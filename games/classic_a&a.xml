@@ -1427,8 +1427,8 @@
 			<boolean/>
 		</property>
 		
-                <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
-                        <number min="2" max="10"/>
+                <property name="Heavy Bomber Dice Rolls" value="3" editable="false">
+                        <number min="2" max="3"/>
                 </property>
 
 		<property name="neutralCharge" value="3"/>
