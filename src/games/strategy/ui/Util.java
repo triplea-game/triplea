@@ -37,6 +37,8 @@ public class Util
 	//all we have is static methods
 	private Util() {}
 
+
+
 	public static void ensureImageLoaded(Image anImage, Component comp) throws InterruptedException
 	{
 		MediaTracker tracker = new MediaTracker(comp);
@@ -54,7 +56,20 @@ public class Util
 
 	public static Image createImage(int width, int height)
 	{
-		return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+      // local graphic system is used to create compatible bitmaps
+      GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
+          .getDefaultScreenDevice()
+          .getDefaultConfiguration();
+
+      // Create a buffered image in the most optimal format, which allows a
+      //    fast blit to the screen.
+      BufferedImage workImage = localGraphicSystem.createCompatibleImage(width,
+          height,
+          Transparency.BITMASK);
+
+      return workImage;
+
 	}
 
 	public static Dimension getDimension(Image anImage, ImageObserver obs)

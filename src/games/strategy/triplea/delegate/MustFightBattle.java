@@ -47,13 +47,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
   private final Territory m_territory;
   private List m_attackingUnits = new LinkedList();
   private Collection m_attackingWaitingToDie = new ArrayList();
-  private Collection m_attackingNonCombatants;
   private Set m_attackingFrom = new HashSet();
   private Collection m_amphibiousAttackFrom = new ArrayList();
   private Collection m_amphibiousLandAttackers = new ArrayList();
   private Collection m_defendingUnits = new LinkedList();
   private Collection m_defendingWaitingToDie = new ArrayList();
-  private Collection m_defendingNonCombatants;
   private boolean m_amphibious = false;
   private boolean m_over = false;
   private BattleTracker m_tracker;
