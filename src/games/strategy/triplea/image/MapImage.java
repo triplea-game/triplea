@@ -40,7 +40,7 @@ import games.strategy.util.NullImageObserver;
 public class MapImage
 {
 
-  private final static String LARGE_IMAGE_FILENAME = "images/largeMap.gif";
+  private final static String LARGE_IMAGE_FILENAME = "images/maps/largeMap.gif";
 
   private static MapImage s_instance;
   private static final ImageObserver s_observer = new NullImageObserver();
