@@ -48,7 +48,7 @@ public final class TestDelegate implements IDelegate
 	public boolean inTransaction() {return false;}
 	public String getName() {return m_name;}
 	public void cancelTransaction() {}
-	public void start(DelegateBridge aBridge, GameData gameData) {	}
+	public void start(IDelegateBridge aBridge, GameData gameData) {	}
 	public Message sendMessage(Message aMessage) {return null;	}
 	public void end() {	}
 	public String getDisplayName() {return "displayName";}

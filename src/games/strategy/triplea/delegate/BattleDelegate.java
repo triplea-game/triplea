@@ -40,10 +40,15 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
 {
 
     private String m_name;
+
     private String m_displayName;
-    private DelegateBridge m_bridge;
+
+    private IDelegateBridge m_bridge;
+
     private BattleTracker m_battleTracker = new BattleTracker();
+
     private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
+
     private GameData m_data;
 
     //dont allow saving while handling a message
@@ -58,11 +63,11 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(DelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge, GameData gameData)
     {
         m_bridge = aBridge;
         m_data = gameData;
-	addBombardmentSources();
+        addBombardmentSources();
         setupSeaUnitsInSameSeaZoneBattles();
     }
 
@@ -76,54 +81,41 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         return m_displayName;
     }
 
-    /**
-     * A message from the given player.
-     */
-    public Message sendMessage(Message message)
+    public String fightBattle(Territory territory, boolean bombing)
     {
-        if (message instanceof GetBattles)
-            return getBattles();
-        if (message instanceof FightBattleMessage)
+        m_inBattle = true;
+        Battle battle = m_battleTracker.getPendingBattle(territory, bombing);
+
+        //does the battle exist
+        if (battle == null)
+            return "No battle in given territory";
+
+        //are there battles that must occur first
+        Collection allMustPrecede = m_battleTracker.getDependentOn(battle);
+        if (!allMustPrecede.isEmpty())
         {
+            Battle firstPrecede = (Battle) allMustPrecede.iterator().next();
+            String name = firstPrecede.getTerritory().getName();
+            String fightingWord = firstPrecede.isBombingRun() ? "Bombing Run"
+                    : "Battle";
+            return "Must complete " + fightingWord + " in " + name + " first";
+        }
 
-            m_inBattle = true;
+        //fight the battle
+        battle.fight(m_bridge);
 
-            FightBattleMessage fightMessage = (FightBattleMessage) message;
+        m_inBattle = false;
 
-            Territory territory = fightMessage.getTerritory();
-            boolean bombing = fightMessage.getStrategicBombingRaid();
-            Battle battle = m_battleTracker.getPendingBattle(territory, bombing);
+        //and were done
+        return null;
 
-            //does the battle exist
-            if (battle == null)
-                return new StringMessage("No battle in given territory", true);
-
-            //are there battles that must occur first
-            Collection allMustPrecede = m_battleTracker.getDependentOn(battle);
-            if (!allMustPrecede.isEmpty())
-            {
-                Battle firstPrecede = (Battle) allMustPrecede.iterator().next();
-                String name = firstPrecede.getTerritory().getName();
-                String fightingWord = firstPrecede.isBombingRun() ? "Bombing Run" : "Battle";
-                return new StringMessage("Must complete " + fightingWord + " in " + name + " first", true);
-            }
-
-            //fight the battle
-            battle.fight(m_bridge);
-
-            m_inBattle = false;
-
-            //and were done
-            return new StringMessage("Battle fought");
-        } else
-            throw new IllegalArgumentException("Battle delegate received message of wrong type:" + message);
     }
 
-    private BattleListingMessage getBattles()
+    public BattleListing getBattles()
     {
         Collection battles = m_battleTracker.getPendingBattleSites(false);
         Collection bombing = m_battleTracker.getPendingBattleSites(true);
-        return new BattleListingMessage(battles, bombing);
+        return new BattleListing(battles, bombing);
     }
 
     /**
@@ -149,28 +141,32 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
      */
     private void addBombardmentSources()
     {
-	PlayerID attacker = m_bridge.getPlayerID();
-        Match ownedAndCanBombard = new CompositeMatchAnd(Matches.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
+        PlayerID attacker = m_bridge.getPlayerID();
+        Match ownedAndCanBombard = new CompositeMatchAnd(Matches
+                .unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
         Map adjBombardment = getPossibleBombardingTerritories();
-	Iterator territories = adjBombardment.keySet().iterator();
+        Iterator territories = adjBombardment.keySet().iterator();
         while (territories.hasNext())
         {
             Territory t = (Territory) territories.next();
             if (!m_battleTracker.hasPendingBattle(t, false))
-	    {
-		Collection battles = (Collection)adjBombardment.get(t);
-		battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
-		if (!battles.isEmpty()) {
-		    Iterator bombarding = t.getUnits().getMatches(ownedAndCanBombard).iterator();
-		    while (bombarding.hasNext()) {
-			Unit u = (Unit) bombarding.next();
-			Battle battle = selectBombardingBattle(u, t, battles);
-			if (battle != null)
-			{
-			    battle.addBombardingUnit(u);
-			}
-		    }
-		}
+            {
+                Collection battles = (Collection) adjBombardment.get(t);
+                battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
+                if (!battles.isEmpty())
+                {
+                    Iterator bombarding = t.getUnits().getMatches(
+                            ownedAndCanBombard).iterator();
+                    while (bombarding.hasNext())
+                    {
+                        Unit u = (Unit) bombarding.next();
+                        Battle battle = selectBombardingBattle(u, t, battles);
+                        if (battle != null)
+                        {
+                            battle.addBombardingUnit(u);
+                        }
+                    }
+                }
             }
         }
     }
@@ -178,116 +174,125 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     /**
      * Return map of adjacent territories to battles.
      */
-    private Map getPossibleBombardingTerritories() {
-	Map possibleBombardingTerritories = new HashMap();
-	Iterator battleTerritories = m_battleTracker.getPendingBattleSites(false).iterator();
-	while (battleTerritories.hasNext())
-	{
-	    Territory t = (Territory)battleTerritories.next();
-	    Battle battle = (Battle)m_battleTracker.getPendingBattle(t, false);
-	    Iterator bombardingTerritories = ((Collection)m_data.getMap().getNeighbors(t)).iterator();
-	    while (bombardingTerritories.hasNext())
-	    {
-		Territory neighbor = (Territory)bombardingTerritories.next();
-		Collection battles = (Collection)possibleBombardingTerritories.get(neighbor);
-		if (battles == null)
-		{
-		    battles = new ArrayList();
-		    possibleBombardingTerritories.put(neighbor, battles);
-		}
-		battles.add(battle);
-	    }
-	}
+    private Map getPossibleBombardingTerritories()
+    {
+        Map possibleBombardingTerritories = new HashMap();
+        Iterator battleTerritories = m_battleTracker.getPendingBattleSites(
+                false).iterator();
+        while (battleTerritories.hasNext())
+        {
+            Territory t = (Territory) battleTerritories.next();
+            Battle battle = (Battle) m_battleTracker.getPendingBattle(t, false);
+            Iterator bombardingTerritories = ((Collection) m_data.getMap()
+                    .getNeighbors(t)).iterator();
+            while (bombardingTerritories.hasNext())
+            {
+                Territory neighbor = (Territory) bombardingTerritories.next();
+                Collection battles = (Collection) possibleBombardingTerritories
+                        .get(neighbor);
+                if (battles == null)
+                {
+                    battles = new ArrayList();
+                    possibleBombardingTerritories.put(neighbor, battles);
+                }
+                battles.add(battle);
+            }
+        }
 
-	return possibleBombardingTerritories;
+        return possibleBombardingTerritories;
     }
 
     /**
      * Select which territory to bombard.
      */
-    private Battle selectBombardingBattle(Unit u, Territory uTerritory, Collection battles)
+    private Battle selectBombardingBattle(Unit u, Territory uTerritory,
+            Collection battles)
     {
-	boolean hasNotMoved = DelegateFinder.moveDelegate(m_data).hasNotMoved(u);
-	// If only one battle to select from just return that battle
-	if ((battles.size() == 1) && !hasNotMoved)
-	{
-	    return (Battle)battles.iterator().next();
-	}
+        boolean hasNotMoved = DelegateFinder.moveDelegate(m_data)
+                .hasNotMoved(u);
+        // If only one battle to select from just return that battle
+        if ((battles.size() == 1) && !hasNotMoved)
+        {
+            return (Battle) battles.iterator().next();
+        }
 
+        List territories = new ArrayList();
+        Map battleTerritories = new HashMap();
+        Iterator battlesIter = battles.iterator();
+        while (battlesIter.hasNext())
+        {
+            Battle battle = (Battle) battlesIter.next();
+            territories.add(battle.getTerritory());
+            battleTerritories.put(battle.getTerritory(), battle);
+        }
 
-	List territories = new ArrayList();
-	Map battleTerritories = new HashMap();
-	Iterator battlesIter = battles.iterator();
-	while (battlesIter.hasNext())
-	{
-	    Battle battle = (Battle)battlesIter.next();
-	    territories.add(battle.getTerritory());
-	    battleTerritories.put(battle.getTerritory(), battle);
-	}
+        PlayerID attacker = m_bridge.getPlayerID();
 
-	PlayerID attacker = m_bridge.getPlayerID();
+        Message msg = new BombardmentQueryMessage(u, uTerritory, territories,
+                hasNotMoved);
+        Message response = m_bridge.sendMessage(msg, attacker);
+        if (!(response instanceof BombardmentSelectMessage))
+        {
+            throw new IllegalStateException("Message of wrong type:" + response);
+        }
 
-	Message msg = new BombardmentQueryMessage(u, uTerritory, territories, hasNotMoved);
-	Message response = m_bridge.sendMessage(msg, attacker);
-	if(!(response instanceof BombardmentSelectMessage))
-	{
-	    throw new IllegalStateException("Message of wrong type:" + response);
-	}
-	
-	BombardmentSelectMessage bsm = (BombardmentSelectMessage) response;
+        BombardmentSelectMessage bsm = (BombardmentSelectMessage) response;
 
-	if (bsm.getTerritory() != null)
-	{
-	    return (Battle)battleTerritories.get(bsm.getTerritory());
-	}
+        if (bsm.getTerritory() != null)
+        {
+            return (Battle) battleTerritories.get(bsm.getTerritory());
+        }
 
-
-	return null; // User elected not to bombard with this unit
+        return null; // User elected not to bombard with this unit
     }
 
     /**
-     * Setup the battles where the battle occurs because sea units are in the same sea
-     * zone. This happens when subs emerge (after being submerged), and when naval units are 
-     * placed in enemy occupied sea zones
+     * Setup the battles where the battle occurs because sea units are in the
+     * same sea zone. This happens when subs emerge (after being submerged), and
+     * when naval units are placed in enemy occupied sea zones
      */
     private void setupSeaUnitsInSameSeaZoneBattles()
     {
         //we want to match all sea zones with our units and enemy units
         CompositeMatch seaWithOwnAndEnemy = new CompositeMatchAnd();
         seaWithOwnAndEnemy.add(Matches.TerritoryIsWater);
-        seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(m_bridge.getPlayerID()));
-        seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(m_bridge.getPlayerID(), m_data));
-        
-        Iterator territories = Match.getMatches(m_data.getMap().getTerritories(), seaWithOwnAndEnemy).iterator();
-        
+        seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(m_bridge
+                .getPlayerID()));
+        seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(m_bridge
+                .getPlayerID(), m_data));
+
+        Iterator territories = Match.getMatches(
+                m_data.getMap().getTerritories(), seaWithOwnAndEnemy)
+                .iterator();
+
         Match ownedUnit = Matches.unitIsOwnedBy(m_bridge.getPlayerID());
-        while(territories.hasNext())
+        while (territories.hasNext())
         {
             Territory territory = (Territory) territories.next();
-            
+
             List attackingUnits = territory.getUnits().getMatches(ownedUnit);
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
             Route route = new Route();
-                        
-            if(battle != null)
+
+            if (battle != null)
             {
-                attackingUnits.removeAll( ((MustFightBattle) battle).getAttackingUnits() );
+                attackingUnits.removeAll(((MustFightBattle) battle)
+                        .getAttackingUnits());
             }
-            if(!attackingUnits.isEmpty())
+            if (!attackingUnits.isEmpty())
             {
                 route.setStart(territory);
-            	m_battleTracker.addBattle(route, attackingUnits, DelegateFinder.moveDelegate(m_data).getTransportTracker(), false, m_bridge.getPlayerID(),m_data, m_bridge, null);
+                m_battleTracker.addBattle(route, attackingUnits, DelegateFinder
+                        .moveDelegate(m_data).getTransportTracker(), false,
+                        m_bridge.getPlayerID(), m_data, m_bridge, null);
             }
         }
-        
-        
-        
+
     }
-    
-    
 
     /**
      * Can the delegate be saved at the current time.
+     * 
      * @arg message, a String[] of size 1, hack to pass an error message back.
      */
     public boolean canSave(String[] message)
@@ -318,7 +323,9 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         m_originalOwnerTracker = state.m_originalOwnerTracker;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
     public Class getRemoteType()
@@ -327,9 +334,9 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     }
 }
 
-
 class BattleState implements Serializable
 {
     public BattleTracker m_battleTracker = new BattleTracker();
+
     public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
 }

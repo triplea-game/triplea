@@ -34,7 +34,7 @@ public class RocketsFireHelper
 
     }
 
-    public void fireRockets(DelegateBridge bridge, GameData data, PlayerID player)
+    public void fireRockets(IDelegateBridge bridge, GameData data, PlayerID player)
     {
 
         boolean is4thEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
@@ -53,7 +53,7 @@ public class RocketsFireHelper
        
     }
      
-    private void fire4thEdition(GameData data, PlayerID player, Set rocketTerritories, DelegateBridge bridge)
+    private void fire4thEdition(GameData data, PlayerID player, Set rocketTerritories, IDelegateBridge bridge)
     {
         Set attackedTerritories = new HashSet();
         Iterator iter = rocketTerritories.iterator();
@@ -73,7 +73,7 @@ public class RocketsFireHelper
         }
     }
     
-    private void fire3rdEdition(GameData data, PlayerID player, Set rocketTerritories, DelegateBridge bridge)
+    private void fire3rdEdition(GameData data, PlayerID player, Set rocketTerritories, IDelegateBridge bridge)
     {
         Set targets = new HashSet();
         Iterator iter = rocketTerritories.iterator();
@@ -137,7 +137,7 @@ public class RocketsFireHelper
         return hasFactory;
     }
 
-    private Territory getTarget(Collection targets, PlayerID player, DelegateBridge bridge, Territory from)
+    private Territory getTarget(Collection targets, PlayerID player, IDelegateBridge bridge, Territory from)
     {
         if(targets.size() == 1)
         {
@@ -153,7 +153,7 @@ public class RocketsFireHelper
         return territoryMessage.getTerritory();
     }
 
-    private void fireRocket(PlayerID player, Territory attackedTerritory, DelegateBridge bridge, GameData data)
+    private void fireRocket(PlayerID player, Territory attackedTerritory, IDelegateBridge bridge, GameData data)
     {
 
         PlayerID attacked = attackedTerritory.getOwner();

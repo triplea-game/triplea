@@ -35,7 +35,7 @@ import games.strategy.net.IRemote;
  * @author  Sean Bridges
  *
  */
-public class DefaultPlayerBridge implements PlayerBridge
+public class DefaultPlayerBridge implements IPlayerBridge
 {
     
     private final IGame m_game;
@@ -48,15 +48,6 @@ public class DefaultPlayerBridge implements PlayerBridge
     {
         m_game = aGame;
         m_game.addGameStepListener(m_gameStepListener);
-    }
-    
-    /**
-     * Send a message to the current delegate
-     * @returnVal null if the action performed successfuly, otherwise an error message.
-     */
-    public Message sendMessage(Message message)
-    {
-        return m_game.getMessageManager().send(message, m_currentDelegate);
     }
     
     /**

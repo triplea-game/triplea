@@ -94,7 +94,7 @@ public class ServerGame implements IGame
             GamePlayer gp = (GamePlayer) localPlayersIter.next();
             PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
             m_gamePlayers.put(player, gp);
-            PlayerBridge bridge = new DefaultPlayerBridge(this);
+            IPlayerBridge bridge = new DefaultPlayerBridge(this);
             gp.initialize(bridge, player);
             m_messageManager.addDestination(gp);
 
@@ -132,7 +132,6 @@ public class ServerGame implements IGame
         while (delegateIter.hasNext())
         {
             IDelegate delegate = (IDelegate) delegateIter.next();
-            m_messageManager.addDestination(delegate);
             
             Class remoteType = delegate.getRemoteType();
             //if its null then it shouldnt be added as an IRemote

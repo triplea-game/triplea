@@ -43,9 +43,12 @@ import games.strategy.net.IRemote;
  * The delegate will be initialized with a call of initialize(..) before used.
  *
  * Delegates start executing with the start method, and stop with the end message.
+ * 
+ * Delegates can be made accesseble to players through implementing an IRemote,
+ * and will be called through RemoteMessenger.
  *
  */
-public interface IDelegate extends IDestination
+public interface IDelegate 
 {
 	/*
 	 * Uses name as the interal unique name and displayName for display to users
@@ -55,16 +58,11 @@ public interface IDelegate extends IDestination
 	/**
 	 * Called before the delegate will run.
 	 */
-	public void start(DelegateBridge aBridge, GameData gameData);
+	public void start(IDelegateBridge aBridge, GameData gameData);
 	/**
 	 * Called before the delegate will stop running.
 	 */
 	public void end();
-
-	/**
-	 * A message has been received.
-	 */
-	public Message sendMessage(Message aMessage);
 
 	public String getName();
 

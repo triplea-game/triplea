@@ -27,7 +27,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 {
     private int m_bid;
     private int m_spent;
-    private DelegateBridge m_bridge;
+    private IDelegateBridge m_bridge;
 
 
   /**
@@ -42,7 +42,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
     return m_bid >= ipcCost;
   }
 
-  public void start(DelegateBridge bridge, GameData data)
+  public void start(IDelegateBridge bridge, GameData data)
   {
       super.start(bridge, data);
       m_bridge = bridge;

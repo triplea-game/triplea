@@ -50,7 +50,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
 
     private GameData m_data;
 
-    private DelegateBridge m_bridge;
+    private IDelegateBridge m_bridge;
 
     private PlayerID m_player;
 
@@ -71,7 +71,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(DelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge, GameData gameData)
     {
         m_bridge = aBridge;
         m_data = gameData;
@@ -234,15 +234,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
     {
         return m_displayName;
     }
-
-    /**
-     * A message from the given player.
-     */
-    public Message sendMessage(Message aMessage)
-    {
-        throw new IllegalStateException("Messaging not supported" + aMessage);
-    }
-
+    
     /**
      * Called before the delegate will stop running.
      */

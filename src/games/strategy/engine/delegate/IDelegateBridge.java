@@ -39,7 +39,7 @@ import games.strategy.engine.history.*;
  *
  * The delegateBridge allows the Delegate to talk to the player in a safe manner.
  */
-public interface DelegateBridge
+public interface IDelegateBridge
 {
   /**
    * Messages are sent to the current player

@@ -18,7 +18,7 @@ package games.strategy.triplea.delegate;
 import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.UnitAttatchment;
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.*;
 import games.strategy.util.Match;
@@ -36,7 +36,7 @@ public class DiceRoll implements java.io.Serializable
   private final int m_hits;
   private final boolean m_hitOnlyIfEquals;
 
-  public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge, Territory location, GameData data)
+  public static DiceRoll rollAA(int numberOfAirUnits, IDelegateBridge bridge, Territory location, GameData data)
   {
     int hits = 0;
     int[] dice = new int[0];
@@ -79,7 +79,7 @@ public class DiceRoll implements java.io.Serializable
    */
   public static DiceRoll rollDice(List units, boolean defending,
 				  PlayerID player,
-				  DelegateBridge bridge,
+				  IDelegateBridge bridge,
 				  GameData data)
   {
     // Decide whether to use low luck rules or normal rules.
@@ -97,7 +97,7 @@ public class DiceRoll implements java.io.Serializable
    */
   private static DiceRoll rollDiceLowLuck(List units, boolean defending,
 					  PlayerID player,
-					  DelegateBridge bridge,
+					  IDelegateBridge bridge,
 					  GameData data)
   {
     String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
@@ -179,7 +179,7 @@ public class DiceRoll implements java.io.Serializable
    */
   private static DiceRoll rollDiceNormal(List units, boolean defending,
 					 PlayerID player,
-					 DelegateBridge bridge,
+					 IDelegateBridge bridge,
 					 GameData data)
   {
     String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);

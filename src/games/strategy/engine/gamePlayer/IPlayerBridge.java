@@ -36,7 +36,7 @@ import games.strategy.net.IRemote;
  *
  *
  */
-public interface PlayerBridge 
+public interface IPlayerBridge 
 {	
 	/**
 	 * Return the game data
@@ -44,12 +44,8 @@ public interface PlayerBridge
 	public GameData getGameData();
 	
 	/**
-	 * Send a message to the current delegate.
-	 */
-	public Message sendMessage(Message aMessage);
-	
-	/**
-	 * Get a remote reference to the current delegate
+	 * Get a remote reference to the current delegate, the type of the reference
+	 * is declared by the delegates getRemoteType() method
 	 */
 	public IRemote getRemote();
 	

@@ -24,7 +24,7 @@ import java.util.*;
 
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 
 import games.strategy.triplea.Constants;
 
@@ -56,7 +56,7 @@ interface Battle extends java.io.Serializable
     /**
      * Fight this battle.
      */
-    public void fight(DelegateBridge bridge);
+    public void fight(IDelegateBridge bridge);
     
     /**
      * Return whether this battle is over or not.
@@ -68,7 +68,7 @@ interface Battle extends java.io.Serializable
      * This is needed to remove dependent units who have been
      * lost in another battle.
      */
-    public void unitsLost(Battle battle, Collection units, DelegateBridge bridge);
+    public void unitsLost(Battle battle, Collection units, IDelegateBridge bridge);
 
     /**
      * Add a bombardment unit.

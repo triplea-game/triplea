@@ -28,7 +28,7 @@ import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.util.*;
 import games.strategy.util.*;
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.data.*;
 
 /**
@@ -42,7 +42,7 @@ import games.strategy.engine.data.*;
 public class BattleCalculator
 {
 
-    public static int getAAHits(Collection units, DelegateBridge bridge, int[] dice)
+    public static int getAAHits(Collection units, IDelegateBridge bridge, int[] dice)
     {
 	int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);
 
@@ -59,7 +59,7 @@ public class BattleCalculator
      * Choose plane casualties according to 4th edition rules which
      * specifies that they are randomnly chosen.
      */
-    public static Collection fourthEditionAACasualties(Collection planes, DiceRoll dice, DelegateBridge bridge) 
+    public static Collection fourthEditionAACasualties(Collection planes, DiceRoll dice, IDelegateBridge bridge) 
     {
 	Collection casualties = new ArrayList();
 	int hits = dice.getHits();
@@ -82,13 +82,13 @@ public class BattleCalculator
 	return casualties;
     }
 
-    public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
+    public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, IDelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
     {
 	return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
     }
 
 
-    public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
+    public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, IDelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
     {
 	int hits = dice.getHits();
 	if(hits == 0)

@@ -65,7 +65,7 @@ public class EndRoundDelegate implements ISaveableDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	public void start(DelegateBridge aBridge, GameData gameData)
+	public void start(IDelegateBridge aBridge, GameData gameData)
 	{
 		if(m_gameOver)
 			return;
@@ -108,13 +108,7 @@ public class EndRoundDelegate implements ISaveableDelegate
 	{
 		return m_displayName;
 	}
-
-
-	public Message sendMessage(Message message)
-	{
-		throw new UnsupportedOperationException("Cannot respond to messages.  Recieved:" + message);
-	}
-
+	
 	/**
 	 * Called before the delegate will stop running.
 	 */

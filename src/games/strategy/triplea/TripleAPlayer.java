@@ -49,7 +49,7 @@ public class TripleAPlayer implements GamePlayer
 
     private TripleAFrame m_ui;
 
-    private PlayerBridge m_bridge;
+    private IPlayerBridge m_bridge;
 
     /** Creates new TripleAPlayer */
     public TripleAPlayer(String name)
@@ -149,7 +149,7 @@ public class TripleAPlayer implements GamePlayer
         return m_id;
     }
 
-    public void initialize(PlayerBridge bridge, PlayerID id)
+    public void initialize(IPlayerBridge bridge, PlayerID id)
     {
         m_bridge = bridge;
         m_id = id;
@@ -301,28 +301,21 @@ public class TripleAPlayer implements GamePlayer
     {
         while (true)
         {
-
-            Message response = m_bridge.sendMessage(new GetBattles());
-            if (response instanceof BattleListingMessage)
-            {
-                BattleListingMessage battles = (BattleListingMessage) response;
+            IBattleDelegate battleDel = (IBattleDelegate) m_bridge.getRemote();
+            BattleListing battles = battleDel.getBattles();
+           
+                
                 if (battles.isEmpty())
                 {
                     return;
                 }
-                response = m_bridge.sendMessage(m_ui.getBattle(m_id, battles
-                        .getBattles(), battles.getStrategicRaids()));
-                if (response instanceof StringMessage)
-                {
-                    StringMessage msg = (StringMessage) response;
-                    if (msg.isError())
-                        m_ui.notifyError(((StringMessage) response)
-                                .getMessage());
-                }
+                
+                FightBattleDetails details = m_ui.getBattle(m_id, battles
+                        .getBattles(), battles.getStrategicRaids());
+                String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid());
 
-            } else
-                throw new IllegalArgumentException(
-                        "Received response of wrong type:" + response);
+                if(error != null)
+                        m_ui.notifyError(error);
         }
     }
 

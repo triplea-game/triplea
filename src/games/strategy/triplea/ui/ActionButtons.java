@@ -27,7 +27,7 @@ import javax.swing.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
-import games.strategy.engine.gamePlayer.PlayerBridge;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -134,7 +134,7 @@ public class ActionButtons extends JPanel
      * 
      * @return null if no move was made.
      */
-    public MoveDescription waitForMove(PlayerBridge bridge)
+    public MoveDescription waitForMove(IPlayerBridge bridge)
     {
         return m_movePanel.waitForMove(bridge);
     }
@@ -160,7 +160,7 @@ public class ActionButtons extends JPanel
      * 
      * @return null if no placement was made.
      */
-    public PlaceData waitForPlace(boolean bid, PlayerBridge bridge)
+    public PlaceData waitForPlace(boolean bid, IPlayerBridge bridge)
     {
         return m_placePanel.waitForPlace(bid, bridge);
     }
@@ -168,7 +168,7 @@ public class ActionButtons extends JPanel
     /**
      * Blocks until the user selects a battle to fight.
      */
-    public FightBattleMessage waitForBattleSelection()
+    public FightBattleDetails waitForBattleSelection()
     {
         return m_battlePanel.waitForBattleSelection();
     }

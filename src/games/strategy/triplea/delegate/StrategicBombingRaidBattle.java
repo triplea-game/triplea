@@ -23,7 +23,7 @@ import java.util.*;
 import games.strategy.util.*;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
@@ -86,7 +86,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     }
 
-    public void fight(DelegateBridge bridge)
+    public void fight(IDelegateBridge bridge)
     {
 
         bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite);
@@ -135,7 +135,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     }
 
-    private void fireAA(DelegateBridge bridge)
+    private void fireAA(IDelegateBridge bridge)
     {
 
         DiceRoll dice = DiceRoll.rollAA(m_units.size(), bridge, m_battleSite, m_data);
@@ -150,7 +150,7 @@ public class StrategicBombingRaidBattle implements Battle
       return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
-    private void removeAAHits(DelegateBridge bridge, DiceRoll dice)
+    private void removeAAHits(IDelegateBridge bridge, DiceRoll dice)
     {
       Collection casualties = null;
       if (isFourthEdition()) {
@@ -182,7 +182,7 @@ public class StrategicBombingRaidBattle implements Battle
     /**
      * @return how many ipcs the raid cost
      */
-    private int conductRaid(DelegateBridge bridge, PlayerID attacker, PlayerID defender, Territory location)
+    private int conductRaid(IDelegateBridge bridge, PlayerID attacker, PlayerID defender, Territory location)
     {
 
         int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
@@ -272,7 +272,7 @@ public class StrategicBombingRaidBattle implements Battle
         return true;
     }
 
-    public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
+    public void unitsLost(Battle battle, Collection units, IDelegateBridge bridge)
     {
 
         //should never happen

@@ -40,7 +40,7 @@ import games.strategy.triplea.attatchments.*;
 public class EndTurnDelegate extends AbstractEndTurnDelegate
 {
 
-	protected void checkForWinner(DelegateBridge bridge)
+	protected void checkForWinner(IDelegateBridge bridge)
 	{
 		//only notify once
 		if(m_gameOver)

@@ -12,29 +12,33 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package games.strategy.triplea.delegate.remote;
+package games.strategy.triplea.delegate.message;
 
 import games.strategy.engine.data.Territory;
-import games.strategy.net.IRemote;
-import games.strategy.triplea.delegate.message.BattleListing;
 
 /**
  * @author Sean Bridges
  */
-public interface IBattleDelegate extends IRemote
+public class FightBattleDetails
 {
-    /**
-     * 
-     * @return the battles currently waiting to be fought
-     */
-    public BattleListing getBattles();
-    
-    /**
-     * Fight the battle in the given country
-     * @param where - where to fight
-     * @param bombing - fight a bombing raid
-     * @return an error string if the battle could not be fought or an error occured, null otherwse
-     */
-    public String fightBattle(Territory where, boolean bombing);
 
+    private final boolean m_bombingRaid;
+    private final Territory m_where;
+    
+    
+    
+    public FightBattleDetails(final boolean bombingRaid, final Territory where)
+    {
+        m_bombingRaid = bombingRaid;
+        m_where = where;
+    }
+    
+    public boolean isBombingRaid()
+    {
+        return m_bombingRaid;
+    }
+    public Territory getWhere()
+    {
+        return m_where;
+    }
 }

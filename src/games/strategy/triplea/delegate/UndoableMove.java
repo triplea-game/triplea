@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.*;
 import games.strategy.triplea.delegate.message.*;
@@ -154,7 +154,7 @@ public class UndoableMove implements Serializable
 
     }
 
-    public void undo(DelegateBridge bridge, IntegerMap movement,
+    public void undo(IDelegateBridge bridge, IntegerMap movement,
                      GameData data)
     {
         TransportTracker transportTracker = DelegateFinder.moveDelegate(data).getTransportTracker();

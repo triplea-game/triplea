@@ -1,6 +1,6 @@
 package games.strategy.twoIfBySea.delegate;
 
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
@@ -24,7 +24,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     {
     }
 
-	protected void checkForWinner(DelegateBridge bridge)
+	protected void checkForWinner(IDelegateBridge bridge)
 	{
 		PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
 		PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);

@@ -28,7 +28,7 @@ import javax.swing.*;
 
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.gamePlayer.PlayerBridge;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.engine.message.Message;
@@ -48,7 +48,7 @@ public class MovePanel extends ActionPanel
     private JLabel m_actionLabel = new JLabel();
     private MoveDescription m_moveMessage;
     private Territory m_firstSelectedTerritory;
-    private PlayerBridge m_bridge;
+    private IPlayerBridge m_bridge;
 
     private List m_forced;
     private boolean m_nonCombat;
@@ -108,7 +108,7 @@ public class MovePanel extends ActionPanel
         m_undableMovesPanel.setMoves(getDelegate().getMovesMade());
     }
 
-    public MoveDescription waitForMove(PlayerBridge bridge)
+    public MoveDescription waitForMove(IPlayerBridge bridge)
     {
         setUp(bridge);
         updateMoves();
@@ -130,7 +130,7 @@ public class MovePanel extends ActionPanel
         }
     }
 
-    private void setUp(PlayerBridge bridge)
+    private void setUp(IPlayerBridge bridge)
     {
         m_firstSelectedTerritory = null;
         m_forced = null;

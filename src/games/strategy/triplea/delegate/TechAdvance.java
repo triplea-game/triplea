@@ -87,7 +87,7 @@ public abstract class TechAdvance implements java.io.Serializable
 
     public abstract String getName();
     public abstract String getProperty();
-    public abstract void perform(PlayerID id, DelegateBridge bridge, GameData data);
+    public abstract void perform(PlayerID id, IDelegateBridge bridge, GameData data);
 
     public boolean equals(Object o)
     {
@@ -130,7 +130,7 @@ class SuperSubsAdvance extends TechAdvance
         return "superSub";
     }
 
-    public void perform(PlayerID id, DelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
 }
@@ -149,7 +149,7 @@ class HeavyBomberAdvance extends TechAdvance
         return "heavyBomber";
     }
 
-    public void perform(PlayerID id, DelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
 
@@ -169,7 +169,7 @@ class IndustrialTechnologyAdvance extends TechAdvance
         return "industrialTechnology";
     }
 
-    public void perform(PlayerID id, DelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
         ProductionFrontier advancedTech = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
         Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
@@ -191,7 +191,7 @@ class JetPowerAdvance extends TechAdvance
         return "jetPower";
     }
 
-    public void perform(PlayerID id, DelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
 
@@ -211,7 +211,7 @@ class RocketsAdvance extends TechAdvance
         return "rocket";
     }
 
-    public void perform(PlayerID id, DelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
 
@@ -229,7 +229,7 @@ class DestroyerBombardTechAdvance extends TechAdvance
         return "destroyerBombard";
     }
 
-    public void perform(PlayerID id, DelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
 }
@@ -248,7 +248,7 @@ class LongRangeAircraftAdvance extends TechAdvance
         return "longRangeAir";
     }
 
-    public void perform(PlayerID id, DelegateBridge bridge, GameData data)
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
     }
 }

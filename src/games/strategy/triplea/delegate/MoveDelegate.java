@@ -55,7 +55,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     private String m_name;
     private String m_displayName;
-    private DelegateBridge m_bridge;
+    private IDelegateBridge m_bridge;
     private GameData m_data;
     private PlayerID m_player;
     private boolean m_firstRun = true;
@@ -147,7 +147,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     /**
      * Called before the delegate will run.
      */
-    public void start(DelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge, GameData gameData)
     {
         if (aBridge.getStepName().endsWith("NonCombatMove"))
             m_nonCombat = true;
@@ -176,14 +176,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     {
 
         return m_displayName;
-    }
-
-    /**
-     * A message from the given player.
-     */
-    public Message sendMessage(Message aMessage)
-    {
-        throw new IllegalArgumentException("We dont do messages anymore");
     }
    
     public List getMovesMade()

@@ -24,7 +24,7 @@ import java.util.*;
 
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.Formatter;
@@ -63,7 +63,7 @@ public class NonFightingBattle implements Battle
 		m_transportTracker = transportTracker;
 	}
 
-	public void fight(DelegateBridge bridge)
+	public void fight(IDelegateBridge bridge)
 	{
 		if(!m_battleTracker.getDependentOn(this).isEmpty())
 			throw new IllegalStateException("Must fight battles that this battle depends on first");
@@ -133,7 +133,7 @@ public class NonFightingBattle implements Battle
 		return m_battleSite;
 	}
 
-	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
+	public void unitsLost(Battle battle, Collection units, IDelegateBridge bridge)
 	{
 		
 		Collection lost = getDependentUnits(units);

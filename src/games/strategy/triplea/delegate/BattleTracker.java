@@ -24,7 +24,7 @@ import java.util.*;
 
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.*;
@@ -145,7 +145,7 @@ public class BattleTracker implements java.io.Serializable
 
   }
 
-  public void addBattle(Route route, Collection units, TransportTracker tracker, boolean bombing, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
+  public void addBattle(Route route, Collection units, TransportTracker tracker, boolean bombing, PlayerID id, GameData data, IDelegateBridge bridge, UndoableMove changeTracker)
   {
     if (bombing)
       addBombingBattle(route, units, id, data);
@@ -184,7 +184,7 @@ public class BattleTracker implements java.io.Serializable
   /**
    * No enemies, but not neutral.
    */
-  private void addEmptyBattle(Route route, Collection units, TransportTracker tracker, final PlayerID id, final GameData data, DelegateBridge bridge, UndoableMove changeTracker)
+  private void addEmptyBattle(Route route, Collection units, TransportTracker tracker, final PlayerID id, final GameData data, IDelegateBridge bridge, UndoableMove changeTracker)
   {
     if (!Match.someMatch(units, Matches.UnitIsLand))
       return;
@@ -252,7 +252,7 @@ public class BattleTracker implements java.io.Serializable
 
   }
 
-  private void addNeutralBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
+  private void addNeutralBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data, IDelegateBridge bridge, UndoableMove changeTracker)
   {
     //TODO check for pre existing battles at the sight
     //here and in empty battle
@@ -297,7 +297,7 @@ public class BattleTracker implements java.io.Serializable
     }
   }
 
-  protected void takeOver(Territory territory, final PlayerID id, DelegateBridge bridge, GameData data, UndoableMove changeTracker)
+  protected void takeOver(Territory territory, final PlayerID id, IDelegateBridge bridge, GameData data, UndoableMove changeTracker)
   {
     OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 

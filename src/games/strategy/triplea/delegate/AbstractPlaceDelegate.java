@@ -70,7 +70,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
 
     private String m_displayName;
 
-    private DelegateBridge m_bridge;
+    private IDelegateBridge m_bridge;
 
     //maps Territory-> Collection of units
     protected Map m_produced = new HashMap();
@@ -106,7 +106,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
     /**
      * Called before the delegate will run.
      */
-    public void start(DelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge, GameData gameData)
     {
 
         m_bridge = aBridge;
@@ -124,14 +124,6 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
     {
 
         return m_displayName;
-    }
-
-    /**
-     * A message from the given player.
-     */
-    public Message sendMessage(Message aMessage)
-    {
-        throw new IllegalArgumentException("We dont do messages anymore" + aMessage);
     }
 
     public int getPlacementsMade()
@@ -800,7 +792,7 @@ class UndoPlace
         }
     }
 
-    public void undo(GameData data, DelegateBridge bridge,
+    public void undo(GameData data, IDelegateBridge bridge,
             AbstractPlaceDelegate delegate)
     {
 

@@ -51,7 +51,7 @@ public class BattlePanel extends ActionPanel
     }
 
     private JLabel m_actionLabel = new JLabel();
-    private FightBattleMessage m_fightBattleMessage;
+    private FightBattleDetails m_fightBattleMessage;
     private TripleAFrame m_parent;
 
     private BattleDisplay m_battleDisplay;
@@ -180,7 +180,7 @@ public class BattlePanel extends ActionPanel
 	return null;
     }
 
-    public FightBattleMessage waitForBattleSelection()
+    public FightBattleDetails waitForBattleSelection()
     {
 	try
 	{
@@ -194,7 +194,7 @@ public class BattlePanel extends ActionPanel
 	}
 
 	if(m_fightBattleMessage != null)
-	    getMap().centerOn(m_fightBattleMessage.getTerritory());
+	    getMap().centerOn(m_fightBattleMessage.getWhere());
 
 	return m_fightBattleMessage;
     }
@@ -296,7 +296,7 @@ public class BattlePanel extends ActionPanel
 
 	public void actionPerformed(ActionEvent actionEvent)
 	{
-	    m_fightBattleMessage = new FightBattleMessage(m_territory, m_bomb);
+	    m_fightBattleMessage = new FightBattleDetails(m_bomb, m_territory);
 	    synchronized(getLock())
 	    {
 		getLock().notify();

@@ -46,7 +46,7 @@ public class TechActivationDelegate implements ISaveableDelegate
     private String m_name;
     private String m_displayName;
     private GameData m_data;
-    private DelegateBridge m_bridge;
+    private IDelegateBridge m_bridge;
     private PlayerID m_player;
 
     /** Creates new TechActivationDelegate */
@@ -65,7 +65,7 @@ public class TechActivationDelegate implements ISaveableDelegate
      * Called before the delegate will run.
      * In this class, this does all the work.
      */
-    public void start(DelegateBridge aBridge, GameData gameData)
+    public void start(IDelegateBridge aBridge, GameData gameData)
     {
 	m_bridge = aBridge;
 	m_data = gameData;
@@ -124,14 +124,6 @@ public class TechActivationDelegate implements ISaveableDelegate
      */
     public void end()
     {
-    }
-
-    /**
-     * A message from the given player.
-     */
-    public Message sendMessage(Message aMessage)
-    {
-	throw new IllegalStateException("Message of wrong type:" + aMessage);
     }
 
     /**

@@ -82,7 +82,7 @@ public class TechTracker implements java.io.Serializable
 
   }
 
-  public static synchronized void addAdvance(PlayerID player, GameData data, DelegateBridge bridge, TechAdvance advance)
+  public static synchronized void addAdvance(PlayerID player, GameData data, IDelegateBridge bridge, TechAdvance advance)
   {
     Change attatchmentChange = ChangeFactory.attatchmentPropertyChange(TechAttatchment.get(player), "true", advance.getProperty());
     bridge.addChange(attatchmentChange);

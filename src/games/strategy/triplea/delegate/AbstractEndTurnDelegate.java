@@ -68,7 +68,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 	/**
 	 * Called before the delegate will run.
 	 */
-	public void start(DelegateBridge aBridge, GameData gameData)
+	public void start(IDelegateBridge aBridge, GameData gameData)
 	{
 		m_data = gameData;
 		PlayerID player = aBridge.getPlayerID();
@@ -100,7 +100,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 	}
 	
 	
-	private void repairBattleShips(DelegateBridge aBridge)
+	private void repairBattleShips(IDelegateBridge aBridge)
 	{
 	   Match damagedBattleship = new CompositeMatchAnd(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
 	    
@@ -128,7 +128,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 	}
 	
 
-	protected abstract void checkForWinner(DelegateBridge bridge);
+	protected abstract void checkForWinner(IDelegateBridge bridge);
 
 
 	protected int getProduction(Collection territories)
@@ -155,15 +155,6 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 	public String getDisplayName()
 	{
 		return m_displayName;
-	}
-
-
-	/**
-	 * A message from the given player.
-	 */
-	public Message sendMessage(Message aMessage)
-	{
-		return null;
 	}
 
 	/**

@@ -51,7 +51,7 @@ public class TroxAIPlayer implements GamePlayer
 {
   private final String m_name;
   private PlayerID m_id;
-  private PlayerBridge m_bridge;
+  private IPlayerBridge m_bridge;
   //added by Troy Graber
   private AI m_ai; 
   //end addition
@@ -144,7 +144,7 @@ public class TroxAIPlayer implements GamePlayer
     return m_id;
   }
 
-  public void initialize(PlayerBridge bridge, PlayerID id)
+  public void initialize(IPlayerBridge bridge, PlayerID id)
   {
     m_bridge = bridge;
     m_id = id;
@@ -325,30 +325,18 @@ public class TroxAIPlayer implements GamePlayer
     while(true)
     {
 
-      Message response = m_bridge.sendMessage(new GetBattles());
-      if(response instanceof BattleListingMessage)
-      {
-        BattleListingMessage battles = (BattleListingMessage) response;
-        if(battles.isEmpty())
-        {
+      IBattleDelegate battleDel = (IBattleDelegate) m_bridge.getRemote();
+      Collection battles = battleDel.getBattles().getBattles();
+      if(battles.isEmpty())
           return;
-        }
-        //code added by Troy Graber
-        FightBattleMessage m1 = new FightBattleMessage((Territory)battles.getBattles().iterator().next(), false);
-        response = m_bridge.sendMessage(m1);
         
-        //end addition
-        //response = m_bridge.sendMessage(m_ui.getBattle(m_id, battles.getBattles(), battles.getStrategicRaids()));
-        if(response instanceof StringMessage)
-        {
-          StringMessage msg = (StringMessage) response;
-          if(msg.isError())
-            System.err.println(((StringMessage) response).getMessage());
-        }
-
-      }
-      else
-        throw new IllegalArgumentException("Received response of wrong type:" + response);
+      //code added by Troy Graber
+      String error = battleDel.fightBattle((Territory) battles.iterator().next(), false);
+      
+      if(error != null)
+          System.err.println(error);
+        
+        
     }
   }
 

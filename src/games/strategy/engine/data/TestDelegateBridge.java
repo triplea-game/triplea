@@ -43,7 +43,7 @@ import games.strategy.engine.history.*;
  *  Never returns messages, but can get random and implements changes
  *  immediately.
  */
-public class TestDelegateBridge implements DelegateBridge
+public class TestDelegateBridge implements IDelegateBridge
 {
   GameData m_data;
   PlayerID m_id;

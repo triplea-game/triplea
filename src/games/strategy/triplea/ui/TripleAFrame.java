@@ -33,7 +33,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.gamePlayer.PlayerBridge;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.message.*;
 
 import games.strategy.engine.data.properties.PropertiesUI;
@@ -681,7 +681,7 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForPurchase(bid);
     }
 
-    public MoveDescription getMove(PlayerID player, PlayerBridge bridge,
+    public MoveDescription getMove(PlayerID player, IPlayerBridge bridge,
             boolean nonCombat)
     {
         m_actionButtons.changeToMove(player, nonCombat);
@@ -689,7 +689,7 @@ public class TripleAFrame extends JFrame
     }
 
     public PlaceData waitForPlace(PlayerID player, boolean bid,
-            PlayerBridge bridge)
+            IPlayerBridge bridge)
     {
         m_actionButtons.changeToPlace(player);
         return m_actionButtons.waitForPlace(bid, bridge);
@@ -700,7 +700,7 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.listBattle(msg);
     }
 
-    public FightBattleMessage getBattle(PlayerID player, Collection battles,
+    public FightBattleDetails getBattle(PlayerID player, Collection battles,
             Collection bombingRaids)
     {
         m_actionButtons.changeToBattle(player, battles, bombingRaids);

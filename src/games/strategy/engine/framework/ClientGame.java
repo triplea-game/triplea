@@ -74,7 +74,7 @@ public class ClientGame implements IGame
       PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
       m_gamePlayers.put(player, gp);
 
-      PlayerBridge bridge = new DefaultPlayerBridge(this);
+      IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
 
       m_messageManager.addDestination(gp);

@@ -58,12 +58,12 @@ public class InitializationDelegate implements IDelegate
   /**
    * Called before the delegate will run.
    */
-  public void start(DelegateBridge aBridge, GameData gameData)
+  public void start(IDelegateBridge aBridge, GameData gameData)
   {
     init(gameData, aBridge);
   }
 
-  protected void init(GameData data, DelegateBridge aBridge)
+  protected void init(GameData data, IDelegateBridge aBridge)
   {
     boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
     boolean addArtilleryAndDestroyers = data.getProperties().get(Constants.USE_DESTROYERS_AND_ARTILLERY, false);
@@ -124,12 +124,6 @@ public class InitializationDelegate implements IDelegate
   public String getDisplayName()
   {
     return m_displayName;
-  }
-
-
-  public Message sendMessage(Message message)
-  {
-    throw new UnsupportedOperationException("Cant send messages to init delegate");
   }
 
   /**

@@ -51,7 +51,7 @@ public class PlacePanel extends ActionPanel
   private JLabel actionLabel = new JLabel();
   private PlaceData m_placeData;
   private SimpleUnitPanel m_unitsToPlace = new SimpleUnitPanel();
-  private PlayerBridge m_bridge;
+  private IPlayerBridge m_bridge;
 
   /** Creates new PlacePanel */
     public PlacePanel(GameData data, MapPanel map)
@@ -87,7 +87,7 @@ public class PlacePanel extends ActionPanel
     actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));
   }
 
-  public PlaceData waitForPlace(boolean bid, PlayerBridge bridge)
+  public PlaceData waitForPlace(boolean bid, IPlayerBridge bridge)
   {
     m_bridge = bridge;
     refreshActionLabelText(bid);

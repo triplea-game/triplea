@@ -38,7 +38,7 @@ import games.strategy.util.*;
 public class InitDelegate extends InitializationDelegate
 {
 
-	protected void init(GameData data,  DelegateBridge aBridge)
+	protected void init(GameData data,  IDelegateBridge aBridge)
 	{
 		super.init(data, aBridge);
 

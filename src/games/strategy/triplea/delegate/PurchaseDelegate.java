@@ -48,7 +48,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 {
   private String m_name;
   private String m_displayName;
-  private DelegateBridge m_bridge;
+  private IDelegateBridge m_bridge;
   private PlayerID m_player;
   private GameData m_data;
 
@@ -62,7 +62,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   /**
    * Called before the delegate will run.
    */
-  public void start(DelegateBridge aBridge, GameData gameData)
+  public void start(IDelegateBridge aBridge, GameData gameData)
   {
     m_bridge = aBridge;
     m_player = aBridge.getPlayerID();
@@ -84,14 +84,6 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     return m_data;
   }
 
-
-  /**
-   * A message from the given player.
-   */
-  public Message sendMessage(Message aMessage)
-  {
-      throw new IllegalArgumentException("We dont respond to messages"); 
-  }
 
   /**
    * subclasses can over ride this method to use different restrictions as to what a player can buy

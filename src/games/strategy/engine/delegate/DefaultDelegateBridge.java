@@ -30,7 +30,7 @@ import games.strategy.engine.random.*;
  *
  * @author  Sean Bridges
  */
-public class DefaultDelegateBridge implements DelegateBridge
+public class DefaultDelegateBridge implements IDelegateBridge
 {
 
   private final GameStep m_step;

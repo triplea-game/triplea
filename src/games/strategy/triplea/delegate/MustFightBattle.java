@@ -23,7 +23,7 @@ import java.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
-import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.engine.delegate.IDelegateBridge;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.message.*;
@@ -283,7 +283,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun();
     }
     
-    public void fight(DelegateBridge bridge)
+    public void fight(IDelegateBridge bridge)
     {
         
         bridge.getHistoryWriter().startEvent("Battle in" + m_battleSite);
@@ -461,7 +461,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
     }
     
-    private void fightStart(DelegateBridge bridge)
+    private void fightStart(IDelegateBridge bridge)
     {
         
         fireAAGuns(bridge);
@@ -469,7 +469,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         removeNonCombatants();
     }
     
-    private void fightLoop(DelegateBridge bridge)
+    private void fightLoop(IDelegateBridge bridge)
     {
         
         if (m_over)
@@ -603,7 +603,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
     
     
-    private void attackerRetreat(DelegateBridge bridge)
+    private void attackerRetreat(IDelegateBridge bridge)
     {
         
         if (!canAttackerRetreat())
@@ -615,7 +615,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             queryRetreat(false, DEFAULT_RETREAT_TYPE, bridge, possible);
     }
     
-    private void attackerRetreatSubs(DelegateBridge bridge)
+    private void attackerRetreatSubs(IDelegateBridge bridge)
     {
         
         if (!canAttackerRetreatSubs())
@@ -628,7 +628,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             queryRetreat(false, SUBS_RETREAT_TYPE, bridge, possible);
     }
     
-    private void attackerRetreatPlanes(DelegateBridge bridge)
+    private void attackerRetreatPlanes(IDelegateBridge bridge)
     {
         //planes retreat to the same square the battle is in, and then should
         //move during non combat to their landing site, or be scrapped if they
@@ -650,7 +650,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return getEmptyOrFriendlySeaNeighbors(m_defender).size() != 0 || canSubsSubmerge();
     }
     
-    private void defenderRetreatSubs(DelegateBridge bridge)
+    private void defenderRetreatSubs(IDelegateBridge bridge)
     {
         
         if (!canDefenderRetreatSubs())
@@ -685,7 +685,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return possible;
     }
     
-    private void queryRetreat(boolean defender, int retreatType, DelegateBridge bridge, Collection availableTerritories)
+    private void queryRetreat(boolean defender, int retreatType, IDelegateBridge bridge, Collection availableTerritories)
     {
         boolean subs;
         boolean planes;
@@ -777,7 +777,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
     }
     
-    private Change retreatFromDependents(Collection units, DelegateBridge bridge, Territory retreatTo)
+    private Change retreatFromDependents(Collection units, IDelegateBridge bridge, Territory retreatTo)
     {
         CompositeChange change = new CompositeChange();
         Collection dependents = m_tracker.getBlocked(this);
@@ -814,7 +814,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         return change;
     }
-    private void retreatPlanes(Collection retreating, boolean defender, DelegateBridge bridge)
+    private void retreatPlanes(Collection retreating, boolean defender, IDelegateBridge bridge)
     {
         String transcriptText = Formatter.unitsToTextNoOwner(retreating) + " retreated";
         
@@ -840,7 +840,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
         
     }
-    private void submergeUnits(Collection submerging, boolean defender, DelegateBridge bridge)
+    private void submergeUnits(Collection submerging, boolean defender, IDelegateBridge bridge)
     {
         String transcriptText = Formatter.unitsToTextNoOwner(submerging) + " Submerged";
         
@@ -866,7 +866,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
     }
     
-    private void retreatUnits(Collection retreating, Territory to, boolean defender, DelegateBridge bridge)
+    private void retreatUnits(Collection retreating, Territory to, boolean defender, IDelegateBridge bridge)
     {
         
         retreating.addAll(getDependentUnits(retreating));
@@ -929,7 +929,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return count;
     }
     
-    private void fire(String stepName, Collection firingUnits, Collection attackableUnits, boolean defender, boolean canReturnFire, DelegateBridge bridge, String text)
+    private void fire(String stepName, Collection firingUnits, Collection attackableUnits, boolean defender, boolean canReturnFire, IDelegateBridge bridge, String text)
     {
         
         PlayerID firingPlayer = defender ? m_defender : m_attacker;
@@ -969,7 +969,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         removeCasualties(killed, canReturnFire, !defender, bridge);
     }
     
-    private void defendNonSubs(DelegateBridge bridge)
+    private void defendNonSubs(IDelegateBridge bridge)
     {
         
         if (m_attackingUnits.size() == 0)
@@ -985,7 +985,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         fire(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES, units, m_attackingUnits, true, true, bridge, "Defenders fire, ");
     }
     
-    private void attackNonSubs(DelegateBridge bridge)
+    private void attackNonSubs(IDelegateBridge bridge)
     {
         
         if (m_defendingUnits.size() == 0)
@@ -999,7 +999,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         fire(m_defender.getName() + DEFENDER_SELECT_CASUALTIES, units, m_defendingUnits, false, true, bridge, "Attackers fire,");
     }
     
-    private void attackSubs(DelegateBridge bridge)
+    private void attackSubs(IDelegateBridge bridge)
     {
         
         Collection firing = Match.getMatches(m_attackingUnits, Matches.UnitIsSub);
@@ -1011,7 +1011,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         fire(DEFENDER_SELECT_SUB_CASUALTIES, firing, attacked, false, destroyersPresent, bridge, "Subs fire,");
     }
     
-    private void defendSubs(DelegateBridge bridge, Collection units)
+    private void defendSubs(IDelegateBridge bridge, Collection units)
     {
         if (m_attackingUnits.size() == 0)
             return;
@@ -1027,14 +1027,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         fire(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES, units, attacked, true, destroyersPresent, bridge, "Subs defend, ");
     }
     
-    private SelectCasualtyMessage selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
+    private SelectCasualtyMessage selectCasualties(String step, IDelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
     {
         
         PlayerID hit = defender ? m_defender : m_attacker;
         return BattleCalculator.selectCasualties(step, hit, attackableUnits, bridge, text, m_data, dice, defender);
     }
     
-    private void removeCasualties(Collection killed, boolean canReturnFire, boolean defender, DelegateBridge bridge)
+    private void removeCasualties(Collection killed, boolean canReturnFire, boolean defender, IDelegateBridge bridge)
     {
         
         if (canReturnFire)
@@ -1056,7 +1056,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             m_attackingUnits.removeAll(killed);
     }
     
-    private void fireNavalBombardment(DelegateBridge bridge)
+    private void fireNavalBombardment(IDelegateBridge bridge)
     {
         
         Collection bombard = getBombardingUnits();
@@ -1107,7 +1107,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	return m_bombardingUnits;
     }
     
-    private void fireAAGuns(DelegateBridge bridge)
+    private void fireAAGuns(IDelegateBridge bridge)
     {
         
         String step = SELECT_AA_CASUALTIES;
@@ -1193,7 +1193,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return dependents;
     }
     
-    private void markDamaged(Collection damaged, DelegateBridge bridge)
+    private void markDamaged(Collection damaged, IDelegateBridge bridge)
     {
         
         if (damaged.size() == 0)
@@ -1207,7 +1207,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
     }
     
-    private void remove(Collection killed, DelegateBridge bridge)
+    private void remove(Collection killed, IDelegateBridge bridge)
     {
         if (killed.size() == 0)
             return;
@@ -1229,7 +1229,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
     }
     
-    private void removeFromDependents(Collection units, DelegateBridge bridge)
+    private void removeFromDependents(Collection units, IDelegateBridge bridge)
     {
         
         Collection dependents = m_tracker.getBlocked(this);
@@ -1241,7 +1241,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
     }
     
-    private void clearWaitingToDie(DelegateBridge bridge)
+    private void clearWaitingToDie(IDelegateBridge bridge)
     {
         
         Collection units = new ArrayList();
@@ -1252,7 +1252,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_attackingWaitingToDie.clear();
     }
     
-    private void defenderWins(DelegateBridge bridge)
+    private void defenderWins(IDelegateBridge bridge)
     {
         
         BattleEndMessage msg = new BattleEndMessage(m_defender.getName() + " win");
@@ -1270,7 +1270,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      * The defender has won, but there may be defending fighters that cant stay
      * in the sea zone due to insufficient carriers.
      */
-    private void checkDefendingPlanesCanLand(DelegateBridge bridge, PlayerID defender)
+    private void checkDefendingPlanesCanLand(IDelegateBridge bridge, PlayerID defender)
     {
         
         //not water, not relevant.
@@ -1351,7 +1351,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.addChange(change);
     }
     
-    private void attackerWins(DelegateBridge bridge)
+    private void attackerWins(IDelegateBridge bridge)
     {
         
         BattleEndMessage msg = new BattleEndMessage(m_attacker.getName() + " win");
@@ -1374,7 +1374,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         showCasualties(bridge);
     }
     
-    private void showCasualties(DelegateBridge bridge)
+    private void showCasualties(IDelegateBridge bridge)
     {
         if(m_killed.isEmpty())
             return;
@@ -1389,7 +1389,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
     
     
-    private void endBattle(DelegateBridge bridge)
+    private void endBattle(IDelegateBridge bridge)
     {
         
         clearWaitingToDie(bridge);
@@ -1408,7 +1408,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_attackingUnits;
     }
     
-    public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
+    public void unitsLost(Battle battle, Collection units, IDelegateBridge bridge)
     {
         
         Collection lost = getDependentUnits(units);
