@@ -131,6 +131,11 @@ class ReliefMapDrawable implements Drawable
     
     public void prepare() 
     {
+        if(!TileImageFactory.getShowReliefImages())
+            return;
+        if(m_noImage)
+            return;
+        
         TileImageFactory.getInstance().prepareReliefTile(m_x, m_y);
     }
     
@@ -188,6 +193,8 @@ class BaseMapDrawable implements Drawable
    
     public void prepare() 
     {
+        if(m_noImage)
+            return;
         TileImageFactory.getInstance().prepareBaseTile(m_x, m_y);
     }
     
