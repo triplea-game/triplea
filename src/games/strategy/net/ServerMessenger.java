@@ -49,8 +49,9 @@ public class ServerMessenger implements IServerMessenger
 	public ServerMessenger(String name, int portNumber, IObjectStreamFactory streamFactory) throws IOException
 	{
 		m_inStreamFactory = streamFactory;
-		m_socket = new ServerSocket(portNumber, 10);
-
+		m_socket = new ServerSocket();
+        m_socket.setReuseAddress(true);
+        m_socket.bind(new InetSocketAddress(portNumber), 10);
 
 		m_node = new Node(name, InetAddress.getLocalHost(), m_socket.getLocalPort());
 		m_allNodes = new HashSet();

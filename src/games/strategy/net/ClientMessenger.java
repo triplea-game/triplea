@@ -172,6 +172,13 @@ public class ClientMessenger implements IMessenger
 
 	public void shutDown()
 	{
+        //it may be that we recieve this message before the connection has been set up
+        //ie in the constructor to m_connection which starts another thread
+        while(m_connection == null)
+        {
+            Thread.currentThread().yield();
+            System.out.println("Client Messenger waiting for connection to be set");
+        }
       m_connection.shutDown();
       m_allNodes = Collections.EMPTY_SET;
 	}

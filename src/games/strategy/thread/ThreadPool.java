@@ -159,8 +159,11 @@ public class ThreadPool
 
     public void stop()
     {
+        if(!m_run)
+            throw new IllegalStateException("not running");
       m_run = false;
-      m_thread.interrupt();
+      if(m_thread != null)
+          m_thread.interrupt();
     }
 
     private Runnable getTask()
