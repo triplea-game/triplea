@@ -65,13 +65,38 @@ public interface ITripleaDisplay extends IDisplay
             PlayerID player,
             Collection killed,
             Collection damaged,
-            Map dependents,
-            boolean autoCalculated);
+            Map dependents);
     
     /**
      * Notification of the results of a bombing raid 
      */
     public void bombingResults(GUID battleID, int[] dice, int cost);
     
+    /**
+     * Notify that the given player has retreated some or all of his units.
+     *  
+     * @param shortMessage
+     * @param message
+     * @param step
+     */
+    public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer);
+
+    
+    
+    
+    public void notifyRetreat(GUID battleId, Collection retreating);
+
+    /**
+     * Show dice for the given battle and step
+     * 
+     * @param battleId
+     * @param dice
+     */
+    public void showDice(GUID battleId, DiceRoll dice, String stepName, PlayerID ignore);
+
+    
+    public void gotoBattleStep(GUID battleId, String step);
+    
     
 }
+

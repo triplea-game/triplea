@@ -13,140 +13,154 @@
  */
 
 /*
- * GameRunner.java
+ * GameRunner.java	
  *
  * Created on December 14, 2001, 12:05 PM
  */
 
 package games.strategy.engine.framework;
 
-import java.io.File;
-import java.io.Serializable;
-
-import java.awt.Image;
-import java.awt.MediaTracker;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-
 import games.strategy.debug.Console;
 import games.strategy.engine.framework.ui.LauncherFrame;
 
+import java.awt.*;
+import java.io.*;
+import java.util.logging.LogManager;
+
+import javax.swing.*;
+
 /**
- *
- * @author  Sean Bridges
- *
+ * 
+ * @author Sean Bridges
+ * 
  * This class starts and runs the game.
  */
 public class GameRunner
 {
-  public final static int PORT = 3300;
+    public final static int PORT = 3300;
 
-  public static Image getGameIcon(JFrame frame)
-  {
-    Image img = null;
-    try
+    public static Image getGameIcon(JFrame frame)
     {
-      img = frame.getToolkit().getImage(GameRunner.class.getResource("ta_icon.png"));
-    }
-    catch (Exception ex)
-    {
-      System.out.println("icon not loaded");
-    }
-    MediaTracker tracker = new MediaTracker(frame);
-    tracker.addImage(img, 0);
-    try
-    {
-      tracker.waitForAll();
-    }
-    catch (InterruptedException ex)
-    {
-      ex.printStackTrace();
-    }
-    return img;
-  }
-
-  private static boolean isMac()
-  {
-    return   System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
-  }
-
-
-  /**
-     Get version number of Java VM.
-     Allow versions of 1.4 to run the game.
-     Show warning for 1.5 version due to instability with
-     serialized classes but don't prevent from game play,
-     as it seems to affect cross version play only.
-     
-     Show error + URL and kill program.
-     @author NeKromancer
-  */
-  private static void checkJavaVersion()
-  {
-     String strV = System.getProperties().getProperty("java.version");
-     boolean v14 = strV.indexOf("1.4") != -1;
-     boolean v15 = strV.indexOf("1.5") != -1;
-
-     if(v14 && v15) {
-          if(!isMac()) {
-               JOptionPane.showMessageDialog(null, "You need java version 1.4.x\nPlease download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
-               System.exit( -1);
-          }
-          else if(isMac()) {
-               JOptionPane.showMessageDialog(null, "You need java version 1.4.x\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR", JOptionPane.ERROR_MESSAGE);
-               System.exit( -1);
-	   }
-      }
-      else if(v15) {
-               JOptionPane.showMessageDialog(null, "Running TripleA with Java v1.5.x will cause instability\n with serialized classes (bug #1027674)\nYou will get errors when playing other who use a differnt version!!\nWe highly recomend using Java v1.4.x", "WARNING", JOptionPane.WARNING_MESSAGE);
-      }
-
-  }//end checkJavaVersion()
-
-  public static void main(String[] args)
-  {
-
-    checkJavaVersion();
-    
-    Console.getConsole().displayStandardError();
-    Console.getConsole().displayStandardOutput();
- 
-    try
-    {
-      //macs are already beautiful
-        if(!isMac())
+        Image img = null;
+        try
         {
-          com.jgoodies.plaf.plastic.PlasticLookAndFeel.setTabStyle(com.jgoodies.plaf.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
-          //com.jgoodies.plaf.plastic.PlasticXPLookAndFeel.setTabStyle(com.jgoodies.plaf.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
-          UIManager.setLookAndFeel(new com.jgoodies.plaf.plastic.PlasticXPLookAndFeel());
+            img = frame.getToolkit().getImage(GameRunner.class.getResource("ta_icon.png"));
+        } catch (Exception ex)
+        {
+            System.out.println("icon not loaded");
         }
+        MediaTracker tracker = new MediaTracker(frame);
+        tracker.addImage(img, 0);
+        try
+        {
+            tracker.waitForAll();
+        } catch (InterruptedException ex)
+        {
+            ex.printStackTrace();
+        }
+        return img;
     }
-    catch (Exception ex)
+
+    private static boolean isMac()
     {
-      ex.printStackTrace();
+        return System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
     }
 
+    /**
+     * Get version number of Java VM. Allow versions of 1.4 to run the game.
+     * Show warning for 1.5 version due to instability with serialized classes
+     * but don't prevent from game play, as it seems to affect cross version
+     * play only.
+     * 
+     * Show error + URL and kill program.
+     * 
+     * @author NeKromancer
+     */
+    private static void checkJavaVersion()
+    {
+        String strV = System.getProperties().getProperty("java.version");
+        boolean v14 = strV.indexOf("1.4") != -1;
+        boolean v15 = strV.indexOf("1.5") != -1;
 
-    LauncherFrame frame = new LauncherFrame();
-    frame.setIconImage(getGameIcon(frame));
-    frame.pack();
+        if (v14 && v15)
+        {
+            if (!isMac())
+            {
+                JOptionPane.showMessageDialog(null, "You need java version 1.4.x\nPlease download a newer version of java from http://java.sun.com/",
+                        "ERROR", JOptionPane.ERROR_MESSAGE);
+                System.exit(-1);
+            } else if (isMac())
+            {
+                JOptionPane.showMessageDialog(null,
+                        "You need java version 1.4.x\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(-1);
+            }
+        } else if (v15)
+        {
+            JOptionPane
+                    .showMessageDialog(
+                            null,
+                            "Running TripleA with Java v1.5.x will cause instability\n with serialized classes (bug #1027674)\nYou will get errors when playing other who use a differnt version!!\nWe highly recomend using Java v1.4.x",
+                            "WARNING", JOptionPane.WARNING_MESSAGE);
+        }
 
-    games.strategy.ui.Util.center(frame);
-    frame.show();
+    }//end checkJavaVersion()
 
-  }
+    public static void main(String[] args)
+    {
 
-  /**
-   * Get the root folder for the application
-   */
-  public static File getRootFolder()
-  {
-    //TODO this is a bit hokey, we assume that we are running
-    //from the bin directory.
-      return new File("..");
-  }
+        setupLogging();
 
+        checkJavaVersion();
+
+        Console.getConsole().displayStandardError();
+        Console.getConsole().displayStandardOutput();
+
+        try
+        {
+            //macs are already beautiful
+            if (!isMac())
+            {
+                com.jgoodies.plaf.plastic.PlasticLookAndFeel.setTabStyle(com.jgoodies.plaf.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
+                //com.jgoodies.plaf.plastic.PlasticXPLookAndFeel.setTabStyle(com.jgoodies.plaf.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
+                UIManager.setLookAndFeel(new com.jgoodies.plaf.plastic.PlasticXPLookAndFeel());
+            }
+        } catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        LauncherFrame frame = new LauncherFrame();
+        frame.setIconImage(getGameIcon(frame));
+        frame.pack();
+
+        games.strategy.ui.Util.center(frame);
+        frame.show();
+
+    }
+
+    private static void setupLogging()
+    {
+        //setup logging to read our logging.properties 
+        try
+        {
+            LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }       
+    }
+
+    /**
+     * Get the root folder for the application
+     */
+    public static File getRootFolder()
+    {
+        //TODO this is a bit hokey, we assume that we are running
+        //from the bin directory.
+        return new File("..");
+    }
 
 }
 

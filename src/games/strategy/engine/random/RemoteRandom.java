@@ -45,11 +45,11 @@ public class RemoteRandom implements IRemoteRandom
     
     //remembered from generate to unlock
     private VaultID m_remoteVaultID;
-    private VaultID m_localVaultID;
     private String m_annotation;
     private int m_max;
     //have we recieved a generate request, but not a unlock request
     private boolean m_waitingForUnlock;
+    private int[] m_localNumbers;
     
     
     /**
@@ -63,7 +63,7 @@ public class RemoteRandom implements IRemoteRandom
     /* 
      * @see games.strategy.engine.random.IRemoteRandom#generate(int, int, java.lang.String)
      */
-    public VaultID generate(int max, int count, String annotation, VaultID remoteVaultID)
+    public int[] generate(int max, int count, String annotation, VaultID remoteVaultID)
     {
         if(m_waitingForUnlock)
             throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation");
@@ -75,29 +75,27 @@ public class RemoteRandom implements IRemoteRandom
         if(m_remoteVaultID != null)
         {
             m_game.getVault().release(m_remoteVaultID);
-            m_game.getVault().release(m_localVaultID);
         }
         
         m_remoteVaultID = remoteVaultID;
         m_annotation = annotation;
         m_max = max;
         
-        int[] localRandom = m_plainRandom.getRandom(max, count, annotation);
+        m_localNumbers = m_plainRandom.getRandom(max, count, annotation);
        
-        m_localVaultID = m_game.getVault().lock(CryptoRandomSource.intsToBytes(localRandom));
         m_game.getVault().waitForID(remoteVaultID, 15000);
+        if(!m_game.getVault().knowsAbout(remoteVaultID))
+            throw new IllegalStateException("Vault id not locked, cheating suspected");
         
-        return m_localVaultID;
+        return m_localNumbers;
     }
 
     /* 
      * @see games.strategy.engine.random.IRemoteRandom#unlock()
      */
-    public void unlock()
+    public void verifyNumbers()
     {
         Vault vault = m_game.getVault();
-        //unlock ours, then wait for the server
-        vault.unlock(m_localVaultID);
        
         vault.waitForIdToUnlock(m_remoteVaultID, 15000);
         
@@ -105,17 +103,15 @@ public class RemoteRandom implements IRemoteRandom
             throw new IllegalStateException("Server did not unlock random numbers, cheating is suspected");
         
         int[] remoteNumbers;
-        int[] localNumbers;
         try
         {
             remoteNumbers = CryptoRandomSource.bytesToInts(vault.get(m_remoteVaultID));
-            localNumbers = CryptoRandomSource.bytesToInts(vault.get(m_localVaultID));
         } catch (NotUnlockedException e1)
         {
             e1.printStackTrace();
             throw new IllegalStateException("Could not unlock numbers, cheating suspected");
         }
-        int[] verifiedNumbers = CryptoRandomSource.xor(remoteNumbers, localNumbers, m_max);
+        int[] verifiedNumbers = CryptoRandomSource.xor(remoteNumbers, m_localNumbers, m_max);
         
         addVerifiedRandomNumber(new VerifiedRandomNumbers(m_annotation, verifiedNumbers));
         m_waitingForUnlock = false;

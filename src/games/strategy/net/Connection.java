@@ -1,15 +1,13 @@
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version. This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /*
@@ -17,14 +15,14 @@
  * 
  * 
  * This is the code that handles writing and reading objects over the socket.
- * Each connection handles the threads and communications for 1 socket to 1 remote party.
+ * Each connection handles the threads and communications for 1 socket to 1
+ * remote party.
  * 
- * Connections write objects in the order that they are sent, and read them in the order that
- * they arrive.  Messages are sent to our message listener using the same thread used to
- * read the message over the network.
- *
- * @author Sean Bridges 
- * Created on December 11, 2001, 8:23 PM
+ * Connections write objects in the order that they are sent, and read them in
+ * the order that they arrive. Messages are sent to our message listener using
+ * the same thread used to read the message over the network.
+ * 
+ * @author Sean Bridges Created on December 11, 2001, 8:23 PM
  */
 
 package games.strategy.net;
@@ -55,7 +53,6 @@ class Connection
     //used to notify writer thread that an object is ready to be written
     private final Object m_writeWaitLock = new Object();
 
-    
     public Connection(Socket s, INode ident, IConnectionListener listener, IObjectStreamFactory fact) throws IOException
     {
         m_objectStreamFactory = fact;
@@ -63,33 +60,29 @@ class Connection
     }
 
     public void log(MessageHeader header, boolean read)
-    {      
-        
-        Logger logger =Logger.getLogger(this.getClass().getName());
-        if(!logger.isLoggable(Level.FINEST))
+    {
+
+        Logger logger = Logger.getLogger(this.getClass().getName());
+        if (!logger.isLoggable(Level.FINEST))
             return;
 
         ByteArrayOutputStream sink = new ByteArrayOutputStream();
-     
         try
         {
-            ObjectOutputStream out = new ObjectOutputStream(sink);
+            ObjectOutputStream out = m_objectStreamFactory.create(sink);
             out.writeObject(header);
             sink.close();
-            String message = (read ?  "READ:" : "WRITE:") + header.getMessage() + " size:" + sink.toByteArray().length;
-            logger.log(Level.FINEST, message );
-            
-            
+            String message = (read ? "READ:" : "WRITE:") + header.getMessage() + " size:" + sink.toByteArray().length;
+            logger.log(Level.FINEST, message);
+
         } catch (IOException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-        
-    }        
 
-    
+    }
+
     /**
      * Creates new Connection s must be open.
      */
@@ -129,7 +122,7 @@ class Connection
         }
 
         m_reader = new Thread(new Reader(), "ConnectionReader for " + m_localNode.getName());
-      
+
         m_reader.start();
 
         m_writer = new Thread(new Writer(), "ConnectionWriter for" + m_localNode.getName());
@@ -137,7 +130,8 @@ class Connection
     }
 
     /**
-     * Blocks until no more data remains to be written or the socket is shutdown.
+     * Blocks until no more data remains to be written or the socket is
+     * shutdown.
      */
     public void flush()
     {
@@ -157,7 +151,7 @@ class Connection
             }
         }
     }
-    
+
     public INode getLocalNode()
     {
         return m_localNode;
@@ -169,14 +163,14 @@ class Connection
     }
 
     /**
-     * Write the MessageHeader over the network.
-     * Returns immediately.
+     * Write the MessageHeader over the network. Returns immediately.
+     * 
      * @param msg
      */
     public void send(MessageHeader msg)
     {
         m_waitingToBeSent.add(msg);
-        synchronized(m_writeWaitLock)
+        synchronized (m_writeWaitLock)
         {
             m_writeWaitLock.notifyAll();
         }
@@ -201,20 +195,9 @@ class Connection
                 }
             }
         }
-        
-//        //wait for the threads to die
-//        try
-//        {
-//            m_writer.interrupt();
-//            m_writer.join();
-//            m_reader.interrupt();
-//            m_reader.join();
-//        } catch (InterruptedException e)
-//        {
-//            e.printStackTrace();
-//        }
-        
+
     }
+
     public boolean isConnected()
     {
         return !m_shutdown;
@@ -228,52 +211,53 @@ class Connection
 
     class Writer implements Runnable
     {
-        
+
         public void run()
         {
             while (!m_shutdown)
             {
-                    if (!m_waitingToBeSent.isEmpty())
+                if (!m_waitingToBeSent.isEmpty())
+                {
+                    MessageHeader next = (MessageHeader) m_waitingToBeSent.get(0);
+                    write(next);
+                    log(next, false);
+
+                    m_waitingToBeSent.remove(0);
+
+                    /**
+                     * flush() may need to be woken up
+                     */
+                    synchronized (m_flushLock)
                     {
-                        MessageHeader next = (MessageHeader) m_waitingToBeSent.get(0);
-                        write(next);
-                        log(next, false);
-
-                        m_waitingToBeSent.remove(0);
-
-                        /**
-                         * flush() may need to be woken up
-                         */
                         if (m_waitingToBeSent.isEmpty())
                         {
-                            synchronized(m_flushLock)
-                            {
-                                m_flushLock.notifyAll();
-                            }
-                        }
-                    } else
-                    {
-                        try
-                        {
-                            //the stream keeps a memory of objects that have been written to the
-                            //stream, preventing them from being gc'd. reset stream when we
-                            //are out of things to send
-                            try
-                            {
-                                m_out.reset();
-                            } catch (IOException ioe)
-                            {
-                                ioe.printStackTrace();
-                            }
-                            synchronized(m_writeWaitLock)
-                            {
-                                m_writeWaitLock.wait();
-                            }
-                        } catch (InterruptedException ie)
-                        {
+                            m_flushLock.notifyAll();
                         }
                     }
-                
+                } else
+                {
+                    try
+                    {
+                        //the stream keeps a memory of objects that have been
+                        // written to the
+                        //stream, preventing them from being gc'd. reset stream
+                        // when we
+                        //are out of things to send
+                        try
+                        {
+                            m_out.reset();
+                        } catch (IOException ioe)
+                        {
+                            ioe.printStackTrace();
+                        }
+                        synchronized (m_writeWaitLock)
+                        {
+                            m_writeWaitLock.wait();
+                        }
+                    } catch (InterruptedException ie)
+                    {
+                    }
+                }
 
             }
         }
@@ -303,7 +287,7 @@ class Connection
 
     class Reader implements Runnable
     {
-       
+
         public void run()
         {
             while (!m_shutdown)
@@ -334,6 +318,3 @@ class Connection
         }
     }
 }
-
-
-

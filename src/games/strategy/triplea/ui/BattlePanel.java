@@ -42,25 +42,18 @@ import javax.swing.*;
 public class BattlePanel extends ActionPanel
 {
 
-//    static
-//    {
-//        Map atts = new HashMap();
-//        atts.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
-//        BOLD = new Font(atts);
-//    }
-
     private JLabel m_actionLabel = new JLabel();
     private FightBattleDetails m_fightBattleMessage;
-    private TripleAFrame m_parent;
+    
 
     private BattleDisplay m_battleDisplay;
     private JFrame m_battleFrame;
 
     /** Creates new BattlePanel */
-    public BattlePanel(GameData data, MapPanel map, TripleAFrame parent)
+    public BattlePanel(GameData data, MapPanel map)
     {
         super(data, map);
-        m_parent = parent;
+    
     }
 
     public void display(PlayerID id, Collection battles, Collection bombing)
@@ -86,7 +79,7 @@ public class BattlePanel extends ActionPanel
         SwingUtilities.invokeLater(REFRESH);
     }
 
-    public void battleInfo(String messageShort, String messageLong, String step)
+    public void notifyRetreat(String messageShort, String messageLong, String step, PlayerID retreatingPlayer)
     {
         if (m_battleDisplay != null)
             m_battleDisplay.battleInfo(messageShort, messageLong, step);
@@ -101,11 +94,25 @@ public class BattlePanel extends ActionPanel
     
     public void battleEndMessage(GUID battleId, String message)
     {
-        m_battleDisplay.endBattle(message);
-        m_battleDisplay = null;
-        m_battleFrame.setVisible(false);
-        m_battleFrame.dispose();
-        m_battleFrame = null;
+        m_battleDisplay.endBattle(message, m_battleFrame);
+    }
+
+    
+    /**
+     * 
+     */
+    private void cleanUpBattleWindow()
+    {
+        if(m_battleDisplay != null)
+        {
+	        m_battleDisplay = null;
+	        if(m_battleFrame.isVisible())
+	        {
+	            m_battleFrame.setVisible(false);
+	            m_battleFrame.dispose();
+	        }
+	        m_battleFrame = null;
+        }
     }
 
     private void ensureBattleIsDisplayed(GUID battleID)
@@ -147,15 +154,13 @@ public class BattlePanel extends ActionPanel
 
         getMap().centerOn(m_battleDisplay.getBattleLocation());
         m_battleDisplay.listBattle(currentStep, steps);
-
-        
     }
 
     public void showBattle(GUID battleID, Territory location, String battleTitle, Collection attackingUnits, Collection defendingUnits, Map unit_dependents, PlayerID attacker, PlayerID defender)
     {
-        if (!(m_battleDisplay == null))
+        if (m_battleDisplay != null)
         {
-            throw new IllegalStateException("Battle display already showing");
+            cleanUpBattleWindow();
         }
 
         m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID);
@@ -218,19 +223,20 @@ public class BattlePanel extends ActionPanel
         return comp.getSelection();
     }
 
-    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents, boolean autoCalculated)
+    public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection killed, final Collection damaged, final Map dependents)
+    {   
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents);
+            }
+        });
+    }
+    
+    public void confirmCasualties(GUID battleId, String message)
     {
-        //if we are playing this player, then dont wait for the user
-        //to see the units, since the player selected the units, and knows
-        //what they are
-        //if all the units to be removed have been calculated automatically
-        // then wait so user can see units which have been removed.
-        //if no units died, then wait, since the user hasnt had a chance to
-        //see the roll
-        boolean waitFOrUserInput = !m_parent.playing(player)
-                || autoCalculated ||  (damaged.isEmpty() && killed.isEmpty());
-        
-        m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents, autoCalculated, waitFOrUserInput);
+        m_battleDisplay.waitForConfirmation(message);
     }
 
     public CasualtyDetails getCasualties(String step, Collection selectFrom, Map dependents, int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
@@ -280,6 +286,11 @@ public class BattlePanel extends ActionPanel
         return m_battleDisplay.getRetreat(step, message, possible, submerge);
     }
 
+    public void gotoStep(GUID battleID, String step)
+    {
+        m_battleDisplay.setStep(step);
+    }
+    
     public void notifyRetreat(Collection retreating)
     {
         m_battleDisplay.notifyRetreat(retreating);

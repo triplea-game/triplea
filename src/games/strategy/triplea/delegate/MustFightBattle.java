@@ -208,7 +208,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void addDependentUnits(Map dependencies)
     {
-
         Iterator iter = dependencies.keySet().iterator();
         while (iter.hasNext())
         {
@@ -337,18 +336,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         ITripleaDisplay display = getDisplay(bridge);
         display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
 
-  //        BattleStartMessage battleStart = new BattleStartMessage(m_attacker,
-//                m_defender, m_battleSite,
-//                removeNonCombatants(m_attackingUnits),
-//                removeNonCombatants(m_defendingUnits), m_dependentUnits);
-//        bridge.sendMessage(battleStart);
-//        bridge.sendMessage(battleStart, m_defender);
-
         display.listBattleSteps(m_battleID, (String) steps.get(0), steps);
-//        BattleStepMessage battleStepMessage = new BattleStepMessage(
-//                (String) steps.get(0), getBattleTitle(), steps, m_battleSite);
-//        bridge.sendMessage(battleStepMessage);
-//        bridge.sendMessage(battleStepMessage, m_defender);
 
         //take the casualties with least movement first
         moveDelegate.sortAccordingToMovementLeft(m_attackingUnits, false);
@@ -508,8 +496,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_over)
             return;
 
-        //for 4th edition we need to find the defending subs before the
-        // attacking subs fire
+        //for 4th edition we need to fire the defending subs before the
+        //attacking subs fire
         //this allows the dead subs to return fire, even if they are selected
         // as casualties
         List defendingSubs = Match.getMatches(m_defendingUnits,
@@ -586,7 +574,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private Collection getAttackerRetreatTerritories()
     {
-
         // If attacker is all planes, just return collection of current
         // territory
         if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
@@ -631,7 +618,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private boolean canAttackerRetreat()
     {
-
         if (m_amphibious)
             return false;
 
@@ -653,7 +639,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void attackerRetreat(IDelegateBridge bridge)
     {
-
         if (!canAttackerRetreat())
             return;
 
@@ -700,7 +685,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void defenderRetreatSubs(IDelegateBridge bridge)
     {
-
         if (!canDefenderRetreatSubs())
             return;
 
@@ -711,7 +695,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private Collection getEmptyOrFriendlySeaNeighbors(PlayerID player)
     {
-
         Collection possible = m_data.getMap().getNeighbors(m_battleSite);
         CompositeMatch match = new CompositeMatchAnd(Matches.TerritoryIsWater,
                 Matches.territoryHasNoEnemyUnits(player, m_data));
@@ -719,7 +702,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //make sure we can move through the any canals
         Match canalMatch = new Match()
         {
-
             public boolean match(Object o)
             {
 
@@ -765,7 +747,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
         PlayerID retreatingPlayer = defender ? m_defender : m_attacker;
-        PlayerID nonRetreatingPlayer = defender ? m_attacker : m_defender;
         String text;
         if (subs)
             text = retreatingPlayer.getName() + " retreat subs?";
@@ -790,6 +771,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         
         boolean submerge = subs && canSubsSubmerge();
+        getDisplay(bridge).gotoBattleStep(m_battleID, step);
         Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, submerge, availableTerritories, text, step);
         
         if(retreatTo != null && !availableTerritories.contains(retreatTo))
@@ -810,13 +792,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 submergeUnits(units, defender, bridge);
                 String messageShort = retreatingPlayer.getName()
                         + " submerges subs";
-                getRemote(nonRetreatingPlayer, bridge).battleInfoMessage(messageShort, messageShort, step);
+                getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
             } else if (planes)
             {
                 retreatPlanes(units, defender, bridge);
                 String messageShort = retreatingPlayer.getName()
                         + " retreats planes";
-                getRemote(nonRetreatingPlayer, bridge).battleInfoMessage(messageShort, messageShort, step);
+                getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
             } else
             {
 
@@ -833,7 +815,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 else
                     messageLong = retreatingPlayer.getName()
                             + " retreats all units to " + retreatTo.getName();
-                getRemote(nonRetreatingPlayer, bridge).battleInfoMessage(messageShort, messageLong, step);
+                getDisplay(bridge).notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
 
             }
 
@@ -901,8 +883,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 defenderWins(bridge);
         } else
         {
-            getRemote(m_attacker, bridge).retreatNotificationMessage(retreating);
-            getRemote(m_defender, bridge).retreatNotificationMessage(retreating);
+            getDisplay(bridge).notifyRetreat(m_battleID, retreating);
+
         }
 
         bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
@@ -929,8 +911,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 defenderWins(bridge);
         } else
         {
-            getRemote(m_attacker, bridge).retreatNotificationMessage(submerging);
-            getRemote(m_defender, bridge).retreatNotificationMessage(submerging);
+            getDisplay(bridge).notifyRetreat(m_battleID, submerging);
+
          }
 
         bridge.getHistoryWriter().addChildToEvent(transcriptText, submerging);
@@ -974,8 +956,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 defenderWins(bridge);
         } else
         {
-            getRemote(m_attacker, bridge).retreatNotificationMessage(retreating);
-            getRemote(m_defender, bridge).retreatNotificationMessage(retreating);
+            getDisplay(bridge).notifyRetreat(m_battleID, retreating);
 
 
         }
@@ -1016,29 +997,28 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         int hitCount = dice.getHits();
         Collection killed;
-        Collection damaged = null;
-        boolean autoCalculated = false;
+        Collection damaged = Collections.EMPTY_LIST;
+        
 
         //they all die
         if (hitCount >= getMaxHits(attackableUnits))
         {
             killed = attackableUnits;
         } else
-        {
-            String messageShort = "Waiting for " + hitPlayer.getName() + " to select casualties";
-            //originally  a no response message
-            getRemote(firingPlayer, bridge).battleInfoMessage(messageShort, dice, stepName);
+        {            
+            getDisplay(bridge).showDice(m_battleID, dice, stepName, hitPlayer);
 
             CasualtyDetails message = selectCasualties(stepName, bridge,
                     attackableUnits, !defender, text, dice);
             killed = message.getKilled();
             damaged = message.getDamaged();
-            autoCalculated = message.getAutoCalculated();
+            
         }
 
-        autoCalculated = (killed.size() == attackableUnits.size()) || autoCalculated; 
-        getDisplay(bridge).casualtyNotification(stepName, dice, hitPlayer, killed, damaged, m_dependentUnits, autoCalculated);
+         
+        getDisplay(bridge).casualtyNotification(stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
         
+        getRemote(firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Continue", stepName, hitPlayer);
         
         if (damaged != null)
             markDamaged(damaged, bridge);
@@ -1219,12 +1199,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //send attacker the dice roll so he can see what the dice are while he
         // waits for
         //attacker to select casualties
-        getRemote(m_defender, bridge).battleInfoMessage("aa hits", dice, step);
+        getDisplay(bridge).showDice(m_battleID,  dice, step, m_attacker);
 
         Collection casualties = null;
         Collection attackable = Match.getMatches(m_attackingUnits,
                 Matches.UnitIsAir);
-        boolean autoCalculated = false;
+        
         // if 4th edition choose casualties randomnly
         // we can do that by removing planes at positions in the list where
         // there was a corresponding hit in the dice roll.
@@ -1232,14 +1212,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             casualties = BattleCalculator.fourthEditionAACasualties(attackable,
                     dice, bridge);
-            autoCalculated = true;
+           
         } else
         {
             casualties = selectCasualties(step, bridge, attackable, false,
                     "AA guns fire,", dice).getKilled();
         }
 
-        getDisplay(bridge).casualtyNotification(step,dice, m_attacker, casualties, Collections.EMPTY_LIST, m_dependentUnits, autoCalculated);
+        getDisplay(bridge).casualtyNotification(step,dice, m_attacker, casualties, Collections.EMPTY_LIST, m_dependentUnits);
         removeCasualties(casualties, false, false, bridge);
 
     }
@@ -1429,8 +1409,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Territory territory = null;
             if (canLandHere.size() > 1)
             {
-                ITripleaPlayer defenderRemote =  getRemote(m_defender, bridge);
-                territory = defenderRemote.selectTerritoryForAirToLand(canLandHere);
+                territory = getRemote(m_defender, bridge).selectTerritoryForAirToLand(canLandHere);
             } else
             {
                 territory = (Territory) canLandHere.iterator().next();
@@ -1443,7 +1422,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             bridge.addChange(change);
             return;
         } else if (canLandHere.size() > 0)
-        { // 2nd edition
+        {   // 2nd edition
             //now defending air has what cant stay, is there a place we can go?
             //check for an island in this sea zone
             Iterator neighborsIter = canLandHere.iterator();

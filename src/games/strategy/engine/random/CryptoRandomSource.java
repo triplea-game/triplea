@@ -15,11 +15,8 @@
 package games.strategy.engine.random;
 
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.IGame;
-import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.vault.NotUnlockedException;
-import games.strategy.engine.vault.Vault;
-import games.strategy.engine.vault.VaultID;
+import games.strategy.engine.framework.*;
+import games.strategy.engine.vault.*;
 
 /**
  * A random source that generates numbers using a secure algorithm shared
@@ -121,33 +118,18 @@ public class CryptoRandomSource implements IRandomSource
         //generate numbers locally, and put them in the vault
         int[] localRandom = m_plainRandom.getRandom(max, count, annotation);
         
+        //lock it so the client knows that its there, but cant read it
         VaultID localID = vault.lock(intsToBytes(localRandom));
 
         //ask the remote to generate numbers
         IRemoteRandom remote = (IRemoteRandom) (m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(m_remotePlayer)));
-        VaultID remoteID = remote.generate(max, count, annotation, localID);
+        int[] remoteNumbers = remote.generate(max, count, annotation, localID);
 
-        //make sure the value is in the vault
-        vault.waitForID(remoteID, 15000);
-        if (!vault.knowsAbout(remoteID))
-            throw new IllegalStateException("Could not verify random, cheating susepected");
 
-        //unlock ours, and wait for the client
+        //unlock ours, tell the client he can verify
         vault.unlock(localID);
-        remote.unlock();
-        vault.waitForIdToUnlock(remoteID, 15000);
-
-        //get the remote numbers
-        int[] remoteNumbers;
-        try
-        {
-            remoteNumbers = bytesToInts(vault.get(remoteID));
-        } catch (NotUnlockedException e)
-        {
-            e.printStackTrace();
-            throw new IllegalStateException("Could not verify random, cheating suspected");
-        }
-
+        remote.verifyNumbers();
+        
         //finally, we join the two together to get the real value
         return xor(localRandom, remoteNumbers, max);
 

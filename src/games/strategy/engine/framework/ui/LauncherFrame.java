@@ -284,6 +284,7 @@ public class LauncherFrame extends JFrame
         ((IServerReady) m_remoteMessenger.getRemote(LauncherFrame.CLIENT_READY_CHANNEL)).clientReady();
 
         setVisible(false);
+        
     }
 
     public void setGameInfo(String gameName, String gameVersion)

@@ -68,9 +68,9 @@ public class TripleaDisplay implements ITripleaDisplay
     /* 
      * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
      */
-    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents, boolean autoCalculated)
+    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents)
     {
-        m_ui.getBattlePanel().casualtyNotification(step,dice, player, killed, damaged, dependents, autoCalculated);
+        m_ui.getBattlePanel().casualtyNotification(step,dice, player, killed, damaged, dependents);
         
     }
     /* (non-Javadoc)
@@ -80,7 +80,7 @@ public class TripleaDisplay implements ITripleaDisplay
     {
         m_ui.getBattlePanel().battleEndMessage(battleID, message);
     }
-    /* (non-Javadoc)
+    /* )
      * @see games.strategy.triplea.ui.display.ITripleaDisplay#bombingResults(games.strategy.net.GUID, int[], int)
      */
     public void bombingResults(GUID battleID, int[] dice, int cost)
@@ -88,7 +88,38 @@ public class TripleaDisplay implements ITripleaDisplay
         m_ui.getBattlePanel().bombingResults(battleID, dice, cost);
     }
     
+    public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer)
+    {
+        //we just told the game to retreat, so we already know
+        if(m_ui.playing(retreatingPlayer))
+            return;
+        m_ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
+    }
+
+    /**
+     * Show dice for the given battle and step
+     * 
+     * @param battleId
+     * @param dice
+     * @param the player who must act on the roll, ignore
+     */
+    public void showDice(GUID battleId, DiceRoll dice, String stepName, PlayerID ignore)
+    {
+        if(m_ui.playing(ignore))
+            return;
+        
+        m_ui.getBattlePanel().battleInfo(null, dice, stepName);
+    }
     
+    public void notifyRetreat(GUID battleId, Collection retreating)
+    {
+        m_ui.getBattlePanel().notifyRetreat(retreating);
+    }
     
+    public void gotoBattleStep(GUID battleId, String step)
+    {
+        m_ui.getBattlePanel().gotoStep(battleId, step);
+    }
+   
     
 }

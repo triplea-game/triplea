@@ -34,13 +34,14 @@ public interface ITripleaPlayer extends IRemote
     /**
      * Select casualties
      * 
-     * @param m_selectFrom - the units to select casualties from
-     * @param m_dependents - dependents of the units to select from
-     * @param m_count - the number of casualties to select
-     * @param m_message - ui message to display
-     * @param m_hit - the player hit
-     * @param m_dice - the dice rolled for the casualties 
-     * @param m_defaultCasualties - default casualties as selected by the game
+     * @param selectFrom - the units to select casualties from
+     * @param dependents - dependents of the units to select from
+     * @param count - the number of casualties to select
+     * @param message - ui message to display
+     * @param hit - the player hit
+     * @param dice - the dice rolled for the casualties 
+     * @param defaultCasualties - default casualties as selected by the game
+     * @param the battle step the selection is for
      * @return the selected casualties
      */
     public CasualtyDetails selectCasualties(
@@ -48,7 +49,7 @@ public interface ITripleaPlayer extends IRemote
     );
     
     /**
-     * Select the territory to bombard
+     * Select the territory to bombard with the bombarding capable unit (eg battleship)
      * 
      * @param unit - the bombarding unit
      * @param unitTerritory - where the bombarding unit is
@@ -65,7 +66,7 @@ public interface ITripleaPlayer extends IRemote
     
     
     /**
-     * 
+     * Report an error to the user. 
      * 
      * @param report that an error occured
      */
@@ -93,7 +94,7 @@ public interface ITripleaPlayer extends IRemote
     public Territory whereShouldRocketsAttach(Collection candidates, Territory from);
     
     /**
-     * get the number of fighters to move to a newly produced carrier
+     * get the fighters to move to a newly produced carrier
      * 
      * @param fightersThatCanBeMoved - the fighters that can be moved
      * @param from - the territory containing the factory
@@ -109,11 +110,7 @@ public interface ITripleaPlayer extends IRemote
      * @return - the territory to land the fighters in, must be non null
      */
     public Territory selectTerritoryForAirToLand(Collection candidates);
-    
-    /**
-     * Notifies that the units have retreated or submerged, and no longer take part in the battle. 
-     */
-    public void retreatNotificationMessage(Collection units);
+
     
     /**
      * The attempted move will incur aa fire, confirm that you still want to move
@@ -134,9 +131,14 @@ public interface ITripleaPlayer extends IRemote
      * @return the territory to retreat to, or null if the player doesnt wish to retreat
      */
     public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message, String step);
-    
-    public void battleInfoMessage(String shortMessage, String message, String step);
-    public void battleInfoMessage(String shortMessage, DiceRoll dice, String step);
 
+    
+    /**
+     * Allows the user to pause and confirm enemy casualties
+     * @param battleId
+     * @param message
+     * @param step
+     */
+    public void confirmEnemyCasualties(GUID battleId, String message, String step, PlayerID hitPlayer);
     
 }

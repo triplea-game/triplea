@@ -56,7 +56,7 @@ public class ActionButtons extends JPanel
     /** Creates new ActionPanel */
     public ActionButtons(GameData data, MapPanel map, TripleAFrame parent)
     {
-        m_battlePanel = new BattlePanel(data, map, parent);
+        m_battlePanel = new BattlePanel(data, map);
         m_movePanel = new MovePanel(data, map);
         m_purchasePanel = new PurchasePanel(data, map);
         m_placePanel = new PlacePanel(data, map);
@@ -165,10 +165,6 @@ public class ActionButtons extends JPanel
         return m_battlePanel.waitForBattleSelection();
     }
 
-    public void notifyRetreat(Collection retreating)
-    {
-        m_battlePanel.notifyRetreat(retreating);
-    }
 
     public ActionPanel getCurrent()
     {

@@ -41,10 +41,11 @@ import javax.swing.table.*;
 
 public class BattleDisplay extends JPanel
 {
+    private static final String DICE_KEY = "D";
+    private static final String CASUALTIES_KEY = "C";
+    private static final String MESSAGE_KEY = "M";
     
-    private final GUID m_battleID;
-    private final String DICE_KEY = "D";
-    private final String CASUALTIES_KEY = "C";
+    private final GUID m_battleID;    
     
     private final PlayerID m_defender;
     private final PlayerID m_attacker;
@@ -63,6 +64,9 @@ public class BattleDisplay extends JPanel
     private CasualtyNotificationPanel m_casualties;
     private JPanel m_actionPanel;
     private CardLayout m_actionLayout = new CardLayout();
+    private JPanel m_messagePanel = new JPanel();
+    
+    private JLabel m_messageLabel = new JLabel();
     
     public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection attackingUnits, Collection defendingUnits, GUID battleID)
     {
@@ -113,7 +117,7 @@ public class BattleDisplay extends JPanel
     }
     
     
-    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents, boolean autoCalculated, boolean waitForUserInput)
+    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents)
     {
         setStep(step);
         m_casualties.setNotication(dice, player, killed, damaged, dependents);
@@ -127,18 +131,16 @@ public class BattleDisplay extends JPanel
             m_attackerModel.removeCasualties(killed);
         }
         
-        //if wait is true, then dont return until the user presses continue
-        if (!waitForUserInput)
-            return;
+    }
+    
+    
+    
+    public void waitForConfirmation(final String message)
+    {
+                
         if(!getShowEnemyCasualtyNotification())
             return;
         
-        
-        waitForConfirmation("Continue");
-    }
-    
-    private void waitForConfirmation(final String message)
-    {
         final Object continueLock = new Object();
         
         //set the action in the swing thread.
@@ -188,10 +190,27 @@ public class BattleDisplay extends JPanel
         
     }
     
-    public void endBattle(String message)
+    public void endBattle(String message, final Frame enclosingFrame)
     {
         m_steps.walkToLastStep();
-        waitForConfirmation(message + " : (Click to close)");
+        final Action close = new AbstractAction(message + " : (Click to close)")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                enclosingFrame.setVisible(false);
+                enclosingFrame.dispose();
+            }
+        };
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                m_actionButton.setAction(close);            
+            }
+        });
+    
+    
     }
     
     public void notifyRetreat(Collection retreating )
@@ -202,7 +221,6 @@ public class BattleDisplay extends JPanel
     
     public Territory getRetreat(String step, String message, Collection possible, boolean submerge)
     {
-        
         if (!submerge)
         {
             return getRetreatInternal(step, message, possible);
@@ -213,9 +231,7 @@ public class BattleDisplay extends JPanel
     }
     
     private Territory getSubmerge(String message, String step)
-    {
-        setStep(step);
-        
+    {        
         String ok = "Submerge";
         String cancel = "Remain";
         String[] options = {ok, cancel};
@@ -229,9 +245,7 @@ public class BattleDisplay extends JPanel
     }
     
     private Territory getRetreatInternal(String step, String message, Collection possible)
-    {   
-        setStep(step);
-        
+    {          
         String ok = "Retreat";
         String cancel = "Remain";
         String[] options = {ok, cancel};
@@ -387,6 +401,9 @@ public class BattleDisplay extends JPanel
         north.add(getTerritoryComponent());
         north.add(defenderUnits);
         
+        m_messagePanel.setLayout(new BorderLayout());
+        m_messagePanel.add(m_messageLabel, BorderLayout.CENTER);
+        
         m_steps = new BattleStepsPanel();
         m_steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         m_dicePanel = new DicePanel();
@@ -396,6 +413,7 @@ public class BattleDisplay extends JPanel
         
         m_actionPanel.add(m_dicePanel, DICE_KEY);
         m_actionPanel.add(m_casualties, CASUALTIES_KEY);
+        m_actionPanel.add(m_messagePanel, MESSAGE_KEY );
         
         JPanel diceAndSteps = new JPanel();
         diceAndSteps.setLayout(new BorderLayout());
@@ -437,13 +455,10 @@ public class BattleDisplay extends JPanel
         
     }
     
-    
     public void setStep(String step)
     {
         m_steps.setStep(step);
     }
-    
-    
     
     public void battleInfo(String messageShort, DiceRoll message, String step)
     {
@@ -454,13 +469,10 @@ public class BattleDisplay extends JPanel
     
     public void battleInfo(String messageShort, String message, String step)
     {
+        m_messageLabel.setText(message);
         setStep(step);
-        
-        String ok = "OK";
-        String[] options = {ok};
-        
-        JOptionPane.showOptionDialog(this, message, messageShort, JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, ok);
-
+        m_actionLayout.show(m_actionPanel, MESSAGE_KEY);
+       
     }
     
     public void listBattle(String currentStep, List steps)
@@ -749,7 +761,11 @@ class BattleStepsPanel extends JPanel
             
             try
             {
-                SwingUtilities.invokeAndWait(r);
+                if(!SwingUtilities.isEventDispatchThread())
+                    SwingUtilities.invokeAndWait(r);
+                else
+                    r.run();
+                
                 pause();
             } catch (InterruptedException ie)
             {

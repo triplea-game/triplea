@@ -405,21 +405,26 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     }
 
     /*
-     * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, java.lang.String, java.lang.String)
-     */
-    public void battleInfoMessage(String shortMessage, String message, String step)
-    {
-        
-        
-    }
-
-    /*
      * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, games.strategy.triplea.delegate.DiceRoll, java.lang.String)
      */
     public void battleInfoMessage(String shortMessage, DiceRoll dice, String step)
     {
       
         
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#confirmCasualties(games.strategy.net.GUID, java.lang.String, java.lang.String)
+     */
+    public void confirmCasualties(GUID battleId, String message, String step)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#confirmEnemyCasualties(games.strategy.net.GUID, java.lang.String, java.lang.String, games.strategy.engine.data.PlayerID)
+     */
+    public void confirmEnemyCasualties(GUID battleId, String message, String step, PlayerID hitPlayer)
+    {
     }
 
 }

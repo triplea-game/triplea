@@ -330,13 +330,6 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         return m_ui.selectTerritoryForAirToLand(candidates);
     }
 
-    /* 
-     * @see games.strategy.triplea.player.ITripleaPlayer#retreatNotificationMessage(java.util.Collection)
-     */
-    public void retreatNotificationMessage(Collection units)
-    {
-        m_ui.notifyRetreat(units);   
-    }
 
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
@@ -355,24 +348,15 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     {
         return m_ui.getBattlePanel().getRetreat(battleID, step, message, possibleTerritories,submerge);
     }
-
-    /* (non-Javadoc)
-     * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, java.lang.String, java.lang.String)
-     */
-    public void battleInfoMessage(String shortMessage, String message, String step)
+    
+    public void confirmEnemyCasualties(GUID battleId, String message, String step, PlayerID hitPlayer)
     {
-        m_ui.getBattlePanel().battleInfo(shortMessage, message, step);
-        
+        //no need, we have already confirmed since we are firing player
+        if(m_ui.playing(hitPlayer))
+            return;
+        m_ui.getBattlePanel().confirmCasualties(battleId, message);
     }
 
-    /* (non-Javadoc)
-     * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, games.strategy.triplea.delegate.DiceRoll, java.lang.String)
-     */
-    public void battleInfoMessage(String shortMessage, DiceRoll dice, String step)
-    {
-        m_ui.getBattlePanel().battleInfo(shortMessage, dice, step);
-        
-    }
     
     
 }

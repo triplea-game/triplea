@@ -26,87 +26,84 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 /**
- *
+ * 
  * Abstract superclass for all action panels. <br>
- *
- *
- * @author  Sean Bridges
+ * 
+ * 
+ * @author Sean Bridges
  * @version 1.0
- *
+ *  
  */
 public abstract class ActionPanel extends JPanel
 {
-	private GameData m_data;
-	private PlayerID m_currentPlayer;
-	private MapPanel m_map;
-	private final Object m_lock = new Object();
-  private boolean m_active;
+    private GameData m_data;
+    private PlayerID m_currentPlayer;
+    private MapPanel m_map;
+    private final Object m_lock = new Object();
+    private boolean m_active;
 
+    /** Creates new ActionPanel */
+    public ActionPanel(GameData data, MapPanel map)
+    {
+        m_data = data;
+        m_map = map;
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(new EmptyBorder(5, 5, 0, 0));
+    }
 
-  /** Creates new ActionPanel */
-  public ActionPanel(GameData data, MapPanel map)
-  {
-    m_data = data;
-    m_map = map;
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    setBorder(new EmptyBorder(5,5,0,0));
-  }
+    protected GameData getData()
+    {
+        return m_data;
+    }
 
-	protected GameData getData()
-	{
-		return m_data;
-	}
+    public void display(PlayerID player)
+    {
+        m_currentPlayer = player;
+        setActive(true);
+    }
 
-	public void display(PlayerID player)
-	{
-		m_currentPlayer = player;
-    setActive(true);
-	}
+    protected PlayerID getCurrentPlayer()
+    {
+        return m_currentPlayer;
+    }
 
-	protected PlayerID getCurrentPlayer()
-	{
-		return m_currentPlayer;
-	}
+    protected MapPanel getMap()
+    {
+        return m_map;
+    }
 
-	protected MapPanel getMap()
-	{
-		return m_map;
-	}
+    /**
+     * Returns the object used to synchronize this action panel. <br>
+     * Never changes.
+     */
+    protected Object getLock()
+    {
+        return m_lock;
+    }
 
-	/**
-	 * Returns the object used to synchronize this action panel. <br>
-	 * Never changes.
-	 */
-	protected Object getLock()
-	{
-		return m_lock;
-	}
+    /**
+     * Called when the history panel shows used to disable the panel
+     * temporarily.
+     */
+    public void setActive(boolean aBool)
+    {
+        m_active = aBool;
+    }
 
+    public boolean getActive()
+    {
+        return m_active;
+    }
 
-
-  /**
-   * Called when the history panel shows
-   * used to disable the panel temporarily.
-   */
-  public void setActive(boolean aBool)
-  {
-    m_active = aBool;
-  }
-
-  public boolean getActive()
-  {
-    return m_active;
-  }
-
-	/**
-	 * Refreshes the action panel.  Should be run within the swing event queue.
-	 */
-	protected final Runnable REFRESH = new Runnable()
-	{
-		public void run()
-		{
-			revalidate();
-			repaint();
-		}
-	};
+    /**
+     * Refreshes the action panel. Should be run within the swing event queue.
+     */
+    protected final Runnable REFRESH = new Runnable()
+    {
+        public void run()
+        {
+            revalidate();
+            repaint();
+        }
+    };
 }

@@ -11,29 +11,32 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package games.strategy.engine.random;
+package games.strategy.util;
 
-import games.strategy.engine.message.IRemote;
-import games.strategy.engine.vault.VaultID;
+import java.util.logging.*;
+import java.util.logging.StreamHandler;
 
 /**
+ * A simple logger that prints to System.out.
+ * 
+ * wtf?  Why do I need to write this.  Why cant ConsoleHandler
+ * be set up to write to something other than System.err?  I
+ * am so close to switching to log4j
+ * 
  * @author Sean Bridges
  */
-public interface IRemoteRandom extends IRemote
+public class SystemOutHandler extends StreamHandler
 {
-    /**
-     * 
-     * Generate a random number, and lock it in the vault.
-     * 
-     * @param serverVaultID - the vaultID where the server has stored his numbers
-     * 
-     * @return the vault id for which we have locked the data
-     */
-    public int[] generate(int max, int count, String annotation, VaultID serverVaultID);
+    public SystemOutHandler()
+    {
+        super(System.out, new SimpleFormatter());
+    }
     
-    /**
-     * unlock the random number last generated.
-     *
-     */
-    public void verifyNumbers();
+    public void publish(LogRecord record)
+    {
+        super.publish(record);
+        flush();
+    }
+    
+
 }

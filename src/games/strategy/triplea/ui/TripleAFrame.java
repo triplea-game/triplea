@@ -695,12 +695,6 @@ public class TripleAFrame extends JFrame
     }
 
 
-    public void notifyRetreat(Collection retreating)
-    {
-        m_actionButtons.notifyRetreat(retreating);
-    }
-
-
     public void notifyError(String message)
     {
         JOptionPane.showMessageDialog(this, message, "Error",
