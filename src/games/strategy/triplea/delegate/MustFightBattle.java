@@ -344,9 +344,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         //take the casualties with least movement first
         BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
-        System.out.print(m_attackingUnits);
+        //System.out.print(m_attackingUnits);
         BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
-        System.out.print(m_defendingUnits);
+        //System.out.print(m_defendingUnits);
 
         fightStart(bridge);
         fightLoop(bridge);
