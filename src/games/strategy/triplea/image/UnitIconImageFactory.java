@@ -67,7 +67,7 @@ public class UnitIconImageFactory
   private final Map m_images = new HashMap();
   //maps Point -> Icon
   private final Map m_icons = new HashMap();
-
+  // Scaling factor for unit images
   private double m_scaleFactor = 1;
 
   /** Creates new IconImageFactory */
@@ -107,12 +107,16 @@ public class UnitIconImageFactory
     return (int)(m_scaleFactor * UNIT_ICON_HEIGHT);
   }
 
+  // Clear the image and icon cache
   private void clearImageCache()
   {
     m_images.clear();
     m_icons.clear();
   }
 
+  /**
+   * Return the appropriate unit image.
+   */
   public Image getImage(UnitType type, PlayerID player, GameData data, boolean damaged)
   {
     String baseName = getBaseImageName(type, player, data, damaged);
@@ -124,11 +128,24 @@ public class UnitIconImageFactory
 
     Image baseImage = getBaseImage(baseName, player, damaged);
 
+    // We want to scale units according to the given scale factor.
+    // We use smooth scaling since the images are cached to allow
+    // to take our time in doing the scaling.
     // Image observer is null, since the image should have been
     // guaranteed to be loaded.
     int width = (int) (baseImage.getWidth(null) * m_scaleFactor);
     int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
     Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+    // Ensure the scaling is completed.
+    try
+    {
+      Util.ensureImageLoaded(scaledImage, new java.awt.Label());
+    }
+    catch (InterruptedException ex)
+    {
+      ex.printStackTrace();
+    }
 
     m_images.put(fullName, scaledImage);
     return scaledImage;
@@ -154,6 +171,9 @@ public class UnitIconImageFactory
     return image;
   }
 
+  /**
+   * Return a icon image for a unit.
+   */
   public ImageIcon getIcon(UnitType type, PlayerID player, GameData data, boolean damaged)
   {
     String baseName = getBaseImageName(type, player, data, damaged);
