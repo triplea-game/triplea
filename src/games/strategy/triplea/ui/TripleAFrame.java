@@ -494,16 +494,7 @@ public class TripleAFrame extends JFrame
         // Create A String array of compatible MapDirs
 
         final String currentMapSubDir = TerritoryImageFactory.getMapDir();
-        final File mapsDir = new File(System.getProperty("user.dir") + "/classes/" + Constants.MAP_DIR);
-
-        // TO DO:
-        //
-        // Make it use friendly constant. On some systems where the
-        // binaries are separated from the game files we can't use
-        // the "user.dir" property ... possibly "triplea.root" ?
-        //
-        // mapsDir = /games/strategy/triplea/image/images/maps/
-        //final File mapsDir = new File(Constants.MAP_DIR);
+        final File mapsDir = new File(GameRunner.getRootFolder().getPath() + "/classes/" + Constants.MAP_DIR);
 
         if (currentMapSubDir != null)
         {
