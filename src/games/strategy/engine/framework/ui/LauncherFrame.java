@@ -389,7 +389,11 @@ public class LauncherFrame extends JFrame
     prefs.put(PLAYERNAME, name);
 
     int port = options.getPort();
-
+    if(port>=65536){
+        JOptionPane.showMessageDialog(this,"Invalid Port: "+port, "Error", JOptionPane.ERROR_MESSAGE);
+    	return;
+  	}
+    
     ServerMessenger messenger;
     try
     {
@@ -442,6 +446,12 @@ public class LauncherFrame extends JFrame
     prefs.put(PLAYERNAME, name);
 
     int port = options.getPort();
+    if(port>=65536){
+        JOptionPane.showMessageDialog(this,"Invalid Port: "+port, "Error", JOptionPane.ERROR_MESSAGE);
+    	return;
+  	}
+
+    
     String address = options.getAddress();
 
     try
