@@ -1561,7 +1561,7 @@
 			<boolean/>
 		</property>
                 
-		<property name="Always on AA" value="true" editable="false">
+		<property name="Always on AA" value="true" editable="true">
 			<boolean/>
 		</property>
                 
@@ -1596,6 +1596,10 @@
 
 		<property name="Russians bid" value="0" editable="true">
 			<number min="0" max="1000"/>
+		</property>
+
+		<property name="Low Luck" value="false" editable="true">
+			<boolean/>
 		</property>
 
 		<property name="mapName" value="revised" editable="false"/>
