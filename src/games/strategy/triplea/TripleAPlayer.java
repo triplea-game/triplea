@@ -193,6 +193,14 @@ public class TripleAPlayer implements GamePlayer
 
   private void purchase(boolean bid)
   {
+    if(bid)
+    {
+      String propertyName = m_id.getName() + " bid";
+      if(Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString()) == 0)
+        return;
+    }
+
+
     IntegerMap prod = m_ui.getProduction(m_id, bid);
     if(prod == null)
       return;
