@@ -1241,6 +1241,9 @@
 		<property name="Always on AA" value="false" editable="true">
 			<boolean/>
 		</property>
+		<property name="Battleships repair at end of round" value="false" editable="true">
+			<boolean/>
+		</property>
 		<property name="neutralCharge" value="3"/>
 		<property name="maxFactoriesPerTerritory" value="1"/>
 		<property name="Germans bid" value="0" editable="true">
