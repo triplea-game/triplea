@@ -69,6 +69,8 @@ public class TripleAFrame extends JFrame
   {
     super("TripleA");
 
+    setIconImage(GameRunner.getGameIcon(this));
+
     m_game = game;
 
     game.getMessenger().addErrorListener(m_messengerErrorListener);

@@ -52,6 +52,30 @@ public class GameRunner
   private GameData m_data;
   public final static int PORT = 932;
 
+  public static Image getGameIcon(JFrame frame)
+  {
+    Image img = null;
+    try
+    {
+      img = frame.getToolkit().getImage(GameRunner.class.getResource("ta_icon.png"));
+    }
+    catch (Exception ex)
+    {
+      System.out.println("icon not loaded");
+    }
+    MediaTracker tracker = new MediaTracker(frame);
+    tracker.addImage(img, 0);
+    try
+    {
+      tracker.waitForAll();
+    }
+    catch (InterruptedException ex)
+    {
+      ex.printStackTrace();
+    }
+    return img;
+  }
+
   private static void installSecurityProvider()
   {
 //    java.security.Security.addProvider( new com.sun.crypto.provider.SunJCE());
@@ -76,6 +100,7 @@ public class GameRunner
     //c.show();
 
     LauncherFrame frame = new LauncherFrame();
+    frame.setIconImage(getGameIcon(frame));
     frame.pack();
     frame.show();
   }

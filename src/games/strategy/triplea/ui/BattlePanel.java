@@ -139,6 +139,7 @@ public class BattlePanel extends ActionPanel
     m_battleDisplay = new BattleDisplay(getData(), msg.getTerritory(), msg.getAttacker(), msg.getDefender(), msg.getAttackingUnits(), msg.getDefendingUnits());
 
     m_battleFrame = new JFrame(msg.getAttacker().getName() + " attacks " + msg.getDefender().getName() + " in " + msg.getTerritory().getName());
+    m_battleFrame.setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(m_battleFrame));
     m_battleFrame.getContentPane().add(m_battleDisplay);
     m_battleFrame.setSize(750, 500);
     m_battleFrame.show();
