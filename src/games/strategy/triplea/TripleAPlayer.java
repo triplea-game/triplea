@@ -205,7 +205,13 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
             if (Integer.parseInt(m_bridge.getGameData().getProperties().get(
                     propertyName).toString()) == 0)
                 return;
-        } else
+        }
+        //we have no production frontier
+        else if(m_id.getProductionFrontier() == null || m_id.getProductionFrontier().getRules().isEmpty())
+        {
+            return;
+        }
+        else
         {
             int minIPCsNeededToBuild = Integer.MAX_VALUE;
             Iterator prodRules = m_id.getProductionFrontier().getRules().iterator();
