@@ -37,6 +37,7 @@ public class Chat
 
     private ChatFrame m_frame;
     private IMessenger m_messenger;
+    
 
     /** Creates a new instance of Chat */
     public Chat(IMessenger messenger, ChatFrame frame)
@@ -47,7 +48,6 @@ public class Chat
         m_messenger.addMessageListener(m_messageListener);
         m_messenger.addConnectionChangeListener(m_connectionChangeListener);
         updateConnections();
-
     }
 
     /**
@@ -85,7 +85,6 @@ public class Chat
         }
 
     }
-
     void sendMessage(ChatMessage msg)
     {
         m_messenger.broadcast(msg);

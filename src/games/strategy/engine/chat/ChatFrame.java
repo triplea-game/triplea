@@ -44,6 +44,8 @@ public class ChatFrame extends JFrame
     private JButton m_send;
     private Chat m_chat;
     private DefaultListModel m_listModel;
+    
+    private ChatHistory m_ChatHistory;
 
     SimpleAttributeSet bold = new SimpleAttributeSet();
     SimpleAttributeSet normal = new SimpleAttributeSet();
@@ -60,6 +62,7 @@ public class ChatFrame extends JFrame
         layoutComponents();
 
         m_chat = new Chat(messenger, this);
+		m_ChatHistory = new ChatHistory();
 
         StyleConstants.setBold(bold, true);
         setSize(300, 200);
@@ -110,7 +113,10 @@ public class ChatFrame extends JFrame
         //when enter is pressed, send the message
         Keymap nextMessageKeymap = m_nextMessage.getKeymap();
         nextMessageKeymap.addActionForKeyStroke(KeyStroke.getKeyStroke('\n'), m_sendAction);
+		nextMessageKeymap.addActionForKeyStroke(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP,0,false), m_UpAction);
+		nextMessageKeymap.addActionForKeyStroke(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN,0,false), m_DownAction);
 
+		
         m_listModel = new DefaultListModel();
         m_players = new JList(m_listModel);
 
@@ -263,6 +269,7 @@ public class ChatFrame extends JFrame
 
             if (m_nextMessage.getText().trim().length() == 0)
                 return;
+			m_ChatHistory.setHistory(m_nextMessage.getText());
             if(Chat.getTense(m_nextMessage.getText())==1){
                 MeMessage msg = new MeMessage(m_nextMessage.getText().substring(4));
                 m_chat.sendMessage(msg);
@@ -271,7 +278,32 @@ public class ChatFrame extends JFrame
             	ChatMessage msg = new ChatMessage(m_nextMessage.getText());
             	m_chat.sendMessage(msg);
             }
+			m_ChatHistory.insertHistory("");
             m_nextMessage.setText("");
         }
     };
+	private Action m_DownAction = new AbstractAction()
+	{
+
+		public void actionPerformed(ActionEvent e)
+		{
+			if(m_ChatHistory.hasNextHistory()){
+				m_ChatHistory.setHistory(m_nextMessage.getText());
+				m_ChatHistory.nextHistory();
+				m_nextMessage.setText(m_ChatHistory.getHistory());
+			}
+		}
+	};
+	private Action m_UpAction = new AbstractAction()
+	{
+
+		public void actionPerformed(ActionEvent e)
+		{
+			if(m_ChatHistory.hasPrevHistory()){
+				m_ChatHistory.setHistory(m_nextMessage.getText());
+				m_ChatHistory.prevHistory();
+				m_nextMessage.setText(m_ChatHistory.getHistory());
+			}
+		}
+	};
 }
