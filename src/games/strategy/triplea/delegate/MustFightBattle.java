@@ -187,6 +187,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	if (isFourthEdition()) {
 	  dependencies.putAll(moveDelegate.carrierMustMoveWith(units, units));
 	}
+
+	addDependentUnits(dependencies);
+    }
+
+    private void addDependentUnits(Map dependencies) {
+
         Iterator iter = dependencies.keySet().iterator();
         while (iter.hasNext())
         {
@@ -298,6 +304,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
             attackerWins(bridge);
             return;
         }
+
+        MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
+
+	// Add dependent defending units to dependent unit map
+        Map dependencies = transporting(m_defendingUnits);
+	addDependentUnits(dependencies);	
         
         //list the steps
         List steps = determineStepStrings(true);
@@ -311,7 +323,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.sendMessage(battleStepMessage, m_defender);
         
         //take the casualties with least movement first
-        MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
         moveDelegate.sortAccordingToMovementLeft(m_attackingUnits, false);
         
         fightStart(bridge);
@@ -1105,7 +1116,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         
         String step = SELECT_AA_CASUALTIES;
-        if (!canFireAA())
+        if (!canFireAA() || m_battleSite.isWater())
             return;
         
         int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
@@ -1180,8 +1191,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         while (iter.hasNext())
         {
   	    Collection depending = (Collection)m_dependentUnits.get(iter.next());
-            if (depending != null)
-                dependents.addAll(depending);
+  	    if (depending != null) {
+	        dependents.addAll(depending);
+	    }
         }
         return dependents;
     }
@@ -1202,10 +1214,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     private void remove(Collection killed, DelegateBridge bridge)
     {
-        
         if (killed.size() == 0)
             return;
-        
+
         //get the transported units
         if (m_battleSite.isWater())
         {
