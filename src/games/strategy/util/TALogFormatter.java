@@ -14,30 +14,32 @@
 package games.strategy.util;
 
 import java.util.logging.*;
-import java.util.logging.StreamHandler;
+import java.util.logging.Formatter;
 
 /**
- * A simple logger that prints to System.out.
  * 
- * wtf?  Why do I need to write this.  Why cant ConsoleHandler
- * be set up to write to something other than System.err?  I
- * am so close to switching to log4j
- * 
+ *
+ *
  * @author Sean Bridges
  */
-public class SystemOutHandler extends StreamHandler
+public class TALogFormatter extends Formatter
 {
-    public SystemOutHandler()
-    {
-        super(System.out, new SimpleFormatter());
-        setFormatter(new TALogFormatter());
-    }
     
-    public void publish(LogRecord record)
+    /**
+     * 
+     */
+    public TALogFormatter()
     {
-        super.publish(record);
-        flush();
+
+     
     }
-    
+
+    /* 
+     * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
+     */
+    public String format(LogRecord record)
+    {
+       return record.getLevel() + ":" + record.getLoggerName() + ":->" + record.getMessage() + "\n";
+    }
 
 }

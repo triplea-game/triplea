@@ -120,7 +120,7 @@ public class TileImageBreaker
                         bounds.x + TileManager.TILE_SIZE, bounds.y + TileManager.TILE_SIZE, observer);
 
                 
-                boolean match = false;
+                //boolean match = false;
                 Iterator territories = MapData.getInstance().getTerritories().iterator();
                 while(territories.hasNext())
                 {
@@ -133,7 +133,7 @@ public class TileImageBreaker
                             )
                     {
                       
-                        match = true;
+                        //match = true;
                         break;
                     }
                 }

@@ -1,43 +1,46 @@
 package games.strategy.triplea.image;
 
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version. This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.ImageIoCompletionWatcher;
 
 import java.awt.*;
 import java.io.File;
-import java.lang.ref.SoftReference;
+import java.lang.ref.*;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.*;
 import java.util.prefs.*;
 
 public final class TileImageFactory
 {
 
-    private static boolean s_showReliefImages = true;
-    private static final boolean cacheImages = true;
+    private final Object m_mutex = new Object();
+
+    // one instance in the application
+    private static TileImageFactory s_singletonInstance = new TileImageFactory();
     private final static String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief";
+    private static boolean s_showReliefImages = true;
+
+    //maps image name to ImageRef
+    private HashMap m_imageCache = new HashMap();
+    private final Toolkit m_toolkit = Toolkit.getDefaultToolkit();
 
     static
     {
         Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
         s_showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, false);
-        s_mapDir="classic";//default to using the classic map files
+        s_mapDir = "classic";//default to using the classic map files
     }
 
     public static boolean getShowReliefImages()
@@ -52,11 +55,10 @@ public final class TileImageFactory
         prefs.putBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, s_showReliefImages);
         try
         {
-          prefs.flush();
-        }
-        catch (BackingStoreException ex)
+            prefs.flush();
+        } catch (BackingStoreException ex)
         {
-          ex.printStackTrace();
+            ex.printStackTrace();
         }
     }
 
@@ -64,19 +66,25 @@ public final class TileImageFactory
 
     public static String getMapDir()
     {
-      return s_mapDir;
+        return s_mapDir;
     }
-    
+
     public static void setMapDir(String dir)
     {
-      s_mapDir=dir;
+        s_mapDir = dir;
+        synchronized (getInstance().m_mutex)
+        {
+            //we manually want to clear each ref to allow the soft reference to
+            // be removed
+            Iterator values = getInstance().m_imageCache.values().iterator();
+            while (values.hasNext())
+            {
+                ImageRef imageRef = (ImageRef) values.next();
+                imageRef.clear();
+            }
+            getInstance().m_imageCache.clear();
+        }
     }
-
-    private HashMap m_cache = new HashMap();
-
-    // one instance in the application
-    private static TileImageFactory s_singletonInstance = new TileImageFactory();
-
 
     // return the singleton
     public static TileImageFactory getInstance()
@@ -84,98 +92,178 @@ public final class TileImageFactory
         return s_singletonInstance;
     }
 
-
     // constructor
     private TileImageFactory()
     {
     }
 
- 
-    public Color getPlayerColour(PlayerID owner)
+    /**
+     * Take advantage of awt loading of images in another thread this starts the
+     * loading of an image in a background thread calls to getImage will ensure
+     * the image has finished loading
+     */
+    public void prepareReliefTile(int x, int y)
     {
-        return MapData.getInstance().getPlayerColor(owner.getName());
+        String fileName = getReliefTileImageName(x, y);
+        //image is already loaded
+        prepareImage(fileName);
     }
 
-    
+    private void prepareImage(String fileName)
+    {
+        synchronized (m_mutex)
+        {
+            if (isImageLoaded(fileName) != null)
+                return;
+            URL url = this.getClass().getResource(fileName);
+            if (url == null)
+                return;
+            startLoadingImage(url, fileName);
+        }
+    }
+
+    /**
+     * @param fileName
+     * @return
+     */
+    private Image isImageLoaded(String fileName)
+    {
+        if (m_imageCache.get(fileName) == null)
+            return null;
+        return ((ImageRef) m_imageCache.get(fileName)).getImage();
+    }
+
+    /**
+     * Take advantage of awt loading of images in another thread this starts the
+     * loading of an image in a background thread calls to getImage will ensure
+     * the image has finished loading
+     */
+    public void prepareBaseTile(int x, int y)
+    {
+        String fileName = getBaseTileImageName(x, y);
+        //image is already loaded
+        prepareImage(fileName);
+    }
+
     public Image getBaseTile(int x, int y)
     {
-        String key = x + "_" + y + "base";
-        SoftReference ref = (SoftReference) m_cache.get(key);
-        
-        if(ref != null)
-        {
-            Image cached = (Image) ref.get();
-            if(cached != null)
-                return cached;
-        }
-        
-        String fileName = Constants.MAP_DIR+s_mapDir+File.separator +"baseTiles"+java.io.File.separator + x + "_" + y + ".png";
-        URL file = this.getClass().getResource(fileName);
-        if(file == null)
-            return null;
-        Image img = loadImageCompletely(file);
-        if(cacheImages)
-            m_cache.put(key, new SoftReference(img));
-        return img;
+        String fileName = getBaseTileImageName(x, y);
+        return getImage(fileName);
     }
 
-    
+    /**
+     * @param x
+     * @param y
+     * @return
+     */
+    private String getBaseTileImageName(int x, int y)
+    {
+        String fileName = Constants.MAP_DIR + s_mapDir + File.separator + "baseTiles" + java.io.File.separator + x + "_" + y + ".png";
+        return fileName;
+    }
+
+    /**
+     * @param fileName
+     * @return
+     */
+    private Image getImage(String fileName)
+    {
+        synchronized (m_mutex)
+        {
+            Image rVal = isImageLoaded(fileName);
+            if (rVal != null)
+                return rVal;
+
+            URL url = this.getClass().getResource(fileName);
+            if (url == null)
+                return null;
+
+            startLoadingImage(url, fileName);
+        }
+        return getImage(fileName);
+    }
+
     public Image getReliefTile(int x, int y)
     {
-        String key = x + "_" + y + "relief";
-        SoftReference ref = (SoftReference) m_cache.get(key);
-        
-        if(ref != null)
-        {
-            Image cached = (Image) ref.get();
-            if(cached != null)
-                return cached;
-        }
-        
-        String fileName = Constants.MAP_DIR+s_mapDir+File.separator +"reliefTiles"+java.io.File.separator + x + "_" + y + ".png";
-        URL file = this.getClass().getResource(fileName);
-        if(file == null)
-            return null;
-        Image img = loadImageCompletely(file);
-        if(cacheImages)
-            m_cache.put(key, new SoftReference(img));
-        return img;
-        
-        
+        String fileName = getReliefTileImageName(x, y);
+        return getImage(fileName);
     }
 
-
-
-
-
-    private Image loadImageCompletely(URL imageLocation)
+    /**
+     * @param x
+     * @param y
+     * @return
+     */
+    private String getReliefTileImageName(int x, int y)
     {
+        String fileName = Constants.MAP_DIR + s_mapDir + File.separator + "reliefTiles" + java.io.File.separator + x + "_" + y + ".png";
+        return fileName;
+    }
 
-//       try
-//    {
-//        return ImageIO.read(imageLocation);
-//    } catch (IOException e)
-//    {
-//        e.printStackTrace();
-//        throw new IllegalStateException(e.getMessage());
-//    }
-        
-      // use the local toolkit to load the image
-      Toolkit tk = Toolkit.getDefaultToolkit();
-      Image img = tk.createImage(imageLocation);
+    /**
+     * @param imageLocation
+     * @return
+     */
+    private Image startLoadingImage(URL imageLocation, String fileName)
+    {
+        synchronized (m_mutex)
+        {
+            // use the local toolkit to load the image
+            Image img = m_toolkit.createImage(imageLocation);
 
-      // force it to be loaded *now*
-      ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
-      boolean isLoaded = tk.prepareImage(img, -1, -1, watcher);
+            // force it to be loaded *now*
+            ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
+            boolean done = m_toolkit.prepareImage(img, -1, -1, watcher);
+            if(!done)
+                m_imageCache.put(fileName, new ImageRef(img, watcher));
+            else
+                m_imageCache.put(fileName, new ImageRef(img));
 
-      // use the watcher to block while loading
-      if (!isLoaded)
-      {
-          watcher.waitForCompletion();
-      }
-
-      // done!
-      return img;
+            return img;
+        }
     }
 
 }//end class TerritoryImageFactory
+
+/**
+ * We keep a soft reference to the image to allow it to be garbage collected.
+ * 
+ * Also, the image may not have finished watching when we are created, but the
+ * getImage method ensures that the image will be loaded before returning.
+ * 
+ * @author Sean Bridges
+ */
+
+class ImageRef
+{
+    private final Reference m_image;
+    private ImageIoCompletionWatcher m_watcher;
+
+    public ImageRef(final Image image)
+    {
+        m_image = new SoftReference(image);
+    }
+
+    public ImageRef(final Image image, final ImageIoCompletionWatcher watcher)
+    {
+        this(image);
+        m_watcher = watcher;
+    }
+
+    public Image getImage()
+    {
+        if (m_watcher == null)
+            return (Image) m_image.get();
+        m_watcher.waitForCompletion();
+        m_watcher = null;
+
+        return (Image) m_image.get();
+    }
+
+    public void clear()
+    {
+        m_image.clear();
+        m_watcher = null;
+    }
+
+}

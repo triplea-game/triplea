@@ -24,7 +24,7 @@ import java.awt.*;
 
 public class ImageIoCompletionWatcher implements ImageObserver
 {
-  private volatile boolean m_complete = false;
+  private boolean m_complete = false;
   private final Object m_lock = new Object();
 
   public void waitForCompletion()
@@ -43,11 +43,6 @@ public class ImageIoCompletionWatcher implements ImageObserver
     }
   }
 
-  public boolean isComplete()
-  {
-    return m_complete;
-  }
-
   public boolean imageUpdate(Image image, int flags, int x, int y, int width,
                              int height)
   {
@@ -62,7 +57,7 @@ public class ImageIoCompletionWatcher implements ImageObserver
       }
       return false;
     }
-
+    
     return true;
 
   }

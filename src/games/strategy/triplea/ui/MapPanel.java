@@ -23,6 +23,7 @@ import games.strategy.engine.data.events.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.screen.*;
+import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.*;
 import games.strategy.util.ListenerList;
 
@@ -30,6 +31,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
+import java.util.logging.*;
+import java.util.logging.Logger;
 
 /**
  * Responsible for drawing the large map and keeping it updated.
@@ -38,7 +42,8 @@ import java.util.*;
  */
 public class MapPanel extends ImageScrollerLargeView
 {
-
+    private static Logger s_logger = Logger.getLogger(MapPanel.class.getName());
+    
     private ListenerList m_mapSelectionListeners = new ListenerList();
 
     private GameData m_data;
@@ -51,7 +56,7 @@ public class MapPanel extends ImageScrollerLargeView
     
     //keep a reference to the images from the last paint to
     //prevent them from being gcd
-    private Set m_images = new HashSet();;
+    private List m_images = new ArrayList();
     
     private RouteDescription m_routeDescription;
 
@@ -376,14 +381,26 @@ public class MapPanel extends ImageScrollerLargeView
     public void paint(Graphics g)
     {
         super.paint(g);
-        Set images = new HashSet();
+        List images = new ArrayList();
 
+        Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINER, "Paint");
+        
         //handle wrapping off the screen to the left
         if(m_x < 0)
         {
             Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
-            Iterator tiles = m_tileManager.getTiles(leftBounds).iterator();
+            List tileList = m_tileManager.getTiles(leftBounds);
+            Iterator tiles = tileList.iterator();
             
+            
+            //prep the tiles for drawing
+            while(tiles.hasNext())
+            {
+                Tile tile = (Tile) tiles.next();
+                tile.prepareToDraw();
+            }
+            
+            tiles = tileList.iterator();
             while (tiles.hasNext())
             {
                 Tile tile = (Tile) tiles.next();
@@ -393,24 +410,48 @@ public class MapPanel extends ImageScrollerLargeView
             }
         }
         
-        Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
-        Iterator tiles = m_tileManager.getTiles(mainBounds).iterator();
-        
-        while (tiles.hasNext())
+        //handle the non overlap
         {
-            Tile tile = (Tile) tiles.next();
-            Image img = tile.getImage(m_data, MapData.getInstance());
-            g.drawImage(img, tile.getBounds().x - m_x, tile.getBounds().y - m_y, this);
-            images.add(tile);
+        
+	        Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
+	        List tileList = m_tileManager.getTiles(mainBounds);
+	        Iterator tiles = tileList.iterator();
+	
+	        //prep the tiles for drawing
+	        while(tiles.hasNext())
+	        {
+	            Tile tile = (Tile) tiles.next();
+	            tile.prepareToDraw();
+	        }
+	        
+	        tiles = tileList.iterator();
+	        
+	        while (tiles.hasNext())
+	        {
+	            Tile tile = (Tile) tiles.next();
+	            Image img = tile.getImage(m_data, MapData.getInstance());
+	            g.drawImage(img, tile.getBounds().x - m_x, tile.getBounds().y - m_y, this);
+	            images.add(tile);
+	        }
         }
 
+        
         double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
         //handle wrapping off the screen to the left
         if(leftOverlap > 0)
         {
             Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
-            tiles = m_tileManager.getTiles(rightBounds).iterator();
+            List tileList =  m_tileManager.getTiles(rightBounds);
+            Iterator tiles = tileList.iterator();
             rightBounds.translate((int) (leftOverlap - getWidth()), 0);
+
+            //prep the tiles for drawing
+            while(tiles.hasNext())
+            {
+                Tile tile = (Tile) tiles.next();
+                tile.prepareToDraw();
+            }
+            tiles = tileList.iterator();
             
             while (tiles.hasNext())
             {
@@ -426,6 +467,9 @@ public class MapPanel extends ImageScrollerLargeView
         
         m_images.clear();
         m_images.addAll(images);
+        
+        stopWatch.done();
+        
     }
 
     

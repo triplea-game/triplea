@@ -19,23 +19,37 @@ import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.*;
 import java.util.*;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.*;
+import java.util.logging.Logger;
 
 /**
  * @author Sean Bridges
  */
 public interface Drawable
 {
+    public Logger s_logger = Logger.getLogger(Drawable.class.getName());
+    
     public static final int BASE_MAP_LEVEL = 1;
     public static final int POLYGONS_LEVEL = 2;
     public static final int RELIEF_LEVEL = 3;
     public static final int TERRITORY_TEXT_LEVEL = 4;
     public static final int UNITS_LEVEL = 5;
 
+    /**
+     * Start any asynchronous preparation that can be done in the backgrounds.
+     * Note, a drawable should not rely on prepare being called.  It is merly a hint.
+     */
+    public void prepare();
+    
+    /**
+     * Draw the tile
+     */
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData);
 
     public int getLevel();
@@ -60,6 +74,8 @@ class TerritoryNameDrawable implements Drawable
         this.m_territoryName = territoryName;
     }
 
+    public void prepare() {}
+    
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
         Territory territory = data.getMap().getTerritory(m_territoryName);
@@ -103,6 +119,7 @@ class TerritoryNameDrawable implements Drawable
 class ReliefMapDrawable implements Drawable
 {
 
+    private boolean m_noImage = false;
     private final int m_x;
     private final int m_y;
     
@@ -112,24 +129,41 @@ class ReliefMapDrawable implements Drawable
         m_y = y;
     }
     
+    public void prepare() 
+    {
+        TileImageFactory.getInstance().prepareReliefTile(m_x, m_y);
+    }
+    
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
+        if(m_noImage)
+            return;
+        
         if(!TileImageFactory.getShowReliefImages())
             return;
         
+        Stopwatch loadImageStopWatch = new Stopwatch(s_logger, Level.FINEST, "Loading Relief Images");
         Image img = TileImageFactory.getInstance().getReliefTile(m_x, m_y);
-        if(img != null)
+        loadImageStopWatch.done();
+        
+        if(img == null)
         {
-            Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
-            graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-
-            graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y,null);
-            
-            if(oldValue == null)
-                graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
-            else
-                graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
+            m_noImage = true;
+            return;            
         }
+    
+        Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
+        graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        
+        Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing relief images");
+        graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y,null);
+        drawStopWatch.done();
+        
+        if(oldValue == null)
+            graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
+        else
+            graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
+
     }
 
     public int getLevel()
@@ -144,18 +178,39 @@ class BaseMapDrawable implements Drawable
 
     private final int m_x;
     private final int m_y;
-    
+    private boolean m_noImage = false;
+   
     public BaseMapDrawable(final int x, final int y)
     {
         m_x = x;
         m_y = y;
     }
+   
+    public void prepare() 
+    {
+        TileImageFactory.getInstance().prepareBaseTile(m_x, m_y);
+    }
     
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
+        if(m_noImage)
+            return;
+        Stopwatch loadStopWatch = new Stopwatch(s_logger, Level.FINEST, "Loading base map tile");
         Image img = TileImageFactory.getInstance().getBaseTile(m_x, m_y);
+        loadStopWatch.done();
+        
+        if(img == null)
+        {
+            m_noImage = true;
+            return;
+        }
+        
         if(img != null)
+        {
+            Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing base map tile");
             graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y,null);
+            drawStopWatch.done();
+        }
         
     }
 
@@ -175,8 +230,11 @@ class LandTerritoryDrawable implements Drawable
         m_territoryName = territoryName;
     }
 
+    public void prepare() {}
+    
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
+
         Territory territory = data.getMap().getTerritory(m_territoryName);
         Color territoryColor;
 
@@ -195,6 +253,11 @@ class LandTerritoryDrawable implements Drawable
         while (iter2.hasNext())
         {
             Polygon polygon = (Polygon) iter2.next();
+            
+            //if we dont have to draw, dont
+            if(!polygon.intersects(bounds) && !polygon.contains(bounds))
+                continue;
+            
             //use a copy since we will move the polygon
             polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
 
@@ -204,6 +267,7 @@ class LandTerritoryDrawable implements Drawable
             graphics.setColor(Color.BLACK);
             graphics.drawPolygon(polygon);
         }
+        
     }
 
     public int getLevel()
@@ -230,6 +294,8 @@ class UnitsDrawer implements Drawable
         m_damaged = damaged;
     }
 
+    public void prepare() {}
+    
     public Point getPlacementPoint()
     {
         return m_placementPoint;

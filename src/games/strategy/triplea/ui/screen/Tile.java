@@ -15,6 +15,7 @@ package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 import java.awt.*;
@@ -53,6 +54,21 @@ public class Tile
         
     }
     
+    public void prepareToDraw()
+    {
+        synchronized(m_mutex)
+        {
+            Iterator iter = m_contents.iterator();
+            while (iter.hasNext())
+            {
+                Drawable drawable = (Drawable) iter.next();
+                drawable.prepare();
+                
+            }
+        }
+        
+    }
+    
     public Image getImage(GameData data, MapData mapData) 
     {
         if(m_imageRef == null)
@@ -77,7 +93,7 @@ public class Tile
     
     private synchronized void draw(Graphics2D g, GameData data, MapData mapData)
     {
-        long start = System.currentTimeMillis();
+        Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + m_bounds);
         
         //clear
         g.setColor(Color.WHITE);
@@ -97,8 +113,7 @@ public class Tile
 	        m_isDirty = false;
         
         }
-        if(s_logger.isLoggable(Level.FINEST))
-            s_logger.log(Level.FINEST, "Tile at:" + m_bounds + " finished redrawing in:" + (System.currentTimeMillis() - start) + " ms");
+        stopWatch.done();
         
     }
     
