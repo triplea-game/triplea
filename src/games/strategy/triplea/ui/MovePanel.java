@@ -348,7 +348,7 @@ public class MovePanel extends ActionPanel
     }
 
     /**
-     * Get the route inculdin g the territories that we are forced to move through.
+     * Get the route inculding the territories that we are forced to move through.
      */
     private Route getRouteForced(Territory start, Territory end)
     {
@@ -380,7 +380,7 @@ public class MovePanel extends ActionPanel
         if (!end.equals(last))
         {
 
-            Route add = getData().getMap().getRoute(last, end);
+            Route add = getRouteNonForced(last, end);
             Route newTotal = Route.join(total, add);
             if (newTotal != null)
                 total = newTotal;
@@ -410,17 +410,37 @@ public class MovePanel extends ActionPanel
                 return waterRoute;
         }
 
-        //try to avoid aa guns if we can
-        CompositeMatch noAAMatch = new CompositeMatchOr();
-        noAAMatch.add(new InverseMatch(Matches.territoryHasEnemyAA(
+
+	// No aa guns on route predicate
+        CompositeMatch noAA = new CompositeMatchOr();
+        noAA.add(new InverseMatch(Matches.territoryHasEnemyAA(
             getCurrentPlayer(), getData())));
         //ignore the destination
-        noAAMatch.add(Matches.territoryIs(end));
+        noAA.add(Matches.territoryIs(end));
 
-        Route noAARoute = getData().getMap().getRoute(start, end, noAAMatch);
+	// No neutral countries on route predicate
+        Match noEmptyNeutral = new InverseMatch(new CompositeMatchAnd(Matches.TerritoryIsNuetral, Matches.TerritoryIsEmpty));
+
+	// No neutral countries nor AA guns on route predicate
+	Match noNeutralOrAA = new CompositeMatchAnd(noAA, noEmptyNeutral);
+
+	// Try to avoid both AA guns and neutral territories
+	Route noAAOrNeutralRoute = getData().getMap().getRoute(start, end, noNeutralOrAA);
+        if (noAAOrNeutralRoute != null &&
+            noAAOrNeutralRoute.getLength() == defaultRoute.getLength())
+	  return noAAOrNeutralRoute;
+
+        // Try to avoid aa guns
+        Route noAARoute = getData().getMap().getRoute(start, end, noAA);
         if (noAARoute != null &&
             noAARoute.getLength() == defaultRoute.getLength())
-            return noAARoute;
+	  return noAARoute;
+
+	// Try to avoid neutral countries
+        Route noNeutralRoute = getData().getMap().getRoute(start, end, noEmptyNeutral);
+        if (noNeutralRoute != null &&
+            noNeutralRoute.getLength() == defaultRoute.getLength())
+	  return noNeutralRoute;
 
         return defaultRoute;
     }
