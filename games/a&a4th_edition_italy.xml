@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-	<info name="4th Edition" version="1.2"/>
+	<info name="4th Edition Italy" version="1.2"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 
