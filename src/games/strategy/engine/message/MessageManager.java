@@ -236,9 +236,16 @@ public class MessageManager implements IMessageManager
                 throw new IllegalStateException("Destination not found:" + clientMessage.getDestination());
 
             IDestination target = (IDestination) m_local.get(clientMessage.getDestination());
-            Message response = target.sendMessage(clientMessage.getMessage());
-            UnblockMessage unBlock = new UnblockMessage(response, clientMessage.getID());
-            m_messenger.send(unBlock, from);
+            
+            Message response= null;
+            try
+            {
+                response= target.sendMessage(clientMessage.getMessage());
+            } finally
+            {
+                UnblockMessage unBlock = new UnblockMessage(response, clientMessage.getID());
+                m_messenger.send(unBlock, from);
+            }
         }
     };
 
