@@ -765,7 +765,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
   private Collection getBombardingUnits()
   {
     Iterator territories = m_amphibiousAttackFrom.iterator();
-    Collection bombard = new ArrayList();
+    Collection bombard = new HashSet();
     while (territories.hasNext())
     {
       Territory possible = (Territory) territories.next();
