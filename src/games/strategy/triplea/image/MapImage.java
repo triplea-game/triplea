@@ -44,26 +44,6 @@ public class MapImage
   private static Component s_observer;
 
 
-  private static final int BRITISH_COLOUR = (153<<0) | (102<<8) | (0<<16);
-  private static final int AMERICAN_COLOUR = (102<<0) | (102<<8) | (0<<16);
-  private static final int RUSSIAN_COLOUR = (153<<0) | (51<<8) | (0<<16);
-  private static final int GERMAN_COLOUR = (119<<0) | (119<<8) | (119<<16);
-  private static final int JAPANESE_COLOUR = (255<<0) | (153<<8) | (0<<16);
-  private static final int NEUTRAL_COLOUR = (204<<0) | (153<<8) | (51<<16);
-
-
-  //maps playerName -> Integer
-  private static Map s_playerColours = new HashMap();
-  static
-  {
-    s_playerColours.put("no one", new Integer(NEUTRAL_COLOUR));
-    s_playerColours.put("Americans", new Integer(AMERICAN_COLOUR));
-    s_playerColours.put("British", new Integer(BRITISH_COLOUR));
-    s_playerColours.put("Russians", new Integer(RUSSIAN_COLOUR));
-    s_playerColours.put("Japanese", new Integer(JAPANESE_COLOUR));
-    s_playerColours.put("Germans", new Integer(GERMAN_COLOUR));
-  }
-
   public static synchronized MapImage getInstance()
   {
     if(s_instance == null)
@@ -174,41 +154,12 @@ public class MapImage
     }
   }
 
-
-  public static BufferedImage getWaterImage()
-  {
-    Image country = loadImage("countries/water.gif");
-
-    BufferedImage newImage = new BufferedImage(country.getWidth(s_observer), country.getHeight(s_observer), BufferedImage.TYPE_INT_ARGB);
-    newImage.getGraphics().drawImage(country, 0,0, s_observer);
-    return newImage;
-  }
-
-  /**
-   * Note, this method only works for land territories
-   */
-  public static BufferedImage getTerritoryImage(Territory territory, PlayerID id)
-  {
-    String name = territory.getName() +  ".gif";
-
-    String fileName = "countries/" + name.replace(' ', '_');
-    Image country = loadImage(fileName);
-
-    BufferedImage newImage = new BufferedImage(country.getWidth(s_observer), country.getHeight(s_observer), BufferedImage.TYPE_INT_ARGB);
-    newImage.getGraphics().drawImage(country, 0,0, s_observer);
-
-    LookupOp filter = getLookupOp(id, (DirectColorModel) newImage.getColorModel());
-    filter.filter(newImage, newImage);
-
-    return newImage;
-  }
-
   public void setOwner(Territory territory, PlayerID id)
   {
     if(territory.isWater())
       return;
 
-    BufferedImage country = getTerritoryImage(territory,id);
+    BufferedImage country = TerritoryImageFactory.getInstance().getTerritoryImage(territory,id);
     String name = territory.getName();
 
     Point p = (Point) m_topCorners.get(name);
@@ -252,48 +203,6 @@ public class MapImage
     Point smallPoint = new Point( (int)( p.x / m_smallLargeRatio), (int) (p.y / m_smallLargeRatio));
     m_smallMapImage.getGraphics().drawImage(small, smallPoint.x, smallPoint.y,  s_observer);
 
-  }
-
-
-  private static LookupOp getLookupOp(PlayerID id, DirectColorModel model)
-  {
-    String playerName = id.getName();
-    if(!s_playerColours.containsKey(playerName))
-      throw new IllegalStateException("player name not found:" + playerName);
-
-    int colour = ((Integer) s_playerColours.get(playerName)).intValue();
-    byte red = (byte) colour;
-    byte green = (byte) (colour>>8);
-    byte blue = (byte) (colour>>16);
-
-    byte[] rBytes = new byte[256];
-    byte[] gBytes = new byte[256];
-    byte[] bBytes = new byte[256];
-    byte[] alpha = new byte[256];
-
-
-    for(int i = 0; i < 256; i++)
-    {
-      rBytes[i] = red;
-      gBytes[i] = green;
-      bBytes[i] = blue;
-      alpha[i] = (byte) i;
-    }
-
-    byte[][] bytes;
-    if(System.getProperties().getProperty("os.name").indexOf("Windows") == -1 &&
-       System.getProperties().getProperty("os.name").indexOf("Irix") == -1)
-    {
-      //linux and bsd systems orientate this way
-      bytes = new byte[][] {gBytes, rBytes, alpha, bBytes};
-    }
-    else //windows and irix orientate this way
-    {
-      bytes = new byte[][] {rBytes, gBytes, bBytes, alpha};
-    }
-    LookupOp op = new LookupOp( new ByteLookupTable(0,bytes), null );
-
-    return op;
   }
 
 }

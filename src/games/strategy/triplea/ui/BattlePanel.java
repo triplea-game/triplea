@@ -71,7 +71,7 @@ public class BattlePanel extends ActionPanel
     removeAll();
     m_actionLabel.setText(id.getName() + " battle");
     add(m_actionLabel);
-    Iterator iter = battles.iterator();
+   Iterator iter = battles.iterator();
     while(iter.hasNext() )
     {
       Action action = new FightBattleAction((Territory) iter.next(), false);

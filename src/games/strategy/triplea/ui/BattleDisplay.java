@@ -16,26 +16,25 @@
 package games.strategy.triplea.ui;
 
 import java.util.*;
-import java.awt.*;
-
-import javax.swing.*;
-import javax.swing.table.*;
-import java.awt.font.*;
-import java.awt.event.*;
-
-import games.strategy.engine.data.events.GameDataChangeListener;
 import java.util.List;
-import games.strategy.triplea.image.UnitIconImageFactory;
-import games.strategy.triplea.image.DiceImageFactory;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
 import games.strategy.engine.data.*;
-import games.strategy.ui.Util;
-import games.strategy.util.*;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.attatchments.UnitAttatchment;
-import games.strategy.triplea.delegate.message.*;
 import games.strategy.engine.message.Message;
+import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.util.*;
+import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.image.DiceImageFactory;
+import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitOwner;
+import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.ui.Util;
 
 /**
  * Displays a running battle
@@ -316,10 +315,10 @@ public class BattleDisplay extends JPanel
     Image territory;
     if(m_location.isWater())
       //territory = games.strategy.triplea.image.MapImage.getWaterImage();
-      territory = games.strategy.triplea.image.MapImage.getInstance().getWaterImage();
+      territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getWaterImage();
     else
       //territory = games.strategy.triplea.image.MapImage.getTerritoryImage(m_location, m_defender);
-      territory = games.strategy.triplea.image.MapImage.getInstance().getTerritoryImage(m_location, m_defender);
+      territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getTerritoryImage(m_location, m_defender);
 
     finalImage.getGraphics().drawImage(territory,  0, 0, WIDTH, HEIGHT, this);
 
