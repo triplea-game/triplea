@@ -221,6 +221,17 @@ public class TripleAFrame extends JFrame
             if(rVal == JFileChooser.APPROVE_OPTION)
             {
               File f = fileChooser.getSelectedFile();
+
+              //A small warning so users will not over-write a file, added by NeKromancer
+              if(f.exists())
+              {
+                int choice = JOptionPane.showConfirmDialog(TripleAFrame.this, "A file by that name already exists. Do you wish to over write it?" ,"Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if(choice == JOptionPane.NO_OPTION)
+                {
+                  return;
+                }
+              }//end if exists
+
               if(!f.getName().toLowerCase().endsWith(".svg"))
               {
                 f= new File(f.getParent(), f.getName() + ".svg");
