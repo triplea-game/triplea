@@ -75,6 +75,9 @@ public class ImageScrollerLargeView extends JComponent
   private int m_y = 0;
   private Image m_offscreenImage;
 
+  private int m_drag_scrolling_lastx;
+  private int m_drag_scrolling_lasty;
+
   private ActionListener mTimerAction = new ActionListener()
   {
 
@@ -124,7 +127,9 @@ public class ImageScrollerLargeView extends JComponent
     setMaximumSize( Util.getDimension(m_offscreenImage, this));
 
     addMouseListener(MOUSE_LISTENER);
+	addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
     addMouseMotionListener(MOUSE_MOTION_LISTENER);
+	addMouseMotionListener(MOUSE_DRAG_LISTENER);
     addComponentListener(COMPONENT_LISTENER);
 
     m_timer.start();
@@ -219,7 +224,7 @@ public class ImageScrollerLargeView extends JComponent
     if(newX > m_offscreenImage.getWidth(this))
       newX = 0;
     if(newX < -getWidth())
-      newX = m_offscreenImage.getWidth(this) - getHeight();
+      newX = m_offscreenImage.getWidth(this) - getWidth();
    // newX = checkBounds(newX, m_originalImage.getWidth(this), this.getWidth(), true);
 
     int newY = m_y + dy;
@@ -318,6 +323,74 @@ public class ImageScrollerLargeView extends JComponent
       m_control.largeViewChangedSize();
     }
   };
+
+	/**
+	 * this is used to detect dragscrolling
+	 */
+  private MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter()
+  {
+	private long m_LastUpdate = 0; //time since the last update
+	private long MIN_UPDATE_DELAY = 10; //the fastest we allow it to update
+
+	public void mouseDragged(MouseEvent e)
+	{
+		//this is to make sure we don't update too soon
+		long now = System.currentTimeMillis();
+		if(now < m_LastUpdate + MIN_UPDATE_DELAY)
+		  return;
+
+		m_LastUpdate = now;
+
+		//the right button must be the one down
+		if ( (e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+			m_inside = true;
+
+			//read in location
+			int x = e.getX();
+			int y = e.getY();
+
+			int height = getHeight();
+			int width = getWidth();
+
+			if(m_edge == NONE)
+			  m_insideCount = 0;
+
+			//compute the amount to move
+			int dx = m_drag_scrolling_lastx-x;
+			int dy = m_drag_scrolling_lasty-y;
+
+			//move left and right and test for wrap
+			int newX = (m_x + dx);
+			if(newX > width)
+			  newX = 0;
+			if(newX < -getWidth())
+			  newX = m_offscreenImage.getWidth( ImageScrollerLargeView.this) - width;
+		   // newX = checkBounds(newX, m_originalImage.getWidth(this), this.getWidth(), true);
+
+			//move up and down and test for edges
+			int newY = m_y + dy;
+			newY = checkBounds(newY, m_offscreenImage.getHeight(ImageScrollerLargeView.this), height, false);
+
+			//update the map
+			setCoords(newX,newY);
+			m_control.setLargeCoords(m_x,m_y);
+
+			//store the location of the mouse for the next move
+			m_drag_scrolling_lastx=e.getX();
+			m_drag_scrolling_lasty=e.getY();
+		}
+	}
+  };
+
+	private final MouseAdapter MOUSE_LISTENER_DRAG_SCROLLING = new MouseAdapter()
+	{
+		public void mousePressed(MouseEvent e)
+		{
+		  //try to center around the click
+		  m_drag_scrolling_lastx = e.getX();
+		  m_drag_scrolling_lasty = e.getY();
+		}
+	};
 
   private MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
   {
