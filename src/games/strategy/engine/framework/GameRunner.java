@@ -34,14 +34,12 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.gamePlayer.GamePlayer;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.ui.*;
 
 import games.strategy.engine.chat.*;
 import games.strategy.engine.transcript.*;
 
 import games.strategy.debug.Console;
-
-//TODO remote this, it is evil
-import games.strategy.triplea.TripleA;
 
 /**
  *
@@ -51,7 +49,6 @@ import games.strategy.triplea.TripleA;
  */
 public class GameRunner 
 {
-	
 	private GameData m_data;
 	private final static int PORT = 932;
 	
@@ -75,14 +72,12 @@ public class GameRunner
 	}
 	
 	private void start()
-	{
-		
+	{	
 		selectClientServer();		
 	}	
 	
 	private void loadData()
-	{
-		
+	{		
 		//TODO, select from all possible games
 		URL xmlFile = GameRunner.class.getResource("..\\..\\triplea\\xml\\Game.xml");	
 		InputStream xmlStream = null;
@@ -96,9 +91,7 @@ public class GameRunner
 			System.err.println("Cannot open xml file:" + xmlFile.getPath());
 			System.exit(0);
 		}
-		
-		
-		
+			
 		m_data = null;
 		
 		try
@@ -147,21 +140,19 @@ public class GameRunner
 	public void startServer()
 	{
 		System.out.println("Server");
-		ServerPlayerSelector selector = new ServerPlayerSelector(m_data.getPlayerList().getNames());
-		Collection remotePlayers = selector.getRemotePlayers();
-		
-		if(remotePlayers.isEmpty())
-			startLocalGame();
-		
-		String name = selector.getName();
-		if(name.trim().length() ==0)
-			name = "Server";
-		
-		
 		ServerMessenger messenger = null;
+		
+		ServerOptions options = new ServerOptions("Server", PORT);
+		options.show();
+		options.waitForOptions();
+		options.dispose();
+		
+		String name = options.getName();
+		int port = options.getPort();
+		
 		try
 		{
-			 messenger= new ServerMessenger(name, PORT, new GameObjectStreamFactory(m_data));	
+			 messenger= new ServerMessenger(name, port, new GameObjectStreamFactory(m_data));	
 		} catch(IOException ioe)
 		{
 			ioe.printStackTrace();
@@ -171,72 +162,51 @@ public class GameRunner
 		ChatFrame chatFrame = new ChatFrame(messenger);
 		chatFrame.show();
 	
-		Collection allPlayers = Util.toList(m_data.getPlayerList().getNames());
-		Collection localPlayers = games.strategy.util.Util.difference(allPlayers, remotePlayers);
+		IGameLoader loader = m_data.getGameLoader();
 		
-		Set gamePlayers = TripleA.createPlayers(new HashSet(localPlayers));
-	
+		System.out.println("starting");
+		ServerStartup startup = new ServerStartup(loader, m_data, messenger);
+		startup.setVisible(true);
+		
+		startup.waitForPlayers();
+		startup.dispose();
+		
 		ServerWaitForClientMessageListener listener = new ServerWaitForClientMessageListener();
 		messenger.addMessageListener(listener);
 		
-		ServerWaitForPlayers servertWait = new ServerWaitForPlayers(messenger, remotePlayers);
-		Map playerMapping = servertWait.waitForPlayers();	
-		
-		System.out.println(playerMapping);
-		
-		ServerGame serverGame = new ServerGame(m_data,gamePlayers, messenger, playerMapping);
+		Map playerMapping = startup.getLocalPlayerMapping();
+		Set playerSet = loader.createPlayers(playerMapping);
+		Map remotePlayers = startup.getRemotePlayerMapping();
+			
+		ServerGame serverGame = new ServerGame(m_data, playerSet, messenger, remotePlayers);
 		
 		chatFrame.getChat().showTranscript(serverGame.getTranscript());
 		
-		TripleA.startUI(serverGame, gamePlayers);
+		loader.startGame(serverGame, playerSet);
+		
 		listener.waitFor( new HashSet(playerMapping.values()).size());
 		messenger.removeMessageListener(listener);
+		
 		serverGame.startGame();
-		
-		
 	}
 	
 	public void startClient()
 	{
 		System.out.println("Client");
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-		JPanel p1 = new JPanel();
-		p1.setLayout(new FlowLayout(FlowLayout.LEFT));
-		p1.add(new JLabel("name:"));
-		JTextField name = new JTextField("client");
-		p1.add(name);
-		name.setColumns(5);
-
-		panel.add(p1);
 		
-		JPanel p2 = new JPanel();
-		p2.setLayout(new FlowLayout(FlowLayout.LEFT));
-		p2.add(new JLabel("port:"));
-		IntTextField port = new IntTextField(0, Integer.MAX_VALUE);
-		p2.add(port);
-		port.setValue(PORT);
-		port.setColumns(5);
+		ClientOptions options = new ClientOptions("Client", PORT, "127.0.0.1");
+		options.show();
+		options.waitForOptions();
+		options.dispose();
 		
-		panel.add(p2);
-		
-		JPanel p3 = new JPanel();
-		p3.setLayout(new FlowLayout(FlowLayout.LEFT));
-		p3.add(new JLabel("ip:"));
-		JTextField ip = new JTextField();
-		ip.setColumns(15);
-		ip.setText("localhost");
-		p3.add(ip);
-		
-		panel.add(p3);
-		
-		JOptionPane.showMessageDialog(null, panel, "Enter server info", JOptionPane.YES_OPTION);
+		String name = options.getName();
+		int port = options.getPort();
+		String address = options.getAddress();
 		
 		ClientMessenger messenger = null;
 		try
 		{
-			messenger = new ClientMessenger(ip.getText(), port.getValue(), name.getText(), new GameObjectStreamFactory(m_data));
+			messenger = new ClientMessenger(address, port, name, new GameObjectStreamFactory(m_data));
 		} catch(Exception e)
 		{
 			JOptionPane.showMessageDialog(null, e.getMessage());
@@ -244,23 +214,30 @@ public class GameRunner
 			return;
 		}
 		
-		ChatFrame f = new ChatFrame(messenger);
+		ChatFrame chatFrame = new ChatFrame(messenger);
 		
-		f.show();
+		chatFrame.show();
 		
-		ClientPlayerSelector selector = new ClientPlayerSelector(messenger, messenger.getServerNode());
-		Collection players = selector.waitToJoin();
+		IGameLoader loader = m_data.getGameLoader();
 		
-		Set gamePlayers = TripleA.createPlayers( new HashSet(players));
+		ClientStartup startup = new ClientStartup(loader, m_data, messenger);
+		startup.setVisible(true);
+		
+		startup.waitForPlayers();
+		startup.dispose();
+		
+		Map playerMapping = startup.getLocalPlayerMapping();
+		Set playerSet = loader.createPlayers(playerMapping);
 		
 		
-		ClientGame game = new ClientGame(m_data, gamePlayers, messenger, messenger.getServerNode());
 		
-		f.getChat().showTranscript(game.getTranscript());
+		ClientGame clientGame = new ClientGame(m_data, playerSet, messenger, messenger.getServerNode());
 		
-		TripleA.startUI(game, gamePlayers);
+		chatFrame.getChat().showTranscript(clientGame.getTranscript());
+		
+		m_data.getGameLoader().startGame(clientGame, playerSet);
+		
 		messenger.send(new ClientReady(), messenger.getServerNode());
-		
 	}
 	
 	public void startLocalGame()
@@ -268,9 +245,17 @@ public class GameRunner
 		IServerMessenger messenger = new DummyMessenger();
 
 		java.util.List players = games.strategy.util.Util.toList(m_data.getPlayerList().getNames());
-		Set gamePlayers = TripleA.createPlayers( new HashSet(players));		
+		
+		Map localPlayerMap = new HashMap();
+		Iterator playerIter = players.iterator();
+		while(playerIter.hasNext())
+		{
+			localPlayerMap.put(playerIter.next(), "local");
+		}
+		
+		Set gamePlayers = m_data.getGameLoader().createPlayers(localPlayerMap);		
 		ServerGame game = new ServerGame(m_data, gamePlayers, messenger, new HashMap());
-		TripleA.startUI(game, gamePlayers);
+		m_data.getGameLoader().startGame(game, gamePlayers);
 		game.startGame();
 	}		
 }

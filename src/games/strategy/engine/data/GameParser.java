@@ -30,8 +30,11 @@ import org.xml.sax.*;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
+import games.strategy.engine.framework.IGameLoader;
 
 /**
+ *
+ *  
  *
  * @author  Sean Bridges
  * @version 1.0
@@ -42,7 +45,6 @@ public class GameParser
 	private static final Class[] SETTER_ARGS = {String.class};
 	
 	private GameData data;
-
 	
 	public GameParser() 
 	{
@@ -69,6 +71,7 @@ public class GameParser
 		data = new GameData();
 
 		//mandatory fields
+		parseGameLoader(getSingleChild("loader", root));
 		parseMap(getSingleChild("map", root));
 		parseResources(getSingleChild("resourceList", root));
 		parseUnits(getSingleChild("unitList", root));
@@ -266,6 +269,17 @@ public class GameParser
 				found.add(current);
 		}
 		return found;
+	}
+	
+	private void parseGameLoader(Node loader) throws GameParseException
+	{
+		String className = ( (Element) loader).getAttribute("javaClass");
+		Object instance = getInstance(className);
+		if(!(instance instanceof IGameLoader))
+		{
+			throw new GameParseException("Loader must implement IGameLoader.  Class Name:" + className);
+		}
+		data.setGameLoader( (IGameLoader) instance);
 	}
 	
 	private void parseMap(Node map) throws GameParseException

@@ -36,18 +36,18 @@ import games.strategy.net.*;
 
 import games.strategy.triplea.ui.*;
 
+
 /**
  *
  * @author  Sean Bridges
  * @version 1.0
  */
-public class TripleA 
+public class TripleA implements IGameLoader
 {
-
-	public static Set createPlayers(Set playerNames)
+	public Set createPlayers(Map playerNames)
 	{
 		Set players = new HashSet();
-		Iterator iter = playerNames.iterator();
+		Iterator iter = playerNames.keySet().iterator();
 		while(iter.hasNext())
 		{
 			String name = (String) iter.next();
@@ -57,7 +57,7 @@ public class TripleA
 		return players;
 	}
 	
-	public static void startUI(IGame game, Set players)
+	public void startGame(IGame game, Set players)
 	{
 		try
 		{
@@ -79,7 +79,7 @@ public class TripleA
 		}
 	}
 		
-	private static void connectPlayers(Set players, TripleAFrame frame)
+	private void connectPlayers(Set players, TripleAFrame frame)
 	{
 		Iterator iter = players.iterator();
 		while(iter.hasNext())
@@ -89,8 +89,23 @@ public class TripleA
 		}
 	}
 		
-	/** Creates new TripleA */
-    private TripleA() 
+	/**
+	 * Return an array of player types that can play on the server.
+	 * This array must not contain any entries that could play on the client.
+	 */
+	public String[] getServerPlayerTypes()
 	{
-    }
+		String[] players = {"Server"};
+		return players;
+	}
+	
+	/**
+	 * Return an array of player types that can play on the client.
+	 * This array must not contain any entries that could play on the server.
+	 */
+	public String[] getClientPlayerTypes()
+	{
+		String[] players = {"Client"};
+		return players;
+	}
 }

@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * GameData.java
  *
  * Created on October 14, 2001, 7:11 AM
@@ -9,13 +23,15 @@ package games.strategy.engine.data;
 import java.util.*;
 import games.strategy.engine.data.events.*;
 import games.strategy.util.ListenerList;
+import games.strategy.engine.framework.IGameLoader;
 
 /**
  *
  * @author  Sean Bridges
  * @version 1.0
  */
-public class GameData {
+public class GameData 
+{
 
 	private ListenerList m_territoryListeners = new ListenerList();
 	private ListenerList m_dataChangeListeners = new ListenerList();
@@ -31,10 +47,14 @@ public class GameData {
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
 	private final GameProperties m_properties = new GameProperties(this);
 	
+	
+	//TODO, remove this, should not be here
+	private IGameLoader m_loader;
+	
 	/** Creates new GameData */
-    public GameData() 
+	public GameData() 
 	{
-    }
+	}
 	
 	public GameMap getMap()
 	{
@@ -143,7 +163,16 @@ public class GameData {
 			GameDataChangeListener listener = (GameDataChangeListener) iter.next();
 			listener.gameDataChanged();
 		}
+	}			
+	
+	public IGameLoader getGameLoader()
+	{
+		return m_loader;
 	}
-			
+	
+	protected void setGameLoader(IGameLoader loader)
+	{
+		m_loader = loader;
+	}
+		
 }
-

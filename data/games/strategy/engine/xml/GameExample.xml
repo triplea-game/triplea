@@ -2,6 +2,10 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
+
+	<loader javaClass="games.strategy.engine.xml.TestGameLoader"/>
+		
+	
 	<map>
 		<territory name="canada"/>
 		<territory name="us"/>

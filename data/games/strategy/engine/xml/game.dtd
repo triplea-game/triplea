@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?)>
+<!ELEMENT game (loader, map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?)>
+
+<!-- javaClass must implement the IGameLoader interfaxce -->
+<!ELEMENT loader EMPTY>
+<!ATTLIST loader 
+	javaClass CDATA #REQUIRED
+>
 
 <!ELEMENT map (territory+, connection+) >
 	<!ELEMENT territory EMPTY>
