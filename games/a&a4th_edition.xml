@@ -1279,6 +1279,9 @@
 		<property name="4th Edition" value="true" editable="false">
 			<boolean/>
 		</property>
+		<property name="Submersible Subs" value="true" editable="false">
+			<boolean/>
+		</property>
 		<property name="Heavy Bomber Dice Rolls" value="2" editable="false">
 			<number min="2" max="3"/>
 		</property>
