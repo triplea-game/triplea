@@ -16,9 +16,11 @@ package games.strategy.engine.vault;
 import games.strategy.engine.message.*;
 
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
 import javax.crypto.*;
+import javax.crypto.spec.DESKeySpec;
 
 /**
  * A vault is a secure way for the client and server to share information without 
@@ -42,6 +44,7 @@ public class Vault implements IServerVault
     
     private static final String ALGORITHM = "DES";
 
+    private SecretKeyFactory mSecretKeyFactory;
     
     //0xCAFEBABE
     //we encrypt both this value and data when we encrypt data.
@@ -85,12 +88,43 @@ public class Vault implements IServerVault
         
         try
         {
+            mSecretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
             m_keyGen = KeyGenerator.getInstance(ALGORITHM);
         } catch (NoSuchAlgorithmException e)
         {
             e.printStackTrace();
             throw new IllegalStateException("Nothing known about algorithm:" +  ALGORITHM);
         }
+    }
+    
+    //serialize secret key as byte array to 
+    //preserve jdk 1.4 to 1.5 compatability
+    //they should be compatable, but we are 
+    //getting errors with serializing secret keys
+    private SecretKey bytesToKey(byte[] bytes)
+    {
+        try
+        {
+            DESKeySpec spec = new DESKeySpec(bytes);
+            return mSecretKeyFactory.generateSecret(spec);
+        } catch (GeneralSecurityException e)
+        {
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+    
+    private byte[] secretKeyToBytes(SecretKey key)
+    {
+        DESKeySpec ks;
+        try
+        {
+            ks = (DESKeySpec) mSecretKeyFactory.getKeySpec(key, DESKeySpec.class);
+            return  ks.getKey(); 
+        } catch (GeneralSecurityException e)
+        {
+            throw new IllegalStateException(e.getMessage());
+        }
+       
     }
     
     /**
@@ -206,7 +240,7 @@ public class Vault implements IServerVault
         m_secretKeys.remove(key);
     
         //let everyone unlock it
-        getRemoteBroadcaster().unlock(id, key);
+        getRemoteBroadcaster().unlock(id, secretKeyToBytes( key));
     }
     
     /**
@@ -284,10 +318,12 @@ public class Vault implements IServerVault
             
         }
 
-        public void unlock(VaultID id, SecretKey key)
+        public void unlock(VaultID id, byte[] secretKeyBytes)
         {
             if(id.getGeneratedOn().equals(m_channelMessenger.getLocalNode()))
                 return;
+            
+            SecretKey key = bytesToKey(secretKeyBytes);
             
             Cipher cipher;
             try
@@ -427,7 +463,7 @@ public class Vault implements IServerVault
 interface IRemoteVault extends IChannelSubscribor
 {
    public void addLockedValue(VaultID id, byte[] data);
-   public void unlock(VaultID id, SecretKey key);
+   public void unlock(VaultID id, byte[] secretKeyBytes);
    public void release(VaultID id);
 }
 
