@@ -1,5 +1,7 @@
 Changes for 0.5.1
 
+* Added menu option to use small unit images on map. (Ali Ibrahim)
+
 * Large improvement and re-organizing of user documentation. (Nekro)
 
 * Fully implemented Pact Of Steel mod (by Black Elk/Beagle). (Nekro)
@@ -18,7 +20,7 @@ Changes for 0.5.1
 
 * Allowed transports carrying aa guns to move in combat, although the aa guns still cannot be loaded/unloaded in the combat move. (Ali Ibrahim)
 
-* Fixed map bugs (missing connection between sz25, sz43, missing connection between belgian congo and sz27, wrong connection between sz51, sz56, misspelling of Angola). (Ali Ibrahim)
+* Fixed map bugs (missing connection between sz25, sz43, wrong connection between sz51, sz56, misspelling of Angola). (Ali Ibrahim)
 
 * Added logic to prefer routes without neutral countries. (Ali Ibrahim)
 
