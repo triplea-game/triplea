@@ -504,7 +504,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     if(availableTerritories.isEmpty() )
       return;
 
-    if(m_tracker.getBlocked(this).size() != 0)
+    //dont allow retreating units to retreat if a naval invasion depends on this
+    if(m_tracker.getBlocked(this).size() != 0 && !subs)
       return;
 
     Collection units = defender ? m_defendingUnits : m_attackingUnits;
