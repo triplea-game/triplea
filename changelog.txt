@@ -1,3 +1,5 @@
+* added tile map drawing (sgb)
+
 * add a copy to clipboard button on the console (sgb)
 
 * if available, console will print stack traces when enumerating threads (sgb)
