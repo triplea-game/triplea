@@ -172,8 +172,16 @@
 
 
     <!-- patch -->
+    <!--
+    	PBEM patch
+    -->
     <target name="patch">
-        <jar destfile="patch.jar" basedir="classes" includes="**/*Connection.class"/>
+        <jar destfile="patch.jar" basedir="classes">
+		<include name="games/strategy/engine/random/IronyGamesDiceRollerRandomSource.class"/>
+		<include name="games/strategy/engine/random/IRandomSource.class"/>
+		<include name="games/strategy/engine/random/HttpDiceRoller*.class"/>
+		<include name="games/strategy/engine/random/DiceStatic.class"/>
+	</jar>
     </target>
 
 
