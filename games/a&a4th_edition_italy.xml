@@ -54,7 +54,7 @@
 		<territory name="United Kingdom"/>
 		<territory name="Western Europe"/>
 		<territory name="Rio De Oro"/>
-		<territory name="Angloa"/>
+		<territory name="Angola"/>
 		<territory name="New Zealand"/>
 		<territory name="Sahara"/>
 		<territory name="French Equatorial Africa"/>
@@ -169,7 +169,7 @@
                 <connection t1="21 Sea Zone" t2="Peru"/>
                 <connection t1="21 Sea Zone" t2="Argentina"/>
                 <connection t1="25 Sea Zone" t2="Argentina"/>
-                <connection t1="27 Sea Zone" t2="Angloa"/>
+                <connection t1="27 Sea Zone" t2="Angola"/>
                 <connection t1="33 Sea Zone" t2="Mozambique"/>
                 <connection t1="34 Sea Zone" t2="Saudia Arabia"/>
                 <connection t1="Panama" t2="Venezuala"/>
@@ -205,10 +205,10 @@
                 <connection t1="French West Africa" t2="Sahara"/>
                 <connection t1="French Equatorial Africa" t2="Sahara"/>
                 <connection t1="French West Africa" t2="Rio De Oro"/>
-                <connection t1="Belgian Congo" t2="Angloa"/>
-                <connection t1="Kenya" t2="Angloa"/>
+                <connection t1="Belgian Congo" t2="Angola"/>
+                <connection t1="Kenya" t2="Angola"/>
                 <connection t1="Kenya" t2="Mozambique"/>
-                <connection t1="Union of South Africa" t2="Angloa"/>
+                <connection t1="Union of South Africa" t2="Angola"/>
                 <connection t1="Union of South Africa" t2="Mozambique"/>
                 <connection t1="1 Sea Zone" t2="Eastern Canada" />
                 <connection t1="1 Sea Zone" t2="2 Sea Zone"/>
@@ -303,6 +303,7 @@
                 <connection t1="26 Sea Zone" t2="27 Sea Zone"/>
                 <connection t1="27 Sea Zone" t2="28 Sea Zone"/>
                 <connection t1="27 Sea Zone" t2="Union of South Africa"/>
+                <connection t1="27 Sea Zone" t2="Belgian Congo"/>
                 <connection t1="28 Sea Zone" t2="29 Sea Zone"/>
                 <connection t1="28 Sea Zone" t2="33 Sea Zone"/>
                 <connection t1="28 Sea Zone" t2="Union of South Africa"/>
@@ -390,7 +391,6 @@
                 <connection t1="50 Sea Zone" t2="Caroline Islands"/>
                 <connection t1="51 Sea Zone" t2="52 Sea Zone"/>
                 <connection t1="51 Sea Zone" t2="58 Sea Zone"/>
-                <connection t1="51 Sea Zone" t2="56 Sea Zone"/>
                 <connection t1="51 Sea Zone" t2="57 Sea Zone"/>
                 <connection t1="51 Sea Zone" t2="60 Sea Zone"/>
                 <connection t1="51 Sea Zone" t2="Wake Island"/>
@@ -1161,7 +1161,7 @@
 			<option name="production" value="0"/>
 		</attatchment>
 
-		<attatchment name="territoryAttatchment" attatchTo="Angloa" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
+		<attatchment name="territoryAttatchment" attatchTo="Angola" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
 			<option name="production" value="0"/>
 		</attatchment>
                 
