@@ -64,7 +64,6 @@ public class UnitIconImageFactory
    **/
   public static final int UNIT_ICON_HEIGHT = 48;
 
-
   private static final String FILE_NAME_BASE = "images/units/";
 
   //maps Point -> image
@@ -78,38 +77,16 @@ public class UnitIconImageFactory
 
   }
 
-  private void copyImage(int row, int column, Component comp, Image source)
+  public Image getImage(UnitType type, PlayerID player, GameData data, boolean damaged)
   {
-    Image image = Util.createImage(UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT, false);
-    Graphics g = image.getGraphics();
-    int sx = column * UNIT_ICON_WIDTH;
-    int sy = row * UNIT_ICON_HEIGHT;
-    g.drawImage(source, 0,0, UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT, sx, sy, sx + UNIT_ICON_WIDTH, sy + UNIT_ICON_HEIGHT, comp);
-    m_images.put(new Point(row, column), image);
-
-  }
-
-  public Image getImage(UnitType type, PlayerID player, GameData data)
-  {
-      String baseName = getBaseImageName(type, player, data);
+      String baseName = getBaseImageName(type, player, data, damaged);
       String fullName = baseName + player.getName();
       if(m_images.containsKey(fullName))
       {
           return (Image) m_images.get(fullName);
       }
 
-      Image baseImage = getBaseImage(baseName, player);
-
-//      javax.swing.JComponent obs = new javax.swing.JLabel();
-//      Image playerImage = Util.createImage(UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT);
-//      Graphics g = playerImage.getGraphics();
-//      Image flagImage = FlagIconImageFactory.instance().getSmallFlag(player);
-//      int x = UNIT_ICON_WIDTH - flagImage.getWidth(null);
-//      g.drawImage(flagImage ,x,0, obs);
-//      g.drawImage(baseImage,0,0,  obs);
-
-//      m_images.put(fullName, playerImage);
-//      return playerImage;
+      Image baseImage = getBaseImage(baseName, player, damaged);
 
       m_images.put(fullName, baseImage);
       return baseImage;
@@ -117,7 +94,7 @@ public class UnitIconImageFactory
 
   }
 
-  private Image getBaseImage(String baseImageName, PlayerID id)
+  private Image getBaseImage(String baseImageName, PlayerID id, boolean damaged)
   {
       String fileName = FILE_NAME_BASE + id.getName() + "/"  + baseImageName  + ".png";
       URL url = this.getClass().getResource(fileName);
@@ -137,23 +114,23 @@ public class UnitIconImageFactory
 
   }
 
-  public ImageIcon getIcon(UnitType type, PlayerID player, GameData data)
+  public ImageIcon getIcon(UnitType type, PlayerID player, GameData data, boolean damaged)
   {
-      String baseName = getBaseImageName(type, player, data);
+      String baseName = getBaseImageName(type, player, data, damaged);
       String fullName = baseName + player.getName();
       if(m_icons.containsKey(fullName))
       {
           return (ImageIcon) m_icons.get(fullName);
       }
 
-      Image img = getImage(type, player, data);
+      Image img = getImage(type, player, data, damaged);
       ImageIcon icon = new ImageIcon(img);
       m_icons.put(fullName, icon);
 
       return icon;
   }
 
-  public String getBaseImageName(UnitType type, PlayerID id, GameData data)
+  public String getBaseImageName(UnitType type, PlayerID id, GameData data, boolean damaged)
   {
       StringBuffer name = new StringBuffer(32);
       name.append(type.getName());
@@ -201,6 +178,9 @@ public class UnitIconImageFactory
               name.append("_it");
           }
       }
+
+      if(damaged)
+          name.append("_hit");
 
       return name.toString();
   }

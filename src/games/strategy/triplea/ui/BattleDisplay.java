@@ -183,7 +183,7 @@ public class BattleDisplay extends JPanel
       {
 
         String messageText = msg.getMessage() + " " + btnText + ".";
-        UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), m_data);
+        UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), m_data, true);
 
         chooser.setTitle(messageText);
         chooser.setMax(msg.getCount());
@@ -191,15 +191,16 @@ public class BattleDisplay extends JPanel
         int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
         if(option != 0)
           return;
-        Collection choosen = chooser.getSelected(false);
+        List killed = chooser.getSelected(false);
+        List damaged = chooser.getSelectedFirstHit();
 
-        if(choosen.size() != msg.getCount())
+        if(killed.size() + damaged.size()  != msg.getCount())
         {
           JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", msg.getPlayer().getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
         }
         else
         {
-          SelectCasualtyMessage response = new SelectCasualtyMessage(choosen);
+          SelectCasualtyMessage response = new SelectCasualtyMessage(killed, damaged);
           m_selectCasualtyResponse = response;
           synchronized(m_continueLock)
           {
@@ -276,6 +277,31 @@ public class BattleDisplay extends JPanel
     m_actionButton.setBackground(Color.lightGray.darker());
     m_actionButton.setEnabled(false);
     m_actionButton.setForeground(Color.white);
+
+    setDefaultWidhts(defenderTable);
+    setDefaultWidhts(attackerTable);
+
+  }
+
+  /**
+   * Shorten columsn with no units.
+   */
+  private void setDefaultWidhts(JTable table)
+  {
+      for(int column = 0 ; column < table.getColumnCount(); column++)
+  {
+      boolean hasData = false;
+      for(int row = 0; row < table.getRowCount(); row++)
+      {
+          hasData |=  (table.getValueAt(row,column) != TableData.NULL);
+      }
+      if(!hasData)
+      {
+          table.getColumnModel().getColumn(column).setPreferredWidth(8);
+      }
+  }
+
+
   }
 
   public void setStep(BattleMessage message)
@@ -354,7 +380,7 @@ class BattleModel extends DefaultTableModel
 
   public void removeCasualties(CasualtyNotificationMessage msg)
   {
-    m_units.removeAll(msg.getUnits());
+    m_units.removeAll(msg.getKilled());
     refresh();
   }
 
@@ -381,7 +407,7 @@ class BattleModel extends DefaultTableModel
       else
         strength = UnitAttatchment.get(category.getType()).getDefense(category.getOwner());
 
-      columns[strength].add(new TableData(category.getOwner(), category.getUnits().size(), category.getType(), m_data));
+      columns[strength].add(new TableData(category.getOwner(), category.getUnits().size(), category.getType(), m_data, category.getDamaged()));
     }
 
     //find the number of rows
@@ -420,36 +446,45 @@ class BattleModel extends DefaultTableModel
 
 class Renderer implements TableCellRenderer
 {
-
+    JLabel m_stamp = new JLabel();
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
   {
-    return ((TableData) value).getStamp();
+    ((TableData) value).updateStamp(m_stamp);
+    return m_stamp;
   }
 }
 
 class TableData
 {
   static TableData NULL = new TableData();
-
-  private JLabel m_stamp = new JLabel();
+  private int m_count;
+  private Icon m_icon;
 
   private TableData()
   {
 
   }
 
-  TableData(PlayerID player, int count, UnitType type, GameData data)
+  TableData(PlayerID player, int count, UnitType type, GameData data, boolean damaged)
   {
-    m_stamp.setText("x" + count);
-    m_stamp.setIcon(UnitIconImageFactory.instance().getIcon(type, player, data));
+      m_count = count;
+      m_icon = UnitIconImageFactory.instance().getIcon(type, player, data, damaged);
   }
 
 
-  public JLabel getStamp()
+  public void updateStamp(JLabel stamp)
   {
-    return m_stamp;
+      if(m_count == 0)
+      {
+          stamp.setText("");
+          stamp.setIcon(null);
+      }
+      else
+      {
+          stamp.setText("x" + m_count);
+          stamp.setIcon(m_icon);
+      }
   }
-
 }
 
 
@@ -662,7 +697,8 @@ class DicePanel extends JPanel
 class CasualtyNotificationPanel extends JPanel
 {
   private DicePanel m_dice = new DicePanel();
-  private JPanel m_units = new JPanel();
+  private JPanel m_killed = new JPanel();
+  private JPanel m_damaged = new JPanel();
   private GameData m_data;
 
   public CasualtyNotificationPanel(GameData data)
@@ -670,33 +706,57 @@ class CasualtyNotificationPanel extends JPanel
     m_data = data;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     add(m_dice);
-    add(m_units);
-    //add(Box.createVerticalGlue());
+    add(m_killed);
+    add(m_damaged);
   }
 
   public void setNotication(CasualtyNotificationMessage msg)
   {
     m_dice.setDiceRoll(msg.getDice());
 
-    m_units.removeAll();
-    Iterator categoryIter = UnitSeperator.categorize(msg.getUnits(), msg.getDependents(), null).iterator();
-    while(categoryIter.hasNext())
-    {
-      UnitCategory category = (UnitCategory) categoryIter.next();
-      JPanel panel = new JPanel();
-      JLabel unit = new JLabel(UnitIconImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data));
-      panel.add(unit);
-      Iterator iter = category.getDependents().iterator();
-      while(iter.hasNext())
-      {
-        UnitOwner owner = (UnitOwner) iter.next();
-        unit.add(new JLabel(UnitIconImageFactory.instance().getIcon(owner.getType(), owner.getOwnerr(), m_data)));
-      }
-      panel.add(new JLabel("x " + category.getUnits().size()));
-      m_units.add(panel);
-    }
+    m_killed.removeAll();
+    m_damaged.removeAll();
+    Collection killed = msg.getKilled();
+    if(!killed.isEmpty())
+        m_killed.add(new JLabel("Killed"));
+    Iterator killedIter = UnitSeperator.categorize(killed, msg.getDependents(), null).iterator();
+    categorizeUnits(killedIter, false);
+
+
+    Collection damaged = new ArrayList(msg.getDamaged());
+    damaged.removeAll(killed);
+    if(!damaged.isEmpty())
+        m_damaged.add(new JLabel("Damaged"));
+
+    Iterator damagedIter = UnitSeperator.categorize(damaged, msg.getDependents(), null).iterator();
+    categorizeUnits(damagedIter, true);
+
 
     invalidate();
+  }
+
+  private void categorizeUnits(Iterator categoryIter, boolean damaged)
+  {
+      while (categoryIter.hasNext())
+      {
+          UnitCategory category = (UnitCategory) categoryIter.next();
+          JPanel panel = new JPanel();
+          JLabel unit = new JLabel(UnitIconImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged()));
+          panel.add(unit);
+          Iterator iter = category.getDependents().iterator();
+          while (iter.hasNext())
+          {
+              UnitOwner owner = (UnitOwner) iter.next();
+              //we dont want to use the damaged icon for unuts that have just been damaged
+              boolean useDamagedIcon = category.getDamaged() && !damaged ;
+              unit.add(new JLabel(UnitIconImageFactory.instance().getIcon(owner.getType(), owner.getOwner(), m_data,  useDamagedIcon)));
+          }
+          panel.add(new JLabel("x " + category.getUnits().size()));
+          if(damaged)
+              m_damaged.add(panel);
+          else
+              m_killed.add(panel);
+      }
   }
 
 }

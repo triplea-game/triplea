@@ -61,7 +61,7 @@ public class UnitOwner
     return m_type;
   }
 
-  public PlayerID getOwnerr()
+  public PlayerID getOwner()
   {
     return m_owner;
   }

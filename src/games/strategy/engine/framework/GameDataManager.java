@@ -7,6 +7,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.util.*;
 import java.util.zip.*;
+import games.strategy.engine.*;
 
 /**
  * <p>Title: TripleA</p>
@@ -55,13 +56,11 @@ public class GameDataManager
     try
     {
       //TODO we should check the game version as well
-      Version engineVersion = (Version) input.readObject();
-      if(!engineVersion.equals(games.strategy.engine.EngineVersion.VERSION))
-        throw new IOException("Incompatable engine versions");
-
+      Version readVersion = (Version) input.readObject();
+      if(!readVersion.equals(EngineVersion.VERSION))
+        throw new IOException("Incompatable engine versions. We are:" + EngineVersion.VERSION + " . Trying to load:" + readVersion);
 
       GameData data = (GameData) input.readObject();
-
 
       loadDelegates(input, data);
         data.postSerialize();

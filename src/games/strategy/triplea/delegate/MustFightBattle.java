@@ -29,6 +29,7 @@ import games.strategy.engine.delegate.DelegateBridge;
 
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.attatchments.*;
 
 
 /**
@@ -588,6 +589,27 @@ public class MustFightBattle implements Battle, BattleStepStrings
         defenderWins(bridge);
     }
   }
+  //the maximum number of hits that this collection of units can sustain
+  //takes into account units with two hits
+  public int getMaxHits(Collection units)
+  {
+      int count = 0;
+      Iterator unitIter = units.iterator();
+      while (unitIter.hasNext())
+      {
+          Unit unit = (Unit) unitIter.next();
+          if(UnitAttatchment.get(unit.getUnitType()).isTwoHit())
+          {
+              count += 2;
+              count -= unit.getHits();
+          }
+          else
+          {
+              count++;
+          }
+      }
+      return count;
+  }
 
   private void fire(String stepName, Collection firingUnits, Collection attackableUnits,  boolean defender, boolean canReturnFire,  DelegateBridge bridge, String text)
   {
@@ -597,25 +619,31 @@ public class MustFightBattle implements Battle, BattleStepStrings
     DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, firingPlayer, bridge);
 
     int hitCount = dice.getHits();
-    Collection casualties;
+    Collection killed;
+    Collection damaged = null;
 
     //they all die
-    if(hitCount >= attackableUnits.size())
+    if(hitCount >= getMaxHits( attackableUnits))
     {
-      casualties = attackableUnits;
+      killed = attackableUnits;
     }
     else
     {
-      casualties = selectCasualties(stepName, bridge,attackableUnits, !defender, text, dice);
+        SelectCasualtyMessage message = selectCasualties(stepName, bridge,attackableUnits, !defender, text, dice);
+        killed = message.getKilled();
+        damaged = message.getDamaged();
     }
 
-    CasualtyNotificationMessage msg = new CasualtyNotificationMessage(stepName, casualties, m_dependentUnits, hitPlayer, dice);
-    msg.setAll(casualties.size() == attackableUnits.size());
+    CasualtyNotificationMessage msg = new CasualtyNotificationMessage(stepName, killed, damaged, m_dependentUnits, hitPlayer, dice);
+    msg.setAll(killed.size() == attackableUnits.size());
 
     bridge.sendMessage(msg, hitPlayer);
     bridge.sendMessage(msg, firingPlayer);
 
-    removeCasualties(casualties, canReturnFire, !defender, bridge);
+    if(damaged != null)
+        markDamaged(damaged, bridge);
+
+    removeCasualties(killed, canReturnFire, !defender, bridge);
   }
 
   private void defendNonSubs(DelegateBridge bridge)
@@ -673,35 +701,31 @@ public class MustFightBattle implements Battle, BattleStepStrings
     fire(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES, units,  attacked, true, true, bridge, "Subs defend, ");
   }
 
-  private Collection selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
+  private SelectCasualtyMessage selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
   {
-
     PlayerID hit = defender ?  m_defender : m_attacker;
-    Collection casualties =  BattleCalculator.selectCasualties(step, hit, attackableUnits, bridge, text, m_data, dice);
-
-    return casualties;
+    return  BattleCalculator.selectCasualties(step, hit, attackableUnits, bridge, text, m_data, dice);
   }
 
 
-  private void removeCasualties(Collection casualties, boolean canReturnFire, boolean defender, DelegateBridge bridge)
+  private void removeCasualties(Collection killed, boolean canReturnFire, boolean defender, DelegateBridge bridge)
   {
     if(canReturnFire)
     {
       //move to waiting to die
       if(defender)
-        m_defendingWaitingToDie.addAll(casualties);
+        m_defendingWaitingToDie.addAll(killed);
       else
-        m_attackingWaitingToDie.addAll(casualties);
+        m_attackingWaitingToDie.addAll(killed);
     } else
       //remove immediately
-      remove(casualties, bridge);
+      remove(killed, bridge);
 
     //remove from the active fighting
     if(defender)
-      m_defendingUnits.removeAll(casualties);
+      m_defendingUnits.removeAll(killed);
     else
-      m_attackingUnits.removeAll(casualties);
-
+      m_attackingUnits.removeAll(killed);
   }
 
   private void fireNavalBombardment(DelegateBridge bridge)
@@ -758,9 +782,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     else
     {
       Collection attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
-      Collection casualties = selectCasualties(step, bridge,attackable, false,"AA guns fire,", dice);
+      Collection casualties = selectCasualties(step, bridge,attackable, false,"AA guns fire,", dice).getKilled();
 
-      CasualtyNotificationMessage msg = new CasualtyNotificationMessage(REMOVE_AA_CASUALTIES, casualties, m_dependentUnits, m_attacker, dice);
+      CasualtyNotificationMessage msg = new CasualtyNotificationMessage(REMOVE_AA_CASUALTIES, casualties, Collections.EMPTY_LIST,  m_dependentUnits, m_attacker, dice);
       msg.setAll(false);
 
       bridge.sendMessage(msg, m_attacker);
@@ -813,21 +837,35 @@ public class MustFightBattle implements Battle, BattleStepStrings
     return transported;
   }
 
-  private void remove(Collection units, DelegateBridge bridge)
+  private void markDamaged(Collection damaged, DelegateBridge bridge)
   {
-    if(units.size() == 0)
+      if(damaged.size() == 0)
+          return;
+      Change damagedChange = null;
+      IntegerMap damagedMap = new IntegerMap();
+      damagedMap.putAll(damaged, 1);
+      damagedChange = ChangeFactory.unitsHit(damagedMap);
+      bridge.addChange(damagedChange);
+      bridge.getTranscript().write("Some units may have been damaged too");
+  }
+
+  private void remove(Collection killed, DelegateBridge bridge)
+  {
+    if(killed.size() == 0 )
       return;
 
     //get the transported units
     if(m_territory.isWater())
     {
-      Collection transported = getTransportedUnits(units);
-      units.addAll(transported);
+      Collection transported = getTransportedUnits(killed);
+      killed.addAll(transported);
     }
-    bridge.addChange(ChangeFactory.removeUnits(m_territory,units));
-    removeFromDependents(units, bridge);
+    Change killedChange = ChangeFactory.removeUnits(m_territory,killed);
 
-    String transcriptText = Formatter.unitsToText(units) + " lost in " + m_territory.getName();
+    bridge.addChange(killedChange);
+    removeFromDependents(killed, bridge);
+
+    String transcriptText = Formatter.unitsToText(killed) + " lost in " + m_territory.getName();
     bridge.getTranscript().write(transcriptText);
   }
 

@@ -29,6 +29,7 @@ import java.lang.reflect.*;
 import games.strategy.triplea.delegate.*;
 import games.strategy.util.*;
 import java.awt.geom.*;
+import games.strategy.triplea.util.*;
 
 
 /**
@@ -197,75 +198,67 @@ public class MapUnitsDrawer
       graphics.setFont(MapImage.MAP_FONT);
 
       Iterator placementPoints = TerritoryData.getInstance().getPlacementPoints(territory).iterator();
-      if(placementPoints == null || !placementPoints.hasNext())
-        throw new IllegalStateException("No where to palce units");
+      if (placementPoints == null || !placementPoints.hasNext())
+          throw new IllegalStateException("No where to palce units");
 
       Point lastPlace = null;
 
-      UnitCollection units = territory.getUnits();
-      Iterator players = units.getPlayersWithUnits().iterator();
+      Iterator unitCategoryIter = UnitSeperator.categorize(territory.getUnits().getUnits()).iterator();
 
       Rectangle2D tempRectanlge = new Rectangle2D.Double();
 
-      while(players.hasNext())
+      while (unitCategoryIter.hasNext())
       {
-        PlayerID player = (PlayerID) players.next();
+          UnitCategory category = (UnitCategory) unitCategoryIter.next();
 
-        Iterator types = m_data.getUnitTypeList().iterator();
-        while(types.hasNext())
-        {
-          UnitType current = (UnitType) types.next();
-          int count = units.getUnitCount(current, player);
-          if(count != 0)
+          Point place;
+          if (placementPoints.hasNext())
           {
-            Point place;
-            if(placementPoints.hasNext())
-            {
               place = (Point) placementPoints.next();
               lastPlace = new Point(place.x, place.y);
-            }
-            else
-            {
+          }
+          else
+          {
               place = lastPlace;
               lastPlace.x += UnitIconImageFactory.UNIT_ICON_WIDTH;
-            }
-
-            Image img = UnitIconImageFactory.instance().getImage(current, player, m_data);
-            graphics.drawImage(img, place.x, place.y, m_mapPanel);
-            if(count != 1)
-            {
-              graphics.drawString(String.valueOf(count), place.x + (UnitIconImageFactory.UNIT_ICON_WIDTH / 4), place.y + UnitIconImageFactory.UNIT_ICON_HEIGHT);
-            }
-
-             drawUnitOnSmallScreen(player, place);
-
-             //check to see if we are drawing on another territory
-             tempRectanlge.setFrame(place.x, place.y, UnitIconImageFactory.UNIT_ICON_HEIGHT, UnitIconImageFactory.UNIT_ICON_WIDTH);
-             Collection intersects = TerritoryData.getInstance().intersectsOrIsContainedIn(tempRectanlge);
-             if(!intersects.isEmpty())
-                 dependencies.addAll(intersects);
           }
-        }//end for each unit type
-      }//end for each player
+
+          Image img = UnitIconImageFactory.instance().getImage( category.getType(), category.getOwner(), m_data, category.getDamaged());
+          graphics.drawImage(img, place.x, place.y, m_mapPanel);
+          int count = category.getUnits().size();
+          if (count != 1)
+          {
+              graphics.drawString(String.valueOf(count), place.x + (UnitIconImageFactory.UNIT_ICON_WIDTH / 4), place.y + UnitIconImageFactory.UNIT_ICON_HEIGHT);
+          }
+
+          drawUnitOnSmallScreen(category.getOwner(), place);
+
+          //check to see if we are drawing on another territory
+          tempRectanlge.setFrame(place.x, place.y, UnitIconImageFactory.UNIT_ICON_HEIGHT, UnitIconImageFactory.UNIT_ICON_WIDTH);
+          Collection intersects = TerritoryData.getInstance().intersectsOrIsContainedIn(tempRectanlge);
+          if (!intersects.isEmpty())
+              dependencies.addAll(intersects);
+      }
 
       //remove yourself
       dependencies.remove(territory.getName());
-      if(dependencies.isEmpty())
+
+      if (dependencies.isEmpty())
           m_updateDependencies.remove(territory);
       else
           m_updateDependencies.put(territory, dependencies);
-    }
+  }
 
-    private void drawUnitOnSmallScreen(PlayerID player, Point place)
-    {
-        double smallLargeRatio = 1 / 15.0; // ((float) m_smallView.getHeight()) / ((float) getHeight());
+  private void drawUnitOnSmallScreen(PlayerID player, Point place)
+  {
+      double smallLargeRatio = 1 / 15.0; // ((float) m_smallView.getHeight()) / ((float) getHeight());
 
-        Graphics2D smallOffscreen = (Graphics2D) m_smallView.getOffScreenImage().
-            getGraphics();
-        smallOffscreen.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      Graphics2D smallOffscreen = (Graphics2D) m_smallView.getOffScreenImage().
+          getGraphics();
+      smallOffscreen.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        smallOffscreen.setColor(TerritoryImageFactory.getInstance().
-                                getPlayerColour(player).darker());
+      smallOffscreen.setColor(TerritoryImageFactory.getInstance().
+                              getPlayerColour(player).darker());
 
         Ellipse2D oval = new Ellipse2D.Double(place.x * smallLargeRatio - 3,
                                          place.y * smallLargeRatio - 3,
@@ -304,7 +297,7 @@ public class MapUnitsDrawer
                     public void run()
                     {
                         //finally, redraw the screen
-                        m_mapPanel.update();
+                        m_mapPanel.repaint();
                         m_smallView.repaint();
                     }
                 }

@@ -1276,8 +1276,8 @@ private void updateUndoableMoveIndexes()
   {
     String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
 
-    Collection casualties = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice);
-    units.removeAll(casualties);
+    SelectCasualtyMessage casualties = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice);
+    units.removeAll(casualties.getKilled());
   }
 
   public TransportTracker getTransportTracker()

@@ -32,17 +32,35 @@ public class UnitCategory implements Comparable
    //the units in the category
    private List m_units = new ArrayList();
 
+   private boolean m_damaged = false;
+
    public UnitCategory(Unit unit, Collection dependents, int movement)
+   {
+       this(unit, dependents, movement, false);
+   }
+
+   public UnitCategory(Unit unit, Collection dependents, int movement, boolean damaged)
    {
      m_type = unit.getType();
      m_movement = movement;
      m_owner = unit.getOwner();
+     m_damaged = damaged;
      if(dependents == null)
        m_dependents = new ArrayList();
      else
        m_dependents = new ArrayList(dependents);
      m_units.add(unit);
      createDependents(dependents);
+   }
+
+   public boolean getDamaged()
+   {
+       return m_damaged;
+   }
+
+   public boolean isTwoHit()
+   {
+       return UnitAttatchment.get(m_type).isTwoHit();
    }
 
    private void createDependents(Collection dependents)
@@ -65,25 +83,34 @@ public class UnitCategory implements Comparable
 
    public boolean equals(Object o)
    {
-     if(o == null)
-       return false;
-     if(!(o instanceof UnitCategory))
-        return false;
+       if (o == null)
+           return false;
+       if (! (o instanceof UnitCategory))
+           return false;
 
-     UnitCategory other = (UnitCategory) o;
+       UnitCategory other = (UnitCategory) o;
 
-     //equality of categories does not compare the number
-     //of units in the category, so dont compare on m_units
-     return
-       other.m_type.equals(this.m_type) &&
-       other.m_movement == this.m_movement &&
-       other.m_owner.equals(this.m_owner) &&
-       Util.equals(this.m_dependents, other.m_dependents);
+       //equality of categories does not compare the number
+       //of units in the category, so dont compare on m_units
+       boolean equalsIgnoreDamaged = equalsIgnoreDamaged(other);
+
+       return equalsIgnoreDamaged &&
+           other.m_damaged == this.m_damaged;
+   }
+
+   public boolean equalsIgnoreDamaged(UnitCategory other)
+   {
+       boolean equalsIgnoreDamaged =
+           other.m_type.equals(this.m_type) &&
+           other.m_movement == this.m_movement &&
+           other.m_owner.equals(this.m_owner) &&
+           Util.equals(this.m_dependents, other.m_dependents);
+       return equalsIgnoreDamaged;
    }
 
    public int hashCode()
    {
-     return m_type.hashCode();
+     return m_type.hashCode() | m_owner.hashCode();
    }
 
    public String toString()
@@ -119,14 +146,19 @@ public class UnitCategory implements Comparable
      m_units.add(unit);
    }
 
+   void removeUnit(Unit unit)
+   {
+       m_units.remove(unit);
+   }
+
    public UnitType getType()
    {
      return m_type;
    }
 
+
    public int compareTo(Object o)
    {
-
        if (o == null)
            return -1;
 
@@ -148,6 +180,14 @@ public class UnitCategory implements Comparable
            return m_dependents.toString().compareTo(other.m_dependents.
                toString());
        }
+
+       if(this.m_damaged != other.m_damaged)
+       {
+           if(m_damaged)
+               return 1;
+           return -1;
+       }
+
        return 0;
    }
 }

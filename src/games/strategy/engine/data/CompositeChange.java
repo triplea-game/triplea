@@ -33,6 +33,13 @@ public class CompositeChange extends Change
 
 	private final List m_changes;
 
+    public CompositeChange(Change c1, Change c2)
+    {
+        this();
+        add(c1);
+        add(c2);
+    }
+
 	public CompositeChange()
 	{
 		m_changes = new ArrayList();

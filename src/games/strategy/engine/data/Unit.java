@@ -33,8 +33,6 @@ import games.strategy.net.GUID;
 public class Unit extends GameDataComponent implements Serializable
 {
 
-  static final long serialVersionUID = -4776804897761373923L;
-
   //for network identification purposes.
   private static GUID createUID()
   {
@@ -44,6 +42,7 @@ public class Unit extends GameDataComponent implements Serializable
 
   private PlayerID m_owner;
   private GUID m_uid;
+  private int m_hits;
 
   private UnitType m_type;
 
@@ -99,10 +98,20 @@ public class Unit extends GameDataComponent implements Serializable
     return m_owner;
   }
 
+  public int getHits()
+  {
+      return m_hits;
+  }
+
+  void setHits(int hits)
+  {
+      m_hits = hits;
+  }
+
   /**
    * can be null.
    */
-  public void setOwner(PlayerID player)
+  void setOwner(PlayerID player)
   {
     if(player == null)
       player = PlayerID.NULL_PLAYERID;

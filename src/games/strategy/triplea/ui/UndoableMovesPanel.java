@@ -100,7 +100,7 @@ public class UndoableMovesPanel extends JPanel
         while (iter.hasNext())
         {
             UnitCategory category = (UnitCategory)iter.next();
-            Icon icon = UnitIconImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data);
+            Icon icon = UnitIconImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged());
             JLabel label =  new JLabel("x" + category.getUnits().size() + " ",  icon , JLabel.LEFT );
             unitsBox.add(label);
         }

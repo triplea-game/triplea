@@ -69,7 +69,7 @@ public class TerritoryDetailPanel extends JPanel
 
 
           ImageIcon icon = UnitIconImageFactory.instance().getIcon(
-            item.getType(), item.getOwner(), m_data);
+            item.getType(), item.getOwner(), m_data, item.getDamaged());
           JLabel label = new JLabel("x" + item.getUnits().size(),
                                     icon,
                                     JLabel.LEFT

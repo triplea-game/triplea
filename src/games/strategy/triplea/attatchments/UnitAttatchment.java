@@ -53,6 +53,7 @@ public class UnitAttatchment extends DefaultAttatchment
   private boolean m_isSub = false;
   private boolean m_canBombard = false;
   private boolean m_isStrategicBomber = false;
+  private boolean m_isTwoHit = false;
 
   //-1 if cant transport
   private int m_transportCapacity = -1;
@@ -168,6 +169,16 @@ public class UnitAttatchment extends DefaultAttatchment
   public int getTransportCapacity()
   {
     return m_transportCapacity;
+  }
+
+  public void setIsTwoHit(String s)
+  {
+      m_isTwoHit = getBool(s);
+  }
+
+  public boolean isTwoHit()
+  {
+      return m_isTwoHit;
   }
 
   public void setTransportCost(String s)
@@ -318,6 +329,7 @@ public class UnitAttatchment extends DefaultAttatchment
     {
       throw new GameParseException("Invalid Unit Attatchemnnt" + this);
     }
+
 
 
   }

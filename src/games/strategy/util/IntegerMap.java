@@ -80,6 +80,16 @@ public class IntegerMap implements Cloneable, Serializable
 		m_values.put(key, obj);
 	}
 
+    public void putAll(Collection keys, int value)
+    {
+        Integer obj = getInteger(value);
+        Iterator iter = keys.iterator();
+        while (iter.hasNext())
+        {
+            put(iter.next(), obj);
+        }
+    }
+
 	/**
 	 * returns 0 if no key found.
 	 */

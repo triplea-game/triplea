@@ -26,10 +26,10 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
-import games.strategy.util.*;
+import java.util.List;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
-import games.strategy.engine.data.events.*;
+
 
 import games.strategy.triplea.delegate.message.*;
 
@@ -188,7 +188,7 @@ public class BattlePanel extends ActionPanel
     //hasnt been asked to select casualties
     //if no units died, then wait, since the user hasnt had a chance to
     //see the roll
-    boolean waitFOrUserInput = !m_parent.playing(message.getPlayer()) || message.getAll() || message.getUnits().isEmpty();
+    boolean waitFOrUserInput = !m_parent.playing(message.getPlayer()) || message.getAll() || message.isEmpty();
     m_battleDisplay.casualtyNotificationMessage( message, waitFOrUserInput);
   }
 
@@ -206,8 +206,7 @@ public class BattlePanel extends ActionPanel
 
   private SelectCasualtyMessage getCasualtiesAA(SelectCasualtyQueryMessage msg)
   {
-    boolean plural = msg.getCount() > 1;
-    UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), getData());
+    UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), getData(), false);
 
     chooser.setTitle(msg.getMessage());
     chooser.setMax(msg.getCount());
@@ -223,12 +222,10 @@ public class BattlePanel extends ActionPanel
     dice.setPreferredSize(new Dimension(300, (int) dice.getPreferredSize().getHeight()));
     panel.add(dice, BorderLayout.SOUTH);
 
-
-
     String[] options = {"OK"};
-    int option = JOptionPane.showOptionDialog( getRootPane(), panel, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-    Collection choosen = chooser.getSelected(false);
-    SelectCasualtyMessage response = new SelectCasualtyMessage(choosen);
+    JOptionPane.showOptionDialog( getRootPane(), panel, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+    List killed = chooser.getSelected(false);
+    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, chooser.getSelectedFirstHit());
     return response;
   }
 
@@ -321,7 +318,6 @@ public class BattlePanel extends ActionPanel
       }
     }
   }
-
 
   public String toString()
   {

@@ -18,6 +18,7 @@ package games.strategy.triplea.util;
 import java.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
+import games.strategy.triplea.attatchments.*;
 
 /**
  * Seperates a group of units into distinct categories.
@@ -37,6 +38,8 @@ public class UnitSeperator
     return categorize(units, null, null);
   }
 
+
+
   /**
    * Break the units into discrete categories.
    *
@@ -44,6 +47,7 @@ public class UnitSeperator
    *
    * @param dependent - can be null
    * @param movement - can be null
+   * @oaram - forceDamagedCategory - if true then we will ensure a category exists for damaged unit types even if it would be empty
    * @return a Collection of UnitCategories
    */
   public static Set categorize(Collection units, Map dependent, IntegerMap movement)
@@ -64,7 +68,8 @@ public class UnitSeperator
       Collection currentDependents = Collections.EMPTY_LIST;
       if(dependent != null)
           currentDependents = (Collection) dependent.get(current);
-      UnitCategory entry = new UnitCategory(current, currentDependents,unitMovement);
+      boolean damaged = current.getHits() == 1;
+      UnitCategory entry = new UnitCategory(current, currentDependents,unitMovement, damaged);
 
       //we test to see if we have the key using equals, then since
       //key maps to key, we retrieve it to add the unit to the correct
@@ -78,6 +83,7 @@ public class UnitSeperator
       {
         categories.put(entry, entry);
       }
+
     }
     return new TreeSet( categories.keySet());
   }

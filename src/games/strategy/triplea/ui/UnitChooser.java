@@ -26,7 +26,6 @@ import java.util.List;
 import javax.swing.*;
 
 import games.strategy.ui.*;
-import games.strategy.util.Util;
 import games.strategy.util.IntegerMap;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.image.*;
@@ -46,6 +45,7 @@ public class UnitChooser extends JPanel
   private int m_total = -1;
   private JLabel m_leftToSelect = new JLabel();
   private GameData m_data;
+  private boolean m_allowTwoHit = false;
 
   /** Creates new UnitChooser */
   public UnitChooser(Collection units, Map dependent, IntegerMap movement, GameData data)
@@ -56,10 +56,11 @@ public class UnitChooser extends JPanel
     layoutEntries();
   }
 
-  public UnitChooser(Collection units, Map dependent, GameData data)
+  public UnitChooser(Collection units, Map dependent, GameData data, boolean allowTwoHit)
   {
     m_dependents = dependent;
     m_data = data;
+    m_allowTwoHit = allowTwoHit;
     createEntries(units, dependent, null);
     layoutEntries();
   }
@@ -88,7 +89,7 @@ public class UnitChooser extends JPanel
     while(iter.hasNext())
     {
       ChooserEntry entry = (ChooserEntry) iter.next();
-      selected += entry.getQuantity();
+      selected += entry.getTotalHits();
     }
 
     m_leftToSelect.setText("Left to select:" + (m_total - selected));
@@ -97,11 +98,13 @@ public class UnitChooser extends JPanel
     while(iter.hasNext())
     {
       ChooserEntry entry = (ChooserEntry) iter.next();
-      entry.setLimit(m_total - selected);
+      entry.setLeftToSelect(m_total - selected);
     }
 
     m_leftToSelect.setText("Left to select:" + (m_total - selected));
+
   }
+
 
 
   private void createEntries(Collection units, Map dependent, IntegerMap movement)
@@ -111,14 +114,15 @@ public class UnitChooser extends JPanel
     while(iter.hasNext())
     {
       UnitCategory category = (UnitCategory) iter.next();
-      addEntry(category);
+      addCategory(category);
     }
   }
 
-  private void addEntry(UnitCategory category)
+  private void addCategory(UnitCategory category)
   {
-    ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data);
+    ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowTwoHit);
     m_entries.add(entry);
+
 
   }
 
@@ -145,14 +149,12 @@ public class UnitChooser extends JPanel
 
   private void addEntry(ChooserEntry entry)
   {
-    JPanel panel = new JPanel();
-    panel.add(entry);
+      Box box = new Box(BoxLayout.X_AXIS);
 
-    StringBuffer text = new StringBuffer();
-    text.append("max " + entry.getCategory().getUnits().size());
+      box.add(entry);
+      box.add(box.createHorizontalGlue());
+      add(box);
 
-    panel.add(new JLabel(text.toString()));
-    this.add(panel);
   }
 
   public Collection getSelected()
@@ -160,23 +162,47 @@ public class UnitChooser extends JPanel
     return getSelected(true);
   }
 
-  public Collection getSelected(boolean selectDependents)
+  /**
+   * get the units selected.
+   * If units are two hit enabled, returns those with two hits.
+   */
+  public List getSelected(boolean selectDependents)
   {
-    Collection units = new ArrayList();
+    List selectedUnits = new ArrayList();
 
     Iterator entries = m_entries.iterator();
     while(entries.hasNext())
     {
-      ChooserEntry current = (ChooserEntry) entries.next();
-      int count = current.getQuantity();
-      addToCollection(units, count, current, selectDependents);
+      ChooserEntry chooserEntry = (ChooserEntry) entries.next();
+      if(chooserEntry.isTwoHit())
+          addToCollection(selectedUnits, chooserEntry,  chooserEntry.getSecondHits(), selectDependents);
+      else
+          addToCollection(selectedUnits, chooserEntry, chooserEntry.getFirstHits(), selectDependents);
 
     }
-    return units;
+    return selectedUnits;
   }
 
-  private void addToCollection(Collection addTo, int quantity, ChooserEntry entry, boolean addDependents)
+  /**
+   * Only applicable if this dialog was constructed using twoHits
+   */
+  public List getSelectedFirstHit()
   {
+      List selectedUnits = new ArrayList();
+
+      Iterator entries = m_entries.iterator();
+      while(entries.hasNext())
+      {
+        ChooserEntry chooserEntry = (ChooserEntry) entries.next();
+        if(chooserEntry.isTwoHit())
+            addToCollection(selectedUnits, chooserEntry, chooserEntry.getFirstHits(), false);
+      }
+      return selectedUnits;
+  }
+
+  private void addToCollection(Collection addTo, ChooserEntry entry, int quantity, boolean addDependents)
+  {
+
     Collection possible = entry.getCategory().getUnits();
     if(possible.size() < quantity)
       throw new IllegalStateException("Not enough units");
@@ -206,25 +232,67 @@ public class UnitChooser extends JPanel
 
 class ChooserEntry extends JPanel
 {
-  private UnitCategory m_category;
-  private ScrollableTextField m_text;
-  private ScrollableTextFieldListener m_textFieldListener;
-  private GameData m_data;
+  private final UnitCategory m_category;
+  private ScrollableTextField m_hitText;
+  private final ScrollableTextFieldListener m_hitTextFieldListener;
+  private final GameData m_data;
+  private final boolean m_hasSecondHit;
 
-  ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data)
+  private ScrollableTextField m_secondHitText;
+  private ScrollableTextFieldListener m_secondHitTextField;
+
+  private JLabel m_secondHitLabel;
+  private int m_leftToSelect = 0;
+
+
+  ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data, boolean allowTwoHit)
   {
-    m_textFieldListener = listener;
+
+    m_hitTextFieldListener = listener;
     m_data = data;
     m_category = category;
+    m_hasSecondHit = allowTwoHit && category.isTwoHit() && ! category.getDamaged();
 
-    add(new UnitChooserEntryIcon());
-    if(m_category.getMovement() != -1)
-      add(new JLabel("mvt " + m_category.getMovement()));
+    createComponents(category);
 
-    m_text = new ScrollableTextField(0, category.getUnits().size());
-    m_text.addChangeListener(m_textFieldListener);
-    add(m_text);
+  }
 
+  private void createComponents(UnitCategory category)
+  {
+
+      add(new UnitChooserEntryIcon(false));
+      if (m_category.getMovement() != -1)
+          add(new JLabel("mvt " + m_category.getMovement()));
+
+       add(new JLabel("x" + m_category.getUnits().size()));
+
+      m_hitText = new ScrollableTextField(0, category.getUnits().size());
+      m_hitText.addChangeListener(m_hitTextFieldListener);
+      add(m_hitText);
+
+      if (m_hasSecondHit)
+      {
+          add(new UnitChooserEntryIcon(true));
+
+          m_secondHitLabel = new JLabel("x0 ");
+
+          m_secondHitText = new ScrollableTextField(0, 0);
+          add(m_secondHitLabel);
+          add(m_secondHitText);
+
+          m_hitText.addChangeListener(
+              new ScrollableTextFieldListener()
+          {
+              public void changedValue(ScrollableTextField field)
+              {
+                  m_secondHitLabel.setText("x" + field.getValue());
+                  updateLeftToSelect();
+              }
+          }
+          );
+
+           m_secondHitText.addChangeListener(m_hitTextFieldListener);
+      }
   }
 
   public UnitCategory getCategory()
@@ -233,37 +301,71 @@ class ChooserEntry extends JPanel
   }
 
 
-  public void setLimit(int limit)
+  public void setLeftToSelect(int leftToSelect)
   {
-    int newMax = limit + m_text.getValue();
+    m_leftToSelect = leftToSelect;
+    updateLeftToSelect();
 
-    m_text.setMax(Math.min(newMax, m_category.getUnits().size()));
+  }
+
+  private void updateLeftToSelect()
+  {
+      int newMax = m_leftToSelect + m_hitText.getValue();
+
+      m_hitText.setMax(Math.min(newMax, m_category.getUnits().size()));
+
+      if (m_hasSecondHit)
+      {
+          int newSecondHitMax = m_leftToSelect + m_secondHitText.getValue();
+          m_secondHitText.setMax(Math.min(newSecondHitMax, m_hitText.getValue()));
+      }
   }
 
 
-  public int getQuantity()
+  public int getTotalHits()
   {
-    return m_text.getValue();
+      return getFirstHits() + getSecondHits();
   }
 
-  public int getMovement()
+  public int getFirstHits()
   {
-    return m_category.getMovement();
+      return m_hitText.getValue();
+  }
+
+  public int getSecondHits()
+  {
+      if(!m_hasSecondHit)
+          return 0;
+      return m_secondHitText.getValue();
+  }
+
+  public boolean isTwoHit()
+  {
+      return m_hasSecondHit;
   }
 
   class UnitChooserEntryIcon extends JComponent
   {
+      private boolean m_forceDamaged;
+
+    UnitChooserEntryIcon(boolean forceDamaged)
+    {
+        m_forceDamaged = forceDamaged;
+    }
+
+
+
     public void paint(Graphics g)
     {
       super.paint(g);
-      g.drawImage( UnitIconImageFactory.instance().getImage(m_category.getType(), m_category.getOwner(), m_data), 0,0,this);
+      g.drawImage( UnitIconImageFactory.instance().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged()), 0,0,this);
       Iterator iter = m_category.getDependents().iterator();
       int index = 1;
       while(iter.hasNext())
       {
         UnitOwner holder = (UnitOwner) iter.next();
         int x = UnitIconImageFactory.UNIT_ICON_WIDTH * index;
-        Image unitImg = UnitIconImageFactory.instance().getImage(holder.getType(), holder.getOwnerr(), m_data);
+        Image unitImg = UnitIconImageFactory.instance().getImage(holder.getType(), holder.getOwner(), m_data, false);
         g.drawImage(unitImg, x, 0, this);
 
 

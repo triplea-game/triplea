@@ -359,37 +359,6 @@ public class ImageScrollerLargeView extends JComponent
       return m_offscreenImage;
   }
 
-  /**
-   * Copies the offscreen graphics to the screen.
-   * Thread safe.  Can be called outside the swing event thread.
-   */
-  public synchronized void update()
-  {
-    //copying the offscreen image onscreen must occur within the
-    //swing event thread, otherwise m_image
-    //could be altered while it was being drawn
-    if(SwingUtilities.isEventDispatchThread())
-    {
-        //this fixes a strange bug on linux where the graphics werent being updated correctly
-       // getOffscreenGraphics().draw3DRect(0,0,1,1,false);
-        repaint();
-    }
-    else
-      SwingUtilities.invokeLater(
-        new Runnable()
-          {
-            public void run()
-            {
-                //this fixes a strange bug on linux where the graphics werent being updated correctly
-                getOffscreenGraphics().draw3DRect(0,0,1,1,false);
-
-              repaint();
-            }
-          }
-      );
-  }
-
-
 
   public int getXOffset()
   {

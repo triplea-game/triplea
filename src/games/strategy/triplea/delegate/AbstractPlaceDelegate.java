@@ -380,7 +380,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     while(iter.hasNext() )
     {
       Territory current = (Territory)iter.next();
-      if( hasFactory( current) && ! m_producedFactory.contains(current))
+      if( hasFactory( current) && ! m_producedFactory.contains(current) && current.getOwner().equals(m_player))
       {
         neighborFactory = getBetterProducer(current, neighborFactory, alreadyProduced);
       }

@@ -256,6 +256,7 @@ public class BattleDelegate implements SaveableDelegate
     return state;
   }
 
+
   /**
    * Loads the delegates state
    */

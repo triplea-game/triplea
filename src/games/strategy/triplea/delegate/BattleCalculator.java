@@ -54,16 +54,16 @@ public class BattleCalculator
     return hitCount;
   }
 
-  public static Collection selectCasualties(PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice)
+  public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice)
   {
     return selectCasualties(null, player, targets, bridge, text, data, dice);
   }
 
 
-  public static Collection selectCasualties(String step, PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice)
+  public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice)
   {
     if(dice.getHits() == 0)
-      return Collections.EMPTY_LIST;
+      return new SelectCasualtyMessage(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
 
     Map dependents = getDependents(targets,data);
 
@@ -73,20 +73,22 @@ public class BattleCalculator
       throw new IllegalStateException("Message of wrong type:" + response);
 
     SelectCasualtyMessage casualtySelection = (SelectCasualtyMessage) response;
-    Collection casualties = casualtySelection.getSelection();
+    List killed = casualtySelection.getKilled();
+    List damaged = casualtySelection.getDamaged();
+
     //check right number
-    if ( ! (casualties.size() == dice.getHits()) )
+    if ( ! (killed.size()  + damaged.size() == dice.getHits()) )
     {
       bridge.sendMessage( new StringMessage("Wrong number of casualties selected", true), player);
       return selectCasualties(player, targets, bridge,text, data, dice);
     }
     //check we have enough of each type
-    if(!targets.containsAll(casualties))
+    if(!targets.containsAll(killed) || ! targets.containsAll(damaged))
     {
       bridge.sendMessage( new StringMessage("Cannot remove enough units of those types", true), player);
       return selectCasualties(player, targets, bridge,text, data, dice);
     }
-    return casualties;
+    return casualtySelection;
   }
 
   private static Map getDependents(Collection targets, GameData data)

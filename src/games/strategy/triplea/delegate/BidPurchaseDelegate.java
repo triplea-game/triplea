@@ -25,6 +25,11 @@ import games.strategy.triplea.Constants;
 
 public class BidPurchaseDelegate extends PurchaseDelegate
 {
+    private int m_bid;
+    private int m_spent;
+    private DelegateBridge m_bridge;
+
+
   /**
    * subclasses can over ride this method to use different restrictions as to what a player can buy
    */
@@ -32,17 +37,36 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   {
     int ipcCost = costs.getInt(Constants.IPCS);
 
-    String propertyName = player.getName() + " bid";
 
-    int ipcAvailable =  Integer.parseInt(getData().getProperties().get(propertyName).toString());
-    return ipcAvailable >= ipcCost;
+
+    return m_bid >= ipcCost;
   }
 
+  public void start(DelegateBridge bridge, GameData data)
+  {
+      super.start(bridge, data);
+      m_bridge = bridge;
+      String propertyName = bridge.getPlayerID().getName() + " bid";
+      m_bid = Integer.parseInt(getData().getProperties().get(propertyName).toString());
+      m_spent = 0;
+  }
 
   protected void removeFromPlayer(PlayerID player, IntegerMap resources)
   {
-    //we dont take away since the limit is a (now) non editable property
+      m_spent = resources.getInt(super.getData().getResourceList().getResource(Constants.IPCS));
   }
+
+  /**
+    * Called before the delegate will stop running.
+    */
+   public void end()
+   {
+       super.end();
+       Change unspent = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), super.getData().getResourceList().getResource(Constants.IPCS), m_bid - m_spent);
+       m_bridge.addChange(unspent);
+
+   }
+
 
 
 }

@@ -62,7 +62,7 @@ public class SimpleUnitPanel extends JPanel
         UnitType unit = (UnitType) productionRule.getResults().keySet().
             iterator().next();
         label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player,
-            data));
+            data, false));
         add(label);
     }
 }

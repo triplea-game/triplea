@@ -22,17 +22,12 @@ package games.strategy.triplea.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Ellipse2D;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.TerritoryListener;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TerritoryImageFactory;
-import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.ui.ImageScrollerLargeView;
 
 /**

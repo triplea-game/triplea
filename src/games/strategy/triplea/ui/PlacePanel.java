@@ -155,7 +155,7 @@ public class PlacePanel extends ActionPanel
        if(units.isEmpty())
            return;
 
-      UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP, getData());
+      UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP, getData(), false);
       String messageText = "Place units in " + territory.getName();
       int option = JOptionPane.showOptionDialog( (JFrame) getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
       if(option == JOptionPane.OK_OPTION)
@@ -196,7 +196,7 @@ class UnitPanel extends JPanel
       JLabel label = new JLabel();
       label.setHorizontalTextPosition(JLabel.RIGHT);
       UnitType unit = (UnitType) iter.next();
-      label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player, data));
+      label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player, data, false));
       label.setText(" x " +  player.getUnits().getUnitCount(unit));
       add(label);
     }

@@ -22,6 +22,7 @@ package games.strategy.engine.data;
 
 import java.util.*;
 import games.strategy.net.GUID;
+import games.strategy.util.*;
 
 
 /**
@@ -102,6 +103,11 @@ public class ChangeFactory
 	{
 		return new SetPropertyChange(property, value, data.getProperties());
 	}
+
+    public static Change unitsHit(IntegerMap newHits)
+    {
+        return new UnitHitsChange(newHits);
+    }
 
 	/** Creates new ChangeFactory.  No need */
     private ChangeFactory() { }
@@ -379,6 +385,47 @@ class SetPropertyChange extends Change
 	{
 		data.getProperties().set(m_property, m_value);
 	}
+
+}
+
+class UnitHitsChange extends Change
+{
+    private final IntegerMap m_hits;
+    private final IntegerMap m_undoHits;
+
+    private UnitHitsChange(IntegerMap hits, IntegerMap undoHits)
+    {
+        m_hits = hits;
+        m_undoHits = undoHits;
+    }
+
+    UnitHitsChange(IntegerMap hits)
+    {
+        m_hits = hits.copy();
+        m_undoHits = new IntegerMap();
+        Iterator iter = m_hits.keySet().iterator();
+        while (iter.hasNext())
+        {
+            Unit item = (Unit) iter.next();
+            m_undoHits.put(item, item.getHits());
+        }
+
+    }
+
+    protected void perform(GameData data)
+    {
+        Iterator iter = m_hits.keySet().iterator();
+        while (iter.hasNext())
+        {
+            Unit item = (Unit) iter.next();
+            item.setHits(m_hits.getInt(item));
+        }
+    }
+
+    public Change invert()
+    {
+        return new UnitHitsChange(m_undoHits, m_hits);
+    }
 
 }
 
