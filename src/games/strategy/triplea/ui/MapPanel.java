@@ -264,8 +264,43 @@ public class MapPanel extends ImageScrollerLargeView
     return null;
   }
 
+  /**
+   * Updating is an expensive operation.
+   * Merge updates that occur close together into one larger update operation.
+   */
+  private volatile boolean updateScheduled = false;
   private void initTerritories()
   {
+    //if an update is scheduled, return
+    if(updateScheduled)
+        return;
+
+    //schedule an update
+    updateScheduled = true;
+    Runnable r = new Runnable()
+    {
+      public void run()
+      {
+        synchronized(this)
+        {
+            try
+            {
+                wait(50);
+            }
+            catch (InterruptedException ex)
+            {
+            }
+            performInitTerritories();
+        }
+      }
+    };
+
+    new Thread(r).start();
+  }
+
+  private synchronized void performInitTerritories()
+  {
+    updateScheduled = false;
     clearOffscreen();
     Iterator iter = m_polygonTerritories.iterator();
     while(iter.hasNext())
