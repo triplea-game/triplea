@@ -335,7 +335,13 @@ class HttpDiceRollerDialog extends JDialog
             {
                 try
                 {
-                    appendText("Failure!  Did you enter valid email addresses?\n");
+                    appendText("An eror has occured!\n");
+		    appendText("Possible reasons the error could have happened:\n");
+		    appendText("  1: An invalid e-mail address\n");
+		    appendText("  2: Firewall could be blocking TripleA from connecting to Irony Dice Server\n");
+		    appendText("  3: The e-mail address does not exist\n");
+		    appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
+		    appendText("     Visit http://maddlinks.com/triplea  for extra help\n");
 
                     if (text != null)
                     {
@@ -356,7 +362,10 @@ class HttpDiceRollerDialog extends JDialog
         } else
         { //enter here for invalid e-mail
 
-            appendText("Invalid e-mail syntax, please check again.\n");
+            appendText("There is an error in the e-mails you have entered\n");
+	    appendText("Please check the following:\n");
+	    appendText("  1: Do you have a valid e-mail syntax ? (ie. rommel@germany.com) ?\n");
+	    appendText("  2: Are both e-mail boxes filled out ?\n\n");
             m_exitButton.setEnabled(true);
         }
 
