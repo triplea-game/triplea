@@ -20,43 +20,33 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.*;
+import games.strategy.engine.data.events.GameStepListener;
+import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.gamePlayer.*;
+import games.strategy.engine.message.Message;
+import games.strategy.engine.random.*;
+import games.strategy.engine.sound.ClipPlayer;
+import games.strategy.net.*;
+import games.strategy.triplea.*;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.image.*;
+import games.strategy.triplea.sound.SoundPath;
+import games.strategy.triplea.ui.history.*;
+import games.strategy.ui.*;
+import games.strategy.util.IntegerMap;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.List;
-import java.net.URL;
+
 import javax.swing.*;
 import javax.swing.border.*;
-
-import games.strategy.engine.data.*;
-import games.strategy.engine.data.events.*;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.engine.message.*;
-
-import games.strategy.engine.data.properties.PropertiesUI;
-
-import games.strategy.ui.*;
-import games.strategy.util.*;
-import games.strategy.net.*;
-
-import games.strategy.triplea.*;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.image.*;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.triplea.delegate.*;
-import games.strategy.engine.history.*;
-import games.strategy.triplea.ui.history.*;
-import games.strategy.engine.gamePlayer.*;
-
-import games.strategy.engine.random.RandomStats;
-import games.strategy.engine.random.RandomStatsMessage;
-import games.strategy.engine.sound.ClipPlayer; //the player
-import games.strategy.triplea.sound.SoundPath; //the relative path of sounds
 
 /**
  * 
@@ -338,11 +328,11 @@ public class TripleAFrame extends JFrame
 
             FilenameFilter filter = new FilenameFilter()
             {
-                public boolean accept(File mapsDir, String name)
+                public boolean accept(File aDir, String name)
                 {
                     if (name.startsWith(currentMapSubDir))
                     {
-                        File file = new File(mapsDir + "/" + name);
+                        File file = new File(aDir + "/" + name);
                         return file.isDirectory();
                     }
                     return (false);

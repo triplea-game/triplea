@@ -20,7 +20,6 @@
 
 package games.strategy.triplea.delegate.message;
 
-import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.delegate.DiceRoll;
 
 /**

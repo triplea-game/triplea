@@ -14,11 +14,9 @@
 package games.strategy.engine.data.properties;
 
 
-import javax.swing.*;
-import games.strategy.ui.IntTextField;
-import games.strategy.ui.IntTextFieldChangeListener;
+import games.strategy.ui.*;
 
-import java.awt.event.*;
+import javax.swing.JComponent;
 
 
 public class NumberProperty extends AEditableProperty

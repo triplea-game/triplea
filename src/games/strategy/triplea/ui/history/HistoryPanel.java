@@ -15,14 +15,15 @@
 
 package games.strategy.triplea.ui.history;
 
-import javax.swing.*;
-import java.util.*;
-import games.strategy.engine.history.*;
-import java.awt.*;
 import games.strategy.engine.data.*;
-import javax.swing.tree.*;
+import games.strategy.engine.history.*;
+import games.strategy.triplea.image.FlagIconImageFactory;
+
+import java.awt.*;
+
+import javax.swing.*;
 import javax.swing.event.*;
-import games.strategy.triplea.image.*;
+import javax.swing.tree.*;
 
 /**
  * Shows the history as a tree.
@@ -144,13 +145,13 @@ class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
     boolean expanded,
     boolean leaf,
     int row,
-    boolean hasFocus)
+    boolean haveFocus)
   {
 
     super.getTreeCellRendererComponent(
       tree, value, sel,
       expanded, leaf, row,
-      hasFocus);
+      haveFocus);
     if (value instanceof Step)
     {
       PlayerID player = ( (Step) value).getPlayerID();

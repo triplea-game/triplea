@@ -20,19 +20,14 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
-import games.strategy.engine.message.*;
-
-import games.strategy.net.IRemote;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.formatter.Formatter;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
+import games.strategy.util.*;
+
+import java.util.*;
 
 /**
  *

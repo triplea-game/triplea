@@ -20,19 +20,12 @@
 
 package games.strategy.triplea.delegate;
 
-import junit.framework.*;
+import games.strategy.engine.data.*;
+import games.strategy.util.IntegerMap;
 
 import java.util.*;
 
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.message.*;
-
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.attatchments.*;
+import junit.framework.*;
 /**
  *
  * @author  Sean Bridges
@@ -1227,9 +1220,9 @@ public class MoveDelegateTest extends DelegateTest
     assertTrue(tracker.wasBlitzed(libya));
     assertTrue(tracker.wasConquered(libya));
 
-    Unit factory = (Unit) factCollection.iterator().next();
+    Unit aFactory = (Unit) factCollection.iterator().next();
 
-    assertEquals( factory.getOwner(), british);
+    assertEquals( aFactory.getOwner(), british);
   }
 
   public void testAirCanLandOnLand()

@@ -13,17 +13,6 @@
  */
 package games.strategy.triplea.troxAI;
 
-import java.util.*;
-
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.*;
-import games.strategy.engine.data.events.*;
-import games.strategy.triplea.ui.TripleAFrame;
-
-import games.strategy.triplea.delegate.message.*;
 
 
 /**

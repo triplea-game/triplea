@@ -15,26 +15,14 @@
 
 package games.strategy.engine.framework;
 
-import java.util.*;
-import java.net.*;
+import games.strategy.engine.data.*;
+import games.strategy.engine.framework.ui.NewGameFileChooser;
+
 import java.io.*;
+
+import javax.swing.JFileChooser;
+
 import org.xml.sax.SAXException;
-import java.awt.*;
-import javax.swing.*;
-
-import games.strategy.util.Util;
-import games.strategy.net.*;
-import games.strategy.ui.*;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.GameParser;
-import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.ui.*;
-
-import games.strategy.engine.chat.*;
-
-
-import games.strategy.debug.Console;
 
 
 /**

@@ -20,11 +20,10 @@
 
 package games.strategy.triplea.delegate.message;
 
-import java.util.*;
-
-import games.strategy.util.IntegerMap;
 import games.strategy.engine.message.Message;
-import games.strategy.engine.data.*;
+import games.strategy.util.IntegerMap;
+
+import java.util.Map;
 
 /**
  *

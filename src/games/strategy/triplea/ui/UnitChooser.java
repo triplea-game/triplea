@@ -20,18 +20,18 @@
 
 package games.strategy.triplea.ui;
 
-import java.util.List;
-import java.awt.*;
-import java.util.*;
-import javax.swing.*;
-
+import games.strategy.engine.data.*;
+import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.util.*;
 import games.strategy.ui.*;
 import games.strategy.util.IntegerMap;
-import games.strategy.engine.data.*;
-import games.strategy.triplea.image.*;
-import games.strategy.triplea.image.*;
-import games.strategy.triplea.util.*;
+
+import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+
+import javax.swing.*;
 
 /**
  *

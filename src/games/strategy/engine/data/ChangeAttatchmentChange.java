@@ -15,10 +15,7 @@
 
 package games.strategy.engine.data;
 
-import java.util.*;
-import games.strategy.net.GUID;
-import games.strategy.util.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
 
 
 public class ChangeAttatchmentChange extends Change

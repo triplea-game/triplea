@@ -51,13 +51,13 @@ public class Console extends JFrame
 	}
 	
 	private JTextArea m_text = new JTextArea(20,50); 
-	private JToolBar m_actions = new JToolBar(JToolBar.HORIZONTAL);
+	private JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
 	
 	/** Creates a new instance of Console */
     public Console() 
 	{
 		super("An error has occured!");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		getContentPane().setLayout(new BorderLayout());
 		

@@ -21,17 +21,12 @@
 package games.strategy.triplea.ui;
 
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.events.*;
+import games.strategy.util.IntegerMap;
 
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.message.*;
+import java.awt.event.ActionEvent;
+
+import javax.swing.*;
 
 /**
  *

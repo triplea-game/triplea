@@ -15,19 +15,16 @@
 package util.image;
 
 
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-import javax.imageio.*;
-import java.util.Map;
-import java.awt.*;
-import java.awt.image.*;
-import java.awt.Graphics2D;
-
-import games.strategy.ui.Util;
+import games.strategy.triplea.ui.TerritoryData;
 import games.strategy.ui.*;
-import games.strategy.triplea.ui.*;
-import games.strategy.util.PointFileReaderWriter;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Iterator;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 /**
   Utility for breaking an image into seperate smaller images.

@@ -16,20 +16,13 @@
 
 package games.strategy.triplea.ui;
 
-import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.QuadCurve2D;
-
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.image.MapImage;
+import games.strategy.engine.data.*;
 import games.strategy.ui.ImageScrollerLargeView;
-import games.strategy.util.Util;
 
+import java.awt.*;
+import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
-import java.awt.geom.*;
 
 /**
  * Draws a route on a map. This code is really ugly, bad and it barely works. It

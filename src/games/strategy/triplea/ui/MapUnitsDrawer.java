@@ -14,22 +14,18 @@
 
 package games.strategy.triplea.ui;
 
-import java.util.*;
+import games.strategy.engine.data.*;
+import games.strategy.thread.ThreadPool;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.image.*;
+import games.strategy.triplea.util.*;
+import games.strategy.util.Match;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-
-import games.strategy.engine.data.*;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TerritoryImageFactory;
-import games.strategy.triplea.image.UnitIconImageFactory;
-import games.strategy.thread.*;
-import javax.swing.*;
-import java.lang.reflect.*;
-import games.strategy.triplea.delegate.*;
-import games.strategy.util.*;
 import java.awt.geom.*;
-import games.strategy.triplea.util.*;
+import java.util.*;
+
+import javax.swing.SwingUtilities;
 
 /**
  * Used to draw units on a map.

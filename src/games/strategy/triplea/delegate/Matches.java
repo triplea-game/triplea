@@ -20,10 +20,9 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.*;
-import games.strategy.triplea.*;
+import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.util.*;
 
 /**
  * Useful match interfaces.

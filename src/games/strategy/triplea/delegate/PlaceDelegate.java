@@ -20,18 +20,8 @@
 
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.*;
-
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.message.*;
-
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
 
 /**
  *

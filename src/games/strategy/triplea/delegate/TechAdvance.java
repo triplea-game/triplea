@@ -20,12 +20,11 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
-import games.strategy.triplea.Constants;
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Constants;
+
+import java.util.*;
 
 /**
  * @author Sean Bridges

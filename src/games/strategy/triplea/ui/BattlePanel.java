@@ -167,7 +167,7 @@ public class BattlePanel extends ActionPanel
         m_battleFrame.setSize(750, 500);
         games.strategy.ui.Util.center(m_battleFrame);
         m_battleFrame.show();
-        m_battleFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         SwingUtilities.invokeLater(new Runnable()
         {

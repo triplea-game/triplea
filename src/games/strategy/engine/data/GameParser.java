@@ -20,19 +20,20 @@
 
 package games.strategy.engine.data;
 
-import java.io.*;
-import java.net.URL;
-import java.util.*;
-import java.lang.reflect.*;
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
+import games.strategy.engine.data.properties.*;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.util.Version;
-import games.strategy.engine.data.properties.*;
+
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.URL;
+import java.util.*;
+
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 /**
  *

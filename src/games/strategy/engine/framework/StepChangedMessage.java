@@ -20,9 +20,7 @@
 
 package games.strategy.engine.framework;
 
-import java.io.*;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.GameObjectInputStream;
 import games.strategy.engine.message.Message;
 import games.strategy.net.OrderedMessage;
 

@@ -23,9 +23,6 @@ package games.strategy.triplea.delegate.message;
 
 import java.util.Collection;
 
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.message.*;
-
 
 public class PlaceableUnits implements java.io.Serializable
 {

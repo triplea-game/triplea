@@ -2,7 +2,6 @@
 package games.strategy.engine.random;   //so it will work with TripleA
 
 import java.io.*;
-import java.util.*;
 
 /** 
  * <h3>MersenneTwister and MersenneTwisterFast</h3>
@@ -143,9 +142,9 @@ public class MersenneTwister extends java.util.Random implements Serializable
     private static final int TEMPERING_MASK_B = 0x9d2c5680;
     private static final int TEMPERING_MASK_C = 0xefc60000;
     
-    private int mt[]; // the array for the state vector
-    private int mti; // mti==N+1 means mt[N] is not initialized
-    private int mag01[];
+    private int m_mt[]; // the array for the state vector
+    private int m_mti; // mti==N+1 means mt[N] is not initialized
+    private int m_mag01[];
     
     // a good initial seed (of int size, though stored in a long)
     //private static final long GOOD_SEED = 4357;
@@ -199,22 +198,22 @@ public class MersenneTwister extends java.util.Random implements Serializable
         // doing our own Gaussian variable.
         __haveNextNextGaussian = false;
 
-        mt = new int[N];
+        m_mt = new int[N];
         
-        mag01 = new int[2];
-        mag01[0] = 0x0;
-        mag01[1] = MATRIX_A;
+        m_mag01 = new int[2];
+        m_mag01[0] = 0x0;
+        m_mag01[1] = MATRIX_A;
 
-        mt[0]= (int)(seed & 0xffffffff);
-        for (mti=1; mti<N; mti++) 
+        m_mt[0]= (int)(seed & 0xffffffff);
+        for (m_mti=1; m_mti<N; m_mti++) 
             {
-            mt[mti] = 
-                (1812433253 * (mt[mti-1] ^ (mt[mti-1] >>> 30)) + mti); 
+            m_mt[m_mti] = 
+                (1812433253 * (m_mt[m_mti-1] ^ (m_mt[m_mti-1] >>> 30)) + m_mti); 
             /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
             /* In the previous versions, MSBs of the seed affect   */
             /* only MSBs of the array mt[].                        */
             /* 2002/01/09 modified by Makoto Matsumoto             */
-            mt[mti] &= 0xffffffff;
+            m_mt[m_mti] &= 0xffffffff;
             /* for >32 bit machines */
             }
         }
@@ -235,24 +234,24 @@ public class MersenneTwister extends java.util.Random implements Serializable
         k = (N>array.length ? N : array.length);
         for (; k!=0; k--) 
             {
-            mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >>> 30)) * 1664525)) + array[j] + j; /* non linear */
-            mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
+            m_mt[i] = (m_mt[i] ^ ((m_mt[i-1] ^ (m_mt[i-1] >>> 30)) * 1664525)) + array[j] + j; /* non linear */
+            m_mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
             i++;
             j++;
-            if (i>=N) { mt[0] = mt[N-1]; i=1; }
+            if (i>=N) { m_mt[0] = m_mt[N-1]; i=1; }
             if (j>=array.length) j=0;
             }
         for (k=N-1; k!=0; k--) 
             {
-            mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >>> 30)) * 1566083941)) - i; /* non linear */
-            mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
+            m_mt[i] = (m_mt[i] ^ ((m_mt[i-1] ^ (m_mt[i-1] >>> 30)) * 1566083941)) - i; /* non linear */
+            m_mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
             i++;
             if (i>=N) 
                 {
-                mt[0] = mt[N-1]; i=1; 
+                m_mt[0] = m_mt[N-1]; i=1; 
                 }
             }
-        mt[0] = 0x80000000; /* MSB is 1; assuring non-zero initial array */ 
+        m_mt[0] = 0x80000000; /* MSB is 1; assuring non-zero initial array */ 
         }
 
 
@@ -264,11 +263,11 @@ public class MersenneTwister extends java.util.Random implements Serializable
         {
         int y;
         
-        if (mti >= N)   // generate N words at one time
+        if (m_mti >= N)   // generate N words at one time
             {
             int kk;
-            final int[] mt = this.mt; // locals are slightly faster 
-            final int[] mag01 = this.mag01; // locals are slightly faster 
+            final int[] mt = this.m_mt; // locals are slightly faster 
+            final int[] mag01 = this.m_mag01; // locals are slightly faster 
             
             for (kk = 0; kk < N - M; kk++)
                 {
@@ -283,10 +282,10 @@ public class MersenneTwister extends java.util.Random implements Serializable
             y = (mt[N-1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
             mt[N-1] = mt[M-1] ^ (y >>> 1) ^ mag01[y & 0x1];
 
-            mti = 0;
+            m_mti = 0;
             }
   
-        y = mt[mti++];
+        y = m_mt[m_mti++];
         y ^= y >>> 11;                          // TEMPERING_SHIFT_U(y)
         y ^= (y << 7) & TEMPERING_MASK_B;       // TEMPERING_SHIFT_S(y)
         y ^= (y << 15) & TEMPERING_MASK_C;      // TEMPERING_SHIFT_T(y)

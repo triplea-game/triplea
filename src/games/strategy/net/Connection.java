@@ -32,12 +32,11 @@
 
 package games.strategy.net;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
-
 import games.strategy.thread.ThreadPool;
-import games.strategy.util.ListenerList;
+
+import java.io.*;
+import java.net.Socket;
+import java.util.*;
 
 /**
  * @author Sean Bridges

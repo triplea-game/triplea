@@ -14,10 +14,7 @@
 
 package games.strategy.engine.message;
 
-import java.io.IOException;
-
 import games.strategy.net.*;
-import games.strategy.net.DummyMessenger;
 import junit.framework.TestCase;
 
 /**

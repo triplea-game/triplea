@@ -20,23 +20,19 @@
 
 package games.strategy.triplea.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
-
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.engine.message.Message;
-
+import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.triplea.delegate.*;
-import games.strategy.triplea.attatchments.*;
+import games.strategy.util.*;
+
+import java.awt.Point;
+import java.awt.event.*;
+import java.util.*;
+
+import javax.swing.*;
 
 /**
  *
@@ -502,7 +498,7 @@ public class MovePanel extends ActionPanel
             if(!getActive())
               return;
 
-            if ( (me.getModifiers() & MouseEvent.BUTTON3_MASK) != 0)
+            if ( (me.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
             {
                 rightButtonSelection(territory);
             }

@@ -20,9 +20,9 @@
 
 package games.strategy.ui;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+
+import javax.swing.JFrame;
 
 /**
  *

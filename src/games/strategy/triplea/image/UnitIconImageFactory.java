@@ -20,20 +20,16 @@
 
 package games.strategy.triplea.image;
 
-import java.io.*;
-import java.util.*;
-import java.awt.*;
+import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
-import javax.swing.ImageIcon;
-
-import games.strategy.ui.Util;
-import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.PlayerID;
-
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.engine.data.GameData;
-import java.net.*;
+import games.strategy.ui.Util;
+
+import java.awt.*;
+import java.net.URL;
+import java.util.*;
+
+import javax.swing.ImageIcon;
 
 /**
  *

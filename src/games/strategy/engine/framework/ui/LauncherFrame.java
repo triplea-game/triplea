@@ -15,26 +15,23 @@
 
 package games.strategy.engine.framework.ui;
 
-import java.awt.BorderLayout;
-import java.io.*;
-import java.util.prefs.*;
-import java.util.*;
-import javax.swing.*;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.message.*;
-import games.strategy.engine.framework.ServerGame;
-import games.strategy.net.*;
-import games.strategy.triplea.Constants;
-import games.strategy.engine.chat.*;
-import java.awt.event.*;
+import games.strategy.engine.chat.ChatFrame;
 import games.strategy.engine.data.*;
+import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.message.DonePlayerSelectionMessage;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.random.*;
-import games.strategy.engine.gamePlayer.*;
+import games.strategy.net.*;
+import games.strategy.triplea.Constants;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.io.*;
+import java.util.*;
+import java.util.prefs.Preferences;
+
+import javax.swing.*;
 
 
 /**

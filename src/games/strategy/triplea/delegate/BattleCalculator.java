@@ -20,17 +20,16 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
+import games.strategy.engine.data.*;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.engine.message.Message;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.delegate.message.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.*;
 import games.strategy.util.*;
-import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.data.*;
+
+import java.util.*;
 
 /**
  *

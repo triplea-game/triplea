@@ -14,10 +14,6 @@
 
 package games.strategy.engine.history;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import java.util.*;
-import games.strategy.triplea.delegate.*;
-import games.strategy.engine.data.*;
 
 public class Event extends IndexedHistoryNode implements Renderable
 {

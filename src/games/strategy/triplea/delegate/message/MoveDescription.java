@@ -20,11 +20,9 @@
 
 package games.strategy.triplea.delegate.message;
 
-import java.util.*;
+import games.strategy.engine.data.Route;
 
-import games.strategy.util.*;
-import games.strategy.engine.message.*;
-import games.strategy.engine.data.*;
+import java.util.*;
 
 /**
  * 

@@ -20,14 +20,9 @@
 
 package games.strategy.triplea.attatchments;
 
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.DefaultAttatchment;
-import games.strategy.engine.data.UnitType;
-
+import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.*;
-import games.strategy.engine.data.GameParseException;
+import games.strategy.triplea.delegate.TechTracker;
 
 
 /**

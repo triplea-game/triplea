@@ -121,7 +121,7 @@ class HttpDiceRollerDialog extends JDialog
     m_email1 = email1;
     m_email2 = email2;
 
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     m_exitButton.addActionListener(
       new ActionListener()
     {

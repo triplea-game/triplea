@@ -18,20 +18,15 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-import java.io.Serializable;
-
-import games.strategy.util.*;
-
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
-import games.strategy.engine.message.*;
-
-import games.strategy.triplea.Constants;
-
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.message.BattleListing;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.*;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * @author Sean Bridges

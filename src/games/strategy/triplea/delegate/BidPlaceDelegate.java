@@ -14,14 +14,11 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.message.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.triplea.attatchments.*;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.util.*;
+
+import java.util.*;
 
 
 

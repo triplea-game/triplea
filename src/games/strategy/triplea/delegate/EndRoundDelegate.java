@@ -20,17 +20,13 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-import java.io.Serializable;
-
 import games.strategy.engine.data.*;
-import games.strategy.engine.message.*;
 import games.strategy.engine.delegate.*;
-
-
-import games.strategy.net.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+
+import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  *

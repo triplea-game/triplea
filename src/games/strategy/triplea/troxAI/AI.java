@@ -14,19 +14,12 @@
 
 package games.strategy.triplea.troxAI;
 
-import java.util.*;
-import java.lang.*;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.*;
-import games.strategy.engine.data.events.*;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.attatchments.*;//UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.delegate.message.MoveDescription;
+import games.strategy.util.IntegerMap;
 
-import games.strategy.triplea.delegate.message.*;
+import java.util.*;
 
 
 /**
@@ -36,13 +29,14 @@ import games.strategy.triplea.delegate.message.*;
  */
 public class AI
 {
-	private Personality p;
+	private Personality m_personality;
 	private PlayerID m_id;
 	private GameData m_data;
-	private int count;
+	private int m_count;
+	
 	public AI(Personality per, PlayerID pid, GameData gd)
 	{
-		p = per;
+		m_personality = per;
 		m_id = pid;
 		m_data = gd;//m_id.getData();
 	}
@@ -260,7 +254,7 @@ public class AI
 			return 0;
 		defender = removeAA(defender);
 		
-		count = 0;
+		m_count = 0;
 		BattleResult b = Simbattlehelper(attacker, defender);
 		odds = b.getNumber();
 		a2 = b.getAttack();
@@ -273,9 +267,9 @@ public class AI
 		acost = valuehelper(attacker) - valuehelper(a2);
 		dcost = valuehelper(defender) - valuehelper(d2);
 		//System.out.println(like +"+"+ acost + "+" + dcost);
-		like = like + (((p.getAttrition()) / 10) * dcost) - acost;
+		like = like + (((m_personality.getAttrition()) / 10) * dcost) - acost;
 		//System.out.println(like);
-		like = like + (int)(60.0 * (odds - ((p.getAgressiveness())/10)));
+		like = like + (int)(60.0 * (odds - ((m_personality.getAgressiveness())/10)));
 		//System.out.println(like);
 		if(odds < 0 && like > 0)
 		{
@@ -379,7 +373,7 @@ public class AI
 		
 		
 		try{
-		count++;
+		m_count++;
 		return Simbattlehelper(a2, d2);
 		}
 		//allocate casualities then call recursively
@@ -390,7 +384,7 @@ public class AI
 				System.out.println(a2.toString());
 			if(d2.size() == 1)
 				System.out.println(d2.toString());
-			System.out.println("Bad" + a2.size() + " " + d2.size() + " # of turns " + count);
+			System.out.println("Bad" + a2.size() + " " + d2.size() + " # of turns " + m_count);
 			//return Simbattlehelper(a2, d2, a2, d2);
 		}
 		return new BattleResult(0, new ArrayList(), new ArrayList());
@@ -518,8 +512,8 @@ public class AI
 			int ipcs = m_id.getResources().getQuantity("IPCs");
 			//int aipcs = (int)(ipcs * ((1.0 * p.getAgressiveness())/((1.0 * p.getDefensiveness()) + (1.0 * p.getAgressiveness()))));
 			//int dipcs = (int)(ipcs * ((1.0 * p.getDefensiveness())/((1.0 * p.getDefensiveness()) + (1.0 * p.getAgressiveness()))));
-			int aipcs = (int)(ipcs * ((1.0 * p.getPurchase())/10));
-			int dipcs = (int)(ipcs * (1.0 - ((1.0 * p.getPurchase())/10)));
+			int aipcs = (int)(ipcs * ((1.0 * m_personality.getPurchase())/10));
+			int dipcs = (int)(ipcs * (1.0 - ((1.0 * m_personality.getPurchase())/10)));
 			//System.out.println("" + aipcs + " " + bestattack.toString());
 			//System.out.println("" + dipcs + " " + bestdefense.toString());
 			if(pr.getResults().getInt(bestattack) != 0)

@@ -15,10 +15,10 @@
 
 package games.strategy.triplea.util;
 
+import games.strategy.engine.data.Unit;
+import games.strategy.util.IntegerMap;
+
 import java.util.*;
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.*;
 
 /**
  * Seperates a group of units into distinct categories.

@@ -24,26 +24,12 @@ package games.strategy.engine.framework;
  */
 
 
-import java.util.*;
-import java.net.*;
-import java.io.*;
-import org.xml.sax.SAXException;
-import java.awt.*;
-import javax.swing.*;
-
-import games.strategy.util.Util;
-import games.strategy.net.*;
-import games.strategy.ui.*;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.GameParser;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.ui.*;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 
-import games.strategy.engine.chat.*;
+import java.io.File;
 
-
-import games.strategy.debug.Console;
+import javax.swing.JFileChooser;
 
 public class SavedGamedDataLoader implements IGameDataLoader
 {

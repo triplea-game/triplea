@@ -21,18 +21,16 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-import java.io.Serializable;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.message.Message;
 import games.strategy.engine.delegate.*;
-
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.message.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.formatter.*;
+import games.strategy.triplea.formatter.Formatter;
+import games.strategy.util.Util;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Logic for dealing with player tech rolls. This class requires the

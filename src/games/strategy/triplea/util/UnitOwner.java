@@ -17,8 +17,6 @@
 package games.strategy.triplea.util;
 
 
-import java.util.*;
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
 
 public class UnitOwner

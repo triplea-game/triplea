@@ -20,27 +20,18 @@
 
 package games.strategy.triplea.troxAI;
 
-import java.util.*;
-import java.lang.*;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.*;
-import games.strategy.engine.data.events.*;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.TripleAFrame;
-//added by Troy Graber
+import games.strategy.engine.message.Message;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import java.io.*;
-
-//end addition
-
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.*;
-import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.IntegerMap;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * 

@@ -20,7 +20,6 @@
 
 package games.strategy.engine.message;
 
-import games.strategy.net.INode;
 import java.util.Set;
 
 /**

@@ -18,10 +18,10 @@
 
 package games.strategy.engine.data;
 
-import java.util.*;
 import games.strategy.net.GUID;
-import games.strategy.util.*;
-import java.lang.reflect.*;
+import games.strategy.util.IntegerMap;
+
+import java.util.*;
 
 /**
  * All changes made to GameData should be made through changes produced here.

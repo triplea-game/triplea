@@ -20,18 +20,11 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-import java.io.Serializable;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.message.Message;
 import games.strategy.engine.delegate.*;
 
-import games.strategy.net.IRemote;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.formatter.*;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Logic for activating tech rolls.

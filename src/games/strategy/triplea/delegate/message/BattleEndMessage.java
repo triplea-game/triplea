@@ -19,7 +19,6 @@ package games.strategy.triplea.delegate.message;
  * Indicates that the current battle is over.
  */
 
-import games.strategy.engine.data.PlayerID;
 
 public class BattleEndMessage extends MultiDestinationMessage
 {

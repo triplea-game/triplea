@@ -14,12 +14,12 @@
 
 package games.strategy.engine.framework;
 
-import junit.framework.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
 import games.strategy.engine.data.*;
+
+import java.io.InputStream;
+import java.net.URL;
+
+import junit.framework.TestCase;
 
 /**
  * <p>Title: </p>

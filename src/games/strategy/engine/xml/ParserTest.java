@@ -20,14 +20,13 @@
 
 package games.strategy.engine.xml;
 
-import junit.framework.*;
-import java.io.*;
-import java.net.URL;
-import java.util.*;
-
-
 import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Collection;
+
+import junit.framework.*;
 
 /**
  *

@@ -20,11 +20,11 @@
 
 package games.strategy.engine.message;
 
-import junit.framework.*;
-import java.util.*;
-import java.io.*;
-
 import games.strategy.net.*;
+
+import java.io.IOException;
+
+import junit.framework.*;
 
 /**
  *

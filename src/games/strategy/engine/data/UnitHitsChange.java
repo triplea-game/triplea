@@ -14,10 +14,9 @@
 package games.strategy.engine.data;
 
 
+import games.strategy.util.IntegerMap;
+
 import java.util.*;
-import games.strategy.net.GUID;
-import games.strategy.util.*;
-import java.lang.reflect.*;
 
 public class UnitHitsChange extends Change
 {

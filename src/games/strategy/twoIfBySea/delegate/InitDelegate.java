@@ -24,16 +24,9 @@ package games.strategy.twoIfBySea.delegate;
  *
  */
 
-import java.util.*;
-import java.io.Serializable;
-
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.message.Message;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.InitializationDelegate;
-import games.strategy.triplea.delegate.*;
-import games.strategy.triplea.Constants;
-import games.strategy.util.*;
 
 public class InitDelegate extends InitializationDelegate
 {

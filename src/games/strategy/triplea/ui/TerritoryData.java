@@ -15,15 +15,14 @@
 
 package games.strategy.triplea.ui;
 
-import java.io.*;
+import games.strategy.engine.data.*;
+import games.strategy.util.PointFileReaderWriter;
+
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
-import java.text.*;
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.geom.Rectangle2D;
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
 
 
 /**

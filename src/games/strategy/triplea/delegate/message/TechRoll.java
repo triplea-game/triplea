@@ -13,7 +13,6 @@
  */
 package games.strategy.triplea.delegate.message;
 
-import games.strategy.engine.message.Message;
 import games.strategy.triplea.delegate.TechAdvance;
 
 

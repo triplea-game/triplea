@@ -21,8 +21,7 @@ package games.strategy.ui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.util.*;
+
 import javax.swing.*;
 
 /**
@@ -402,7 +401,7 @@ public class ImageScrollerLargeView extends JComponent
 		m_LastUpdate = now;
 
 		//the right button must be the one down
-		if ( (e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+		if ( (e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
 			m_inside = false;
 
 			//read in location

@@ -20,20 +20,11 @@
 
 package games.strategy.twoIfBySea.delegate;
 
-import java.io.Serializable;
-import java.util.*;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.delegate.*;
+import games.strategy.util.Match;
 
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.message.*;
-
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.AbstractPlaceDelegate;
-import games.strategy.triplea.formatter.Formatter;
+import java.util.Collection;
 
 /**
  *

@@ -20,24 +20,19 @@
 
 package games.strategy.triplea.ui;
 
-import java.awt.*;
+import games.strategy.engine.data.*;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.message.PlaceableUnits;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.*;
+
 import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
-
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.data.events.*;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.image.UnitIconImageFactory;
-
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.Message;
-import games.strategy.triplea.delegate.*;
-import games.strategy.triplea.util.*;
 
 
 /**

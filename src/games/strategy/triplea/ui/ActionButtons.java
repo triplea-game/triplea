@@ -20,20 +20,16 @@
 
 package games.strategy.triplea.ui;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import games.strategy.engine.data.*;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.message.Message;
+import games.strategy.triplea.delegate.message.*;
+import games.strategy.util.IntegerMap;
+
+import java.awt.CardLayout;
+import java.util.Collection;
 
 import javax.swing.*;
-
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.message.Message;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
-
-import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 
 /**
  * 

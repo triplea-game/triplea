@@ -75,7 +75,7 @@ public class UndoableMovesPanel extends JPanel
 
             if(iter.hasNext())
             {
-                JSeparator seperator = new JSeparator(JSeparator.HORIZONTAL);
+                JSeparator seperator = new JSeparator(SwingConstants.HORIZONTAL);
                 seperator.setPreferredSize(seperatorSize);
                 seperator.setMaximumSize(seperatorSize);
                 items.add(seperator);
@@ -101,7 +101,7 @@ public class UndoableMovesPanel extends JPanel
         {
             UnitCategory category = (UnitCategory)iter.next();
             Icon icon = UnitIconImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged());
-            JLabel label =  new JLabel("x" + category.getUnits().size() + " ",  icon , JLabel.LEFT );
+            JLabel label =  new JLabel("x" + category.getUnits().size() + " ",  icon , SwingConstants.LEFT );
             unitsBox.add(label);
         }
 

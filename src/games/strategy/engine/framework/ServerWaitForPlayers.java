@@ -20,14 +20,13 @@
 
 package games.strategy.engine.framework;
 
-import java.util.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-
-import games.strategy.engine.framework.message.*;
+import games.strategy.engine.framework.message.PlayerSetupMessage;
 import games.strategy.net.*;
+
+import java.io.Serializable;
+import java.util.*;
+
+import javax.swing.*;
 
 
 /**

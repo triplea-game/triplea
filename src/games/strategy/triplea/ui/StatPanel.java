@@ -20,23 +20,18 @@
 
 package games.strategy.triplea.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.*;
-
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameDataChangeListener;
-
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
-
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.delegate.*;
+import games.strategy.util.IntegerMap;
+
+import java.awt.GridLayout;
+import java.util.*;
+
+import javax.swing.*;
+import javax.swing.table.*;
 
 /**
  *

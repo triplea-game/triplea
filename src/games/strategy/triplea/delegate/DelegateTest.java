@@ -20,21 +20,15 @@
 
 package games.strategy.triplea.delegate;
 
-import junit.framework.*;
+import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAttatchment;
+import games.strategy.triplea.delegate.message.StringMessage;
 
-import java.util.*;
-import java.io.*;
+import java.io.InputStream;
 import java.net.URL;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.xml.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.message.*;
-
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.attatchments.*;
+import junit.framework.*;
 
 /**
  *

@@ -18,28 +18,18 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-import java.io.Serializable;
-
-import games.strategy.util.*;
-
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
-import games.strategy.engine.message.*;
-
-import games.strategy.net.IRemote;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.Formatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.*;
 
-import java.io.*;
-
-import org.omg.CORBA.COMM_FAILURE;
-
-import sun.security.provider.MD5;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * 

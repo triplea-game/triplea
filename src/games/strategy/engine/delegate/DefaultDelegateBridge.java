@@ -15,12 +15,9 @@
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.framework.IGame;
-import games.strategy.engine.message.*;
 import games.strategy.engine.framework.*;
+import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.message.Message;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.history.*;
 import games.strategy.engine.random.*;
 import games.strategy.net.IRemote;
 

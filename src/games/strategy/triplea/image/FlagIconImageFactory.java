@@ -20,14 +20,11 @@
 
 package games.strategy.triplea.image;
 
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.image.*;
-
-import games.strategy.util.*;
-import games.strategy.ui.Util;
 import games.strategy.engine.data.PlayerID;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.*;
 
 /**
  *

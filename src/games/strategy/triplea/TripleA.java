@@ -21,22 +21,16 @@
 
 package games.strategy.triplea;
 
+import games.strategy.engine.framework.*;
+import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.triplea.image.TerritoryImageFactory;
+import games.strategy.triplea.sound.SoundPath;
+import games.strategy.triplea.troxAI.TroxAIPlayer;
+import games.strategy.triplea.ui.*;
+
+import java.awt.Frame;
 import java.io.IOException;
 import java.util.*;
-
-import games.strategy.engine.framework.IGame;
-import games.strategy.engine.framework.IGameLoader;
-import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
-import games.strategy.triplea.troxAI.TroxAIPlayer;
-import games.strategy.triplea.ui.TerritoryData;
-import games.strategy.triplea.ui.TripleAFrame;
-import java.awt.*;
-import games.strategy.engine.random.*;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TerritoryImageFactory;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.sound.*;
 
 /**
  * @author Sean Bridges

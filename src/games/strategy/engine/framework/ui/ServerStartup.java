@@ -20,21 +20,20 @@
 
 package games.strategy.engine.framework.ui;
 
-import java.io.*;
-import java.util.*;
-import java.util.List;
-import java.util.zip.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-
-
+import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.message.*;
 import games.strategy.net.*;
-import games.strategy.engine.EngineVersion;
 import games.strategy.util.Version;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+import java.util.List;
+
+import javax.swing.*;
 
 /**
  * UI For starting server games.

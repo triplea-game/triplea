@@ -20,13 +20,10 @@
 
 package games.strategy.engine.gamePlayer;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.IGame;
-import games.strategy.engine.message.Message;
 import games.strategy.net.IRemote;
 
 /**

@@ -162,7 +162,7 @@ public class ChatFrame extends JFrame
         
         Action slap = new AbstractAction("Slap " + playerName)
         {
-            public void actionPerformed(ActionEvent e)
+            public void actionPerformed(ActionEvent event)
             {
                m_chat.slap(playerName);
             }

@@ -15,7 +15,6 @@
 
 package games.strategy.engine.history;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Round extends IndexedHistoryNode
 {

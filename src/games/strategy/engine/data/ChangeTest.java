@@ -26,8 +26,6 @@ import java.net.URL;
 import java.util.*;
 
 import junit.framework.*;
-
-import games.strategy.engine.xml.*;
 /**
  *
  * @author  Sean Bridges

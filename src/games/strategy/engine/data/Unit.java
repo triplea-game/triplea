@@ -20,9 +20,9 @@
 
 package games.strategy.engine.data;
 
-import java.io.*;
-import java.util.*;
 import games.strategy.net.GUID;
+
+import java.io.Serializable;
 
 
 /**

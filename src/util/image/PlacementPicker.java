@@ -15,19 +15,16 @@
 
 package util.image;
 
+import games.strategy.ui.Util;
+import games.strategy.util.PointFileReaderWriter;
+
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.image.BufferedImage;
-import javax.swing.*;
 
-import games.strategy.ui.Util;
-import games.strategy.util.*;
+import javax.swing.*;
 
 
 public class PlacementPicker extends JFrame

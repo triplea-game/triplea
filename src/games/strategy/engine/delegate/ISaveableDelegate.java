@@ -20,12 +20,7 @@
 
 package games.strategy.engine.delegate;
 
-import java.util.*;
 import java.io.Serializable;
-
-import games.strategy.engine.data.*;
-import games.strategy.engine.message.*;
-import games.strategy.engine.message.IDestination;
 
 
 /**

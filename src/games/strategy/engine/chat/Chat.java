@@ -18,19 +18,9 @@
 
 package games.strategy.engine.chat;
 
-import games.strategy.net.IChannelMessenger;
-import games.strategy.net.IChannelSubscribor;
-import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessageListener;
-import games.strategy.net.IMessenger;
-import games.strategy.net.INode;
+import games.strategy.net.*;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 

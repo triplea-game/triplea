@@ -20,8 +20,6 @@
 
 package games.strategy.engine.gamePlayer;
 
-import java.util.*;
-
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.*;
 

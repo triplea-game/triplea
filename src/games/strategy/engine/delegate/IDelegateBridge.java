@@ -20,7 +20,6 @@
 
 package games.strategy.engine.delegate;
 
-import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
 import games.strategy.engine.history.*;

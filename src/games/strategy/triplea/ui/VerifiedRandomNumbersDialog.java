@@ -17,14 +17,12 @@ import games.strategy.engine.framework.VerifiedRandomNumbers;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.triplea.formatter.Formatter;
 
-import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import java.util.List;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Sean Bridges

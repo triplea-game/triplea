@@ -20,16 +20,12 @@
 
 package games.strategy.engine.data;
 
-import java.util.*;
-
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.message.*;
-import games.strategy.net.*;
-import games.strategy.net.DummyMessenger;
-
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.*;
+import games.strategy.engine.message.Message;
+import games.strategy.net.*;
+
+import java.util.Random;
 
 /**
  * 

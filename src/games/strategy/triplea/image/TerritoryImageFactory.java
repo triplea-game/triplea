@@ -14,25 +14,18 @@ package games.strategy.triplea.image;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.ui.TerritoryData;
+import games.strategy.ui.ImageIoCompletionWatcher;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.ui.ImageIoCompletionWatcher;
-import games.strategy.triplea.ui.*;
-import games.strategy.triplea.*;
-import java.util.List;
+import java.io.File;
+import java.net.URL;
 import java.util.*;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
-
-import javax.imageio.*;
-import java.io.*;
+import java.util.List;
+import java.util.prefs.*;
 
 public final class TerritoryImageFactory
 {

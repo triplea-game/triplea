@@ -14,15 +14,14 @@
 
 package games.strategy.engine.framework.ui;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
 import games.strategy.engine.framework.GameRunner;
-import java.util.*;
+
+import java.io.*;
+import java.net.URL;
+import java.util.Properties;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * @author Sean Bridges

@@ -219,7 +219,7 @@ public class ProductionPanel extends JPanel
       m_type = (UnitType) rule.getResults().keySet().iterator().next();
       Icon icon = UnitIconImageFactory.instance().getIcon(m_type, id, m_data, false);
       String text =  " x " + (m_cost < 10 ? " " : "") + m_cost;
-      JLabel label = new JLabel(text, icon, JLabel.LEFT);
+      JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 
       int space = 8;
       this.add(new JLabel( m_type.getName()), new GridBagConstraints(0,0,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(2,0,0,0),0,0));

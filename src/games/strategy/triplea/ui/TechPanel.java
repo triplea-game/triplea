@@ -20,25 +20,20 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.delegate.*;
+import games.strategy.triplea.delegate.message.TechRoll;
+import games.strategy.ui.*;
+import games.strategy.util.Util;
+
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
-
-import games.strategy.ui.*;
-import games.strategy.util.*;
-import games.strategy.util.Util;
-import games.strategy.engine.data.*;
-import games.strategy.engine.data.events.*;
-import games.strategy.engine.message.Message;
-
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.attatchments.*;
 
 /**
  *

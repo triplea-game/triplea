@@ -20,11 +20,7 @@
 
 package games.strategy.net;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
+import java.io.*;
 
 /**
  *

@@ -20,23 +20,18 @@
 
 package games.strategy.triplea.image;
 
-import java.util.Iterator;
-import java.util.List;
-import java.io.*;
-import java.net.*;
-import java.awt.*;
-import java.awt.image.ImageObserver;
-import games.strategy.triplea.*;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.ui.TerritoryData;
+import games.strategy.ui.Util;
 import games.strategy.util.NullImageObserver;
-import games.strategy.ui.*;
-import java.awt.image.*;
 
-import javax.swing.JFrame;
+import java.awt.*;
+import java.awt.image.*;
+import java.net.URL;
+import java.util.*;
+import java.util.List;
 
 /**
  * Responsible for drawing countries on the map.

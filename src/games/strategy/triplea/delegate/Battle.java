@@ -20,13 +20,10 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 
-import games.strategy.triplea.Constants;
+import java.util.Collection;
 
 /**
  *

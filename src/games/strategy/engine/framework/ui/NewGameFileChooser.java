@@ -14,12 +14,12 @@
 
 package games.strategy.engine.framework.ui;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import java.awt.*;
+import games.strategy.engine.framework.GameRunner;
+
 import java.io.File;
 
-import games.strategy.engine.framework.GameRunner;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * <p>Title: TripleA</p>

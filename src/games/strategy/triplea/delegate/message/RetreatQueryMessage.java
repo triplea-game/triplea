@@ -20,10 +20,7 @@
 
 package games.strategy.triplea.delegate.message;
 
-import java.util.*;
-
-import games.strategy.util.*;
-import games.strategy.engine.message.Message;
+import java.util.Collection;
 
 /**
  *

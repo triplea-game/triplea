@@ -16,13 +16,11 @@ package games.strategy.engine.random;
 import java.util.ArrayList;
 import java.util.List;
 
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.VerifiedRandomNumbers;
 import games.strategy.engine.vault.NotUnlockedException;
 import games.strategy.engine.vault.Vault;
 import games.strategy.engine.vault.VaultID;
-import games.strategy.triplea.formatter.Formatter;
 
 /**
  * @author Sean Bridges
@@ -42,7 +40,6 @@ public class RemoteRandom implements IRemoteRandom
     }
     
     
-    private final PlayerID m_id;
     private final PlainRandomSource m_plainRandom = new PlainRandomSource();
     private final IGame m_game;
     
@@ -58,9 +55,8 @@ public class RemoteRandom implements IRemoteRandom
     /**
      * @param id
      */
-    public RemoteRandom(final PlayerID id, IGame game)
+    public RemoteRandom(IGame game)
     {
-        m_id = id;
         m_game = game;
     }
 

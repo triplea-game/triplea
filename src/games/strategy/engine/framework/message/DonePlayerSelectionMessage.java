@@ -15,7 +15,6 @@
 package games.strategy.engine.framework.message;
 
 import java.io.*;
-import java.util.zip.*;
 
 /*
  * DonePlayerSelectionMessage.java

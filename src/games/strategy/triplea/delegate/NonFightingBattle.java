@@ -20,14 +20,12 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
-
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.Formatter;
+import games.strategy.util.*;
+
+import java.util.*;
 
 /**
  * Battle in which no fighting occurs.  <b>

@@ -20,12 +20,12 @@
 
 package games.strategy.engine.framework.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-
 import games.strategy.ui.IntTextField;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+
+import javax.swing.*;
 
 /**
  * UI for choosing server options.

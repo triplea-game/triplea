@@ -20,11 +20,10 @@
 
 package games.strategy.triplea.ui;
 
-import java.awt.*;
-import javax.swing.*;
-
 import games.strategy.engine.data.*;
-import javax.swing.border.*;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 /**
  *

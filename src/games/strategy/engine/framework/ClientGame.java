@@ -83,7 +83,7 @@ public class ClientGame implements IGame
       m_messageManager.addDestination(gp);
       m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, ServerGame.getRemoteName(gp.getID()));
       
-      IRemoteRandom remoteRandom = new RemoteRandom(player, this);
+      IRemoteRandom remoteRandom = new RemoteRandom(this);
       m_remoteMessenger.registerRemote(IRemoteRandom.class, remoteRandom, ServerGame.getRemoteRandomName(player));
       
     }

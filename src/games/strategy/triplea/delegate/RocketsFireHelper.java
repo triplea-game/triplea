@@ -13,14 +13,14 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.message.StringMessage;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.*;
-import java.util.*;
 import games.strategy.util.*;
-import games.strategy.engine.message.*;
+
+import java.util.*;
 
 /**
  * Logic to fire rockets.

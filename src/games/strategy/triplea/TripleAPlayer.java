@@ -20,22 +20,17 @@
 
 package games.strategy.triplea;
 
-import java.util.*;
-
-import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.*;
-import games.strategy.engine.data.events.*;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.*;
-import games.strategy.triplea.ui.TripleAFrame;
-
+import games.strategy.engine.message.Message;
+import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.*;
-import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.delegate.*;
+import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.*;
+import games.strategy.util.*;
+
+import java.util.*;
 
 /**
  * 

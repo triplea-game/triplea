@@ -20,12 +20,10 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.engine.data.*;
-import java.io.*;
+import games.strategy.triplea.attatchments.UnitAttatchment;
+
+import java.util.*;
 
 
 /**

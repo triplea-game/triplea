@@ -15,8 +15,7 @@
 
 package games.strategy.engine.history;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.PlayerID;
 
 public class Step extends IndexedHistoryNode
 {

@@ -14,11 +14,12 @@
 
 package games.strategy.engine.framework.ui;
 
-import javax.swing.*;
+import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
+
 import java.awt.*;
-import java.awt.event.*;
-import games.strategy.engine.random.*;
-import games.strategy.triplea.*;
+import java.awt.event.ActionEvent;
+
+import javax.swing.*;
 
 public class PBEMStartup extends JPanel
 {

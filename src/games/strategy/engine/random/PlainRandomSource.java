@@ -16,8 +16,6 @@ package games.strategy.engine.random;
 
 import games.strategy.util.IntegerMap;
 
-import java.util.*;
-
 /**
  * Gets random numbers from javas random number generators.
  */

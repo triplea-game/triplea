@@ -21,11 +21,10 @@
 package games.strategy.ui;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.image.*;
+
+import javax.swing.JComponent;
 
 /**
  *

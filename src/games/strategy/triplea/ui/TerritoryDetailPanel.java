@@ -14,16 +14,14 @@
 
 package games.strategy.triplea.ui;
 
-import javax.swing.*;
-import java.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.Territory;
-import java.awt.event.MouseEvent;
+import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.util.*;
-import games.strategy.triplea.image.*;
-import java.awt.*;
-import java.lang.reflect.*;
-import javax.swing.border.*;
+
+import java.util.*;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class TerritoryDetailPanel extends JPanel
 {
@@ -83,7 +81,7 @@ public class TerritoryDetailPanel extends JPanel
                 item.getType(), item.getOwner(), m_data, item.getDamaged());
             JLabel label = new JLabel("x" + item.getUnits().size(),
                                       icon,
-                                      JLabel.LEFT
+                                      SwingConstants.LEFT
                                       );
 
             add(label);
