@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="WH World1942" version="1.00"/>
+        <info name="WH World1942" version="1.01"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1967,7 +1967,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="England" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="5"/>
+                        <option name="production" value="4"/>
                         <option name="capital" value="British"/>
                     </attatchment>
 
@@ -2028,7 +2028,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Southern Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="2"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Sakhalin Island" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2048,11 +2048,11 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Caucasus" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="4"/>
+                        <option name="production" value="3"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Scotland" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="3"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Okhotsk" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2173,7 +2173,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Stalingrad" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="4"/>
+                        <option name="production" value="3"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Kansu" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2230,7 +2230,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Madagascar" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="0"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Shantung" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2262,7 +2262,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Sverdlovsk" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="3"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Western South America" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2310,7 +2310,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Karelija" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Solomon Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2403,7 +2403,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Central Australia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="0"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Cuba" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2415,7 +2415,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Western Poland" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="3"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2715,6 +2715,7 @@
                         <unitPlacement unitType="aaGun" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Moscow" quantity="3" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Moscow" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="armour" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="fighter" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="bomber" territory="Moscow" quantity="1" owner="Russians"/>
 
@@ -2727,7 +2728,7 @@
 
                         <unitPlacement unitType="infantry" territory="Kazakh" quantity="3" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Omsk" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Omsk" quantity="2" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Sverdlovsk" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Sverdlovsk" quantity="2" owner="Russians"/>
@@ -2795,7 +2796,7 @@
 
                         <unitPlacement unitType="factory" territory="Western Germany" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="aaGun" territory="Western Germany" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="infantry" territory="Western Germany" quantity="4" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Western Germany" quantity="3" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Western Germany" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="armour" territory="Western Germany" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Western Germany" quantity="1" owner="Germans"/>
@@ -2804,9 +2805,7 @@
                         <unitPlacement unitType="fighter" territory="Baltic States" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="bomber" territory="Baltic States" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Ukraine" quantity="3" owner="Germans"/>
-                        <unitPlacement unitType="artillery" territory="Ukraine" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="armour" territory="Ukraine" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Ukraine" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Ukraine" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Algeria" quantity="1" owner="Germans"/>
@@ -2819,10 +2818,12 @@
                         <unitPlacement unitType="infantry" territory="Balkans" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="armour" territory="Balkans" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Western Poland" quantity="3" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Western Poland" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Western Poland" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Belorussia" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Belorussia" quantity="4" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Belorussia" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="armour" territory="Belorussia" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="Eastern Germany" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="aaGun" territory="Eastern Germany" quantity="1" owner="Germans"/>
@@ -2842,13 +2843,13 @@
                         <unitPlacement unitType="armour" territory="Italy" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Italy" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Vichy France" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Vichy France" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Morocco" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="armour" territory="Morocco" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Austria-Czechoslovakia" quantity="4" owner="Germans"/>
-                        <unitPlacement unitType="armour" territory="Austria-Czechoslovakia" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Austria-Czechoslovakia" quantity="3" owner="Germans"/>
+                        <unitPlacement unitType="armour" territory="Austria-Czechoslovakia" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Sardinia" quantity="1" owner="Germans"/>
 
@@ -2879,7 +2880,6 @@
 
                         <unitPlacement unitType="fighter" territory="SZ 56 Bay of Bengal" quantity="1" owner="British"/>
                         <unitPlacement unitType="transport" territory="SZ 56 Bay of Bengal" quantity="1" owner="British"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 56 Bay of Bengal" quantity="1" owner="British"/>
                         <unitPlacement unitType="carrier" territory="SZ 56 Bay of Bengal" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="submarine" territory="SZ 57 North East Indian" quantity="1" owner="British"/>
@@ -2899,7 +2899,7 @@
                         <unitPlacement unitType="bomber" territory="England" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="factory" territory="New South Wales" quantity="1" owner="British"/>
-                        <unitPlacement unitType="infantry" territory="New South Wales" quantity="3" owner="British"/>
+                        <unitPlacement unitType="infantry" territory="New South Wales" quantity="1" owner="British"/>
                         <unitPlacement unitType="armour" territory="New South Wales" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="infantry" territory="Baluchistan" quantity="2" owner="British"/>
@@ -2955,8 +2955,9 @@
                         <unitPlacement unitType="carrier" territory="SZ 70 South China Sea" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="battleship" territory="SZ 70 South China Sea" quantity="1" owner="Japanese"/>
 
+                        <unitPlacement unitType="transport" territory="SZ 78 Northwest Pacific" quantity="1" owner="Japanese"/>
+
                         <unitPlacement unitType="transport" territory="SZ 83 West Pacific" quantity="1" owner="Japanese"/>
-                        <unitPlacement unitType="submarine" territory="SZ 83 West Pacific" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="destroyer" territory="SZ 83 West Pacific" quantity="1" owner="Japanese"/>
 
                         <unitPlacement unitType="fighter" territory="SZ 84 West Pacific" quantity="2" owner="Japanese"/>
@@ -2971,7 +2972,7 @@
 
                         <unitPlacement unitType="infantry" territory="Sumatra" quantity="2" owner="Japanese"/>
 
-                        <unitPlacement unitType="infantry" territory="Manchuria" quantity="3" owner="Japanese"/>
+                        <unitPlacement unitType="infantry" territory="Manchuria" quantity="2" owner="Japanese"/>
                         <unitPlacement unitType="fighter" territory="Manchuria" quantity="1" owner="Japanese"/>
 
                         <unitPlacement unitType="infantry" territory="Sakhalin Island" quantity="1" owner="Japanese"/>
@@ -2986,7 +2987,7 @@
 
                         <unitPlacement unitType="factory" territory="Northern Japan" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="aaGun" territory="Northern Japan" quantity="1" owner="Japanese"/>
-                        <unitPlacement unitType="infantry" territory="Northern Japan" quantity="3" owner="Japanese"/>
+                        <unitPlacement unitType="infantry" territory="Northern Japan" quantity="4" owner="Japanese"/>
 
                         <unitPlacement unitType="infantry" territory="Java" quantity="1" owner="Japanese"/>
 
@@ -3096,8 +3097,8 @@
                         <resourceGiven player="British" resource="IPCs" quantity="36"/>
                         <resourceGiven player="Americans" resource="IPCs" quantity="54"/>
                         <resourceGiven player="Japanese" resource="IPCs" quantity="34"/>
-                        <resourceGiven player="Russians" resource="IPCs" quantity="35"/>
-                        <resourceGiven player="Germans" resource="IPCs" quantity="54"/>
+                        <resourceGiven player="Russians" resource="IPCs" quantity="33"/>
+                        <resourceGiven player="Germans" resource="IPCs" quantity="57"/>
 
                 </resourceInitialize>
         </initialize>
