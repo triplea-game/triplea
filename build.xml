@@ -54,6 +54,10 @@
 			<zipfileset dir="games/" prefix="games/">
 				<include name="*.xml"/>
 			</zipfileset>
+			<zipfileset dir=".">
+				<include name="readme.html"/>
+			</zipfileset>
+
 		</zip>
     </target>
 
@@ -81,6 +85,7 @@
 			</zipfileset>
 			<zipfileset dir=".">
 				<include name="build.xml"/>
+				<include name="readme.html"/>
 			</zipfileset>
 			<zipfileset dir="liscence/" prefix="liscence/">
 				<include name="gpl.txt"/>
