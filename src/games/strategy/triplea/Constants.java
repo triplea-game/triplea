@@ -30,22 +30,32 @@ package games.strategy.triplea;
 public interface Constants
 {
 
-	//Player names
-	public static final String AMERICANS = "Americans";
-	public static final String BRITISH = "British";
-	public static final String GERMANS = "Germans";
-	public static final String JAPANESE = "Japanese";
-	public static final String RUSSIANS = "Russians";
+  //Player names
+  public static final String AMERICANS = "Americans";
+  public static final String BRITISH = "British";
+  public static final String GERMANS = "Germans";
+  public static final String JAPANESE = "Japanese";
+  public static final String RUSSIANS = "Russians";
 
-	public static final String UNIT_ATTATCHMENT_NAME = "unitAttatchment";
-	public static final String TERRITORY_ATTATCHMENT_NAME = "territoryAttatchment";
-	public static final String IPCS = "IPCs";
-	public static final int MAX_DICE = 6;
-	public static final String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
+  public static final String UNIT_ATTATCHMENT_NAME = "unitAttatchment";
+  public static final String TERRITORY_ATTATCHMENT_NAME = "territoryAttatchment";
+  public static final String IPCS = "IPCs";
+  public static final int MAX_DICE = 6;
+  public static final String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
     public static final String FACTORIES_PER_COUNTRY_PROPERTY ="maxFactoriesPerTerritory";
 
-	public static final int TECH_ROLL_COST = 5;
-	public static final String TECH_PROPERTY = "TECH PROPERTY";
+  public static final int TECH_ROLL_COST = 5;
+  public static final String TECH_PROPERTY = "TECH PROPERTY";
 
-	public static final String INFANTRY_TYPE = "infantry";
+  public static final String INFANTRY_TYPE = "infantry";
+  public static final String ARMOUR_TYPE = "armour";
+  public static final String TRANSPORT_TYPE = "transport";
+  public static final String SUBMARINE_TYPE = "submarine";
+  public static final String BATTLESHIP_TYPE = "battleship";
+  public static final String CARRIER_TYPE = "carrier";
+  public static final String FIGHTER_TYPE = "fighter";
+  public static final String BOMBER_TYPE = "bomber";
+  public static final String FACTORY_TYPE = "factory";
+  public static final String AAGUN_TYPE = "aaGun";
+
 }

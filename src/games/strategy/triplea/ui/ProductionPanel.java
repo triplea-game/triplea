@@ -70,7 +70,7 @@ public class ProductionPanel extends JPanel
 
     s_panel.m_bid = bid;
     s_panel.m_data = data;
-    s_panel.initRules(id.getProductionFrontier().getRules(), data);
+    s_panel.initRules(id, data);
     s_panel.initLayout(id);
     s_panel.calculateLimits();
 
@@ -97,12 +97,12 @@ public class ProductionPanel extends JPanel
 
     }
 
-  private void initRules(Collection rules, GameData data)
+  private void initRules(PlayerID player, GameData data)
   {
-    Iterator iter = rules.iterator();
+    Iterator iter = player.getProductionFrontier().getRules().iterator();
     while(iter.hasNext())
     {
-      m_rules.add(new Rule( (ProductionRule) iter.next(), data));
+      m_rules.add(new Rule( (ProductionRule) iter.next(), data, player));
     }
 
   }
@@ -198,14 +198,14 @@ public class ProductionPanel extends JPanel
     private UnitType m_type;
     private ProductionRule m_rule;
 
-    Rule(ProductionRule rule, GameData data)
+    Rule(ProductionRule rule, GameData data, PlayerID id)
     {
       m_data = data;
       m_rule = rule;
       m_cost = rule.getCosts().getInt( m_data.getResourceList().getResource(Constants.IPCS));
       m_type = (UnitType) rule.getResults().keySet().iterator().next();
 
-      this.add( new JLabel(UnitIconImageFactory.instance().getIcon(m_type)));
+      this.add( new JLabel(UnitIconImageFactory.instance().getIcon(m_type, id, m_data)));
       this.add(new JLabel( " x " + m_cost));
       this.add(m_text);
       m_text.addChangeListener(m_listener);

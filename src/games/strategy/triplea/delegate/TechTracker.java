@@ -33,94 +33,99 @@ import games.strategy.triplea.Constants;
  */
 public class TechTracker implements java.io.Serializable
 {
-	//Maps playerID -> collection of advances
-	private Map m_advances = new HashMap();
+  //Maps playerID -> collection of advances
+  private Map m_advances = new HashMap();
 
-	/** Creates new TechTracker */
+  /** Creates new TechTracker */
     public TechTracker()
-	{
+  {
     }
 
-	public synchronized void addAdvance(PlayerID player, GameData data, DelegateBridge bridge, TechAdvance advance)
-	{
-		Collection already = (Collection) m_advances.get(player);
-		if(already == null)
-		{
-			already = new ArrayList();
-			m_advances.put(player, already);
-		}
-		if(already.contains(advance))
-			throw new IllegalStateException("Trying to add an advance that player already has");
+  public synchronized void addAdvance(PlayerID player, GameData data, DelegateBridge bridge, TechAdvance advance)
+  {
+    Collection already = (Collection) m_advances.get(player);
+    if(already == null)
+    {
+      already = new ArrayList();
+      m_advances.put(player, already);
+    }
+    if(already.contains(advance))
+      throw new IllegalStateException("Trying to add an advance that player already has");
 
 
-		already.add(advance);
-		updateAdvanceProperties(data, bridge);
-	}
+    already.add(advance);
+    updateAdvanceProperties(data, bridge);
+  }
 
-	/**
-	 * Place a hash map of PLayerID -> List of strings into
-	 * the games properties to show which player has what advances.
-	 */
-	private void updateAdvanceProperties(GameData data, DelegateBridge bridge)
-	{
-		HashMap property = new HashMap();
-		Iterator players = m_advances.keySet().iterator();
-		while(players.hasNext())
-		{
-			PlayerID player = (PlayerID) players.next();
-			Iterator advances = ((Collection) m_advances.get(player)).iterator();
+  /**
+   * Place a hash map of PLayerID -> List of strings into
+   * the games properties to show which player has what advances.
+   */
+  private void updateAdvanceProperties(GameData data, DelegateBridge bridge)
+  {
+    HashMap property = new HashMap();
+    Iterator players = m_advances.keySet().iterator();
+    while(players.hasNext())
+    {
+      PlayerID player = (PlayerID) players.next();
+      Iterator advances = ((Collection) m_advances.get(player)).iterator();
 
-			Collection advanceNames = new ArrayList();
-			while(advances.hasNext())
-			{
-				TechAdvance advance = (TechAdvance) advances.next();
-				advanceNames.add(advance.getName());
+      Collection advanceNames = new ArrayList();
+      while(advances.hasNext())
+      {
+        TechAdvance advance = (TechAdvance) advances.next();
+        advanceNames.add(advance.getName());
 
-			}
-			property.put(player, advanceNames);
-		}
+      }
+      property.put(player, advanceNames);
+    }
 
-		Change change = ChangeFactory.setProperty(Constants.TECH_PROPERTY, property, data);
-		bridge.addChange(change);
-	}
+    Change change = ChangeFactory.setProperty(Constants.TECH_PROPERTY, property, data);
+    bridge.addChange(change);
+  }
 
-	public synchronized Collection getAdvances(PlayerID player)
-	{
-		if(m_advances.get(player) == null)
-			return Collections.EMPTY_LIST;
-		return Collections.unmodifiableList( (List) m_advances.get(player));
-	}
+  public synchronized Collection getAdvances(PlayerID player)
+  {
+    if(m_advances.get(player) == null)
+      return Collections.EMPTY_LIST;
+    return Collections.unmodifiableList( (List) m_advances.get(player));
+  }
 
-	public synchronized boolean hasAdvance(PlayerID player, TechAdvance advance)
-	{
-		Collection already = (Collection) m_advances.get(player);
-		if(already == null)
-			return false;
-		return already.contains(advance);
-	}
+  public synchronized boolean hasAdvance(PlayerID player, TechAdvance advance)
+  {
+    Collection already = (Collection) m_advances.get(player);
+    if(already == null)
+      return false;
+    return already.contains(advance);
+  }
 
-	public boolean hasLongRangeAir(PlayerID player)
-	{
-		return hasAdvance(player, TechAdvance.LONG_RANGE_AIRCRAFT);
-	}
+  public boolean hasLongRangeAir(PlayerID player)
+  {
+    return hasAdvance(player, TechAdvance.LONG_RANGE_AIRCRAFT);
+  }
 
-	public boolean hasHeavyBomber(PlayerID player)
-	{
-		return hasAdvance(player, TechAdvance.HEAVY_BOMBER);
-	}
+  public boolean hasHeavyBomber(PlayerID player)
+  {
+    return hasAdvance(player, TechAdvance.HEAVY_BOMBER);
+  }
 
-	public boolean hasSuperSubs(PlayerID player)
-	{
-		return hasAdvance(player, TechAdvance.SUPER_SUBS);
-	}
+  public boolean hasSuperSubs(PlayerID player)
+  {
+    return hasAdvance(player, TechAdvance.SUPER_SUBS);
+  }
 
-	public boolean hasJetFighter(PlayerID player)
-	{
-		return hasAdvance(player, TechAdvance.JET_POWER);
-	}
+  public boolean hasJetFighter(PlayerID player)
+  {
+    return hasAdvance(player, TechAdvance.JET_POWER);
+  }
 
-	public boolean hasRocket(PlayerID player)
-	{
-		return hasAdvance(player, TechAdvance.ROCKETS);
-	}
+  public boolean hasRocket(PlayerID player)
+  {
+    return hasAdvance(player, TechAdvance.ROCKETS);
+  }
+
+  public boolean hasIndustrialTechnology(PlayerID player)
+  {
+    return hasAdvance(player, TechAdvance.INDUSTRIAL_TECHNOLOGY);
+  }
 }
