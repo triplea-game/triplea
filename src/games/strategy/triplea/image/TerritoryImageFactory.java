@@ -37,7 +37,10 @@ public final class TerritoryImageFactory
   // data
   private HashMap m_playerColors = new HashMap();
   private HashMap m_baseTerritoryImages = new HashMap();
-  private HashMap m_ownedTerritoryImages = new HashMap();
+
+  //this can get quite large, make it a weak hash map to
+  //allow reclaiming if the memory is needed
+  private WeakHashMap m_ownedTerritoryImages = new WeakHashMap();
   private GraphicsConfiguration m_localGraphicSystem = null;
   private BufferedImage m_waterImage = null;
 
@@ -57,7 +60,7 @@ public final class TerritoryImageFactory
   public BufferedImage getTerritoryImage(Territory place, PlayerID owner)
   {
 
-    BufferedImage terrImage;
+    BufferedImage terrImage = null;
 
     // lookup via a composite key
     String key = place.getName() + " owned by " + owner.getName();
@@ -65,14 +68,15 @@ public final class TerritoryImageFactory
     // look in the cache first
     if (m_ownedTerritoryImages.containsKey(key))
       terrImage = (BufferedImage) m_ownedTerritoryImages.get(key);
-    else
+
+    //its a weak hash map, so it may be empty
+    if(terrImage == null)
     { // load it if not found
       terrImage = createTerritoryImage(place, owner);
       m_ownedTerritoryImages.put(key, terrImage);
     }
 
     return terrImage;
-
   }
 
   // constructor

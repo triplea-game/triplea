@@ -29,6 +29,7 @@ import java.awt.image.*;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.util.*;
 
 /**
  *
@@ -41,7 +42,7 @@ public class MapImage
   private final static String SMALL_IMAGE_FILENAME = "images/smallMap.gif";
 
   private static MapImage s_instance;
-  private static Component s_observer;
+  private static final ImageObserver s_observer = new NullImageObserver();
 
 
   public static synchronized MapImage getInstance()
@@ -49,7 +50,6 @@ public class MapImage
     if(s_instance == null)
     {
       s_instance = new MapImage();
-      s_observer = new Panel();
     }
     return s_instance;
   }
@@ -57,7 +57,7 @@ public class MapImage
   private static Image loadImage(String name)
   {
     Image img =  Toolkit.getDefaultToolkit().createImage(MapImage.class.getResource(name));
-    MediaTracker tracker = new MediaTracker(s_observer);
+    MediaTracker tracker = new MediaTracker( new Panel());
     tracker.addImage(img,1 );
     try
     {
@@ -112,12 +112,13 @@ public class MapImage
     frame.addNotify();
     m_largeMapImage = frame.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer));
     m_smallMapImage = frame.createImage(smallFromFile.getWidth(s_observer), smallFromFile.getHeight(s_observer));
-    frame.removeNotify();
+
     frame.dispose();
     frame = null;
 
     m_largeMapImage.getGraphics().drawImage(largeFromFile, 0,0,s_observer);
     m_smallMapImage.getGraphics().drawImage(smallFromFile, 0,0,s_observer);
+
 
     largeFromFile = null;
     smallFromFile = null;

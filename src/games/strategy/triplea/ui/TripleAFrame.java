@@ -146,11 +146,11 @@ public class TripleAFrame extends JFrame
     tabs.addTab( "Actions", m_actionButtons);
     m_actionButtons.setBorder(null);
 
+    TerritoryDetailPanel details = new TerritoryDetailPanel(m_mapPanel, m_data);
+    tabs.addTab("Territory", details);
+
     StatPanel stats = new StatPanel(m_data);
     tabs.addTab("Stats", stats);
-
-    TerritoryDetailPanel details = new TerritoryDetailPanel(m_mapPanel, m_data);
-    tabs.addTab("Details", details);
 
     rightHandSide.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize().getHeight()));
     mainPanel.add(rightHandSide, BorderLayout.EAST);

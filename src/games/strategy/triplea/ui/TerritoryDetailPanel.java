@@ -23,6 +23,7 @@ import games.strategy.triplea.util.*;
 import games.strategy.triplea.image.*;
 import java.awt.*;
 import java.lang.reflect.*;
+import javax.swing.border.*;
 
 public class TerritoryDetailPanel extends JPanel
 {
@@ -33,7 +34,7 @@ public class TerritoryDetailPanel extends JPanel
   {
     m_data = data;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
+    setBorder(new EmptyBorder(5,5,0,0));
 
     mapPanel.addMapSelectionListener(
       new MapSelectionListener()
@@ -49,9 +50,9 @@ public class TerritoryDetailPanel extends JPanel
 
         if(territory == null)
         {
-          refresh();
           return;
         }
+
         add(new JLabel(territory.getName()));
         Set units = UnitSeperator.categorize(territory.getUnits().getUnits());
         Iterator iter = (new TreeSet(units)).iterator();

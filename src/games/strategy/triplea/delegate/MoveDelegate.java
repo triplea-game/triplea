@@ -1184,8 +1184,6 @@ public class MoveDelegate implements SaveableDelegate
 
     Change remove = ChangeFactory.removeUnits(territory, toRemove);
 
-
-
     m_bridge.addChange(remove);
 
     String transcriptText = Formatter.unitsToText(toRemove) + " could not land in " + territory.getName() + " and " + (toRemove.size() > 1 ? "were" : "was") +  " removed";
@@ -1418,6 +1416,8 @@ class UndoableMove implements Serializable
 
           //undo any changes to the game data
           bridge.addChange(m_undoChange.invert());
+
+          bridge.getTranscript().write(bridge.getPlayerID().getName() +  " undoes his last move.");
 
       }
       catch (ClassNotFoundException ex)
