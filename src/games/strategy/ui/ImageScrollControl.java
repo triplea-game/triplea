@@ -40,6 +40,7 @@ public class ImageScrollControl
 	private ImageScrollerSmallView m_small;
 	private double m_ratioX = 0;
 	private double m_ratioY = 0;
+	private boolean m_scrollWrapX = true;
 
 	public static void main(String[] args)
 	{
@@ -81,6 +82,16 @@ public class ImageScrollControl
 		resetSmallSelectionArea();
     }
 
+    public void setScrollWrapX(boolean aBool)
+    {
+      m_scrollWrapX = aBool;   
+    }
+    
+    public boolean getScrollWrapX()
+    {
+        return m_scrollWrapX;
+    }
+    
 	public double getRatioX()
 	{
 		return m_ratioX;

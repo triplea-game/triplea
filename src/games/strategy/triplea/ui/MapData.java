@@ -85,6 +85,11 @@ public class MapData
     }
 
     
+    public boolean scrollWrapX()
+    {
+        return Boolean.valueOf(m_mapProperties.getProperty("map.scrollWrapX", "true")).booleanValue();
+    }
+    
     /**
      * Constructor TerritoryData(java.lang.String)
      * 

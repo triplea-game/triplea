@@ -111,7 +111,7 @@ public class TripleAFrame extends JFrame
         m_data = game.getData();
         m_localPlayers = players;
 
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(WINDOW_LISTENER);
 
         createMenuBar();
@@ -127,7 +127,9 @@ public class TripleAFrame extends JFrame
         m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
 
         //link the small and large images
-        new ImageScrollControl(m_mapPanel, m_smallView);
+        ImageScrollControl control = new ImageScrollControl(m_mapPanel, m_smallView);
+        control.setScrollWrapX(MapData.getInstance().scrollWrapX());
+        
 
         m_gameMainPanel.setLayout(new BorderLayout());
 

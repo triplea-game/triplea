@@ -19,8 +19,6 @@
 
 package games.strategy.ui;
 
-import games.strategy.triplea.ui.MapData;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -185,6 +183,19 @@ public class ImageScrollerLargeView extends JComponent
      */
     private void setCoordsInternal(int newX, int newY)
     {
+        if(!m_control.getScrollWrapX())
+        {
+            if(newX < -getWidth() / 2)
+            {
+                newX = m_offscreenImage.getWidth(this) - getWidth() ;
+            }
+            else if(newX < 0)
+            {
+                newX =0;
+            }
+        }
+        
+        
         setCoords(newX, newY);
         m_control.setLargeCoords(newX, newY);
     }
