@@ -566,6 +566,8 @@ public class TripleAFrame extends JFrame
                                 PlayerID player, int round)
     {
         m_step.setText("Round: " + round + " ");
+        if(player != null)
+            m_step.setIcon(new ImageIcon(FlagIconImageFactory.instance().getFlag(player)));
     }
   };
 
