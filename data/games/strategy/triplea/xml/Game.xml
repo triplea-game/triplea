@@ -476,7 +476,6 @@
 		<delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
 		<delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
 		<delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
-		<delegate name="ncmove" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Non-Combat Move"/>
 		<delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
 		<delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
 		<delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
@@ -489,7 +488,7 @@
 			<step name="russianPurchase" delegate="purchase" player="Russians"/>
 			<step name="russianCombatMove" delegate="move" player="Russians"/>
 			<step name="russianBattle" delegate="battle" player="Russians"/>
-			<step name="russianNonCombatMove" delegate="ncmove" player="Russians"/>
+			<step name="russianNonCombatMove" delegate="move" player="Russians"/>
 			<step name="russianPlace" delegate="place" player="Russians"/>
 			<step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
@@ -497,7 +496,7 @@
 			<step name="germanPurchase" delegate="purchase" player="Germans"/>
 			<step name="germanCombatMove" delegate="move" player="Germans"/>
 			<step name="germanBattle" delegate="battle" player="Germans"/>
-			<step name="germanNonCombatMove" delegate="ncmove" player="Germans"/>
+			<step name="germanNonCombatMove" delegate="move" player="Germans"/>
 			<step name="germanPlace" delegate="place" player="Germans"/>
 			<step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
@@ -505,7 +504,7 @@
 			<step name="britishPurchase" delegate="purchase" player="British"/>
 			<step name="britishCombatMove" delegate="move" player="British"/>
 			<step name="britishBattle" delegate="battle" player="British"/>
-			<step name="britishNonCombatMove" delegate="ncmove" player="British"/>
+			<step name="britishNonCombatMove" delegate="move" player="British"/>
 			<step name="britishPlace" delegate="place" player="British"/>
 			<step name="britishEndTurn" delegate="endTurn" player="British"/>
 
@@ -513,7 +512,7 @@
 			<step name="japanesePurchase" delegate="purchase" player="Japanese"/>
 			<step name="japaneseCombatMove" delegate="move" player="Japanese"/>
 			<step name="japaneseBattle" delegate="battle" player="Japanese"/>
-			<step name="japaneseNonCombatMove" delegate="ncmove" player="Japanese"/>
+			<step name="japaneseNonCombatMove" delegate="move" player="Japanese"/>
 			<step name="japanesePlace" delegate="place" player="Japanese"/>
 			<step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
 
@@ -521,7 +520,7 @@
 			<step name="americanPurchase" delegate="purchase" player="Americans"/>
 			<step name="americanCombatMove" delegate="move" player="Americans"/>
 			<step name="americanBattle" delegate="battle" player="Americans"/>
-			<step name="americanNonCombatMove" delegate="ncmove" player="Americans"/>
+			<step name="americanNonCombatMove" delegate="move" player="Americans"/>
 			<step name="americanPlace" delegate="place" player="Americans"/>
 			<step name="americanEndTurn" delegate="endTurn" player="Americans"/>
 			

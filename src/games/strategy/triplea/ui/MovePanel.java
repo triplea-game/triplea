@@ -158,10 +158,7 @@ public class MovePanel extends ActionPanel
 			}
 		}
 		
-		
-		Map dependent = getDependents(owned, start);
-		
-		UnitChooser chooser = new UnitChooser(owned, dependent );
+		UnitChooser chooser = getUnitChooser(owned, start);
 		String text = "Select units to move from "	+ start.getName() + ".";
 		int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,null,null,null );
 		
@@ -170,18 +167,17 @@ public class MovePanel extends ActionPanel
 		
 		return chooser.getSelected();
 	}
-	
-	private Map getDependents(Collection units, Territory territory)
+
+	private UnitChooser getUnitChooser(Collection units, Territory start)
 	{
-		if(!territory.isWater())
-			return Collections.EMPTY_MAP;
-		
-		Message msg = new MustMoveWithQuery(units, territory);
+		Message msg = new MustMoveWithQuery(units, start);
 		Message response = m_bridge.sendMessage(msg);
 		if(!(response instanceof MustMoveWithReply))
 			throw new IllegalStateException("Message of wrong type:" + response);
+
+		MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
 		
-		return ((MustMoveWithReply) response).getMustMoveWith();		
+		return new UnitChooser(units, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement());
 	}
 	
 	private Route getRoute(Territory start, Territory end)

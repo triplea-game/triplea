@@ -36,7 +36,6 @@ import games.strategy.triplea.formatter.Formatter;
 
 
 
-
 /**
  *
  * Responsible for moving units on the board. <p>
@@ -151,7 +150,7 @@ public class MoveDelegate implements Delegate
 	
 		//reset movement, dont do at end of turn since
 		//we move a couple times.
-		if(m_player != player)
+		if(!m_nonCombat)
 		{
 			m_alreadyMoved.clear();
 			m_transportTracker.clearUnloadedCapacity();
@@ -185,12 +184,29 @@ public class MoveDelegate implements Delegate
 	
 	private MustMoveWithReply mustMoveWith(MustMoveWithQuery query) 
 	{
-		return new MustMoveWithReply( mustMoveWith(query.getUnits(), query.getStart()));
+		return new MustMoveWithReply( mustMoveWith(query.getUnits(), query.getStart()), movementLeft(query.getUnits()));
+	}
+
+	private IntegerMap movementLeft(Collection units)
+	{
+		IntegerMap movement = new IntegerMap();
+		
+		Iterator iter = units.iterator();
+		while(iter.hasNext())
+		{
+			Unit current = (Unit) iter.next();
+			movement.put(current, MoveValidator.movementLeft(current, m_alreadyMoved));
+		}
+	
+		return movement;
 	}
 	
 	private Map mustMoveWith(Collection units, Territory start)
 	{
 		List sortedUnits = new ArrayList(units);
+
+		
+		
 		Collections.sort(sortedUnits, increasingMovement);
 		
 		Map mapping = new HashMap();

@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * UnitChooser.java
  *
  * Created on December 3, 2001, 7:32 PM
@@ -13,6 +27,7 @@ import javax.swing.*;
 
 import games.strategy.ui.*;
 import games.strategy.util.Util;
+import games.strategy.util.IntegerMap;
 
 import games.strategy.engine.data.*;
 
@@ -36,11 +51,18 @@ public class UnitChooser extends JPanel
 	private JLabel m_leftToSelect = new JLabel();
 	
 	/** Creates new UnitChooser */
-    public UnitChooser(Collection units, Map dependent) 
+    public UnitChooser(Collection units, Map dependent, IntegerMap movement) 
 	{	
-		createEntries(units, dependent);
+		createEntries(units, dependent, movement);
 		layoutEntries();
     }
+
+	public UnitChooser(Collection units, Map dependent) 
+	{	
+		createEntries(units, dependent, null);
+		layoutEntries();
+    }
+
 	
 	public void setTitle(String title)
 	{
@@ -78,15 +100,23 @@ public class UnitChooser extends JPanel
 		
 		m_leftToSelect.setText("Left to select:" + (m_total - selected));
 	}
+
 	
-	private void createEntries(Collection units, Map dependent)
+	private void createEntries(Collection units, Map dependent, IntegerMap movement)
 	{
 		Iterator iter = units.iterator();
 		while(iter.hasNext())
 		{
 			Unit current = (Unit) iter.next();
+			
+			
+			int unitMovement = -1;
+			if(movement != null)
+				unitMovement = movement.getInt(current);
+			
+			
 			Collection currentDependents = (Collection) dependent.get(current);
-			ChooserEntry entry = new ChooserEntry(current, currentDependents, m_textFieldListener);
+			ChooserEntry entry = new ChooserEntry(current, currentDependents,unitMovement , m_textFieldListener);
 			addEntry(entry, current);
 			addDependent(current, (Collection) dependent.get(current));
 		}
@@ -132,7 +162,11 @@ public class UnitChooser extends JPanel
 		int max = ( (Collection) m_entries.get(entry)).size();
 		entry.setMax(max);
 		panel.add(entry);
-		panel.add(new JLabel("max " + max));
+		
+		StringBuffer text = new StringBuffer();
+		text.append("max " + max);
+		
+		panel.add(new JLabel(text.toString()));
 		this.add(panel);
 	}	
 	
@@ -193,15 +227,20 @@ class ChooserEntry extends JPanel
 	private ScrollableTextField m_text;
 	private ScrollableTextFieldListener m_textFieldListener;
 	private int m_max; //max we can select
+	private int m_movement; //movement of the unit
 	
-	ChooserEntry(Unit unit, Collection dependents, ScrollableTextFieldListener listener)
+	ChooserEntry(Unit unit, Collection dependents, int movement, ScrollableTextFieldListener listener)
 	{
 		m_textFieldListener = listener;
 		m_type = unit.getType();
 		m_dependents = new ArrayList();
+		m_movement = movement;
 	
 		createDependents(dependents);
+		
 		add(new UnitChooserEntryIcon());
+		if(m_movement != -1)
+			add(new JLabel("mvt " + m_movement));
 	}
 	
 	public void setMax(int max)
@@ -237,7 +276,7 @@ class ChooserEntry extends JPanel
 	{
 		ChooserEntry other = (ChooserEntry) o;
 		
-		return other.m_type.equals(this.m_type) && 
+		return other.m_type.equals(this.m_type) &&  other.m_movement == this.m_movement &&
 		       Util.equals(this.m_dependents, other.m_dependents);
 	}
 	
@@ -254,6 +293,11 @@ class ChooserEntry extends JPanel
 	public int getQuantity()
 	{
 		return m_text.getValue();
+	}
+
+	public int getMovement()
+	{
+		return m_movement;
 	}
 	
 	class UnitChooserEntryIcon extends JComponent
