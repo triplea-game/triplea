@@ -261,6 +261,8 @@ public class MovePanel extends ActionPanel
 
         Collection owned = route.getStart().getUnits().getMatches(ownedNotFactory);
 
+	boolean transportsAtEnd = route.getEnd().getUnits().getMatches(Matches.UnitCanTransport).size() > 0;
+
         if (route.getStart().isWater())
         {
             if (route.getEnd().isWater())
@@ -273,9 +275,10 @@ public class MovePanel extends ActionPanel
                 owned = Match.getMatches(owned, Matches.UnitIsAir);
                 owned.addAll(getUnitsThatCanBeUnload(route));
             }
-        } else if (route.crossesWater()) {
+        } else if (route.crossesWater() ||
+	            (route.getEnd().isWater() && !transportsAtEnd)) {
 	  // Eliminate land units if starting from land, crossing water, and
-	  // back to land
+	  // back to land or if going into water and no transports there
 	  owned = Match.getMatches(owned, Matches.UnitIsAir);
 	}
 
