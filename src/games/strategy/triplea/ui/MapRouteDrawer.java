@@ -25,6 +25,7 @@ import java.awt.geom.QuadCurve2D;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.image.MapImage;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.util.Util;
 
@@ -46,9 +47,9 @@ public class MapRouteDrawer
     /**
      * Draw m_route to the screen, do nothing if null.
      */
-    public static void drawRoute(Graphics2D graphics, Route m_route, ImageScrollerLargeView view)
+    public static void drawRoute(Graphics2D graphics, Route route, ImageScrollerLargeView view)
     {
-      if(m_route == null)
+      if(route == null)
         return;
 
       graphics.setStroke(new BasicStroke(3.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
@@ -57,11 +58,13 @@ public class MapRouteDrawer
       graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       
       
-      List territories = m_route.getTerritories();
-      Point[] points = new Point[territories.size()];
+      List territories = route.getTerritories();
+      
+int numTerritories = territories.size();
+    Point[] points = new Point[numTerritories];
       
       //find all the points for this route
-      for(int i = 0; i < territories.size(); i++)
+      for(int i = 0; i < numTerritories; i++)
       {
           points[i] = (Point) TerritoryData.getInstance().getCenter( (Territory) territories.get(i));
       }
@@ -116,18 +119,48 @@ public class MapRouteDrawer
           }
 
       }
-
+      int translate = -view.getImageWidth();
 
       for(int i = 0; i < shapes.size(); i ++)
       {
         Shape shape = (Shape) shapes.get(i);
 
         drawWithTranslate(graphics, shape, 0);
-        int translate = -view.getImageWidth();
+        
         drawWithTranslate(graphics, shape, translate);
         drawWithTranslate(graphics, shape, -translate);
       }
-
+      
+      
+      //draw the length of the move
+      if(numTerritories > 1)
+      {
+          
+          
+	      int textXOffset;
+	      int xDir =points[numTerritories -1].x  - points[numTerritories -2].x; 
+	      if(xDir > 0)
+	          textXOffset = 2;
+	       else if(xDir == 0)
+	         textXOffset = 0; 
+	       else 
+	           textXOffset = -8;
+	      
+	      int textyOffset;
+	      int yDir =points[numTerritories -1].y  - points[numTerritories -2].y; 
+	      if(yDir > 0)
+	          textyOffset = 2;
+	       else if(yDir == 0)
+	         textyOffset = 0; 
+	       else 
+	           textyOffset = -8;
+	     
+	      graphics.setColor(Color.YELLOW);
+	      graphics.setFont(new Font("Dialog", Font.BOLD, 18));
+	      graphics.drawString( String.valueOf(numTerritories -1), points[numTerritories-1].x + textXOffset - xOffset, points[numTerritories-1].y + textyOffset - yOffset);
+	      graphics.drawString( String.valueOf(numTerritories -1), points[numTerritories-1].x + textXOffset - xOffset + translate , points[numTerritories-1].y + textyOffset - yOffset);
+	      graphics.drawString( String.valueOf(numTerritories -1), points[numTerritories-1].x + textXOffset - xOffset - translate, points[numTerritories-1].y + textyOffset - yOffset);	      
+      }
     }
 
     private static void drawWithTranslate(Graphics2D graphics, Shape shape, int translate)

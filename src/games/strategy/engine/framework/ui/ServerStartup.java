@@ -57,6 +57,8 @@ public class ServerStartup extends JPanel
 
   private byte[] m_dataBytes;
 
+  private JPanel m_info = new JPanel();
+  
   /**
    * Creates a new instance of ServerStartup
    */
@@ -218,20 +220,18 @@ public class ServerStartup extends JPanel
   {
     setLayout(new BorderLayout());
 
-    JPanel info = new JPanel();
-    info.setLayout(new GridBagLayout());
 
-    info.add(new JLabel("Name:"), new GridBagConstraints(0,0,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0));
-    info.add(new JLabel("Address:"), new GridBagConstraints(0,1,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0));
-    info.add(new JLabel("Port:"), new GridBagConstraints(0,2,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0));
+    m_info.setLayout(new GridBagLayout());
 
-    info.add(m_nameField, new GridBagConstraints(1,0,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0));
-    info.add(m_addressField, new GridBagConstraints(1,1,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0));
-    info.add(m_portField, new GridBagConstraints(1,2,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0));
+    m_info.add(new JLabel("Name:"), new GridBagConstraints(0,0,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+    m_info.add(new JLabel("Address:"), new GridBagConstraints(0,1,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+    m_info.add(new JLabel("Port:"), new GridBagConstraints(0,2,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
 
+    m_info.add(m_nameField, new GridBagConstraints(1,0,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+    m_info.add(m_addressField, new GridBagConstraints(1,1,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+    m_info.add(m_portField, new GridBagConstraints(1,2,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
 
-
-    add(info, BorderLayout.NORTH);
+    add(m_info, BorderLayout.NORTH);
 
     JPanel lowerPanel = new JPanel();
     lowerPanel.setLayout(new BorderLayout());
@@ -302,6 +302,7 @@ public class ServerStartup extends JPanel
     }
 
     removeAll();
+    add(m_info, BorderLayout.NORTH);
     add(players, BorderLayout.CENTER);
 
 

@@ -133,68 +133,7 @@ public class ReliefImageBreaker
           ImageIO.write(relief, "png" , new File(outFileName));
     }
 
-    private final int ALPHA_MASK = 0xFF000000;
-    private final int NONALPHA_MASK = 0x00FFFFFF;
-    private final int R_MASK = 0x00FF0000;
-    private final int G_MASK = 0x0000FF00;
-    private final int B_MASK = 0x000000FF;
-
-    private int minComponent(int pixel)
-    {
-        int  red =  (R_MASK & pixel) >> 16 ;
-        int  green =  (G_MASK & pixel) >> 8 ;
-        int  blue =  (B_MASK & pixel) ;
-
-        int min = Math.min(red, green);
-        min = Math.min(min, blue);
-        return min;
-
-
-    }
-
-
-    private int maxComponent(int pixel)
-    {
-        int  red =  (R_MASK & pixel) >> 16 ;
-        int  green =  (G_MASK & pixel) >> 8 ;
-        int  blue =  (B_MASK & pixel) ;
-
-        int max = Math.max(red, green);
-        max = Math.max(max, blue);
-        return max;
-
-
-    }
-
-    private void correctAlpha(BufferedImage relief)
-    {
-
-
-        for(int x = 0; x < relief.getWidth(); x++)
-        {
-            for(int y = 0; y < relief.getHeight(); y++)
-            {
-                int pixel = relief.getRGB(x,y);
-                //if the pixel isnt already transparent
-                if((pixel & ALPHA_MASK) != 0)
-                {
-
-
-                    //if its nearly all white, make it transparent
-                    int min = minComponent(pixel);
-
-                    int alpha = 255 - min;
-                    pixel = (alpha << 24) | (pixel & NONALPHA_MASK);
-
-                    relief.setRGB(x,y, pixel);
-
-
-                }
-            }
-        }
-    }
-
-
+  
     //set the alpha channel to the same as that of the base image
     private void blankOutline(Image alphaChannelImage, BufferedImage relief)
     {

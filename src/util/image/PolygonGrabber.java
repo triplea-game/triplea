@@ -326,10 +326,6 @@ public class PolygonGrabber extends JFrame
         }
     }
 
-    private final boolean inBounds(Point p)
-     {
-         return inBounds(p.x, p.y);
-     }
 
 
     private final boolean inBounds(int x, int y)
@@ -377,11 +373,7 @@ public class PolygonGrabber extends JFrame
 
     }
 
-    private void assertValid(int x, int y)
-    {
-       if(!inBounds(x, y))
-            throw new IllegalStateException("invalid point:" + x + ":" + y);
-    }
+
 
     private Point m_testPoint = new Point();
 
