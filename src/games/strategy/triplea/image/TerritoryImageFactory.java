@@ -124,7 +124,7 @@ public final class TerritoryImageFactory
         m_playerColors.put("Russians",  new Color(153, 51, 0));
         m_playerColors.put("Germans",   new Color(119, 119, 119));
         m_playerColors.put("Japanese",  new Color(255, 153, 0));
-        m_playerColors.put("Italians",  new Color(0, 0, 255));
+        m_playerColors.put("Italians",  new Color(90, 90, 90));
         m_playerColors.put(PlayerID.NULL_PLAYERID.getName(), new Color(204, 153, 51));
     }
 
