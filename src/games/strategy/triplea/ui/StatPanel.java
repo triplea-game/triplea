@@ -43,7 +43,7 @@ import games.strategy.triplea.delegate.TechAdvance;
 public class StatPanel extends JPanel
 {
 	/** Creates a new instance of InfoPanel */
-	public StatPanel(GameData data) 
+	public StatPanel(GameData data)
 	{
 		setLayout(new GridLayout(2, 1));
 
@@ -53,7 +53,7 @@ public class StatPanel extends JPanel
       		JTable table = new JTable(dataModel);
       		// Strangely, this is enabled by default
       		table.getTableHeader().setReorderingAllowed(false);
-  		
+
       		JScrollPane scroll = new JScrollPane(table);
 		// add(scroll, BorderLayout.NORTH);
 		add(scroll);
@@ -67,58 +67,59 @@ public class StatPanel extends JPanel
 		// and measure the pixel width of the longest technology name in the
 		// current font.
 		TableColumn column = table.getColumnModel().getColumn(0);
-		column.setPreferredWidth(500); 
-  		
+		column.setPreferredWidth(500);
+
       		scroll = new JScrollPane(table);
 		// add(scroll, BorderLayout.SOUTH);
 		add(scroll);
 
 		data.addDataChangeListener(dataModel);
-		data.addDataChangeListener(techModel);		
+		data.addDataChangeListener(techModel);
 	}
 
 	/*
 	 * Custom table model
-	 */	
+	 */
 	class StatTableModel extends AbstractTableModel implements GameDataChangeListener {
 		/* Flag to indicate whether data needs to be recalculated */
-		private boolean isDirty = true;		
+		private boolean isDirty = true;
 		private GameData m_data;
 		/* Column Header Names */
 	 	private String[] colList = new String[] { "Country", "IPCs", "Production", "Units" };
 	 	/* Row Header Names */
-		private String[] rowList = new String[] { Constants.RUSSIANS, Constants.GERMANS, Constants.BRITISH, Constants.JAPANESE, Constants.AMERICANS, "Allies", "Axis" } ;			
+		private String[] rowList = new String[] { Constants.RUSSIANS, Constants.GERMANS, Constants.BRITISH, Constants.JAPANESE, Constants.AMERICANS, "Allies", "Axis" } ;
 		/* Underlying data for the table */
 		private Object[][] data = new Object[rowList.length][colList.length];
 		/* Convenience mapping of player names -> row */
 		private Map rowMap = null;
-	 	
+
 		public StatTableModel(GameData data) {
 			m_data = data;
-			
+
 			/* Load the player -> row mapping */
 			rowMap = new HashMap();
 			for (int i = 0; i < rowList.length; i++)
-				rowMap.put(rowList[i], new Integer(i));			
+				rowMap.put(rowList[i], new Integer(i));
 		}
-		
+
 		public void gameDataChanged()
 		{
 			isDirty = true;
-		}		
+		}
 
 		/*
-		 * Ideally, this would only be called to initialize the stats.  The stats would then be updated 
+		 * Ideally, this would only be called to initialize the stats.  The stats would then be updated
 		 * incrementally as they changed.  But I don't think this can happen until the GameDataChange
 		 * event gets some more context.
 		 */
 
-		private void update() {
+		private void update()
+        {
 			PlayerList plist = m_data.getPlayerList();
 
 			// Use an int array for the scratch array for performance (avoids object thrashing)
 			int[][] tmpData = new int[rowList.length][colList.length - 2];
-			
+
 			// Iterate over the territories, updating all the per-territory stats in one pass
 			Iterator territories = m_data.getMap().iterator();
 			while(territories.hasNext())
@@ -126,19 +127,19 @@ public class StatPanel extends JPanel
 				Territory current = (Territory) territories.next();
 				TerritoryAttatchment ta = TerritoryAttatchment.get(current);
 				Integer row = (Integer) rowMap.get(current.getOwner().getName());
-				
-				if (row != null) 
+
+				if (row != null)
 				{
 					tmpData[row.intValue()][1] += ta.getProduction();
-			
+
 					// Take advantage of the fact that the indices of allied countries are all even numbers to update team totals.
 					tmpData[5 + (row.intValue() % 2)][1] += ta.getProduction();
-				}				
+				}
 			}
-			
+
 			// Now do all the per-country stats
-			for (int row = 0; row < rowList.length - 2; row++) 
-			{	
+			for (int row = 0; row < rowList.length - 2; row++)
+			{
 				tmpData[row][0] = plist.getPlayerID(rowList[row]).getResources().getQuantity(Constants.IPCS);
 				// Take advantage of the fact that the indices of allied countries are all even numbers to update team totals.
 				tmpData[5 + (row % 2)][0] += plist.getPlayerID(rowList[row]).getResources().getQuantity(Constants.IPCS);
@@ -148,64 +149,77 @@ public class StatPanel extends JPanel
 			Integer ZERO = new Integer(0);
 			data[5][3] = ZERO;
 			data[6][3] = ZERO;
-			
+
 			// Finally, throw this into an array that closely matches the table structure
 			for (int row = 0; row < rowList.length; row++)
 			{
-				PlayerID m_id = plist.getPlayerID(rowList[row]);
+				PlayerID id = plist.getPlayerID(rowList[row]);
 				data[row][0] = rowList[row];
 				data[row][1] = new Integer(tmpData[row][0]);
-				data[row][2] = new Integer(tmpData[row][1]);		
+				data[row][2] = new Integer(tmpData[row][1]);
 				// Not sure how much I like hardcoding this 5 in here.
-				if ( row < 5 ) 
+				if ( row < 5 )
 				{
-					data[row][3] = new Integer(Unit.getUnits(m_id).size());
-					
+                    int placedUnits = getUnitsPlaced(id);
+					data[row][3] = new Integer( placedUnits);
+
 					// Take advantage of the fact that the indices of allied countries are all even numbers to update team totals.
-					data[5 + (row % 2)][3] = new Integer(((Integer) data[5 + (row % 2)][3]).intValue() + Unit.getUnits(m_id).size());
+					data[5 + (row % 2)][3] = new Integer(((Integer) data[5 + (row % 2)][3]).intValue() + placedUnits);
 				}
 			}
 		}
 
-		/* 
-		 * Recalcs the underlying data in a lazy manner 
+        private int getUnitsPlaced(PlayerID id)
+        {
+            int placed = 0;
+            Iterator territories = m_data.getMap().iterator();
+            while(territories.hasNext())
+            {
+                Territory current = (Territory) territories.next();
+                placed += current.getUnits().getUnitCount(id);
+            }
+            return placed;
+        }
+
+		/*
+		 * Recalcs the underlying data in a lazy manner
 		 * Limitation: This is not a threadsafe implementation
-		 */		
-  		public Object getValueAt(int row, int col) 
-  		{ 
-  			if (isDirty) 
+		 */
+  		public Object getValueAt(int row, int col)
+  		{
+  			if (isDirty)
   			{
   				update();
-  				isDirty = false;	
+  				isDirty = false;
   			}
-  				
-  			return data[row][col]; 
+
+  			return data[row][col];
   		}
 
-		// Trivial implementations of required methods 
+		// Trivial implementations of required methods
 		public String getColumnName(int col) { return colList[col]; }
   		public int getColumnCount() { return colList.length; }
   		public int getRowCount() { return rowList.length;}
-      	}	
-      	
+      	}
+
 	class TechTableModel extends AbstractTableModel implements GameDataChangeListener {
 		/* Flag to indicate whether data needs to be recalculated */
-		private boolean isDirty = true;		
+		private boolean isDirty = true;
 		private GameData m_data;
 		/* Column Header Names */
 	 	private String[] rowList = new String[] { "Jet Power", "Rockets", "Super Subs", "Long Range Aircraft", "Industrial Technology", "Heavy Bombers" };
 	 	/* Row Header Names */
-		private String[] colList = new String[] { Constants.RUSSIANS, Constants.GERMANS, Constants.BRITISH, Constants.JAPANESE, Constants.AMERICANS } ;			
+		private String[] colList = new String[] { Constants.RUSSIANS, Constants.GERMANS, Constants.BRITISH, Constants.JAPANESE, Constants.AMERICANS } ;
 		/* Underlying data for the table */
 		private String[][] data = new String[rowList.length][colList.length + 1];
 		/* Convenience mapping of country names -> col */
 		private Map colMap = null;
 		/* Convenience mapping of technology names -> row */
 		private Map rowMap = null;
-	 	
+
 		public TechTableModel(GameData gdata) {
 			m_data = gdata;
-			
+
 			/* Load the country -> col mapping */
 			colMap = new HashMap();
 			for (int i = 0; i < colList.length; i++)
@@ -215,41 +229,41 @@ public class StatPanel extends JPanel
 			rowMap = new HashMap();
 			Iterator iter = TechAdvance.getTechAdvances().iterator();
 			int row = 0;
-			
-			while (iter.hasNext()) 
+
+			while (iter.hasNext())
 			{
 				rowMap.put(((TechAdvance) iter.next()).getName(), new Integer(row));
 				row++;
 			}
-		
+
 
 			/* Initialize the table with the tech names */
 			for (int i = 0; i < rowList.length; i++)
 			{
 				data[i][0] = rowList[i];
-				for (int j = 1; j <= colList.length; j++)	
+				for (int j = 1; j <= colList.length; j++)
 					data[i][j] = "";
-			}			
+			}
 		}
 
-		public void update() {			
-			Iterator iter = m_data.getPlayerList().getPlayers().iterator();			
+		public void update() {
+			Iterator iter = m_data.getPlayerList().getPlayers().iterator();
 			Map advanceProperty =  (Map) m_data.getProperties().get(Constants.TECH_PROPERTY);
-			
-			if (advanceProperty == null) 
+
+			if (advanceProperty == null)
 				return;
-			
-			while (iter.hasNext()) 
+
+			while (iter.hasNext())
 			{
 				PlayerID pid = (PlayerID) iter.next();
-				if (colMap.get(pid.getName()) == null) 
+				if (colMap.get(pid.getName()) == null)
 					throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
-				
+
 				int col = ((Integer) colMap.get(pid.getName())).intValue();
-				
+
 				if (advanceProperty.get(pid) == null)
 					continue;
-					
+
 				Iterator advances = ((Collection) advanceProperty.get(pid)).iterator();
 
 				while(advances.hasNext())
@@ -260,39 +274,39 @@ public class StatPanel extends JPanel
 					// data[row][col] = colList[col].substring(0, 1);
 				}
 			}
-		}				
-
-		public String getColumnName(int col) 
-		{ 
-			if (col == 0)
-				return "Technology";
-			return colList[col - 1].substring(0, 1); 
 		}
 
-		/* 
-		 * Recalcs the underlying data in a lazy manner 
+		public String getColumnName(int col)
+		{
+			if (col == 0)
+				return "Technology";
+			return colList[col - 1].substring(0, 1);
+		}
+
+		/*
+		 * Recalcs the underlying data in a lazy manner
 		 * Limitation: This is not a threadsafe implementation
-		 */		
-  		public Object getValueAt(int row, int col) 
-  		{ 
-  			if (isDirty) 
+		 */
+  		public Object getValueAt(int row, int col)
+  		{
+  			if (isDirty)
   			{
   				update();
-  				isDirty = false;	
+  				isDirty = false;
   			}
-  				
-  			return data[row][col]; 
+
+  			return data[row][col];
   		}
 
-		// Trivial implementations of required methods 			
+		// Trivial implementations of required methods
   		public int getColumnCount() { return colList.length + 1; }
   		public int getRowCount() { return rowList.length;}
-		
+
 		public void gameDataChanged() { isDirty = true; }
-  		
-      	}	
-      	
-}      	
+
+      	}
+
+}
 
 
 

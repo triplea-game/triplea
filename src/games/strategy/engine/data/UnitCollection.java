@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * UnitCollection.java
  *
  * Created on October 14, 2001, 12:32 PM
@@ -21,9 +35,9 @@ public class UnitCollection extends GameDataComponent
 {
 	private final List m_units = new ArrayList(8);
 	private final NamedUnitHolder m_holder;
-	
+
 	/** Creates new UnitCollection */
-    public UnitCollection(NamedUnitHolder holder, GameData data) 
+    public UnitCollection(NamedUnitHolder holder, GameData data)
 	{
 		super(data);
 		m_holder = holder;
@@ -34,64 +48,76 @@ public class UnitCollection extends GameDataComponent
 		m_units.add(unit);
 		m_holder.notifyChanged();
 	}
-	
+
 	public void addAllUnits(UnitCollection collection)
 	{
 		m_units.addAll(collection.m_units);
 		m_holder.notifyChanged();
 	}
-	
+
 	public void addAllUnits(Collection units)
 	{
 		m_units.addAll(units);
 		m_holder.notifyChanged();
 	}
-	
+
 	public void removeAllUnits(Collection units)
 	{
 		m_units.removeAll(units);
 		m_holder.notifyChanged();
 	}
-	
+
 	public int getUnitCount()
 	{
 		return m_units.size();
 	}
-	
+
 	public int getUnitCount(UnitType type)
 	{
 		int count = 0;
 		for(int i = 0; i < m_units.size(); i++)
 		{
 			Unit current = (Unit) m_units.get(i);
-			
+
 			if(current.getType().equals(type))
 				count++;
 		}
 		return count;
 	}
-	
+
 	public int getUnitCount(UnitType type, PlayerID owner)
 	{
 		int count = 0;
 		for(int i = 0; i < m_units.size(); i++)
 		{
 			Unit current = (Unit) m_units.get(i);
-			
+
 			if(current.getType().equals(type) && current.getOwner().equals(owner))
 				count++;
 		}
 		return count;
 	}
-	
-	
+
+	public int getUnitCount(PlayerID owner)
+	{
+		int count = 0;
+		for(int i = 0; i < m_units.size(); i++)
+		{
+			Unit current = (Unit) m_units.get(i);
+
+			if(current.getOwner().equals(owner))
+				count++;
+		}
+		return count;
+	}
+
 	public boolean containsAll(Collection units)
 	{
 		return m_units.containsAll(units);
 	}
-	
+
 	/**
-	 * returns up to int units of a given type currently in 
+	 * returns up to int units of a given type currently in
 	 * the collection.
 	 */
 	public Collection getUnits(UnitType type, int count)
@@ -100,7 +126,7 @@ public class UnitCollection extends GameDataComponent
 			return new ArrayList();
 		if(count < 0)
 			throw new IllegalArgumentException("value must be positiive.  Instead its:" + count);
-		
+
 		Collection rVal = new ArrayList();
 		for(int i = 0; i < m_units.size(); i++)
 		{
@@ -112,7 +138,7 @@ public class UnitCollection extends GameDataComponent
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * Returns a map of UnitType -> int.
 	 */
@@ -128,7 +154,7 @@ public class UnitCollection extends GameDataComponent
 				units.put(type,count );
 		}
 		return units;
-		
+
 	}
 
 	/**
@@ -138,19 +164,19 @@ public class UnitCollection extends GameDataComponent
 	public IntegerMap getUnitsByType(PlayerID id)
 	{
 		IntegerMap count = new IntegerMap();
-		
+
 		Iterator iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next(); 
+			Unit unit = (Unit) iter.next();
 			if(unit.getOwner().equals(id))
 				count.add(unit.getType(), 1);
 		}
 		return count;
-		
+
 	}
 
-	
+
 	/**
 	 * Passed a map of UnitType -> int
 	 * return a collection of units of each type up to max
@@ -166,12 +192,12 @@ public class UnitCollection extends GameDataComponent
 		}
 		return units;
 	}
-	
+
 	public int size()
 	{
 		return m_units.size();
 	}
-	
+
 	public boolean isEmpty()
 	{
 		return m_units.isEmpty();
@@ -182,47 +208,47 @@ public class UnitCollection extends GameDataComponent
 		return new ArrayList(m_units);
 	}
 
-	
+
 	public Set getPlayersWithUnits()
 	{
 		//note nulls are handled by PlayerID.NULL_PLAYERID
 		Set ids = new HashSet();
-	
+
 		Iterator iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next(); 
+			Unit unit = (Unit) iter.next();
 			ids.add(unit.getOwner());
 		}
 		return ids;
-		
+
 	}
-	
-	
-	
+
+
+
 	public IntegerMap getPlayerUnitCounts()
 	{
 		IntegerMap count = new IntegerMap();
-		
+
 		Iterator iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next(); 
+			Unit unit = (Unit) iter.next();
 			count.add(unit.getOwner(), 1);
 		}
 		return count;
 	}
-	
+
 	public boolean hasUnitsFromMultiplePlayers()
 	{
 		return getPlayersWithUnits().size() > 1;
 	}
-	
+
 	public NamedUnitHolder getHolder()
 	{
 		return m_holder;
 	}
-	
+
 	public boolean allMatch(Match matcher)
 	{
 		Iterator iter = m_units.iterator();
@@ -259,13 +285,13 @@ public class UnitCollection extends GameDataComponent
 		}
 		return values;
 	}
-	
+
 	public String toString()
 	{
 		StringBuffer buf = new StringBuffer();
 		buf.append("Unit collecion held by ").append(m_holder.getName());
 		buf.append(" units:");
-		IntegerMap units = getUnitsByType(); 
+		IntegerMap units = getUnitsByType();
 		Iterator iter = units.keySet().iterator();
 		while(iter.hasNext())
 		{
