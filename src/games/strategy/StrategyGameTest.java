@@ -27,9 +27,9 @@ import junit.framework.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class StrategyGameTest extends TestCase 
+public class StrategyGameTest extends TestCase
 {
-	
+
 	public static Test suite()
 	{
 		TestSuite suite = new TestSuite();
@@ -42,12 +42,13 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(games.strategy.engine.message.ManagerTest.class);
 		suite.addTestSuite(games.strategy.net.MessengerTest.class);
 		suite.addTestSuite(games.strategy.thread.ThreadPoolTest.class);
-		
+		suite.addTestSuite(games.strategy.engine.framework.GameDataManagerTest.class);
+
 		return suite;
 	}
 
 	/** Creates new StrategyGameTest */
-    public StrategyGameTest(String name) 
+    public StrategyGameTest(String name)
 	{
 		super(name);
     }

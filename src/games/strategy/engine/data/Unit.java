@@ -32,148 +32,148 @@ import games.strategy.net.GUID;
  */
 public class Unit extends GameDataComponent implements Serializable
 {
-	//maps GUID -> Unit
-	protected static Map s_allUnits = new WeakHashMap();
+  //maps GUID -> Unit
+  protected static Map s_allUnits = new WeakHashMap();
 
-	static final long serialVersionUID = -4776804897761373923L;
+  static final long serialVersionUID = -4776804897761373923L;
 
-	//for network identification purposes.
-	private static GUID createUID()
-	{
-		return new GUID();
-	}
+  //for network identification purposes.
+  private static GUID createUID()
+  {
+    return new GUID();
+  }
 
-	protected static Unit get(GUID id)
-	{
-		return (Unit) s_allUnits.get(id);
-	}
+  protected static Unit get(GUID id)
+  {
+    return (Unit) s_allUnits.get(id);
+  }
 
-	protected static void put(Unit unit)
-	{
-		s_allUnits.put(unit.getID(), unit);
-	}
+  public static void put(Unit unit)
+  {
+    s_allUnits.put(unit.getID(), unit);
+  }
 
-	/*
-	 * Gets all units currently in the game
-	 */
-	public static Collection getUnits()
-	{
-		return s_allUnits.values();
-	}
+  /*
+   * Gets all units currently in the game
+   */
+  public static Collection getUnits()
+  {
+    return s_allUnits.values();
+  }
 
-	/**
-	 * Clears all units, used when loading a game.
-	 * Should not be called except by the GameDataManager.
-	 */
-	public static void clearUnits()
-	{
-		s_allUnits.clear();
-	}
+  /**
+   * Clears all units, used when loading a game.
+   * Should not be called except by the GameDataManager.
+   */
+  public static void clearUnits()
+  {
+    s_allUnits.clear();
+  }
 
-	/*
-	 * Gets all units for the specified player
-	 * NOTE: implementation iterates over the entire list of units, so not extraordinarily efficient right now.
-	 */
-	public static Collection getUnits(PlayerID player)
-	{
-		ArrayList out = new ArrayList(s_allUnits.size() / 5);
-		Iterator iter = s_allUnits.values().iterator();
-		Unit u;
+  /*
+   * Gets all units for the specified player
+   * NOTE: implementation iterates over the entire list of units, so not extraordinarily efficient right now.
+   */
+  public static Collection getUnits(PlayerID player)
+  {
+    ArrayList out = new ArrayList(s_allUnits.size() / 5);
+    Iterator iter = s_allUnits.values().iterator();
+    Unit u;
 
-		while (iter.hasNext())
-		{
-			u = (Unit) iter.next();
-			if (u.getOwner().equals(player))
-				out.add(u);
-		}
-
-		return out;
-	}
-
-	private PlayerID m_owner;
-	private GUID m_uid;
-
-	private UnitType m_type;
-
-	/**
-	 * Creates new Unit. Should use a call to UnitType.create() instead.
-	 * owner can be null
-	 * id is the id of the unit, should be unique
-	 */
-	protected Unit(UnitType type, PlayerID owner, GameData data, short id)
-	{
-		super(data);
-		init(type, owner, data);
-		m_uid = new GUID(id);
-		s_allUnits.put(m_uid, this);
-	}
-
-	/**
-	 * Creates new Unit.  Should use a call to UnitType.create() instead.
-	 * owner can be null
-	 */
-    protected Unit(UnitType type, PlayerID owner, GameData data)
-	{
-		super(data);
-		init(type, owner, data);
-		m_uid = createUID();
-		s_allUnits.put(m_uid, this);
+    while (iter.hasNext())
+    {
+      u = (Unit) iter.next();
+      if (u.getOwner().equals(player))
+        out.add(u);
     }
 
-	private void init(UnitType type, PlayerID owner, GameData data)
-	{
-		m_type = type;
-		setOwner(owner);
-	}
+    return out;
+  }
+
+  private PlayerID m_owner;
+  private GUID m_uid;
+
+  private UnitType m_type;
+
+  /**
+   * Creates new Unit. Should use a call to UnitType.create() instead.
+   * owner can be null
+   * id is the id of the unit, should be unique
+   */
+  protected Unit(UnitType type, PlayerID owner, GameData data, short id)
+  {
+    super(data);
+    init(type, owner, data);
+    m_uid = new GUID(id);
+    s_allUnits.put(m_uid, this);
+  }
+
+  /**
+   * Creates new Unit.  Should use a call to UnitType.create() instead.
+   * owner can be null
+   */
+  protected Unit(UnitType type, PlayerID owner, GameData data)
+  {
+    super(data);
+    init(type, owner, data);
+    m_uid = createUID();
+    s_allUnits.put(m_uid, this);
+  }
+
+  private void init(UnitType type, PlayerID owner, GameData data)
+  {
+    m_type = type;
+    setOwner(owner);
+  }
 
 
-	protected GUID getID()
-	{
-		return m_uid;
-	}
+  public GUID getID()
+  {
+    return m_uid;
+  }
 
-	public UnitType getType()
-	{
-		return m_type;
-	}
+  public UnitType getType()
+  {
+    return m_type;
+  }
 
-	public UnitType getUnitType()
-	{
-		return m_type;
-	}
+  public UnitType getUnitType()
+  {
+    return m_type;
+  }
 
-	public PlayerID getOwner()
-	{
-		return m_owner;
-	}
+  public PlayerID getOwner()
+  {
+    return m_owner;
+  }
 
-	/**
-	 * can be null.
-	 */
-	public void setOwner(PlayerID player)
-	{
-		if(player == null)
-			player = PlayerID.NULL_PLAYERID;
-		m_owner = player;
-	}
+  /**
+   * can be null.
+   */
+  public void setOwner(PlayerID player)
+  {
+    if(player == null)
+      player = PlayerID.NULL_PLAYERID;
+    m_owner = player;
+  }
 
-	public boolean equals(Object o)
-	{
-		if(o == null || ! (o instanceof Unit))
-			return false;
+  public boolean equals(Object o)
+  {
+    if(o == null || ! (o instanceof Unit))
+      return false;
 
-		Unit other = (Unit) o;
-		return this.m_uid.equals(other.m_uid);
-	}
+    Unit other = (Unit) o;
+    return this.m_uid.equals(other.m_uid);
+  }
 
-	public int hashCode()
-	{
-		return m_uid.hashCode();
-	}
+  public int hashCode()
+  {
+    return m_uid.hashCode();
+  }
 
-	public String toString()
-	{
-		return m_type.getName() + " owned by " + m_owner.getName();
-	}
+  public String toString()
+  {
+    return m_type.getName() + " owned by " + m_owner.getName();
+  }
 
 }
