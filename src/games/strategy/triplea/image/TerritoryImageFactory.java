@@ -119,11 +119,12 @@ public final class TerritoryImageFactory
             .getDefaultConfiguration();
 
         // cache the player colors
-        m_playerColors.put("British", new Color(153, 102, 0));
+        m_playerColors.put("British",   new Color(153, 102, 0));
         m_playerColors.put("Americans", new Color(102, 102, 0));
-        m_playerColors.put("Russians", new Color(153, 51, 0));
-        m_playerColors.put("Germans", new Color(119, 119, 119));
-        m_playerColors.put("Japanese", new Color(255, 153, 0));
+        m_playerColors.put("Russians",  new Color(153, 51, 0));
+        m_playerColors.put("Germans",   new Color(119, 119, 119));
+        m_playerColors.put("Japanese",  new Color(255, 153, 0));
+        m_playerColors.put("Italians",  new Color(0, 0, 255));
         m_playerColors.put(PlayerID.NULL_PLAYERID.getName(), new Color(204, 153, 51));
     }
 

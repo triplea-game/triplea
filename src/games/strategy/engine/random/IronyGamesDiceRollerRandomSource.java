@@ -342,7 +342,7 @@ class HttpDiceRollerDialog extends JDialog
 
         }
     }
-    else {  //enter here for invalid e-mail or non-reachable hosts
+    else {  //enter here for invalid e-mail
 
         appendText("Invalid e-mail syntax, please check again.\n");
     }

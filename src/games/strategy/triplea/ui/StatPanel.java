@@ -319,8 +319,7 @@ public class StatPanel extends JPanel
 
   }
 
-  class TechTableModel extends AbstractTableModel implements
-      GameDataChangeListener
+  class TechTableModel extends AbstractTableModel implements GameDataChangeListener
   {
     /* Flag to indicate whether data needs to be recalculated */
     private boolean isDirty = true;
@@ -345,12 +344,18 @@ public class StatPanel extends JPanel
 
       /* Load the country -> col mapping */
       colMap = new HashMap();
-      for (int i = 0; i < colList.length; i++)
+      for (int i = 0; i < colList.length; i++) {
         colMap.put(colList[i], new Integer(i + 1));
+      }
 
-      data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];
-
-        /* Load the technology -> row mapping */
+      /*
+       * .size()+1  added to stop index out of bounds errors
+       * when using an Italian player.
+       */
+       
+      data = new String[TechAdvance.getTechAdvances(m_data).size()+1][colList.length + 1];
+      
+      /* Load the technology -> row mapping */
       rowMap = new HashMap();
       Iterator iter = TechAdvance.getTechAdvances(m_data).iterator();
       int row = 0;
@@ -368,12 +373,14 @@ public class StatPanel extends JPanel
 
     private void clearAdvances()
     {
+
       /* Initialize the table with the tech names */
-      for (int i = 0; i < data[0].length; i++)
-      {
-        for (int j = 1; j <= colList.length; j++)
+      for (int i = 0; i < data[0].length; i++) {
+        for (int j = 1; j <= colList.length; j++) {
           data[i][j] = "";
+        }
       }
+      
     }
 
     private void initColList()

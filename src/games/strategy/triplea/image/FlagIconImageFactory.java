@@ -56,8 +56,7 @@ public class FlagIconImageFactory
 	private final Map m_images = new HashMap();
 
 	/** Creates new IconImageFactory */
-    private FlagIconImageFactory()
-	{}
+    private FlagIconImageFactory() { };
 
 
 	/**
@@ -82,6 +81,8 @@ public class FlagIconImageFactory
 		Image russian = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/rus.gif"));
 		Image russianSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/rus_small.gif"));
 		Image neutralSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/neutral_small.gif"));
+                Image italian = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/it.gif"));
+                Image italianSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/it_small.gif"));
 
 		MediaTracker tracker = new MediaTracker(observer);
 		tracker.addImage(japanese, 1);
@@ -94,6 +95,8 @@ public class FlagIconImageFactory
 		tracker.addImage(germanSmall, 1);
 		tracker.addImage(russian, 1);
 		tracker.addImage(russianSmall, 1);
+                tracker.addImage(italian, 1);
+                tracker.addImage(italianSmall, 1);
 		try
 		{
 			tracker.waitForAll();
@@ -115,6 +118,8 @@ public class FlagIconImageFactory
 		m_images.put("Germans", german);
 		m_images.put("RussiansSmall", russianSmall);
 		m_images.put("Russians", russian);
+                m_images.put("Italians", italian);
+                m_images.put("ItaliansSmall", italianSmall);
 		m_images.put(PlayerID.NULL_PLAYERID.getName() + "Small", neutralSmall);
 
 		m_loaded = true;

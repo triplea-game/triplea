@@ -384,7 +384,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 	TerritoryAttatchment ta = TerritoryAttatchment.get(producer);
 	Collection factoryUnits = producer.getUnits().getMatches(Matches.UnitIsFactory);
 	boolean originalFactory = ta.isOriginalFactory();
-	boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
+        boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
  
          if (originalFactory && playerIsOriginalOwner)
             return 0;
@@ -803,4 +803,3 @@ class PlaceState implements Serializable
 
     public Map m_produced;
 }
-
