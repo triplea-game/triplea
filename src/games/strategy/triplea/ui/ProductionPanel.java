@@ -32,6 +32,8 @@ import games.strategy.util.*;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Constants;
+import java.util.List;
+import javax.swing.border.*;
 
 
 /**
@@ -47,7 +49,7 @@ public class ProductionPanel extends JPanel
   private static JDialog s_dialog;
   private static ProductionPanel s_panel;
 
-  private Collection m_rules = new ArrayList();
+  private List m_rules = new ArrayList();
   private JLabel m_left = new JLabel();
   private PlayerID m_id;
   private boolean m_bid;
@@ -112,23 +114,26 @@ public class ProductionPanel extends JPanel
 
   private void initLayout(PlayerID id)
   {
+    Insets nullInsets = new Insets(0,0,0,0);
     this.removeAll();
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    this.setLayout(new GridBagLayout());
     int ipcs = getIPCs();
-    add(Box.createVerticalStrut(5));
-    add(new JLabel("You have " + ipcs + " " + StringUtil.plural("IPC", ipcs) + "  to spend"));
-    add(Box.createVerticalStrut(10));
-    Iterator iter = m_rules.iterator();
-    while(iter.hasNext())
+    JLabel totalIPCs = new JLabel("You have " + ipcs + " " + StringUtil.plural("IPC", ipcs) + "  to spend");
+    add(totalIPCs, new GridBagConstraints(0,0,30,1,1,1,GridBagConstraints.EAST,GridBagConstraints.HORIZONTAL,  new Insets(8,8,8,0),0,0));
+
+    for(int x = 0;x < m_rules.size() / 2; x++)
     {
-      this.add( (Rule) iter.next());
+      add( (Rule) m_rules.get(2*x), new GridBagConstraints(x,1,1,1,1,1,GridBagConstraints.EAST,GridBagConstraints.HORIZONTAL, nullInsets,0,0));
+      if((2*x) + 1 > m_rules.size());
+        add( (Rule) m_rules.get((2* x) + 1), new GridBagConstraints(x,2,1,1,1,1,GridBagConstraints.EAST,GridBagConstraints.HORIZONTAL, nullInsets,0,0));
     }
-    add(Box.createVerticalStrut(5));
-    add(m_left);
+
+
+    add(m_left, new GridBagConstraints(0,3,30,1,1,1,GridBagConstraints.EAST,GridBagConstraints.HORIZONTAL, new Insets(8,8,0,0),0,0));
     setLeft(ipcs);
-    add(Box.createVerticalStrut(10));
-    add(new JButton(m_done_action));
-    add(Box.createVerticalStrut(10));
+
+    add(new JButton(m_done_action), new GridBagConstraints(0,4,30,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(0,0,8,0),0,0));
+
 
 
   }
@@ -207,15 +212,20 @@ public class ProductionPanel extends JPanel
 
     Rule(ProductionRule rule, GameData data, PlayerID id)
     {
+      setLayout(new GridBagLayout());
       m_data = data;
       m_rule = rule;
       m_cost = rule.getCosts().getInt( m_data.getResourceList().getResource(Constants.IPCS));
       m_type = (UnitType) rule.getResults().keySet().iterator().next();
+      Icon icon = UnitIconImageFactory.instance().getIcon(m_type, id, m_data, false);
+      String text =  " x " + (m_cost < 10 ? " " : "") + m_cost;
+      JLabel label = new JLabel(text, icon, JLabel.LEFT);
 
-      this.add( new JLabel(UnitIconImageFactory.instance().getIcon(m_type, id, m_data, false)));
-      this.add(new JLabel( " x " + (m_cost < 10 ? " " : "") + m_cost));
-      this.add(m_text);
+      int space = 8;
+      this.add(label,  new GridBagConstraints(0,0,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(10,space,space,space),0,0));
+      this.add(m_text, new GridBagConstraints(0,1,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(10,space,space,space),0,0));
       m_text.addChangeListener(m_listener);
+      setBorder(new EtchedBorder());
     }
 
     int getCost()
