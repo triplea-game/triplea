@@ -205,15 +205,11 @@ public class BattleTracker implements java.io.Serializable
     conquerable.addInverse(Matches.TerritoryIsNuetral);
   
     //check the last territory specially to see if its a naval invasion
-    Collection blitzed = route.getMatches(canBlitz);
+    
     Collection conquered = route.getMatches(conquerable);	
-    
     //we handle the end of the route later
-    blitzed.remove(route.getEnd());
     conquered.remove(route.getEnd());
-    
-    if(!conquered.containsAll(blitzed))
-        throw new IllegalStateException("Blitzed but not conqured!");
+    Collection blitzed = Match.getMatches(conquered, canBlitz);
     
     m_blitzed.addAll(blitzed);
     m_conquered.addAll(conquered);
@@ -233,11 +229,11 @@ public class BattleTracker implements java.io.Serializable
       Battle precede = getDependentAmphibiousAssault(route);
       if (precede == null)
       {
-        takeOver(route.getEnd(), id, bridge, data, changeTracker);
         if(canBlitz.match(route.getEnd()))
         {
          m_blitzed.add(route.getEnd());   
         }
+        takeOver(route.getEnd(), id, bridge, data, changeTracker);
         m_conquered.add(route.getEnd());
       }
       else

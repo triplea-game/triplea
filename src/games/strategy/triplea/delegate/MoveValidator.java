@@ -111,13 +111,11 @@ public class MoveValidator
 	{
 	    if(current.isWater())
 			return false;
-	    
+
+	    //cant blitz on neutrals
 	    if(current.getOwner().isNull())
 	        return false;
-	   
-	    if(data.getAllianceTracker().isAllied(player, current.getOwner()))
-	        return false;
-	    
+
 	    if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(current) &&
 		   !DelegateFinder.battleDelegate(data).getBattleTracker().wasBlitzed(current))
 			return false;
