@@ -31,6 +31,7 @@ import games.strategy.engine.data.events.*;
 import games.strategy.triplea.ui.TripleAFrame;
 
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.*;
 
 
 /**
@@ -164,6 +165,10 @@ public class TripleAPlayer implements GamePlayer
 
   private void tech()
   {
+    //can we tech?
+    if(m_id.getResources().getQuantity(Constants.IPCS) == 0)
+      return;
+
     IntegerMessage message = m_ui.getTechRolls(m_id);
     if(message != null)
     {
@@ -187,6 +192,9 @@ public class TripleAPlayer implements GamePlayer
 
   private void move(boolean nonCombat)
   {
+    if(!hasUnitsThatCanMove())
+      return;
+
     MoveMessage message = m_ui.getMove(m_id, m_bridge, nonCombat);
     if(message == null)
     {
@@ -221,12 +229,36 @@ public class TripleAPlayer implements GamePlayer
     }
   }
 
+  private boolean hasUnitsThatCanMove()
+  {
+    CompositeMatchAnd moveableUnitOwnedByMe = new CompositeMatchAnd(new InverseMatch(Matches.UnitIsAAOrFactory),
+                                                    Matches.unitIsOwnedBy(m_id));
+    
+    Iterator territoryIter = m_bridge.getGameData().getMap().getTerritories().iterator();
+    while (territoryIter.hasNext())
+    {
+      Territory item = (Territory) territoryIter.next();
+      if (item.getUnits().someMatch(moveableUnitOwnedByMe))
+      {
+        return true;
+      }
+    }
+    return false;
+
+  }
+
   private void purchase(boolean bid)
   {
     if(bid)
     {
       String propertyName = m_id.getName() + " bid";
       if(Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString()) == 0)
+        return;
+    }
+    else
+    {
+      //can we buy anything
+      if (m_id.getResources().getQuantity(Constants.IPCS) == 0)
         return;
     }
 
