@@ -35,7 +35,7 @@ import games.strategy.triplea.Constants;
  *
  * Used to keep track of where battles have occured
  */
-public class BattleTracker
+public class BattleTracker implements java.io.Serializable
 {
 	//List of pending battles
 	private Set m_pendingBattles = new HashSet();
@@ -194,7 +194,9 @@ public class BattleTracker
 		//TODO check for pre existing battles at the sight
 		//here and in empty battle
 
+
 		Collection neutral = route.getMatches(Matches.TerritoryIsNuetral);
+		neutral = Match.getMatches(neutral, Matches.TerritoryIsEmpty);
 		//deal with the end seperately
 		neutral.remove(route.getEnd());
 
@@ -209,7 +211,7 @@ public class BattleTracker
 
 		//deal with end territory, may be the case that
 		//a naval battle must precede th
-		if(Matches.TerritoryIsNuetral.match(route.getEnd()))
+		if(Matches.TerritoryIsNuetral.match(route.getEnd()) && Matches.TerritoryIsEmpty.match(route.getEnd()))
 		{
 			Battle precede = getDependentAmphibiousAssault(route);
 			if(precede == null)
@@ -241,7 +243,7 @@ public class BattleTracker
 		if(territory.getOwner().isNull())
 		{
 			Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
-			Change neutralFee = ChangeFactory.changeResourcesChange(id, ipcs, Constants.NEUTRAL_CHARGE);
+			Change neutralFee = ChangeFactory.changeResourcesChange(id, ipcs, games.strategy.triplea.Properties.getNeutralCharge(data));
 			bridge.addChange(neutralFee);
 		}
 

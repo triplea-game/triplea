@@ -12,7 +12,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/** ChangeFactory.java
+/** 
+ * ChangeFactory.java
  *
  * Created on October 25, 2001, 1:26 PM
  */

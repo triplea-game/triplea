@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import java.util.*;
+import java.io.Serializable;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.*;
@@ -37,34 +38,34 @@ import games.strategy.triplea.attatchments.TerritoryAttatchment;
  *
  * @author  Sean Bridges
  */
-public class EndRoundDelegate implements Delegate, java.io.Serializable
+public class EndRoundDelegate implements SaveableDelegate
 {
 	private final static int AXIS_ECONOMIC_VICTORY = 84;
 	private final static int ALLIES_ECONOMIC_VICTORY = 110;
-	
-	private String m_name;	
+
+	private String m_name;
 	private String m_displayName;
 	private GameData m_data;
 	//to prevent repeat notifications
 	private boolean m_gameOver = false;
-	
+
 	/** Creates a new instance of EndRoundDelegate */
-    public EndRoundDelegate() 
+    public EndRoundDelegate()
 	{
     }
 
-	public void initialize(String name) 
+	public void initialize(String name)
 	{
 		initialize(name, name);
 	}
 
-	public void initialize(String name, String displayName) 
+	public void initialize(String name, String displayName)
 	{
 		m_name = name;
 		m_displayName = displayName;
 	}
 
-	
+
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -72,18 +73,18 @@ public class EndRoundDelegate implements Delegate, java.io.Serializable
 	{
 		if(m_gameOver)
 			return;
-		
+
 		m_data = gameData;
-		
+
 		int gProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.GERMANS));
 		int jProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.JAPANESE));
-		
+
 		if(gProd + jProd >= AXIS_ECONOMIC_VICTORY)
 		{
 			m_gameOver = true;
 			aBridge.getTranscript().write("Axis achieve economic victory", TranscriptMessage.PRIORITY_CHANNEL);
 		}
-		
+
 		int rProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.RUSSIANS));
 		int bProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.BRITISH));
 		int aProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.AMERICANS));
@@ -97,24 +98,30 @@ public class EndRoundDelegate implements Delegate, java.io.Serializable
 		}
 		*/
 	}
-	
+
 	public String getName()
 	{
 		return m_name;
 	}
-	
+
+	public String getDisplayName()
+	{
+		return m_displayName;
+	}
+
+
 	public Message sendMessage(Message message)
 	{
 		throw new UnsupportedOperationException("Cannot respond to messages.  Recieved:" + message);
 	}
-	
+
 	/**
 	 * Called before the delegate will stop running.
 	 */
 	public void end()
 	{
 	}
-	
+
 	public int getProduction(PlayerID id)
 	{
 		int sum = 0;
@@ -131,5 +138,30 @@ public class EndRoundDelegate implements Delegate, java.io.Serializable
 		return sum;
 	}
 
-	
+	/**
+	 * Can the delegate be saved at the current time.
+	 * @arg message, a String[] of size 1, hack to pass an error message back.
+	 */
+	public boolean canSave(String[] message)
+	{
+		return true;
+	}
+
+	/**
+	 * Returns the state of the Delegate.
+	 */
+	public Serializable saveState()
+	{
+		return new Boolean(m_gameOver);
+	}
+
+	/**
+	 * Loads the delegates state
+	 */
+	public void loadState(Serializable state)
+	{
+		m_gameOver = ((Boolean) state).booleanValue();
+	}
+
+
 }

@@ -21,27 +21,27 @@
 package games.strategy.engine.data;
 
 import java.util.*;
-import games.strategy.util.Version;
+
 import games.strategy.engine.data.events.*;
-import games.strategy.util.ListenerList;
-import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.*;
+import games.strategy.util.*;
 
 /**
  *
  * @author  Sean Bridges
  * @version 1.0
  */
-public class GameData 
+public class GameData implements java.io.Serializable
 {
 
 	private String m_gameName;
 	private Version m_gameVersion;
 
-	private ListenerList m_territoryListeners = new ListenerList();
-	private ListenerList m_dataChangeListeners = new ListenerList();
-	
+	private transient ListenerList m_territoryListeners = new ListenerList();;
+	private transient ListenerList m_dataChangeListeners = new ListenerList();;
+
 	private final AllianceTracker m_alliances = new AllianceTracker(this);
-	private final DelegateList m_delegateList = new DelegateList(this);
+	private final  DelegateList m_delegateList;
 	private final GameMap m_map = new GameMap(this);
 	private final PlayerList m_playerList = new PlayerList(this);
 	private final ProductionFrontierList m_productionFrontierList = new ProductionFrontierList(this);
@@ -50,21 +50,20 @@ public class GameData
 	private final GameSequence m_sequence = new GameSequence(this);
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
 	private final GameProperties m_properties = new GameProperties(this);
-	
-	
-	//TODO, remove this, should not be here
+
 	private IGameLoader m_loader;
-	
+
 	/** Creates new GameData */
-	public GameData() 
+	public GameData()
 	{
+		m_delegateList = new DelegateList(this);
 	}
-	
+
 	public GameMap getMap()
 	{
 		return m_map;
 	}
-	
+
 	public PlayerList getPlayerList()
 	{
 		return m_playerList;
@@ -74,12 +73,12 @@ public class GameData
 	{
 		return m_resourceList;
 	}
-	
+
 	public ProductionFrontierList getProductionFrontierList()
 	{
 		return m_productionFrontierList;
 	}
-	
+
 	public ProductionRuleList getProductionRuleList()
 	{
 		return m_productionRuleList;
@@ -89,17 +88,17 @@ public class GameData
 	{
 		return m_alliances;
 	}
-	
+
 	public GameSequence getSequence()
 	{
 		return m_sequence;
 	}
-	
+
 	public UnitTypeList getUnitTypeList()
 	{
 		return m_unitTypeList;
 	}
-	
+
 	public DelegateList getDelegateList()
 	{
 		return m_delegateList;
@@ -112,17 +111,17 @@ public class GameData
 			return m_map.getTerritory(name);
 		return m_playerList.getPlayerID(name);
 	}
-	
+
 	public GameProperties getProperties()
 	{
 		return m_properties;
 	}
-	
+
 	public void addTerritoryListener(TerritoryListener listener)
 	{
 		m_territoryListeners.add(listener);
 	}
-	
+
 	public void removeTerritoryListener(TerritoryListener listener)
 	{
 		m_territoryListeners.remove(listener);
@@ -132,13 +131,13 @@ public class GameData
 	{
 		m_dataChangeListeners.add(listener);
 	}
-	
+
 	public void removeDataChangeListener(GameDataChangeListener listener)
 	{
 		m_dataChangeListeners.remove(listener);
 	}
 
-	
+
 	protected void notifyTerritoryUnitsChanged(Territory t)
 	{
 		Iterator iter = m_territoryListeners.iterator();
@@ -148,7 +147,7 @@ public class GameData
 			listener.unitsChanged(t);
 		}
 	}
-	
+
 	protected void notifyTerritoryOwnerChanged(Territory t)
 	{
 		Iterator iter = m_territoryListeners.iterator();
@@ -158,7 +157,7 @@ public class GameData
 			listener.ownerChanged(t);
 		}
 	}
-	
+
 	protected void notifyGameDataChanged()
 	{
 		Iterator iter = m_dataChangeListeners.iterator();
@@ -167,13 +166,13 @@ public class GameData
 			GameDataChangeListener listener = (GameDataChangeListener) iter.next();
 			listener.gameDataChanged();
 		}
-	}			
-	
+	}
+
 	public IGameLoader getGameLoader()
 	{
 		return m_loader;
 	}
-	
+
 	protected void setGameLoader(IGameLoader loader)
 	{
 		m_loader = loader;
@@ -198,5 +197,11 @@ public class GameData
 	{
 		return m_gameName;
 	}
-		
+
+
+	public void postSerialize()
+	{
+		m_territoryListeners = new ListenerList();;
+		m_dataChangeListeners = new ListenerList();;
+	}
 }

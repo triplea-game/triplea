@@ -29,7 +29,7 @@ import javax.swing.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.*;
-import games.strategy.net.*; 
+import games.strategy.net.*;
 
 import games.strategy.engine.EngineVersion;
 
@@ -42,18 +42,18 @@ import games.strategy.engine.EngineVersion;
 public class ClientStartup extends JFrame
 {
 	private static final Insets BUTTON_INSETS = new Insets(0,0,0,0);
-	
+
 	private final Object m_lock = new Object();
-	
+
 	private final IGameLoader m_loader;
 	private final IMessenger m_messenger;
 	private final GameData m_data;
-	
+
 	private JLabel m_nameLabel;
-	
+
 	//list of PlayerRows
 	private ArrayList m_playerRows;
-	
+
 	/**
 	 * Creates a new instance of ServerStartup
 	 */
@@ -62,11 +62,11 @@ public class ClientStartup extends JFrame
 		super("Client");
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		m_loader = loader;
 		m_data = data;
 		m_messenger = messenger;
-		
+
 		initComponents();
 		layoutComponents();
 		setWidgetActivation();
@@ -79,7 +79,7 @@ public class ClientStartup extends JFrame
 	public Map getLocalPlayerMapping()
 	{
 		Map map = new HashMap();
-		
+
 		Iterator iter = m_playerRows.iterator();
 		while(iter.hasNext())
 		{
@@ -91,48 +91,48 @@ public class ClientStartup extends JFrame
 		}
 		return map;
 	}
-		
+
 	public void waitForPlayers()
 	{
 		m_messenger.addMessageListener(m_messageListener);
-		m_messenger.broadcast(new ListPlayerRequest());	
-		
+		m_messenger.broadcast(new ListPlayerRequest());
+
 		try
 		{
 			synchronized(m_lock)
 			{
 				m_lock.wait();
 			}
-			
+
 		} catch(InterruptedException ie)
 		{
 			ie.printStackTrace();
 		}
-		
-		
+
+
 		m_messenger.removeMessageListener(m_messageListener);
 	}
-	
+
 	private void initComponents()
 	{
-		m_nameLabel = new JLabel("Name:" + m_messenger.getLocalNode().getName());	
-		
+		m_nameLabel = new JLabel("Name:" + m_messenger.getLocalNode().getName());
+
 		String[] remoteOptions = m_loader.getClientPlayerTypes();
-		
+
 		m_playerRows = new ArrayList();
 		Iterator iter = m_data.getPlayerList().getPlayers().iterator();
-		
+
 		while(iter.hasNext())
 		{
 			PlayerID id = (PlayerID) iter.next();
 			m_playerRows.add(new PlayerRow(id.getName(),remoteOptions[0]));
 		}
 	}
-		
+
 	private void layoutComponents()
 	{
 		Container content = getContentPane();
-		
+
 		content.removeAll();
 		content.setLayout(new BorderLayout());
 
@@ -141,34 +141,34 @@ public class ClientStartup extends JFrame
 		info.add(m_nameLabel);
 		info.add(new JLabel(" "));
 		content.add(info, BorderLayout.NORTH);
-		
+
 		JPanel players = new JPanel();
 		GridBagLayout layout = new GridBagLayout();
 		players.setLayout(layout);
-	
+
 		Insets spacing = new Insets(3,23,0,0);
 		Insets lastSpacing = new Insets(3,23,0,23);
-		
+
 		GridBagConstraints nameConstraints = new GridBagConstraints();
 		nameConstraints.anchor = GridBagConstraints.WEST;
 		nameConstraints.gridx = 0;
 		nameConstraints.insets = spacing;
-		
+
 		GridBagConstraints playerConstraints = new GridBagConstraints();
 		playerConstraints.anchor = GridBagConstraints.WEST;
 		playerConstraints.gridx = 2;
 		playerConstraints.insets = spacing;
-		
+
 		GridBagConstraints playConstraints = new GridBagConstraints();
 		playConstraints.anchor = GridBagConstraints.WEST;
 		playConstraints.gridx = 3;
 		playConstraints.insets = lastSpacing;
-			
+
 		JLabel nameLabel = new JLabel("Name");
 		nameLabel.setForeground(Color.black);
 		layout.setConstraints(nameLabel, nameConstraints);
 		players.add(nameLabel);
-		
+
 		JLabel playerLabel = new JLabel("Played By");
 		playerLabel.setForeground(Color.black);
 		layout.setConstraints(playerLabel, playerConstraints);
@@ -177,40 +177,38 @@ public class ClientStartup extends JFrame
 		JLabel playedByLabel = new JLabel("                    ");
 		layout.setConstraints(playedByLabel, playConstraints);
 		players.add(playedByLabel);
-		
+
 		Iterator iter = m_playerRows.iterator();
 		while(iter.hasNext())
 		{
 			PlayerRow row = (PlayerRow) iter.next();
-			
+
 			layout.setConstraints(row.getName(), nameConstraints);
 			players.add(row.getName());
-			
+
 			layout.setConstraints(row.getPlayer(), playerConstraints);
 			players.add(row.getPlayer());
-			
+
 			layout.setConstraints(row.getPlayerComponent(), playConstraints);
-			players.add(row.getPlayerComponent());	
+			players.add(row.getPlayerComponent());
 		}
-		
+
 		content.add(players, BorderLayout.CENTER);
-		
+
 		JPanel lowerPanel = new JPanel();
 		lowerPanel.setLayout(new BorderLayout());
 		lowerPanel.add(new JLabel(" "), BorderLayout.NORTH);
-		
+
 		JPanel buttons = new JPanel();
 		buttons.add(new JButton(m_cancelAction));
-		
+
 		lowerPanel.add(buttons, BorderLayout.CENTER);
-		
+
 		content.add(lowerPanel, BorderLayout.SOUTH);
 	}
-	
+
 	private void checkVersion(PlayerListingMessage msg)
 	{
-
-		System.out.println(msg);	
 		if(!msg.getGameName().equals(m_data.getGameName()) ||
 		   !msg.getGameVersion().equals(m_data.getGameVersion()) ||
 		   !msg.getEngineVersion().equals(EngineVersion.VERSION)
@@ -219,19 +217,19 @@ public class ClientStartup extends JFrame
 			try
 			{
 				StringBuffer version = new StringBuffer();
-				
+
 				version.append("Error, server running different game or version.  Cannot join game. \n");
-				
+
 				version.append("Server\n engineVersion:").append(msg.getEngineVersion());
 				version.append(" gameName:").append(msg.getGameName());
 				version.append(" gameVersion:").append(msg.getGameVersion());
-				
+
 				version.append("\nClient\n engineVersion:").append(EngineVersion.VERSION);
 				version.append(" gameName:").append(m_data.getGameName());
 				version.append(" gameVersion:").append(m_data.getGameVersion());
-				
+
 				System.err.println(version.toString());
-				
+
 				JOptionPane.showMessageDialog(this, version.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 				m_messenger.shutDown();
 			} finally
@@ -240,11 +238,11 @@ public class ClientStartup extends JFrame
 			}
 		}
 	}
-	
+
 	private void setWidgetActivation()
 	{
 	}
-	
+
 	private Action m_cancelAction = new AbstractAction("Quit")
 	{
 		public void actionPerformed(ActionEvent e)
@@ -252,7 +250,7 @@ public class ClientStartup extends JFrame
 			System.exit(0);
 		}
 	};
-	
+
 	private IMessageListener m_messageListener = new IMessageListener()
 	{
 		public void messageReceived(Serializable msg, INode from)
@@ -267,15 +265,15 @@ public class ClientStartup extends JFrame
 			if(msg instanceof PlayerListingMessage)
 			{
 				checkVersion((PlayerListingMessage) msg);
-				
+
 				Map listing = ((PlayerListingMessage) msg).getPlayerListing();
 				Iterator listings = listing.keySet().iterator();
-				
+
 				while(listings.hasNext())
 				{
 					String playerName = (String) listings.next();
 					String node = (String) listing.get(playerName);
-					
+
 					Iterator rows = m_playerRows.iterator();
 					while(rows.hasNext())
 					{
@@ -285,7 +283,7 @@ public class ClientStartup extends JFrame
 							row.setPlayerName(node);
 						}
 					}
-					
+
 				}
 				Runnable refresh = new Runnable()
 				{
@@ -295,19 +293,19 @@ public class ClientStartup extends JFrame
 						pack();
 					}
 				};
-				
+
 				SwingUtilities.invokeLater(refresh);
 			}
-		}	
+		}
 	};
-	
+
 	class PlayerRow
 	{
 		private JLabel m_nameLabel;
 		private JLabel m_playerLabel;
 		private JComponent m_playerComponent;
 		private String m_localPlayerType;
-		
+
 		PlayerRow(String playerName, String localPlayerType)
 		{
 			m_nameLabel = new JLabel(playerName);
@@ -315,22 +313,22 @@ public class ClientStartup extends JFrame
 			m_playerComponent = new JLabel("");
 			m_localPlayerType = localPlayerType;
 		}
-		
+
 		public JLabel getName()
 		{
 			return m_nameLabel;
 		}
-		
+
 		public JLabel getPlayer()
 		{
 			return m_playerLabel;
 		}
-		
+
 		public String getPlayerName()
 		{
 			return m_nameLabel.getText();
 		}
-		
+
 		public void setPlayerName(String playerName)
 		{
 			if(playerName == null)
@@ -339,12 +337,12 @@ public class ClientStartup extends JFrame
 				JButton button = new JButton(m_takeAction);
 				button.setMargin(BUTTON_INSETS);
 				m_playerComponent = button;
-				
+
 			}
 			else
 			{
 				m_playerLabel.setText(playerName);
-				
+
 				if(playerName.equals(m_messenger.getLocalNode().getName()))
 				{
 					JButton button = new JButton(m_dontTakeAction);
@@ -357,22 +355,22 @@ public class ClientStartup extends JFrame
 				}
 			}
 		}
-		
+
 		public boolean isPlaying()
 		{
 			return m_playerLabel.getText().equals(m_messenger.getLocalNode().getName());
 		}
-		
+
 		public JComponent getPlayerComponent()
 		{
 			return m_playerComponent;
 		}
-		
+
 		public String getLocalType()
 		{
 			return m_localPlayerType;
 		}
-		
+
 		private Action m_takeAction = new AbstractAction("Play")
 		{
 			public void actionPerformed(ActionEvent e)
@@ -381,8 +379,8 @@ public class ClientStartup extends JFrame
 				//TODO send to server only
 				m_messenger.broadcast(msg);
 			}
-		};	
-		
+		};
+
 		private Action m_dontTakeAction = new AbstractAction("Dont Play")
 		{
 			public void actionPerformed(ActionEvent e)
@@ -391,6 +389,6 @@ public class ClientStartup extends JFrame
 				//TODO send to server only
 				m_messenger.broadcast(msg);
 			}
-		};	
+		};
 	}
 }

@@ -50,5 +50,6 @@ public final class TestDelegate implements Delegate
 	public void start(DelegateBridge aBridge, GameData gameData) {	}
 	public Message sendMessage(Message aMessage) {return null;	}
 	public void end() {	}
-	
+	public String getDisplayName() {return "displayName";}
+
 }

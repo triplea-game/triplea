@@ -44,10 +44,10 @@ public class ClientGame implements IGame
 	private ChangePerformer m_changePerformer;
 	private INode m_serverNode;
 	//maps PlayerID->GamePlayer
-	private Map m_gamePlayers = new HashMap(); 
+	private Map m_gamePlayers = new HashMap();
 	private Transcript m_transcript;
-	
-	public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, INode server) 
+
+	public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, INode server)
 	{
 		m_data = data;
 		m_serverNode = server;
@@ -55,48 +55,48 @@ public class ClientGame implements IGame
 		m_messenger.addMessageListener(m_messageListener);
 		m_messageManager = new MessageManager(m_messenger);
 		m_transcript = new Transcript(m_messenger);
-		
+
 		Iterator iter = gamePlayers.iterator();
 		while(iter.hasNext())
 		{
 			GamePlayer gp = (GamePlayer) iter.next();
 			PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
 			m_gamePlayers.put(player, gp);
-			
+
 			PlayerBridge bridge = new DefaultPlayerBridge(this, gp);
 			gp.initialize(bridge, player);
-			
+
 			m_messageManager.addDestination(gp);
 		}
-		
+
 		m_changePerformer = new ChangePerformer(m_data);
     }
-	
+
 	public IMessageManager getMessageManager()
 	{
 		return m_messageManager;
-	}	
+	}
 
 	public GameData getData()
 	{
 		return m_data;
 	}
-	
+
 	public IMessenger getMessenger()
 	{
 		return m_messenger;
 	}
-	
+
 	public void addGameStepListener(GameStepListener listener)
-	{	
+	{
 		m_gameStepListeners.add(listener);
 	}
-	
+
 	public void removeGameStepListener(GameStepListener listener)
 	{
 		m_gameStepListeners.remove(listener);
 	}
-	
+
 	private void notifyGameStepChanged(String stepName, String delegateName, PlayerID id)
 	{
 		Iterator iter = m_gameStepListeners.iterator();
@@ -106,17 +106,17 @@ public class ClientGame implements IGame
 			listener.gameStepChanged(stepName, delegateName, id);
 		}
 	}
-	
+
 	public void addChange(Change aChange)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public Transcript getTranscript()
 	{
 		return m_transcript;
 	}
-	
+
 	private IMessageListener m_messageListener = new IMessageListener()
 	{
 		public void messageReceived(Serializable msg, INode from)
@@ -135,17 +135,26 @@ public class ClientGame implements IGame
 			{
 				PlayerStartStepMessage playerStart = (PlayerStartStepMessage) msg;
 				GamePlayer gp = (GamePlayer) m_gamePlayers.get(playerStart.getPlayerID());
-				
+
 				if(gp == null)
 					throw new IllegalStateException("Game player not found" + playerStart);
-	
+
 				gp.start(playerStart.getStepName());
-				
+
 				PlayerStepEndedMessage response = new PlayerStepEndedMessage(playerStart.getStepName());
-				m_messenger.send(response, m_serverNode);			
+				m_messenger.send(response, m_serverNode);
 			}
 		}
 	};
-	
+
+	/**
+	 * Clients cant save because they do not have the delegate data.
+	 * It would be easy to get the server to save the game, and send the
+	 * data to the client, I just havent bothered.
+	 */
+	public boolean canSave()
+	{
+		return false;
+	}
 
 }

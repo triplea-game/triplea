@@ -87,14 +87,18 @@ public class StatPanel extends JPanel
 		/* Column Header Names */
 	 	private String[] colList = new String[] { "Country", "IPCs", "Production", "Units" };
 	 	/* Row Header Names */
-		private String[] rowList = new String[] { Constants.RUSSIANS, Constants.GERMANS, Constants.BRITISH, Constants.JAPANESE, Constants.AMERICANS, "Allies", "Axis" } ;
+		private String[] rowList;
 		/* Underlying data for the table */
-		private Object[][] data = new Object[rowList.length][colList.length];
+		private Object[][] data;
 		/* Convenience mapping of player names -> row */
 		private Map rowMap = null;
 
-		public StatTableModel(GameData data) {
+		public StatTableModel(GameData data)
+		{
 			m_data = data;
+
+			initRowList();
+			this.data = new Object[rowList.length][colList.length];
 
 			/* Load the player -> row mapping */
 			rowMap = new HashMap();
@@ -102,9 +106,83 @@ public class StatPanel extends JPanel
 				rowMap.put(rowList[i], new Integer(i));
 		}
 
+		private void initRowList()
+		{
+			Collection players =  m_data.getPlayerList().getPlayers();
+			Collection alliances = getAlliances();
+			ArrayList entries = new ArrayList(players);
+			entries.addAll(alliances);
+
+			rowList = new String[ players.size() + alliances.size()];
+
+			for(int i = 0; i < players.size(); i++)
+			{
+				rowList[i] = ((PlayerID) entries.get(i)).getName();
+			}
+
+			Arrays.sort(rowList, 0,players.size() );
+		}
+
+
+		/**
+		 *
+		 * @return all the alliances with more than one player.
+		 */
+		private Collection getAlliances()
+		{
+			Iterator allAlliances = m_data.getAllianceTracker().getAliances().iterator();
+			//order the alliances use a Tree Set
+			Collection rVal = new TreeSet();
+
+			while(allAlliances.hasNext())
+			{
+				String alliance = (String) allAlliances.next();
+				if( m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1)
+				{
+					rVal.add(alliance);
+				}
+			}
+			return rVal;
+		}
+
 		public void gameDataChanged()
 		{
 			isDirty = true;
+		}
+
+
+		public void updateAlliances()
+		{
+
+			Collection alliances = getAlliances();
+			int currentRow = rowList.length - alliances.size();
+			Iterator allianceIter = alliances.iterator();
+
+			while(allianceIter.	hasNext())
+			{
+				String alliance = (String) allianceIter.next();
+				data[currentRow][0] = alliance;
+
+				int col1 = 0;
+				int col2 = 0;
+				int col3 = 0;
+
+				Iterator playerIDS = m_data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
+				while(playerIDS.hasNext())
+				{
+					PlayerID player = (PlayerID) playerIDS.next();
+					int row = ((Integer) rowMap.get(player.getName())).intValue();
+					col1 += ((Integer) data[row][1]).intValue();
+					col2 += ((Integer) data[row][2]).intValue();
+					col3 += ((Integer) data[row][3]).intValue();
+				}
+
+				data[currentRow][1] = new Integer(col1);
+				data[currentRow][2] = new Integer(col2);
+				data[currentRow][3] = new Integer(col3);
+
+				currentRow++;
+			}
 		}
 
 		/*
@@ -113,8 +191,10 @@ public class StatPanel extends JPanel
 		 * event gets some more context.
 		 */
 
-		private void update()
+		private void updatePlayers()
         {
+		    int playerCount = rowList.length - getAlliances().size();
+
 			PlayerList plist = m_data.getPlayerList();
 
 			// Use an int array for the scratch array for performance (avoids object thrashing)
@@ -131,41 +211,24 @@ public class StatPanel extends JPanel
 				if (row != null)
 				{
 					tmpData[row.intValue()][1] += ta.getProduction();
-
-					// Take advantage of the fact that the indices of allied countries are all even numbers to update team totals.
-					tmpData[5 + (row.intValue() % 2)][1] += ta.getProduction();
 				}
 			}
 
 			// Now do all the per-country stats
-			for (int row = 0; row < rowList.length - 2; row++)
+			for (int row = 0; row < playerCount; row++)
 			{
 				tmpData[row][0] = plist.getPlayerID(rowList[row]).getResources().getQuantity(Constants.IPCS);
-				// Take advantage of the fact that the indices of allied countries are all even numbers to update team totals.
-				tmpData[5 + (row % 2)][0] += plist.getPlayerID(rowList[row]).getResources().getQuantity(Constants.IPCS);
 			}
 
-			// Initialize the total units column for the axis and allies to 0
-			Integer ZERO = new Integer(0);
-			data[5][3] = ZERO;
-			data[6][3] = ZERO;
 
 			// Finally, throw this into an array that closely matches the table structure
-			for (int row = 0; row < rowList.length; row++)
+			for (int row = 0; row < playerCount; row++)
 			{
 				PlayerID id = plist.getPlayerID(rowList[row]);
 				data[row][0] = rowList[row];
 				data[row][1] = new Integer(tmpData[row][0]);
 				data[row][2] = new Integer(tmpData[row][1]);
-				// Not sure how much I like hardcoding this 5 in here.
-				if ( row < 5 )
-				{
-                    int placedUnits = getUnitsPlaced(id);
-					data[row][3] = new Integer( placedUnits);
-
-					// Take advantage of the fact that the indices of allied countries are all even numbers to update team totals.
-					data[5 + (row % 2)][3] = new Integer(((Integer) data[5 + (row % 2)][3]).intValue() + placedUnits);
-				}
+				data[row][3] = new Integer( getUnitsPlaced(id));
 			}
 		}
 
@@ -189,7 +252,8 @@ public class StatPanel extends JPanel
   		{
   			if (isDirty)
   			{
-  				update();
+  				updatePlayers();
+				updateAlliances();
   				isDirty = false;
   			}
 
@@ -209,9 +273,9 @@ public class StatPanel extends JPanel
 		/* Column Header Names */
 	 	private String[] rowList = new String[] { "Jet Power", "Rockets", "Super Subs", "Long Range Aircraft", "Industrial Technology", "Heavy Bombers" };
 	 	/* Row Header Names */
-		private String[] colList = new String[] { Constants.RUSSIANS, Constants.GERMANS, Constants.BRITISH, Constants.JAPANESE, Constants.AMERICANS } ;
+		private String[] colList;
 		/* Underlying data for the table */
-		private String[][] data = new String[rowList.length][colList.length + 1];
+		private String[][] data;
 		/* Convenience mapping of country names -> col */
 		private Map colMap = null;
 		/* Convenience mapping of technology names -> row */
@@ -219,6 +283,9 @@ public class StatPanel extends JPanel
 
 		public TechTableModel(GameData gdata) {
 			m_data = gdata;
+
+			initColList();
+			data = new String[rowList.length][colList.length + 1];
 
 			/* Load the country -> col mapping */
 			colMap = new HashMap();
@@ -244,6 +311,21 @@ public class StatPanel extends JPanel
 				for (int j = 1; j <= colList.length; j++)
 					data[i][j] = "";
 			}
+		}
+
+		private void initColList()
+		{
+			java.util.List players = new ArrayList(  m_data.getPlayerList().getPlayers());
+
+
+			colList = new String[ players.size()];
+
+			for(int i = 0; i < players.size(); i++)
+			{
+				colList[i] = ((PlayerID) players.get(i)).getName();
+			}
+
+			Arrays.sort(colList, 0,players.size() );
 		}
 
 		public void update() {

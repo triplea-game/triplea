@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import java.util.*;
+import java.io.Serializable;
 
 import games.strategy.util.*;
 
@@ -47,7 +48,7 @@ import games.strategy.triplea.formatter.Formatter;
  * @version 1.0
  *
  */
-public class MoveDelegate implements Delegate
+public class MoveDelegate implements SaveableDelegate
 {
 	private String m_name;
 	private String m_displayName;
@@ -57,7 +58,6 @@ public class MoveDelegate implements Delegate
 	private boolean m_firstRun = true;
 	private boolean m_nonCombat;
 	private TransportTracker m_transportTracker = new TransportTracker();
-
 	private IntegerMap m_alreadyMoved = new IntegerMap();
 
 	/** Creates new MoveDelegate */
@@ -165,6 +165,11 @@ public class MoveDelegate implements Delegate
 	public String getName()
 	{
 		return m_name;
+	}
+
+	public String getDisplayName()
+	{
+		return m_displayName;
 	}
 
 	/**
@@ -827,7 +832,7 @@ public class MoveDelegate implements Delegate
 
 	private int getNeutralCharge(int numberOfTerritories)
 	{
-		return numberOfTerritories * Constants.NEUTRAL_CHARGE;
+		return numberOfTerritories *  games.strategy.triplea.Properties.getNeutralCharge(m_data);
 	}
 
 	private boolean hasConqueredNonBlitzed(Route route)
@@ -1240,4 +1245,47 @@ public class MoveDelegate implements Delegate
 	{
 		return m_transportTracker;
 	}
+
+	/**
+	 * Can the delegate be saved at the current time.
+	 * @arg message, a String[] of size 1, hack to pass an error message back.
+	 */
+	public boolean canSave(String[] message)
+	{
+		return true;
+	}
+
+
+	/**
+	 * Returns the state of the Delegate.
+	 */
+	public Serializable saveState()
+	{
+		MoveState state = new MoveState();
+		state.m_firstRun= m_firstRun;
+		state.m_nonCombat = m_nonCombat;
+		state.m_transportTracker = m_transportTracker;
+		state.m_alreadyMoved = m_alreadyMoved;
+		return state;
+	}
+
+	/**
+	 * Loads the delegates state
+	 */
+	public void loadState(Serializable aState)
+	{
+		MoveState state = (MoveState) aState;
+		m_firstRun= state.m_firstRun;
+		m_nonCombat = state.m_nonCombat;
+		m_transportTracker = state.m_transportTracker;
+		m_alreadyMoved = state.m_alreadyMoved;
+	}
+}
+
+class MoveState implements Serializable
+{
+	public boolean m_firstRun = true;
+	public boolean m_nonCombat;
+	public TransportTracker m_transportTracker;
+	public IntegerMap m_alreadyMoved;
 }

@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import java.util.*;
+import java.io.Serializable;
 
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
@@ -31,7 +32,7 @@ import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
 
 /**
- * 
+ *
  * Logic for purchasing units.
  *
  * @author  Sean Bridges
@@ -43,48 +44,54 @@ public class PurchaseDelegate implements Delegate
 	private String m_displayName;
 	private DelegateBridge m_bridge;
 	private PlayerID m_player;
-	
-	public void initialize(String name) 
+
+	public void initialize(String name)
 	{
 		initialize(name, name);
 	}
 
-	public void initialize(String name, String displayName) 
+	public void initialize(String name, String displayName)
 	{
 		m_name = name;
 		m_displayName = displayName;
 	}
 
-	
+
 	/**
 	 * Called before the delegate will run.
 	 */
-	public void start(DelegateBridge aBridge, GameData gameData) 
+	public void start(DelegateBridge aBridge, GameData gameData)
 	{
 		m_bridge = aBridge;
 		m_player = aBridge.getPlayerID();
 	}
-	
-	public String getName() 
+
+	public String getName()
 	{
 		return m_name;
 	}
-	
+
+	public String getDisplayName()
+	{
+		return m_displayName;
+	}
+
+
 	/**
 	 * A message from the given player.
 	 */
-	public Message sendMessage(Message aMessage) 
+	public Message sendMessage(Message aMessage)
 	{
 		if(aMessage instanceof BuyMessage)
-		{	
-			return buy( (BuyMessage) aMessage, m_player); 
+		{
+			return buy( (BuyMessage) aMessage, m_player);
 		} else
 		{
 			throw new IllegalArgumentException("Purchase delegate received message of wrong type:" + aMessage);
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Returns an error code, or null if all is good.
 	 */
 	private Message buy(BuyMessage buy, PlayerID player)
@@ -93,19 +100,19 @@ public class PurchaseDelegate implements Delegate
 		IntegerMap results = getResults(buy);
 		if(!(player.getResources().has(costs)))
 			return new StringMessage("Not enough resources", true);
-		
+
 		addToPlayer(player, results);
 		removeFromPlayer(player, costs);
-		
-		
-		
+
+
+
 		return new StringMessage("done");
 	}
-	
+
 	private IntegerMap getCosts(BuyMessage buy)
 	{
 		IntegerMap costs = new IntegerMap();
-		
+
 		Iterator rules = buy.getPurchase().keySet().iterator();
 		while(rules.hasNext() )
 		{
@@ -118,7 +125,7 @@ public class PurchaseDelegate implements Delegate
 	private IntegerMap getResults(BuyMessage buy)
 	{
 		IntegerMap costs = new IntegerMap();
-		
+
 		Iterator rules = buy.getPurchase().keySet().iterator();
 		while(rules.hasNext() )
 		{
@@ -127,8 +134,8 @@ public class PurchaseDelegate implements Delegate
 		}
 		return costs;
 	}
-	
-	
+
+
 	private void addToPlayer(PlayerID player, IntegerMap resourcesAndUnits)
 	{
 		Iterator iter = resourcesAndUnits.keySet().iterator();
@@ -148,20 +155,20 @@ public class PurchaseDelegate implements Delegate
 				int quantity = resourcesAndUnits.getInt(type);
 				Collection units = type.create(quantity, player);
 				totalUnits.addAll(units);
-				
+
 			}
 		}
-		
+
 		if(!totalUnits.isEmpty())
-		{	
+		{
 			Change change = ChangeFactory.addUnits(player, totalUnits);
 			m_bridge.addChange(change);
-			
+
 			String transcriptText = player.getName() + " buys " + Formatter.unitsToTextNoOwner(totalUnits);
 			m_bridge.getTranscript().write(transcriptText);
 		}
 	}
-	
+
 	private void removeFromPlayer(PlayerID player, IntegerMap resources)
 	{
 		Iterator iter = resources.keySet().iterator();
@@ -173,15 +180,18 @@ public class PurchaseDelegate implements Delegate
 			m_bridge.addChange(change);
 		}
 	}
-	
-	
 
-	
+
+
+
 	/**
 	 * Called before the delegate will stop running.
 	 */
-	public void end() 
+	public void end()
 	{
 		//this space intentionally left blank
 	}
+
+
 }
+

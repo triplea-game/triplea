@@ -32,47 +32,47 @@ public class GameStep extends GameDataComponent
 	private final String m_name;
 	private final String m_displayName;
 	private final PlayerID m_player;
-	private final Delegate m_delegate;
+	private final String m_delegate;
 	int m_hashCode = -1;
-	
+
 	/** Creates new GameStep */
-	public GameStep(String name, PlayerID player, Delegate delegate, GameData data) 
+	public GameStep(String name, PlayerID player, Delegate delegate, GameData data)
 	{
 		this(name, name, player, delegate, data);
 	}
 
 	/** Creates new GameStep */
-    public GameStep(String name, String displayName, PlayerID player, Delegate delegate, GameData data) 
+    public GameStep(String name, String displayName, PlayerID player, Delegate delegate, GameData data)
 	{
 		super(data);
 		m_name = name;
 		m_displayName = displayName;
 		m_player = player;
-		m_delegate = delegate;
+		m_delegate = delegate.getName();
     }
-	
+
 	public String getName()
 	{
 		return m_name;
 	}
-	
+
 	public PlayerID getPlayerID()
 	{
 		return m_player;
 	}
-	
+
 	public Delegate getDelegate()
 	{
-		return m_delegate;
+		return getData().getDelegateList().getDelegate(m_delegate);
 	}
-	
+
 	public boolean equals(Object o)
 	{
 		if(o == null || ! (o instanceof GameStep))
 			return false;
-		
+
 		GameStep other = (GameStep) o;
-		
+
 		return other.m_name.equals(this.m_name) &&
 		       other.m_delegate.equals(this.m_delegate) &&
 			   other.m_player.equals(this.m_player);
@@ -85,7 +85,7 @@ public class GameStep extends GameDataComponent
 			String s = m_name + m_delegate + m_player;
 			m_hashCode = s.hashCode();
 		}
-		
+
 		return m_hashCode;
 	}
 }

@@ -47,20 +47,20 @@ import games.strategy.debug.Console;
  *
  * This class starts and runs the game.
  */
-public class GameRunner 
+public class GameRunner
 {
 	private GameData m_data;
 	private final static int PORT = 932;
-	
+
 	public static void main(String[] args)
 	{
 		//Console c = Console.getConsole();
 		//c.displayStandardError();
 		//c.displayStandardOutput();
 		//c.show();
-		
+
 		GameRunner runner = new GameRunner();
-		runner.loadData();
+
 		if(args.length == 0)
 			runner.start();
 		else if(args[0].equalsIgnoreCase("server"))
@@ -70,49 +70,36 @@ public class GameRunner
 		else if(args[0].equalsIgnoreCase("local"))
 			runner.startLocalGame();
 	}
-	
-	private void start()
-	{	
-		selectClientServer();		
-	}	
-	
-	private void loadData()
-	{		
-		//TODO, select from all possible games
-		URL xmlFile = GameRunner.class.getResource("..\\..\\triplea\\xml\\Game.xml");	
-		InputStream xmlStream = null;
-		try
-		{
-			xmlStream = xmlFile.openStream();
-			xmlStream = new BufferedInputStream(xmlStream);
-		} catch(IOException e)
-		{
-			
-			System.err.println("Cannot open xml file:" + xmlFile.getPath());
-			System.exit(0);
-		}
-			
-		m_data = null;
-		
-		try
-		{
-			System.out.print("Parsing XML game data");
-			long now = System.currentTimeMillis();
-			GameParser parser = new GameParser();
-			m_data = parser.parse(xmlStream);
-			System.out.println(" done:" + (((double) System.currentTimeMillis() - now) / 1000.0) + "s");
-		} catch(GameParseException gpe)
-		{
-			gpe.printStackTrace();
-			System.err.println("Error parsing xml:" + gpe.getMessage());
-			System.exit(0);
-		} catch(SAXException spe)
-		{
-			System.err.println("Error in xml file:" + spe.getMessage());
-			System.exit(0);
-		} 
+
+	/**
+	 * Get the root folder for the application
+	 */
+	public static File getRootFolder()
+	{
+		//TODO this is a bit hokey, we assume that we are running
+		//from the bin directory.
+	    return new File("..");
 	}
-	
+
+	private void start()
+	{
+		selectClientServer();
+	}
+
+	private void loadDataLocal()
+	{
+		String newString = "New Game";
+		String loadString = "Load Saved";
+		String[] options = new String[] {newString, loadString};
+		int choice = JOptionPane.showOptionDialog(null, "New game or load saved?", "New Game", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, newString);
+		System.out.println(choice);
+		if(choice == 1 )
+			m_data = new SavedGamedDataLoader().loadData();
+		else
+			m_data = new DefaultGameDataLoader().loadData();
+
+	}
+
 	private void selectClientServer()
 	{
 		String server = "Server";
@@ -128,7 +115,7 @@ public class GameRunner
 		if(option != 0)
 			System.exit(0);
 		String type = options[combo.getSelectedIndex()];
-		
+
 		if(type == server)
 			startServer();
 		else if(type == client)
@@ -136,128 +123,137 @@ public class GameRunner
 		else
 			startLocalGame();
 	}
-	
+
 	public void startServer()
 	{
+	     loadDataLocal();
+
 		System.out.println("Server");
 		ServerMessenger messenger = null;
-		
+
 		ServerOptions options = new ServerOptions("Server", PORT);
 		options.show();
 		options.waitForOptions();
 		options.dispose();
-		
+
 		String name = options.getName();
 		int port = options.getPort();
-		
+
 		try
 		{
-			 messenger= new ServerMessenger(name, port, new GameObjectStreamFactory(m_data));	
+			 messenger= new ServerMessenger(name, port, new GameObjectStreamFactory(m_data));
 		} catch(IOException ioe)
 		{
 			ioe.printStackTrace();
 			System.exit(0);
 		}
-		
+
 		ChatFrame chatFrame = new ChatFrame(messenger);
 		chatFrame.show();
-	
+
 		IGameLoader loader = m_data.getGameLoader();
-		
+
 		System.out.println("starting");
 		ServerStartup startup = new ServerStartup(loader, m_data, messenger);
 		startup.setVisible(true);
-		
+
 		startup.waitForPlayers();
 		startup.dispose();
-		
+
 		ServerWaitForClientMessageListener listener = new ServerWaitForClientMessageListener();
 		messenger.addMessageListener(listener);
-		
+
 		Map playerMapping = startup.getLocalPlayerMapping();
 		Set playerSet = loader.createPlayers(playerMapping);
 		Map remotePlayers = startup.getRemotePlayerMapping();
-			
+
 		ServerGame serverGame = new ServerGame(m_data, playerSet, messenger, remotePlayers);
-		
+
 		chatFrame.getChat().showTranscript(serverGame.getTranscript());
-		
+
 		loader.startGame(serverGame, playerSet);
-		
+
 		listener.waitFor( new HashSet(playerMapping.values()).size());
 		messenger.removeMessageListener(listener);
-		
+
 		serverGame.startGame();
 	}
-	
+
 	public void startClient()
 	{
 		System.out.println("Client");
-		
+
 		ClientOptions options = new ClientOptions("Client", PORT, "127.0.0.1");
 		options.show();
 		options.waitForOptions();
 		options.dispose();
-		
+
 		String name = options.getName();
 		int port = options.getPort();
 		String address = options.getAddress();
-		
+
 		ClientMessenger messenger = null;
+		GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
 		try
 		{
-			messenger = new ClientMessenger(address, port, name, new GameObjectStreamFactory(m_data));
+			messenger = new ClientMessenger(address, port, name, objectStreamFactory);
 		} catch(Exception e)
 		{
 			JOptionPane.showMessageDialog(null, e.getMessage());
 			startClient();
 			return;
 		}
-		
+
 		ChatFrame chatFrame = new ChatFrame(messenger);
-		
+
 		chatFrame.show();
-		
+
+
+		m_data = new ClientGameLoader(messenger).loadData();
+		objectStreamFactory.setData(m_data);
+
 		IGameLoader loader = m_data.getGameLoader();
-		
+
 		ClientStartup startup = new ClientStartup(loader, m_data, messenger);
 		startup.setVisible(true);
-		
+
 		startup.waitForPlayers();
 		startup.dispose();
-		
+
 		Map playerMapping = startup.getLocalPlayerMapping();
 		Set playerSet = loader.createPlayers(playerMapping);
-		
-		
-		
+
+
+
 		ClientGame clientGame = new ClientGame(m_data, playerSet, messenger, messenger.getServerNode());
-		
+
 		chatFrame.getChat().showTranscript(clientGame.getTranscript());
-		
+
 		m_data.getGameLoader().startGame(clientGame, playerSet);
-		
+
 		messenger.send(new ClientReady(), messenger.getServerNode());
 	}
-	
+
 	public void startLocalGame()
 	{
+	    loadDataLocal();
+
 		IServerMessenger messenger = new DummyMessenger();
 
 		java.util.List players = games.strategy.util.Util.toList(m_data.getPlayerList().getNames());
-		
+
 		Map localPlayerMap = new HashMap();
 		Iterator playerIter = players.iterator();
 		while(playerIter.hasNext())
 		{
 			localPlayerMap.put(playerIter.next(), "local");
 		}
-		
-		Set gamePlayers = m_data.getGameLoader().createPlayers(localPlayerMap);		
+
+		Set gamePlayers = m_data.getGameLoader().createPlayers(localPlayerMap);
 		ServerGame game = new ServerGame(m_data, gamePlayers, messenger, new HashMap());
 		m_data.getGameLoader().startGame(game, gamePlayers);
 		game.startGame();
-	}		
+	}
 }
 
 class ClientReady implements Serializable
@@ -268,7 +264,7 @@ class ClientReady implements Serializable
 class ServerWaitForClientMessageListener implements IMessageListener
 {
 	int m_count = 0;
-	
+
 	public void messageReceived(Serializable msg, INode from)
 	{
 		if(msg instanceof ClientReady)
@@ -280,7 +276,7 @@ class ServerWaitForClientMessageListener implements IMessageListener
 			}
 		}
 	}
-	
+
 	public void waitFor(int target)
 	{
 		synchronized(this)

@@ -30,9 +30,9 @@ import java.util.*;
 public class GameSequence extends GameDataComponent
 {
 	private final List m_steps = new ArrayList();
-	private int m_currentIndex = -1;
-	
-	public GameSequence(GameData data) 
+	private int m_currentIndex = 0;
+
+	public GameSequence(GameData data)
 	{
 		super(data);
     }
@@ -41,7 +41,7 @@ public class GameSequence extends GameDataComponent
 	{
 		m_steps.add(step);
 	}
-	
+
 	/**
 	 * Removes the first instance of step.
 	 */
@@ -49,10 +49,10 @@ public class GameSequence extends GameDataComponent
 	{
 		if(!m_steps.contains(step))
 			throw new IllegalArgumentException("Step does not exist");
-		
+
 		m_steps.remove(step);
 	}
-	
+
 	protected void removeStep(int index)
 	{
 		m_steps.remove(index);
@@ -63,29 +63,35 @@ public class GameSequence extends GameDataComponent
 		return m_steps.size();
 	}
 	*/
-	
+
 	public void next() {
 		m_currentIndex++;
 		if (m_currentIndex == m_steps.size())
-			m_currentIndex = 0;	
+			m_currentIndex = 0;
 	}
-	
-	public GameStep getStep() 
+
+	public GameStep getStep()
 	{
-		return getStep(m_currentIndex);	
+		return getStep(m_currentIndex);
 	}
-	
+
 	public GameStep getStep(int index)
 	{
 		if ((index < 0) || (index >= m_steps.size()))
 			throw new IllegalArgumentException("Attempt to access invalid state: " + index);
-			
+
 		return (GameStep) m_steps.get(index);
 	}
-	
+
 	public Iterator iterator()
 	{
 		return m_steps.iterator();
 	}
-	
+
+	public boolean isFirstStep()
+	{
+		return m_currentIndex == 0;
+	}
+
+
 }
