@@ -449,6 +449,15 @@ public class Matches
 		}
 	};
 
+    public static final Match BattleIsEmpty = new Match()
+	{
+		public boolean match(Object o)
+		{
+			Battle battle = (Battle) o;
+			return battle.isEmpty();
+		}
+	};
+	
     public static final Match BattleIsAmphibious = new Match()
 	{
 		public boolean match(Object o)

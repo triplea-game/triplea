@@ -512,8 +512,8 @@ public class BattleTracker implements java.io.Serializable
 
     if (dependent == null)
       return Collections.EMPTY_LIST;
-    else
-      return dependent;
+
+    return Match.getMatches(dependent, new InverseMatch(Matches.BattleIsEmpty));
   }
 
   /**
