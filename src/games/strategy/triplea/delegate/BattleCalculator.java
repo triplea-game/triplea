@@ -42,239 +42,249 @@ import games.strategy.engine.data.*;
 public class BattleCalculator
 {
 
-  public static int getAAHits(Collection units, DelegateBridge bridge, int[] dice)
-  {
-    int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);
-
-    int hitCount = 0;
-    for(int i = 0; i < attackingAirCount; i++)
+    public static int getAAHits(Collection units, DelegateBridge bridge, int[] dice)
     {
-      if(1 > dice[i])
-        hitCount++;
+	int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);
+
+	int hitCount = 0;
+	for(int i = 0; i < attackingAirCount; i++)
+	{
+	    if(1 > dice[i])
+		hitCount++;
+	}
+	return hitCount;
     }
-    return hitCount;
-  }
 
-  public static Collection fourthEditionAACasualties(Collection planes, DiceRoll dice, DelegateBridge bridge) 
-  {
-    Collection casualties = new ArrayList();
-    int hits = dice.getHits();
-    List planesList = new ArrayList(planes);
-
-    // We need to choose which planes die randomnly
-    for (int i = 0; i < hits; i++)
+    /**
+     * Choose plane casualties according to 4th edition rules which
+     * specifies that they are randomnly chosen.
+     */
+    public static Collection fourthEditionAACasualties(Collection planes, DiceRoll dice, DelegateBridge bridge) 
     {
-      int pos = bridge.getRandom(planesList.size(), "Deciding which planes should die due to AA fire");
-      Object unit = planesList.get(pos);
-      planesList.remove(pos);
-      casualties.add(unit);
-    }
-    return casualties;
-  }
+	Collection casualties = new ArrayList();
+	int hits = dice.getHits();
+	List planesList = new ArrayList(planes);
 
-  public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
-  {
-    return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
-  }
-
-
-  public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
-  {
-    int hits = dice.getHits();
-    if(hits == 0)
-      return new SelectCasualtyMessage(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
-
-    Map dependents = getDependents(targets,data);
-
-    // If all targets are one type and not two hit then
-    // just remove the appropriate amount of units of that type.
-    // Sets the appropriate flag in the select casualty message
-    // such that user is prompted to continue since they did not
-    // select the units themselves.
-    if (allTargetsOneTypeNotTwoHit(targets, dependents)) {
-      List killed = new ArrayList();
-      Iterator iter = targets.iterator();
-      for (int i = 0; i < hits; i++) {
-	killed.add(iter.next());
-      }
-      return new SelectCasualtyMessage(killed, Collections.EMPTY_LIST, true);
+	// We need to choose which planes die randomnly
+	if (hits < planesList.size())
+	{
+	    for (int i = 0; i < hits; i++)
+	    {
+		int pos = bridge.getRandom(planesList.size(), "Deciding which planes should die due to AA fire");
+		Object unit = planesList.get(pos);
+		planesList.remove(pos);
+		casualties.add(unit);
+	    }
+	} else {
+	    casualties.addAll(planesList);
+	}
+	
+	return casualties;
     }
 
-
-    // Create production cost map, Maybe should do this elsewhere, but in case prices
-    // change, we do it here.
-    IntegerMap costs = getCosts(player, data);
-
-    List defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
-    Message msg = new SelectCasualtyQueryMessage(step, targets, dependents, dice.getHits(), text, dice, player, defaultCasualties);
-    Message response = bridge.sendMessage(msg, player);
-    if(!(response instanceof SelectCasualtyMessage))
-      throw new IllegalStateException("Message of wrong type:" + response);
-
-    SelectCasualtyMessage casualtySelection = (SelectCasualtyMessage) response;
-    List killed = casualtySelection.getKilled();
-    List damaged = casualtySelection.getDamaged();
-
-    //check right number
-    if ( ! (killed.size()  + damaged.size() == dice.getHits()) )
+    public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
     {
-      bridge.sendMessage( new StringMessage("Wrong number of casualties selected", true), player);
-      return selectCasualties(player, targets, bridge,text, data, dice, defending);
+	return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
     }
-    //check we have enough of each type
-    if(!targets.containsAll(killed) || ! targets.containsAll(damaged))
-    {
-      bridge.sendMessage( new StringMessage("Cannot remove enough units of those types", true), player);
-      return selectCasualties(player, targets, bridge,text, data, dice, defending);
-    }
-    return casualtySelection;
-  }
 
-  private static List getDefaultCasualties(Collection targets, int hits, boolean defending, PlayerID player, IntegerMap costs) {
-    // Remove two hit bb's selecting them first for default casualties
-    ArrayList defaultCasualties = new ArrayList();
-    int numSelectedCasualties = 0;
-    Iterator targetsIter = targets.iterator();
-    while (targetsIter.hasNext()) {
-      // Stop if we have already selected as many hits as there are targets
-      if (numSelectedCasualties >= hits) {
-	return defaultCasualties;
-      }
-      Unit unit = (Unit)targetsIter.next();
-      UnitAttatchment ua = UnitAttatchment.get(unit.getType());
-      if (ua.isTwoHit() && (unit.getHits() == 0)) {
-	numSelectedCasualties++;
-	defaultCasualties.add(unit);	
-      }
+
+    public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
+    {
+	int hits = dice.getHits();
+	if(hits == 0)
+	    return new SelectCasualtyMessage(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
+
+	Map dependents = getDependents(targets,data);
+
+	// If all targets are one type and not two hit then
+	// just remove the appropriate amount of units of that type.
+	// Sets the appropriate flag in the select casualty message
+	// such that user is prompted to continue since they did not
+	// select the units themselves.
+	if (allTargetsOneTypeNotTwoHit(targets, dependents)) {
+	    List killed = new ArrayList();
+	    Iterator iter = targets.iterator();
+	    for (int i = 0; i < hits; i++) {
+		killed.add(iter.next());
+	    }
+	    return new SelectCasualtyMessage(killed, Collections.EMPTY_LIST, true);
+	}
+
+
+	// Create production cost map, Maybe should do this elsewhere, but in case prices
+	// change, we do it here.
+	IntegerMap costs = getCosts(player, data);
+
+	List defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
+	Message msg = new SelectCasualtyQueryMessage(step, targets, dependents, dice.getHits(), text, dice, player, defaultCasualties);
+	Message response = bridge.sendMessage(msg, player);
+	if(!(response instanceof SelectCasualtyMessage))
+	    throw new IllegalStateException("Message of wrong type:" + response);
+
+	SelectCasualtyMessage casualtySelection = (SelectCasualtyMessage) response;
+	List killed = casualtySelection.getKilled();
+	List damaged = casualtySelection.getDamaged();
+
+	//check right number
+	if ( ! (killed.size()  + damaged.size() == dice.getHits()) )
+	{
+	    bridge.sendMessage( new StringMessage("Wrong number of casualties selected", true), player);
+	    return selectCasualties(player, targets, bridge,text, data, dice, defending);
+	}
+	//check we have enough of each type
+	if(!targets.containsAll(killed) || ! targets.containsAll(damaged))
+	{
+	    bridge.sendMessage( new StringMessage("Cannot remove enough units of those types", true), player);
+	    return selectCasualties(player, targets, bridge,text, data, dice, defending);
+	}
+	return casualtySelection;
     }
+
+    private static List getDefaultCasualties(Collection targets, int hits, boolean defending, PlayerID player, IntegerMap costs) {
+	// Remove two hit bb's selecting them first for default casualties
+	ArrayList defaultCasualties = new ArrayList();
+	int numSelectedCasualties = 0;
+	Iterator targetsIter = targets.iterator();
+	while (targetsIter.hasNext()) {
+	    // Stop if we have already selected as many hits as there are targets
+	    if (numSelectedCasualties >= hits) {
+		return defaultCasualties;
+	    }
+	    Unit unit = (Unit)targetsIter.next();
+	    UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+	    if (ua.isTwoHit() && (unit.getHits() == 0)) {
+		numSelectedCasualties++;
+		defaultCasualties.add(unit);	
+	    }
+	}
     
-    // Sort units by power and cost in ascending order
-    List sorted = new ArrayList(targets);
-    Collections.sort(sorted,new UnitBattleComparator(defending, player, costs));
-    // Select units
-    Iterator sortedIter = sorted.iterator();
-    while (sortedIter.hasNext()) {
-      // Stop if we have already selected as many hits as there are targets
-      if (numSelectedCasualties >= hits) {
+	// Sort units by power and cost in ascending order
+	List sorted = new ArrayList(targets);
+	Collections.sort(sorted,new UnitBattleComparator(defending, player, costs));
+	// Select units
+	Iterator sortedIter = sorted.iterator();
+	while (sortedIter.hasNext()) {
+	    // Stop if we have already selected as many hits as there are targets
+	    if (numSelectedCasualties >= hits) {
+		return defaultCasualties;
+	    }
+	    Unit unit = (Unit) sortedIter.next();
+	    defaultCasualties.add(unit);
+	    numSelectedCasualties++;
+	}
+
 	return defaultCasualties;
-      }
-      Unit unit = (Unit) sortedIter.next();
-      defaultCasualties.add(unit);
-      numSelectedCasualties++;
     }
 
-    return defaultCasualties;
-  }
-
-  private static Map getDependents(Collection targets, GameData data)
-  {
-    //jsut worry about transports
-    TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
-
-    Map dependents = new HashMap();
-    Iterator iter = targets.iterator();
-    while(iter.hasNext())
+    private static Map getDependents(Collection targets, GameData data)
     {
-      Unit target = (Unit) iter.next();
-      dependents.put( target, tracker.transportingAndUnloaded(target));
-    }
-    return dependents;
-  }
+	//jsut worry about transports
+	TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 
-  /**
-   * Return map where keys are unit types and values are ipc costs of that unit type
-   * @param player The player to get costs schedule for
-   * @param data The game data.
-   * @return a map of unit types to ipc cost
-   */
-  public static IntegerMap getCosts(PlayerID player, GameData data) {
-    IntegerMap costs = new IntegerMap();
-    Iterator iter = player.getProductionFrontier().getRules().iterator();
-    while(iter.hasNext())
+	Map dependents = new HashMap();
+	Iterator iter = targets.iterator();
+	while(iter.hasNext())
+	{
+	    Unit target = (Unit) iter.next();
+	    dependents.put( target, tracker.transportingAndUnloaded(target));
+	}
+	return dependents;
+    }
+
+    /**
+     * Return map where keys are unit types and values are ipc costs of that unit type
+     * @param player The player to get costs schedule for
+     * @param data The game data.
+     * @return a map of unit types to ipc cost
+     */
+    public static IntegerMap getCosts(PlayerID player, GameData data) {
+	IntegerMap costs = new IntegerMap();
+	Iterator iter = player.getProductionFrontier().getRules().iterator();
+	while(iter.hasNext())
+	{
+	    ProductionRule rule = (ProductionRule) iter.next();
+	    int cost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.IPCS));
+	    UnitType type = (UnitType)rule.getResults().keySet().iterator().next();
+	    costs.put(type, cost);
+	}
+	return costs;
+    }
+
+    /**
+     * Return the total unit value
+     * @param units A collection of units
+     * @param costs An integer map of unit types to costs.
+     * @return the total unit value.
+     */
+    public static int getTUV(Collection units, IntegerMap costs)
     {
-      ProductionRule rule = (ProductionRule) iter.next();
-      int cost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.IPCS));
-      UnitType type = (UnitType)rule.getResults().keySet().iterator().next();
-      costs.put(type, cost);
-    }
-    return costs;
-  }
-
-  /**
-   * Return the total unit value
-   * @param units A collection of units
-   * @param costs An integer map of unit types to costs.
-   * @return the total unit value.
-   */
-  public static int getTUV(Collection units, IntegerMap costs)
-  {
-    int tuv = 0;
-    Iterator unitsIter = units.iterator();
-    while (unitsIter.hasNext()) {
-      Unit u = (Unit)unitsIter.next();
-      int unitValue = costs.getInt(u.getType());
-      tuv += unitValue;
-    }
-    return tuv;
-  }
-
-  /**
-   * Return the total unit value for a certain player
-   * @param units A collection of units
-   * @param player The player to calculate the TUV for.
-   * @param costs An integer map of unit types to costs
-   * @return the total unit value.
-   */
-  public static int getTUV(Collection units, PlayerID player, IntegerMap costs)
-  {
-    Collection playerUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
-    return getTUV(playerUnits, costs);
-  }
-
-
-  /**
-   * Checks if the given collections target are all of one category as
-   * defined by UnitSeperator.categorize and they are not two hit units.
-   * @param targets a collection of target units
-   * @param dependents map of depend units for target units
-   */
-  private static boolean allTargetsOneTypeNotTwoHit(Collection targets, Map dependents)
-  {
-    Set categorized = UnitSeperator.categorize(targets, dependents, null);
-    if (categorized.size() == 1) {
-      UnitCategory unitCategory = (UnitCategory)categorized.iterator().next();
-      if (!unitCategory.isTwoHit() || unitCategory.getDamaged()) {
-	return true;
-      }
+	int tuv = 0;
+	Iterator unitsIter = units.iterator();
+	while (unitsIter.hasNext()) {
+	    Unit u = (Unit)unitsIter.next();
+	    int unitValue = costs.getInt(u.getType());
+	    tuv += unitValue;
+	}
+	return tuv;
     }
 
-    return false;
-  }
-
-
-  public static int getRolls(Collection units, PlayerID id, boolean defend)
-  {
-    int count = 0;
-    Iterator iter = units.iterator();
-    while(iter.hasNext())
+    /**
+     * Return the total unit value for a certain player
+     * @param units A collection of units
+     * @param player The player to calculate the TUV for.
+     * @param costs An integer map of unit types to costs
+     * @return the total unit value.
+     */
+    public static int getTUV(Collection units, PlayerID player, IntegerMap costs)
     {
-      Unit unit = (Unit) iter.next();    
-      count+=getRolls(unit,id, defend);
+	Collection playerUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
+	return getTUV(playerUnits, costs);
     }
-    return count;
-  }
+
+
+    /**
+     * Checks if the given collections target are all of one category as
+     * defined by UnitSeperator.categorize and they are not two hit units.
+     * @param targets a collection of target units
+     * @param dependents map of depend units for target units
+     */
+    private static boolean allTargetsOneTypeNotTwoHit(Collection targets, Map dependents)
+    {
+	Set categorized = UnitSeperator.categorize(targets, dependents, null);
+	if (categorized.size() == 1) {
+	    UnitCategory unitCategory = (UnitCategory)categorized.iterator().next();
+	    if (!unitCategory.isTwoHit() || unitCategory.getDamaged()) {
+		return true;
+	    }
+	}
+
+	return false;
+    }
+
+
+    public static int getRolls(Collection units, PlayerID id, boolean defend)
+    {
+	int count = 0;
+	Iterator iter = units.iterator();
+	while(iter.hasNext())
+	{
+	    Unit unit = (Unit) iter.next();    
+	    count+=getRolls(unit,id, defend);
+	}
+	return count;
+    }
   
-  public static int getRolls(Unit unit, PlayerID id, boolean defend)
-  {
-      if(defend)
-          return 1;
-      return UnitAttatchment.get(unit.getType()).getAttackRolls(id);
+    public static int getRolls(Unit unit, PlayerID id, boolean defend)
+    {
+	if(defend)
+	    return 1;
+	return UnitAttatchment.get(unit.getType()).getAttackRolls(id);
       
-  }
+    }
 
-  //nothing but static
-  private BattleCalculator()
-  {}
+    //nothing but static
+    private BattleCalculator()
+    {}
 }
 
 class UnitBattleComparator implements Comparator {
