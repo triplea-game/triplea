@@ -50,9 +50,10 @@ public class UnitIconImageFactory
     return s_instance;
   }
 
+  TechTracker m_techTracker = new TechTracker();
   private TechTracker getTechTracker(GameData data)
   {
-    return DelegateFinder.techDelegate(data).getTechTracker();
+    return m_techTracker;
   }
 
   /**
