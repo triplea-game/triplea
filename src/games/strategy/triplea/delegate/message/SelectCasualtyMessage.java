@@ -33,36 +33,42 @@ import games.strategy.engine.data.*;
  */
 public class SelectCasualtyMessage implements Message
 {
-	private final List m_killed;
-    private final  List m_damaged;
+  private final List m_killed;
+  private final  List m_damaged;
+  private final boolean m_autoCalculated;
 
-	/** Creates new SelectCasualtyMessage */
-    public SelectCasualtyMessage(List killed, List damaged)
-	{
-        if(killed == null)
-            throw new IllegalArgumentException("null killed");
-        if(damaged == null)
-            throw new IllegalArgumentException("null damaged");
+  /** Creates new SelectCasualtyMessage */
+  public SelectCasualtyMessage(List killed, List damaged, boolean autoCalculated)
+  {
+    if(killed == null)
+      throw new IllegalArgumentException("null killed");
+    if(damaged == null)
+      throw new IllegalArgumentException("null damaged");
 
-		m_killed = killed;
-        m_damaged = damaged;
-    }
+    m_killed = killed;
+    m_damaged = damaged;
+    m_autoCalculated = autoCalculated;
+  }
 
-	/**
-	 * A mapping of UnitType -> count,
-	 */
-	public List getKilled()
-	{
-		return m_killed;
-	}
+  /**
+   * A mapping of UnitType -> count,
+   */
+  public List getKilled()
+  {
+    return m_killed;
+  }
 
-    public List getDamaged()
-    {
-        return m_damaged;
-    }
+  public List getDamaged()
+  {
+    return m_damaged;
+  }
 
-	public String toString()
-	{
-		return "SelectCasualtyMessage killed:" + m_killed + " damaged:" + m_damaged;
-	}
+  public boolean getAutoCalculated() {
+    return m_autoCalculated;
+  }
+
+  public String toString()
+  {
+    return "SelectCasualtyMessage killed:" + m_killed + " damaged:" + m_damaged;
+  }
 }
