@@ -409,7 +409,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     Collection factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrFactory);
     DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwner(factoryAndAA, m_player);
 
-    String transcriptText = Formatter.unitsToText(units) + " placed in " +placeMessage.getTo().getName();
+    String transcriptText = Formatter.unitsToTextNoOwner(units) + " placed in " +placeMessage.getTo().getName();
     m_bridge.getHistoryWriter().startEvent(transcriptText);
     m_bridge.getHistoryWriter().setRenderingData(units);
 
