@@ -72,6 +72,16 @@ public class MapPanel extends ImageScrollerLargeView
   }
 
 
+  public boolean isShowing(Territory territory)
+  {
+    Point territoryCenter = TerritoryData.getInstance().getCenter(territory);
+
+
+    Rectangle screenBounds = new Rectangle(super.getXOffset(), super.getYOffset(), super.getWidth(), super.getHeight());
+    return screenBounds.contains(territoryCenter);
+
+  }
+
   public void centerOn(Territory territory)
   {
     if(territory == null)

@@ -73,6 +73,8 @@ public class HistoryDetailsPanel extends JPanel
         MoveMessage moveMessage = (MoveMessage) details;
         renderUnits(mainConstraints, moveMessage.getUnits());
         m_mapPanel.setRoute(moveMessage.getRoute());
+        if(!m_mapPanel.isShowing(moveMessage.getRoute().getEnd()))
+           m_mapPanel.centerOn(moveMessage.getRoute().getEnd());
       }
       else if(details instanceof Collection)
       {

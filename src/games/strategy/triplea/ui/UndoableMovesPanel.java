@@ -168,7 +168,8 @@ public class UndoableMovesPanel extends JPanel
         public void actionPerformed(ActionEvent e)
         {
            m_movePanel.cancelMove();
-           m_movePanel.getMap().centerOn(m_move.getRoute().getStart());
+           if(!m_movePanel.getMap().isShowing(m_move.getRoute().getEnd()))
+              m_movePanel.getMap().centerOn(m_move.getRoute().getEnd());
            m_movePanel.getMap().setRoute(m_move.getRoute());
         }
     }
