@@ -28,6 +28,7 @@ import javax.swing.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitIconImageFactory;
 
 import games.strategy.triplea.delegate.message.*;
@@ -138,6 +139,14 @@ public class PlacePanel extends ActionPanel
     }
   };
 
+  private boolean canProduceFightersOnCarriers()
+  {
+      Boolean property = (Boolean) getData().getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS);
+      if(property == null)
+          return false;
+      return property.booleanValue();
+  }
+  
   private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
   {
     public void territorySelected(Territory territory, MouseEvent e)
@@ -152,7 +161,15 @@ public class PlacePanel extends ActionPanel
       //get the units that can be placed on this territory.
       Collection units = getCurrentPlayer().getUnits().getUnits();
       if(territory.isWater())
-          units = Match.getMatches(units, Matches.UnitIsSea);
+      {
+          if(!canProduceFightersOnCarriers())
+              units = Match.getMatches(units, Matches.UnitIsSea);
+          else
+          {
+              CompositeMatch unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+              units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
+          }
+      }
        else
            units = Match.getMatches(units, Matches.UnitIsNotSea);
 

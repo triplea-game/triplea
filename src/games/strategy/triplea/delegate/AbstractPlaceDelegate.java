@@ -68,8 +68,8 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   private String m_displayName;
   private DelegateBridge m_bridge;
   private GameData m_data;
-  private IntegerMap m_alreadyProduced = new IntegerMap(); //maps Territory-> alreadyProduced this turn
-  private Set m_producedFactory = new HashSet();
+  //maps Territory-> Collection of units
+  private Map m_produced = new HashMap();
   private PlayerID m_player;
   //a list of CompositeChanges
   private List m_placements = new ArrayList();
@@ -86,6 +86,13 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   }
 
 
+  private Collection getAlreadyProduced(Territory t)
+  {
+      if(m_produced.containsKey(t))
+          return (Collection) m_produced.get(t);
+      return new ArrayList();
+  }
+  
   /**
    * Called before the delegate will run.
    */
@@ -125,10 +132,17 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     }
     else
       throw new IllegalArgumentException("Place delegate received message of wrong type:" + aMessage);
-
-
   }
 
+  /**
+   * 
+   * only for testing.  Shouldonly be called by unit tests
+   */
+  void setProduced(Map produced)
+  {
+      m_produced = produced;
+  }
+  
   private void undoPlace()
   {
     int lastChange = m_placements.size() -1;
@@ -161,7 +175,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
       return error;
 
     //can we produce that much
-    error = canProduce(placeMessage, player, m_alreadyProduced);
+    error = canProduce(placeMessage, player);
     if(error!= null)
       return error;
 
@@ -194,21 +208,66 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     Territory to = placeMessage.getTo();
     Collection units = placeMessage.getUnits();
     return canUnitsBePlaced(to, units, player);
-
   }
 
-  private Message canUnitsBePlaced(Territory to, Collection units, PlayerID player)
+  	
+  private boolean canProduceFightersOnCarriers()
+  {
+      Boolean property = (Boolean) m_data.getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS);
+      if(property == null)
+          return false;
+      return property.booleanValue();
+  }
+  
+  /**
+   * The rule is that new fighters can be produced on new carriers.
+   * This does not allow for fighters to be produced on old carriers. 
+   */
+  private StringMessage validateNewAirCanLandOnNewCarriers(Territory to, Collection units)
+  {
+      Collection allProducedUnits = new ArrayList(units);
+      allProducedUnits.addAll(getAlreadyProduced(to));
+      
+      int cost = MoveValidator.carrierCost(allProducedUnits);
+      int capacity = MoveValidator.carrierCapacity(allProducedUnits);
+      
+      if(cost > capacity)
+          return new StringMessage("Not enough new carriers to land all the fighters", true);
+      else
+         return null;
+  }
+  
+  private StringMessage canUnitsBePlaced(Territory to, Collection units, PlayerID player)
   {
     //check we havent just put a factory there
-  if(m_producedFactory.contains(to))
+  if(Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactory))
     return new StringMessage("Factories cant produce until 1 turn after they are created", true);
 
   if(to.isWater())
   {
-    //make sure all units are water
-    if(! Match.allMatch(units, Matches.UnitIsSea))
-      return new StringMessage("Cant place non naval units in sea zone", true);
-
+     CompositeMatch allowedAtSea = new CompositeMatchOr();
+     allowedAtSea.add(Matches.UnitIsSea);
+     if(canProduceFightersOnCarriers())
+         allowedAtSea.add(Matches.UnitCanLandOnCarrier);
+      
+    //Land units wont do
+    if(!Match.allMatch(units, allowedAtSea))
+        return new StringMessage("Cant place those units in a sea zone", true);
+    
+    CompositeMatch airThatCantLandOnCarrier = new CompositeMatchAnd();
+    airThatCantLandOnCarrier.add(Matches.UnitIsAir);
+    airThatCantLandOnCarrier.add(new InverseMatch(Matches.UnitCanLandOnCarrier));
+    
+    //Can the air units be placed on a carrier?
+    //we can produce directly onto new carriers
+    //but if a unit cannot land on a carrier, dont allow it
+    if(Match.someMatch(units, airThatCantLandOnCarrier))
+        return new StringMessage("Air units must be able to land on carriers,", true);
+    
+    StringMessage canLand = validateNewAirCanLandOnNewCarriers(to, units);
+    if(canLand != null)
+        return canLand;
+    
     //make sure all units not the players are allied
     Set playersWithUnits = to.getUnits().getPlayersWithUnits();
     playersWithUnits.remove(player);
@@ -219,6 +278,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
       if(! m_data.getAllianceTracker().isAllied(player, other))
         return new StringMessage("Cant place units in water when the enemy has units in the same Sea Zone :" + other.getName(), true);
     }
+ 
   } else  //if land
   {
     //make sure we own the territory
@@ -275,15 +335,13 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
    * support the placement.
    * AlreadyProduced maps territory->units already produced this turn by that territory.
    */
-  protected StringMessage canProduce(PlaceMessage placeMessage, PlayerID player, IntegerMap alreadyProduced)
+  protected StringMessage canProduce(PlaceMessage placeMessage, PlayerID player)
   {
-    Territory producer = getProducer(placeMessage.getTo(), alreadyProduced, player);
+    Territory producer = getProducer(placeMessage.getTo(), player);
     //the only reason to could be null is if its water and no
     //territories adjacent have factories
     if(producer == null)
       return new StringMessage("No factory adjacent to " + placeMessage.getTo().getName(), true);
-
-
 
     //make sure the territory wasnt conquered this turn
     if(wasConquered(producer))
@@ -313,7 +371,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
     //a factory can produce the same number of units as the number of ipcs the
     //territroy generates each turn
-    int unitCount = placeMessage.getUnits().size() + alreadyProduced.getInt(producer);
+    int unitCount = placeMessage.getUnits().size() + getAlreadyProduced(producer).size();
         int production = getProduction(producer);
         if(production == 0)
           production = 1; //if it has a factory then it can produce at least 1
@@ -331,7 +389,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   /**
    * Returns the better producer of the two territories, either of which can be null.
    */
-  private Territory getBetterProducer(Territory t1, Territory t2, IntegerMap alreadyProduced, PlayerID player)
+  private Territory getBetterProducer(Territory t1, Territory t2, PlayerID player)
   {
     //anything is better than nothing
     if(t1 == null)
@@ -354,7 +412,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
       return t2;
 
     //which can produce the most
-    if(getProduction(t1)  - alreadyProduced.getInt(t1) >getProduction(t2) - alreadyProduced.getInt(t2))
+    if(getProduction(t1)  - getAlreadyProduced(t1).size() >getProduction(t2) - getAlreadyProduced(t1).size())
       return t1;
     return t2;
   }
@@ -375,7 +433,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
    * units are to be placed in a given territory.
    * Returns null if no suitable territory could be found.
    */
-  private Territory getProducer(Territory to, IntegerMap alreadyProduced, PlayerID player)
+  private Territory getProducer(Territory to, PlayerID player)
   {
     //if not water then must produce in that territory
     if(!to.isWater() )
@@ -386,9 +444,9 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     while(iter.hasNext() )
     {
       Territory current = (Territory)iter.next();
-      if( hasFactory( current) && ! m_producedFactory.contains(current) && current.getOwner().equals(m_player))
+      if( hasFactory( current) && ! Match.someMatch(getAlreadyProduced(current), Matches.UnitIsFactory ) && current.getOwner().equals(m_player))
       {
-        neighborFactory = getBetterProducer(current, neighborFactory, alreadyProduced, player);
+        neighborFactory = getBetterProducer(current, neighborFactory, player);
       }
     }
     return neighborFactory;
@@ -430,11 +488,12 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     m_bridge.addChange(change);
     m_placements.add(new UndoPlace(m_data, this, change));
 
-    Territory producer = getProducer(placeMessage.getTo(), m_alreadyProduced, player);
-    m_alreadyProduced.add(producer, units.size() );
-
-    if(Match.someMatch(units, Matches.UnitIsFactory))
-      m_producedFactory.add(producer);
+    Territory producer = getProducer(placeMessage.getTo(), player);
+    Collection produced = new ArrayList();
+    produced.addAll(getAlreadyProduced(producer));
+    produced.addAll(units);
+    
+    m_produced.put(producer, produced );
 
     return new StringMessage("done");
   }
@@ -457,8 +516,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     }
 
     //reset ourseleves for next turn
-    m_alreadyProduced = new IntegerMap();
-    m_producedFactory.clear();
+    m_produced = new HashMap();
     m_placements.clear();
   }
 
@@ -477,8 +535,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   public Serializable saveState()
   {
     PlaceState state = new PlaceState();
-    state.m_alreadyProduced = m_alreadyProduced;
-    state.m_producedFactory = m_producedFactory;
+    state.m_produced = m_produced;
     return state;
   }
 
@@ -488,8 +545,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   public void loadState(Serializable aState)
   {
     PlaceState state = (PlaceState) aState;
-    m_alreadyProduced = state.m_alreadyProduced;
-    m_producedFactory = state.m_producedFactory;
+    m_produced = state.m_produced;
   }
 
   protected GameData getData()
@@ -562,6 +618,8 @@ class UndoPlace
 
 class PlaceState implements Serializable
 {
-  public IntegerMap m_alreadyProduced;
-  public Set m_producedFactory;
+  public Map m_produced;
 }
+
+
+

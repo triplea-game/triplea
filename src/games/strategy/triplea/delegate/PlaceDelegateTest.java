@@ -57,6 +57,11 @@ public class PlaceDelegateTest extends DelegateTest
 		
 		return suite;
 	}
+	
+	private Collection getInfantry(int count, PlayerID player)
+	{
+	    return m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE).create(count, player);
+	}
 
 	public void setUp() throws Exception
 	{
@@ -210,20 +215,19 @@ public class PlaceDelegateTest extends DelegateTest
 	public void testCanProduce()
 	{
 		IntegerMap map = new IntegerMap();
-		IntegerMap alreadyProduced = new IntegerMap();
+		
 		map.add(infantry, 2);
 		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response = m_delegate.canProduce(message, british, alreadyProduced);
+		StringMessage response = m_delegate.canProduce(message, british);
 		assertValid(response );
 	}
 	
 	public void testCanProduceInSea()
 	{
 		IntegerMap map = new IntegerMap();
-		IntegerMap alreadyProduced = new IntegerMap();
 		map.add(transport, 2);
 		PlaceMessage message = new PlaceMessage(getUnits(map, british), northSea);
-		StringMessage response = m_delegate.canProduce(message, british, alreadyProduced);
+		StringMessage response = m_delegate.canProduce(message, british);
 		assertValid(response );
 	}
 	
@@ -231,32 +235,34 @@ public class PlaceDelegateTest extends DelegateTest
 	public void testCanNotProduceThatManyUnits()
 	{
 		IntegerMap map = new IntegerMap();
-		IntegerMap alreadyProduced = new IntegerMap();
+		
 		map.add(infantry, 3);
 		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response = m_delegate.canProduce(message, british, alreadyProduced);
+		StringMessage response = m_delegate.canProduce(message, british);
 		assertError(response);
 	}
 	
 	public void testAlreadyProducedUnits()
 	{
 		IntegerMap map = new IntegerMap();
-		IntegerMap alreadyProduced = new IntegerMap();
-		alreadyProduced.put(westCanada, 2);
+		Map alreadyProduced = new HashMap();
+		alreadyProduced.put(westCanada, getInfantry(2, british));
+		m_delegate.setProduced(alreadyProduced);
 		map.add(infantry, 1);
 		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response =  m_delegate.canProduce(message, british, alreadyProduced);
+		StringMessage response =  m_delegate.canProduce(message, british);
 		assertError(response);
 	}
 	
 	public void testMultipleFactories()
 	{
 		IntegerMap map = new IntegerMap();
-		IntegerMap alreadyProduced = new IntegerMap();
-		alreadyProduced.put(westCanada, 2);
+		Map alreadyProduced = new HashMap();
+		alreadyProduced.put(westCanada, getInfantry(2, british));
+		m_delegate.setProduced(alreadyProduced);
 		map.add(infantry, 1);
 		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response =  m_delegate.canProduce(message, british, alreadyProduced);
+		StringMessage response =  m_delegate.canProduce(message, british);
 		assertError(response );
 	}
 }

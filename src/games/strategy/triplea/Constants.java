@@ -46,6 +46,8 @@ public interface Constants
   public static final String FACTORIES_PER_COUNTRY_PROPERTY ="maxFactoriesPerTerritory";
   public static final String TWO_HIT_BATTLESHIP_PROPERTY = "Two hit battleship";
   public static final String ALWAYS_ON_AA_PROPERTY = "Always on AA";
+  //allow fighters to be placed on newly produced carriers
+  public static final String CAN_PRODUCE_FIGHTERS_ON_CARRIERS = "Produce fighters on carriers";  
 
   public static final String TWO_HIT = "isTwoHit";
 
