@@ -98,7 +98,7 @@ public class Chat
     }
 
     public static int getTense(String msg){
-		if(msg.substring(0,3).compareToIgnoreCase("/me")==0){
+		if(msg.length()>3&&msg.substring(0,4).compareToIgnoreCase("/me ")==0){
 			return 1;
 		}
 		return 3;
