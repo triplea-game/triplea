@@ -17,6 +17,7 @@ package games.strategy.engine.framework.ui;
 
 import java.awt.BorderLayout;
 import java.io.*;
+import java.util.prefs.*;
 import java.util.*;
 import javax.swing.*;
 
@@ -61,6 +62,8 @@ public class LauncherFrame extends JFrame
   private PBEMStartup m_pbemStartup;
   private LocalPlayerSelectionPanel m_localPlayerTypes = new LocalPlayerSelectionPanel();
 
+
+  private final String PLAYERNAME = "PlayerName";
 
   public LauncherFrame()
   {
@@ -364,7 +367,11 @@ public class LauncherFrame extends JFrame
 
   private void chooseServerOptions()
   {
-    ServerOptions options = new ServerOptions(this,"Server", GameRunner.PORT);
+  	//load in the saved name! -- lnxduk
+    Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+    String playername = prefs.get(PLAYERNAME, "Server");
+
+    ServerOptions options = new ServerOptions(this,playername, GameRunner.PORT);
     options.setLocationRelativeTo(this);
 
     options.show();
@@ -378,6 +385,9 @@ public class LauncherFrame extends JFrame
 
 
     String name = options.getName();
+  	//save the name! -- lnxduk
+    prefs.put(PLAYERNAME, name);
+
     int port = options.getPort();
 
     ServerMessenger messenger;
@@ -412,7 +422,11 @@ public class LauncherFrame extends JFrame
 
   private void chooseClientOptions()
   {
-    ClientOptions options = new ClientOptions(this,"Client", GameRunner.PORT, "127.0.0.1");
+  	//load in the saved name!
+    Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+    String playername = prefs.get(PLAYERNAME, "Client");
+
+    ClientOptions options = new ClientOptions(this,playername, GameRunner.PORT, "127.0.0.1");
     options.setLocationRelativeTo(this);
     options.show();
     options.dispose();
@@ -424,6 +438,9 @@ public class LauncherFrame extends JFrame
     }
 
     String name = options.getName();
+  	//save the name! -- lnxduk
+    prefs.put(PLAYERNAME, name);
+
     int port = options.getPort();
     String address = options.getAddress();
 
