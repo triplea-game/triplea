@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Battleship Row" version="0.1.1"/>
+	<info name="Battleship Row" version="0.1.2"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	

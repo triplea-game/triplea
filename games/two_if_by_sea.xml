@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="two_if_by_sea" version="0.1"/>
+	<info name="two_if_by_sea" version="0.2"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
