@@ -51,6 +51,28 @@ public class Util
 		}
 		return intersection;
 	}
+	
+	/**
+	 * Equivalent to !intersection(c1,c2).isEmpty(), but more effecient.
+	 * 
+	 * @return true if some element in c1 is in c2
+	 */
+	public static boolean someIntersect(Collection c1, Collection c2)
+	{
+	    if(c1.isEmpty())
+	        return false;
+	    if(c2.isEmpty())
+	        return false;
+	    
+	    Iterator iter = c1.iterator();
+	    while(iter.hasNext())
+	    {
+	        if(c2.contains(iter.next()))
+	            return true;
+	    }
+	    return false;
+	}
+	
 
 	/**
 	 * Returns a such that a exists in c1 but not in c2.

@@ -395,46 +395,7 @@ class SetPropertyChange extends Change
 
 }
 
-class UnitHitsChange extends Change
-{
-    private final IntegerMap m_hits;
-    private final IntegerMap m_undoHits;
 
-    private UnitHitsChange(IntegerMap hits, IntegerMap undoHits)
-    {
-        m_hits = hits;
-        m_undoHits = undoHits;
-    }
-
-    UnitHitsChange(IntegerMap hits)
-    {
-        m_hits = hits.copy();
-        m_undoHits = new IntegerMap();
-        Iterator iter = m_hits.keySet().iterator();
-        while (iter.hasNext())
-        {
-            Unit item = (Unit) iter.next();
-            m_undoHits.put(item, item.getHits());
-        }
-
-    }
-
-    protected void perform(GameData data)
-    {
-        Iterator iter = m_hits.keySet().iterator();
-        while (iter.hasNext())
-        {
-            Unit item = (Unit) iter.next();
-            item.setHits(m_hits.getInt(item));
-        }
-    }
-
-    public Change invert()
-    {
-        return new UnitHitsChange(m_undoHits, m_hits);
-    }
-
-}
 
 /**
  * Change a players production frontier.

@@ -85,6 +85,9 @@ public class MapUnitsDrawer
 
     public  void queueUpdate(Collection  territories)
     {
+        if(territories.isEmpty())
+            return;
+        
         synchronized(m_lock)
         {
             m_waitingToBeUpdated.addAll(territories);

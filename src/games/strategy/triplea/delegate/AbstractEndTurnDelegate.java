@@ -122,7 +122,7 @@ public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Seria
 	       hits.put(unit,0);
 	   }
 	   aBridge.addChange(ChangeFactory.unitsHit(hits));
-	   aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  Formatter.pluralize("units", damaged.size()) + " repaired.");
+	   aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  Formatter.pluralize("unit", damaged.size()) + " repaired.");
 	   
 	}
 	
