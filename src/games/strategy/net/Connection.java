@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 
 class Connection
 {
+    private static Logger s_logger = Logger.getLogger(Connection.class.getName());
     private Socket m_socket;
     private ObjectOutputStream m_out;
     private ObjectInputStream m_in;
@@ -61,8 +62,9 @@ class Connection
 
     public void log(MessageHeader header, boolean read)
     {
-        Logger logger = Logger.getLogger(this.getClass().getName());
-        if (!logger.isLoggable(Level.FINEST))
+        //we measure the size of the object by serializing it into a byte array.
+        //this is a very expensive operation, so make sure we are really logging before we do it
+        if (!s_logger.isLoggable(Level.FINEST))
             return;
 
         ByteArrayOutputStream sink = new ByteArrayOutputStream();
@@ -72,7 +74,7 @@ class Connection
             out.writeObject(header);
             sink.close();
             String message = (read ? "READ:" : "WRITE:") + header.getMessage() + " size:" + sink.toByteArray().length;
-            logger.log(Level.FINEST, message);
+            s_logger.log(Level.FINEST, message);
 
         } catch (IOException e)
         {
