@@ -79,8 +79,7 @@ public class TripleA implements IGameLoader
             boolean fourthEdition = game.getData().getProperties().get(Constants.FOURTH_EDITION, false);
             String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
             TerritoryData.setFourthEdition(fourthEdition);
-            MapImage.setFourthEdition(fourthEdition);
-            TerritoryImageFactory.setFourthEdition(fourthEdition);
+            
             TerritoryImageFactory.setMapDir(mapDir);
 
             TripleAFrame frame = new TripleAFrame(game, players);

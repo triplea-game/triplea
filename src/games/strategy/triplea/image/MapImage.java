@@ -36,6 +36,8 @@ import games.strategy.util.NullImageObserver;
 import games.strategy.ui.*;
 import java.awt.image.*;
 
+import javax.swing.JFrame;
+
 /**
  * Responsible for drawing countries on the map.
  * Is not responsible for drawing things on top of the map, such as units, routes etc.
@@ -43,15 +45,10 @@ import java.awt.image.*;
 public class MapImage
 {
 
-  private static MapImage s_instance;
+  private static MapImage s_instance = new MapImage();;
   private static final ImageObserver s_observer = new NullImageObserver();
-  private static boolean s_fourthEdition;
-  public static void setFourthEdition(boolean fourthEdition)
-  {
-    s_fourthEdition = fourthEdition;
-    s_instance = new MapImage();
-  }
-
+ 
+  
   public static synchronized MapImage getInstance()
   {
     return s_instance;
@@ -60,12 +57,17 @@ public class MapImage
   private static Image loadImage(String name)
   {
     URL mapFileUrl=MapImage.class.getResource(name);
-    Image img =  Toolkit.getDefaultToolkit().createImage(mapFileUrl.getFile().substring(1));
+    if(mapFileUrl == null)
+        throw new IllegalStateException("resource not found:" + name);
+    Image img =  Toolkit.getDefaultToolkit().createImage(mapFileUrl);
+    
     MediaTracker tracker = new MediaTracker( new Panel());
-    tracker.addImage(img,1 );
+    tracker.addImage(img, 1 );
     try
     {
       tracker.waitForAll();
+      if(tracker.isErrorAny())
+      	throw new IllegalStateException("Error loading");
       return img;
     }
     catch(InterruptedException ie)

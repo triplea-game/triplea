@@ -72,15 +72,10 @@ public final class TerritoryImageFactory
 
     private final int CACHE_SIZE = 5;
 
-    private static boolean s_fourthEdition;
+    
 
     private static String s_mapDir;
 
-
-    public static void setFourthEdition(boolean aBool)
-    {
-        s_fourthEdition = aBool;
-    }
 
     public static String getMapDir()
     {
@@ -206,7 +201,7 @@ public final class TerritoryImageFactory
       String key = place.getName() + "_relief";
       // load it on the fly
 
-      String fileName = Constants.MAP_DIR+s_mapDir+"countries"+java.io.File.separator + key.replace(' ', '_')  + ".png";
+      String fileName = Constants.MAP_DIR+s_mapDir+File.separator +"countries"+java.io.File.separator + key.replace(' ', '_')  + ".png";
       URL file = this.getClass().getResource(fileName);
       if(file == null)
           return null;
