@@ -26,6 +26,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.engine.message.Message;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.delegate.DelegateBridge;
 import games.strategy.engine.data.*;
@@ -62,10 +63,26 @@ public class BattleCalculator
 
   public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice)
   {
-    if(dice.getHits() == 0)
-      return new SelectCasualtyMessage(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+    int hits = dice.getHits();
+    if(hits == 0)
+      return new SelectCasualtyMessage(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
 
     Map dependents = getDependents(targets,data);
+
+    // If all targets are one type and not two hit then
+    // just remove the appropriate amount of units of that type.
+    // Sets the appropriate flag in the select casualty message
+    // such that user is prompted to continue since they did not
+    // select the units themselves.
+    if (allTargetsOneTypeNotTwoHit(targets, dependents)) {
+      List killed = new ArrayList();
+      Iterator iter = targets.iterator();
+      for (int i = 0; i < hits; i++) {
+	killed.add(iter.next());
+      }
+      return new SelectCasualtyMessage(killed, Collections.EMPTY_LIST, true);
+    }
+
 
     Message msg = new SelectCasualtyQueryMessage(step, targets, dependents, dice.getHits(), text, dice, player);
     Message response = bridge.sendMessage(msg, player);
@@ -106,6 +123,24 @@ public class BattleCalculator
     return dependents;
   }
 
+  /**
+   * Checks if the given collections target are all of one category as
+   * defined by UnitSeperator.categorize and they are not two hit units.
+   * @param targets a collection of target units
+   * @param dependents map of depend units for target units
+   */
+  private static boolean allTargetsOneTypeNotTwoHit(Collection targets, Map dependents)
+  {
+    Set categorized = UnitSeperator.categorize(targets, dependents, null);
+    if (categorized.size() == 1) {
+      UnitCategory unitCategory = (UnitCategory)categorized.iterator().next();
+      if (!unitCategory.isTwoHit() || unitCategory.getDamaged()) {
+	return true;
+      }
+    }
+
+    return false;
+  }
 
 
   public static int getRolls(Collection units, PlayerID id, boolean defend)
