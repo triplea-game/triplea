@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Classic" version="1.2"/>
+	<info name="Classic" version="1.3"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -1233,6 +1233,9 @@
 
 	<propertyList>
 		<property name="Two hit battleship" value="false" editable="true">
+			<boolean/>
+		</property>
+		<property name="Always on AA" value="false" editable="true">
 			<boolean/>
 		</property>
 		<property name="neutralCharge" value="3"/>
