@@ -349,6 +349,8 @@ class DiceStatic
 
   public static String postRequest(String player1, String player2, int numDice, String text) throws IOException
   {
+     //text must be limited to 91 characters, not quite sure why
+     //if we dont do this the dice roller will fail
      if(text.length() > 91)
          text=text.substring(0,90);
       
