@@ -45,8 +45,10 @@
 			
 			<p>
 				To play the game you must first install a java virtual machine on your
-				computer. The game requires at least the JDK 1.4. If you have already
-				installed a java virtual machine then you can skip this step.<br/>
+				computer. The game requires at least the JDK 1.4 or greater. Starting from
+				TripleA version 0.5.2 you can run TripleA with Java 1.4 or 1.5 without any
+				problems with other players who have a different Java version than you.
+				If you have already installed a java virtual machine then you can skip this step.<br/>
 				<br/>
 				<b>Windows</b> and <b>Linux</b> users can download the Java Runtime Engine
 				(JRE) from Sun Microsystems at <a target="_blank" href="http://www.java.com/en/index.jsp">www.java.com/en/index.jsp</a>.
@@ -148,7 +150,8 @@
 				other for the GNU/Linux platform. The instructions on how to compile TripleA on GNU/Linux are
 				relatively similar (if not exactly the same) as the Mac OS X platform and other UNIX variants
 				that are out there. Compiling instructions on other platforms are not supported by the TripleA
-				team unless someone wishes to donate instructions.
+				team unless someone wishes to donate instructions. <b>Please note that TripleA can be compiled
+				cleanly under Java 1.4 and Java 1.5</b>.
 			</p>
 			
 			<h2><a name="sec_b_1">Compiling on Windows</a></h2>
@@ -359,7 +362,7 @@
 					<blockquote>
 					<code>
 						junit.jar=C:junit3.8.1\junit.jar<br/>
-						triplea.version=0_5_1
+						triplea.version=0_5_2
 					</code>
 					</blockquote>
 				</p>
@@ -379,8 +382,8 @@
 
 				<p>
 					Now if you placed your Triplea source folder at C: root level, simply change directory again &quot;cd&quot; to the
-					Triplea source folder by entering: &quot;cd triplea_0_5_1&quot; (of course you could have done all of this in one
-					shot... by entering &quot;cd C:\triplea_0_5_1&quot; ...just giving you an idea how to navigate around directories using the
+					Triplea source folder by entering: &quot;cd triplea_0_5_2&quot; (of course you could have done all of this in one
+					shot... by entering &quot;cd C:\triplea_0_5_2&quot; ...just giving you an idea how to navigate around directories using the
 					cd command.)
 				</p>
 				
@@ -388,7 +391,7 @@
 					Command Prompt should now look like this:
 					<blockquote>
 					<code>
-						C:\triplea_0_5_1>
+						C:\triplea_0_5_2>
 					</code>
 					</blockquote>
 
@@ -400,8 +403,9 @@
 						init:<br/>
 						compile:<br/>
 						[echo] looking for junit.jar in:C:junit3.8.1junit.jar, edit .ant.properties to set junit location<br/>
-						[mkdir] Created dir: C:\Triplea_0_5_1\classes<br/>
-						[copy] Copying 359 files to C:\triplea_0_5_1\classes<br/>
+						[mkdir] Created dir: C:\Triplea_0_5_2\classes<br/>
+						[copy] Copying 712 files to C:\triplea_0_5_2\classes<br/>
+						[javac] Compiling 313 source files to C:\Triplea_0_5_2\classes<br/>
 						BUILD SUCCESSFUL<br/>
 						Total time: 29 seconds
 					</code>
@@ -465,7 +469,7 @@
 				<blockquote>
 				<code>
 					 junit.jar=/home/necro/junit3.8.1/junit3.8.1.jar<br/>
-					 triplea.version=0_5_1
+					 triplea.version=0_5_2
 				</code>
 				</blockquote>
 				These fields point to the location where <b>Junit</b> is installed so that <b>ANT</b> can use them while you compile.
@@ -489,8 +493,8 @@
 					compile:<br/>
 					[echo] looking for junit.jar in:/home/necro/javabox/junit3.8.1/junit.jar, edit .ant.properties to set junit location<br/>
 					[mkdir] Created dir: /home/necro/CVS/triplea/classes<br/>
-					[copy] Copying 452 files to /home/necro/CVS/triplea/classes<br/>
-					[javac] Compiling 335 source files to /home/necro/CVS/triplea/classes<br/>
+					[copy] Copying 712 files to /home/necro/CVS/triplea/classes<br/>
+					[javac] Compiling 313 source files to /home/necro/CVS/triplea/classes<br/>
 					<br/>
 					BUILD SUCCESSFUL<br/>
 					Total time: 18 seconds<br/>
@@ -529,36 +533,36 @@
 			<p>
 				<h4>Running On Windows</h4>
 				Simply open Windows Explorer, or whatever program you use to browse files around your computer. Find your
-				TripleA folder and go inside the <b>bin</b> folder. Inside there you should find a file called <b>triplea.bat</b>
+				TripleA folder and go inside it. Inside there you should find a file called <b>triplea_windows.bat</b>
 				This is the file that Windows users are expected to double click on (or run through a DOS prompt) to get
 				the game started.<br/>
 				<br/>
-				You can make shortcuts pointing to <b>triplea.bat</b> and you can as well use some of our TripleA icons that are
+				You can make shortcuts pointing to <b>triplea_windows.bat</b> and you can as well use some of our TripleA icons that are
 				provided in the <b>icons</b> folder.
 			</p>
 			
 			<p>
-				<h4>Running on Unix/Linux/Irix/Mac OS X</h4>
-				Go into the directory in which you installed TripleA. From there enter the <b>bin</b> directory. You should see a file
-				called <b>triplea.sh</b> You will need to change the permissions on that file in order to make it executable. Running
+				<h4>Running on Unix/Linux/Irix</h4>
+				Go into the directory in which you installed TripleA. You should see a file
+				called <b>triplea_unix.sh</b> You will need to change the permissions on that file in order to make it executable. Running
 				the command:
 				<blockquote>
 				<code>
-					 chmod +x triplea.sh
+					 chmod +x triplea_unix.sh
 				</code>
 				</blockquote>
 				That will give the file executable permissions. Once that is done you can run the actual file by issuing the command:
 				<blockquote>
 				<code>
-					./triplea.sh
+					./triplea_unix.sh
 				</code>
 				</blockquote>
-				This will cause the game to be run. Though the <b>triplea.sh</b> file is not exactly a proper shell script it helps
+				This will cause the game to be run. Though the <b>triplea_unix.sh</b> file is not exactly a proper shell script it helps
 				us to distinguish the windows files from the others. Though if one wants, they can skip the step to <b>chmod</b> the
 				file and directly exectue it with the following:
 				<blockquote>
 				<code>
-					 sh triplea.sh
+					 sh triplea_unix.sh
 				</code>
 				</blockquote>
 				The file itself contains the command:
@@ -567,13 +571,53 @@
 					 java -cp ../lib/patch.jar:../classes:../lib/plastic-1.2.0.jar games.strategy.engine.framework.GameRunner
 				</code>
 				</blockquote>
-				This command can be run manually in the <b>bin</b> directory from a command prompt but it is quite lengthy and
+				This command can be run manually in the TripleA directory from a command prompt but it is quite lengthy and
 				tedious to write all the time. That Java command has proved to work on most Unix, Linux, Irix 6.5, and Mac OS X
 				systems. If you encounter problems with this command please log on to the <a target="_blank" href="http://maddlinks.com/triplea">TripleA message board</a>
 				and request further assistance.<br/>
 				<br/>
 				<a href="#top">- Top -</a>
 			</p>
+			
+			<p>
+				<h4>Running on Mac OS X</h4>
+				Go into the directory in which you installed TripleA. You should see a file
+				called <b>triplea_mac_os_x.sh</b> You will need to change the permissions on that file in order to make it executable. Running
+				the command:
+				<blockquote>
+				<code>
+					 chmod +x triplea_mac_os_x.sh
+				</code>
+				</blockquote>
+				That will give the file executable permissions. Once that is done you can run the actual file by issuing the command:
+				<blockquote>
+				<code>
+					./triplea_mac_os_x.sh
+				</code>
+				</blockquote>
+				This will cause the game to be run. Though the <b>triplea_mac_os_x.sh</b> file is not exactly a proper shell script it helps
+				us to distinguish the windows files from the others. Though if one wants, they can skip the step to <b>chmod</b> the
+				file and directly exectue it with the following:
+				<blockquote>
+				<code>
+					 sh triplea_mac_os_x.sh
+				</code>
+				</blockquote>
+				The file itself contains the command:
+				<blockquote>
+				<code>
+					 java -cp ../lib/patch.jar:../classes:../lib/plastic-1.2.0.jar games.strategy.engine.framework.GameRunner
+				</code>
+				</blockquote>
+				This command can be run manually in the TripleA directory from a command prompt but it is quite lengthy and
+				tedious to write all the time. That Java command has proved to work on most Unix, Linux, Irix 6.5, and Mac OS X
+				systems. If you encounter problems with this command please log on to the <a target="_blank" href="http://maddlinks.com/triplea">TripleA message board</a>
+				and request further assistance.<br/>
+				<br/>
+				<a href="#top">- Top -</a>
+			</p>
+					
+			
 			
 			<h2><a name="sec_c_1">Local Game</a></h2>
 			<p>
@@ -935,16 +979,16 @@
 				submarine is by itself or with empty transports then it submerges on the first round.
 			</p>
 			
-			<h4>Types of PBE play</h4>
+			<h4>Types of PBEM play</h4>
 			
 			<p>
-				<b>Standard PBE</b>: this kind of game is described in the TripleA documentation.  You select the PBE option
+				<b>Standard PBEM</b>: this kind of game is described in the TripleA documentation.  You select the PBE option
 				and enter your email address and your opponents email address.  If there is more than two involved in the
 				game you enter your email address and the email address of the person whose turn follows yours.
 			</p>
 	
 			<p>
-				<b>Confirmable PBE</b>: we use this kind of game to keep the game easy on our inbox.  You select the PBE
+				<b>Confirmable PBEM</b>: we use this kind of game to keep the game easy on our inbox.  You select the PBE
 				option but you use the groups email address.  Create one email address for your group and send all dice
 				rolls to that address (use it for both email fields).  The group moderator should have the password to
 				this email account.  This way dice rolls can still be confirmed if they are called into question and no

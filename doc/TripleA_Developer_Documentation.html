@@ -202,7 +202,7 @@
 				<blockquote>
 				<code>
 					 junit.jar=/home/necro/junit3.8.1/junit3.8.1.jar<br>
-					 triplea.version=0_5_1
+					 triplea.version=0_5_2
 				</code>
 				</blockquote>
 			</p>
@@ -225,6 +225,7 @@
 						<li><b>ant compileClean</b> (executes <b>ant clean</b> then <b>ant compile</b> in one go)</li>
 						<li><b>ant zip</b> (Compiles the source code and packages it in a zip file)</li>
 						<li><b>ant zipSource</b> (Pacakges TripleA and the source in a zip file without compiling)</li>
+						<li><b>ant patch</b> Creates a patch.jar file as specified in the build.xml file</li>
 					</ul>
 				</blockquote>
 				
@@ -747,8 +748,15 @@
 				has selected every territory and aquired its polygon points. To do this you click on a country with the 
 				<b>left mouse</b> button. It will highlight in RED, then you click again with the <b>right mouse</b> button
 				it will show you the name of the territory, to which you will have to verify. If it is correct then hit <b>OK</b>
-				and the territory will turn all BLACK to indicate it has been accounted for. You will need to do this to all
-				sea and land territories.
+				and the territory will turn all YELLOW to indicate it has been accounted for. You will need to do this to all
+				sea and land territories. If you encounter a problem where the sea zone area covers up some islands
+				that you still did not process, there is a menu option called <b>Island Mode</b>. This option can be
+				turned on and off. It will outline the territories that have been processed while others are left white.
+				This is to overcome the problem of processed sea zones covering up islands. Another problem that is encountered
+				at times is when you want to process a sea zone but it shows you the island name only. When this happens, just
+				erase the island name from the dialog box and manually enter in the correct sea zone name. Make sure the sea zone
+				name abides by the naming convetion &quot;33 Sea Zone&quot; This is for 4th Edition (revised) rules. It will probably
+				change if you have your own custom delegates and games.
 			</p>
 			
 			<p>
@@ -854,9 +862,6 @@
 					data/games/strategy/triplea/images/image/maps/pacific
 				</code>
 				</blockquote>
-				You will also need to create a new directory called <b>newImages</b> in "classes" right before
-				running the ReliefImageBreaker! This is where it will store all newly created images. If it can not
-				find this folder it will crash.
 			</p>
 			
 			<p>
@@ -878,13 +883,14 @@
 				shown below for our "pacific" example:
 				<blockquote>
 				<code>
-					data/games/strategy/triplea/images/image/maps/pacific<br>
-					data/games/strategy/triplea/images/image/maps/pacific/seazones<br>
-					data/games/strategy/triplea/images/image/maps/pacific/countries<br>
-					data/games/strategy/triplea/images/image/maps/pacific/centers.txt<br>
-					data/games/strategy/triplea/images/image/maps/pacific/polygons.txt<br>
-					data/games/strategy/triplea/images/image/maps/pacific/place.txt<br>
-					data/games/strategy/triplea/images/image/maps/pacific/largeMap.gif
+					data/games/strategy/triplea/images/image/maps/pacific<br/>
+					data/games/strategy/triplea/images/image/maps/pacific/seazones<br/>
+					data/games/strategy/triplea/images/image/maps/pacific/countries<br/>
+					data/games/strategy/triplea/images/image/maps/pacific/centers.txt<br/>
+					data/games/strategy/triplea/images/image/maps/pacific/polygons.txt<br/>
+					data/games/strategy/triplea/images/image/maps/pacific/place.txt<br/>
+					data/games/strategy/triplea/images/image/maps/pacific/largeMap.gif<br/>
+					data/games/strategy/triplea/images/image/maps/pacific/map.properties
 				</code>
 				</blockquote>
 			</p>
@@ -899,8 +905,8 @@
 					<br>
 					has<br>
 					<br>
-					   classic/<br>
-					   revised/<br>
+					   classic/<br/>
+					   revised/<br/>
 					   pact_of_steel/
 				</code>
 				</blockquote>
@@ -912,12 +918,13 @@
 					<br>
 					has<br>
 					<br>
-					   centers.txt<br>
-					   place.txt<br>
-					   polygons.txt<br>
-					   largeMap.gif<br>
-					   seazones/<br>
-					   countries/<br>
+					   centers.txt<br/>
+					   place.txt<br/>
+					   polygons.txt<br/>
+					   largeMap.gif<br/>
+					   seazones/<br/>
+					   countries/<br/>
+					   map.properties<br/>
 				</code>
 				</blockquote>
 				
@@ -933,6 +940,7 @@
 					   polygons.txt<br>
 					   largeMap.gif<br>
 					   seazones/<br>
+					   map.properties<br/>
 				</code>
 				</blockquote>
 				As you can see they have identical names, but are placed in different folders. This makes it ideal for TripleA
@@ -947,10 +955,27 @@
 			<h4><a name="sec_e_8">Creating External MapPacks</a></h4>
 			<p>
 				Anyone can create their own map image and run it through the map utilities to produce the config files.
-				They can get it to work on their own computer and construct their own XML Game file for it.
-				What they can do is place all the files in a folder and Zip it up. Then anyone else can download the zip file
-				and extract it to <b>data/games/strategy/triplea/images/image/maps</b> and place the XML Game file in
-				<b>triplea/games</b> and then presto! They can run the game!.
+				They can get it to work on their own computer and construct their own XML Game file for it and a custom
+				&quot;map.properties&quot; file or use a default one.<br/>
+			</p>
+			
+			<p>
+				Files needed to create a complete map skin:
+				<ul>
+					<li>An image of the map in GIF format: <b>largeMap.gif</b></li>
+					<li>Map's config files: <b>polygons.txt centers.txt place.txt</b></li>
+					<li><u>optional</u> County relief images in a folder named <b>countries</b></li>
+					<li><u>optional</u> Sea Zone relief images in a folder named <b>seazones</b></li>
+					<li>The <b>map.properties</b> file which one must have. It also indicates what colors
+					    are to be used for each nation, if relief images should be turned on by default, and
+					    the default size of the unit images</li>
+					<li>A folder with all of the above files inside it. Folder must be properly named</li>
+				</ul>
+				
+				If you were making a skin for the revised map and lets say
+				you wanted to call your map skin &quto;Gold&quot;, you would have to put your map skin files into a folder
+				called <b>revisedGold</b>. This is for the TripleA map skins menu to find your skins and place it in the
+				menu bar for user selection.
 			</p>
 			<a href="#top">- Top -</a>
 		</blockquote>
