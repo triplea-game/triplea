@@ -396,8 +396,6 @@ public class ServerStartup extends JPanel
       {
          takePlayerMessageReceived( (TakePlayerMessage) msg, from);
       }
-      else
-        throw new IllegalArgumentException("unrecognized message:" + msg);
     }
 
   };
