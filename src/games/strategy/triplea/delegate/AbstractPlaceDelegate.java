@@ -277,7 +277,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
    */
   protected StringMessage canProduce(PlaceMessage placeMessage, PlayerID player, IntegerMap alreadyProduced)
   {
-    Territory producer = getProducer(placeMessage.getTo(), alreadyProduced);
+    Territory producer = getProducer(placeMessage.getTo(), alreadyProduced, player);
     //the only reason to could be null is if its water and no
     //territories adjacent have factories
     if(producer == null)
@@ -331,7 +331,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   /**
    * Returns the better producer of the two territories, either of which can be null.
    */
-  private Territory getBetterProducer(Territory t1, Territory t2, IntegerMap alreadyProduced)
+  private Territory getBetterProducer(Territory t1, Territory t2, IntegerMap alreadyProduced, PlayerID player)
   {
     //anything is better than nothing
     if(t1 == null)
@@ -347,10 +347,10 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
     //original factories are good
     TerritoryAttatchment t1a = TerritoryAttatchment.get(t1);
-    if(t1a.isOriginalFactory())
+    if(t1a.isOriginalFactory() && isOriginalOwner(t1, player))
       return t1;
     TerritoryAttatchment t2a = TerritoryAttatchment.get(t2);
-    if(t2a.isOriginalFactory())
+    if(t2a.isOriginalFactory() && isOriginalOwner(t2, player))
       return t2;
 
     //which can produce the most
@@ -359,6 +359,12 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     return t2;
   }
 
+  private boolean isOriginalOwner(Territory t, PlayerID id)
+  {
+      OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker();
+      return tracker.getOriginalOwner(t).equals(id);
+  }
+  
   private boolean hasFactory(Territory to)
   {
     return to.getUnits().someMatch(Matches.UnitIsFactory);
@@ -369,7 +375,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
    * units are to be placed in a given territory.
    * Returns null if no suitable territory could be found.
    */
-  private Territory getProducer(Territory to, IntegerMap alreadyProduced)
+  private Territory getProducer(Territory to, IntegerMap alreadyProduced, PlayerID player)
   {
     //if not water then must produce in that territory
     if(!to.isWater() )
@@ -382,7 +388,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
       Territory current = (Territory)iter.next();
       if( hasFactory( current) && ! m_producedFactory.contains(current) && current.getOwner().equals(m_player))
       {
-        neighborFactory = getBetterProducer(current, neighborFactory, alreadyProduced);
+        neighborFactory = getBetterProducer(current, neighborFactory, alreadyProduced, player);
       }
     }
     return neighborFactory;
@@ -424,7 +430,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     m_bridge.addChange(change);
     m_placements.add(new UndoPlace(m_data, this, change));
 
-    Territory producer = getProducer(placeMessage.getTo(), m_alreadyProduced);
+    Territory producer = getProducer(placeMessage.getTo(), m_alreadyProduced, player);
     m_alreadyProduced.add(producer, units.size() );
 
     if(Match.someMatch(units, Matches.UnitIsFactory))
