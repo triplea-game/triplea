@@ -55,13 +55,13 @@ public class BattleCalculator
     return hitCount;
   }
 
-  public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice)
+  public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
   {
-    return selectCasualties(null, player, targets, bridge, text, data, dice);
+    return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
   }
 
 
-  public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice)
+  public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
   {
     int hits = dice.getHits();
     if(hits == 0)
@@ -84,7 +84,12 @@ public class BattleCalculator
     }
 
 
-    Message msg = new SelectCasualtyQueryMessage(step, targets, dependents, dice.getHits(), text, dice, player);
+    // Create production cost map, Maybe should do this elsewhere, but in case prices
+    // we do it here.
+    IntegerMap costs = getCosts(player, data);
+
+    List defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
+    Message msg = new SelectCasualtyQueryMessage(step, targets, dependents, dice.getHits(), text, dice, player, defaultCasualties);
     Message response = bridge.sendMessage(msg, player);
     if(!(response instanceof SelectCasualtyMessage))
       throw new IllegalStateException("Message of wrong type:" + response);
@@ -97,15 +102,51 @@ public class BattleCalculator
     if ( ! (killed.size()  + damaged.size() == dice.getHits()) )
     {
       bridge.sendMessage( new StringMessage("Wrong number of casualties selected", true), player);
-      return selectCasualties(player, targets, bridge,text, data, dice);
+      return selectCasualties(player, targets, bridge,text, data, dice, defending);
     }
     //check we have enough of each type
     if(!targets.containsAll(killed) || ! targets.containsAll(damaged))
     {
       bridge.sendMessage( new StringMessage("Cannot remove enough units of those types", true), player);
-      return selectCasualties(player, targets, bridge,text, data, dice);
+      return selectCasualties(player, targets, bridge,text, data, dice, defending);
     }
     return casualtySelection;
+  }
+
+  private static List getDefaultCasualties(Collection targets, int hits, boolean defending, PlayerID player, IntegerMap costs) {
+    // Remove two hit bb's selecting them first for default casualties
+    ArrayList defaultCasualties = new ArrayList();
+    int numSelectedCasualties = 0;
+    Iterator targetsIter = targets.iterator();
+    while (targetsIter.hasNext()) {
+      // Stop if we have already selected as many hits as there are targets
+      if (numSelectedCasualties >= hits) {
+	return defaultCasualties;
+      }
+      Unit unit = (Unit)targetsIter.next();
+      UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+      if (ua.isTwoHit() && (unit.getHits() == 0)) {
+	numSelectedCasualties++;
+	defaultCasualties.add(unit);	
+      }
+    }
+    
+    // Sort units by power and cost in ascending order
+    List sorted = new ArrayList(targets);
+    Collections.sort(sorted,new UnitBattleComparator(defending, player, costs));
+    // Select units
+    Iterator sortedIter = sorted.iterator();
+    while (sortedIter.hasNext()) {
+      // Stop if we have already selected as many hits as there are targets
+      if (numSelectedCasualties >= hits) {
+	return defaultCasualties;
+      }
+      Unit unit = (Unit) sortedIter.next();
+      defaultCasualties.add(unit);
+      numSelectedCasualties++;
+    }
+
+    return defaultCasualties;
   }
 
   private static Map getDependents(Collection targets, GameData data)
@@ -121,6 +162,25 @@ public class BattleCalculator
       dependents.put( target, tracker.transportingAndUnloaded(target));
     }
     return dependents;
+  }
+
+  /**
+   * Return map where keys are unit types and values are ipc costs of that unit type
+   * @param player The player to get costs schedule for
+   * @param data The game data.
+   * @return a map of unit types to ipc cost
+   */
+  public static IntegerMap getCosts(PlayerID player, GameData data) {
+    IntegerMap costs = new IntegerMap();
+    Iterator iter = player.getProductionFrontier().getRules().iterator();
+    while(iter.hasNext())
+    {
+      ProductionRule rule = (ProductionRule) iter.next();
+      int cost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.IPCS));
+      UnitType type = (UnitType)rule.getResults().keySet().iterator().next();
+      costs.put(type, cost);
+    }
+    return costs;
   }
 
   /**
@@ -166,4 +226,42 @@ public class BattleCalculator
   //nothing but static
   private BattleCalculator()
   {}
+}
+
+class UnitBattleComparator implements Comparator {
+  private boolean m_defending;
+  private PlayerID m_player;
+  private IntegerMap m_costs;
+
+  public UnitBattleComparator(boolean defending, PlayerID player, IntegerMap costs) {
+    m_defending = defending;
+    m_player = player;
+    m_costs = costs;
+  }
+
+  public int compare(Object o1, Object o2) {
+    Unit u1 = (Unit)o1;
+    Unit u2 = (Unit)o2;
+    UnitAttatchment ua1 = UnitAttatchment.get(u1.getType());
+    UnitAttatchment ua2 = UnitAttatchment.get(u2.getType());
+    int rolls1 = BattleCalculator.getRolls(u1, m_player, m_defending);
+    int rolls2 = BattleCalculator.getRolls(u2, m_player, m_defending);
+    int power1 = m_defending ? ua1.getDefense(m_player) : ua1.getAttack(m_player);
+    int power2 = m_defending ? ua2.getDefense(m_player) : ua2.getAttack(m_player);
+    int cost1 = m_costs.getInt(u1.getType());
+    int cost2 = m_costs.getInt(u2.getType());
+    //    System.out.println("Unit 1: " + u1 + " rolls: " + rolls1 + " power: " + power1 + " cost: " + cost1);
+    //    System.out.println("Unit 2: " + u2 + " rolls: " + rolls2 + " power: " + power2 + " cost: " + cost2);
+    if (rolls1 != rolls2) {
+      return rolls1 - rolls2;
+    }
+    if (power1 != power2) {
+      return power1 - power2;
+    }
+    if (cost1 != cost2) {
+      return cost1 - cost2;
+    }
+
+    return 0;
+  }
 }
