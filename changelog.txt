@@ -1,3 +1,7 @@
+Changes for 0.5.2
+
+* Fixed bug #1043826 concerning missing sea zone border & missing pixles on border. (Nekro)
+
 Changes for 0.5.1
 
 * Fixed bug where defending transported units were not correctly removed when their transports were killed. (Ali Ibrahim)
@@ -12,7 +16,7 @@ Changes for 0.5.1
 
 * Fully implemented Pact Of Steel mod (by Black Elk/Beagle). (Nekro)
 
-* Improved map directory structures and code for triplea concerning TerritoryData class. (NeKro)
+* Improved map directory structures and code for triplea concerning TerritoryData class. (Nekro)
 
 * Small iteration fix applied to PolygonGrabber to prevent crash. (Beagle)
 
