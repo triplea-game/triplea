@@ -74,9 +74,9 @@ public class GameProperties extends GameDataComponent
     public Object get(String key)
     {
         if (m_editableProperties.containsKey(key))
-            return ((IEditableProperty) m_editableProperties.get(key))
-                    .getValue();
-        return m_constantProperties.get(key);
+                return ((IEditableProperty) m_editableProperties.get(key)).getValue();
+	
+	return m_constantProperties.get(key);
     }
 
     public boolean get(String key, boolean defaultValue)

@@ -157,9 +157,17 @@ public class GameRunner
      */
     public static File getRootFolder()
     {
-        //TODO this is a bit hokey, we assume that we are running
-        //from the bin directory.
-        return new File("..");
+        // gentoo patch by Thomas Matthijs
+	
+        String rootFolder = System.getProperty("triplea.root");
+	if(rootFolder != null)
+	{
+		return new File(rootFolder);
+	}
+	else
+	{
+		return new File("..");
+	}
     }
 
 }

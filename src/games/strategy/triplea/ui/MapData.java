@@ -15,6 +15,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
 import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.*;
@@ -86,15 +87,15 @@ public class MapData
      * Sets the map directory for this instance of TerritoryData
      * 
      * @param java.lang.String
-     *            mapDir the given map directory
+     *            mapNameDir the given map directory
      *  
      */
-    private MapData(String mapDir)
+    private MapData(String mapNameDir)
     {
         try
         {
-            String prefix = "../image/images/maps/" + mapDir + "/";
-
+            String prefix = Constants.MAP_DIR + mapNameDir + Constants.FILE_SEP;
+	
             m_place = PointFileReaderWriter.readOneToMany(this.getClass().getResourceAsStream(prefix + PLACEMENT_FILE));
             m_polys = PointFileReaderWriter.readOneToManyPolygons(this.getClass().getResourceAsStream(prefix + POLYGON_FILE));
             m_centers = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CENTERS_FILE));
@@ -236,8 +237,8 @@ public class MapData
             String name = (String) iter.next();
             Territory terr = data.getMap().getTerritory(name);
             if (terr == null)
-                errors.append("Territory in file could not be found in game data for " + dataTypeForErrorMessage + ". Territory name <" + name
-                        + ">\n");
+                errors.append("Territory in file could not be found in game data for "
+		               + dataTypeForErrorMessage + ". Territory name <" + name + ">\n");
         }
 
         Iterator territories = data.getMap().getTerritories().iterator();

@@ -1,5 +1,7 @@
 Changes for 0.5.2
 
+* Added root folder path fix by Thomas Matthijs for Gentoo friendliness and extra changes for how triplea see file paths(Nekro)
+
 * Now all map utils have proper "save as" dialogs (Nekro)
 
 * Added new class to prompt user to select a directory so map utils won't save files to a hardcoded dir (Nekro)

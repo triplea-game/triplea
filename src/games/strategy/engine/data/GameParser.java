@@ -108,7 +108,7 @@ public class GameParser
     factory.setValidating(true);
 
     //get the dtd location
-    URL url = GameParser.class.getResource("../xml/");
+    URL url = GameParser.class.getResource("/games/strategy/engine/xml/");
     String system = url.toExternalForm();
 
     DocumentBuilder builder = factory.newDocumentBuilder();

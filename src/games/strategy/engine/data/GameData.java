@@ -48,7 +48,7 @@ public class GameData implements java.io.Serializable
 	private transient ListenerList m_dataChangeListeners = new ListenerList();
 
 	private final AllianceTracker m_alliances = new AllianceTracker(this);
-	private final  DelegateList m_delegateList;
+	private final DelegateList m_delegateList;
 	private final GameMap m_map = new GameMap(this);
 	private final PlayerList m_playerList = new PlayerList(this);
 	private final ProductionFrontierList m_productionFrontierList = new ProductionFrontierList(this);
@@ -57,10 +57,10 @@ public class GameData implements java.io.Serializable
 	private final GameSequence m_sequence = new GameSequence(this);
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
 	private final GameProperties m_properties = new GameProperties(this);
-    private final UnitsList m_unitsList = new UnitsList();
+	private final UnitsList m_unitsList = new UnitsList();
 
 	private IGameLoader m_loader;
-    private final History m_gameHistory = new History(this);
+	private final History m_gameHistory = new History(this);
 
 	/** Creates new GameData */
 	public GameData()
@@ -73,10 +73,10 @@ public class GameData implements java.io.Serializable
 		return m_map;
 	}
 
-    public UnitsList getUnits()
-    {
-        return m_unitsList;
-    }
+	public UnitsList getUnits()
+	{
+        	return m_unitsList;
+	}
 
 	public PlayerList getPlayerList()
 	{

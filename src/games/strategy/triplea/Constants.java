@@ -29,6 +29,8 @@ package games.strategy.triplea;
  */
 public interface Constants
 {
+  // Directory separator
+  public static final String FILE_SEP = java.io.File.separator;
 
   //Player names
   public static final String AMERICANS = "Americans";
@@ -74,7 +76,10 @@ public interface Constants
   public static final String ARTILLERY = "artillery";
   public static final String DESTROYER = "destroyer";
 
-  public static final  String MAP_DIR = "images"+java.io.File.separator+"maps"+java.io.File.separator;
+  // MAP_DIR =  /games/strategy/triplea/image/images/maps/
+  
+  public static final String MAP_DIR = FILE_SEP+"games"+FILE_SEP+"strategy"+FILE_SEP+"triplea"+FILE_SEP+"image"+FILE_SEP+"images"+FILE_SEP+"maps"+FILE_SEP;
+  
   public static final String LARGE_MAP_FILENAME = "largeMap.gif";
   public static final String MAP_NAME = "mapName";
   
