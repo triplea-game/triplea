@@ -1051,7 +1051,7 @@
 			<unitPlacement unitType="infantry" territory="East Indies" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="armour" territory="East Canada" quantity ="1" owner="British" /> 
 			<unitPlacement unitType="armour" territory="East Europe" quantity ="1" owner="Germans" /> 
-			<unitPlacement unitType="infantry" territory="East Europe" quantity ="2" owner="Germans" /> 
+			<unitPlacement unitType="infantry" territory="East Europe" quantity ="3" owner="Germans" /> 
 			<unitPlacement unitType="fighter" territory="East Europe" quantity ="1" owner="Germans" /> 
 			<unitPlacement unitType="infantry" territory="East US" quantity ="2" owner="Americans" /> 
 			<unitPlacement unitType="armour" territory="East US" quantity ="1" owner="Americans" /> 
