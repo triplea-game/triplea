@@ -97,6 +97,8 @@ class Connection
         }
 
         m_reader = new Thread(new Reader(), "ConnectionReader for " + m_localNode.getName());
+        //give priority to processing messages already recieved
+        m_reader.setPriority(m_reader.getPriority() - 1);
         m_reader.start();
 
         m_writer = new Thread(new Writer(), "ConnectionWriter for" + m_localNode.getName());

@@ -96,7 +96,7 @@ public class RemoteHistoryMessage implements java.io.Serializable
     {
         long waitCount = 0;
         //ensure messages get processed in the order they are generated
-        while(writer.getLastMessageReceived() +1 != m_messageIndex)
+        while(writer.getLastMessageReceived() +1 != m_messageIndex && writer.getLastMessageReceived() > 0)
         {
             //messages are delivered in order to the client
             //but since each message is processed in its own thread, it is possible
@@ -109,8 +109,8 @@ public class RemoteHistoryMessage implements java.io.Serializable
             waitCount++;
             if(waitCount == 10000)
             {
-                System.err.println("cant process message " + m_messageIndex + " last message:" + writer.getLastMessageReceived()) ;
-                waitCount = 0;
+                new IllegalStateException("cant process message " + m_messageIndex + " last message:" + writer.getLastMessageReceived()).printStackTrace();
+                return;
             }
         }
         synchronized(writer)

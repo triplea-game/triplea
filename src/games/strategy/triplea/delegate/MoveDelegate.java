@@ -473,8 +473,6 @@ public class MoveDelegate implements SaveableDelegate
     private String validateNonCombat(Collection units, Route route, PlayerID player)
     {
 
-        
-        
         CompositeMatch battle = new CompositeMatchOr();
         battle.add(Matches.TerritoryIsNuetral);
         battle.add(Matches.isTerritoryEnemy(player, m_data));
@@ -506,7 +504,7 @@ public class MoveDelegate implements SaveableDelegate
                 return "Air units cannot fly over neutral territories in non combat";
         } else
         {
-            CompositeMatch neutralOrEnemy = new CompositeMatchAnd(Matches.TerritoryIsNuetral, Matches.isTerritoryEnemy(player, m_data));
+            CompositeMatch neutralOrEnemy = new CompositeMatchOr(Matches.TerritoryIsNuetral, Matches.isTerritoryEnemy(player, m_data));
             if (route.someMatch(neutralOrEnemy))
                 return "Cant move units to neutral or enemy territories in non combat";
         }
@@ -587,7 +585,7 @@ public class MoveDelegate implements SaveableDelegate
                 return "Must stop land units when passing through nuetral territories";
         }
 
-        if(Match.someMatch(units, Matches.UnitIsLand) && route.getLength() >=1)
+        if(!m_nonCombat &&  Match.someMatch(units, Matches.UnitIsLand) && route.getLength() >=1)
         {
         	//check all the territories but the end, 
         	//if there are enemy territories, make sure they are blitzable
