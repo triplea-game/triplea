@@ -88,10 +88,6 @@ public class GameRunner
      int v14 = strV.indexOf("1.4");
      int v15 = strV.indexOf("1.5");
 
-     System.out.println("v14 = "+v14);
-     System.out.println("v15 = "+v15);
-     System.out.println("strV = "+strV);
-
      if(v14 == -1 && v15 == -1) {
           if(!isMac()) {
                JOptionPane.showMessageDialog(null, "You need java version 1.4.x\nPlease download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -158,4 +154,3 @@ class ClientReady implements Serializable
 {
 
 }
-
