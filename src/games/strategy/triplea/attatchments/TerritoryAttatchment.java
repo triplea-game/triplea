@@ -56,7 +56,7 @@ public class TerritoryAttatchment extends DefaultAttatchment
 
 
 	/**
-	 * Conveniente method.
+	 * Convenience method.
 	 */
 	public static TerritoryAttatchment get(Territory t)
 	{
