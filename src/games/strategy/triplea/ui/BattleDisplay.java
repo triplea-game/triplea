@@ -289,7 +289,7 @@ public class BattleDisplay extends JPanel
             {
 
                 String messageText = msg.getMessage() + " " + btnText + ".";
-                UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), m_data, true);
+                UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDefaultCasualties(), msg.getDependent(), m_data, true);
 
                 chooser.setTitle(messageText);
                 chooser.setMax(msg.getCount());
