@@ -226,7 +226,7 @@ public class MovePanel extends ActionPanel
         return (Collection) mustMoveWith.getMustMoveWith().get(candidateTransports.get(0));
       }
 
-
+      // choosing what units to UNLOAD
       UnitChooser chooser = new UnitChooser(candidateTransports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement(), m_bridge.getGameData());
       chooser.setTitle("What transports do you want to unload");
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
@@ -279,8 +279,12 @@ public class MovePanel extends ActionPanel
 	  owned = Match.getMatches(owned, Matches.UnitIsAir);
 	}
 
-
-        return getUnitsChosen(owned, route);
+	// CM.  We want the Units chosen to be automatic if there
+	// is only one possible unit to move.
+	if ( owned.size() == 1 )
+	   return owned;
+	else
+	   return getUnitsChosen(owned, route);
     }
 
     private Collection getUnitsChosen(Collection units, Route route)
@@ -320,6 +324,7 @@ public class MovePanel extends ActionPanel
 	  return movedUnits;
 	}
 
+	// choosing what units to MOVE
         UnitChooser chooser = new UnitChooser(canMove, mustMoveWithMap,
 					      mustMoveWith.getMovement(), m_bridge.getGameData());
 
@@ -471,6 +476,7 @@ public class MovePanel extends ActionPanel
         return candidateTransports;
 
 
+      // choosing what units to LOAD.
       UnitChooser chooser = new UnitChooser(candidateTransports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement(), m_bridge.getGameData());
       chooser.setTitle("What transports do you want to load");
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
