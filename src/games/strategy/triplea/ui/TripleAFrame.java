@@ -210,6 +210,11 @@ public class TripleAFrame extends JFrame
             if(rVal == JFileChooser.APPROVE_OPTION)
             {
               File f = fileChooser.getSelectedFile();
+              if(!f.getName().toLowerCase().endsWith(".svg"))
+              {
+                f= new File(f.getParent(), f.getName() + ".svg");
+              }
+
               manager.saveGame(f, m_data);
               JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",  JOptionPane.PLAIN_MESSAGE);
             }

@@ -38,11 +38,11 @@ public class UndoableMove implements Serializable
      * Some moves (such as those following an aa fire) can't be undone.
      */
     private int m_index;
-    private transient CompositeChange m_undoChange = new CompositeChange();
+    private CompositeChange m_undoChange = new CompositeChange();
     private String m_reasonCantUndo;
     private String m_description;
-    private transient IntegerMap m_changedMovement;
-    private transient IntegerMap m_startingMovement; //needed so we can calculate the change when done
+    private IntegerMap m_changedMovement;
+    private IntegerMap m_startingMovement; //needed so we can calculate the change when done
 
     //this move is dependent on these moves
     //these moves cant be undone until this one has been
@@ -55,10 +55,10 @@ public class UndoableMove implements Serializable
     private Set m_conquered = new HashSet();
 
     //maps unit -> transport, both of type Unit
-    private transient Map m_loaded = new HashMap();
+    private Map m_loaded = new HashMap();
 
     //maps unit -> transport, both of type Unit
-    private transient Map m_unloaded = new HashMap();
+    private Map m_unloaded = new HashMap();
 
     private final Route m_route;
     private final Collection m_units;
@@ -210,6 +210,12 @@ public class UndoableMove implements Serializable
         while (iter.hasNext())
         {
             UndoableMove other = (UndoableMove)iter.next();
+
+            if(other == null)
+            {
+              System.err.println(undoableMoves);
+              throw new IllegalStateException("other should not be null");
+            }
 
             if( //if the other move has moves that depend on this
                 !Util.intersection(other.getUnits(), this.getUnits() ).isEmpty() ||

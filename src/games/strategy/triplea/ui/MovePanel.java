@@ -177,6 +177,77 @@ public class MovePanel extends ActionPanel
         }
     };
 
+    /**
+     * Return the units that can be unloaded for this routs.
+     * If needed will ask the user what transports to unload.
+     * This is needed because the user needs to be able to select what transports to unload
+     */
+    private Collection getUnitsThatCanBeUnload(Route route)
+    {
+      //get the allied transports
+      Match alliedTransports = new CompositeMatchAnd(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
+      Collection transports = Match.getMatches(route.getStart().getUnits().getUnits(), alliedTransports);
+      if(transports.isEmpty())
+        return Collections.EMPTY_LIST;
+
+      //find out what they are transporting
+      Message msg = new MustMoveWithQuery(transports, route.getStart());
+      Message response = m_bridge.sendMessage(msg);
+
+      if (! (response instanceof MustMoveWithReply))
+          throw new IllegalStateException("Message of wrong type:" + response);
+
+      MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
+
+      List candidateTransports = new ArrayList();
+
+      //get the transports with units that we own
+      //these transports can be unloaded
+      Match owned = Matches.unitIsOwnedBy(getCurrentPlayer());
+      Iterator mustMoveWithIter = mustMoveWith.getMustMoveWith().keySet().iterator();
+      while (mustMoveWithIter.hasNext())
+      {
+        Unit transport = (Unit) mustMoveWithIter.next();
+        Collection transporting = (Collection) mustMoveWith.getMustMoveWith().get(transport);
+        if(transporting == null)
+          continue;
+        if(Match.someMatch(transporting, owned))
+          candidateTransports.add(transport);
+      }
+
+      if(candidateTransports.isEmpty())
+        return Collections.EMPTY_LIST;
+      //only one, no choice
+      if(candidateTransports.size() == 1)
+      {
+        return (Collection) mustMoveWith.getMustMoveWith().get(candidateTransports.get(0));
+      }
+
+
+      UnitChooser chooser = new UnitChooser(candidateTransports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement(), m_bridge.getGameData());
+      chooser.setTitle("What transports do you want to unload");
+      int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                                                chooser, "What transports do you want to unload",
+                                                JOptionPane.OK_CANCEL_OPTION,
+                                                JOptionPane.PLAIN_MESSAGE, null, null, null);
+      if(option != JOptionPane.OK_OPTION)
+        return Collections.EMPTY_LIST;
+
+      Collection choosenTransports = chooser.getSelected();
+
+      Collection toMove = new ArrayList();
+      Iterator choosenIter = choosenTransports.iterator();
+      while (choosenIter.hasNext())
+      {
+        Unit transport = (Unit)choosenIter.next();
+        Collection transporting = (Collection) mustMoveWith.getMustMoveWith().get(transport);
+        if(transporting != null)
+          toMove.addAll(transporting);
+      }
+
+      return toMove;
+    }
+
     private Collection getUnitsToMove(Route route)
     {
         CompositeMatch ownedNotFactory = new CompositeMatchAnd();
@@ -193,9 +264,11 @@ public class MovePanel extends ActionPanel
             {
                 owned = Match.getMatches(owned, Matches.UnitIsNotLand);
             }
+            //unloading
             if (!route.getEnd().isWater())
             {
-                owned = Match.getMatches(owned, Matches.UnitIsNotSea);
+                owned = Match.getMatches(owned, Matches.UnitIsAir);
+                owned.addAll(getUnitsThatCanBeUnload(route));
             }
         }
 
@@ -241,7 +314,6 @@ public class MovePanel extends ActionPanel
 
         if (canMove.isEmpty())
             return null;
-
 
         return new UnitChooser(canMove, mustMoveWith.getMustMoveWith(),
                                mustMoveWith.getMovement(), m_bridge.getGameData());

@@ -954,6 +954,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
       //is it safe to move the planes there?
       if(!m_data.getAllianceTracker().isAllied(m_defender, currentTerritory.getOwner()))
         continue;
+
       //only one neighbor, its an island.
       if(m_data.getMap().getNeighbors(currentTerritory).size() == 1)
       {

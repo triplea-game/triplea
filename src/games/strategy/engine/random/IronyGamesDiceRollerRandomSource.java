@@ -306,7 +306,6 @@ class HttpDiceRollerDialog extends JDialog
     }
 
   }
-
 }
 
 class DiceStatic
