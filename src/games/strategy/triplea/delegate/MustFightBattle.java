@@ -543,11 +543,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
 	private void defendSubs(DelegateBridge bridge)
 	{
-		Collection firing = Match.getMatches(m_defendingUnits, Matches.UnitIsSub);
-		if(firing.isEmpty())
+		if(m_attackingUnits.size() == 0)
 			return;
+		Collection units = new ArrayList(m_defendingUnits.size() + m_defendingWaitingToDie.size());
+		units.addAll(m_defendingUnits);
+		units.addAll(m_defendingWaitingToDie);
+		units = Match.getMatches(units, Matches.UnitIsSub);
+		
+		if(units.isEmpty() )
+			return;
+		
 		Collection attacked = Match.getMatches(m_attackingUnits, Matches.UnitIsNotAir);
-		fire(ATTACKER_SELECT_SUB_CASUALTIES, firing, attacked, true, true, bridge, "Subs defend, ");
+		if(attacked.isEmpty())
+			return;
+
+		fire(ATTACKER_SELECT_SUB_CASUALTIES, units,  attacked, true, true, bridge, "Subs defend, ");
 	}
 
 	private Collection selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, int hitCount, boolean defender, String text)
