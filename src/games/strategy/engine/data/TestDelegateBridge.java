@@ -21,6 +21,8 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.IGame;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
@@ -53,8 +55,11 @@ public class TestDelegateBridge implements IDelegateBridge
         History history = new History(m_data);
         HistoryWriter historyWriter = new HistoryWriter(history);
         historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
-        m_historyWriter = new DelegateHistoryWriter(new ChannelMessenger( new UnifiedMessenger( new DummyMessenger())));
-
+        
+        ChannelMessenger channelMessenger = new ChannelMessenger( new UnifiedMessenger( new DummyMessenger()));
+        channelMessenger.createChannel(IGameModifiedChannel.class, IGame.GAME_MODIFICATION_CHANNEL);
+        m_historyWriter = new DelegateHistoryWriter(channelMessenger);
+        
     }
 
     /**
