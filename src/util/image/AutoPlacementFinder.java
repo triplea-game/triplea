@@ -55,7 +55,15 @@ public class AutoPlacementFinder
 	    System.exit(0);
 	}
 	
-        TerritoryData.setMapDir(mapDir);       //makes TripleA read all the text data files for the map.
+	try
+	{
+            TerritoryData.setMapDir(mapDir);       //makes TripleA read all the text data files for the map.
+        }
+	catch(NullPointerException npe)
+	{
+	    System.out.println("Bad data given, shutting down");
+	    System.exit(0);
+	}
 
         Iterator terrIter = TerritoryData.getInstance().getTerritories().iterator();
 	
