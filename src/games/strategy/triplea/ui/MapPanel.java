@@ -384,89 +384,99 @@ public class MapPanel extends ImageScrollerLargeView
         List images = new ArrayList();
 
         Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINER, "Paint");
-        
-        //handle wrapping off the screen to the left
-        if(m_x < 0)
+
+        //make sure we use the same data for the entire paint
+        final GameData data = m_data;
+        data.acquireChangeLock();
+        try
         {
-            Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
-            List tileList = m_tileManager.getTiles(leftBounds);
-            Iterator tiles = tileList.iterator();
-            
-            
-            //prep the tiles for drawing
-            while(tiles.hasNext())
-            {
-                Tile tile = (Tile) tiles.next();
-                tile.prepareToDraw();
-            }
-            
-            tiles = tileList.iterator();
-            while (tiles.hasNext())
-            {
-                Tile tile = (Tile) tiles.next();
-                Image img = tile.getImage(m_data, MapData.getInstance());
-                g.drawImage(img, tile.getBounds().x -leftBounds.x, tile.getBounds().y - m_y, this);
-                images.add(tile);
-            }
-        }
-        
-        //handle the non overlap
-        {
-        
-	        Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
-	        List tileList = m_tileManager.getTiles(mainBounds);
-	        Iterator tiles = tileList.iterator();
+	        //handle wrapping off the screen to the left
+	        if(m_x < 0)
+	        {
+	            Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
+	            List tileList = m_tileManager.getTiles(leftBounds);
+	            Iterator tiles = tileList.iterator();
+	            
+	            
+	            //prep the tiles for drawing
+	            while(tiles.hasNext())
+	            {
+	                Tile tile = (Tile) tiles.next();
+	                tile.prepareToDraw();
+	            }
+	            
+	            tiles = tileList.iterator();
+	            while (tiles.hasNext())
+	            {
+	                Tile tile = (Tile) tiles.next();
+	                Image img = tile.getImage(data, MapData.getInstance());
+	                g.drawImage(img, tile.getBounds().x -leftBounds.x, tile.getBounds().y - m_y, this);
+	                images.add(tile);
+	            }
+	        }
+	        
+	        //handle the non overlap
+	        {
+	        
+		        Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
+		        List tileList = m_tileManager.getTiles(mainBounds);
+		        Iterator tiles = tileList.iterator();
+		
+		        //prep the tiles for drawing
+		        while(tiles.hasNext())
+		        {
+		            Tile tile = (Tile) tiles.next();
+		            tile.prepareToDraw();
+		        }
+		        
+		        tiles = tileList.iterator();
+		        
+		        while (tiles.hasNext())
+		        {
+		            Tile tile = (Tile) tiles.next();
+		            Image img = tile.getImage(data, MapData.getInstance());
+		            g.drawImage(img, tile.getBounds().x - m_x, tile.getBounds().y - m_y, this);
+		            images.add(tile);
+		        }
+	        }
 	
-	        //prep the tiles for drawing
-	        while(tiles.hasNext())
-	        {
-	            Tile tile = (Tile) tiles.next();
-	            tile.prepareToDraw();
-	        }
 	        
-	        tiles = tileList.iterator();
-	        
-	        while (tiles.hasNext())
+	        double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
+	        //handle wrapping off the screen to the left
+	        if(leftOverlap > 0)
 	        {
-	            Tile tile = (Tile) tiles.next();
-	            Image img = tile.getImage(m_data, MapData.getInstance());
-	            g.drawImage(img, tile.getBounds().x - m_x, tile.getBounds().y - m_y, this);
-	            images.add(tile);
+	            Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
+	            List tileList =  m_tileManager.getTiles(rightBounds);
+	            Iterator tiles = tileList.iterator();
+	            rightBounds.translate((int) (leftOverlap - getWidth()), 0);
+	
+	            //prep the tiles for drawing
+	            while(tiles.hasNext())
+	            {
+	                Tile tile = (Tile) tiles.next();
+	                tile.prepareToDraw();
+	            }
+	            tiles = tileList.iterator();
+	            
+	            while (tiles.hasNext())
+	            {
+	                Tile tile = (Tile) tiles.next();
+	                Image img = tile.getImage(data, MapData.getInstance());
+	                g.drawImage(img, tile.getBounds().x -rightBounds.x, tile.getBounds().y - m_y, this);
+	                images.add(tile);
+	            }
 	        }
+	
+	        
+	        MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
+	        
+	        m_images.clear();
+	        m_images.addAll(images);
         }
-
-        
-        double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
-        //handle wrapping off the screen to the left
-        if(leftOverlap > 0)
+        finally
         {
-            Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
-            List tileList =  m_tileManager.getTiles(rightBounds);
-            Iterator tiles = tileList.iterator();
-            rightBounds.translate((int) (leftOverlap - getWidth()), 0);
-
-            //prep the tiles for drawing
-            while(tiles.hasNext())
-            {
-                Tile tile = (Tile) tiles.next();
-                tile.prepareToDraw();
-            }
-            tiles = tileList.iterator();
-            
-            while (tiles.hasNext())
-            {
-                Tile tile = (Tile) tiles.next();
-                Image img = tile.getImage(m_data, MapData.getInstance());
-                g.drawImage(img, tile.getBounds().x -rightBounds.x, tile.getBounds().y - m_y, this);
-                images.add(tile);
-            }
+            data.releaseChangeLock();
         }
-
-        
-        MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
-        
-        m_images.clear();
-        m_images.addAll(images);
         
         stopWatch.done();
         

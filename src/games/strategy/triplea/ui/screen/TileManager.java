@@ -170,31 +170,39 @@ public class TileManager
     {
         Set drawnOn = new HashSet();
         Set drawing = new HashSet();
-        
-        Drawable territoryDrawer = null;
-        if(!territory.isWater())
-            territoryDrawer = new LandTerritoryDrawable(territory.getName());
-        
-        drawUnits(territory, data, mapData, drawnOn, drawing);
-        TerritoryNameDrawable nameDrawer = new TerritoryNameDrawable(territory.getName());
-        
-        //add to the relevant tiles
-        Iterator tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
-        while (tiles.hasNext())
+     
+        data.acquireChangeLock();
+        try
         {
-            Tile tile = (Tile) tiles.next();
-            drawnOn.add(tile);
-            if(territoryDrawer != null)
-            {
-                tile.addDrawable(territoryDrawer);
-                drawing.add(territoryDrawer);
-            }
-            tile.addDrawable(nameDrawer);
-            drawing.add(nameDrawer);
+	        Drawable territoryDrawer = null;
+	        if(!territory.isWater())
+	            territoryDrawer = new LandTerritoryDrawable(territory.getName());
+	        
+	        drawUnits(territory, data, mapData, drawnOn, drawing);
+	        TerritoryNameDrawable nameDrawer = new TerritoryNameDrawable(territory.getName());
+	        
+	        //add to the relevant tiles
+	        Iterator tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
+	        while (tiles.hasNext())
+	        {
+	            Tile tile = (Tile) tiles.next();
+	            drawnOn.add(tile);
+	            if(territoryDrawer != null)
+	            {
+	                tile.addDrawable(territoryDrawer);
+	                drawing.add(territoryDrawer);
+	            }
+	            tile.addDrawable(nameDrawer);
+	            drawing.add(nameDrawer);
+	        }
+	        
+	        m_territoryDrawables.put(territory.getName(), drawing);
+	        m_territoryTiles.put(territory.getName(), drawnOn);
         }
-        
-        m_territoryDrawables.put(territory.getName(), drawing);
-        m_territoryTiles.put(territory.getName(), drawnOn);
+        finally
+        {
+            data.releaseChangeLock();
+        }
     }
     
     private void drawUnits(Territory territory, GameData data, MapData mapData, Set drawnOn, Set drawing)

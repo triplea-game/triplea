@@ -99,20 +99,31 @@ public class Tile
         g.setColor(Color.WHITE);
         g.fill(m_bounds);
      
+        Iterator iter;
+        
         synchronized(m_mutex)
         {
 		    //draw
 		    Collections.sort(m_contents, new DrawableComparator());
-		    Iterator iter = m_contents.iterator();
-	        
+		    iter = new ArrayList(m_contents).iterator();
+        }
+	
+        data.acquireChangeLock();
+        try
+        {
 	        while (iter.hasNext())
 	        {
 	            Drawable drawable = (Drawable) iter.next();
 	            drawable.draw(m_bounds, data, g, mapData);
 	        }
 	        m_isDirty = false;
-        
         }
+        finally
+        {
+            data.releaseChangeLock();
+        }
+        
+        
         stopWatch.done();
         
     }

@@ -14,9 +14,12 @@ package games.strategy.ui;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
 import java.awt.image.*;
 import java.awt.*;
+
+import javax.swing.Action;
+
+import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
 
 /**
  * Code originally contributed by "Thomas Carvin"
@@ -24,41 +27,44 @@ import java.awt.*;
 
 public class ImageIoCompletionWatcher implements ImageObserver
 {
-  private boolean m_complete = false;
-  private final Object m_lock = new Object();
+    //we countdown when we are done
+    private final CountDownLatch m_countDownLatch = new CountDownLatch(1);
+    private final Action m_doneAction;
 
-  public void waitForCompletion()
-  {
-    synchronized(m_lock)
+    public void waitForCompletion()
     {
-      if (!m_complete)
-      {
         try
         {
-          m_lock.wait();
+            m_countDownLatch.await();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
         }
-        catch (InterruptedException ie)
-        {}
-      }
     }
-  }
 
-  public boolean imageUpdate(Image image, int flags, int x, int y, int width,
-                             int height)
-  {
-
-    // wait for complete or error/abort
-    if ( ( (flags & ALLBITS) != 0) || ( (flags & ABORT) != 0))
+    public ImageIoCompletionWatcher(Action onDoneAction)
     {
-      synchronized(m_lock)
-      {
-        m_complete = true;
-        m_lock.notifyAll();
-      }
-      return false;
+        m_doneAction = onDoneAction;
     }
-    
-    return true;
 
-  }
+    public ImageIoCompletionWatcher()
+    {
+        m_doneAction = null;
+    }
+
+    public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height)
+    {
+        // wait for complete or error/abort
+        if (((flags & ALLBITS) != 0) || ((flags & ABORT) != 0))
+        {
+            m_countDownLatch.countDown();
+            if(m_doneAction != null)
+                m_doneAction.actionPerformed(null);
+            
+            return false;
+        }
+
+        return true;
+
+    }
 }
