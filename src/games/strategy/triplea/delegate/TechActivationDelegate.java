@@ -27,9 +27,9 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Logic for activating tech rolls.
- * This delegate requires the TechnologyDelegate to run correctly.
- *
+ * Logic for activating tech rolls. This delegate requires the
+ * TechnologyDelegate to run correctly.
+ * 
  * @author Ali Ibrahim
  * @version 1.0
  */
@@ -47,69 +47,71 @@ public class TechActivationDelegate implements ISaveableDelegate
     {
     }
 
-
     public void initialize(String name, String displayName)
     {
-	m_name = name;
-	m_displayName = displayName;
+        m_name = name;
+        m_displayName = displayName;
     }
 
     /**
-     * Called before the delegate will run.
-     * In this class, this does all the work.
+     * Called before the delegate will run. In this class, this does all the
+     * work.
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-	m_bridge = aBridge;
-	m_data = gameData;
-	m_player = aBridge.getPlayerID();
-    
-	// Activate techs
-	Map techMap = DelegateFinder.techDelegate(m_data).getAdvances();
-	Collection advances = (Collection)techMap.get(m_player);
-	if ((advances != null) && (advances.size() > 0))
-	{
-	    // Start event
-	    m_bridge.getHistoryWriter().startEvent(m_player.getName() + " activating " + advancesAsString(advances));
+        m_bridge = aBridge;
+        m_data = gameData;
+        m_player = aBridge.getPlayerID();
 
-	    Iterator techsIter = advances.iterator();
-	    while (techsIter.hasNext())
-	    {
-		TechAdvance advance = (TechAdvance)techsIter.next();
-		advance.perform(m_bridge.getPlayerID(), m_bridge, m_data );
-		TechTracker.addAdvance(m_player, m_data, m_bridge, advance);
-	    }
-	}
+        // Activate techs
+        Map techMap = DelegateFinder.techDelegate(m_data).getAdvances();
+        Collection advances = (Collection) techMap.get(m_player);
+        if ((advances != null) && (advances.size() > 0))
+        {
+            // Start event
+            m_bridge.getHistoryWriter().startEvent(m_player.getName() + " activating " + advancesAsString(advances));
+
+            Iterator techsIter = advances.iterator();
+            while (techsIter.hasNext())
+            {
+                TechAdvance advance = (TechAdvance) techsIter.next();
+                advance.perform(m_bridge.getPlayerID(), m_bridge, m_data);
+                TechTracker.addAdvance(m_player, m_data, m_bridge, advance);
+            }
+        }
+        //empty
+        techMap.put(m_player, null);
+        
     }
 
     // Return string representing all advances in collection
     private String advancesAsString(Collection advances)
     {
-	Iterator iter = advances.iterator();
-	int count = advances.size();
-	StringBuffer text = new StringBuffer();
+        Iterator iter = advances.iterator();
+        int count = advances.size();
+        StringBuffer text = new StringBuffer();
 
-	while(iter.hasNext())
-	{
-	    TechAdvance advance = (TechAdvance) iter.next();
-	    text.append(advance.getName());
-	    count--;
-	    if(count > 1)
-		text.append(", ");
-	    if(count == 1)
-		text.append(" and ");
-	}
-	return text.toString();
+        while (iter.hasNext())
+        {
+            TechAdvance advance = (TechAdvance) iter.next();
+            text.append(advance.getName());
+            count--;
+            if (count > 1)
+                text.append(", ");
+            if (count == 1)
+                text.append(" and ");
+        }
+        return text.toString();
     }
 
     public String getName()
     {
-	return m_name;
+        return m_name;
     }
 
     public String getDisplayName()
     {
-	return m_displayName;
+        return m_displayName;
     }
 
     /**
@@ -121,11 +123,12 @@ public class TechActivationDelegate implements ISaveableDelegate
 
     /**
      * Can the delegate be saved at the current time.
+     * 
      * @arg message, a String[] of size 1, hack to pass an error message back.
      */
     public boolean canSave(String[] message)
     {
-	return true;
+        return true;
     }
 
     /**
@@ -133,7 +136,7 @@ public class TechActivationDelegate implements ISaveableDelegate
      */
     public Serializable saveState()
     {
-	return null;
+        return null;
     }
 
     /**
@@ -141,16 +144,15 @@ public class TechActivationDelegate implements ISaveableDelegate
      */
     public void loadState(Serializable state)
     {
-    
+
     }
 
-    /* 
+    /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
     public Class getRemoteType()
     {
-        return  null;
+        return null;
     }
-
 
 }
