@@ -69,6 +69,11 @@ public class TechTracker implements java.io.Serializable
     {
       rVal.add(TechAdvance.SUPER_SUBS);
     }
+    if(attatchment.hasDestroyerBombard())
+    {
+      rVal.add(TechAdvance.DESTROYER_BOMBARD);
+    }
+
 
     return rVal;
 

@@ -37,12 +37,19 @@ public class TechAttatchment extends DefaultAttatchment
   private boolean mrocket;
   private boolean mindustrialTechnology;
   private boolean msuperSub;
-
+  private boolean mdestroyerBombard;
+  
   public void setHeavyBomber(String s)
   {
     mheavyBomber = getBool(s);
   }
 
+  public void setDestroyerBombard(String s)
+  {
+      mdestroyerBombard = getBool(s);
+  }
+
+  
   public void setLongRangeAir(String s)
   {
     mlongRangeAir = getBool(s);
@@ -97,6 +104,11 @@ public class TechAttatchment extends DefaultAttatchment
   {
     return "" + msuperSub;
   }
+  
+  public String getDestroyerBombard()
+  {
+      return "" + mdestroyerBombard;
+  }
 
   public TechAttatchment()
   {
@@ -131,5 +143,11 @@ public class TechAttatchment extends DefaultAttatchment
   {
     return msuperSub;
   }
+  
+  public boolean hasDestroyerBombard()
+  {
+      return mdestroyerBombard;
+  }
+  
 
 }

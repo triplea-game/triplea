@@ -334,11 +334,11 @@ public class StatPanel extends JPanel
       for (int i = 0; i < colList.length; i++)
         colMap.put(colList[i], new Integer(i + 1));
 
-      data = new String[TechAdvance.getTechAdvances().size()][colList.length + 1];
+      data = new String[TechAdvance.getTechAdvances(true).size()][colList.length + 1];
 
         /* Load the technology -> row mapping */
       rowMap = new HashMap();
-      Iterator iter = TechAdvance.getTechAdvances().iterator();
+      Iterator iter = TechAdvance.getTechAdvances(true).iterator();
       int row = 0;
 
       while (iter.hasNext())
