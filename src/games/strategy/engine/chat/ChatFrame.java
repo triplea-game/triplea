@@ -173,13 +173,20 @@ public class ChatFrame extends JFrame
     void addMessage(ChatMessage msg, String from)
     {
 
-        addMessage(msg.getMessage(), from);
+        addMessage(msg.getMessage(), from, false);
+   
+
+    }
+    void addMessage(MeMessage msg, String from)
+    {
+
+        addMessage(msg.getMessage(), from, true);
    
 
     }
 
     /** thread safe */
-    void addMessage(final String message, final String from)
+    void addMessage(final String message, final String from,final boolean thirdperson)
     {
 
         Runnable runner = new Runnable()
@@ -191,9 +198,11 @@ public class ChatFrame extends JFrame
                 try
                 {
                     Document doc = m_text.getDocument();
-                    doc.insertString(doc.getLength(), from, bold);
-                    doc.insertString(doc.getLength(), " : ", bold);
-                    doc.insertString(doc.getLength(), message + "\n", normal);
+                    if(thirdperson)
+                    	doc.insertString(doc.getLength(), "*"+from, bold);
+                    else
+                        doc.insertString(doc.getLength(), from+": ", bold);
+                    doc.insertString(doc.getLength()," "+message + "\n", normal);
                 } catch (BadLocationException ble)
                 {
                     ble.printStackTrace();
@@ -254,9 +263,14 @@ public class ChatFrame extends JFrame
 
             if (m_nextMessage.getText().trim().length() == 0)
                 return;
-
-            ChatMessage msg = new ChatMessage(m_nextMessage.getText());
-            m_chat.sendMessage(msg);
+            if(Chat.getTense(m_nextMessage.getText())==1){
+                MeMessage msg = new MeMessage(m_nextMessage.getText().substring(4));
+                m_chat.sendMessage(msg);
+            	
+            } else {
+            	ChatMessage msg = new ChatMessage(m_nextMessage.getText());
+            	m_chat.sendMessage(msg);
+            }
             m_nextMessage.setText("");
         }
     };

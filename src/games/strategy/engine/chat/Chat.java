@@ -77,19 +77,32 @@ public class Chat
         }
         if (destination != null)
         {
-            m_frame.addMessage("You just slapped " + playerName, m_messenger.getLocalNode().getName() );
-            m_messenger.send(new SlapMessage(), destination);
+            //m_frame.addMessage("You just slapped " + playerName, "*" /*m_messenger.getLocalNode().getName()*/ );
+        	MeMessage message=new MeMessage("just slapped " + playerName);
+            m_frame.addMessage(message,m_messenger.getLocalNode().getName());
+            m_messenger.broadcast(message);
+            //m_messenger.send(new SlapMessage(), destination);
         }
 
     }
 
     void sendMessage(ChatMessage msg)
     {
-
+        m_messenger.broadcast(msg);
+        m_frame.addMessage(msg, m_messenger.getLocalNode().getName());
+    }
+    void sendMessage(MeMessage msg)
+    {
         m_messenger.broadcast(msg);
         m_frame.addMessage(msg, m_messenger.getLocalNode().getName());
     }
 
+    public static int getTense(String msg){
+		if(msg.substring(0,3).compareToIgnoreCase("/me")==0){
+			return 1;
+		}
+		return 3;
+	}
     private synchronized void updateConnections()
     {
 
@@ -128,10 +141,11 @@ public class Chat
             {
                 m_frame.addMessage((ChatMessage) msg, from.getName());
             }
-            if(msg instanceof SlapMessage)
+            if(msg instanceof MeMessage)
             {
                 ClipPlayer.getInstance().playClip(SoundPath.LAND_BATTLE , SoundPath.class);
-                m_frame.addMessage(from.getName() + " just slapped you", from.getName());
+                //m_frame.addMessage(from.getName() + " just slapped you ", from.getName());
+                m_frame.addMessage((MeMessage) msg,from.getName());
                 
             }
         }
@@ -139,8 +153,11 @@ public class Chat
 }
 
 
-class SlapMessage implements Message
+class MeMessage extends ChatMessage
 {
-
+	MeMessage(String message)
+	{
+		super(message);
+	}
 }
 

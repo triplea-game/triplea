@@ -62,6 +62,8 @@ public class ImageScrollerLargeView extends JComponent
   final static int RIGHT = 2;
   final static int TOP = 4;
   final static int  BOTTOM = 8;
+  
+  final static int WHEEL_SCROLL_AMOUNT = 50;
 
   //how close to an edge we have to be before we scroll
   private final static int TOLERANCE = 25;
@@ -342,7 +344,13 @@ public class ImageScrollerLargeView extends JComponent
 
 			//compute the amount to move
 			int dx = 0;
-			int dy = e.getWheelRotation()*50;
+			int dy = 0;
+			
+			if ( (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) 
+					dx=e.getWheelRotation()*WHEEL_SCROLL_AMOUNT;
+				else
+					dy=e.getWheelRotation()*WHEEL_SCROLL_AMOUNT;
+
 
 			//move left and right and test for wrap
 			int newX = (m_x + dx);
