@@ -69,7 +69,7 @@ public class GameDataManager
             GameData data = (GameData) input.readObject();
 
             loadDelegates(input, data);
-            data.postSerialize();
+            data.postDeSerialize();
 
             return data;
 
