@@ -79,7 +79,7 @@ public class UnitSeperator
         categories.put(entry, entry);
       }
     }
-    return categories.keySet();
+    return new TreeSet( categories.keySet());
   }
 
 }

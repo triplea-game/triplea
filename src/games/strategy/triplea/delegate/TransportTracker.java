@@ -22,12 +22,8 @@ package games.strategy.triplea.delegate;
 
 import java.util.*;
 
-import games.strategy.util.*;
-
-import games.strategy.engine.data.*;
-
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.attatchments.UnitAttatchment;
 
 
 /**
@@ -113,18 +109,25 @@ public class TransportTracker implements java.io.Serializable
 		}
 		return returnVal;
 	}
+    /**
+     * Undo the unload
+     */
+    public void undoUnload(Unit unit, Unit transport)
+    {
+        loadTransport(transport, unit);
+        Collection unload = (Collection) m_unloaded.get(transport);
+        unload.remove(unit);
+    }
 
-	public void unload(Unit unit)
+	public void unload(Unit unit, UndoableMove undoableMove)
 	{
-		UnitAttatchment ua = UnitAttatchment.get(unit.getType());
-		int cost = ua.getTransportCost();
-
 		Unit transport = (Unit) m_transportedBy.get(unit);
 		m_transportedBy.remove(unit);
 		unload(unit, transport);
 
 		Collection carrying = (Collection) m_transporting.get(transport);
 		carrying.remove(unit);
+        undoableMove.unload(unit, transport);
 	}
 
 	private void unload(Unit unit, Unit transport)
@@ -138,14 +141,31 @@ public class TransportTracker implements java.io.Serializable
 		unload.add(unit);
 	}
 
-	public void load(Unit unit, Unit transport)
+
+    /**
+     * Undoes the load.  This is different from unload(...) which marks the unit as having been unloaded.
+     * Instead this makes it appear that the load never took place.
+     *
+     * @param unit Unit
+     * @param transport Unit
+     */
+    public void undoLoad(Unit unit, Unit transport)
+    {
+        m_transportedBy.remove(transport);
+        Collection carrying = (Collection) m_transporting.get(transport);
+        carrying.remove(unit);
+    }
+
+	public void load(Unit unit, Unit transport, UndoableMove undoableMove)
 	{
-		m_transportedBy.put(unit, transport);
+
 		loadTransport(transport, unit);
+        undoableMove.load(unit, transport);
 	}
 
 	private void loadTransport(Unit transport, Unit unit)
 	{
+        m_transportedBy.put(unit, transport);
 		Collection carrying = (Collection) m_transporting.get(transport);
 		if(carrying == null)
 		{

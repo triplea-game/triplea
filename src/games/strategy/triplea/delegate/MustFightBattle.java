@@ -45,6 +45,11 @@ import games.strategy.triplea.formatter.Formatter;
 public class MustFightBattle implements Battle, BattleStepStrings
 {
   private final Territory m_territory;
+
+  //maps Territory-> units
+  //stores a collection of who is attacking from where, needed
+  //for undoing moves
+  private Map m_attackingFromMap = new HashMap();
   private List m_attackingUnits = new LinkedList();
   private Collection m_attackingWaitingToDie = new ArrayList();
   private Set m_attackingFrom = new HashSet();
@@ -81,25 +86,69 @@ public class MustFightBattle implements Battle, BattleStepStrings
     m_defender = findDefender(battleSite);
   }
 
+  public void removeAttack(Route route, Collection units)
+  {
+      //remove all the units from this battle.
+      m_attackingUnits.removeAll(units);
+      Territory attackingFrom = getAttackFrom(route);
+
+      Collection attackingFromMapUnits = (Collection) m_attackingFromMap.get(attackingFrom);
+      attackingFromMapUnits.removeAll(units);
+      if(attackingFromMapUnits.isEmpty())
+      {
+          m_attackingFrom.remove(attackingFrom);
+      }
+
+      //deal with amphibious assaults
+      if(attackingFrom.isWater())
+      {
+          //if none of the units is a land unit, the attack from
+          //that territory is no longer an amphibious assault
+          if (Match.noneMatch(attackingFromMapUnits,  Matches.UnitIsLand))
+          {
+              m_amphibiousAttackFrom.remove(attackingFrom);
+              //do we have any amphibious attacks left?
+              m_amphibious = !m_amphibiousAttackFrom.isEmpty();
+          }
+      }
+
+      Iterator transports = m_dependentUnits.keySet().iterator();
+      while (transports.hasNext()) {
+          Object transport = transports.next();
+          Collection dependent = (Collection) m_dependentUnits.get(transport);
+          dependent.removeAll(units);
+
+      }
+
+  }
+
+
+  public boolean isEmpty()
+  {
+      return m_attackingUnits.isEmpty();
+  }
+
   public void addAttack(Route route, Collection units)
   {
-    int routeSize = route.getLength();
-    Territory attackFrom;
-    if(routeSize == 1)
-      attackFrom = route.getStart();
-    else
-      attackFrom = route.at(routeSize - 2);
-
-    m_attackingFrom.add(attackFrom);
-
+    Territory attackingFrom = getAttackFrom(route);
+    m_attackingFrom.add(attackingFrom);
     m_attackingUnits.addAll(units);
+
+    if(m_attackingFromMap.get(attackingFrom) == null)
+    {
+        m_attackingFromMap.put(attackingFrom, new ArrayList());
+    }
+    {
+        Collection attackingFromMapUnits = (Collection) m_attackingFromMap.get(attackingFrom);
+        attackingFromMapUnits.addAll(units);
+    }
 
     //are we amphibious
     if(route.getStart().isWater() &&
        !route.getEnd().isWater() &&
        Match.someMatch(units, Matches.UnitIsLand))
     {
-      m_amphibiousAttackFrom.add(attackFrom);
+      m_amphibiousAttackFrom.add(getAttackFrom(route));
       m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
       m_amphibious = true;
     }
@@ -121,6 +170,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
       else
         m_dependentUnits.put(transport, transporting);
     }
+  }
+
+  private Territory getAttackFrom(Route route)
+  {
+      int routeSize = route.getLength();
+      Territory attackFrom;
+      if (routeSize == 1)
+          attackFrom = route.getStart();
+      else
+          attackFrom = route.at(routeSize - 2);
+      return attackFrom;
   }
 
   private String getBattleTitle()

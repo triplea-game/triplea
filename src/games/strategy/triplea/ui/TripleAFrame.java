@@ -157,6 +157,8 @@ public class TripleAFrame extends JFrame
     mainPanel.add(rightHandSide, BorderLayout.EAST);
 
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
+
+
   }
 
   private void shutdown()

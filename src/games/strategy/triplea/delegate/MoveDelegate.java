@@ -34,9 +34,6 @@ import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
 import java.io.*;
-import games.strategy.engine.framework.*;
-
-
 
 /**
  *
@@ -126,7 +123,7 @@ public class MoveDelegate implements SaveableDelegate
           int capacity = m_transportTracker.getAvailableCapacity(transport);
           if(capacity >= cost)
           {
-            m_transportTracker.load(toLoad, transport);
+            m_transportTracker.load(toLoad, transport, m_currentMove);
             found = true;
             break;
           }
@@ -188,7 +185,7 @@ public class MoveDelegate implements SaveableDelegate
     else if(aMessage instanceof MustMoveWithQuery)
       return mustMoveWith((MustMoveWithQuery) aMessage);
     else if(aMessage instanceof UndoMoveMessage)
-      return undoMove();
+      return undoMove((UndoMoveMessage) aMessage);
     else if (aMessage instanceof MoveCountRequestMessage)
         return getMoveCount();
     else
@@ -210,16 +207,20 @@ public class MoveDelegate implements SaveableDelegate
 
   }
 
-  private StringMessage undoMove()
+  private StringMessage undoMove(UndoMoveMessage message)
   {
     if(m_movesToUndo.isEmpty())
         return new StringMessage("No moves to undo", true);
-    UndoableMove lastMove = (UndoableMove) m_movesToUndo.get(m_movesToUndo.size() -1);
-    if( !lastMove.getcanUndo())
-        return new StringMessage("Move cannot be undone:" + lastMove.getReasonCantUndo(), true);
+    if(message.getIndex() >= m_movesToUndo.size())
+        return new StringMessage("Undo move index out of range", true);
 
-    lastMove.undo(m_data, m_bridge);
-    m_movesToUndo.remove(m_movesToUndo.size() -1);
+    UndoableMove moveToUndo = (UndoableMove) m_movesToUndo.get(message.getIndex());
+
+    if( !moveToUndo.getcanUndo())
+        return new StringMessage("Move cannot be undone:" + moveToUndo.getReasonCantUndo(), true);
+
+    moveToUndo.undo(m_data, m_bridge, m_alreadyMoved, DelegateFinder.battleDelegate(m_data).getBattleTracker(), m_transportTracker);
+    m_movesToUndo.remove(message.getIndex());
 
     return null;
   }
@@ -246,8 +247,6 @@ public class MoveDelegate implements SaveableDelegate
   private Map mustMoveWith(Collection units, Territory start)
   {
     List sortedUnits = new ArrayList(units);
-
-
 
     Collections.sort(sortedUnits, increasingMovement);
 
@@ -360,10 +359,11 @@ public class MoveDelegate implements SaveableDelegate
     if(error != null)
       return new StringMessage(error, true);
     //do the move
-    m_currentMove = new UndoableMove(m_data);
+    m_currentMove = new UndoableMove(m_data, m_alreadyMoved, units, route);
     StringMessage rVal = moveUnits(units, route, id);
     if(!rVal.isError())
     {
+      m_currentMove.markEndMovement(m_alreadyMoved);
       m_movesToUndo.add(m_currentMove);
     }
     m_currentMove = null;
@@ -581,7 +581,6 @@ public class MoveDelegate implements SaveableDelegate
     {
       //TODO
       //dont move if some were conquered
-      BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
 
       for(int i = 0; i < route.getLength(); i++)
       {
@@ -954,7 +953,7 @@ public class MoveDelegate implements SaveableDelegate
       while(unitIter.hasNext())
       {
         Unit load = (Unit) unitIter.next();
-        m_transportTracker.unload(load);
+        m_transportTracker.unload(load, m_currentMove);
       }
     }
 
@@ -968,7 +967,7 @@ public class MoveDelegate implements SaveableDelegate
 
         Unit load = (Unit) units.next();
         Unit transport = (Unit) transporting.get(load);
-        m_transportTracker.load(load, transport);
+        m_transportTracker.load(load, transport, m_currentMove);
       }
     }
   }
@@ -1367,10 +1366,18 @@ class MoveState implements Serializable
 
 class UndoableMove implements Serializable
 {
-  byte[] m_data;  //the serialized state of the battle and move delegates
   private CompositeChange m_undoChange = new CompositeChange();
   private String m_reasonCantUndo;
   private String m_description;
+  private IntegerMap m_changedMovement;
+  private IntegerMap m_startingMovement; //needed so we can calculate the change when done
+  //maps unit -> transport, both of type Unit
+  private Map m_loaded;
+  //maps unit -> transport, both of type Unit
+  private Map m_unloaded;
+
+  private final Route m_route;
+  private final Collection m_units;
 
   public boolean getcanUndo()
   {
@@ -1402,59 +1409,74 @@ class UndoableMove implements Serializable
     m_description = description;
   }
 
-  public UndoableMove(GameData data)
+  public UndoableMove(GameData data, IntegerMap startMovement, Collection units, Route route)
   {
-    try
-    {
-        //capture the save state of the move and save delegates
-        GameObjectStreamFactory factory = new GameObjectStreamFactory(data);
-
-        ByteArrayOutputStream sink = new ByteArrayOutputStream(2000);
-        ObjectOutputStream out = factory.create(sink);
-
-        out.writeObject(DelegateFinder.moveDelegate(data).saveState(false));
-        out.writeObject(DelegateFinder.battleDelegate(data).saveState());
-        out.flush();
-        out.close();
-
-        m_data = sink.toByteArray();
-    }
-    catch (IOException ex)
-    {
-      ex.printStackTrace();
-      throw new IllegalStateException(ex.getMessage());
-    }
+      m_startingMovement = startMovement.copy();
+      m_route = route;
+      m_units = units;
   }
 
-  public void undo(GameData data, DelegateBridge bridge)
+  public void load(Unit unit, Unit transport)
   {
+      if(m_loaded == null)
+          m_loaded = new HashMap();
+      m_loaded.put(unit, transport);
+  }
 
-      try
+  public void unload(Unit unit, Unit transport)
+  {
+      if(m_unloaded == null)
+          m_unloaded = new HashMap();
+      m_unloaded.put(unit, transport);
+  }
+
+
+
+  public void markEndMovement(IntegerMap endMovement)
+  {
+      //start - change
+      m_changedMovement = m_startingMovement.copy();
+      m_changedMovement.subtract(endMovement);
+      //we dont need this any more
+      m_startingMovement = null;
+
+  }
+
+
+
+  public void undo(GameData data, DelegateBridge bridge, IntegerMap movement, BattleTracker battleTracker, TransportTracker transportTracker)
+  {
+      //undo any changes to the game data
+      bridge.addChange(m_undoChange.invert());
+
+      bridge.getTranscript().write(bridge.getPlayerID().getName() +
+                                   " undoes his last move.");
+      movement.add(m_changedMovement);
+      if(m_loaded != null)
       {
-          GameObjectStreamFactory factory = new GameObjectStreamFactory(data);
-          ObjectInputStream in = factory.create(new ByteArrayInputStream(
-              m_data));
-          MoveState moveState = (MoveState) in.readObject();
-          BattleState battleState = (BattleState) in.readObject();
+          Iterator loaded = m_loaded.keySet().iterator();
+          while (loaded.hasNext())
+          {
+              Unit unit = (Unit) loaded.next();
+              Unit transport = (Unit) m_loaded.get(unit);
+              transportTracker.undoLoad(unit, transport);
 
-          DelegateFinder.moveDelegate(data).loadState(moveState);
-          DelegateFinder.battleDelegate(data).loadState(battleState);
+          }
+      }
 
-          //undo any changes to the game data
-          bridge.addChange(m_undoChange.invert());
+      if(m_unloaded != null)
+      {
+          Iterator unloaded = m_unloaded.keySet().iterator();
+          while (unloaded.hasNext())
+          {
+              Unit unit = (Unit) unloaded.next();
+              Unit transport = (Unit) m_unloaded.get(unit);
+              transportTracker.undoUnload(unit, transport);
 
-          bridge.getTranscript().write(bridge.getPlayerID().getName() +  " undoes his last move.");
+          }
 
       }
-      catch (ClassNotFoundException ex)
-      {
-        ex.printStackTrace();
-      }
-      catch (IOException ex)
-      {
-        ex.printStackTrace();
-      }
-
+      battleTracker.undoBattle(m_route, m_units);
   }
 
 }

@@ -55,11 +55,11 @@ public class TerritoryDetailPanel extends JPanel
 
         add(new JLabel(territory.getName()));
         Set units = UnitSeperator.categorize(territory.getUnits().getUnits());
-        Iterator iter = (new TreeSet(units)).iterator();
+        Iterator iter = units.iterator();
         PlayerID currentPlayer = null;
         while (iter.hasNext())
         {
-          //seperate players
+          //seperate players with a seperator
           UnitCategory item = (UnitCategory) iter.next();
           if(item.getOwner() != currentPlayer)
           {

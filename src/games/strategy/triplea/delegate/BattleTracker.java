@@ -108,7 +108,37 @@ public class BattleTracker implements java.io.Serializable
     return m_foughBattles.contains(t);
   }
 
-  void addBattle(Route route, Collection units,TransportTracker tracker,  boolean bombing, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
+  public void undoBattle(Route route, Collection units)
+  {
+      Iterator iter = new ArrayList(m_pendingBattles).iterator();
+      while (iter.hasNext())
+      {
+          Battle battle = (Battle)iter.next();
+          if(battle.getTerritory().equals(route.getEnd()))
+          {
+              battle.removeAttack(route, units);
+              if(battle.isEmpty())
+              {
+                  removeBattleForUndo(battle);
+              }
+          }
+      }
+  }
+
+  private void removeBattleForUndo(Battle battle)
+  {
+      m_pendingBattles.remove(battle);
+      Iterator blocked = getBlocked(battle).iterator();
+      while (blocked.hasNext())
+      {
+          Battle current = (Battle) blocked.next();
+          removeDependency(current, battle);
+      }
+
+  }
+
+
+  public void addBattle(Route route, Collection units,TransportTracker tracker,  boolean bombing, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
   {
     if(bombing)
       addBombingBattle(route, units, id, data);
@@ -443,10 +473,6 @@ public class BattleTracker implements java.io.Serializable
     }
   }
 
-  private Collection getDependentBattles()
-  {
-    return m_dependencies.keySet();
-  }
 
   public void removeBattle(Battle battle)
   {

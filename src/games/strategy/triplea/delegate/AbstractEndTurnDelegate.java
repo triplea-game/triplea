@@ -25,7 +25,6 @@ import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
-import games.strategy.engine.transcript.*;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
@@ -62,7 +61,7 @@ public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Seria
 		PlayerID player = aBridge.getPlayerID();
 
 		//cant collect unless you own your own capital
-		Territory capital = getCapital(player);
+		Territory capital = TerritoryAttatchment.getCapital(player, m_data);
 		if(!capital.getOwner().equals(player))
 			return;
 
@@ -109,25 +108,6 @@ public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Seria
 		return m_displayName;
 	}
 
-	protected Territory getCapital(PlayerID player)
-	{
-		Iterator iter = m_data.getMap().getTerritories().iterator();
-		while(iter.hasNext())
-		{
-			Territory current = (Territory) iter.next();
-			TerritoryAttatchment ta = TerritoryAttatchment.get(current);
-			if(ta.getCapital() != null)
-			{
-				PlayerID whoseCapital = m_data.getPlayerList().getPlayerID(ta.getCapital());
-				if(whoseCapital == null)
-					throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
-
-				if(player.equals(whoseCapital))
-					return current;
-			}
-		}
-		throw new IllegalStateException("Capital not found for:" + player);
-	}
 
 	/**
 	 * A message from the given player.

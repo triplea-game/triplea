@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * IntegerMap.java
  *
  * Created on November 7, 2001, 1:26 PM
@@ -20,16 +34,18 @@ import java.io.Serializable;
  */
 public class IntegerMap implements Cloneable, Serializable
 {
-	private static final Integer INT_NEG_1 = new Integer(-1);
-	private static final Integer INT_0 = new Integer(0);
-	private static final Integer INT_1 = new Integer(1);
-	private static final Integer INT_2 = new Integer(2);
-	private static final Integer INT_3 = new Integer(3);
-	
+    private static final Integer INT_NEG_3 = new Integer( -3);
+    private static final Integer INT_NEG_2 = new Integer( -2);
+    private static final Integer INT_NEG_1 = new Integer( -1);
+    private static final Integer INT_0 = new Integer(0);
+    private static final Integer INT_1 = new Integer(1);
+    private static final Integer INT_2 = new Integer(2);
+    private static final Integer INT_3 = new Integer(3);
+
 	private static final long serialVersionUID = -1791355374359884955L;
-	
+
 	private Map m_values = new HashMap();
-	
+
 	/**
 	 * To avoid creating objects, recycle some common values.
 	 */
@@ -37,31 +53,33 @@ public class IntegerMap implements Cloneable, Serializable
 	{
 		switch( i)
 		{
-			case -1 : return INT_NEG_1; 
-			case 0 : return INT_0; 
-			case 1 : return INT_1; 
-			case 2 : return INT_2; 
-			case 3 : return INT_3; 
+			case -3 : return INT_NEG_3;
+			case -2 : return INT_NEG_2;
+			case -1 : return INT_NEG_1;
+			case 0 : return INT_0;
+			case 1 : return INT_1;
+			case 2 : return INT_2;
+			case 3 : return INT_3;
 			default : return new Integer(i);
 		}
 	}
-	
+
 	/** Creates new IntegerMap */
-    public IntegerMap() 
+    public IntegerMap()
 	{
     }
-	
+
 	public void put(Object key, Integer value)
 	{
 		m_values.put(key, value);
 	}
-	
+
 	public void put(Object key, int value)
 	{
 		Integer obj = getInteger(value);
 		m_values.put(key, obj);
 	}
-	
+
 	/**
 	 * returns 0 if no key found.
 	 */
@@ -72,13 +90,13 @@ public class IntegerMap implements Cloneable, Serializable
 			return 0;
 		return val.intValue();
 	}
-	
-	
+
+
 	public void add(Object key, Integer value)
-	{	
+	{
 		add(key, value.intValue());
 	}
-	
+
 	public void add(Object key, int value)
 	{
 		if(m_values.get(key) == null)
@@ -95,12 +113,12 @@ public class IntegerMap implements Cloneable, Serializable
 	{
 		m_values.clear();
 	}
-		
+
 	public Set keySet()
 	{
 		return m_values.keySet();
 	}
-	
+
 	/**
 	 * @return the sum of all keys.
 	 */
@@ -116,7 +134,7 @@ public class IntegerMap implements Cloneable, Serializable
 		}
 		return sum;
 	}
-	
+
 	public void add(IntegerMap map)
 	{
 		Iterator iter = map.keySet().iterator();
@@ -126,7 +144,7 @@ public class IntegerMap implements Cloneable, Serializable
 			add(key, map.getInt(key) );
 		}
 	}
-	
+
 	public void subtract(IntegerMap map)
 	{
 		Iterator iter = map.keySet().iterator();
@@ -138,10 +156,10 @@ public class IntegerMap implements Cloneable, Serializable
 	}
 
 	/**
-	 * By >= we mean that each of our entries is greater 
+	 * By >= we mean that each of our entries is greater
 	 * than or equal to each entry in the other map.  We do not take into
 	 * account entries that are in the second map but not in ours. <br>
-	 * It is possible that for two maps a and b 
+	 * It is possible that for two maps a and b
 	 * a.greaterThanOrEqualTo(b) is false, and b.greaterThanOrEqualTo(a) is false, and
 	 * that a and b are not equal.
 	 */
@@ -156,7 +174,7 @@ public class IntegerMap implements Cloneable, Serializable
 		}
 		return true;
 	}
-	
+
 	/**
 	 * True if all values are >= 0.
 	 */
@@ -171,14 +189,14 @@ public class IntegerMap implements Cloneable, Serializable
 		}
 		return true;
 	}
-	
+
 	public IntegerMap copy()
 	{
 		IntegerMap copy = new IntegerMap();
 		copy.add(this);
 		return copy;
 	}
-	
+
 	public Object clone()
 	{
 		return copy();
@@ -196,7 +214,7 @@ public class IntegerMap implements Cloneable, Serializable
 			add(key, map.getInt(key) * multiple);
 		}
 	}
-	
+
 	public boolean someKeysMatch(Match matcher)
 	{
 		Iterator iter = m_values.keySet().iterator();
@@ -208,7 +226,7 @@ public class IntegerMap implements Cloneable, Serializable
 		}
 		return false;
 	}
-	
+
 	public boolean allKeysMatch(Match matcher)
 	{
 		Iterator iter = m_values.keySet().iterator();
@@ -220,7 +238,7 @@ public class IntegerMap implements Cloneable, Serializable
 		}
 		return true;
 	}
-	
+
 	public Collection getKeyMatches(Match matcher)
 	{
 		Collection values = new ArrayList();
@@ -233,7 +251,7 @@ public class IntegerMap implements Cloneable, Serializable
 		}
 		return values;
 	}
-	
+
 	public int sumMatches(Match matcher)
 	{
 		int sum = 0;
@@ -246,24 +264,24 @@ public class IntegerMap implements Cloneable, Serializable
 		}
 		return sum;
 	}
-	
+
 	public void removeNonMatchingKeys(Match aMatch)
 	{
 		Match match = new InverseMatch(aMatch);
 		removeMatchingKeys(match);
 	}
-	
+
 	public void removeMatchingKeys(Match aMatch)
 	{
 		Collection badKeys = getKeyMatches(aMatch);
 		removeKeys(badKeys);
 	}
-	
+
 	public void removeKey(Object key)
 	{
 		m_values.remove(key);
 	}
-	
+
 	private void removeKeys(Collection keys)
 	{
 		Iterator iter = keys.iterator();
@@ -273,7 +291,7 @@ public class IntegerMap implements Cloneable, Serializable
 			removeKey(key);
 		}
 	}
-	
+
 	public String toString()
 	{
 		StringBuffer buf = new StringBuffer();

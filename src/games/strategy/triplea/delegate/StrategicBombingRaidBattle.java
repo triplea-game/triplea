@@ -58,7 +58,17 @@ public class StrategicBombingRaidBattle implements Battle
     m_attacker = attacker;
     m_defender = defender;
     m_tracker = tracker;
-    }
+  }
+
+  public boolean isEmpty()
+  {
+      return m_units.isEmpty();
+  }
+
+  public void removeAttack(Route route, Collection units)
+  {
+      m_units.removeAll(units);
+  }
 
   public void addAttack(Route route, Collection units)
   {
@@ -67,7 +77,6 @@ public class StrategicBombingRaidBattle implements Battle
 
     m_units.addAll(units);
 
-    //TODO, add dependencies in case of land attack in same territory
   }
 
   public void fight(DelegateBridge bridge)

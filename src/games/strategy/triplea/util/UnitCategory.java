@@ -20,6 +20,7 @@ package games.strategy.triplea.util;
 import java.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
+import games.strategy.triplea.attatchments.*;
 
 public class UnitCategory implements Comparable
 {
@@ -87,7 +88,7 @@ public class UnitCategory implements Comparable
 
    public String toString()
    {
-     return "Entry type:" + m_type.getName() + " dependenents:" + m_dependents;
+     return "Entry type:" + m_type.getName() + " owner:" + m_owner + " dependenents:" + m_dependents;
    }
 
    /**
@@ -125,14 +126,28 @@ public class UnitCategory implements Comparable
 
    public int compareTo(Object o)
    {
-     if(o == null)
-       return -1;
 
-     UnitCategory other = (UnitCategory) o;
-     if(!other.m_owner.equals(this.m_owner))
-       return other.m_owner.getName().compareTo(this.m_owner.getName());
+       if (o == null)
+           return -1;
 
-     return other.getType().getName().compareTo(this.getType().getName());
+       UnitCategory other = (UnitCategory) o;
+
+       if (!other.m_owner.equals(this.m_owner))
+           return this.m_owner.getName().compareTo(other.m_owner.getName());
+
+       int typeCompare = new UnitTypeComparator().compare(this.getType(),
+           other.getType());
+       if (typeCompare != 0)
+           return typeCompare;
+
+       if (m_movement != other.m_movement)
+           return m_movement - other.m_movement;
+
+       if (!Util.equals(this.m_dependents, other.m_dependents))
+       {
+           return m_dependents.toString().compareTo(other.m_dependents.
+               toString());
+       }
+       return 0;
    }
 }
-

@@ -44,7 +44,6 @@ public class NonFightingBattle implements Battle
 	private Territory m_battleSite;
 	private PlayerID m_attacker;
 	private BattleTracker m_battleTracker;
-	private boolean m_neutral;
 	private GameData m_data;
 	private TransportTracker m_transportTracker;
 
@@ -59,7 +58,6 @@ public class NonFightingBattle implements Battle
 		m_battleTracker = battleTracker;
 		m_attacker = attacker;
 		m_battleSite = battleSite;
-		m_neutral = neutral;
 		m_data = data;
 		m_transportTracker = transportTracker;
 	}
@@ -70,10 +68,8 @@ public class NonFightingBattle implements Battle
 			throw new IllegalStateException("Must fight battles that this battle depends on first");
 
 		//if any attacking non air units then win
-		CompositeMatch attackingLand = new CompositeMatchAnd();
-		attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
-		attackingLand.add(Matches.UnitIsLand);
-		if( m_battleSite.getUnits().someMatch(attackingLand))
+		boolean someAttacking = hasAttackingUnits();
+		if( someAttacking)
 		{
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, m_data, null);
 			m_battleTracker.addToConquered(m_battleSite);
@@ -81,10 +77,35 @@ public class NonFightingBattle implements Battle
 		m_battleTracker.removeBattle(this);
 	}
 
+    private boolean hasAttackingUnits()
+    {
+        CompositeMatch attackingLand = new CompositeMatchAnd();
+              attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
+              attackingLand.add(Matches.UnitIsLand);
+              boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
+        return someAttacking;
+    }
+
 	public boolean isBombingRun()
 	{
 		return false;
 	}
+
+    public void removeAttack(Route route, Collection units)
+    {
+        Iterator dependents = m_dependentUnits.keySet().iterator();
+        while(dependents.hasNext())
+        {
+            Unit dependence = (Unit) dependents.next();
+            Collection dependent = (Collection) m_dependentUnits.get(dependence);
+            dependent.removeAll(units);
+        }
+    }
+
+    public boolean isEmpty()
+    {
+        return !hasAttackingUnits();
+    }
 
 	public void addAttack(Route route, Collection units)
 	{

@@ -32,6 +32,7 @@ import games.strategy.engine.data.events.*;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.attatchments.*;
 
 /**
  *
@@ -57,6 +58,8 @@ public class TechPanel extends ActionPanel
     add(m_actionLabel);
     add(new JButton(GetTechRollsAction));
     add(new JButton(DontBother));
+
+    getMap().centerOn(TerritoryAttatchment.getCapital(id, getData()));
 
   }
 

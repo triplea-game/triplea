@@ -54,11 +54,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 
 		// Quick check to see who still owns their own capital
-		boolean russia = getCapital(russians).getOwner().equals(russians);
-		boolean germany = getCapital(germans).getOwner().equals(germans);
-		boolean britain = getCapital(british).getOwner().equals(british);
-		boolean japan = getCapital(japanese).getOwner().equals(japanese);
-		boolean america = getCapital(americans).getOwner().equals(americans);
+		boolean russia = TerritoryAttatchment.getCapital(russians, m_data).getOwner().equals(russians);
+		boolean germany = TerritoryAttatchment.getCapital(germans, m_data).getOwner().equals(germans);
+		boolean britain = TerritoryAttatchment.getCapital(british, m_data).getOwner().equals(british);
+		boolean japan = TerritoryAttatchment.getCapital(japanese, m_data).getOwner().equals(japanese);
+		boolean america = TerritoryAttatchment.getCapital(americans, m_data).getOwner().equals(americans);
 
 		int count = 0;
 		if (!russia) count++;

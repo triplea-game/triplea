@@ -5,6 +5,7 @@ import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.transcript.*;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.*;
 
 
 
@@ -30,8 +31,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
 
 		// Quick check to see who still owns their own capital
-		boolean britain = getCapital(british).getOwner().equals(british);
-		boolean japan = getCapital(japanese).getOwner().equals(japanese);
+		boolean britain = TerritoryAttatchment.getCapital(british, m_data).getOwner().equals(british);
+		boolean japan = TerritoryAttatchment.getCapital(japanese, m_data).getOwner().equals(japanese);
 
 		if(!m_gameOver)
 		{

@@ -233,6 +233,11 @@ public class UnitAttatchment extends DefaultAttatchment
     return m_attack;
   }
 
+  int getRawAttack()
+  {
+      return m_attack;
+  }
+
   public void setDefense(String s)
   {
     m_defense = getInt(s);
@@ -336,4 +341,5 @@ public class UnitAttatchment extends DefaultAttatchment
     " transportCapacity:" +m_transportCapacity +
     " transportCost:" +m_transportCost;
   }
+
 }

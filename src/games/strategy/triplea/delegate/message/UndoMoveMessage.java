@@ -20,6 +20,18 @@ import games.strategy.engine.message.*;
 
 public class UndoMoveMessage implements Message
 {
+    private final int m_undoIndex ;
 
+    public UndoMoveMessage(int index)
+    {
+        if(index < 0)
+            throw new IllegalArgumentException("Index must be positive");
+        m_undoIndex = index;
+    }
+
+    public int getIndex()
+    {
+        return m_undoIndex;
+    }
 
 }

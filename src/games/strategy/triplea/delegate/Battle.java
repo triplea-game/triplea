@@ -48,4 +48,14 @@ interface Battle extends java.io.Serializable
 
 	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge);
 
+    /**
+     *  This occurs when a move has been undone
+     */
+    public void removeAttack(Route route, Collection units);
+
+    /**
+     * After an attack has been removed, you can use this to test if
+    * there are still units left to fight
+     */
+    public boolean isEmpty();
 }

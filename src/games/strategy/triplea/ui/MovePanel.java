@@ -159,7 +159,7 @@ public class MovePanel extends ActionPanel
         public void actionPerformed(ActionEvent e)
         {
             StringMessage results = (StringMessage) m_bridge.sendMessage(new
-                UndoMoveMessage());
+                UndoMoveMessage(0));
             if (results != null && results.isError())
             {
                 JOptionPane.showMessageDialog(getTopLevelAncestor(),
@@ -328,16 +328,6 @@ public class MovePanel extends ActionPanel
         getMap().setRoute(route);
     }
 
-    private void append(Route route, StringBuffer buf)
-    {
-        for (int i = 0; i < route.getLength(); i++)
-        {
-            buf.append(route.at(i));
-            if (i + 1 < route.getLength())
-                buf.append("->");
-            buf.append("\n");
-        }
-    }
 
     private final Action SHOW_MOVES_ACTION = new AbstractAction("Show Moves...")
     {
@@ -448,7 +438,6 @@ public class MovePanel extends ActionPanel
         {
             if (m_firstSelectedTerritory != null && territory != null)
             {
-
                 updateRoute(getRoute(m_firstSelectedTerritory, territory));
             }
         }
