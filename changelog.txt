@@ -1,3 +1,5 @@
+* fixed bug [ 1175467 ] game "stuck" when doing multiple battles with same units (sgb)
+
 * fixed bug [ 1171596 ] Rocket Tech bug v0.5.2.2, we now always ask what territory to attack with rockets, even if there is only one choice, this allows the user to decline a rocket attack (sgb)
 
 * during battles the dice are sorted according to unit type so that when you review the dice rolls, you can tell what unit rolled for which dice
