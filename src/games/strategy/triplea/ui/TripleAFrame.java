@@ -497,7 +497,7 @@ public class TripleAFrame extends JFrame
         // Create A String array of compatible MapDirs
 
         final String currentMapSubDir = TerritoryImageFactory.getMapDir();
-        final File mapsDir = new File(System.getProperties().getProperty("user.dir") + java.io.File.separator + "classes" + Constants.MAP_SKINS_DIR);
+        final File mapsDir = new File(GameRunner.getRootFolder() + java.io.File.separator + "classes" + Constants.MAP_SKINS_DIR);
 
         if (currentMapSubDir != null)
         {
