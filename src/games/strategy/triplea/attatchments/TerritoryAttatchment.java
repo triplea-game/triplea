@@ -70,12 +70,23 @@ public class TerritoryAttatchment extends DefaultAttatchment
 	private boolean m_originalFactory = false;
 	private int m_production = 2;
 	private boolean m_isVictoryCity = false;
+	private boolean m_isImpassible = false;
 	
 
   /** Creates new TerritoryAttatchment */
   public TerritoryAttatchment()
   {
   }
+
+	public void setIsImpassible(String value)
+	{
+		m_isImpassible = getBool(value);
+	}
+
+	public boolean isImpassible()
+	{
+		return m_isImpassible;
+	}
 
 	public void setCapital(String value)
 	{

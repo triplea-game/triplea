@@ -178,8 +178,16 @@ class LandTerritoryDrawable implements Drawable
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
         Territory territory = data.getMap().getTerritory(m_territoryName);
+        Color territoryColor;
 
-        Color playerColor = mapData.getPlayerColor(territory.getOwner().getName()); 
+        if (TerritoryAttatchment.get(territory).isImpassible())
+        {
+          territoryColor = mapData.impassibleColor();
+        }
+        else
+        {
+          territoryColor = mapData.getPlayerColor(territory.getOwner().getName()); 
+        }
 
         List polys = MapData.getInstance().getPolygons(territory);
         
@@ -191,7 +199,7 @@ class LandTerritoryDrawable implements Drawable
             polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
 
             polygon.translate(-bounds.x, -bounds.y);
-            graphics.setColor(playerColor);
+            graphics.setColor(territoryColor);
             graphics.fillPolygon(polygon);
             graphics.setColor(Color.BLACK);
             graphics.drawPolygon(polygon);

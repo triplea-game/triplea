@@ -38,6 +38,8 @@ public class MapData
     private static final String POLYGON_FILE = "polygons.txt";
     private static final String PLACEMENT_FILE = "place.txt";
     private static final String MAP_PROPERTIES = "map.properties";
+    private static final String IMPASSIBLE = "Impassible";
+
 
     //default colour if none is defined.
     private final List m_defaultColours = new ArrayList(Arrays.asList(new Color[]
@@ -219,6 +221,15 @@ public class MapData
             
     }
     
+    /**
+     * returns the color for impassible territories
+     */
+    public Color impassibleColor()
+    {
+        // just use getPlayerColor, since it parses the properties 
+        return getPlayerColor(IMPASSIBLE);
+    }
+
     /**
      * 
      * @return a Set of territory names as Strings. generally this shouldnt be

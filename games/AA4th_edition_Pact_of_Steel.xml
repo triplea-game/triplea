@@ -1063,6 +1063,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Turkey" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Belgian Congo" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1089,10 +1090,12 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Afghanistan" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Philipine Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1109,10 +1112,12 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Eire" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Mozambique" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Italian East Africa" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1161,10 +1166,12 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Saudia Arabia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Switzerland" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Norway" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1185,6 +1192,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Venezuala" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Trans-Jordan" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1203,10 +1211,12 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Rio De Oro" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Angloa" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="New Zealand" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1215,6 +1225,7 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Sahara" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="French Equatorial Africa" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1251,6 +1262,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Himilaya" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Evanki National Okrug" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1259,6 +1271,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Libya" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1271,6 +1284,7 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Mongolia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="West Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1279,6 +1293,7 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Peru" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <!-- American Capital -->
@@ -1327,6 +1342,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Argentina" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="China" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">

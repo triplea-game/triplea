@@ -63,6 +63,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     //The current move
     private UndoableMove m_currentMove;
 
+    private static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
     private static final String CANT_VIOLATE_NEUTRALITY = "Can't violate neutrality";
     private static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
 
@@ -425,9 +426,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         int resources = player.getResources().getQuantity(Constants.IPCS);
         if (resources - cost < 0)
         {
-            if (isFourEdition())
-                return CANT_VIOLATE_NEUTRALITY;
-            else
                 return TOO_POOR_TO_VIOLATE_NEUTRALITY;
         }
 
@@ -457,6 +455,11 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private String validateNonCombat(Collection units, Route route, PlayerID player)
     {
 
+        if (route.someMatch(Matches.TerritoryIsImpassible))
+        {
+          return CANT_MOVE_THROUGH_IMPASSIBLE;
+        }
+
         CompositeMatch battle = new CompositeMatchOr();
         battle.add(Matches.TerritoryIsNuetral);
         battle.add(Matches.isTerritoryEnemy(player, m_data));
@@ -481,13 +484,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         {
             if (route.someMatch(Matches.TerritoryIsNuetral))
             {
-                if (isFourEdition())
-                {
-                    return CANT_VIOLATE_NEUTRALITY;
-                } else
-                {
                     return "Air units cannot fly over neutral territories in non combat";
-                }
             }
         } else
         {
@@ -655,6 +652,12 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             return "Only 1 AA gun allowed in a territory";
         }
 
+        // don't allow move through impassible territories
+        if (route.someMatch(Matches.TerritoryIsImpassible))
+        {
+          return CANT_MOVE_THROUGH_IMPASSIBLE;
+        }
+
         String errorMsg = canCrossNeutralTerritory(route, player);
         if (errorMsg != null)
         {
@@ -739,10 +742,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //neutrals we will overfly in the first place
         Collection neutrals = getEmptyNeutral(route);
         int ipcs = player.getResources().getQuantity(Constants.IPCS);
-        if (isFourEdition() && (neutrals.size() > 0))
-        {
-            return CANT_VIOLATE_NEUTRALITY;
-        }
+
         if (ipcs < getNeutralCharge(neutrals.size()))
         {
             return TOO_POOR_TO_VIOLATE_NEUTRALITY;

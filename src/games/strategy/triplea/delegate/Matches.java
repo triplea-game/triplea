@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.util.*;
 
 /**
@@ -429,6 +430,22 @@ public class Matches
 			if(t.isWater() )
 				return false;
 			return t.getOwner().equals(PlayerID.NULL_PLAYERID);
+		}
+	};
+
+	public static final Match TerritoryIsImpassible = new Match()
+	{
+		public boolean match(Object o)
+		{
+			Territory t = (Territory) o;
+			if (t.isWater())
+            {
+              return false;
+            }
+            else
+            {
+			  return TerritoryAttatchment.get(t).isImpassible();
+            }
 		}
 	};
 

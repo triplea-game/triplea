@@ -2075,6 +2075,7 @@
 
                     <attatchment name="territoryAttatchment" attatchTo="Afghanistan" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Newfoundland" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2103,6 +2104,7 @@
 
                     <attatchment name="territoryAttatchment" attatchTo="Kashmir" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Northern Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2200,6 +2202,7 @@
 
                     <attatchment name="territoryAttatchment" attatchTo="Himalaya-Tibet" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Baffin Island" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2285,6 +2288,7 @@
 
                     <attatchment name="territoryAttatchment" attatchTo="Sahara" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Novo-Sibirsk" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2430,6 +2434,7 @@
 
                     <attatchment name="territoryAttatchment" attatchTo="Siberia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Southern Siberia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -2442,6 +2447,7 @@
 
                     <attatchment name="territoryAttatchment" attatchTo="Mongolia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="0"/>
+                        <option name="isImpassible" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Arabian Peninsula" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -3139,7 +3145,7 @@
                         <boolean/>
                 </property>
                 
-                <property name="neutralCharge" value="9999999"/>
+                <property name="neutralCharge" value="25"/>
                 
                 <property name="maxFactoriesPerTerritory" value="1"/>
 		
