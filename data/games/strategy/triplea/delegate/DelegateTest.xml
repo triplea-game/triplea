@@ -583,7 +583,6 @@
 			<frontierRules name="buyTransport"/>
 			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyBattleship"/>
-			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyAAGun"/>
 			<frontierRules name="buyFactory"/>	
 		</productionFrontier>
@@ -593,7 +592,6 @@
 			<frontierRules name="buyFighterIndustrialTechnology"/>
 			<frontierRules name="buyBomberIndustrialTechnology"/>
 			<frontierRules name="buyTransportIndustrialTechnology"/>
-			<frontierRules name="buyCarrierIndustrialTechnology"/>
 			<frontierRules name="buyBattleshipIndustrialTechnology"/>
 			<frontierRules name="buyCarrierIndustrialTechnology"/>
 			<frontierRules name="buyAAGunIndustrialTechnology"/>
