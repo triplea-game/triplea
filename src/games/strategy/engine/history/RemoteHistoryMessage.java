@@ -95,23 +95,29 @@ public class RemoteHistoryMessage implements java.io.Serializable
     public void perform(HistoryWriter writer)
     {
         long waitCount = 0;
+        Object lock = new Object();
         //ensure messages get processed in the order they are generated
         while(writer.getLastMessageReceived() +1 != m_messageIndex && writer.getLastMessageReceived() > 0)
         {
-            //messages are delivered in order to the client
-            //but since each message is processed in its own thread, it is possible
-            //that messages will be processed out of order
-            //we shouldnt have to wait long here,
-            //the message before has already arrived, and it is being
-            //processed, its just that our thread got scheduled to run first
-            
-            Thread.yield();
             waitCount++;
-            if(waitCount == 10000)
+            
+            if(waitCount > 20)
             {
-                new IllegalStateException("cant process message " + m_messageIndex + " last message:" + writer.getLastMessageReceived()).printStackTrace();
-                return;
+                new IllegalStateException("Could not add history, m_index:" + m_messageIndex + " Last index:" + writer.getLastMessageReceived() + " this:" + this  ).printStackTrace();
+                break;
             }
+            
+            synchronized(lock)
+            {
+                try
+                {
+                    lock.wait(50);
+                } catch (InterruptedException e)
+                {
+                    //ignore
+                }
+            }
+            
         }
         synchronized(writer)
         {
