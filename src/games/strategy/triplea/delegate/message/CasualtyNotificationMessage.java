@@ -52,6 +52,7 @@ public class CasualtyNotificationMessage extends BattleMessage
       return m_killed.isEmpty() && m_damaged.isEmpty();
   }
 
+
   /**
    * The player who lost the units
    */

@@ -658,6 +658,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
             else
                 defenderWins(bridge);
         }
+        else
+        {
+            RetreatNotificationMessage msg = new RetreatNotificationMessage(submerging);
+            bridge.sendMessage(msg, m_attacker);
+            bridge.sendMessage(msg, m_defender);  
+        }
         
     }
     
@@ -684,6 +690,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 attackerWins(bridge);
             else
                 defenderWins(bridge);
+        }
+        else
+        {
+            RetreatNotificationMessage msg = new RetreatNotificationMessage(retreating);
+            bridge.sendMessage(msg, m_attacker);
+            bridge.sendMessage(msg, m_defender);            
+          
         }
     }
 

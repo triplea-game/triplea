@@ -109,6 +109,11 @@ public class TripleAPlayer implements GamePlayer
     {
       return m_ui.getRetreat( (RetreatQueryMessage) message);
     }
+    else if (message instanceof RetreatNotificationMessage)
+    {
+      m_ui.notifyRetreat( (RetreatNotificationMessage) message);
+      return null;
+    }
     else if(message instanceof StrategicBombQuery)
     {
       return new BooleanMessage( m_ui.getStrategicBombingRaid((StrategicBombQuery) message));

@@ -177,6 +177,12 @@ public class BattleDisplay extends JPanel
         m_actionButton.setAction(null);
     }
 
+    public void notifyRetreat(RetreatNotificationMessage msg)
+    {
+        m_defenderModel.notifyRetreat(msg);
+        m_attackerModel.notifyRetreat(msg);        
+    }
+    
     public RetreatMessage getRetreat(RetreatQueryMessage rqm)
     {
 
@@ -495,9 +501,15 @@ class BattleModel extends DefaultTableModel
         m_units = new ArrayList(units);
     }
 
+    public void notifyRetreat(RetreatNotificationMessage msg)
+    {
+        m_units.removeAll(msg.getUnits());
+        refresh();
+    }
+    
+    
     public void removeCasualties(CasualtyNotificationMessage msg)
     {
-
         m_units.removeAll(msg.getKilled());
         refresh();
     }

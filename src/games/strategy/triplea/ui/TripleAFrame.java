@@ -476,6 +476,11 @@ public class TripleAFrame extends JFrame
     return m_actionButtons.getRetreat(rqm);
   }
 
+  public void notifyRetreat(RetreatNotificationMessage msg)
+  {
+      m_actionButtons.notifyRetreat(msg);
+  }
+  
   public Message battleInfo(BattleInfoMessage msg)
   {
     return m_actionButtons.battleInfo(msg);

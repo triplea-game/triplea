@@ -209,6 +209,11 @@ public class ActionButtons extends JPanel
     return 	m_battlePanel.getRetreat(rqm);
   }
 
+  public void notifyRetreat(RetreatNotificationMessage msg)
+  {
+      m_battlePanel.notifyRetreat(msg);
+  }
+  
   public ActionPanel getCurrent()
   {
     return m_current;
