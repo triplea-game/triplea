@@ -1,5 +1,7 @@
 Changes for 0.5.1
 
+* Added a new developer document with map utils info. (Nekro)
+
 * Added menu option to use small unit images on map. (Ali Ibrahim)
 
 * Large improvement and re-organizing of user documentation. (Nekro)
