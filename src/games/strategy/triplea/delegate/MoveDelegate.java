@@ -213,7 +213,7 @@ public class MoveDelegate implements SaveableDelegate
         if (!moveToUndo.getcanUndo())
             return new StringMessage(moveToUndo.getReasonCantUndo(), true);
 
-        moveToUndo.undo(m_bridge, m_alreadyMoved, DelegateFinder.battleDelegate(m_data).getBattleTracker(), m_transportTracker);
+        moveToUndo.undo(m_bridge, m_alreadyMoved, m_data);
         m_movesToUndo.remove(message.getIndex());
         updateUndoableMoveIndexes();
 
@@ -423,8 +423,10 @@ public class MoveDelegate implements SaveableDelegate
             return error;
 
         //dont let the user move out of a battle zone
-        //note that this restricts planes who may be able to fly away
-        if (DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle(route.getStart(), false))
+        //the exception is air units
+        if (DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle(route.getStart(), false) &&
+            Match.someMatch(units, Matches.UnitIsNotAir)    
+                )
         {
             boolean unload = MoveValidator.isUnload(route);
             PlayerID endOwner = route.getEnd().getOwner();
@@ -839,6 +841,30 @@ public class MoveDelegate implements SaveableDelegate
 
         //mark movement
         markMovement(units, route);
+        
+        
+        //if we are moving out of a battle zone, mark it
+        //this can happen for air units moving out of a battle zone
+        Battle battleLand =DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(route.getStart(), false);
+        Battle battleAir =DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(route.getStart(), true);
+        if(battleLand != null || battleAir != null)
+        {
+            Iterator iter = units.iterator();
+            while(iter.hasNext())
+            {
+                Unit unit = (Unit) iter.next();
+                Route routeUnitUsedToMove = getRouteUsedToMoveInto(unit, route.getStart());
+                if(battleLand != null)
+                {
+                    battleLand.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                }
+                if(battleAir != null)
+                {
+                    battleAir.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                }
+            }
+        }
+        
 
         Collection arrivingUnits = units;
         if (!m_nonCombat || isAlwaysONAAEnabled())
@@ -1368,6 +1394,23 @@ public class MoveDelegate implements SaveableDelegate
         SelectCasualtyMessage casualties = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice);
         m_bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(), casualties.getKilled());
         units.removeAll(casualties.getKilled());
+    }
+    
+    /**
+     * Find the route that a unit used to move into the given territory. 
+     */
+    public Route getRouteUsedToMoveInto(Unit unit, Territory end)
+    {
+        for(int i = m_movesToUndo.size() -1; i >= 0; i--)
+        {
+            UndoableMove move = (UndoableMove) m_movesToUndo.get(i);
+            if(!move.getUnits().contains(unit))
+                continue;
+            if(move.getRoute().getEnd().equals(end))
+                return move.getRoute();            
+        }
+        return null;
+            
     }
 
     public TransportTracker getTransportTracker()

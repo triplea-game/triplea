@@ -104,8 +104,29 @@ public class BattlePanel extends ActionPanel
   }
 
 
-  public Message listBattle(BattleStepMessage msg)
+  public Message listBattle(final BattleStepMessage msg)
   {
+    if(!SwingUtilities.isEventDispatchThread())
+    {
+        Runnable r = new Runnable()
+        {
+            public void run()
+            {
+                listBattle(msg);
+            }
+        };
+        try
+        {
+            SwingUtilities.invokeAndWait(r);
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+      
+      
+      
     removeAll();
 
     JPanel panel = new JPanel();

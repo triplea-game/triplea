@@ -155,9 +155,12 @@ public class UndoableMove implements Serializable
     }
 
     public void undo(DelegateBridge bridge, IntegerMap movement,
-                     BattleTracker battleTracker,
-                     TransportTracker transportTracker)
+                     GameData data)
     {
+        TransportTracker transportTracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+        BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
+        
+        
 
         bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() +
                                      " undo move " + (m_index + 1)+ ".");
@@ -199,6 +202,30 @@ public class UndoableMove implements Serializable
 
         }
 
+        
+        //if we are moving out of a battle zone, mark it
+        //this can happen for air units moving out of a battle zone
+        Battle battleLand =battleTracker.getPendingBattle(m_route.getStart(), false);
+        Battle battleAir =battleTracker.getPendingBattle(m_route.getStart(), true);
+        if(battleLand != null || battleAir != null)
+        {
+            iter = m_units.iterator();
+            while(iter.hasNext())
+            {
+                Unit unit = (Unit) iter.next();
+                Route routeUnitUsedToMove = DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
+                if(battleLand != null)
+                {
+                    battleLand.addAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                }
+                if(battleAir != null)
+                {
+                    battleAir.addAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                }
+            }
+        }
+        
+        
     }
 
     /**
