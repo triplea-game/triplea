@@ -513,6 +513,10 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
         change.add(remove);
         change.add(place);
 
+        //can we move planes to land there 
+        moveAirOntoNewCarriers(placeMessage.getTo(), units, player, change);
+        m_bridge.addChange(change);
+        m_placements.add(new UndoPlace(m_data, this, change));
 
         Territory producer = getProducer(placeMessage.getTo(), player);
         Collection produced = new ArrayList();
@@ -520,11 +524,6 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
         produced.addAll(units);
 
         m_produced.put(producer, produced);
-
-        //can we move planes to land there 
-        moveAirOntoNewCarriers(placeMessage.getTo(), units, player, change);
-        m_bridge.addChange(change);
-        m_placements.add(new UndoPlace(m_data, this, change));
 
         
         return new StringMessage("done");
@@ -579,7 +578,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
             if(fighters.size() == 0)
                 continue;
             
-            IntegerMessage response = (IntegerMessage) m_bridge.sendMessage(new MoveFightersToNewCarrierMessage(fighters.size(), territory));
+            IntegerMessage response = (IntegerMessage) m_bridge.sendMessage(new MoveFightersToNewCarrierMessage(fighters.size(), neighbor));
             if(response.getMessage() == 0)
                 continue;
             
