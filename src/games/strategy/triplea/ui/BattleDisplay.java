@@ -94,7 +94,6 @@ public class BattleDisplay extends JPanel
   */
   public void bombingResults(BombingResults message)
   {
-    ClipPlayer.getInstance().playClip(SoundPath.STRAT, SoundPath.class);
     m_dicePanel.setDiceRoll(message);
     m_actionLayout.show(m_actionPanel, DICE_KEY);
   }
