@@ -71,22 +71,29 @@ public class GameRunner
   }
 
 
+  /**
+     Get version number of Java VM.
+     If it is less than v1.4 on a mac or PC
+     show error + URL and kill program.
+     @author NeKromancer
+  */
   private static void checkJavaVersion()
   {
-    try
-    {
-      java.nio.CharBuffer.class.toString();
-    } catch(NoClassDefFoundError e)
-    {
+     String strV = ""+System.getProperties().getProperty("java.version");
+     int x = strV.indexOf("1.4");
+     int y = strV.indexOf("1.5");
+     //int z = strV.indexOf("1.6");  //well till that comes along...
 
-        if (!isMac())
-            JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else
-            JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://www.apple.com/java/", "ERROR", JOptionPane.ERROR_MESSAGE);
-
+     if(x == -1 && y == -1 && !isMac()) {
+        JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
         System.exit( -1);
-    }
-  }
+     }
+     else if(x == -1 && y == -1 && isMac()) {
+        JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://www.apple.com/java/", "ERROR", JOptionPane.ERROR_MESSAGE);
+        System.exit( -1);
+     };
+
+  }//end checkJavaVersion()
 
   public static void main(String[] args)
   {
