@@ -43,6 +43,7 @@
                 <include name="**/*.txt"/>
                 <include name="**/*.xml"/>
                 <include name="**/*.wav"/>
+		<include name="**/*.properties"/>
             </fileset>
         </copy>
     
