@@ -565,6 +565,26 @@
 		<sequence>
 			<step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
 
+			<!-- Bidding Phase -->
+			<step name="italianBid" delegate="bid" player="Italians" maxRunCount="1"/>
+			<step name="italianBidPlace" delegate="placeBid" player="Italians" maxRunCount="1"/>
+
+			<step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
+			<step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+                        
+			<step name="germanBid" delegate="bid" player="Germans" maxRunCount="1"/>
+			<step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
+
+			<step name="britishBid" delegate="bid" player="British" maxRunCount="1"/>
+			<step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
+                        
+			<step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
+			<step name="japanesedPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
+
+			<step name="americanBid" delegate="bid" player="Americans" maxRunCount="1"/>
+			<step name="americanBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
+
+
                         <!-- Actual In Game Turns -->
                         <!-- Italians -->
                         <step name="italianTech" delegate="tech" player="Italians"/>
@@ -1552,6 +1572,31 @@
 		<property name="neutralCharge" value="9999999"/>
                 
 		<property name="maxFactoriesPerTerritory" value="1"/>
+		
+		<!-- Bidding -->
+		<property name="Italians bid" value="0" editable="true">
+			<number min="0" max="1000"/>
+		</property>
+		
+		<property name="Germans bid" value="0" editable="true">
+			<number min="0" max="1000"/>
+		</property>
+                
+		<property name="Japanese bid" value="0" editable="true">
+			<number min="0" max="1000"/>
+		</property>
+
+		<property name="Americans bid" value="0" editable="true">
+			<number min="0" max="1000"/>
+		</property>
+
+		<property name="British bid" value="0" editable="true">
+			<number min="0" max="1000"/>
+		</property>
+
+		<property name="Russians bid" value="0" editable="true">
+			<number min="0" max="1000"/>
+		</property>
 
 		<property name="mapName" value="revised" editable="false"/>
 	</propertyList>
