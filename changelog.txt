@@ -1,5 +1,11 @@
 Changes for 0.5.1
 
+* Allowed transports carrying aa guns to move in combat, although the aa guns still cannot be loaded/unloaded in the combat move. (Ali Ibrahim)
+
+* Fixed map bugs (missing connection between sz25, sz43, missing connection between belgian congo and sz27, wrong connection between sz51, sz56, misspelling of Angola). (Ali Ibrahim)
+
+* Added logic to prefer routes without neutral countries. (Ali Ibrahim)
+
 * Fixed bug which did not allow placement of bid units. (Ali Ibrahim)
  
 * Fixed bug which did not allow placement of units in classic. (Ali Ibrahim)
