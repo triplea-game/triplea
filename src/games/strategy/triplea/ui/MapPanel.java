@@ -191,7 +191,7 @@ public class MapPanel extends ImageScrollerLargeView
         }
     }
 
-    private void initTerritories()
+    public void initTerritories()
     {
 
         Set territoriesToUpdate = new HashSet();

@@ -466,7 +466,7 @@ class ChooserEntry
       while(iter.hasNext())
       {
         UnitOwner holder = (UnitOwner) iter.next();
-        int x = UnitIconImageFactory.UNIT_ICON_WIDTH * index;
+        int x = UnitIconImageFactory.instance().getUnitImageWidth() * index;
         Image unitImg = UnitIconImageFactory.instance().getImage(holder.getType(), holder.getOwner(), m_data, false);
         g.drawImage(unitImg, x, 0, this);
 
@@ -478,12 +478,12 @@ class ChooserEntry
     public int getWidth()
     {
       //we draw a unit symbol for each dependent
-      return UnitIconImageFactory.UNIT_ICON_WIDTH * (1 + m_category.getDependents().size());
+      return UnitIconImageFactory.instance().getUnitImageWidth() * (1 + m_category.getDependents().size());
     }
 
     public int getHeight()
     {
-      return UnitIconImageFactory.UNIT_ICON_HEIGHT;
+      return UnitIconImageFactory.instance().getUnitImageHeight();
     }
 
     public Dimension getMaximumSize()

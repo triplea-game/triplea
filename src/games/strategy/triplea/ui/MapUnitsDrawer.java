@@ -268,7 +268,7 @@ public class MapUnitsDrawer
           else
           {
               place = lastPlace;
-              lastPlace.x += UnitIconImageFactory.UNIT_ICON_WIDTH;
+              lastPlace.x += UnitIconImageFactory.instance().getUnitImageWidth();
           }
 
           Image img = UnitIconImageFactory.instance().getImage( category.getType(), category.getOwner(), m_data, category.getDamaged());
@@ -276,7 +276,7 @@ public class MapUnitsDrawer
           int count = category.getUnits().size();
           if (count != 1)
           {
-              graphics.drawString(String.valueOf(count), place.x + (UnitIconImageFactory.UNIT_ICON_WIDTH / 4), place.y + UnitIconImageFactory.UNIT_ICON_HEIGHT);
+	    graphics.drawString(String.valueOf(count), place.x + (UnitIconImageFactory.instance().getUnitImageWidth() / 4), place.y + UnitIconImageFactory.instance().getUnitImageHeight());
           }
 
           drawUnitOnSmallScreen(category.getOwner(), place);

@@ -274,6 +274,23 @@ public class TripleAFrame extends JFrame
     
     menuBar.add(menuGame);
 
+    final JCheckBox smallUnitsBox = new JCheckBox("Use small units");
+    smallUnitsBox.setSelected(UnitIconImageFactory.instance().getScaleFactor() != 1);
+
+    smallUnitsBox.addActionListener(new ActionListener()
+      {
+	public void actionPerformed(ActionEvent e)
+	{
+	  if (smallUnitsBox.isSelected()) {
+	    UnitIconImageFactory.instance().setScaleFactor(.75);
+	    m_mapPanel.initTerritories();
+	  } else {
+	    UnitIconImageFactory.instance().setScaleFactor(1);
+	    m_mapPanel.initTerritories();
+	  }
+	}
+      });
+
     final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
 
     soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
@@ -332,6 +349,8 @@ public class TripleAFrame extends JFrame
     }
 
     menuGame.add(soundCheckBox);
+    menuGame.add(smallUnitsBox);
+
     if(!m_data.getProperties().get(Constants.FOURTH_EDITION, false))
         menuGame.add(showMapDetails);
     
@@ -458,7 +477,6 @@ public class TripleAFrame extends JFrame
           );
 
         }
-
 
     this.setJMenuBar(menuBar);
   }

@@ -51,11 +51,11 @@ public class UnitIconImageFactory
   }
 
 
-
   /**
    * Width of all icons.
    */
   public static final int UNIT_ICON_WIDTH = 48;
+
   /**
    * Height of all icons.
    **/
@@ -68,118 +68,161 @@ public class UnitIconImageFactory
   //maps Point -> Icon
   private final Map m_icons = new HashMap();
 
+  private double m_scaleFactor = 1;
+
   /** Creates new IconImageFactory */
   private UnitIconImageFactory()
   {
 
   }
 
+  /**
+   * Set the unitScaling factor
+   */
+  public void setScaleFactor(double scaleFactor) {
+    if (m_scaleFactor != scaleFactor) {
+      m_scaleFactor = scaleFactor;
+      clearImageCache();
+    }
+  }
+
+  /**
+   * Return the unit scaling factor
+   */
+  public double getScaleFactor() {
+    return m_scaleFactor;
+  }
+
+  /**
+   * Return the width of scaled units
+   */
+  public int getUnitImageWidth() {
+    return (int)(m_scaleFactor * UNIT_ICON_WIDTH);
+  }
+
+  /**
+   * Return the height of scaled units
+   */
+  public int getUnitImageHeight() {
+    return (int)(m_scaleFactor * UNIT_ICON_HEIGHT);
+  }
+
+  private void clearImageCache()
+  {
+    m_images.clear();
+    m_icons.clear();
+  }
+
   public Image getImage(UnitType type, PlayerID player, GameData data, boolean damaged)
   {
-      String baseName = getBaseImageName(type, player, data, damaged);
-      String fullName = baseName + player.getName();
-      if(m_images.containsKey(fullName))
-      {
-          return (Image) m_images.get(fullName);
-      }
+    String baseName = getBaseImageName(type, player, data, damaged);
+    String fullName = baseName + player.getName();
+    if(m_images.containsKey(fullName))
+    {
+      return (Image) m_images.get(fullName);
+    }
 
-      Image baseImage = getBaseImage(baseName, player, damaged);
+    Image baseImage = getBaseImage(baseName, player, damaged);
 
-      m_images.put(fullName, baseImage);
-      return baseImage;
+    // Image observer is null, since the image should have been
+    // guaranteed to be loaded.
+    int width = (int) (baseImage.getWidth(null) * m_scaleFactor);
+    int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
+    Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
-
+    m_images.put(fullName, scaledImage);
+    return scaledImage;
   }
 
   private Image getBaseImage(String baseImageName, PlayerID id, boolean damaged)
   {
-      String fileName = FILE_NAME_BASE + id.getName() + "/"  + baseImageName  + ".png";
-      URL url = this.getClass().getResource(fileName);
-      if(url == null)
-          throw new IllegalStateException("Cant load :"+ baseImageName + " looking in:" + fileName);
+    String fileName = FILE_NAME_BASE + id.getName() + "/"  + baseImageName  + ".png";
+    URL url = this.getClass().getResource(fileName);
+    if(url == null)
+      throw new IllegalStateException("Cant load :"+ baseImageName + " looking in:" + fileName);
 
-      Image image = Toolkit.getDefaultToolkit().getImage(url);
-      try
-      {
-          Util.ensureImageLoaded(image, new java.awt.Label());
-      }
-      catch (InterruptedException ex)
-      {
-          ex.printStackTrace();
-      }
-      return image;
+    Image image = Toolkit.getDefaultToolkit().getImage(url);
+    try
+    {
+      Util.ensureImageLoaded(image, new java.awt.Label());
+    }
+    catch (InterruptedException ex)
+    {
+      ex.printStackTrace();
+    }
 
+    return image;
   }
 
   public ImageIcon getIcon(UnitType type, PlayerID player, GameData data, boolean damaged)
   {
-      String baseName = getBaseImageName(type, player, data, damaged);
-      String fullName = baseName + player.getName();
-      if(m_icons.containsKey(fullName))
-      {
-          return (ImageIcon) m_icons.get(fullName);
-      }
+    String baseName = getBaseImageName(type, player, data, damaged);
+    String fullName = baseName + player.getName();
+    if(m_icons.containsKey(fullName))
+    {
+      return (ImageIcon) m_icons.get(fullName);
+    }
 
-      Image img = getImage(type, player, data, damaged);
-      ImageIcon icon = new ImageIcon(img);
-      m_icons.put(fullName, icon);
+    Image img = getBaseImage(baseName, player, damaged);
+    ImageIcon icon = new ImageIcon(img);
+    m_icons.put(fullName, icon);
 
-      return icon;
+    return icon;
   }
 
   public String getBaseImageName(UnitType type, PlayerID id, GameData data, boolean damaged)
   {
-      StringBuffer name = new StringBuffer(32);
-      name.append(type.getName());
+    StringBuffer name = new StringBuffer(32);
+    name.append(type.getName());
 
-      if (type.getName().equals(Constants.FIGHTER_TYPE))
+    if (type.getName().equals(Constants.FIGHTER_TYPE))
+    {
+      if (TechTracker.hasLongRangeAir(id))
       {
-          if (TechTracker.hasLongRangeAir(id))
-          {
-              name.append("_lr");
-          }
-          if (TechTracker.hasJetFighter(id))
-          {
-              name.append("_jp");
-          }
+	name.append("_lr");
+      }
+      if (TechTracker.hasJetFighter(id))
+      {
+	name.append("_jp");
+      }
+    }
+
+    if (type.getName().equals(Constants.BOMBER_TYPE))
+    {
+      if (TechTracker.hasLongRangeAir(id))
+      {
+	name.append("_lr");
       }
 
-      if (type.getName().equals(Constants.BOMBER_TYPE))
+      if (TechTracker.hasHeavyBomber(id))
       {
-          if (TechTracker.hasLongRangeAir(id))
-          {
-              name.append("_lr");
-          }
-
-          if (TechTracker.hasHeavyBomber(id))
-          {
-              name.append("_hb");
-          }
+	name.append("_hb");
       }
+    }
 
-      if (type.getName().equals(Constants.SUBMARINE_TYPE))
+    if (type.getName().equals(Constants.SUBMARINE_TYPE))
+    {
+      if (TechTracker.hasSuperSubs(id))
       {
-          if (TechTracker.hasSuperSubs(id))
-          {
-              name.append("_ss");
-          }
-          if (TechTracker.hasRocket(id))
-          {}
+	name.append("_ss");
       }
+      if (TechTracker.hasRocket(id))
+      {}
+    }
 
-      if (type.getName().equals(Constants.FACTORY_TYPE))
+    if (type.getName().equals(Constants.FACTORY_TYPE))
+    {
+
+      if (TechTracker.hasIndustrialTechnology(id))
       {
-
-          if (TechTracker.hasIndustrialTechnology(id))
-          {
-              name.append("_it");
-          }
+	name.append("_it");
       }
+    }
 
-      if(damaged)
-          name.append("_hit");
+    if(damaged)
+      name.append("_hit");
 
-      return name.toString();
+    return name.toString();
   }
 
 
