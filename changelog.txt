@@ -1,5 +1,13 @@
 Changes for 0.5.2
 
+* Added new technology activation delegate to allow control of when technologies actually take effect. This is used to allow delay of technology activation in LHTR. (Ali Ibrahim)
+
+* Changed mouse behavior such that only the left button is used to select a territory to put units in. (Ali Ibrahim)
+
+* Added more options for unit size using submenu. (Ali Ibrahim)
+
+* Changed ordering of properties in the launcher properties tab to use ordering in game XML file. (Ali Ibrahim)
+
 * Added Map Skins code to allow multiple (1 and greater) map skins to be used for each game based on a directory search pattern. Skins must be in maps folder with game name as prefix (ie. revisedMySkin). (Beagle)
 
 * Changed how bombardment works. Now users pick where to bombard before any battles are resolved. This allows users not to bombard with a unit (for example if they wish to move it during non-combat) by picking "None". This also fixes the bug where a a unit could retreat from a battle and bombard in the same turn. It also allows user to divide their bombardment shots however they like when there are multiple bombardment targets. (Ali Ibrahim)
