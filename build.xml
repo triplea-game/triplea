@@ -6,7 +6,6 @@
   <property file=".ant.properties"/>
 
   <path id="full.path">
-    <pathelement path="${junit.home}"/>
     <pathelement path="${junit.jar}"/>
     <pathelement path="lib\plastic-1.2.0.jar"/>
     <pathelement path="${classpath}"/>
@@ -147,7 +146,6 @@
           description="run junit tests">
     <junit fork="yes" haltonerror="on">
       <classpath>
-        <pathelement path="${junit.home}"/>
         <pathelement path="${junit.jar}"/>
         <pathelement path="${classpath}"/>
         <pathelement path="classes/"/>
