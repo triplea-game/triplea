@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="4th Ed. Pact of Steel" version="2.0"/>
+        <info name="4th Ed. Pact of Steel" version="2.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1598,8 +1598,9 @@
                         <unitPlacement unitType="infantry" territory="Central China" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="infantry" territory="Midway" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="infantry" territory="Hawaiian Islands" quantity="2" owner="Americans"/>
-                        <unitPlacement unitType="infantry" territory="Alaska" quantity="1" owner="Americans"/>
-                        <unitPlacement unitType="aaGun" territory="Western United States" quantity="2" owner="Americans"/>
+                        <unitPlacement unitType="aaGun" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
+			<unitPlacement unitType="infantry" territory="Alaska" quantity="1" owner="Americans"/>
+                        <unitPlacement unitType="aaGun" territory="Western United States" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="factory" territory="Western United States" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="infantry" territory="Western United States" quantity="3" owner="Americans"/>
                         <unitPlacement unitType="fighter" territory="Western United States" quantity="1" owner="Americans"/>
