@@ -54,6 +54,10 @@ public class BattleTracker implements java.io.Serializable
 	//territories where a battle occured
 	private Set m_foughBattles = new HashSet();
 
+    //these territories have had battleships bombard during a naval invasion
+    //used to make sure that the same battleship doesnt bombard twice
+    private Set m_bombardedFromTerritories = new HashSet();
+
 	/**
 	 * True if a battle is to be fought in the given territory.
 	 */
@@ -444,8 +448,24 @@ public class BattleTracker implements java.io.Serializable
 		m_foughBattles.add(battle.getTerritory());
 	}
 
+    /**
+     * Marks the set of territories as having been the source of a naval bombardment.
+     *
+     * @arg territories - a collection of Territory's
+     */
+    public void addPreviouslyNavalBombardmentSource(Collection territories)
+    {
+      m_bombardedFromTerritories.addAll(territories);
+    }
+
+    public boolean wasNavalBombardmentSource(Territory territory)
+    {
+      return m_bombardedFromTerritories.contains(territory);
+    }
+
 	public void clear()
 	{
+        m_bombardedFromTerritories.clear();
 		m_pendingBattles.clear();
 		m_blitzed.clear();
 		m_foughBattles.clear();

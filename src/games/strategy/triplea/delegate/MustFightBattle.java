@@ -660,7 +660,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
 		if(bombard.size() > 0 && attacked.size() > 0)
 			fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, true, bridge, "Bombard");
+        markBombardingSources();
 	}
+
+    /**
+     * Marks all the naval origins as having been the source for a bombardment
+     */
+    private void markBombardingSources()
+    {
+        m_tracker.addPreviouslyNavalBombardmentSource(m_amphibiousAttackFrom);
+    }
 
 	private Collection getBombardingUnits()
 	{
@@ -671,7 +680,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 			Territory possible = (Territory) territories.next();
 			if(m_tracker.hasPendingBattle(possible, false))
 				throw new IllegalStateException("Navel battle pending where amphibious assault originated");
-			if(! m_tracker.wasBattleFought(possible))
+			if(! m_tracker.wasBattleFought(possible) && !m_tracker.wasNavalBombardmentSource(possible))
 			{
 				bombard.addAll( possible.getUnits().getMatches(Matches.UnitCanBombard));
 			}
@@ -827,6 +836,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		" defender:" + m_defender +
 		" bombing:" + isBombingRun();
 	}
+
 
 	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
 	{
