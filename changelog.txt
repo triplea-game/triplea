@@ -1,5 +1,11 @@
 Changes for 0.5.2
 
+* add switch in map.properties to disable scrolling map around the edges (sgb)
+ 
+* added scripted random for debugging (sgb)
+
+* added new map by WanderingHead (wandering head)
+
 * add confirmation prompt when exiting the game (sgb)
 
 * jdk 1.4 - 1.5 compatability (sgb)
