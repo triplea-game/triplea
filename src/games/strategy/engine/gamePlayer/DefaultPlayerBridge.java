@@ -34,57 +34,57 @@ import games.strategy.engine.message.Message;
  */
 public class DefaultPlayerBridge implements PlayerBridge
 {
-
-	private final IGame m_game;
-	private String m_currentStep;
-	private String m_currentDelegate;
-
-
-  /** Creates new DefaultPlayerBridge */
-  public DefaultPlayerBridge(IGame aGame)
-  {
-    m_game = aGame;
-    m_game.addGameStepListener(m_gameStepListener);
-  }
-
-	/**
-	 * Send a message to the current delegate
-	 * @returnVal null if the action performed successfuly, otherwise an error message.
-	 */
-	public Message sendMessage(Message message)
-	{
-		return m_game.getMessageManager().send(message, m_currentDelegate);
-	}
-
-	/**
-	 * Get the name of the current step being exectured.
-	 */
-	public String getStepName()
-	{
-		return m_currentStep;
-	}
-
-	/**
-	 * Return the game data
-	 */
-	public GameData getGameData()
-	{
-		return m_game.getData();
-	}
-
-	private GameStepListener m_gameStepListener = new GameStepListener()
-	{
-		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
-		{
-      if(stepName == null)
-        throw new IllegalArgumentException("Null step");
-      if(delegateName == null)
-        throw new IllegalArgumentException("Null delegate");
-
-
-			m_currentStep = stepName;
-			m_currentDelegate = delegateName;
-		}
-	};
-
+    
+    private final IGame m_game;
+    private String m_currentStep;
+    private String m_currentDelegate;
+    
+    
+    /** Creates new DefaultPlayerBridge */
+    public DefaultPlayerBridge(IGame aGame)
+    {
+        m_game = aGame;
+        m_game.addGameStepListener(m_gameStepListener);
+    }
+    
+    /**
+     * Send a message to the current delegate
+     * @returnVal null if the action performed successfuly, otherwise an error message.
+     */
+    public Message sendMessage(Message message)
+    {
+        return m_game.getMessageManager().send(message, m_currentDelegate);
+    }
+    
+    /**
+     * Get the name of the current step being exectured.
+     */
+    public String getStepName()
+    {
+        return m_currentStep;
+    }
+    
+    /**
+     * Return the game data
+     */
+    public GameData getGameData()
+    {
+        return m_game.getData();
+    }
+    
+    private GameStepListener m_gameStepListener = new GameStepListener()
+    {
+        public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+        {
+            if(stepName == null)
+                throw new IllegalArgumentException("Null step");
+            if(delegateName == null)
+                throw new IllegalArgumentException("Null delegate");
+            
+            
+            m_currentStep = stepName;
+            m_currentDelegate = delegateName;
+        }
+    };
+    
 }

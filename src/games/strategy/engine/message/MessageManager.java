@@ -98,7 +98,9 @@ public class MessageManager implements IMessageManager
                 if(m_remote.containsKey(destination))
                 {
                     INode node = (INode) m_remote.get(destination);
-                    BlockedMessage blockMessage = new BlockedMessage(msg, destination, id);
+                    BlockedMessage blockMessage = msg instanceof OrderedMessage ?
+                            new OrderedBlockedMessage(msg, destination, id) :
+                            new BlockedMessage(msg, destination, id);
                     m_messenger.send(blockMessage, node);
                     waitCount++;
                 }
@@ -173,7 +175,9 @@ public class MessageManager implements IMessageManager
     private Message sendRemote(Message msg, String destination, INode node)
     {
         GUID id = new GUID();
-        BlockedMessage blockedMessage = new BlockedMessage(msg, destination, id);
+        BlockedMessage blockedMessage =  msg instanceof OrderedMessage ?  
+                							new OrderedBlockedMessage(msg, destination, id) :
+                							new BlockedMessage(msg, destination, id);
         
         Object lock = new Object();
 

@@ -22,6 +22,7 @@ package games.strategy.engine.message;
 
 import games.strategy.engine.message.Message;
 import games.strategy.net.GUID;
+import games.strategy.net.OrderedMessage;
 
 /**
  *
@@ -66,4 +67,14 @@ class BlockedMessage implements java.io.Serializable
 	{
 		return "Blocked Message for:" + m_destination + " id:" + m_id + " msg:" + m_message;
 	}
+}
+
+class OrderedBlockedMessage extends BlockedMessage implements OrderedMessage
+{
+    public OrderedBlockedMessage(Message message, String to, GUID id)
+    {
+        super(message, to, id);
+        
+    }
+    
 }
