@@ -46,7 +46,7 @@ import games.strategy.triplea.formatter.Formatter;
  * The situation where one has two non original factories a,b each with production 2.
  * If sea zone e neighbors a,b and sea zone f neighbors b.  Then producing 2 in e
  * could make it such that you cannot produce in f.
- * The reason is that the production in e could be assigned to the 
+ * The reason is that the production in e could be assigned to the
  * factory in b, leaving no capacity to produce in f.
  * If anyone ever accidently runs into this situation then they can
  * undo the production, produce in f first, and then produce in e.
@@ -60,38 +60,38 @@ public class PlaceDelegate implements Delegate
 	private IntegerMap m_alreadyProduced = new IntegerMap(); //maps Territory-> alreadyProduced this turn
 	private Set m_producedFactory = new HashSet();
 	private PlayerID m_player;
-	
-	public void initialize(String name) 
+
+	public void initialize(String name)
 	{
 		initialize(name, name);
 	}
 
-	public void initialize(String name, String displayName) 
+	public void initialize(String name, String displayName)
 	{
 		m_name = name;
 		m_displayName = displayName;
 	}
 
-	
+
 	/**
 	 * Called before the delegate will run.
 	 */
-	public void start(DelegateBridge aBridge, GameData gameData) 
+	public void start(DelegateBridge aBridge, GameData gameData)
 	{
 		m_bridge = aBridge;
 		m_data = gameData;
 		m_player = aBridge.getPlayerID();
 	}
-	
-	public String getName() 
+
+	public String getName()
 	{
 		return m_name;
 	}
-	
+
 	/**
 	 * A message from the given player.
 	 */
-	public Message sendMessage(Message aMessage) 
+	public Message sendMessage(Message aMessage)
 	{
 		if(! (aMessage instanceof PlaceMessage))
 			throw new IllegalArgumentException("Place delegate received message of wrong type:" + aMessage);
@@ -101,17 +101,17 @@ public class PlaceDelegate implements Delegate
 		Message error = isValidPlacement(placeMessage, m_player);
 		if(error!= null)
 			return error;
-		
+
 		return placeUnits(placeMessage, m_player);
 	}
-	
+
 	Message isValidPlacement(PlaceMessage placeMessage, PlayerID player)
 	{
 		//do we hold enough units
 		Message error = playerHasEnoughUnits(placeMessage, player);
 		if(error!= null)
 			return error;
-		
+
 		//can we produce that much
 		error = canProduce(placeMessage, player, m_alreadyProduced);
 		if(error!= null)
@@ -121,10 +121,10 @@ public class PlaceDelegate implements Delegate
 		error = canUnitsBePlaced(placeMessage, player);
 		if(error!= null)
 			return error;
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Make sure the player has enough in hand to place the units.
 	 */
@@ -135,52 +135,52 @@ public class PlaceDelegate implements Delegate
 			return new StringMessage("Not enough units", true);
 		return null;
 	}
-	
+
 	/**
 	 * Make sure the units can be placed.
 	 */
 	Message canUnitsBePlaced(PlaceMessage placeMessage, PlayerID player)
-	{	
+	{
 		Territory to = placeMessage.getTo();
 		Collection units = placeMessage.getUnits();
-		
+
 		//check we havent just put a factory there
 		if(m_producedFactory.contains(to))
 			return new StringMessage("Factories cant produce until 1 turn after they are created", true);
-		
+
 		if(to.isWater())
 		{
 			//make sure all units are water
 			if(! Match.allMatch(units, Matches.UnitIsSea))
 				return new StringMessage("Cant place non naval units in sea zone", true);
-		
+
 			//make sure all units not the players are allied
 			Set playersWithUnits = to.getUnits().getPlayersWithUnits();
 			playersWithUnits.remove(player);
 			Iterator iter = playersWithUnits.iterator();
 			while(iter.hasNext())
-			{	
+			{
 				PlayerID other = (PlayerID) iter.next();
 				if(! m_data.getAllianceTracker().isAllied(player, other))
-					return new StringMessage("Cant place units in water when the enemy has units in the same Sea Zone :" + other.getName(), true);	
+					return new StringMessage("Cant place units in water when the enemy has units in the same Sea Zone :" + other.getName(), true);
 			}
 		} else  //if land
 		{
 			//make sure we own the territory
 			if(!to.getOwner().equals(player) )
-				return new StringMessage("You don't own " +  placeMessage.getTo().getName(), true);	
+				return new StringMessage("You don't own " +  placeMessage.getTo().getName(), true);
 			//make sure all units are land
 			if(!Match.allMatch(units, Matches.UnitIsNotSea))
-				return new StringMessage("Cant place sea units on land", true);			
+				return new StringMessage("Cant place sea units on land", true);
 		}
-		
+
 		//make sure only 1 AA
 		if(Match.countMatches(units, Matches.UnitIsAA) >= 1)
 		{
 			//if trying to place 2
 			if( Match.countMatches(units, Matches.UnitIsAA) > 1)
 				return new StringMessage("Can only have 1 AA per territory", true);
-			
+
 			//if one already exists
 			if(to.getUnits().someMatch(Matches.UnitIsAA))
 				return new StringMessage("Can only have 1 AA per territory", true);
@@ -190,37 +190,37 @@ public class PlaceDelegate implements Delegate
 		if(Match.countMatches(units, Matches.UnitIsFactory) >= 1)
 		{
 			//trying to place factories
-			
+
 			//error if one already exists
 			if(Match.countMatches(units, Matches.UnitIsFactory) > 1)
 				return new StringMessage("Can only have 1 Factory per territory", true);
-				
+
 			//error if we want to place 2
 			if(to.getUnits().someMatch(Matches.UnitIsFactory))
 				return new StringMessage("Can only have 1 Factory per territory", true);
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Test whether or not the territory has the factory resources to 
+	 * Test whether or not the territory has the factory resources to
 	 * support the placement.
 	 * AlreadyProduced maps territory->units already produced this turn by that territory.
 	 */
 	StringMessage canProduce(PlaceMessage placeMessage, PlayerID player, IntegerMap alreadyProduced)
 	{
 		Territory producer = getProducer(placeMessage.getTo(), alreadyProduced);
-		//the only reason to could be null is if its water and no 
+		//the only reason to could be null is if its water and no
 		//territories adjacent have factories
 		if(producer == null)
 			return new StringMessage("No factory adjacent to " + placeMessage.getTo().getName(), true);
-		
 
-		
+
+
 		//make sure the territory wasnt conquered this turn
 		if(wasConquered(producer))
 			return new StringMessage(producer.getName() + " was conqured this turn and cannot produce till next turn", true);
-		
+
 		//make sure there is a factory
 		if(! hasFactory(producer))
 		{
@@ -229,26 +229,28 @@ public class PlaceDelegate implements Delegate
 			boolean allFactory = Match.allMatch(placeMessage.getUnits(), Matches.UnitIsFactory);
 			if( onlyOne &&  allFactory)
 				return null;
-			else 
+			else
 				return new StringMessage("No Factory in " + producer.getName(), true);
 		}
-		
+
 		//check production
-		
+
 		//if its an original factory then unlimited production
 		TerritoryAttatchment ta = TerritoryAttatchment.get(producer);
 		boolean originalFactory = ta.isOriginalFactory();
 		boolean playerIsOriginalOwner = m_player.equals(getOriginalFactoryOwner(producer));
-		
+
 		if( originalFactory && playerIsOriginalOwner )
 			return null;
-		
+
 		//a factory can produce the same number of units as the number of ipcs the
 		//territroy generates each turn
 		int unitCount = placeMessage.getUnits().size() + alreadyProduced.getInt(producer);
-		if(unitCount > ta.getProduction())
-			return new StringMessage("Can only produce " + ta.getProduction() + " in " +  producer.getName(), true);
-		
+        int production = ta.getProduction();
+        if(production == 0)
+          production = 1; //if it has a factory then it can produce at least 1
+		if(unitCount > production)
+			return new StringMessage("Can only produce " + production + " in " +  producer.getName(), true);
 		return null;
 	}
 
@@ -257,7 +259,7 @@ public class PlaceDelegate implements Delegate
 		BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
 		return tracker.wasConquered(t);
 	}
-	
+
 	/**
 	 * Returns the better producer of the two territories, either of which can be null.
 	 */
@@ -274,7 +276,7 @@ public class PlaceDelegate implements Delegate
 			return t2;
 		if(wasConquered(t2))
 			return t1;
-		
+
 		//original factories are good
 		TerritoryAttatchment t1a = TerritoryAttatchment.get(t1);
 		if(t1a.isOriginalFactory())
@@ -282,13 +284,13 @@ public class PlaceDelegate implements Delegate
 		TerritoryAttatchment t2a = TerritoryAttatchment.get(t2);
 		if(t2a.isOriginalFactory())
 			return t2;
-		
+
 		//which can produce the most
 		if(t1a.getProduction() - alreadyProduced.getInt(t1) > t2a.getProduction() - alreadyProduced.getInt(t2))
 			return t1;
 		return t2;
 	}
-	
+
 	private boolean hasFactory(Territory to)
 	{
 		return to.getUnits().someMatch(Matches.UnitIsFactory);
@@ -304,7 +306,7 @@ public class PlaceDelegate implements Delegate
 		//if not water then must produce in that territory
 		if(!to.isWater() )
 			return to;
-				
+
 		Territory neighborFactory = null;
 		Iterator iter = m_data.getMap().getNeighbors(to).iterator();
 		while(iter.hasNext() )
@@ -317,7 +319,7 @@ public class PlaceDelegate implements Delegate
 		}
 		return neighborFactory;
 	}
-	
+
 	/**
 	 * There must be a factory in the territotory or an illegal state exception will be thrown.
 	 * return value may be null.
@@ -327,40 +329,40 @@ public class PlaceDelegate implements Delegate
 		Collection factoryUnits = territory.getUnits().getMatches(Matches.UnitIsFactory);
 		if(factoryUnits.size() != 1)
 			throw new IllegalStateException("No factory in territroy:" + territory);
-		
+
 		Unit factory = (Unit) factoryUnits.iterator().next();
 		return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory);
 	}
-	
+
 	private Message placeUnits(PlaceMessage placeMessage, PlayerID player)
-	{		
+	{
 		Collection units = placeMessage.getUnits();
-		
+
 		Territory producer = getProducer(placeMessage.getTo(), m_alreadyProduced);
 		m_alreadyProduced.add(producer, units.size() );
 
 		if(Match.someMatch(units, Matches.UnitIsFactory))
 			m_producedFactory.add(producer);
-		
-		
+
+
 		Collection factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrFactory);
 		DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwner(factoryAndAA, m_player);
-		
+
 		Change remove= ChangeFactory.removeUnits(player, units);
 		Change place = ChangeFactory.addUnits(placeMessage.getTo(), units);
 		m_bridge.addChange(remove);
 		m_bridge.addChange(place);
-		
+
 		String transcriptText = Formatter.unitsToText(units) + " placed in " +placeMessage.getTo().getName();
 		m_bridge.getTranscript().write(transcriptText);
-		
-		return new StringMessage("done");		
+
+		return new StringMessage("done");
 	}
-	
+
 	/**
 	 * Called before the delegate will stop running.
 	 */
-	public void end() 
+	public void end()
 	{
 		PlayerID player = m_bridge.getPlayerID();
 		//clear all units not placed
@@ -370,10 +372,10 @@ public class PlaceDelegate implements Delegate
 			Change change = ChangeFactory.removeUnits( player, units);
 			m_bridge.addChange(change);
 		}
-		
+
 		//reset ourseleves for next turn
 		m_alreadyProduced = new IntegerMap();
 		m_producedFactory.clear();
-		
+
 	}
 }
