@@ -121,6 +121,12 @@ public class TestDelegateBridge implements DelegateBridge
   /**
    * Messages are sent to the current player
    */
+  public void sendMessageNoResponse(Message message) {
+  }
+  
+  /**
+   * Messages are sent to the current player
+   */
   public Message sendMessage(Message message) {
     return null;
   }
@@ -128,6 +134,13 @@ public class TestDelegateBridge implements DelegateBridge
   public void rollback() {
   }
 	
+  /**
+   * Sends a message to the given player.
+   */
+  public void sendMessageNoResponse(Message message, PlayerID player) 
+  {
+  }
+
   /**
    * Sends a message to the given player.
    */
