@@ -18,20 +18,18 @@
 
 package games.strategy.triplea.ui;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import games.strategy.engine.data.*;
+import games.strategy.engine.data.events.*;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.ui.*;
+import games.strategy.ui.Util;
+import games.strategy.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
-
-import games.strategy.engine.data.*;
-import games.strategy.engine.data.events.TerritoryListener;
-import games.strategy.ui.ImageScrollerLargeView;
+import java.io.IOException;
 import java.util.*;
-import games.strategy.engine.data.events.*;
-import games.strategy.triplea.*;
-import games.strategy.util.*;
-import games.strategy.triplea.delegate.*;
 
 /**
  * Responsible for drawing the large map and keeping it updated.
@@ -53,11 +51,14 @@ public class MapPanel extends ImageScrollerLargeView
 
     private final MapUnitsDrawer m_mapsUnitDrawer;
 
+    private Image m_offscreenImage;
+
     /** Creates new MapPanel */
     public MapPanel(Image image, GameData data, MapPanelSmallView smallView) throws IOException
     {
 
         super(image);
+        m_offscreenImage = image;
         m_smallView = smallView;
         m_mapsUnitDrawer = new MapUnitsDrawer(m_data, m_smallView, this);
         setGameData(data);
@@ -66,6 +67,21 @@ public class MapPanel extends ImageScrollerLargeView
         this.addMouseListener(MOUSE_LISTENER);
         this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
 
+    }
+
+    // Beagle Code used to chnage map skin
+    public void changeImage(Image image)
+    {
+        try
+        {
+            Util.ensureImageLoaded(image, this);
+        } catch (InterruptedException ie)
+        {
+            ie.printStackTrace();
+        }
+
+        m_offscreenImage = image;
+        super.setDimensions(Util.getDimension(image, this));
     }
 
     public boolean isShowing(Territory territory)
@@ -181,16 +197,6 @@ public class MapPanel extends ImageScrollerLargeView
         return m_data.getMap().getTerritory(name);
     }
 
-    public void paint(Graphics g)
-    {
-
-        synchronized (m_mapsUnitDrawer.getLock())
-        {
-            super.paint(g);
-            MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
-        }
-    }
-
     public void initTerritories()
     {
 
@@ -201,8 +207,8 @@ public class MapPanel extends ImageScrollerLargeView
         while (iter.hasNext())
         {
             Territory territory = (Territory) iter.next();
-            if (!territory.isWater() || !territory.getUnits().isEmpty())
-                territoriesToUpdate.add(territory);
+            //    if (!territory.isWater() || !territory.getUnits().isEmpty())
+            territoriesToUpdate.add(territory);
         }
 
         m_mapsUnitDrawer.queueUpdate(territoriesToUpdate);
@@ -313,7 +319,7 @@ public class MapPanel extends ImageScrollerLargeView
                 if (territory.getUnits().size() == 0)
                     continue;
 
-                if (Util.someIntersect(units, territory.getUnits().getUnits()))
+                if (games.strategy.util.Util.someIntersect(units, territory.getUnits().getUnits()))
                 {
                     invalidatedTerritories.add(territory);
                 }
@@ -322,6 +328,15 @@ public class MapPanel extends ImageScrollerLargeView
             m_mapsUnitDrawer.queueUpdate(invalidatedTerritories);
         }
     };
+
+    /**
+     * Updates will not appear until update has been called. Updates made here
+     * can be made outside the swing event thread.
+     */
+    public Graphics getOffscreenGraphics()
+    {
+        return m_offscreenImage.getGraphics();
+    }
 
     private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener()
     {
@@ -384,8 +399,44 @@ public class MapPanel extends ImageScrollerLargeView
 
     };
 
-}
+    public void paint(Graphics g)
+    {
+        super.paint(g);
 
+        synchronized (m_mapsUnitDrawer.getLock())
+        {
+
+            //TODO what if the graphics is the same size as the image
+
+            Rectangle center = new Rectangle(m_x, m_y, getWidth(), getHeight());
+            Rectangle left = new Rectangle(m_x - (int) m_dimensions.getWidth(), m_y, getWidth(), getHeight());
+            Rectangle right = new Rectangle(m_x + (int) m_dimensions.getWidth(), m_y, getWidth(), getHeight());
+
+            drawVisible(g, center);
+            drawVisible(g, left);
+            drawVisible(g, right);
+
+            MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
+        }
+
+    }
+
+    private void drawVisible(Graphics g, Rectangle center)
+    {
+        Rectangle visible = new Rectangle(0, 0, m_dimensions.width, m_dimensions.height);
+        Rectangle intersection = center.intersection(visible);
+
+        if (intersection.getWidth() == 0)
+            return;
+
+        int x = intersection.x == center.x ? 0 : (int) center.getWidth() - (int) intersection.getWidth();
+
+        g.drawImage(m_offscreenImage, x, 0, x + (int) intersection.getWidth(), 0 + (int) intersection.getHeight(),
+
+        intersection.x, intersection.y, intersection.x + (int) intersection.getWidth(), intersection.y + (int) intersection.getHeight(), this);
+    }
+
+}
 
 class RouteDescription
 {
@@ -409,10 +460,12 @@ class RouteDescription
             return true;
         RouteDescription other = (RouteDescription) o;
 
-        if (m_start == null && other.m_start != null || other.m_start == null && m_start != null || (m_start != other.m_start && !m_start.equals(other.m_start)))
+        if (m_start == null && other.m_start != null || other.m_start == null && m_start != null
+                || (m_start != other.m_start && !m_start.equals(other.m_start)))
             return false;
 
-        if (m_route == null && other.m_route != null || other.m_route == null && m_route != null || (m_route != other.m_route && !m_route.equals(other.m_route)))
+        if (m_route == null && other.m_route != null || other.m_route == null && m_route != null
+                || (m_route != other.m_route && !m_route.equals(other.m_route)))
             return false;
 
         if (m_end == null && other.m_end != null || other.m_end == null && m_end != null)
@@ -420,12 +473,11 @@ class RouteDescription
 
         //we dont want to be updating for every small change,
         //if the end points are close enough, they are close enough
-        if(other.m_end == null && this.m_end != null)
+        if (other.m_end == null && this.m_end != null)
             return false;
-        if(other.m_end != null && this.m_end == null)
+        if (other.m_end != null && this.m_end == null)
             return false;
 
-        
         int xDiff = m_end.x - other.m_end.x;
         xDiff *= xDiff;
         int yDiff = m_end.y - other.m_end.y;

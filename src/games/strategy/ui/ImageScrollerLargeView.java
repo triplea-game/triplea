@@ -36,22 +36,8 @@ import javax.swing.*;
  * been scrolled when the user holds the mouse near the edge of the component.
  * 
  * 
- * This class keeps tracks of three images, the original, an offscreen, and what
- * is currently being displayed.
- * 
- * You can get the graphics context of the offscreen image by calling
- * getOffScreenGraphics(). Updates made here will not be displayed until update
- * has been called.
- * 
- * The user can clear various parts of the offscreen with the original by
- * calling clearOffScreen(...). Updates are not reflected until update has been
- * called.
- * 
- * Since the above do not make any changes onscreen they are safe with respect
- * to the swing event thread.
- * 
- * update() takes care of all isues related to the swing event thread, and can
- * be called from any thread.
+ * We do not take care of drawing ourselves.  All we do is keep track of 
+ * our location and size.  Subclasses must take care of rendering 
  *  
  */
 public class ImageScrollerLargeView extends JComponent
@@ -73,12 +59,14 @@ public class ImageScrollerLargeView extends JComponent
 
     protected ImageScrollControl m_control;
 
-    private int m_x = 0;
-    private int m_y = 0;
-    private Image m_offscreenImage;
+    protected int m_x = 0;
+    protected int m_y = 0;
+    
 
     private int m_drag_scrolling_lastx;
     private int m_drag_scrolling_lasty;
+    
+    protected Dimension m_dimensions;
 
     private ActionListener mTimerAction = new ActionListener()
     {
@@ -122,10 +110,11 @@ public class ImageScrollerLargeView extends JComponent
             ie.printStackTrace();
         }
 
-        m_offscreenImage = image;
+        
+        m_dimensions = Util.getDimension(image, this);
 
-        setPreferredSize(Util.getDimension(m_offscreenImage, this));
-        setMaximumSize(Util.getDimension(m_offscreenImage, this));
+        setPreferredSize(m_dimensions);
+        setMaximumSize(m_dimensions);
 
         addMouseWheelListener(MOUSE_WHEEL_LISTENER);
         addMouseListener(MOUSE_LISTENER);
@@ -138,17 +127,10 @@ public class ImageScrollerLargeView extends JComponent
     }
 
     // Beagle Code used to chnage map skin
-    public void changeImage(Image image)
+    public void setDimensions(Dimension dimensions)
     {
-        try
-        {
-            Util.ensureImageLoaded(image, this);
-        } catch (InterruptedException ie)
-        {
-            ie.printStackTrace();
-        }
 
-        m_offscreenImage = image;
+        m_dimensions = new Dimension(dimensions);
     }
 
     /**
@@ -161,7 +143,7 @@ public class ImageScrollerLargeView extends JComponent
         // this.getWidth(), true);
 
         int newY = y;
-        newY = checkBounds(newY, m_offscreenImage.getHeight(this), this.getHeight());
+        newY = checkBounds(newY, (int)  m_dimensions.getHeight(), this.getHeight());
 
         setCoordsInternal(newX, newY);
     }
@@ -169,10 +151,10 @@ public class ImageScrollerLargeView extends JComponent
     protected void setTopLeftNoWrap(int x, int y)
     {
         int newX = x;
-        newX = checkBounds(newX, m_offscreenImage.getWidth(this), this.getWidth());
+        newX = checkBounds(newX, (int)  m_dimensions.getWidth(), this.getWidth());
 
         int newY = y;
-        newY = checkBounds(newY, m_offscreenImage.getHeight(this), this.getHeight());
+        newY = checkBounds(newY, (int)  m_dimensions.getHeight(), this.getHeight());
 
         setCoordsInternal(newX, newY);
     }
@@ -187,7 +169,7 @@ public class ImageScrollerLargeView extends JComponent
         {
             if(newX < -getWidth() / 2)
             {
-                newX = m_offscreenImage.getWidth(this) - getWidth() ;
+                newX = (int)  m_dimensions.getWidth() - getWidth() ;
             }
             else if(newX < 0)
             {
@@ -202,12 +184,12 @@ public class ImageScrollerLargeView extends JComponent
 
     public int getImageWidth()
     {
-        return m_offscreenImage.getWidth(this);
+        return (int) m_dimensions.getWidth();
     }
 
     public int getImageHeight()
     {
-        return m_offscreenImage.getHeight(this);
+        return (int) m_dimensions.getHeight();
     }
 
     void setCoords(int x, int y)
@@ -245,15 +227,15 @@ public class ImageScrollerLargeView extends JComponent
             dx = SCROLL_DISTANCE;
 
         int newX = (m_x + dx);
-        if (newX > m_offscreenImage.getWidth(this) - getWidth())
-            newX -= m_offscreenImage.getWidth(this);
+        if (newX > (int) m_dimensions.getWidth() - getWidth())
+            newX -= (int) m_dimensions.getWidth();
         if (newX < -getWidth())
-            newX += m_offscreenImage.getWidth(this);
+            newX += (int) m_dimensions.getWidth();
         // newX = checkBounds(newX, m_originalImage.getWidth(this),
         // this.getWidth(), true);
 
         int newY = m_y + dy;
-        newY = checkBounds(newY, m_offscreenImage.getHeight(this), this.getHeight());
+        newY = checkBounds(newY, (int) m_dimensions.getHeight(), this.getHeight());
 
         setCoordsInternal(newX, newY);
 
@@ -261,7 +243,7 @@ public class ImageScrollerLargeView extends JComponent
 
     public Dimension getImageDimensions()
     {
-        return Util.getDimension(m_offscreenImage, this);
+        return new Dimension(m_dimensions);
     }
 
     void setController(ImageScrollControl control)
@@ -269,35 +251,7 @@ public class ImageScrollerLargeView extends JComponent
         m_control = control;
     }
 
-    public void paint(Graphics g)
-    {
-        super.paint(g);
 
-        //TODO what if the graphics is the same size as the image
-
-        Rectangle center = new Rectangle(m_x, m_y, getWidth(), getHeight());
-        Rectangle left = new Rectangle(m_x - m_offscreenImage.getWidth(this), m_y, getWidth(), getHeight());
-        Rectangle right = new Rectangle(m_x + m_offscreenImage.getWidth(this), m_y, getWidth(), getHeight());
-
-        drawVisible(g, center);
-        drawVisible(g, left);
-        drawVisible(g, right);
-    }
-
-    private void drawVisible(Graphics g, Rectangle center)
-    {
-        Rectangle visible = new Rectangle(0, 0, m_offscreenImage.getWidth(this), m_offscreenImage.getHeight(this));
-        Rectangle intersection = center.intersection(visible);
-
-        if (intersection.getWidth() == 0)
-            return;
-
-        int x = intersection.x == center.x ? 0 : (int) center.getWidth() - (int) intersection.getWidth();
-
-        g.drawImage(m_offscreenImage, x, 0, x + (int) intersection.getWidth(), 0 + (int) intersection.getHeight(),
-
-        intersection.x, intersection.y, intersection.x + (int) intersection.getWidth(), intersection.y + (int) intersection.getHeight(), this);
-    }
 
     private MouseAdapter MOUSE_LISTENER = new MouseAdapter()
     {
@@ -363,14 +317,14 @@ public class ImageScrollerLargeView extends JComponent
 
             //move left and right and test for wrap
             int newX = (m_x + dx);
-            if (newX > m_offscreenImage.getWidth(ImageScrollerLargeView.this) - getWidth())
-                newX -= m_offscreenImage.getWidth(ImageScrollerLargeView.this);
+            if (newX > (int)  m_dimensions.getWidth() - getWidth())
+                newX -= (int)  m_dimensions.getWidth();
             if (newX < -getWidth())
-                newX += m_offscreenImage.getWidth(ImageScrollerLargeView.this);
+                newX += (int)  m_dimensions.getWidth();
 
             //move up and down and test for edges
             int newY = m_y + dy;
-            newY = checkBounds(newY, m_offscreenImage.getHeight(ImageScrollerLargeView.this), height);
+            newY = checkBounds(newY,(int)  m_dimensions.getHeight(), height);
 
             //update the map
             setCoordsInternal(newX, newY);
@@ -411,22 +365,22 @@ public class ImageScrollerLargeView extends JComponent
                     m_insideCount = 0;
 
                 //compute the amount to move
-                int dx = -(m_drag_scrolling_lastx - x) * (m_offscreenImage.getWidth(ImageScrollerLargeView.this) - width) / width;
-                int dy = -(m_drag_scrolling_lasty - y) * (m_offscreenImage.getHeight(ImageScrollerLargeView.this) - height) / height;
+                int dx = -(m_drag_scrolling_lastx - x) * ((int)  m_dimensions.getWidth()- width) / width;
+                int dy = -(m_drag_scrolling_lasty - y) * ((int)  m_dimensions.getHeight() - height) / height;
 
                 //move left and right and test for wrap
                 int newX = (m_x + dx);
-                if (newX > m_offscreenImage.getWidth(ImageScrollerLargeView.this) - getWidth())
-                    newX -= m_offscreenImage.getWidth(ImageScrollerLargeView.this);
+                if (newX > (int)  m_dimensions.getWidth() - getWidth())
+                    newX -= (int)  m_dimensions.getWidth();
                 if (newX < -getWidth())
-                    newX += m_offscreenImage.getWidth(ImageScrollerLargeView.this);
+                    newX += (int)  m_dimensions.getWidth();
 
                 // newX = checkBounds(newX, m_originalImage.getWidth(this),
                 // this.getWidth(), true);
 
                 //move up and down and test for edges
                 int newY = m_y + dy;
-                newY = checkBounds(newY, m_offscreenImage.getHeight(ImageScrollerLargeView.this), height);
+                newY = checkBounds(newY, (int)  m_dimensions.getHeight(), height);
 
                 //update the map
                 setCoordsInternal(newX, newY);
@@ -472,19 +426,9 @@ public class ImageScrollerLargeView extends JComponent
      * image to the original.
      */
 
-    /**
-     * Updates will not appear until update has been called. Updates made here
-     * can be made outside the swing event thread.
-     */
-    public Graphics getOffscreenGraphics()
-    {
-        return m_offscreenImage.getGraphics();
-    }
 
-    public Image getOffscreenImage()
-    {
-        return m_offscreenImage;
-    }
+
+
 
     public int getXOffset()
     {
