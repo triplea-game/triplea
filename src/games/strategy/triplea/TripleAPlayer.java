@@ -103,12 +103,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         } else if (message instanceof BattleStringMessage)
         {
             return m_ui.battleStringMessage((BattleStringMessage) message);
-        } else if (message instanceof MoveFightersToNewCarrierMessage)
-        {
-            return m_ui
-                    .moveFightersToCarrier((MoveFightersToNewCarrierMessage) message);
-        }
-        else if (message instanceof BattleStartMessage)
+        } else if (message instanceof BattleStartMessage)
         {
             m_ui.battleStartMessage((BattleStartMessage) message);
         } else if (message instanceof RetreatQueryMessage)
@@ -118,10 +113,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         {
             m_ui.notifyRetreat((RetreatNotificationMessage) message);
             return null;
-        } else if (message instanceof LandAirQueryMessage)
-        {
-            return m_ui.getLandAir((LandAirQueryMessage) message);
-        }  else if (message instanceof BattleEndMessage)
+        } else if (message instanceof BattleEndMessage)
         {
             m_ui.battleEndMessage((BattleEndMessage) message);
             return null;
@@ -369,6 +361,22 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     {
         return m_ui.getRocketAttack(candidates, from);
      }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
+     */
+    public Collection getNumberOfFightersToMoveToNewCarrier(Collection fightersThatCanBeMoved, Territory from)
+    {
+        return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
+    }
+
+    /*
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
+     */
+    public Territory selectTerritoryForAirToLand(Collection candidates)
+    {
+        return m_ui.selectTerritoryForAirToLand(candidates);
+    }
     
     
     

@@ -40,6 +40,7 @@ import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.engine.framework.*;
 import java.io.*;
 
@@ -605,6 +606,11 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
 
         m_produced.put(producer, produced);
     }
+    
+    private ITripleaPlayer getRemotePlayer()
+    {
+        return (ITripleaPlayer) m_bridge.getRemote();
+    }
 
     private void moveAirOntoNewCarriers(Territory territory, Collection units,
             PlayerID player, CompositeChange placeChange)
@@ -663,13 +669,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
             if (fighters.size() == 0)
                 continue;
 
-            IntegerMessage response = (IntegerMessage) m_bridge
-                    .sendMessage(new MoveFightersToNewCarrierMessage(fighters
-                            .size(), neighbor));
-            if (response.getMessage() == 0)
-                continue;
-
-            List movedFighters = fighters.subList(0, response.getMessage());
+            Collection movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, neighbor);
 
             Change change = ChangeFactory.moveUnits(neighbor, territory,
                     movedFighters);

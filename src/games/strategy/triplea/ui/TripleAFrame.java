@@ -799,10 +799,10 @@ public class TripleAFrame extends JFrame
         return choice == 0;
     }
 
-    public LandAirMessage getLandAir(LandAirQueryMessage msg)
+    public Territory selectTerritoryForAirToLand(Collection candidates)
     {
-        Collection territories = msg.getTerritories();
-        JList list = new JList(new Vector(territories));
+        
+        JList list = new JList(new Vector(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         JPanel panel = new JPanel();
@@ -819,7 +819,7 @@ public class TripleAFrame extends JFrame
 
         Territory selected = (Territory) list.getSelectedValue();
 
-        return new LandAirMessage(selected);
+        return selected;
     }
 
     public TechRoll getTechRolls(PlayerID id)
@@ -1133,18 +1133,16 @@ public class TripleAFrame extends JFrame
         };
     };
 
-    public IntegerMessage moveFightersToCarrier(
-            MoveFightersToNewCarrierMessage msg)
+    public Collection moveFightersToCarrier(Collection fighters, Territory where)
     {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        ScrollableTextField text = new ScrollableTextField(0, msg
-                .getNumberOfFighters());
+        ScrollableTextField text = new ScrollableTextField(0, fighters.size());
         text.setBorder(new EmptyBorder(8, 8, 8, 8));
         panel.add(text, BorderLayout.CENTER);
         panel.add(new JLabel("How many fighters do you want to move from "
-                + msg.getTerritory().getName() + " to new carrier?"),
+                + where.getName() + " to new carrier?"),
                 BorderLayout.NORTH);
 
         int choice = JOptionPane.showOptionDialog(this, panel,
@@ -1153,9 +1151,9 @@ public class TripleAFrame extends JFrame
                         "Cancel" }, "OK");
         if (choice == 0)
         {
-            return new IntegerMessage(text.getValue());
+            return new ArrayList(fighters).subList(0, text.getValue());
         } else
-            return new IntegerMessage(0);
+            return new ArrayList(0);
     }
 
     private JMenu getUnitSizeMenu()

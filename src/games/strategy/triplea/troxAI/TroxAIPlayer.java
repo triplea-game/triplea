@@ -405,4 +405,20 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
         return (Territory) candidates.iterator().next();
     }
 
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
+     */
+    public Collection getNumberOfFightersToMoveToNewCarrier(Collection fightersThatCanBeMoved, Territory from)
+    {
+        return Collections.EMPTY_LIST;
+    }
+
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
+     */
+    public Territory selectTerritoryForAirToLand(Collection candidates)
+    {
+       return (Territory) candidates.iterator().next();
+    }
+
 }

@@ -65,6 +65,7 @@ public interface ITripleaPlayer extends IRemote
     
     /**
      * 
+     * 
      * @param report that an error occured
      */
     public void reportError(String error);
@@ -77,11 +78,30 @@ public interface ITripleaPlayer extends IRemote
     public boolean shouldBomberBomb(Territory territory);
     
     /**
+     * Choose where my rockets should fire
      * 
      * @param candidates  - a collection of Territories,  the possible territories to attack
      * @param from - where the rockets are launched from, null for 3rd edition rules
      * @return the territory to attack, null if no territory should be attacked
      */
     public Territory whereShouldRocketsAttach(Collection candidates, Territory from);
+    
+    /**
+     * get the number of fighters to move to a newly produced carrier
+     * 
+     * @param fightersThatCanBeMoved - the fighters that can be moved
+     * @param from - the territory containing the factory
+     * @return - the fighters to move
+     */
+    public Collection getNumberOfFightersToMoveToNewCarrier(Collection fightersThatCanBeMoved, Territory from);
+ 
+    /**
+     * Some carriers were lost while defending.  We must select where to land
+     * some air units.
+     * 
+     * @param candidates -  a list of territories - these are the places where air units can land
+     * @return - the territory to land the fighters in, must be non null
+     */
+    public Territory selectTerritoryForAirToLand(Collection candidates);
     
 }
