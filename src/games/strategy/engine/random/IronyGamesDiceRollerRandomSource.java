@@ -153,15 +153,9 @@ class HttpDiceRollerDialog extends JDialog
     getContentPane().add(new JScrollPane(m_text));
     m_text.setEditable(false);
 
-    //added Center to Screen code
-
-    Toolkit kit = Toolkit.getDefaultToolkit();
-    Dimension screenSize = kit.getScreenSize();
-    int screenHeight = screenSize.height;
-    int screenWidth  = screenSize.width;
-
     setSize(400, 300);
-    setLocation(screenWidth/2,screenHeight/2);
+    games.strategy.ui.Util.center(this); // games.strategy.ui.Util
+
   }
 
   /**
