@@ -1,5 +1,7 @@
 Changes for 0.5.2
 
+* Added better unix shell scripts for TripleA, thanks DMan for the scripts (George_H)
+
 * Added root folder path fix by Thomas Matthijs for Gentoo friendliness and extra changes for how triplea see file paths (George_H)
 
 * Now all map utils have proper "save as" dialogs (George_H)
