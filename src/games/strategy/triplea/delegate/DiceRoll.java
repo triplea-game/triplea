@@ -63,9 +63,10 @@ public class DiceRoll implements java.io.Serializable
 
   public static DiceRoll rollDice(List units, boolean defending,
                                   PlayerID player,
-                                  DelegateBridge bridge)
+                                  DelegateBridge bridge,
+                                  GameData data)
   {
-      
+
     String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
@@ -74,11 +75,11 @@ public class DiceRoll implements java.io.Serializable
         return new DiceRoll(new int[Constants.MAX_DICE][0], 0 );
     }
 
-    
+
     int artillerySupportAvailable = 0;
     if(!defending)
         artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
-    
+
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
 
     List[] sortedDice = new List[Constants.MAX_DICE];
@@ -96,6 +97,8 @@ public class DiceRoll implements java.io.Serializable
       Unit current = (Unit) iter.next();
       UnitAttatchment ua = UnitAttatchment.get(current.getType());
       int rolls = defending ? 1 : ua.getAttackRolls(player);
+      int lowerRollForBomber=Constants.MAX_DICE;
+      String bomberRollFeedback="Bomber rolled:";
       for(int i = 0; i < rolls; i++)
       {
         int strength;
@@ -112,7 +115,18 @@ public class DiceRoll implements java.io.Serializable
         }
 
         sortedDice[strength - 1].add(new Integer(dice[diceIndex]));
-
+        if(TechTracker.hasHeavyBomber(player) &&
+           data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)!=null &&
+           data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)==Boolean.TRUE)
+        {
+          bomberRollFeedback+=" "+dice[diceIndex];
+          if(lowerRollForBomber>dice[diceIndex])
+            lowerRollForBomber=dice[diceIndex];
+          if(i+1<rolls)
+            continue;
+          bridge.getHistoryWriter().addChildToEvent(bomberRollFeedback+", picked "+lowerRollForBomber);
+          strength=lowerRollForBomber;
+        }
         //dice is [0-MAX_DICE)
         if( strength > dice[diceIndex])
           hitCount++;
