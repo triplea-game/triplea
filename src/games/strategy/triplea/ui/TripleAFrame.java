@@ -338,7 +338,7 @@ public class TripleAFrame extends JFrame
                 {
                     if (name.startsWith(currentMapSubDir))
                     {
-                        File file = new File(aDir + Constants.FILE_SEP + name);
+                        File file = new File(aDir + java.io.File.separator + name);
                         return file.isDirectory();
                     }
                     return (false);
