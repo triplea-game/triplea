@@ -116,8 +116,22 @@ public class MapPanel extends ImageScrollerLargeView
   {
     if(m_route != route || (m_route != null && !m_route.equals(route)))
     {
-      m_route = route;
-      initTerritories();
+      //we can just redraw the route in this case,
+      //no need to redraw the whole screen
+      if(m_route == null ||
+         route != null && route.extend( m_route))
+      {
+        m_route = route;
+        drawRoute();
+        update();
+      }
+      //for now we have to redraw the whole screen
+      //we should find a better way
+      else
+      {
+        m_route = route;
+        initTerritories();
+      }
     }
   }
 
@@ -283,8 +297,7 @@ public class MapPanel extends ImageScrollerLargeView
    */
   private void drawRoute()
   {
-    Route route = m_route;
-    if(route == null)
+    if(m_route == null)
       return;
 
     Graphics2D graphics = (Graphics2D) getOffscreenGraphics();
@@ -293,15 +306,15 @@ public class MapPanel extends ImageScrollerLargeView
 
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    Territory current = route.getStart();
+    Territory current = m_route.getStart();
 
     Point start = (Point) m_centers.get(current);
     Ellipse2D oval = new Ellipse2D.Double(start.x - 3, start.y - 3, 6,6);
     graphics.draw(oval);
 
-    for(int i = 0; i < route.getLength(); i++)
+    for(int i = 0; i < m_route.getLength(); i++)
     {
-      Territory next = route.at(i);
+      Territory next = m_route.at(i);
       start = (Point) m_centers.get(current);
       start = new Point(start.x, start.y);
       Point finish = (Point) m_centers.get(next);
