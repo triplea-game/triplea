@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.IntegerMap;
 
 import java.io.*;
@@ -89,7 +90,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
                 }
             } catch (IOException ioe)
             {
-                System.err.println(ioe.getMessage());
+                System.out.println(ioe.getMessage());
             }
             m_ai = new AI(new Personality(line[0], line[1], line[2], line[3],
                     line[4]), m_id, m_bridge.getGameData());
@@ -101,6 +102,8 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
                     .getGameData());
         }
     }
+    
+    
 
     public void start(String name)
     {
@@ -118,8 +121,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
             place(name.indexOf("Bid") != -1);
         else if (name.endsWith("EndTurn"))
             ;//intentionally blank
-        else
-            throw new IllegalArgumentException("Unrecognized step name:" + name);
+        
 
     }
 
@@ -130,22 +132,12 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
 
     private void move(boolean nonCombat)
     {
-        //The following lines added by Troy Graber
+
 
         Collection moves;
 
-        AllianceTracker m_allies = m_bridge.getGameData().getAllianceTracker();
 
-        Territory cc = m_bridge.getGameData().getMap().getTerritory("Caucaus");
-        //System.out.println(cc.toString());
-        if (cc != null
-                && cc.getUnits().getUnits().iterator().hasNext()
-                && !m_allies.isAllied(cc.getOwner(), (((Unit) (cc.getUnits()
-                        .getUnits().iterator().next())).getOwner())))
-            cc.setOwner(((Unit) (cc.getUnits().getUnits().iterator().next()))
-                    .getOwner());
-
-        //m_ai.setData(m_ui.cloneGameData());
+        m_ai.setData(TripleAFrame.cloneGameData(m_bridge.getGameData()));
         if (nonCombat)
         {
             moves = m_ai.selectNonCombatMoves();
@@ -425,6 +417,15 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
      */
     public void confirmEnemyCasualties(GUID battleId, String message, String step, PlayerID hitPlayer)
     {
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#confirmOwnCasualties(games.strategy.net.GUID, java.lang.String, java.lang.String, games.strategy.triplea.delegate.DiceRoll)
+     */
+    public void confirmOwnCasualties(GUID battleID, String message, String Step, DiceRoll dice)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -118,6 +118,7 @@ public class ClientGame implements IGame
 
     public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
     {
+        
         //we want to skip the first iteration, since that simply advances us to step 0
         if(m_firstRun)
           m_firstRun = false;
@@ -129,13 +130,16 @@ public class ClientGame implements IGame
             m_data.getSequence().next();
           }
         }
+        
         Iterator iter = m_gameStepListeners.iterator();
         while(iter.hasNext())
         {
           GameStepListener listener = (GameStepListener) iter.next();
           listener.gameStepChanged(stepName, delegateName, player, round, displayName);
         }
+        
         m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+      
         
     }
      
@@ -187,12 +191,13 @@ public class ClientGame implements IGame
       public void startPlayerStep(String stepName, PlayerID player)
     {
       
-        
+         
         //make sure we are in the correct step
         //steps are advanced on a different channel, and the
         //message advancing the step may be being processed in a different thread
         while(!m_data.getSequence().getStep().getName().equals(stepName))
         {
+            
             try
             {
                 Thread.sleep(50);
@@ -200,7 +205,9 @@ public class ClientGame implements IGame
             {
                 //no worries mate
             }
+            
         }
+        
         
         IGamePlayer gp = (IGamePlayer) m_gamePlayers.get(player);
 

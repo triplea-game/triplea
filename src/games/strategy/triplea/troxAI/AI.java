@@ -147,43 +147,43 @@ public class AI
 	
 	public Collection selectCombatMoves()
 	{	//Medium AI
-		GameMap m = m_data.getMap();
+		GameMap map = m_data.getMap();
 		//PlayerList pls = m_data.getPlayerList();
-		Iterator i1 = m_data.getPlayerList().getPlayers().iterator();
-		Collection c = new ArrayList();
-		AllianceTracker m_allies = m_data.getAllianceTracker();
+		Iterator playerIter = m_data.getPlayerList().getPlayers().iterator();
+		Collection enemyTerritories = new ArrayList();
+		AllianceTracker allianceTracker = m_data.getAllianceTracker();
 		Collection moves = new ArrayList();
 		int best = 0;
 		Collection bestmoves = new ArrayList();
 		//System.out.println("Combat");
-		while(i1.hasNext() )
+		while(playerIter.hasNext() )
 		{
-			PlayerID p = (PlayerID)i1.next();
+			PlayerID p = (PlayerID)playerIter.next();
 			//System.out.println(p.toString());
-			if(!m_allies.isAllied(m_id, p))
+			if(!allianceTracker.isAllied(m_id, p))
 			{
-				c.addAll(m.getTerritoriesOwnedBy(p));
+				enemyTerritories.addAll(map.getTerritoriesOwnedBy(p));
 			}
 		}
 
-	  	Iterator iter = c.iterator();
-	  	while(iter.hasNext() )
+	  	Iterator enemyTerritoryIter = enemyTerritories.iterator();
+	  	while(enemyTerritoryIter.hasNext() )
 		{
-			Territory territory = (Territory) iter.next();
+			Territory enemyTerritory = (Territory) enemyTerritoryIter.next();
 			//x++;
 			Collection u = new ArrayList();
 			//Set adjacent = m.getNeighbors(territory, 3);
-			Iterator iter2 = m.getNeighbors(territory, 3).iterator();
-			while(iter2.hasNext() )
+			Iterator neighboringTerritoryIter = map.getNeighbors(enemyTerritory, 3).iterator();
+			while(neighboringTerritoryIter.hasNext() )
 			{
-				Territory t2 = (Territory) iter2.next();
-				if(!t2.isWater() && m_allies.isAllied(m_id,t2.getOwner()) && t2.getUnits().getUnits().size() >=1)
+				Territory neighborOfMyEnemy = (Territory) neighboringTerritoryIter.next();
+				if(!neighborOfMyEnemy.isWater() && allianceTracker.isAllied(m_id,neighborOfMyEnemy.getOwner()) && neighborOfMyEnemy.getUnits().getUnits().size() >=1)
 				{
 					Collection temp = new ArrayList();
-					temp.addAll(t2.getUnits().getUnits());
-					Collection newu = selectUnitsWithRange(m_id, temp, m.getLandDistance(territory, t2));
+					temp.addAll(neighborOfMyEnemy.getUnits().getUnits());
+					Collection newu = selectUnitsWithRange(m_id, temp, map.getLandDistance(enemyTerritory, neighborOfMyEnemy));
 					//System.out.println("Current Fitness " + t2.getUnits().getUnits().size());	
-					Route r = m.getLandRoute(t2, territory);
+					Route r = map.getLandRoute(neighborOfMyEnemy, enemyTerritory);
 					
 					if(r != null && r.getLength() >= 1)
 					{
@@ -192,7 +192,7 @@ public class AI
 						for(int q = 0; q < r.getLength() - 1; q++)
 						{
 							//System.out.println(r.at(q).toString());
-							if(!m_allies.isAllied(r.at(q).getOwner(), m_id))
+							if(!allianceTracker.isAllied(r.at(q).getOwner(), m_id))
 								trap = false;
 						}
 						MoveDescription cow = new MoveDescription(newu, r);
@@ -209,10 +209,10 @@ public class AI
 			if(u.size() != 0)
 			{
 				Collection temp = new ArrayList();
-				temp.addAll(territory.getUnits().getUnits());
+				temp.addAll(enemyTerritory.getUnits().getUnits());
 				int current = evaluateAttackhelper(u, temp);
 				//System.out.println("Current Fitness " + current);
-				if(territory.getUnits().getUnits().size() == 0)
+				if(enemyTerritory.getUnits().getUnits().size() == 0)
 				{
 					//System.out.println("empty Country" + best);
 					//current = best + 1;

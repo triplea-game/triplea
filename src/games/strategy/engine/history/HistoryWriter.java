@@ -38,7 +38,7 @@ public class HistoryWriter implements java.io.Serializable
     /**
      * Can only be called if we are currently in a round or a step
      */
-    public synchronized void startNextStep(String stepName, String delegateName, PlayerID player, String stepDisplayName)
+    public void startNextStep(String stepName, String delegateName, PlayerID player, String stepDisplayName)
     {
         s_logger.log(Level.FINE, "start step, stepName:" + stepName + " delegateName:" + delegateName + " player:" + player + " displayName:"
                 + stepDisplayName);
@@ -66,7 +66,7 @@ public class HistoryWriter implements java.io.Serializable
         m_current = currentStep;
     }
 
-    public synchronized void startNextRound(int round)
+    public void startNextRound(int round)
     {
         s_logger.log(Level.FINE, "Starting round:" + round);
 
@@ -107,7 +107,7 @@ public class HistoryWriter implements java.io.Serializable
         m_current = (HistoryNode) m_current.getParent();
     }
 
-    public synchronized void startEvent(String eventName)
+    public void startEvent(String eventName)
     {
         s_logger.log(Level.FINE, "Starting event:" + eventName);
 
@@ -144,7 +144,7 @@ public class HistoryWriter implements java.io.Serializable
     /**
      * Add a child to the current event.
      */
-    public synchronized void addChildToEvent(EventChild node)
+    public void addChildToEvent(EventChild node)
     {
         s_logger.log(Level.FINE, "Adding child:" + node);
 
@@ -162,7 +162,7 @@ public class HistoryWriter implements java.io.Serializable
     /**
      * Add a change to the current event.
      */
-    public synchronized void addChange(Change change)
+    public void addChange(Change change)
     {
         s_logger.log(Level.FINE, "Adding change:" + change);
 
@@ -174,7 +174,7 @@ public class HistoryWriter implements java.io.Serializable
         m_history.changeAdded(change);
     }
 
-    public synchronized void setRenderingData(Object details)
+    public void setRenderingData(Object details)
     {
         s_logger.log(Level.FINE, "Setting rendering data:" + details);
 

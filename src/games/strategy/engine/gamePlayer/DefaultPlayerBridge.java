@@ -72,7 +72,6 @@ public class DefaultPlayerBridge implements IPlayerBridge
             if(delegateName == null)
                 throw new IllegalArgumentException("Null delegate");
             
-            
             m_currentStep = stepName;
             m_currentDelegate = delegateName;
         }

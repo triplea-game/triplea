@@ -277,7 +277,7 @@ public class ServerGame implements IGame
         PlayerID id = getCurrentStep().getPlayerID();
         
         getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);        
-    
+               
         Iterator iter = m_gameStepListeners.iterator();
         while (iter.hasNext())
         {

@@ -21,6 +21,7 @@
 package games.strategy.engine.data;
 
 
+import java.io.Serializable;
 import java.util.*;
 /**
  *
@@ -32,6 +33,7 @@ public class GameSequence extends GameDataComponent
 	private final List m_steps = new ArrayList();
 	private int m_currentIndex;
     private int m_round = 1;
+    private Serializable m_currentStepMutex = new Serializable() {};
 
 	public GameSequence(GameData data)
 	{
@@ -68,20 +70,27 @@ public class GameSequence extends GameDataComponent
      *
      * @return boolean wether the round has changed
      */
-    public boolean next() {
-		m_currentIndex++;
-		if (m_currentIndex == m_steps.size())
+    public boolean next() 
+    {
+        synchronized(m_currentStepMutex)
         {
-          m_currentIndex = 0;
-          m_round++;
-          return true;
+			m_currentIndex++;
+			if (m_currentIndex == m_steps.size())
+	        {
+	          m_currentIndex = 0;
+	          m_round++;
+	          return true;
+	        }
+	        return false;
         }
-        return false;
 	}
 
 	public GameStep getStep()
 	{
-		return getStep(m_currentIndex);
+	    synchronized(m_currentStepMutex)
+	    {
+	        return getStep(m_currentIndex);
+	    }
 	}
 
 	public GameStep getStep(int index)
