@@ -221,7 +221,7 @@ public class UnifiedMessenger
         //invoke locally, we want to do this after remote invocation, since the remote calls and
         //the local calls may execute concurrently
        
-        List results = endPoint.invokeLocal(remoteCall);
+        List results = endPoint.invokeLocal(remoteCall, endPoint.takeANumber());
                 
         //wait for the remote calls to finish
         if(remote.length > 0)
@@ -266,7 +266,7 @@ public class UnifiedMessenger
      
         //invoke locally
         EndPoint endPoint = (EndPoint) m_localEndPoints.get(endPointName);
-        endPoint.invokeLocal(call);                
+        endPoint.invokeLocal(call, endPoint.takeANumber());                
     }
     
     
@@ -435,12 +435,21 @@ public class UnifiedMessenger
                     m_messenger.send(new InvocationResults(new ArrayList(), invoke.methodCallID), from);
                     return;
                 }
+                
+                //very important
+                //we are guaranteed that here messages will be
+                //read in the same order that they are sent from the client
+                //however, once we delegate to the thread pool, there is no
+                //guarantee that the thread pool task will run before
+                //we get the next message notification
+                //get the number for the invocation here
+                final long methodRunNumber = local.takeANumber();
                 //we dont want to block the message thread, only one thread is reading messages
                 //per connection, so run with out thread pool
                 Runnable task = new Runnable() {
                     public void run()
                     {
-                       List results = local.invokeLocal(invoke.call);
+                       List results = local.invokeLocal(invoke.call, methodRunNumber);
                        if(invoke.needReturnValues)
                        {
                            m_messenger.send(new InvocationResults(results, invoke.methodCallID), from);
@@ -603,7 +612,52 @@ public class UnifiedMessenger
  */
 class EndPoint
 {
+    //the next number we are going to give
+    private long m_nextGivenNumber = 0;
+    //the next number we can run
+    private long m_currentRunnableNumber = 0;
+    
+    private final Object m_numberMutext = new Object(); 
+    
+    public long takeANumber()
+    {
+        synchronized(m_numberMutext)
+        {
+            long rVal = m_nextGivenNumber;
+            m_nextGivenNumber++;
+            return rVal;
+        }
+    }
+    
+    private void waitTillCanBeRun(long aNumber)
+    {
+        while(aNumber > m_currentRunnableNumber)
+        {
+            synchronized(m_numberMutext)
+            {
+                try
+                {
+                    m_numberMutext.wait();
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    private void releaseNumber()
+    {
+        synchronized(m_numberMutext)
+        {
+            m_currentRunnableNumber++;
+            m_numberMutext.notifyAll();
+        }
+    }
+    
    
+    
+    
     private static final Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
     
     private final String m_name;
@@ -668,25 +722,31 @@ class EndPoint
     }
     
     /*
+     * @param number - like the number you get in a bank line, if 
+     * we are single threaded, then the method will not run until the number
+     * comes up.  Acquire with getNumber()
      * @return a List of RemoteMethodCallResults
      */
-    public synchronized List invokeLocal(final RemoteMethodCall call)
+    public synchronized List invokeLocal(final RemoteMethodCall call, long number)
     {
-  
-        
-        if(m_implementors.isEmpty())
-            return new ArrayList();
-
-        if(m_singleThreaded)
+        try
         {
-            synchronized(this)
-            {
-                return invokeMultiple(call);               
-            }
+	        if(m_implementors.isEmpty())
+	            return new ArrayList();
+	
+	        if(m_singleThreaded)
+	        {
+	            waitTillCanBeRun(number);
+	            return invokeMultiple(call);               
+	            
+	        }
+	        else
+	            return invokeMultiple(call);	
         }
-        else
-            return invokeMultiple(call);	
-               
+        finally
+        {
+            releaseNumber();
+        }
         
     }
     
@@ -796,6 +856,11 @@ class EndPointDestroyed implements Serializable
     {
         this.name = name;
     }
+    
+    public String toString()
+    {
+        return "EndPointDestroyed:" + name;
+    }
 }
 
 //someone now has an implementor for an endpoint
@@ -803,8 +868,6 @@ class HasEndPointImplementor implements Serializable
 {
     public final String endPointName;
 
-    
-    
     public HasEndPointImplementor(String endPointName)
     {
         this.endPointName = endPointName;
