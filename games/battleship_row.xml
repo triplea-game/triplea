@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Battleship Row" version="0.1.2"/>
+	<info name="Battleship Row" version="0.1.3"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -625,7 +625,6 @@
 			<frontierRules name="buySubmarine"/>
 			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyBattleship"/>
-			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyAAGun"/>
 		</productionFrontier>
 		
@@ -635,9 +634,9 @@
 			<frontierRules name="buyFighterIndustrialTechnology"/>
 			<frontierRules name="buyBomberIndustrialTechnology"/>
 			<frontierRules name="buyTransportIndustrialTechnology"/>
+			<frontierRules name="buySubmarineIndustrialTechnology"/>
 			<frontierRules name="buyCarrierIndustrialTechnology"/>
 			<frontierRules name="buyBattleshipIndustrialTechnology"/>
-			<frontierRules name="buyCarrierIndustrialTechnology"/>
 			<frontierRules name="buyAAGunIndustrialTechnology"/>
 		</productionFrontier>
 

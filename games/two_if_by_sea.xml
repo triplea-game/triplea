@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="two_if_by_sea" version="0.2"/>
+	<info name="two_if_by_sea" version="0.3"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -593,7 +593,6 @@
 			<frontierRules name="buySubmarine"/>
 			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyBattleship"/>
-			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyAAGun"/>
 			<frontierRules name="buyFactory"/>	
 		</productionFrontier>
@@ -606,7 +605,6 @@
 			<frontierRules name="buyTransportIndustrialTechnology"/>
 			<frontierRules name="buyCarrierIndustrialTechnology"/>
 			<frontierRules name="buyBattleshipIndustrialTechnology"/>
-			<frontierRules name="buyCarrierIndustrialTechnology"/>
 			<frontierRules name="buyAAGunIndustrialTechnology"/>
 			<frontierRules name="buyFactoryIndustrialTechnology"/>	
 		</productionFrontier>
