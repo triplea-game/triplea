@@ -473,14 +473,28 @@ public class MoveDelegate implements SaveableDelegate
     private String validateNonCombat(Collection units, Route route, PlayerID player)
     {
 
+        
+        
         CompositeMatch battle = new CompositeMatchOr();
-        battle.add(Matches.territoryHasEnemyUnits(player, m_data));
-        battle.add(Matches.isTerritoryEnemy(player, m_data));
         battle.add(Matches.TerritoryIsNuetral);
-
+        battle.add(Matches.isTerritoryEnemy(player, m_data));
+        
         if (battle.match(route.getEnd()))
+        {
             return "Cant advance units to battle in non combat";
+        }
 
+        
+        if(route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, m_data)))
+        {
+            boolean someDestroyers = Match.someMatch(units, Matches.UnitIsDestroyer);
+            if(someDestroyers)
+               return "Cant advance to battle in non combat";
+            if(!route.getEnd().getUnits().allMatch(Matches.unitIsSubmerged(m_data)))
+            {
+                return "Cant advance to battle in non combat";
+            }
+        }
         
         if (Match.allMatch(units, Matches.UnitIsAir))
         {

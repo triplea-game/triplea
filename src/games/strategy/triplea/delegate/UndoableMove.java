@@ -214,11 +214,11 @@ public class UndoableMove implements Serializable
             {
                 Unit unit = (Unit) iter.next();
                 Route routeUnitUsedToMove = DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
-                if(battleLand != null)
+                if(battleLand != null && !battleLand.isOver())
                 {
                     battleLand.addAttack(routeUnitUsedToMove, Collections.singleton(unit));
                 }
-                if(battleAir != null)
+                if(battleAir != null && !battleAir.isOver())
                 {
                     battleAir.addAttack(routeUnitUsedToMove, Collections.singleton(unit));
                 }

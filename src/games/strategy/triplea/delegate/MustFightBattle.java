@@ -90,6 +90,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         return m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
     }
+    
+    public boolean isOver()
+    {
+        return m_over;
+    }
 
     public void removeAttack(Route route, Collection units)
     {

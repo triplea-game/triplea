@@ -46,6 +46,7 @@ public class NonFightingBattle implements Battle
 	private BattleTracker m_battleTracker;
 	private GameData m_data;
 	private TransportTracker m_transportTracker;
+	private boolean m_isOver = false; 
 
 	//dependent units
 	//maps unit -> Collection of units
@@ -75,6 +76,12 @@ public class NonFightingBattle implements Battle
 			m_battleTracker.addToConquered(m_battleSite);
 		}
 		m_battleTracker.removeBattle(this);
+		m_isOver = true;
+	}
+	
+	public boolean isOver()
+	{
+	    return m_isOver;
 	}
 
     private boolean hasAttackingUnits()

@@ -46,6 +46,8 @@ interface Battle extends java.io.Serializable
 
 	public void fight(DelegateBridge bridge);
 
+	public boolean isOver();
+	
 	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge);
 	
     /**

@@ -47,7 +47,8 @@ public class StrategicBombingRaidBattle implements Battle
     private PlayerID m_attacker;
     private GameData m_data;
     private BattleTracker m_tracker;
-
+    private boolean m_isOver = false;
+    
     /** Creates new StrategicBombingRaidBattle */
     public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker)
     {
@@ -58,6 +59,11 @@ public class StrategicBombingRaidBattle implements Battle
         m_defender = defender;
         m_tracker = tracker;
     }
+    
+    public boolean isOver()
+    {
+        return m_isOver;
+    }
 
     public boolean isEmpty()
     {
@@ -67,7 +73,6 @@ public class StrategicBombingRaidBattle implements Battle
 
     public void removeAttack(Route route, Collection units)
     {
-
         m_units.removeAll(units);
     }
 
@@ -125,7 +130,9 @@ public class StrategicBombingRaidBattle implements Battle
         BattleEndMessage battleEnd = new BattleEndMessage("Bombing raid cost " + cost);
         bridge.sendMessage(battleEnd, m_attacker);
         bridge.sendMessage(battleEnd, m_defender);
-
+        
+        m_isOver = true;
+        
     }
 
     private void fireAA(DelegateBridge bridge)
