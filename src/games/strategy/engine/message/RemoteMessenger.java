@@ -17,6 +17,7 @@ package games.strategy.engine.message;
 import java.io.Serializable;
 import java.lang.reflect.*;
 import java.lang.reflect.Method;
+import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,9 +39,10 @@ public class RemoteMessenger implements IRemoteMessenger
     
     //maps remote name -> interface for that remote
     //this is a global map
-    private final Map m_namesToInterfaces = new HashMap();
+    private final Map m_namesToInterfaces = Collections.synchronizedMap(new HashMap());
     //the remotes that have been registered locally
-    private final Map m_localRemotes = new HashMap();
+    private final Map m_localRemotes = Collections.synchronizedMap(new HashMap());
+    
     
     /* 
      * @see games.strategy.net.IRemoteMessenger#getRemote(java.lang.String)
@@ -50,6 +52,7 @@ public class RemoteMessenger implements IRemoteMessenger
         m_messageManager = messageManager;
         m_messenger = messenger;
         m_messenger.addMessageListener(m_messageListener);
+        m_messenger.broadcast(new RemoteInitRequest());
     }
     
   
@@ -122,7 +125,21 @@ public class RemoteMessenger implements IRemoteMessenger
            else if(msg instanceof RemoteMessengerKeyRemoved)
            {
                unregisterLocal((RemoteMessengerKeyRemoved) msg);
-           }              
+           }
+           if(msg instanceof RemoteInitRequest)
+           {
+               //only the server should respond
+               if(!m_messenger.isServer())
+                   return;
+               Map mapping = new HashMap(m_namesToInterfaces);
+               Iterator iter = mapping.keySet().iterator();
+               while(iter.hasNext())
+               {
+                  String name = (String) iter.next();
+                  String className = ((Class) mapping.get(name) ).getName();
+                  m_messenger.send(new RemoteMessengerKeyAdded(name, className), from);
+               }
+           }
         }
     };
     
@@ -185,6 +202,13 @@ class RemoteMessengerKeyAdded implements Serializable
     }
 }
 
+/**
+ * We have just joined the network, request the registered keys
+ */
+class RemoteInitRequest implements Message
+{
+    
+}
 
 /**
  * Listens for RemoteMethodCall, and returns RemoteMethodCallResults.

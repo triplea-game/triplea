@@ -16,6 +16,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.*;
 import java.util.*;
 import games.strategy.util.*;
@@ -144,13 +145,7 @@ public class RocketsFireHelper
             return (Territory) targets.iterator().next();
         }
 
-        Message response = bridge.sendMessage(new RocketAttackQuery(targets, from), player);
-        if (!(response instanceof TerritoryMessage))
-            throw new IllegalStateException("Message of wrong type:" + response);
-        TerritoryMessage territoryMessage = (TerritoryMessage) response;
-        if (territoryMessage.getTerritory() == null)
-            return null;
-        return territoryMessage.getTerritory();
+        return ((ITripleaPlayer) bridge.getRemote()).whereShouldRocketsAttach(targets, from);
     }
 
     private void fireRocket(PlayerID player, Territory attackedTerritory, IDelegateBridge bridge, GameData data)

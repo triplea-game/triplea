@@ -121,10 +121,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         } else if (message instanceof LandAirQueryMessage)
         {
             return m_ui.getLandAir((LandAirQueryMessage) message);
-        } else if (message instanceof RocketAttackQuery)
-        {
-            return m_ui.getRocketAttack((RocketAttackQuery) message);
-        } else if (message instanceof BattleEndMessage)
+        }  else if (message instanceof BattleEndMessage)
         {
             m_ui.battleEndMessage((BattleEndMessage) message);
             return null;
@@ -367,6 +364,11 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         return m_ui.getStrategicBombingRaid(territory);
        
     } 
+    
+    public Territory whereShouldRocketsAttach(Collection candidates, Territory from)
+    {
+        return m_ui.getRocketAttack(candidates, from);
+     }
     
     
     

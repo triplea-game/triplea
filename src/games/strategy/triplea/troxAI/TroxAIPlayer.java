@@ -97,12 +97,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
         {
             //return m_ui.getRetreat( (RetreatQueryMessage) message);
             return null;
-        }  else if (message instanceof RocketAttackQuery)
-        {
-            Territory selected = (Territory) ((RocketAttackQuery) message)
-                    .getTerritories().iterator().next();
-            return new TerritoryMessage(selected);
-        } else if (message instanceof BattleEndMessage)
+        }   else if (message instanceof BattleEndMessage)
         {
 
             return null;
@@ -399,6 +394,15 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     public boolean shouldBomberBomb(Territory territory)
     {
         return false;
+    }
+
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#whereShouldRocketsAttach(java.util.Collection, games.strategy.engine.data.Territory)
+     */
+    public Territory whereShouldRocketsAttach(Collection candidates, Territory from)
+    {   
+        //just use the first one
+        return (Territory) candidates.iterator().next();
     }
 
 }

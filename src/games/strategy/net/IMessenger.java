@@ -108,4 +108,6 @@ public interface IMessenger
      * Pause the current thread until there are no messages are being processed.
      */
     public void waitForAllMessagsToBeProcessed();
+    
+    public boolean isServer();
 }

@@ -397,6 +397,10 @@ public class ServerMessenger implements IServerMessenger
   {
       Connection.s_threadPool.waitForAll();
   }
-
+  
+  public boolean isServer()
+  {
+      return true;
+  }
 
 }

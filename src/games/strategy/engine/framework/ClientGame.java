@@ -78,6 +78,7 @@ public class ClientGame implements IGame
       gp.initialize(bridge, player);
 
       m_messageManager.addDestination(gp);
+      m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, ServerGame.getRemoteName(gp.getID()));
 
       // Add a corresponding random destination for this GamePlayer
       RandomDestination rnd_dest = new RandomDestination(gp.getName() );

@@ -124,5 +124,10 @@ public class DummyMessenger implements IServerMessenger
   {
       
   }
+  
+  public boolean isServer()
+  {
+      return true;
+  }
 
 }

@@ -275,4 +275,9 @@ public class ClientMessenger implements IMessenger
     {
         Connection.s_threadPool.waitForAll();
     }
+    
+    public boolean isServer()
+    {
+        return false;
+    }
 }

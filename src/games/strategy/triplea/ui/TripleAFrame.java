@@ -828,10 +828,10 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForTech();
     }
 
-    public TerritoryMessage getRocketAttack(RocketAttackQuery msg)
+    public Territory getRocketAttack(Collection candidates, Territory from)
     {
-        Collection territories = msg.getTerritories();
-        JList list = new JList(new Vector(territories));
+        
+        JList list = new JList(new Vector(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         JPanel panel = new JPanel();
@@ -839,10 +839,10 @@ public class TripleAFrame extends JFrame
         JScrollPane scroll = new JScrollPane(list);
         panel.add(scroll, BorderLayout.CENTER);
 
-        if (msg.getFrom() != null)
+        if (from != null)
         {
             panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in "
-                    + msg.getFrom().getName()));
+                    + from.getName()));
         }
 
         String[] options = { "OK", "Dont attack" };
@@ -856,7 +856,7 @@ public class TripleAFrame extends JFrame
         if (selection == 0) //OK
             selected = (Territory) list.getSelectedValue();
 
-        return new TerritoryMessage(selected);
+        return selected;
     }
 
     public boolean playing(PlayerID id)

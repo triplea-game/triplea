@@ -75,4 +75,13 @@ public interface ITripleaPlayer extends IRemote
      * raid can be conducted, should the bomber bomb? 
      */
     public boolean shouldBomberBomb(Territory territory);
+    
+    /**
+     * 
+     * @param candidates  - a collection of Territories,  the possible territories to attack
+     * @param from - where the rockets are launched from, null for 3rd edition rules
+     * @return the territory to attack, null if no territory should be attacked
+     */
+    public Territory whereShouldRocketsAttach(Collection candidates, Territory from);
+    
 }
