@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * PlaceDelegate.java
  *
  * Created on November 2, 2001, 12:29 PM
@@ -192,7 +206,13 @@ public class PlaceDelegate implements Delegate
 		//territories adjacent have factories
 		if(producer == null)
 			return new StringMessage("No factory adjacent to " + placeMessage.getTo().getName(), true);
-			
+		
+
+		
+		//make sure the territory wasnt conquered this turn
+		if(wasConquered(producer))
+			return new StringMessage(producer.getName() + " was conqured this turn and cannot produce till next turn", true);
+		
 		//make sure there is a factory
 		if(! hasFactory(producer))
 		{
@@ -224,16 +244,30 @@ public class PlaceDelegate implements Delegate
 		return null;
 	}
 
+	private boolean wasConquered(Territory t)
+	{
+		BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
+		return tracker.wasConquered(t);
+	}
+	
 	/**
 	 * Returns the better producer of the two territories, either of which can be null.
 	 */
 	private Territory getBetterProducer(Territory t1, Territory t2, IntegerMap alreadyProduced)
 	{
+		//anything is better than nothing
 		if(t1 == null)
 			return t2;
 		if(t2 == null)
 			return t1;
+
+		//conquered cant produce
+		if(wasConquered(t1))
+			return t2;
+		if(wasConquered(t2))
+			return t1;
 		
+		//original factories are good
 		TerritoryAttatchment t1a = TerritoryAttatchment.get(t1);
 		if(t1a.isOriginalFactory())
 			return t1;
@@ -241,6 +275,7 @@ public class PlaceDelegate implements Delegate
 		if(t2a.isOriginalFactory())
 			return t2;
 		
+		//which can produce the most
 		if(t1a.getProduction() - alreadyProduced.getInt(t1) > t2a.getProduction() - alreadyProduced.getInt(t2))
 			return t1;
 		return t2;
