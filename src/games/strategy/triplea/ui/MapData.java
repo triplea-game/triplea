@@ -45,10 +45,7 @@ public class MapData
 
     //maps PlayerName as String to Color
     private Map m_playerColors = new HashMap();
-    {
-        //default for null player
-        m_playerColors.put(PlayerID.NULL_PLAYERID.getName(), new Color(204, 153, 51));        
-    }
+
     
     //maps String -> List of points
     private Map m_place;
