@@ -48,7 +48,11 @@ public class GameObjectInputStream extends ObjectInputStream
 
 	protected Object resolveObject(Object obj) throws IOException
 	{
-		if((obj instanceof GameObjectStreamData))
+    if(obj instanceof GameData)
+    {
+       return m_dataSource.getData();
+    }
+		else if((obj instanceof GameObjectStreamData))
 		{
 			return ((GameObjectStreamData) obj).getReference(getData());
 		}
