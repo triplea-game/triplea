@@ -15,6 +15,7 @@
 package games.strategy.triplea.delegate.message;
 
 import games.strategy.engine.message.*;
+import java.util.List;
 
 /**
  * A reply from the server telling how many moves have been made.
@@ -22,21 +23,26 @@ import games.strategy.engine.message.*;
 
 public class MoveCountReplyMessage implements Message
 {
-  final String[] m_moves;
+  //A list of UndoableMoves
+  final List  m_moves;
 
-  public MoveCountReplyMessage(String[] moves)
+  /**
+   *
+   * @param moves List - a list of undoable moves
+   */
+  public MoveCountReplyMessage(List moves)
   {
     m_moves = moves;
   }
 
-  public String[] getMoves()
+  public List getMoves()
   {
     return m_moves;
   }
 
   public int getMoveCount()
   {
-    return m_moves.length;
+    return m_moves.size();
   }
 
 }

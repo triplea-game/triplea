@@ -314,14 +314,51 @@ public class MapPanel extends ImageScrollerLargeView
       Point finish = (Point) m_centers.get(next);
       finish = new Point(finish.x, finish.y);
 
-      drawLineSegment(graphics, start.x, start.y, finish.x , finish.y, i + 1 == m_route.getLength());
+      Point nextPoint = null;
+      if(i + 1 != m_route.getLength())
+      {
+          nextPoint = (Point) m_centers.get( m_route.at(i+1));
+          drawCurvedLineSegment(graphics, start.x, start.y, finish.x, finish.y, nextPoint.x, nextPoint.y);
+      }
+      else
+      {
+          drawLineSegment(graphics, start.x, start.y, finish.x, finish.y);
+      }
 
       current = next;
     }
   }
 
+  private void drawCurvedLineSegment(Graphics2D graphics, int x, int y, int xx, int yy, int xxx, int yyy)
+  {
+      final int maxControlLength = 100;
+      int controlDiffx = xx - xxx;
+      if( Math.abs(controlDiffx) > maxControlLength)
+      {
+          controlDiffx = controlDiffx < 0 ?  -maxControlLength : maxControlLength;
+      }
+
+      int controlDiffy = yy - yyy;
+      if (Math.abs(controlDiffy) > maxControlLength)
+      {
+          controlDiffy = controlDiffy < 0 ? -maxControlLength :
+              maxControlLength;
+      }
+
+
+      int controlx = xx + controlDiffx;
+      int controly = yy + controlDiffy;
+
+      QuadCurve2D.Double curve = new QuadCurve2D.Double(x,y,controlx, controly, xx,yy);
+      graphics.draw(curve);
+
+      Ellipse2D oval = new Ellipse2D.Double(xx - 3, yy - 3, 6, 6);
+      graphics.draw(oval);
+
+  }
+
   //http://www.experts-exchange.com/Programming/Programming_Languages/Java/Q_20627343.html
-  private void drawLineSegment( Graphics2D graphics, int x, int y, int xx, int yy, boolean lastLineSegment )
+  private void drawLineSegment( Graphics2D graphics, int x, int y, int xx, int yy)
   {
     float arrowWidth = 12.0f ;
     float theta = 0.7f ;
@@ -360,22 +397,12 @@ public class MapPanel extends ImageScrollerLargeView
     xPoints[ 2 ] = (int)( baseX - th * vecLeft[0] );
     yPoints[ 2 ] = (int)( baseY - th * vecLeft[1] );
 
-    //draw a dot at the end of the line
-    if(!lastLineSegment)
-    {
-      Shape line = new Line2D.Double(x, y, xx, yy);
-      graphics.draw(line);
-      Ellipse2D oval = new Ellipse2D.Double(xx - 3, yy - 3, 6, 6);
-      graphics.draw(oval);
-    }
     //draw an arrow
-    else
-    {
       Shape line = new Line2D.Double( x, y, (int)baseX, (int)baseY);
       graphics.draw(line);
 
       graphics.fillPolygon(xPoints, yPoints, 3);
-    }
+
 
   }
 

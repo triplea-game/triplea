@@ -32,6 +32,7 @@ import games.strategy.triplea.*;
  */
 public class Matches
 {
+
 	public static final Match UnitIsSea = new Match()
 	{
 		public boolean match(Object obj)
@@ -326,6 +327,20 @@ public class Matches
 		}
 	};
 
+
+    /**
+     *  Match units that have at least lower limit movement
+     */
+    public static Match unitHasEnoughMovement(final int lowerLimit, final IntegerMap movement)
+    {
+        return new Match()
+        {
+            public boolean match(Object o)
+            {
+                return movement.getInt(o) >= lowerLimit;
+            }
+        };
+    }
 
 	public static Match unitIsOwnedBy(final PlayerID player)
 	{

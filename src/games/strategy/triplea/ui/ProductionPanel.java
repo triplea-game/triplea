@@ -48,8 +48,6 @@ public class ProductionPanel extends JPanel
   private static ProductionPanel s_panel;
 
   private Collection m_rules = new ArrayList();
-  private int m_limit;
-  private int m_current;
   private JLabel m_left = new JLabel();
   private PlayerID m_id;
   private boolean m_bid;

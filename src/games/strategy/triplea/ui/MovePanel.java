@@ -29,7 +29,6 @@ import javax.swing.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.PlayerBridge;
-import games.strategy.engine.data.events.*;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.engine.message.Message;
@@ -49,9 +48,8 @@ public class MovePanel extends ActionPanel
     private PlayerBridge m_bridge;
 
     private List m_forced;
-    private JLabel m_moveLabel = new JLabel();
 
-    private String[] m_currentMoves = null;
+    private UndoableMovesPanel m_undableMovesPanel;
 
     /** Creates new MovePanel */
     public MovePanel(GameData data, MapPanel map)
@@ -64,8 +62,15 @@ public class MovePanel extends ActionPanel
                         KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
                         WHEN_IN_FOCUSED_WINDOW
                         );
+         m_undableMovesPanel = new UndoableMovesPanel(data, this);
+    }
 
-
+    private JComponent leftBox(JComponent c)
+    {
+        Box b = new Box(BoxLayout.X_AXIS);
+        b.add(c);
+        b.add(Box.createHorizontalGlue());
+        return b;
     }
 
     public void display(PlayerID id, boolean nonCombat)
@@ -74,32 +79,31 @@ public class MovePanel extends ActionPanel
         removeAll();
         m_actionLabel.setText(id.getName() +
                               (nonCombat ? " non combat" : " combat") + " move");
-        this.add(m_actionLabel);
-        this.add(new JButton(CANCEL_MOVE_ACTION));
-        this.add(new JButton(DONE_MOVE_ACTION));
-        this.add(new JLabel("  "));
-        this.add(m_moveLabel);
-        this.add(new JButton(SHOW_MOVES_ACTION));
-        this.add(new JButton(UNDO_MOVE_ACTION));
+        this.add(leftBox(m_actionLabel));
+        this.add(leftBox(new JButton(CANCEL_MOVE_ACTION)));
+        this.add(leftBox(new JButton(DONE_MOVE_ACTION)));
+        this.add(Box.createVerticalStrut(40));
+
+
+        this.add(m_undableMovesPanel);
+        this.add(Box.createGlue());
 
         SwingUtilities.invokeLater(REFRESH);
     }
 
-    private void updateMoveLabel()
+    private void updateMoves()
     {
         MoveCountReplyMessage moves = (MoveCountReplyMessage) m_bridge.
             sendMessage(new MoveCountRequestMessage());
         int moveCount = moves.getMoveCount();
-        m_moveLabel.setText(moveCount + (moveCount == 1 ? " Move" : " Moves"));
-        m_currentMoves = moves.getMoves();
-        UNDO_MOVE_ACTION.setEnabled(moveCount != 0);
-        SHOW_MOVES_ACTION.setEnabled(moveCount != 0);
+
+        m_undableMovesPanel.setMoves(moves.getMoves());
     }
 
     public MoveMessage waitForMove(PlayerBridge bridge)
     {
         setUp(bridge);
-        updateMoveLabel();
+        updateMoves();
         synchronized (getLock())
         {
             try
@@ -153,27 +157,6 @@ public class MovePanel extends ActionPanel
         }
     };
 
-    private final AbstractAction UNDO_MOVE_ACTION = new AbstractAction(
-        "Undo last move")
-    {
-        public void actionPerformed(ActionEvent e)
-        {
-            StringMessage results = (StringMessage) m_bridge.sendMessage(new
-                UndoMoveMessage(0));
-            if (results != null && results.isError())
-            {
-                JOptionPane.showMessageDialog(getTopLevelAncestor(),
-                                              results.getMessage(),
-                                              "Could not undo move",
-                                              JOptionPane.ERROR_MESSAGE);
-            }
-            else
-            {
-                updateMoveLabel();
-            }
-
-        }
-    };
 
     private final AbstractAction CANCEL_MOVE_ACTION = new AbstractAction(
         "Cancel")
@@ -188,28 +171,34 @@ public class MovePanel extends ActionPanel
         }
     };
 
-    private Collection getUnitsToMove(Territory start, Territory end)
+    private Collection getUnitsToMove(Route route)
     {
         CompositeMatch ownedNotFactory = new CompositeMatchAnd();
         ownedNotFactory.add(Matches.UnitIsNotFactory);
         ownedNotFactory.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
 
-        Collection owned = start.getUnits().getMatches(ownedNotFactory);
+        Collection owned = route.getStart().getUnits().getMatches(ownedNotFactory);
 
-        if (start.isWater())
+        if (route.getStart().isWater())
         {
-            if (end.isWater())
+            if (route.getEnd().isWater())
             {
                 owned = Match.getMatches(owned, Matches.UnitIsNotLand);
             }
-            if (!end.isWater())
+            if (!route.getEnd().isWater())
             {
                 owned = Match.getMatches(owned, Matches.UnitIsNotSea);
             }
         }
 
-        UnitChooser chooser = getUnitChooser(owned, start);
-        String text = "Select units to move from " + start.getName() + ".";
+
+        UnitChooser chooser = getUnitChooser(owned, route);
+        if(chooser == null)
+        {
+            JOptionPane.showMessageDialog(getTopLevelAncestor(), "No units can move that far", "No units", JOptionPane.INFORMATION_MESSAGE);
+            return Collections.EMPTY_LIST;
+        }
+        String text = "Select units to move from " + route.getStart().getName() + ".";
         int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                                                   chooser, text,
                                                   JOptionPane.OK_CANCEL_OPTION,
@@ -221,16 +210,22 @@ public class MovePanel extends ActionPanel
         return chooser.getSelected();
     }
 
-    private UnitChooser getUnitChooser(Collection units, Territory start)
+    private UnitChooser getUnitChooser(Collection units, Route route)
     {
-        Message msg = new MustMoveWithQuery(units, start);
+        Message msg = new MustMoveWithQuery(units, route.getStart());
         Message response = m_bridge.sendMessage(msg);
+
         if (! (response instanceof MustMoveWithReply))
             throw new IllegalStateException("Message of wrong type:" + response);
 
         MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
 
-        return new UnitChooser(units, mustMoveWith.getMustMoveWith(),
+        Collection canMove = Match.getMatches(units, Matches.unitHasEnoughMovement(route.getLength(), mustMoveWith.getMovement()));
+        if(canMove.isEmpty())
+            return null;
+
+
+        return new UnitChooser(canMove, mustMoveWith.getMustMoveWith(),
                                mustMoveWith.getMovement(), m_bridge.getGameData());
     }
 
@@ -329,35 +324,7 @@ public class MovePanel extends ActionPanel
     }
 
 
-    private final Action SHOW_MOVES_ACTION = new AbstractAction("Show Moves...")
-    {
-        public void actionPerformed(ActionEvent e)
-        {
 
-            JEditorPane editorPane = new JEditorPane();
-            editorPane.setEditable(false);
-            editorPane.setContentType("text/html");
-
-            StringBuffer text = new StringBuffer();
-            for (int i = 0; i < m_currentMoves.length; i++)
-            {
-                text.append("<b>");
-                text.append(i + 1);
-                text.append(")</b> ");
-                text.append(m_currentMoves[i]);
-                text.append(".<br>");
-            }
-            editorPane.setText(text.toString());
-
-            JScrollPane scroll = new JScrollPane(editorPane);
-            scroll.setPreferredSize(new Dimension(350, 200));
-            scroll.setMaximumSize(new Dimension(350, 200));
-
-            JOptionPane.showMessageDialog(MovePanel.this, scroll, "Moves Made",
-                                          JOptionPane.PLAIN_MESSAGE);
-
-        }
-    };
 
     private final MapSelectionListener MAP_SELECTION_LISTENER = new
         DefaultMapSelectionListener()
@@ -408,8 +375,8 @@ public class MovePanel extends ActionPanel
             }
             else if (m_firstSelectedTerritory != territory)
             {
-                Collection units = getUnitsToMove(m_firstSelectedTerritory,
-                                                  territory);
+                Route route = getRoute(m_firstSelectedTerritory, territory);
+                Collection units = getUnitsToMove(route);
                 if (units.size() == 0)
                 {
                     m_firstSelectedTerritory = null;
@@ -420,7 +387,7 @@ public class MovePanel extends ActionPanel
                 }
                 else
                 {
-                    Route route = getRoute(m_firstSelectedTerritory, territory);
+
                     MoveMessage message = new MoveMessage(units, route);
                     m_moveMessage = message;
                     m_firstSelectedTerritory = null;
@@ -447,4 +414,26 @@ public class MovePanel extends ActionPanel
     {
         return "MovePanel";
     }
+
+    public void undoMove(int moveIndex)
+    {
+        StringMessage results = (StringMessage) m_bridge.sendMessage(new
+            UndoMoveMessage(moveIndex));
+        if (results != null && results.isError())
+        {
+            JOptionPane.showMessageDialog(getTopLevelAncestor(),
+                                          results.getMessage(),
+                                          "Could not undo move",
+                                          JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+            updateMoves();
+        }
+
+    }
+
 }
+
+
+

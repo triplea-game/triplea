@@ -194,16 +194,7 @@ public class MoveDelegate implements SaveableDelegate
 
   private MoveCountReplyMessage getMoveCount()
   {
-    String[] moves = new String[m_movesToUndo.size()];
-    int index = 0;
-
-    Iterator iter = m_movesToUndo.iterator();
-    while (iter.hasNext()) {
-      UndoableMove item = (UndoableMove)iter.next();
-      moves[index] = item.getDescription();
-      index++;
-    }
-    return new MoveCountReplyMessage(moves);
+    return new MoveCountReplyMessage(m_movesToUndo);
 
   }
 
@@ -219,11 +210,20 @@ public class MoveDelegate implements SaveableDelegate
     if( !moveToUndo.getcanUndo())
         return new StringMessage("Move cannot be undone:" + moveToUndo.getReasonCantUndo(), true);
 
-    moveToUndo.undo(m_data, m_bridge, m_alreadyMoved, DelegateFinder.battleDelegate(m_data).getBattleTracker(), m_transportTracker);
+    moveToUndo.undo(m_bridge, m_alreadyMoved, DelegateFinder.battleDelegate(m_data).getBattleTracker(), m_transportTracker);
     m_movesToUndo.remove(message.getIndex());
+    updateUndoableMoveIndexes();
 
     return null;
   }
+
+private void updateUndoableMoveIndexes()
+{
+    for(int i = 0; i < m_movesToUndo.size(); i++)
+    {
+        ((UndoableMove) m_movesToUndo.get(i) ).setIndex(i);
+    }
+}
 
   private MustMoveWithReply mustMoveWith(MustMoveWithQuery query)
   {
@@ -364,7 +364,9 @@ public class MoveDelegate implements SaveableDelegate
     if(!rVal.isError())
     {
       m_currentMove.markEndMovement(m_alreadyMoved);
+      m_currentMove.initializeDependencies(m_movesToUndo);
       m_movesToUndo.add(m_currentMove);
+      updateUndoableMoveIndexes();
     }
     m_currentMove = null;
     return rVal;
@@ -1355,128 +1357,3 @@ class MoveState implements Serializable
 }
 
 
-/**
- * Stores data about a move so that it can be undone.
- * Stores the serialized state of the move and battle delegates (just
- * as if they were saved), and a CompositeChange that represents all the changes that
- * were made during the move.
- *
- * Some moves (such as those following an aa fire) can't be undone.
- */
-
-class UndoableMove implements Serializable
-{
-  private CompositeChange m_undoChange = new CompositeChange();
-  private String m_reasonCantUndo;
-  private String m_description;
-  private IntegerMap m_changedMovement;
-  private IntegerMap m_startingMovement; //needed so we can calculate the change when done
-  //maps unit -> transport, both of type Unit
-  private Map m_loaded;
-  //maps unit -> transport, both of type Unit
-  private Map m_unloaded;
-
-  private final Route m_route;
-  private final Collection m_units;
-
-  public boolean getcanUndo()
-  {
-      return m_reasonCantUndo == null;
-  }
-
-  public String getReasonCantUndo()
-  {
-    return m_reasonCantUndo;
-  }
-
-  public void setCantUndo(String reason)
-  {
-    m_reasonCantUndo = reason;
-  }
-
-  public void addChange(Change aChange)
-  {
-    m_undoChange.add(aChange);
-  }
-
-  public String getDescription()
-  {
-    return m_description;
-  }
-
-  public void setDescription(String description)
-  {
-    m_description = description;
-  }
-
-  public UndoableMove(GameData data, IntegerMap startMovement, Collection units, Route route)
-  {
-      m_startingMovement = startMovement.copy();
-      m_route = route;
-      m_units = units;
-  }
-
-  public void load(Unit unit, Unit transport)
-  {
-      if(m_loaded == null)
-          m_loaded = new HashMap();
-      m_loaded.put(unit, transport);
-  }
-
-  public void unload(Unit unit, Unit transport)
-  {
-      if(m_unloaded == null)
-          m_unloaded = new HashMap();
-      m_unloaded.put(unit, transport);
-  }
-
-
-
-  public void markEndMovement(IntegerMap endMovement)
-  {
-      //start - change
-      m_changedMovement = m_startingMovement.copy();
-      m_changedMovement.subtract(endMovement);
-      //we dont need this any more
-      m_startingMovement = null;
-
-  }
-
-
-
-  public void undo(GameData data, DelegateBridge bridge, IntegerMap movement, BattleTracker battleTracker, TransportTracker transportTracker)
-  {
-      //undo any changes to the game data
-      bridge.addChange(m_undoChange.invert());
-
-      bridge.getTranscript().write(bridge.getPlayerID().getName() +
-                                   " undoes his last move.");
-      movement.add(m_changedMovement);
-      if(m_loaded != null)
-      {
-          Iterator loaded = m_loaded.keySet().iterator();
-          while (loaded.hasNext())
-          {
-              Unit unit = (Unit) loaded.next();
-              Unit transport = (Unit) m_loaded.get(unit);
-              transportTracker.undoLoad(unit, transport);
-
-          }
-      }
-
-      if(m_unloaded != null)
-      {
-          Iterator unloaded = m_unloaded.keySet().iterator();
-          while (unloaded.hasNext())
-          {
-              Unit unit = (Unit) unloaded.next();
-              Unit transport = (Unit) m_unloaded.get(unit);
-              transportTracker.undoUnload(unit, transport);
-
-          }
-
-      }
-      battleTracker.undoBattle(m_route, m_units);
-  }
-
-}
