@@ -276,7 +276,7 @@ private static String getAnnotation(List units, PlayerID player, Battle battle)
 {
     String annotation = player.getName() +  " roll dice for " + MyFormatter.unitsToTextNoOwner(units);
     if(battle!= null)
-        annotation = annotation + " in " + battle.getTerritory().getName() + ", round " + battle.getBattleRound();
+        annotation = annotation + " in " + battle.getTerritory().getName() + ", round " + (battle.getBattleRound() + 1);
     return annotation;
     
 }
