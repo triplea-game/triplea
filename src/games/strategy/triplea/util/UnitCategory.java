@@ -29,7 +29,7 @@ public class UnitCategory implements Comparable
    private Collection m_dependents;
    private int m_movement; //movement of the units
    private PlayerID m_owner;
-   //the units in the category
+   //the units in the category, may be duplicates.
    private List m_units = new ArrayList();
 
    private boolean m_damaged = false;
