@@ -43,7 +43,7 @@ import games.strategy.util.*;
 
 public class PolygonGrabber extends JFrame
 {
-    private static boolean islandMode;
+    private static boolean s_islandMode;
     private JCheckBoxMenuItem modeItem;
 
     private List m_current;                   // the current set of polyongs
@@ -207,11 +207,11 @@ public class PolygonGrabber extends JFrame
 
         JMenuItem exitItem = new JMenuItem(exitAction);
 	
-	islandMode = false;
+	s_islandMode = false;
 	modeItem = new JCheckBoxMenuItem("Island Mode",false);
         modeItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                islandMode = modeItem.getState();
+                s_islandMode = modeItem.getState();
 		repaint();
             }
         });
@@ -297,7 +297,7 @@ public class PolygonGrabber extends JFrame
 		    Collection polygons = (Collection) ((Map.Entry) iter.next()).getValue();
                     Iterator iter2 = polygons.iterator();
                     
-		    if(islandMode)
+		    if(s_islandMode)
 		    {
 		    	while (iter2.hasNext())
                     	{
