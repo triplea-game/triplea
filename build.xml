@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 
-<project name="myapp" basedir="." default="compile">
+<project name="TripleA" basedir="." default="compile">
 
-	
 	<target name="init">
     </target>
 
@@ -31,7 +30,6 @@
 
 	<target name ="compileClean" depends="clean,compile"/>
 
-
 	<target name="zip" depends="init,compile" description="create a zip file for end users">
 		<mkdir dir="release" />
 		<zip zipfile="release/triplea.zip" compress="true" >
@@ -45,6 +43,9 @@
 			</zipfileset>
 			<zipfileset dir="lib/" prefix="lib/">
 				<include name="**/*.jar"/>
+			</zipfileset>
+			<zipfileset dir="liscence/" prefix="liscence/">
+				<include name="gpl.txt"/>
 			</zipfileset>
 			<zipfileset dir="bin/" prefix="bin/">
 				<include name="triplea.bat"/>
@@ -77,9 +78,12 @@
 			<zipfileset dir=".">
 				<include name="build.xml"/>
 			</zipfileset>
+			<zipfileset dir="liscence/" prefix="liscence/">
+				<include name="gpl.txt"/>
+			</zipfileset>
+
 		</zip>
 	</target>
-
 
     <target name="javadoc" depends="init">
 		<delete dir="apidoc"/>
