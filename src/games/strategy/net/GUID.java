@@ -20,6 +20,10 @@
 
 package games.strategy.net;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 
 /**
@@ -30,9 +34,19 @@ import java.io.Serializable;
  * @author  Sean Bridges
  * @see java.rmi.dgc.VMID
  */
-public class GUID implements Serializable
+public class GUID implements Externalizable
 {
-	private String m_id;
+    //this prefix is unique across vms
+    //intern it to reduce memory consumption
+    //by getting a reference to the interned string
+    //when we deserialize
+    private static final String vm_prefix = new java.rmi.dgc.VMID().toString().intern();
+    
+    //the local identifier
+    private static int s_lastID = 0;
+    
+	private int m_id;
+	private String m_prefix;
 	
 	/**
 	 * Creates an id based on the given int. <br>
@@ -43,12 +57,18 @@ public class GUID implements Serializable
 	 */
 	public GUID(int id) 
 	{
-		m_id = String.valueOf(id);
+		m_id = id;
+		m_prefix = "autoGen";
 	}
 
 	public GUID() 
 	{
-		m_id = new java.rmi.dgc.VMID().toString();
+		synchronized(GUID.class)
+		{
+		    m_id = s_lastID++;
+		}
+		m_prefix = vm_prefix;
+		
 	}	
 	
 	public boolean equals(Object o)
@@ -59,16 +79,32 @@ public class GUID implements Serializable
 			return false;
 		
 		GUID other = (GUID) o;
-		return other.m_id.equals(this.m_id);
+		return other.m_prefix.equals(this.m_prefix) && this.m_id == other.m_id;
 	}
 	
 	public int hashCode()
 	{
-		return m_id.hashCode();
+		return ((int) m_id) ^  m_prefix.hashCode();
 	}
 	
 	public String toString()
 	{
-		return "GUID:" + m_id;
+		return "GUID:" + m_prefix + ":" + m_id;
 	}
+
+	
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+        m_id = in.readInt();
+        m_prefix = ((String) in.readObject() ).intern();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        out.writeInt(m_id);
+        out.writeObject(m_prefix);
+        
+    }
+	
+	
 }
