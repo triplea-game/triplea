@@ -15,12 +15,11 @@
 
 package util.image;
 
-
-
+import java.io.*;
 import java.util.*;
 import java.util.List;
-
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -30,18 +29,25 @@ import javax.swing.*;
 import games.strategy.ui.Util;
 import games.strategy.util.*;
 
-import java.io.*;
-import java.awt.event.*;
-
 
 public class CenterPicker extends JFrame
 {
 
-    private Image m_image;
+    private Image  m_image;                     // The map image will be stored here    
+    private Map    m_centers  = new HashMap();  // hash map for center points
+    private Map    m_polygons = new HashMap();  // hash map for polygon points
     private JLabel m_location = new JLabel();
-    private Map m_centers = new HashMap();
-    private Map m_polygons = new HashMap();
 
+
+    /**
+       Constructor CenterPicker(java.lang.String)
+       
+       @param java.lang.String  fileName  name of polygons file
+       
+       Setus up all GUI components, initializes variables with
+       default or needed values, and prepares the map for user
+       commands.
+    */
     public CenterPicker(String fileName)
     {
         super("Center Picker");
@@ -49,13 +55,24 @@ public class CenterPicker extends JFrame
 
         try
         {
-            m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream("/home/sgb/dev/triplea/data/games/strategy/triplea/ui/new_polygons.txt"));
-        }
+	    System.out.println("Select the Polygons file");
+	    
+	    String polyPath = new FileOpen().getPathString();
+	    
+	    if(polyPath != null)
+	    {
+	        System.out.println("Polygons : "+polyPath);
+                m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
+            }
+	    else
+	    {
+	        System.out.println("Polygons file not given. Will Run without");
+	    }
+	}
         catch (IOException ex1)
         {
             ex1.printStackTrace();
         }
-
 
         m_image = Toolkit.getDefaultToolkit().createImage(fileName);
 
@@ -71,58 +88,103 @@ public class CenterPicker extends JFrame
 
         JPanel imagePanel = createMainPanel();
 
+
+        /*
+	   Add a mouse listener to show
+	   X : Y coordinates on the lower
+	   left corner of the screen.
+	*/
+	
         imagePanel.addMouseMotionListener(
-        new MouseMotionAdapter()
-        {
-             public void mouseMoved(MouseEvent e)
-             {
-                 m_location.setText("x:"+ e.getX() + " y:" + e.getY());
-             }
-        }
-        );
-
-        imagePanel.addMouseListener(
-        new MouseAdapter()
-        {
-            public void mouseClicked(MouseEvent e)
+            new MouseMotionAdapter()
             {
-                mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
+                 public void mouseMoved(MouseEvent e)
+                 {
+                     m_location.setText("x:"+ e.getX() + " y:" + e.getY());
+                 }
             }
-        }
+	);
 
-        );
 
-        imagePanel.setMinimumSize(new Dimension( m_image.getWidth(this), m_image.getHeight(this)));
-        imagePanel.setPreferredSize(new Dimension( m_image.getWidth(this), m_image.getHeight(this)));
-        imagePanel.setMaximumSize(new Dimension( m_image.getWidth(this), m_image.getHeight(this)));
+        /*
+           Add a mouse listener to monitor
+	   for right mouse button being
+	   clicked.	
+	*/
+	
+        imagePanel.addMouseListener(
+            new MouseAdapter()
+            {
+                public void mouseClicked(MouseEvent e)
+                {
+                    mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
+                }
+            }
+	);
 
+        //set up the image panel size dimensions ...etc
+	
+        imagePanel.setMinimumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
+        imagePanel.setPreferredSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
+        imagePanel.setMaximumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
+
+        //set up the layout manager
+	
         this.getContentPane().setLayout(new BorderLayout());
         this.getContentPane().add(new JScrollPane(imagePanel),  BorderLayout.CENTER);
         this.getContentPane().add(m_location, BorderLayout.SOUTH);
 
         JToolBar toolBar = new JToolBar();
-        toolBar.add(new AbstractAction("Save")
+	
+	/*
+	   Add a save button
+	*/
+        toolBar.add(new AbstractAction("Save Centers")
         {
             public void actionPerformed(ActionEvent e)
             {
-                save();
+                saveCenters();
             }
-        }
-        );
-
-        toolBar.add(new AbstractAction("Load")
-       {
-           public void actionPerformed(ActionEvent e)
-           {
-               load();
-           }
-       }
-       );
+        });
 
 
-        this.getContentPane().add(toolBar, BorderLayout.NORTH);
-    }
+        /*
+	   Add a load button
+	*/
+        toolBar.add(new AbstractAction("Load Centers")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                loadCenters();
+            }
+       });
+       
+       
+        /*
+	   Add an exit button
+	*/
+        toolBar.add(new AbstractAction("Exit")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                System.exit(0);
+            }
+       });
+       
 
+       this.getContentPane().add(toolBar, BorderLayout.NORTH);
+
+    }//end constructor
+
+
+    /**
+       javax.swing.JPanel createMainPanel()
+       
+       Creates the main panel and returns
+       a JPanel object.
+       
+       @return javax.swing.JPanel  the panel to return
+    */
     private JPanel createMainPanel()
     {
         JPanel imagePanel = new JPanel()
@@ -144,19 +206,28 @@ public class CenterPicker extends JFrame
     }
 
 
-
-    private void save()
+    /**
+       saveCenters()
+       
+       Saves the centers to disk.
+    */
+    private void saveCenters()
     {
 
         try
         {
-            String fileName = JOptionPane.showInputDialog(this, "enter name to save");
-            if (fileName.trim().length() == 0)
+            String fileName = JOptionPane.showInputDialog(this, "Save Center Points as");
+	    
+	    if(fileName == null)
+	    {
                 return;
-            FileOutputStream out = new FileOutputStream(fileName);
+            }
+	    
+	    FileOutputStream out = new FileOutputStream(fileName);
             PointFileReaderWriter.writeOneToOne(out, m_centers);
             out.flush();
             out.close();
+	    
             System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
         }
 
@@ -172,16 +243,25 @@ public class CenterPicker extends JFrame
         {
             ex.printStackTrace();
         }
-
     }
 
-    private void load()
+
+    /**
+       load()
+       
+       Loads a pre-defined file with map center points.
+    */
+    private void loadCenters()
     {
         try
          {
-             String fileName = JOptionPane.showInputDialog(this, "enter name to load");
-             if(fileName.trim().length() == 0)
+             String fileName = new FileOpen().getPathString();
+
+	     if(fileName == null)
+	     {
                  return;
+	     }
+	      
              FileInputStream in = new FileInputStream(fileName);
              m_centers = PointFileReaderWriter.readOneToOne(in);
              repaint();
@@ -198,18 +278,25 @@ public class CenterPicker extends JFrame
          {
              ex.printStackTrace();
          }
-
-
-
     }
 
 
+    /**
+        java.lang.String findTerritoryName(java.awt.Point)
+	
+	@param java.awt.point p  a point on the map
+	
+	Finds a land territory name or
+	some sea zone name.
+    
+    */
     private String findTerritoryName(Point p)
     {
         String seaName = "there be dragons";
 
         //try to find a land territory.
         //sea zones often surround a land territory
+	
         Iterator keyIter = m_polygons.keySet().iterator();
         while (keyIter.hasNext())
         {
@@ -226,14 +313,28 @@ public class CenterPicker extends JFrame
                         seaName = name;
                     }
                     else
+		    {
                         return name;
-                }
+		    }
+		    
+		}//if
 
-            }
-        }
+            }//while
+	    
+        }//while
+	
         return seaName;
     }
 
+
+    /**
+       mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
+       
+       @param java.awt.Point    point       a point clicked by mouse
+       @param java.lang.boolean ctrlDown    true if ctrl key was hit
+       @param java.lang.boolean rightMouse  true if the right mouse button was hit
+    
+    */
     private void mouseEvent(Point point, boolean ctrlDown, boolean rightMouse)
     {
         String name = findTerritoryName(point);
@@ -249,17 +350,39 @@ public class CenterPicker extends JFrame
             m_centers.put(name, point);
         }
         repaint();
-
-
     }
 
+
+    /**
+       main(java.lang.String[])
+       
+       @param java.lang.String[] args  the command line arguments
+       
+       Main program begins here.
+       Asks the user to select the map then runs the
+       the actual picker.
+       
+       @see Picker(java.lang.String) picker
+       
+    */
     public static void main(String[] args)
-     {
-         String fileName = "/home/sgb/dev/triplea/baseMap.gif";
-         CenterPicker picker = new CenterPicker(fileName);
-         picker.setSize(600,550);
-         picker.show();
+    {
+         System.out.println("Select the map");
+	 
+         String fileName = new FileOpen().getPathString();
+	 
+	 System.out.println("Map : "+fileName);
+	 
+	 if(fileName != null)
+	 {
+             CenterPicker picker = new CenterPicker(fileName);
+             picker.setSize(600,550);
+             picker.show();
+	 }
+	 else {
+	 	System.out.println("No Image Map Selected. Shutting down.");
+		System.exit(0);
+	}
      }
 
-
-}
+}//end class CenterPicker
