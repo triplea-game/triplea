@@ -98,7 +98,7 @@ public class MapData
     {
         try
         {
-            String prefix = Constants.MAP_DIR + mapNameDir + java.io.File.separator;
+            String prefix = Constants.MAP_DIR + mapNameDir + "/";
 	
             m_place = PointFileReaderWriter.readOneToMany(this.getClass().getResourceAsStream(prefix + PLACEMENT_FILE));
             m_polys = PointFileReaderWriter.readOneToManyPolygons(this.getClass().getResourceAsStream(prefix + POLYGON_FILE));
