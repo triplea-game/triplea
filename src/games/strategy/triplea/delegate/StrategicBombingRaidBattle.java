@@ -172,24 +172,32 @@ public class StrategicBombingRaidBattle implements Battle
         int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
         if (rollCount == 0)
             return 0;
+        
         String annotation = attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in " + location.getName();
         int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
         int cost = 0;
+        boolean fourthEdition = m_data.getProperties().get(Constants.FOURTH_EDITION, false); 
+        int production = TerritoryAttatchment.get(location).getProduction();
 
-        for (int i = 0; i < dice.length; i++)
+        Iterator iter = m_units.iterator();
+        int index = 0;
+        
+        while(iter.hasNext())
         {
-            cost += 1 + dice[i];
+            final int rolls = BattleCalculator.getRolls( (Unit) iter.next(), attacker, false);
+            int costThisUnit = 0;
+            for(int i = 0; i < rolls; i++)
+            {
+                costThisUnit += dice[index] + 1;
+                index++;
+            }
+            if(fourthEdition)
+                cost+= Math.min(costThisUnit, production);
+            else
+                cost+=costThisUnit;
         }
+        
 
-        //4th edition rules limit the cost of a bombing raid to the 
-        //production of the territory
-        if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
-        {
-	        if(cost > TerritoryAttatchment.get(location).getProduction())
-	        {
-	            cost = TerritoryAttatchment.get(location).getProduction();
-	        }
-        }
         
         BombingResults results = new BombingResults(dice, cost);
 

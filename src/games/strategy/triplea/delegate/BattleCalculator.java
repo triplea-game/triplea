@@ -110,18 +110,22 @@ public class BattleCalculator
 
   public static int getRolls(Collection units, PlayerID id, boolean defend)
   {
-    if(defend)
-      return units.size();
-
     int count = 0;
     Iterator iter = units.iterator();
     while(iter.hasNext())
     {
-      Unit unit = (Unit) iter.next();
-      UnitAttatchment ua = UnitAttatchment.get(unit.getType());
-      count+=ua.getAttackRolls(id);
+      Unit unit = (Unit) iter.next();    
+      count+=getRolls(unit,id, defend);
     }
     return count;
+  }
+  
+  public static int getRolls(Unit unit, PlayerID id, boolean defend)
+  {
+      if(defend)
+          return 1;
+      return UnitAttatchment.get(unit.getType()).getAttackRolls(id);
+      
   }
 
   //nothing but static

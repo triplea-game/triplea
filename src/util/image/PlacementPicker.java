@@ -290,7 +290,9 @@ public class PlacementPicker extends JFrame
 
     public static void main(String[] args)
      {
-         String fileName = "baseMap.gif";
+
+        
+         String fileName = "/home/sgb/dev/triplea/data/games/strategy/triplea/image/images/maps/new_LargeMap.gif";
          PlacementPicker picker = new PlacementPicker(fileName);
          picker.setSize(600,550);
          picker.show();

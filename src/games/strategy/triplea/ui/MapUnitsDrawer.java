@@ -238,7 +238,7 @@ public class MapUnitsDrawer
       Iterator placementPoints = TerritoryData.getInstance().getPlacementPoints(territory).iterator();
       if (placementPoints == null || !placementPoints.hasNext())
       {
-          throw new IllegalStateException("No where to place units");
+          throw new IllegalStateException("No where to place units:" + territory.getName());
       }
 
       Point lastPlace = null;

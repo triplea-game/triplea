@@ -1368,9 +1368,16 @@ public class MoveDelegate implements SaveableDelegate
         }
 
         //check start as well, prevent user from moving to and from aa sites
-        // one
-        //at a time
-        if (route.getStart().getUnits().someMatch(hasAA))
+        // one at a time
+        //if there was a battle fought there then dont fire
+        //this covers the case where we fight, and always on aa wants to fire
+        //after the battle.
+        //TODO
+        //there is a bug in which if you move an air unit to a battle site
+        //in the middle of non combat, it wont fire
+        if (route.getStart().getUnits().someMatch(hasAA) && 
+            !DelegateFinder.battleDelegate(m_data).getBattleTracker().wasBattleFought(route.getStart())        
+        )
             fireAA(route.getStart(), targets);
 
         return Util.difference(originalTargets, targets);
