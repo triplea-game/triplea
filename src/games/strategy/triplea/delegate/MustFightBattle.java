@@ -726,6 +726,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
       Collection attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
       Collection casualties = selectCasualties(step, bridge,attackable, false,"AA guns fire,", dice);
+
+      CasualtyNotificationMessage msg = new CasualtyNotificationMessage(REMOVE_AA_CASUALTIES, casualties, m_dependentUnits, m_attacker, dice);
+      msg.setAll(false);
+
+      bridge.sendMessage(msg, m_attacker);
+      bridge.sendMessage(msg, m_defender);
+
+
       removeCasualties(casualties, false, false, bridge);
     }
   }
@@ -833,7 +841,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
       if(Match.someMatch(m_attackingUnits, Matches.UnitIsNotAir))
       {
         m_tracker.addToConquered(m_territory);
-        m_tracker.takeOver(m_territory, m_attacker, bridge, m_data);
+        m_tracker.takeOver(m_territory, m_attacker, bridge, m_data, null);
       }
     }
   }

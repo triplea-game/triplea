@@ -168,7 +168,7 @@ public class BattlePanel extends ActionPanel
   }
 
 
-  public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
+  public void casualtyNotificationMessage(CasualtyNotificationMessage message)
   {
     //if we are playing this player, then dont wait for the user
     //to see the units, since the player selected the units, and knows

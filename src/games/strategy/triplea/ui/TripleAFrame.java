@@ -149,6 +149,9 @@ public class TripleAFrame extends JFrame
     StatPanel stats = new StatPanel(m_data);
     tabs.addTab("Stats", stats);
 
+    TerritoryDetailPanel details = new TerritoryDetailPanel(m_mapPanel, m_data);
+    tabs.addTab("Details", details);
+
     rightHandSide.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize().getHeight()));
     mainPanel.add(rightHandSide, BorderLayout.EAST);
 
@@ -190,7 +193,7 @@ public class TripleAFrame extends JFrame
             {
               File f = fileChooser.getSelectedFile();
               manager.saveGame(f, m_data);
-              JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved", JOptionPane.OK_OPTION, null);
+              JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",  JOptionPane.PLAIN_MESSAGE);
             }
 
           } catch(Exception se)
@@ -244,9 +247,9 @@ public class TripleAFrame extends JFrame
       {
         public void actionPerformed(ActionEvent e)
         {
-          String text = "Engine version: " +  games.strategy.engine.EngineVersion.VERSION.toString() + "<br>" +
-                        "Game: " + m_data.getGameName() + " Version:" + m_data.getGameVersion() + "<br><br>" +
-                        "<a hlink='http://sourceforge.net/projects/triplea'>http://sourceforge.net/projects/triplea</a>" ;
+          String text = "<b>TripleA</b>  " +  games.strategy.engine.EngineVersion.VERSION.toString() + "<br>" +
+                        "Game: " + m_data.getGameName() + ". Version:" + m_data.getGameVersion() + "<br><br>" +
+                        "<a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a>" ;
 
           JEditorPane editorPane = new JEditorPane();
           editorPane.setEditable(false);
@@ -255,12 +258,8 @@ public class TripleAFrame extends JFrame
 
 
           JScrollPane scroll = new JScrollPane(editorPane);
-          scroll.setMinimumSize(new Dimension(150,200));
-          scroll.setPreferredSize(new Dimension(150,200));
 
-
-
-          JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "TripleA", JOptionPane.PLAIN_MESSAGE);
+          JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "About", JOptionPane.PLAIN_MESSAGE);
         }
       }
     );
@@ -270,7 +269,9 @@ public class TripleAFrame extends JFrame
           public void actionPerformed(ActionEvent e)
           {
             //html formatted string
-            String hints = "To select a path when moving, right click on territories";
+            String hints =
+              "To force a path while moving, right click on each territory in turn.<br><br>" +
+              "You may be able to set game properties such as a bid in the Properties tab at game start up.";
             JEditorPane editorPane = new JEditorPane();
             editorPane.setEditable(false);
             editorPane.setContentType("text/html");
@@ -278,7 +279,7 @@ public class TripleAFrame extends JFrame
 
             JScrollPane scroll = new JScrollPane(editorPane);
 
-            JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "TripleA", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "Hints", JOptionPane.PLAIN_MESSAGE);
           }
         }
         );

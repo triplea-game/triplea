@@ -339,8 +339,6 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
   }
 
 
-
-
   /**
    * Update will not be seen until update is called.
    * Resets the offscreen image to the original.
@@ -350,6 +348,7 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
     ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
     if(!m_offscreenImage.getGraphics().drawImage(m_originalImage, 0,0,watcher))
     {
+        System.out.println("here");
         try
         {
             watcher.runUntilOpComplete();
@@ -357,6 +356,7 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
         }
         catch (InterruptedException ie)
         {
+
             return;
         }
 
@@ -382,27 +382,27 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
     //swing event thread, otherwise m_image
     //could be altered while it was being drawn
     if(SwingUtilities.isEventDispatchThread())
-      updateOnScreen();
+    {
+        //this fixes a strange bug on linux where the graphics werent being updated correctly
+        getOffscreenGraphics().draw3DRect(0,0,1,1,false);
+        repaint();
+    }
     else
       SwingUtilities.invokeLater(
         new Runnable()
           {
             public void run()
             {
-              updateOnScreen();
+                //this fixes a strange bug on linux where the graphics werent being updated correctly
+                getOffscreenGraphics().draw3DRect(0,0,1,1,false);
+
+              repaint();
             }
           }
       );
   }
 
-  /**
-   * Must be called from the event thread.
-   */
-  private void updateOnScreen()
-  {
 
-    repaint();
-  }
 
   public int getXOffset()
   {

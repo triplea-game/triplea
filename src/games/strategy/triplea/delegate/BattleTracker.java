@@ -54,9 +54,9 @@ public class BattleTracker implements java.io.Serializable
   //territories where a battle occured
   private Set m_foughBattles = new HashSet();
 
-    //these territories have had battleships bombard during a naval invasion
-    //used to make sure that the same battleship doesnt bombard twice
-    private Set m_bombardedFromTerritories = new HashSet();
+  //these territories have had battleships bombard during a naval invasion
+  //used to make sure that the same battleship doesnt bombard twice
+  private Set m_bombardedFromTerritories = new HashSet();
 
   /**
    * True if a battle is to be fought in the given territory.
@@ -108,15 +108,15 @@ public class BattleTracker implements java.io.Serializable
     return m_foughBattles.contains(t);
   }
 
-  void addBattle(Route route, Collection units,TransportTracker tracker,  boolean bombing, PlayerID id, GameData data, DelegateBridge bridge)
+  void addBattle(Route route, Collection units,TransportTracker tracker,  boolean bombing, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
   {
     if(bombing)
       addBombingBattle(route, units, id, data);
     else
     {
       addMustFightBattle(route, units, tracker, id, data);
-      addNeutralBattle(route, units, tracker, id, data, bridge);
-      addEmptyBattle(route, units, tracker, id, data, bridge);
+      addNeutralBattle(route, units, tracker, id, data, bridge, changeTracker);
+      addEmptyBattle(route, units, tracker, id, data, bridge, changeTracker);
     }
   }
 
@@ -142,7 +142,7 @@ public class BattleTracker implements java.io.Serializable
   /**
    * No enemies, but not neutral.
    */
-  private void addEmptyBattle(Route route, Collection units,TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge)
+  private void addEmptyBattle(Route route, Collection units,TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
   {
     if(!Match.someMatch(units, Matches.UnitIsLand))
       return;
@@ -163,7 +163,7 @@ public class BattleTracker implements java.io.Serializable
     {
       Territory current = (Territory) iter.next();
 
-      takeOver(current, id, bridge, data);
+      takeOver(current, id, bridge, data, changeTracker);
     }
 
     //check the last territory
@@ -173,7 +173,7 @@ public class BattleTracker implements java.io.Serializable
       Battle precede = getDependentAmphibiousAssault(route);
       if(precede == null)
       {
-        takeOver(route.getEnd(), id, bridge, data);
+        takeOver(route.getEnd(), id, bridge, data, changeTracker);
         m_blitzed.add(route.getEnd());
         m_conquered.add(route.getEnd());
       }
@@ -193,7 +193,7 @@ public class BattleTracker implements java.io.Serializable
 
   }
 
-  private void addNeutralBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge)
+  private void addNeutralBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
   {
     //TODO check for pre existing battles at the sight
     //here and in empty battle
@@ -210,7 +210,7 @@ public class BattleTracker implements java.io.Serializable
     while(iter.hasNext())
     {
       Territory current = (Territory) iter.next();
-      takeOver(current, id, bridge, data);
+      takeOver(current, id, bridge, data, changeTracker);
     }
 
     //deal with end territory, may be the case that
@@ -222,7 +222,7 @@ public class BattleTracker implements java.io.Serializable
       {
 
         m_conquered.add(route.getEnd());
-        takeOver(route.getEnd(), id, bridge, data);
+        takeOver(route.getEnd(), id, bridge, data, changeTracker);
       }
       else
       {
@@ -239,7 +239,7 @@ public class BattleTracker implements java.io.Serializable
     }
   }
 
-  protected void takeOver(Territory territory, PlayerID id, DelegateBridge bridge, GameData data)
+  protected void takeOver(Territory territory, PlayerID id, DelegateBridge bridge, GameData data, UndoableMove changeTracker)
   {
     OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 
@@ -249,6 +249,8 @@ public class BattleTracker implements java.io.Serializable
       Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
       Change neutralFee = ChangeFactory.changeResourcesChange(id, ipcs, -games.strategy.triplea.Properties.getNeutralCharge(data));
       bridge.addChange(neutralFee);
+      if(changeTracker != null)
+        changeTracker.addChange(neutralFee);
     }
 
     //if its a capital we take the money
@@ -262,8 +264,12 @@ public class BattleTracker implements java.io.Serializable
         int capturedIPCCount = whoseCapital.getResources().getQuantity(ipcs);
         Change remove = ChangeFactory.changeResourcesChange(whoseCapital, ipcs, -capturedIPCCount);
         bridge.addChange(remove);
+        if(changeTracker != null)
+          changeTracker.addChange(remove);
         Change add = ChangeFactory.changeResourcesChange(id, ipcs, capturedIPCCount);
         bridge.addChange(add);
+        if(changeTracker != null)
+          changeTracker.addChange(add);
       }
     }
 
@@ -284,11 +290,15 @@ public class BattleTracker implements java.io.Serializable
       {
         Change capture = ChangeFactory.changeOwner(current, originalOwner);
         bridge.addChange(capture);
+        if(changeTracker != null)
+          changeTracker.addChange(capture);
       }
       else
       {
         Change capture = ChangeFactory.changeOwner(current, id);
         bridge.addChange(capture);
+        if(changeTracker != null)
+          changeTracker.addChange(capture);
       }
     }
 
@@ -302,6 +312,8 @@ public class BattleTracker implements java.io.Serializable
 
     Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
     bridge.addChange(takeOver);
+    if(changeTracker != null)
+      changeTracker.addChange(takeOver);
 
     String transcriptText = territory.getName() + " now owned by " + newOwner.getName();
     bridge.getTranscript().write(transcriptText);

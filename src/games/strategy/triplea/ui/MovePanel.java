@@ -49,6 +49,7 @@ public class MovePanel extends ActionPanel
   private PlayerBridge m_bridge;
 
   private List m_forced;
+  private JLabel m_moveLabel = new JLabel();
 
 
   /** Creates new MovePanel */
@@ -66,13 +67,26 @@ public class MovePanel extends ActionPanel
     this.add(m_actionLabel);
     this.add(new JButton(CANCEL_MOVE_ACTION));
     this.add(new JButton(DONE_MOVE_ACTION));
+    this.add(new JLabel("  "));
+    this.add(m_moveLabel);
+    this.add(new JButton(UNDO_MOVE_ACTION));
+
 
     SwingUtilities.invokeLater(REFRESH);
+  }
+
+  private void updateMoveLabel()
+  {
+    StringMessage moves = (StringMessage) m_bridge.sendMessage(new MoveCountRequestMessage());
+    int moveCount = Integer.parseInt(moves.getMessage() );
+    m_moveLabel.setText("Moves:" + moveCount);
+    UNDO_MOVE_ACTION.setEnabled(moveCount != 0);
   }
 
   public MoveMessage waitForMove(PlayerBridge bridge)
   {
     setUp(bridge);
+    updateMoveLabel();
     synchronized(getLock())
     {
       try
@@ -122,6 +136,23 @@ public class MovePanel extends ActionPanel
         m_moveMessage = null;
         getLock().notify();
       }
+    }
+  };
+
+  private final AbstractAction UNDO_MOVE_ACTION = new AbstractAction("Undo last move")
+  {
+    public void actionPerformed(ActionEvent e)
+    {
+        StringMessage results = (StringMessage) m_bridge.sendMessage(new UndoMoveMessage());
+        if(results != null && results.isError())
+        {
+          JOptionPane.showMessageDialog( getTopLevelAncestor(), results.getMessage(), "Could not undo move", JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+          updateMoveLabel();
+        }
+
     }
   };
 

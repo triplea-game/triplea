@@ -175,7 +175,7 @@ public class ActionButtons extends JPanel
 
   public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
   {
-    m_battlePanel.casualtyNoticicationMessage( message);
+    m_battlePanel.casualtyNotificationMessage( message);
   }
 
   public void battleEndMessage(BattleEndMessage message)

@@ -21,7 +21,7 @@ import java.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 
-public class UnitCategory
+public class UnitCategory implements Comparable
 {
    private UnitType m_type;
    //Collection of UnitOwners, the type of our dependents, not the dependents
@@ -121,6 +121,18 @@ public class UnitCategory
    public UnitType getType()
    {
      return m_type;
+   }
+
+   public int compareTo(Object o)
+   {
+     if(o == null)
+       return -1;
+
+     UnitCategory other = (UnitCategory) o;
+     if(!other.m_owner.equals(this.m_owner))
+       return other.m_owner.getName().compareTo(this.m_owner.getName());
+
+     return other.getType().getName().compareTo(this.getType().getName());
    }
 }
 

@@ -34,6 +34,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
+import java.io.*;
+import games.strategy.engine.framework.*;
 
 
 
@@ -59,6 +61,14 @@ public class MoveDelegate implements SaveableDelegate
   private boolean m_nonCombat;
   private TransportTracker m_transportTracker = new TransportTracker();
   private IntegerMap m_alreadyMoved = new IntegerMap();
+
+
+
+  // A collection of UndoableMoves
+  private List m_movesToUndo = new ArrayList();
+
+  //The current move
+  private UndoableMove m_currentMove;
 
   /** Creates new MoveDelegate */
   public MoveDelegate()
@@ -178,8 +188,26 @@ public class MoveDelegate implements SaveableDelegate
       return new TerritoryCollectionMessage( getTerritoriesWhereAirCantLand());
     else if(aMessage instanceof MustMoveWithQuery)
       return mustMoveWith((MustMoveWithQuery) aMessage);
+    else if(aMessage instanceof UndoMoveMessage)
+      return undoMove();
+    else if (aMessage instanceof MoveCountRequestMessage)
+        return new StringMessage(m_movesToUndo.size() + "");
     else
       throw new IllegalArgumentException("Move delegate received message of wrong type:" + aMessage);
+  }
+
+  private StringMessage undoMove()
+  {
+    if(m_movesToUndo.isEmpty())
+        return new StringMessage("No moves to undo", true);
+    UndoableMove lastMove = (UndoableMove) m_movesToUndo.get(m_movesToUndo.size() -1);
+    if( !lastMove.getcanUndo())
+        return new StringMessage("Move cannot be undone:" + lastMove.getReasonCantUndo(), true);
+
+    lastMove.undo(m_data, m_bridge);
+    m_movesToUndo.remove(m_movesToUndo.size() -1);
+
+    return null;
   }
 
   private MustMoveWithReply mustMoveWith(MustMoveWithQuery query)
@@ -318,7 +346,14 @@ public class MoveDelegate implements SaveableDelegate
     if(error != null)
       return new StringMessage(error, true);
     //do the move
-    return moveUnits(units, route, id);
+    m_currentMove = new UndoableMove(m_data);
+    StringMessage rVal = moveUnits(units, route, id);
+    if(!rVal.isError())
+    {
+      m_movesToUndo.add(m_currentMove);
+    }
+    m_currentMove = null;
+    return rVal;
   }
 
 
@@ -399,11 +434,11 @@ public class MoveDelegate implements SaveableDelegate
 
       if(! m_data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
          ! m_data.getAllianceTracker().isAllied(player, iraq.getOwner()))
-        return "Must own egypt and syria to go through Suez Canal";
+        return "Must own Egypt and Syria/Jordan  to go through Suez Canal";
 
       BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
       if(tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
-        return "Cannot move through canal without owning syria and iraq for  an entire turn.";
+        return "Cannot move through canal without owning Egypt and Syria/Jordan for an entire turn.";
 
     }
 
@@ -762,7 +797,7 @@ public class MoveDelegate implements SaveableDelegate
         bombing = ((BooleanMessage) response).getBoolean();
       }
 
-      DelegateFinder.battleDelegate(m_data).getBattleTracker().addBattle(route, arrivingUnits, m_transportTracker, bombing, id, m_data, m_bridge);
+      DelegateFinder.battleDelegate(m_data).getBattleTracker().addBattle(route, arrivingUnits, m_transportTracker, bombing, id, m_data, m_bridge, m_currentMove);
     }
 
     //note that this must be done after adding battles since the battles
@@ -777,6 +812,9 @@ public class MoveDelegate implements SaveableDelegate
     Change add = ChangeFactory.addUnits(route.getEnd(), arrivingUnits);
     m_bridge.addChange(remove);
     m_bridge.addChange(add);
+
+    m_currentMove.addChange(remove);
+    m_currentMove.addChange(add);
 
     Collection moved = Util.intersection(units, arrivingUnits);
     String transcriptText = Formatter.unitsToText(moved) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName();
@@ -942,6 +980,7 @@ public class MoveDelegate implements SaveableDelegate
   {
     if(m_nonCombat)
       removeAirThatCantLand();
+    m_movesToUndo.clear();
   }
 
 
@@ -1212,6 +1251,10 @@ public class MoveDelegate implements SaveableDelegate
    */
   private void fireAA(Territory territory, Collection units)
   {
+    //once we fire the aa guns, we cant undo
+    //otherwise you could keep undoing and redoing
+    //until you got the roll you wanted
+    m_currentMove.setCantUndo("AA has fired.");
     DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge,
                                     m_player, territory.getOwner());
     int hitCount = dice.getHits();
@@ -1250,22 +1293,31 @@ public class MoveDelegate implements SaveableDelegate
     return true;
   }
 
+  public Serializable saveState()
+  {
+    return saveState(true);
+  }
 
   /**
    * Returns the state of the Delegate.
+   * We dont want to save the undoState if we are saving the state for an undo move
+   * (we dont need it, it will just take up extra space).
    */
-  public Serializable saveState()
+  Serializable saveState(boolean saveUndo)
   {
     MoveState state = new MoveState();
     state.m_firstRun= m_firstRun;
     state.m_nonCombat = m_nonCombat;
     state.m_transportTracker = m_transportTracker;
     state.m_alreadyMoved = m_alreadyMoved;
+    if(saveUndo)
+      state.m_movesToUndo = m_movesToUndo;
     return state;
   }
 
   /**
    * Loads the delegates state
+   *
    */
   public void loadState(Serializable aState)
   {
@@ -1274,6 +1326,10 @@ public class MoveDelegate implements SaveableDelegate
     m_nonCombat = state.m_nonCombat;
     m_transportTracker = state.m_transportTracker;
     m_alreadyMoved = state.m_alreadyMoved;
+    //if the undo state wasnt saved, then dont load it
+    //prevents overwriting undo state when we restore from an undo move
+    if(state.m_movesToUndo != null)
+      m_movesToUndo = state.m_movesToUndo;
   }
 }
 
@@ -1283,4 +1339,94 @@ class MoveState implements Serializable
   public boolean m_nonCombat;
   public TransportTracker m_transportTracker;
   public IntegerMap m_alreadyMoved;
+  public List m_movesToUndo;
+}
+
+
+/**
+ * Stores data about a move so that it can be undone.
+ * Stores the serialized state of the move and battle delegates (just
+ * as if they were saved), and a CompositeChange that represents all the changes that
+ * were made during the move.
+ *
+ * Some moves (such as those following an aa fire) can't be undone.
+ */
+
+class UndoableMove implements Serializable
+{
+  byte[] m_data;  //the serialized state of the battle and move delegates
+  private CompositeChange m_undoChange = new CompositeChange();
+  private String m_reasonCantUndo;
+
+  public boolean getcanUndo()
+  {
+      return m_reasonCantUndo == null;
+  }
+
+  public String getReasonCantUndo()
+  {
+    return m_reasonCantUndo;
+  }
+
+  public void setCantUndo(String reason)
+  {
+    m_reasonCantUndo = reason;
+  }
+
+  public void addChange(Change aChange)
+  {
+    m_undoChange.add(aChange);
+  }
+
+  public UndoableMove(GameData data)
+  {
+    try
+    {
+        //capture the save state of the move and save delegates
+        GameObjectStreamFactory factory = new GameObjectStreamFactory(data);
+
+        ByteArrayOutputStream sink = new ByteArrayOutputStream(2000);
+        ObjectOutputStream out = factory.create(sink);
+
+        out.writeObject(DelegateFinder.moveDelegate(data).saveState(false));
+        out.writeObject(DelegateFinder.battleDelegate(data).saveState());
+        out.flush();
+        out.close();
+
+        m_data = sink.toByteArray();
+    }
+    catch (IOException ex)
+    {
+      ex.printStackTrace();
+      throw new IllegalStateException(ex.getMessage());
+    }
+  }
+
+  public void undo(GameData data, DelegateBridge bridge)
+  {
+
+      try
+      {
+          GameObjectStreamFactory factory = new GameObjectStreamFactory(data);
+          ObjectInputStream in = factory.create(new ByteArrayInputStream(
+              m_data));
+          MoveState moveState = (MoveState) in.readObject();
+          BattleState battleState = (BattleState) in.readObject();
+
+          DelegateFinder.moveDelegate(data).loadState(moveState);
+          DelegateFinder.battleDelegate(data).loadState(battleState);
+
+          //undo any changes to the game data
+          bridge.addChange(m_undoChange.invert());
+
+      }
+      catch (ClassNotFoundException ex)
+      {
+      }
+      catch (IOException ex)
+      {
+      }
+
+  }
+
 }
