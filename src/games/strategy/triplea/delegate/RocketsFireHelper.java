@@ -137,11 +137,9 @@ public class RocketsFireHelper
 
     private Territory getTarget(Collection targets, PlayerID player, IDelegateBridge bridge, Territory from)
     {
-        if (targets.size() == 1)
-        {
-            return (Territory) targets.iterator().next();
-        }
-
+        //ask even if there is only once choice
+        //that will allow the user to not attack if he doesnt want to
+        
         return ((ITripleaPlayer) bridge.getRemote()).whereShouldRocketsAttach(targets, from);
     }
 
