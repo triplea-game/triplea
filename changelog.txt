@@ -1,3 +1,9 @@
+Change for 0.5.2.2
+
+* fixed Dont play button on client screen. (sgb)
+
+* threading fixes. (sgb)
+
 Changes for 0.5.2
 
 * add switch in map.properties to disable scrolling map around the edges (sgb)
