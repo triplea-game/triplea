@@ -130,6 +130,9 @@
       </zipfileset>
     </zip>
   </target>
+  <target name="patch">
+	<jar destfile="patch.jar" basedir="classes" includes="**/*Connection.class"/>
+  </target>
 
   <target name="javadoc" depends="init"
           description="Generate JavaDoc documentation">
