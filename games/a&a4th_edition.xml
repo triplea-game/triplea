@@ -4,7 +4,7 @@
 
 <game>
 
-	<info name="4th Edition" version="1.0"/>
+	<info name="4th Edition" version="1.1"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -177,20 +177,82 @@
 		<territory name="24 Sea Zone" water="true" />
 		<territory name="20 Sea Zone" water="true" />
 
+	
+
 	    <connection t1="Sweden" t2="Norway"/>
 	    <connection t1="Sweden" t2="5 Sea Zone"/>
-
 	    <connection t1="Switzerland" t2="Germany"/>
 	    <connection t1="Switzerland" t2="Western Europe"/>
 	    <connection t1="Switzerland" t2="Southern Europe"/>
+	    <connection t1="2 Sea Zone" t2="Eire"/>
 
-    	<connection t1="1 Sea Zone" t2="Eastern Canada" />
+	    <connection t1="12 Sea Zone" t2="Spain"/>
+	    <connection t1="13 Sea Zone" t2="Spain"/>
+	    <connection t1="15 Sea Zone" t2="Turkey"/>
+	    <connection t1="16 Sea Zone" t2="Turkey"/>
+	    <connection t1="17 Sea Zone" t2="Rio De Oro"/>
+	    <connection t1="19 Sea Zone" t2="Venezuala"/>
+
+	    <connection t1="20 Sea Zone" t2="Venezuala"/>
+	    <connection t1="21 Sea Zone" t2="Peru"/>
+	    <connection t1="21 Sea Zone" t2="Argentina"/>
+	    <connection t1="25 Sea Zone" t2="Argentina"/>
+	    <connection t1="27 Sea Zone" t2="Angloa"/>
+	    <connection t1="33 Sea Zone" t2="Mozambique"/>
+
+	    <connection t1="34 Sea Zone" t2="Saudia Arabia"/>
+	    <connection t1="Panama" t2="Venezuala"/>
+	    <connection t1="Venezuala" t2="Brazil"/>
+	    <connection t1="Venezuala" t2="Peru"/>
+	    <connection t1="Brazil" t2="Peru"/>
+	    <connection t1="Brazil" t2="Argentina"/>
+
+	    <connection t1="Peru" t2="Argentina"/>
+	    <connection t1="Eire" t2="United Kingdom"/>
+	    <connection t1="Gibraltar" t2="Spain"/>
+	    <connection t1="Spain" t2="Western Europe"/>
+	    <connection t1="Caucus" t2="Turkey"/>
+	    <connection t1="Kazakh S.S.R." t2="Afghanistan"/>
+
+	    <connection t1="Himilaya" t2="Afghanistan"/>
+	    <connection t1="India" t2="Afghanistan"/>
+	    <connection t1="India" t2="Himilaya"/>
+	    <connection t1="Sinkiang" t2="Himilaya"/>
+	    <connection t1="China" t2="Himilaya"/>
+	    <connection t1="French Indochina" t2="Himilaya"/>
+
+	    <connection t1="Novisibirsk" t2="Mongolia"/>
+	    <connection t1="Sinkiang" t2="Mongolia"/>
+	    <connection t1="Manchuria" t2="Mongolia"/>
+	    <connection t1="China" t2="Mongolia"/>
+	    <connection t1="Yakut S.S.R." t2="Mongolia"/>
+	    <connection t1="Burytia S.S.R." t2="Mongolia"/>
+
+	    <connection t1="Persia" t2="Afghanistan"/>
+	    <connection t1="Persia" t2="Turkey"/>
+	    <connection t1="Trans-Jordan" t2="Turkey"/>
+	    <connection t1="Trans-Jordan" t2="Saudia Arabia"/>
+	    <connection t1="Anglo Egypt" t2="Sahara"/>
+	    <connection t1="Libya" t2="Sahara"/>
+
+	    <connection t1="Algeria" t2="Sahara"/>
+	    <connection t1="French West Africa" t2="Sahara"/>
+	    <connection t1="French Equatorial Africa" t2="Sahara"/>
+
+	    <connection t1="French West Africa" t2="Rio De Oro"/>
+	    <connection t1="Belgian Congo" t2="Angloa"/>
+	    <connection t1="Kenya" t2="Angloa"/>
+
+	    <connection t1="Kenya" t2="Mozambique"/>
+	    <connection t1="Union of South Africa" t2="Angloa"/>
+	    <connection t1="Union of South Africa" t2="Mozambique"/>
+
+    	    <connection t1="1 Sea Zone" t2="Eastern Canada" />
 	    <connection t1="1 Sea Zone" t2="2 Sea Zone"/>
-
 	    <connection t1="1 Sea Zone" t2="8 Sea Zone"/>
 	    <connection t1="1 Sea Zone" t2="9 Sea Zone"/>
 	    <connection t1="2 Sea Zone" t2="Greenland"/>
-	    <connection t1="2 Sea Zone" t2="Eire"/>
+
 	    <connection t1="2 Sea Zone" t2="United Kingdom"/>
 	    <connection t1="2 Sea Zone" t2="3 Sea Zone"/>
 
@@ -229,7 +291,7 @@
 	    <connection t1="10 Sea Zone" t2="11 Sea Zone"/>
 	    <connection t1="10 Sea Zone" t2="19 Sea Zone"/>
 	    <connection t1="10 Sea Zone" t2="Eastern United States"/>
-
+          <connection t1="10 Sea Zone" t2="Panama"/>
 	    <connection t1="11 Sea Zone" t2="12 Sea Zone"/>
 	    <connection t1="11 Sea Zone" t2="18 Sea Zone"/>
 	    <connection t1="11 Sea Zone" t2="19 Sea Zone"/>
@@ -237,11 +299,11 @@
 	    <connection t1="12 Sea Zone" t2="17 Sea Zone"/>
 	    <connection t1="12 Sea Zone" t2="18 Sea Zone"/>
 
-	    <connection t1="12 Sea Zone" t2="Spain"/>
+
 	    <connection t1="12 Sea Zone" t2="Algeria"/>
 	    <connection t1="13 Sea Zone" t2="14 Sea Zone"/>
 	    <connection t1="13 Sea Zone" t2="Gibraltar"/>
-	    <connection t1="13 Sea Zone" t2="Spain"/>
+
 	    <connection t1="13 Sea Zone" t2="Western Europe"/>
 
 	    <connection t1="13 Sea Zone" t2="Algeria"/>
@@ -249,23 +311,23 @@
 	    <connection t1="14 Sea Zone" t2="16 Sea Zone"/>
 	    <connection t1="14 Sea Zone" t2="Southern Europe"/>
 	    <connection t1="14 Sea Zone" t2="Libya"/>
-	    <connection t1="15 Sea Zone" t2="16 Sea Zone"/>
+          <connection t1="15 Sea Zone" t2="16 Sea Zone"/>
 
 	    <connection t1="15 Sea Zone" t2="34 Sea Zone"/>
-	    <connection t1="15 Sea Zone" t2="Turkey"/>
+
 	    <connection t1="15 Sea Zone" t2="Trans-Jordan"/>
 	    <connection t1="15 Sea Zone" t2="Anglo Egypt"/>
 	    <connection t1="16 Sea Zone" t2="Balkans"/>
 	    <connection t1="16 Sea Zone" t2="Ukraine S.S.R."/>
 
 	    <connection t1="16 Sea Zone" t2="Caucus"/>
-	    <connection t1="16 Sea Zone" t2="Turkey"/>
+
 	    <connection t1="17 Sea Zone" t2="18 Sea Zone"/>
 	    <connection t1="17 Sea Zone" t2="22 Sea Zone"/>
 	    <connection t1="17 Sea Zone" t2="23 Sea Zone"/>
 	    <connection t1="17 Sea Zone" t2="French West Africa"/>
 
-	    <connection t1="17 Sea Zone" t2="Rio De Oro"/>
+
 	    <connection t1="18 Sea Zone" t2="19 Sea Zone"/>
 	    <connection t1="18 Sea Zone" t2="22 Sea Zone"/>
 	    <connection t1="18 Sea Zone" t2="Brazil"/>
@@ -273,16 +335,16 @@
 	    <connection t1="19 Sea Zone" t2="Panama"/>
 
 	    <connection t1="19 Sea Zone" t2="West Indies"/>
-	    <connection t1="19 Sea Zone" t2="Venezuala"/>
+
 	    <connection t1="20 Sea Zone" t2="21 Sea Zone"/>
 	    <connection t1="20 Sea Zone" t2="54 Sea Zone"/>
 	    <connection t1="20 Sea Zone" t2="Panama"/>
-	    <connection t1="20 Sea Zone" t2="Venezuala"/>
+
 
 	    <connection t1="21 Sea Zone" t2="25 Sea Zone"/>
 	    <connection t1="21 Sea Zone" t2="43 Sea Zone"/>
-	    <connection t1="21 Sea Zone" t2="Peru"/>
-	    <connection t1="21 Sea Zone" t2="Venezuala"/>
+
+
 	    <connection t1="22 Sea Zone" t2="23 Sea Zone"/>
 	    <connection t1="22 Sea Zone" t2="24 Sea Zone"/>
 
@@ -297,13 +359,13 @@
 	    <connection t1="24 Sea Zone" t2="26 Sea Zone"/>
 	    <connection t1="24 Sea Zone" t2="27 Sea Zone"/>
 	    <connection t1="25 Sea Zone" t2="26 Sea Zone"/>
-	    <connection t1="25 Sea Zone" t2="43 Sea Zone"/>
-	    <connection t1="25 Sea Zone" t2="Argentina"/>
+	    <connection t1="25 Sea Zone" t2="42 Sea Zone"/>
+
 
 	    <connection t1="26 Sea Zone" t2="27 Sea Zone"/>
 	    <connection t1="27 Sea Zone" t2="28 Sea Zone"/>
 	    <connection t1="27 Sea Zone" t2="Union of South Africa"/>
-	    <connection t1="27 Sea Zone" t2="Angloa"/>
+
 	    <connection t1="28 Sea Zone" t2="29 Sea Zone"/>
 	    <connection t1="28 Sea Zone" t2="33 Sea Zone"/>
 
@@ -329,14 +391,14 @@
 	    <connection t1="33 Sea Zone" t2="34 Sea Zone"/>
 
 	    <connection t1="33 Sea Zone" t2="French Madagascar"/>
-	    <connection t1="33 Sea Zone" t2="Mozambique"/>
+
 	    <connection t1="33 Sea Zone" t2="Kenya"/>
 	    <connection t1="34 Sea Zone" t2="35 Sea Zone"/>
 	    <connection t1="34 Sea Zone" t2="Italian East Africa"/>
 	    <connection t1="34 Sea Zone" t2="Anglo Egypt"/>
 
 	    <connection t1="34 Sea Zone" t2="Trans-Jordan"/>
-	    <connection t1="34 Sea Zone" t2="Saudia Arabia"/>
+
 	    <connection t1="34 Sea Zone" t2="Persia"/>
 	    <connection t1="35 Sea Zone" t2="36 Sea Zone"/>
 	    <connection t1="35 Sea Zone" t2="37 Sea Zone"/>
@@ -361,7 +423,7 @@
 	    <connection t1="39 Sea Zone" t2="40 Sea Zone"/>
 	    <connection t1="39 Sea Zone" t2="Australia"/>
 	    <connection t1="40 Sea Zone" t2="41 Sea Zone"/>
-	    <connection t1="40 Sea Zone" t2="42 Sea Zone"/>
+
 	    <connection t1="40 Sea Zone" t2="46 Sea Zone"/>
 	    <connection t1="40 Sea Zone" t2="Australia"/>
 
@@ -370,7 +432,7 @@
 	    <connection t1="41 Sea Zone" t2="42 Sea Zone"/>
 	    <connection t1="41 Sea Zone" t2="44 Sea Zone"/>
 	    <connection t1="41 Sea Zone" t2="New Zealand"/>
-	    <connection t1="42 Sea Zone" t2="25 Sea Zone"/>
+
 
 	    <connection t1="42 Sea Zone" t2="43 Sea Zone"/>
 	    <connection t1="42 Sea Zone" t2="44 Sea Zone"/>
@@ -470,17 +532,8 @@
 	    <connection t1="Western United States" t2="Western Canada"/>
     	    <connection t1="Western Canada" t2="Alaska"/>
 	    <connection t1="Eastern United States" t2="Panama"/>
-	    <connection t1="Panama" t2="Venezuala"/>
-	    <connection t1="Panama" t2="Mexico"/>
-	    <connection t1="Venezuala" t2="Brazil"/>
-	    <connection t1="Venezuala" t2="Peru"/>
-	    <connection t1="Brazil" t2="Peru"/>
-	    <connection t1="Brazil" t2="Argentina"/>
 
-	    <connection t1="Peru" t2="Argentina"/>
-	    <connection t1="Eire" t2="United Kingdom"/>
-	    <connection t1="Gibraltar" t2="Spain"/>
-	    <connection t1="Spain" t2="Western Europe"/>
+	    <connection t1="Panama" t2="Mexico"/>
 	    <connection t1="Western Europe" t2="Germany"/>
 	    <connection t1="Western Europe" t2="Southern Europe"/>
 
@@ -503,7 +556,7 @@
 	    <connection t1="Belorussia" t2="Ukraine S.S.R." />
 	    <connection t1="Ukraine S.S.R." t2="West Russia"/>
 	    <connection t1="Ukraine S.S.R." t2="Caucus"/>
-	    <connection t1="Caucus" t2="Turkey"/>
+
 
 	    <connection t1="Caucus" t2="Persia"/>
 	    <connection t1="Caucus" t2="West Russia"/>
@@ -519,67 +572,62 @@
 	    <connection t1="Kazakh S.S.R." t2="Novisibirsk"/>
 	    <connection t1="Kazakh S.S.R." t2="Sinkiang"/>
 
-	    <connection t1="Kazakh S.S.R." t2="Afghanistan"/>
+
 	    <connection t1="Kazakh S.S.R." t2="Persia"/>
-	    <connection t1="India" t2="Afghanistan"/>
-	    <connection t1="India" t2="Himilaya"/>
+
+
 	    <connection t1="India" t2="French Indochina"/>
 	    <connection t1="Evanki National Okrug" t2="Yakut S.S.R."/>
 
 	    <connection t1="Evanki National Okrug" t2="Novisibirsk"/>
 	    <connection t1="Novisibirsk" t2="Yakut S.S.R."/>
-	    <connection t1="Novisibirsk" t2="Mongolia"/>
+
 	    <connection t1="Novisibirsk" t2="Sinkiang"/>
-	    <connection t1="Sinkiang" t2="Mongolia"/>
+
 	    <connection t1="Sinkiang" t2="China"/>
 
-	    <connection t1="Sinkiang" t2="Himilaya"/>
+
 	    <connection t1="Yakut S.S.R." t2="Soviet Far East"/>
 	    <connection t1="Yakut S.S.R." t2="Burytia S.S.R."/>
 	    <connection t1="Burytia S.S.R." t2="Manchuria"/>
 	    <connection t1="Burytia S.S.R." t2="Soviet Far East"/>
-	    <connection t1="Manchuria" t2="Mongolia"/>
+
 
 	    <connection t1="Manchuria" t2="China"/>
 	    <connection t1="Manchuria" t2="Kwangtung"/>
 	    <connection t1="Kwangtung" t2="China"/>
 	    <connection t1="Kwangtung" t2="French Indochina"/>
 	    <connection t1="China" t2="French Indochina"/>
-	    <connection t1="Persia" t2="Afghanistan"/>
+
 
 	    <connection t1="Persia" t2="India"/>
 	    <connection t1="Persia" t2="Trans-Jordan"/>
-	    <connection t1="Persia" t2="Turkey"/>
-	    <connection t1="Trans-Jordan" t2="Turkey"/>
-	    <connection t1="Trans-Jordan" t2="Saudia Arabia"/>
+	
 	    <connection t1="Trans-Jordan" t2="Anglo Egypt"/>
 
 	    <connection t1="Anglo Egypt" t2="Libya"/>
-	    <connection t1="Anglo Egypt" t2="Sahara"/>
+
 	    <connection t1="Anglo Egypt" t2="Italian East Africa"/>
 	    <connection t1="Anglo Egypt" t2="French Equatorial Africa"/>
 	    <connection t1="Anglo Egypt" t2="Belgian Congo"/>
-	    <connection t1="Libya" t2="Sahara"/>
+
 
 	    <connection t1="Libya" t2="Algeria"/>
-	    <connection t1="Algeria" t2="Sahara"/>
-	    <connection t1="French West Africa" t2="Sahara"/>
-	    <connection t1="French West Africa" t2="Rio De Oro"/>
+	
 	    <connection t1="French West Africa" t2="French Equatorial Africa"/>
 	    <connection t1="French Equatorial Africa" t2="Belgian Congo"/>
 
 	    <connection t1="Belgian Congo" t2="Italian East Africa"/>
 	    <connection t1="Belgian Congo" t2="Kenya"/>
-	    <connection t1="Belgian Congo" t2="Angloa"/>
+
 	    <connection t1="Italian East Africa" t2="Kenya"/>
-	    <connection t1="Kenya" t2="Angloa"/>
-	    <connection t1="Kenya" t2="Mozambique"/>
+
+
 
 	    <connection t1="Kenya" t2="Union of South Africa"/>
-	    <connection t1="Union of South Africa" t2="Angloa"/>
-	    <connection t1="Union of South Africa" t2="Mozambique"/>
+	   
 
-	    <connection t1="Southern Europe" t2="15 Sea Zone"/>	
+	
 
 
 	</map>
@@ -1194,7 +1242,6 @@
 		javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
 			<option name="production" value="10"/>
 
-			<option name="capital" value="Americans"/>
 		</attatchment>
 		<attatchment name="territoryAttatchment" attatchTo="Karelia S.S.R." 
 		javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" 
@@ -1406,6 +1453,7 @@
 		<attatchment name="territoryAttatchment" attatchTo="Eastern United States" 
 		javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
 			<option name="production" value="12"/>
+			<option name="capital" value="Americans"/>
 		</attatchment>
 
 		<attatchment name="territoryAttatchment" attatchTo="Belorussia" 
@@ -1644,7 +1692,7 @@
 			<unitPlacement unitType="transport" territory="5 Sea Zone" quantity="1" owner="Germans"/>
 			<unitPlacement unitType="submarine" territory="5 Sea Zone" quantity="2" owner="Germans"/>
 			<unitPlacement unitType="destroyer" territory="5 Sea Zone" quantity="1" owner="Germans"/>
-			<unitPlacement unitType="submarine" territory="12 Sea Zone" quantity="1" owner="Germans"/>
+			<unitPlacement unitType="submarine" territory="8 Sea Zone" quantity="1" owner="Germans"/>
 			<unitPlacement unitType="transport" territory="14 Sea Zone" quantity="1" owner="Germans"/>
 			<unitPlacement unitType="battleship" territory="14 Sea Zone" quantity="1" owner="Germans"/>
 
