@@ -167,7 +167,7 @@ public class BattlePanel extends ActionPanel
             {
                 e.printStackTrace();
             }
-
+            return;
         }
 
         removeAll();
