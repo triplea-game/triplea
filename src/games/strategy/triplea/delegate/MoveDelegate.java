@@ -1450,9 +1450,11 @@ class UndoableMove implements Serializable
       }
       catch (ClassNotFoundException ex)
       {
+        ex.printStackTrace();
       }
       catch (IOException ex)
       {
+        ex.printStackTrace();
       }
 
   }

@@ -40,6 +40,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
+import games.strategy.engine.framework.*;
+import java.io.*;
 
 /**
  *
@@ -130,8 +132,8 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   private void undoPlace()
   {
     int lastChange = m_placements.size() -1;
-    Change change = (Change) m_placements.get(lastChange);
-    m_bridge.addChange(change.invert());
+    UndoPlace undoPlace = (UndoPlace) m_placements.get(lastChange);
+    undoPlace.undo(m_data, m_bridge ,this);
     m_placements.remove(lastChange);
   }
 
@@ -404,13 +406,6 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   {
     Collection units = placeMessage.getUnits();
 
-    Territory producer = getProducer(placeMessage.getTo(), m_alreadyProduced);
-    m_alreadyProduced.add(producer, units.size() );
-
-    if(Match.someMatch(units, Matches.UnitIsFactory))
-      m_producedFactory.add(producer);
-
-
     Collection factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrFactory);
     DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwner(factoryAndAA, m_player);
 
@@ -422,7 +417,13 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     change.add(place);
 
     m_bridge.addChange(change);
-    m_placements.add(change);
+    m_placements.add(new UndoPlace(m_data, this, change));
+
+    Territory producer = getProducer(placeMessage.getTo(), m_alreadyProduced);
+    m_alreadyProduced.add(producer, units.size() );
+
+    if(Match.someMatch(units, Matches.UnitIsFactory))
+      m_producedFactory.add(producer);
 
 
     String transcriptText = Formatter.unitsToText(units) + " placed in " +placeMessage.getTo().getName();
@@ -487,6 +488,66 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   }
 }
 
+class UndoPlace
+{
+  private CompositeChange m_change;
+  private byte[] m_data;
+
+  public UndoPlace(GameData data, AbstractPlaceDelegate delegate, CompositeChange change)
+   {
+     m_change = change;
+     try
+     {
+         //capture the save state of the move and save delegates
+         GameObjectStreamFactory factory = new GameObjectStreamFactory(data);
+
+         ByteArrayOutputStream sink = new ByteArrayOutputStream(2000);
+         ObjectOutputStream out = factory.create(sink);
+
+         out.writeObject(delegate.saveState());
+         out.flush();
+         out.close();
+
+         m_data = sink.toByteArray();
+     }
+     catch (IOException ex)
+     {
+       ex.printStackTrace();
+       throw new IllegalStateException(ex.getMessage());
+     }
+   }
+
+   public void undo(GameData data, DelegateBridge bridge, AbstractPlaceDelegate delegate)
+   {
+
+       try
+       {
+           GameObjectStreamFactory factory = new GameObjectStreamFactory(data);
+           ObjectInputStream in = factory.create(new ByteArrayInputStream(
+               m_data));
+           PlaceState placeState = (PlaceState) in.readObject();
+           delegate.loadState(placeState);
+
+           //undo any changes to the game data
+           bridge.addChange(m_change.invert());
+
+           bridge.getTranscript().write(bridge.getPlayerID().getName() +  " undoes his last placement.");
+
+       }
+       catch (ClassNotFoundException ex)
+       {
+         ex.printStackTrace();
+       }
+       catch (IOException ex)
+       {
+         ex.printStackTrace();
+       }
+
+   }
+
+
+
+}
 
 class PlaceState implements Serializable
 {
