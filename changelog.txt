@@ -1,0 +1,31 @@
+Changes for 0.5.1
+
+* Fixed bug which did not allow placement of bid units. (Ali Ibrahim)
+ 
+* Fixed bug which did not allow placement of units in classic. (Ali Ibrahim)
+
+* Fixed bug which did not allow placement of AA guns correctly. (Ali Ibrahim)
+
+* Fixed bug which did not correctly reload transports which had conducted an amphibious assault and then retreated. (Ali Ibrahim)
+
+* Added capability to bid for allies for 4th edition game. (Ali Ibrahim)
+
+Changes for 0.5.0
+
+* Added TUV (total unit value) column in statistics panel. Added TUV lost in battle as part of battle end message. (Ali Ibrahim)
+
+* Fixed bug in statistics table when adding a player such as Italy (Nekro).
+
+* Added logic to check production limits to display in production panel. (Kevin Sanders).
+
+* Added logic to not consider moving land units into water if there are no transports there. (Ali Ibrahim)
+
+* Added game defintion file, flags, color for Italian player. (unknown).
+
+* Fixed bug where allied air units which are cargo attacked. (Ali Ibrahim)
+
+* Changed game logic to allow destroyers to pass over submerged subs in 4th edition. (Ali Ibrahim)
+
+* Fixed bug which didn't allow fighters to consider landing in gibralator due to issue with pathing and neutrals. (Ali Ibrahim)
+
+* Added warning for users using Java 1.5 about some serialization problems which cause an incompatibility with saved games in Java 1.4. (Nekro)
