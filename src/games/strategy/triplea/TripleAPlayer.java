@@ -120,7 +120,7 @@ public class TripleAPlayer implements GamePlayer
     }
     else if (message instanceof RocketAttackQuery)
     {
-      return m_ui.getRocketAttack( ((RocketAttackQuery) message).getTerritories());
+      return m_ui.getRocketAttack( (RocketAttackQuery) message);
     }
     else if(message instanceof BattleEndMessage)
     {

@@ -551,15 +551,28 @@ public class TripleAFrame extends JFrame
     return m_actionButtons.waitForTech();
   }
 
-  public TerritoryMessage getRocketAttack(Collection territories)
+  public TerritoryMessage getRocketAttack(RocketAttackQuery msg)
   {
+    Collection territories = msg.getTerritories();	
     JList list = new JList(new Vector(territories));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setSelectedIndex(0);
+    JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout());
     JScrollPane scroll = new JScrollPane(list);
+    panel.add(scroll, BorderLayout.CENTER);
+    
+    if(msg.getFrom() != null)
+    {
+        panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + msg.getFrom().getName() ));
+    }
+    
     String[] options = {"OK", "Dont attack"};
-    int selection = JOptionPane.showOptionDialog(this, scroll, "Select rocket attack", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-
+    String message = "Select Rocket Target";
+        
+    int selection = JOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+    
+    
     Territory selected = null;
     if(selection == 0) //OK
       selected = (Territory) list.getSelectedValue();
