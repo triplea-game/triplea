@@ -655,6 +655,7 @@ public class PolygonGrabber extends JFrame
     private final Polygon findPolygon(final int x, final int y)
     {
         //walk up, find the first black point
+	
         Point startPoint = new Point(x,y);
         while( inBounds(startPoint.x, startPoint.y -1) && !isBlack(startPoint.x, startPoint.y))
         {
@@ -681,7 +682,7 @@ public class PolygonGrabber extends JFrame
 	    
             int tempDirection;
 	    
-            for(int i = 2; i >= -4; i--)
+            for(int i = 2; i >= -3; i--)   //was -4
             {
                 tempDirection = (currentDirection + i) % 8;
 		

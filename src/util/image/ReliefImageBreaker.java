@@ -107,7 +107,7 @@ public class ReliefImageBreaker
         }
 	catch(NullPointerException npe)
 	{
-	    System.out.println("Bad data given, shutting down");
+	    System.out.println("Bad data given or missing text files, shutting down");
 	    System.exit(0);
 	}
 
@@ -194,7 +194,7 @@ public class ReliefImageBreaker
     */
     private static String getMapDirectory()
     {
-	String mapDir = JOptionPane.showInputDialog(null, "Enter the map name as indicated in the XML Game file");
+	String mapDir = JOptionPane.showInputDialog(null, "Enter the folder name (ie. map name)");
 	    
 	if(mapDir != null)
 	{

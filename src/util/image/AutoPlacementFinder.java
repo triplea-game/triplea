@@ -55,17 +55,20 @@ public class AutoPlacementFinder
 	    System.exit(0);
 	}
 	
+	
 	try
 	{
             TerritoryData.setMapDir(mapDir);       //makes TripleA read all the text data files for the map.
-        }
+	}
 	catch(NullPointerException npe)
 	{
-	    System.out.println("Bad data given, shutting down");
+	    System.out.println("Caught Null Pointer Exception.");
+	    System.out.println("Could be due to some missing text files");
+	    npe.printStackTrace();
 	    System.exit(0);
 	}
-
-        Iterator terrIter = TerritoryData.getInstance().getTerritories().iterator();
+	
+	Iterator terrIter = TerritoryData.getInstance().getTerritories().iterator();
 	
 	System.out.println("Calculating, this may take a while...");
 	
@@ -134,7 +137,7 @@ public class AutoPlacementFinder
     */
     private static String getMapDirectory()
     {
-	String mapDir = JOptionPane.showInputDialog(null, "Enter the map name as indicated in the XML Game file");
+	String mapDir = JOptionPane.showInputDialog(null, "Enter the map name (ie. folder name)");
 	    
 	if(mapDir != null)
 	{
