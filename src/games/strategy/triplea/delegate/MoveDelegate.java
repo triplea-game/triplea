@@ -920,9 +920,9 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             }
         }
 
-        Collection arrivingUnits = units;
+         
         Collection aaCasualties = fireAA(route, units);
-        arrivingUnits = Util.difference(units, aaCasualties);
+        Collection arrivingUnits = Util.difference(units, aaCasualties);
 
         //if any non enemy territories on route
         //or if any enemy units on route the

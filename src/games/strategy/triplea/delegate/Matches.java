@@ -406,14 +406,20 @@ public class Matches
 
 
 
-	public static final Match TerritoryIsEmptyOfCombatUnits = new Match()
-	{
-		public boolean match(Object o)
-		{
-			Territory t = (Territory) o;
-			return t.getUnits().allMatch(UnitIsAAOrFactory);
-		}
-	};
+	public static Match territoryIsEmptyOfCombatUnits(final GameData data, final PlayerID player)
+    {
+        return new Match()
+        {
+            public boolean match(Object o)
+            {
+                Territory t = (Territory) o;
+                CompositeMatch nonCom = new CompositeMatchOr();
+                nonCom.add(UnitIsAAOrFactory);
+                nonCom.add(alliedUnit(player, data));
+                return t.getUnits().allMatch(nonCom);
+            }
+        };
+    }
 
 	public static final Match TerritoryIsNuetral = new Match()
 	{

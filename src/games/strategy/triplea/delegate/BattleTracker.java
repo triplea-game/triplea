@@ -200,7 +200,7 @@ public class BattleTracker implements java.io.Serializable
     };
     
     CompositeMatch conquerable = new CompositeMatchAnd();
-    conquerable.add(Matches.TerritoryIsEmptyOfCombatUnits);
+    conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
     conquerable.add(Matches.isTerritoryEnemy(id, data));
     conquerable.addInverse(Matches.TerritoryIsNuetral);
   
