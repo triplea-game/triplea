@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * MoveValidatorTest.java
  *
  * Created on November 8, 2001, 5:00 PM
@@ -94,22 +108,22 @@ public class MoveValidatorTest extends DelegateTest
 		//japanese unit in congo
 		Route bad = new Route();
 		//the empty case
-		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data));
+		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data, false));
 		
 		bad.add(egypt);
 		bad.add(congo);
 		bad.add(kenya);
 		
-		assertTrue(!MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data));
+		assertTrue(!MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data,  false));
 		
 		Route good = new Route();
 		good.add(egypt);
 		good.add(kenya);
-		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));
+		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data, false));
 
 		//at end so should still be good
 		good.add(congo);
-		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));	
+		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data, false));	
 	}
 	
 	public void testIsBlitz()
