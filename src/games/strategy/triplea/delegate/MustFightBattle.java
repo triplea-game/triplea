@@ -900,7 +900,76 @@ public class MustFightBattle implements Battle, BattleStepStrings
     bridge.sendMessage(msg, m_attacker);
     bridge.sendMessage(msg, m_defender);
     bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " wins");
+
+    checkDefendingPlanesCanLand(bridge);
+
   }
+
+  /**
+   * The defender has won, but there may be defending fighters that cant stay in the sea zone
+   * due to insufficient carriers.
+   */
+  private void checkDefendingPlanesCanLand(DelegateBridge bridge)
+  {
+    //not water, not relevant.
+    if(!m_battleSite.isWater())
+      return;
+
+    CompositeMatch alliedDefendingAir = new CompositeMatchAnd( Matches.UnitIsAir, Matches.isUnitAllied(m_defender, m_data));
+    Collection defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
+    //ne defending air
+    if(defendingAir.isEmpty())
+      return;
+
+    int carrierCost = MoveValidator.carrierCost(defendingAir);
+    int carrierCapacity = MoveValidator.carrierCapacity(m_defendingUnits);
+
+    if(carrierCapacity >= carrierCost)
+      return;
+
+    //find out what we must remove
+    //remove all the air that can land on carriers from defendingAir
+    carrierCost = 0;
+    Iterator defendingAirIter = new ArrayList(defendingAir).iterator();
+    while (defendingAirIter.hasNext() && carrierCapacity >= carrierCost)
+    {
+      Unit currentUnit = (Unit)defendingAirIter.next();
+      carrierCost += UnitAttatchment.get(currentUnit.getType()).getCarrierCost();
+      if(carrierCapacity >= carrierCost)
+      {
+        defendingAir.remove(currentUnit);
+      }
+    }
+
+    //now defending air has what cant stay, is there a place we can go?
+    //check for an island in this sea zone
+    Set neighbors = m_data.getMap().getNeighbors(m_battleSite);
+    Iterator neighborsIter = neighbors.iterator();
+    while (neighborsIter.hasNext())
+    {
+      Territory currentTerritory = (Territory)neighborsIter.next();
+      //we cant land them on water
+      if(currentTerritory.isWater())
+        continue;
+      //is it safe to move the planes there?
+      if(!m_data.getAllianceTracker().isAllied(m_defender, currentTerritory.getOwner()))
+        continue;
+      //only one neighbor, its an island.
+      if(m_data.getMap().getNeighbors(currentTerritory).size() == 1)
+      {
+        bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToText(defendingAir) + " forced to land in " + currentTerritory.getName(), defendingAir);
+        Change change = ChangeFactory.moveUnits(m_battleSite, currentTerritory, defendingAir);
+        bridge.addChange(change);
+        return;
+      }
+    }
+
+    //no were to go, they must die
+    bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToText(defendingAir) + " could not land and were killed", defendingAir);
+    Change change = ChangeFactory.removeUnits(m_battleSite, defendingAir);
+    bridge.addChange(change);
+  }
+
 
   private void attackerWins(DelegateBridge bridge)
   {
