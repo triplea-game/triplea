@@ -195,6 +195,10 @@ public class TripleAFrame extends JFrame
 
     private void shutdown()
     {
+        int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
+        if(rVal != JOptionPane.OK_OPTION)
+            return;
+        
         m_game.shutdown();
         System.exit(0);
     }
@@ -972,18 +976,10 @@ public class TripleAFrame extends JFrame
         //show the history
         if (player != null && !player.isNull() && !playing(player) && !m_inHistory)
         {
-            if (SwingUtilities.isEventDispatchThread())
-                showHistory();
-            else
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    public void run()
-                    {
-                        showHistory();
-                    }
-                });
-            }
+            if (!SwingUtilities.isEventDispatchThread())
+                throw new IllegalStateException("We should be in dispatch thread");
+            
+            showHistory();
         }
         //if the game control is with us
         //show the current game
@@ -1002,7 +998,7 @@ public class TripleAFrame extends JFrame
         setWidgetActivation();
 
         //we want to use a clone of the data, so we can make changes to it
-        GameData clonedGameData = cloneGameData();
+        GameData clonedGameData = cloneGameData(m_data);
         if (clonedGameData == null)
             return;
 
@@ -1044,13 +1040,13 @@ public class TripleAFrame extends JFrame
     /**
      * Create a deep copy of GameData
      */
-    private GameData cloneGameData()
+    public static GameData cloneGameData(GameData data)
     {
         try
         {
             GameDataManager manager = new GameDataManager();
             ByteArrayOutputStream sink = new ByteArrayOutputStream(10000);
-            manager.saveGame(sink, m_data, false);
+            manager.saveGame(sink, data, false);
             sink.close();
             ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
             sink = null;
@@ -1140,7 +1136,8 @@ public class TripleAFrame extends JFrame
                 { "OK", "Cancel" }, "OK");
         if (choice == 0)
         {
-            return new ArrayList(fighters).subList(0, text.getValue());
+            //arrayList.subList() is not serializable
+            return new ArrayList(new ArrayList(fighters).subList(0, text.getValue()));
         } else
             return new ArrayList(0);
     }
