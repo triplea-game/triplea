@@ -54,6 +54,7 @@ public class UnitAttatchment extends DefaultAttatchment
   private boolean m_canBombard = false;
   private boolean m_isStrategicBomber = false;
   private boolean m_isTwoHit = false;
+  private boolean m_isDestroyer = false;
 
   //-1 if cant transport
   private int m_transportCapacity = -1;
@@ -112,15 +113,31 @@ public class UnitAttatchment extends DefaultAttatchment
     m_isStrategicBomber = getBool(s);
   }
 
+  
+  public void setIsDestroyer(String s)
+  {
+    m_isDestroyer = getBool(s);
+  }
+
+  public boolean getIsDestroyer(PlayerID player)
+  {
+    return m_isDestroyer;
+  }
+
 
   public void setCanBombard(String s)
   {
     m_canBombard = getBool(s);
   }
 
-  public boolean getCanBombard()
+  public boolean getCanBombard(PlayerID player)
   {
-    return m_canBombard;
+    if(m_canBombard)
+        return true;
+    if(m_isDestroyer && TechAttatchment.get(player).hasDestroyerBombard())
+      return true;
+    
+    return false;
   }
 
   public void setIsAir(String s)
@@ -363,7 +380,8 @@ public class UnitAttatchment extends DefaultAttatchment
     " defense:" +m_defense +
     " movement:" +m_movement +
     " transportCapacity:" +m_transportCapacity +
-    " transportCost:" +m_transportCost;
+    " transportCost:" +m_transportCost+
+    "  destroyer" + m_isDestroyer;
   }
 
 }

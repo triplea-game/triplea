@@ -31,83 +31,83 @@ public class TechAttatchment extends DefaultAttatchment
     return (TechAttatchment) id.getAttatchment(Constants.TECH_ATTATCHMENT_NAME);
   }
 
-  private boolean mheavyBomber;
-  private boolean mlongRangeAir;
-  private boolean mjetPower;
-  private boolean mrocket;
-  private boolean mindustrialTechnology;
-  private boolean msuperSub;
-  private boolean mdestroyerBombard;
+  private boolean m_heavyBomber;
+  private boolean m_longRangeAir;
+  private boolean m_jetPower;
+  private boolean m_rocket;
+  private boolean m_industrialTechnology;
+  private boolean m_superSub;
+  private boolean m_destroyerBombard;
   
   public void setHeavyBomber(String s)
   {
-    mheavyBomber = getBool(s);
+    m_heavyBomber = getBool(s);
   }
 
   public void setDestroyerBombard(String s)
   {
-      mdestroyerBombard = getBool(s);
+      m_destroyerBombard = getBool(s);
   }
 
   
   public void setLongRangeAir(String s)
   {
-    mlongRangeAir = getBool(s);
+    m_longRangeAir = getBool(s);
   }
 
   public void setJetPower(String s)
   {
-    mjetPower = getBool(s);
+    m_jetPower = getBool(s);
   }
 
   public void setRocket(String s)
   {
-    mrocket = getBool(s);
+    m_rocket = getBool(s);
   }
 
   public void setIndustrialTechnology(String s)
   {
-    mindustrialTechnology = getBool(s);
+    m_industrialTechnology = getBool(s);
   }
 
   public void setSuperSub(String s)
   {
-    msuperSub = getBool(s);
+    m_superSub = getBool(s);
   }
 
   public String getHeavyBomber()
   {
-    return "" + mheavyBomber;
+    return "" + m_heavyBomber;
   }
 
   public String getLongRangeAir()
   {
-    return "" + mlongRangeAir;
+    return "" + m_longRangeAir;
   }
 
   public String getJetPower()
   {
-    return "" + mjetPower;
+    return "" + m_jetPower;
   }
 
   public String getRocket()
   {
-    return "" + mrocket;
+    return "" + m_rocket;
   }
 
   public String getIndustrialTechnology()
   {
-    return "" + mindustrialTechnology;
+    return "" + m_industrialTechnology;
   }
 
   public String getSuperSub()
   {
-    return "" + msuperSub;
+    return "" + m_superSub;
   }
   
   public String getDestroyerBombard()
   {
-      return "" + mdestroyerBombard;
+      return "" + m_destroyerBombard;
   }
 
   public TechAttatchment()
@@ -116,37 +116,37 @@ public class TechAttatchment extends DefaultAttatchment
 
   public boolean hasHeavyBomber()
   {
-    return mheavyBomber;
+    return m_heavyBomber;
   }
 
   public boolean hasLongRangeAir()
   {
-    return mlongRangeAir;
+    return m_longRangeAir;
   }
 
   public boolean hasJetPower()
   {
-    return mjetPower;
+    return m_jetPower;
   }
 
   public boolean hasRocket()
   {
-    return mrocket;
+    return m_rocket;
   }
 
   public boolean hasIndustrialTechnology()
   {
-    return mindustrialTechnology;
+    return m_industrialTechnology;
   }
 
   public boolean hasSuperSub()
   {
-    return msuperSub;
+    return m_superSub;
   }
   
   public boolean hasDestroyerBombard()
   {
-      return mdestroyerBombard;
+      return m_destroyerBombard;
   }
   
 

@@ -763,7 +763,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
   private Collection getBombardingUnits()
   {
-    Match ownedAndCanBombard = new CompositeMatchAnd(Matches.UnitCanBombard, Matches.unitIsOwnedBy(m_attacker));
+    Match ownedAndCanBombard = new CompositeMatchAnd(Matches.unitCanBombard(m_attacker), Matches.unitIsOwnedBy(m_attacker));
     Iterator territories = m_amphibiousAttackFrom.iterator();
     Collection bombard = new HashSet();
     while (territories.hasNext())

@@ -163,14 +163,18 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitCanBombard = new Match()
+	public static Match unitCanBombard(final PlayerID id)
 	{
-		public boolean match(Object obj)
-		{
-			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
-			return ua.getCanBombard();
-		}
+	    return new Match()
+	    {
+	    
+			public boolean match(Object obj)
+			{
+				Unit unit = (Unit) obj;
+				UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+				return ua.getCanBombard(id);
+			}
+	    };
 	};
 
 	public static final Match UnitCanBlitz = new Match()
