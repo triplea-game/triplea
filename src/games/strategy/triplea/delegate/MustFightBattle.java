@@ -899,6 +899,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
       m_attackingUnits.removeAll(lost);
       remove(lost, bridge);
     }
+
+    if(m_attackingUnits.isEmpty())
+      m_tracker.removeBattle(this);
   }
 
   /**

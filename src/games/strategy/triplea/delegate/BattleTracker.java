@@ -465,7 +465,7 @@ public class BattleTracker implements java.io.Serializable
 
   public void clear()
   {
-        m_bombardedFromTerritories.clear();
+    m_bombardedFromTerritories.clear();
     m_pendingBattles.clear();
     m_blitzed.clear();
     m_foughBattles.clear();
