@@ -69,8 +69,9 @@
       </zipfileset>
       <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
         <include name="**/*.html"/>
+        <include name="**/*.png"/>
       </zipfileset>
-      <zipfileset dir="liscence/" prefix="triplea_${triplea.version}/liscence/">
+      <zipfileset dir="licence/" prefix="triplea_${triplea.version}/licence/">
         <include name="gpl.txt"/>
       </zipfileset>
       <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
@@ -120,8 +121,9 @@
       </zipfileset>
       <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
         <include name="**/*.html"/>
+        <include name="**/*.png"/>
       </zipfileset>
-      <zipfileset dir="licence/" prefix="triplea_${triplea.version}/liscence/">
+      <zipfileset dir="licence/" prefix="triplea_${triplea.version}/licence/">
         <include name="gpl.txt"/>
       </zipfileset>
       <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
