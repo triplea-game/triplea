@@ -23,6 +23,8 @@ package games.strategy.net;
 import java.io.*;
 import java.rmi.dgc.VMID;
 
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
+
 /**
  *
  * A globally unique id.  <br>
@@ -42,17 +44,14 @@ public class GUID implements Externalizable
     //the local identifier
     //this coupled with the unique vm prefix comprise
     //our unique id
-    private static int s_lastID = 0;
+    private static AtomicInteger s_lastID = new AtomicInteger();
     
 	private int m_id;
 	private VMID m_prefix;
 	
 	public GUID() 
 	{
-		synchronized(GUID.class)
-		{
-		    m_id = s_lastID++;
-		}
+		m_id = s_lastID.getAndIncrement();
 		m_prefix = vm_prefix;
 		
 	}
