@@ -280,7 +280,7 @@ public class BattleCalculator
     }
 
     /**
-     * Return the total unit value for a certain player
+     * Return the total unit value for a certain player and his allies
      * 
      * @param units
      *            A collection of units
@@ -290,9 +290,9 @@ public class BattleCalculator
      *            An integer map of unit types to costs
      * @return the total unit value.
      */
-    public static int getTUV(Collection units, PlayerID player, IntegerMap costs)
+    public static int getTUV(Collection units, PlayerID player, IntegerMap costs, GameData data)
     {
-        Collection playerUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
+        Collection playerUnits = Match.getMatches(units, Matches.alliedUnit(player, data));
         return getTUV(playerUnits, costs);
     }
 
