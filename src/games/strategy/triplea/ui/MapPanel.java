@@ -419,6 +419,12 @@ class RouteDescription
 
         //we dont want to be updating for every small change,
         //if the end points are close enough, they are close enough
+        if(other.m_end == null && this.m_end != null)
+            return false;
+        if(other.m_end != null && this.m_end == null)
+            return false;
+
+        
         int xDiff = m_end.x - other.m_end.x;
         xDiff *= xDiff;
         int yDiff = m_end.y - other.m_end.y;
