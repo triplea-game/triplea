@@ -109,13 +109,21 @@ public class MapImage
     //areas of the image that are outside of the boundaries of the screen do not update correctly
     // m_largeMapImage = frame.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer));
 
-    m_largeMapImage = Util.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer), false);
+    //dont create a new one if we have an old one the right size
+    if(m_largeMapImage == null || 
+            m_largeMapImage.getWidth() != largeFromFile.getWidth(s_observer) || 
+            m_largeMapImage.getHeight() != largeFromFile.getHeight(s_observer))
+    {
+        m_largeMapImage = Util.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer), false);
+    }
+        
     m_smallMapImage = Util.createImage( (int) (largeFromFile.getWidth(s_observer) / m_smallLargeRatio),
                                          (int) ( largeFromFile.getHeight(s_observer) / m_smallLargeRatio), false);
 
     m_largeMapImage.getGraphics().drawImage(largeFromFile, 0,0,s_observer);
     m_smallMapImage.getGraphics().drawImage(largeFromFile, 0,0, m_smallMapImage.getWidth(null), m_smallMapImage.getHeight(null), s_observer);
 
+    //this is a large image, allow it to be gc'd right now
     largeFromFile = null;
     System.gc();
 
