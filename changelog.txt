@@ -1,5 +1,7 @@
 Changes for 0.5.2
 
+* Fixed bug #1067768 concerning the border of seazone 27 and Belgian Congo. (Nekro)
+
 * Fixed bug #1067331 by removing the connection between seazone 51 and 56 for Pact of Steel mod. (Nekro)
 
 * Fixed bug #1067073 by removing the connection between seazone 15 and 16 for Pact of Steel mod. (Nekro)
