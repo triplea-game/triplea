@@ -84,7 +84,7 @@ public class GUID implements Externalizable
 	
 	public int hashCode()
 	{
-		return ((int) m_id) ^  m_prefix.hashCode();
+		return  m_id ^  m_prefix.hashCode();
 	}
 	
 	public String toString()

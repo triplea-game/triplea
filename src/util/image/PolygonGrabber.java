@@ -240,7 +240,7 @@ public class PolygonGrabber extends JFrame
 
     public static void main(String[] args)
     {
-        String fileName = "/home/sgb/dev/triplea/additonalImageData/new_baseMap.gif";
+        String fileName = "/home/sgb/dev/triplea/data/games/strategy/triplea/image/images/maps/new_LargeMap.gif";
         PolygonGrabber grabber = new PolygonGrabber(fileName);
         grabber.setSize(600,550);
         grabber.show();
@@ -385,7 +385,9 @@ public class PolygonGrabber extends JFrame
     {
         m_testPoint.setLocation(currentPoint);
         move(m_testPoint, direction);
-        return isBlack(m_testPoint);
+        return   m_testPoint.x == 0 || m_testPoint.y == 0 ||
+        		 m_testPoint.y == m_image.getHeight(this) || m_testPoint.x == m_image.getWidth(this) ||
+        	isBlack(m_testPoint);
     }
 
     private final Polygon findPolygon(final int x, final int y)
