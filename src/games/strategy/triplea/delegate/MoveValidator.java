@@ -192,6 +192,21 @@ public class MoveValidator
 		return Match.someMatch(units, Matches.UnitIsAir);
 	}
 
+  public static int getTransportCost(Collection units)
+  {
+    if(units == null)
+      return 0;
+
+    int cost = 0;
+    Iterator iter = units.iterator();
+    while (iter.hasNext())
+    {
+      Unit item = (Unit) iter.next();
+      cost += UnitAttatchment.get(item.getType()).getTransportCost();
+    }
+    return cost;
+  }
+
 
 	public static boolean hasUnitsThatCantGoOnWater(Collection units)
 	{

@@ -35,6 +35,7 @@ import games.strategy.engine.message.Message;
 
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.*;
+import games.strategy.triplea.attatchments.*;
 
 /**
  *
@@ -432,11 +433,29 @@ public class MovePanel extends ActionPanel
       Message response = m_bridge.sendMessage(msg);
 
       if (! (response instanceof MustMoveWithReply))
-          throw new IllegalStateException("Message of wrong type:" + response);
+        throw new IllegalStateException("Message of wrong type:" + response);
 
       MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
 
-      UnitChooser chooser = new UnitChooser(transports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement(), m_bridge.getGameData());
+      List candidateTransports = new ArrayList();
+
+      //find the transports with space left
+      Iterator transportIter = transports.iterator();
+      while (transportIter.hasNext())
+      {
+        Unit transport = (Unit) transportIter.next();
+        Collection transporting = (Collection) mustMoveWith.getMustMoveWith().get(transport);
+        int cost = MoveValidator.getTransportCost(transporting);
+        int capacity = UnitAttatchment.get(transport.getType()).getTransportCapacity();
+        if(capacity > cost)
+          candidateTransports.add(transport);
+      }
+
+      if(candidateTransports.size() <= 1)
+        return candidateTransports;
+
+
+      UnitChooser chooser = new UnitChooser(candidateTransports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement(), m_bridge.getGameData());
       chooser.setTitle("What transports do you want to load");
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                                                 chooser, "What transports do you want to load",
