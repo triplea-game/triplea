@@ -23,6 +23,7 @@ package games.strategy.triplea.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+
 import javax.swing.*;
 
 import games.strategy.util.*;
@@ -33,6 +34,7 @@ import games.strategy.triplea.image.UnitIconImageFactory;
 
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.engine.gamePlayer.*;
+import games.strategy.engine.message.Message;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.util.*;
 
@@ -154,9 +156,36 @@ public class PlacePanel extends ActionPanel
       if(!getActive())
         return;
 
+      int maxUnits[] = new int[1];
+      Collection units = getUnitsToPlace(territory, maxUnits);
+      if (units.isEmpty())
+          return;
+
+      UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP, getData(), false);
+      String messageText = "Place units in " + territory.getName();
+      if (maxUnits[0] > 0)
+          chooser.setMax(maxUnits[0]);
+      
+      int option = JOptionPane.showOptionDialog( (JFrame) getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+      if(option == JOptionPane.OK_OPTION)
+      {
+        Collection choosen = chooser.getSelected();
+        PlaceMessage message = new PlaceMessage(choosen, territory);
+        m_placeMessage = message;
+        updateUnits();
+        synchronized(getLock())
+        {
+          getLock().notify();
+        }
+      }
+    }
+  };
+
+  private Collection getUnitsToPlace(Territory territory, int maxUnits[])
+  {
       //not our territory
       if(!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer()))
-          return;
+          return Collections.EMPTY_LIST;
 
       //get the units that can be placed on this territory.
       Collection units = getCurrentPlayer().getUnits().getUnits();
@@ -174,26 +203,25 @@ public class PlacePanel extends ActionPanel
            units = Match.getMatches(units, Matches.UnitIsNotSea);
 
        if(units.isEmpty())
-           return;
+           return Collections.EMPTY_LIST;
+      
+       Message msg = new ProductionRequestMessage(units, territory);
+       Message response = m_bridge.sendMessage(msg);
+       
+       if (! (response instanceof ProductionResponseMessage))
+           throw new IllegalStateException("Message of wrong type:" + response);
 
-      UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP, getData(), false);
-      String messageText = "Place units in " + territory.getName();
-      int option = JOptionPane.showOptionDialog( (JFrame) getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-      if(option == JOptionPane.OK_OPTION)
-      {
-        Collection choosen = chooser.getSelected();
-        PlaceMessage message = new PlaceMessage(choosen, territory);
-        m_placeMessage = message;
-        updateUnits();
-        synchronized(getLock())
-        {
-          getLock().notify();
-        }
-      }
-    }
-
-  };
-
+       ProductionResponseMessage production = (ProductionResponseMessage) response;
+       if (production.isError())
+       {
+           JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getMessage(), "No units", JOptionPane.INFORMATION_MESSAGE);
+           return Collections.EMPTY_LIST;
+       }
+       
+       maxUnits[0] = production.getMaxUnits();
+       return production.getUnits();
+  }
+  
   private void updateUnits()
   {
     Collection unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
