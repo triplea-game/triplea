@@ -66,7 +66,7 @@ public class PBEMStartup extends JPanel
         m_email1TextField.setText("");
         m_email1TextField.setColumns(50);
         m_instructionsText.setEditable(false);
-        m_instructionsText.setText("PGEM Properties");
+        m_instructionsText.setText("PBEM Properties");
         m_instructionsText.setLineWrap(true);
         m_instructionsText.setWrapStyleWord(true);
         this.add(m_email1TextField, new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
