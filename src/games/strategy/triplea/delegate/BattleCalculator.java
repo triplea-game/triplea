@@ -26,6 +26,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.engine.message.Message;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -82,17 +83,17 @@ public class BattleCalculator
 	return casualties;
     }
 
-    public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, IDelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
+    public static CasualtyDetails selectCasualties(PlayerID player, Collection targets, IDelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
     {
 	return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
     }
 
 
-    public static SelectCasualtyMessage selectCasualties(String step, PlayerID player, Collection targets, IDelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
+    public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection targets, IDelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
     {
 	int hits = dice.getHits();
 	if(hits == 0)
-	    return new SelectCasualtyMessage(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
+	    return new CasualtyDetails(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
 
 	Map dependents = getDependents(targets,data);
 
@@ -107,7 +108,7 @@ public class BattleCalculator
 	    for (int i = 0; i < hits; i++) {
 		killed.add(iter.next());
 	    }
-	    return new SelectCasualtyMessage(killed, Collections.EMPTY_LIST, true);
+	    return new CasualtyDetails(killed, Collections.EMPTY_LIST, true);
 	}
 
 
@@ -116,25 +117,23 @@ public class BattleCalculator
 	IntegerMap costs = getCosts(player, data);
 
 	List defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
-	Message msg = new SelectCasualtyQueryMessage(step, targets, dependents, dice.getHits(), text, dice, player, defaultCasualties);
-	Message response = bridge.sendMessage(msg, player);
-	if(!(response instanceof SelectCasualtyMessage))
-	    throw new IllegalStateException("Message of wrong type:" + response);
-
-	SelectCasualtyMessage casualtySelection = (SelectCasualtyMessage) response;
+	
+	ITripleaPlayer tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
+	CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(step, targets, dependents, dice.getHits(), text, dice, player, defaultCasualties);
+	
 	List killed = casualtySelection.getKilled();
 	List damaged = casualtySelection.getDamaged();
 
 	//check right number
 	if ( ! (killed.size()  + damaged.size() == dice.getHits()) )
 	{
-	    bridge.sendMessage( new StringMessage("Wrong number of casualties selected", true), player);
+	    tripleaPlayer.reportError("Wrong number of casualties selected");
 	    return selectCasualties(player, targets, bridge,text, data, dice, defending);
 	}
 	//check we have enough of each type
 	if(!targets.containsAll(killed) || ! targets.containsAll(damaged))
 	{
-	    bridge.sendMessage( new StringMessage("Cannot remove enough units of those types", true), player);
+	    tripleaPlayer.reportError("Cannot remove enough units of those types");
 	    return selectCasualties(player, targets, bridge,text, data, dice, defending);
 	}
 	return casualtySelection;

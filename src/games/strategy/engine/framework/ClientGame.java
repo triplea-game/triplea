@@ -70,7 +70,7 @@ public class ClientGame implements IGame
     Iterator iter = gamePlayers.iterator();
     while(iter.hasNext())
     {
-      GamePlayer gp = (GamePlayer) iter.next();
+      IGamePlayer gp = (IGamePlayer) iter.next();
       PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
       m_gamePlayers.put(player, gp);
 
@@ -195,7 +195,7 @@ public class ClientGame implements IGame
       else if(msg instanceof PlayerStartStepMessage)
       {
         PlayerStartStepMessage playerStart = (PlayerStartStepMessage) msg;
-        GamePlayer gp = (GamePlayer) m_gamePlayers.get(playerStart.getPlayerID());
+        IGamePlayer gp = (IGamePlayer) m_gamePlayers.get(playerStart.getPlayerID());
 
         if(gp == null)
           throw new IllegalStateException("Game player not found" + playerStart);

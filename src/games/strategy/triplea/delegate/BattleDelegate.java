@@ -31,6 +31,7 @@ import games.strategy.triplea.Constants;
 
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
+import games.strategy.triplea.player.ITripleaPlayer;
 
 /**
  * @author Sean Bridges
@@ -226,21 +227,12 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
             battleTerritories.put(battle.getTerritory(), battle);
         }
 
-        PlayerID attacker = m_bridge.getPlayerID();
-
-        Message msg = new BombardmentQueryMessage(u, uTerritory, territories,
-                hasNotMoved);
-        Message response = m_bridge.sendMessage(msg, attacker);
-        if (!(response instanceof BombardmentSelectMessage))
+        ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+        Territory bombardingTerritory =  remotePlayer.selectBombardingTerritory(u, uTerritory, territories, hasNotMoved);
+        
+        if (bombardingTerritory != null)
         {
-            throw new IllegalStateException("Message of wrong type:" + response);
-        }
-
-        BombardmentSelectMessage bsm = (BombardmentSelectMessage) response;
-
-        if (bsm.getTerritory() != null)
-        {
-            return (Battle) battleTerritories.get(bsm.getTerritory());
+            return (Battle) battleTerritories.get(bombardingTerritory);
         }
 
         return null; // User elected not to bombard with this unit

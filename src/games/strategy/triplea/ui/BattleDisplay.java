@@ -62,7 +62,7 @@ public class BattleDisplay extends JPanel
     private BattleModel m_attackerModel;
     private BattleStepsPanel m_steps;
     
-    private SelectCasualtyMessage m_selectCasualtyResponse;
+    private CasualtyDetails m_selectCasualtyResponse;
     
     private DicePanel m_dicePanel;
     private CasualtyNotificationPanel m_casualties;
@@ -284,15 +284,15 @@ public class BattleDisplay extends JPanel
         }
     }
     
-    public SelectCasualtyMessage getCasualties(final SelectCasualtyQueryMessage msg)
+    public CasualtyDetails getCasualties(final  String step, final Collection selectFrom, final Map dependents, final int count, final String message, final DiceRoll dice, final PlayerID hit, final List defaultCasualties)
     {
         
-        setStep(msg);
+        setStep(step);
         m_actionLayout.show(m_actionPanel, DICE_KEY);
-        m_dicePanel.setDiceRoll(msg.getDice());
+        m_dicePanel.setDiceRoll(dice);
         
-        boolean plural = msg.getCount() > 1;
-        final String btnText = msg.getPlayer().getName() + " select " + msg.getCount() + (plural ? " casualties" : " casualty");
+        boolean plural = count > 1;
+        final String btnText = hit.getName() + " select " + count + (plural ? " casualties" : " casualty");
         m_actionButton.setEnabled(true);
         
         final Object continueLock = new Object();
@@ -308,24 +308,24 @@ public class BattleDisplay extends JPanel
                             public void actionPerformed(ActionEvent e)
                             {
                                 
-                                String messageText = msg.getMessage() + " " + btnText + ".";
-                                UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDefaultCasualties(), msg.getDependent(), m_data, true);
+                                String messageText = message + " " + btnText + ".";
+                                UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true);
                                 
                                 chooser.setTitle(messageText);
-                                chooser.setMax(msg.getCount());
+                                chooser.setMax(count);
                                 String[] options = {"Ok", "Cancel"};
-                                int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+                                int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
                                 if (option != 0)
                                     return;
                                 List killed = chooser.getSelected(false);
                                 List damaged = chooser.getSelectedFirstHit();
                                 
-                                if (killed.size() + damaged.size() != msg.getCount())
+                                if (killed.size() + damaged.size() != count)
                                 {
-                                    JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", msg.getPlayer().getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
+                                    JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", hit.getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
                                 } else
                                 {
-                                    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, damaged, false);
+                                    CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
                                     m_selectCasualtyResponse = response;
                                     synchronized (continueLock)
                                     {
@@ -357,7 +357,7 @@ public class BattleDisplay extends JPanel
             }
         });
         
-        SelectCasualtyMessage rVal = m_selectCasualtyResponse;
+        CasualtyDetails rVal = m_selectCasualtyResponse;
         m_selectCasualtyResponse = null;
         return rVal;
         
@@ -441,9 +441,16 @@ public class BattleDisplay extends JPanel
     public void setStep(BattleMessage message)
     {
         
-        m_steps.setStep(message);
+        m_steps.setStep(message.getStep());
         
     }
+    
+    public void setStep(String step)
+    {
+        m_steps.setStep(step);
+    }
+    
+    
     
     public Message battleInfo(BattleInfoMessage msg)
     {
@@ -704,7 +711,7 @@ class BattleStepsPanel extends JPanel
     public Message battleStringMessage(BattleStringMessage message)
     {
         
-        setStep(message);
+        setStep(message.getStep());
         JOptionPane.showMessageDialog(getRootPane(), message.getMessage(), message.getMessage(), JOptionPane.PLAIN_MESSAGE);
         return null;
     }
@@ -813,12 +820,12 @@ class BattleStepsPanel extends JPanel
         walkStep(m_list.getSelectedIndex(), m_list.getModel().getSize() - 1);
     }
     
-    public void setStep(BattleMessage msg)
+    public void setStep(String step)
     {
         
-        if (msg.getStep() != null)
+        if (step != null)
         {
-            int newIndex = m_listModel.lastIndexOf(msg.getStep());
+            int newIndex = m_listModel.lastIndexOf(step);
             int currentIndex = m_list.getSelectedIndex();
             if (newIndex != -1)
                 walkStep(currentIndex, newIndex);

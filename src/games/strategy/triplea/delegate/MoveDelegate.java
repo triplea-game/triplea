@@ -33,6 +33,8 @@ import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.player.ITripleaPlayer;
+
 import java.io.*;
 
 import org.omg.CORBA.COMM_FAILURE;
@@ -893,6 +895,16 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return property.booleanValue();
     }
 
+    private ITripleaPlayer getRemotePlayer()
+    {
+        return (ITripleaPlayer) m_bridge.getRemote(); 
+    }
+    
+    private ITripleaPlayer getRemotePlayer(PlayerID id)
+    {
+        return (ITripleaPlayer) m_bridge.getRemote(id);
+    }
+    
     /**
      * We assume that the move is valid
      */
@@ -956,13 +968,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
             if (allCanBomb && targetToBomb)
             {
-                StrategicBombQuery query = new StrategicBombQuery(route.getEnd());
-                Message response = m_bridge.sendMessage(query);
-                if (!(response instanceof BooleanMessage))
-                {
-                    throw new IllegalStateException("Received message of wrong type. Message:" + response);
-                }
-                bombing = ((BooleanMessage) response).getBoolean();
+                bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
             }
 
             DelegateFinder.battleDelegate(m_data).getBattleTracker().addBattle(route, arrivingUnits, m_transportTracker, bombing, id, m_data, m_bridge, m_currentMove);
@@ -1494,7 +1500,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 	if (isFourEdition()) {
           casualties = BattleCalculator.fourthEditionAACasualties(units, dice, m_bridge);
 	} else {
-	  SelectCasualtyMessage casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false);
+	  CasualtyDetails casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false);
 	  casualties = casualtyMsg.getKilled();
 	}
 

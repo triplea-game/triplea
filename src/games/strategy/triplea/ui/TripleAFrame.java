@@ -25,6 +25,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 import java.net.URL;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -707,16 +708,6 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForBattleSelection();
     }
 
-    public BombardmentSelectMessage getBombardment(BombardmentQueryMessage msg)
-    {
-        return m_actionButtons.getBombardment(msg);
-    }
-
-    public SelectCasualtyMessage getCasualties(SelectCasualtyQueryMessage msg)
-    {
-        return m_actionButtons.getCasualties(msg);
-    }
-
     public Message battleStringMessage(BattleStringMessage message)
     {
         return m_actionButtons.battleStringMessage(message);
@@ -796,9 +787,9 @@ public class TripleAFrame extends JFrame
 
     }
 
-    public boolean getStrategicBombingRaid(StrategicBombQuery query)
+    public boolean getStrategicBombingRaid(Territory location)
     {
-        String message = "Bomb in " + query.getLocation().getName();
+        String message = "Bomb in " + location.getName();
         String bomb = "Bomb";
         String normal = "Attack";
         String[] choices = { bomb, normal };
@@ -876,7 +867,7 @@ public class TripleAFrame extends JFrame
         Iterator iter = m_localPlayers.iterator();
         while (iter.hasNext())
         {
-            GamePlayer gamePlayer = (GamePlayer) iter.next();
+            IGamePlayer gamePlayer = (IGamePlayer) iter.next();
             if (gamePlayer.getID().equals(id)
                     && gamePlayer instanceof TripleAPlayer)
             {
@@ -1220,4 +1211,30 @@ public class TripleAFrame extends JFrame
 
         return unitSizeMenu;
     }
+    
+    public BattlePanel getBattlePanel()
+    {
+        return m_actionButtons.getBattlePanel();
+    }
+    
+    public MovePanel getMovePanel()
+    {
+        return m_actionButtons.getMovePanel();
+    }
+    
+    public TechPanel getTechPanel() 
+    {
+        return m_actionButtons.getTechPanel();
+    }
+    
+    public PlacePanel getPlacePanel()
+    {
+        return m_actionButtons.getPlacePanel();
+    }
+    
+    public PurchasePanel getPurchasePanel()
+    {
+        return m_actionButtons.getPurchasePanel();
+    }
+    
 }

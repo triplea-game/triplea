@@ -27,7 +27,7 @@ import games.strategy.net.*;
 import games.strategy.ui.*;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.gamePlayer.GamePlayer;
+import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ui.*;
 

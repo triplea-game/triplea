@@ -951,7 +951,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Message diceNotification = new BattleInfoMessage(dice, "Waiting for " + hitPlayer.getName() + " to select casualties", stepName);
             bridge.sendMessageNoResponse(diceNotification, firingPlayer);
             
-            SelectCasualtyMessage message = selectCasualties(stepName, bridge, attackableUnits, !defender, text, dice);
+            CasualtyDetails message = selectCasualties(stepName, bridge, attackableUnits, !defender, text, dice);
             killed = message.getKilled();
             damaged = message.getDamaged();
             autoCalculated = message.getAutoCalculated();
@@ -1027,7 +1027,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         fire(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES, units, attacked, true, destroyersPresent, bridge, "Subs defend, ");
     }
     
-    private SelectCasualtyMessage selectCasualties(String step, IDelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
+    private CasualtyDetails selectCasualties(String step, IDelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
     {
         
         PlayerID hit = defender ? m_defender : m_attacker;

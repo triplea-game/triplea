@@ -24,67 +24,94 @@ import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
 import games.strategy.engine.history.*;
+import games.strategy.net.IRemote;
 
 /**
- *
- * @author  Sean Bridges
- * @version 1.0
- *
- * A class that communicates with the Delegate.
- * DelegateBridge co-ordinates comunication between the Delegate and both the players
- * and the game data.
- *
+ * 
+ * 
+ * 
+ * A class that communicates with the Delegate. DelegateBridge co-ordinates
+ * comunication between the Delegate and both the players and the game data.
+ * 
  * The reason for communicating through a DelegateBridge is to achieve network
  * transparancy.
- *
- * The delegateBridge allows the Delegate to talk to the player in a safe manner.
+ * 
+ * The delegateBridge allows the Delegate to talk to the player in a safe
+ * manner.
+ * 
+ * @author Sean Bridges
  */
 public interface IDelegateBridge
 {
-  /**
-   * Messages are sent to the current player
-   */
-  public Message sendMessage(Message message);
+    /**
+     * Messages are sent to the current player
+     */
+    public Message sendMessage(Message message);
 
-  /**
-   * Messages are sent to the current player without waiting for a response.
-   */
-  public void sendMessageNoResponse(Message message);
+    /**
+     * Messages are sent to the current player without waiting for a response.
+     */
+    public void sendMessageNoResponse(Message message);
 
+    /**
+     * Sends a message to the given player.
+     */
+    public Message sendMessage(Message message, PlayerID player);
 
-  /**
-   * Sends a message to the given player.
-   */
-  public Message sendMessage(Message message, PlayerID player);
+    /**
+     * Messages are sent to the given player without waiting for a response.
+     */
+    public void sendMessageNoResponse(Message message, PlayerID player);
 
-  /**
-   * Messages are sent to the given player without waiting for a response.
-   */
-  public void sendMessageNoResponse(Message message, PlayerID player);
+    /**
+     * equivalent to getRemote(getPlayerID())
+     * 
+     * @return remote for the current player.
+     */
+    public IRemote getRemote();
 
+    /**
+     * Get a remote reference to the given player.
+     * 
+     * @see games.strategy.net.IRemoteMessenger
+     */
+    public IRemote getRemote(PlayerID id);
 
-  /**
-   * Player is initialized to the player specified in the xml data.
-   */
-  public void setPlayerID(PlayerID aPlayer);
-  public PlayerID getPlayerID();
+    /**
+     * Player is initialized to the player specified in the xml data.
+     */
+    public void setPlayerID(PlayerID aPlayer);
 
-  /**
-   * Returns the current step name
-   */
-  public String getStepName();
+    public PlayerID getPlayerID();
 
-  public void addChange(Change aChange);
+    /**
+     * Returns the current step name
+     */
+    public String getStepName();
 
-  /**
-   * Delegates should not use random data that comes from any other source.
-   */
-  public int getRandom(int max, String annotation);
-  public int[] getRandom(int max, int count, String annotation);
+    /**
+     * Add a change to game data. Use this rather than changing gameData
+     * directly since this method allows us to send the changes to other
+     * machines.
+     * 
+     * @param aChange
+     */
+    public void addChange(Change aChange);
 
+    /**
+     * Delegates should not use random data that comes from any other source.
+     * 
+     * @param annotation -
+     *            a string used to describe the dice roll
+     * @see games.strategy.engine.random.IRandomSource
+     */
+    public int getRandom(int max, String annotation);
 
-  /**
-   *
-   */
+    public int[] getRandom(int max, int count, String annotation);
+
+    /**
+     *  
+     */
     public DelegateHistoryWriter getHistoryWriter();
-  }
+
+}

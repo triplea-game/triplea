@@ -31,14 +31,14 @@ import games.strategy.engine.data.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class SelectCasualtyMessage implements Message
+public class CasualtyDetails implements Message
 {
   private final List m_killed;
   private final  List m_damaged;
   private final boolean m_autoCalculated;
 
   /** Creates new SelectCasualtyMessage */
-  public SelectCasualtyMessage(List killed, List damaged, boolean autoCalculated)
+  public CasualtyDetails(List killed, List damaged, boolean autoCalculated)
   {
     if(killed == null)
       throw new IllegalArgumentException("null killed");

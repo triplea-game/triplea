@@ -88,21 +88,7 @@ public class ServerGame implements IGame
         RandomDestination rnd_dest = new RandomDestination(PlayerID.NULL_PLAYERID.getName());
         m_messageManager.addDestination(rnd_dest);
 
-        Iterator localPlayersIter = localPlayers.iterator();
-        while (localPlayersIter.hasNext())
-        {
-            GamePlayer gp = (GamePlayer) localPlayersIter.next();
-            PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
-            m_gamePlayers.put(player, gp);
-            IPlayerBridge bridge = new DefaultPlayerBridge(this);
-            gp.initialize(bridge, player);
-            m_messageManager.addDestination(gp);
-
-            // Add a random destination for this GamePlayer
-            rnd_dest = new RandomDestination(gp.getName());
-
-            m_messageManager.addDestination(rnd_dest);
-        }
+        setupLocalPlayers(localPlayers);
 
         //add a null destination for the null player.
         IDestination nullDest = new IDestination()
@@ -126,6 +112,30 @@ public class ServerGame implements IGame
         m_randomStats = new RandomStats(m_messageManager);
     }
 
+    /**
+     * @param localPlayers
+     */
+    private void setupLocalPlayers(Set localPlayers)
+    {
+        RandomDestination rnd_dest;
+        Iterator localPlayersIter = localPlayers.iterator();
+        while (localPlayersIter.hasNext())
+        {
+            IGamePlayer gp = (IGamePlayer) localPlayersIter.next();
+            PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
+            m_gamePlayers.put(player, gp);
+            IPlayerBridge bridge = new DefaultPlayerBridge(this);
+            gp.initialize(bridge, player);
+            m_messageManager.addDestination(gp);
+            m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, getRemoteName(gp.getID()));
+
+            // Add a random destination for this GamePlayer
+            rnd_dest = new RandomDestination(gp.getName());
+
+            m_messageManager.addDestination(rnd_dest);
+        }
+    }
+
     private void setupDelegateMessaging(GameData data)
     {
         Iterator delegateIter = data.getDelegateList().iterator();
@@ -144,6 +154,11 @@ public class ServerGame implements IGame
     public static String getRemoteName(IDelegate delegate)
     {
         return "games.strategy.engine.framework.ServerGame.DELEGATE_REMOTE." + delegate.getName();
+    }
+    
+    public static String getRemoteName(PlayerID id)
+    {
+        return "games.strategy.engine.framework.ServerGame.PLAYER_REMOTE." + id.getName();
     }
 
     public GameData getData()
@@ -237,7 +252,7 @@ public class ServerGame implements IGame
         if (playerID == null)
             return;
 
-        GamePlayer player = (GamePlayer) m_gamePlayers.get(playerID);
+        IGamePlayer player = (IGamePlayer) m_gamePlayers.get(playerID);
 
         if (player != null)
         {

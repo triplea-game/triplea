@@ -22,6 +22,8 @@ package games.strategy.triplea.ui;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
+
 import javax.swing.*;
 
 import games.strategy.util.*;
@@ -29,6 +31,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 
@@ -173,21 +176,6 @@ public class ActionButtons extends JPanel
         return m_battlePanel.waitForBattleSelection();
     }
 
-    /**
-     * Return which territory should a unit bombard.
-     */
-    public BombardmentSelectMessage getBombardment(BombardmentQueryMessage msg)
-    {
-        return m_battlePanel.getBombardment(msg);
-    }
-
-    /**
-     * Return which casualties should be selected.
-     */
-    public SelectCasualtyMessage getCasualties(SelectCasualtyQueryMessage msg)
-    {
-        return m_battlePanel.getCasualties(msg);
-    }
 
     public Message battleStringMessage(BattleStringMessage message)
     {
@@ -237,5 +225,27 @@ public class ActionButtons extends JPanel
     public ActionPanel getCurrent()
     {
         return m_current;
+    }
+    
+    
+    public BattlePanel getBattlePanel()
+    {
+        return m_battlePanel;
+    }
+    public MovePanel getMovePanel()
+    {
+        return m_movePanel;
+    }
+    public PlacePanel getPlacePanel()
+    {
+        return m_placePanel;
+    }
+    public PurchasePanel getPurchasePanel()
+    {
+        return m_purchasePanel;
+    }
+    public TechPanel getTechPanel()
+    {
+        return m_techPanel;
     }
 }

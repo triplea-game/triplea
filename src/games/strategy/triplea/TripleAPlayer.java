@@ -28,6 +28,7 @@ import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.message.*;
 import games.strategy.engine.data.events.*;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.*;
 import games.strategy.triplea.ui.TripleAFrame;
 
@@ -41,7 +42,7 @@ import games.strategy.triplea.delegate.*;
  * @author Sean Bridges
  * @version 1.0
  */
-public class TripleAPlayer implements GamePlayer
+public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
 {
     private final String m_name;
 
@@ -75,14 +76,9 @@ public class TripleAPlayer implements GamePlayer
                     .shouldIgnore((MultiDestinationMessage) message))
                 return null;
         }
-
-        if (message instanceof SelectCasualtyQueryMessage)
-        {
-            return m_ui.getCasualties((SelectCasualtyQueryMessage) message);
-        } else if (message instanceof BombardmentQueryMessage)
-        {
-            return m_ui.getBombardment((BombardmentQueryMessage) message);
-        } else if (message instanceof StringMessage)
+        
+        
+        if (message instanceof StringMessage)
         {
             StringMessage smsg = (StringMessage) message;
             if (!m_ui.playing(smsg.getIgnore()))
@@ -92,7 +88,8 @@ public class TripleAPlayer implements GamePlayer
                 else
                     m_ui.notifyMessage(smsg.getMessage());
             }
-        } else if (message instanceof BattleStepMessage)
+        }
+        else if (message instanceof BattleStepMessage)
         {
             return m_ui.listBattle((BattleStepMessage) message);
         } else if (message instanceof CasualtyNotificationMessage)
@@ -111,7 +108,7 @@ public class TripleAPlayer implements GamePlayer
             return m_ui
                     .moveFightersToCarrier((MoveFightersToNewCarrierMessage) message);
         }
-        if (message instanceof BattleStartMessage)
+        else if (message instanceof BattleStartMessage)
         {
             m_ui.battleStartMessage((BattleStartMessage) message);
         } else if (message instanceof RetreatQueryMessage)
@@ -124,10 +121,6 @@ public class TripleAPlayer implements GamePlayer
         } else if (message instanceof LandAirQueryMessage)
         {
             return m_ui.getLandAir((LandAirQueryMessage) message);
-        } else if (message instanceof StrategicBombQuery)
-        {
-            return new BooleanMessage(m_ui
-                    .getStrategicBombingRaid((StrategicBombQuery) message));
         } else if (message instanceof RocketAttackQuery)
         {
             return m_ui.getRocketAttack((RocketAttackQuery) message);
@@ -142,6 +135,11 @@ public class TripleAPlayer implements GamePlayer
         }
 
         return null;
+    }
+    
+    public void reportError(String error)
+    {
+        m_ui.notifyError(error);
     }
 
     public PlayerID getID()
@@ -336,6 +334,42 @@ public class TripleAPlayer implements GamePlayer
                 m_ui.notifyError(error);
         }
     }
+    
+    /* 
+     * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
+     */
+    public Class getRemotePlayerType()
+    {
+        return ITripleaPlayer.class;
+    }
+    
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
+     */
+    public CasualtyDetails selectCasualties(String step, Collection selectFrom, Map dependents, int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
+    {
+        return m_ui.getBattlePanel().getCasualties(step, selectFrom, dependents, count, message, dice,hit, defaultCasualties);
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit, games.strategy.engine.data.Territory, java.util.Collection, boolean)
+     */
+    public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection territories, boolean noneAvailable)
+    {
+        return m_ui.getBattlePanel().getBombardment(unit, unitTerritory,  territories, noneAvailable);
+    }
+
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
+     */
+    public boolean shouldBomberBomb(Territory territory)
+    {
+        return m_ui.getStrategicBombingRaid(territory);
+       
+    } 
+    
+    
+    
 }
 
 

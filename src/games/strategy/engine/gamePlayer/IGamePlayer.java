@@ -26,19 +26,35 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.*;
 
 /**
- *
- * A player of the game.  <p>
+ * 
+ * A player of the game.
+ * <p>
  * Game players communicate to the game through a PlayerBridge.
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
- *
+ *  
  */
-public interface GamePlayer extends IDestination
+public interface IGamePlayer extends IDestination
 {
-	public void initialize(IPlayerBridge bridge, PlayerID id);
-	public Message sendMessage(Message message);
-	public String getName();
-	public PlayerID getID();
-	public void start(String stepName);
+    public void initialize(IPlayerBridge bridge, PlayerID id);
+
+    public Message sendMessage(Message message);
+
+    public String getName();
+
+    public PlayerID getID();
+
+    public void start(String stepName);
+
+    /**
+     * Get the type of the GamePlayer.
+     * <p>
+     * The type must extend IRemote, and is to be used by an IRemoteManager to
+     * allow a player to be contacted remotately
+     * 
+     * @see games.strategy.net.IRemoteMessenger
+     */
+    public Class getRemotePlayerType();
+
 }

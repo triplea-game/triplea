@@ -20,145 +20,168 @@
 
 package games.strategy.engine.data;
 
-
 import java.util.*;
 
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
+import games.strategy.net.*;
 import games.strategy.net.DummyMessenger;
 
 import games.strategy.engine.history.*;
 
-
-
-
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
- *
- *  Not for actual use, suitable for testing.
- *  Never returns messages, but can get random and implements changes
- *  immediately.
+ * 
+ * Not for actual use, suitable for testing. Never returns messages, but can get
+ * random and implements changes immediately.
  */
 public class TestDelegateBridge implements IDelegateBridge
 {
-  GameData m_data;
-  PlayerID m_id;
-  String m_stepName = "no name specified";
+    GameData m_data;
+    PlayerID m_id;
+    String m_stepName = "no name specified";
 
-  Random m_rand = new Random(System.currentTimeMillis());
+    Random m_rand = new Random(System.currentTimeMillis());
 
-  private DelegateHistoryWriter m_historyWriter;
+    private DelegateHistoryWriter m_historyWriter;
 
-  /** Creates new TestDelegateBridge */
-  public TestDelegateBridge(GameData data, PlayerID id)
-  {
-    m_data = data;
-    m_id = id;
-    History history = new History(m_data);
-    HistoryWriter historyWriter = new HistoryWriter(history);
-    historyWriter.startNextStep("","",PlayerID.NULL_PLAYERID, "");
-    m_historyWriter = new DelegateHistoryWriter(historyWriter, new DummyMessenger());
-
-
-  }
-
-  /**
-   * Delegates should not use random data that comes from any other source.
-   */
-  public int getRandom(int max, String annotation) {
-    return m_rand.nextInt(max);
-  }
-
-  public int[] getRandom(int max, int count, String annotation) {
-    int[] r = new int[count];
-    for(int i = 0; i < count; i++)
+    /** Creates new TestDelegateBridge */
+    public TestDelegateBridge(GameData data, PlayerID id)
     {
-      r[i] = getRandom(max, annotation);
+        m_data = data;
+        m_id = id;
+        History history = new History(m_data);
+        HistoryWriter historyWriter = new HistoryWriter(history);
+        historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
+        m_historyWriter = new DelegateHistoryWriter(historyWriter,
+                new DummyMessenger());
+
     }
-    return r;
-  }
 
-  /**
-   * Changing the player has the effect of commiting the current transaction.
-   * Player is initialized to the player specified in the xml data.
-   */
-  public void setPlayerID(PlayerID aPlayer)
-  {
-    m_id = aPlayer;
+    /**
+     * Delegates should not use random data that comes from any other source.
+     */
+    public int getRandom(int max, String annotation)
+    {
+        return m_rand.nextInt(max);
+    }
 
-  }
+    public int[] getRandom(int max, int count, String annotation)
+    {
+        int[] r = new int[count];
+        for (int i = 0; i < count; i++)
+        {
+            r[i] = getRandom(max, annotation);
+        }
+        return r;
+    }
 
-  public boolean inTransaction() {
-    return false;
-  }
+    /**
+     * Changing the player has the effect of commiting the current transaction.
+     * Player is initialized to the player specified in the xml data.
+     */
+    public void setPlayerID(PlayerID aPlayer)
+    {
+        m_id = aPlayer;
 
-  public PlayerID getPlayerID() {
-    return m_id;
-  }
+    }
 
-  public void addChange(Change aChange) {
-    aChange.perform(m_data);
-  }
+    public boolean inTransaction()
+    {
+        return false;
+    }
 
-  public void commit() {
-  }
+    public PlayerID getPlayerID()
+    {
+        return m_id;
+    }
 
-  public void startTransaction() {
-  }
+    public void addChange(Change aChange)
+    {
+        aChange.perform(m_data);
+    }
 
-  /**
-   * Messages are sent to the current player
-   */
-  public void sendMessageNoResponse(Message message) {
-  }
+    public void commit()
+    {
+    }
 
-  /**
-   * Messages are sent to the current player
-   */
-  public Message sendMessage(Message message) {
-    return null;
-  }
+    public void startTransaction()
+    {
+    }
 
-  public void rollback() {
-  }
+    /**
+     * Messages are sent to the current player
+     */
+    public void sendMessageNoResponse(Message message)
+    {
+    }
 
-  /**
-   * Sends a message to the given player.
-   */
-  public void sendMessageNoResponse(Message message, PlayerID player)
-  {
-  }
+    /**
+     * Messages are sent to the current player
+     */
+    public Message sendMessage(Message message)
+    {
+        return null;
+    }
 
-  /**
-   * Sends a message to the given player.
-   */
-  public Message sendMessage(Message message, PlayerID player)
-  {
-    return null;
-  }
+    public void rollback()
+    {
+    }
 
-  public void setStepName(String name)
-  {
-    m_stepName = name;
-  }
+    /**
+     * Sends a message to the given player.
+     */
+    public void sendMessageNoResponse(Message message, PlayerID player)
+    {
+    }
 
-  /**
-   * Returns the current step name
-   */
-  public String getStepName()
-  {
-    return m_stepName;
-  }
+    /**
+     * Sends a message to the given player.
+     */
+    public Message sendMessage(Message message, PlayerID player)
+    {
+        return null;
+    }
 
+    public void setStepName(String name)
+    {
+        m_stepName = name;
+    }
 
+    /**
+     * Returns the current step name
+     */
+    public String getStepName()
+    {
+        return m_stepName;
+    }
 
-  public DelegateHistoryWriter getHistoryWriter()
-  {
-    return m_historyWriter;
-  }
+    public DelegateHistoryWriter getHistoryWriter()
+    {
+        return m_historyWriter;
+    }
+
+    /*
+     * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
+     */
+    public IRemote getRemote()
+    {
+
+        return null;
+    }
+
+    /*
+     * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
+     */
+    public IRemote getRemote(PlayerID id)
+    {
+
+        return null;
+    }
+
 
 }

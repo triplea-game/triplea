@@ -39,7 +39,7 @@ public interface IGameLoader extends java.io.Serializable
    *
    * It is assumed that all players can play on either server or client.
    */
-  String[] getServerPlayerTypes();
+  public String[] getServerPlayerTypes();
 
   /**
    * Create the players.  Given a map of playerName -> type,
@@ -47,10 +47,12 @@ public interface IGameLoader extends java.io.Serializable
    *
    * @return a Set of GamePlayers
    */
-  Set createPlayers(Map players);
+  public Set createPlayers(Map players);
 
   /**
    * The game is about to start.
    */
-  void startGame(IGame game, Set players);
+  public void startGame(IGame game, Set players);
+  
+
 }

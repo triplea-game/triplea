@@ -35,6 +35,7 @@ import games.strategy.engine.random.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TerritoryImageFactory;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.sound.*;
 
 /**
@@ -125,7 +126,7 @@ public class TripleA implements IGameLoader
         Iterator iter = players.iterator();
         while (iter.hasNext())
         {
-            GamePlayer player = (GamePlayer) iter.next();
+            IGamePlayer player = (IGamePlayer) iter.next();
             if (player instanceof TripleAPlayer)
                 ((TripleAPlayer) player).setFrame(frame);
         }
@@ -143,5 +144,6 @@ public class TripleA implements IGameLoader
             return new String[]
             {HUMAN_PLAYER_TYPE};
     }
+
 
 }
