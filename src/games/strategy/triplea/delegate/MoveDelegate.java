@@ -64,7 +64,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private UndoableMove m_currentMove;
 
     private static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
-    private static final String CANT_VIOLATE_NEUTRALITY = "Can't violate neutrality";
     private static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
 
     /** Creates new MoveDelegate */
