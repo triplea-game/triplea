@@ -453,8 +453,9 @@ public class BattleTracker implements java.io.Serializable
 
     //make amphibious assaults dependent on possible naval invasions
 
+    //its only a dependency if we are unloading
     Battle precede = getDependentAmphibiousAssault(route);
-    if (precede != null)
+    if (precede != null && Match.someMatch(units, Matches.UnitIsLand))
     {
       addDependency(battle, precede);
     }
