@@ -45,13 +45,18 @@ public class PurchasePanel extends ActionPanel
   private boolean m_bid;
   private SimpleUnitPanel m_unitsPanel = new SimpleUnitPanel();
   private JLabel m_purchasedSoFar = new JLabel();
+  private JButton m_buyButton;
 
+  private final String BUY = "Buy...";
+  private final String CHANGE = "Change...";
 
   /** Creates new PurchasePanel */
-    public PurchasePanel(GameData data,MapPanel map)
+  public PurchasePanel(GameData data,MapPanel map)
   {
     super(data, map);
-    }
+    m_buyButton = new JButton(BUY);
+    m_buyButton.addActionListener(PURCHASE_ACTION);
+  }
 
   public void display(PlayerID id)
   {
@@ -59,8 +64,9 @@ public class PurchasePanel extends ActionPanel
     m_purchase = new IntegerMap();
     removeAll();
     actionLabel.setText(id.getName() + " production");
+    m_buyButton.setText(BUY);
     add(actionLabel);
-    add(new JButton(PURCHASE_ACTION));
+    add(m_buyButton);
     add(new JButton(DoneAction));
     m_purchasedSoFar.setText("");
 
@@ -105,12 +111,18 @@ public class PurchasePanel extends ActionPanel
       m_purchase = ProductionPanel.show(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase);
       m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, getCurrentPlayer(), getData());
       if(m_purchase.totalValues() == 0)
+      {
         m_purchasedSoFar.setText("");
-      else if(m_purchase.totalValues() == 1)
-        m_purchasedSoFar.setText("1 unit to be prooduced:");
+        m_buyButton.setText(BUY);
+      }
       else
-        m_purchasedSoFar.setText(m_purchase.totalValues() + " units to be produced:");
-
+      {
+        m_buyButton.setText(CHANGE);
+        if(m_purchase.totalValues() == 1)
+          m_purchasedSoFar.setText("1 unit to be prooduced:");
+        else
+          m_purchasedSoFar.setText(m_purchase.totalValues() + " units to be produced:");
+      }
     }
   };
 
