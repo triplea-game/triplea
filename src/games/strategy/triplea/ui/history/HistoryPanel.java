@@ -121,12 +121,9 @@ public class HistoryPanel extends JPanel
         HistoryNode last = m_data.getHistory().getLastNode();
         gotoNode(last);
 
-
-
         TreePath path = new TreePath(last.getPath());
         m_tree.expandPath(path);
         m_tree.setSelectionPath(path);
-        System.out.println("at end 4654");
     }
 
 
