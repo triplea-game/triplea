@@ -11,6 +11,7 @@
     <target name="clean" depends="init" >
 		<delete dir="release"/>
 		<delete dir="classes"/>
+		<delete dir="savedGames"/>
 	</target>
 
 	<target name="compile" depends="init">
@@ -50,6 +51,9 @@
 			<zipfileset dir="bin/" prefix="bin/">
 				<include name="triplea.bat"/>
 			</zipfileset>
+			<zipfileset dir="games/" prefix="ga,es/">
+				<include name="*.xml"/>
+			</zipfileset>
 		</zip>
     </target>
 
@@ -81,7 +85,9 @@
 			<zipfileset dir="liscence/" prefix="liscence/">
 				<include name="gpl.txt"/>
 			</zipfileset>
-
+			<zipfileset dir="games/" prefix="ga,es/">
+				<include name="*.xml"/>
+			</zipfileset>
 		</zip>
 	</target>
 
