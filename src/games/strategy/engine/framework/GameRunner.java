@@ -79,7 +79,7 @@ public class GameRunner
   */
   private static void checkJavaVersion()
   {
-     String strV = ""+System.getProperties().getProperty("java.version");
+     String strV = System.getProperties().getProperty("java.version");
      int x = strV.indexOf("1.4");
      int y = strV.indexOf("1.5");
      //int z = strV.indexOf("1.6");  //well till that comes along...
