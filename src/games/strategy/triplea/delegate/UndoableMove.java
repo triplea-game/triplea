@@ -186,7 +186,7 @@ public class UndoableMove implements Serializable
             {
                 Unit unit = (Unit) unloaded.next();
                 Unit transport = (Unit) m_unloaded.get(unit);
-                transportTracker.undoUnload(unit, transport);
+                transportTracker.undoUnload(unit, transport, bridge.getPlayerID());
             }
         }
         battleTracker.undoBattle(m_route, m_units);

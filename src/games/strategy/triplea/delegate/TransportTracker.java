@@ -105,9 +105,9 @@ public class TransportTracker implements java.io.Serializable
     /**
      * Undo the unload
      */
-    public void undoUnload(Unit unit, Unit transport)
+    public void undoUnload(Unit unit, Unit transport, PlayerID id)
     {
-        loadTransport(transport, unit, null);
+        loadTransport(transport, unit, id);
         Collection unload = (Collection) m_unloaded.get(transport);
         unload.remove(unit);
     }

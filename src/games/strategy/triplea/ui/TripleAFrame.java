@@ -679,6 +679,9 @@ public class TripleAFrame extends JFrame
       m_tabsPanel.add("Stats", m_statsPanel);
       m_tabsPanel.add("Territory", m_details);
 
+      if(m_actionButtons.getCurrent() != null)
+        m_actionButtons.getCurrent().setActive(false);
+
       m_historyPanel.removeAll();
       m_historyPanel.setLayout(new BorderLayout());
 
@@ -741,6 +744,8 @@ public class TripleAFrame extends JFrame
       m_tabsPanel.add("Action", m_actionButtons);
       m_tabsPanel.add("Territory", m_details);
       m_tabsPanel.add("Stats", m_statsPanel);
+      if(m_actionButtons.getCurrent() != null)
+        m_actionButtons.getCurrent().setActive(true);
 
       m_gameMainPanel.removeAll();
       m_gameMainPanel.setLayout(new BorderLayout());
