@@ -47,6 +47,15 @@ public class ProductionFrontier extends DefaultNamed
 		m_rules.add(rule);
 		m_cachedRules = null;
 	}
+	
+	public void removeRule(ProductionRule rule)
+	{
+        if(!m_rules.contains(rule))
+            throw new IllegalStateException("Rule not present:" + rule);
+
+  		m_rules.remove(rule);
+  		m_cachedRules = null;	    
+	}
 
 	public List getRules()
 	{

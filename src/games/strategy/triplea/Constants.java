@@ -53,7 +53,7 @@ public interface Constants
   public static final String FOURTH_EDITION = "4th Edition";
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";  
   public static final String TWO_HIT = "isTwoHit";
-  
+  public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
   
   public static final int TECH_ROLL_COST = 5;
 

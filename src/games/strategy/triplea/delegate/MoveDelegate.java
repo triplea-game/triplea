@@ -60,7 +60,8 @@ public class MoveDelegate implements SaveableDelegate
     private boolean m_nonCombat;
     private TransportTracker m_transportTracker = new TransportTracker();
     private IntegerMap m_alreadyMoved = new IntegerMap();
-
+    private SubmergedTracker m_submergedTracker = new SubmergedTracker();
+    
     // A collection of UndoableMoves
     private List m_movesToUndo = new ArrayList();
 
@@ -1361,6 +1362,7 @@ public class MoveDelegate implements SaveableDelegate
         state.m_alreadyMoved = m_alreadyMoved;
         if (saveUndo)
             state.m_movesToUndo = m_movesToUndo;
+        state.m_submergedTracker = m_submergedTracker;
         return state;
     }
 
@@ -1380,16 +1382,24 @@ public class MoveDelegate implements SaveableDelegate
         //prevents overwriting undo state when we restore from an undo move
         if (state.m_movesToUndo != null)
             m_movesToUndo = state.m_movesToUndo;
+        m_submergedTracker = state.m_submergedTracker;
+    }
+    
+    public SubmergedTracker getSubmergedTracker()
+    {
+        return m_submergedTracker;
     }
 }
 
 
 class MoveState implements Serializable
 {
-
+    
     public boolean m_firstRun = true;
     public boolean m_nonCombat;
     public TransportTracker m_transportTracker;
     public IntegerMap m_alreadyMoved;
     public List m_movesToUndo;
+    public SubmergedTracker m_submergedTracker;
+    
 }

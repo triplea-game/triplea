@@ -64,6 +64,33 @@ public class InitializationDelegate implements Delegate
 
   protected void init(GameData data, DelegateBridge aBridge)
   {
+    boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
+    boolean addArtilleryAndDestroyers = data.getProperties().get(Constants.USE_DESTROYERS_AND_ARTILLERY, false);
+    if(!fourthEdition && addArtilleryAndDestroyers)
+    {
+        CompositeChange change = new CompositeChange();
+        ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
+        ProductionRule destroyer = data.getProductionRuleList().getProductionRule("buyDestroyer");
+        ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier("production");
+        
+        change.add(ChangeFactory.addProductionRule(artillery, frontier));
+        change.add(ChangeFactory.addProductionRule(destroyer, frontier));        
+
+        ProductionRule artilleryIT = data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
+        ProductionRule destroyerIT = data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
+        ProductionFrontier frontierIT = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
+
+        change.add(ChangeFactory.addProductionRule(artilleryIT, frontierIT));
+        change.add(ChangeFactory.addProductionRule(destroyerIT, frontierIT));        
+
+        aBridge.getHistoryWriter().startEvent("Adding destroyers and artillery production rules");
+        aBridge.addChange(change);
+        
+        
+    }
+      
+      
+      
     boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
     UnitAttatchment battleShipAttatchment = UnitAttatchment.get(data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE));
     boolean defaultEnabled = battleShipAttatchment.isTwoHit();
