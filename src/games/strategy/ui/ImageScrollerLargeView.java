@@ -90,7 +90,6 @@ public class ImageScrollerLargeView extends JComponent
               m_insideCount = 0;
               return;
           }
-
           if (m_inside && m_edge != NONE)
           {
               m_insideCount++;
@@ -334,8 +333,6 @@ public class ImageScrollerLargeView extends JComponent
 
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
-			m_inside = true;
-
 			int height = getHeight();
 			int width = getWidth();
 
@@ -389,7 +386,7 @@ public class ImageScrollerLargeView extends JComponent
 
 		//the right button must be the one down
 		if ( (e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
-			m_inside = true;
+			m_inside = false;
 
 			//read in location
 			int x = e.getX();
