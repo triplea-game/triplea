@@ -284,7 +284,11 @@ public class MoveDelegate implements SaveableDelegate
         return mustMoveWith;
     }
 
-    private Map carrierMustMoveWith(Collection units, Territory start)
+    private Map carrierMustMoveWith(Collection units, Territory start) {
+      return carrierMustMoveWith(units, start.getUnits().getUnits());
+    }
+
+    public Map carrierMustMoveWith(Collection units, Collection startUnits)
     {
 
         //we want to get all air units that are owned by our allies
@@ -294,7 +298,7 @@ public class MoveDelegate implements SaveableDelegate
         friendlyNotOwnedAir.addInverse(Matches.unitIsOwnedBy(m_player));
         friendlyNotOwnedAir.add(Matches.UnitCanLandOnCarrier);
 
-        Collection alliedAir = start.getUnits().getMatches(friendlyNotOwnedAir);
+        Collection alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
 
         if (alliedAir.isEmpty())
             return Collections.EMPTY_MAP;
@@ -305,7 +309,7 @@ public class MoveDelegate implements SaveableDelegate
         friendlyNotOwnedCarrier.add(Matches.alliedUnit(m_player, m_data));
         friendlyNotOwnedCarrier.addInverse(Matches.unitIsOwnedBy(m_player));
 
-        Collection alliedCarrier = start.getUnits().getMatches(friendlyNotOwnedCarrier);
+        Collection alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
 
         Iterator alliedCarrierIter = alliedCarrier.iterator();
         while (alliedCarrierIter.hasNext())

@@ -105,8 +105,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     public void removeAttack(Route route, Collection units)
     {
-        
-        //remove all the units from this battle.
         m_attackingUnits.removeAll(units);
         Territory attackingFrom = getAttackFrom(route);
         
@@ -130,12 +128,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
         
-        Iterator transports = m_dependentUnits.keySet().iterator();
-        while (transports.hasNext())
+        Iterator dependentHolders = m_dependentUnits.keySet().iterator();
+        while (dependentHolders.hasNext())
         {
-            Object transport = transports.next();
-            Collection dependent = (Collection) m_dependentUnits.get(transport);
-            dependent.removeAll(units);
+            Object holder = dependentHolders.next();
+            Collection dependents = (Collection) m_dependentUnits.get(holder);
+            dependents.removeAll(units);
             
         }
         
@@ -149,10 +147,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     public void addAttack(Route route, Collection units)
     {
-        
+
+        Match ownedBy = Matches.unitIsOwnedBy(m_attacker);
+	// Filter out allied units if fourth edition
+	Collection attackingUnits = isFourthEdition() ? Match.getMatches(units, ownedBy) : units;
         Territory attackingFrom = getAttackFrom(route);
         m_attackingFrom.add(attackingFrom);
-        m_attackingUnits.addAll(units);
+        m_attackingUnits.addAll(attackingUnits);
         
         if (m_attackingFromMap.get(attackingFrom) == null)
         {
@@ -160,33 +161,39 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         {
             Collection attackingFromMapUnits = (Collection) m_attackingFromMap.get(attackingFrom);
-            attackingFromMapUnits.addAll(units);
+            attackingFromMapUnits.addAll(attackingUnits);
         }
         
         //are we amphibious
-        if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand))
+        if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(attackingUnits, Matches.UnitIsLand))
         {
             m_amphibiousAttackFrom.add(getAttackFrom(route));
-            m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
+            m_amphibiousLandAttackers.addAll(Match.getMatches(attackingUnits, Matches.UnitIsLand));
             m_amphibious = true;
         }
         
         //mark units with no movement
         //for all but air
-        Collection nonAir = Match.getMatches(units, Matches.UnitIsNotAir);
+        Collection nonAir = Match.getMatches(attackingUnits, Matches.UnitIsNotAir);
         DelegateFinder.moveDelegate(m_data).markNoMovement(nonAir);
         
         //dependencies
+        MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
+	// transports
         Map dependencies = transporting(units);
+	// If fourth edition, allied air on our carriers are also dependents
+	if (isFourthEdition()) {
+	  dependencies.putAll(moveDelegate.carrierMustMoveWith(units, units));
+	}
         Iterator iter = dependencies.keySet().iterator();
         while (iter.hasNext())
         {
-            Unit transport = (Unit) iter.next();
-            Collection transporting = (Collection) dependencies.get(transport);
-            if (m_dependentUnits.get(transport) != null)
-                ((Collection) m_dependentUnits.get(transport)).addAll(transporting);
+            Unit holder = (Unit) iter.next();
+            Collection transporting = (Collection) dependencies.get(holder);
+            if (m_dependentUnits.get(holder) != null)
+                ((Collection) m_dependentUnits.get(holder)).addAll(transporting);
             else
-                m_dependentUnits.put(transport, transporting);
+                m_dependentUnits.put(holder, transporting);
         }
     }
     
@@ -810,9 +817,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void retreatUnits(Collection retreating, Territory to, boolean defender, DelegateBridge bridge)
     {
         
-        retreating.addAll(getTransportedUnits(retreating));
-        //air units dont retreat with land units
-        retreating = Match.getMatches(retreating, Matches.UnitIsNotAir);
+        retreating.addAll(getDependentUnits(retreating));
+        //our own air units dont retreat with land units
+	Match notMyAir = new CompositeMatchOr(Matches.UnitIsNotAir, 
+					      new InverseMatch(Matches.unitIsOwnedBy(m_attacker)));
+        retreating = Match.getMatches(retreating, notMyAir);
         
         String transcriptText = Formatter.unitsToTextNoOwner(retreating) + " retreated to " + to.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList(retreating));
@@ -1121,18 +1130,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_attackingUnits = removeNonCombatants(m_attackingUnits);
     }
     
-    private Collection getTransportedUnits(Collection transports)
+    public Collection getDependentUnits(Collection units)
     {
         
-        Iterator iter = transports.iterator();
-        Collection transported = new ArrayList();
+        Iterator iter = units.iterator();
+        Collection dependents = new ArrayList();
         while (iter.hasNext())
         {
-            Collection transporting = DelegateFinder.moveDelegate(m_data).getTransportTracker().transporting((Unit) iter.next());
-            if (transporting != null)
-                transported.addAll(transporting);
+  	    Collection depending = (Collection)m_dependentUnits.get(iter.next());
+            if (depending != null)
+                dependents.addAll(depending);
         }
-        return transported;
+        return dependents;
     }
     
     private void markDamaged(Collection damaged, DelegateBridge bridge)
@@ -1158,8 +1167,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //get the transported units
         if (m_battleSite.isWater())
         {
-            Collection transported = getTransportedUnits(killed);
-            killed.addAll(transported);
+            Collection dependent = getDependentUnits(killed);
+            killed.addAll(dependent);
         }
         Change killedChange = ChangeFactory.removeUnits(m_battleSite, killed);
         m_killed.addAll(killed);
@@ -1344,21 +1353,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public Collection getAttackingUnits()
     {
         return m_attackingUnits;
-    }
-    
-    public Collection getDependentUnits(Collection units)
-    {
-        Collection rVal = new ArrayList();
-        
-        Iterator iter = units.iterator();
-        while (iter.hasNext())
-        {
-            Unit unit = (Unit) iter.next();
-            Collection dependent = (Collection) m_dependentUnits.get(unit);
-            if (dependent != null)
-                rVal.addAll(dependent);
-        }
-        return rVal;
     }
     
     public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
