@@ -22,6 +22,8 @@ Changes for 0.5.3
 
 * Fixed bug [ 1092852 ] bug in 2bysea Version .5.1 (sgb)
 
+* Fixed bug [ 1021352 ] advanced tech prob
+
 
 Changes for 0.5.2
 
