@@ -63,6 +63,13 @@ public class TripleAPlayer implements GamePlayer
 
   public Message sendMessage(Message message)
   {
+    if(message instanceof MultiDestinationMessage)
+    {
+      if(MultiDestinationMessage.shouldIgnore((MultiDestinationMessage) message))
+        return null;
+    }
+
+
     if(message instanceof SelectCasualtyQueryMessage)
       return m_ui.getCasualties( m_id, (SelectCasualtyQueryMessage) message);
     else if(message instanceof StringMessage)
@@ -87,6 +94,10 @@ public class TripleAPlayer implements GamePlayer
     else if (message instanceof BattleStringMessage)
     {
       return m_ui.battleStringMessage((BattleStringMessage) message);
+    }
+    if(message instanceof BattleStartMessage)
+    {
+      m_ui.battleStartMessage((BattleStartMessage) message);
     }
     else if(message instanceof RetreatQueryMessage)
     {

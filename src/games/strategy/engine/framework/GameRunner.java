@@ -59,6 +59,15 @@ public class GameRunner
 
   public static void main(String[] args)
   {
+    try
+    {
+      UIManager.setLookAndFeel(new com.incors.plaf.kunststoff.KunststoffLookAndFeel());
+    }
+    catch (UnsupportedLookAndFeelException ex)
+    {
+      ex.printStackTrace();
+    }
+
     installSecurityProvider();
 
     //Console c = Console.getConsole();

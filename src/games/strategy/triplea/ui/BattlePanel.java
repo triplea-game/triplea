@@ -1,21 +1,21 @@
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 /*
- * BattlePanel.java
- *
- * Created on December 4, 2001, 7:00 PM
+* BattlePanel.java
+*
+* Created on December 4, 2001, 7:00 PM
  */
 
 package games.strategy.triplea.ui;
@@ -42,12 +42,6 @@ import games.strategy.triplea.delegate.message.*;
  */
 public class BattlePanel extends ActionPanel
 {
-  private JLabel m_actionLabel = new JLabel();
-  private FightBattleMessage m_fightBattleMessage;
-  private DefaultListModel m_listModel = new DefaultListModel();
-  private JList m_list = new JList(m_listModel);
-  private MyListSelectionModel m_listSelectionModel = new MyListSelectionModel();
-  private TripleAFrame m_parent;
 
   private static Font BOLD;
   static
@@ -57,14 +51,19 @@ public class BattlePanel extends ActionPanel
     BOLD = new Font(atts);
   }
 
+  private JLabel m_actionLabel = new JLabel();
+  private FightBattleMessage m_fightBattleMessage;
+  private TripleAFrame m_parent;
+
+  private BattleDisplay m_battleDisplay;
+  private JFrame m_battleFrame;
+
   /** Creates new BattlePanel */
-    public BattlePanel(GameData data, MapPanel map, TripleAFrame parent)
+  public BattlePanel(GameData data, MapPanel map, TripleAFrame parent)
   {
     super(data, map);
-    m_list.setBackground(this.getBackground());
-    m_list.setSelectionModel(m_listSelectionModel);
     m_parent = parent;
-    }
+  }
 
   public void display(PlayerID id, Collection battles, Collection bombing)
   {
@@ -90,27 +89,18 @@ public class BattlePanel extends ActionPanel
 
   public Message battleInfo(BattleInfoMessage msg)
   {
-    if(!m_parent.playing(msg.getDontNotify()))
-    {
-      setStep(msg);
-      String ok = "OK";
-      String[] options =  {ok};
-      JOptionPane.showOptionDialog(getTopLevelAncestor(), msg.getMessage(), msg.getShortMessage(), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, ok);
-    }
+    if(m_parent.playing(msg.getDontNotify()))
+      return null;
+
+    if(m_battleDisplay != null)
+      m_battleDisplay.battleInfo(msg);
+
     return null;
   }
 
   public Message listBattle(BattleStepMessage msg)
   {
     removeAll();
-
-    if(msg.getSteps().isEmpty())
-    {
-      SwingUtilities.invokeLater(REFRESH);
-      return null;
-    }
-
-    getMap().centerOn(msg.getTerritory());
 
     JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
@@ -125,18 +115,31 @@ public class BattlePanel extends ActionPanel
     text.setWrapStyleWord(true);
     panel.add(text, BorderLayout.NORTH);
 
-    m_listModel.removeAllElements();
 
-
-    Iterator iter = msg.getSteps().iterator();
-    while(iter.hasNext())
+    if(msg.getSteps().isEmpty())
     {
-      m_listModel.addElement(iter.next());
+      m_battleDisplay = null;
+      m_battleFrame.setVisible(false);
+      m_battleFrame.dispose();
+      m_battleFrame = null;
     }
-    m_listSelectionModel.hiddenSetSelectionInterval(0);
-    panel.add(m_list, BorderLayout.CENTER);
-    add(panel);
-    SwingUtilities.invokeLater(REFRESH);
+    else
+    {
+      getMap().centerOn(msg.getTerritory());
+      m_battleDisplay.listBattle(msg);
+    }
+    return null;
+  }
+
+  public Message battleStartMessage(BattleStartMessage msg)
+  {
+    m_battleDisplay = new BattleDisplay(getData(), msg.getTerritory(), msg.getAttacker(), msg.getDefender());
+
+    m_battleFrame = new JFrame("Battle in " + msg.getTerritory().getName());
+    m_battleFrame.getContentPane().add(m_battleDisplay);
+    m_battleFrame.pack();
+    m_battleFrame.show();
+    m_battleFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
     return null;
   }
@@ -149,126 +152,47 @@ public class BattlePanel extends ActionPanel
       {
         getLock().wait();
       }
-    } catch(InterruptedException ie)
-    {
-      waitForBattleSelection();
-    }
-
-    if(m_fightBattleMessage != null)
-      getMap().centerOn(m_fightBattleMessage.getTerritory());
-
-    return m_fightBattleMessage;
-  }
-
-  /**
-   * Walks through and pause at each list item.
-   */
-  private void walkStep(final int start, final int stop)
-  {
-    if(start < 0 || stop < 0 || stop >= m_listModel.getSize())
-      throw new IllegalStateException("Illegal start and stop.  start:" + start + " stop:" + stop);
-
-    Object lock = new Object();
-
-    int current = start;
-    while(current != stop)
-    {
-      if(current == 0)
-        pause();
-
-      current++;
-      if( current >= m_listModel.getSize())
-      {
-        current = 0;
-      }
-
-      final int set = current;
-      Runnable r = new Runnable()
-      {
-        public void run()
-        {
-          m_listSelectionModel.hiddenSetSelectionInterval(set);
-        }
-      };
-
-      try
-      {
-        SwingUtilities.invokeAndWait(r);
-        pause();
       } catch(InterruptedException ie)
       {
-      } catch(java.lang.reflect.InvocationTargetException ioe)
-      {
-        ioe.printStackTrace();
-        throw new RuntimeException(ioe.getMessage());
+        waitForBattleSelection();
       }
-    }
+
+      if(m_fightBattleMessage != null)
+        getMap().centerOn(m_fightBattleMessage.getTerritory());
+
+      return m_fightBattleMessage;
   }
 
-  private void pause()
-  {
-    Object lock = new Object();
-    try
-    {
-      synchronized(lock)
-      {
-        lock.wait(850);
-      }
-    } catch(InterruptedException ie)
-    {
-    }
-  }
 
-  private void setStep(BattleMessage msg)
-  {
-    if(msg.getStep() != null)
-    {
-      int newIndex = m_listModel.lastIndexOf(msg.getStep());
-      int currentIndex = m_list.getSelectedIndex();
-      if(newIndex != -1)
-        walkStep(currentIndex,newIndex );
-    }
-  }
+
 
   public SelectCasualtyMessage getCasualties(PlayerID player, SelectCasualtyQueryMessage msg)
   {
-    setStep(msg);
-
-    boolean plural = msg. getCount() > 1;
-    UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), getData());
-
-    String messageText = msg.getMessage() + " " + player.getName() + " select " + msg.getCount() + (plural ? " casualties" :" casualty") + ".";
-    chooser.setTitle(messageText);
-    chooser.setMax(msg.getCount());
-    String[] options = {"OK"};
-    int option = JOptionPane.showOptionDialog( getRootPane(), chooser, player.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-    Collection choosen = chooser.getSelected(false);
-    SelectCasualtyMessage response = new SelectCasualtyMessage(choosen);
-    return response;
+    m_battleDisplay.setStep(msg);
+    return m_battleDisplay.getCasualties(player, msg);
   }
 
   public Message battleStringMessage(BattleStringMessage message)
   {
-    setStep(message);
-    JOptionPane.showMessageDialog(getRootPane(), message.getMessage(), message.getMessage(), JOptionPane.PLAIN_MESSAGE);
+   //TODO
     return null;
   }
 
   public RetreatMessage getRetreat(RetreatQueryMessage rqm)
   {
-    setStep(rqm);
+    m_battleDisplay.setStep(rqm);
 
     String message = rqm.getMessage();
     String ok = "Retreat";
     String cancel ="Remain";
     String[] options ={ok, cancel};
-    int choice = JOptionPane.showOptionDialog(getTopLevelAncestor(), message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
+    int choice = JOptionPane.showOptionDialog(m_battleDisplay, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
     boolean retreat = (choice == 0);
     if(!retreat)
       return null;
 
     RetreatComponent comp = new RetreatComponent(rqm);
-    int option = JOptionPane.showConfirmDialog( getTopLevelAncestor(), comp,rqm.getMessage(), JOptionPane.OK_CANCEL_OPTION);
+    int option = JOptionPane.showConfirmDialog( m_battleDisplay, comp,rqm.getMessage(), JOptionPane.OK_CANCEL_OPTION);
     if(option == JOptionPane.OK_OPTION)
     {
       if(comp.getSelection() != null)
@@ -297,7 +221,6 @@ public class BattlePanel extends ActionPanel
       m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       JScrollPane scroll = new JScrollPane(m_list);
       this.add(scroll, BorderLayout.CENTER);
-      m_listSelectionModel.hiddenSetSelectionInterval(0);
     }
 
     public Territory getSelection()
@@ -320,6 +243,14 @@ public class BattlePanel extends ActionPanel
 
     public void actionPerformed(ActionEvent actionEvent)
     {
+
+      if(!m_bomb)
+      {
+        Iterator iter = m_territory.getUnits().getPlayersWithUnits().iterator();
+        PlayerID first = (PlayerID) iter.next();
+        PlayerID second = (PlayerID) iter.next();
+      }
+
       m_fightBattleMessage = new FightBattleMessage(m_territory, m_bomb);
       synchronized(getLock())
       {
@@ -334,18 +265,3 @@ public class BattlePanel extends ActionPanel
   }
 }
 
-/**
- * Doesnt allow the user to change the selection,
- * must be done through hiddenSetSelectionInterval.
- */
-class MyListSelectionModel extends DefaultListSelectionModel
-{
-  public void setSelectionInterval(int index0, int index1)
-  {
-  }
-
-  public void hiddenSetSelectionInterval(int index)
-  {
-    super.setSelectionInterval(index, index);
-  }
-}

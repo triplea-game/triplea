@@ -210,7 +210,7 @@ public class ProductionPanel extends JPanel
       m_type = (UnitType) rule.getResults().keySet().iterator().next();
 
       this.add( new JLabel(UnitIconImageFactory.instance().getIcon(m_type, id, m_data)));
-      this.add(new JLabel( " x " + m_cost));
+      this.add(new JLabel( " x " + (m_cost < 10 ? " " : "") + m_cost));
       this.add(m_text);
       m_text.addChangeListener(m_listener);
     }

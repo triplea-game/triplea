@@ -163,6 +163,10 @@ public class ActionButtons extends JPanel
     return m_battlePanel.battleStringMessage(message);
   }
 
+  public Message battleStartMessage(BattleStartMessage msg)
+  {
+    return m_battlePanel.battleStartMessage(msg);
+  }
 
   public Message battleInfo(BattleInfoMessage msg)
   {

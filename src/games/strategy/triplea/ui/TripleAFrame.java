@@ -26,6 +26,7 @@ import java.io.*;
 import java.util.*;
 import java.net.URL;
 import javax.swing.*;
+import javax.swing.border.*;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
@@ -111,13 +112,20 @@ public class TripleAFrame extends JFrame
 
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout());
-    mainPanel.add(m_mapPanel, BorderLayout.CENTER);
+
+    JPanel mapBorderPanel = new JPanel();
+    mapBorderPanel.setLayout(new BorderLayout());
+    mapBorderPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    mapBorderPanel.add(m_mapPanel, BorderLayout.CENTER);
+
+    mainPanel.add(mapBorderPanel, BorderLayout.CENTER);
 
     JPanel rightHandSide = new JPanel();
     rightHandSide.setLayout(new BorderLayout());
     rightHandSide.add(m_smallView, BorderLayout.NORTH);
 
     JTabbedPane tabs = new JTabbedPane();
+    tabs.setBorder(new EtchedBorder());
     rightHandSide.add(tabs, BorderLayout.CENTER);
 
     m_actionButtons = new ActionButtons(m_data, m_mapPanel, this);
@@ -378,6 +386,11 @@ public class TripleAFrame extends JFrame
   public Message battleInfo(BattleInfoMessage msg)
   {
     return m_actionButtons.battleInfo(msg);
+  }
+
+  public Message battleStartMessage(BattleStartMessage msg)
+  {
+    return m_actionButtons.battleStartMessage(msg);
   }
 
   public void notifyError(String message)
