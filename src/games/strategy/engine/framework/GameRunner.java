@@ -74,29 +74,37 @@ public class GameRunner
 
   /**
      Get version number of Java VM.
-     If it is less than v1.4 on a mac or PC
-     show error + URL and kill program.
+     Allow versions of 1.4 to run the game.
+     Show warning for 1.5 version due to instability with
+     serialized classes but don't prevent from game play,
+     as it seems to affect cross version play only.
+     
+     Show error + URL and kill program.
      @author NeKromancer
   */
   private static void checkJavaVersion()
   {
      String strV = System.getProperties().getProperty("java.version");
-     boolean v13 = strV.indexOf("1.3") != -1;
-     boolean v12 = strV.indexOf("1.2") != -1;
+     int v14 = strV.indexOf("1.4");
+     int v15 = strV.indexOf("1.5");
 
-     if(v13 || v12)
-     {
-         if(!isMac()) 
-         {
-             JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
-             System.exit( -1);
-         }
-         if(isMac()) 
-         {
-             JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://www.apple.com/java/", "ERROR", JOptionPane.ERROR_MESSAGE);
-             System.exit( -1);
-         }
-     }
+     System.out.println("v14 = "+v14);
+     System.out.println("v15 = "+v15);
+     System.out.println("strV = "+strV);
+
+     if(v14 == -1 && v15 == -1) {
+          if(!isMac()) {
+               JOptionPane.showMessageDialog(null, "You need java version 1.4.x\nPlease download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
+               System.exit( -1);
+          }
+          else if(isMac()) {
+               JOptionPane.showMessageDialog(null, "You need java version 1.4.x\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR", JOptionPane.ERROR_MESSAGE);
+               System.exit( -1);
+	   }
+      }
+      else if(v15 != -1) {
+               JOptionPane.showMessageDialog(null, "Running TripleA with Java v1.5.x will cause instability\n with serialized classes (bug #1027674)\nYou will get errors when playing other who use a differnt version!!\nWe highly recomend using Java v1.4.x", "WARNING", JOptionPane.WARNING_MESSAGE);
+      }
 
   }//end checkJavaVersion()
 
