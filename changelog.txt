@@ -1,3 +1,7 @@
+* fixed bug [ 1116632 ] v0.5.1.1 TripleA skipping battle in Borneo (sgb)
+
+* fixed bug [ 1145318 ] Another Error on 5.2.2 (sgb)
+
 * fixed bug [ 1157717 ] 0.5.2.2 Error with question : Sumerge subs (sgb)
 
 * fixed bug [ 1175467 ] game "stuck" when doing multiple battles with same units (sgb)
