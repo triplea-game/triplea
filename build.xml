@@ -26,7 +26,12 @@
 			</fileset>
 		</copy>
 		<javac srcdir="src/" destdir="classes/" debug="true" deprecation="true">
-        </javac>
+			<classpath>
+				<fileset dir="lib/">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+	        </javac>
     </target>
 
 	<target name ="compileClean" depends="clean,compile"/>
@@ -35,7 +40,6 @@
 		<mkdir dir="release" />
 		<zip zipfile="release/triplea.zip" compress="true" >
 			<zipfileset dir="classes/" prefix="classes/">
-				<include name="**/Game.xml"/>
 				<include name="**/*.class"/>
 				<include name="**/*.dtd"/>
 				<include name="**/*.gif"/>
@@ -45,11 +49,15 @@
 			<zipfileset dir="lib/" prefix="lib/">
 				<include name="**/*.jar"/>
 			</zipfileset>
+			<zipfileset dir="doc/" prefix="doc/">
+				<include name="**/*.html"/>
+			</zipfileset>			
 			<zipfileset dir="liscence/" prefix="liscence/">
 				<include name="gpl.txt"/>
 			</zipfileset>
 			<zipfileset dir="bin/" prefix="bin/">
 				<include name="triplea.bat"/>
+				<include name="triplea.sh"/>
 			</zipfileset>
 			<zipfileset dir="games/" prefix="games/">
 				<include name="*.xml"/>
@@ -82,11 +90,15 @@
 			</zipfileset>
 			<zipfileset dir="bin/" prefix="bin/">
 				<include name="triplea.bat"/>
+				<include name="triplea.sh"/>				
 			</zipfileset>
 			<zipfileset dir=".">
 				<include name="build.xml"/>
 				<include name="readme.html"/>
 			</zipfileset>
+			<zipfileset dir="doc/" prefix="doc/">
+				<include name="**/*.html"/>
+			</zipfileset>						
 			<zipfileset dir="liscence/" prefix="liscence/">
 				<include name="gpl.txt"/>
 			</zipfileset>
