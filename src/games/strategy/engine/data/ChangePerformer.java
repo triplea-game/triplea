@@ -32,8 +32,7 @@ package games.strategy.engine.data;
  */
 public class ChangePerformer
 {
-	private int inChangeCount = 0;
-	private GameData m_data;
+	private final GameData m_data;
 
 	/** Creates a new instance of ChangePerformer */
     public ChangePerformer(GameData data)
@@ -47,13 +46,12 @@ public class ChangePerformer
 	{
 		try
 		{
-			inChangeCount++;
+		    m_data.acquireChangeLock();
 			aChange.perform(m_data);
 		} finally
 		{
-			inChangeCount--;
-			if(inChangeCount == 0)
-    			m_data.notifyGameDataChanged(aChange);
+		    m_data.releaseChangeLock();
+  			m_data.notifyGameDataChanged(aChange);
 		}
 	}
 }

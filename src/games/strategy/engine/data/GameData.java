@@ -41,7 +41,10 @@ import games.strategy.engine.history.*;
  */
 public class GameData implements java.io.Serializable
 {
-	private String m_gameName;
+    private transient boolean m_changeLockAcquired = false;
+    private transient Object m_changeLockMutex = new Object();
+    
+    private String m_gameName;
 	private Version m_gameVersion;
 
 	private transient ListenerList m_territoryListeners = new ListenerList();
@@ -217,9 +220,50 @@ public class GameData implements java.io.Serializable
         return m_gameHistory;
     }
 
-	public void postSerialize()
+	public void postDeSerialize()
 	{
-		m_territoryListeners = new ListenerList();;
-		m_dataChangeListeners = new ListenerList();;
+		m_territoryListeners = new ListenerList();
+		m_dataChangeListeners = new ListenerList();
+		m_changeLockAcquired = false;
+		m_changeLockMutex = new Object();
+		
 	}
+	
+	/**
+	 * No changes to the game data should be made unless this lock is held.
+	 * calls to acquire lock will block if the lock is held, and will be held 
+	 * until the release method is called
+	 * 
+	 */
+	public void acquireChangeLock()
+	{	
+	    synchronized(m_changeLockMutex)
+	    {
+	        while(m_changeLockAcquired)
+	        {
+	            try
+                {
+                    m_changeLockMutex.wait();
+                } catch (InterruptedException e)
+                {
+                   
+                }
+	        }
+	        m_changeLockAcquired = true;
+	    }
+	}
+	
+	
+	public void releaseChangeLock()
+	{
+	    synchronized(m_changeLockMutex)
+	    {
+	        if(!m_changeLockAcquired)
+	            throw new IllegalStateException("Change lock not acquired, but trying to release");
+	        
+	        m_changeLockAcquired = false;
+	        m_changeLockMutex.notifyAll();
+	    }
+	}
+	
 }
