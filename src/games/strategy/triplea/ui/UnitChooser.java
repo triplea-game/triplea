@@ -20,9 +20,9 @@
 
 package games.strategy.triplea.ui;
 
+import java.util.List;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 import javax.swing.*;
 
 import games.strategy.ui.*;
@@ -56,16 +56,21 @@ public class UnitChooser extends JPanel
   {
     m_dependents = dependent;
     m_data = data;
-    createEntries(units, dependent, movement);
+    createEntries(units, dependent, movement, Collections.EMPTY_LIST);
     layoutEntries();
   }
 
-  public UnitChooser(Collection units, Map dependent, GameData data, boolean allowTwoHit)
+ public UnitChooser(Collection units, Map dependent, GameData data, boolean allowTwoHit)
+  {
+    this(units, Collections.EMPTY_LIST, dependent, data, allowTwoHit);
+  }
+
+  public UnitChooser(Collection units, List defaultSelections, Map dependent, GameData data, boolean allowTwoHit)
   {
     m_dependents = dependent;
     m_data = data;
     m_allowTwoHit = allowTwoHit;
-    createEntries(units, dependent, null);
+    createEntries(units, dependent, null, defaultSelections);
     layoutEntries();
   }
 
@@ -113,22 +118,35 @@ public class UnitChooser extends JPanel
 
 
 
-  private void createEntries(Collection units, Map dependent, IntegerMap movement)
+  private void createEntries(Collection units, Map dependent, IntegerMap movement, List defaultSelections)
   {
     Collection categories = UnitSeperator.categorize(units, dependent, movement);
+    Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, movement);
+    IntegerMap defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
     Iterator iter = categories.iterator();
     while(iter.hasNext())
     {
       UnitCategory category = (UnitCategory) iter.next();
-      addCategory(category);
+      addCategory(category, defaultValues.getInt(category));
     }
   }
 
-  private void addCategory(UnitCategory category)
+  private IntegerMap createDefaultSelectionsMap(Collection categories)
   {
-    ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowTwoHit);
-    m_entries.add(entry);
+    IntegerMap defaultValues = new IntegerMap();
+    Iterator iter = categories.iterator();
+    while (iter.hasNext()) {
+      UnitCategory category = (UnitCategory) iter.next();
+      int defaultValue = category.getUnits().size();
+      defaultValues.put(category, defaultValue);
+    }
+    return defaultValues;
+  }
 
+  private void addCategory(UnitCategory category, int defaultValue)
+  {
+    ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowTwoHit, defaultValue);
+    m_entries.add(entry);
 
   }
 
@@ -296,6 +314,9 @@ class ChooserEntry
   private final GameData m_data;
   private final boolean m_hasSecondHit;
 
+  private final int m_defaultValueFirstHits;
+  private final int m_defaultValueSecondHits;
+
   private ScrollableTextField m_secondHitText;
 
   private JLabel m_secondHitLabel;
@@ -303,13 +324,16 @@ class ChooserEntry
   private static Insets nullInsets = new Insets(0,0,0,0);
 
 
-  ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data, boolean allowTwoHit)
+  ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data, boolean allowTwoHit, int defaultValue)
   {
     m_hitTextFieldListener = listener;
     m_data = data;
     m_category = category;
     m_hasSecondHit = allowTwoHit && category.isTwoHit() && ! category.getDamaged();
-
+    int numUnits = category.getUnits().size();
+    m_defaultValueFirstHits = numUnits < defaultValue ? numUnits : defaultValue;
+    m_defaultValueSecondHits = numUnits < defaultValue ? defaultValue - numUnits : 0;
+    //    System.out.println("Default hits: " + m_defaultValueFirstHits + " " + m_defaultValueSecondHits);
   }
 
   public void createComponents(JPanel panel, int yIndex)
@@ -326,6 +350,7 @@ class ChooserEntry
            new GridBagConstraints(2,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ) );
 
       m_hitText = new ScrollableTextField(0, m_category.getUnits().size());
+      m_hitText.setValue(m_defaultValueFirstHits);
       m_hitText.addChangeListener(m_hitTextFieldListener);
       panel.add(m_hitText,
         new GridBagConstraints(3,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,4,0,0), 0,0 ) );
@@ -339,6 +364,8 @@ class ChooserEntry
           m_secondHitLabel = new JLabel("x0");
 
           m_secondHitText = new ScrollableTextField(0, 0);
+	  m_secondHitText.setValue(m_defaultValueSecondHits);
+	  updateLeftToSelect();
           panel.add(m_secondHitLabel,
                     new GridBagConstraints(5,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,0,0,4), 0,0 ) );
 
