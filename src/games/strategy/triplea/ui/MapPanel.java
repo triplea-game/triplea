@@ -30,6 +30,10 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.ui.ImageScrollerLargeView;
 import java.util.*;
+import games.strategy.engine.data.events.*;
+import games.strategy.triplea.*;
+import games.strategy.util.*;
+import games.strategy.triplea.delegate.*;
 
 /**
  * Responsible for drawing the large map and keeping it updated.
@@ -209,12 +213,13 @@ public class MapPanel extends ImageScrollerLargeView
       if(m_data != null)
       {
           m_data.removeTerritoryListener(TERRITORY_LISTENER);
+          m_data.removeDataChangeListener(TECH_UPDATE_LISTENER);
       }
 
       m_data = data;
       m_data.addTerritoryListener(TERRITORY_LISTENER);
       m_mapsUnitDrawer.setData(m_data);
-
+      m_data.addDataChangeListener(TECH_UPDATE_LISTENER);
 
   }
 
@@ -231,6 +236,64 @@ public class MapPanel extends ImageScrollerLargeView
     }
   };
 
+  private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener()
+  {
+
+    public void gameDataChanged(Change aChange)
+    {
+      //find the players with tech changes
+      Set playersWithTechChange = new HashSet();
+      getPlayersWithTechChanges(aChange, playersWithTechChange);
+
+      if(playersWithTechChange.isEmpty())
+        return;
+
+      Set territories = new HashSet();
+      //find the territories that need to redrawn
+      Iterator iter = playersWithTechChange.iterator();
+      while (iter.hasNext())
+      {
+        PlayerID player= (PlayerID)iter.next();
+        territories.addAll( getTerritoriesWithPlayersUnits(player));
+      }
+
+      m_mapsUnitDrawer.queueUpdate(territories);
+    }
+
+    private Collection getTerritoriesWithPlayersUnits(PlayerID id)
+    {
+      Match match = Matches.territoryHasUnitsOwnedBy(id);
+      return Match.getMatches( m_data.getMap().getTerritories(), match);
+    }
+
+    private void getPlayersWithTechChanges(Change aChange, Set players)
+    {
+      if(aChange instanceof CompositeChange)
+      {
+        CompositeChange composite = (CompositeChange) aChange;
+        Iterator iter = composite.getChanges().iterator();
+        while (iter.hasNext())
+        {
+          Change item = (Change)iter.next();
+          getPlayersWithTechChanges(item, players);
+
+        }
+      }
+      else
+      {
+        if(aChange instanceof ChangeAttatchmentChange)
+        {
+          ChangeAttatchmentChange changeAttatchment = (ChangeAttatchmentChange) aChange;
+          if(changeAttatchment.getAttatchmentName().equals(Constants.TECH_ATTATCHMENT_NAME))
+          {
+            players.add( (PlayerID) changeAttatchment.getAttatchedTo());
+          }
+        }
+
+      }
+    }
+
+  };
 
 
 }

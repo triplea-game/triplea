@@ -76,4 +76,9 @@ public class CompositeChange extends Change
 			current.perform(data);
 		}
 	}
+
+  public List getChanges()
+  {
+    return new ArrayList(m_changes);
+  }
 }

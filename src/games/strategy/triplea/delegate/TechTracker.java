@@ -24,6 +24,7 @@ import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.*;
 
 /**
  * Tracks which players have which technology advances.
@@ -33,99 +34,83 @@ import games.strategy.triplea.Constants;
  */
 public class TechTracker implements java.io.Serializable
 {
-  //Maps playerID -> collection of advances
-  private Map m_advances = new HashMap();
 
   /** Creates new TechTracker */
-    public TechTracker()
+  public TechTracker()
   {
+  }
+
+  public Collection getTechAdvances(PlayerID id)
+  {
+    Collection rVal = new ArrayList();
+    TechAttatchment attatchment = TechAttatchment.get(id);
+
+    if(attatchment.hasHeavyBomber())
+    {
+      rVal.add(TechAdvance.HEAVY_BOMBER);
     }
+    if(attatchment.hasIndustrialTechnology())
+    {
+      rVal.add(TechAdvance.INDUSTRIAL_TECHNOLOGY);
+    }
+    if(attatchment.hasJetPower())
+    {
+      rVal.add(TechAdvance.JET_POWER);
+    }
+    if(attatchment.hasLongRangeAir())
+    {
+      rVal.add(TechAdvance.LONG_RANGE_AIRCRAFT);
+    }
+    if(attatchment.hasRocket())
+    {
+      rVal.add(TechAdvance.ROCKETS);
+    }
+    if(attatchment.hasSuperSub())
+    {
+      rVal.add(TechAdvance.SUPER_SUBS);
+    }
+
+    return rVal;
+
+
+
+
+  }
 
   public synchronized void addAdvance(PlayerID player, GameData data, DelegateBridge bridge, TechAdvance advance)
   {
-    Collection already = (Collection) m_advances.get(player);
-    if(already == null)
-    {
-      already = new ArrayList();
-      m_advances.put(player, already);
-    }
-    if(already.contains(advance))
-      throw new IllegalStateException("Trying to add an advance that player already has");
-
-
-    already.add(advance);
-    updateAdvanceProperties(data, bridge);
-  }
-
-  /**
-   * Place a hash map of PLayerID -> List of strings into
-   * the games properties to show which player has what advances.
-   */
-  private void updateAdvanceProperties(GameData data, DelegateBridge bridge)
-  {
-    HashMap property = new HashMap();
-    Iterator players = m_advances.keySet().iterator();
-    while(players.hasNext())
-    {
-      PlayerID player = (PlayerID) players.next();
-      Iterator advances = ((Collection) m_advances.get(player)).iterator();
-
-      Collection advanceNames = new ArrayList();
-      while(advances.hasNext())
-      {
-        TechAdvance advance = (TechAdvance) advances.next();
-        advanceNames.add(advance.getName());
-
-      }
-      property.put(player, advanceNames);
-    }
-
-    Change change = ChangeFactory.setProperty(Constants.TECH_PROPERTY, property, data);
-    bridge.addChange(change);
-  }
-
-  public synchronized Collection getAdvances(PlayerID player)
-  {
-    if(m_advances.get(player) == null)
-      return Collections.EMPTY_LIST;
-    return Collections.unmodifiableList( (List) m_advances.get(player));
-  }
-
-  public synchronized boolean hasAdvance(PlayerID player, TechAdvance advance)
-  {
-    Collection already = (Collection) m_advances.get(player);
-    if(already == null)
-      return false;
-    return already.contains(advance);
+    Change attatchmentChange = ChangeFactory.attatchmentPropertyChange(TechAttatchment.get(player), "true", advance.getProperty());
+    bridge.addChange(attatchmentChange);
+    advance.perform(player, bridge, data);
   }
 
   public boolean hasLongRangeAir(PlayerID player)
   {
-    return hasAdvance(player, TechAdvance.LONG_RANGE_AIRCRAFT);
+    return TechAttatchment.get(player).hasLongRangeAir();
   }
 
   public boolean hasHeavyBomber(PlayerID player)
   {
-    return hasAdvance(player, TechAdvance.HEAVY_BOMBER);
+    return TechAttatchment.get(player).hasHeavyBomber();
   }
 
   public boolean hasSuperSubs(PlayerID player)
   {
-    return hasAdvance(player, TechAdvance.SUPER_SUBS);
+    return TechAttatchment.get(player).hasSuperSub();
   }
 
   public boolean hasJetFighter(PlayerID player)
   {
-    return hasAdvance(player, TechAdvance.JET_POWER);
+    return TechAttatchment.get(player).hasJetPower();
   }
 
   public boolean hasRocket(PlayerID player)
   {
-    return hasAdvance(player, TechAdvance.ROCKETS);
+    return TechAttatchment.get(player).hasRocket();
   }
 
   public boolean hasIndustrialTechnology(PlayerID player)
   {
-    return hasAdvance(player, TechAdvance.INDUSTRIAL_TECHNOLOGY);
+    return TechAttatchment.get(player).hasIndustrialTechnology();
   }
 }

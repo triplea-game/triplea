@@ -485,12 +485,6 @@ public class TripleAFrame extends JFrame
   public void notifyTechResults(TechResultsMessage msg)
   {
     TechResultsDisplay display = new TechResultsDisplay(msg);
-    if(msg.getHits() != 0)
-    {
-        Match match = Matches.territoryHasUnitsOwnedBy(msg.getPlayer());
-        Collection updatedCountries = Match.getMatches( m_data.getMap().getTerritories(), match);
-        m_mapPanel.updateCounties(updatedCountries);
-    }
     JOptionPane.showOptionDialog(this, display, "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK");
 
 
@@ -714,5 +708,6 @@ public class TripleAFrame extends JFrame
 
       };
   };
+
 
 }

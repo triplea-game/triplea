@@ -212,6 +212,8 @@ public class BattleDisplay extends JPanel
 
       m_list = new JList(listElements);
       m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      if(listElements.size() >=1)
+        m_list.setSelectedIndex(0);
       JScrollPane scroll = new JScrollPane(m_list);
       this.add(scroll, BorderLayout.CENTER);
     }
