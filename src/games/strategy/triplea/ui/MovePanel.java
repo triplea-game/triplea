@@ -71,8 +71,8 @@ public class MovePanel extends ActionPanel
     this.add(new JButton(DONE_MOVE_ACTION));
     this.add(new JLabel("  "));
     this.add(m_moveLabel);
-    this.add(new JButton(UNDO_MOVE_ACTION));
     this.add(new JButton(SHOW_MOVES_ACTION));
+    this.add(new JButton(UNDO_MOVE_ACTION));
 
     SwingUtilities.invokeLater(REFRESH);
   }
@@ -81,7 +81,7 @@ public class MovePanel extends ActionPanel
   {
     MoveCountReplyMessage moves = (MoveCountReplyMessage) m_bridge.sendMessage(new MoveCountRequestMessage());
     int moveCount = moves.getMoveCount();
-    m_moveLabel.setText("Moves:" + moveCount);
+    m_moveLabel.setText(moveCount + ( moveCount == 1 ? " Move" : " Moves"));
     m_currentMoves = moves.getMoves();
     UNDO_MOVE_ACTION.setEnabled(moveCount != 0);
     SHOW_MOVES_ACTION.setEnabled(moveCount != 0);
