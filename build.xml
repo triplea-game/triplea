@@ -76,7 +76,8 @@
       <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
         <include name="triplea.bat"/>
         <include name="triplea.sh"/>
-        <include name="triplea.irix.sh"/>
+        <include name="triplea_ai.sh"/>
+	<include name="triplea_ai.bat"/>
       </zipfileset>
       <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
         <include name="*.xml"/>
