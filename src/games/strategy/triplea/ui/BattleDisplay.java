@@ -88,8 +88,13 @@ public class BattleDisplay extends JPanel
     initLayout();
   }
 
+  /**
+     Play a sound when strat bombing. At this stage something will
+     get hit. No need to check dice.
+  */
   public void bombingResults(BombingResults message)
   {
+    ClipPlayer.getInstance().playClip(SoundPath.STRAT, SoundPath.class);
     m_dicePanel.setDiceRoll(message);
     m_actionLayout.show(m_actionPanel, DICE_KEY);
   }
@@ -101,34 +106,23 @@ public class BattleDisplay extends JPanel
     m_casualties.setNotication(message);
     m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
 
-    //Play the battle sound when either the attack or defender removes casualties.
-    //the sound will play even when there is no casualties to be removed... This
-    //still sounds cool, like they fire and miss.
-
     if (message.getPlayer().equals(m_defender))
     {
-      if (m_location.isWater())
-      {
-        ClipPlayer.getInstance().playClip(SoundPath.NAVAL_BATTLE, SoundPath.class);
-      }
-      else
-      {
-        ClipPlayer.getInstance().playClip(SoundPath.LAND_BATTLE, SoundPath.class);
-      }
+/*
+        System.out.println("Casualty Notification Message");
+        if (m_location.isWater()) {
+                ClipPlayer.getInstance().playClip(SoundPath.NAVAL_BATTLE, SoundPath.class);
+        }
+        else {
+                ClipPlayer.getInstance().playClip(SoundPath.LAND_BATTLE, SoundPath.class);
+        }
+*/
+
       m_defenderModel.removeCasualties(message);
     }
     else
     {
-      if (m_location.isWater())
-      {
-        ClipPlayer.getInstance().playClip(SoundPath.NAVAL_BATTLE, SoundPath.class);
-      }
-      else
-      {
-        ClipPlayer.getInstance().playClip(SoundPath.LAND_BATTLE, SoundPath.class);
-      }
       m_attackerModel.removeCasualties(message);
-
     }
 
     //if wait is true, then dont return until the user presses continue
@@ -398,6 +392,7 @@ public class BattleDisplay extends JPanel
   public void setStep(BattleMessage message)
   {
     m_steps.setStep(message);
+
   }
 
   public Message battleInfo(BattleInfoMessage msg)
@@ -747,17 +742,18 @@ class CasualtyNotificationPanel extends JPanel
     m_killed.removeAll();
     m_damaged.removeAll();
     Collection killed = msg.getKilled();
-    if(!killed.isEmpty())
+    if(!killed.isEmpty()) {
         m_killed.add(new JLabel("Killed"));
+    }
     Iterator killedIter = UnitSeperator.categorize(killed, msg.getDependents(), null).iterator();
     categorizeUnits(killedIter, false);
 
 
     Collection damaged = new ArrayList(msg.getDamaged());
     damaged.removeAll(killed);
-    if(!damaged.isEmpty())
+    if(!damaged.isEmpty()) {
         m_damaged.add(new JLabel("Damaged"));
-
+    }
     Iterator damagedIter = UnitSeperator.categorize(damaged, msg.getDependents(), null).iterator();
     categorizeUnits(damagedIter, true);
 

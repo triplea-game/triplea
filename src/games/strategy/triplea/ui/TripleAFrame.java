@@ -667,7 +667,7 @@ public class TripleAFrame extends JFrame
    else if(player != null && !player.isNull() && playing(player) && m_inHistory)
    {
      showGame();
-     ClipPlayer.getInstance().playClip(SoundPath.START_TURN, SoundPath.class); //play sound
+     ClipPlayer.getInstance().playClip(SoundPath.START, SoundPath.class); //play sound
    }
 
   }

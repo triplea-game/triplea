@@ -5,6 +5,9 @@ import java.awt.*;
 import javax.swing.*;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.delegate.message.TechResultsMessage;
+import games.strategy.triplea.sound.SoundPath;
+import games.strategy.engine.sound.ClipPlayer;
+
 
 /**
  * <p>Title: </p>
@@ -26,7 +29,7 @@ public class TechResultsDisplay extends JPanel
         new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,5,0), 0,0));
     if(msg.getHits() != 0)
     {
-      add(new JLabel("Technologies discovered:"),
+        add(new JLabel("Technologies discovered:"),
         new GridBagConstraints(0,1,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0)
       );
       JList list = new JList(new Vector(msg.getAdvances()));
@@ -34,6 +37,7 @@ public class TechResultsDisplay extends JPanel
         new GridBagConstraints(0,2,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,5,0), 0,0)
           );
       list.setBackground(this.getBackground());
+      ClipPlayer.getInstance().playClip(SoundPath.TECH, SoundPath.class); //hope this plays for all players
     }
 
     JPanel dice = new JPanel();
