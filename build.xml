@@ -73,6 +73,8 @@
             <include name="**/*.dtd"/>
             <include name="**/*.gif"/>
             <include name="**/*.png"/>
+	    <include name="**/*.jpg"/>
+	    <include name="**/*.jpeg"/>
             <include name="**/*.txt"/>
             <include name="**/*.wav"/>
 	    <include name="**/*.properties"/>
@@ -139,6 +141,8 @@
             <include name="**/*.dtd"/>
             <include name="**/*.gif"/>
             <include name="**/*.png"/>
+	    <include name="**/*.jpg"/>
+	    <include name="**/*.jpeg"/>
             <include name="**/*.txt"/>
             <include name="**/*.xml"/>
             <include name="**/*.wav"/>
