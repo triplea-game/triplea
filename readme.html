@@ -1,80 +1,97 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-<head>
-</head>
-<body>
-<h3>What is TripleA: </h3>
-<p> Triplea is a networked open source gaming engine and clone of a
-popular board game. Triplea is released under the Gnu Public License<span
- style="font-size: 12pt; font-family: &quot;Times New Roman&quot;;"> </span>(gpl).&nbsp;
-<br>
-</p>
-<p> </p>
-<h3>Installing:<br>
-</h3>
-Please read the <a href="http://triplea.sourceforge.net/install.html">installation</a>
-page.&nbsp; <br>
-<br>
-Before you run the game you must first install the java runtime
-environment (JRE) on your machine (instructions are provided on the
-installation page).<br>
-<a href="http://triplea.sourceforge.net/install.html"></a>
-<h3>How do I play: </h3>
-On windows to play the game you simply double click on the triplea.bat
-file in the bin directory. <br>
-<br>
-On mac and linux you need to run the triplea.sh command in the bin
-directory.<br>
-<br>
-To do that open a terminal prompt, cd to the bin directory, and then
-execute the following 2 commands,<br>
-<br>
-<span style="font-weight: bold;">chmod +x triplea.sh</span><br>
-<span style="font-weight: bold;">./triplea.sh<br>
-<br>
-</span>If you are using a mac, and you dont know how to use the
-terminal, please read this&nbsp; <a
- href="http://www.macdevcenter.com/pub/a/mac/2001/12/14/terminal_one.html">instruction
-on how to use a terminal here</a>.<span style="font-weight: bold;"><br>
-</span>
-<h3>Common Problems: </h3>
-<span style="font-weight: bold;">Windows</span><br>
-<br>
-If you run the game and you get an error message that says 'Bad command
-or file name', then you haven&#8217;t installed
-or set up the java virtual machine correctly. Please see the <a
- href="http://triplea.sourceforge.net/install.html">installation</a>
-page for instructions on setting up a java virtual machine on your
-computer.<span style="font-weight: bold;"><br>
-<br>
-Linux and Mac:<br>
-<br>
-</span>All I get is :<br>
-<br>
-Exception in thread "main" java.lang.NoClassDefFoundError:
-games/strategy/engine/framework/GameRunner<br>
-<br>
-<span style="font-weight: bold;">Solution:</span><br>
-<span style="font-weight: bold;"><br>
-</span>Are you running the command in the bin directory?&nbsp; type
-pwd, and the result should end in /bin.&nbsp; If you arent in the bin
-directory, change your directory.<span style="font-weight: bold;"><br>
-</span>
-<h3> Further Reading: </h3>
-<a href="http://triplea.sourceforge.net/index.html">Project home page</a>
-<br>
-<a href="http://sourceforge.net/projects/triplea/">Sourceforge project page</a> <br>
-<a href="doc/UserManual.html">TripleA User Manual</a><br>
-<a href="doc/How%20to%20create%20custom%20games.html">How to create a custom game</a><br>
-<a href="doc/Engine%20code%20overview.html">Engine code overview</a><br>
-<br>
-<h3>Contributing:</h3>
-TripleA is a volunteer project, and you can help make it better.&nbsp;
-We need people to test and contribute better graphics,
-but above all we need people to contribute code.&nbsp; If you are
-interested please see the <a
- href="http://triplea.sourceforge.net/contrib.html">contributing</a>
-page.<br>
-<br>
-</body>
+	<head>
+		<title>TripleA Read Me File</title>
+	</head>
+
+	<body>
+	
+	<p><h3>What is TripleA:</h3></p>
+
+	<p> Triplea is a networked open source gaming engine and clone of a 
+	    popular board game. Triplea is released under the Gnu Public License
+	    <a href="http://www.opensource.org/licenses/gpl-license.php">(GPL)</a>.
+	</p>
+	
+
+	<p><h3>Installing:</h3></p>
+	
+	<p>Please read the <a href="http://triplea.sourceforge.net/index.php?option=content&task=view&id=8&Itemid=32">installation</a>page.<br>
+           Before you run the game you must first install the java runtime
+           environment (JRE) on your machine (instructions are provided on the
+           <a href="http://triplea.sourceforge.net/index.php?option=content&task=view&id=8&Itemid=32">installation</a> page).
+	</p>
+
+	<p><h3>How do I play:</h3></p>
+
+
+	<p>On windows to play the game you simply double click on the triplea.bat file in the bin directory.</p>
+
+	<p>On mac and linux you need to run the <b>triplea.sh</b> command in the bin directory.</p>
+
+	<p>To do that open a terminal prompt, cd to the bin directory, and then execute the following 2 commands:</p>
+
+	<blockquote>
+		<ul>
+			<li>chmod +x triplea.sh</li>
+			<li>./triplea.sh</li>
+		</ul>
+	</blockquote>
+
+	<p>If you are using a mac, and you dont know how to use the terminal, 
+	   please read this <a href="http://www.macdevcenter.com/pub/a/mac/2001/12/14/terminal_one.html">instruction on how to use a terminal here</a>.
+	</p>
+
+
+	<p><h3>Common Problems:</h3></p>
+
+	<p><b>Windows</b></p>
+
+	<p>If you run the game and you get an error message that says 'Bad command
+	   or file name', then you haven&#8217;t installed or set up the java virtual machine correctly.
+	   Please see the <a href="http://triplea.sourceforge.net/index.php?option=content&task=view&id=8&Itemid=32">installation</a>
+	   page for instructions on setting up a java virtual machine on your computer.
+	</p>
+
+	<p><b>Linux and Mac:</b></p>
+
+	<p>All I get is:<br>
+
+	<blockquote>
+		<code>
+			Exception in thread "main" java.lang.NoClassDefFoundError:<br>
+			games/strategy/engine/framework/GameRunner
+		</code>
+	</blockquote>
+	</p>
+
+	<p><b>Solution:</b></p>
+
+	<p>Are you running the command in the bin directory? type
+	   pwd, and the result should end in /bin. If you arent in the bin
+	   directory, change your directory.
+	</p>
+
+	<p><h3> Further Reading:</h3></p>
+	<ul>
+		<li><a href="http://triplea.sourceforge.net/index.html">Project home page</a></li>
+		<li><a href="http://sourceforge.net/projects/triplea/">Sourceforge project page</a></li>
+		<li><a href="doc/UserManual.html">TripleA User Manual</a></li>
+		<li><a href="doc/How%20to%20create%20custom%20games.html">How to create a custom game</a></li>
+		<li><a href="doc/Engine%20code%20overview.html">Engine code overview</a></li>
+		<li><a href="doc/Release%20Model.html">An overview on TripleA's release model</a></li>
+		<li><a href="doc/Play%20By%20EMail%20Guide.html">Practical Guidelines for Play By EMail Games</a></li>
+		<li><a href="http://triplea.sourceforge.net/TRIPLEA_1.doc">Black Elk's Visual TripleA Guide (MS DOC)</a></li>
+		<li><a href="http://triplea.sourceforge.net/TRIPLEA_1.pdf">Black Elk's Visual TripleA Guide (PDF)</a></li>
+	</ul>
+
+	<p><h3>Contributing:</h3></p>
+	
+	<p>TripleA is a volunteer project, and you can help make it better.
+	   We need people to test and contribute better graphics,
+	   but above all we need people to contribute code. If you are
+	   interested please see the <a href="http://triplea.sourceforge.net/index.php?option=content&task=view&id=5&Itemid=27">contributing</a> page.
+	<p>
+
+	</body>
 </html>
