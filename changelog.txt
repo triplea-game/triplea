@@ -29,3 +29,34 @@ Changes for 0.5.0
 * Fixed bug which didn't allow fighters to consider landing in gibralator due to issue with pathing and neutrals. (Ali Ibrahim)
 
 * Added warning for users using Java 1.5 about some serialization problems which cause an incompatibility with saved games in Java 1.4. (Nekro)
+
+Changes for 0.4.9
+
+* Fix for bug #1010428 bypassing the unit selection popup message when there is only 1 unit to be moved. (Ali Ibrahim)
+
+* AI for 2nd edition rules added,experimental. (Sean Bridges/Troy)
+
+* Stack trace when starting triplea after a saved game fixed. (Sean Bridges)
+
+* Fixed bug when defending subs get first strike fire, even if an enemy destroyer is present. (Sean Bridges)
+
+* Changes in Battle Panel relating to SWING event thread to stop game from freezing in battle mode. (Sean Bridges)
+
+* Fix for Bug #1001946 fixed for units crossing water. Now crossesWater only returns true if the route starts and ends on land and also contains a water territory. (James Damour)
+
+* Fixes for Points 1,4 (and possibly 3) for Bug #1003736. (Ali Ibrahim)
+
+* Clean up of neutrality violation messages (4th ed). (Ali Ibrahim)
+
+* Now defending planes can land in any adjacent territory if their carrier is lost in combat (4th ed). (Ali Ibrahim)
+
+Changes for 0.4.8
+
+* Automatic casualty selection has been also added (Ali Ibrahim)
+
+* Drag scrolling and mouse wheel scrolling (since 0.4.7).  (lnxduk)
+
+* TripleA Chat improvements. (lnxduk)
+
+* Fix for null network interface on IRIX 6.5 OS. (Nekro)
+
