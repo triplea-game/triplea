@@ -124,6 +124,7 @@ public class BattlePanel extends ActionPanel
     {
         if (m_battleDisplay != null)
         {
+            m_battleDisplay.cleanUp();
             m_battleDisplay = null;
             if (m_battleFrame.isVisible())
             {

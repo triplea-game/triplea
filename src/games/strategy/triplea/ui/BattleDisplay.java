@@ -18,7 +18,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.*;
-import games.strategy.triplea.delegate.dataObjects.*;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.util.*;
@@ -65,7 +65,7 @@ public class BattleDisplay extends JPanel
     private JPanel m_actionPanel;
     private CardLayout m_actionLayout = new CardLayout();
     private JPanel m_messagePanel = new JPanel();
-    private final MapPanel m_mapPanel; 
+    private final MapPanel m_mapPanel;
 
     private JLabel m_messageLabel = new JLabel();
 
@@ -88,6 +88,11 @@ public class BattleDisplay extends JPanel
         initLayout();
     }
 
+    public void cleanUp()
+    {
+        m_steps.deactivate();
+    }
+    
     public Territory getBattleLocation()
     {
         return m_location;
@@ -102,7 +107,7 @@ public class BattleDisplay extends JPanel
     {
 
         ClipPlayer.getInstance().playClip(SoundPath.BOMB, SoundPath.class); //play
-                                                                            // sound
+        // sound
         m_dicePanel.setDiceRollForBombing(dice, cost);
         m_actionLayout.show(m_actionPanel, DICE_KEY);
     }
@@ -519,7 +524,6 @@ public class BattleDisplay extends JPanel
         Image finalImage = Util.createImage(WIDTH, HEIGHT, true);
 
         Image territory = m_mapPanel.getTerritoryImage(m_location);
-       
 
         finalImage.getGraphics().drawImage(territory, 0, 0, WIDTH, HEIGHT, this);
 
@@ -705,167 +709,7 @@ class TableData
     }
 }
 
-class BattleStepsPanel extends JPanel
-{
 
-    private DefaultListModel m_listModel = new DefaultListModel();
-    private JList m_list = new JList(m_listModel);
-    private MyListSelectionModel m_listSelectionModel = new MyListSelectionModel();
-
-    public BattleStepsPanel()
-    {
-
-        setLayout(new BorderLayout());
-        add(m_list, BorderLayout.CENTER);
-        m_list.setBackground(this.getBackground());
-        m_list.setSelectionModel(m_listSelectionModel);
-    }
-
-    public void listBattle(List steps)
-    {
-        m_listModel.removeAllElements();
-
-        Iterator iter = steps.iterator();
-        while (iter.hasNext())
-        {
-            m_listModel.addElement(iter.next());
-        }
-        m_listSelectionModel.hiddenSetSelectionInterval(0);
-
-        validate();
-        setStep((String) steps.get(0));
-    }
-
-    /**
-     * Walks through and pause at each list item.
-     */
-    private void walkStep(final int start, final int stop)
-    {
-        if (start < 0 || stop < 0 || stop >= m_listModel.getSize())
-            throw new IllegalStateException("Illegal start and stop.  start:" + start + " stop:" + stop);
-
-        if (SwingUtilities.isEventDispatchThread())
-        {
-            new Thread()
-            {
-                public void run()
-                {
-                    walkStep(start, stop);
-                }
-            }.start();
-            return;
-        }
-
-        int current = start;
-        while (current != stop)
-        {
-            if (current == 0)
-                pause();
-
-            current++;
-            if (current >= m_listModel.getSize())
-            {
-                current = 0;
-            }
-
-            final int set = current;
-            Runnable r = new Runnable()
-            {
-
-                public void run()
-                {
-
-                    m_listSelectionModel.hiddenSetSelectionInterval(set);
-                    JOptionPane.getFrameForComponent(BattleStepsPanel.this).toFront();
-                }
-            };
-
-            try
-            {
-                if (!SwingUtilities.isEventDispatchThread())
-                    SwingUtilities.invokeAndWait(r);
-                else
-                    r.run();
-
-                pause();
-            } catch (InterruptedException ie)
-            {
-            } catch (java.lang.reflect.InvocationTargetException ioe)
-            {
-                ioe.printStackTrace();
-                throw new RuntimeException(ioe.getMessage());
-            }
-        }
-    }
-
-    /**
-     * Doesnt allow the user to change the selection, must be done through
-     * hiddenSetSelectionInterval.
-     */
-    class MyListSelectionModel extends DefaultListSelectionModel
-    {
-
-        public void setSelectionInterval(int index0, int index1)
-        {
-
-        }
-
-        public void hiddenSetSelectionInterval(int index)
-        {
-
-            super.setSelectionInterval(index, index);
-        }
-    }
-
-    private void pause()
-    {
-
-        Object lock = new Object();
-        try
-        {
-            synchronized (lock)
-            {
-                lock.wait(300);
-            }
-        } catch (InterruptedException ie)
-        {
-        }
-    }
-
-    public void walkToLastStep()
-    {
-
-        if (m_list.getSelectedIndex() == m_list.getModel().getSize() - 1)
-            return;
-        walkStep(m_list.getSelectedIndex(), m_list.getModel().getSize() - 1);
-    }
-
-    public String getStep()
-    {
-        synchronized (this)
-        {
-            return (String) m_list.getSelectedValue();
-        }
-    }
-
-    public void setStep(String step)
-    {
-
-        if (step != null)
-        {
-            int newIndex = m_listModel.lastIndexOf(step);
-            int currentIndex = m_list.getSelectedIndex();
-            if (newIndex != -1)
-                walkStep(currentIndex, newIndex);
-            else
-            {
-                System.err.println("Step not found:" + step);
-                Thread.dumpStack();
-            }
-
-        }
-    }
-}
 
 class CasualtyNotificationPanel extends JPanel
 {
