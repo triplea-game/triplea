@@ -54,7 +54,7 @@ import javax.swing.*;
  * swing event thread, and can be called from any thread.
  *
  */
-public class ImageScrollerLargeView extends JComponent implements ActionListener
+public class ImageScrollerLargeView extends JComponent
 {
   //bit flags for determining which way we are scrolling
   final static int NONE = 0;
@@ -77,8 +77,32 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
   private Image m_originalImage;
   private Image m_offscreenImage;
 
+  private ActionListener mTimerAction = new ActionListener()
+  {
+
+      public final void actionPerformed(ActionEvent e)
+      {
+          if(JOptionPane.getFrameForComponent(ImageScrollerLargeView.this).getFocusOwner()  == null)
+          {
+              m_insideCount = 0;
+              return;
+          }
+
+          if (m_inside && m_edge != NONE)
+          {
+              m_insideCount++;
+              if (m_insideCount > 6)
+              {
+                  //we are in the timer thread, make sure the update occurs in the swing thread
+                  SwingUtilities.invokeLater(new Scroller());
+              }
+          }
+      }
+  };
+
+
   //scrolling
-  private javax.swing.Timer m_timer = new javax.swing.Timer(50,this);
+  private javax.swing.Timer m_timer = new javax.swing.Timer(50,mTimerAction);
   private boolean m_inside = false;
   private int m_insideCount = 0;
   private int m_edge = NONE;
@@ -181,6 +205,7 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
 
   private void scroll()
   {
+
     int dy = 0;
     if((m_edge & TOP) != 0)
       dy = -SCROLL_DISTANCE;
@@ -315,19 +340,6 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
         m_insideCount = 0;
     }
   };
-
-  public final void actionPerformed(ActionEvent e)
-  {
-    if(m_inside && m_edge != NONE)
-    {
-      m_insideCount++;
-      if(m_insideCount > 6)
-      {
-        //we are in the timer thread, make sure the update occurs in the swing thread
-        SwingUtilities.invokeLater(new Scroller());
-      }
-    }
-  }
 
   //for subclasses
   /**
