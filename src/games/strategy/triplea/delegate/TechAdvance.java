@@ -25,6 +25,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 
 import java.util.*;
+import java.util.logging.*;
+import java.util.logging.Logger;
 
 /**
  * @author Sean Bridges
@@ -170,7 +172,22 @@ class IndustrialTechnologyAdvance extends TechAdvance
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
-        ProductionFrontier advancedTech = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
+        ProductionFrontier current = id.getProductionFrontier();
+        //they already have it
+        if(current.getName().endsWith("IndustrialTechnology"))
+            return;
+        
+        String industrialTechName = current.getName() + "IndustrialTechnology";
+        
+        ProductionFrontier advancedTech = data.getProductionFrontierList().getProductionFrontier(industrialTechName);
+        
+        //it doesnt exist, dont crash
+        if(advancedTech == null)
+        {
+            Logger.getLogger(TechAdvance.class.getName()).log(Level.WARNING, "No tech named:" + industrialTechName + " not adding tech");
+            return;
+        }
+        
         Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
         bridge.addChange(prodChange);
     }
