@@ -14,7 +14,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.net.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscribor;
 
 /**
  * 

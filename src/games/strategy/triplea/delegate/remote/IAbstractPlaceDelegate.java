@@ -15,7 +15,7 @@
 package games.strategy.triplea.delegate.remote;
 
 import games.strategy.engine.data.Territory;
-import games.strategy.net.IRemote;
+import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 
 import java.util.Collection;

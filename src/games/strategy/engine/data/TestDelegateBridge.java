@@ -22,10 +22,8 @@ package games.strategy.engine.data;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.IGame;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.*;
-import games.strategy.net.*;
 
 import java.util.Random;
 

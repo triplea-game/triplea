@@ -18,8 +18,8 @@ import java.util.*;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.message.IRemote;
 import games.strategy.net.*;
-import games.strategy.net.IRemote;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 

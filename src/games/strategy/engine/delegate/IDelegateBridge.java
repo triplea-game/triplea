@@ -21,9 +21,8 @@
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.history.*;
-import games.strategy.net.*;
-import games.strategy.net.IRemote;
+import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.message.*;
 
 /**
  * 
@@ -53,7 +52,7 @@ public interface IDelegateBridge
     /**
      * Get a remote reference to the given player.
      * 
-     * @see games.strategy.net.IRemoteMessenger
+     * @see games.strategy.engine.message.IRemoteMessenger
      */
     public IRemote getRemote(PlayerID id);
 

@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.Route;
-import games.strategy.net.IRemote;
+import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 
 /**

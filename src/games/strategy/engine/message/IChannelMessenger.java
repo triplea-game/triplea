@@ -12,7 +12,9 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package games.strategy.net;
+package games.strategy.engine.message;
+
+import games.strategy.net.INode;
 
 /**
  * A simple way to multicast method calls over several machines and several objects.<br>

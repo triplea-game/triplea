@@ -13,8 +13,8 @@
  */
 package games.strategy.engine.random;
 
+import games.strategy.engine.message.IRemote;
 import games.strategy.engine.vault.VaultID;
-import games.strategy.net.IRemote;
 
 /**
  * @author Sean Bridges

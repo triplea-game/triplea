@@ -15,7 +15,7 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.Change;
-import games.strategy.net.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscribor;
 
 /**
  * All changes to game data (Changes and History events) can be tracked

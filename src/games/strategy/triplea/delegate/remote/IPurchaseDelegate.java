@@ -14,7 +14,7 @@
 
 package games.strategy.triplea.delegate.remote;
 
-import games.strategy.net.IRemote;
+import games.strategy.engine.message.IRemote;
 import games.strategy.util.IntegerMap;
 
 /**

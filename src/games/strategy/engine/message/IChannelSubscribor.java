@@ -12,23 +12,29 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package games.strategy.net;
+package games.strategy.engine.message;
 
 /**
- *
+ * @author Sean Bridges
+ * 
  * A marker interface, used to indicate that the interface
- * can be used by IRemoteMessenger.<br>
+ * can be used by IChannelMessenger
  * 
- * All arguments and return values to all methods of 
- * an IRemote must be serializable, since the methods
- * may be called by a remote VM.<br>
+ * All arguments to all methods of an IChannelSubscriber 
+ * must be serializable, since the methods
+ * may be called by a remote VM.
  * 
- * Modifications to the paramaters of an IRemote may or may not 
- * be visible to the calling object. <br>
+ * Return values of an IChannelSubscriber will be ignored.
  * 
- *  @author Sean Bridges
+ * Exceptions thrown by methods of an IChannelSubscriber will
+ * be printed to standard error, but otherwise ignored.
+ * 
+ * Arguments to the methods of IChannelSubscribor should not be modified 
+ * in any way.  The values may be used in method calls to other 
+ * subscribors.
+ * 
  */
-public interface IRemote
+public interface IChannelSubscribor
 {
 
 }

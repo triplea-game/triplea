@@ -28,15 +28,15 @@ import java.rmi.dgc.VMID;
  * A globally unique id.  <br>
  * Backed by a java.rmi.dgc.VMID.
  * 
+ * Written across the network often, so this class is 
+ * externalizable to increase effeciency
+ * 
  * @author  Sean Bridges
  * @see java.rmi.dgc.VMID
  */
 public class GUID implements Externalizable
 {
     //this prefix is unique across vms
-    //intern it to reduce memory consumption
-    //by getting a reference to the interned string
-    //when we deserialize
     private static final VMID vm_prefix = new java.rmi.dgc.VMID();
     
     //the local identifier

@@ -48,7 +48,7 @@ public interface IGamePlayer
      * The type must extend IRemote, and is to be used by an IRemoteManager to
      * allow a player to be contacted remotately
      * 
-     * @see games.strategy.net.IRemoteMessenger
+     * @see games.strategy.engine.message.IRemoteMessenger
      */
     public Class getRemotePlayerType();
 

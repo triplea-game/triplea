@@ -10,7 +10,7 @@ import java.util.*;
 
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.IGame;
-import games.strategy.net.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscribor;
 
 /**
  *

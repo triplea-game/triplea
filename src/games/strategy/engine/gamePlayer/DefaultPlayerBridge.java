@@ -24,7 +24,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.*;
-import games.strategy.net.IRemote;
+import games.strategy.engine.message.IRemote;
 
 /**
  * Default implementation of PlayerBridge.

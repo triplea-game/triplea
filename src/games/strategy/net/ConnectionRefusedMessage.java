@@ -25,7 +25,7 @@ package games.strategy.net;
  *
  * @author  Sean Bridges
  */
-public class ConnectionRefusedMessage extends ServerMessage
+class ConnectionRefusedMessage extends ServerMessage
 {
 	private String m_error;
 	

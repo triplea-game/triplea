@@ -18,6 +18,7 @@
 
 package games.strategy.engine.chat;
 
+import games.strategy.engine.message.*;
 import games.strategy.net.*;
 
 import java.util.*;

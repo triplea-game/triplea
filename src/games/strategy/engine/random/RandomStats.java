@@ -13,7 +13,7 @@
  */
 package games.strategy.engine.random;
 
-import games.strategy.net.IRemoteMessenger;
+import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.util.IntegerMap;
 
 

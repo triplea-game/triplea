@@ -23,8 +23,8 @@ package games.strategy.engine.framework.ui;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.message.*;
-import games.strategy.net.*;
+import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.message.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

@@ -14,8 +14,8 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.message.IRemote;
 import games.strategy.net.*;
-import games.strategy.net.IRemote;
 
 /**
  * 

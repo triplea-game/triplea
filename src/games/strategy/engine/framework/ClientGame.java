@@ -25,6 +25,7 @@ import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.EventChild;
+import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;

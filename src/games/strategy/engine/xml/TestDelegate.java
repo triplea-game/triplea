@@ -22,7 +22,7 @@ package games.strategy.engine.xml;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.*;
-import games.strategy.net.IRemote;
+import games.strategy.engine.message.IRemote;
 
 /**
  *

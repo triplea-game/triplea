@@ -18,7 +18,6 @@ import java.io.IOException;
 import games.strategy.engine.message.*;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.net.ClientMessenger;
-import games.strategy.net.DummyMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.ServerMessenger;

@@ -14,8 +14,6 @@
 
 package games.strategy.engine.message;
 
-import games.strategy.net.*;
-
 import java.lang.reflect.*;
 
 /**

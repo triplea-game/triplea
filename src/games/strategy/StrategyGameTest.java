@@ -20,9 +20,9 @@
 
 package games.strategy;
 
+import games.strategy.engine.message.*;
 import games.strategy.engine.message.RemoteMessengerTest;
 import games.strategy.engine.random.CryptoRandomSourceTest;
-import games.strategy.net.ChannelMessengerTest;
 import games.strategy.util.*;
 import junit.framework.*;
 
@@ -50,7 +50,7 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(RemoteMessengerTest.class);
 		suite.addTestSuite(CryptoRandomSourceTest.class);
 		suite.addTestSuite(VersionTest.class);
-		
+		suite.addTestSuite(EndPointTest.class);
 		
 
 		return suite;

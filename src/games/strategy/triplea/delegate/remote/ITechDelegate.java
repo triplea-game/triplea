@@ -14,7 +14,7 @@
 
 package games.strategy.triplea.delegate.remote;
 
-import games.strategy.net.IRemote;
+import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 

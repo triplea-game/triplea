@@ -27,6 +27,7 @@ import games.strategy.engine.display.*;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.*;
+import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;

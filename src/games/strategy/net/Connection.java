@@ -50,8 +50,12 @@ class Connection
     //on the list object
     private final List m_waitingToBeSent = Collections.synchronizedList(new LinkedList());
     private IObjectStreamFactory m_objectStreamFactory;
-    private final Object m_lock = new Object();
+    private final Object m_flushLock = new Object();
 
+    //used to notify writer thread that an object is ready to be written
+    private final Object m_writeWaitLock = new Object();
+
+    
     public Connection(Socket s, INode ident, IConnectionListener listener, IObjectStreamFactory fact) throws IOException
     {
         m_objectStreamFactory = fact;
@@ -140,13 +144,13 @@ class Connection
         if (m_shutdown)
             return;
 
-        synchronized (m_lock)
+        synchronized (m_flushLock)
         {
             while (!m_shutdown && !m_waitingToBeSent.isEmpty())
             {
                 try
                 {
-                    m_lock.wait();
+                    m_flushLock.wait();
                 } catch (InterruptedException ie)
                 {
                 }
@@ -172,15 +176,15 @@ class Connection
     public void send(MessageHeader msg)
     {
         m_waitingToBeSent.add(msg);
-        synchronized(m_lock)
+        synchronized(m_writeWaitLock)
         {
-            m_lock.notifyAll();
+            m_writeWaitLock.notifyAll();
         }
     }
 
     public void shutDown()
     {
-        synchronized (m_lock)
+        synchronized (m_flushLock)
         {
             if (!m_shutdown)
             {
@@ -188,7 +192,7 @@ class Connection
                 try
                 {
                     m_socket.close();
-                    m_lock.notifyAll();
+                    m_flushLock.notifyAll();
 
                 } catch (Exception e)
                 {
@@ -229,15 +233,11 @@ class Connection
         {
             while (!m_shutdown)
             {
-                synchronized (m_lock)
-                {
                     if (!m_waitingToBeSent.isEmpty())
                     {
                         MessageHeader next = (MessageHeader) m_waitingToBeSent.get(0);
                         write(next);
                         log(next, false);
-                        
-                        
 
                         m_waitingToBeSent.remove(0);
 
@@ -245,7 +245,12 @@ class Connection
                          * flush() may need to be woken up
                          */
                         if (m_waitingToBeSent.isEmpty())
-                            m_lock.notifyAll();
+                        {
+                            synchronized(m_flushLock)
+                            {
+                                m_flushLock.notifyAll();
+                            }
+                        }
                     } else
                     {
                         try
@@ -260,12 +265,15 @@ class Connection
                             {
                                 ioe.printStackTrace();
                             }
-                            m_lock.wait();
+                            synchronized(m_writeWaitLock)
+                            {
+                                m_writeWaitLock.wait();
+                            }
                         } catch (InterruptedException ie)
                         {
                         }
                     }
-                }
+                
 
             }
         }
@@ -295,8 +303,7 @@ class Connection
 
     class Reader implements Runnable
     {
-        
-
+       
         public void run()
         {
             while (!m_shutdown)

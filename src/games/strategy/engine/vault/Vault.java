@@ -13,7 +13,7 @@
  */
 package games.strategy.engine.vault;
 
-import games.strategy.net.*;
+import games.strategy.engine.message.*;
 
 import java.security.*;
 import java.util.*;

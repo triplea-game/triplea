@@ -13,7 +13,7 @@
  */
 package games.strategy.engine.display;
 
-import games.strategy.net.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscribor;
 
 /**
  * A Display is a view of the game.

@@ -25,8 +25,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
+import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.sound.ClipPlayer;
-import games.strategy.net.IChannelMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.triplea.sound.SoundPath;
 
