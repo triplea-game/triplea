@@ -184,7 +184,7 @@
 	    <connection t1="Switzerland" t2="Western Europe"/>
 	    <connection t1="Switzerland" t2="Southern Europe"/>
 
-    	    <connection t1="1 Sea Zone" t2="Eastern Canada" />
+    	<connection t1="1 Sea Zone" t2="Eastern Canada" />
 	    <connection t1="1 Sea Zone" t2="2 Sea Zone"/>
 
 	    <connection t1="1 Sea Zone" t2="8 Sea Zone"/>
@@ -219,6 +219,7 @@
 	    <connection t1="7 Sea Zone" t2="United Kingdom"/>
 	    <connection t1="7 Sea Zone" t2="Western Europe"/>
 	    <connection t1="8 Sea Zone" t2="9 Sea Zone"/>
+	    <connection t1="8 Sea Zone" t2="12 Sea Zone"/>
 	    <connection t1="8 Sea Zone" t2="United Kingdom"/>
 	    <connection t1="9 Sea Zone" t2="10 Sea Zone"/>
 
@@ -300,7 +301,7 @@
 	    <connection t1="25 Sea Zone" t2="Argentina"/>
 
 	    <connection t1="26 Sea Zone" t2="27 Sea Zone"/>
-	    <connection t1="27 Sea Zone" t2="29 Sea Zone"/>
+	    <connection t1="27 Sea Zone" t2="28 Sea Zone"/>
 	    <connection t1="27 Sea Zone" t2="Union of South Africa"/>
 	    <connection t1="27 Sea Zone" t2="Angloa"/>
 	    <connection t1="28 Sea Zone" t2="29 Sea Zone"/>
@@ -352,7 +353,6 @@
 	    <connection t1="37 Sea Zone" t2="38 Sea Zone"/>
 	    <connection t1="37 Sea Zone" t2="East Indies"/>
 	    <connection t1="38 Sea Zone" t2="39 Sea Zone"/>
-	    <connection t1="38 Sea Zone" t2="41 Sea Zone"/>
 	    <connection t1="38 Sea Zone" t2="47 Sea Zone"/>
 
 	    <connection t1="38 Sea Zone" t2="Australia"/>
@@ -360,6 +360,7 @@
 	    <connection t1="39 Sea Zone" t2="Australia"/>
 	    <connection t1="40 Sea Zone" t2="41 Sea Zone"/>
 	    <connection t1="40 Sea Zone" t2="42 Sea Zone"/>
+	    <connection t1="40 Sea Zone" t2="46 Sea Zone"/>
 	    <connection t1="40 Sea Zone" t2="Australia"/>
 
 	    <connection t1="41 Sea Zone" t2="46 Sea Zone"/>
@@ -456,12 +457,19 @@
 	    <connection t1="63 Sea Zone" t2="Western Canada"/>
 	    <connection t1="64 Sea Zone" t2="Alaska"/>
 	    <connection t1="64 Sea Zone" t2="Western Canada"/>
+	    
 	    <connection t1="Eastern Canada" t2="Eastern United States"/>
 	    <connection t1="Eastern Canada" t2="Western Canada"/>
 	    <connection t1="Eastern United States" t2="Central United States"/>
-
+	    <connection t1="Central United States" t2="Western Canada"/>
+	    <connection t1="Central United States" t2="Western United States"/>
+	    <connection t1="Western United States" t2="Mexico"/>
+	    <connection t1="Central United States" t2="Mexico"/>
+	    <connection t1="Western United States" t2="Western Canada"/>
+    	    <connection t1="Western Canada" t2="Alaska"/>
 	    <connection t1="Eastern United States" t2="Panama"/>
 	    <connection t1="Panama" t2="Venezuala"/>
+	    <connection t1="Panama" t2="Mexico"/>
 	    <connection t1="Venezuala" t2="Brazil"/>
 	    <connection t1="Venezuala" t2="Peru"/>
 	    <connection t1="Brazil" t2="Peru"/>
@@ -569,7 +577,7 @@
 	    <connection t1="Union of South Africa" t2="Angloa"/>
 	    <connection t1="Union of South Africa" t2="Mozambique"/>
 
-
+	    <connection t1="Southern Europe" t2="15 Sea Zone"/>	
 
 
 	</map>
