@@ -282,7 +282,12 @@ public class UnitAttatchment extends DefaultAttatchment
     {
       TechTracker tracker = getTechTracker();
       if(tracker.hasHeavyBomber(player))
-        return 3;
+      {
+        if(getData().getProperties().get(Constants.HEAVY_BOMBER_DICE_ROLLS) != null)
+            return new Integer( (String) getData().getProperties().get(Constants.HEAVY_BOMBER_DICE_ROLLS)).intValue();
+        else
+            return 3;
+      }
     }
     return 1;
   }

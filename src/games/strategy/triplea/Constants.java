@@ -48,7 +48,7 @@ public interface Constants
   public static final String ALWAYS_ON_AA_PROPERTY = "Always on AA";
   //allow fighters to be placed on newly produced carriers
   public static final String CAN_PRODUCE_FIGHTERS_ON_CARRIERS = "Produce fighters on carriers";  
-  
+  public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
 
   public static final String TWO_HIT = "isTwoHit";
