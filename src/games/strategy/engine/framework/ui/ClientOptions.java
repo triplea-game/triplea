@@ -59,12 +59,12 @@ public class ClientOptions extends JDialog
 
   public String getName()
   {
-    return m_nameField.getText();
+    return m_nameField.getText().trim();
   }
 
   public String getAddress()
   {
-    return m_addressField.getText();
+    return m_addressField.getText().trim();
   }
 
   public int getPort()
