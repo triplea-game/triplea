@@ -130,6 +130,9 @@ public class ClipPlayer
 
   private synchronized Clip loadClip(InputStream input)
   {
+    if(getBeSilent())
+        return null;
+      
     try
     {
       AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(input);
@@ -142,6 +145,7 @@ public class ClipPlayer
       return clip;
 
     }
+    //these can happen if the sound isnt configured, its not that bad.
     catch (LineUnavailableException e)
     {
       e.printStackTrace(System.out);
@@ -154,6 +158,11 @@ public class ClipPlayer
     {
       e.printStackTrace(System.out);
     }
+    catch(RuntimeException re)
+    {
+        re.printStackTrace(System.out);
+    }
+    setBeSilent(true);
     return null;
   }
 
