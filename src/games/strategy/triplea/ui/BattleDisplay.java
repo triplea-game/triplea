@@ -567,9 +567,10 @@ class BattleModel extends DefaultTableModel
                 artillerySupportAvailable -= supportedUnitsToAdd;
                 unitsToAdd -= supportedUnitsToAdd;
             }
-
-            columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged()));
-            columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged()));
+            if(unitsToAdd > 0)
+                columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged()));
+            if(supportedUnitsToAdd > 0)
+                columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged()));
         }
 
         //find the number of rows
