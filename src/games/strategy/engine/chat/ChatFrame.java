@@ -38,6 +38,7 @@ public class ChatFrame extends JFrame
 {
 
     private JTextPane m_text;
+    private JScrollPane m_scrollPane;
     private JTextField m_nextMessage;
     private JList m_players;
     private JButton m_send;
@@ -75,15 +76,15 @@ public class ChatFrame extends JFrame
 
         Container content = getContentPane();
         content.setLayout(new BorderLayout());
-
-        JScrollPane scrollText = new JScrollPane(m_text);
-        content.add(scrollText, BorderLayout.CENTER);
+        m_scrollPane = new JScrollPane(m_text);
+        
+        content.add(m_scrollPane, BorderLayout.CENTER);
 
         JScrollPane scrollPlayers = new JScrollPane(m_players);
         content.add(scrollPlayers, BorderLayout.EAST);
 
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        split.setLeftComponent(scrollText);
+        split.setLeftComponent(m_scrollPane);
         split.setRightComponent(scrollPlayers);
         split.setOneTouchExpandable(false);
         split.setDividerSize(5);
@@ -201,6 +202,8 @@ public class ChatFrame extends JFrame
                     setVisible(true);
    
                 toFront();
+                BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
+                scrollModel.setValue(scrollModel.getValue());
                 
                 ClipPlayer.getInstance().playClip(SoundPath.MESSAGE, SoundPath.class);                
             }
