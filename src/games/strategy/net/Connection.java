@@ -257,7 +257,7 @@ class Connection
 
     class Reader implements Runnable
     {
-        private OrderedMessageHandler m_orderedMessageHandler = null; 
+        
         
         public void run()
         {
@@ -275,17 +275,8 @@ class Connection
                         }
                     };
                     
-                    //only one ordered message can be processed at a time
-                    //delay processing until the last ordered message is done
-                    if(msg.getMessage() instanceof OrderedMessage)
-                    {
-                        if(m_orderedMessageHandler != null)
-                            m_orderedMessageHandler.waitTillDone();
-                        m_orderedMessageHandler = new OrderedMessageHandler(r);
-                        s_threadPool.runTask(m_orderedMessageHandler);
-                    }
-                    else
-                        s_threadPool.runTask(r);
+                    
+                    s_threadPool.runTask(r);
               
                     //allow the message to be processed
                     Thread.yield();

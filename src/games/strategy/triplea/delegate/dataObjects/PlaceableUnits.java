@@ -19,7 +19,7 @@
  * Created on August 28, 2004
  */
 
-package games.strategy.triplea.delegate.message;
+package games.strategy.triplea.delegate.dataObjects;
 
 import java.util.Collection;
 

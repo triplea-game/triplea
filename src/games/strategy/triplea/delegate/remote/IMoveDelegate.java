@@ -20,7 +20,7 @@ import java.util.Collection;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.Route;
 import games.strategy.net.IRemote;
-import games.strategy.triplea.delegate.message.MustMoveWithDetails;
+import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 
 /**
  * Remote interface for MoveDelegate

@@ -22,7 +22,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttatchment;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.Formatter;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -1481,7 +1481,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         if (hitCount == 0)
         {
-            m_bridge.sendMessage(new StringMessage("No aa hits in " + territory.getName()));
+            getRemotePlayer().reportMessage("No aa hits in " + territory.getName());
         } else
             selectCasualties(dice, units, territory);
     }
@@ -1505,7 +1505,8 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             casualties = casualtyMsg.getKilled();
         }
 
-        m_bridge.sendMessage(new StringMessage(dice.getHits() + " AA hits in " + territory.getName()));
+        getRemotePlayer().reportMessage(dice.getHits() + " AA hits in " + territory.getName());
+        
         m_bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
         units.removeAll(casualties);
     }

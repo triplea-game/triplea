@@ -18,7 +18,7 @@
  * Created on November 6, 2001, 8:26 PM
  */
 
-package games.strategy.triplea.delegate.message;
+package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Route;
 

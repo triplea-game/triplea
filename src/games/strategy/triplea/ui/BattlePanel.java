@@ -20,18 +20,18 @@
 
 package games.strategy.triplea.ui;
 
-import java.awt.*;
-import java.awt.font.*;
-import java.awt.event.*;
-import java.util.*;
-
-import javax.swing.*;
-
-import java.util.List;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
+import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.dataObjects.*;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.*;
+import java.util.List;
+
+import javax.swing.*;
 
 /**
  * 
@@ -43,13 +43,12 @@ import games.strategy.triplea.delegate.message.*;
 public class BattlePanel extends ActionPanel
 {
 
-    private static Font BOLD;
-    static
-    {
-        Map atts = new HashMap();
-        atts.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
-        BOLD = new Font(atts);
-    }
+//    static
+//    {
+//        Map atts = new HashMap();
+//        atts.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+//        BOLD = new Font(atts);
+//    }
 
     private JLabel m_actionLabel = new JLabel();
     private FightBattleDetails m_fightBattleMessage;
@@ -88,15 +87,20 @@ public class BattlePanel extends ActionPanel
         SwingUtilities.invokeLater(REFRESH);
     }
 
-    public Message battleInfo(BattleInfoMessage msg)
+    public void battleInfo(String messageShort, String messageLong, String step)
     {
         if (m_battleDisplay != null)
-            m_battleDisplay.battleInfo(msg);
-
-        return null;
+            m_battleDisplay.battleInfo(messageShort, messageLong, step);
     }
 
-    public void battleEndMessage(BattleEndMessage message)
+    public void battleInfo(String messageShort, DiceRoll dice, String step)
+    {
+        if (m_battleDisplay != null)
+            m_battleDisplay.battleInfo(messageShort, dice, step);
+    }
+
+    
+    public void battleEndMessage(GUID battleId, String message)
     {
         m_battleDisplay.endBattle(message);
         m_battleDisplay = null;
@@ -105,7 +109,21 @@ public class BattlePanel extends ActionPanel
         m_battleFrame = null;
     }
 
-    public Message listBattle(final BattleStepMessage msg)
+    private void ensureBattleIsDisplayed(GUID battleID)
+    {
+        while(m_battleDisplay == null || !m_battleDisplay.getBattleID().equals(battleID))
+        {
+            try
+            {
+                Thread.sleep(20);
+            } catch (InterruptedException e)
+            {
+                return;
+            }
+        }
+    }
+    
+    public Message listBattle(final GUID battleID, final String currentStep,final  List steps)
     {
         if (!SwingUtilities.isEventDispatchThread())
         {
@@ -113,7 +131,7 @@ public class BattlePanel extends ActionPanel
             {
                 public void run()
                 {
-                    listBattle(msg);
+                    listBattle(battleID, currentStep, steps);
                 }
             };
             try
@@ -128,39 +146,24 @@ public class BattlePanel extends ActionPanel
 
         removeAll();
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-
-        JTextArea text = new JTextArea();
-
-        text.setFont(BOLD);
-        text.setEditable(false);
-        text.setBackground(this.getBackground());
-        text.setText(msg.getTitle());
-        text.setLineWrap(true);
-        text.setWrapStyleWord(true);
-        panel.add(text, BorderLayout.NORTH);
-
-        getMap().centerOn(msg.getTerritory());
-        m_battleDisplay.listBattle(msg);
+        getMap().centerOn(m_battleDisplay.getBattleLocation());
+        m_battleDisplay.listBattle(currentStep, steps);
 
         return null;
     }
 
-    public Message battleStartMessage(BattleStartMessage msg)
+    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection attackingUnits, Collection defendingUnits, Map unit_dependents, PlayerID attacker, PlayerID defender)
     {
         if (!(m_battleDisplay == null))
         {
             throw new IllegalStateException("Battle display already showing");
         }
 
-        m_battleDisplay = new BattleDisplay(getData(), msg.getTerritory(), msg
-                .getAttacker(), msg.getDefender(), msg.getAttackingUnits(), msg
-                .getDefendingUnits());
+        m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID);
 
-        m_battleFrame = new JFrame(msg.getAttacker().getName() + " attacks "
-                + msg.getDefender().getName() + " in "
-                + msg.getTerritory().getName());
+        m_battleFrame = new JFrame(attacker.getName() + " attacks "
+                + defender.getName() + " in "
+                + location.getName());
         m_battleFrame.setIconImage(games.strategy.engine.framework.GameRunner
                 .getGameIcon(m_battleFrame));
         m_battleFrame.getContentPane().add(m_battleDisplay);
@@ -168,6 +171,7 @@ public class BattlePanel extends ActionPanel
         games.strategy.ui.Util.center(m_battleFrame);
         m_battleFrame.show();
         m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        
 
         SwingUtilities.invokeLater(new Runnable()
         {
@@ -177,7 +181,7 @@ public class BattlePanel extends ActionPanel
             }
         });
 
-        return null;
+        
     }
 
     public FightBattleDetails waitForBattleSelection()
@@ -215,7 +219,7 @@ public class BattlePanel extends ActionPanel
         return comp.getSelection();
     }
 
-    public void casualtyNotificationMessage(CasualtyNotificationMessage message)
+    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents, boolean autoCalculated)
     {
         //if we are playing this player, then dont wait for the user
         //to see the units, since the player selected the units, and knows
@@ -224,9 +228,10 @@ public class BattlePanel extends ActionPanel
         // then wait so user can see units which have been removed.
         //if no units died, then wait, since the user hasnt had a chance to
         //see the roll
-        boolean waitFOrUserInput = !m_parent.playing(message.getPlayer())
-                || message.getAutoCalculated() || message.isEmpty();
-        m_battleDisplay.casualtyNotificationMessage(message, waitFOrUserInput);
+        boolean waitFOrUserInput = !m_parent.playing(player)
+                || autoCalculated ||  (damaged.isEmpty() && killed.isEmpty());
+        
+        m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents, autoCalculated, waitFOrUserInput);
     }
 
     public CasualtyDetails getCasualties(String step, Collection selectFrom, Map dependents, int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
@@ -270,15 +275,10 @@ public class BattlePanel extends ActionPanel
         return response;
     }
 
-    public Message battleStringMessage(BattleStringMessage message)
+    public Territory getRetreat(GUID battleID, String step, String message, Collection possible, boolean submerge)
     {
-        m_battleDisplay.setStep(message);
-        return null;
-    }
-
-    public RetreatMessage getRetreat(RetreatQueryMessage rqm)
-    {
-        return m_battleDisplay.getRetreat(rqm);
+        ensureBattleIsDisplayed(battleID);
+        return m_battleDisplay.getRetreat(step, message, possible, submerge);
     }
 
     public void notifyRetreat(Collection retreating)
@@ -286,9 +286,9 @@ public class BattlePanel extends ActionPanel
         m_battleDisplay.notifyRetreat(retreating);
     }
 
-    public void bombingResults(BombingResults message)
+    public void bombingResults(GUID battleID,  int[] dice,  int cost)
     {
-        m_battleDisplay.bombingResults(message);
+        m_battleDisplay.bombingResults(dice, cost);
     }
 
     class FightBattleAction extends AbstractAction

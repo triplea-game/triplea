@@ -20,24 +20,20 @@
 
 package games.strategy.engine.framework;
 
-import java.io.*;
-
-import java.util.*;
-
-import games.strategy.util.ListenerList;
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.events.*;
+import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.display.*;
-import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.*;
-import games.strategy.net.*;
-
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
+import games.strategy.net.*;
+import games.strategy.util.ListenerList;
+
+import java.io.File;
+import java.util.*;
 
 /**
  *
@@ -57,7 +53,6 @@ public class ServerGame implements IGame
     private final Map m_gamePlayers = new HashMap();
 
     private final IServerMessenger m_messenger;
-    private final IMessageManager m_messageManager;
     private final ChangePerformer m_changePerformer;
     
     private final IRemoteMessenger m_remoteMessenger;
@@ -78,13 +73,13 @@ public class ServerGame implements IGame
      * @param messenger IServerMessenger
      * @param remotePlayerMapping Map
      */
-    public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, IMessageManager messageManager)
+    public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
     {
         m_data = data;
 
         m_messenger = messenger;
         
-        m_messageManager = messageManager;
+        
         m_remoteMessenger = remoteMessenger;
         m_channelMessenger = channelMessenger;
         m_vault = new Vault(m_channelMessenger);
@@ -98,22 +93,6 @@ public class ServerGame implements IGame
         
         
         setupLocalPlayers(localPlayers);
-
-        //add a null destination for the null player.
-        IDestination nullDest = new IDestination()
-        {
-            public Message sendMessage(Message message)
-            {
-                return null;
-            }
-
-            public String getName()
-            {
-                return PlayerID.NULL_PLAYERID.getName();
-            }
-        };
-
-        m_messageManager.addDestination(nullDest);
 
         setupDelegateMessaging(data);
 
@@ -135,7 +114,7 @@ public class ServerGame implements IGame
             m_gamePlayers.put(player, gp);
             IPlayerBridge bridge = new DefaultPlayerBridge(this);
             gp.initialize(bridge, player);
-            m_messageManager.addDestination(gp);
+            
             m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, getRemoteName(gp.getID()));
 
         }
@@ -311,10 +290,6 @@ public class ServerGame implements IGame
         return m_messenger;
     }
 
-    public IMessageManager getMessageManager()
-    {
-        return m_messageManager;
-    }
     
     public IChannelMessenger getChannelMessenger()
     {

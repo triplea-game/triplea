@@ -16,7 +16,7 @@ package games.strategy.triplea.troxAI;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.UnitAttatchment;
-import games.strategy.triplea.delegate.message.MoveDescription;
+import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.util.IntegerMap;
 
 import java.util.*;

@@ -31,7 +31,7 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.delegate.message.PlaceableUnits;
+import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.Formatter;
 import games.strategy.triplea.player.ITripleaPlayer;

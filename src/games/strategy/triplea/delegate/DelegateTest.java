@@ -23,7 +23,6 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttatchment;
-import games.strategy.triplea.delegate.message.StringMessage;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -166,20 +165,6 @@ public class DelegateTest extends TestCase
 		ipcs = m_data.getResourceList().getResource("IPCs");
 	}
 
-	public void assertError(StringMessage message)
-	{
-		assertNotNull(message);
-		if(!message.isError() )
-			fail(message.getMessage());
-	}
-	
-	public void assertValid(StringMessage message)
-	{
-		if(message == null)
-			return;
-		if(message.isError() )
-			fail(message.getMessage());
-	}
 
 	public void assertValid(String string)
 	{

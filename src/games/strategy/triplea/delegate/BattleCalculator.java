@@ -24,7 +24,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttatchment;
-import games.strategy.triplea.delegate.message.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.*;
 import games.strategy.util.*;

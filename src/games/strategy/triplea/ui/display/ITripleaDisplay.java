@@ -13,7 +13,13 @@
  */
 package games.strategy.triplea.ui.display;
 
+import java.util.*;
+
+import games.strategy.engine.data.*;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.net.GUID;
+import games.strategy.triplea.delegate.DiceRoll;
 
 /**
  * 
@@ -23,6 +29,49 @@ import games.strategy.engine.display.IDisplay;
  */
 public interface ITripleaDisplay extends IDisplay
 {
-
- 
+    /**
+     * Display info about the battle.
+     * This is the first message to be displayed in a battle
+     * 
+     * @param battleID - a unique id for the battle
+     * @param location - where the battle occurs
+     * @param battleTitle - the title of the battle
+     * @param attackingUnits - attacking units
+     * @param defendingUnits - defending units
+     * @param dependentUnits - unit dependencies, maps Unit->Collection of units
+     */
+    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection attackingUnits, Collection defendingUnits, Map dependentUnits, PlayerID attacker, PlayerID defender);
+    
+    /**
+     * 
+     * @param battleID - the battle we are listing steps for
+     * @param currentStep - the current step
+     * @param steps - a collection of strings denoting all steps in the battle 
+     */
+    public void listBattleSteps(GUID battleID, String currentStep, List steps);
+    
+    /**
+     * The given battle has eneded. 
+     */
+    public void battleEnd(GUID battleID, String message);
+    
+    /**
+     * Notify that the casuatlies occured
+     *  
+     */
+    public void casualtyNotification(
+            String step,
+            DiceRoll dice,
+            PlayerID player,
+            Collection killed,
+            Collection damaged,
+            Map dependents,
+            boolean autoCalculated);
+    
+    /**
+     * Notification of the results of a bombing raid 
+     */
+    public void bombingResults(GUID battleID, int[] dice, int cost);
+    
+    
 }

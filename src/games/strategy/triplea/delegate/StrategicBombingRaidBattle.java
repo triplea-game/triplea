@@ -18,18 +18,16 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.*;
-
-import games.strategy.util.*;
-
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
-
+import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
-import games.strategy.util.Match;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.util.*;
+
+import java.util.*;
 
 /**
  * @author Sean Bridges
@@ -49,6 +47,8 @@ public class StrategicBombingRaidBattle implements Battle
     private BattleTracker m_tracker;
     private boolean m_isOver = false;
 
+    private final GUID m_battleID = new GUID();
+
     /** Creates new StrategicBombingRaidBattle */
     public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker)
     {
@@ -58,6 +58,15 @@ public class StrategicBombingRaidBattle implements Battle
         m_attacker = attacker;
         m_defender = defender;
         m_tracker = tracker;
+    }
+
+    /**
+     * @param bridge
+     * @return
+     */
+    private ITripleaDisplay getDisplay(IDelegateBridge bridge)
+    {
+        return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
     }
 
     public boolean isOver()
@@ -96,10 +105,8 @@ public class StrategicBombingRaidBattle implements Battle
         moveDelegate.sortAccordingToMovementLeft(m_units, false);
 
         Collection defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
-
-        BattleStartMessage startBattle = new BattleStartMessage(m_attacker, m_defender, m_battleSite, m_units, defendingUnits, null);
-        bridge.sendMessage(startBattle, m_attacker);
-        bridge.sendMessage(startBattle, m_defender);
+        String title = "Bombing raid in " + m_battleSite.getName();
+        getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_units, defendingUnits, Collections.EMPTY_MAP, m_attacker, m_defender);
 
         CompositeMatch hasAAMatch = new CompositeMatchAnd();
         hasAAMatch.add(Matches.UnitIsAA);
@@ -112,11 +119,7 @@ public class StrategicBombingRaidBattle implements Battle
             steps.add(FIRE_AA);
         steps.add(RAID);
 
-        String title = "Bombing raid in " + m_battleSite.getName();
-
-        BattleStepMessage listSteps = new BattleStepMessage((String) steps.get(0), title, steps, m_battleSite);
-        bridge.sendMessage(listSteps, m_attacker);
-        bridge.sendMessage(listSteps, m_defender);
+        getDisplay(bridge).listBattleSteps(m_battleID, (String) steps.get(0), steps);
 
         if (hasAA)
             fireAA(bridge);
@@ -127,9 +130,7 @@ public class StrategicBombingRaidBattle implements Battle
 
         bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + cost + Formatter.pluralize("ipc", cost));
 
-        BattleEndMessage battleEnd = new BattleEndMessage("Bombing raid cost " + cost);
-        bridge.sendMessage(battleEnd, m_attacker);
-        bridge.sendMessage(battleEnd, m_defender);
+        getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + cost);
 
         m_isOver = true;
 
@@ -147,36 +148,34 @@ public class StrategicBombingRaidBattle implements Battle
      */
     private boolean isFourthEdition()
     {
-      return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
     private void removeAAHits(IDelegateBridge bridge, DiceRoll dice)
     {
-      Collection casualties = null;
-      if (isFourthEdition()) {
-        casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice, bridge);
-      } else {
-        casualties = new ArrayList(dice.getHits());
-        for (int i = 0; i < dice.getHits() && i < m_units.size(); i++)
+        Collection casualties = null;
+        if (isFourthEdition())
         {
-            casualties.add(m_units.get(i));
+            casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice, bridge);
+        } else
+        {
+            casualties = new ArrayList(dice.getHits());
+            for (int i = 0; i < dice.getHits() && i < m_units.size(); i++)
+            {
+                casualties.add(m_units.get(i));
+            }
         }
-      }
-        
-      if (casualties.size() != dice.getHits())
-	throw new IllegalStateException("Wrong number of casualties");
-      
-      CasualtyNotificationMessage notify = new CasualtyNotificationMessage(FIRE_AA, casualties, null, null, m_attacker, dice);
-      
-      notify.setAutoCalculated(true);
-      bridge.sendMessage(notify, m_attacker);
-      bridge.sendMessage(notify, m_defender);
-      
-      bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
 
-      m_units.removeAll(casualties);
-      Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
-      bridge.addChange(remove);
+        if (casualties.size() != dice.getHits())
+            throw new IllegalStateException("Wrong number of casualties");
+
+        getDisplay(bridge).casualtyNotification(FIRE_AA, dice, m_attacker, casualties, Collections.EMPTY_LIST, Collections.EMPTY_MAP, true);
+
+        bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
+
+        m_units.removeAll(casualties);
+        Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
+        bridge.addChange(remove);
     }
 
     /**
@@ -189,20 +188,21 @@ public class StrategicBombingRaidBattle implements Battle
         if (rollCount == 0)
             return 0;
 
-        String annotation = attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in " + location.getName();
+        String annotation = attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in "
+                + location.getName();
         int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
         int[] newDice;
-        if(TechTracker.hasHeavyBomber(attacker) &&
-           m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)!=null &&
-           m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)==Boolean.TRUE)
+        if (TechTracker.hasHeavyBomber(attacker) && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) != null
+                && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) == Boolean.TRUE)
         {
-          newDice=new int[dice.length/2];
-          for(int i=0;i<dice.length;i+=2)
-          {
-            newDice[i/2]=Math.max(dice[i],dice[i+1]);
-            bridge.getHistoryWriter().addChildToEvent("Bomber rolled "+(dice[i]+1)+" and "+(dice[i+1]+1)+" and picked "+(newDice[i/2]+1));
-          }
-          dice=newDice;
+            newDice = new int[dice.length / 2];
+            for (int i = 0; i < dice.length; i += 2)
+            {
+                newDice[i / 2] = Math.max(dice[i], dice[i + 1]);
+                bridge.getHistoryWriter().addChildToEvent(
+                        "Bomber rolled " + (dice[i] + 1) + " and " + (dice[i + 1] + 1) + " and picked " + (newDice[i / 2] + 1));
+            }
+            dice = newDice;
         }
 
         int cost = 0;
@@ -212,53 +212,48 @@ public class StrategicBombingRaidBattle implements Battle
         Iterator iter = m_units.iterator();
         int index = 0;
 
-        while(iter.hasNext())
+        while (iter.hasNext())
         {
             int rolls;
-            if(TechTracker.hasHeavyBomber(attacker) &&
-               m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) != null &&
-               m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)==Boolean.TRUE)
+            if (TechTracker.hasHeavyBomber(attacker) && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) != null
+                    && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) == Boolean.TRUE)
             {
-              rolls = 1;
-              iter.next();
-            }
-            else
+                rolls = 1;
+                iter.next();
+            } else
             {
-              rolls = BattleCalculator.getRolls( (Unit) iter.next(), attacker, false);
+                rolls = BattleCalculator.getRolls((Unit) iter.next(), attacker, false);
             }
             int costThisUnit = 0;
-            for(int i = 0; i < rolls; i++)
+            for (int i = 0; i < rolls; i++)
             {
                 costThisUnit += dice[index] + 1;
-		index++;
+                index++;
             }
 
-	    if(fourthEdition)
-		cost += Math.min(costThisUnit, production);
-	    else
-		cost += costThisUnit;
+            if (fourthEdition)
+                cost += Math.min(costThisUnit, production);
+            else
+                cost += costThisUnit;
         }
 
-	// Limit ipcs lost if we would like to cap ipcs lost at territory value
-	if (m_data.getProperties().get(Constants.IPC_CAP, false))
-	{
-	    int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(location);
-	    int limit = Math.max(0, production - alreadyLost);
-	    cost = Math.min(cost, limit);
-	}
+        // Limit ipcs lost if we would like to cap ipcs lost at territory value
+        if (m_data.getProperties().get(Constants.IPC_CAP, false))
+        {
+            int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(location);
+            int limit = Math.max(0, production - alreadyLost);
+            cost = Math.min(cost, limit);
+        }
 
-        BombingResults results = new BombingResults(dice, cost);
-
-        bridge.sendMessage(results);
-        bridge.sendMessage(results, m_defender);
+        getDisplay(bridge).bombingResults(m_battleID, dice, cost);
 
         //get resources
         Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
         int have = m_defender.getResources().getQuantity(ipcs);
         int toRemove = Math.min(cost, have);
 
-	// Record ipcs lost
-	DelegateFinder.moveDelegate(m_data).ipcsLost(location, toRemove);
+        // Record ipcs lost
+        DelegateFinder.moveDelegate(m_data).ipcsLost(location, toRemove);
 
         Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
         bridge.addChange(change);
@@ -311,17 +306,18 @@ public class StrategicBombingRaidBattle implements Battle
     }
 
     /**
-     * Add bombarding unit. Doesn't make sense here so just do
-     * nothing.
+     * Add bombarding unit. Doesn't make sense here so just do nothing.
      */
-    public void addBombardingUnit(Unit unit) {
-	// nothing
+    public void addBombardingUnit(Unit unit)
+    {
+        // nothing
     }
 
     /**
      * Return whether battle is amphibious.
      */
-    public boolean isAmphibious() {
-	return false;
+    public boolean isAmphibious()
+    {
+        return false;
     }
 }

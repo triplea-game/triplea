@@ -21,7 +21,6 @@
 package games.strategy.engine.gamePlayer;
 
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.message.*;
 
 /**
  * 
@@ -33,11 +32,9 @@ import games.strategy.engine.message.*;
  * @version 1.0
  *  
  */
-public interface IGamePlayer extends IDestination
+public interface IGamePlayer 
 {
     public void initialize(IPlayerBridge bridge, PlayerID id);
-
-    public Message sendMessage(Message message);
 
     public String getName();
 

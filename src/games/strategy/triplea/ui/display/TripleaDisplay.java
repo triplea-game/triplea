@@ -13,7 +13,13 @@
  */
 package games.strategy.triplea.ui.display;
 
+import java.util.*;
+
+import games.strategy.engine.data.*;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
+import games.strategy.net.GUID;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.ui.TripleAFrame;
 
 /**
@@ -40,7 +46,46 @@ public class TripleaDisplay implements ITripleaDisplay
     public void initialize(IDisplayBridge bridge)
     {
        m_displayBridge = bridge;
+       m_displayBridge.toString();
         
+    }
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.ui.display.ITripleaDisplay#showBattle(games.strategy.net.GUID, java.util.List, games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection)
+     */
+    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection attackingUnits, Collection defendingUnits, Map unit_dependents,PlayerID attacker, PlayerID defender)
+    {
+        m_ui.getBattlePanel().showBattle(battleID,  location, battleTitle,  attackingUnits, defendingUnits, unit_dependents, attacker, defender);
+        
+    }
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.ui.display.ITripleaDisplay#listBattleSteps(games.strategy.net.GUID, java.lang.String, java.util.List)
+     */
+    public void listBattleSteps(GUID battleID, String currentStep, List steps)
+    {
+       m_ui.getBattlePanel().listBattle(battleID, currentStep, steps);
+        
+    }
+    /* 
+     * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
+     */
+    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents, boolean autoCalculated)
+    {
+        m_ui.getBattlePanel().casualtyNotification(step,dice, player, killed, damaged, dependents, autoCalculated);
+        
+    }
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.ui.display.ITripleaDisplay#battleEnd(games.strategy.net.GUID, java.lang.String)
+     */
+    public void battleEnd(GUID battleID, String message)
+    {
+        m_ui.getBattlePanel().battleEndMessage(battleID, message);
+    }
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.ui.display.ITripleaDisplay#bombingResults(games.strategy.net.GUID, int[], int)
+     */
+    public void bombingResults(GUID battleID, int[] dice, int cost)
+    {
+        m_ui.getBattlePanel().bombingResults(battleID, dice, cost);
     }
     
     

@@ -22,9 +22,9 @@ package games.strategy.triplea;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.Message;
+import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.*;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
 import games.strategy.triplea.formatter.Formatter;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -64,65 +64,17 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         return m_name;
     }
 
-    public Message sendMessage(Message message)
-    {
-        if (message instanceof MultiDestinationMessage)
-        {
-            if (MultiDestinationMessage
-                    .shouldIgnore((MultiDestinationMessage) message))
-                return null;
-        }
-        
-        
-        if (message instanceof StringMessage)
-        {
-            StringMessage smsg = (StringMessage) message;
-            if (!m_ui.playing(smsg.getIgnore()))
-            {
-                if (smsg.isError())
-                    m_ui.notifyError(smsg.getMessage());
-                else
-                    m_ui.notifyMessage(smsg.getMessage());
-            }
-        }
-        else if (message instanceof BattleStepMessage)
-        {
-            return m_ui.listBattle((BattleStepMessage) message);
-        } else if (message instanceof CasualtyNotificationMessage)
-        {
-            m_ui
-                    .casualtyNotificationMessage((CasualtyNotificationMessage) message);
-            return null;
-        } else if (message instanceof BattleInfoMessage)
-        {
-            return m_ui.battleInfo((BattleInfoMessage) message);
-        } else if (message instanceof BattleStringMessage)
-        {
-            return m_ui.battleStringMessage((BattleStringMessage) message);
-        } else if (message instanceof BattleStartMessage)
-        {
-            m_ui.battleStartMessage((BattleStartMessage) message);
-        } else if (message instanceof RetreatQueryMessage)
-        {
-            return m_ui.getRetreat((RetreatQueryMessage) message);
-        } else if (message instanceof BattleEndMessage)
-        {
-            m_ui.battleEndMessage((BattleEndMessage) message);
-            return null;
-        } else if (message instanceof BombingResults)
-        {
-            m_ui.bombingResults((BombingResults) message);
-            return null;
-        }
-
-        return null;
-    }
-    
     public void reportError(String error)
     {
         m_ui.notifyError(error);
     }
 
+    
+    public void reportMessage(String message)
+    {
+        m_ui.notifyMessage(message);
+    }
+    
     public PlayerID getID()
     {
         return m_id;
@@ -395,7 +347,32 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         return m_ui.getOK(question);
         
     }
-    
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
+     */
+    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message, String step)
+    {
+        return m_ui.getBattlePanel().getRetreat(battleID, step, message, possibleTerritories,submerge);
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void battleInfoMessage(String shortMessage, String message, String step)
+    {
+        m_ui.getBattlePanel().battleInfo(shortMessage, message, step);
+        
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, games.strategy.triplea.delegate.DiceRoll, java.lang.String)
+     */
+    public void battleInfoMessage(String shortMessage, DiceRoll dice, String step)
+    {
+        m_ui.getBattlePanel().battleInfo(shortMessage, dice, step);
+        
+    }
     
     
 }

@@ -20,7 +20,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
-import games.strategy.triplea.delegate.message.BattleListing;
+import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;

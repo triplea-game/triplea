@@ -12,34 +12,28 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.*;
+import games.strategy.engine.sound.ClipPlayer;
+import games.strategy.net.GUID;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.delegate.*;
+import games.strategy.triplea.delegate.dataObjects.*;
+import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.sound.SoundPath;
+import games.strategy.triplea.util.*;
+import games.strategy.ui.Util;
+import games.strategy.util.Match;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-
-import games.strategy.engine.sound.ClipPlayer; //the player
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.sound.SoundPath; //the relative path of sounds
-
-import games.strategy.engine.data.*;
-import games.strategy.engine.message.Message;
-import games.strategy.triplea.attatchments.UnitAttatchment;
-import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.image.UnitIconImageFactory;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitOwner;
-import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.ui.Util;
-import games.strategy.util.Match;
-
-import javax.swing.border.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.table.*;
 
 /**
  * Displays a running battle
@@ -48,15 +42,16 @@ import javax.swing.border.*;
 public class BattleDisplay extends JPanel
 {
     
+    private final GUID m_battleID;
     private final String DICE_KEY = "D";
     private final String CASUALTIES_KEY = "C";
     
-    private PlayerID m_defender;
-    private PlayerID m_attacker;
-    private Territory m_location;
-    private GameData m_data;
+    private final PlayerID m_defender;
+    private final PlayerID m_attacker;
+    private final Territory m_location;
+    private final GameData m_data;
     
-    private JButton m_actionButton = new JButton("");
+    private final JButton m_actionButton = new JButton("");
     
     private BattleModel m_defenderModel;
     private BattleModel m_attackerModel;
@@ -69,9 +64,9 @@ public class BattleDisplay extends JPanel
     private JPanel m_actionPanel;
     private CardLayout m_actionLayout = new CardLayout();
     
-    public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection attackingUnits, Collection defendingUnits)
+    public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection attackingUnits, Collection defendingUnits, GUID battleID)
     {
-        
+        m_battleID = battleID;
         m_defender = defender;
         m_attacker = attacker;
         m_location = territory;
@@ -86,12 +81,21 @@ public class BattleDisplay extends JPanel
         initLayout();
     }
     
+    public Territory getBattleLocation()
+    {
+        return m_location;
+    }
     
-    public void bombingResults(BombingResults message)
+    public GUID getBattleID()
+    {
+        return m_battleID;
+    }
+    
+    public void bombingResults(int[] dice, int cost)
     {
         
         ClipPlayer.getInstance().playClip(SoundPath.BOMB, SoundPath.class); //play sound
-        m_dicePanel.setDiceRoll(message);
+        m_dicePanel.setDiceRollForBombing(dice, cost);
         m_actionLayout.show(m_actionPanel, DICE_KEY);
     }
     
@@ -109,22 +113,22 @@ public class BattleDisplay extends JPanel
     }
     
     
-    public void casualtyNotificationMessage(CasualtyNotificationMessage message, boolean waitFOrUserInput)
+    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents, boolean autoCalculated, boolean waitForUserInput)
     {
-        setStep(message);
-        m_casualties.setNotication(message);
+        setStep(step);
+        m_casualties.setNotication(dice, player, killed, damaged, dependents);
         m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
         
-        if (message.getPlayer().equals(m_defender))
+        if (player.equals(m_defender))
         {
-            m_defenderModel.removeCasualties(message);
+            m_defenderModel.removeCasualties(killed);
         } else
         {
-            m_attackerModel.removeCasualties(message);
+            m_attackerModel.removeCasualties(killed);
         }
         
         //if wait is true, then dont return until the user presses continue
-        if (!waitFOrUserInput)
+        if (!waitForUserInput)
             return;
         if(!getShowEnemyCasualtyNotification())
             return;
@@ -184,12 +188,10 @@ public class BattleDisplay extends JPanel
         
     }
     
-    public void endBattle(BattleEndMessage msg)
+    public void endBattle(String message)
     {
-        
         m_steps.walkToLastStep();
-        waitForConfirmation(msg.getMessage() + " : (Click to close)");
-        
+        waitForConfirmation(message + " : (Click to close)");
     }
     
     public void notifyRetreat(Collection retreating )
@@ -198,41 +200,38 @@ public class BattleDisplay extends JPanel
         m_attackerModel.notifyRetreat(retreating);        
     }
     
-    public RetreatMessage getRetreat(RetreatQueryMessage rqm)
+    public Territory getRetreat(String step, String message, Collection possible, boolean submerge)
     {
         
-        if (!rqm.getSubmerge())
+        if (!submerge)
         {
-            return getRetreatInternal(rqm);
+            return getRetreatInternal(step, message, possible);
         } else
         {
-            return getSubmerge(rqm);
+            return getSubmerge(message, step);
         }
     }
     
-    private RetreatMessage getSubmerge(RetreatQueryMessage rqm)
+    private Territory getSubmerge(String message, String step)
     {
-        setStep(rqm);
+        setStep(step);
         
-        String message = rqm.getMessage();
         String ok = "Submerge";
         String cancel = "Remain";
         String[] options = {ok, cancel};
         int choice = JOptionPane.showOptionDialog(this, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
         boolean retreat = (choice == 0);
         if(retreat)
-            return new RetreatMessage(null);
+            return m_location;
         else
             return null;
         
     }
     
-    private RetreatMessage getRetreatInternal(RetreatQueryMessage rqm)
-    {
+    private Territory getRetreatInternal(String step, String message, Collection possible)
+    {   
+        setStep(step);
         
-        setStep(rqm);
-        
-        String message = rqm.getMessage();
         String ok = "Retreat";
         String cancel = "Remain";
         String[] options = {ok, cancel};
@@ -241,15 +240,15 @@ public class BattleDisplay extends JPanel
         if (!retreat)
             return null;
         
-        RetreatComponent comp = new RetreatComponent(rqm);
-        int option = JOptionPane.showConfirmDialog(this, comp, rqm.getMessage(), JOptionPane.OK_CANCEL_OPTION);
+        RetreatComponent comp = new RetreatComponent(possible);
+        int option = JOptionPane.showConfirmDialog(this, comp, message, JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION)
         {
             if (comp.getSelection() != null)
-                return new RetreatMessage(comp.getSelection());
+                return comp.getSelection();
         } else
         {
-            return getRetreat(rqm);
+            return getRetreatInternal(step, message, possible);
         }
         
         return null;
@@ -259,7 +258,7 @@ public class BattleDisplay extends JPanel
     {
         private JList m_list;
         
-        RetreatComponent(RetreatQueryMessage rqm)
+        RetreatComponent(Collection possible)
         {
             
             this.setLayout(new BorderLayout());
@@ -267,7 +266,7 @@ public class BattleDisplay extends JPanel
             JLabel label = new JLabel("Retreat to...");
             this.add(label, BorderLayout.NORTH);
             
-            Vector listElements = new Vector(rqm.getTerritories());
+            Vector listElements = new Vector(possible);
             
             m_list = new JList(listElements);
             m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -438,12 +437,6 @@ public class BattleDisplay extends JPanel
         
     }
     
-    public void setStep(BattleMessage message)
-    {
-        
-        m_steps.setStep(message.getStep());
-        
-    }
     
     public void setStep(String step)
     {
@@ -452,32 +445,29 @@ public class BattleDisplay extends JPanel
     
     
     
-    public Message battleInfo(BattleInfoMessage msg)
+    public void battleInfo(String messageShort, DiceRoll message, String step)
     {
-        setStep(msg);
-        
-        if(msg.getMessage() instanceof DiceRoll)
-        {
-            
-            m_dicePanel.setDiceRoll((DiceRoll) msg.getMessage());
-            m_actionLayout.show(m_actionPanel, DICE_KEY);
-            
-        }
-        else
-        {
-            
-            String ok = "OK";
-            String[] options = {ok};
-            String message = (String) msg.getMessage();
-            JOptionPane.showOptionDialog(this, message, msg.getShortMessage(), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, ok);
-        }
-        return null;
+        setStep(step);
+        m_dicePanel.setDiceRoll(message);
+        m_actionLayout.show(m_actionPanel, DICE_KEY);
     }
     
-    public void listBattle(BattleStepMessage message)
+    public void battleInfo(String messageShort, String message, String step)
+    {
+        setStep(step);
+        
+        String ok = "OK";
+        String[] options = {ok};
+        
+        JOptionPane.showOptionDialog(this, message, messageShort, JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, ok);
+
+    }
+    
+    public void listBattle(String currentStep, List steps)
     {
         
-        m_steps.listBattle(message);
+        m_steps.listBattle(currentStep, steps);
+        
     }
     
     private JComponent getPlayerComponent(PlayerID id)
@@ -554,9 +544,9 @@ class BattleModel extends DefaultTableModel
     }
     
     
-    public void removeCasualties(CasualtyNotificationMessage msg)
+    public void removeCasualties(Collection killed)
     {
-        m_units.removeAll(msg.getKilled());
+        m_units.removeAll(killed);
         refresh();
     }
     
@@ -708,20 +698,13 @@ class BattleStepsPanel extends JPanel
         m_list.setSelectionModel(m_listSelectionModel);
     }
     
-    public Message battleStringMessage(BattleStringMessage message)
-    {
-        
-        setStep(message.getStep());
-        JOptionPane.showMessageDialog(getRootPane(), message.getMessage(), message.getMessage(), JOptionPane.PLAIN_MESSAGE);
-        return null;
-    }
+
     
-    public void listBattle(final BattleStepMessage msg)
+    public void listBattle(final String currentStep, List steps)
     {
-        
         m_listModel.removeAllElements();
         
-        Iterator iter = msg.getSteps().iterator();
+        Iterator iter = steps.iterator();
         while (iter.hasNext())
         {
             m_listModel.addElement(iter.next());
@@ -729,7 +712,7 @@ class BattleStepsPanel extends JPanel
         m_listSelectionModel.hiddenSetSelectionInterval(0);
         
         validate();
-        
+        setStep(currentStep);
     }
     
     /**
@@ -829,6 +812,12 @@ class BattleStepsPanel extends JPanel
             int currentIndex = m_list.getSelectedIndex();
             if (newIndex != -1)
                 walkStep(currentIndex, newIndex);
+            else
+            {
+                System.err.println("Step not found:" + step);
+                Thread.dumpStack();
+            }
+            	
         }
     }
     
@@ -853,28 +842,30 @@ class CasualtyNotificationPanel extends JPanel
         add(m_damaged);
     }
     
-    public void setNotication(CasualtyNotificationMessage msg)
+
+    public void setNotication(DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents)
     {
         
-        m_dice.setDiceRoll(msg.getDice());
+        m_dice.setDiceRoll(dice);
         
         m_killed.removeAll();
         m_damaged.removeAll();
-        Collection killed = msg.getKilled();
+        
         if (!killed.isEmpty())
         {
             m_killed.add(new JLabel("Killed"));
         }
-        Iterator killedIter = UnitSeperator.categorize(killed, msg.getDependents(), null).iterator();
+        
+        Iterator killedIter = UnitSeperator.categorize(killed, dependents, null).iterator();
         categorizeUnits(killedIter, false);
         
-        Collection damaged = new ArrayList(msg.getDamaged());
+        
         damaged.removeAll(killed);
         if (!damaged.isEmpty())
         {
             m_damaged.add(new JLabel("Damaged"));
         }
-        Iterator damagedIter = UnitSeperator.categorize(damaged, msg.getDependents(), null).iterator();
+        Iterator damagedIter = UnitSeperator.categorize(damaged, dependents, null).iterator();
         categorizeUnits(damagedIter, true);
         
         invalidate();

@@ -16,7 +16,6 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.delegate.message.StringMessage;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;
 
@@ -27,8 +26,6 @@ import java.util.*;
  */
 public class RocketsFireHelper
 {
-
-    
 
     public RocketsFireHelper()
     {
@@ -43,50 +40,50 @@ public class RocketsFireHelper
         Set rocketTerritories = getTerritoriesWithRockets(data, player);
         if (rocketTerritories.isEmpty())
         {
-            bridge.sendMessage(new StringMessage("No aa guns to fire rockets with"));
+            getRemote(bridge).reportMessage("No aa guns to fire rockets with");
             return;
         }
-        
-        if(is4thEdition)
+
+        if (is4thEdition)
             fire4thEdition(data, player, rocketTerritories, bridge);
         else
-            fire3rdEdition(data, player, rocketTerritories, bridge); 
-       
+            fire3rdEdition(data, player, rocketTerritories, bridge);
+
     }
-     
+
     private void fire4thEdition(GameData data, PlayerID player, Set rocketTerritories, IDelegateBridge bridge)
     {
         Set attackedTerritories = new HashSet();
         Iterator iter = rocketTerritories.iterator();
-        while(iter.hasNext())
+        while (iter.hasNext())
         {
             Territory territory = (Territory) iter.next();
             Set targets = getTargetsWithinRange(territory, data, player);
             targets.removeAll(attackedTerritories);
-            if(targets.isEmpty())
+            if (targets.isEmpty())
                 continue;
             Territory target = getTarget(targets, player, bridge, territory);
-            if(target != null)
+            if (target != null)
             {
                 attackedTerritories.add(target);
                 fireRocket(player, target, bridge, data);
-            }            
+            }
         }
     }
-    
+
     private void fire3rdEdition(GameData data, PlayerID player, Set rocketTerritories, IDelegateBridge bridge)
     {
         Set targets = new HashSet();
         Iterator iter = rocketTerritories.iterator();
-        while(iter.hasNext())
+        while (iter.hasNext())
         {
             Territory territory = (Territory) iter.next();
             targets.addAll(getTargetsWithinRange(territory, data, player));
         }
-        
+
         if (targets.isEmpty())
         {
-            bridge.sendMessage(new StringMessage("No targets to attack with rockets"));
+            getRemote(bridge).reportMessage("No targets to attack with rockets");
             return;
         }
 
@@ -140,7 +137,7 @@ public class RocketsFireHelper
 
     private Territory getTarget(Collection targets, PlayerID player, IDelegateBridge bridge, Territory from)
     {
-        if(targets.size() == 1)
+        if (targets.size() == 1)
         {
             return (Territory) targets.iterator().next();
         }
@@ -165,16 +162,16 @@ public class RocketsFireHelper
         if (data.getProperties().get(Constants.FOURTH_EDITION, false))
         {
             int territoryProduction = TerritoryAttatchment.get(attackedTerritory).getProduction();
-	    // If we are limiting total ipcs lost then take that into
-	    // account
-	    if (data.getProperties().get(Constants.IPC_CAP, false))
-	    {
-		int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
-		territoryProduction -= alreadyLost;
-		territoryProduction = Math.max(0, territoryProduction);
-	    }
-            
-	    if (cost > territoryProduction)
+            // If we are limiting total ipcs lost then take that into
+            // account
+            if (data.getProperties().get(Constants.IPC_CAP, false))
+            {
+                int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
+                territoryProduction -= alreadyLost;
+                territoryProduction = Math.max(0, territoryProduction);
+            }
+
+            if (cost > territoryProduction)
             {
                 cost = territoryProduction;
             }
@@ -185,11 +182,11 @@ public class RocketsFireHelper
         if (cost > availForRemoval)
             cost = availForRemoval;
 
-	// Record the ipcs lost
-	DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
+        // Record the ipcs lost
+        DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
 
-        bridge.sendMessage(new StringMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost));
-
+        getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
+      
         String transcriptText = attacked.getName() + " lost " + cost + " ipcs to rocket attack by " + player.getName();
         bridge.getHistoryWriter().startEvent(transcriptText);
 
@@ -198,4 +195,10 @@ public class RocketsFireHelper
 
     }
 
+    
+    private ITripleaPlayer getRemote(IDelegateBridge bridge)
+    {
+        return (ITripleaPlayer) bridge.getRemote();
+    }
+    
 }

@@ -21,7 +21,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.*;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.dataObjects.*;
 
 /**
  * Contains all the data to describe a move and to undo it.

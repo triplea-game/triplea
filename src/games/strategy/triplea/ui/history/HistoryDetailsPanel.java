@@ -23,7 +23,7 @@ import games.strategy.triplea.delegate.*;
 import java.awt.*;
 import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.*;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.dataObjects.*;
 
 
 public class HistoryDetailsPanel extends JPanel

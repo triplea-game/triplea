@@ -18,7 +18,7 @@
  * Created on December 3, 2001, 6:25 PM
  */
 
-package games.strategy.triplea.delegate.message;
+package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.message.Message;
 import games.strategy.util.IntegerMap;

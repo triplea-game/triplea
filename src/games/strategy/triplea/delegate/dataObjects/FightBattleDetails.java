@@ -12,7 +12,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package games.strategy.triplea.delegate.message;
+package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Territory;
 

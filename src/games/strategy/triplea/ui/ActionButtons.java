@@ -22,8 +22,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.engine.message.Message;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.util.IntegerMap;
 
 import java.awt.CardLayout;
@@ -148,12 +147,6 @@ public class ActionButtons extends JPanel
         return m_techPanel.waitForTech();
     }
 
-    public Message listBattle(BattleStepMessage msg)
-    {
-        m_layout.show(this, m_battlePanel.toString());
-        return m_battlePanel.listBattle(msg);
-    }
-
     /**
      * Blocks until the user selects units to place.
      * 
@@ -170,47 +163,6 @@ public class ActionButtons extends JPanel
     public FightBattleDetails waitForBattleSelection()
     {
         return m_battlePanel.waitForBattleSelection();
-    }
-
-
-    public Message battleStringMessage(BattleStringMessage message)
-    {
-        return m_battlePanel.battleStringMessage(message);
-    }
-
-    public Message battleStartMessage(BattleStartMessage msg)
-    {
-        return m_battlePanel.battleStartMessage(msg);
-    }
-
-    public Message battleInfo(BattleInfoMessage msg)
-    {
-        return m_battlePanel.battleInfo(msg);
-    }
-
-    public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
-    {
-        m_battlePanel.casualtyNotificationMessage(message);
-    }
-
-    public void battleEndMessage(BattleEndMessage message)
-    {
-        m_battlePanel.battleEndMessage(message);
-    }
-
-    public void bombingResults(BombingResults message)
-    {
-        m_battlePanel.bombingResults(message);
-    }
-
-    /**
-     * Blocks until the user selects a country to retreat to.
-     * 
-     * @return null if user doesnt retreat.
-     */
-    public RetreatMessage getRetreat(RetreatQueryMessage rqm)
-    {
-        return m_battlePanel.getRetreat(rqm);
     }
 
     public void notifyRetreat(Collection retreating)

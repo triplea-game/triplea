@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.triplea.delegate.message.TechResults;
+import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.image.DiceImageFactory;
 
 import java.awt.*;

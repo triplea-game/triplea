@@ -22,7 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.message.PlaceableUnits;
+import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.util.IntegerMap;
 
 import java.util.*;

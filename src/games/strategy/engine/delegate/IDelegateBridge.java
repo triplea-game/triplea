@@ -21,7 +21,6 @@
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.message.Message;
 import games.strategy.engine.history.*;
 import games.strategy.net.*;
 import games.strategy.net.IRemote;
@@ -43,21 +42,7 @@ import games.strategy.net.IRemote;
  */
 public interface IDelegateBridge
 {
-    /**
-     * Messages are sent to the current player
-     */
-    public Message sendMessage(Message message);
-
-    /**
-     * Sends a message to the given player.
-     */
-    public Message sendMessage(Message message, PlayerID player);
-
-    /**
-     * Messages are sent to the given player without waiting for a response.
-     */
-    public void sendMessageNoResponse(Message message, PlayerID player);
-
+  
     /**
      * equivalent to getRemote(getPlayerID())
      * 

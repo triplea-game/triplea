@@ -26,13 +26,12 @@ import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.Message;
 import games.strategy.engine.random.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.*;
 import games.strategy.triplea.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.ui.history.*;
@@ -687,10 +686,6 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForPlace(bid, bridge);
     }
 
-    public Message listBattle(BattleStepMessage msg)
-    {
-        return m_actionButtons.listBattle(msg);
-    }
 
     public FightBattleDetails getBattle(PlayerID player, Collection battles,
             Collection bombingRaids)
@@ -699,35 +694,12 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForBattleSelection();
     }
 
-    public Message battleStringMessage(BattleStringMessage message)
-    {
-        return m_actionButtons.battleStringMessage(message);
-    }
-
-    public void casualtyNotificationMessage(CasualtyNotificationMessage message)
-    {
-        m_actionButtons.casualtyNoticicationMessage(message);
-    }
-
-    public RetreatMessage getRetreat(RetreatQueryMessage rqm)
-    {
-        return m_actionButtons.getRetreat(rqm);
-    }
 
     public void notifyRetreat(Collection retreating)
     {
         m_actionButtons.notifyRetreat(retreating);
     }
 
-    public Message battleInfo(BattleInfoMessage msg)
-    {
-        return m_actionButtons.battleInfo(msg);
-    }
-
-    public Message battleStartMessage(BattleStartMessage msg)
-    {
-        return m_actionButtons.battleStartMessage(msg);
-    }
 
     public void notifyError(String message)
     {
@@ -735,15 +707,6 @@ public class TripleAFrame extends JFrame
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public void battleEndMessage(BattleEndMessage message)
-    {
-        m_actionButtons.battleEndMessage(message);
-    }
-
-    public void bombingResults(BombingResults message)
-    {
-        m_actionButtons.bombingResults(message);
-    }
 
     public void notifyMessage(String message)
     {

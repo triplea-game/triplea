@@ -24,7 +24,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.message.PlaceableUnits;
+import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.*;

@@ -11,36 +11,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+package games.strategy.triplea.delegate.dataObjects;
 
-/*
- * BattleMessage.java
- *
- * Created on January 16, 2002, 10:19 AM
- */
-
-package games.strategy.triplea.delegate.message;
+import games.strategy.triplea.delegate.TechAdvance;
 
 
 /**
- *
- * Superclass of all delegate sent messages that involve battles.  <p>
- * Contains information about which step the battle is in.
- *
- * @author  Sean Bridges
+ * Used to describe a tech roll.
+ * advance may be null if the game does not support rolling for
+ * specific techs (ie aa 2nd edition)
  */
-public class BattleMessage extends MultiDestinationMessage
+public class TechRoll
 {
-
-  private final String m_step;
-
-  /** Creates a new instance of BattleMessage */
-    public BattleMessage(String step)
-  {
-    m_step = step;
+    private final TechAdvance m_tech;
+    private final int m_rolls;
+    
+    public TechRoll(TechAdvance advance, int rolls)
+    {
+        m_rolls = rolls;
+        m_tech = advance;  
     }
-
-  public String getStep()
-  {
-    return m_step;
-  }
+    
+    public int getRolls()
+    {
+        return m_rolls;
+    }
+    
+    public TechAdvance getTech()
+    {
+        return m_tech;
+    }
 }

@@ -225,7 +225,7 @@ public class LauncherFrame extends JFrame
         Map remotePlayers = m_serverStartup.getRemotePlayerMapping();
 
         final ServerGame serverGame = new ServerGame(m_gameData, localPlayerSet, (IServerMessenger) m_messenger, remotePlayers, m_channelMessenger,
-                m_remoteMessenger, m_messageManager);
+                m_remoteMessenger);
         boolean useSecureRandomSource = !remotePlayers.isEmpty() && !localPlayerMapping.isEmpty();
         if (useSecureRandomSource)
         {
@@ -280,7 +280,7 @@ public class LauncherFrame extends JFrame
         Set playerSet = m_gameData.getGameLoader().createPlayers(playerMapping);
 
         ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger,
-                m_channelMessenger, m_remoteMessenger, m_messageManager);
+                m_channelMessenger, m_remoteMessenger);
 
         m_gameData.getGameLoader().startGame(clientGame, playerSet);
 
@@ -320,8 +320,7 @@ public class LauncherFrame extends JFrame
                 }
 
                 Set gamePlayers = m_gameData.getGameLoader().createPlayers(localPlayerMap);
-                ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap(), m_channelMessenger, m_remoteMessenger,
-                        m_messageManager);
+                ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap(), m_channelMessenger, m_remoteMessenger);
                 if (m_gameTypePanel.isPBEM())
                 {
                     IronyGamesDiceRollerRandomSource randomSource = new IronyGamesDiceRollerRandomSource(m_pbemStartup.getEmail1(), m_pbemStartup

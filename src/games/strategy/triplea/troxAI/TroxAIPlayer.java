@@ -22,10 +22,10 @@ package games.strategy.triplea.troxAI;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.Message;
+import games.strategy.net.GUID;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.IntegerMap;
@@ -57,48 +57,6 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     public String getName()
     {
         return m_name;
-    }
-
-    public Message sendMessage(Message message)
-    {
-        if (message instanceof StringMessage)
-        {
-
-        } else if (message instanceof BattleStepMessage)
-        { //This is where a battle ends a turn
-            //return m_ui.listBattle((BattleStepMessage) message);
-            return null;
-        } else if (message instanceof CasualtyNotificationMessage)
-        {
-
-            return null;
-        } else if (message instanceof BattleInfoMessage)
-        {
-            //return m_ui.battleInfo((BattleInfoMessage) message);
-            return null;
-        } else if (message instanceof BattleStringMessage)
-        {
-            //return m_ui.battleStringMessage((BattleStringMessage) message);
-            return null;
-        }
-        if (message instanceof BattleStartMessage)
-        {
-            //return null;
-        } else if (message instanceof RetreatQueryMessage)
-        {
-            //return m_ui.getRetreat( (RetreatQueryMessage) message);
-            return null;
-        }   else if (message instanceof BattleEndMessage)
-        {
-
-            return null;
-        } else if (message instanceof BombingResults)
-        {
-
-            return null;
-        }
-
-        return null;
     }
 
     public PlayerID getID()
@@ -427,6 +385,41 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
     {
         return true;
+    }
+
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
+     */
+    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message, String step)
+    {
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#reportMessage(java.lang.String)
+     */
+    public void reportMessage(String message)
+    {
+       //dont bother
+        
+    }
+
+    /*
+     * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void battleInfoMessage(String shortMessage, String message, String step)
+    {
+        
+        
+    }
+
+    /*
+     * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, games.strategy.triplea.delegate.DiceRoll, java.lang.String)
+     */
+    public void battleInfoMessage(String shortMessage, DiceRoll dice, String step)
+    {
+      
+        
     }
 
 }

@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.message;
+package games.strategy.triplea.delegate.dataObjects;
 
 import java.util.List;
 import games.strategy.engine.data.*;

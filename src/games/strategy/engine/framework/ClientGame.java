@@ -23,10 +23,8 @@ package games.strategy.engine.framework;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.*;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.EventChild;
-import games.strategy.engine.message.IMessageManager;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
@@ -43,7 +41,6 @@ public class ClientGame implements IGame
   private ListenerList m_gameStepListeners = new ListenerList();
   private final GameData m_data;
   private final IMessenger m_messenger;
-  private final IMessageManager m_messageManager;
   private final IRemoteMessenger m_remoteMessenger;
   private final IChannelMessenger m_channelMessenger;
   private final ChangePerformer m_changePerformer;
@@ -57,14 +54,12 @@ public class ClientGame implements IGame
       return "games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName();  
   }
 
-  public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, IMessageManager messageManager)
+  public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
   {
     m_data = data;
     
     m_messenger = messenger;
     
-     
-    m_messageManager = messageManager;
     m_remoteMessenger = remoteMessenger;
     m_channelMessenger = channelMessenger;
     m_vault = new Vault(m_channelMessenger);
@@ -83,7 +78,6 @@ public class ClientGame implements IGame
       IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
 
-      m_messageManager.addDestination(gp);
       m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, ServerGame.getRemoteName(gp.getID()));
       
       IRemoteRandom remoteRandom = new RemoteRandom(this);
@@ -145,13 +139,7 @@ public class ClientGame implements IGame
     }
      
   };
-  
-
-  public IMessageManager getMessageManager()
-  {
-    return m_messageManager;
-  }
-
+ 
   public GameData getData()
   {
     return m_data;

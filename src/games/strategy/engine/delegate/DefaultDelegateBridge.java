@@ -17,10 +17,8 @@ package games.strategy.engine.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.history.DelegateHistoryWriter;
-import games.strategy.engine.message.Message;
 import games.strategy.engine.random.*;
 import games.strategy.net.*;
-import games.strategy.net.IRemote;
 
 /**
  * 
@@ -86,34 +84,13 @@ public class DefaultDelegateBridge implements IDelegateBridge
         m_game.addChange(aChange);
     }
 
-    /**
-     * Messages are sent to the current player
-     */
-    public Message sendMessage(Message message)
-    {
-        return m_game.getMessageManager().send(message, m_player.getName());
-    }
 
     public void setPlayerID(PlayerID aPlayer)
     {
         m_player = aPlayer;
     }
 
-    /**
-     * Sends a message to the given player.
-     */
-    public Message sendMessage(Message message, PlayerID player)
-    {
-        return m_game.getMessageManager().send(message, player.getName());
-    }
 
-    /**
-     * Sends a message to the given player.
-     */
-    public Message sendMessage(Message message, String dest_name)
-    {
-        return m_game.getMessageManager().send(message, dest_name);
-    }
 
     /**
      * Returns the current step name
@@ -124,11 +101,6 @@ public class DefaultDelegateBridge implements IDelegateBridge
     }
 
 
-
-    public void sendMessageNoResponse(Message message, PlayerID player)
-    {
-        m_game.getMessageManager().sendNoResponse(message, player.getName());
-    }
 
     public DelegateHistoryWriter getHistoryWriter()
     {

@@ -22,7 +22,6 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.events.GameStepListener;
-import games.strategy.engine.message.IMessageManager;
 import games.strategy.net.*;
 import games.strategy.net.IMessenger;
 import games.strategy.engine.data.Change;
@@ -49,7 +48,6 @@ public interface IGame
   public void addGameStepListener(GameStepListener listener);
   public void removeGameStepListener(GameStepListener listener);
 
-  public IMessageManager getMessageManager();
   public IMessenger getMessenger();
   public IChannelMessenger getChannelMessenger();
   public IRemoteMessenger getRemoteMessenger();

@@ -18,9 +18,10 @@ import java.util.*;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.net.*;
 import games.strategy.net.IRemote;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.message.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 
 /**
  * Interface the TriplePlayer presents to Delegates through IRemoteMessenger
@@ -70,7 +71,12 @@ public interface ITripleaPlayer extends IRemote
      */
     public void reportError(String error);
     
-
+    /**
+     * report a message to the user
+     * @param message
+     */
+    public void reportMessage(String message);
+    
     /**
      * One or more bombers have just moved into a territory where a strategic bombing
      * raid can be conducted, should the bomber bomb? 
@@ -116,5 +122,21 @@ public interface ITripleaPlayer extends IRemote
      */
     public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories);
     
+    /**
+     * 
+     * Ask the player if he wishes to retreat.
+     * 
+     * @param battleID - the battle
+     * @param submerge - is submerging possible
+     * @param possibleTerritories - where the player can retreat to
+     * @param message - user displayable message
+     * @param step - the battle step
+     * @return the territory to retreat to, or null if the player doesnt wish to retreat
+     */
+    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message, String step);
+    
+    public void battleInfoMessage(String shortMessage, String message, String step);
+    public void battleInfoMessage(String shortMessage, DiceRoll dice, String step);
+
     
 }

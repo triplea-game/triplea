@@ -15,14 +15,13 @@
 package games.strategy.triplea.ui;
 
 
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.image.DiceImageFactory;
+
 import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.*;
-
-import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.message.BombingResults;
-import games.strategy.triplea.image.DiceImageFactory;
 
 
 public class DicePanel extends JPanel
@@ -37,14 +36,14 @@ public class DicePanel extends JPanel
     removeAll();
   }
 
-  public void setDiceRoll(BombingResults results)
+  public void setDiceRollForBombing(int[] dice, int cost)
   {
     removeAll();
 
-    add(create(results.getDice(), -1, false));
+    add(create(dice, -1, false));
 
     add(Box.createVerticalGlue());
-    add(new JLabel("Cost:" + results.getCost()));
+    add(new JLabel("Cost:" + cost));
 
     invalidate();
   }
