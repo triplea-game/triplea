@@ -99,7 +99,7 @@ public class TerritoryAttatchment extends DefaultAttatchment
 
 	public boolean isVictoryCity()
 	{
-		return m_originalFactory;
+		return m_isVictoryCity;
 	}
 	
 	public void setOriginalFactory(String value)
