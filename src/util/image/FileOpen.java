@@ -15,7 +15,7 @@
 
 /*
   @author George El-Haddad
-  @email  nekromancer@usrs.sourceforge.net
+  @email  nekromancer@users.sourceforge.net
  */
 
 package util.image;
@@ -25,13 +25,7 @@ import javax.swing.*;
 
 public class FileOpen 
 {
-
-	// Error messages
-	
-	//private final String ERR_MSG_1 = "The file could not be found!";
-	//private final String ERR_MSG_2 = "I/O Error occured with this file!\nTry loading it again.";
-	private final String ERR_MSG_3 = "Warning! Could not load the file!";
-	//private final String ERR_MSG_4 = "Warning! This is an empty file or the first line is NULL.";
+	private final String ERR_MSG_1 = "Warning! Could not load the file!";
 	
 	private File file = null;
 
@@ -81,11 +75,10 @@ public class FileOpen
 		try
 		{
 			file = chooser.getSelectedFile();   //get the file
-
 		}
 		catch(Exception ex)
 		{
-			JOptionPane.showMessageDialog(null,ERR_MSG_3,"Warning!", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null,ERR_MSG_1,"Warning!", JOptionPane.WARNING_MESSAGE);
 			file = null;
 		}
 
