@@ -930,6 +930,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_defendingUnits.size() == 0)
             return;
         Collection units = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
+        units.addAll(Match.getMatches(m_attackingWaitingToDie, Matches.UnitIsNotSub));
         
         if (units.isEmpty())
             return;
