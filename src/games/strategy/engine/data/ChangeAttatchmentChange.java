@@ -94,6 +94,9 @@ public class ChangeAttatchmentChange extends Change
     return new ChangeAttatchmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
   }
 
-
+  public String toString()
+  {
+      return "ChangAttatchmentChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
+  }
 
 }
