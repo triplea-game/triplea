@@ -53,8 +53,8 @@
   <target name="zip" depends="init,compile"
           description="create a zip file for end users">
     <mkdir dir="release" />
-    <zip zipfile="release/triplea.zip" compress="true" >
-      <zipfileset dir="classes/" prefix="classes/">
+    <zip zipfile="release/triplea_${triplea.version}.zip" compress="true" >
+      <zipfileset dir="classes/" prefix="triplea_${triplea.version}/classes/">
         <include name="**/*.class"/>
 		<!-- dont put Test classes in the main distribution -->
 		<exclude name="**/*Test.class"/>
@@ -64,24 +64,24 @@
         <include name="**/*.txt"/>
         <include name="**/*.wav"/>
       </zipfileset>
-      <zipfileset dir="lib/" prefix="lib/">
+      <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
         <include name="**/*.jar"/>
       </zipfileset>
-      <zipfileset dir="doc/" prefix="doc/">
+      <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
         <include name="**/*.html"/>
       </zipfileset>
-      <zipfileset dir="liscence/" prefix="liscence/">
+      <zipfileset dir="liscence/" prefix="triplea_${triplea.version}/liscence/">
         <include name="gpl.txt"/>
       </zipfileset>
-      <zipfileset dir="bin/" prefix="bin/">
+      <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
         <include name="triplea.bat"/>
         <include name="triplea.sh"/>
         <include name="triplea.irix.sh"/>
       </zipfileset>
-      <zipfileset dir="games/" prefix="games/">
+      <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
         <include name="*.xml"/>
       </zipfileset>
-      <zipfileset dir=".">
+      <zipfileset dir="." prefix="triplea_${triplea.version}/">
         <include name="readme.html"/>
       </zipfileset>
     </zip>
@@ -90,17 +90,17 @@
   <target name="zipSource" depends="init"
           description="create a zip file for developers">
     <mkdir dir="release" />
-    <zip zipfile="release/triplea_source.zip" compress="true" >
-      <zipfileset dir="src/" prefix="src/">
+    <zip zipfile="release/triplea_source_${triplea.version}.zip" compress="true" >
+      <zipfileset dir="src/" prefix="triplea_${triplea.version}/src/">
         <include name="**/*.java"/>
       </zipfileset>
-      <zipfileset dir="junit/" prefix="junit/">
+      <zipfileset dir="junit/" prefix="triplea_${triplea.version}/junit/">
         <include name="excluded.properties"/>
       </zipfileset>
-      <zipfileset dir="lib/" prefix="lib/">
+      <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
         <include name="**/*.jar"/>
       </zipfileset>
-      <zipfileset dir="data/" prefix="data/">
+      <zipfileset dir="data/" prefix="triplea_${triplea.version}/data/">
         <include name="**/*.dtd"/>
         <include name="**/*.gif"/>
         <include name="**/*.png"/>
@@ -108,23 +108,23 @@
         <include name="**/*.xml"/>
         <include name="**/*.wav"/>
       </zipfileset>
-      <zipfileset dir="bin/" prefix="bin/">
+      <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
         <include name="triplea.bat"/>
         <include name="triplea.sh"/>
         <include name="triplea.irix.sh"/>
       </zipfileset>
-      <zipfileset dir=".">
+      <zipfileset dir="." prefix ="triplea_${triplea.version}/">
         <include name="build.xml"/>
         <include name=".ant.properties"/>
         <include name="readme.html"/>
       </zipfileset>
-      <zipfileset dir="doc/" prefix="doc/">
+      <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
         <include name="**/*.html"/>
       </zipfileset>
-      <zipfileset dir="liscence/" prefix="liscence/">
+      <zipfileset dir="licence/" prefix="triplea_${triplea.version}/liscence/">
         <include name="gpl.txt"/>
       </zipfileset>
-      <zipfileset dir="games/" prefix="games/">
+      <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
         <include name="*.xml"/>
       </zipfileset>
     </zip>
@@ -141,7 +141,6 @@
       </sourcepath>
     </javadoc>
   </target>
-
   <target name="test" depends="init,compile"
           description="run junit tests">
     <junit fork="yes" haltonerror="on">
