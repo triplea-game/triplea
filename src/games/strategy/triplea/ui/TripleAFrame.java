@@ -421,7 +421,7 @@ public class TripleAFrame extends JFrame
   public void notifyTechResults(TechResultsMessage msg)
   {
     TechResultsDisplay display = new TechResultsDisplay(msg);
-    JOptionPane.showOptionDialog(this, display, "Tech roll result", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK");
+    JOptionPane.showOptionDialog(this, display, "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK");
 
   }
 
