@@ -11,16 +11,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+package games.strategy.engine.random;
 
-package games.strategy.net;
-
-import java.io.Serializable;
-
+import games.strategy.net.IRemote;
 
 /**
- * Listens for outgoing broadcasts
+ * 
+ *
+ *
+ * @author Sean Bridges
  */
-public interface IBroadcastListener
+public interface IRandomStats extends IRemote
 {
-  public void broadcastSent(Serializable broadcast);
+    public static final String RANDOM_STATS_REMOTE_NAME = "games.strategy.engine.random.RandomStats.RANDOM_STATS_REMOTE_NAME";
+
+    
+    public RandomStatsDetails getRandomStats();
 }

@@ -96,13 +96,6 @@ public interface IMessenger
      */
     public void flush();
 
-    /**
-     * Listen for when this messenger makes a broadcast.
-     * 
-     * This is used to listen for outgoing broadvasts, since these outgoing broadcasts will not be sent to a local message listener.
-     */
-    public void addBroadcastListener(IBroadcastListener listener);
-    public void removeBroadcastListener(IBroadcastListener listener);
     
     /**
      * Pause the current thread until there are no messages are being processed.

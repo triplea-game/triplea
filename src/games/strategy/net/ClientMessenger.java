@@ -28,7 +28,7 @@ public class ClientMessenger implements IMessenger
     private final Connection m_connection;
     private final ListenerList m_errorListeners = new ListenerList();
     private final ListenerList m_connectionListeners = new ListenerList();
-    private final ListenerList m_broadcastListeners = new ListenerList();
+    
     private String m_connectionRefusedError;
 
     public ClientMessenger(String host, int port, String name) throws IOException, UnknownHostException
@@ -122,7 +122,7 @@ public class ClientMessenger implements IMessenger
     {
         MessageHeader header = new MessageHeader(m_node, msg);
         m_connection.send(header);
-        notifyBroadcast(msg);
+        
     }
 
     /*
@@ -238,25 +238,7 @@ public class ClientMessenger implements IMessenger
         }
     }
 
-    public void addBroadcastListener(IBroadcastListener listener)
-    {
-        m_broadcastListeners.add(listener);
-    }
-
-    public void removeBroadcastListener(IBroadcastListener listener)
-    {
-        m_broadcastListeners.remove(listener);
-    }
-
-    private void notifyBroadcast(Serializable message)
-    {
-        Iterator iter = m_broadcastListeners.iterator();
-        while (iter.hasNext())
-        {
-            IBroadcastListener item = (IBroadcastListener) iter.next();
-            item.broadcastSent(message);
-        }
-    }
+ 
 
     /**
      * Get the local node

@@ -52,9 +52,6 @@ public class ClientGame implements IGame
   private Map m_gamePlayers = new HashMap();
   private final Vault m_vault;
   
-  public static final String STEP_CHANGE_LISTENER_DESTINATION = "_StepChangeListener_";
-
-  private int m_currentRound = -1;
 
   public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, INode server, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, IMessageManager messageManager)
   {
@@ -67,7 +64,7 @@ public class ClientGame implements IGame
     m_channelMessenger = channelMessenger;
     m_vault = new Vault(m_channelMessenger);
     
-    m_messageManager.addDestination(m_stepChangeDestination);
+    m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
 
 
     Iterator iter = gamePlayers.iterator();
@@ -90,6 +87,59 @@ public class ClientGame implements IGame
 
     m_changePerformer = new ChangePerformer(m_data);
   }
+  
+  private IGameModifiedChannel m_gameModificationChannelListener = new IGameModifiedChannel()
+  {
+
+    public void gameDataChanged(Change aChange)
+    {
+        m_changePerformer.perform(aChange);
+        m_data.getHistory().getHistoryWriter().addChange(aChange);
+    }
+
+    public void startHistoryEvent(String event)
+    {
+        m_data.getHistory().getHistoryWriter().startEvent(event);
+        
+    }
+
+    public void addChildToEvent(String text, Object renderingData)
+    {
+        m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
+        
+    }
+
+    public void setRenderingData(Object renderingData)
+    {
+        m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
+        
+    }
+
+    public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+    {
+        //we want to skip the first iteration, since that simply advances us to step 0
+        if(m_firstRun)
+          m_firstRun = false;
+        else
+        {
+          m_data.getSequence().next();
+          while (!m_data.getSequence().getStep().getName().equals(stepName))
+          {
+            m_data.getSequence().next();
+          }
+        }
+        Iterator iter = m_gameStepListeners.iterator();
+        while(iter.hasNext())
+        {
+          GameStepListener listener = (GameStepListener) iter.next();
+          listener.gameStepChanged(stepName, delegateName, player, round, displayName);
+        }
+        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+        
+    }
+     
+  };
+  
 
   public IMessageManager getMessageManager()
   {
@@ -126,61 +176,14 @@ public class ClientGame implements IGame
   }
 
   private boolean m_firstRun = true;
-  private void notifyGameStepChanged(StepChangedMessage msg)
-  {
-    //we want to skip the first iteration, since that simply advances us to step 0
-    if(m_firstRun)
-      m_firstRun = false;
-    else
-    {
-      m_data.getSequence().next();
-      while (!m_data.getSequence().getStep().getName().equals(msg.getStepName()))
-      {
-        m_data.getSequence().next();
-      }
-    }
-    Iterator iter = m_gameStepListeners.iterator();
-    while(iter.hasNext())
-    {
-      GameStepListener listener = (GameStepListener) iter.next();
-      listener.gameStepChanged(msg.getStepName(), msg.getDelegateName(), msg.getPlayer(), msg.getRound(), msg.getDisplayName());
-    }
-  }
+
 
   public void addChange(Change aChange)
   {
     throw new UnsupportedOperationException();
   }
 
-  private IDestination m_stepChangeDestination = new IDestination()
-  {
 
-    public Message sendMessage(Message message)
-    {
-        if(message instanceof StepChangedMessage)
-        {
-          StepChangedMessage stepChange = (StepChangedMessage) message;
-
-          if(m_currentRound != stepChange.getRound())
-          {
-              m_currentRound = stepChange.getRound();
-              m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
-          }
-          m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getDisplayName());
-
-          notifyGameStepChanged(stepChange);
-          return null;
-        }
-        else 
-            throw new IllegalStateException("Message not recognized:" + message);
-    }
-
-    public String getName()
-    {
-        return m_messenger.getLocalNode() + STEP_CHANGE_LISTENER_DESTINATION;
-    }
-      
-  };
   
   
 
@@ -188,14 +191,7 @@ public class ClientGame implements IGame
   {
     public void messageReceived(Serializable msg, INode from)
     {
-      if(msg instanceof ChangeMessage)
-      {
-        ChangeMessage changeMessage = (ChangeMessage) msg;
-        m_data.getHistory().getHistoryWriter().addChange(changeMessage.getChange());
-        m_changePerformer.perform(changeMessage.getChange());
-
-      }
-      else if(msg instanceof PlayerStartStepMessage)
+      if(msg instanceof PlayerStartStepMessage)
       {
         PlayerStartStepMessage playerStart = (PlayerStartStepMessage) msg;
         IGamePlayer gp = (IGamePlayer) m_gamePlayers.get(playerStart.getPlayerID());
@@ -207,10 +203,6 @@ public class ClientGame implements IGame
 
         PlayerStepEndedMessage response = new PlayerStepEndedMessage(playerStart.getStepName());
         m_messenger.send(response, m_serverNode);
-      }
-      else if(msg instanceof RemoteHistoryMessage)
-      {
-          ((RemoteHistoryMessage) msg).perform(m_data.getHistory().getHistoryWriter());
       }
     }
   };

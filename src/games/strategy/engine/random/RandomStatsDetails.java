@@ -13,17 +13,18 @@
  */
 package games.strategy.engine.random;
 
-import games.strategy.engine.message.Message;
 import games.strategy.util.IntegerMap;
 
+import java.io.Serializable;
 
 
-public class RandomStatsMessage implements Message
+
+public class RandomStatsDetails implements Serializable
 {
     private final IntegerMap m_data;
     private final float m_average;
     
-    public RandomStatsMessage(IntegerMap data)
+    public RandomStatsDetails(IntegerMap data)
     {
         m_data = data;
         

@@ -13,22 +13,19 @@
  */
 package games.strategy.engine.random;
 
-import games.strategy.engine.message.IDestination;
-import games.strategy.engine.message.IMessageManager;
-import games.strategy.engine.message.Message;
+import games.strategy.net.IRemoteMessenger;
 import games.strategy.util.IntegerMap;
 
 
 
-public class RandomStats implements IDestination
+public class RandomStats implements IRandomStats
 {
-    
-    public static String RANDOM_STATS_DESTINATION = "__RandomStatsSource__";
+       
     private IntegerMap m_randomStats = new IntegerMap();
     
-    public RandomStats(IMessageManager manager)
+    public RandomStats(IRemoteMessenger remoteMessenger)
     {
-        manager.addDestination(this);
+        remoteMessenger.registerRemote(IRandomStats.class, this, RANDOM_STATS_REMOTE_NAME);
     }
     
     public synchronized void addRandom(int[] random)
@@ -44,15 +41,11 @@ public class RandomStats implements IDestination
         m_randomStats.add(new Integer(random + 1), 1 );
     }
 
-    public synchronized Message sendMessage(Message message)
+    public synchronized RandomStatsDetails getRandomStats()
     {
-        return new RandomStatsMessage(m_randomStats);
+        return new RandomStatsDetails(m_randomStats);
     }
 
-    public String getName()
-    {
-        return RANDOM_STATS_DESTINATION;
-    }
     
     
     

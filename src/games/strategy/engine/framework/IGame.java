@@ -41,6 +41,8 @@ import games.strategy.engine.vault.Vault;
  */
 public interface IGame
 {
+  public static final String GAME_MODIFICATION_CHANNEL = "games.strategy.engine.framework.IGame.GAME_MODIFICATION_CHANNEL";  
+    
   public GameData getData();
 
   public void addGameStepListener(GameStepListener listener);

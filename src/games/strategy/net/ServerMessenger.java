@@ -42,7 +42,6 @@ public class ServerMessenger implements IServerMessenger
   private final ListenerList m_listeners = new ListenerList();
   private final ListenerList m_errorListeners = new ListenerList();
   private final ListenerList m_connectionListeners = new ListenerList();
-  private final ListenerList m_broadcastListeners = new ListenerList();
   private boolean m_acceptNewConnection = false;
   private IConnectionAccepter m_connectionAccepter = null;
   
@@ -151,7 +150,6 @@ public class ServerMessenger implements IServerMessenger
   {
     MessageHeader header = new MessageHeader(m_node, msg);
     forwardBroadcast(header);
-    notifyBroadcast(msg);
   }
 
   private void serverMessageReceived(ServerMessage msg)
@@ -373,25 +371,7 @@ public class ServerMessenger implements IServerMessenger
     }
   };
 
-  public void addBroadcastListener(IBroadcastListener listener)
-  {
-    m_broadcastListeners.add(listener);
-  }
-
-  public void removeBroadcastListener(IBroadcastListener listener)
-  {
-    m_broadcastListeners.remove(listener);
-  }
-
-  private void notifyBroadcast(Serializable message)
-  {
-    Iterator iter = m_broadcastListeners.iterator();
-    while (iter.hasNext())
-    {
-      IBroadcastListener item = (IBroadcastListener) iter.next();
-      item.broadcastSent(message);
-    }
-  }
+ 
   
   public void waitForAllMessagsToBeProcessed()
   {

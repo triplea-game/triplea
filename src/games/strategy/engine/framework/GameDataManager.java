@@ -64,7 +64,7 @@ public class GameDataManager
             //TODO we should check the game version as well
             Version readVersion = (Version) input.readObject();
             if (!readVersion.equals(EngineVersion.VERSION))
-                throw new IOException("Incompatable engine versions. We are:" + EngineVersion.VERSION + " . Trying to load:" + readVersion);
+                throw new IOException("Incompatable engine versions. We are:" + EngineVersion.VERSION + " . Trying to load game created with:" + readVersion);
 
             GameData data = (GameData) input.readObject();
 

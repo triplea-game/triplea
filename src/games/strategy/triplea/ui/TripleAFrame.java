@@ -493,9 +493,11 @@ public class TripleAFrame extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                RandomStatsMessage stats = (RandomStatsMessage) m_game
-                        .getMessageManager().send(null,
-                                RandomStats.RANDOM_STATS_DESTINATION);
+                IRandomStats randomStats = (IRandomStats) m_game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
+                
+                RandomStatsDetails stats = randomStats.getRandomStats();                 
+                
+
                 JPanel panel = new JPanel();
                 BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
                 panel.setLayout(layout);

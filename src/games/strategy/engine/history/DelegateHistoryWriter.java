@@ -14,6 +14,8 @@
 
 package games.strategy.engine.history;
 
+import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.net.*;
 
 /**
@@ -25,20 +27,22 @@ import games.strategy.net.*;
 
 public class DelegateHistoryWriter
 {
-    private final HistoryWriter m_historyWriter;
-    private final IServerMessenger m_messenger;
+    private final IChannelMessenger m_messenger;
 
-    public DelegateHistoryWriter(HistoryWriter writer, IServerMessenger messenger)
+    public DelegateHistoryWriter(IChannelMessenger messenger)
     {
-        m_historyWriter = writer;
         m_messenger = messenger;
     }
 
+    private IGameModifiedChannel getGameModifiedChannel()
+    {
+        return (IGameModifiedChannel) m_messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
+    }
+    
     public void startEvent(String eventName)
     {
-        RemoteHistoryMessage msg = new RemoteHistoryMessage(eventName);
-        msg.perform(m_historyWriter);
-        m_messenger.broadcast(msg);
+        getGameModifiedChannel().startHistoryEvent(eventName);
+
     }
 
     public void addChildToEvent(String child)
@@ -48,9 +52,8 @@ public class DelegateHistoryWriter
 
     public void addChildToEvent(String child, Object renderingData)
     {
-        RemoteHistoryMessage msg = new RemoteHistoryMessage(child, renderingData);
-        msg.perform(m_historyWriter);
-        m_messenger.broadcast(msg);
+        getGameModifiedChannel().addChildToEvent(child, renderingData);
+
     }
 
     /**
@@ -58,9 +61,7 @@ public class DelegateHistoryWriter
      */
     public void setRenderingData(Object renderingData)
     {
-        RemoteHistoryMessage msg = new RemoteHistoryMessage(renderingData);
-        msg.perform(m_historyWriter);
-        m_messenger.broadcast(msg);
+        getGameModifiedChannel().setRenderingData(renderingData);
     }
 
 

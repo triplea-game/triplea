@@ -87,7 +87,10 @@ public class ServerGame implements IGame
         
         m_remotePlayers = new HashMap(remotePlayerMapping);
 
-
+        m_channelMessenger.createChannel(IGameModifiedChannel.class, IGame.GAME_MODIFICATION_CHANNEL);
+        m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+        
+        
         setupLocalPlayers(localPlayers);
 
         //add a null destination for the null player.
@@ -109,7 +112,7 @@ public class ServerGame implements IGame
         setupDelegateMessaging(data);
 
         m_changePerformer = new ChangePerformer(m_data);
-        m_randomStats = new RandomStats(m_messageManager);
+        m_randomStats = new RandomStats(m_remoteMessenger);
     }
 
     /**
@@ -209,7 +212,7 @@ public class ServerGame implements IGame
         DefaultDelegateBridge bridge = new DefaultDelegateBridge(
                 m_data, 
                 getCurrentStep(), this, 
-                new DelegateHistoryWriter(m_data.getHistory().getHistoryWriter(), m_messenger),
+                new DelegateHistoryWriter(m_channelMessenger),
                 m_randomStats
                 );
         bridge.setRandomSource(m_randomSource);
@@ -299,36 +302,15 @@ public class ServerGame implements IGame
         String delegateName = getCurrentStep().getDelegate().getName();
         String displayName = getCurrentStep().getDisplayName();
         PlayerID id = getCurrentStep().getPlayerID();
-
-        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, id, displayName);
-
+        
+        getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);        
+    
         Iterator iter = m_gameStepListeners.iterator();
         while (iter.hasNext())
         {
             GameStepListener listener = (GameStepListener) iter.next();
             listener.gameStepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), getCurrentStep().getDisplayName());
-        }
-
-        StepChangedMessage msg = new StepChangedMessage(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);
-        
-        Set destinations = new HashSet();
-        
-        iter = m_messenger.getNodes().iterator();
-        while(iter.hasNext())
-        {
-            INode node = (INode) iter.next();
-            if(!node.equals(m_messenger.getLocalNode()))
-            {
-                destinations.add(node.toString() + ClientGame.STEP_CHANGE_LISTENER_DESTINATION);
-            }
-        }
-        
-        //we want to wait for everyone here, otherwise the client may receive and act upon the message 
-        //to start the next step before he has finished processing the step change message
-        m_messageManager.broadcastAndWait(msg, destinations);
-        
-        
-        
+        }        
     }
 
     public IMessenger getMessenger()
@@ -350,12 +332,16 @@ public class ServerGame implements IGame
         return m_remoteMessenger;
     }
 
+    private IGameModifiedChannel getGameModifiedBroadcaster()
+    {
+        return (IGameModifiedChannel) m_channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL); 
+    }
+    
     public void addChange(Change aChange)
     {
-        m_changePerformer.perform(aChange);
-        ChangeMessage msg = new ChangeMessage(aChange);
-        m_messenger.broadcast(msg);
-        m_data.getHistory().getHistoryWriter().addChange(aChange);
+        getGameModifiedBroadcaster().gameDataChanged(aChange);
+        //let our channel subscribor do the change, 
+        //that way all changes will happen in the same thread
     }
 
     private IMessageListener m_messageListener = new IMessageListener()
@@ -399,4 +385,39 @@ public class ServerGame implements IGame
     {
         return m_vault;
     }
+    
+    private IGameModifiedChannel m_gameModifiedChannel = new IGameModifiedChannel()
+    {
+
+        public void gameDataChanged(Change aChange)
+        {
+            m_changePerformer.perform(aChange);
+            m_data.getHistory().getHistoryWriter().addChange(aChange);
+        }
+
+        public void startHistoryEvent(String event)
+        {
+            m_data.getHistory().getHistoryWriter().startEvent(event);
+            
+        }
+
+        public void addChildToEvent(String text, Object renderingData)
+        {
+            m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
+            
+        }
+
+        public void setRenderingData(Object renderingData)
+        {
+            m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
+            
+        }
+
+        public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+        {
+            m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+            
+        }
+        
+    };
 }

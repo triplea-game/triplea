@@ -37,6 +37,9 @@ import java.util.*;
 public class Version implements Serializable, Comparable
 {
 	
+    //maintain compatability with old versions
+    static final long serialVersionUID = -4770210855326775333L;
+    
 	private final int m_major;
 	private final int m_minor;
 	private final int m_point;

@@ -118,12 +118,7 @@ public class DummyMessenger implements IServerMessenger
 	public void setConnectionAccepter(IConnectionAccepter accepter)
 	{}
 
-  public void addBroadcastListener(IBroadcastListener listener)
-  {}
-
-  public void removeBroadcastListener(IBroadcastListener listener)
-  {}
-
+  
   public void waitForAllMessagsToBeProcessed()
   {
       
