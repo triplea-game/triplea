@@ -53,6 +53,7 @@ import games.strategy.triplea.delegate.message.*;
 public class TripleAFrame extends JFrame
 {	
 	private final GameData m_data;
+	private final IGame m_game;
 	private MapPanel m_mapPanel;
 	private ImageScrollerSmallView m_smallView;
 	private JLabel m_message = new JLabel("No selection");
@@ -65,10 +66,12 @@ public class TripleAFrame extends JFrame
 	{
 		super("TripleA");
 		
+		m_game = game;
+		
 		game.getMessenger().addErrorListener(m_messengerErrorListener);
 		
-		this.m_data = game.getData();
-		this.m_localPlayers = players;
+		m_data = game.getData();
+		m_localPlayers = players;
 		
 		game.getTranscript().addTranscriptListener(m_transcriptListener);
 		
@@ -121,6 +124,7 @@ public class TripleAFrame extends JFrame
 		StatPanel stats = new StatPanel(m_data);
 		tabs.addTab("Stats", stats);
 		
+		rightHandSide.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize().getHeight()));
 		mainPanel.add(rightHandSide, BorderLayout.EAST);
 		
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
@@ -132,7 +136,26 @@ public class TripleAFrame extends JFrame
 		
 		JMenu fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
-		fileMenu.add( new AbstractAction("Exit")
+		
+		// menuFileSave = new JMenuItem("Save", KeyEvent.VK_S);
+		JMenuItem menuFileSave = new JMenuItem( new AbstractAction( "Save" )
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					if (save( "C:\\foo.sav", m_data ) == 0)
+						JOptionPane.showMessageDialog(TripleAFrame.this,"Success", "TripleA", JOptionPane.PLAIN_MESSAGE);
+					else
+						JOptionPane.showMessageDialog(TripleAFrame.this,"Error", "TripleA", JOptionPane.PLAIN_MESSAGE);
+				}
+			}
+		);		
+		menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		
+		fileMenu.add( menuFileSave );		
+		fileMenu.addSeparator();
+		
+		/* Following change was made for personal convenience */		
+		JMenuItem menuFileExit = new JMenuItem( new AbstractAction("Exit")
 			{
 				public void actionPerformed(ActionEvent e)
 				{
@@ -140,6 +163,12 @@ public class TripleAFrame extends JFrame
 				}
 			}
 		);
+		menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+		fileMenu.add( menuFileExit );
+	
+
+		/* End Save Code */
+
 		
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
@@ -336,5 +365,28 @@ public class TripleAFrame extends JFrame
 			JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE);
 		}			
 	};
+	
+	public static int save(String filename, GameData m_data) {
+		FileOutputStream fos = null;
+		ObjectOutputStream oos = null;
+							
+		try {
+			fos = new FileOutputStream( filename );
+			oos = new ObjectOutputStream( fos );
+			
+			oos.writeObject( m_data );
+		
+			return 0;
+		}
+		catch (Throwable t) {
+			// t.printStackTrace();						
+			System.err.println(t.getMessage());
+			return -1;
+		}
+		finally {
+			try { fos.flush(); } catch (Exception ignore) { }
+			try { oos.close(); } catch (Exception ignore) { }
+		}					
+	}
 
 }

@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Game.java
  *
  * Created on October 27, 2001, 6:39 PM
@@ -36,7 +50,7 @@ public class ServerGame implements IGame
 	private GameData m_data;
 	//maps PlayerID->GamePlayer
 	private Map m_gamePlayers = new HashMap(); 
-	private int m_currentStepIndex = -1;
+
 	private IServerMessenger m_messenger;
 	private IMessageManager m_messageManager;
 	private ChangePerformer m_changePerformer;
@@ -93,7 +107,8 @@ public class ServerGame implements IGame
 
 	private GameStep getCurrentStep()
 	{
-		return m_data.getSequence().getStep(m_currentStepIndex);
+		return m_data.getSequence().getStep();
+		// m_data.getSequence().getStep(m_currentStepIndex);
 	}
 
 	/**
@@ -102,11 +117,14 @@ public class ServerGame implements IGame
 	 */
 	public void startGame()
 	{
+		/*
 		if(m_currentStepIndex != -1)
 			throw new IllegalStateException("Game can only be started once");
 		else
+		*/
 			while(true)
 				startNextStep();
+			
 	}
 	
 	public void stopGame()
@@ -122,9 +140,7 @@ public class ServerGame implements IGame
 	
 	private void startNextStep()
 	{
-		m_currentStepIndex++;
-		if(m_currentStepIndex == m_data.getSequence().size())
-			m_currentStepIndex = 0;
+		m_data.getSequence().next();
 		
 		DelegateBridge bridge = new DefaultDelegateBridge(m_data, getCurrentStep(), this);
 		getCurrentStep().getDelegate().start(bridge,m_data );

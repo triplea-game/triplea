@@ -260,7 +260,7 @@ public class BattlePanel extends ActionPanel
 		
 		String message = rqm.getMessage();
 		String ok = "Retreat";
-		String cancel ="Cancel";
+		String cancel ="Remain";
 		String[] options ={ok, cancel};
 		int choice = JOptionPane.showOptionDialog(getTopLevelAncestor(), message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
 		boolean retreat = (choice == 0);
@@ -288,7 +288,7 @@ public class BattlePanel extends ActionPanel
 			this.setLayout(new BorderLayout());
 			
 			JLabel label = new JLabel("Retreat to...");
-			add(label, BorderLayout.NORTH);
+			this.add(label, BorderLayout.NORTH);
 			
 			m_query = rqm;
 			Vector listElements = new Vector(rqm.getTerritories());
@@ -296,7 +296,7 @@ public class BattlePanel extends ActionPanel
 			m_list = new JList(listElements);
 			m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			JScrollPane scroll = new JScrollPane(m_list);
-			add(scroll, BorderLayout.CENTER);
+			this.add(scroll, BorderLayout.CENTER);
 			m_listSelectionModel.hiddenSetSelectionInterval(0);
 		}
 		

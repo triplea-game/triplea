@@ -63,9 +63,9 @@ public class MovePanel extends ActionPanel
 		super.display(id);
 		removeAll();
 		m_actionLabel.setText(id.getName() + " move");
-		add(m_actionLabel);
-		add(new JButton(CANCEL_MOVE_ACTION));
-		add(new JButton(DONE_MOVE_ACTION));
+		this.add(m_actionLabel);
+		this.add(new JButton(CANCEL_MOVE_ACTION));
+		this.add(new JButton(DONE_MOVE_ACTION));
 		
 		SwingUtilities.invokeLater(REFRESH);	
 	}
@@ -133,9 +133,10 @@ public class MovePanel extends ActionPanel
 			m_firstSelectedTerritory = null;
 			m_forced = null;
 			updateRoute(null);
-			setEnabled(false);
+			this.setEnabled(false);
 		}
 	};
+	
 	
 	private Collection getUnitsToMove(Territory start, Territory end)
 	{

@@ -621,8 +621,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	private void fireNavalBombardment(DelegateBridge bridge)
 	{
 		Collection bombard = getBombardingUnits();
-		if(bombard.size() > 0 && m_defendingUnits.size() > 0)
-			fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, m_defendingUnits, false, true, bridge, "Bombard");
+		Collection attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsDestructible);
+
+		if(bombard.size() > 0 && attacked.size() > 0)
+			fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, true, bridge, "Bombard");
 	}
 	
 	private Collection getBombardingUnits()

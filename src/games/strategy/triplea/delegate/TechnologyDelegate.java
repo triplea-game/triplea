@@ -41,6 +41,7 @@ public class TechnologyDelegate implements Delegate
 {
 	
 	private String m_name;
+	private String m_displayName;
 	private GameData m_data;
 	private DelegateBridge m_bridge;
 	private TechTracker m_techTracker = new TechTracker();
@@ -53,8 +54,15 @@ public class TechnologyDelegate implements Delegate
 
 	public void initialize(String name) 
 	{
+		initialize(name, name);
+	}
+
+	public void initialize(String name, String displayName) 
+	{
 		m_name = name;
-	}	
+		m_displayName = displayName;
+	}
+
 	/**
 	 * Called before the delegate will run.
 	 */

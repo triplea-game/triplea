@@ -37,9 +37,10 @@ import games.strategy.triplea.attatchments.*;
  *
  * At the end of the turn collect income.
  */
-public class EndTurnDelegate implements Delegate
+public class EndTurnDelegate implements Delegate, java.io.Serializable
 {
 	private String m_name;
+	private String m_displayName;
 	private GameData m_data;
 
 	//we only want to notify once that the game is over
@@ -47,8 +48,15 @@ public class EndTurnDelegate implements Delegate
 	
 	public void initialize(String name) 
 	{
-		m_name = name;
+		initialize(name, name);
 	}
+
+	public void initialize(String name, String displayName) 
+	{
+		m_name = name;
+		m_displayName = displayName;
+	}
+
 	
 	/**
 	 * Called before the delegate will run.
@@ -84,39 +92,36 @@ public class EndTurnDelegate implements Delegate
 			return;
 
 		//check allies
-		PlayerID russia = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
+		PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
+		PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
 		PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
+		PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
 		PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 		
-		int count = 0;
+		// Quick check to see who still owns their own capital
+		boolean russia = getCapital(russians).getOwner().equals(russians);
+		boolean germany = getCapital(germans).getOwner().equals(germans);
+		boolean britain = getCapital(british).getOwner().equals(british);
+		boolean japan = getCapital(japanese).getOwner().equals(japanese);
+		boolean america = getCapital(americans).getOwner().equals(americans);
 		
-		if(!getCapital(russia).getOwner().equals(russia))
-		{
-			count++;
-		}
-		if(!getCapital(british).getOwner().equals(british))
-		{
-			count++;
-		}
-		if(!getCapital(americans).getOwner().equals(americans))
-		{
-			count++;
-		}
-		if(count >= 2)
+		int count = 0;
+		if (!russia) count++;
+		if (!britain) count++;
+		if (!america) count++;
+		
+		if ( germany && japan && count >=2)
 		{
 			m_gameOver = true;
-			bridge.getTranscript().write("Axis are victorious", TranscriptMessage.PRIORITY_CHANNEL);
+			bridge.getTranscript().write("Axis achieve a military victory", TranscriptMessage.PRIORITY_CHANNEL);
 		}
 
-		PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
-		PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
-
-	 	if(!getCapital(germans).getOwner().equals(germans) &&
-		!getCapital(japanese).getOwner().equals(japanese))
+	 	if ( russia && !germany && britain && !japan && america)
 		{
 			m_gameOver = true;
-			bridge.getTranscript().write("Allies are victorious", TranscriptMessage.PRIORITY_CHANNEL);
+			bridge.getTranscript().write("Allies acheive a military victory", TranscriptMessage.PRIORITY_CHANNEL);
 		}
+
 	}
 	
 	private int getProduction(Collection territories)

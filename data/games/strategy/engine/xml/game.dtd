@@ -60,6 +60,7 @@
 	<!ATTLIST delegate
 		name ID #REQUIRED
 		javaClass CDATA #REQUIRED
+		display CDATA #IMPLIED
 	>
 	<!-- if no player given, then delegate is initialized with a null player -->
 	<!ELEMENT sequence (step+)>

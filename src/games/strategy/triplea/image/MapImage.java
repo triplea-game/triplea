@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * CountryImage.java
  *
  * Created on January 8, 2002, 9:15 PM
@@ -14,6 +28,7 @@ import java.awt.image.*;
 
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.engine.data.*;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
 
 /**
  *
@@ -180,6 +195,34 @@ public class MapImage
 			throw new IllegalStateException("No top corner could be found for:" + name);
 		
 		m_largeMapImage.getGraphics().drawImage(newImage, p.x, p.y, s_observer);
+		
+		if (!territory.isWater()) 
+		{
+			TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+			Graphics g = m_largeMapImage.getGraphics();
+			FontMetrics fm = g.getFontMetrics();
+			int x = p.x;
+			int y = p.y;
+		
+//			if (ta.getProduction() > 0) 
+//				name += " (" + ta.getProduction() + ")";
+		
+			x += country.getWidth(s_observer) >> 1;
+			y += country.getHeight(s_observer) >> 1;
+			
+			x -= fm.stringWidth(name) >> 1;
+			y += fm.getAscent() >> 1;
+			
+			g.drawString(name, x, y);
+			
+			if (ta.getProduction() > 0) 
+			{
+				String prod = new Integer(ta.getProduction()).toString();
+				x = p.x + ((country.getWidth(s_observer) - fm.stringWidth(prod))>> 1); 
+				y += fm.getLeading() + fm.getAscent();
+				g.drawString(prod, x, y);
+			}
+		}	
 		
 		int smallHeight = (int) (newImage.getHeight() / m_smallLargeRatio) + 3;
 		int smallWidth = (int) (newImage.getWidth() / m_smallLargeRatio) + 3;

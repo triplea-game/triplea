@@ -51,6 +51,7 @@ import games.strategy.triplea.formatter.Formatter;
 public class MoveDelegate implements Delegate
 {	
 	private String m_name;
+	private String m_displayName;
 	private DelegateBridge m_bridge;
 	private GameData m_data;
 	private PlayerID m_player;
@@ -67,8 +68,15 @@ public class MoveDelegate implements Delegate
 
 	public void initialize(String name) 
 	{
-		m_name = name;
+		initialize(name, name);
 	}
+
+	public void initialize(String name, String displayName) 
+	{
+		m_name = name;
+		m_displayName = displayName;
+	}
+
 	
 	/**
 	 * Want to make sure that all units in the sea that can be transported are

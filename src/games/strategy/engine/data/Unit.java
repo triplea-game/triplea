@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Unit.java
  *
  * Created on October 14, 2001, 12:33 PM
@@ -38,6 +52,54 @@ public class Unit extends GameDataComponent implements Serializable
 	{
 		s_allUnits.put(unit.getID(), unit);
 	}
+	
+	/*
+	 * Gets all units currently in the game
+	 */
+	public static Collection getUnits() 
+	{
+		return s_allUnits.values();				
+	}
+
+	/*
+	 * Gets all units for the specified player
+	 * NOTE: implementation iterates over the entire list of units, so not extraordinarily efficient right now.
+	 */	
+	public static Collection getUnits(PlayerID player) 
+	{
+		ArrayList out = new ArrayList(s_allUnits.size() / 5);
+		Iterator iter = s_allUnits.values().iterator();
+		Unit u;
+		
+		while (iter.hasNext()) 
+		{
+			u = (Unit) iter.next();	
+			if (u.getOwner().equals(player))
+				out.add(u);
+		}
+		
+		return out;
+	}
+
+	/*
+	 * Gets all units of the specified type for the specified player
+	 * NOTE: implementation iterates over the entire list of units, so not extraordinarily efficient right now.
+	 */	
+	public static Collection getUnits(PlayerID player, UnitType unitType) 
+	{
+		ArrayList out = new ArrayList(s_allUnits.size() / 5);
+		Iterator iter = s_allUnits.values().iterator();
+		Unit u;
+		
+		while (iter.hasNext()) 
+		{
+			u = (Unit) iter.next();	
+			if (u.getOwner().equals(player) && u.getType().equals(unitType))
+				out.add(u);
+		}
+		
+		return out;
+	}	
 	
 	private PlayerID m_owner;
 	private GUID m_uid;

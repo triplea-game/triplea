@@ -419,7 +419,12 @@ public class GameParser
 			}
 			
 			String name = current.getAttribute("name");
-			delegate.initialize(name);
+			String displayName = current.getAttribute("display");
+
+			if (displayName == null)
+				displayName = name;
+				
+			delegate.initialize(name, displayName);
 			delegates.addDelegate(delegate);
 		}
 	}
@@ -438,7 +443,8 @@ public class GameParser
 			Delegate delegate = getDelegate(current, "delegate", true);
 			PlayerID player = getPlayerID(current, "player", false);
 			String name = current.getAttribute("name");
-			GameStep step = new GameStep(name,player,delegate, data);
+
+			GameStep step = new GameStep(name, player, delegate, data);
 			data.getSequence().addStep(step);
 		}
 	}

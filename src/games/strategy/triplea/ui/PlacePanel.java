@@ -85,6 +85,12 @@ public class PlacePanel extends ActionPanel
 	{
 		public void actionPerformed(ActionEvent e)
 		{
+			if (getCurrentPlayer().getUnits().size() > 0) {
+				int option = JOptionPane.showConfirmDialog((JFrame) getTopLevelAncestor(),"You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);	
+				if (option == JOptionPane.NO_OPTION)
+					return;
+			}
+			
 			synchronized(getLock())
 			{
 				m_placeMessage = null;

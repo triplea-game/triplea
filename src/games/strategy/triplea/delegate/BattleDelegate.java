@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * BattleDelegate.java
  *
  * Created on November 2, 2001, 12:26 PM
@@ -28,6 +42,7 @@ public class BattleDelegate implements Delegate
 {
 
 	private String m_name;
+	private String m_displayName;
 	private GameData m_data;
 	private DelegateBridge m_bridge;
 	private BattleTracker m_battleTracker = new BattleTracker();
@@ -35,7 +50,13 @@ public class BattleDelegate implements Delegate
 	
 	public void initialize(String name) 
 	{
+		initialize(name, name);
+	}
+
+	public void initialize(String name, String displayName) 
+	{
 		m_name = name;
+		m_displayName = displayName;
 	}
 	
 	/**
@@ -79,8 +100,15 @@ public class BattleDelegate implements Delegate
 		while(iter.hasNext())
 		{
 			Territory current = (Territory) iter.next();
-			if(!current.getOwner().equals(player))
+/* START False: no targets to attack with rockets (Bug 515108) */
+			if(current.isWater())
 				continue;
+
+// OLD CODE
+//			if(!current.getOwner().equals(player))
+//				continue;
+/* END False: no targets to attack with rockets (Bug 515108) */
+
 			if(current.getUnits().someMatch(ownedAA))
 				targets.addAll(getTargetsWithinRange(current, data, player));
 		}
