@@ -52,8 +52,15 @@ public class GameRunner
   private GameData m_data;
   public final static int PORT = 932;
 
+  private static void installSecurityProvider()
+  {
+    java.security.Security.addProvider( new com.sun.crypto.provider.SunJCE());
+  }
+
   public static void main(String[] args)
   {
+    installSecurityProvider();
+
     //Console c = Console.getConsole();
     //c.displayStandardError();
     //c.displayStandardOutput();

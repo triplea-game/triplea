@@ -59,8 +59,9 @@ public class UnitChooser extends JPanel
     layoutEntries();
   }
 
-  public UnitChooser(Collection units, Map dependent)
+  public UnitChooser(Collection units, Map dependent, GameData data)
   {
+    m_data = data;
     createEntries(units, dependent, null);
     layoutEntries();
   }

@@ -110,7 +110,7 @@ public class PlacePanel extends ActionPanel
     public void territorySelected(Territory territory, MouseEvent e)
     {
       Collection units = getCurrentPlayer().getUnits().getUnits();
-      UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP);
+      UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP, getData());
       String messageText = "Place units in " + territory.getName();
       int option = JOptionPane.showOptionDialog( (JFrame) getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
       if(option == JOptionPane.OK_OPTION)
