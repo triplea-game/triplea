@@ -246,6 +246,8 @@ class Connection
 
     class Reader implements Runnable
     {
+        private OrderedMessageHandler m_orderedMessageHandler = null; 
+        
         public void run()
         {
             while (!m_shutdown)
@@ -261,8 +263,19 @@ class Connection
                             messageReceived(msg);
                         }
                     };
-
-                    s_threadPool.runTask(r);
+                    
+                    //only one ordered message can be processed at a time
+                    //delay processing until the last ordered message is done
+                    if(msg instanceof OrderedMessage)
+                    {
+                        if(m_orderedMessageHandler != null)
+                            m_orderedMessageHandler.waitTillDone();
+                        m_orderedMessageHandler = new OrderedMessageHandler(r);
+                        s_threadPool.runTask(m_orderedMessageHandler);
+                    }
+                    else
+                        s_threadPool.runTask(r);
+              
                     //allow the message to be processed
                     Thread.yield();
 
@@ -279,6 +292,59 @@ class Connection
                         List unsent = new ArrayList(m_waitingToBeSent);
                         m_listener.fatalError(ioe, Connection.this, unsent);
                     }
+                }
+            }
+        }
+    }
+}
+
+
+/**
+ * Prevents multiple OrderedMessages from being run at the same time.
+ *  
+ */
+class OrderedMessageHandler implements Runnable
+{
+    private boolean m_done = false;
+    private final Object m_lock = new Object();
+    private final Runnable m_runnable;
+    
+    OrderedMessageHandler(Runnable target)
+    {
+        m_runnable = target;
+    }
+    
+    public void run()
+    {
+        try
+        {
+            m_runnable.run();
+        }
+        catch(Throwable t)
+        {
+            t.printStackTrace();
+        }
+        
+        synchronized(m_lock)
+        {
+            m_done = true;
+            m_lock.notifyAll();
+        }
+    }
+    
+    public void waitTillDone()
+    {
+        
+        synchronized(m_lock)
+        {
+            while(!m_done)
+            {
+                try
+                {
+                    m_lock.wait();
+                } catch (InterruptedException e)
+                {
+                    //ignore
                 }
             }
         }

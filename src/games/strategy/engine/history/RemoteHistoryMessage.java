@@ -14,6 +14,8 @@
 
 package games.strategy.engine.history;
 
+import games.strategy.net.OrderedMessage;
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -21,12 +23,8 @@ import java.awt.event.*;
  * These events are written by the delegate, and need to be serialized and sent
  *  to all games.
  */
-public class RemoteHistoryMessage implements java.io.Serializable
+public class RemoteHistoryMessage implements java.io.Serializable, OrderedMessage
 {
-    private static long s_currentMessageIndex = 1;  
-    
-    
-    private final long m_messageIndex;
     
     //this is a little curious
     //the final variables referenced by the anonymous
@@ -40,12 +38,7 @@ public class RemoteHistoryMessage implements java.io.Serializable
     
     public RemoteHistoryMessage(final String event)
     {
-        synchronized(RemoteHistoryMessage.class)
-        {
-            m_messageIndex = s_currentMessageIndex++;
-        }
-        
-        
+               
         m_action = new AbstractAction()
         {
             public void actionPerformed(ActionEvent e)
@@ -57,13 +50,6 @@ public class RemoteHistoryMessage implements java.io.Serializable
     
     public RemoteHistoryMessage(final String text, final Object renderingData)
     {
-
-        synchronized(RemoteHistoryMessage.class)
-        {
-            m_messageIndex = s_currentMessageIndex++;
-        }
-
-        
         m_action = new AbstractAction()
         {
             public void actionPerformed(ActionEvent e)
@@ -76,12 +62,6 @@ public class RemoteHistoryMessage implements java.io.Serializable
     
     public RemoteHistoryMessage(final Object renderingData)
     {
-        synchronized(RemoteHistoryMessage.class)
-        {
-            m_messageIndex = s_currentMessageIndex++;
-        }
-
-        
         m_action = new AbstractAction()
         {
             public void actionPerformed(ActionEvent e)
@@ -94,38 +74,10 @@ public class RemoteHistoryMessage implements java.io.Serializable
     
     public void perform(HistoryWriter writer)
     {
-        long waitCount = 0;
-        Object lock = new Object();
-        //ensure messages get processed in the order they are generated
-        while(writer.getLastMessageReceived() +1 != m_messageIndex && writer.getLastMessageReceived() > 0)
-        {
-            waitCount++;
-            
-            if(waitCount > 20)
-            {
-                new IllegalStateException("Could not add history, m_index:" + m_messageIndex + " Last index:" + writer.getLastMessageReceived() + " this:" + this  ).printStackTrace();
-                break;
-            }
-            
-            synchronized(lock)
-            {
-                try
-                {
-                    lock.wait(50);
-                } catch (InterruptedException e)
-                {
-                    //ignore
-                }
-            }
-            
-        }
-        synchronized(writer)
-        {
-            writer.setLastMessageReceived(m_messageIndex);
             m_historyWriter = writer;
             m_action.actionPerformed(null);
             m_historyWriter = null;
-        }
+
         
     }
 }

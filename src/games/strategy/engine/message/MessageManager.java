@@ -87,6 +87,7 @@ public class MessageManager implements IMessageManager
         Object lock = new Object();
         m_locks.put(id, lock);
         
+        
         synchronized(lock)
         {
             int waitCount = 0;
