@@ -116,7 +116,7 @@ public class ServerGame implements IGame
             IPlayerBridge bridge = new DefaultPlayerBridge(this);
             gp.initialize(bridge, player);
             
-            m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, getRemoteName(gp.getID()));
+            m_remoteMessenger.registerRemote(m_data.getGameLoader().getRemotePlayerType(), gp, getRemoteName(gp.getID()));
 
         }
     }

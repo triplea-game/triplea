@@ -24,6 +24,7 @@ package games.strategy.triplea;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.triplea.image.TerritoryImageFactory;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.troxAI.TroxAIPlayer;
 import games.strategy.triplea.ui.*;
@@ -132,7 +133,7 @@ public class TripleA implements IGameLoader
     }
 
     /**
-     * Return an array of player types that can play on the server. This array must not contain any entries that could play on the client.
+     * Return an array of player types that can play on the server. 
      */
     public String[] getServerPlayerTypes()
     {
@@ -152,5 +153,12 @@ public class TripleA implements IGameLoader
         return ITripleaDisplay.class;
     }
 
-
+    
+    public Class getRemotePlayerType()
+    {
+        return ITripleaPlayer.class;
+    }
+    
+    
+    
 }

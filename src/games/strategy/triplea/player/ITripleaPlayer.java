@@ -135,6 +135,7 @@ public interface ITripleaPlayer extends IRemote
     
     /**
      * Allows the user to pause and confirm enemy casualties
+     * 
      * @param battleId
      * @param message
      * @param step

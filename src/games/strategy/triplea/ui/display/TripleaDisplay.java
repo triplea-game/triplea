@@ -108,7 +108,7 @@ public class TripleaDisplay implements ITripleaDisplay
         if(m_ui.playing(ignore))
             return;
         
-        m_ui.getBattlePanel().battleInfo(null, dice, stepName);
+        m_ui.getBattlePanel().showDice(null, dice, stepName);
     }
     
     public void notifyRetreat(GUID battleId, Collection retreating)

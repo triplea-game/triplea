@@ -299,14 +299,12 @@ public class BattleDisplay extends JPanel
     
     public CasualtyDetails getCasualties(final  String step, final Collection selectFrom, final Map dependents, final int count, final String message, final DiceRoll dice, final PlayerID hit, final List defaultCasualties)
     {
-        
+        //this method is thread safe
+        //can be called outside of event dispatch thread
         setStep(step);
-        m_actionLayout.show(m_actionPanel, DICE_KEY);
-        m_dicePanel.setDiceRoll(dice);
         
-        boolean plural = count > 1;
-        final String btnText = hit.getName() + " select " + count + (plural ? " casualties" : " casualty");
-        m_actionButton.setEnabled(true);
+        if(SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("This method should not be run in teh event dispatch thread");
         
         final Object continueLock = new Object();
         SwingUtilities.invokeLater(
@@ -315,6 +313,12 @@ public class BattleDisplay extends JPanel
                     
                     public void run()
                     {
+                        
+                        m_actionLayout.show(m_actionPanel, DICE_KEY);
+                        m_dicePanel.setDiceRoll(dice);
+                        
+                        boolean plural = count > 1;
+                        final String btnText = hit.getName() + " select " + count + (plural ? " casualties" : " casualty");
                         m_actionButton.setAction(new AbstractAction(btnText)
                                 {
                             
@@ -732,10 +736,21 @@ class BattleStepsPanel extends JPanel
      */
     private void walkStep(final int start, final int stop)
     {
-        
         if (start < 0 || stop < 0 || stop >= m_listModel.getSize())
             throw new IllegalStateException("Illegal start and stop.  start:" + start + " stop:" + stop);
-        
+
+        if(SwingUtilities.isEventDispatchThread())
+        {
+            new Thread()
+            {
+             public void run()   
+             {
+                 walkStep(start, stop);
+             }
+            }.start();
+            return;
+        }
+       
         int current = start;
         while (current != stop)
         {
@@ -835,8 +850,7 @@ class BattleStepsPanel extends JPanel
             }
             	
         }
-    }
-    
+    }    
 }
 
 

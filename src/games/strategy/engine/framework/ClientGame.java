@@ -79,7 +79,7 @@ public class ClientGame implements IGame
       IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
 
-      m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, ServerGame.getRemoteName(gp.getID()));
+      m_remoteMessenger.registerRemote(m_data.getGameLoader().getRemotePlayerType(), gp, ServerGame.getRemoteName(gp.getID()));
       
       IRemoteRandom remoteRandom = new RemoteRandom(this);
       m_remoteMessenger.registerRemote(IRemoteRandom.class, remoteRandom, ServerGame.getRemoteRandomName(player));

@@ -10,7 +10,9 @@ import java.util.*;
 
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.message.*;
 import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.triplea.player.ITripleaPlayer;
 
 /**
  *
@@ -57,6 +59,14 @@ public class TestGameLoader implements IGameLoader
     public Class getDisplayType()
     {
         return IChannelSubscribor.class;
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
+     */
+    public Class getRemotePlayerType()
+    {
+       return IRemote.class;
     }	
 	
 	

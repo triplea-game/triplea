@@ -34,22 +34,31 @@ import games.strategy.engine.data.PlayerID;
  */
 public interface IGamePlayer 
 {
+    
+    /**
+     * Called before the game starts. 
+     */
     public void initialize(IPlayerBridge bridge, PlayerID id);
 
+    /**
+     * 
+     * @return the name of the game player
+     */
     public String getName();
 
+    /**
+     * 
+     * @return the id of this player.  This id is initialized by the initialize method.
+     */
     public PlayerID getID();
 
+    /**
+     * Start the given step.  stepName appears as it does in the game xml file.
+     * 
+     * The game step will finish executing when this method returns.
+     * 
+     */
     public void start(String stepName);
 
-    /**
-     * Get the type of the GamePlayer.
-     * <p>
-     * The type must extend IRemote, and is to be used by an IRemoteManager to
-     * allow a player to be contacted remotately
-     * 
-     * @see games.strategy.engine.message.IRemoteMessenger
-     */
-    public Class getRemotePlayerType();
 
 }

@@ -24,7 +24,8 @@ import java.util.*;
  * starting the game.
  *
  * The name is somewhat misleading since it doesnt actually load the
- * game data, merely performs the game specific steps for starting the game.
+ * game data, merely performs the game specific steps for starting the game
+ * and meta data needed by the engine.
  *
  * @author  Sean Bridges
  */
@@ -35,9 +36,6 @@ public interface IGameLoader extends java.io.Serializable
     
   /**
    * Return an array of player types that can play on the server.
-   * This array must not contain any entries that could play on the client.
-   *
-   * It is assumed that all players can play on either server or client.
    */
   public String[] getServerPlayerTypes();
 
@@ -60,5 +58,15 @@ public interface IGameLoader extends java.io.Serializable
    */
   public Class getDisplayType();
   
-
+  /**
+   * Get the type of the GamePlayer.
+   * <p>
+   * The type must extend IRemote, and is to be used by an IRemoteManager to
+   * allow a player to be contacted remotately
+   * 
+   * @see games.strategy.engine.message.IRemoteMessenger
+   */
+  public Class getRemotePlayerType();
+  
+  
 }

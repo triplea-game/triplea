@@ -276,14 +276,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         }
     }
     
-    /* 
-     * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
-     */
-    public Class getRemotePlayerType()
-    {
-        return ITripleaPlayer.class;
-    }
-    
+
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
      */
