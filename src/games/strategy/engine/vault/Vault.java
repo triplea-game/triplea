@@ -16,7 +16,6 @@ package games.strategy.engine.vault;
 import games.strategy.engine.message.*;
 
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
 import javax.crypto.*;
