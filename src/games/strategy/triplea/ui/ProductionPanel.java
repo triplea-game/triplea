@@ -222,8 +222,14 @@ public class ProductionPanel extends JPanel
       JLabel label = new JLabel(text, icon, JLabel.LEFT);
 
       int space = 8;
-      this.add(label,  new GridBagConstraints(0,0,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(10,space,space,space),0,0));
-      this.add(m_text, new GridBagConstraints(0,1,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(10,space,space,space),0,0));
+      this.add(new JLabel( m_type.getName()), new GridBagConstraints(0,0,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(2,0,0,0),0,0));
+      this.add(label,  new GridBagConstraints(0,1,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(5,space,space,space),0,0));
+      
+     
+      this.add(m_text, new GridBagConstraints(0,2,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(10,space,space,space),0,0));
+      
+      
+      
       m_text.addChangeListener(m_listener);
       setBorder(new EtchedBorder());
     }

@@ -318,19 +318,28 @@ public class TripleAFrame extends JFrame
       {
         public void actionPerformed(ActionEvent e)
         {
-          String text = "<b>TripleA</b>  " +  games.strategy.engine.EngineVersion.VERSION.toString() + "<br>" +
-                        "Game: " + m_data.getGameName() + ". Version:" + m_data.getGameVersion() + "<br><br>" +
-                        "<a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a>" ;
+          String text = "<h2>TripleA</h2>  " +
+          
+              		    "<b>Engine Version:</b> " +games.strategy.engine.EngineVersion.VERSION.toString()  + "<br>" +
+                        "<b>Game:</b> " + m_data.getGameName() + "<br>"+ 
+                        "<b>Game Version:</b>" + m_data.getGameVersion() + "<br>" +
+                        "<br>" +
+                        "For more information please visit, <p>" +
+                        
+                        "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><p>" ;
 
           JEditorPane editorPane = new JEditorPane();
+          editorPane.setBorder(null);
+          editorPane.setBackground(getBackground());
           editorPane.setEditable(false);
           editorPane.setContentType("text/html");
           editorPane.setText(text);
 
 
           JScrollPane scroll = new JScrollPane(editorPane);
+          scroll.setBorder(null);
 
-          JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "About", JOptionPane.PLAIN_MESSAGE);
+          JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "About", JOptionPane.PLAIN_MESSAGE);
         }
       }
     );
