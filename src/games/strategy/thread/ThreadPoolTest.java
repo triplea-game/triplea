@@ -32,7 +32,6 @@ public class ThreadPoolTest extends TestCase
 
 	public void testRunOneTask()
 	{
-		System.out.println("running");
 		ThreadPool pool = new ThreadPool(50);
 		Task task = new Task();
 		pool.runTask(task);
