@@ -800,7 +800,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void defendSubs(DelegateBridge bridge)
     {
-
         if (m_attackingUnits.size() == 0)
             return;
         Collection units = new ArrayList(m_defendingUnits.size() + m_defendingWaitingToDie.size());
@@ -853,8 +852,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection bombard = getBombardingUnits();
         Collection attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsDestructible);
 
+        //4th edition, bombardment casualties cant return fire
+        boolean canReturnFire = !m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+        
         if (bombard.size() > 0 && attacked.size() > 0)
-            fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, true, bridge, "Bombard");
+            fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, canReturnFire, bridge, "Bombard");
         markBombardingSources();
     }
 
