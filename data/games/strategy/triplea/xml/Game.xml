@@ -1033,10 +1033,11 @@
 			<unitPlacement unitType="fighter" territory="China" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="infantry" territory="East Indies" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="armour" territory="East Canada" quantity ="1" owner="British" /> 
-			<unitPlacement unitType="armour" territory="East Europe" quantity ="2" owner="Germans" /> 
+			<unitPlacement unitType="armour" territory="East Europe" quantity ="1" owner="Germans" /> 
 			<unitPlacement unitType="infantry" territory="East Europe" quantity ="2" owner="Germans" /> 
 			<unitPlacement unitType="fighter" territory="East Europe" quantity ="1" owner="Germans" /> 
 			<unitPlacement unitType="infantry" territory="East US" quantity ="2" owner="Americans" /> 
+			<unitPlacement unitType="armour" territory="East US" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="fighter" territory="East US" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="bomber" territory="East US" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="factory" territory="East US" quantity ="1" owner="Americans" /> 
@@ -1126,7 +1127,7 @@
 			<unitPlacement unitType="submarine" territory="Hawaii Sea Zone" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="carrier" territory="Hawaii Sea Zone" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="transport" territory="Indian Ocean Sea Zone" quantity ="1" owner="British" /> 
-			<unitPlacement unitType="carrier" territory="Japan Sea Zone" quantity ="1" owner="Japanese" /> 
+			<unitPlacement unitType="battleship" territory="Japan Sea Zone" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="transport" territory="Japan Sea Zone" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="submarine" territory="Karelia Sea Zone" quantity ="1" owner="Russians" /> 
 			<unitPlacement unitType="transport" territory="Karelia Sea Zone" quantity ="1" owner="Russians" /> 
