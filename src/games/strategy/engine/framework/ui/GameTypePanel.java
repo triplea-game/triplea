@@ -285,12 +285,12 @@ public class GameTypePanel extends JPanel
       }
       catch (SAXException ex)
       {
-        ex.printStackTrace();
+        ex.printStackTrace(System.out);
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error loading file", "Error", JOptionPane.WARNING_MESSAGE);
         return;
       }catch (GameParseException ex)
       {
-        ex.printStackTrace();
+        ex.printStackTrace(System.out);
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error loading file", "Error", JOptionPane.WARNING_MESSAGE);
         return;
       }

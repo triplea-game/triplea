@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Console.java
  *
  * Created on January 2, 2002, 5:46 PM
@@ -42,7 +56,7 @@ public class Console extends JFrame
 	/** Creates a new instance of Console */
     public Console() 
 	{
-		super("Console");
+		super("An error has occured!");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		getContentPane().setLayout(new BorderLayout());
@@ -73,8 +87,8 @@ public class Console extends JFrame
 	 */
 	public void displayStandardError()
 	{
-		SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream();
-		ThreadReader reader = new ThreadReader(out, m_text);
+		SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);
+		ThreadReader reader = new ThreadReader(out, m_text, true);
 		Thread thread = new Thread(reader, "Console std err reader");
 		thread.start();
 		
@@ -84,8 +98,8 @@ public class Console extends JFrame
 	
 	public void displayStandardOutput()
 	{
-		SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream();
-		ThreadReader reader = new ThreadReader(out, m_text);
+		SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.out);
+		ThreadReader reader = new ThreadReader(out, m_text, false);
 		Thread thread = new Thread(reader, "Console std out reader");
 		thread.start();
 		
@@ -164,11 +178,13 @@ class ThreadReader implements Runnable
 {
 	private JTextArea m_text;
 	private SynchedByteArrayOutputStream m_in;
+	private boolean m_displayConsoleOnWrite; 
 	
-	ThreadReader(SynchedByteArrayOutputStream in, JTextArea text)
+	ThreadReader(SynchedByteArrayOutputStream in, JTextArea text, boolean displayConsoleOnWrite)
 	{
 		m_in = in;
 		m_text = text;
+		m_displayConsoleOnWrite = displayConsoleOnWrite;
 	}
 	
 	public void run()
@@ -176,6 +192,8 @@ class ThreadReader implements Runnable
 		while(true)
 		{
 			m_text.append(m_in.readFully());
+			if(m_displayConsoleOnWrite)
+			    Console.getConsole().show();
 		}
 	}
 }
@@ -190,11 +208,18 @@ class ThreadReader implements Runnable
 class SynchedByteArrayOutputStream extends ByteArrayOutputStream
 {
 	private Object lock = new Object();
+	private PrintStream m_mirror;
+	
+	SynchedByteArrayOutputStream(PrintStream mirror)
+	{
+	    m_mirror = mirror;
+	}
 	
 	public void write(byte b) throws IOException
 	{
 		synchronized(lock)
 		{
+		    m_mirror.write(b);
 			super.write(b);
 			lock.notifyAll();
 		}
@@ -205,6 +230,7 @@ class SynchedByteArrayOutputStream extends ByteArrayOutputStream
 		synchronized(lock)
 		{
 			super.write(b, off, len);
+			m_mirror.write(b,off,len);
 			lock.notifyAll();
 		}
 	}

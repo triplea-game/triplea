@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import games.strategy.debug.Console;
 import games.strategy.engine.framework.ui.LauncherFrame;
 
 /**
@@ -99,6 +100,10 @@ public class GameRunner
   {
 
     checkJavaVersion();
+    
+    Console.getConsole().displayStandardError();
+    Console.getConsole().displayStandardOutput();
+ 
     try
     {
       //macs are already beautiful
