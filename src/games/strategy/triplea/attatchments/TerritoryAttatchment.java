@@ -69,7 +69,8 @@ public class TerritoryAttatchment extends DefaultAttatchment
 	private String m_capital = null;
 	private boolean m_originalFactory = false;
 	private int m_production = 2;
-
+	private boolean m_isVictoryCity = false;
+	
 
   /** Creates new TerritoryAttatchment */
   public TerritoryAttatchment()
@@ -91,6 +92,16 @@ public class TerritoryAttatchment extends DefaultAttatchment
 		return m_capital;
 	}
 
+	public void setVictoryCity(String value)
+	{
+		m_isVictoryCity = getBool(value);
+	}
+
+	public boolean isVictoryCity()
+	{
+		return m_originalFactory;
+	}
+	
 	public void setOriginalFactory(String value)
 	{
 		m_originalFactory = getBool(value);
