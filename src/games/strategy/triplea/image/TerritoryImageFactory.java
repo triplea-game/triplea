@@ -53,10 +53,16 @@ public final class TerritoryImageFactory
     return m_waterImage;
   }
 
+  public BufferedImage getTerritoryImageNoRelief(Territory place, PlayerID owner)
+  {
+    return  createTerritoryImage(place, owner, false);
+  }
+
+
   // returns an image of the desired territory with the desired owner
   public BufferedImage getTerritoryImage(Territory place, PlayerID owner)
   {
-    return  createTerritoryImage(place, owner);
+    return  createTerritoryImage(place, owner, true);
   }
 
   // constructor
@@ -83,7 +89,7 @@ public final class TerritoryImageFactory
 
 
   // dynamically create a new territory image
-  private BufferedImage createTerritoryImage(Territory place, PlayerID owner)
+  private BufferedImage createTerritoryImage(Territory place, PlayerID owner, boolean addReliefHighlights)
   {
     // get the base image and the color to apply
     Image baseImage = getBaseImage(place);
@@ -129,7 +135,8 @@ public final class TerritoryImageFactory
 
     // cleanup
     gc.setComposite(prevComposite);
-    gc.drawImage(getReliefImage(place), 0,0, watcher );
+    if(addReliefHighlights)
+        gc.drawImage(getReliefImage(place), 0,0, watcher );
 
     // done
     return workImage;

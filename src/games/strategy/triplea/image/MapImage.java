@@ -197,13 +197,21 @@ public class MapImage
       }
     }
 
+    setOwnerOnSmallMap(territory, id, p);
+
+  }
+
+private void setOwnerOnSmallMap(Territory territory, PlayerID id, Point p)
+{
+    BufferedImage country = TerritoryImageFactory.getInstance().getTerritoryImageNoRelief(territory, id);
+
     int smallHeight = (int) (country.getHeight() / m_smallLargeRatio) + 3;
     int smallWidth = (int) (country.getWidth() / m_smallLargeRatio) + 3;
+
     Image small  = country.getScaledInstance(smallWidth, smallHeight , Image.SCALE_FAST);
 
     Point smallPoint = new Point( (int)( p.x / m_smallLargeRatio), (int) (p.y / m_smallLargeRatio));
     m_smallMapImage.getGraphics().drawImage(small, smallPoint.x, smallPoint.y,  s_observer);
-
-  }
+}
 
 }
