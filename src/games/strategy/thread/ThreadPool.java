@@ -116,16 +116,24 @@ public class ThreadPool
 	private class ThreadTracker implements Runnable
 	{
 		private boolean m_run = true;
+		private Thread m_thread;
 		
 		public void run()
 		{
+			m_thread = Thread.currentThread();
 			while(m_run)
 			{					
 				Runnable task = getTask();
 				if(task == null)
 					continue;
 
-				task.run();
+				try
+				{
+					task.run();
+				} catch(Throwable t)
+				{
+					t.printStackTrace();
+				}
 				synchronized(m_taskLock)
 				{
 					m_runningTasks.remove(task);
@@ -146,7 +154,7 @@ public class ThreadPool
 		public void stop()
 		{
 			m_run = false;
-			Thread.currentThread().interrupt();
+			m_thread.interrupt();
 		}
 		
 		private Runnable getTask()
