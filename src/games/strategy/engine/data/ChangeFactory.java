@@ -18,6 +18,7 @@
 
 package games.strategy.engine.data;
 
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
 import games.strategy.util.IntegerMap;
 

@@ -16,6 +16,8 @@ Changes for 0.5.3
 
 * Fixed bug [ 1102225 ] Error by adding better error messages (sgb)
 
+* Store pbem emails in saved game (sgb)
+
 Changes for 0.5.2
 
 * Added option to limit ipcs lost in a territory during one round. This is necessary to implement LHTR ruleset.

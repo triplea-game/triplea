@@ -18,10 +18,11 @@
  * Created on January 15, 2002, 2:21 PM
  */
 
-package games.strategy.engine.data;
+package games.strategy.engine.data.properties;
 
 import java.util.*;
-import games.strategy.engine.data.properties.IEditableProperty;
+
+import games.strategy.engine.data.*;
 
 /**
  * Properties of the current game. <br>
@@ -33,14 +34,14 @@ import games.strategy.engine.data.properties.IEditableProperty;
 public class GameProperties extends GameDataComponent
 {
 
-    private HashMap m_constantProperties = new HashMap();
+    private final HashMap m_constantProperties = new HashMap();
 
     //a set of IEditableProperties
-    private HashMap m_editableProperties = new HashMap();
+    private final HashMap m_editableProperties = new HashMap();
 
     // This list is used to keep track of order properties were
     // added.
-    private List m_ordering = new ArrayList();
+    private final List m_ordering = new ArrayList();
 
     /** Creates a new instance of Properties */
     public GameProperties(GameData data)
@@ -52,7 +53,7 @@ public class GameProperties extends GameDataComponent
      * Setting a property to null has the effect of unbinding the key.
      * package access to prevent outsiders from setting properties
      */
-    void set(String key, Object value)
+    public void set(String key, Object value)
     {
         if (value == null)
         {

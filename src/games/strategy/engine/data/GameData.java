@@ -23,6 +23,7 @@ package games.strategy.engine.data;
 import java.util.*;
 
 import games.strategy.engine.data.events.*;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.*;
 import games.strategy.util.*;
 import games.strategy.engine.history.*;

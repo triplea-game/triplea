@@ -14,10 +14,10 @@
 
 package games.strategy.engine.data.properties;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-import games.strategy.engine.data.*;
+
+import javax.swing.*;
 
 public class PropertiesUI extends JPanel
 {
