@@ -74,6 +74,7 @@
 			delegate IDREF #REQUIRED
 			player IDREF #IMPLIED
 			maxRunCount CDATA #IMPLIED
+			display CDATA #IMPLIED
 		>
 
 <!ELEMENT production (productionRule+, productionFrontier+, playerProduction+)>
