@@ -57,7 +57,11 @@ public class ServerOptions extends JDialog
 
   public String getName()
   {
-    return m_nameField.getText();
+  	//fixes crash by truncating names to 20 characters
+  	String s=m_nameField.getText().trim();
+  	if(s.length()>20)
+  		return s.substring(0,20);
+  	return s;
   }
 
   public int getPort()
