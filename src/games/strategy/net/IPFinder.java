@@ -58,17 +58,17 @@ public class IPFinder {
 	*/
 	public static InetAddress findInetAddress() throws SocketException, UnknownHostException
 	{
-		Enumeration enum = NetworkInterface.getNetworkInterfaces();
+		Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
 
 		// Test if null, no point taking a performance hit by
 		// letting the JVM check for a NullPointerException.
-		if(enum == null) {
+		if(enum1 == null) {
 			InetAddress ip1 = InetAddress.getLocalHost();
 			return ip1;
 		}
 		else {
-			while (enum.hasMoreElements()) {
-				NetworkInterface netface = (NetworkInterface)enum.nextElement();
+			while (enum1.hasMoreElements()) {
+				NetworkInterface netface = (NetworkInterface)enum1.nextElement();
 				Enumeration enum2 = netface.getInetAddresses();
 				while (enum2.hasMoreElements()) {
 					InetAddress ip2 = (InetAddress) enum2.nextElement();
