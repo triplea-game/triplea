@@ -13,6 +13,7 @@
  */
 package games.strategy.engine.message;
 
+import edu.emory.mathcs.backport.java.util.concurrent.*;
 import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicLong;
 import games.strategy.net.*;
@@ -43,23 +44,26 @@ public class UnifiedMessenger
     //maps String -> EndPoint
     //these are the end points we know about
     //some of them may not have implementors
-    private final Map m_localEndPoints = new HashMap();
+    private final Map m_localEndPoints = new ConcurrentHashMap();
 
     //maps INode - collection of endpoints as string that the INode has
     // implementors for
     private final Map m_remoteNodesWithImplementors = new HashMap();
 
-    //maps GUID-> collection of RemoteMethodResults
-    private final Map m_methodCallResults = new HashMap();
+    //maps GUID-> synchronized list of RemoteMethodResults
+    private final Map m_methodCallResults = new ConcurrentHashMap();
 
     //maps GUID -> CountDownLatch of clients we are awaiting responses from
-    private final Map m_methodCallWaitCount = new HashMap();
+    private final Map m_methodCallWaitCount = new ConcurrentHashMap();
 
-    //synchronize on this to wait for the init lock to arrive
+    //synchronize on this to wait for the init data to arrive
     private final CountDownLatch m_initCountDownLatch = new CountDownLatch(1);
 
-    //lock on this for modifications to internal state
-    private final Object m_mutex = new Object();
+    //lock on this for modifications to create or remove local end points
+    private final Object m_endPointmutex = new Object();
+
+    //used to synchronize access to m_remoteNodesWithImplementors 
+    private final Object m_nodesWithImplementorsMutex = new Object();
 
     /**
      * @param messenger
@@ -109,7 +113,7 @@ public class UnifiedMessenger
     private void createEndPointInternal(String name, Class[] classes, boolean singleThreaded)
     {
         EndPoint endPoint = new EndPoint(name, classes, singleThreaded);
-        synchronized (m_mutex)
+        synchronized (m_endPointmutex)
         {
             //if we already have it, make sure its the same classes
             if (m_localEndPoints.containsKey(name))
@@ -137,7 +141,7 @@ public class UnifiedMessenger
 
     private void destroyEndPointInternal(String name)
     {
-        synchronized (m_mutex)
+        synchronized (m_endPointmutex)
         {
             m_localEndPoints.remove(name);
             Iterator remotes = m_remoteNodesWithImplementors.values().iterator();
@@ -149,7 +153,7 @@ public class UnifiedMessenger
         }
     }
 
-    private INode[] getNodesWithImplementors(final String endPointName)
+    private INode[] getRemoteNodesWithImplementors(final String endPointName)
     {
         Match containsEndPoint = new Match()
         {
@@ -161,7 +165,7 @@ public class UnifiedMessenger
 
         Set matching;
 
-        synchronized (m_mutex)
+        synchronized (m_nodesWithImplementorsMutex)
         {
             matching = Match.getKeysWhereValueMatch(m_remoteNodesWithImplementors, containsEndPoint);
         }
@@ -171,24 +175,12 @@ public class UnifiedMessenger
 
     public Class[] getTypes(String endPointName)
     {
-        EndPoint endPoint;
-        synchronized (m_mutex)
-        {
-            assertEndPointExists(endPointName);
-            endPoint = (EndPoint) m_localEndPoints.get(endPointName);
-        }
-        return endPoint.getClasses();
+        return getLocalEndPointOrThrow(endPointName).getClasses();
     }
 
     public int getLocalImplementorCount(String endPointName)
     {
-        EndPoint endPoint;
-        synchronized (m_mutex)
-        {
-            assertEndPointExists(endPointName);
-            endPoint = (EndPoint) m_localEndPoints.get(endPointName);
-        }
-        return endPoint.getLocalImplementorCount();
+        return getLocalEndPointOrThrow(endPointName).getLocalImplementorCount();
     }
 
     /**
@@ -197,29 +189,23 @@ public class UnifiedMessenger
      */
     public RemoteMethodCallResults[] invokeAndWait(String endPointName, RemoteMethodCall remoteCall)
     {
-        EndPoint endPoint;
-        synchronized (m_mutex)
-        {
-            assertEndPointExists(endPointName);
-            endPoint = (EndPoint) m_localEndPoints.get(endPointName);
-        }
+        EndPoint endPoint = getLocalEndPointOrThrow(endPointName);
 
         //prepatory to anything else...
         //generate a unique id
         final GUID methodCallID = new GUID();
 
         //who do we call
-        final INode[] remote = getNodesWithImplementors(endPointName);
+        final INode[] remote = getRemoteNodesWithImplementors(endPointName);
         CountDownLatch latch = new CountDownLatch(remote.length);
 
         if (remote.length > 0)
         {
-            synchronized(m_mutex)
-            {
-                //we need to indicate how many returns we are waiting for
-                m_methodCallWaitCount.put(methodCallID, latch);
-            }
-         
+            //we need to indicate how many returns we are waiting for
+            m_methodCallWaitCount.put(methodCallID, latch);
+            //the list should be synchronized since we may add to it in
+            // multiple threads
+            m_methodCallResults.put(methodCallID, Collections.synchronizedList(new ArrayList()));
         }
 
         //invoke remotely
@@ -251,12 +237,9 @@ public class UnifiedMessenger
             s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
                     + " with id:" + methodCallID);
 
-            synchronized (m_mutex)
-            {
-                results.addAll((List) m_methodCallResults.get(methodCallID));
-                m_methodCallResults.remove(methodCallID);
-                m_methodCallWaitCount.remove(methodCallID);
-            }
+            results.addAll((List) m_methodCallResults.get(methodCallID));
+            m_methodCallResults.remove(methodCallID);
+            m_methodCallWaitCount.remove(methodCallID);
 
         }
 
@@ -268,16 +251,11 @@ public class UnifiedMessenger
      */
     public void invoke(final String endPointName, final RemoteMethodCall call)
     {
-        EndPoint endPoint;
-        synchronized (m_mutex)
-        {
-            assertEndPointExists(endPointName);
-            endPoint = (EndPoint) m_localEndPoints.get(endPointName);
-        }
+        EndPoint endPoint = getLocalEndPointOrThrow(endPointName);
 
         //invoke remotely first, allows concurrent execution
         //with local invocation
-        INode[] destinations = getNodesWithImplementors(endPointName);
+        INode[] destinations = getRemoteNodesWithImplementors(endPointName);
 
         Invoke invoke = new Invoke(null, false, call, endPointName);
         for (int i = 0; i < destinations.length; i++)
@@ -290,45 +268,50 @@ public class UnifiedMessenger
         endPoint.invokeLocal(call, endPoint.takeANumber());
     }
 
+    /**
+     * Do we know about the given end point? <br>
+     * We may or may not have implementors for this endpoint locally.
+     */
     public boolean isAwareOfEndPoint(String endPointName)
     {
-        synchronized (m_mutex)
-        {
-            return m_localEndPoints.containsKey(endPointName);
-        }
+        return m_localEndPoints.containsKey(endPointName);
     }
 
+    /**
+     * Do we know of any implementors for this endpoint. <br>
+     * The implementors may or may not be local.
+     */
     public boolean isAwareOfImplementors(String endPointName)
     {
-        synchronized (m_mutex)
+        synchronized (m_endPointmutex)
         {
+            //if we dont know about the endpoint, we wont know about
+            // implementors
             if (!isAwareOfEndPoint(endPointName))
                 return false;
 
+            //do we have anything local?
             if (((EndPoint) m_localEndPoints.get(endPointName)).hasImplementors())
                 return true;
-
-            return getNodesWithImplementors(endPointName).length != 0;
         }
+  
+        return getRemoteNodesWithImplementors(endPointName).length != 0;
+        
     }
 
-    private void assertEndPointExists(String name)
+    private EndPoint getLocalEndPointOrThrow(String name)
     {
-        if (!isAwareOfEndPoint(name))
+        EndPoint rVal = (EndPoint) m_localEndPoints.get(name);
+        if (rVal == null)
         {
             throw new IllegalStateException("Nothing known about endpoint:" + name);
         }
+        return rVal;
     }
 
     public void addImplementor(String name, Object implementor)
     {
-        EndPoint endPoint;
-
-        synchronized (m_mutex)
-        {
-            assertEndPointExists(name);
-            endPoint = (EndPoint) m_localEndPoints.get(name);
-        }
+        EndPoint endPoint = getLocalEndPointOrThrow(name);
 
         boolean broadcast = endPoint.addImplementor(implementor);
         if (broadcast)
@@ -347,12 +330,7 @@ public class UnifiedMessenger
 
     public void removeImplementor(String name, Object implementor)
     {
-        EndPoint endPoint;
-        synchronized (m_mutex)
-        {
-            assertEndPointExists(name);
-            endPoint = (EndPoint) m_localEndPoints.get(name);
-        }
+        EndPoint endPoint = getLocalEndPointOrThrow(name);
 
         boolean broadcast = endPoint.removeImplementor(implementor);
 
@@ -376,10 +354,11 @@ public class UnifiedMessenger
             if (msg instanceof UnifiedInitRequest)
             {
                 UnifiedInitMessage init;
-                synchronized (m_mutex)
+                List localNodesWithImplementors = new ArrayList();
+                EndPointCreated[] created;
+                synchronized (m_endPointmutex)
                 {
-                    List localNodesWithImplementors = new ArrayList();
-                    EndPointCreated[] created = new EndPointCreated[m_localEndPoints.keySet().size()];
+                    created = new EndPointCreated[m_localEndPoints.keySet().size()];
                     Iterator names = m_localEndPoints.keySet().iterator();
                     int i = 0;
                     while (names.hasNext())
@@ -395,15 +374,31 @@ public class UnifiedMessenger
                         created[i] = new EndPointCreated(RemoteMethodCall.classesToString(endPoint.getClasses()), name, endPoint.isSingleThreaded());
                         i++;
                     }
-
-                    Map nodesWithImplementors = new HashMap(m_remoteNodesWithImplementors);
-                    nodesWithImplementors.put(m_messenger.getLocalNode(), localNodesWithImplementors);
-
-                    init = new UnifiedInitMessage(created, nodesWithImplementors);
                 }
+                synchronized (m_nodesWithImplementorsMutex)
+                {
+                    Map nodeWithImplementors = new HashMap();
+                    Iterator iter = m_remoteNodesWithImplementors.values().iterator();
+                    while (iter.hasNext())
+                    {
+                        //we need to copy each collection here
+                        //otherwise it may be modified while we are sending
+                        INode node = (INode) iter.next();
+                        Collection values = new ArrayList((Collection) m_remoteNodesWithImplementors.get(node));
+                        nodeWithImplementors.put(node, values);
+                        
+                    }
+                    
+                    nodeWithImplementors.put(m_messenger.getLocalNode(), localNodesWithImplementors);
+                    init = new UnifiedInitMessage(created, nodeWithImplementors);
+                }
+
                 m_messenger.send(init, from);
+
             }
+
         }
+
     };
 
     private IMessageListener m_messageListener = new IMessageListener()
@@ -426,20 +421,16 @@ public class UnifiedMessenger
             } else if (msg instanceof NoLongerHasEndPointImplementor)
             {
                 String name = ((NoLongerHasEndPointImplementor) msg).endPointName;
-                synchronized (m_mutex)
+                synchronized (m_nodesWithImplementorsMutex)
                 {
                     Collection current = (Collection) m_remoteNodesWithImplementors.get(from);
-                    if (current == null)
-                    {
-                        current = new HashSet();
-                        m_remoteNodesWithImplementors.put(from, current);
-                    }
-                    current.remove(name);
+                    if (current != null)
+                        current.remove(name);
                 }
             } else if (msg instanceof HasEndPointImplementor)
             {
                 String name = ((HasEndPointImplementor) msg).endPointName;
-                synchronized (m_mutex)
+                synchronized (m_nodesWithImplementorsMutex)
                 {
                     Collection current = (Collection) m_remoteNodesWithImplementors.get(from);
                     if (current == null)
@@ -452,11 +443,7 @@ public class UnifiedMessenger
             } else if (msg instanceof Invoke)
             {
                 final Invoke invoke = (Invoke) msg;
-                EndPoint local;
-                synchronized (m_mutex)
-                {
-                    local = (EndPoint) m_localEndPoints.get(invoke.endPointName);
-                }
+                EndPoint local = (EndPoint) m_localEndPoints.get(invoke.endPointName);
 
                 //something a bit strange here, it may be the case
                 //that the endpoint was deleted locally
@@ -501,22 +488,10 @@ public class UnifiedMessenger
 
                 GUID methodID = results.methodCallID;
 
-                CountDownLatch latch;
-                synchronized (m_mutex)
-                {
-                    //add the results
-                    if (!m_methodCallResults.containsKey(methodID))
-                    {
-                        m_methodCallResults.put(methodID, new ArrayList());
-                    }
-                    ((List) m_methodCallResults.get(methodID)).addAll(results.results);
-
-                    //who should we notify
-                    latch = (CountDownLatch) m_methodCallWaitCount.get(methodID);
-                }
-
-                //notify while not holding the mutex, just in case
-                latch.countDown();
+                //both of these should already be populated
+                //this list should be a synchronized list so we can do the add all
+                ((List) m_methodCallResults.get(methodID)).addAll(results.results);
+                ((CountDownLatch) m_methodCallWaitCount.get(methodID)).countDown();
 
             }
         }
@@ -527,18 +502,18 @@ public class UnifiedMessenger
          */
         private void initFromRemoteData(final INode from, UnifiedInitMessage initMessage)
         {
-            synchronized (m_mutex)
+            //create end points
+            for (int i = 0; i < initMessage.endPoints.length; i++)
             {
-                //create end points
-                for (int i = 0; i < initMessage.endPoints.length; i++)
-                {
-                    EndPointCreated endPointCreated = initMessage.endPoints[i];
-                    createEndPointInternal(endPointCreated.name, RemoteMethodCall.stringsToClasses(endPointCreated.classes),
-                            endPointCreated.singleThreaded);
-                }
+                EndPointCreated endPointCreated = initMessage.endPoints[i];
+                createEndPointInternal(endPointCreated.name, RemoteMethodCall.stringsToClasses(endPointCreated.classes),
+                        endPointCreated.singleThreaded);
+            }
 
-                //initialize who has endpoints
-                Iterator nodes = initMessage.nodesWithEndPoints.keySet().iterator();
+            //initialize who has endpoints
+            Iterator nodes = initMessage.nodesWithEndPoints.keySet().iterator();
+            synchronized (m_nodesWithImplementorsMutex)
+            {
                 while (nodes.hasNext())
                 {
                     INode node = (INode) nodes.next();
@@ -553,6 +528,7 @@ public class UnifiedMessenger
                     currentEndPoints.addAll(initEndPoints);
                 }
             }
+
             m_initCountDownLatch.countDown();
         }
     };
