@@ -748,6 +748,7 @@
 			 <option name="transportCost" value="2"/>
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
+			 <option name="artillerySupportable" value="true"/>
 	    </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="artillery"
@@ -757,6 +758,7 @@
 			 <option name="transportCost" value="3"/>
 			 <option name="attack" value="2"/>
 			 <option name="defense" value="2"/>
+			 <option name="artillery" value="true"/>
 	    </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="armour"
@@ -1186,6 +1188,7 @@
 			<unitPlacement unitType="factory" territory="Japan" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="aaGun" territory="Japan" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="armour" territory="Karelia S.S.R." quantity ="1" owner="Russians" /> 
+			<unitPlacement unitType="artillery" territory="Karelia S.S.R." quantity ="2" owner="Russians" /> 
 			<unitPlacement unitType="infantry" territory="Karelia S.S.R." quantity ="3" owner="Russians" /> 
 			<unitPlacement unitType="fighter" territory="Karelia S.S.R." quantity ="1" owner="Russians" /> 
 			<unitPlacement unitType="factory" territory="Karelia S.S.R." quantity ="1" owner="Russians" /> 

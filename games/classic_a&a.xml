@@ -726,6 +726,7 @@
 			 <option name="transportCost" value="1"/>
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
+			 <option name="artillerySupportable" value="true"/>
 	    </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="armour"
