@@ -328,7 +328,7 @@ public class TripleAFrame extends JFrame
                                         
                                       }
                                     });
-    
+   
     
 
     if(!m_game.getData().getProperties().getEditableProperties().isEmpty())
@@ -354,6 +354,18 @@ public class TripleAFrame extends JFrame
     if(m_game instanceof ClientGame)
         menuGame.add(showVerifiedDice);
 
+    final JCheckBox showEnemyCasualties = new JCheckBox("Confirm Enemy Casualties");
+    showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
+    showEnemyCasualties.addActionListener(new AbstractAction()
+    {
+       public void actionPerformed(ActionEvent e)
+       {
+           BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected());
+       }
+    });
+    
+    menuGame.add(showEnemyCasualties);
+    
 
     Action showDiceStats = new AbstractAction("Show Dice Stats")
     {

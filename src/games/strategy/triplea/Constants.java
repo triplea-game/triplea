@@ -74,5 +74,7 @@ public interface Constants
   public static final  String MAP_DIR = "images"+java.io.File.separator+"maps"+java.io.File.separator;
   public static final String LARGE_MAP_FILENAME = "largeMap.gif";
   public static final String MAP_NAME = "mapName";
+  
+  public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
 
 }

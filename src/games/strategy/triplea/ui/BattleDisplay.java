@@ -14,6 +14,7 @@ package games.strategy.triplea.ui;
 
 import java.util.*;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import games.strategy.engine.sound.ClipPlayer; //the player
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.sound.SoundPath; //the relative path of sounds
 
 import games.strategy.engine.data.*;
@@ -98,9 +100,22 @@ public class BattleDisplay extends JPanel
         m_actionLayout.show(m_actionPanel, DICE_KEY);
     }
 
+    public static boolean getShowEnemyCasualtyNotification()
+    {
+        Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
+        return prefs.getBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, true);        
+    }
+    
+    public static void setShowEnemyCasualtyNotification(boolean aVal)
+    {
+        Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
+        prefs.putBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, aVal);        
+        
+    }
+     
+    
     public void casualtyNotificationMessage(CasualtyNotificationMessage message, boolean waitFOrUserInput)
     {
-
         setStep(message);
         m_casualties.setNotication(message);
         m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
@@ -116,6 +131,9 @@ public class BattleDisplay extends JPanel
         //if wait is true, then dont return until the user presses continue
         if (!waitFOrUserInput)
             return;
+        if(!getShowEnemyCasualtyNotification())
+            return;
+        
 
         m_actionButton.setAction(new AbstractAction("Continue")
         {
@@ -151,10 +169,9 @@ public class BattleDisplay extends JPanel
 
         m_actionButton.setAction(new AbstractAction(msg.getMessage() + " : (Click to close)")
         {
-
+            
             public void actionPerformed(ActionEvent e)
-            {
-
+            {                
                 synchronized (m_continueLock)
                 {
                     m_continueLock.notifyAll();
