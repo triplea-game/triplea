@@ -28,25 +28,15 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.*;
+import java.util.logging.*;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import javax.swing.*;
 
 /**
- * <p>
- * Title:
- * </p>
- * <p>
- * Description:
- * </p>
- * <p>
- * Copyright: Copyright (c) 2002
- * </p>
- * <p>
- * Company:
- * </p>
  * 
- * @author unascribed
+ * @author Sean Bridges
  * @version 1.0
  */
 
@@ -54,7 +44,8 @@ public class LauncherFrame extends JFrame
 {
 
     public static final String CLIENT_READY_CHANNEL = "games.strategy.engine.framework.ui.LauncherFrame.CLIENT_READY_CHANNEL";
-
+    private static Logger s_logger = Logger.getLogger(LauncherFrame.class.getName());
+    
     private JTabbedPane m_mainTabPanel = new JTabbedPane();
     private JPanel m_buttonPanel = new JPanel();
     private JButton m_playButton = new JButton();
@@ -218,6 +209,9 @@ public class LauncherFrame extends JFrame
             throw new IllegalStateException(e.getMessage());
         }
 
+        //tell the clients to start,
+        //later we will wait for them to all
+        //signal that they are ready.
         ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes);
 
         Map localPlayerMapping = m_serverStartup.getLocalPlayerMapping();
@@ -235,12 +229,16 @@ public class LauncherFrame extends JFrame
 
             CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, serverGame);
             serverGame.setRandomSource(randomSource);
-            System.out.println("Using secure random with remote player " + remotePlayer.getName());
+            
         }
 
         m_gameData.getGameLoader().startGame(serverGame, localPlayerSet);
 
-        serverReady.waitFor(m_messenger.getNodes().size() - 1);
+        //-1 since we dont count ourself
+        int waitCount = m_messenger.getNodes().size() - 1;
+        if(waitCount <= 0)
+            s_logger.log(Level.WARNING, "not waiting for clients");
+        serverReady.waitFor(waitCount);
         m_remoteMessenger.unregisterRemote(CLIENT_READY_CHANNEL);
 
         if (useSecureRandomSource)
@@ -281,8 +279,10 @@ public class LauncherFrame extends JFrame
 
         m_gameData.getGameLoader().startGame(clientGame, playerSet);
 
+        
         ((IServerReady) m_remoteMessenger.getRemote(LauncherFrame.CLIENT_READY_CHANNEL)).clientReady();
-
+        
+        
         SwingUtilities.invokeLater( new Runnable()
         {
             public void run()
@@ -576,6 +576,7 @@ class ServerReady implements IServerReady
     {
         synchronized (this)
         {
+            
             m_count++;
             this.notifyAll();
         }

@@ -120,4 +120,9 @@ public class RemoteMethodCall implements Serializable
         }
         return rVal;
     }
+    
+    public String toString()
+    {
+        return "Remote method call:" + m_methodName + " on:" + m_remoteName;
+    }
 }

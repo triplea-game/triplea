@@ -32,4 +32,9 @@ public class EventChild extends HistoryNode implements Renderable
     return m_renderingData;
   }
 
+  public String toString()
+  {
+      return "EventChild text:" + m_text;
+  }
+  
 }

@@ -44,12 +44,12 @@ public class RemoteMessenger implements IRemoteMessenger
     }
 
     
-    public IRemote getRemote(String remoteNname)
+    public IRemote getRemote(String remoteName)
     {
         //return an IChannelSubscribor  that knows how to call the methods correctly
-        assertRemoteExists(remoteNname);
+        assertRemoteExists(remoteName);
      
-        String unifiedName = getUnifiedName(remoteNname);
+        String unifiedName = getUnifiedName(remoteName);
         
         InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,unifiedName, false, true);
         

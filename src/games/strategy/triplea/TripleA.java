@@ -35,6 +35,8 @@ import java.awt.Frame;
 import java.io.IOException;
 import java.util.*;
 
+import javax.swing.SwingUtilities;
+
 /**
  * @author Sean Bridges
  * @version 1.0
@@ -85,7 +87,7 @@ public class TripleA implements IGameLoader
             MapData.setMapDir(mapDir);          //tells TerritoryData where the txt files are
             TerritoryImageFactory.setMapDir(mapDir);  //tells the image factory where the images are
 
-            TripleAFrame frame = new TripleAFrame(game, players);
+            final TripleAFrame frame = new TripleAFrame(game, players);
            
             TripleaDisplay display = new TripleaDisplay(frame);
             game.addDisplay(display);
@@ -97,9 +99,17 @@ public class TripleA implements IGameLoader
                 Thread.yield();
             }
             //size when minimized
-            frame.setSize(700, 400);
-
-            frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+            
+            SwingUtilities.invokeLater(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        frame.setSize(700, 400);
+                        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+                    }
+                }
+            );
 
             connectPlayers(players, frame);
 

@@ -19,6 +19,8 @@ import games.strategy.util.Match;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.logging.*;
+import java.util.logging.Logger;
 
 
 /**
@@ -28,11 +30,14 @@ import java.util.*;
  */
 public class UnifiedMessenger
 {
+  
+    //a thread pool to run the invoke on
+    private static games.strategy.thread.ThreadPool m_threadPool = new games.strategy.thread.ThreadPool(15, "UnifiedMessengerPool");
+ 
+    
     //the messenger we are based on
     private final IMessenger m_messenger;
     
-    //a thread pool to run the invoke on
-    private games.strategy.thread.ThreadPool m_threadPool = new games.strategy.thread.ThreadPool(15, "UnifiedMessengerPool");
     
     //maps String -> EndPoint
     //these are the end points we know about
@@ -53,6 +58,7 @@ public class UnifiedMessenger
 
     //lock on this for modifications to end points
     private final Object m_endPointMutex = new Object(); 
+   
     
     /**
      * @param messenger
@@ -188,18 +194,18 @@ public class UnifiedMessenger
     public RemoteMethodCallResults[] invokeAndWait(String endPointName, RemoteMethodCall remoteCall)
     {
         assertEndPointExists(endPointName);
+        EndPoint endPoint = (EndPoint) m_localEndPoints.get(endPointName);
         
         //prepatory to anything else...
         //generate a unique id
-        GUID methodCallID = new GUID();
-        
+        final GUID methodCallID = new GUID();
+       
         //who do we call
-        INode[] remote = getNodesWithImplementors(endPointName);
-               
+        final INode[] remote = getNodesWithImplementors(endPointName);
+        
         if(remote.length > 0)
         {
             //we need to indicate how many returns we are waiting for
-            //this value should be removed from the map when set to 0
 	        m_methodCallWaitCount.put(methodCallID, new Integer(remote.length));
         }
 
@@ -212,7 +218,7 @@ public class UnifiedMessenger
         
         //invoke locally, we want to do this after remote invocation, since the remote calls and
         //the local calls may execute concurrently
-        EndPoint endPoint = (EndPoint) m_localEndPoints.get(endPointName);
+       
         List results = endPoint.invokeLocal(remoteCall);
                 
         //wait for the remote calls to finish
@@ -220,8 +226,8 @@ public class UnifiedMessenger
         {            
             synchronized(methodCallID)
             {
-                //wait until the results are cleared
-                while(!m_methodCallResults.containsKey(methodCallID))
+                //wait until the results are in 
+                while( ((Integer)m_methodCallWaitCount.get(methodCallID)).intValue() > 0 )
                 {
                     try
                     {
@@ -233,6 +239,7 @@ public class UnifiedMessenger
                 }
                 results.addAll( (List) m_methodCallResults.get(methodCallID));
                 m_methodCallResults.remove(methodCallID);
+                m_methodCallWaitCount.remove(methodCallID);
             }
         }
        
@@ -440,6 +447,8 @@ public class UnifiedMessenger
                 };
                 
                 m_threadPool.runTask(task);
+                
+                
             }
             //a remote machine is returning results
             else if(msg instanceof InvocationResults)
@@ -450,28 +459,34 @@ public class UnifiedMessenger
                 //we synch on that object
                 Iterator keys = m_methodCallWaitCount.keySet().iterator();
                 GUID localGUID = null;
+                boolean found = false;
                 while(keys.hasNext())
                 {
                     localGUID = (GUID) keys.next();
                     if(localGUID.equals(results.methodCallID))
                     {
+                        found = true;
                         break;
                     }
                 }
+                if(!found)
+                    throw new IllegalStateException("Could not find local id for method:" + results.methodCallID);
+                
                 synchronized(localGUID)
                 {
                     if(!m_methodCallResults.containsKey(localGUID))
                     {
                         m_methodCallResults.put(localGUID, new ArrayList());
                     }
-                    ((ArrayList) m_methodCallResults.get(localGUID)).addAll(results.results);
+                    ((List) m_methodCallResults.get(localGUID)).addAll(results.results);
                     
                     int waitCount = ((Integer) m_methodCallWaitCount.get(localGUID)).intValue();
                     waitCount--;
-                    if(waitCount == 0)
+                    m_methodCallWaitCount.put(localGUID, new Integer(waitCount));
+                    if(waitCount < 0)
+                        throw new IllegalStateException("-ve wait count of:" + waitCount);
+                    if(waitCount == 0) 
                     {
-                        //remove to allow gc
-                        m_methodCallWaitCount.remove(localGUID);
                         //wake up the waiter
                         localGUID.notifyAll();
                     }
@@ -586,11 +601,17 @@ public class UnifiedMessenger
  */
 class EndPoint
 {
+   
+    private static final Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
+    
     private final String m_name;
     private final Class[] m_classes;
     private final Collection m_implementors = Collections.synchronizedList(new ArrayList());
     private final boolean m_singleThreaded;
     
+ 
+
+       
     public EndPoint(final String name, final Class[] classes, boolean singleThreaded)
     {
         if(classes.length <= 0)
@@ -603,6 +624,7 @@ class EndPoint
     
     public void addImplementor(Object implementor)
     {
+        s_logger.log(Level.FINER, "Implementor:" + implementor + " added to endpoint:" + m_name);
         //check that implementor implements the correct interfaces
         for(int i = 0; i < m_classes.length; i++)
         {
@@ -646,8 +668,10 @@ class EndPoint
     /*
      * @return a List of RemoteMethodCallResults
      */
-    public List invokeLocal(RemoteMethodCall call)
+    public synchronized List invokeLocal(final RemoteMethodCall call)
     {
+  
+        
         if(m_implementors.isEmpty())
             return new ArrayList();
 
@@ -867,8 +891,8 @@ class Invoke implements Externalizable
 //the results of a remote invocation
 class InvocationResults implements Serializable
 {
-    public Collection results;
-    public GUID methodCallID;
+    public final Collection results;
+    public final GUID methodCallID;
     
     public InvocationResults(Collection results, GUID methodCallID)
     {
