@@ -26,7 +26,8 @@ public class HistoryWriter implements java.io.Serializable
 {
   private final History m_history;
   private HistoryNode m_current;
-
+  private long m_lastMessageReceived = 0;
+  
   public HistoryWriter(History history)
   {
     m_history = history;
@@ -157,4 +158,15 @@ public class HistoryWriter implements java.io.Serializable
     ( (Event) m_current).setRenderingData(details);
     m_history.reload(m_current);
   }
+  
+  public synchronized long getLastMessageReceived()
+  {
+      return m_lastMessageReceived;
+  }
+  
+  public synchronized void setLastMessageReceived(long messageID)
+  {
+      m_lastMessageReceived = messageID;
+  }
+  
 }

@@ -23,55 +23,97 @@ import java.awt.event.*;
  */
 public class RemoteHistoryMessage implements java.io.Serializable
 {
-  //this is a little curious
-  //the final variables referenced by the anonymous
-  //inner class are serialized when the object is sent over the network
-  private Action m_action;
-
-  //this is set before the action is performed
-  //its only reason for existing is so I didnt have to create a new interface
-  //to pass it to the actions.
-  private transient HistoryWriter m_historyWriter;
-
-  public RemoteHistoryMessage(final String event)
-  {
-    m_action = new AbstractAction()
+    private static long s_currentMessageIndex = 0;  
+    
+    
+    private final long m_messageIndex;
+    
+    //this is a little curious
+    //the final variables referenced by the anonymous
+    //inner class are serialized when the object is sent over the network
+    private Action m_action;
+    
+    //this is set before the action is performed
+    //its only reason for existing is so I didnt have to create a new interface
+    //to pass it to the actions.
+    private transient HistoryWriter m_historyWriter;
+    
+    public RemoteHistoryMessage(final String event)
     {
-      public void actionPerformed(ActionEvent e)
-      {
-        m_historyWriter.startEvent(event);
-      }
-    };
-  }
-
-  public RemoteHistoryMessage(final String text, final Object renderingData)
-  {
-    m_action = new AbstractAction()
+        synchronized(RemoteHistoryMessage.class)
+        {
+            m_messageIndex = s_currentMessageIndex++;
+        }
+        
+        
+        m_action = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                m_historyWriter.startEvent(event);
+            }
+        };
+    }
+    
+    public RemoteHistoryMessage(final String text, final Object renderingData)
     {
-      public void actionPerformed(ActionEvent e)
-      {
-        m_historyWriter.addChildToEvent(new EventChild(text, renderingData));
-      }
-    };
 
-  }
+        synchronized(RemoteHistoryMessage.class)
+        {
+            m_messageIndex = s_currentMessageIndex++;
+        }
 
-  public RemoteHistoryMessage(final Object renderingData)
-  {
-    m_action = new AbstractAction()
+        
+        m_action = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                m_historyWriter.addChildToEvent(new EventChild(text, renderingData));
+            }
+        };
+        
+    }
+    
+    public RemoteHistoryMessage(final Object renderingData)
     {
-      public void actionPerformed(ActionEvent e)
-      {
-        m_historyWriter.setRenderingData(renderingData);
-      }
-    };
+        synchronized(RemoteHistoryMessage.class)
+        {
+            m_messageIndex = s_currentMessageIndex++;
+        }
 
-  }
+        
+        m_action = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                m_historyWriter.setRenderingData(renderingData);
+            }
+        };
+        
+    }
+    
+    public void perform(HistoryWriter writer)
+    {
+        long waitCount = 0;
+        //ensure messages get processed in the order they are generated
+        while(m_messageIndex > writer.getLastMessageReceived() + 1)
+        {
+            //messages are delivered in order to the client
+            //but since each message is processed in its own thread, it is possible
+            //that messages will be processed out of order
+            //we shouldnt have to wait long here,
+            //the message before has already arrived, and it is being
+            //processed, its just that our thread got scheduled to run first
 
-  public void perform(HistoryWriter writer)
-  {
-    m_historyWriter = writer;
-    m_action.actionPerformed(null);
-    m_historyWriter = null;
-  }
+            
+            Thread.yield();
+            waitCount++;
+            if(waitCount > 1000)
+                throw new IllegalStateException("cant process message");
+        }
+        writer.setLastMessageReceived(m_messageIndex);
+        m_historyWriter = writer;
+        m_action.actionPerformed(null);
+        m_historyWriter = null;
+    }
 }
