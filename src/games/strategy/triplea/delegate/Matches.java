@@ -642,6 +642,19 @@ public class Matches
 		};
 	}
 
+	public static Match unitIsSubmerged(final GameData data)
+	{
+	    return new Match()
+	    {
+	        public boolean match(Object o)
+	        {
+	            SubmergedTracker tracker = DelegateFinder.moveDelegate(data).getSubmergedTracker();
+	            return tracker.isSuberged((Unit) o);
+	        }
+	    };
+	    
+	}
+	
 	public static final Match UnitIsAAOrFactory = new CompositeMatchOr(UnitIsAA, UnitIsFactory);
 
 	/** Creates new Matches */

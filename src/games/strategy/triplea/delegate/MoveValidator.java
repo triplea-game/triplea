@@ -63,9 +63,12 @@ public class MoveValidator
 	 * Checks that there are no enemy units on the route except possibly at the end.
 	 * AA and factory dont count as enemy.
 	 */
-	public static boolean onlyAlliedUnitsOnPath(Route route, PlayerID player, GameData data)
+	public static boolean onlyAlliedUnitsOnPath(Route route, PlayerID player, GameData data, boolean destroyerMovingOnPath)
 	{
-		Match alliedOrNonCombat = new CompositeMatchOr(Matches.UnitIsAAOrFactory, Matches.alliedUnit(player, data));
+		CompositeMatch alliedOrNonCombat = new CompositeMatchOr(Matches.UnitIsAAOrFactory, Matches.alliedUnit(player, data));
+		if(!destroyerMovingOnPath)
+		    alliedOrNonCombat.add(Matches.unitIsSubmerged(data));
+		
 		for(int i = 0; i < route.getLength() - 1; i++)
 		{
 			Territory current = route.at(i);

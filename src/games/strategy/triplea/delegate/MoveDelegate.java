@@ -401,7 +401,7 @@ public class MoveDelegate implements SaveableDelegate
                 return error;
         }
 
-        error = validateNonEnemyUnitsOnPath(units, route, player, transportsToLoad);
+        error = validateNonEnemyUnitsOnPath(units, route, player);
         if (error != null)
             return error;
         
@@ -492,10 +492,12 @@ public class MoveDelegate implements SaveableDelegate
         return null;
     }
 
-    private String validateNonEnemyUnitsOnPath(Collection units, Route route, PlayerID player, Collection transportsToLoad)
+    private String validateNonEnemyUnitsOnPath(Collection units, Route route, PlayerID player)
     {
+        boolean hasDestroyer= Match.someMatch(units, Matches.UnitIsDestroyer);
+        
         //check to see no enemy units on path
-        if (MoveValidator.onlyAlliedUnitsOnPath(route, player, m_data))
+        if (MoveValidator.onlyAlliedUnitsOnPath(route, player, m_data, hasDestroyer))
             return null;
         
         //if we are all air, then its ok

@@ -680,6 +680,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             bridge.sendMessage(msg, m_defender);  
         }
         
+        bridge.getHistoryWriter().addChildToEvent(transcriptText, submerging);
+        
     }
     
     private void retreatUnits(Collection retreating, Territory to, boolean defender, DelegateBridge bridge)
