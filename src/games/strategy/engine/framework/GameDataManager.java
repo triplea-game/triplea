@@ -6,6 +6,7 @@ import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.util.*;
+import java.util.zip.*;
 
 /**
  * <p>Title: TripleA</p>
@@ -31,7 +32,7 @@ public class GameDataManager
     InputStream input = null;
     try
     {
-      input = new BufferedInputStream(new FileInputStream(savedGameFile));
+      input = new GZIPInputStream( new BufferedInputStream(new FileInputStream(savedGameFile)));
       return loadGame(input);
     }
     finally
@@ -130,8 +131,11 @@ public class GameDataManager
     writeDelegates(data, outStream);
     writeGameSteps(data, outStream);
 
+    GZIPOutputStream zippedOut = new GZIPOutputStream(sink);
     //now write to file
-    sink.write(bytes.toByteArray());
+    zippedOut.write(bytes.toByteArray());
+    zippedOut.flush();
+    zippedOut.close();
   }
 
   private void writeDelegates(GameData data, ObjectOutputStream out) throws IOException
