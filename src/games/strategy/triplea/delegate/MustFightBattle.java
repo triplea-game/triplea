@@ -595,8 +595,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (availableTerritories.isEmpty() && !(subs && canSubsSubmerge()))
             return;
 
-
-
         Collection units = defender ? m_defendingUnits : m_attackingUnits;
         if (subs)
         {
@@ -649,14 +647,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 String messageLong = retreatingPlayer.getName() + " retreats " + (subs ? "subs" : "all units") + " to " + retreatTo.getName();
                 bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, step), nonRetreatingPlayer);
 
-                
-                
-                
             }
-            
+
         }
     }
-    
+
     private Change retreatFromDependents(Collection units, DelegateBridge bridge, Territory retreatTo)
     {
         CompositeChange change = new CompositeChange();
@@ -668,17 +663,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Route route = new Route();
             route.setStart(m_battleSite);
             route.add(dependent.getTerritory());
-            
+
             Collection retreatedUnits = dependent.getDependentUnits(units);
-            
+
             dependent.removeAttack(route, retreatedUnits);
-            
+
             change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
         }
-        
-        
+
         return change;
-    }    
+    }
 
     private void submergeUnits(Collection submerging, boolean defender, DelegateBridge bridge)
     {
@@ -718,12 +712,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         CompositeChange change = new CompositeChange();
         change.add(ChangeFactory.moveUnits(m_battleSite, to, retreating));
-        
-        if(m_over)
+
+        if (m_over)
         {
             change.add(retreatFromDependents(retreating, bridge, to));
         }
-        
+
         bridge.addChange(change);
 
         Collection units = defender ? m_defendingUnits : m_attackingUnits;
@@ -785,6 +779,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
             killed = attackableUnits;
         } else
         {
+            Message diceNotification = new BattleInfoMessage(dice, "Waiting for " + hitPlayer.getName() + " to select casualties", stepName);
+            bridge.sendMessageNoResponse(diceNotification, firingPlayer);
+
             SelectCasualtyMessage message = selectCasualties(stepName, bridge, attackableUnits, !defender, text, dice);
             killed = message.getKilled();
             damaged = message.getDamaged();
@@ -904,10 +901,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (bombard.size() > 0 && attacked.size() > 0)
             fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, canReturnFire, bridge, "Bombard");
         markBombardingSources();
-        
+
         //these units cant move after bombarding
         DelegateFinder.moveDelegate(m_data).markNoMovement(bombard);
-        
+
     }
 
     /**
@@ -959,23 +956,22 @@ public class MustFightBattle implements Battle, BattleStepStrings
         // NEW VERSION
         DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge, m_battleSite);
 
-        if (dice.getHits() == 0)
-        {
-            bridge.sendMessage(new BattleStringMessage(step, "No AA hits"));
-            bridge.sendMessage(new BattleInfoMessage("No AA hits", "No AA hits", step), m_defender);
-        } else
-        {
-            Collection attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
-            Collection casualties = selectCasualties(step, bridge, attackable, false, "AA guns fire,", dice).getKilled();
+        //send attacker the dice roll so he can see what the dice are while he
+        // waits for
+        //attacker to select casualties
+        bridge.sendMessageNoResponse(new BattleInfoMessage(dice, "aa hits", step), m_defender);
 
-            CasualtyNotificationMessage msg = new CasualtyNotificationMessage(REMOVE_AA_CASUALTIES, casualties, Collections.EMPTY_LIST, m_dependentUnits, m_attacker, dice);
-            msg.setAll(false);
+        Collection attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
+        Collection casualties = selectCasualties(step, bridge, attackable, false, "AA guns fire,", dice).getKilled();
 
-            bridge.sendMessage(msg, m_attacker);
-            bridge.sendMessage(msg, m_defender);
+        CasualtyNotificationMessage msg = new CasualtyNotificationMessage(step, casualties, Collections.EMPTY_LIST, m_dependentUnits, m_attacker, dice);
+        msg.setAll(false);
 
-            removeCasualties(casualties, false, false, bridge);
-        }
+        bridge.sendMessage(msg, m_attacker);
+        bridge.sendMessage(msg, m_defender);
+
+        removeCasualties(casualties, false, false, bridge);
+
     }
 
     private boolean canFireAA()
@@ -1200,28 +1196,27 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         return m_attackingUnits;
     }
-    
+
     public Collection getDependentUnits(Collection units)
     {
         Collection rVal = new ArrayList();
-        
+
         Iterator iter = units.iterator();
-		while(iter.hasNext())
-		{
-			Unit unit = (Unit) iter.next();
-			Collection dependent = (Collection) m_dependentUnits.get(unit);
-			if(dependent != null)
-				rVal.addAll(dependent);
-		}
+        while (iter.hasNext())
+        {
+            Unit unit = (Unit) iter.next();
+            Collection dependent = (Collection) m_dependentUnits.get(unit);
+            if (dependent != null)
+                rVal.addAll(dependent);
+        }
         return rVal;
     }
-    
 
     public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
     {
 
         Collection lost = getDependentUnits(units);
-        
+
         //if all the amphibious attacking land units are lost, then we are
         //no longer a naval invasion
         m_amphibiousLandAttackers.removeAll(lost);

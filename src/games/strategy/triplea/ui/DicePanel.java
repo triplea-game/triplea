@@ -16,6 +16,8 @@ package games.strategy.triplea.ui;
 
 
 import java.awt.Dimension;
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.*;
 
 import games.strategy.triplea.delegate.DiceRoll;
@@ -47,8 +49,36 @@ public class DicePanel extends JPanel
     invalidate();
   }
 
-  public void setDiceRoll(DiceRoll diceRoll)
+  public void setDiceRoll(final DiceRoll diceRoll)
   {
+    if(!SwingUtilities.isEventDispatchThread() )  
+    {
+        try
+        {
+            SwingUtilities.invokeAndWait(
+            new Runnable()        
+            {
+                public void run()
+                {
+                    setDiceRoll(diceRoll);
+                }
+            }
+            
+            );
+        } catch (InterruptedException e)
+        {
+            
+            e.printStackTrace();
+        } catch (InvocationTargetException e)
+        {
+            
+            e.printStackTrace();
+        }
+        
+        return;
+    }
+      
+      
     removeAll();
     for(int i = 1; i <= 6; i++)
     {
@@ -63,7 +93,8 @@ public class DicePanel extends JPanel
     add(Box.createVerticalGlue());
     add(new JLabel("Total hits:" + diceRoll.getHits()));
 
-    invalidate();
+    validate();
+    repaint();
   }
 
   private JComponent create(int[] dice, int rollAt, boolean hitOnlyIfEquals)

@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate.message;
 
 import games.strategy.engine.data.PlayerID;
+import games.strategy.triplea.delegate.DiceRoll;
 
 /**
  * Sent to inform the player of an event that occured during the battle.
@@ -36,20 +37,27 @@ public class BattleInfoMessage extends BattleMessage
    * Allows the ui to ignore notifications if more than
    * one player is sharing the same ui.
    */
-  private String m_message;
-  private String m_shortMessage;
+  private final Object m_message;
+  private final String m_shortMessage;
 
+
+  
   /**
    * Creates a new instance of BattleInfoMessage
    */
-  public BattleInfoMessage(String message, String shortMessage, String step)
+  public BattleInfoMessage(Object message, String shortMessage, String step)
   {
     super(step);
+    
+    if( ! (message instanceof String || message instanceof DiceRoll))
+        throw new IllegalArgumentException("Message of wrong type");
+    
     m_message = message;
     m_shortMessage = shortMessage;
+    
   }
 
-  public String getMessage()
+  public Object getMessage()
   {
     return m_message;
   }
@@ -58,5 +66,7 @@ public class BattleInfoMessage extends BattleMessage
   {
     return m_shortMessage;
   }
+  
+ 
 
 }

@@ -27,6 +27,7 @@ import games.strategy.triplea.sound.SoundPath; //the relative path of sounds
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
 import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.image.UnitIconImageFactory;
@@ -419,12 +420,23 @@ public class BattleDisplay extends JPanel
 
     public Message battleInfo(BattleInfoMessage msg)
     {
-
         setStep(msg);
-        String ok = "OK";
-        String[] options = {ok};
-        JOptionPane.showOptionDialog(this, msg.getMessage(), msg.getShortMessage(), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, ok);
+        
+        if(msg.getMessage() instanceof DiceRoll)
+        {
 
+             m_dicePanel.setDiceRoll((DiceRoll) msg.getMessage());
+             m_actionLayout.show(m_actionPanel, DICE_KEY);
+             
+        }
+        else
+        {
+        
+            String ok = "OK";
+            String[] options = {ok};
+            String message = (String) msg.getMessage();
+            JOptionPane.showOptionDialog(this, message, msg.getShortMessage(), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, ok);
+        }
         return null;
     }
 
