@@ -789,7 +789,6 @@ public class MoveDelegate implements SaveableDelegate
         //neutrals we will overfly in the first place
         Collection neutrals = getEmptyNeutral(route);
         int ipcs = player.getResources().getQuantity(Constants.IPCS);
-
         while (iter.hasNext())
         {
             Territory possible = (Territory) iter.next();
@@ -800,8 +799,9 @@ public class MoveDelegate implements SaveableDelegate
                 Set overflownNeutrals = new HashSet();
                 overflownNeutrals.addAll(neutrals);
                 overflownNeutrals.addAll(getBestNeutralEmptyCollection(route.getEnd(), possible, distance));
-                if (ipcs >= getNeutralCharge(overflownNeutrals.size()))
+                if (ipcs >= getNeutralCharge(overflownNeutrals.size())) {
                     canLand = true;
+		}
             }
         }
         return canLand;
@@ -1028,7 +1028,7 @@ public class MoveDelegate implements SaveableDelegate
         //see if we can do better
         Match emptyNeutral = new CompositeMatchAnd(Matches.TerritoryIsNuetral, Matches.TerritoryIsEmpty);
 
-        Route alternate = m_data.getMap().getRoute(start, end, emptyNeutral);
+        Route alternate = m_data.getMap().getRoute(start, end, new InverseMatch(emptyNeutral));
         if (alternate == null)
             return neutral;
         if (alternate.getLength() > maxDistance)
