@@ -81,18 +81,22 @@ public class GameRunner
   private static void checkJavaVersion()
   {
      String strV = System.getProperties().getProperty("java.version");
-     int x = strV.indexOf("1.4");
-     int y = strV.indexOf("1.5");
-     //int z = strV.indexOf("1.6");  //well till that comes along...
+     boolean v13 = strV.indexOf("1.3") != -1;
+     boolean v12 = strV.indexOf("1.2") != -1;
 
-     if(x == -1 && y == -1 && !isMac()) {
-        JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
-        System.exit( -1);
+     if(v13 || v12)
+     {
+         if(!isMac()) 
+         {
+             JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
+             System.exit( -1);
+         }
+         if(isMac()) 
+         {
+             JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://www.apple.com/java/", "ERROR", JOptionPane.ERROR_MESSAGE);
+             System.exit( -1);
+         }
      }
-     else if(x == -1 && y == -1 && isMac()) {
-        JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://www.apple.com/java/", "ERROR", JOptionPane.ERROR_MESSAGE);
-        System.exit( -1);
-     };
 
   }//end checkJavaVersion()
 

@@ -46,7 +46,7 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
    */
   public void test()
   {
-    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getCocusedFrame(), 1, "Test", m_player1Email, m_player2Email);
+    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 1, "Test", m_player1Email, m_player2Email);
     dialog.setTest();
 
     dialog.roll();
@@ -59,12 +59,12 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
   public int[] getRandom(final int max, final int count, final String annotation)
   {
 
-    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getCocusedFrame(), count, annotation, m_player1Email, m_player2Email);
+    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), count, annotation, m_player1Email, m_player2Email);
     dialog.roll();
     return dialog.getDiceRoll();
   }
 
-  private Frame getCocusedFrame()
+  private Frame getFocusedFrame()
   {
       Frame[] frames = Frame.getFrames();
       Frame rVal = null;

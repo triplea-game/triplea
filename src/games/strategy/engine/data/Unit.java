@@ -32,14 +32,6 @@ import games.strategy.net.GUID;
  */
 public class Unit extends GameDataComponent implements Serializable
 {
-
-  //for network identification purposes.
-  private static GUID createUID()
-  {
-    return new GUID();
-  }
-
-
   private PlayerID m_owner;
   private GUID m_uid;
   private int m_hits;
@@ -67,7 +59,7 @@ public class Unit extends GameDataComponent implements Serializable
   {
     super(data);
     init(type, owner, data);
-    m_uid = createUID();
+    m_uid = new GUID();
     data.getUnits().put(this);
   }
 

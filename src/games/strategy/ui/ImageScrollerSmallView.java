@@ -184,6 +184,7 @@ public class ImageScrollerSmallView extends JComponent
       int x = e.getX() - (m_selectionWidth / 2);
       int y = e.getY() - (m_selectionHeight / 2);
 
+      
       setSelection(x,y);
     }
   };

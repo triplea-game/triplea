@@ -33,7 +33,7 @@ import java.util.*;
 public class AllianceTracker extends GameDataComponent
 {
 
-	//maps player to Collection of alliances names
+	//maps PlayerID to Collection of alliances names
 	private Map m_alliances = new HashMap();
 
 	/** Creates new Alliance Tracker. */

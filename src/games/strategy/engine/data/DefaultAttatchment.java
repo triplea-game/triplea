@@ -23,89 +23,89 @@ package games.strategy.engine.data;
 
 
 /**
+ * Contains some utility methods that subclasses can use to make writing attatchments easier
  *
  * @author  Sean Bridges
- * @version 1.0
  */
 public class DefaultAttatchment implements Attatchment
 {
-
-	private GameData m_data;
-  private Attatchable m_attatchedTo;
-  private String m_name;
-
-	/**
-	 * Throws an error if format is invalid.
-	 */
-	protected 	static int getInt(String aString)
-	{
-		int val = 0;
-		try
-		{
-			val = Integer.parseInt(aString);
-		} catch( NumberFormatException nfe)
-		{
-			throw new IllegalArgumentException(aString + " is not a valid int value");
-		}
-		return val;
-	}
-
-	/**
-	 * Throws an error if format is invalid.  Must be either true or false ignoring case.
-	 */
-	protected static boolean getBool(String aString)
-	{
-		if(aString.equalsIgnoreCase("true") )
-			return true;
-		else if(aString.equalsIgnoreCase("false"))
-			return false;
-		else
-			throw new IllegalArgumentException(aString + " is not a valid boolean");
-	}
-
-	public void setData(GameData data)
-	{
-		m_data = data;
-	}
-
-	protected GameData getData()
-	{
-		return m_data;
-	}
-
-	/**
-	 * Called after the attatchment is created.
-	 */
-	public void validate() throws GameParseException
-	{
-	}
-
-  public Attatchable getAttatchedTo()
-  {
-    return m_attatchedTo;
-  }
-
-  public void setAttatchedTo(Attatchable attatchable)
-  {
-    m_attatchedTo = attatchable;
-  }
-
-
-  /** Creates new Attatchment */
-  public DefaultAttatchment()
-  {
-
-  }
-  public String getName()
-  {
-    return m_name;
-  }
-
-  public void setName(String aString)
-  {
-    m_name = aString;
-  }
-
-
-
+    
+    private GameData m_data;
+    private Attatchable m_attatchedTo;
+    private String m_name;
+    
+    /**
+     * Throws an error if format is invalid.
+     */
+    protected 	static int getInt(String aString)
+    {
+        int val = 0;
+        try
+        {
+            val = Integer.parseInt(aString);
+        } catch( NumberFormatException nfe)
+        {
+            throw new IllegalArgumentException(aString + " is not a valid int value");
+        }
+        return val;
+    }
+    
+    /**
+     * Throws an error if format is invalid.  Must be either true or false ignoring case.
+     */
+    protected static boolean getBool(String aString)
+    {
+        if(aString.equalsIgnoreCase("true") )
+            return true;
+        else if(aString.equalsIgnoreCase("false"))
+            return false;
+        else
+            throw new IllegalArgumentException(aString + " is not a valid boolean");
+    }
+    
+    public void setData(GameData data)
+    {
+        m_data = data;
+    }
+    
+    protected GameData getData()
+    {
+        return m_data;
+    }
+    
+    /**
+     * Called after the attatchment is created.
+     */
+    public void validate() throws GameParseException
+    {
+    }
+    
+    public Attatchable getAttatchedTo()
+    {
+        return m_attatchedTo;
+    }
+    
+    public void setAttatchedTo(Attatchable attatchable)
+    {
+        m_attatchedTo = attatchable;
+    }
+    
+    
+    /** Creates new Attatchment */
+    public DefaultAttatchment()
+    {
+        
+    }
+    public String getName()
+    {
+        return m_name;
+    }
+    
+    public void setName(String aString)
+    {
+        m_name = aString;
+    }
+    
+    
+    
 }

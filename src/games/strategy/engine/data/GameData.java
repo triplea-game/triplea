@@ -29,6 +29,12 @@ import games.strategy.engine.history.*;
 
 /**
  *
+ * Central place to find all the information for a running game.
+ * Using this object you can find the territores, connections, production rules,
+ * unit types...
+ * 
+ * Everything in the xml game file.
+ *
  * @author  Sean Bridges
  * @version 1.0
  */

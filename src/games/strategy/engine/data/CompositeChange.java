@@ -23,6 +23,7 @@ package games.strategy.engine.data;
 import java.util.*;
 
 /**
+ * A Change made of several changes.
  *
  * @author  Sean Bridges
  */
