@@ -25,6 +25,7 @@ import games.strategy.engine.framework.ui.LauncherFrame;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 import java.util.logging.LogManager;
 
 import javax.swing.*;
@@ -96,7 +97,7 @@ public class GameRunner
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }
-        } 
+        }
 
     }//end checkJavaVersion()
 
@@ -135,14 +136,14 @@ public class GameRunner
 
     private static void setupLogging()
     {
-        //setup logging to read our logging.properties 
+        //setup logging to read our logging.properties
         try
         {
             LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
         } catch (Exception e)
         {
             e.printStackTrace();
-        }       
+        }
     }
 
     /**
@@ -150,17 +151,31 @@ public class GameRunner
      */
     public static File getRootFolder()
     {
-        // gentoo patch by Thomas Matthijs
-	
-        String rootFolder = System.getProperty("triplea.root");
-	if(rootFolder != null)
-	{
-		return new File(rootFolder);
-	}
-	else
-	{
-		return new File(".");
-	}
+        //this will fail if we are in a jar
+        //what we are doing is looking up the url to GameRunner.class
+        //we can find it because we are it
+        //we know that the class file is in a directory one above the games root folder
+        //so navigate up from the class file, and we have root.
+        
+        //find the url of our class
+        URL url = GameRunner.class.getResource("GameRunner.class");
+        
+        //we want to move up 1 directory for each  
+        //package
+        int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
+        File f = new File(url.getFile());
+        for(int i = 0; i < moveUpCount; i++)
+        {
+            f = f.getParentFile();
+        }
+        
+        if(!f.exists())
+        {
+            System.err.println("Could not find root folder, does  not exist:" + f);
+            return new File(".");
+        }
+        
+        return f;
     }
 
 }

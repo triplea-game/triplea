@@ -42,6 +42,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.text.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -55,7 +56,7 @@ import javax.swing.border.*;
  * 
  * Main frame for the triple a game
  */
-public class TripleAFrame extends JFrame 
+public class TripleAFrame extends JFrame
 {
     private final GameData m_data;
 
@@ -139,12 +140,10 @@ public class TripleAFrame extends JFrame
 
         JPanel stepPanel = new JPanel();
         stepPanel.setLayout(new GridBagLayout());
-        stepPanel.add(m_step, new GridBagConstraints(0, 0, 1, 1, 0, 0,
-                GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0,
-                        0, 0, 0), 0, 0));
-        stepPanel.add(m_round, new GridBagConstraints(1, 0, 1, 1, 0, 0,
-                GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0,
-                        0, 0, 0), 0, 0));
+        stepPanel.add(m_step,
+                new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        stepPanel.add(m_round, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0,
+                0));
 
         m_step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
         m_round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -181,9 +180,8 @@ public class TripleAFrame extends JFrame
         m_details = new TerritoryDetailPanel(m_mapPanel, m_data);
         m_tabsPanel.addTab("Territory", m_details);
 
-        m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView
-                .getPreferredSize().getWidth(), (int) m_mapPanel
-                .getPreferredSize().getHeight()));
+        m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize()
+                .getHeight()));
         gameCenterPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
 
         m_gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
@@ -225,22 +223,10 @@ public class TripleAFrame extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                String text = "<h2>TripleA</h2>  "
-                        +
+                String text = "<h2>TripleA</h2>  " +
 
-                        "<b>Engine Version:</b> "
-                        + games.strategy.engine.EngineVersion.VERSION
-                                .toString()
-                        + "<br>"
-                        + "<b>Game:</b> "
-                        + m_data.getGameName()
-                        + "<br>"
-                        + "<b>Game Version:</b>"
-                        + m_data.getGameVersion()
-                        + "<br>"
-                        + "<br>"
-                        + "For more information please visit, <p>"
-                        +
+                "<b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString() + "<br>" + "<b>Game:</b> " + m_data.getGameName()
+                        + "<br>" + "<b>Game Version:</b>" + m_data.getGameVersion() + "<br>" + "<br>" + "For more information please visit, <p>" +
 
                         "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><p>";
 
@@ -254,8 +240,7 @@ public class TripleAFrame extends JFrame
                 JScrollPane scroll = new JScrollPane(editorPane);
                 scroll.setBorder(null);
 
-                JOptionPane.showMessageDialog(TripleAFrame.this, editorPane,
-                        "About", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "About", JOptionPane.PLAIN_MESSAGE);
             }
         });
 
@@ -273,8 +258,7 @@ public class TripleAFrame extends JFrame
 
                 JScrollPane scroll = new JScrollPane(editorPane);
 
-                JOptionPane.showMessageDialog(TripleAFrame.this, scroll,
-                        "Hints", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Hints", JOptionPane.PLAIN_MESSAGE);
             }
         });
 
@@ -296,8 +280,7 @@ public class TripleAFrame extends JFrame
 
                     JScrollPane scroll = new JScrollPane(editorPane);
 
-                    JOptionPane.showMessageDialog(TripleAFrame.this, scroll,
-                            "Notes", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
                 }
             });
 
@@ -326,11 +309,124 @@ public class TripleAFrame extends JFrame
         // Put in unit size menu
         menuGame.add(getUnitSizeMenu());
 
-        //beagles Mapskin code
+        
+        
+        createMapSkinsMenu(menuGame);
+
+        final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
+
+        soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
+        //temporarily disable sound
+
+        soundCheckBox.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
+            }
+        });
+
+        final JCheckBoxMenuItem showMapDetails = new JCheckBoxMenuItem("Show Map Details");
+
+        showMapDetails.setSelected(TerritoryImageFactory.getShowReliefImages());
+
+        showMapDetails.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+
+                TerritoryImageFactory.setShowReliefImages(showMapDetails.isSelected());
+                Thread t = new Thread()
+                {
+                    public void run()
+                    {
+                        yield();
+                        m_mapPanel.updateCounties(m_data.getMap().getTerritories());
+
+                    }
+                };
+                t.start();
+
+            }
+        });
+
+        if (!m_game.getData().getProperties().getEditableProperties().isEmpty())
+        {
+            AbstractAction optionsAction = new AbstractAction("View Game Options...")
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    PropertiesUI ui = new PropertiesUI(m_game.getData().getProperties(), false);
+                    JOptionPane.showMessageDialog(TripleAFrame.this, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
+                }
+            };
+            menuGame.addSeparator();
+
+            menuGame.add(optionsAction);
+
+        }
+
+        menuGame.add(soundCheckBox);
+
+        menuGame.add(showMapDetails);
+        showMapDetails.setEnabled(MapData.getInstance().getHasRelief());
+
+        if (m_game instanceof ClientGame)
+            menuGame.add(showVerifiedDice);
+
+        final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem("Confirm Enemy Casualties");
+        showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
+        showEnemyCasualties.addActionListener(new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected());
+            }
+        });
+
+        menuGame.add(showEnemyCasualties);
+
+        Action showDiceStats = new AbstractAction("Show Dice Stats")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                IRandomStats randomStats = (IRandomStats) m_game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
+
+                RandomStatsDetails stats = randomStats.getRandomStats();
+
+                JPanel panel = new JPanel();
+                BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+                panel.setLayout(layout);
+
+                Iterator iter = new TreeSet(stats.getData().keySet()).iterator();
+                while (iter.hasNext())
+                {
+                    Object key = iter.next();
+                    int value = stats.getData().getInt(key);
+                    JLabel label = new JLabel(key + " was rolled " + value + " times");
+                    panel.add(label);
+                }
+                panel.add(new JLabel("  "));
+                DecimalFormat format = new DecimalFormat("#0.000");
+                panel.add(new JLabel("Average roll is :" + format.format(stats.getAverage())));
+
+                JOptionPane.showMessageDialog(TripleAFrame.this, panel, "Random Stats", JOptionPane.INFORMATION_MESSAGE);
+
+            }
+        };
+        menuGame.add(showDiceStats);
+    }
+
+    /**
+     * @param menuGame
+     */
+    private void createMapSkinsMenu(JMenu menuGame)
+    {
+        
+        //      beagles Mapskin code
         //creates a sub menu of radiobuttons for each available mapdir
 
         JMenuItem mapMenuItem;
-        menuGame.addSeparator();
         JMenu mapSubMenu = new JMenu("Map Skins");
         ButtonGroup mapButtonGroup = new ButtonGroup();
 
@@ -338,15 +434,15 @@ public class TripleAFrame extends JFrame
 
         final String currentMapSubDir = TerritoryImageFactory.getMapDir();
         final File mapsDir = new File(System.getProperty("user.dir") + "/classes/" + Constants.MAP_DIR);
-	
-	// TO DO:
-	//
-	// Make it use friendly constant. On some systems where the
-	// binaries are separated from the game files we can't use
-	// the "user.dir" property ... possibly "triplea.root" ?
-	//
-	// mapsDir = /games/strategy/triplea/image/images/maps/
-	//final File mapsDir = new File(Constants.MAP_DIR);
+
+        // TO DO:
+        //
+        // Make it use friendly constant. On some systems where the
+        // binaries are separated from the game files we can't use
+        // the "user.dir" property ... possibly "triplea.root" ?
+        //
+        // mapsDir = /games/strategy/triplea/image/images/maps/
+        //final File mapsDir = new File(Constants.MAP_DIR);
 
         if (currentMapSubDir != null)
         {
@@ -364,9 +460,11 @@ public class TripleAFrame extends JFrame
                     return (false);
                 }
             };
-	    
-            String[] mapDirs = mapsDir.list(filter);
 
+            String[] mapDirs = mapsDir.list(filter);
+            if(mapDirs == null)
+                return;
+            
             //create entry for each mapdir
             String mapMenuItemName;
             for (int i = 0; i < mapDirs.length; i++)
@@ -401,24 +499,17 @@ public class TripleAFrame extends JFrame
                             } catch (Exception se)
                             {
                                 se.printStackTrace();
-                                JOptionPane.showMessageDialog(
-                                        TripleAFrame.this, se.getMessage(),
-                                        "Error Changing Map Skin",
-                                        JOptionPane.OK_OPTION);
+                                JOptionPane.showMessageDialog(TripleAFrame.this, se.getMessage(), "Error Changing Map Skin", JOptionPane.OK_OPTION);
                             }
                         } else
                         {
                             try
                             {
-                                UpdateMap(currentMapSubDir
-                                        + e.getActionCommand());
+                                UpdateMap(currentMapSubDir + e.getActionCommand());
                             } catch (Exception se)
                             {
                                 se.printStackTrace();
-                                JOptionPane.showMessageDialog(
-                                        TripleAFrame.this, se.getMessage(),
-                                        "Error Changing Map Skin2",
-                                        JOptionPane.OK_OPTION);
+                                JOptionPane.showMessageDialog(TripleAFrame.this, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
                             }
 
                         }//else
@@ -432,125 +523,6 @@ public class TripleAFrame extends JFrame
 
         // add the sub menu to the menu
         menuGame.add(mapSubMenu);
-
-        final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
-
-        soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
-        //temporarily disable sound
-
-        soundCheckBox.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                ClipPlayer.getInstance().setBeSilent(
-                        !soundCheckBox.isSelected());
-            }
-        });
-
-        final JCheckBoxMenuItem showMapDetails = new JCheckBoxMenuItem("Show Map Details");
-
-        showMapDetails.setSelected(TerritoryImageFactory.getShowReliefImages());
-       
-        showMapDetails.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-
-                TerritoryImageFactory.setShowReliefImages(showMapDetails
-                        .isSelected());
-                Thread t = new Thread()
-                {
-                    public void run()
-                    {
-                        yield();
-                        m_mapPanel.updateCounties(m_data.getMap()
-                                .getTerritories());
-
-                    }
-                };
-                t.start();
-
-            }
-        });
-
-        if (!m_game.getData().getProperties().getEditableProperties().isEmpty())
-        {
-            AbstractAction optionsAction = new AbstractAction(
-                    "View Game Options...")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    PropertiesUI ui = new PropertiesUI(m_game.getData()
-                            .getProperties(), false);
-                    JOptionPane.showMessageDialog(TripleAFrame.this, ui,
-                            "Game options", JOptionPane.PLAIN_MESSAGE);
-                }
-            };
-            menuGame.addSeparator();
-
-            menuGame.add(optionsAction);
-
-        }
-
-        menuGame.add(soundCheckBox);
-
-        
-        menuGame.add(showMapDetails);
-        showMapDetails.setEnabled(MapData.getInstance().getHasRelief());
-        
-        if (m_game instanceof ClientGame)
-            menuGame.add(showVerifiedDice);
-
-        final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem(
-                "Confirm Enemy Casualties");
-        showEnemyCasualties.setSelected(BattleDisplay
-                .getShowEnemyCasualtyNotification());
-        showEnemyCasualties.addActionListener(new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                BattleDisplay
-                        .setShowEnemyCasualtyNotification(showEnemyCasualties
-                                .isSelected());
-            }
-        });
-
-        menuGame.add(showEnemyCasualties);
-
-        Action showDiceStats = new AbstractAction("Show Dice Stats")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                IRandomStats randomStats = (IRandomStats) m_game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
-                
-                RandomStatsDetails stats = randomStats.getRandomStats();                 
-                
-
-                JPanel panel = new JPanel();
-                BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
-                panel.setLayout(layout);
-
-                Iterator iter = new TreeSet(stats.getData().keySet())
-                        .iterator();
-                while (iter.hasNext())
-                {
-                    Object key = iter.next();
-                    int value = stats.getData().getInt(key);
-                    JLabel label = new JLabel(key + " was rolled " + value
-                            + " times");
-                    panel.add(label);
-                }
-                panel.add(new JLabel("  "));
-                DecimalFormat format = new DecimalFormat("#0.000");
-                panel.add(new JLabel("Average roll is :"
-                        + format.format(stats.getAverage())));
-
-                JOptionPane.showMessageDialog(TripleAFrame.this, panel,
-                        "Random Stats", JOptionPane.INFORMATION_MESSAGE);
-
-            }
-        };
-        menuGame.add(showDiceStats);
     }
 
     /**
@@ -568,11 +540,8 @@ public class TripleAFrame extends JFrame
             {
                 if (!m_game.canSave())
                 {
-                    JOptionPane
-                            .showMessageDialog(
-                                    TripleAFrame.this,
-                                    "You cannot save the game if you are playing as a client",
-                                    "Cant save", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(TripleAFrame.this, "You cannot save the game if you are playing as a client", "Cant save",
+                            JOptionPane.OK_OPTION);
                     return;
                 }
 
@@ -580,8 +549,7 @@ public class TripleAFrame extends JFrame
 
                 try
                 {
-                    JFileChooser fileChooser = SaveGameFileChooser
-                            .getInstance();
+                    JFileChooser fileChooser = SaveGameFileChooser.getInstance();
 
                     int rVal = fileChooser.showSaveDialog(TripleAFrame.this);
                     if (rVal == JFileChooser.APPROVE_OPTION)
@@ -592,13 +560,9 @@ public class TripleAFrame extends JFrame
                         // added by NeKromancer
                         if (f.exists())
                         {
-                            int choice = JOptionPane
-                                    .showConfirmDialog(
-                                            TripleAFrame.this,
-                                            "A file by that name already exists. Do you wish to over write it?",
-                                            "Over-write?",
-                                            JOptionPane.YES_NO_OPTION,
-                                            JOptionPane.WARNING_MESSAGE);
+                            int choice = JOptionPane.showConfirmDialog(TripleAFrame.this,
+                                    "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.WARNING_MESSAGE);
                             if (choice != JOptionPane.OK_OPTION)
                             {
                                 return;
@@ -611,22 +575,17 @@ public class TripleAFrame extends JFrame
                         }
 
                         manager.saveGame(f, m_data);
-                        JOptionPane.showMessageDialog(TripleAFrame.this,
-                                "Game Saved", "Game Saved",
-                                JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
                     }
 
                 } catch (Exception se)
                 {
                     se.printStackTrace();
-                    JOptionPane.showMessageDialog(TripleAFrame.this, se
-                            .getMessage(), "Error Saving Game",
-                            JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(TripleAFrame.this, se.getMessage(), "Error Saving Game", JOptionPane.OK_OPTION);
                 }
             }
         });
-        menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                ActionEvent.CTRL_MASK));
+        menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 
         fileMenu.add(menuFileSave);
 
@@ -637,8 +596,7 @@ public class TripleAFrame extends JFrame
                 shutdown();
             }
         });
-        menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
-                ActionEvent.CTRL_MASK));
+        menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
         fileMenu.add(menuFileExit);
     }
 
@@ -704,66 +662,56 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForPurchase(bid);
     }
 
-    public MoveDescription getMove(PlayerID player, IPlayerBridge bridge,
-            boolean nonCombat)
+    public MoveDescription getMove(PlayerID player, IPlayerBridge bridge, boolean nonCombat)
     {
         m_actionButtons.changeToMove(player, nonCombat);
         return m_actionButtons.waitForMove(bridge);
     }
 
-    public PlaceData waitForPlace(PlayerID player, boolean bid,
-            IPlayerBridge bridge)
+    public PlaceData waitForPlace(PlayerID player, boolean bid, IPlayerBridge bridge)
     {
         m_actionButtons.changeToPlace(player);
         return m_actionButtons.waitForPlace(bid, bridge);
     }
 
-
-    public FightBattleDetails getBattle(PlayerID player, Collection battles,
-            Collection bombingRaids)
+    public FightBattleDetails getBattle(PlayerID player, Collection battles, Collection bombingRaids)
     {
         m_actionButtons.changeToBattle(player, battles, bombingRaids);
         return m_actionButtons.waitForBattleSelection();
     }
 
-
     public void notifyError(String message)
     {
-        JOptionPane.showMessageDialog(this, message, "Error",
-                JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
-
 
     public void notifyMessage(String message)
     {
-        JOptionPane.showMessageDialog(this, message, message,
-                JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, message, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public boolean getOKToLetAirDie(String message)
     {
         String ok = "Kill air";
         String cancel = "Keep moving";
-        String[] options = { cancel, ok };
-        int choice = JOptionPane.showOptionDialog(this, message,
-                "Air cannot land", JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE, null, options, cancel);
+        String[] options =
+        { cancel, ok };
+        int choice = JOptionPane.showOptionDialog(this, message, "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                options, cancel);
         return choice == 1;
     }
 
     public boolean getOK(String message)
     {
-        int choice = JOptionPane.showConfirmDialog(this, message, message,
-                JOptionPane.OK_CANCEL_OPTION);
+        int choice = JOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION);
         return choice == JOptionPane.OK_OPTION;
     }
 
     public void notifyTechResults(TechResults msg)
     {
         TechResultsDisplay display = new TechResultsDisplay(msg);
-        JOptionPane.showOptionDialog(this, display, "Tech roll",
-                JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                new String[] { "OK" }, "OK");
+        JOptionPane.showOptionDialog(this, display, "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[]
+        { "OK" }, "OK");
 
     }
 
@@ -772,16 +720,16 @@ public class TripleAFrame extends JFrame
         String message = "Bomb in " + location.getName();
         String bomb = "Bomb";
         String normal = "Attack";
-        String[] choices = { bomb, normal };
-        int choice = JOptionPane.showOptionDialog(this, message, "Bomb?",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                null, choices, bomb);
+        String[] choices =
+        { bomb, normal };
+        int choice = JOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+                choices, bomb);
         return choice == 0;
     }
 
     public Territory selectTerritoryForAirToLand(Collection candidates)
     {
-        
+
         JList list = new JList(new Vector(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
@@ -790,12 +738,11 @@ public class TripleAFrame extends JFrame
         JScrollPane scroll = new JScrollPane(list);
         panel.add(scroll, BorderLayout.CENTER);
 
-        String[] options = { "OK" };
+        String[] options =
+        { "OK" };
         String message = "Select territory for air units to land";
 
-        JOptionPane.showOptionDialog(this, panel, message,
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                options, null);
+        JOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 
         Territory selected = (Territory) list.getSelectedValue();
 
@@ -810,7 +757,7 @@ public class TripleAFrame extends JFrame
 
     public Territory getRocketAttack(Collection candidates, Territory from)
     {
-        
+
         JList list = new JList(new Vector(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
@@ -821,16 +768,15 @@ public class TripleAFrame extends JFrame
 
         if (from != null)
         {
-            panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in "
-                    + from.getName()));
+            panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
         }
 
-        String[] options = { "OK", "Dont attack" };
+        String[] options =
+        { "OK", "Dont attack" };
         String message = "Select Rocket Target";
 
-        int selection = JOptionPane.showOptionDialog(this, panel, message,
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                options, null);
+        int selection = JOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+                null);
 
         Territory selected = null;
         if (selection == 0) //OK
@@ -848,8 +794,7 @@ public class TripleAFrame extends JFrame
         while (iter.hasNext())
         {
             IGamePlayer gamePlayer = (IGamePlayer) iter.next();
-            if (gamePlayer.getID().equals(id)
-                    && gamePlayer instanceof TripleAPlayer)
+            if (gamePlayer.getID().equals(id) && gamePlayer instanceof TripleAPlayer)
             {
                 return true;
             }
@@ -859,21 +804,16 @@ public class TripleAFrame extends JFrame
 
     private IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
     {
-        public void connectionLost(INode node, Exception reason,
-                java.util.List unsent)
+        public void connectionLost(INode node, Exception reason, java.util.List unsent)
         {
-            String message = "Connection lost to " + node.getName()
-                    + ". Game over.";
-            JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            String message = "Connection lost to " + node.getName() + ". Game over.";
+            JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        public void messengerInvalid(IMessenger messenger, Exception reason,
-                java.util.List unsent)
+        public void messengerInvalid(IMessenger messenger, Exception reason, java.util.List unsent)
         {
             String message = "Network connection lost. Game over.";
-            JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE);
         }
     };
 
@@ -915,8 +855,7 @@ public class TripleAFrame extends JFrame
     GameStepListener m_stepListener = new GameStepListener()
     {
 
-        public void gameStepChanged(String stepName, String delegateName,
-                PlayerID player, int round, String stepDisplayName)
+        public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String stepDisplayName)
         {
             updateStep();
         }
@@ -928,8 +867,8 @@ public class TripleAFrame extends JFrame
             return;
 
         //we nee d to invoke and wait here since
-        //if we switch to the history as a result of a history 
-        //change, we need to ensure that no further history 
+        //if we switch to the history as a result of a history
+        //change, we need to ensure that no further history
         //events are run until our historySynchronizer is set up
         if (!SwingUtilities.isEventDispatchThread())
         {
@@ -954,20 +893,17 @@ public class TripleAFrame extends JFrame
         }
 
         int round = m_data.getSequence().getRound();
-        String stepDisplayName = m_data.getSequence().getStep()
-                .getDisplayName();
+        String stepDisplayName = m_data.getSequence().getStep().getDisplayName();
         PlayerID player = m_data.getSequence().getStep().getPlayerID();
 
         m_round.setText("Round:" + round + " ");
         m_step.setText(stepDisplayName);
         if (player != null && !player.isNull())
-            m_round.setIcon(new ImageIcon(FlagIconImageFactory.instance()
-                    .getFlag(player)));
+            m_round.setIcon(new ImageIcon(FlagIconImageFactory.instance().getFlag(player)));
 
         //if the game control has passed to someone else
         //show the history
-        if (player != null && !player.isNull() && !playing(player)
-                && !m_inHistory)
+        if (player != null && !player.isNull() && !playing(player) && !m_inHistory)
         {
             if (SwingUtilities.isEventDispatchThread())
                 showHistory();
@@ -984,12 +920,11 @@ public class TripleAFrame extends JFrame
         }
         //if the game control is with us
         //show the current game
-        else if (player != null && !player.isNull() && playing(player)
-                && m_inHistory)
+        else if (player != null && !player.isNull() && playing(player) && m_inHistory)
         {
             showGame();
-            ClipPlayer.getInstance().playClip(SoundPath.START_TURN,
-                    SoundPath.class); //play sound
+            ClipPlayer.getInstance().playClip(SoundPath.START_TURN, SoundPath.class); //play
+                                                                                      // sound
         }
 
     }
@@ -1011,8 +946,7 @@ public class TripleAFrame extends JFrame
         m_details.setGameData(clonedGameData);
         m_mapPanel.setGameData(clonedGameData);
 
-        HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(
-                clonedGameData, m_mapPanel);
+        HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, m_mapPanel);
 
         m_tabsPanel.removeAll();
         m_tabsPanel.add("History", historyDetailPanel);
@@ -1051,8 +985,7 @@ public class TripleAFrame extends JFrame
             ByteArrayOutputStream sink = new ByteArrayOutputStream(10000);
             manager.saveGame(sink, m_data, false);
             sink.close();
-            ByteArrayInputStream source = new ByteArrayInputStream(sink
-                    .toByteArray());
+            ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
             sink = null;
             return manager.loadGame(source);
         } catch (IOException ex)
@@ -1105,8 +1038,7 @@ public class TripleAFrame extends JFrame
         m_showGameAction.setEnabled(m_inHistory);
     }
 
-    private AbstractAction m_showHistoryAction = new AbstractAction(
-            "Show history")
+    private AbstractAction m_showHistoryAction = new AbstractAction("Show history")
     {
         public void actionPerformed(ActionEvent e)
         {
@@ -1114,8 +1046,7 @@ public class TripleAFrame extends JFrame
         };
     };
 
-    private AbstractAction m_showGameAction = new AbstractAction(
-            "Show current game")
+    private AbstractAction m_showGameAction = new AbstractAction("Show current game")
     {
         {
             setEnabled(false);
@@ -1135,14 +1066,11 @@ public class TripleAFrame extends JFrame
         ScrollableTextField text = new ScrollableTextField(0, fighters.size());
         text.setBorder(new EmptyBorder(8, 8, 8, 8));
         panel.add(text, BorderLayout.CENTER);
-        panel.add(new JLabel("How many fighters do you want to move from "
-                + where.getName() + " to new carrier?"),
-                BorderLayout.NORTH);
+        panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"), BorderLayout.NORTH);
 
-        int choice = JOptionPane.showOptionDialog(this, panel,
-                "Place fighters on new carrier?", JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.OK_CANCEL_OPTION, null, new String[] { "OK",
-                        "Cancel" }, "OK");
+        int choice = JOptionPane.showOptionDialog(this, panel, "Place fighters on new carrier?", JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.OK_CANCEL_OPTION, null, new String[]
+                { "OK", "Cancel" }, "OK");
         if (choice == 0)
         {
             return new ArrayList(fighters).subList(0, text.getValue());
@@ -1152,6 +1080,9 @@ public class TripleAFrame extends JFrame
 
     private JMenu getUnitSizeMenu()
     {
+         
+        final NumberFormat s_decimalFormat = new DecimalFormat("00.##");
+
         // This is the action listener used
         class UnitSizeAction extends AbstractAction
         {
@@ -1160,9 +1091,9 @@ public class TripleAFrame extends JFrame
             public UnitSizeAction(double scaleFactor)
             {
                 m_scaleFactor = scaleFactor;
-                putValue(Action.NAME, DecimalFormat.getInstance().format(m_scaleFactor * 100) + "%");
+                putValue(Action.NAME, s_decimalFormat.format(m_scaleFactor * 100) + "%");
             }
-            
+
             public void actionPerformed(ActionEvent e)
             {
                 UnitIconImageFactory.instance().setScaleFactor(m_scaleFactor);
@@ -1173,14 +1104,13 @@ public class TripleAFrame extends JFrame
         JMenu unitSizeMenu = new JMenu();
         unitSizeMenu.setText("Unit Size");
         ButtonGroup unitSizeGroup = new ButtonGroup();
-        JRadioButtonMenuItem radioItem125 = new JRadioButtonMenuItem(new UnitSizeAction(1.25) );
-        
-        JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem(new UnitSizeAction(1.0) );
-        JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem(new UnitSizeAction(0.875) );
-        JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333) );
-        JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75) );
-        JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666) );
-       
+        JRadioButtonMenuItem radioItem125 = new JRadioButtonMenuItem(new UnitSizeAction(1.25));
+
+        JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem(new UnitSizeAction(1.0));
+        JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem(new UnitSizeAction(0.875));
+        JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333));
+        JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75));
+        JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666));
 
         unitSizeGroup.add(radioItem125);
         unitSizeGroup.add(radioItem100);
@@ -1190,25 +1120,24 @@ public class TripleAFrame extends JFrame
         unitSizeGroup.add(radioItem66);
 
         radioItem100.setSelected(true);
-        
+
         //select the closest to to the default size
         Enumeration enum1 = unitSizeGroup.getElements();
         boolean matchFound = false;
-        while(enum1.hasMoreElements())
+        while (enum1.hasMoreElements())
         {
             JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();
-             UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
-             if(Math.abs(action.m_scaleFactor - MapData.getInstance().getDefaultUnitScale()) < 0.01 )
-             {
-                 menuItem.setSelected(true);
-                 matchFound = true;
-                 break;
-             }
+            UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
+            if (Math.abs(action.m_scaleFactor - MapData.getInstance().getDefaultUnitScale()) < 0.01)
+            {
+                menuItem.setSelected(true);
+                matchFound = true;
+                break;
+            }
         }
-        
-        if(!matchFound)
+
+        if (!matchFound)
             System.err.println("default unit size does not match any menu item");
-        
 
         unitSizeMenu.add(radioItem125);
         unitSizeMenu.add(radioItem100);
@@ -1219,32 +1148,30 @@ public class TripleAFrame extends JFrame
 
         return unitSizeMenu;
     }
-    
+
     public BattlePanel getBattlePanel()
     {
         return m_actionButtons.getBattlePanel();
     }
-    
+
     public MovePanel getMovePanel()
     {
         return m_actionButtons.getMovePanel();
     }
-    
-    public TechPanel getTechPanel() 
+
+    public TechPanel getTechPanel()
     {
         return m_actionButtons.getTechPanel();
     }
-    
+
     public PlacePanel getPlacePanel()
     {
         return m_actionButtons.getPlacePanel();
     }
-    
+
     public PurchasePanel getPurchasePanel()
     {
         return m_actionButtons.getPurchasePanel();
     }
 
-    
-    
 }
