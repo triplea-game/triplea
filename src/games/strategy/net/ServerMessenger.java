@@ -151,6 +151,7 @@ public class ServerMessenger implements IServerMessenger
   {
     MessageHeader header = new MessageHeader(m_node, msg);
     forwardBroadcast(header);
+    notifyListeners(header);
   }
 
   private void serverMessageReceived(ServerMessage msg)

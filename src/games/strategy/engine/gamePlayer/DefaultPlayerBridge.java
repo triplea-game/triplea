@@ -39,12 +39,13 @@ public class DefaultPlayerBridge implements PlayerBridge
 	private String m_currentStep;
 	private String m_currentDelegate;
 
-	/** Creates new DefaultPlayerBridge */
-    public DefaultPlayerBridge(IGame aGame)
-	{
-		m_game = aGame;
-		m_game.addGameStepListener(m_gameStepListener);
-    }
+
+  /** Creates new DefaultPlayerBridge */
+  public DefaultPlayerBridge(IGame aGame)
+  {
+    m_game = aGame;
+    m_game.addGameStepListener(m_gameStepListener);
+  }
 
 	/**
 	 * Send a message to the current delegate
@@ -75,6 +76,12 @@ public class DefaultPlayerBridge implements PlayerBridge
 	{
 		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
 		{
+      if(stepName == null)
+        throw new IllegalArgumentException("Null step");
+      if(delegateName == null)
+        throw new IllegalArgumentException("Null delegate");
+
+
 			m_currentStep = stepName;
 			m_currentDelegate = delegateName;
 		}

@@ -55,6 +55,7 @@ public class HistoryWriter implements java.io.Serializable
 
     Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
     m_current.add(currentStep);
+    m_history.reload(m_current);
     m_current = currentStep;
   }
 
@@ -70,6 +71,7 @@ public class HistoryWriter implements java.io.Serializable
     Round currentRound = new Round(round, m_history.getChanges().size());
 
     ( (HistoryNode) m_history.getRoot()).add(currentRound);
+    m_history.reload();
     m_current = currentRound;
   }
 
@@ -101,7 +103,9 @@ public class HistoryWriter implements java.io.Serializable
     Event event = new Event(eventName, m_history.getChanges().size());
 
     m_current.add(event);
+    m_history.reload(m_current);
     m_current = event;
+
   }
 
   private boolean isCurrentEvent()
@@ -128,6 +132,7 @@ public class HistoryWriter implements java.io.Serializable
       throw new IllegalStateException("Not in an event");
 
     m_current.add(node);
+    m_history.reload(m_current);
   }
 
   /**
@@ -145,5 +150,7 @@ public class HistoryWriter implements java.io.Serializable
     if (!isCurrentEvent())
       throw new IllegalStateException("Not in an event, but trying to set details:" + details);
     ( (Event) m_current).setRenderingData(details);
+    m_history.reload(m_current);
+    m_history.reload(m_current);
   }
 }

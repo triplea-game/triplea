@@ -78,6 +78,7 @@ public class TripleAFrame extends JFrame
   private JPanel m_gameSouthPanel;
   private HistoryPanel m_historyTree ;
   private boolean m_inHistory = false;
+  private HistorySynchronizer m_historySyncher;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(IGame game, Set players) throws IOException
@@ -663,6 +664,8 @@ public class TripleAFrame extends JFrame
           return;
 
       clonedGameData.getAllianceTracker();
+       m_historySyncher = new HistorySynchronizer(clonedGameData, m_game.getMessenger());
+
 
       m_statsPanel.setGameData(clonedGameData);
       m_details.setGameData(clonedGameData);
@@ -718,8 +721,13 @@ public class TripleAFrame extends JFrame
 
   public void showGame()
   {
-     m_inHistory = false;
+    m_inHistory = false;
+
+    if(m_historySyncher != null)
+        m_historySyncher.deactivate();
+
      setWidgetActivation();
+
 
       m_historyTree.goToEnd();
       m_historyTree = null;

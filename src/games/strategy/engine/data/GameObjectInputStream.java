@@ -30,50 +30,50 @@ import games.strategy.engine.framework.GameObjectStreamFactory;
  */
 public class GameObjectInputStream extends ObjectInputStream
 {
-	private final GameObjectStreamFactory m_dataSource;
+  private final GameObjectStreamFactory m_dataSource;
 
-	/** Creates new GameObjectReader */
-    public GameObjectInputStream(GameObjectStreamFactory dataSource, InputStream input) throws IOException
-	{
-		super(input);
+  /** Creates new GameObjectReader */
+  public GameObjectInputStream(GameObjectStreamFactory dataSource, InputStream input) throws IOException
+  {
+    super(input);
 
-		m_dataSource = dataSource;
-		enableResolveObject(true);
-    }
+    m_dataSource = dataSource;
+    enableResolveObject(true);
+  }
 
-	public GameData getData()
-	{
-		return m_dataSource.getData();
-	}
+  public GameData getData()
+  {
+    return m_dataSource.getData();
+  }
 
-	protected Object resolveObject(Object obj) throws IOException
-	{
-    if(obj instanceof GameData)
+  protected Object resolveObject(Object obj) throws IOException
+  {
+    if (obj instanceof GameData)
     {
-       return m_dataSource.getData();
+      return m_dataSource.getData();
     }
-		else if((obj instanceof GameObjectStreamData))
-		{
-			return ((GameObjectStreamData) obj).getReference(getData());
-		}
-		else if(obj instanceof Unit)
-		{
-			return resolveUnit((Unit) obj);
-		}
-		else
-			return obj;
-	}
+    else if ( (obj instanceof GameObjectStreamData))
+    {
+      return ( (GameObjectStreamData) obj).getReference(getData());
+    }
+    else if (obj instanceof Unit)
+    {
+      return resolveUnit( (Unit) obj);
+    }
+    else
+      return obj;
+  }
 
-	private Object resolveUnit(Unit unit)
-	{
+  private Object resolveUnit(Unit unit)
+  {
 
-		Unit local = m_dataSource.getData().getUnits().get(unit.getID());
-		if(local != null)
-			return local;
-		else
-		{
-            getData().getUnits().put(unit);
-			return unit;
-		}
-	}
+    Unit local = m_dataSource.getData().getUnits().get(unit.getID());
+    if (local != null)
+      return local;
+    else
+    {
+      getData().getUnits().put(unit);
+      return unit;
+    }
+  }
 }
