@@ -54,10 +54,6 @@ public class EndRoundDelegate implements SaveableDelegate
 	{
     }
 
-	public void initialize(String name)
-	{
-		initialize(name, name);
-	}
 
 	public void initialize(String name, String displayName)
 	{

@@ -66,7 +66,7 @@ public class MoveDelegateTest extends DelegateTest
     m_bridge = new TestDelegateBridge(m_data, british);
     m_bridge.setStepName("BritishCombatMove");
     m_delegate = new MoveDelegate();
-    m_delegate.initialize("MoveDelegate");
+    m_delegate.initialize("MoveDelegate", "MoveDelegate");
     m_delegate.start(m_bridge, m_data);
   }
 

@@ -41,14 +41,10 @@ public class InitializationDelegate implements Delegate
 
 
   /** Creates a new instance of InitializationDelegate */
-    public InitializationDelegate()
+  public InitializationDelegate()
   {
-    }
-
-  public void initialize(String name)
-  {
-    initialize(name, name);
   }
+
 
   public void initialize(String name, String displayName)
   {

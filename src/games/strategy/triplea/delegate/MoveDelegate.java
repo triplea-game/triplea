@@ -61,13 +61,8 @@ public class MoveDelegate implements SaveableDelegate
   private IntegerMap m_alreadyMoved = new IntegerMap();
 
   /** Creates new MoveDelegate */
-    public MoveDelegate()
+  public MoveDelegate()
   {
-    }
-
-  public void initialize(String name)
-  {
-    initialize(name, name);
   }
 
   public void initialize(String name, String displayName)

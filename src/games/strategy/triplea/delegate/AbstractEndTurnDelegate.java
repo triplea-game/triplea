@@ -46,11 +46,6 @@ public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Seria
 	//we only want to notify once that the game is over
 	protected boolean m_gameOver = false;
 
-	public void initialize(String name)
-	{
-		initialize(name, name);
-	}
-
 	public void initialize(String name, String displayName)
 	{
 		m_name = name;

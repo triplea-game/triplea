@@ -52,11 +52,6 @@ public class BattleDelegate implements SaveableDelegate
   //dont allow saving while handling a message
   private boolean m_inBattle;
 
-  public void initialize(String name)
-  {
-    initialize(name, name);
-  }
-
   public void initialize(String name, String displayName)
   {
     m_name = name;

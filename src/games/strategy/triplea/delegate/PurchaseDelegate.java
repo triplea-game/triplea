@@ -51,11 +51,6 @@ public class PurchaseDelegate implements Delegate
   private PlayerID m_player;
   private GameData m_data;
 
-  public void initialize(String name)
-  {
-    initialize(name, name);
-  }
-
   public void initialize(String name, String displayName)
   {
     m_name = name;

@@ -47,11 +47,6 @@ import games.strategy.engine.message.IDestination;
 public interface Delegate extends IDestination
 {
 
-	/*
-	 * Uses name as the interal unique name and for display to users
-	 */
-
-	public void initialize(String name);
 
 	/*
 	 * Uses name as the interal unique name and displayName for display to users

@@ -53,10 +53,6 @@ public class TechnologyDelegate implements SaveableDelegate
   {
   }
 
-  public void initialize(String name)
-  {
-    initialize(name, name);
-  }
 
   public void initialize(String name, String displayName)
   {
