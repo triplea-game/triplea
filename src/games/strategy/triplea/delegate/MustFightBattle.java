@@ -147,12 +147,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     public void addAttack(Route route, Collection units)
     {
-
+        // Filter out allied units if fourth edition
         Match ownedBy = Matches.unitIsOwnedBy(m_attacker);
-	// Filter out allied units if fourth edition
 	Collection attackingUnits = isFourthEdition() ? Match.getMatches(units, ownedBy) : units;
+
         Territory attackingFrom = getAttackFrom(route);
-        m_attackingFrom.add(attackingFrom);
+
+	m_attackingFrom.add(attackingFrom);
+
         m_attackingUnits.addAll(attackingUnits);
         
         if (m_attackingFromMap.get(attackingFrom) == null)
@@ -528,10 +530,33 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     private Collection getAttackerRetreatTerritories()
     {
-        
+
+        // If attacker is all planes, just return collection of current territory
+      if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+	{
+	  Collection oneTerritory = new ArrayList(2);
+	  oneTerritory.add(m_battleSite);
+	  return oneTerritory;
+	}
+	
+
         //its possible that a sub retreated to a territory we came from,
         //if so we can no longer retreat there
         Collection possible = Match.getMatches(m_attackingFrom, Matches.territoryHasNoEnemyUnits(m_attacker, m_data));
+	
+	// In 4th edition we need to filter out territories where only planes came from since planes cannot define retreat paths
+	if (isFourthEdition()) {
+	  possible = Match.getMatches(possible, new Match()
+	    {
+	      public boolean match(Object obj)
+	      {
+		Collection units = (Collection)m_attackingFromMap.get(obj);
+		return !Match.allMatch(units, Matches.UnitIsAir);
+	      }
+	    }
+	    );
+	}
+
         //the battle site is in the attacking from
         //if sea units are fighting a submerged sub
         possible.remove(m_battleSite);
@@ -552,6 +577,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return false;
         
         Collection options = getAttackerRetreatTerritories();
+
         if (options.size() == 0)
             return false;
         
