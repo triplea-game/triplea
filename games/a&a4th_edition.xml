@@ -510,9 +510,6 @@
 	</resourceList>
 
 	<playerList>
-                <!-- Observers -->
-                <player name="Neutral" optional="true"/>
-        
 		<!-- Axis -->
 		<player name="Japanese" optional="false"/>
 		<player name="Germans" optional="false"/>
@@ -530,9 +527,6 @@
 		<alliance player="British" alliance="Allies"/>
 		<alliance player="Russians" alliance="Allies"/>
 		<alliance player="Americans" alliance="Allies"/>
-                
-                <!-- Observer Alliance -->
-                <alliance player="Neutral" alliance="Neutrals"/>
 	</playerList>
 
 	
@@ -611,8 +605,6 @@
 			<step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
 			<step name="americanPlace" delegate="place" player="Americans"/>
 			<step name="americanEndTurn" delegate="endTurn" player="Americans"/>
-
-                        <!--<step name="neutralEndTurn" delegate="endTurn" player="Neutral"/>-->
                         
 			<step name="endRoundStep" delegate="endRound"/>
 		</sequence>
@@ -1609,7 +1601,6 @@
 			<resourceGiven player="Americans" resource="IPCs" quantity="42"/>
 			<resourceGiven player="Russians" resource="IPCs" quantity="24"/>
 			<resourceGiven player="Germans" resource="IPCs" quantity="40"/>
-                        <resourceGiven player="Neutral" resource="IPCs" quantity="0"/>
 		</resourceInitialize>
 	</initialize>
 
