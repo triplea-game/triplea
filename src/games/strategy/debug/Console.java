@@ -47,7 +47,7 @@ public class Console extends JFrame
 		Console c = getConsole();
 		c.displayStandardError();
 		c.displayStandardOutput();
-		c.show();
+		c.setVisible(true);
 	}
 	
 	private JTextArea m_text = new JTextArea(20,50); 
@@ -193,7 +193,7 @@ class ThreadReader implements Runnable
 		{
 			m_text.append(m_in.readFully());
 			if(m_displayConsoleOnWrite)
-			    Console.getConsole().show();
+			    Console.getConsole().setVisible(true);
 		}
 	}
 }

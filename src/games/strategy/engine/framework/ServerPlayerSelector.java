@@ -81,7 +81,7 @@ public class ServerPlayerSelector extends JFrame
 		{
 			synchronized(m_lock)
 			{
-				this.show();
+				this.setVisible(true);
 				m_lock.wait();
 			}
 			if(m_remote == null)

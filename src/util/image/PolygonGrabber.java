@@ -77,7 +77,7 @@ public class PolygonGrabber extends JFrame
 	
             PolygonGrabber grabber = new PolygonGrabber(mapName);
             grabber.setSize(600,550);
-            grabber.show();
+            grabber.setVisible(true);
 	}
 	else {
 	    System.out.println("No Image Map Selected. Shutting down.");

@@ -58,7 +58,7 @@ public class ScrollableTextField extends JPanel
 
 
     frame.setSize(400,140);
-    frame.show();
+    frame.setVisible(true);
   }
 
 

@@ -45,7 +45,7 @@ public class ZoomableImageExample extends JFrame
 			System.out.println("Expecting first and only arg to be the name of the image file");
 		}
 		JFrame frame = new ZoomableImageExample(args[0]);
-		frame.show();
+		frame.setVisible(true);
 	}
 	
 	/** Creates new ZoomableImageExample */

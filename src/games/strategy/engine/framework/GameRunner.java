@@ -129,7 +129,7 @@ public class GameRunner
         frame.pack();
 
         games.strategy.ui.Util.center(frame);
-        frame.show();
+        frame.setVisible(true);
 
     }
 

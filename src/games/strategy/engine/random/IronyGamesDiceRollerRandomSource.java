@@ -240,7 +240,7 @@ class HttpDiceRollerDialog extends JDialog
         }
 
         rollInternal();
-        show();
+        setVisible(true);
 
     }
 
@@ -284,7 +284,7 @@ class HttpDiceRollerDialog extends JDialog
      * Before contacting Irony Dice Server, check if email has a reasonable
      * valid syntax.
      * 
-     * @author NeKromancer
+     * @author George_H
      */
     private void rollInSeperateThread()
     {

@@ -74,7 +74,7 @@ public class ProductionPanel extends JPanel
 
         s_dialog.pack();
         s_dialog.setLocationRelativeTo(parent);
-        s_dialog.show();
+        s_dialog.setVisible(true);
 
         return s_panel.getProduction();
 

@@ -47,7 +47,7 @@ public class PropertiesUI extends JPanel
     JFrame frame = new JFrame();
     frame.getContentPane().add(ui);
     frame.pack();
-    frame.show();
+    frame.setVisible(true);
 
 
   }

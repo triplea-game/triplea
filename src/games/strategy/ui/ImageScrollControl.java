@@ -62,7 +62,7 @@ public class ImageScrollControl
 		l.setSize(900,600);
 		l.addWindowListener(Util.EXIT_ON_CLOSE_WINDOW_LISTENER);
 		l.getContentPane().add(scroller);
-		l.show();
+		l.setVisible(true);
 	}
 
 	/** Creates new ImageScrollControl */

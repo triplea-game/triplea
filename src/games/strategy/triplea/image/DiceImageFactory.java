@@ -148,7 +148,7 @@ public class DiceImageFactory
 
     frame.pack();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.show();
+    frame.setVisible(true);
 
 
   }

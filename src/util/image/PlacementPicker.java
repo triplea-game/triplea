@@ -61,7 +61,7 @@ public class PlacementPicker extends JFrame
 	{ 
 	    PlacementPicker picker = new PlacementPicker(mapName);
             picker.setSize(600,550);
-            picker.show();
+            picker.setVisible(true);
 	}
 	else {
 	    System.out.println("No Image Map Selected. Shutting down.");

@@ -407,7 +407,7 @@ public class LauncherFrame extends JFrame
         ServerOptions options = new ServerOptions(this, playername, GameRunner.PORT);
         options.setLocationRelativeTo(this);
 
-        options.show();
+        options.setVisible(true);
         options.dispose();
 
         if (!options.getOKPressed())
@@ -444,7 +444,7 @@ public class LauncherFrame extends JFrame
         m_remoteMessenger = new RemoteMessenger(m_unifiedMessenger);
 
         m_chat = new ChatFrame(messenger, m_channelMessenger);
-        m_chat.show();
+        m_chat.setVisible(true);
 
         m_serverStartup = new ServerStartup(messenger, m_remoteMessenger, m_channelMessenger);
         if (m_gameData != null)
@@ -470,7 +470,7 @@ public class LauncherFrame extends JFrame
 
         ClientOptions options = new ClientOptions(this, playername, GameRunner.PORT, "127.0.0.1");
         options.setLocationRelativeTo(this);
-        options.show();
+        options.setVisible(true);
         options.dispose();
 
         if (!options.getOKPressed())
@@ -507,7 +507,7 @@ public class LauncherFrame extends JFrame
         m_remoteMessenger = new RemoteMessenger(m_unifiedMessenger);
 
         m_chat = new ChatFrame(m_messenger, m_channelMessenger);
-        m_chat.show();
+        m_chat.setVisible(true);
 
         m_clientStartup = new ClientStartup(m_channelMessenger, m_remoteMessenger);
         m_clientStartup.setLauncherFrame(this);

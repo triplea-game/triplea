@@ -57,7 +57,7 @@ public class IntTextField extends JTextField
 		frame.getContentPane().add(new IntTextField(0,5));
 		
 		frame.setSize(400,60);
-		frame.show();
+		frame.setVisible(true);
 	}
 	
 	/** Creates new IntTextBox */
