@@ -97,6 +97,8 @@ public class TripleAFrame extends JFrame
 
     setIconImage(GameRunner.getGameIcon(this));
 
+    
+    
     m_game = game;
 
     game.getMessenger().addErrorListener(m_messengerErrorListener);
@@ -277,13 +279,21 @@ public class TripleAFrame extends JFrame
     menuGame.add(m_showGameAction);
     menuGame.add(m_showHistoryAction);
 
+    Action showVerifiedDice = new AbstractAction("Show  Verified Dice..")
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            new VerifiedRandomNumbersDialog(TripleAFrame.this.getRootPane() ).show();
+        }
+    };
+    
     menuBar.add(menuGame);
 
     final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
 
     soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
     //temporarily disable sound
-    menuGame.add(soundCheckBox);
+
     soundCheckBox.addActionListener(new ActionListener()
                                     {
                                       public void actionPerformed(ActionEvent e)
@@ -295,8 +305,6 @@ public class TripleAFrame extends JFrame
 
     if(!m_game.getData().getProperties().getEditableProperties().isEmpty())
     {
-
-
       AbstractAction optionsAction = new AbstractAction("View Game Options...")
       {
         public void actionPerformed(ActionEvent e)
@@ -306,8 +314,13 @@ public class TripleAFrame extends JFrame
         }
       };
       menuGame.addSeparator();
+     
       menuGame.add(optionsAction);
-
+      menuGame.add(soundCheckBox);
+      
+      if(m_game instanceof ClientGame)
+          menuGame.add(showVerifiedDice);
+      
     }
 
 

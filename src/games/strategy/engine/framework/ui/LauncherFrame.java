@@ -27,6 +27,7 @@ import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.message.*;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.net.*;
+import games.strategy.triplea.Constants;
 import games.strategy.engine.chat.*;
 import java.awt.event.*;
 import games.strategy.engine.data.*;
@@ -208,6 +209,23 @@ public class LauncherFrame extends JFrame
 
     listener.waitFor( new HashSet(remotePlayers.values()).size());
     m_messenger.removeMessageListener(listener);
+    
+    if (useSecureRandomSource)
+    {
+        //the first roll takes a while, initialize
+        //here in the background so that the user doesnt notice
+        Thread t = new Thread()
+        {
+            public void run()
+            {
+                serverGame.getRandomSource().getRandom(Constants.MAX_DICE, 2, "Warming up crpyto random source");
+            }
+        };
+        t.start();
+
+    }
+    
+    
 
     Thread t = new Thread()
     {

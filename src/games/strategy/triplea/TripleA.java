@@ -88,20 +88,7 @@ public class TripleA implements IGameLoader
             {
                 ((IronyGamesDiceRollerRandomSource) game.getRandomSource()).setUI(frame);
             }
-            if (game.getRandomSource() != null && game.getRandomSource() instanceof CryptoRandomSource)
-            {
-                //the first roll takes a while, initialize
-                //here in the background so that the user doesnt notice
-                Thread t = new Thread()
-                {
-                    public void run()
-                    {
-                        game.getRandomSource().getRandom(Constants.MAX_DICE, 2, "Warming up crpyto random source");
-                    }
-                };
-                t.start();
-
-            }
+            
 
             frame.setVisible(true);
 
