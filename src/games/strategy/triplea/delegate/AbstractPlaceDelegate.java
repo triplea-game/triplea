@@ -355,8 +355,9 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
         //make sure the territory wasnt conquered this turn
         if (wasConquered(producer))
-            return new StringMessage(producer.getName() + " was conqured this turn and cannot produce till next turn", true);
+            return new StringMessage(producer.getName() + " was conquered this turn and cannot produce till next turn", true);
 
+        
         //make sure there is a factory
         if (!hasFactory(producer))
         {
@@ -376,9 +377,17 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
         boolean originalFactory = ta.isOriginalFactory();
         boolean playerIsOriginalOwner = m_player.equals(getOriginalFactoryOwner(producer));
 
+        //4th edition, you cant place factories in territories with no production
+        if(m_data.getProperties().get(Constants.FOURTH_EDITION, false) && ta.getProduction() ==0)
+        {
+            return new StringMessage("Cant place factory, that territory cant produce any units" + producer.getName(), true);
+        }
+        
         if (originalFactory && playerIsOriginalOwner)
             return null;
 
+        
+        
         //a factory can produce the same number of units as the number of ipcs
         // the
         //territroy generates each turn
