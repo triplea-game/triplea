@@ -2,6 +2,8 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
+
+	<info name="triplea" version="0.1"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	

@@ -31,6 +31,8 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.*;
 import games.strategy.net.*; 
 
+import games.strategy.engine.EngineVersion;
+
 /**
  *
  * UI for starting the client.
@@ -205,6 +207,38 @@ public class ClientStartup extends JFrame
 		content.add(lowerPanel, BorderLayout.SOUTH);
 	}
 	
+	private void checkVersion(PlayerListingMessage msg)
+	{
+		if(!msg.getGameName().equals(m_data.getGameName()) ||
+		   !msg.getGameVersion().equals(m_data.getGameVersion()) ||
+		   !msg.getEngineVersion().equals(EngineVersion.VERSION)
+		   )
+		{
+			try
+			{
+				StringBuffer version = new StringBuffer();
+				
+				version.append("Error, server running different game or version.  Cannot join game. \n");
+				
+				version.append("Server\n engineVersion:").append(msg.getEngineVersion());
+				version.append(" gameName:").append(msg.getGameName());
+				version.append(" gameVersion:").append(msg.getGameVersion());
+				
+				version.append("\nClient\n engineVersion:").append(EngineVersion.VERSION);
+				version.append(" gameName:").append(m_data.getGameName());
+				version.append(" gameVersion:").append(m_data.getGameVersion());
+				
+				System.err.println(version.toString());
+				
+				JOptionPane.showMessageDialog(this, version.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+				m_messenger.shutDown();
+			} finally
+			{
+				System.exit(0);
+			}
+		}
+	}
+	
 	private void setWidgetActivation()
 	{
 	}
@@ -230,6 +264,8 @@ public class ClientStartup extends JFrame
 			}
 			if(msg instanceof PlayerListingMessage)
 			{
+				checkVersion((PlayerListingMessage) msg);
+				
 				Map listing = ((PlayerListingMessage) msg).getPlayerListing();
 				Iterator listings = listing.keySet().iterator();
 				

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (loader, map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?)>
+<!ELEMENT game (info, loader, map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?)>
+
+<!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
+<!ELEMENT info EMPTY>
+<!ATTLIST info
+	name CDATA #REQUIRED
+	version CDATA #REQUIRED
+>
 
 <!-- javaClass must implement the IGameLoader interfaxce -->
 <!ELEMENT loader EMPTY>

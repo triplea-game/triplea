@@ -30,6 +30,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.*;
 import games.strategy.net.*;
+import games.strategy.engine.EngineVersion;
 
 /**
  * UI For starting server games.
@@ -278,7 +279,7 @@ public class ServerStartup extends JFrame
 			}
 		}
 		
-		return new PlayerListingMessage(mapping);
+		return new PlayerListingMessage(mapping, EngineVersion.VERSION, m_data.getGameVersion(), m_data.getGameName());
 	}
 	
 	private void takePlayerMessageReceived(TakePlayerMessage msg, INode from)

@@ -3,6 +3,8 @@
 
 <game>
 
+	<info name="test" version="1.0.0" />
+	
 	<loader javaClass="games.strategy.engine.xml.TestGameLoader"/>
 	
 	<map>

@@ -21,6 +21,7 @@
 package games.strategy.engine.data;
 
 import java.util.*;
+import games.strategy.util.Version;
 import games.strategy.engine.data.events.*;
 import games.strategy.util.ListenerList;
 import games.strategy.engine.framework.IGameLoader;
@@ -32,6 +33,9 @@ import games.strategy.engine.framework.IGameLoader;
  */
 public class GameData 
 {
+
+	private String m_gameName;
+	private Version m_gameVersion;
 
 	private ListenerList m_territoryListeners = new ListenerList();
 	private ListenerList m_dataChangeListeners = new ListenerList();
@@ -173,6 +177,26 @@ public class GameData
 	protected void setGameLoader(IGameLoader loader)
 	{
 		m_loader = loader;
+	}
+
+	void setGameVersion(Version version)
+	{
+		m_gameVersion = version;
+	}
+
+	public Version getGameVersion()
+	{
+		return m_gameVersion;
+	}
+
+	void setGameName(String gameName)
+	{
+		m_gameName = gameName;
+	}
+
+	public String getGameName()
+	{
+		return m_gameName;
 	}
 		
 }

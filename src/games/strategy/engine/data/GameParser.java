@@ -31,6 +31,7 @@ import org.xml.sax.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.util.Version;
 
 /**
  *
@@ -71,6 +72,7 @@ public class GameParser
 		data = new GameData();
 
 		//mandatory fields
+		parseInfo(getSingleChild("info", root));
 		parseGameLoader(getSingleChild("loader", root));
 		parseMap(getSingleChild("map", root));
 		parseResources(getSingleChild("resourceList", root));
@@ -269,6 +271,15 @@ public class GameParser
 				found.add(current);
 		}
 		return found;
+	}
+
+	private void parseInfo(Node info) throws GameParseException
+	{
+		String gameName = ( (Element) info).getAttribute("name");
+		data.setGameName(gameName);
+		
+		String version = ( (Element) info).getAttribute("version");
+		data.setGameVersion(new Version(version));
 	}
 	
 	private void parseGameLoader(Node loader) throws GameParseException

@@ -23,9 +23,14 @@ package games.strategy.engine.framework.message;
 import java.io.Serializable;
 import java.util.*;
 
+import games.strategy.util.Version;
+
 /**
  * A message from the server indicating what players are available to be
  * taken, and what players are being played.
+ *
+ * The message also contains versioning info which the client should
+ * check to ensure that it is playing the same game as the server.
  *
  * @author  Sean Bridges
  */
@@ -36,13 +41,19 @@ public class PlayerListingMessage implements Serializable
 	 * if ode name is null then the player is available to play.
 	 */
 	private Map m_playerListing = new HashMap();
+	private Version m_engineVersion;
+	private Version m_gameVersion;
+	private String m_gameName;
 	
 	/**
 	 * Creates a new instance of PlayerListingMessage
 	 */
-	public PlayerListingMessage(Map map)
+	public PlayerListingMessage(Map map, Version engineVersion, Version gameVersion, String gameName)
 	{
 		m_playerListing = new HashMap(map);
+		m_engineVersion = engineVersion;
+		m_gameVersion = gameVersion;
+		m_gameName = gameName;
 	}
 	
 	public Map getPlayerListing()
@@ -50,8 +61,26 @@ public class PlayerListingMessage implements Serializable
 		return m_playerListing;
 	}
 	
+	public String getGameName()
+	{
+		return m_gameName;
+	}
+
+	public Version getGameVersion()
+	{
+		return m_gameVersion;
+	}
+
+	public Version getEngineVersion()
+	{
+		return m_engineVersion;
+	}
+	
 	public String toString()
 	{
 		return "PlayerListingMessage:" + m_playerListing;
 	}
+	
+	
 }
+
