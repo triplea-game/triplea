@@ -160,7 +160,7 @@ public class ImageScrollerSmallView extends JComponent
   }
 
   private long mLastUpdate = 0;
-  private long MIN_UPDATE_DELAY = 100;
+  private long MIN_UPDATE_DELAY = 30;
 
   private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
   {
