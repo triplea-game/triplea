@@ -217,7 +217,7 @@ public class ChannelMessengerTest extends TestCase
 	        try
 	        {
 	            ChannelMessenger client2Messenger = new ChannelMessenger(new UnifiedMessenger(client2));	            
-	            assert(client2Messenger.hasChannel("testInit"));
+	            assertTrue (client2Messenger.hasChannel("testInit"));
 
 	        }
 	        finally
