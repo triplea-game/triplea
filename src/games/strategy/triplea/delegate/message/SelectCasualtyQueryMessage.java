@@ -40,9 +40,10 @@ public class SelectCasualtyQueryMessage extends BattleMessage
   private String m_message;
   private DiceRoll m_dice;
   private PlayerID m_hit;
+  private List m_defaultCasualties;
 
   /** Creates new SelectCasualtyMessage */
-  public SelectCasualtyQueryMessage(String step, Collection selectFrom, Map dependents,  int count, String message, DiceRoll dice, PlayerID hit)
+  public SelectCasualtyQueryMessage(String step, Collection selectFrom, Map dependents,  int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
   {
     super(step);
     m_selectFrom = new ArrayList(selectFrom);
@@ -51,6 +52,7 @@ public class SelectCasualtyQueryMessage extends BattleMessage
     m_message = message;
     m_dice = dice;
     m_hit = hit;
+    m_defaultCasualties = defaultCasualties;
   }
 
   /**
@@ -89,5 +91,9 @@ public class SelectCasualtyQueryMessage extends BattleMessage
   public PlayerID getPlayer()
   {
     return m_hit;
+  }
+
+  public List getDefaultCasualties() {
+    return m_defaultCasualties;
   }
 }
