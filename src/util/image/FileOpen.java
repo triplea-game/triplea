@@ -61,12 +61,13 @@ public class FileOpen
 			{
 				return f.getName().toLowerCase().endsWith(".txt") || 
 				       f.getName().toLowerCase().endsWith(".gif") ||
+				       f.getName().toLowerCase().endsWith(".png") ||
 				       f.isDirectory();
 			}
 
 			public String getDescription()
 			{
-				return "*.txt, *.gif";
+				return "*.txt, *.gif, *.png";
 			}
 		});
 
