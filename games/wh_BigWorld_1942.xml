@@ -929,7 +929,7 @@
                 <connection t1="Northern Russia" t2="Novgorod"/>
 
                 <connection t1="Eastern Russia" t2="Moscow"/>
-                <connection t1="Eastern Russia" t2="Western Russia"/>
+               
                 <connection t1="Eastern Russia" t2="Sverdlovsk"/>
                 <connection t1="Eastern Russia" t2="Omsk"/>
                 <connection t1="Eastern Russia" t2="Kazakh"/>
