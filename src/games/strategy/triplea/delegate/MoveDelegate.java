@@ -35,6 +35,10 @@ import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
 import java.io.*;
 
+import org.omg.CORBA.COMM_FAILURE;
+
+import sun.security.provider.MD5;
+
 /**
  *
  * Responsible for moving units on the board. <p>
@@ -727,6 +731,14 @@ public class MoveDelegate implements SaveableDelegate
     return null;
   }
 
+  private boolean isAlwaysONAAEnabled()
+  {
+    Boolean property = (Boolean) m_data.getProperties().get(Constants.ALWAYS_ON_AA_PROPERTY);
+    if(property == null)
+        return false;
+    return property.booleanValue();
+  }
+  
   /**
    * We assume that the move is valid
    */
@@ -737,7 +749,7 @@ public class MoveDelegate implements SaveableDelegate
     markMovement(units, route);
 
     Collection arrivingUnits = units;
-    if (!m_nonCombat)
+    if (!m_nonCombat || isAlwaysONAAEnabled())
     {
       Collection aaCasualties = fireAA(route, units);
       arrivingUnits = Util.difference(units, aaCasualties);
