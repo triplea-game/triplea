@@ -24,12 +24,13 @@ import java.io.*;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.GameObjectInputStream;
 import games.strategy.engine.message.Message;
+import games.strategy.net.OrderedMessage;
 
 /**
  *
  * @author  Sean Bridges
  */
-class StepChangedMessage implements Message
+class StepChangedMessage implements Message, OrderedMessage
 {
     
     private static final long serialVersionUID = 3330970682208872242L;
