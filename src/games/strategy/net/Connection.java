@@ -36,7 +36,7 @@ import games.strategy.util.ListenerList;
  */
 class Connection
 {
-  private static final ThreadPool s_threadPool = new ThreadPool(10);
+  private static final ThreadPool s_threadPool = new ThreadPool(10, "Connection Thread Pool");
 
   private Socket m_socket;
   private ObjectOutputStream m_out;
@@ -266,7 +266,7 @@ class Connection
 
           s_threadPool.runTask(r);
           //allow the message to be processed
-          Thread.currentThread().yield();
+          Thread.yield();
 
         } catch(ClassNotFoundException cnfe)
         {

@@ -293,7 +293,7 @@ class HttpDiceRollerDialog extends JDialog
       if(validMail) {  //execute below ONLY when we have 2 valid email addresses
 
         while(! isVisible())
-        Thread.currentThread().yield();
+        Thread.yield();
 
         appendText(m_annotation + "\n");
         appendText("Contacting  http://www.irony.com/mailroll.html...\n");

@@ -95,7 +95,6 @@ public abstract class Match
 	 */
 	public static final boolean allMatch(Collection collection, Match aMatch)
 	{
-		Collection matches = new ArrayList();
 		Iterator iter = collection.iterator();
 		while(iter.hasNext())
 		{
@@ -111,7 +110,7 @@ public abstract class Match
 	 */
 	public static final boolean someMatch(Collection collection, Match aMatch)
 	{
-		Collection matches = new ArrayList();
+		
 		Iterator iter = collection.iterator();
 		while(iter.hasNext())
 		{

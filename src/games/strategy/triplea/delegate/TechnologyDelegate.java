@@ -178,7 +178,7 @@ private List getAvailableAdvances()
 {
     //too many
     Collection allAdvances = TechAdvance.getTechAdvances();
-    Collection playersAdvances = m_techTracker.getTechAdvances(m_bridge.getPlayerID());
+    Collection playersAdvances = TechTracker.getTechAdvances(m_bridge.getPlayerID());
 
     List available = Util.difference(allAdvances, playersAdvances);
     return available;

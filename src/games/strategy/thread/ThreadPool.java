@@ -16,6 +16,7 @@ import java.util.*;
 public class ThreadPool
 {
   private final int m_maxCount;
+  private final String m_name;
   private List m_availableThreads = new LinkedList();
   private List m_allThreads = new LinkedList();
   private List m_pendingTasks = new LinkedList();
@@ -30,11 +31,12 @@ public class ThreadPool
    * max is the maximum number of threads the pool can have.
    * The pool may have fewer threads at any given time.
    */
-  public ThreadPool(int max)
-  {
+  public ThreadPool(int max, String name)
+  {  
     if(max < 1)
       throw new IllegalArgumentException("Max must be >= 1, instead its:" + max);
     m_maxCount = max;
+    m_name = name;
   }
 
   /**
@@ -43,7 +45,7 @@ public class ThreadPool
   private void grow()
   {
     ThreadTracker tracker = new ThreadTracker();
-    Thread thread = new Thread(tracker, getClass().getName() + ":" + m_allThreads.size());
+    Thread thread = new Thread(tracker,getClass().getName() + ":" + m_name + ":" + m_allThreads.size());
 
     m_allThreads.add(tracker);
 

@@ -103,7 +103,7 @@ public class TripleA implements IGameLoader
 
 			while(!frame.isVisible())
 			{
-				Thread.currentThread().yield();
+				Thread.yield();
 			}
       //size when minimized
       frame.setSize(700,400);

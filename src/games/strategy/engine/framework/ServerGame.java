@@ -200,7 +200,7 @@ public class ServerGame implements IGame
             return;
         }
 
-        PlayerID[] dicePlayers = getDicePlayers();
+        
         DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, getCurrentStep(), this, new DelegateHistoryWriter(m_data.getHistory().getHistoryWriter(), m_messenger));
         bridge.setRandomSource(m_randomSource);
 

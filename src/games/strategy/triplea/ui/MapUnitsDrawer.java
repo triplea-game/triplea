@@ -39,7 +39,7 @@ import games.strategy.triplea.util.*;
 
 public class MapUnitsDrawer
 {
-    private static ThreadPool s_threadPool = new ThreadPool(1);
+    private static ThreadPool s_threadPool = new ThreadPool(1, "Map Units Thread Pool");
 
     private final Object m_lock = new Object();
     private GameData m_data;

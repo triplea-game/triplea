@@ -423,10 +423,11 @@ public class BattleDisplay extends JPanel
     return player;
   }
 
+  private static final int WIDTH = 100;
+  private static final int HEIGHT = 100;
+
   private JComponent getTerritoryComponent()
   {
-    final int WIDTH = 100;
-    final int HEIGHT = 100;
     Image finalImage = Util.createImage(WIDTH, HEIGHT, true);
 
 
@@ -633,8 +634,6 @@ class BattleStepsPanel extends JPanel
   {
     if(start < 0 || stop < 0 || stop >= m_listModel.getSize())
       throw new IllegalStateException("Illegal start and stop.  start:" + start + " stop:" + stop);
-
-    Object lock = new Object();
 
     int current = start;
     while(current != stop)

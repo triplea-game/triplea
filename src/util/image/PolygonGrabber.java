@@ -47,7 +47,7 @@ public class PolygonGrabber extends JFrame
     {
         try
         {
-            s_centers = new PointFileReaderWriter().readOneToOne(
+            s_centers = PointFileReaderWriter.readOneToOne(
                 new FileInputStream(
                 "/home/sgb/dev/triplea/data/games/strategy/triplea/ui/centers.txt"));
         }
@@ -191,7 +191,7 @@ public class PolygonGrabber extends JFrame
             if(fileName.trim().length() == 0)
                 return;
             FileInputStream in = new FileInputStream(fileName);
-            m_polygons = new PointFileReaderWriter().readOneToManyPolygons(in);
+            m_polygons = PointFileReaderWriter.readOneToManyPolygons(in);
             repaint();
         }
         catch (FileNotFoundException ex)
@@ -216,7 +216,7 @@ public class PolygonGrabber extends JFrame
             if(fileName.trim().length() == 0)
                 return;
             FileOutputStream out = new FileOutputStream(fileName);
-            new PointFileReaderWriter().writeOneToManyPolygons(out, m_polygons);
+            PointFileReaderWriter.writeOneToManyPolygons(out, m_polygons);
             out.flush();
             out.close();
             System.out.println("Data written to :" + new File(fileName).getCanonicalPath());

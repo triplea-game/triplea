@@ -346,7 +346,7 @@ public class ServerStartup extends JPanel
     //synchronize to make sure two adds arent executed at once
     synchronized(this)
     {
-      String playerName = ((TakePlayerMessage) msg).getPlayerName();
+      String playerName = msg.getPlayerName();
 
       Iterator iter = m_playerRows.iterator();
       while(iter.hasNext())

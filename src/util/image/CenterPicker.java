@@ -29,6 +29,7 @@ import javax.swing.*;
 
 import games.strategy.ui.Util;
 import games.strategy.util.*;
+
 import java.io.*;
 import java.awt.event.*;
 
@@ -48,7 +49,7 @@ public class CenterPicker extends JFrame
 
         try
         {
-            m_polygons = new PointFileReaderWriter().readOneToManyPolygons(new FileInputStream("polygons.txt"));
+            m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream("polygons.txt"));
         }
         catch (IOException ex1)
         {
@@ -153,7 +154,7 @@ public class CenterPicker extends JFrame
             if (fileName.trim().length() == 0)
                 return;
             FileOutputStream out = new FileOutputStream(fileName);
-            new PointFileReaderWriter().writeOneToOne(out, m_centers);
+            PointFileReaderWriter.writeOneToOne(out, m_centers);
             out.flush();
             out.close();
             System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
@@ -182,7 +183,7 @@ public class CenterPicker extends JFrame
              if(fileName.trim().length() == 0)
                  return;
              FileInputStream in = new FileInputStream(fileName);
-             m_centers = new PointFileReaderWriter().readOneToOne(in);
+             m_centers = PointFileReaderWriter.readOneToOne(in);
              repaint();
          }
          catch (FileNotFoundException ex)

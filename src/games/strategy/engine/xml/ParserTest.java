@@ -124,8 +124,8 @@ public class ParserTest extends TestCase
 
 	public void testStepsCreated()
 	{
-		GameSequence sequence = gameData.getSequence();
-		// assertEquals(sequence.size(), 5);
+		 gameData.getSequence();
+		
 	}
 	
 	public void testProductionFrontiersCreated()

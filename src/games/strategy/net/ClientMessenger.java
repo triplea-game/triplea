@@ -178,7 +178,7 @@ public class ClientMessenger implements IMessenger
         //ie in the constructor to m_connection which starts another thread
         while(m_connection == null)
         {
-            Thread.currentThread().yield();
+            Thread.yield();
             System.out.println("Client Messenger waiting for connection to be set");
         }
       m_connection.shutDown();

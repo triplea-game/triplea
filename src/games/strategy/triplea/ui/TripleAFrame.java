@@ -349,7 +349,7 @@ public class TripleAFrame extends JFrame
 
         JScrollPane scroll = new JScrollPane(editorPane);
 
-        JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "Hints",
+        JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Hints",
                                       JOptionPane.PLAIN_MESSAGE);
       }
     }

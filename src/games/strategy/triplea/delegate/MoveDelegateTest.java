@@ -85,8 +85,6 @@ public class MoveDelegateTest extends DelegateTest
 
   public void testNotEnoughUnits()
   {
-    IntegerMap map = new IntegerMap();
-
     Route route = new Route();
     route.setStart(egypt);
     route.add(eastAfrica);

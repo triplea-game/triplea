@@ -297,8 +297,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //this is an ilegant way to handle this bug
     CompositeMatch airNotInTerritory = new CompositeMatchAnd();
     airNotInTerritory.add(new InverseMatch(Matches.unitIsInTerritory(m_battleSite)));
-    airNotInTerritory.getMatches(m_attackingUnits, Matches.UnitIsAir);
-
+   
     m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, airNotInTerritory));
 
   }

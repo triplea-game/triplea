@@ -135,7 +135,7 @@ public class ManagerTest extends TestCase
 		TestMessage message = new TestMessage("message");
 
 		while(!m_client1MM.hasDestination(td1.getName()))
-			Thread.currentThread().yield();
+			Thread.yield();
 
 		Message response = m_client1MM.send(message, td1.getName());
 		assertEquals(response.toString(), "td1message");

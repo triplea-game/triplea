@@ -98,7 +98,6 @@ public class MovePanel extends ActionPanel
     {
         MoveCountReplyMessage moves = (MoveCountReplyMessage) m_bridge.
             sendMessage(new MoveCountRequestMessage());
-        int moveCount = moves.getMoveCount();
 
         m_undableMovesPanel.setMoves(moves.getMoves());
     }

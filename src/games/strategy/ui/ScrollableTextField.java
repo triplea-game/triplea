@@ -48,9 +48,9 @@ public class ScrollableTextField extends JPanel
     ScrollableTextField field = new ScrollableTextField(0,100);
     field.addChangeListener( new ScrollableTextFieldListener() {
 
-      public void changedValue(ScrollableTextField field)
+      public void changedValue(ScrollableTextField aField)
       {
-        System.out.println(field.getValue());
+        System.out.println(aField.getValue());
       }
     } );
     frame.getContentPane().add(new JLabel("0-100, listened to"));

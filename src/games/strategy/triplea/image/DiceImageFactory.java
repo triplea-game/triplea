@@ -45,7 +45,6 @@ public class DiceImageFactory
 
   public DiceImageFactory()
   {
-    Panel observer = new Panel();
     final int PIP_SIZE = 6;
 
     generateDice(PIP_SIZE, Color.black, m_images, m_icons);

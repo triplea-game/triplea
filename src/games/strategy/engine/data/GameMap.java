@@ -231,7 +231,7 @@ public class GameMap extends GameDataComponent
 			return null;
 		}
 
-		boolean found = getRoute(route, distance, t1, t2, cond);
+		getRoute(route, distance, t1, t2, cond);
 
 		return route;
 	}

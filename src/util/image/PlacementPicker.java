@@ -53,7 +53,7 @@ public class PlacementPicker extends JFrame
 
         try
         {
-            m_polygons = new PointFileReaderWriter().readOneToManyPolygons(new FileInputStream("polygons.txt"));
+            m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream("polygons.txt"));
         }
         catch (IOException ex1)
         {
@@ -171,7 +171,7 @@ public class PlacementPicker extends JFrame
             if (fileName.trim().length() == 0)
                 return;
             FileOutputStream out = new FileOutputStream(fileName);
-            new PointFileReaderWriter().writeOneToMany(out, m_placements);
+            PointFileReaderWriter.writeOneToMany(out, m_placements);
             out.flush();
             out.close();
             System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
@@ -200,7 +200,7 @@ public class PlacementPicker extends JFrame
              if(fileName.trim().length() == 0)
                  return;
              FileInputStream in = new FileInputStream(fileName);
-             m_placements = new PointFileReaderWriter().readOneToMany(in);
+             m_placements = PointFileReaderWriter.readOneToMany(in);
              repaint();
          }
          catch (FileNotFoundException ex)

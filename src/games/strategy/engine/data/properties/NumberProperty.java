@@ -51,9 +51,9 @@ public class NumberProperty extends AEditableProperty
     field.setValue(m_value);
     field.addChangeListener(new IntTextFieldChangeListener()
     {
-      public void changedValue(IntTextField field)
+      public void changedValue(IntTextField aField)
       {
-        m_value = field.getValue();
+        m_value = aField.getValue();
       }
     }
     );

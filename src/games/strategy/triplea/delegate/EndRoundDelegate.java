@@ -80,11 +80,12 @@ public class EndRoundDelegate implements SaveableDelegate
 			aBridge.getHistoryWriter().startEvent("Axis achieve economic victory");
 		}
 
-		int rProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.RUSSIANS));
-		int bProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.BRITISH));
-		int aProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.AMERICANS));
-
 		// Uncomment this to add allied economic victory when/if optional rules are implemented
+
+//		int rProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.RUSSIANS));
+//		int bProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.BRITISH));
+//		int aProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.AMERICANS));
+
 		/*
 		if(rProd + bProd + aProd >= ALLIES_ECONOMIC_VICTORY)
 		{
