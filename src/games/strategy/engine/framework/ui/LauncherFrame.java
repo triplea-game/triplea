@@ -69,6 +69,8 @@ public class LauncherFrame extends JFrame
     }
     setWidgetActivation();
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    m_gameTypePanel.initializeWithDefaultFile();
+    setWidgetActivation();
   }
 
   private void jbInit() throws Exception

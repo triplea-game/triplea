@@ -24,6 +24,7 @@ import java.io.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import org.xml.sax.*;
+import games.strategy.engine.framework.ui.NewGameFileChooser;
 
 /**
  * <p>Title: </p>
@@ -108,7 +109,6 @@ public class GameTypePanel extends JPanel
     m_gameFilePanel.setLayout(borderLayout2);
     m_fileNameTextField.setEditable(false);
     m_fileNameTextField.setColumns(15);
-    m_fileButton.setActionCommand("File...");
     m_fileButton.setText("File...");
     m_fileButton.addActionListener(new java.awt.event.ActionListener()
     {
@@ -185,6 +185,20 @@ public class GameTypePanel extends JPanel
     m_engineVersion.setText(games.strategy.engine.EngineVersion.VERSION.toString());
   }
 
+  public void initializeWithDefaultFile()
+  {
+    File defaultGame =  new File(NewGameFileChooser.DEFAULT_DIRECTORY, "classic_a&a.xml");
+    try
+    {
+      loadFile(defaultGame);
+    }
+    catch (IOException ex)
+    {
+      //ignore, we're just loading the default file, no reason to cause a panic
+    }
+  }
+
+
   void m_gameTypeComboBox_actionPerformed(ActionEvent e)
   {
     boolean enable = !m_gameTypeComboBox.getSelectedItem().equals(CLIENT);
@@ -216,8 +230,7 @@ public class GameTypePanel extends JPanel
   void m_fileButton_actionPerformed(ActionEvent e)
   {
     JFileChooser fileChooser;
-    boolean useSaved = mGameTypeComboBox.getSelectedIndex() == 1;
-    if(useSaved)
+    if(gameTypeIsSaved())
       fileChooser = SaveGameFileChooser.getInstance();
     else
       fileChooser = NewGameFileChooser.getInstance();
@@ -231,35 +244,7 @@ public class GameTypePanel extends JPanel
     try
     {
       File file = fileChooser.getSelectedFile();
-      GameData data;
-      if(useSaved)
-      {
-        data = (new GameDataManager()).loadGame(file);
-      }
-      else
-      {
-        try
-        {
-          data= (new GameParser()).parse(new FileInputStream(file));
-        }
-        catch (SAXException ex)
-        {
-          ex.printStackTrace();
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error loading file", "Error", JOptionPane.WARNING_MESSAGE);
-          return;
-        }catch (GameParseException ex)
-        {
-          ex.printStackTrace();
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error loading file", "Error", JOptionPane.WARNING_MESSAGE);
-          return;
-        }
-      }
-      m_launcherFrame.setGameData(data);
-
-      m_gameName.setText(data.getGameName());
-      m_gameVersion.setText(data.getGameVersion().toString());
-
-      m_fileNameTextField.setText(file.getAbsolutePath());
+      loadFile(file);
     }
 
     catch (IOException ex)
@@ -272,6 +257,45 @@ public class GameTypePanel extends JPanel
     {
       m_launcherFrame.setWidgetActivation();
     }
+  }
+
+  private boolean gameTypeIsSaved()
+  {
+    boolean useSaved = mGameTypeComboBox.getSelectedIndex() == 1;
+    return useSaved;
+  }
+
+  private void loadFile(File file) throws IOException
+  {
+    GameData data;
+    if(gameTypeIsSaved())
+    {
+      data = (new GameDataManager()).loadGame(file);
+    }
+    else
+    {
+      try
+      {
+        data= (new GameParser()).parse(new FileInputStream(file));
+      }
+      catch (SAXException ex)
+      {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error loading file", "Error", JOptionPane.WARNING_MESSAGE);
+        return;
+      }catch (GameParseException ex)
+      {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error loading file", "Error", JOptionPane.WARNING_MESSAGE);
+        return;
+      }
+    }
+    m_launcherFrame.setGameData(data);
+
+    m_gameName.setText(data.getGameName());
+    m_gameVersion.setText(data.getGameVersion().toString());
+
+    m_fileNameTextField.setText(file.getAbsolutePath());
   }
 
   public void setLocal()
