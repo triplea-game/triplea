@@ -317,8 +317,7 @@ public class TripleAFrame extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                new VerifiedRandomNumbersDialog(TripleAFrame.this.getRootPane())
-                        .show();
+                new VerifiedRandomNumbersDialog(TripleAFrame.this.getRootPane()).setVisible(true);
             }
         };
 
@@ -1193,11 +1192,11 @@ public class TripleAFrame extends JFrame
         radioItem100.setSelected(true);
         
         //select the closest to to the default size
-        Enumeration enum = unitSizeGroup.getElements();
+        Enumeration enum1 = unitSizeGroup.getElements();
         boolean matchFound = false;
-        while(enum.hasMoreElements())
+        while(enum1.hasMoreElements())
         {
-            JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum.nextElement();
+            JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();
              UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
              if(Math.abs(action.m_scaleFactor - MapData.getInstance().getDefaultUnitScale()) < 0.01 )
              {

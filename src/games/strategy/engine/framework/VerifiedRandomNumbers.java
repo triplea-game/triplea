@@ -6,7 +6,7 @@
  */
 package games.strategy.engine.framework;
 
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 
 /**
  * @author sgb
@@ -27,7 +27,7 @@ public class VerifiedRandomNumbers
     
     public String toString()
     {
-        return "Rolled :" +  Formatter.asDice(m_values) + " for " + m_annotation;
+        return "Rolled :" +  MyFormatter.asDice(m_values) + " for " + m_annotation;
     }
     /**
      * @return Returns the m_annotation.

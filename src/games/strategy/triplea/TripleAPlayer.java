@@ -26,7 +26,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.*;
 import games.strategy.util.*;
@@ -329,7 +329,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
      */
     public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
     {
-        String question = "AA guns will fire in " + Formatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
+        String question = "AA guns will fire in " + MyFormatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
         return m_ui.getOK(question);
         
     }

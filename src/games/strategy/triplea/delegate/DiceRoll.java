@@ -69,7 +69,7 @@ public class DiceRoll implements java.io.Serializable
 
 
     DiceRoll roll = new DiceRoll(sortedDiceInt, hits);
-    bridge.getHistoryWriter().addChildToEvent("AA guns fire in" + location + " :" + Formatter.asDice(dice), roll);
+    bridge.getHistoryWriter().addChildToEvent("AA guns fire in" + location + " :" + MyFormatter.asDice(dice), roll);
     return roll;
   }
 
@@ -100,7 +100,7 @@ public class DiceRoll implements java.io.Serializable
 					  IDelegateBridge bridge,
 					  GameData data)
   {
-    String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
+    String annotation = player.getName() +  " roll dice for " + MyFormatter.unitsToTextNoOwner(units);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
     if(rollCount == 0)
@@ -170,7 +170,7 @@ public class DiceRoll implements java.io.Serializable
     
     // Create DiceRoll object
     DiceRoll rVal = new  DiceRoll(sortedDiceInt, hitCount);
-    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + Formatter.asDice(dice), rVal);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(dice), rVal);
     return rVal;
   }
 
@@ -182,7 +182,7 @@ public class DiceRoll implements java.io.Serializable
 					 IDelegateBridge bridge,
 					 GameData data)
   {
-    String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
+    String annotation = player.getName() +  " roll dice for " + MyFormatter.unitsToTextNoOwner(units);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
     if(rollCount == 0)
@@ -262,7 +262,7 @@ public class DiceRoll implements java.io.Serializable
     }
 
     DiceRoll rVal = new  DiceRoll(sortedDiceInt, hitCount);
-    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + Formatter.asDice(dice), rVal);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(dice), rVal);
     return rVal;
   }
 

@@ -24,7 +24,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;
 
@@ -353,7 +353,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //do the move
         m_currentMove = new UndoableMove(m_data, m_alreadyMoved, units, route);
 
-        String transcriptText = Formatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
+        String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);
         MoveDescription description = new MoveDescription(units, route);
         m_bridge.getHistoryWriter().setRenderingData(description);
@@ -966,7 +966,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         m_currentMove.addChange(change);
 
-        m_currentMove.setDescription(Formatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to "
+        m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to "
                 + route.getEnd().getName());
 
     }
@@ -1390,7 +1390,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         Change remove = ChangeFactory.removeUnits(territory, toRemove);
 
-        String transcriptText = Formatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName() + " and "
+        String transcriptText = MyFormatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName() + " and "
                 + (toRemove.size() > 1 ? "were" : "was") + " removed";
         m_bridge.getHistoryWriter().startEvent(transcriptText);
 
@@ -1507,7 +1507,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         getRemotePlayer().reportMessage(dice.getHits() + " AA hits in " + territory.getName());
         
-        m_bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
+        m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
         units.removeAll(casualties);
     }
 

@@ -23,7 +23,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.*;
 
@@ -128,7 +128,7 @@ public class StrategicBombingRaidBattle implements Battle
 
         m_tracker.removeBattle(this);
 
-        bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + cost + Formatter.pluralize("ipc", cost));
+        bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + cost + MyFormatter.pluralize("ipc", cost));
 
         getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + cost);
 
@@ -171,7 +171,7 @@ public class StrategicBombingRaidBattle implements Battle
 
         getDisplay(bridge).casualtyNotification(FIRE_AA, dice, m_attacker, casualties, Collections.EMPTY_LIST, Collections.EMPTY_MAP);
 
-        bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
+        bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
 
         m_units.removeAll(casualties);
         Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);

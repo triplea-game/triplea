@@ -33,7 +33,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;
 
@@ -578,7 +578,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
         DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
                 .addOriginalOwner(factoryAndAA, m_player);
 
-        String transcriptText = Formatter.unitsToTextNoOwner(units)
+        String transcriptText = MyFormatter.unitsToTextNoOwner(units)
                 + " placed in " + at.getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);
         m_bridge.getHistoryWriter().setRenderingData(units);
@@ -671,7 +671,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
                     movedFighters);
             placeChange.add(change);
             m_bridge.getHistoryWriter().addChildToEvent(
-                    Formatter.unitsToTextNoOwner(movedFighters)
+                    MyFormatter.unitsToTextNoOwner(movedFighters)
                             + "  moved from " + neighbor.getName() + " to "
                             + territory);
 
@@ -696,7 +696,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
         if (!units.isEmpty())
         {
             m_bridge.getHistoryWriter().startEvent(
-                    Formatter.unitsToTextNoOwner(units)
+                    MyFormatter.unitsToTextNoOwner(units)
                             + " were produced but were not placed");
             m_bridge.getHistoryWriter().setRenderingData(units);
 

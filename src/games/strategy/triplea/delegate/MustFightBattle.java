@@ -24,7 +24,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.*;
@@ -776,7 +776,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         if(retreatTo != null && !availableTerritories.contains(retreatTo))
         {
-            System.err.println("Invalid retreat selection :" + retreatTo + " not in " + Formatter.territoriesToText(availableTerritories));
+            System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.territoriesToText(availableTerritories));
             Thread.dumpStack();
             return;
         }
@@ -867,7 +867,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void retreatPlanes(Collection retreating, boolean defender,
             IDelegateBridge bridge)
     {
-        String transcriptText = Formatter.unitsToTextNoOwner(retreating)
+        String transcriptText = MyFormatter.unitsToTextNoOwner(retreating)
                 + " retreated";
 
         Collection units = defender ? m_defendingUnits : m_attackingUnits;
@@ -894,7 +894,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void submergeUnits(Collection submerging, boolean defender,
             IDelegateBridge bridge)
     {
-        String transcriptText = Formatter.unitsToTextNoOwner(submerging)
+        String transcriptText = MyFormatter.unitsToTextNoOwner(submerging)
                 + " Submerged";
 
         Collection units = defender ? m_defendingUnits : m_attackingUnits;
@@ -929,7 +929,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 new InverseMatch(Matches.unitIsOwnedBy(m_attacker)));
         retreating = Match.getMatches(retreating, notMyAir);
 
-        String transcriptText = Formatter.unitsToTextNoOwner(retreating)
+        String transcriptText = MyFormatter.unitsToTextNoOwner(retreating)
                 + " retreated to " + to.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText,
                 new ArrayList(retreating));
@@ -1284,7 +1284,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         damagedMap.putAll(damaged, 1);
         damagedChange = ChangeFactory.unitsHit(damagedMap);
         bridge.getHistoryWriter().addChildToEvent(
-                "Units damaged:" + Formatter.unitsToTextNoOwner(damaged),
+                "Units damaged:" + MyFormatter.unitsToTextNoOwner(damaged),
                 damaged);
         bridge.addChange(damagedChange);
 
@@ -1304,7 +1304,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Change killedChange = ChangeFactory.removeUnits(m_battleSite, killed);
         m_killed.addAll(killed);
 
-        String transcriptText = Formatter.unitsToText(killed) + " lost in "
+        String transcriptText = MyFormatter.unitsToText(killed) + " lost in "
                 + m_battleSite.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText, killed);
 
@@ -1415,7 +1415,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 territory = (Territory) canLandHere.iterator().next();
             }
             bridge.getHistoryWriter().addChildToEvent(
-                    Formatter.unitsToText(defendingAir) + " forced to land in "
+                    MyFormatter.unitsToText(defendingAir) + " forced to land in "
                             + territory.getName(), defendingAir);
             Change change = ChangeFactory.moveUnits(m_battleSite, territory,
                     defendingAir);
@@ -1433,7 +1433,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 if (m_data.getMap().getNeighbors(currentTerritory).size() == 1)
                 {
                     bridge.getHistoryWriter().addChildToEvent(
-                            Formatter.unitsToText(defendingAir)
+                            MyFormatter.unitsToText(defendingAir)
                                     + " forced to land in "
                                     + currentTerritory.getName(), defendingAir);
                     Change change = ChangeFactory.moveUnits(m_battleSite,
@@ -1446,7 +1446,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         //no were to go, they must die
         bridge.getHistoryWriter().addChildToEvent(
-                Formatter.unitsToText(defendingAir)
+                MyFormatter.unitsToText(defendingAir)
                         + " could not land and were killed", defendingAir);
         Change change = ChangeFactory.removeUnits(m_battleSite, defendingAir);
         bridge.addChange(change);

@@ -23,7 +23,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 
 import java.util.*;
@@ -158,7 +158,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 
     if(!totalUnits.isEmpty())
     {
-      String transcriptText = player.getName() + " buys " + Formatter.unitsToTextNoOwner(totalUnits);
+      String transcriptText = player.getName() + " buys " + MyFormatter.unitsToTextNoOwner(totalUnits);
       m_bridge.getHistoryWriter().startEvent(transcriptText);
       m_bridge.getHistoryWriter().setRenderingData(totalUnits);
       Change change = ChangeFactory.addUnits(player, totalUnits);

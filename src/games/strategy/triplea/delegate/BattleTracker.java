@@ -310,7 +310,7 @@ public class BattleTracker implements java.io.Serializable
       bridge.addChange(neutralFee);
       if (changeTracker != null)
         changeTracker.addChange(neutralFee);
-      bridge.getHistoryWriter().addChildToEvent(id.getName() + " looses " + -ipcCharge + " " + Formatter.pluralize("IPC", -ipcCharge) + " for violating " + territory.getName() + "s neutrality");
+      bridge.getHistoryWriter().addChildToEvent(id.getName() + " looses " + -ipcCharge + " " + MyFormatter.pluralize("IPC", -ipcCharge) + " for violating " + territory.getName() + "s neutrality");
     }
 
     //if its a capital we take the money
@@ -326,7 +326,7 @@ public class BattleTracker implements java.io.Serializable
         int capturedIPCCount = whoseCapital.getResources().getQuantity(ipcs);
         Change remove = ChangeFactory.changeResourcesChange(whoseCapital, ipcs, -capturedIPCCount);
         bridge.addChange(remove);
-        bridge.getHistoryWriter().addChildToEvent(id.getName() + " captures " + capturedIPCCount + Formatter.pluralize("IPC", capturedIPCCount) + " while taking " + whoseCapital.getName() + " capital");
+        bridge.getHistoryWriter().addChildToEvent(id.getName() + " captures " + capturedIPCCount + MyFormatter.pluralize("IPC", capturedIPCCount) + " while taking " + whoseCapital.getName() + " capital");
         if (changeTracker != null)
           changeTracker.addChange(remove);
         Change add = ChangeFactory.changeResourcesChange(id, ipcs, capturedIPCCount);

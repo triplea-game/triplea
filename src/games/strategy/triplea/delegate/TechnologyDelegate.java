@@ -26,7 +26,7 @@ import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Util;
 
 import java.io.Serializable;
@@ -102,9 +102,9 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         m_bridge.getHistoryWriter().startEvent(
                 m_player.getName()
                         + (random.hashCode() > 0 ? " roll " : " rolls : ")
-                        + Formatter.asDice(random) + directedTechInfo
+                        + MyFormatter.asDice(random) + directedTechInfo
                         + " and gets " + techHits + " "
-                        + Formatter.pluralize("hit", techHits));
+                        + MyFormatter.pluralize("hit", techHits));
         m_bridge.getHistoryWriter().setRenderingData(
                 new DiceRoll(random, techHits, 5, true));
 
@@ -202,7 +202,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
                 .getName()
                 + " rolling to see what tech advances are aquired");
         m_bridge.getHistoryWriter().startEvent(
-                "Rolls to resolve tech hits:" + Formatter.asDice(random));
+                "Rolls to resolve tech hits:" + MyFormatter.asDice(random));
         for (int i = 0; i < random.length; i++)
         {
             int index = random[i] % available.size();

@@ -15,7 +15,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.framework.VerifiedRandomNumbers;
 import games.strategy.engine.random.RemoteRandom;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -80,7 +80,7 @@ public class VerifiedRandomNumbersDialog extends JDialog
         {
             VerifiedRandomNumbers number = (VerifiedRandomNumbers) verified.get(i);
             tableValues[i][0]= number.getAnnotation();
-            tableValues[i][1] = Formatter.asDice(number.getValues());
+            tableValues[i][1] = MyFormatter.asDice(number.getValues());
         }
         return tableValues;
     }

@@ -22,7 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.*;
 
 import java.util.*;
@@ -140,7 +140,7 @@ public class NonFightingBattle implements Battle
 			Change change = ChangeFactory.removeUnits(m_battleSite, lost);
 			bridge.addChange(change);
 
-			String transcriptText = Formatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
+			String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
             bridge.getHistoryWriter().startEvent(transcriptText);
 		}
 	}

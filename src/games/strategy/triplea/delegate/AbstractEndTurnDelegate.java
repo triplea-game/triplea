@@ -24,7 +24,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.formatter.Formatter;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.*;
 
 import java.util.*;
@@ -118,7 +118,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 	       hits.put(unit,0);
 	   }
 	   aBridge.addChange(ChangeFactory.unitsHit(hits));
-	   aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  Formatter.pluralize("unit", damaged.size()) + " repaired.");
+	   aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
 	   
 	}
 	
