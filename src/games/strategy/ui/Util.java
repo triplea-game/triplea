@@ -53,13 +53,24 @@ public class Util
 		return copy;
 	}
 
-
+        
+	/**
+	   Change by Beagle.
+	   
+	   Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
+	   problems. Fix is to use 3Byte rather than INT.
+	*/
 	public static BufferedImage createImage(int width, int height, boolean needAlpha)
 	{
-        if(needAlpha)
-            return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        else
-            return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            if(needAlpha)
+	    {
+                return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+            }
+	    else
+	    {
+                return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+	    }
+	    
     //the code below should be the correct way to get graphics, but it is makes the ui quite
     //unresponsive when drawing the map (as seen when updating the map for different routes
     //in combat move phase)
