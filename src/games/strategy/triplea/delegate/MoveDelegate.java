@@ -522,6 +522,12 @@ public class MoveDelegate implements SaveableDelegate
     private String validateBasic(Collection units, Route route, PlayerID player, Collection transportsToLoad)
     {
 
+        if(m_submergedTracker.areAnySubmerged(units))
+        {
+            return "You cannot move submerged units";
+        }
+    
+        
         //make sure all units are actually in the start territory
         if (!route.getStart().getUnits().containsAll(units))
         {
@@ -1035,6 +1041,7 @@ public class MoveDelegate implements SaveableDelegate
                 RocketsFireHelper helper = new RocketsFireHelper();
                 helper.fireRockets(m_bridge, m_data, m_bridge.getPlayerID());
             }
+            m_submergedTracker.clear();
         }
     }
 

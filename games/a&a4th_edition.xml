@@ -1244,6 +1244,7 @@
 			<unitPlacement unitType="battleship" territory="Caroline Islands Sea Zone" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="carrier" territory="Caroline Islands Sea Zone" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="battleship" territory="Central Mediteranean Sea Zone" quantity ="1" owner="Germans" /> 
+			<unitPlacement unitType="destroyer" territory="Central Mediteranean Sea Zone" quantity ="1" owner="Germans" /> 
 			<unitPlacement unitType="transport" territory="Central Mediteranean Sea Zone" quantity ="1" owner="Germans" /> 
 			<unitPlacement unitType="transport" territory="East Canada Sea Zone" quantity ="1" owner="British" /> 
 			<unitPlacement unitType="submarine" territory="East Mediteranean Sea Zone" quantity ="1" owner="British" /> 

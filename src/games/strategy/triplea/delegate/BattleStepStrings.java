@@ -48,7 +48,8 @@ public interface BattleStepStrings
   final static String ATTACKER_SELECT_CASUALTIES = " select casualties";
 
   final static String REMOVE_CASUALTIES = "Remove casualties";
-  final static String ATTACKER_SUBS_WITHDRAW = " withdraw subs?";
-  final static String DEFENDER_SUBS_WITHDRAW = " withdraw subs?";
+  final static String SUBS_WITHDRAW = " withdraw subs?";
+  final static String SUBS_SUBMERGE = " submerge subs?";  
+  
   final static String ATTACKER_WITHDRAW = " withdraw?";
 }

@@ -1,15 +1,13 @@
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version. This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package games.strategy.triplea.ui;
@@ -46,6 +44,7 @@ import javax.swing.border.*;
 
 public class BattleDisplay extends JPanel
 {
+
     private final String DICE_KEY = "D";
     private final String CASUALTIES_KEY = "C";
 
@@ -74,6 +73,7 @@ public class BattleDisplay extends JPanel
 
     public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection attackingUnits, Collection defendingUnits)
     {
+
         m_defender = defender;
         m_attacker = attacker;
         m_location = territory;
@@ -89,16 +89,19 @@ public class BattleDisplay extends JPanel
     }
 
     /**
-     * Play a sound when strat bombing. At this stage something will get hit. No need to check dice.
+     * Play a sound when strat bombing. At this stage something will get hit. No
+     * need to check dice.
      */
     public void bombingResults(BombingResults message)
     {
+
         m_dicePanel.setDiceRoll(message);
         m_actionLayout.show(m_actionPanel, DICE_KEY);
     }
 
     public void casualtyNotificationMessage(CasualtyNotificationMessage message, boolean waitFOrUserInput)
     {
+
         setStep(message);
         m_casualties.setNotication(message);
         m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
@@ -120,6 +123,7 @@ public class BattleDisplay extends JPanel
 
             public void actionPerformed(ActionEvent e)
             {
+
                 synchronized (m_continueLock)
                 {
                     m_continueLock.notifyAll();
@@ -143,6 +147,7 @@ public class BattleDisplay extends JPanel
 
     public void endBattle(BattleEndMessage msg)
     {
+
         m_steps.walkToLastStep();
 
         m_actionButton.setAction(new AbstractAction(msg.getMessage() + " : (Click to close)")
@@ -150,6 +155,7 @@ public class BattleDisplay extends JPanel
 
             public void actionPerformed(ActionEvent e)
             {
+
                 synchronized (m_continueLock)
                 {
                     m_continueLock.notifyAll();
@@ -173,13 +179,42 @@ public class BattleDisplay extends JPanel
 
     public RetreatMessage getRetreat(RetreatQueryMessage rqm)
     {
+
+        if (!rqm.getSubmerge())
+        {
+            return getRetreatInternal(rqm);
+        } else
+        {
+            return getSubmerge(rqm);
+        }
+    }
+
+    private RetreatMessage getSubmerge(RetreatQueryMessage rqm)
+    {
+        setStep(rqm);
+
+        String message = rqm.getMessage();
+        String ok = "Submerge";
+        String cancel = "Remain";
+        String[] options = {ok, cancel};
+        int choice = JOptionPane.showOptionDialog(this, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
+        boolean retreat = (choice == 0);
+        if(retreat)
+            return new RetreatMessage(null);
+        else
+            return null;
+        
+    }
+
+    private RetreatMessage getRetreatInternal(RetreatQueryMessage rqm)
+    {
+
         setStep(rqm);
 
         String message = rqm.getMessage();
         String ok = "Retreat";
         String cancel = "Remain";
-        String[] options =
-        {ok, cancel};
+        String[] options = {ok, cancel};
         int choice = JOptionPane.showOptionDialog(this, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
         boolean retreat = (choice == 0);
         if (!retreat)
@@ -201,11 +236,13 @@ public class BattleDisplay extends JPanel
 
     private class RetreatComponent extends JPanel
     {
+
         RetreatQueryMessage m_query;
         JList m_list;
 
         RetreatComponent(RetreatQueryMessage rqm)
         {
+
             this.setLayout(new BorderLayout());
 
             JLabel label = new JLabel("Retreat to...");
@@ -224,12 +261,14 @@ public class BattleDisplay extends JPanel
 
         public Territory getSelection()
         {
+
             return (Territory) m_list.getSelectedValue();
         }
     }
 
     public SelectCasualtyMessage getCasualties(final SelectCasualtyQueryMessage msg)
     {
+
         setStep(msg);
         m_actionLayout.show(m_actionPanel, DICE_KEY);
         m_dicePanel.setDiceRoll(msg.getDice());
@@ -240,6 +279,7 @@ public class BattleDisplay extends JPanel
 
         m_actionButton.setAction(new AbstractAction(btnText)
         {
+
             public void actionPerformed(ActionEvent e)
             {
 
@@ -248,8 +288,7 @@ public class BattleDisplay extends JPanel
 
                 chooser.setTitle(messageText);
                 chooser.setMax(msg.getCount());
-                String[] options =
-                {"Ok", "Cancel"};
+                String[] options = {"Ok", "Cancel"};
                 int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
                 if (option != 0)
                     return;
@@ -349,6 +388,7 @@ public class BattleDisplay extends JPanel
      */
     private void setDefaultWidhts(JTable table)
     {
+
         for (int column = 0; column < table.getColumnCount(); column++)
         {
             boolean hasData = false;
@@ -366,16 +406,17 @@ public class BattleDisplay extends JPanel
 
     public void setStep(BattleMessage message)
     {
+
         m_steps.setStep(message);
 
     }
 
     public Message battleInfo(BattleInfoMessage msg)
     {
+
         setStep(msg);
         String ok = "OK";
-        String[] options =
-        {ok};
+        String[] options = {ok};
         JOptionPane.showOptionDialog(this, msg.getMessage(), msg.getShortMessage(), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, ok);
 
         return null;
@@ -383,11 +424,13 @@ public class BattleDisplay extends JPanel
 
     public void listBattle(BattleStepMessage message)
     {
+
         m_steps.listBattle(message);
     }
 
     private JComponent getPlayerComponent(PlayerID id)
     {
+
         JLabel player = new JLabel(id.getName());
         player.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
         player.setFont(player.getFont().deriveFont((float) 14));
@@ -399,6 +442,7 @@ public class BattleDisplay extends JPanel
 
     private JComponent getTerritoryComponent()
     {
+
         Image finalImage = Util.createImage(WIDTH, HEIGHT, true);
 
         Image territory;
@@ -415,11 +459,12 @@ public class BattleDisplay extends JPanel
 }
 
 
-
 class BattleTable extends JTable
 {
+
     BattleTable(BattleModel model)
     {
+
         super(model);
         setDefaultRenderer(Object.class, new Renderer());
         setRowHeight(UnitIconImageFactory.UNIT_ICON_HEIGHT + 5);
@@ -432,9 +477,9 @@ class BattleTable extends JTable
 }
 
 
-
 class BattleModel extends DefaultTableModel
 {
+
     private GameData m_data;
     //is the player the agressor?
     private boolean m_attack;
@@ -442,8 +487,8 @@ class BattleModel extends DefaultTableModel
 
     BattleModel(GameData data, Collection units, boolean attack)
     {
-        super(new Object[0][0], new String[]
-        {" ", "1", "2", "3", "4", "5"});
+
+        super(new Object[0][0], new String[]{" ", "1", "2", "3", "4", "5"});
         m_data = data;
         m_attack = attack;
         //were going to modify the units
@@ -452,6 +497,7 @@ class BattleModel extends DefaultTableModel
 
     public void removeCasualties(CasualtyNotificationMessage msg)
     {
+
         m_units.removeAll(msg.getKilled());
         refresh();
     }
@@ -461,6 +507,7 @@ class BattleModel extends DefaultTableModel
      */
     public void refresh()
     {
+
         List[] columns = new List[6];
         for (int i = 0; i < columns.length; i++)
         {
@@ -479,9 +526,9 @@ class BattleModel extends DefaultTableModel
             UnitCategory category = (UnitCategory) categoriesIter.next();
 
             int strength;
-            
+
             UnitAttatchment attatchment = UnitAttatchment.get(category.getType());
-      
+
             if (m_attack)
                 strength = attatchment.getAttack(category.getOwner());
             else
@@ -490,15 +537,15 @@ class BattleModel extends DefaultTableModel
             int unitsToAdd = category.getUnits().size();
             int supportedUnitsToAdd = 0;
             //factor in artillery support
-            if(attatchment.isArtillerySupportable() && m_attack)
+            if (attatchment.isArtillerySupportable() && m_attack)
             {
                 supportedUnitsToAdd = Math.min(artillerySupportAvailable, unitsToAdd);
                 artillerySupportAvailable -= supportedUnitsToAdd;
                 unitsToAdd -= supportedUnitsToAdd;
             }
-            
+
             columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged()));
-            columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged()));            
+            columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged()));
         }
 
         //find the number of rows
@@ -515,7 +562,8 @@ class BattleModel extends DefaultTableModel
         {
             for (int column = 0; column < columns.length; column++)
             {
-                //if the column has that many items, add to the table, else add null
+                //if the column has that many items, add to the table, else add
+                // null
                 if (columns[column].size() > row)
                 {
                     setValueAt(columns[column].get(row), row, column);
@@ -529,27 +577,30 @@ class BattleModel extends DefaultTableModel
 
     public boolean isCellEditable(int row, int column)
     {
+
         return false;
     }
 
 }
 
 
-
 class Renderer implements TableCellRenderer
 {
+
     JLabel m_stamp = new JLabel();
+
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
     {
+
         ((TableData) value).updateStamp(m_stamp);
         return m_stamp;
     }
 }
 
 
-
 class TableData
 {
+
     static TableData NULL = new TableData();
     private int m_count;
     private Icon m_icon;
@@ -561,12 +612,14 @@ class TableData
 
     TableData(PlayerID player, int count, UnitType type, GameData data, boolean damaged)
     {
+
         m_count = count;
         m_icon = UnitIconImageFactory.instance().getIcon(type, player, data, damaged);
     }
 
     public void updateStamp(JLabel stamp)
     {
+
         if (m_count == 0)
         {
             stamp.setText("");
@@ -580,9 +633,9 @@ class TableData
 }
 
 
-
 class BattleStepsPanel extends JPanel
 {
+
     private DefaultListModel m_listModel = new DefaultListModel();
     private JList m_list = new JList(m_listModel);
     private MyListSelectionModel m_listSelectionModel = new MyListSelectionModel();
@@ -598,6 +651,7 @@ class BattleStepsPanel extends JPanel
 
     public Message battleStringMessage(BattleStringMessage message)
     {
+
         setStep(message);
         JOptionPane.showMessageDialog(getRootPane(), message.getMessage(), message.getMessage(), JOptionPane.PLAIN_MESSAGE);
         return null;
@@ -624,6 +678,7 @@ class BattleStepsPanel extends JPanel
      */
     private void walkStep(final int start, final int stop)
     {
+
         if (start < 0 || stop < 0 || stop >= m_listModel.getSize())
             throw new IllegalStateException("Illegal start and stop.  start:" + start + " stop:" + stop);
 
@@ -642,8 +697,10 @@ class BattleStepsPanel extends JPanel
             final int set = current;
             Runnable r = new Runnable()
             {
+
                 public void run()
                 {
+
                     m_listSelectionModel.hiddenSetSelectionInterval(set);
                 }
             };
@@ -663,22 +720,27 @@ class BattleStepsPanel extends JPanel
     }
 
     /**
-     * Doesnt allow the user to change the selection, must be done through hiddenSetSelectionInterval.
+     * Doesnt allow the user to change the selection, must be done through
+     * hiddenSetSelectionInterval.
      */
     class MyListSelectionModel extends DefaultListSelectionModel
     {
+
         public void setSelectionInterval(int index0, int index1)
         {
+
         }
 
         public void hiddenSetSelectionInterval(int index)
         {
+
             super.setSelectionInterval(index, index);
         }
     }
 
     private void pause()
     {
+
         Object lock = new Object();
         try
         {
@@ -693,6 +755,7 @@ class BattleStepsPanel extends JPanel
 
     public void walkToLastStep()
     {
+
         if (m_list.getSelectedIndex() == m_list.getModel().getSize() - 1)
             return;
         walkStep(m_list.getSelectedIndex(), m_list.getModel().getSize() - 1);
@@ -700,6 +763,7 @@ class BattleStepsPanel extends JPanel
 
     public void setStep(BattleMessage msg)
     {
+
         if (msg.getStep() != null)
         {
             int newIndex = m_listModel.lastIndexOf(msg.getStep());
@@ -712,9 +776,9 @@ class BattleStepsPanel extends JPanel
 }
 
 
-
 class CasualtyNotificationPanel extends JPanel
 {
+
     private DicePanel m_dice = new DicePanel();
     private JPanel m_killed = new JPanel();
     private JPanel m_damaged = new JPanel();
@@ -722,6 +786,7 @@ class CasualtyNotificationPanel extends JPanel
 
     public CasualtyNotificationPanel(GameData data)
     {
+
         m_data = data;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(m_dice);
@@ -731,6 +796,7 @@ class CasualtyNotificationPanel extends JPanel
 
     public void setNotication(CasualtyNotificationMessage msg)
     {
+
         m_dice.setDiceRoll(msg.getDice());
 
         m_killed.removeAll();
@@ -757,6 +823,7 @@ class CasualtyNotificationPanel extends JPanel
 
     private void categorizeUnits(Iterator categoryIter, boolean damaged)
     {
+
         while (categoryIter.hasNext())
         {
             UnitCategory category = (UnitCategory) categoryIter.next();
@@ -767,7 +834,8 @@ class CasualtyNotificationPanel extends JPanel
             while (iter.hasNext())
             {
                 UnitOwner owner = (UnitOwner) iter.next();
-                //we dont want to use the damaged icon for unuts that have just been damaged
+                //we dont want to use the damaged icon for unuts that have just
+                // been damaged
                 boolean useDamagedIcon = category.getDamaged() && !damaged;
                 unit.add(new JLabel(UnitIconImageFactory.instance().getIcon(owner.getType(), owner.getOwner(), m_data, useDamagedIcon)));
             }

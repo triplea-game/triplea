@@ -1279,7 +1279,7 @@
 		<property name="Produce fighters on carriers" value="false" editable="true">
 			<boolean/>
 		</property>
-		<property name="Submerisble Subs" value="false" editable="true">
+		<property name="Submersible Subs" value="false" editable="true">
 			<boolean/>
 		</property>
 		<property name="Always on AA" value="false" editable="true">

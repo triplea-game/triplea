@@ -18,7 +18,8 @@ import games.strategy.engine.data.Unit;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
 
 
 
@@ -31,13 +32,35 @@ public class SubmergedTracker implements Serializable
     
     public boolean isSuberged(Unit unit)
     {
-        return m_submerged.add(unit);
+        return m_submerged.contains(unit);
+    }
+    
+    public boolean areAnySubmerged(Collection units)
+    {
+        Iterator iter = units.iterator();
+        while(iter.hasNext())
+        {
+            if(isSuberged((Unit) iter.next()))
+                return true;
+        }
+        return false;
     }
     
     public void submerge(Unit aUnit)
     {
        m_submerged.add(aUnit); 
     }
+
+    public void submerge(Collection units)
+    {
+        Iterator iter = units.iterator();
+        while(iter.hasNext())
+        {
+            submerge((Unit) iter.next());
+        }
+        
+    }
+
     
     public void clear()
     {
