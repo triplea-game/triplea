@@ -273,14 +273,19 @@ public class UnitCollection extends GameDataComponent
 		return false;
 	}
 
-	public List getMatches(Match matcher)
+	public int countMatches(Match predicate)
+	{
+	    return Match.countMatches(m_units, predicate);
+	}
+	
+	public List getMatches(Match predicate)
 	{
 		List values = new ArrayList();
 		Iterator iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
 			Unit unit = (Unit) iter.next();
-			if(matcher.match(unit))
+			if(predicate.match(unit))
 				values.add(unit);
 		}
 		return values;

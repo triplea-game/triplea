@@ -198,7 +198,7 @@ public class GameTypePanel extends JPanel
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         
         String defaultFileName = "classic_a&a.xml";
-        String s=prefs.get(DEFAULT_FILE_NAME_PREF, defaultFileName);
+        String s= prefs.get(DEFAULT_FILE_NAME_PREF, defaultFileName);
         
         File defaultGame =  new File(NewGameFileChooser.DEFAULT_DIRECTORY, s);
         if(!defaultGame.exists())

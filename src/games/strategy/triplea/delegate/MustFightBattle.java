@@ -1534,10 +1534,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //a handy summary of all the units killed
         IntegerMap costs = BattleCalculator.getCosts(m_attacker, m_data);
         int tuvLostAttacker = BattleCalculator.getTUV(m_killed, m_attacker,
-                costs);
+                costs, m_data);
         costs = BattleCalculator.getCosts(m_defender, m_data);
         int tuvLostDefender = BattleCalculator.getTUV(m_killed, m_defender,
-                costs);
+                costs, m_data);
         int tuvChange = tuvLostDefender - tuvLostAttacker;
         bridge.getHistoryWriter().addChildToEvent(
                 "Battle casualty summary: Battle score (TUV change) for attacker is "
