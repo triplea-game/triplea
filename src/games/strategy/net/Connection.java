@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Connection.java
  *
  * Created on December 11, 2001, 8:23 PM
@@ -10,6 +24,7 @@ import java.util.*;
 import java.io.*;
 import java.net.*;
 
+import games.strategy.thread.ThreadPool;
 import games.strategy.util.ListenerList;
 
 /**
@@ -21,6 +36,8 @@ import games.strategy.util.ListenerList;
  */
 class Connection 
 {
+	private static final ThreadPool s_threadPool = new ThreadPool(10);
+	
 	private Socket m_socket;
 	private ObjectOutputStream m_out;
  	private ObjectInputStream m_in;
@@ -232,16 +249,13 @@ class Connection
 				{
 					final Serializable msg = (Serializable) m_in.readObject();
 					
-					
-					
-					//TODO - pool threads, this is just wasteful
 					Runnable r = new Runnable() 
 					{
 						public void run() {messageReceived(msg); }
 					};
-					Thread t = new Thread(r, "Delivering message:" + msg);
-					t.start();
 					
+					s_threadPool.runTask(r);
+				
 				} catch(ClassNotFoundException cnfe)
 				{
 					cnfe.printStackTrace();
