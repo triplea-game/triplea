@@ -20,6 +20,8 @@
 
 package games.strategy.engine.gamePlayer;
 
+import java.util.Properties;
+
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.IDelegate;
@@ -85,6 +87,11 @@ public class DefaultPlayerBridge implements IPlayerBridge
     {
         IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
         return m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate));
+    }
+    
+    public Properties getStepProperties()
+    {
+        return m_game.getData().getSequence().getStep().getProperties();
     }
     
 }

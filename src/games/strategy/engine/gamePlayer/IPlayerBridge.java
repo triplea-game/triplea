@@ -20,6 +20,8 @@
 
 package games.strategy.engine.gamePlayer;
 
+import java.util.Properties;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.IRemote;
 
@@ -50,4 +52,9 @@ public interface IPlayerBridge
 	 * Get the name of the current step being exectured.
 	 */
 	public String getStepName();
+	
+	/**
+	 * Get the properties for the current step.
+	 */
+	public Properties getStepProperties();
 }
