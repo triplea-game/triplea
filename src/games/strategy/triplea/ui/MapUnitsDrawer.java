@@ -223,12 +223,10 @@ public class MapUnitsDrawer
 
       Set dependencies = new HashSet();
 
-      //add the territories that are contained inside of this territory.
-      //this includes islands surrounded by sea zones.
-      if(TerritoryData.getInstance().hasContainedTerritory(territory.getName()))
+      //if we are contained in another territory, then add a dependency.
+      if(m_data.getMap().getNeighbors(territory).size() == 1)
       {
-        Collection contained = TerritoryData.getInstance().getContainedTerritory(territory.getName());
-        addAll(dependencies, contained);
+        dependencies.addAll(m_data.getMap().getNeighbors(territory));
       }
 
       Graphics graphics = m_mapPanel.getOffscreenGraphics();
