@@ -96,16 +96,21 @@ public class HistorySynchronizer
   private GameStepListener m_stepChangeListener = new GameStepListener()
   {
 
-    public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
-    {
-        
-        if (m_currentRound != round)
-        {
-            m_currentRound = round;
-            m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
-        }
-        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
-    }
+      public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
+      {
+          SwingUtilities.invokeLater( new Runnable()
+                  {
+              public void run()
+              {
+                  if (m_currentRound != round)
+                  {
+                      m_currentRound = round;
+                      m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
+                  }
+                  m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+              }
+                  } );
+      }
   };
  
   
