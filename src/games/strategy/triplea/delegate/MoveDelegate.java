@@ -401,7 +401,12 @@ public class MoveDelegate implements Delegate
 		battle.add(Matches.territoryHasEnemyUnits(player, m_data));
 		battle.add(Matches.isTerritoryEnemy(player, m_data));
 		battle.add(Matches.TerritoryIsNuetral);
-		battle.add(Matches.territoryWasFoughOver(DelegateFinder.battleDelegate(m_data).getBattleTracker()));
+
+		CompositeMatch foughtOver = new CompositeMatchAnd();
+		foughtOver.add(Matches.territoryWasFoughOver(DelegateFinder.battleDelegate(m_data).getBattleTracker()));
+		foughtOver.addInverse(Matches.TerritoryIsWater);
+
+		battle.add(foughtOver);
 		
 		if(Match.allMatch(units, Matches.UnitIsAir))
 		{
