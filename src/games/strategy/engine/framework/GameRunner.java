@@ -104,11 +104,10 @@ public class GameRunner
 
     public static void main(String[] args)
     {
-
-        setupLogging();
-
         checkJavaVersion();
 
+        setupLogging();
+        
         Console.getConsole().displayStandardError();
         Console.getConsole().displayStandardOutput();
 
