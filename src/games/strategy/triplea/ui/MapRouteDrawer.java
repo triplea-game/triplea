@@ -26,6 +26,8 @@ import java.awt.geom.QuadCurve2D;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.ui.ImageScrollerLargeView;
+import games.strategy.util.Util;
+
 import java.util.*;
 import java.util.List;
 import java.awt.geom.*;
@@ -51,77 +53,67 @@ public class MapRouteDrawer
 
       graphics.setStroke(new BasicStroke(3.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       graphics.setPaint(Color.red);
-
+      
       graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-      Territory current = m_route.getStart();
-
-      Point currentStart =  TerritoryData.getInstance().getCenter(current);
-
-      Point previousPoint = null;
-      Point currentFinish = null;
-
-      if(m_route.getLength() > 0)
-          currentFinish = TerritoryData.getInstance().getCenter( m_route.at(0));
-
-      Point nextPoint = null;
-      if(m_route.getLength() > 1)
-          nextPoint = TerritoryData.getInstance().getCenter( m_route.at(1));
-
+      
+      
+      List territories = m_route.getTerritories();
+      Point[] points = new Point[territories.size()];
+      
+      //find all the points for this route
+      for(int i = 0; i < territories.size(); i++)
+      {
+          points[i] = (Point) TerritoryData.getInstance().getCenter( (Territory) territories.get(i));
+      }
+      
+      //adjust points for wrapping around the edge
+      for(int i = 1; i < points.length; i++)
+      {
+          if( Math.abs(points[i].x - points[i-1].x) > view.getImageWidth() / 2)
+          {
+              if(points[i].x < points[i-1].x)
+                  points[i].x += view.getImageWidth();
+              else
+                  points[i].x -= view.getImageWidth();
+          }
+      }
+      
+      
+      
       int yOffset = view.getYOffset();
       int xOffset = view.getXOffset();
 
       List shapes = new ArrayList();
-
-
-      for(int i = 0; i < m_route.getLength(); i++)
+      
+      for(int i = 0; i < points.length; i++)
       {
-          if(i < m_route.getLength())
+          if(i + 1 != points.length )
           {
-              Ellipse2D oval = new Ellipse2D.Double(currentStart.x - 3 - xOffset,
-                  currentStart.y - yOffset - 3, 6, 6);
-
+             Ellipse2D oval = new Ellipse2D.Double(points[i].x - 3 - xOffset,
+                  points[i].y - yOffset - 3, 6, 6);
               shapes.add(oval);
           }
 
-          //correct for the map going over the edge
-          if (Math.abs(currentFinish.x - currentStart.x) > view.getImageWidth() / 2)
+          if(i + 2 < points.length)
           {
-            currentFinish = new Point(currentFinish);
-            if (currentFinish.x > currentStart.x)
-            {
-              currentFinish.x -= view.getImageWidth();
-            }
-            else
-            {
-              currentFinish.x += view.getImageWidth();
-            }
+              drawCurvedLineWithNextPoint(graphics, 
+                      points[i].x - xOffset,
+                      points[i].y - yOffset, 
+                      points[i + 1].x - xOffset,
+                      points[i + 1].y - yOffset, 
+                      points[i + 2].x - xOffset,
+                      points[i + 2].y - yOffset, 
+                      shapes);
           }
-
-
-
-
-          if (nextPoint != null)
-              drawCurvedLineWithNextPoint(graphics, currentStart.x - xOffset,
-                                          currentStart.y - yOffset, currentFinish.x - xOffset,
-                                          currentFinish.y - yOffset, nextPoint.x - xOffset,
-                                          nextPoint.y - yOffset, shapes);
-//        else if (previousPoint != null)
-//            drawCurvedLineWithNextPoint(graphics, currentFinish.x,
-//                                        currentFinish.y, currentStart.x,
-//                                        currentStart.y, previousPoint.x,
-//                                        previousPoint.y);
-          else
-              drawLineSegment(graphics, currentStart.x - xOffset, currentStart.y - yOffset,
-                              currentFinish.x - xOffset, currentFinish.y - yOffset, shapes);
-
-        previousPoint = currentStart;
-        currentStart = currentFinish;
-        currentFinish = nextPoint;
-        if(m_route.getLength() > i + 2)
-            nextPoint = TerritoryData.getInstance().getCenter( m_route.at(i + 2 ));
-        else
-            nextPoint = null;
+          else if(i + 1 < points.length)
+          {          
+              drawLineSegment(graphics, 
+                      points[i].x - xOffset, 
+                      points[i].y - yOffset,
+                      points[i + 1].x - xOffset, 
+                      points[i + 1].y - yOffset, 
+                      shapes);
+          }
 
       }
 
@@ -207,10 +199,7 @@ public class MapRouteDrawer
                 controlDiffx = controlDiffx < 0 ?  (int) (-maxControlLength * ratio) : (int) (maxControlLength * ratio);
 
             }
-//          controlDiffx = controlDiffx < 0 ?  -maxControlLength : maxControlLength;
-//          controlDiffx *= ration;
-//          controlDiffy = controlDiffy < 0 ? -maxControlLength ; max
-//          controlDiffy *= ratio;
+
         }
 
 

@@ -182,7 +182,7 @@ public class TerritoryData
 
     public Point getCenter(String terr)
     {
-        return (Point) m_centers.get(terr);
+        return new Point((Point) m_centers.get(terr));
     }
 
 
