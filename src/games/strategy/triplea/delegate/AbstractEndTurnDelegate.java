@@ -28,6 +28,10 @@ import games.strategy.engine.message.*;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.formatter.Formatter;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 /**
  *
@@ -51,6 +55,14 @@ public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Seria
 		m_displayName = displayName;
 	}
 
+	private boolean doBattleShipsRepair()
+	{
+	    Boolean property = (Boolean) m_data.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN);
+	    if(property == null)
+	        return false;
+	    return property.booleanValue();
+	}
+	
 
 	/**
 	 * Called before the delegate will run.
@@ -79,7 +91,41 @@ public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Seria
 
 
 		checkForWinner(aBridge);
+		
+		if(doBattleShipsRepair())
+		{
+		    repairBattleShips(aBridge);
+		}
 	}
+	
+	
+	private void repairBattleShips(DelegateBridge aBridge)
+	{
+	   Match damagedBattleship = new CompositeMatchAnd(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+	    
+	   Collection damaged = new ArrayList();
+	   Iterator iter = m_data.getMap().getTerritories().iterator();
+	   while(iter.hasNext())
+	   {
+	       Territory current = (Territory) iter.next();
+	       damaged.addAll(current.getUnits().getMatches(damagedBattleship));
+	   }
+	   
+	   if(damaged.size() == 0)
+	       return;
+	   
+	   IntegerMap hits = new IntegerMap();
+	   iter = damaged.iterator();
+	   while(iter.hasNext())
+	   {
+	       Unit unit = (Unit) iter.next();
+	       hits.put(unit,0);
+	   }
+	   aBridge.addChange(ChangeFactory.unitsHit(hits));
+	   aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  Formatter.pluralize("units", damaged.size()) + " repaired.");
+	   
+	}
+	
 
 	protected abstract void checkForWinner(DelegateBridge bridge);
 

@@ -49,7 +49,24 @@ public class Matches
         }
     };
 
+	public static final Match UnitIsTwoHit = new Match()
+	{
+		public boolean match(Object obj)
+		{
+			Unit unit = (Unit) obj;
+			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			return ua.isTwoHit();
+		}
+	};
 
+	public static final Match UnitIsDamaged = new Match()
+	{
+		public boolean match(Object obj)
+		{
+			Unit unit = (Unit) obj;
+			return unit.getHits() == 1;
+		}
+	};
 
 	public static final Match UnitIsSea = new Match()
 	{
