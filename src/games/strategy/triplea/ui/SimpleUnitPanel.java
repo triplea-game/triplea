@@ -20,6 +20,7 @@ import java.util.*;
 import games.strategy.util.IntegerMap;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.engine.data.*;
+import games.strategy.triplea.attatchments.*;
 
 /**
  *
@@ -50,15 +51,31 @@ public class SimpleUnitPanel extends JPanel
     removeAll();
     setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 
-    Iterator iter = units.keySet().iterator();
-    while(iter.hasNext())
+    TreeSet productionRules = new TreeSet(productionRuleComparator);
+    productionRules.addAll(units.keySet());
+    Iterator iter =productionRules.iterator();
+    while (iter.hasNext())
     {
-      ProductionRule productionRule = (ProductionRule) iter.next();
-      JLabel label = new JLabel();
-      label.setText(" x " + units.getInt(productionRule));
-      UnitType unit = (UnitType) productionRule.getResults().keySet().iterator().next();
-      label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player, data));
-      add(label);
+        ProductionRule productionRule = (ProductionRule) iter.next();
+        JLabel label = new JLabel();
+        label.setText(" x " + units.getInt(productionRule));
+        UnitType unit = (UnitType) productionRule.getResults().keySet().
+            iterator().next();
+        label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player,
+            data));
+        add(label);
     }
-  }
+}
+
+  Comparator productionRuleComparator = new Comparator()
+  {
+      UnitTypeComparator utc = new UnitTypeComparator();
+
+      public int compare(Object o1, Object o2)
+      {
+          UnitType u1 = (UnitType)  ((ProductionRule) o1).getResults().keySet().iterator().next();
+          UnitType u2 = (UnitType)  ((ProductionRule) o2).getResults().keySet().iterator().next();
+          return utc.compare(u1, u2);
+      }
+  };
 }
