@@ -272,6 +272,23 @@ public class MovePanel extends ActionPanel
     Route defaultRoute = getData().getMap().getRoute(start, end);
     if(defaultRoute == null)
       throw new IllegalStateException("No route between:" + start + " and " + end);
+
+    //if the start and end are in water, try and get a water route
+    //dont force a water route, since planes may be moving
+    if(start.isWater() && end.isWater())
+    {
+      Route waterRoute = getData().getMap().getRoute(start, end, Matches.TerritoryIsWater);
+      if(waterRoute != null && waterRoute.getLength() == defaultRoute.getLength())
+        return waterRoute;
+    }
+
+    //try to avoid aa guns if we can
+    //this fails if the end has an enemy aa gun (eg britian -> Germany)
+    //TODO - get this to ignore the last territory
+    Route noAARoute = getData().getMap().getRoute(start, end, new InverseMatch( Matches.territoryHasEnemyAA(getCurrentPlayer(), getData())));
+    if(noAARoute != null && noAARoute.getLength() == defaultRoute.getLength())
+      return noAARoute;
+
     return defaultRoute;
   }
 

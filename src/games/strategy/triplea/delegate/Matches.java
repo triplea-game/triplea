@@ -304,6 +304,8 @@ public class Matches
 		}
 	};
 
+
+
 	public static final Match TerritoryIsEmptyOfCombatUnits = new Match()
 	{
 		public boolean match(Object o)
@@ -354,6 +356,15 @@ public class Matches
 		};
 	}
 
+  public static Match unitIsEnemyAA(final PlayerID player, final GameData data)
+  {
+    CompositeMatch comp = new CompositeMatchAnd();
+    comp.add(UnitIsAA);
+    comp.add(enemyUnit(player, data));
+    return comp;
+
+  }
+
 	public static Match isTerritoryEnemy(final PlayerID player, final GameData data)
 	{
 		return new Match()
@@ -389,6 +400,24 @@ public class Matches
 			}
 		};
 	}
+
+  public static Match territoryHasEnemyAA(final PlayerID player, final GameData data)
+  {
+
+
+    return new Match()
+    {
+      Match unitIsEnemyAA = unitIsEnemyAA(player, data);
+
+      public boolean match(Object o)
+      {
+        Territory t = (Territory) o;
+        return t.getUnits().someMatch( unitIsEnemyAA );
+      }
+    };
+
+  }
+
 
 	public static Match territoryHasNoEnemyUnits(final PlayerID player, final GameData data)
 	{
