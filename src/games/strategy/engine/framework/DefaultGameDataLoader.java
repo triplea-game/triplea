@@ -90,6 +90,14 @@ public class DefaultGameDataLoader implements IGameDataLoader
 			System.err.println("Error in xml file:" + spe.getMessage());
 			System.exit(0);
 		}
+
+                try {
+		  xmlStream.close();
+                } catch (IOException e)
+                {
+                  // Do nothing
+                }
+
 		return data;
 	}
 }
