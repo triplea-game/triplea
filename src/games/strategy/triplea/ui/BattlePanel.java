@@ -89,9 +89,6 @@ public class BattlePanel extends ActionPanel
 
   public Message battleInfo(BattleInfoMessage msg)
   {
-    if(m_parent.playing(msg.getDontNotify()))
-      return null;
-
     if(m_battleDisplay != null)
       m_battleDisplay.battleInfo(msg);
 
@@ -133,11 +130,16 @@ public class BattlePanel extends ActionPanel
 
   public Message battleStartMessage(BattleStartMessage msg)
   {
-    m_battleDisplay = new BattleDisplay(getData(), msg.getTerritory(), msg.getAttacker(), msg.getDefender());
+    if(!(m_battleDisplay == null))
+    {
+      throw new IllegalStateException("Battle display already showing");
+    }
 
-    m_battleFrame = new JFrame("Battle in " + msg.getTerritory().getName());
+    m_battleDisplay = new BattleDisplay(getData(), msg.getTerritory(), msg.getAttacker(), msg.getDefender(), msg.getAttackingUnits(), msg.getDefendingUnits());
+
+    m_battleFrame = new JFrame(msg.getAttacker().getName() + " attacks " + msg.getDefender().getName() + " in " + msg.getTerritory().getName());
     m_battleFrame.getContentPane().add(m_battleDisplay);
-    m_battleFrame.pack();
+    m_battleFrame.setSize(750, 500);
     m_battleFrame.show();
     m_battleFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -164,12 +166,36 @@ public class BattlePanel extends ActionPanel
   }
 
 
-
-
-  public SelectCasualtyMessage getCasualties(PlayerID player, SelectCasualtyQueryMessage msg)
+  public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
   {
-    m_battleDisplay.setStep(msg);
-    return m_battleDisplay.getCasualties(player, msg);
+    m_battleDisplay.casualtyNoticicationMessage( message);
+  }
+
+  public SelectCasualtyMessage getCasualties(SelectCasualtyQueryMessage msg)
+  {
+    //if the battle display is null, then this is a bombing raid
+    if(m_battleDisplay == null)
+      return getCasualtiesAA(msg);
+    else
+    {
+      m_battleDisplay.setStep(msg);
+      return m_battleDisplay.getCasualties(msg);
+    }
+  }
+
+  private SelectCasualtyMessage getCasualtiesAA(SelectCasualtyQueryMessage msg)
+  {
+    boolean plural = msg.getCount() > 1;
+    UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), getData());
+
+    String messageText = msg.getMessage() + " " + msg.getPlayer().getName() + " select " + msg.getCount() + (plural ? " casualties" :" casualty") + ".";
+    chooser.setTitle(messageText);
+    chooser.setMax(msg.getCount());
+    String[] options = {"OK"};
+    int option = JOptionPane.showOptionDialog( getRootPane(), chooser, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+    Collection choosen = chooser.getSelected(false);
+    SelectCasualtyMessage response = new SelectCasualtyMessage(choosen);
+    return response;
   }
 
   public Message battleStringMessage(BattleStringMessage message)

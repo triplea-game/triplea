@@ -58,11 +58,11 @@ public class MovePanel extends ActionPanel
     CANCEL_MOVE_ACTION.setEnabled(false);
     }
 
-  public void display(PlayerID id)
+  public void display(PlayerID id, boolean nonCombat)
   {
     super.display(id);
     removeAll();
-    m_actionLabel.setText(id.getName() + " move");
+    m_actionLabel.setText(id.getName() + (nonCombat ? " non combat" : " combat") + " move" );
     this.add(m_actionLabel);
     this.add(new JButton(CANCEL_MOVE_ACTION));
     this.add(new JButton(DONE_MOVE_ACTION));

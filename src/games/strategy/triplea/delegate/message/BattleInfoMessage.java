@@ -24,45 +24,39 @@ import games.strategy.engine.data.PlayerID;
 
 /**
  * Sent to inform the player of an event that occured during the battle.
- * 
+ *
  *
  * @author  Sean Bridges
  */
 public class BattleInfoMessage extends BattleMessage
 {
-	
-	/**
-	 * Dont send a notification to this player.
-	 * Allows the ui to ignore notifications if more than
-	 * one player is sharing the same ui.
-	 */
-	private PlayerID m_dontNotify;
-	private String m_message;
-	private String m_shortMessage;
-	
-	/**
-	 * Creates a new instance of BattleInfoMessage
-	 */
-	public BattleInfoMessage(String message, String shortMessage, PlayerID dontNotify, String step)
-	{
-		super(step);
-		m_dontNotify = dontNotify;
-		m_message = message;
-		m_shortMessage = shortMessage;
-	}
-	
-	public String getMessage()
-	{
-		return m_message;
-	}
-	
-	public String getShortMessage()
-	{
-		return m_shortMessage;
-	}
-	
-	public PlayerID getDontNotify()
-	{
-		return m_dontNotify;
-	}
+
+  /**
+   * Dont send a notification to this player.
+   * Allows the ui to ignore notifications if more than
+   * one player is sharing the same ui.
+   */
+  private String m_message;
+  private String m_shortMessage;
+
+  /**
+   * Creates a new instance of BattleInfoMessage
+   */
+  public BattleInfoMessage(String message, String shortMessage, String step)
+  {
+    super(step);
+    m_message = message;
+    m_shortMessage = shortMessage;
+  }
+
+  public String getMessage()
+  {
+    return m_message;
+  }
+
+  public String getShortMessage()
+  {
+    return m_shortMessage;
+  }
+
 }

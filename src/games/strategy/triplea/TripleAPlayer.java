@@ -71,7 +71,7 @@ public class TripleAPlayer implements GamePlayer
 
 
     if(message instanceof SelectCasualtyQueryMessage)
-      return m_ui.getCasualties( m_id, (SelectCasualtyQueryMessage) message);
+      return m_ui.getCasualties((SelectCasualtyQueryMessage) message);
     else if(message instanceof StringMessage)
     {
       StringMessage smsg = (StringMessage) message;
@@ -86,6 +86,11 @@ public class TripleAPlayer implements GamePlayer
     else if (message instanceof BattleStepMessage)
     {
       return m_ui.listBattle((BattleStepMessage) message);
+    }
+    else if(message instanceof CasualtyNotificationMessage)
+    {
+      m_ui.casualtyNoticicationMessage((CasualtyNotificationMessage) message);
+      return null;
     }
     else if (message instanceof BattleInfoMessage)
     {
@@ -171,7 +176,7 @@ public class TripleAPlayer implements GamePlayer
 
   private void move(boolean nonCombat)
   {
-    MoveMessage message = m_ui.getMove(m_id, m_bridge);
+    MoveMessage message = m_ui.getMove(m_id, m_bridge, nonCombat);
     if(message == null)
     {
       if(nonCombat)

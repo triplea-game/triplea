@@ -72,9 +72,9 @@ public class ActionButtons extends JPanel
     add(m_techPanel, m_techPanel.toString());
     }
 
-  public void changeToMove(PlayerID id)
+  public void changeToMove(PlayerID id, boolean nonCombat)
   {
-    m_movePanel.display(id);
+    m_movePanel.display(id, nonCombat);
     m_layout.show(this, m_movePanel.toString());
   }
 
@@ -153,9 +153,9 @@ public class ActionButtons extends JPanel
     return m_battlePanel.waitForBattleSelection();
   }
 
-  public SelectCasualtyMessage getCasualties(PlayerID player, SelectCasualtyQueryMessage msg)
+  public SelectCasualtyMessage getCasualties(SelectCasualtyQueryMessage msg)
   {
-    return m_battlePanel.getCasualties(player, msg);
+    return m_battlePanel.getCasualties(msg);
   }
 
   public Message battleStringMessage(BattleStringMessage message)
@@ -172,6 +172,12 @@ public class ActionButtons extends JPanel
   {
     return m_battlePanel.battleInfo(msg);
   }
+
+  public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
+  {
+    m_battlePanel.casualtyNoticicationMessage( message);
+  }
+
 
   /**
    * Blocks until the user selects a country to retreat to.

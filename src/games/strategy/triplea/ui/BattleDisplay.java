@@ -26,6 +26,7 @@ import java.awt.event.*;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import java.util.List;
 import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.engine.data.*;
 import games.strategy.ui.Util;
 import games.strategy.util.*;
@@ -33,6 +34,8 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.engine.message.Message;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.util.*;
 
 /**
  * Displays a running battle
@@ -45,7 +48,7 @@ public class BattleDisplay extends JPanel
   private Territory m_location;
   private GameData m_data;
 
-  private JButton m_selectCasualtiesButton = new JButton("");
+  private JButton m_actionButton = new JButton("");
 
   private BattleModel m_defenderModel;
   private BattleModel m_attackerModel;
@@ -54,49 +57,81 @@ public class BattleDisplay extends JPanel
   private Object m_selectCasualtyLock = new Object();
   private SelectCasualtyMessage m_selectCasualtyResponse;
 
+  private DicePanel m_dicePanel;
+  private CasualtyNotificationPanel m_casualties;
+  private JPanel m_actionPanel;
+  private CardLayout m_actionLayout = new CardLayout();
+
+
 //  private Image m_offscreen;
 
 //  private final Dimension SIZE = new Dimension(500,200);
 
-  public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender)
+  public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection attackingUnits, Collection defendingUnits)
   {
     m_defender = defender;
     m_attacker = attacker;
     m_location = territory;
     m_data = data;
+    m_casualties = new CasualtyNotificationPanel(data);
 
-    m_defenderModel = new BattleModel(m_data, m_location, m_defender, false);
+    m_defenderModel = new BattleModel(m_data,defendingUnits, false);
     m_defenderModel.refresh();
-    m_attackerModel = new BattleModel(m_data, m_location, m_attacker, true);
+    m_attackerModel = new BattleModel(m_data, attackingUnits, true);
     m_attackerModel.refresh();
 
     initLayout();
+  }
 
-    m_data.addDataChangeListener(new GameDataChangeListener()
+  public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
+  {
+    m_casualties.setNotication(message);
+    m_actionLayout.show(m_actionPanel, "C");
+
+    if(message.getPlayer().equals(m_defender))
+      m_defenderModel.removeCasualties(message);
+    else
+      m_attackerModel.removeCasualties(message);
+
+
+    m_actionButton.setAction(
+        new AbstractAction("Continue")
     {
-      public void gameDataChanged()
+
+      public void actionPerformed(ActionEvent e)
       {
-        SwingUtilities.invokeLater(new Runnable()
+        synchronized(m_selectCasualtyLock)
         {
-          public void run()
-          {
-            m_defenderModel.refresh();
-            m_attackerModel.refresh();
-          }
+          m_selectCasualtyLock.notifyAll();
         }
-        );
       }
     }
     );
+
+    try
+    {
+      synchronized(m_selectCasualtyLock)
+      {
+        m_selectCasualtyLock.wait();
+      }
+      } catch(InterruptedException ie)
+      {
+
+      }
+
+    m_actionButton.setAction(null);
   }
 
-  public SelectCasualtyMessage getCasualties(final PlayerID player,final SelectCasualtyQueryMessage msg)
-  {
-    boolean plural = msg. getCount() > 1;
-    final String btnText =player.getName() + " select " + msg.getCount() + (plural ? " casualties" :" casualty");
-    m_selectCasualtiesButton.setEnabled(true);
 
-    m_selectCasualtiesButton.setAction(new AbstractAction(btnText)
+  public SelectCasualtyMessage getCasualties(final SelectCasualtyQueryMessage msg)
+  {
+    m_actionLayout.show(m_actionPanel, "D");
+    m_dicePanel.setDiceRoll(msg.getDice());
+    boolean plural = msg. getCount() > 1;
+    final String btnText = msg.getPlayer().getName() + " select " + msg.getCount() + (plural ? " casualties" :" casualty");
+    m_actionButton.setEnabled(true);
+
+    m_actionButton.setAction(new AbstractAction(btnText)
     {
       public void actionPerformed(ActionEvent e)
       {
@@ -106,13 +141,15 @@ public class BattleDisplay extends JPanel
 
         chooser.setTitle(messageText);
         chooser.setMax(msg.getCount());
-        String[] options = {"OK"};
-        int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, player.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+        String[] options = {"Ok", "Cancel"};
+        int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+        if(option != 0)
+          return;
         Collection choosen = chooser.getSelected(false);
 
         if(choosen.size() != msg.getCount())
         {
-          JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", player.getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", msg.getPlayer().getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
         }
         else
         {
@@ -137,8 +174,9 @@ public class BattleDisplay extends JPanel
     {
     }
 
-    m_selectCasualtiesButton.setEnabled(false);
-    m_selectCasualtiesButton.setAction(null);
+    m_dicePanel.clear();
+    m_actionButton.setEnabled(false);
+    m_actionButton.setAction(null);
     SelectCasualtyMessage rVal = m_selectCasualtyResponse;
     m_selectCasualtyResponse = null;
     return rVal;
@@ -149,9 +187,11 @@ public class BattleDisplay extends JPanel
 
   private void initLayout()
   {
+
     JPanel attackerUnits = new JPanel();
     attackerUnits.setLayout(new BoxLayout(attackerUnits, BoxLayout.Y_AXIS));
     attackerUnits.add(getPlayerComponent(m_attacker));
+    attackerUnits.add(Box.createGlue());
     JTable attackerTable = new BattleTable(m_attackerModel);
     attackerUnits.add(attackerTable);
     attackerUnits.add(attackerTable.getTableHeader());
@@ -170,13 +210,27 @@ public class BattleDisplay extends JPanel
     north.add(defenderUnits);
 
     m_steps = new BattleStepsPanel();
+    m_dicePanel = new DicePanel();
+
+    m_actionPanel = new JPanel();
+    m_actionPanel.setLayout(m_actionLayout);
+
+//    m_actionLayout.addLayoutComponent(m_dicePanel, "D");
+//    m_actionLayout.addLayoutComponent(m_casualties, "C");
+    m_actionPanel.add(m_dicePanel, "D");
+    m_actionPanel.add(m_casualties,"C");
+
+    JPanel diceAndSteps = new JPanel();
+    diceAndSteps.setLayout(new BorderLayout());
+    diceAndSteps.add(m_steps, BorderLayout.WEST);
+    diceAndSteps.add(m_actionPanel, BorderLayout.CENTER);
 
     setLayout(new BorderLayout());
     add(north, BorderLayout.NORTH);
-    add(m_steps, BorderLayout.CENTER);
+    add(diceAndSteps, BorderLayout.CENTER);
 
-    add(m_selectCasualtiesButton, BorderLayout.SOUTH);
-    m_selectCasualtiesButton.setEnabled(false);
+    add(m_actionButton, BorderLayout.SOUTH);
+    m_actionButton.setEnabled(false);
   }
 
   public void setStep(BattleMessage message)
@@ -245,23 +299,29 @@ class BattleTable extends JTable
 
 class BattleModel extends DefaultTableModel
 {
-
-  private Territory m_location;
   private GameData m_data;
-  private PlayerID m_player;
   //is the player the agressor?
   private boolean m_attack;
+  private Collection m_units;
 
-  BattleModel(GameData data, Territory territory, PlayerID player, boolean attack)
+  BattleModel(GameData data, Collection units, boolean attack)
   {
     super(new Object[0][0], new String[] {" ", "1", "2", "3", "4", "5"});
-    m_player = player;
-    m_location = territory;
     m_data = data;
     m_attack = attack;
+    //were going to modify the units
+    m_units = new ArrayList(units);
   }
 
+  public void removeCasualties(CasualtyNotificationMessage msg)
+  {
+    m_units.removeAll(msg.getUnits());
+    refresh();
+  }
 
+  /**
+   * refresh the model from m_units
+   */
   public void refresh()
   {
     List[] columns = new List[6];
@@ -270,30 +330,24 @@ class BattleModel extends DefaultTableModel
       columns[i] = new ArrayList();
     }
 
-    Collection players = m_location.getUnits().getPlayersWithUnits();
-    Iterator playerIter = players.iterator();
-    while(playerIter.hasNext())
+    Iterator categories = UnitSeperator.categorize(m_units).iterator();
+
+    while(categories.hasNext())
     {
-      PlayerID player = (PlayerID) playerIter.next();
-      if(!m_data.getAllianceTracker().isAllied(m_player, player))
-        continue;
+      UnitCategory category = (UnitCategory) categories.next();
 
-      IntegerMap units = m_location.getUnits().getUnitsByType(player);
-      Iterator unitIter = units.keySet().iterator();
-      while(unitIter.hasNext())
-      {
-        UnitType unit = (UnitType) unitIter.next();
-        int strength;
-        if(m_attack)
-          strength = UnitAttatchment.get(unit).getAttack(player);
-        else
-          strength = UnitAttatchment.get(unit).getDefense(player);
+      int strength;
+      if(m_attack)
+        strength = UnitAttatchment.get(category.getType()).getAttack(category.getOwner());
+      else
+        strength = UnitAttatchment.get(category.getType()).getDefense(category.getOwner());
 
-        columns[strength].add(new TableData(player, units.getInt(unit), unit, m_data));
-      }
+      columns[strength].add(new TableData(category.getOwner(), category.getUnits().size(), category.getType(), m_data));
     }
 
-    int rowCount = 0;
+    //find the number of rows
+    //this will be the size of the largest column
+    int rowCount = 1;
     for(int i = 0; i < columns.length; i++)
     {
       rowCount = Math.max(rowCount, columns[i].size());
@@ -305,6 +359,7 @@ class BattleModel extends DefaultTableModel
     {
       for(int column = 0; column < columns.length; column++)
       {
+        //if the column has that many items, add to the table, else add null
         if(columns[column].size() > row)
         {
           setValueAt(columns[column].get(row), row, column);
@@ -484,6 +539,96 @@ class BattleStepsPanel extends JPanel
       if(newIndex != -1)
         walkStep(currentIndex,newIndex );
     }
+  }
+
+}
+
+class DicePanel extends JPanel
+{
+  public DicePanel()
+  {
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+  }
+
+  public void clear()
+  {
+    removeAll();
+  }
+
+  public void setDiceRoll(DiceRoll diceRoll)
+  {
+    removeAll();
+    for(int i = 1; i <= 6; i++)
+    {
+      int[] dice = diceRoll.getRolls(i);
+      if(dice.length == 0)
+        continue;
+
+      JPanel dicePanel = new JPanel();
+      dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
+      dicePanel.add(new JLabel("Rolled at " + i + ":"));
+      dicePanel.add(Box.createHorizontalStrut(5));
+      for(int dieIndex = 0; dieIndex < dice.length; dieIndex++)
+      {
+        dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(dice[dieIndex] + 1)));
+        dicePanel.add(Box.createHorizontalStrut(2));
+      }
+      JScrollPane scroll = new JScrollPane(dicePanel);
+      scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+      //we're adding to a box layout, so to prevent the component from
+      //grabbing extra space, set the max height.
+      //allow room for a dice and a scrollbar
+      scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
+      scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
+      scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
+      add(scroll);
+    }
+    add(Box.createVerticalGlue());
+    add(new JLabel("Total hits:" + diceRoll.getHits()));
+
+    invalidate();
+  }
+}
+
+
+class CasualtyNotificationPanel extends JPanel
+{
+  private DicePanel m_dice = new DicePanel();
+  private JPanel m_units = new JPanel();
+  private GameData m_data;
+
+  public CasualtyNotificationPanel(GameData data)
+  {
+    m_data = data;
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    add(m_dice);
+    add(m_units);
+    //add(Box.createVerticalGlue());
+  }
+
+  public void setNotication(CasualtyNotificationMessage msg)
+  {
+    m_dice.setDiceRoll(msg.getDice());
+
+    m_units.removeAll();
+    Iterator categoryIter = UnitSeperator.categorize(msg.getUnits(), msg.getDependents(), null).iterator();
+    while(categoryIter.hasNext())
+    {
+      UnitCategory category = (UnitCategory) categoryIter.next();
+      JPanel panel = new JPanel();
+      JLabel unit = new JLabel(UnitIconImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data));
+      panel.add(unit);
+      Iterator iter = category.getDependents().iterator();
+      while(iter.hasNext())
+      {
+        UnitOwner owner = (UnitOwner) iter.next();
+        unit.add(new JLabel(UnitIconImageFactory.instance().getIcon(owner.getType(), owner.getOwnerr(), m_data)));
+      }
+      panel.add(new JLabel("x " + category.getUnits().size()));
+      m_units.add(panel);
+    }
+
+    invalidate();
   }
 
 }

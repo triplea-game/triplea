@@ -39,125 +39,126 @@ import games.strategy.triplea.formatter.Formatter;
  */
 public class StrategicBombingRaidBattle implements Battle
 {
-	private Territory m_battleSite;
-	private List m_units = new ArrayList();
-	private PlayerID m_defender;
-	private PlayerID m_attacker;
-	private GameData m_data;
-	private BattleTracker m_tracker;
-	
-	/** Creates new StrategicBombingRaidBattle */
-    public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker) 
-	{
-		m_battleSite = territory;
-		m_data = data;
-		m_attacker = attacker;
-		m_defender = defender;
-		m_tracker = tracker;
+  private Territory m_battleSite;
+  private List m_units = new ArrayList();
+  private PlayerID m_defender;
+  private PlayerID m_attacker;
+  private GameData m_data;
+  private BattleTracker m_tracker;
+
+  /** Creates new StrategicBombingRaidBattle */
+    public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker)
+  {
+    m_battleSite = territory;
+    m_data = data;
+    m_attacker = attacker;
+    m_defender = defender;
+    m_tracker = tracker;
     }
 
-	public void addAttack(Route route, Collection units) 
-	{
-		if(!Match.allMatch(units, Matches.UnitIsStrategicBomber))
-			throw new IllegalArgumentException("Non bombers added to strategic bombing raid:" + units);
-		
-		m_units.addAll(units);
-		
-		//TODO, add dependencies in case of land attack in same territory
-	}
-	
-	public void fight(DelegateBridge bridge) 
-	{
-		//sort according to least movement
-		MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
-		moveDelegate.sortAccordingToMovementLeft(m_units, false);
-		
-		CompositeMatch hasAA = new CompositeMatchAnd();
-		hasAA.add(Matches.UnitIsAA);
-		hasAA.add(Matches.enemyUnit(m_attacker, m_data));
-		if(m_battleSite.getUnits().someMatch(hasAA))
-			fireAA(bridge);
-		
-		conductRaid(bridge);
-		
-		m_tracker.removeBattle(this);
-	}
+  public void addAttack(Route route, Collection units)
+  {
+    if(!Match.allMatch(units, Matches.UnitIsStrategicBomber))
+      throw new IllegalArgumentException("Non bombers added to strategic bombing raid:" + units);
 
-	private void fireAA(DelegateBridge bridge)
-	{
-		int hits = BattleCalculator.getAAHits(m_units, bridge);
-		if(hits == 0)
-		{
-			bridge.sendMessage(new StringMessage("No AA hits in " + m_battleSite.getName(), false));
-		
-			StringMessage msg = new StringMessage("No AA hits in " + m_battleSite.getName(), false);
-			msg.setIgnore(m_attacker);
-			bridge.sendMessage(msg, m_defender);
-		}
-		else
-			removeAAHits(bridge, hits);	
-	}
-	
-	private void removeAAHits(DelegateBridge bridge, int hits)
-	{	
-		String text = hits + " hits from AA fire";
-		Collection casualties = BattleCalculator.selectCasualties(m_attacker, m_units,hits,bridge, text, m_data);
-		m_units.removeAll(casualties);		
-		Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);		
-		
-		
-		bridge.addChange(remove);
-		
-		String msgText = m_attacker.getName() + " selects " + Formatter.unitsToText(casualties) + " as casualties from aa raid in " + m_battleSite.getName();
-		StringMessage msg = new StringMessage(msgText);
-		msg.setIgnore(m_attacker);
-		
-		bridge.sendMessage(msg, m_defender);
-		
-		
-		String transcriptText = Formatter.unitsToText(casualties) + " lost in bombing raid in " + m_battleSite.getName();
-		bridge.getTranscript().write(transcriptText);
-	}
+    m_units.addAll(units);
 
-	private void conductRaid(DelegateBridge bridge)
-	{	
-		int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false); 
-		int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount);
-		int cost = 0;
-		
-		for(int i = 0; i < dice.length; i++)
-		{
-			cost += 1 + dice[i];
-		}
-		bridge.sendMessage(new StringMessage("Bombing raid costs " + cost + " IPCS", false));
-		StringMessage msg = new StringMessage("Bombing raid costs " + cost + " IPCS", false);
-		msg.setIgnore(m_attacker);
-		bridge.sendMessage(msg, m_defender);
-		
-		//get resources 
-		Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-		int have = m_defender.getResources().getQuantity(ipcs);
-		int toRemove = Math.min(cost, have);
-		Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
-		bridge.addChange(change);
-		
-		String transcriptText = "Bombing raid by " + m_attacker.getName() + " costs " + cost + " ipcs for " +  m_defender.getName();
-		bridge.getTranscript().write(transcriptText);	
-	}
-	
-	public boolean isBombingRun() 
-	{
-		return true;
-	}
-	
-	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge) 
-	{
-		//should never happen
-		throw new IllegalStateException("say what, why you telling me that");
-	}
-	
-	public Territory getTerritory() 
-	{
-		return m_battleSite;
-	}
+    //TODO, add dependencies in case of land attack in same territory
+  }
+
+  public void fight(DelegateBridge bridge)
+  {
+    //sort according to least movement
+    MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
+    moveDelegate.sortAccordingToMovementLeft(m_units, false);
+
+    CompositeMatch hasAA = new CompositeMatchAnd();
+    hasAA.add(Matches.UnitIsAA);
+    hasAA.add(Matches.enemyUnit(m_attacker, m_data));
+    if(m_battleSite.getUnits().someMatch(hasAA))
+      fireAA(bridge);
+
+    conductRaid(bridge);
+
+    m_tracker.removeBattle(this);
+  }
+
+  private void fireAA(DelegateBridge bridge)
+  {
+
+    DiceRoll dice = DiceRoll.rollAA(m_units.size(),bridge);
+    if(dice.getHits() == 0)
+    {
+      bridge.sendMessage(new StringMessage("No AA hits in " + m_battleSite.getName(), false));
+
+      StringMessage msg = new StringMessage("No AA hits in " + m_battleSite.getName(), false);
+      msg.setIgnore(m_attacker);
+      bridge.sendMessage(msg, m_defender);
+    }
+    else
+      removeAAHits(bridge, dice);
+  }
+
+  private void removeAAHits(DelegateBridge bridge, DiceRoll dice)
+  {
+    String text = dice.getHits() + " hits from AA fire";
+    Collection casualties = BattleCalculator.selectCasualties(m_attacker, m_units,bridge, text, m_data, dice);
+    m_units.removeAll(casualties);
+    Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
+
+
+    bridge.addChange(remove);
+
+    String msgText = m_attacker.getName() + " selects " + Formatter.unitsToText(casualties) + " as casualties from aa raid in " + m_battleSite.getName();
+    StringMessage msg = new StringMessage(msgText);
+    msg.setIgnore(m_attacker);
+
+    bridge.sendMessage(msg, m_defender);
+
+
+    String transcriptText = Formatter.unitsToText(casualties) + " lost in bombing raid in " + m_battleSite.getName();
+    bridge.getTranscript().write(transcriptText);
+  }
+
+  private void conductRaid(DelegateBridge bridge)
+  {
+    int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
+    int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount);
+    int cost = 0;
+
+    for(int i = 0; i < dice.length; i++)
+    {
+      cost += 1 + dice[i];
+    }
+    bridge.sendMessage(new StringMessage("Bombing raid costs " + cost + " IPCS", false));
+    StringMessage msg = new StringMessage("Bombing raid costs " + cost + " IPCS", false);
+    msg.setIgnore(m_attacker);
+    bridge.sendMessage(msg, m_defender);
+
+    //get resources
+    Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+    int have = m_defender.getResources().getQuantity(ipcs);
+    int toRemove = Math.min(cost, have);
+    Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
+    bridge.addChange(change);
+
+    String transcriptText = "Bombing raid by " + m_attacker.getName() + " costs " + cost + " ipcs for " +  m_defender.getName();
+    bridge.getTranscript().write(transcriptText);
+  }
+
+  public boolean isBombingRun()
+  {
+    return true;
+  }
+
+  public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
+  {
+    //should never happen
+    throw new IllegalStateException("say what, why you telling me that");
+  }
+
+  public Territory getTerritory()
+  {
+    return m_battleSite;
+  }
 }

@@ -1219,25 +1219,26 @@ public class MoveDelegate implements SaveableDelegate
    */
   private void fireAA(Territory territory, Collection units)
   {
-    int hitCount = BattleCalculator.getAAHits(units, m_bridge);
+    DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge);
+    int hitCount = dice.getHits();
 
     if(hitCount == 0)
     {
       m_bridge.sendMessage( new StringMessage("No aa hits in " + territory.getName()));
     }
     else
-      selectCasualties(hitCount, units, territory);
+      selectCasualties(dice, units, territory);
   }
 
   /**
    * hits are removed from units.  Note that units are removed in the
    * order that the iterator will move through them.
    */
-  private void selectCasualties(int hitCount, Collection units, Territory territory)
+  private void selectCasualties(DiceRoll dice, Collection units, Territory territory)
   {
-    String text = "Select " + hitCount + " casualties from aa fire in " + territory.getName();
+    String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
 
-    Collection casualties = BattleCalculator.selectCasualties(m_player, units, hitCount, m_bridge, text, m_data);
+    Collection casualties = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice);
     units.removeAll(casualties);
   }
 

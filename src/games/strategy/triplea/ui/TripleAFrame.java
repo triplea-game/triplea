@@ -345,9 +345,9 @@ public class TripleAFrame extends JFrame
     return m_actionButtons.waitForPurchase(bid);
   }
 
-  public MoveMessage getMove(PlayerID player, PlayerBridge bridge)
+  public MoveMessage getMove(PlayerID player, PlayerBridge bridge, boolean nonCombat)
   {
-    m_actionButtons.changeToMove(player);
+    m_actionButtons.changeToMove(player, nonCombat);
     return m_actionButtons.waitForMove(bridge);
   }
 
@@ -368,15 +368,20 @@ public class TripleAFrame extends JFrame
     return m_actionButtons.waitForBattleSelection();
   }
 
-  public SelectCasualtyMessage getCasualties(PlayerID player, SelectCasualtyQueryMessage msg)
+  public SelectCasualtyMessage getCasualties( SelectCasualtyQueryMessage msg)
   {
-    return m_actionButtons.getCasualties(player, msg);
+    return m_actionButtons.getCasualties(msg);
   }
 
   public Message battleStringMessage(BattleStringMessage message)
   {
     return m_actionButtons.battleStringMessage(message);
   }
+  public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
+  {
+    m_actionButtons.casualtyNoticicationMessage( message);
+  }
+
 
   public RetreatMessage getRetreat(RetreatQueryMessage rqm)
   {

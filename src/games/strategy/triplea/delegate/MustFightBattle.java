@@ -204,7 +204,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //list the steps
     List steps = determineStepStrings(true);
 
-    BattleStartMessage battleStart = new BattleStartMessage(m_attacker, m_defender, m_territory);
+    BattleStartMessage battleStart =
+        new BattleStartMessage(
+          m_attacker,
+          m_defender,
+          m_territory,
+          removeNonCombatants(m_attackingUnits),
+          removeNonCombatants(m_defendingUnits),
+          m_dependentUnits
+        );
     bridge.sendMessage(battleStart);
     bridge.sendMessage(battleStart, m_defender);
 
@@ -307,7 +315,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
   }
 
-  public void fightStart(DelegateBridge bridge)
+  private void fightStart(DelegateBridge bridge)
   {
     fireAAGuns(bridge);
     fireNavalBombardment(bridge);
@@ -479,7 +487,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
       String messageShort = retreatingPlayer.getName() + " retreats";
       String messageLong = retreatingPlayer.getName() + " retreats " + (subs ? "subs" : "all units") + " to " +  retreatTo.getName();
-      bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, retreatingPlayer, stepName), nonRetreatingPlayer);
+      bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, stepName), nonRetreatingPlayer);
     }
   }
 
@@ -509,26 +517,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
   {
     PlayerID firingPlayer = defender ? m_defender : m_attacker;
     PlayerID hitPlayer = defender ? m_attacker : m_defender;
-    int hitCount = getCasualties(firingUnits, defender, bridge);
+
+    DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, firingPlayer, bridge);
+
+    int hitCount = dice.getHits();
+    //they all due
     if(hitCount >= attackableUnits.size())
     {
-      String messageLong = text + " " + hitCount + " hits for " + firingPlayer.getName();
-      String messageShort = text;
-      BattleStringMessage msg = new BattleStringMessage(stepName, messageLong);
+      CasualtyNotificationMessage msg = new CasualtyNotificationMessage(stepName, attackableUnits, m_dependentUnits, hitPlayer, dice);
+
       bridge.sendMessage(msg, firingPlayer);
-      bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, firingPlayer, stepName), hitPlayer);
+      bridge.sendMessage(msg, hitPlayer);
 
       removeCasualties(attackableUnits, canReturnFire, !defender, bridge);
-    } else if(hitCount == 0)
+    }
+    else
     {
-      String messageLong = text + " no hits for " + firingPlayer.getName() + ".";
-      String messageShort = text;
-      BattleStringMessage msg = new BattleStringMessage(stepName, messageLong);
-      bridge.sendMessage(msg, firingPlayer);
-      bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, firingPlayer, stepName), hitPlayer);
-    } else
-    {
-      Collection casualties = selectCasualties(stepName, bridge,attackableUnits, hitCount, !defender, text);
+      Collection casualties = selectCasualties(stepName, bridge,attackableUnits, !defender, text, dice);
       removeCasualties(casualties, canReturnFire, !defender, bridge);
     }
   }
@@ -588,32 +593,38 @@ public class MustFightBattle implements Battle, BattleStepStrings
     fire(ATTACKER_SELECT_SUB_CASUALTIES, units,  attacked, true, true, bridge, "Subs defend, ");
   }
 
-  private Collection selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, int hitCount, boolean defender, String text)
+  private Collection selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
   {
-    if(hitCount == 0)
-      return Collections.EMPTY_LIST;
 
     PlayerID hit = defender ?  m_defender : m_attacker;
     PlayerID firing = defender ?  m_attacker : m_defender;
 
-    Collection casualties =  BattleCalculator.selectCasualties(step, hit, attackableUnits, hitCount, bridge, text, m_data);
+    Collection casualties =  BattleCalculator.selectCasualties(step, hit, attackableUnits, bridge, text, m_data, dice);
 
-    String messageShort = hit.getName() + " selects casualties";
-    String messageLong = hit.getName() + " receives " + hitCount + (hitCount > 1 ? " hits. " : " hit. ") + hit.getName() + " selects as casualties:" + Formatter.unitsToTextNoOwner(casualties);
+   CasualtyNotificationMessage notification = new CasualtyNotificationMessage(step, casualties, null, hit, dice);
 
-    bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, hit, step), firing);
+    bridge.sendMessage(notification, firing);
+    bridge.sendMessage(notification, hit);
+
+//    bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, step), firing);
 
     return casualties;
   }
 
-  private int getCasualties(Collection units, boolean defending, DelegateBridge bridge)
+  private int[] getRandom(Collection units, boolean defending, DelegateBridge bridge)
   {
-    Iterator iter = units.iterator();
-    int count = 0;
     PlayerID player = defending ? m_defender : m_attacker;
     int rollCount = BattleCalculator.getRolls(units, player, defending);
-    int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount);
-    int index = 0;
+    return bridge.getRandom(Constants.MAX_DICE, rollCount);
+  }
+
+  private int getCasualties(Collection units, boolean defending, DelegateBridge bridge, int[] dice)
+  {
+    Iterator iter = units.iterator();
+    PlayerID player = defending ? m_defender : m_attacker;
+
+    int hitCount = 0;
+    int diceIndex = 0;
     while(iter.hasNext())
     {
       Unit current = (Unit) iter.next();
@@ -628,12 +639,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
           strength = ua.getAttack(current.getOwner());
 
         //dice is [0-MAX_DICE)
-        if( strength > dice[index])
-          count++;
-        index++;
+        if( strength > dice[diceIndex])
+          hitCount++;
+        diceIndex++;
       }
     }
-    return count;
+    return hitCount;
   }
 
   private void removeCasualties(Collection casualties, boolean canReturnFire, boolean defender, DelegateBridge bridge)
@@ -699,17 +710,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
       return;
 
     int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
+    DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
 
-    int hitCount = BattleCalculator.getAAHits(m_attackingUnits, bridge);
-    if(hitCount == 0)
+    if(dice.getHits() == 0)
     {
       bridge.sendMessage(new BattleStringMessage(step, "No AA hits"));
-      bridge.sendMessage(new BattleInfoMessage("No AA hits", "No AA hits", m_attacker, step), m_defender);
+      bridge.sendMessage(new BattleInfoMessage("No AA hits", "No AA hits", step), m_defender);
     }
     else
     {
       Collection attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
-      Collection casualties = selectCasualties(step, bridge,attackable, hitCount, false,"AA guns fire,");
+      Collection casualties = selectCasualties(step, bridge,attackable, false,"AA guns fire,", dice);
       removeCasualties(casualties, false, false, bridge);
     }
   }
@@ -721,20 +732,26 @@ public class MustFightBattle implements Battle, BattleStepStrings
       Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
   }
 
+  /**
+   * @return a collection containing all the combatants in units
+   * non combatants include such things as factories, aaguns, land units in a water battle.
+   */
+  private List removeNonCombatants(Collection units)
+  {
+    CompositeMatch combat = new CompositeMatchAnd();
+    combat.add(new InverseMatch(Matches.UnitIsAAOrFactory));
+
+    if(m_territory.isWater())
+      combat.add(Matches.UnitIsSea);
+
+    return Match.getMatches(units, combat);
+
+  }
+
   private void removeNonCombatants()
   {
-    m_defendingNonCombatants = Match.getMatches(m_defendingUnits, Matches.UnitIsAAOrFactory);
-    if(m_territory.isWater())
-      m_defendingNonCombatants.addAll( Match.getMatches(m_defendingUnits, Matches.UnitIsLand));
-
-    m_defendingUnits.removeAll(m_defendingNonCombatants);
-
-    if(m_territory.isWater() )
-      m_attackingNonCombatants = Match.getMatches(m_attackingUnits, Matches.UnitIsLand);
-    else
-      m_attackingNonCombatants = new ArrayList();
-
-    m_attackingUnits.removeAll(m_attackingNonCombatants);
+    m_defendingUnits = removeNonCombatants(m_defendingUnits);
+    m_attackingUnits = removeNonCombatants(m_attackingUnits);
   }
 
   private Collection getTransportedUnits(Collection transports)
@@ -828,8 +845,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     clearWaitingToDie(bridge);
     m_over = true;
     m_tracker.removeBattle(this);
-    bridge.sendMessage(new BattleStepMessage(null, null, Collections.EMPTY_LIST, null), m_attacker);
-    bridge.sendMessage(new BattleStepMessage(null, null, Collections.EMPTY_LIST, null), m_defender);
+    BattleStepMessage endBattleMessage = new BattleStepMessage(null, null, Collections.EMPTY_LIST, null);
+    bridge.sendMessage(endBattleMessage, m_attacker);
+    bridge.sendMessage(endBattleMessage, m_defender);
   }
 
   public String toString()

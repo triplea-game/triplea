@@ -25,7 +25,7 @@ package games.strategy.triplea.delegate.message;
  * Note that responses shouldnt be expected for messages of this type.
  */
 
-public class MultiDestinationMessage
+public class MultiDestinationMessage implements games.strategy.engine.message.Message
 {
   private static int s_lastGeneratedID;
   private static int s_lastSeenID = 0;

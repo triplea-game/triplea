@@ -22,17 +22,16 @@ package games.strategy.triplea.ui;
 
 import java.awt.*;
 import java.util.*;
-
+import java.util.List;
 import javax.swing.*;
 
 import games.strategy.ui.*;
 import games.strategy.util.Util;
 import games.strategy.util.IntegerMap;
-
 import games.strategy.engine.data.*;
-
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.image.*;
+import games.strategy.triplea.util.*;
 
 /**
  *
@@ -41,10 +40,7 @@ import games.strategy.triplea.image.*;
  */
 public class UnitChooser extends JPanel
 {
-  /**
-   * Maps ChooserEntry -> Collection of units
-   */
-  private Map m_entries = new HashMap();
+  private List m_entries = new ArrayList();
   private Map m_dependents = new HashMap();
   private JTextArea m_title;
   private int m_total = -1;
@@ -54,6 +50,7 @@ public class UnitChooser extends JPanel
   /** Creates new UnitChooser */
   public UnitChooser(Collection units, Map dependent, IntegerMap movement, GameData data)
   {
+    m_dependents = dependent;
     m_data = data;
     createEntries(units, dependent, movement);
     layoutEntries();
@@ -61,23 +58,24 @@ public class UnitChooser extends JPanel
 
   public UnitChooser(Collection units, Map dependent, GameData data)
   {
+    m_dependents = dependent;
     m_data = data;
     createEntries(units, dependent, null);
     layoutEntries();
   }
 
+  /**
+   * Set the maximum number of units that we can choose.
+   */
+  public void setMax(int max)
+  {
+    m_total = max;
+    m_textFieldListener.changedValue(null);
+  }
 
   public void setTitle(String title)
   {
     m_title.setText(title);
-  }
-
-  public void setMax(int max)
-  {
-    if(m_total == -1)
-      add(m_leftToSelect);
-    m_total = max;
-    updateLeft();
   }
 
   private void updateLeft()
@@ -86,15 +84,16 @@ public class UnitChooser extends JPanel
       return;
 
     int selected = 0;
-    Iterator iter = m_entries.keySet().iterator();
+    Iterator iter = m_entries.iterator();
     while(iter.hasNext())
     {
       ChooserEntry entry = (ChooserEntry) iter.next();
       selected += entry.getQuantity();
     }
+
     m_leftToSelect.setText("Left to select:" + (m_total - selected));
 
-    iter = m_entries.keySet().iterator();
+    iter = m_entries.iterator();
     while(iter.hasNext())
     {
       ChooserEntry entry = (ChooserEntry) iter.next();
@@ -107,39 +106,20 @@ public class UnitChooser extends JPanel
 
   private void createEntries(Collection units, Map dependent, IntegerMap movement)
   {
-    Iterator iter = units.iterator();
+    Collection categories = UnitSeperator.categorize(units, dependent, movement);
+    Iterator iter = categories.iterator();
     while(iter.hasNext())
     {
-      Unit current = (Unit) iter.next();
-
-
-      int unitMovement = -1;
-      if(movement != null)
-        unitMovement = movement.getInt(current);
-
-
-      Collection currentDependents = (Collection) dependent.get(current);
-      ChooserEntry entry = new ChooserEntry(current, currentDependents,unitMovement , m_textFieldListener, m_data);
-      addEntry(entry, current);
-      addDependent(current, (Collection) dependent.get(current));
+      UnitCategory category = (UnitCategory) iter.next();
+      addEntry(category);
     }
   }
 
-  private void addEntry(ChooserEntry entry, Unit unit)
+  private void addEntry(UnitCategory category)
   {
-    Collection units = (Collection) m_entries.get(entry);
-    if(units == null)
-    {
-      units = new ArrayList();
-      m_entries.put(entry, units);
-    }
-    units.add(unit);
-  }
+    ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data);
+    m_entries.add(entry);
 
-  private void addDependent(Unit unit, Collection dependent)
-  {
-    if(dependent != null)
-      m_dependents.put(unit, dependent);
   }
 
   private void layoutEntries()
@@ -151,23 +131,25 @@ public class UnitChooser extends JPanel
     m_title.setColumns(15);
     m_title.setWrapStyleWord(true);
     this.add(m_title);
-    Iterator iter = m_entries.keySet().iterator();
+    Iterator iter = m_entries.iterator();
     while(iter.hasNext())
     {
       addEntry( (ChooserEntry) iter.next());
     }
+    JPanel leftToSelectPanel = new JPanel();
+    leftToSelectPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    leftToSelectPanel.add(m_leftToSelect);
+    add(leftToSelectPanel);
   }
 
 
   private void addEntry(ChooserEntry entry)
   {
     JPanel panel = new JPanel();
-    int max = ( (Collection) m_entries.get(entry)).size();
-    entry.setMax(max);
     panel.add(entry);
 
     StringBuffer text = new StringBuffer();
-    text.append("max " + max);
+    text.append("max " + entry.getCategory().getUnits().size());
 
     panel.add(new JLabel(text.toString()));
     this.add(panel);
@@ -182,7 +164,7 @@ public class UnitChooser extends JPanel
   {
     Collection units = new ArrayList();
 
-    Iterator entries = m_entries.keySet().iterator();
+    Iterator entries = m_entries.iterator();
     while(entries.hasNext())
     {
       ChooserEntry current = (ChooserEntry) entries.next();
@@ -195,7 +177,7 @@ public class UnitChooser extends JPanel
 
   private void addToCollection(Collection addTo, int quantity, ChooserEntry entry, boolean addDependents)
   {
-    Collection possible = (Collection) m_entries.get(entry);
+    Collection possible = entry.getCategory().getUnits();
     if(possible.size() < quantity)
       throw new IllegalStateException("Not enough units");
 
@@ -224,78 +206,40 @@ public class UnitChooser extends JPanel
 
 class ChooserEntry extends JPanel
 {
-  private UnitType m_type;
-  //Collection of UnitOwners
-  private Collection m_dependents;
+  private UnitCategory m_category;
   private ScrollableTextField m_text;
   private ScrollableTextFieldListener m_textFieldListener;
-  private int m_max; //max we can select
-  private int m_movement; //movement of the unit
-  private PlayerID m_owner;
   private GameData m_data;
 
-  ChooserEntry(Unit unit, Collection dependents, int movement, ScrollableTextFieldListener listener, GameData data)
+  ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data)
   {
     m_textFieldListener = listener;
-    m_type = unit.getType();
-    m_dependents = new ArrayList();
-    m_movement = movement;
-    m_owner = unit.getOwner();
     m_data = data;
-
-    createDependents(dependents);
+    m_category = category;
 
     add(new UnitChooserEntryIcon());
-    if(m_movement != -1)
-      add(new JLabel("mvt " + m_movement));
-  }
+    if(m_category.getMovement() != -1)
+      add(new JLabel("mvt " + m_category.getMovement()));
 
-  public void setMax(int max)
-  {
-    m_max = max;
-    m_text = new ScrollableTextField(0, m_max);
+    m_text = new ScrollableTextField(0, category.getUnits().size());
     m_text.addChangeListener(m_textFieldListener);
     add(m_text);
+
   }
+
+  public UnitCategory getCategory()
+  {
+    return m_category;
+  }
+
 
   public void setLimit(int limit)
   {
     int newMax = limit + m_text.getValue();
 
-    m_text.setMax(Math.min(newMax, m_max));
+    m_text.setMax(Math.min(newMax, m_category.getUnits().size()));
   }
 
-  private void createDependents(Collection dependents)
-  {
-    if(dependents == null)
-      return;
-
-    Iterator iter = dependents.iterator();
-
-    while(iter.hasNext())
-    {
-      Unit current = (Unit) iter.next();
-      m_dependents.add(new UnitOwner(current, m_data));
-    }
-  }
-
-  public boolean equals(Object o)
-  {
-    ChooserEntry other = (ChooserEntry) o;
-
-    return other.m_type.equals(this.m_type) &&  other.m_movement == this.m_movement &&
-        other.m_owner.equals(this.m_owner) && Util.equals(this.m_dependents, other.m_dependents);
-  }
-
-  public int hashCode()
-  {
-    return m_type.hashCode();
-  }
-
-  public String toString()
-  {
-    return "Entry type:" + m_type.getName() + " dependenents:" + m_dependents;
-  }
 
   public int getQuantity()
   {
@@ -304,7 +248,7 @@ class ChooserEntry extends JPanel
 
   public int getMovement()
   {
-    return m_movement;
+    return m_category.getMovement();
   }
 
   class UnitChooserEntryIcon extends JComponent
@@ -312,20 +256,25 @@ class ChooserEntry extends JPanel
     public void paint(Graphics g)
     {
       super.paint(g);
-      g.drawImage( UnitIconImageFactory.instance().getImage(m_type, m_owner, m_data), 0,0,this);
-      Iterator iter = m_dependents.iterator();
+      g.drawImage( UnitIconImageFactory.instance().getImage(m_category.getType(), m_category.getOwner(), m_data), 0,0,this);
+      Iterator iter = m_category.getDependents().iterator();
       int index = 1;
       while(iter.hasNext())
       {
         UnitOwner holder = (UnitOwner) iter.next();
-        holder.paint(index, g, this);
+        int x = UnitIconImageFactory.UNIT_ICON_WIDTH * index;
+        Image unitImg = UnitIconImageFactory.instance().getImage(holder.getType(), holder.getOwnerr(), m_data);
+        g.drawImage(unitImg, x, 0, this);
+
+
         index++;
       }
     }
 
     public int getWidth()
     {
-      return UnitIconImageFactory.UNIT_ICON_WIDTH * (1 + m_dependents.size());
+      //we draw a unit symbol for each dependent
+      return UnitIconImageFactory.UNIT_ICON_WIDTH * (1 + m_category.getDependents().size());
     }
 
     public int getHeight()
@@ -355,43 +304,3 @@ class ChooserEntry extends JPanel
   }
 }
 
-class UnitOwner
-{
-  private UnitType type;
-  private PlayerID owner;
-  private GameData m_data;
-
-  UnitOwner(Unit unit, GameData data)
-  {
-    type = unit.getType();
-    owner = unit.getOwner();
-    m_data = data;
-  }
-
-  public boolean equals(Object o)
-  {
-    UnitOwner other = (UnitOwner) o;
-    return other.type.equals(this.type) &&
-        other.owner.equals(this.owner);
-  }
-
-  public int hashCode()
-  {
-    return type.hashCode() ^ owner.hashCode();
-  }
-
-  public void paint(int index, Graphics g, JComponent parent)
-  {
-    int x = UnitIconImageFactory.UNIT_ICON_WIDTH * index;
-    Image unitImg = UnitIconImageFactory.instance().getImage(type, owner, m_data);
-    g.drawImage(unitImg, x, 0, parent);
-
-    Image flagImage = FlagIconImageFactory.instance().getSmallFlag(owner);
-    g.drawImage(flagImage, x, 0, parent);
-  }
-
-  public String toString()
-  {
-    return "Unit owner:" + owner + " type:" + type;
-  }
-}
