@@ -14,6 +14,8 @@
 
 package games.strategy.engine.random;
 
+import games.strategy.util.IntegerMap;
+
 import java.util.*;
 
 /**
@@ -62,4 +64,17 @@ public class PlainRandomSource implements IRandomSource
     return s_random.nextInt(max);
 
   }
+  
+  public static void main(String[] args)
+  {
+     IntegerMap results = new IntegerMap();
+     
+     int[] random =  new PlainRandomSource().getRandom(6, 100000, "Test");
+     for(int i = 0; i < random.length; i++)
+     {
+         results.add(new Integer(random[i] + 1),  1);
+     }
+     System.out.println(results);
+  }
+  
 }
