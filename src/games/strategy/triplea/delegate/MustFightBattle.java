@@ -568,6 +568,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
   private void retreatUnits(Collection retreating, Territory to, boolean defender, DelegateBridge bridge)
   {
     retreating.addAll(getTransportedUnits(retreating));
+    //air units dont retreat with land units
+    retreating = Match.getMatches(retreating, Matches.UnitIsNotAir);
 
     String transcriptText = Formatter.unitsToTextNoOwner(retreating) + " retreated to " + to.getName();
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList( retreating));
@@ -578,7 +580,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     Collection units = defender ? m_defendingUnits : m_attackingUnits;
 
     units.removeAll(retreating);
-    if (units.isEmpty())
+    if (units.isEmpty() || m_over)
     {
       endBattle(bridge);
       if (defender)
