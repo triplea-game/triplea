@@ -23,14 +23,31 @@ package games.strategy.engine.message;
 import games.strategy.net.INode;
 
 /**
- *
+ * A class for routing messages.
+ * 
+ * You can add a destination to a message manager on one machine, 
+ * and messages sent to a message manager on another machine will
+ * reach the destination.
+ * 
+ * You can use this to synchonize, since when sending a message the current 
+ * thread will block until a response is received.
+ * 
  * @author  Sean Bridges
  */
 public interface IMessageManager
 {
 	public void addDestination(IDestination destination);
 	public void removeDestination(IDestination destination);
+
+	/**
+	 * Blocks until a message is returned. 
+	 */
 	public Message send(Message msg, String destination);
 	public void sendNoResponse(Message msg, String destination);
+	
+	/**
+	 * Do we know about this destination.  
+	 * The destination may be local or remote. 
+	 */
 	public boolean hasDestination(String destination);
 }

@@ -27,21 +27,22 @@ import java.io.*;
 import games.strategy.util.ListenerList;
 
 /**
+ * A Messenger that can have many clients connected to it.
  *
  * @author  Sean Bridges
  * @version 1.0
  */
 public class ServerMessenger implements IServerMessenger
 {
-  private ServerSocket m_socket;
-  private Node m_node;
-  private Set m_allNodes;
+  private final ServerSocket m_socket;
+  private final Node m_node;
+  private final Set m_allNodes = Collections.synchronizedSet(new HashSet());
   private boolean m_shutdown = false;
-  private ListenerList m_connections = new ListenerList();
-  private ListenerList m_listeners = new ListenerList();
-  private ListenerList m_errorListeners = new ListenerList();
-  private ListenerList m_connectionListeners = new ListenerList();
-  private ListenerList m_broadcastListeners = new ListenerList();
+  private final ListenerList m_connections = new ListenerList();
+  private final ListenerList m_listeners = new ListenerList();
+  private final ListenerList m_errorListeners = new ListenerList();
+  private final ListenerList m_connectionListeners = new ListenerList();
+  private final ListenerList m_broadcastListeners = new ListenerList();
   private boolean m_acceptNewConnection = false;
   private IConnectionAccepter m_connectionAccepter = null;
 
@@ -58,11 +59,8 @@ public class ServerMessenger implements IServerMessenger
       m_node = new Node(name, IPFinder.findInetAddress(), m_socket.getLocalPort());
     else
       m_node = new Node(name, InetAddress.getLocalHost(), m_socket.getLocalPort());
-    m_allNodes = new HashSet();
-    m_allNodes = Collections.synchronizedSet(m_allNodes);
+    
     m_allNodes.add(m_node);
-
-
 
     Thread t = new Thread(new ConnectionHandler());
     t.start();
@@ -117,7 +115,7 @@ public class ServerMessenger implements IServerMessenger
         Connection current = (Connection) iter.next();
         current.shutDown();
       }
-      m_allNodes = Collections.EMPTY_SET;
+      m_allNodes.clear();
     }
   }
 
