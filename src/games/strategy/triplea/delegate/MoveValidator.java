@@ -75,6 +75,20 @@ public class MoveValidator
 		return true;
 	}
 
+	public static boolean enemyDestroyerOnPath(Route route, PlayerID player, GameData data)
+	{
+		Match enemyDestroyer = new CompositeMatchAnd(Matches.UnitIsDestroyer, Matches.enemyUnit(player, data));
+		for(int i = 0; i < route.getLength() - 1; i++)
+		{
+			Territory current = route.at(i);
+			if(current.getUnits().someMatch( enemyDestroyer))
+				return true;
+		}
+		return false;
+	}
+
+	
+	
 
 	public static boolean hasConqueredNonBlitzedOnRoute(Route route, GameData data)
 	{

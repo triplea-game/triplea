@@ -31,7 +31,8 @@ import games.strategy.engine.data.GameParseException;
 
 
 /**
- *
+ *  Despite the mis leading name, this attatches not to individual Units but to UnitTypes.
+ *  
  * @author  Sean Bridges
  * @version 1.0
  */
@@ -121,7 +122,7 @@ public class UnitAttatchment extends DefaultAttatchment
     m_isDestroyer = getBool(s);
   }
 
-  public boolean getIsDestroyer(PlayerID player)
+  public boolean getIsDestroyer()
   {
     return m_isDestroyer;
   }

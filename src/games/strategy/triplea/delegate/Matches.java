@@ -93,6 +93,16 @@ public class Matches
 
 	public static final Match UnitIsNotSub = new InverseMatch(UnitIsSub);
 
+	public static final Match UnitIsDestroyer = new Match()
+	{
+		public boolean match(Object obj)
+		{
+			Unit unit = (Unit) obj;
+			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			return ua.getIsDestroyer();
+		}
+	};
+	
 	public static final Match UnitIsTransport = new Match()
 	{
 		public boolean match(Object obj)
