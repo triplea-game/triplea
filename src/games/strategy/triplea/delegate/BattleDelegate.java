@@ -145,11 +145,17 @@ public class BattleDelegate implements Delegate
 	
 	private void fireRocket(PlayerID player, PlayerID attacked,  DelegateBridge bridge, GameData data)
 	{
+		Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
 		int cost = bridge.getRandom(Constants.MAX_DICE);
 		//account for 0 base
 		cost++;
+		
+		// Trying to remove more IPCs than the victim has is A Bad Thing[tm]
+		int availForRemoval = attacked.getResources().getQuantity(ipcs);
+		if (cost > availForRemoval)
+			cost = availForRemoval;
+		
 		bridge.sendMessage(new StringMessage("Rocket attack costs:" + cost));
-		Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
 		Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, ipcs, -cost);
 		bridge.addChange(rocketCharge);
 		
