@@ -204,9 +204,7 @@ public class TripleAFrame extends JFrame
         JMenuBar menuBar = new JMenuBar();
 
         createFileMenu(menuBar);
-
         createGameMenu(menuBar);
-
         createHelpMenu(menuBar);
 
         this.setJMenuBar(menuBar);
@@ -219,7 +217,74 @@ public class TripleAFrame extends JFrame
     {
         JMenu helpMenu = new JMenu("Help");
         menuBar.add(helpMenu);
-        helpMenu.add(new AbstractAction("About...")
+        addHelpMenu(helpMenu);
+
+        addHintsMenu(helpMenu);
+        addGameNotesMenu(helpMenu);
+    }
+
+    /**
+     * @param parentMenu
+     */
+    private void addGameNotesMenu(JMenu parentMenu)
+    {
+        //allow the game developer to write notes that appear in the game
+        //displays whatever is in the notes field in html
+        final String notes = (String) m_data.getProperties().get("notes");
+        if (notes != null && notes.trim().length() != 0)
+        {
+
+            parentMenu.add(new AbstractAction("Game Notes...")
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+
+                    JEditorPane editorPane = new JEditorPane();
+                    editorPane.setEditable(false);
+                    editorPane.setContentType("text/html");
+                    editorPane.setText(notes);
+
+                    JScrollPane scroll = new JScrollPane(editorPane);
+
+                    JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
+                }
+            });
+
+        }
+    }
+
+    /**
+     * @param parentMenu
+     */
+    private void addHintsMenu(JMenu parentMenu)
+    {
+        parentMenu.add(new AbstractAction("Hints...")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                //html formatted string
+                String hints = "To force a path while moving, right click on each territory in turn.<br><br>"
+                        + "You may be able to set game properties such as a bid in the Properties tab at game start up.";
+                JEditorPane editorPane = new JEditorPane();
+                editorPane.setEditable(false);
+                editorPane.setContentType("text/html");
+                editorPane.setText(hints);
+
+                JScrollPane scroll = new JScrollPane(editorPane);
+
+                JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Hints", JOptionPane.PLAIN_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * @param parentMenu
+     * @return
+     */
+    private void addHelpMenu(JMenu parentMenu)
+    {
+        
+        parentMenu.add(new AbstractAction("About...")
         {
             public void actionPerformed(ActionEvent e)
             {
@@ -243,48 +308,7 @@ public class TripleAFrame extends JFrame
                 JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "About", JOptionPane.PLAIN_MESSAGE);
             }
         });
-
-        helpMenu.add(new AbstractAction("Hints...")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                //html formatted string
-                String hints = "To force a path while moving, right click on each territory in turn.<br><br>"
-                        + "You may be able to set game properties such as a bid in the Properties tab at game start up.";
-                JEditorPane editorPane = new JEditorPane();
-                editorPane.setEditable(false);
-                editorPane.setContentType("text/html");
-                editorPane.setText(hints);
-
-                JScrollPane scroll = new JScrollPane(editorPane);
-
-                JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Hints", JOptionPane.PLAIN_MESSAGE);
-            }
-        });
-
-        //allow the game developer to write notes that appear in the game
-        //displays whatever is in the notes field in html
-        final String notes = (String) m_data.getProperties().get("notes");
-        if (notes != null && notes.trim().length() != 0)
-        {
-
-            helpMenu.add(new AbstractAction("Game Notes...")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-
-                    JEditorPane editorPane = new JEditorPane();
-                    editorPane.setEditable(false);
-                    editorPane.setContentType("text/html");
-                    editorPane.setText(notes);
-
-                    JScrollPane scroll = new JScrollPane(editorPane);
-
-                    JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
-                }
-            });
-
-        }
+        
     }
 
     /**
@@ -293,9 +317,28 @@ public class TripleAFrame extends JFrame
     private void createGameMenu(JMenuBar menuBar)
     {
         JMenu menuGame = new JMenu("Game");
+        menuBar.add(menuGame);
+
         menuGame.add(m_showGameAction);
         menuGame.add(m_showHistoryAction);
+        addShowVerifiedDice(menuGame);
+        // Put in unit size menu
+        addUnitSizeMenu(menuGame);
 
+        addMapSkinsMenu(menuGame);
+        addEnableSound(menuGame);
+        addShowMapDetails(menuGame);
+        menuGame.addSeparator();
+        addGameOptionsMenu(menuGame);
+        addShowEnemyCasualties(menuGame);
+        addShowDiceStats(menuGame);
+    }
+
+    /**
+     * @param parentMenu
+     */
+    private void addShowVerifiedDice(JMenu parentMenu)
+    {
         Action showVerifiedDice = new AbstractAction("Show  Verified Dice..")
         {
             public void actionPerformed(ActionEvent e)
@@ -303,16 +346,55 @@ public class TripleAFrame extends JFrame
                 new VerifiedRandomNumbersDialog(TripleAFrame.this.getRootPane()).setVisible(true);
             }
         };
+        if (m_game instanceof ClientGame)
+            parentMenu.add(showVerifiedDice);
+    }
 
-        menuBar.add(menuGame);
+    /**
+     * @param parentMenu
+     */
+    private void addShowEnemyCasualties(JMenu parentMenu)
+    {
+        final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem("Confirm Enemy Casualties");
+        showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
+        showEnemyCasualties.addActionListener(new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected());
+            }
+        });
 
-        // Put in unit size menu
-        menuGame.add(getUnitSizeMenu());
+        parentMenu.add(showEnemyCasualties);
+    }
 
-        
-        
-        createMapSkinsMenu(menuGame);
+    /**
+     * @param menuGame
+     */
+    private void addGameOptionsMenu(JMenu menuGame)
+    {
+        if (!m_game.getData().getProperties().getEditableProperties().isEmpty())
+        {
+            AbstractAction optionsAction = new AbstractAction("View Game Options...")
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    PropertiesUI ui = new PropertiesUI(m_game.getData().getProperties(), false);
+                    JOptionPane.showMessageDialog(TripleAFrame.this, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
+                }
+            };
+            
 
+            menuGame.add(optionsAction);
+
+        }
+    }
+
+    /**
+     * @param parentMenu
+     */
+    private void addEnableSound(JMenu parentMenu)
+    {
         final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
 
         soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
@@ -325,67 +407,14 @@ public class TripleAFrame extends JFrame
                 ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
             }
         });
+        parentMenu.add(soundCheckBox);
+    }
 
-        final JCheckBoxMenuItem showMapDetails = new JCheckBoxMenuItem("Show Map Details");
-
-        showMapDetails.setSelected(TerritoryImageFactory.getShowReliefImages());
-
-        showMapDetails.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-
-                TerritoryImageFactory.setShowReliefImages(showMapDetails.isSelected());
-                Thread t = new Thread()
-                {
-                    public void run()
-                    {
-                        yield();
-                        m_mapPanel.updateCounties(m_data.getMap().getTerritories());
-
-                    }
-                };
-                t.start();
-
-            }
-        });
-
-        if (!m_game.getData().getProperties().getEditableProperties().isEmpty())
-        {
-            AbstractAction optionsAction = new AbstractAction("View Game Options...")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    PropertiesUI ui = new PropertiesUI(m_game.getData().getProperties(), false);
-                    JOptionPane.showMessageDialog(TripleAFrame.this, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
-                }
-            };
-            menuGame.addSeparator();
-
-            menuGame.add(optionsAction);
-
-        }
-
-        menuGame.add(soundCheckBox);
-
-        menuGame.add(showMapDetails);
-        showMapDetails.setEnabled(MapData.getInstance().getHasRelief());
-
-        if (m_game instanceof ClientGame)
-            menuGame.add(showVerifiedDice);
-
-        final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem("Confirm Enemy Casualties");
-        showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
-        showEnemyCasualties.addActionListener(new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected());
-            }
-        });
-
-        menuGame.add(showEnemyCasualties);
-
+    /**
+     * @param parentMenu
+     */
+    private void addShowDiceStats(JMenu parentMenu)
+    {
         Action showDiceStats = new AbstractAction("Show Dice Stats")
         {
             public void actionPerformed(ActionEvent e)
@@ -414,13 +443,45 @@ public class TripleAFrame extends JFrame
 
             }
         };
-        menuGame.add(showDiceStats);
+        parentMenu.add(showDiceStats);
     }
 
     /**
      * @param menuGame
      */
-    private void createMapSkinsMenu(JMenu menuGame)
+    private void addShowMapDetails(JMenu menuGame)
+    {
+        final JCheckBoxMenuItem showMapDetails = new JCheckBoxMenuItem("Show Map Details");
+
+        showMapDetails.setSelected(TerritoryImageFactory.getShowReliefImages());
+
+        showMapDetails.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+
+                TerritoryImageFactory.setShowReliefImages(showMapDetails.isSelected());
+                Thread t = new Thread()
+                {
+                    public void run()
+                    {
+                        yield();
+                        m_mapPanel.updateCounties(m_data.getMap().getTerritories());
+
+                    }
+                };
+                t.start();
+
+            }
+        });
+        menuGame.add(showMapDetails);
+        showMapDetails.setEnabled(MapData.getInstance().getHasRelief());
+    }
+
+    /**
+     * @param menuGame
+     */
+    private void addMapSkinsMenu(JMenu menuGame)
     {
         
         //      beagles Mapskin code
@@ -532,7 +593,32 @@ public class TripleAFrame extends JFrame
     {
         JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
+        
+        addSaveMenu(fileMenu);
+        addExitMenu(fileMenu);
+    }
 
+    /**
+     * @param parentMenu
+     */
+    private void addExitMenu(JMenu parentMenu)
+    {
+        JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                shutdown();
+            }
+        });
+        menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+        parentMenu.add(menuFileExit);
+    }
+
+    /**
+     * @param parent
+     */
+    private void addSaveMenu(JMenu parent)
+    {
         // menuFileSave = new JMenuItem("Save", KeyEvent.VK_S);
         JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
         {
@@ -587,17 +673,7 @@ public class TripleAFrame extends JFrame
         });
         menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 
-        fileMenu.add(menuFileSave);
-
-        JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                shutdown();
-            }
-        });
-        menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
-        fileMenu.add(menuFileExit);
+        parent.add(menuFileSave);
     }
 
     // Beagle Code Called to Change Mapskin
@@ -1078,7 +1154,7 @@ public class TripleAFrame extends JFrame
             return new ArrayList(0);
     }
 
-    private JMenu getUnitSizeMenu()
+    private void addUnitSizeMenu(JMenu parentMenu)
     {
          
         final NumberFormat s_decimalFormat = new DecimalFormat("00.##");
@@ -1146,7 +1222,7 @@ public class TripleAFrame extends JFrame
         unitSizeMenu.add(radioItem75);
         unitSizeMenu.add(radioItem66);
 
-        return unitSizeMenu;
+        parentMenu.add(unitSizeMenu);
     }
 
     public BattlePanel getBattlePanel()
