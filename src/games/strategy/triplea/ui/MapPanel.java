@@ -404,6 +404,11 @@ public class MapPanel extends ImageScrollerLargeView
     }
   };
 
+  public void refreshMap()
+  {
+    initTerritories();
+  }
+
   private final TerritoryListener TERRITORY_LISTENER = new TerritoryListener()
   {
     public void unitsChanged(Territory territory)

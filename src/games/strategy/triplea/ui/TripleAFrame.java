@@ -439,7 +439,12 @@ public class TripleAFrame extends JFrame
   public void notifyTechResults(TechResultsMessage msg)
   {
     TechResultsDisplay display = new TechResultsDisplay(msg);
+    if(msg.getHits() != 0)
+    {
+      m_mapPanel.refreshMap();
+    }
     JOptionPane.showOptionDialog(this, display, "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK");
+
 
   }
 
