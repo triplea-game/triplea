@@ -102,48 +102,86 @@ public class VaultTest extends TestCase
         vault.release(id);
     }
     
-    public void testRemote() throws NotUnlockedException
+    public void testServerLock() throws NotUnlockedException
     {
         byte[] data = new byte[] {0,1,2,3,4,5};
         VaultID id = m_serverVault.lock(data);
-        
-        long waitCount = 0;
-        while(waitCount < 5 && !m_clientVault.knowsAbout(id))
-        {
-            waitCount++;
-            try
-            {
-                Thread.sleep(100);
-            } catch (InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        m_clientVault.waitForID(id, 1000);
         
         assertTrue(m_clientVault.knowsAbout(id));        
         
         m_serverVault.unlock(id);
         
-        waitCount = 0;
-        while(waitCount < 5 && !m_clientVault.isUnlocked(id))
-        {
-            waitCount++;
-            try
-            {
-                Thread.sleep(50);
-            } catch (InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
+        m_clientVault.waitForIdToUnlock(id, 1000);
         assertTrue(m_clientVault.isUnlocked(id));
         
         assertEquals(data, m_clientVault.get(id));
+        assertEquals(m_serverVault.get(id), m_clientVault.get(id));        
+        
+        m_clientVault.release(id);
+        
+        
+        
         
     }
+
+    public void testClientLock() throws NotUnlockedException
+    {
+        byte[] data = new byte[] {0,1,2,3,4,5};
+        VaultID id = m_clientVault.lock(data);
+        m_serverVault.waitForID(id, 1000);
+        
+        assertTrue(m_serverVault.knowsAbout(id));        
+        
+        m_clientVault.unlock(id);
+        
+        m_serverVault.waitForIdToUnlock(id, 1000);
+        assertTrue(m_serverVault.isUnlocked(id));
+        
+        assertEquals(data, m_serverVault.get(id));
+        assertEquals(m_clientVault.get(id), m_serverVault.get(id));        
+        
+        m_clientVault.release(id);
+        
+        
+        
+        
+    }
+    
+    
+    
+    public void testMultiple() throws NotUnlockedException
+    {
+        byte[] data1 = new byte[] {0,1,2,3,4,5};
+        byte[] data2 = new byte[] {0xE, 0xF, 2,1,3,1,2,12,3,31,124,12,1};        
+        VaultID id1 = m_serverVault.lock(data1);
+        VaultID id2 = m_serverVault.lock(data2);        
+        
+        m_clientVault.waitForID(id1, 1000);
+        m_clientVault.waitForID(id2, 1000);        
+        
+        assertTrue(m_clientVault.knowsAbout(id1));        
+        assertTrue(m_clientVault.knowsAbout(id2));        
+        
+        m_serverVault.unlock(id1);
+        m_serverVault.unlock(id2);        
+        
+        m_clientVault.waitForIdToUnlock(id1, 1000);
+        m_clientVault.waitForIdToUnlock(id2, 1000);
+        
+        assertTrue(m_clientVault.isUnlocked(id1));
+        assertTrue(m_clientVault.isUnlocked(id2));        
+        
+        
+        assertEquals(data1, m_clientVault.get(id1));
+        assertEquals(data2, m_clientVault.get(id2));
+        
+        m_clientVault.release(id1);
+        m_clientVault.release(id2);        
+        
+    }
+    
+    
     
     public void testJoin()
     {

@@ -11,31 +11,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+package games.strategy.engine.random;
 
-package games.strategy.util;
+import games.strategy.engine.vault.VaultID;
+import games.strategy.net.IRemote;
 
-import junit.framework.TestCase;
-
-public class RandomGenTest extends TestCase
+/**
+ * @author Sean Bridges
+ */
+public interface IRemoteRandom extends IRemote
 {
-    public void testRandomSeed()
-    {
-        RandomGen gen = new RandomGen(6,1, "test");
-        RandomTriplet triplet = gen.getTriplet();
-        RandomGen other = new RandomGen(triplet);
-
-        other.setKey(gen.getKey());
-        
-        assertEquals(other.getRandomSeed(), gen.getRandomSeed());   
-    }
+    /**
+     * 
+     * Generate a random number, and lock it in the vault.
+     * 
+     * @param serverVaultID - the vaultID where the server has stored his numbers
+     * 
+     * @return the vault id for which we have locked the data
+     */
+    public VaultID generate(int max, int count, String annotation, VaultID serverVaultID);
     
-    public void testLongConversion()
-    {
-        for(long l = -1000; l < 2000; l++)
-        {
-            assertEquals(l,  RandomGen.byteArrToLong(RandomGen.longToByteArr(l)));
-        }
-    }
-    
-    
+    /**
+     * unlock the random number last generated.
+     *
+     */
+    public void unlock();
 }

@@ -46,9 +46,11 @@ public class Vault
     
     private static final String ALGORITHM = "DES";
 
+    
     //0xCAFEBABE
     //we encrypt both this value and data when we encrypt data.
-    //when decrypting we ensure that KNOWN_VAL 
+    //when decrypting we ensure that KNOWN_VAL is correct
+    //and thus guarantee that we are being given the right key
     private static final byte[] KNOWN_VAL = new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE };
     
     private final KeyGenerator m_keyGen;
@@ -65,6 +67,8 @@ public class Vault
     //these are the ids of the remote keys that we have seen
     //dont allow values to be reused
     private final Map m_maxRemoteIDIndexes = Collections.synchronizedMap(new HashMap());
+    
+    private final Object m_waitForLock = new Object();
     
     /**
      * @param channelMessenger
@@ -152,7 +156,7 @@ public class Vault
         
     
     /**
-     * Join known and data into one array.
+     * Join known and data into one array.<p>
      * package access so we can test.
      */
     static byte[] joinDataAndKnown(byte[] data)
@@ -251,6 +255,12 @@ public class Vault
             m_maxRemoteIDIndexes.put(id.getGeneratedOn(), new Long(id.getUniqueID()));
             
             m_unverifiedValues.put(id, data);
+            
+            synchronized(m_waitForLock)
+            {
+                m_waitForLock.notifyAll();
+            }
+            
         }
 
         public void unlock(VaultID id, SecretKey key)
@@ -307,6 +317,11 @@ public class Vault
             System.arraycopy(decrypted, KNOWN_VAL.length, data, 0, data.length);
             
             m_verifiedValues.put(id, data);
+            
+            synchronized(m_waitForLock)
+            {
+                m_waitForLock.notifyAll();
+            }
      
         }
 
@@ -316,6 +331,66 @@ public class Vault
             m_verifiedValues.remove(id);
         }
     };
+    
+    /**
+     * Waits until we know about a given vault id.
+     * waits for at most timeout milliseconds 
+     */
+    public void waitForID(VaultID id, long timeout)
+    {
+        if(timeout <= 0)
+            throw new IllegalArgumentException("Must suppply positive timeout argument");
+        
+        long startTime = System.currentTimeMillis();
+        long leftToWait = timeout;
+        
+        while(leftToWait > 0 && !knowsAbout(id))
+        {
+            synchronized(m_waitForLock)
+            {
+                if(knowsAbout(id))
+                    return;
+                try
+                {
+                    m_waitForLock.wait(leftToWait);
+                } catch (InterruptedException e)
+                {
+                    //not a big deal
+                }                
+                leftToWait =  startTime + timeout - System.currentTimeMillis(); 
+        }
+      } 
+               
+    }
+    
+    /**
+     * Wait until the given id is unlocked
+     */
+    public void waitForIdToUnlock(VaultID id, long timeout)
+    {
+        if(timeout <= 0)
+            throw new IllegalArgumentException("Must suppply positive timeout argument");
+        
+        long startTime = System.currentTimeMillis();
+        long leftToWait = timeout;
+        
+        while(leftToWait > 0 && !isUnlocked(id))
+        {
+            synchronized(m_waitForLock)
+            {
+                if(isUnlocked(id))
+                    return;
+                try
+                {
+                    m_waitForLock.wait(leftToWait);
+                } catch (InterruptedException e)
+                {
+                    //not a big deal
+                }                
+                leftToWait =  startTime + timeout - System.currentTimeMillis(); 
+        }
+      }        
+    }
     
 }
 

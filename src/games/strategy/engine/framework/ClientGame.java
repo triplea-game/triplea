@@ -32,6 +32,7 @@ import games.strategy.util.ListenerList;
 
 import games.strategy.engine.history.*;
 import games.strategy.engine.random.*;
+import games.strategy.engine.vault.Vault;
 
 /**
  *
@@ -49,6 +50,7 @@ public class ClientGame implements IGame
   private final INode m_serverNode;
   //maps PlayerID->GamePlayer
   private Map m_gamePlayers = new HashMap();
+  private final Vault m_vault;
   
   public static final String STEP_CHANGE_LISTENER_DESTINATION = "_StepChangeListener_";
 
@@ -63,6 +65,7 @@ public class ClientGame implements IGame
     m_messageManager = new MessageManager(m_messenger);
     m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
     m_channelMessenger = channelMessenger;
+    m_vault = new Vault(m_channelMessenger);
     
     m_messageManager.addDestination(m_stepChangeDestination);
 
@@ -79,11 +82,10 @@ public class ClientGame implements IGame
 
       m_messageManager.addDestination(gp);
       m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, ServerGame.getRemoteName(gp.getID()));
-
-      // Add a corresponding random destination for this GamePlayer
-      RandomDestination rnd_dest = new RandomDestination(gp.getName() );
-
-      m_messageManager.addDestination(rnd_dest);
+      
+      IRemoteRandom remoteRandom = new RemoteRandom(player, this);
+      m_remoteMessenger.registerRemote(IRemoteRandom.class, remoteRandom, ServerGame.getRemoteRandomName(player));
+      
     }
 
     m_changePerformer = new ChangePerformer(m_data);
@@ -231,6 +233,14 @@ public class ClientGame implements IGame
   {
     return null;
   }
+
+	/* 
+	 * @see games.strategy.engine.framework.IGame#getVault()
+	 */
+	public Vault getVault()
+	{
+	    return m_vault;
+	}
 
 
 }

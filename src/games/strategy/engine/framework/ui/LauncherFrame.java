@@ -201,11 +201,11 @@ public class LauncherFrame extends JFrame
     {
       //server game.
       //if we have two players, use a crypto random source.
-       PlayerID player1 = m_gameData.getPlayerList().getPlayerID(( String) remotePlayers.keySet().iterator().next());
-       PlayerID player2  = (( IGamePlayer) localPlayerSet.iterator().next()).getID();
-       CryptoRandomSource randomSource = new CryptoRandomSource(player1, player2, serverGame.getMessageManager());
+       PlayerID remotePlayer = m_gameData.getPlayerList().getPlayerID(( String) remotePlayers.keySet().iterator().next());
+       
+       CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, serverGame);
        serverGame.setRandomSource(randomSource);
-       System.out.println("Using secure random, player1:" + player1.getName() + " player2:" + player2.getName());
+       System.out.println("Using secure random with remote player " + remotePlayer.getName());
     }
 
 

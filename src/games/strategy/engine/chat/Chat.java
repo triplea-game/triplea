@@ -60,7 +60,7 @@ public class Chat implements IChatter
         m_messenger = messenger;
         m_channelMessenger = channelMessenger;
         
-        if(m_messenger.isServer())
+        if(!m_channelMessenger.hasChannel(CHAT_CHANNEL))
         {
             m_channelMessenger.createChannel(IChatter.class, CHAT_CHANNEL);
         }

@@ -70,4 +70,9 @@ public class VaultID implements Serializable
     {
         return ((int) m_uniqueID ) ^ m_generatedOn.getName().hashCode();
     }
+    
+    public String toString()
+    {
+        return "VaultID generated on:" + m_generatedOn + " id:" + m_uniqueID;
+    }
 }

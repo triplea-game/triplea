@@ -14,96 +14,146 @@
 
 package games.strategy.engine.random;
 
+import java.util.*;
+
 import games.strategy.engine.message.*;
+import games.strategy.engine.vault.NotUnlockedException;
+import games.strategy.engine.vault.Vault;
+import games.strategy.engine.vault.VaultID;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
+import games.strategy.triplea.formatter.Formatter;
 
 /**
-   A random source that generates numbers using a secure algorithm shared between two players.
-
-   Code originally contributed by Ben Giddings.
+ * A random source that generates numbers using a secure algorithm shared
+ * between two players.
+ * 
+ * Code originally contributed by Ben Giddings.
  */
- 
+
 public class CryptoRandomSource implements IRandomSource
 {
 
-  //the two players who involved in rolling the dice
-  //dice are rolled securly between these two
-  final private PlayerID m_remotePlayer;
-  final private PlayerID m_localPlayer;
-  final private IMessageManager  m_messageManager;
+    private final IRandomSource m_plainRandom = new PlainRandomSource();
 
+    /**
+     * converts an int[] to a bytep[
+     */
+    public static byte[] intsToBytes(int[] ints)
+    {
+        byte[] rVal = new byte[ints.length * 4];
 
-  public CryptoRandomSource(PlayerID dicePlayer1, PlayerID dicePlayer2, IMessageManager MessageManager)
-  {
-    m_remotePlayer   = dicePlayer1;
-    m_localPlayer    = dicePlayer2;
-    m_messageManager = MessageManager;
-  }
+        for (int i = 0; i < ints.length; i++)
+        {
+            rVal[4 * i] = (byte) ints[i];
+            rVal[(4 * i) + 1] = (byte) (ints[i] >> 8);
+            rVal[(4 * i) + 2] = (byte) (ints[i] >> 16);
+            rVal[(4 * i) + 3] = (byte) (ints[i] >> 24);
+        }
 
-  /**
-    * All delegates should use random data that comes from both players
-    * so that neither player cheats.
-    */
-   public int getRandom(int max, String annotation)
-   {
-       return getRandom(max, 1, annotation)[0];
-   }
+        return rVal;
+    }
 
-   /**
-    * Delegates should not use random data that comes from any other source.
-    */
-   public int[] getRandom(int max, int count, String annotation)
-   {
-     if(count <= 0)
-         throw new IllegalArgumentException("Invalid count");
-       
-     // Start the seeding operation and get the key
-     startRandomGen(max, count, annotation);
+    public static int[] bytesToInts(byte[] bytes)
+    {
+        int[] rVal = new int[bytes.length / 4];
+        for (int i = 0; i < rVal.length; i++)
+        {
+            rVal[i] = bytes[i * 4] + 
+                     ((int) bytes[(4 * i) + 1] << 8) +
+                     ((int) bytes[(4 * i) + 2] << 16) +
+            	     ((int) bytes[(4 * i) + 3] << 24);
+        }
 
-     Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_RANDOM,
-                                           new Integer(count));
-     msg =  m_messageManager.send(msg, RandomDestination.getRandomDestination(m_localPlayer.getName()));
+        return rVal;
+    }
 
-     return (int[])((RandomNumberMessage)msg).m_obj;
-   }
+    public static int[] xor(int[] val1, int[] val2, int max)
+    {
+        if (val1.length != val2.length)
+        {
+            throw new IllegalArgumentException("Arrays not of same length");
+        }
+        int[] rVal = new int[val1.length];
+        for (int i = 0; i < val1.length; i++)
+        {
+            rVal[i] = (val1[i] + val2[i]) % max;
+        }
 
-   /**
-    * Both getRandom and getRandomArray use this method to prepare both
-    * players to generate an integer or an array
-    */
-   private void startRandomGen(int max, int randomCount, String annotation)
-   {
-     Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_TRIPLET,
-                                           new Integer(max));
-     
+        System.out.println("******");
+        System.out.println(Formatter.asDice(val1));
+        System.out.println(Formatter.asDice(val2));
+        System.out.println(Formatter.asDice(rVal));
+        
+        return rVal;
 
-     ((RandomNumberMessage) msg).m_randomCount = randomCount;
-     ((RandomNumberMessage) msg).m_annotation = annotation;     
-     
-     // Send maximum value, request triplet
-     msg =  m_messageManager.send(msg, (m_remotePlayer.getName() + "RandomDest"));
+    }
 
-     // send triplet, request triplet
-     ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_TRIPLET;
-     ((RandomNumberMessage) msg).m_randomCount = randomCount;
-     ((RandomNumberMessage) msg).m_annotation = annotation;     
+    //the remote players who involved in rolling the dice
+    //dice are rolled securly between us and her
+    final private PlayerID m_remotePlayer;
 
-     msg =  m_messageManager.send(msg, (m_localPlayer.getName() + "RandomDest"));
+    final private IGame m_game;
 
-     // send triplet, request key
-     ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_KEY;
-     msg =  m_messageManager.send(msg, (m_remotePlayer.getName() + "RandomDest"));
+    public CryptoRandomSource(PlayerID remotePlayer, IGame game)
+    {
+        m_remotePlayer = remotePlayer;
+        m_game = game;
 
-     // send key, request key
-     ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_KEY;
-     msg =  m_messageManager.send(msg, (m_localPlayer.getName() + "RandomDest"));
+    }
 
-     // send key, request nothing
-     ((RandomNumberMessage)msg).m_request = RandomNumberMessage.NO_REQUEST;
-      m_messageManager.send(msg, (m_remotePlayer.getName() + "RandomDest"));
-   }
+    /**
+     * All delegates should use random data that comes from both players so that
+     * neither player cheats.
+     */
+    public int getRandom(int max, String annotation)
+    {
+        return getRandom(max, 1, annotation)[0];
+    }
 
+    /**
+     * Delegates should not use random data that comes from any other source.
+     */
+    public int[] getRandom(int max, int count, String annotation)
+    {
+        if (count <= 0)
+            throw new IllegalArgumentException("Invalid count");
 
+        Vault vault = m_game.getVault();
+
+        //generate numbers locally, and put them in the vault
+        int[] localRandom = m_plainRandom.getRandom(max, count, annotation);
+        System.out.println("Generating random :" + Formatter.asDice(localRandom));
+        VaultID localID = vault.lock(intsToBytes(localRandom));
+
+        //ask the remote to generate numbers
+        IRemoteRandom remote = (IRemoteRandom) (m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(m_remotePlayer)));
+        VaultID remoteID = remote.generate(max, count, annotation, localID);
+
+        //make sure the value is in the vault
+        vault.waitForID(remoteID, 15000);
+        if (!vault.knowsAbout(remoteID))
+            throw new IllegalStateException("Could not verify random, cheating susepected");
+
+        //unlock ours, and wait for the client
+        vault.unlock(localID);
+        remote.unlock();
+        vault.waitForIdToUnlock(remoteID, 15000);
+
+        //get the remote numbers
+        int[] remoteNumbers;
+        try
+        {
+            remoteNumbers = bytesToInts(vault.get(remoteID));
+        } catch (NotUnlockedException e)
+        {
+            e.printStackTrace();
+            throw new IllegalStateException("Could not verify random, cheating suspected");
+        }
+
+        //finally, we join the two together to get the real value
+        return xor(localRandom, remoteNumbers, max);
+
+    }
 }

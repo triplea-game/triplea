@@ -35,6 +35,7 @@ import games.strategy.net.*;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.*;
 import games.strategy.engine.random.*;
+import games.strategy.engine.vault.Vault;
 
 /**
  *
@@ -57,6 +58,7 @@ public class ServerGame implements IGame
     
     private final IRemoteMessenger m_remoteMessenger;
     private final IChannelMessenger m_channelMessenger;
+    private final Vault m_vault;
 
     //maps playerName -> INode
     //only for remote nodes
@@ -81,12 +83,10 @@ public class ServerGame implements IGame
         m_messageManager = new MessageManager(m_messenger);
         m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
         m_channelMessenger = channelMessenger;
-
+        m_vault = new Vault(m_channelMessenger);
+        
         m_remotePlayers = new HashMap(remotePlayerMapping);
 
-        //add a random destination for the null player
-        RandomDestination rnd_dest = new RandomDestination(PlayerID.NULL_PLAYERID.getName());
-        m_messageManager.addDestination(rnd_dest);
 
         setupLocalPlayers(localPlayers);
 
@@ -117,7 +117,7 @@ public class ServerGame implements IGame
      */
     private void setupLocalPlayers(Set localPlayers)
     {
-        RandomDestination rnd_dest;
+  
         Iterator localPlayersIter = localPlayers.iterator();
         while (localPlayersIter.hasNext())
         {
@@ -129,10 +129,6 @@ public class ServerGame implements IGame
             m_messageManager.addDestination(gp);
             m_remoteMessenger.registerRemote(gp.getRemotePlayerType(), gp, getRemoteName(gp.getID()));
 
-            // Add a random destination for this GamePlayer
-            rnd_dest = new RandomDestination(gp.getName());
-
-            m_messageManager.addDestination(rnd_dest);
         }
     }
 
@@ -161,6 +157,11 @@ public class ServerGame implements IGame
         return "games.strategy.engine.framework.ServerGame.PLAYER_REMOTE." + id.getName();
     }
 
+    public static String getRemoteRandomName(PlayerID id)
+    {
+        return "games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + id.getName();
+    }
+    
     public GameData getData()
     {
         return m_data;
@@ -389,5 +390,13 @@ public class ServerGame implements IGame
     public void setRandomSource(IRandomSource randomSource)
     {
       m_randomSource = randomSource;
+    }
+
+    /* 
+     * @see games.strategy.engine.framework.IGame#getVault()
+     */
+    public Vault getVault()
+    {
+        return m_vault;
     }
 }

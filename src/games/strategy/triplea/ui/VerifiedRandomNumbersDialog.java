@@ -1,13 +1,20 @@
 /*
- * Created on Feb 18, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.framework.RandomDestination;
 import games.strategy.engine.framework.VerifiedRandomNumbers;
+import games.strategy.engine.random.RemoteRandom;
 import games.strategy.triplea.formatter.Formatter;
 
 import java.util.*;
@@ -20,10 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * @author sgb
- *
- * To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * @author Sean Bridges
  */
 public class VerifiedRandomNumbersDialog extends JDialog
 {
@@ -36,16 +40,13 @@ public class VerifiedRandomNumbersDialog extends JDialog
     
     private void init()
     {
-        List verified = RandomDestination.getVerifiedRandomNumbers();
+        List verified = RemoteRandom.getVerifiedRandomNumbers();
         String[][] tableValues = getTableValues(verified);
         
         DefaultTableModel model = new DefaultTableModel(tableValues, new String[] {"Reason","Dice Rolls"});
         
         JTable table = new JTable(model);
-        
-        
-      
-        
+                
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);
         
