@@ -159,11 +159,14 @@ public class BattleDelegate implements SaveableDelegate
       cost = availForRemoval;
 
     bridge.sendMessage(new StringMessage("Rocket attack costs:" + cost));
+
+    String transcriptText = attacked.getName() + " lost " + cost + " ipcs to rocket attack by " + player.getName() ;
+    bridge.getHistoryWriter().startEvent(transcriptText);
+
+
     Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, ipcs, -cost);
     bridge.addChange(rocketCharge);
 
-    String transcriptText = attacked.getName() + " lost " + cost + " ipcs to rocket attack by " + player.getName() ;
-    bridge.getTranscript().write(transcriptText);
   }
 
   /**

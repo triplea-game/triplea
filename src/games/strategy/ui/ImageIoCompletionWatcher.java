@@ -22,32 +22,30 @@ import java.awt.*;
  * Code originally contributed by "Thomas Carvin"
  */
 
-public class ImageIoCompletionWatcher extends Thread implements ImageObserver
+public class ImageIoCompletionWatcher implements ImageObserver
 {
+  private volatile boolean m_complete = false;
+  private Object m_lock = new Object();
 
-  private boolean m_started = false;
-  private boolean m_complete = false;
-
-  public void runUntilOpComplete()
+  public void waitForCompletion()
   {
-    if (!m_started)
+    synchronized(m_lock)
     {
-      this.start();
-      m_started = true;
+      if (!m_complete)
+      {
+        try
+        {
+          m_lock.wait();
+        }
+        catch (InterruptedException ie)
+        {}
+      }
     }
   }
 
   public boolean isComplete()
   {
     return m_complete;
-  }
-
-  public void run()
-  {
-
-    // just hang out until the draw is complete
-    waitForDrawComplete();
-
   }
 
   public boolean imageUpdate(Image image, int flags, int x, int y, int width,
@@ -57,32 +55,15 @@ public class ImageIoCompletionWatcher extends Thread implements ImageObserver
     // wait for complete or error/abort
     if ( ( (flags & ALLBITS) != 0) || ( (flags & ABORT) != 0))
     {
-      notifyDrawComplete();
+      synchronized(m_lock)
+      {
+        m_complete = true;
+        m_lock.notifyAll();
+      }
       return false;
     }
 
     return true;
 
   }
-
-  private synchronized void waitForDrawComplete()
-  {
-
-    if (!m_complete)
-    {
-      try
-      {
-        wait();
-      }
-      catch (InterruptedException ie)
-      {}
-    }
-  }
-
-  private synchronized void notifyDrawComplete()
-  {
-    m_complete = true;
-    notifyAll();
-  }
-
 }

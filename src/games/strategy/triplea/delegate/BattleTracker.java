@@ -27,6 +27,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.DelegateBridge;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.formatter.*;
 
 /**
  *
@@ -110,37 +111,36 @@ public class BattleTracker implements java.io.Serializable
 
   public void undoBattle(Route route, Collection units)
   {
-      Iterator iter = new ArrayList(m_pendingBattles).iterator();
-      while (iter.hasNext())
+    Iterator iter = new ArrayList(m_pendingBattles).iterator();
+    while (iter.hasNext())
+    {
+      Battle battle = (Battle) iter.next();
+      if (battle.getTerritory().equals(route.getEnd()))
       {
-          Battle battle = (Battle)iter.next();
-          if(battle.getTerritory().equals(route.getEnd()))
-          {
-              battle.removeAttack(route, units);
-              if(battle.isEmpty())
-              {
-                  removeBattleForUndo(battle);
-              }
-          }
+        battle.removeAttack(route, units);
+        if (battle.isEmpty())
+        {
+          removeBattleForUndo(battle);
+        }
       }
+    }
   }
 
   private void removeBattleForUndo(Battle battle)
   {
-      m_pendingBattles.remove(battle);
-      Iterator blocked = getBlocked(battle).iterator();
-      while (blocked.hasNext())
-      {
-          Battle current = (Battle) blocked.next();
-          removeDependency(current, battle);
-      }
+    m_pendingBattles.remove(battle);
+    Iterator blocked = getBlocked(battle).iterator();
+    while (blocked.hasNext())
+    {
+      Battle current = (Battle) blocked.next();
+      removeDependency(current, battle);
+    }
 
   }
 
-
-  public void addBattle(Route route, Collection units,TransportTracker tracker,  boolean bombing, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
+  public void addBattle(Route route, Collection units, TransportTracker tracker, boolean bombing, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
   {
-    if(bombing)
+    if (bombing)
       addBombingBattle(route, units, id, data);
     else
     {
@@ -154,8 +154,8 @@ public class BattleTracker implements java.io.Serializable
   {
     //TODO, resolve dependencies here
 
-    Battle battle =  getPendingBattle(route.getEnd(), true);
-    if(battle == null)
+    Battle battle = getPendingBattle(route.getEnd(), true);
+    if (battle == null)
     {
       battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
       m_pendingBattles.add(battle);
@@ -165,16 +165,16 @@ public class BattleTracker implements java.io.Serializable
 
     //dont let land battles in the same territory occur before bombing battles
     Battle dependent = getPendingBattle(route.getEnd(), false);
-    if(dependent != null)
+    if (dependent != null)
       addDependency(dependent, battle);
   }
 
   /**
    * No enemies, but not neutral.
    */
-  private void addEmptyBattle(Route route, Collection units,TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
+  private void addEmptyBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
   {
-    if(!Match.someMatch(units, Matches.UnitIsLand))
+    if (!Match.someMatch(units, Matches.UnitIsLand))
       return;
 
     //find the territories that are considered blitz
@@ -189,7 +189,7 @@ public class BattleTracker implements java.io.Serializable
     m_conquered.addAll(blitzed);
 
     Iterator iter = blitzed.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Territory current = (Territory) iter.next();
 
@@ -197,11 +197,11 @@ public class BattleTracker implements java.io.Serializable
     }
 
     //check the last territory
-    if(canBlitz.match(route.getEnd()))
+    if (canBlitz.match(route.getEnd()))
     {
 
       Battle precede = getDependentAmphibiousAssault(route);
-      if(precede == null)
+      if (precede == null)
       {
         takeOver(route.getEnd(), id, bridge, data, changeTracker);
         m_blitzed.add(route.getEnd());
@@ -210,7 +210,7 @@ public class BattleTracker implements java.io.Serializable
       else
       {
         Battle nonFight = getPendingBattle(route.getEnd(), false);
-        if(nonFight == null)
+        if (nonFight == null)
         {
           nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data, tracker);
           m_pendingBattles.add(nonFight);
@@ -228,7 +228,6 @@ public class BattleTracker implements java.io.Serializable
     //TODO check for pre existing battles at the sight
     //here and in empty battle
 
-
     Collection neutral = route.getMatches(Matches.TerritoryIsNuetral);
     neutral = Match.getMatches(neutral, Matches.TerritoryIsEmpty);
     //deal with the end seperately
@@ -237,7 +236,7 @@ public class BattleTracker implements java.io.Serializable
     m_conquered.addAll(neutral);
 
     Iterator iter = neutral.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Territory current = (Territory) iter.next();
       takeOver(current, id, bridge, data, changeTracker);
@@ -245,10 +244,10 @@ public class BattleTracker implements java.io.Serializable
 
     //deal with end territory, may be the case that
     //a naval battle must precede th
-    if(Matches.TerritoryIsNuetral.match(route.getEnd()) && Matches.TerritoryIsEmpty.match(route.getEnd()))
+    if (Matches.TerritoryIsNuetral.match(route.getEnd()) && Matches.TerritoryIsEmpty.match(route.getEnd()))
     {
       Battle precede = getDependentAmphibiousAssault(route);
-      if(precede == null)
+      if (precede == null)
       {
 
         m_conquered.add(route.getEnd());
@@ -257,7 +256,7 @@ public class BattleTracker implements java.io.Serializable
       else
       {
         Battle nonFight = getPendingBattle(route.getEnd(), false);
-        if(nonFight == null)
+        if (nonFight == null)
         {
           nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data, tracker);
           m_pendingBattles.add(nonFight);
@@ -274,33 +273,36 @@ public class BattleTracker implements java.io.Serializable
     OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 
     //if neutral
-    if(territory.getOwner().isNull())
+    if (territory.getOwner().isNull())
     {
       Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
-      Change neutralFee = ChangeFactory.changeResourcesChange(id, ipcs, -games.strategy.triplea.Properties.getNeutralCharge(data));
+      int ipcCharge = -games.strategy.triplea.Properties.getNeutralCharge(data);
+      Change neutralFee = ChangeFactory.changeResourcesChange(id, ipcs, ipcCharge);
       bridge.addChange(neutralFee);
-      if(changeTracker != null)
+      if (changeTracker != null)
         changeTracker.addChange(neutralFee);
+      bridge.getHistoryWriter().addChildToEvent(id.getName() + " looses " + -ipcCharge + " " + Formatter.pluralize("IPC", -ipcCharge) + " for violating " + territory.getName() + "s neutrality");
     }
 
     //if its a capital we take the money
     TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
-    if(ta.getCapital() != null)
+    if (ta.getCapital() != null)
     {
-        //if the capital is owned by the capitols player
-        //take the money
+      //if the capital is owned by the capitols player
+      //take the money
       PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
-      if(whoseCapital.equals(territory.getOwner()))
+      if (whoseCapital.equals(territory.getOwner()))
       {
         Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
         int capturedIPCCount = whoseCapital.getResources().getQuantity(ipcs);
         Change remove = ChangeFactory.changeResourcesChange(whoseCapital, ipcs, -capturedIPCCount);
         bridge.addChange(remove);
-        if(changeTracker != null)
+        bridge.getHistoryWriter().addChildToEvent(id.getName() + " captures " + capturedIPCCount + Formatter.pluralize("IPC", capturedIPCCount) + " while taking " + whoseCapital.getName() + " capital");
+        if (changeTracker != null)
           changeTracker.addChange(remove);
         Change add = ChangeFactory.changeResourcesChange(id, ipcs, capturedIPCCount);
         bridge.addChange(add);
-        if(changeTracker != null)
+        if (changeTracker != null)
           changeTracker.addChange(add);
       }
     }
@@ -315,24 +317,24 @@ public class BattleTracker implements java.io.Serializable
     //non coms revert to their original owner if once allied
     //unless there capital is not owned
     Iterator iter = nonCom.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
-      Unit current = (Unit) iter.next();
-      PlayerID originalOwner = origOwnerTracker.getOriginalOwner(current);
-      if(originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id) &&
-         TerritoryAttatchment.getCapital(originalOwner, data).getOwner().equals(originalOwner)
-         )
+      Unit currentUnit = (Unit) iter.next();
+      PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
+      if (originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id) &&
+          TerritoryAttatchment.getCapital(originalOwner, data).getOwner().equals(originalOwner)
+          )
       {
-        Change capture = ChangeFactory.changeOwner(current, originalOwner);
+        Change capture = ChangeFactory.changeOwner(currentUnit, originalOwner);
         bridge.addChange(capture);
-        if(changeTracker != null)
+        if (changeTracker != null)
           changeTracker.addChange(capture);
       }
       else
       {
-        Change capture = ChangeFactory.changeOwner(current, id);
+        Change capture = ChangeFactory.changeOwner(currentUnit, id);
         bridge.addChange(capture);
-        if(changeTracker != null)
+        if (changeTracker != null)
           changeTracker.addChange(capture);
       }
     }
@@ -341,99 +343,96 @@ public class BattleTracker implements java.io.Serializable
     //revert to original owner if it is, unless they done own there captital
     PlayerID terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
     PlayerID newOwner;
-    if(terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id) &&
-       TerritoryAttatchment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner)
-       )
+    if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id) &&
+        TerritoryAttatchment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner)
+        )
       newOwner = terrOrigOwner;
-     else
+    else
       newOwner = id;
 
     Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
+    bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
     bridge.addChange(takeOver);
-    if(changeTracker != null)
+    if (changeTracker != null)
     {
-        changeTracker.addChange(takeOver);
-        changeTracker.addToConquered(territory);
+      changeTracker.addChange(takeOver);
+      changeTracker.addToConquered(territory);
     }
 
-      //is this territory our capitol or a capitol of our ally
-      if(terrOrigOwner != null &&
-         TerritoryAttatchment.getCapital(terrOrigOwner, data).equals(territory) &&
-         data.getAllianceTracker().isAllied(terrOrigOwner, id)
-         )
+    //is this territory our capitol or a capitol of our ally
+    if (terrOrigOwner != null &&
+        TerritoryAttatchment.getCapital(terrOrigOwner, data).equals(territory) &&
+        data.getAllianceTracker().isAllied(terrOrigOwner, id)
+        )
+    {
+      //if it is give it back to the original owner
+      Collection originallyOwned = origOwnerTracker.getOriginallyOwned(terrOrigOwner);
+
+      CompositeMatch alliedOccupiedTerritories = new CompositeMatchAnd();
+      alliedOccupiedTerritories.add(Matches.IsTerritory);
+      alliedOccupiedTerritories.add(Matches.isTerritoryAllied(terrOrigOwner, data));
+      List friendlyTerritories = Match.getMatches(originallyOwned, alliedOccupiedTerritories);
+
+      //give back the factories as well.
+      Iterator terrIter = friendlyTerritories.iterator();
+      while (terrIter.hasNext())
       {
-          //if it is give it back to the original owner
-          Collection originallyOwned = origOwnerTracker.getOriginallyOwned(terrOrigOwner);
-
-          CompositeMatch alliedOccupiedTerritories = new CompositeMatchAnd();
-          alliedOccupiedTerritories.add(Matches.IsTerritory);
-          alliedOccupiedTerritories.add(Matches.isTerritoryAllied(terrOrigOwner, data) );
-          List friendlyTerritories = Match.getMatches(originallyOwned,alliedOccupiedTerritories );
-
-          //give back the factories as well.
-          Iterator terrIter = friendlyTerritories.iterator();
-          while (terrIter.hasNext())
-          {
-              Territory item = (Territory)terrIter.next();
-              Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item,terrOrigOwner);
-               bridge.addChange(takeOverFriendlyTerritories);
-               if(changeTracker != null)
-                   changeTracker.addChange(takeOverFriendlyTerritories);
-               Collection units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsFactory);
-               if(!units.isEmpty())
-               {
-                   Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner);
-                   bridge.addChange(takeOverNonComUnits);
-                   if(changeTracker != null)
-                       changeTracker.addChange(takeOverNonComUnits);
-               }
-          }
+        Territory item = (Territory) terrIter.next();
+        if(item.getOwner() == terrOrigOwner)
+          continue;
+        Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
+        bridge.addChange(takeOverFriendlyTerritories);
+        bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
+        if (changeTracker != null)
+          changeTracker.addChange(takeOverFriendlyTerritories);
+        Collection units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsFactory);
+        if (!units.isEmpty())
+        {
+          Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner);
+          bridge.addChange(takeOverNonComUnits);
+          if (changeTracker != null)
+            changeTracker.addChange(takeOverNonComUnits);
+        }
       }
-
-
-    String transcriptText = territory.getName() + " now owned by " + newOwner.getName();
-    bridge.getTranscript().write(transcriptText);
+    }
   }
 
   private void addMustFightBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data)
   {
     Territory site = route.getEnd();
 
-    if(!Matches.territoryHasEnemyUnits(id,data).match(site))
+    if (!Matches.territoryHasEnemyUnits(id, data).match(site))
       return;
 
     //if just a factory then no battle
-    if( route.getEnd().getUnits().allMatch(Matches.UnitIsAAOrFactory))
+    if (route.getEnd().getUnits().allMatch(Matches.UnitIsAAOrFactory))
       return;
 
     Battle battle = getPendingBattle(site, false);
-    if(battle == null)
+    if (battle == null)
     {
       battle = new MustFightBattle(site, id, data, this, tracker);
       m_pendingBattles.add(battle);
     }
     battle.addAttack(route, units);
 
-
     //make amphibious assaults dependent on possible naval invasions
 
     Battle precede = getDependentAmphibiousAssault(route);
-    if(precede != null)
+    if (precede != null)
     {
       addDependency(battle, precede);
     }
 
     //dont let land battles in the same territory occur before bombing battles
     Battle bombing = getPendingBattle(route.getEnd(), true);
-    if(bombing != null)
+    if (bombing != null)
       addDependency(battle, bombing);
   }
 
-
-
   private Battle getDependentAmphibiousAssault(Route route)
   {
-    if( !MoveValidator.isUnload(route))
+    if (!MoveValidator.isUnload(route))
       return null;
     return getPendingBattle(route.getStart(), false);
   }
@@ -441,10 +440,10 @@ public class BattleTracker implements java.io.Serializable
   public Battle getPendingBattle(Territory t, boolean bombing)
   {
     Iterator iter = m_pendingBattles.iterator();
-    while(iter.hasNext() )
+    while (iter.hasNext())
     {
       Battle battle = (Battle) iter.next();
-      if(battle.getTerritory().equals(t) && battle.isBombingRun() == bombing)
+      if (battle.getTerritory().equals(t) && battle.isBombingRun() == bombing)
         return battle;
     }
     return null;
@@ -457,10 +456,10 @@ public class BattleTracker implements java.io.Serializable
   {
     Collection battles = new ArrayList(m_pendingBattles.size());
     Iterator iter = m_pendingBattles.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Battle battle = (Battle) iter.next();
-      if(battle.isBombingRun() == bombing)
+      if (battle.isBombingRun() == bombing)
         battles.add(battle.getTerritory());
 
     }
@@ -475,7 +474,7 @@ public class BattleTracker implements java.io.Serializable
   {
     Collection dependent = (Collection) m_dependencies.get(blocked);
 
-    if(dependent == null)
+    if (dependent == null)
       return Collections.EMPTY_LIST;
     else
       return dependent;
@@ -488,11 +487,11 @@ public class BattleTracker implements java.io.Serializable
   {
     Iterator iter = m_dependencies.keySet().iterator();
     Collection allBlocked = new ArrayList();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Battle current = (Battle) iter.next();
       Collection currentBlockedBy = getDependentOn(current);
-      if(currentBlockedBy.contains(blocking))
+      if (currentBlockedBy.contains(blocking))
         allBlocked.add(current);
     }
     return allBlocked;
@@ -500,50 +499,49 @@ public class BattleTracker implements java.io.Serializable
 
   private void addDependency(Battle blocked, Battle blocking)
   {
-    if(m_dependencies.get(blocked) == null)
+    if (m_dependencies.get(blocked) == null)
     {
       m_dependencies.put(blocked, new HashSet());
     }
-    ((Collection) m_dependencies.get(blocked)).add(blocking);
+    ( (Collection) m_dependencies.get(blocked)).add(blocking);
   }
 
   private void removeDependency(Battle blocked, Battle blocking)
   {
     Collection dependencies = (Collection) m_dependencies.get(blocked);
     dependencies.remove(blocking);
-    if(dependencies.isEmpty())
+    if (dependencies.isEmpty())
     {
       m_dependencies.remove(blocked);
     }
   }
 
-
   public void removeBattle(Battle battle)
   {
     Iterator blocked = getBlocked(battle).iterator();
-    while(blocked.hasNext())
+    while (blocked.hasNext())
     {
       Battle current = (Battle) blocked.next();
-      removeDependency(current , battle);
+      removeDependency(current, battle);
     }
     m_pendingBattles.remove(battle);
     m_foughBattles.add(battle.getTerritory());
   }
 
-    /**
-     * Marks the set of territories as having been the source of a naval bombardment.
-     *
-     * @arg territories - a collection of Territory's
-     */
-    public void addPreviouslyNavalBombardmentSource(Collection territories)
-    {
-      m_bombardedFromTerritories.addAll(territories);
-    }
+  /**
+   * Marks the set of territories as having been the source of a naval bombardment.
+   *
+   * @arg territories - a collection of Territory's
+   */
+  public void addPreviouslyNavalBombardmentSource(Collection territories)
+  {
+    m_bombardedFromTerritories.addAll(territories);
+  }
 
-    public boolean wasNavalBombardmentSource(Territory territory)
-    {
-      return m_bombardedFromTerritories.contains(territory);
-    }
+  public boolean wasNavalBombardmentSource(Territory territory)
+  {
+    return m_bombardedFromTerritories.contains(territory);
+  }
 
   public void clear()
   {
@@ -558,9 +556,9 @@ public class BattleTracker implements java.io.Serializable
   public String toString()
   {
     return "BattleTracker:" + "\n" +
-         "Conquered:" + m_conquered + "\n" +
-         "Blitzed:" + m_blitzed + "\n" +
-         "Fought:" + m_foughBattles + "\n" +
-         "Pending:" + m_pendingBattles;
+      "Conquered:" + m_conquered + "\n" +
+      "Blitzed:" + m_blitzed + "\n" +
+      "Fought:" + m_foughBattles + "\n" +
+      "Pending:" + m_pendingBattles;
   }
 }

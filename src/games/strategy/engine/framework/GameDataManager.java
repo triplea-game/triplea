@@ -33,7 +33,7 @@ public class GameDataManager
     InputStream input = null;
     try
     {
-      input = new GZIPInputStream( new BufferedInputStream(new FileInputStream(savedGameFile)));
+      input = new BufferedInputStream(new FileInputStream(savedGameFile));
       return loadGame(input);
     }
     finally
@@ -48,7 +48,7 @@ public class GameDataManager
 
   public GameData loadGame(InputStream input) throws IOException
   {
-    return loadGame(new ObjectInputStream(input));
+    return  loadGame( new ObjectInputStream( new GZIPInputStream( input)));
   }
 
   public GameData loadGame(ObjectInputStream input) throws IOException
@@ -128,7 +128,7 @@ public class GameDataManager
     outStream.writeObject(games.strategy.engine.EngineVersion.VERSION);
     outStream.writeObject(data);
     writeDelegates(data, outStream);
-    writeGameSteps(data, outStream);
+
 
     GZIPOutputStream zippedOut = new GZIPOutputStream(sink);
     //now write to file
@@ -175,16 +175,9 @@ public class GameDataManager
   out.writeObject(DELEGATE_LIST_END);
   }
 
-  private void writeGameSteps(GameData data, ObjectOutputStream out) throws  IOException
-  {
-  //TODO write the game steps, write the current step (PC)
-  }
 
 
-  public GameData loadNewGame(File gameXMLFile)
-  {
-    return null;
-  }
+
 
 
 

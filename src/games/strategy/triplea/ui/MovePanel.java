@@ -137,15 +137,10 @@ public class MovePanel extends ActionPanel
         getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
         m_bridge = null;
         updateRoute(null);
-        getCursorComponent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         CANCEL_MOVE_ACTION.setEnabled(false);
         m_forced = null;
     }
 
-    private JComponent getCursorComponent()
-    {
-        return getMap();
-    }
 
     private final AbstractAction DONE_MOVE_ACTION = new AbstractAction("Done")
     {
@@ -164,12 +159,17 @@ public class MovePanel extends ActionPanel
         CANCEL_MOVE_ACTION.actionPerformed(null);
     }
 
+    public void setActive(boolean active)
+    {
+      super.setActive(active);
+      CANCEL_MOVE_ACTION.actionPerformed(null);
+    }
+
     private final AbstractAction CANCEL_MOVE_ACTION = new AbstractAction(
         "Cancel")
     {
         public void actionPerformed(ActionEvent e)
         {
-            getCursorComponent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             m_firstSelectedTerritory = null;
             m_forced = null;
             updateRoute(null);
@@ -349,6 +349,9 @@ public class MovePanel extends ActionPanel
     {
         public void territorySelected(Territory territory, MouseEvent me)
         {
+            if(!getActive())
+              return;
+
             if ( (me.getModifiers() & MouseEvent.BUTTON3_MASK) != 0)
             {
                 rightButtonSelection(territory);

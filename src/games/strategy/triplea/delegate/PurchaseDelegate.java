@@ -175,11 +175,11 @@ public class PurchaseDelegate implements Delegate
 
     if(!totalUnits.isEmpty())
     {
+      String transcriptText = player.getName() + " buys " + Formatter.unitsToTextNoOwner(totalUnits);
+      m_bridge.getHistoryWriter().startEvent(transcriptText);
+      m_bridge.getHistoryWriter().setRenderingData(totalUnits);
       Change change = ChangeFactory.addUnits(player, totalUnits);
       m_bridge.addChange(change);
-
-      String transcriptText = player.getName() + " buys " + Formatter.unitsToTextNoOwner(totalUnits);
-      m_bridge.getTranscript().write(transcriptText);
     }
   }
 

@@ -70,11 +70,13 @@ public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Seria
 		Collection territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
 		int toAdd = getProduction(territories);
+
+        String transcriptText = player.getName() + " collects " + toAdd + " ipcs";
+        aBridge.getHistoryWriter().startEvent(transcriptText);
+
 		Change change = ChangeFactory.changeResourcesChange(player, ipcs, toAdd);
 		aBridge.addChange(change);
 
-		String transcriptText = player.getName() + " collects " + toAdd + " ipcs";
-		aBridge.getTranscript().write(transcriptText);
 
 		checkForWinner(aBridge);
 	}

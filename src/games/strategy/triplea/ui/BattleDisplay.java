@@ -27,9 +27,7 @@ import javax.swing.table.TableCellRenderer;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
 import games.strategy.triplea.attatchments.UnitAttatchment;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.message.*;
-import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
@@ -601,7 +599,7 @@ class BattleStepsPanel extends JPanel
     {
       synchronized(lock)
       {
-        lock.wait(850);
+        lock.wait(500);
       }
       } catch(InterruptedException ie)
       {
@@ -628,75 +626,7 @@ class BattleStepsPanel extends JPanel
 
 }
 
-class DicePanel extends JPanel
-{
-  public DicePanel()
-  {
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-  }
 
-  public void clear()
-  {
-    removeAll();
-  }
-
-  public void setDiceRoll(BombingResults results)
-  {
-    removeAll();
-
-    add(create(results.getDice(), -1));
-
-    add(Box.createVerticalGlue());
-    add(new JLabel("Cost:" + results.getCost()));
-
-    invalidate();
-  }
-
-  public void setDiceRoll(DiceRoll diceRoll)
-  {
-    removeAll();
-    for(int i = 1; i <= 6; i++)
-    {
-
-      int[] dice = diceRoll.getRolls(i);
-      if(dice.length == 0)
-        continue;
-
-      add(create(diceRoll.getRolls(i), i));
-    }
-    add(Box.createVerticalGlue());
-    add(new JLabel("Total hits:" + diceRoll.getHits()));
-
-    invalidate();
-  }
-
-  private JComponent create(int[] dice, int rollAt)
-  {
-    JPanel dicePanel = new JPanel();
-    dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
-    if(rollAt != -1)
-      dicePanel.add(new JLabel("Rolled at " + rollAt + ":"));
-    dicePanel.add(Box.createHorizontalStrut(5));
-    for(int dieIndex = 0; dieIndex < dice.length; dieIndex++)
-    {
-      int roll = dice[dieIndex] + 1;
-      boolean hit = roll <= rollAt;
-      dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(roll, hit)));
-      dicePanel.add(Box.createHorizontalStrut(2));
-    }
-    JScrollPane scroll = new JScrollPane(dicePanel);
-    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-    //we're adding to a box layout, so to prevent the component from
-    //grabbing extra space, set the max height.
-    //allow room for a dice and a scrollbar
-    scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
-    scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
-    scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
-
-    return scroll;
-  }
-
-}
 
 
 class CasualtyNotificationPanel extends JPanel

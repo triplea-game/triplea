@@ -58,8 +58,6 @@ public class MoveDelegate implements SaveableDelegate
   private TransportTracker m_transportTracker = new TransportTracker();
   private IntegerMap m_alreadyMoved = new IntegerMap();
 
-
-
   // A collection of UndoableMoves
   private List m_movesToUndo = new ArrayList();
 
@@ -360,6 +358,11 @@ private void updateUndoableMoveIndexes()
       return new StringMessage(error, true);
     //do the move
     m_currentMove = new UndoableMove(m_data, m_alreadyMoved, units, route);
+
+    String transcriptText = Formatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName();
+    m_bridge.getHistoryWriter().startEvent(transcriptText);
+    m_bridge.getHistoryWriter().setRenderingData(message);
+
 
     StringMessage rVal = moveUnits(units, route, id);
     if(!rVal.isError())
@@ -773,6 +776,7 @@ private void updateUndoableMoveIndexes()
    */
   private StringMessage moveUnits(Collection units, Route route, PlayerID id)
   {
+
     //mark movement
     markMovement(units, route);
 
@@ -790,6 +794,9 @@ private void updateUndoableMoveIndexes()
     CompositeMatch mustFightThrough = new CompositeMatchOr();
     mustFightThrough.add(Matches.isTerritoryEnemy(id, m_data));
     mustFightThrough.add(Matches.territoryHasEnemyUnits(id, m_data));
+
+    Collection moved = Util.intersection(units, arrivingUnits);
+
 
     if(route.someMatch(mustFightThrough ) && arrivingUnits.size() != 0)
     {
@@ -822,6 +829,8 @@ private void updateUndoableMoveIndexes()
     Map transporting = mapTransports(route, units);
     markTransportsMovement(transporting, route);
 
+
+
     //actually move the units
     Change remove = ChangeFactory.removeUnits(route.getStart(), units);
     Change add = ChangeFactory.addUnits(route.getEnd(), arrivingUnits);
@@ -831,12 +840,11 @@ private void updateUndoableMoveIndexes()
     m_currentMove.addChange(remove);
     m_currentMove.addChange(add);
 
-    Collection moved = Util.intersection(units, arrivingUnits);
-    String transcriptText = Formatter.unitsToText(moved) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName();
+
 
     m_currentMove.setDescription(Formatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName());
 
-    m_bridge.getTranscript().write(transcriptText);
+
 
     return new StringMessage("done");
   }
@@ -1201,10 +1209,12 @@ private void updateUndoableMoveIndexes()
 
     Change remove = ChangeFactory.removeUnits(territory, toRemove);
 
+    String transcriptText = Formatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName() + " and " + (toRemove.size() > 1 ? "were" : "was") +  " removed";
+    m_bridge.getHistoryWriter().startEvent(transcriptText);
+
+
     m_bridge.addChange(remove);
 
-    String transcriptText = Formatter.unitsToText(toRemove) + " could not land in " + territory.getName() + " and " + (toRemove.size() > 1 ? "were" : "was") +  " removed";
-    m_bridge.getTranscript().write(transcriptText);
   }
 
   /**
@@ -1277,6 +1287,7 @@ private void updateUndoableMoveIndexes()
     String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
 
     SelectCasualtyMessage casualties = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice);
+    m_bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(), casualties.getKilled());
     units.removeAll(casualties.getKilled());
   }
 

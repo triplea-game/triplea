@@ -21,6 +21,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.util.*;
 
 /**
  *
@@ -38,7 +39,7 @@ public class SimpleUnitPanel extends JPanel
 {
   public SimpleUnitPanel()
   {
-
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }
 
   /**
@@ -49,23 +50,50 @@ public class SimpleUnitPanel extends JPanel
   public void setUnitsFromProductionRuleMap(IntegerMap units, PlayerID player, GameData data)
   {
     removeAll();
-    setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+
 
     TreeSet productionRules = new TreeSet(productionRuleComparator);
     productionRules.addAll(units.keySet());
-    Iterator iter =productionRules.iterator();
+    Iterator iter = productionRules.iterator();
     while (iter.hasNext())
     {
-        ProductionRule productionRule = (ProductionRule) iter.next();
-        JLabel label = new JLabel();
-        label.setText(" x " + units.getInt(productionRule));
-        UnitType unit = (UnitType) productionRule.getResults().keySet().
-            iterator().next();
-        label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player,
-            data, false));
-        add(label);
+      ProductionRule productionRule = (ProductionRule) iter.next();
+
+      int quantity = units.getInt(productionRule);
+
+      UnitType unit = (UnitType) productionRule.getResults().keySet().
+        iterator().next();
+      boolean damaged = false;
+
+      addUnits(player, data, quantity, unit, damaged);
+
     }
-}
+  }
+
+  /**
+   *
+   * @param categories a collection of UnitCategories
+   */
+  public void setUnitsFromCategories(Collection categories, GameData data)
+  {
+    removeAll();
+
+    Iterator iter = categories.iterator();
+    while (iter.hasNext())
+    {
+      UnitCategory category = (UnitCategory) iter.next();
+      addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged());
+    }
+  }
+
+  private void addUnits(PlayerID player, GameData data, int quantity, UnitType unit, boolean damaged)
+  {
+    JLabel label = new JLabel();
+    label.setText(" x " + quantity);
+    label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player,
+        data, damaged));
+    add(label);
+  }
 
   Comparator productionRuleComparator = new Comparator()
   {

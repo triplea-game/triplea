@@ -27,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.security.SecureRandom;
 import javax.crypto.*;
+import games.strategy.engine.random.*;
 
 
 /**
@@ -63,32 +64,13 @@ public class RandomGen
   private static final String ALGORITHM = "DES";
   private static final String KNOWN_VAL = "$Id$";
 
-  /**
-   * Knowing the seed gives a player an advantage.
-   * Do something a little more clever than current time.
-   * which could potentially be guessed
-   */
-  private static long getSeed()
-  {
-    //if the execution path is different before the first random
-    //call is made then the object will have a somewhat random
-    //adress in the virtual machine, especially if
-    //a lot of ui and networking objects are created
-    //in response to semi random mouse motion etc.
-    //if the excecution is always the same then
-    //this may vary slightly depending on the vm
-    Object seedObj = new Object();
-    long seed = seedObj.hashCode(); //hash code is an int, 32 bits
-    //seed with current time as well
-    seed += System.currentTimeMillis();
-    return seed;
-  }
+
 
 
 
   // These are used to do the work of generating
   // and working with the encrypted random numbers
-  private static Random s_seed_gen = new Random(getSeed());
+  private static Random s_seed_gen = new Random(PlainRandomSource.getSeed());
 
   private Cipher m_cryptor;
   private KeyGenerator m_keygen;

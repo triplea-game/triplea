@@ -32,6 +32,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.ui.TerritoryData;
 import games.strategy.util.NullImageObserver;
+import games.strategy.ui.*;
+import java.awt.image.*;
 
 /**
  * Responsible for drawing countries on the map.
@@ -70,8 +72,8 @@ public class MapImage
     }
   }
 
-  private Image m_largeMapImage;
-  private Image m_smallMapImage;
+  private BufferedImage m_largeMapImage;
+  private BufferedImage m_smallMapImage;
   private double m_smallLargeRatio = 15.0;
   public static final Font MAP_FONT = new Font("Ariel", Font.BOLD, 12);
 
@@ -102,18 +104,15 @@ public class MapImage
   {
     Image largeFromFile = loadImage(LARGE_IMAGE_FILENAME);
 
-    //create from a component to make screen drawing faster
-    //if you create an image from a component then no operations
-    //have to be done when drawing the image to the screen, just a simple
-    //byte copy
-    Frame frame = new Frame();
-    frame.addNotify();
-    m_largeMapImage = frame.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer));
-    m_smallMapImage = frame.createImage( (int) (largeFromFile.getWidth(s_observer) / m_smallLargeRatio),
-                                         (int) ( largeFromFile.getHeight(s_observer) / m_smallLargeRatio));
+    //NOTE
+    //the following line causes a lot of problems in windows (windows xp with jdk1.4.0)
+    //it looks like the frame.createImage creates an image that only works for the screen size.
+    //areas of the image that are outside of the boundaries of the screen do not update correctly
+   // m_largeMapImage = frame.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer));
 
-    frame.dispose();
-    frame = null;
+    m_largeMapImage = Util.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer), false);
+    m_smallMapImage = Util.createImage( (int) (largeFromFile.getWidth(s_observer) / m_smallLargeRatio),
+                                         (int) ( largeFromFile.getHeight(s_observer) / m_smallLargeRatio), false);
 
     m_largeMapImage.getGraphics().drawImage(largeFromFile, 0,0,s_observer);
     m_smallMapImage.getGraphics().drawImage(largeFromFile, 0,0, m_smallMapImage.getWidth(null), m_smallMapImage.getHeight(null), s_observer);

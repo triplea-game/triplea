@@ -239,11 +239,11 @@ public class TerritoryData
         List polys = getPolygons(name);
         Rectangle bounds = null;
 
-        Iterator iter = polys.iterator();
 
-        while (iter.hasNext())
+
+        for(int i = 0; i < polys.size(); i++)
         {
-            Polygon item = (Polygon) iter.next();
+            Polygon item = (Polygon) polys.get(i);
             if(bounds == null)
                 bounds = item.getBounds();
             else
@@ -258,10 +258,9 @@ public class TerritoryData
      *
      * @return List of territory names as Strings
      */
-    public List intersectsOrIsContainedIn(Shape s)
+    public List territoriesThatOverlap(Rectangle2D bounds)
     {
-        Rectangle2D bounds = s.getBounds();
-        List rVal = new ArrayList();
+        List rVal = null;
 
         Iterator terrIter = getTerritories().iterator();
         while (terrIter.hasNext())
@@ -272,16 +271,22 @@ public class TerritoryData
             for(int i = 0; i < polygons.size(); i++)
             {
                 Polygon item = (Polygon) polygons.get(i);
-                if(item.intersects(bounds) || item.contains(bounds))
+                if(item.intersects(bounds) || item.contains(bounds) || bounds.contains(item.getBounds2D()))
                 {
+                    if(rVal == null)
+                      rVal = new ArrayList(4);
+
                     rVal.add(terr);
                     //only add it once
                     break;
                 }
             }
         }
+        if(rVal == null)
+          return Collections.EMPTY_LIST;
 
         return rVal;
+
     }
 
 

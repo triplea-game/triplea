@@ -157,11 +157,13 @@ public class UndoableMove implements Serializable
                      BattleTracker battleTracker,
                      TransportTracker transportTracker)
     {
+
+        bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() +
+                                     " undoes his last move.");
+
         //undo any changes to the game data
         bridge.addChange(m_undoChange.invert());
 
-        bridge.getTranscript().write(bridge.getPlayerID().getName() +
-                                     " undoes his last move.");
         movement.add(m_changedMovement);
         if (m_loaded != null)
         {

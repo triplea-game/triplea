@@ -64,13 +64,19 @@ public class GameSequence extends GameDataComponent
       return m_round;
     }
 
-	public void next() {
+    /**
+     *
+     * @return boolean wether the round has changed
+     */
+    public boolean next() {
 		m_currentIndex++;
 		if (m_currentIndex == m_steps.size())
         {
           m_currentIndex = 0;
           m_round++;
+          return true;
         }
+        return false;
 	}
 
 	public GameStep getStep()

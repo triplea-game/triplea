@@ -37,7 +37,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ui.*;
 
 import games.strategy.engine.chat.*;
-import games.strategy.engine.transcript.*;
+
 
 import games.strategy.debug.Console;
 
@@ -76,6 +76,11 @@ public class GameRunner
     return img;
   }
 
+  private static boolean isMac()
+  {
+    return   System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
+  }
+
   private static void installSecurityProvider()
   {
 //    java.security.Security.addProvider( new com.sun.crypto.provider.SunJCE());
@@ -88,7 +93,8 @@ public class GameRunner
       java.nio.CharBuffer.class.toString();
     } catch(NoClassDefFoundError e)
     {
-        if (System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1)
+
+        if (!isMac())
             JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
         else
             JOptionPane.showMessageDialog(null, "You need java version 1.4 or greater.\n  Please download a newer version of java from http://www.apple.com/java/", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -103,11 +109,9 @@ public class GameRunner
     checkJavaVersion();
     try
     {
-//        com.l2fprod.gui.plaf.skin.Skin theSkinToUse = com.l2fprod.gui.plaf.skin.SkinLookAndFeel.loadThemePack("../lib/macosthemepack.zip");
-//        com.l2fprod.gui.plaf.skin.SkinLookAndFeel.setSkin(theSkinToUse);
-//        UIManager.setLookAndFeel(new com.l2fprod.gui.plaf.skin.SkinLookAndFeel());
-       // UIManager.setLookAndFeel(new net.sourceforge.mlf.metouia.MetouiaLookAndFeel());
-      UIManager.setLookAndFeel(new com.incors.plaf.kunststoff.KunststoffLookAndFeel());
+        //macs are already beautiful
+        if(!isMac())
+            UIManager.setLookAndFeel(new com.incors.plaf.kunststoff.KunststoffLookAndFeel());
     }
     catch (Exception ex)
     {

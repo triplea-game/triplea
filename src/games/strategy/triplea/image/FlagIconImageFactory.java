@@ -132,6 +132,8 @@ public class FlagIconImageFactory
 
 	public Image getSmallFlag(PlayerID id)
 	{
+    if(id == null)
+      throw new IllegalArgumentException("Null id");
 
 		if(m_loaded == false)
 			throw new IllegalArgumentException("Images not loaded");

@@ -24,7 +24,6 @@ import java.util.*;
 import java.io.Serializable;
 import games.strategy.net.*;
 
-import games.strategy.engine.transcript.*;
 
 /**
  *
@@ -32,46 +31,32 @@ import games.strategy.engine.transcript.*;
  *
  * @author  Sean Bridges
  */
-public class Chat 
+public class Chat
 {
 	private ChatFrame m_frame;
 	private IMessenger m_messenger;
-	private Transcript m_transcript;
-	
+
 	/** Creates a new instance of Chat */
-    public Chat(IMessenger messenger, ChatFrame frame) 
+    public Chat(IMessenger messenger, ChatFrame frame)
 	{
 		m_frame = frame;
 		m_messenger = messenger;
 		m_messenger.addMessageListener(m_messageListener);
 		m_messenger.addConnectionChangeListener(m_connectionChangeListener);
 		updateConnections();
-		
+
     }
-	
+
 	/**
 	 * Stop receiving events from the messenger.
 	 */
 	public void shutdown()
 	{
 		m_messenger.removeMessageListener(m_messageListener);
-		m_messenger.removeConnectionChangeListener(m_connectionChangeListener);	
-		if(m_transcript != null)
-		{
-			m_transcript.removeTranscriptListener(m_transcriptListener);
-			m_transcript = null;
-		}
+		m_messenger.removeConnectionChangeListener(m_connectionChangeListener);
 	}
 
-	public synchronized void showTranscript(Transcript t)
-	{
-		if(m_transcript != null)
-			throw new IllegalStateException("Already displaying a transcript");
-		
-		m_transcript =t;
-		m_transcript.addTranscriptListener(m_transcriptListener);
-	}
-	
+
 	void sendMessage(ChatMessage msg)
 	{
 		m_messenger.broadcast(msg);
@@ -94,7 +79,7 @@ public class Chat
 		Collections.sort(playerNames);
 		m_frame.updatePlayerList(playerNames);
 	}
-	
+
 	private IConnectionChangeListener m_connectionChangeListener = new IConnectionChangeListener()
 	{
 		public void connectionsChanged()
@@ -103,14 +88,7 @@ public class Chat
 		}
 	};
 
-	private ITranscriptListener m_transcriptListener = new ITranscriptListener()
-	{
-		public void messageRecieved(TranscriptMessage msg)
-		{
-			m_frame.addMessage(msg.getMessage(), "Game");
-		}
-	};
-	
+
 	private IMessageListener m_messageListener = new IMessageListener()
 	{
 		public void messageReceived(Serializable msg, INode from)

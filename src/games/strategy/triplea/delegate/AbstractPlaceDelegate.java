@@ -409,6 +409,11 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     Collection factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrFactory);
     DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwner(factoryAndAA, m_player);
 
+    String transcriptText = Formatter.unitsToText(units) + " placed in " +placeMessage.getTo().getName();
+    m_bridge.getHistoryWriter().startEvent(transcriptText);
+    m_bridge.getHistoryWriter().setRenderingData(units);
+
+
     Change remove= ChangeFactory.removeUnits(player, units);
     Change place = ChangeFactory.addUnits(placeMessage.getTo(), units);
 
@@ -425,10 +430,6 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     if(Match.someMatch(units, Matches.UnitIsFactory))
       m_producedFactory.add(producer);
 
-
-    String transcriptText = Formatter.unitsToText(units) + " placed in " +placeMessage.getTo().getName();
-    m_bridge.getTranscript().write(transcriptText);
-
     return new StringMessage("done");
   }
 
@@ -442,6 +443,8 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     Collection units = player.getUnits().getUnits();
     if(!units.isEmpty())
     {
+        m_bridge.getHistoryWriter().startEvent(Formatter.unitsToTextNoOwner(units) + " produced but not placed");
+
       Change change = ChangeFactory.removeUnits( player, units);
       m_bridge.addChange(change);
     }
@@ -528,10 +531,11 @@ class UndoPlace
            PlaceState placeState = (PlaceState) in.readObject();
            delegate.loadState(placeState);
 
+           bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() +  " undoes his last placement.");
+
            //undo any changes to the game data
            bridge.addChange(m_change.invert());
 
-           bridge.getTranscript().write(bridge.getPlayerID().getName() +  " undoes his last placement.");
 
        }
        catch (ClassNotFoundException ex)

@@ -25,7 +25,7 @@ import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.message.IMessageManager;
 import games.strategy.net.IMessenger;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.transcript.*;
+
 
 /**
  * Represents a running game. <p>
@@ -50,11 +50,6 @@ public interface IGame
    * Should not be called outside of engine code.
    */
   public void addChange(Change aChange);
-
-  /**
-   * Get the ganes transcript.
-   */
-  public Transcript getTranscript();
 
   public boolean canSave();
 

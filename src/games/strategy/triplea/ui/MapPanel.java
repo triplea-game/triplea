@@ -41,7 +41,7 @@ public class MapPanel extends ImageScrollerLargeView
 
   private java.util.List m_mapSelectionListeners = new ArrayList();
 
-  private final GameData m_data;
+  private GameData m_data;
   private Territory m_currentTerritory; //the territory that the mouse is currently over
                                         //could be null
   private MapPanelSmallView m_smallView;
@@ -49,22 +49,17 @@ public class MapPanel extends ImageScrollerLargeView
   //current route we are displaying, could be null
   private Route m_route;
 
-  private final MapUnitsDrawer m_mapsUnitDrawer;
+  private MapUnitsDrawer m_mapsUnitDrawer;
 
 
   /** Creates new MapPanel */
-  public MapPanel(Image image, GameData data, MapPanelSmallView smallImage) throws
+  public MapPanel(Image image, GameData data, MapPanelSmallView smallView) throws
       IOException
   {
       super(image);
-      setDoubleBuffered(false);
-      m_smallView = smallImage;
-      m_data = data;
-      data.addTerritoryListener(TERRITORY_LISTENER);
-
-      m_mapsUnitDrawer = new MapUnitsDrawer(data, smallImage, this);
+      m_smallView = smallView;
+      setGameData(data);
       initTerritories();
-
 
       this.addMouseListener(MOUSE_LISTENER);
       this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
@@ -150,8 +145,11 @@ public class MapPanel extends ImageScrollerLargeView
 
   public void paint(Graphics g)
   {
+    synchronized(m_mapsUnitDrawer.getLock())
+    {
       super.paint(g);
-      MapRouteDrawer.drawRoute( (Graphics2D) g,  m_route, this);
+      MapRouteDrawer.drawRoute( (Graphics2D) g, m_route, this);
+    }
   }
 
   private void initTerritories()
@@ -203,6 +201,21 @@ public class MapPanel extends ImageScrollerLargeView
       m_mapsUnitDrawer.queueUpdate(countries);
   }
 
+  public void setGameData(GameData data)
+  {
+      //clean up any old listeners
+      if(m_data != null)
+      {
+          m_data.removeTerritoryListener(TERRITORY_LISTENER);
+      }
+
+      m_data = data;
+      m_data.addTerritoryListener(TERRITORY_LISTENER);
+      m_mapsUnitDrawer = new MapUnitsDrawer(m_data, m_smallView, this);
+
+
+  }
+
   private final TerritoryListener TERRITORY_LISTENER = new TerritoryListener()
   {
     public void unitsChanged(Territory territory)
@@ -215,4 +228,7 @@ public class MapPanel extends ImageScrollerLargeView
         m_mapsUnitDrawer.queueUpdate(territory);
     }
   };
+
+
+
 }

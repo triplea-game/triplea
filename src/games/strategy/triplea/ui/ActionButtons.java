@@ -21,7 +21,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
@@ -29,7 +28,6 @@ import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
 import games.strategy.engine.gamePlayer.PlayerBridge;
-import games.strategy.engine.data.events.*;
 
 import games.strategy.triplea.delegate.message.*;
 
@@ -38,20 +36,19 @@ import games.strategy.triplea.delegate.message.*;
  * Root panel for all action buttons in a triplea game. <br>
  *
  * @author  Sean Bridges
- * @version 1.0
  */
 public class ActionButtons extends JPanel
 {
 
   private CardLayout m_layout = new CardLayout();
 
-  private JLabel actionLabel = new JLabel("Action");
-
   private BattlePanel m_battlePanel;
   private MovePanel m_movePanel;
   private PurchasePanel m_purchasePanel;
   private PlacePanel m_placePanel;
   private TechPanel m_techPanel;
+
+  private ActionPanel m_current;
 
   /** Creates new ActionPanel */
     public ActionButtons(GameData data, MapPanel map, TripleAFrame parent)
@@ -61,6 +58,7 @@ public class ActionButtons extends JPanel
     m_purchasePanel = new PurchasePanel(data, map);
     m_placePanel = new PlacePanel(data, map);
     m_techPanel = new TechPanel(data, map);
+    m_current = m_techPanel;
 
     setLayout(m_layout);
 
@@ -74,32 +72,45 @@ public class ActionButtons extends JPanel
 
   public void changeToMove(PlayerID id, boolean nonCombat)
   {
+    m_current.setActive(false);
+    m_current = m_movePanel;
     m_movePanel.display(id, nonCombat);
     m_layout.show(this, m_movePanel.toString());
+
   }
 
   public void changeToProduce(PlayerID id)
   {
+    m_current.setActive(false);
+    m_current = m_purchasePanel;
     m_purchasePanel.display(id);
     m_layout.show(this, m_purchasePanel.toString());
   }
 
   public void changeToPlace(PlayerID id)
   {
+    m_current.setActive(false);
+    m_current = m_placePanel;
     m_placePanel.display(id);
     m_layout.show(this, m_placePanel.toString());
   }
 
   public void changeToBattle(PlayerID id, Collection battles, Collection bombing)
   {
+    m_current.setActive(false);
+    m_current = m_battlePanel;
     m_battlePanel.display(id, battles, bombing);
     m_layout.show(this, m_battlePanel.toString());
+
   }
 
   public void changeToTech(PlayerID id)
   {
+    m_current.setActive(false);
+    m_current = m_techPanel;
     m_techPanel.display(id);
     m_layout.show(this, m_techPanel.toString());
+
   }
 
 
@@ -196,5 +207,10 @@ public class ActionButtons extends JPanel
   public RetreatMessage getRetreat(RetreatQueryMessage rqm)
   {
     return 	m_battlePanel.getRetreat(rqm);
+  }
+
+  public ActionPanel getCurrent()
+  {
+    return m_current;
   }
 }

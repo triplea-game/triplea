@@ -23,6 +23,7 @@ package games.strategy.engine.data;
 import java.util.*;
 import games.strategy.net.GUID;
 import games.strategy.util.*;
+import java.lang.reflect.*;
 
 
 /**
@@ -253,7 +254,7 @@ class OwnerChange extends Change
 
 	public String toString()
 	{
-		return "Owner change message.  Territory:" + m_territory + " to:" + m_new + " from:" + m_old;
+		return m_new + " takes " + m_territory + " from " + m_old;
 	}
 
 }
@@ -352,7 +353,7 @@ class ChangeResourceChange extends Change
 
 	public String toString()
 	{
-		return "Change resource.  Resource:" + m_resource +  " quantity:" + m_quantity;
+		return "Change resource.  Resource:" + m_resource +  " quantity:" + m_quantity + " Player:" + m_player;
 	}
 }
 
@@ -466,6 +467,72 @@ class ProductionFrontierChange extends Change
 	{
 		return new ProductionFrontierChange(m_endFrontier, m_startFrontier, m_player);
 	}
+
+}
+
+
+class ChangeAttatchmentChange extends Change
+{
+  private final Attatchment m_attatchment;
+  private final String m_newValue;
+  private String m_oldValue;
+  private final String m_property;
+
+  public ChangeAttatchmentChange(Attatchment attatchment, String newValue, String property)
+  {
+    m_attatchment = attatchment;
+    m_newValue = newValue;
+    m_property = property;
+
+    try
+     {
+       Method getter = m_attatchment.getClass().getMethod("get" + capitalizeFirstLetter(property), new Class[0]);
+       m_oldValue = (String) getter.invoke(m_attatchment, new Object[0]);
+     }
+     catch(Exception e)
+     {
+       e.printStackTrace();
+     }
+  }
+
+  public ChangeAttatchmentChange(Attatchment attatchment, String newValue, String oldValue, String property)
+  {
+    m_attatchment = attatchment;
+    m_newValue = newValue;
+    m_oldValue = oldValue;
+    m_property = property;
+
+  }
+
+
+  private String capitalizeFirstLetter(String aString)
+  {
+    char first = aString.charAt(0);
+    first = Character.toUpperCase(first);
+    return first + aString.substring(1);
+  }
+
+
+  public void perform(GameData data)
+  {
+    try
+    {
+      Method setter = m_attatchment.getClass().getMethod("set" + capitalizeFirstLetter(m_property), new Class[]
+        {String.class});
+      setter.invoke(m_attatchment, new Object[] {m_newValue});
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+
+  public Change invert()
+  {
+    return new ChangeAttatchmentChange(m_attatchment, m_oldValue, m_newValue, m_property);
+  }
+
 
 
 }

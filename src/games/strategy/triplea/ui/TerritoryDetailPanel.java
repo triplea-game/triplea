@@ -28,29 +28,44 @@ import javax.swing.border.*;
 public class TerritoryDetailPanel extends JPanel
 {
 
-  private GameData m_data;
+    private GameData m_data;
 
-  public TerritoryDetailPanel(MapPanel mapPanel, GameData data)
-  {
-    m_data = data;
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    setBorder(new EmptyBorder(5,5,0,0));
-
-    mapPanel.addMapSelectionListener(
-      new MapSelectionListener()
+    public void setGameData(GameData data)
     {
+        m_data = data;
+        territoryChanged(null);
+    }
 
-      public void territorySelected(Territory territory, MouseEvent me)
-      {}
+    public TerritoryDetailPanel(MapPanel mapPanel, GameData data)
+    {
+        m_data = data;
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(new EmptyBorder(5, 5, 0, 0));
 
-      public void mouseEntered(Territory territory)
-      {
+        mapPanel.addMapSelectionListener(
+            new MapSelectionListener()
+        {
+
+            public void territorySelected(Territory territory, MouseEvent me)
+            {}
+
+            public void mouseEntered(Territory territory)
+            {
+                territoryChanged(territory);
+            }
+
+        }
+        );
+    }
+
+    private void territoryChanged(Territory territory)
+    {
         removeAll();
         refresh();
 
-        if(territory == null)
+        if (territory == null)
         {
-          return;
+            return;
         }
 
         add(new JLabel(territory.getName()));
@@ -59,37 +74,32 @@ public class TerritoryDetailPanel extends JPanel
         PlayerID currentPlayer = null;
         while (iter.hasNext())
         {
-          //seperate players with a seperator
-          UnitCategory item = (UnitCategory) iter.next();
-          if(item.getOwner() != currentPlayer)
-          {
-            currentPlayer = item.getOwner();
-            add(Box.createVerticalStrut(15));
-          }
+            //seperate players with a seperator
+            UnitCategory item = (UnitCategory) iter.next();
+            if (item.getOwner() != currentPlayer)
+            {
+                currentPlayer = item.getOwner();
+                add(Box.createVerticalStrut(15));
+            }
 
+            ImageIcon icon = UnitIconImageFactory.instance().getIcon(
+                item.getType(), item.getOwner(), m_data, item.getDamaged());
+            JLabel label = new JLabel("x" + item.getUnits().size(),
+                                      icon,
+                                      JLabel.LEFT
+                                      );
 
-          ImageIcon icon = UnitIconImageFactory.instance().getIcon(
-            item.getType(), item.getOwner(), m_data, item.getDamaged());
-          JLabel label = new JLabel("x" + item.getUnits().size(),
-                                    icon,
-                                    JLabel.LEFT
-                                    );
+            add(label);
 
-         add(label);
+            refresh();
 
-         refresh();
+        }
+    }
 
-       }
-      }
-
-      private void refresh()
-      {
+    private void refresh()
+    {
         validate();
         repaint();
-
-      }
     }
-    );
-  }
 
 }

@@ -41,7 +41,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ui.*;
 
 import games.strategy.engine.chat.*;
-import games.strategy.engine.transcript.*;
+
 
 import games.strategy.debug.Console;
 

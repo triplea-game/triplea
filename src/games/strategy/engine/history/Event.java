@@ -12,21 +12,38 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * GameDataChangeListener.java
- *
- * Created on January 9, 2002, 4:05 PM
- */
+package games.strategy.engine.history;
 
-package games.strategy.engine.data.events;
-
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.*;
+import games.strategy.triplea.delegate.*;
 import games.strategy.engine.data.*;
 
-/**
- *
- * @author  Sean Bridges
- */
-public interface GameDataChangeListener
+public class Event extends IndexedHistoryNode implements Renderable
 {
-	public void gameDataChanged(Change aChange);
+    private final String m_description;
+    //additional data used for rendering this event
+    private Object m_renderingData;
+
+    public String getDescription()
+    {
+        return m_description;
+    }
+
+    Event(String description, int changeStartIndex)
+    {
+        super(description, changeStartIndex, true);
+        m_description = description;
+
+    }
+
+    public Object getRenderingData()
+    {
+      return m_renderingData;
+    }
+
+    public void setRenderingData(Object data)
+    {
+      m_renderingData = data;
+    }
 }

@@ -27,7 +27,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.message.*;
 import games.strategy.engine.delegate.*;
 
-import games.strategy.engine.transcript.*;
+
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 
@@ -41,7 +41,6 @@ import games.strategy.triplea.attatchments.TerritoryAttatchment;
 public class EndRoundDelegate implements SaveableDelegate
 {
 	private final static int AXIS_ECONOMIC_VICTORY = 84;
-	private final static int ALLIES_ECONOMIC_VICTORY = 110;
 
 	private String m_name;
 	private String m_displayName;
@@ -78,7 +77,7 @@ public class EndRoundDelegate implements SaveableDelegate
 		if(gProd + jProd >= AXIS_ECONOMIC_VICTORY)
 		{
 			m_gameOver = true;
-			aBridge.getTranscript().write("Axis achieve economic victory", TranscriptMessage.PRIORITY_CHANNEL);
+			aBridge.getHistoryWriter().startEvent("Axis achieve economic victory");
 		}
 
 		int rProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.RUSSIANS));

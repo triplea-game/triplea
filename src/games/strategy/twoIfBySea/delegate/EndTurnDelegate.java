@@ -3,7 +3,6 @@ package games.strategy.twoIfBySea.delegate;
 import games.strategy.engine.delegate.DelegateBridge;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.engine.data.*;
-import games.strategy.engine.transcript.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
 
@@ -39,12 +38,12 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		    if(britain && ! japan)
 			{
 				m_gameOver = true;
-	    		bridge.getTranscript().write("British win.", TranscriptMessage.PRIORITY_CHANNEL);
+	    		bridge.getHistoryWriter().startEvent("British win.");
 			}
 			if(!britain && japan)
 			{
 				m_gameOver = true;
-	    		bridge.getTranscript().write("Japanese win.", TranscriptMessage.PRIORITY_CHANNEL);
+	    		bridge.getHistoryWriter().startEvent("Japanese win.");
 			}
 		}
 

@@ -31,6 +31,7 @@ import games.strategy.engine.delegate.*;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.formatter.*;
 
 /**
  * Logic for dealing with player tech rolls.
@@ -81,6 +82,11 @@ public class TechnologyDelegate implements SaveableDelegate
     int[] random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, m_player.getName() + " rolling for tech.");
     int techHits = getTechHits(random);
 
+    m_bridge.getHistoryWriter().startEvent(m_player.getName() + " rolls : " + Formatter.asDice(random) + " and gets " + techHits + " " + Formatter.pluralize("hit", techHits));
+    m_bridge.getHistoryWriter().setRenderingData(new DiceRoll(random, techHits, 5, true));
+
+
+
     Collection advances = getTechAdvances(techHits);
     List advancesAsString = new ArrayList();
 
@@ -105,7 +111,8 @@ public class TechnologyDelegate implements SaveableDelegate
     }
 
     String transcriptText =  m_bridge.getPlayerID().getName() + " discover " + text.toString();
-    m_bridge.getTranscript().write(transcriptText);
+    if(advances.size() > 0)
+      m_bridge.getHistoryWriter().startEvent(transcriptText);
 
     return new TechResultsMessage(random, techHits, advancesAsString, m_player);
 
@@ -124,12 +131,13 @@ public class TechnologyDelegate implements SaveableDelegate
   {
     Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
     int cost = rolls * Constants.TECH_ROLL_COST;
-    Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), ipcs, -cost);
-    m_bridge.addChange(charge);
 
     String transcriptText = m_bridge.getPlayerID().getName() + " spends " + cost + " on tech rolls";
-    m_bridge.getTranscript().write(transcriptText);
+    m_bridge.getHistoryWriter().startEvent(transcriptText);
 
+
+    Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), ipcs, -cost);
+    m_bridge.addChange(charge);
   }
 
   private int getTechHits(int[] random)
@@ -150,10 +158,13 @@ public class TechnologyDelegate implements SaveableDelegate
       return Collections.EMPTY_LIST;
     if(hits >= available.size())
       return available;
+    if(hits == 0)
+      return Collections.EMPTY_LIST;
 
     Collection newAdvances = new ArrayList(hits);
 
     int random[] = m_bridge.getRandom(Constants.MAX_DICE, hits, m_player.getName() + " rolling to see what tech advances are aquired");
+    m_bridge.getHistoryWriter().startEvent("Rolls to resolve tech hits:" + Formatter.asDice(random) );
     for(int i = 0; i < random.length; i++)
     {
       int index = random[i] % available.size();

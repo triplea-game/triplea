@@ -63,7 +63,7 @@ public abstract class TechAdvance implements java.io.Serializable
 	}
 
 	public abstract String getName();
-    public abstract String getShortName();
+  public abstract String getShortName();
 	public abstract void perform(PlayerID id, DelegateBridge bridge, GameData data);
 
 	public boolean equals(Object o)

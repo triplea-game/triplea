@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Util.java
  *
  * Created on November 13, 2001, 1:57 PM
@@ -10,11 +24,11 @@ import java.util.*;
 
 /**
  * Some utility methods for dealing with collections.
- * 
+ *
  * @author  Sean Bridges
  * @version 1.0
  */
-public class Util 
+public class Util
 {
 	/**
 	 * return a such that a exists in c1 and a exists in c2.
@@ -27,7 +41,7 @@ public class Util
 		if(c1.size() == 0 || c2.size() == 0)
 			return Collections.EMPTY_LIST;
 
-		List intersection = new ArrayList();		
+		List intersection = new ArrayList();
 		Iterator iter = c1.iterator();
 		while(iter.hasNext())
 		{
@@ -48,7 +62,7 @@ public class Util
 			return Collections.EMPTY_LIST;
 		if(c2 == null || c2.size() == 0)
 			return new ArrayList(c1);
-		
+
 		List difference = new ArrayList();
 		Iterator iter = c1.iterator();
 		while(iter.hasNext())
@@ -59,9 +73,9 @@ public class Util
 		}
 		return difference;
 	}
-	
+
 	/**
-	 * true if for each a in c1, a exists in c2, 
+	 * true if for each a in c1, a exists in c2,
 	 * and if for each b in c2, b exist in c1
 	 * and c1 and c2 are the same size.
 	 * Note that (a,a,b) (a,b,b) are equal.
@@ -70,22 +84,22 @@ public class Util
 	{
 		if(c1 == null || c2 == null)
 			return c1 == c2;
-		
+
 		if(c1.size() != c2.size() )
 			return false;
-		
+
 		if(c1 == c2)
 			return true;
-		
+
 		if(!c1.containsAll(c2))
 			return false;
-		
+
 		if(!c2.containsAll(c1))
 			return false;
-		
+
 		return true;
 	}
-	
+
 	public static List toList(Object[] objects)
 	{
 		ArrayList list = new ArrayList(objects.length);
@@ -95,11 +109,11 @@ public class Util
 		}
 		return list;
 	}
-	
-	
-	
+
+
+
 	/** Creates new Util */
-    private Util() 
+    private Util()
 	{
     }
 

@@ -143,6 +143,11 @@ public class ScrollableTextField extends JPanel
     setWidgetActivation();
   }
 
+  public int getMax()
+  {
+    return m_text.getMax();
+  }
+
   public void setMin(int min)
   {
     m_text.setMin(min);
@@ -209,6 +214,7 @@ public class ScrollableTextField extends JPanel
   public void setValue(int value)
   {
     m_text.setValue(value);
+    setWidgetActivation();
   }
 
   public void addChangeListener(ScrollableTextFieldListener listener)

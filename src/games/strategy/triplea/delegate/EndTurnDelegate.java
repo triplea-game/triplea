@@ -25,7 +25,7 @@ import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
-import games.strategy.engine.transcript.*;
+
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
@@ -68,13 +68,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		if ( germany && japan && count >=2)
 		{
 			m_gameOver = true;
-			bridge.getTranscript().write("Axis achieve a military victory", TranscriptMessage.PRIORITY_CHANNEL);
+			bridge.getHistoryWriter().startEvent("Axis achieve a military victory");
 		}
 
 	 	if ( russia && !germany && britain && !japan && america)
 		{
 			m_gameOver = true;
-			bridge.getTranscript().write("Allies achieve a military victory", TranscriptMessage.PRIORITY_CHANNEL);
+			bridge.getHistoryWriter().startEvent("Allies achieve a military victory");
 		}
 
 	}

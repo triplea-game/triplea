@@ -30,7 +30,7 @@ import java.util.*;
 
 public final class TerritoryImageFactory
 {
-    private final int CACHE_SIZE = 2;
+    private final int CACHE_SIZE = 5;
 
     private LinkedList m_cahcedTerritories = new LinkedList();
 
@@ -71,9 +71,6 @@ public final class TerritoryImageFactory
         m_playerColors.put("Germans", new Color(119, 119, 119));
         m_playerColors.put("Japanese", new Color(255, 153, 0));
         m_playerColors.put(PlayerID.NULL_PLAYERID.getName(), new Color(204, 153, 51));
-
-
-
     }
 
     // dynamically create a new territory image
@@ -132,6 +129,10 @@ public final class TerritoryImageFactory
             ImageName current = (ImageName) m_cahcedTerritories.get(i);
             if(current.name.equals(place.getName()))
             {
+                //move it to the front of the cache
+                m_cahcedTerritories.remove(i);
+                m_cahcedTerritories.add(0, current);
+
                 return current.image;
             }
         }
@@ -171,7 +172,11 @@ public final class TerritoryImageFactory
             ImageName current = (ImageName) m_cahcedTerritories.get(i);
             if(current.name.equals(place.getName()))
             {
-                return current.image;
+              //move it to the front of the cache
+              m_cahcedTerritories.remove(i);
+              m_cahcedTerritories.add(0, current);
+
+              return current.image;
             }
         }
 
@@ -201,9 +206,6 @@ public final class TerritoryImageFactory
     private Image loadImageCompletely(URL imageLocation)
     {
 
-      // name?
-      int pathLen = imageLocation.getFile().lastIndexOf("/");
-
       // use the local toolkit to load the image
       Toolkit tk = Toolkit.getDefaultToolkit();
       Image img = tk.createImage(imageLocation);
@@ -215,15 +217,7 @@ public final class TerritoryImageFactory
       // use the watcher to block while loading
       if (!isLoaded)
       {
-        try
-        {
-          watcher.runUntilOpComplete();
-          watcher.join();
-        }
-        catch (InterruptedException ie)
-        {
-          return null;
-        }
+          watcher.waitForCompletion();
       }
 
       // done!

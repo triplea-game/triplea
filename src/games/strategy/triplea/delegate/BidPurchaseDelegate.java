@@ -62,8 +62,12 @@ public class BidPurchaseDelegate extends PurchaseDelegate
    public void end()
    {
        super.end();
-       Change unspent = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), super.getData().getResourceList().getResource(Constants.IPCS), m_bid - m_spent);
-       m_bridge.addChange(unspent);
+       int unspent =  m_bid - m_spent;
+       if(unspent == 0)
+           return;
+       m_bridge.getHistoryWriter().startEvent(m_bridge.getPlayerID().getName() + " retains " + unspent + " IPCS not spent in bid phase");
+       Change unspentChange = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), super.getData().getResourceList().getResource(Constants.IPCS), unspent);
+       m_bridge.addChange(unspentChange);
 
    }
 

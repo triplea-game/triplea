@@ -51,7 +51,7 @@ public class ChangePerformer
 		{
 			inChangeCount--;
 			if(inChangeCount == 0)
-    			m_data.notifyGameDataChanged();
+    			m_data.notifyGameDataChanged(aChange);
 		}
 	}
 }

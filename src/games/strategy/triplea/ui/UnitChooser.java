@@ -31,6 +31,7 @@ import games.strategy.engine.data.*;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.util.*;
+import java.awt.event.*;
 
 /**
  *
@@ -39,6 +40,7 @@ import games.strategy.triplea.util.*;
  */
 public class UnitChooser extends JPanel
 {
+
   private List m_entries = new ArrayList();
   private Map m_dependents = new HashMap();
   private JTextArea m_title;
@@ -46,8 +48,10 @@ public class UnitChooser extends JPanel
   private JLabel m_leftToSelect = new JLabel();
   private GameData m_data;
   private boolean m_allowTwoHit = false;
-
+  private JButton m_autoSelectButton;
+  private JButton m_selectNoneButton;
   /** Creates new UnitChooser */
+
   public UnitChooser(Collection units, Map dependent, IntegerMap movement, GameData data)
   {
     m_dependents = dependent;
@@ -72,6 +76,8 @@ public class UnitChooser extends JPanel
   {
     m_total = max;
     m_textFieldListener.changedValue(null);
+    m_autoSelectButton.setVisible(false);
+    m_selectNoneButton.setVisible(false);
   }
 
   public void setTitle(String title)
@@ -128,34 +134,66 @@ public class UnitChooser extends JPanel
 
   private void layoutEntries()
   {
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    this.setLayout(new GridBagLayout());
+
+
     m_title = new JTextArea("Choose units");
     m_title.setBackground(this.getBackground());
     m_title.setEditable(false);
-    m_title.setColumns(15);
+    //m_title.setColumns(15);
     m_title.setWrapStyleWord(true);
-    this.add(m_title);
+    Insets nullInsets = new Insets(0,0,0,0);
+
+    Dimension buttonSize = new Dimension(80,20);
+
+    m_selectNoneButton = new JButton("None");
+    m_selectNoneButton.setPreferredSize(buttonSize);
+    m_autoSelectButton = new JButton("All");
+    m_autoSelectButton.setPreferredSize(buttonSize);
+
+    add(m_title, new GridBagConstraints(0,0,7 ,1,0,0.5,GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 )  );
+
+
+    m_selectNoneButton.addActionListener
+       (
+       new ActionListener()
+       {
+         public void actionPerformed(ActionEvent e)
+         {
+           selectNone();
+         }
+       }
+     );
+
+
+    m_autoSelectButton.addActionListener
+      (
+      new ActionListener()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          autoSelect();
+        }
+      }
+    );
+
+    int yIndex = 1;
     Iterator iter = m_entries.iterator();
     while(iter.hasNext())
     {
-      addEntry( (ChooserEntry) iter.next());
+      ChooserEntry entry = (ChooserEntry) iter.next();
+      entry.createComponents(this, yIndex);
+      yIndex++;
     }
-    JPanel leftToSelectPanel = new JPanel();
-    leftToSelectPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    leftToSelectPanel.add(m_leftToSelect);
-    add(leftToSelectPanel);
-  }
+
+    add(m_autoSelectButton, new GridBagConstraints(0,yIndex,7 ,1,0,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE,nullInsets, 0,0 )  );
+    yIndex++;
+    add(m_leftToSelect, new GridBagConstraints(0,yIndex,5,2,0,0.5,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ));
 
 
-  private void addEntry(ChooserEntry entry)
-  {
-      Box box = new Box(BoxLayout.X_AXIS);
-
-      box.add(entry);
-      box.add(box.createHorizontalGlue());
-      add(box);
 
   }
+
 
   public Collection getSelected()
   {
@@ -200,6 +238,26 @@ public class UnitChooser extends JPanel
       return selectedUnits;
   }
 
+  private void selectNone()
+  {
+    Iterator iter = m_entries.iterator();
+    while (iter.hasNext())
+    {
+      ChooserEntry entry = (ChooserEntry)iter.next();
+      entry.selectNone();
+    }
+  }
+
+  private void autoSelect()
+  {
+    Iterator iter = m_entries.iterator();
+    while (iter.hasNext())
+    {
+      ChooserEntry entry = (ChooserEntry)iter.next();
+      entry.selectAll();
+    }
+  }
+
   private void addToCollection(Collection addTo, ChooserEntry entry, int quantity, boolean addDependents)
   {
 
@@ -230,7 +288,7 @@ public class UnitChooser extends JPanel
   };
 }
 
-class ChooserEntry extends JPanel
+class ChooserEntry
 {
   private final UnitCategory m_category;
   private ScrollableTextField m_hitText;
@@ -239,46 +297,53 @@ class ChooserEntry extends JPanel
   private final boolean m_hasSecondHit;
 
   private ScrollableTextField m_secondHitText;
-  private ScrollableTextFieldListener m_secondHitTextField;
 
   private JLabel m_secondHitLabel;
   private int m_leftToSelect = 0;
+  private static Insets nullInsets = new Insets(0,0,0,0);
 
 
   ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data, boolean allowTwoHit)
   {
-
     m_hitTextFieldListener = listener;
     m_data = data;
     m_category = category;
     m_hasSecondHit = allowTwoHit && category.isTwoHit() && ! category.getDamaged();
 
-    createComponents(category);
-
   }
 
-  private void createComponents(UnitCategory category)
+  public void createComponents(JPanel panel, int yIndex)
   {
 
-      add(new UnitChooserEntryIcon(false));
+      panel.add(new UnitChooserEntryIcon(false) ,
+                new GridBagConstraints(0,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ) );
+
       if (m_category.getMovement() != -1)
-          add(new JLabel("mvt " + m_category.getMovement()));
+          panel.add(new JLabel("mvt " + m_category.getMovement()),
+                new GridBagConstraints(1,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,4,0,4), 0,0 ) );
 
-       add(new JLabel("x" + m_category.getUnits().size()));
+       panel.add(new JLabel("x" + m_category.getUnits().size()),
+           new GridBagConstraints(2,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ) );
 
-      m_hitText = new ScrollableTextField(0, category.getUnits().size());
+      m_hitText = new ScrollableTextField(0, m_category.getUnits().size());
       m_hitText.addChangeListener(m_hitTextFieldListener);
-      add(m_hitText);
+      panel.add(m_hitText,
+        new GridBagConstraints(3,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,4,0,0), 0,0 ) );
+
 
       if (m_hasSecondHit)
       {
-          add(new UnitChooserEntryIcon(true));
+          panel.add(new UnitChooserEntryIcon(true),
+              new GridBagConstraints(4,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,8,0,0), 0,0 ) );
 
-          m_secondHitLabel = new JLabel("x0 ");
+          m_secondHitLabel = new JLabel("x0");
 
           m_secondHitText = new ScrollableTextField(0, 0);
-          add(m_secondHitLabel);
-          add(m_secondHitText);
+          panel.add(m_secondHitLabel,
+                    new GridBagConstraints(5,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,0,0,4), 0,0 ) );
+
+          panel.add(m_secondHitText,
+                    new GridBagConstraints(6,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ) );
 
           m_hitText.addChangeListener(
               new ScrollableTextFieldListener()
@@ -295,11 +360,21 @@ class ChooserEntry extends JPanel
       }
   }
 
+
   public UnitCategory getCategory()
   {
     return m_category;
   }
 
+  public void selectAll()
+  {
+    m_hitText.setValue(m_hitText.getMax());
+  }
+
+  public void selectNone()
+  {
+    m_hitText.setValue(0);
+  }
 
   public void setLeftToSelect(int leftToSelect)
   {

@@ -74,13 +74,18 @@ public class MapUnitsDrawer
         s_threadPool.waitForAll();
     }
 
+    Object getLock()
+    {
+      return m_lock;
+    }
+
     public  void queueUpdate(Collection  territories)
     {
         synchronized(m_lock)
         {
             m_waitingToBeUpdated.addAll(territories);
-            queueUpdate();
         }
+        queueUpdate();
     }
 
     /**
@@ -138,6 +143,9 @@ public class MapUnitsDrawer
 
     private void performUpdate()
     {
+        synchronized(m_lock)
+        {
+
 
             if (m_waitingToBeUpdated.isEmpty())
                 return;
@@ -149,6 +157,7 @@ public class MapUnitsDrawer
                Territory territory = (Territory)dependencyIter.next();
                addDependentsToQueue(territory);
            }
+
 
             //clear the sea zones first
             //they can overlap with land zones
@@ -177,7 +186,7 @@ public class MapUnitsDrawer
             }
 
             m_waitingToBeUpdated.clear();
-
+        }
 
     }
 
@@ -199,7 +208,7 @@ public class MapUnitsDrawer
 
       Iterator placementPoints = TerritoryData.getInstance().getPlacementPoints(territory).iterator();
       if (placementPoints == null || !placementPoints.hasNext())
-          throw new IllegalStateException("No where to palce units");
+          throw new IllegalStateException("No where to place units");
 
       Point lastPlace = null;
 
@@ -235,7 +244,7 @@ public class MapUnitsDrawer
 
           //check to see if we are drawing on another territory
           tempRectanlge.setFrame(place.x, place.y, UnitIconImageFactory.UNIT_ICON_HEIGHT, UnitIconImageFactory.UNIT_ICON_WIDTH);
-          Collection intersects = TerritoryData.getInstance().intersectsOrIsContainedIn(tempRectanlge);
+          Collection intersects = TerritoryData.getInstance().territoriesThatOverlap(tempRectanlge);
           if (!intersects.isEmpty())
               dependencies.addAll(intersects);
       }
@@ -247,6 +256,8 @@ public class MapUnitsDrawer
           m_updateDependencies.remove(territory);
       else
           m_updateDependencies.put(territory, dependencies);
+
+
   }
 
   private void drawUnitOnSmallScreen(PlayerID player, Point place)
@@ -260,8 +271,8 @@ public class MapUnitsDrawer
       smallOffscreen.setColor(TerritoryImageFactory.getInstance().
                               getPlayerColour(player).darker());
 
-        Ellipse2D oval = new Ellipse2D.Double(place.x * smallLargeRatio - 3,
-                                         place.y * smallLargeRatio - 3,
+        Ellipse2D oval = new Ellipse2D.Double(place.x * smallLargeRatio ,
+                                         place.y * smallLargeRatio ,
                                          4,
                                          4);
 
@@ -270,15 +281,16 @@ public class MapUnitsDrawer
 
     class QueueUpdate implements Runnable
     {
+        private Object thread_lock = new Object();
         public void run()
         {
-            synchronized (m_lock)
+            synchronized (thread_lock)
             {
                 try
                 {
                     //hopefull we can merge changes together
                     //wait and give other changes a chace to happen
-                    m_lock.wait(50);
+                    thread_lock.wait(50);
                 }
                 catch (InterruptedException ex)
                 { //not a big deal
@@ -289,31 +301,19 @@ public class MapUnitsDrawer
                 performUpdate();
             }
 
-            try
+            //dont do invoke and wait since we may be blocking the event queue
+            //in waitForUpdate()
+            SwingUtilities.invokeLater(
+                new Runnable()
             {
-                SwingUtilities.invokeAndWait(
-                    new Runnable()
+                public void run()
                 {
-                    public void run()
-                    {
-                        //finally, redraw the screen
-                        m_mapPanel.repaint();
-                        m_smallView.repaint();
-                    }
+                    //finally, redraw the screen
+                    m_mapPanel.repaint();
+                    m_smallView.repaint();
                 }
-                );
             }
-            catch (InvocationTargetException ex1)
-            {
-                ex1.printStackTrace();
-            }
-            catch (InterruptedException ex1)
-            {
-                ex1.printStackTrace();
-            }
-
+            );
         }
     };
-
-
 }

@@ -34,7 +34,7 @@ import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.PlayerBridge;
 import games.strategy.engine.message.*;
-import games.strategy.engine.transcript.*;
+
 import games.strategy.engine.data.properties.PropertiesUI;
 
 import games.strategy.ui.*;
@@ -47,6 +47,8 @@ import games.strategy.triplea.image.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.delegate.*;
+import games.strategy.engine.history.*;
+import games.strategy.triplea.ui.history.*;
 
 /**
  *
@@ -66,6 +68,15 @@ public class TripleAFrame extends JFrame
   private ActionButtons m_actionButtons;
   //a set of TripleAPlayers
   private Set m_localPlayers;
+  private JPanel m_gameMainPanel = new JPanel();
+  private JPanel m_rightHandSidePanel = new JPanel();
+  private JTabbedPane m_tabsPanel = new JTabbedPane();
+  private StatPanel m_statsPanel;
+  private TerritoryDetailPanel m_details;
+  private JPanel m_historyPanel = new JPanel();
+  private JPanel m_gameSouthPanel;
+  private HistoryPanel m_historyTree ;
+
 
   /** Creates new TripleAFrame */
   public TripleAFrame(IGame game, Set players) throws IOException
@@ -82,7 +93,6 @@ public class TripleAFrame extends JFrame
     m_data = game.getData();
     m_localPlayers = players;
 
-    game.getTranscript().addTranscriptListener(m_transcriptListener);
     game.addGameStepListener(m_stepListener);
 
     this.addWindowListener(WINDOW_LISTENER);
@@ -113,53 +123,57 @@ public class TripleAFrame extends JFrame
     //link the small and large images
     new ImageScrollControl(m_mapPanel, m_smallView);
 
-    this.getContentPane().setLayout(new BorderLayout());
 
-    JPanel southPanel = new JPanel();
-    southPanel.setLayout(new BorderLayout());
-    southPanel.add(m_message, BorderLayout.CENTER);
+    m_gameMainPanel.setLayout(new BorderLayout());
+
+    this.getContentPane().setLayout(new BorderLayout());
+    this.getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
+
+    m_gameSouthPanel = new JPanel();
+    m_gameSouthPanel.setLayout(new BorderLayout());
+    m_gameSouthPanel.add(m_message, BorderLayout.CENTER);
     m_message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    southPanel.add(m_step, BorderLayout.EAST);
-    southPanel.add(new MemoryMonitorLabel(), BorderLayout.WEST);
+    m_gameSouthPanel.add(m_step, BorderLayout.EAST);
     m_step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
 
-    this.getContentPane().add(southPanel, BorderLayout.SOUTH);
+    m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
 
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BorderLayout());
+    JPanel gameCenterPanel = new JPanel();
+    gameCenterPanel.setLayout(new BorderLayout());
 
     JPanel mapBorderPanel = new JPanel();
     mapBorderPanel.setLayout(new BorderLayout());
     mapBorderPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     mapBorderPanel.add(m_mapPanel, BorderLayout.CENTER);
 
-    mainPanel.add(mapBorderPanel, BorderLayout.CENTER);
+    gameCenterPanel.add(mapBorderPanel, BorderLayout.CENTER);
 
-    JPanel rightHandSide = new JPanel();
-    rightHandSide.setLayout(new BorderLayout());
-    rightHandSide.add(m_smallView, BorderLayout.NORTH);
 
-    JTabbedPane tabs = new JTabbedPane();
-    tabs.setBorder(null);
-    rightHandSide.add(tabs, BorderLayout.CENTER);
+    m_rightHandSidePanel.setLayout(new BorderLayout());
+    m_rightHandSidePanel.add(m_smallView, BorderLayout.NORTH);
+
+    m_tabsPanel.setBorder(null);
+    m_rightHandSidePanel.add(m_tabsPanel, BorderLayout.CENTER);
 
     m_actionButtons = new ActionButtons(m_data, m_mapPanel, this);
-    tabs.addTab( "Actions", m_actionButtons);
+    m_tabsPanel.addTab( "Actions", m_actionButtons);
     m_actionButtons.setBorder(null);
 
-    TerritoryDetailPanel details = new TerritoryDetailPanel(m_mapPanel, m_data);
-    tabs.addTab("Territory", details);
+    m_statsPanel = new StatPanel(m_data);
+    m_tabsPanel.addTab("Stats", m_statsPanel);
 
-    StatPanel stats = new StatPanel(m_data);
-    tabs.addTab("Stats", stats);
+    m_details = new TerritoryDetailPanel(m_mapPanel, m_data);
+    m_tabsPanel.addTab("Territory", m_details);
 
-    rightHandSide.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize().getHeight()));
-    mainPanel.add(rightHandSide, BorderLayout.EAST);
+    m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize().getHeight()));
+    gameCenterPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
 
-    this.getContentPane().add(mainPanel, BorderLayout.CENTER);
+    m_gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
     total.done();
 
+    //there are a lot of images that can be gcd right now
+    System.gc();
   }
 
   private void shutdown()
@@ -213,8 +227,6 @@ public class TripleAFrame extends JFrame
     fileMenu.add( menuFileSave );
 
 
-
-
     /* Following change was made for personal convenience */
     JMenuItem menuFileExit = new JMenuItem( new AbstractAction("Exit")
       {
@@ -226,6 +238,14 @@ public class TripleAFrame extends JFrame
     );
     menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
     fileMenu.add( menuFileExit );
+
+    JMenu menuHistory = new JMenu("History");
+    menuHistory.add(m_showGameAction);
+    menuHistory.add(m_showHistoryAction);
+
+    menuBar.add(menuHistory);
+
+
 
 
     if(!m_game.getData().getProperties().getEditableProperties().isEmpty())
@@ -244,6 +264,8 @@ public class TripleAFrame extends JFrame
       optionsMenu.add(optionsAction);
       menuBar.add(optionsMenu);
     }
+
+
 
     JMenu helpMenu = new JMenu("Help");
     menuBar.add(helpMenu);
@@ -310,7 +332,7 @@ public class TripleAFrame extends JFrame
 
                       JScrollPane scroll = new JScrollPane(editorPane);
 
-                      JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "Notes", JOptionPane.PLAIN_MESSAGE);
+                      JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
                   }
               }
           );
@@ -516,16 +538,7 @@ public class TripleAFrame extends JFrame
     return false;
   }
 
-  private ITranscriptListener m_transcriptListener = new ITranscriptListener()
-  {
-    public void messageRecieved(TranscriptMessage msg)
-    {
-      if(msg.getChannel() == TranscriptMessage.PRIORITY_CHANNEL)
-      {
-        JOptionPane.showMessageDialog(TripleAFrame.this, msg.getMessage(), "Game Over", JOptionPane.INFORMATION_MESSAGE);
-      }
-    }
-  };
+
 
   private  IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
   {
@@ -577,6 +590,122 @@ public class TripleAFrame extends JFrame
         if(player != null)
             m_step.setIcon(new ImageIcon(FlagIconImageFactory.instance().getFlag(player)));
     }
+  };
+
+  public void showHistory()
+  {
+       m_actionButtons.getCurrent().setActive(false);
+      //we want to use a clone of the data, so we can make changes to it
+      GameData clonedGameData = cloneGameData();
+      if(clonedGameData == null)
+          return;
+
+      clonedGameData.getAllianceTracker();
+
+      m_statsPanel.setGameData(clonedGameData);
+      m_details.setGameData(clonedGameData);
+      m_mapPanel.setGameData(clonedGameData);
+
+       HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, m_mapPanel);
+
+      m_tabsPanel.removeAll();
+      m_tabsPanel.add("History", historyDetailPanel);
+      m_tabsPanel.add("Stats", m_statsPanel);
+      m_tabsPanel.add("Territory", m_details);
+
+
+
+      m_historyPanel.removeAll();
+      m_historyPanel.setLayout(new BorderLayout());
+
+
+      JSplitPane split = new JSplitPane();
+      m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel);
+      split.setLeftComponent(m_historyTree);
+      split.setRightComponent(m_mapPanel);
+      split.setDividerLocation(150);
+
+      m_historyPanel.add(split, BorderLayout.CENTER);
+      m_historyPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
+      m_historyPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+
+      getContentPane().removeAll();
+      getContentPane().add(m_historyPanel, BorderLayout.CENTER);
+      validate();
+  }
+
+  /**
+   * Create a deep copy of GameData
+   */
+  private GameData cloneGameData()
+  {
+      try
+      {
+          GameDataManager manager = new GameDataManager();
+          ByteArrayOutputStream sink = new ByteArrayOutputStream(10000);
+          manager.saveGame(sink, m_data);
+          sink.close();
+          ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
+          sink = null;
+          return manager.loadGame(source);
+      }
+      catch (IOException ex)
+      {
+          ex.printStackTrace();
+          return null;
+      }
+  }
+
+  public void showGame()
+  {
+      m_actionButtons.getCurrent().setActive(true);
+      m_historyTree.goToEnd();
+      m_historyTree = null;
+
+      m_statsPanel.setGameData(m_data);
+      m_details.setGameData(m_data);
+      m_mapPanel.setGameData(m_data);
+
+      m_tabsPanel.removeAll();
+      m_tabsPanel.add("Action", m_actionButtons);
+      m_tabsPanel.add("Territory", m_details);
+      m_tabsPanel.add("Stats", m_statsPanel);
+
+      m_gameMainPanel.removeAll();
+      m_gameMainPanel.setLayout(new BorderLayout());
+      m_gameMainPanel.add(m_mapPanel, BorderLayout.CENTER);
+      m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
+      m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+
+      getContentPane().removeAll();
+      getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
+
+      validate();
+  }
+
+  private AbstractAction m_showHistoryAction = new AbstractAction("Show history")
+  {
+      public void actionPerformed(ActionEvent e)
+      {
+          showHistory();
+          setEnabled(false);
+          m_showGameAction.setEnabled(true);
+      };
+  };
+
+  private AbstractAction m_showGameAction = new AbstractAction("Show current game")
+  {
+      {
+          setEnabled(false);
+      }
+
+      public void actionPerformed(ActionEvent e)
+      {
+          showGame();
+          setEnabled(false);
+          m_showHistoryAction.setEnabled(true);
+
+      };
   };
 
 }

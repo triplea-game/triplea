@@ -42,15 +42,29 @@ import games.strategy.triplea.delegate.TechAdvance;
  */
 public class StatPanel extends JPanel
 {
+    StatTableModel m_dataModel;
+    TechTableModel m_techModel;
+
+
+
+  public void setGameData(GameData data)
+  {
+     m_dataModel.setGameData(data);
+     m_techModel.setGameData(data);
+     m_dataModel.gameDataChanged(null);
+     m_techModel.gameDataChanged(null);
+
+  }
+
   /** Creates a new instance of InfoPanel */
   public StatPanel(GameData data)
   {
     setLayout(new GridLayout(2, 1));
 
-    StatTableModel dataModel = new StatTableModel(data);
-    TechTableModel techModel = new TechTableModel(data);
+    m_dataModel = new StatTableModel(data);
+    m_techModel = new TechTableModel(data);
 
-    JTable table = new JTable(dataModel);
+    JTable table = new JTable(m_dataModel);
     // Strangely, this is enabled by default
     table.getTableHeader().setReorderingAllowed(false);
 
@@ -58,7 +72,7 @@ public class StatPanel extends JPanel
     // add(scroll, BorderLayout.NORTH);
     add(scroll);
 
-    table = new JTable(techModel);
+    table = new JTable(m_techModel);
     // Strangely, this is enabled by default
     table.getTableHeader().setReorderingAllowed(false);
 
@@ -73,8 +87,6 @@ public class StatPanel extends JPanel
     // add(scroll, BorderLayout.SOUTH);
     add(scroll);
 
-    data.addDataChangeListener(dataModel);
-    data.addDataChangeListener(techModel);
   }
 
   /*
@@ -99,6 +111,7 @@ public class StatPanel extends JPanel
     public StatTableModel(GameData data)
     {
       m_data = data;
+      m_data.addDataChangeListener(this);
 
       initRowList();
       this.data = new Object[rowList.length][colList.length];
@@ -149,9 +162,10 @@ public class StatPanel extends JPanel
       return rVal;
     }
 
-    public void gameDataChanged()
+    public void gameDataChanged(Change aChange)
     {
       isDirty = true;
+      repaint();
     }
 
     public void updateAlliances()
@@ -279,6 +293,15 @@ public class StatPanel extends JPanel
     {
       return rowList.length;
     }
+
+    public void setGameData(GameData data)
+    {
+        m_data.removeDataChangeListener(this);
+        m_data = data;
+        m_data.addDataChangeListener(this);
+        isDirty = true;
+    }
+
   }
 
   class TechTableModel extends AbstractTableModel implements
@@ -301,6 +324,7 @@ public class StatPanel extends JPanel
     public TechTableModel(GameData gdata)
     {
       m_data = gdata;
+      m_data.addDataChangeListener(this);
 
       initColList();
 
@@ -324,9 +348,11 @@ public class StatPanel extends JPanel
         row++;
       }
 
+      clearAdvances();
+    }
 
-
-
+    private void clearAdvances()
+    {
       /* Initialize the table with the tech names */
       for (int i = 0; i < data[0].length; i++)
       {
@@ -351,6 +377,7 @@ public class StatPanel extends JPanel
 
     public void update()
     {
+      clearAdvances();
       Iterator playerIter = m_data.getPlayerList().getPlayers().iterator();
       Map advanceProperty = (Map) m_data.getProperties().get(Constants.
           TECH_PROPERTY);
@@ -415,10 +442,17 @@ public class StatPanel extends JPanel
       return data[0].length;
     }
 
-    public void gameDataChanged()
+    public void gameDataChanged(Change aChange)
     {
       isDirty = true;
     }
 
+    public void setGameData(GameData data)
+    {
+        m_data.removeDataChangeListener(this);
+        m_data = data;
+        m_data.addDataChangeListener(this);
+        isDirty = true;
+    }
   }
 }

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.delegate.DiceRoll;
+import java.util.*;
 
 /**
  * <p>Title: </p>
@@ -29,6 +30,8 @@ public class CasualtyNotificationMessage extends BattleMessage
     super(step);
     m_killed = killed;
     m_damaged = damaged;
+    if(m_damaged == null)
+        m_damaged = Collections.EMPTY_LIST;
     m_player = player;
     m_dependents = dependents;
     m_dice = dice;

@@ -33,6 +33,7 @@ import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.triplea.delegate.*;
+import games.strategy.triplea.util.*;
 
 
 /**
@@ -45,7 +46,7 @@ public class PlacePanel extends ActionPanel
 
   private JLabel actionLabel = new JLabel();
   private PlaceMessage m_placeMessage;
-  private UnitPanel m_unitsToPlace = new UnitPanel();
+  private SimpleUnitPanel m_unitsToPlace = new SimpleUnitPanel();
   private PlayerBridge m_bridge;
 
   /** Creates new PlacePanel */
@@ -67,7 +68,7 @@ public class PlacePanel extends ActionPanel
 
     add(new JLabel("Units left to place:"));
     add(m_unitsToPlace);
-    m_unitsToPlace.setUnits(id, getData());
+    updateUnits();
 
   }
 
@@ -113,7 +114,7 @@ public class PlacePanel extends ActionPanel
     {
        m_bridge.sendMessage(new UndoPlaceMessage());
        refreshUndoButton();
-       m_unitsToPlace.setUnits(getCurrentPlayer(), getData());
+       updateUnits();
        validate();
     }
   };
@@ -141,6 +142,9 @@ public class PlacePanel extends ActionPanel
   {
     public void territorySelected(Territory territory, MouseEvent e)
     {
+      if(!getActive())
+        return;
+
       //not our territory
       if(!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer()))
           return;
@@ -163,44 +167,27 @@ public class PlacePanel extends ActionPanel
         Collection choosen = chooser.getSelected();
         PlaceMessage message = new PlaceMessage(choosen, territory);
         m_placeMessage = message;
-        m_unitsToPlace.setUnits(getCurrentPlayer(), getData());
+        updateUnits();
         synchronized(getLock())
         {
           getLock().notify();
         }
       }
     }
+
   };
+
+  private void updateUnits()
+  {
+    Collection unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
+    m_unitsToPlace.setUnitsFromCategories(unitCategories, getData());
+  }
 
   public String toString()
   {
     return "PlacePanel";
   }
 
-
-
-}
-
-
-class UnitPanel extends JPanel
-{
-
-  public void setUnits(PlayerID player, GameData data)
-  {
-    removeAll();
-    setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-
-    Iterator iter = player.getUnits().getUnitsByType().keySet().iterator();
-    while(iter.hasNext())
-    {
-      JLabel label = new JLabel();
-      label.setHorizontalTextPosition(JLabel.RIGHT);
-      UnitType unit = (UnitType) iter.next();
-      label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player, data, false));
-      label.setText(" x " +  player.getUnits().getUnitCount(unit));
-      add(label);
-    }
-  }
 
 
 }

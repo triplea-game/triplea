@@ -41,6 +41,7 @@ public abstract class ActionPanel extends JPanel
 	private PlayerID m_currentPlayer;
 	private MapPanel m_map;
 	private final Object m_lock = new Object();
+  private boolean m_active;
 
 
   /** Creates new ActionPanel */
@@ -60,6 +61,7 @@ public abstract class ActionPanel extends JPanel
 	public void display(PlayerID player)
 	{
 		m_currentPlayer = player;
+    setActive(true);
 	}
 
 	protected PlayerID getCurrentPlayer()
@@ -80,6 +82,22 @@ public abstract class ActionPanel extends JPanel
 	{
 		return m_lock;
 	}
+
+
+
+  /**
+   * Called when the history panel shows
+   * used to disable the panel temporarily.
+   */
+  public void setActive(boolean aBool)
+  {
+    m_active = aBool;
+  }
+
+  public boolean getActive()
+  {
+    return m_active;
+  }
 
 	/**
 	 * Refreshes the action panel.  Should be run within the swing event queue.

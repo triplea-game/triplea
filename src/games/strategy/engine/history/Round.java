@@ -12,40 +12,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package games.strategy.engine.framework.message;
 
-import java.io.*;
-import java.util.zip.*;
+package games.strategy.engine.history;
 
-/*
- * DonePlayerSelectionMessage.java
- *
- *
- * Created on February 1, 2002, 4:15 PM
- */
+import javax.swing.tree.DefaultMutableTreeNode;
 
-
-/**
- * Sent by the server when all the players have been selected.
- *
- * @author  Sean Bridges
- */
-public class DonePlayerSelectionMessage implements java.io.Serializable
+public class Round extends IndexedHistoryNode
 {
+    private final int m_RoundNo;
 
-  private byte[] m_gameData;
+    Round(int round, int changeStartIndex)
+    {
+        super("Round :" + round, changeStartIndex, true);
+        m_RoundNo = round;
+    }
 
-  /**
-   * Creates a new instance of DonePlayerSelectionMessage
-   */
-  public DonePlayerSelectionMessage(byte[] gameData)
-  {
-    m_gameData = gameData;
-  }
-
-  public InputStream getGameData() throws IOException
-  {
-    return new ByteArrayInputStream(m_gameData);
-  }
+     public int getRoundNo()
+     {
+         return m_RoundNo;
+     }
 
 }

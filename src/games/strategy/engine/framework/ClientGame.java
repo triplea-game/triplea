@@ -29,7 +29,8 @@ import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
 import games.strategy.util.ListenerList;
-import games.strategy.engine.transcript.*;
+
+import games.strategy.engine.history.*;
 
 /**
  *
@@ -38,15 +39,15 @@ import games.strategy.engine.transcript.*;
 public class ClientGame implements IGame
 {
   private ListenerList m_gameStepListeners = new ListenerList();
-  private GameData m_data;
-  private IMessenger m_messenger;
-  private IMessageManager m_messageManager;
-  private ChangePerformer m_changePerformer;
-  private INode m_serverNode;
+  private final GameData m_data;
+  private final IMessenger m_messenger;
+  private final IMessageManager m_messageManager;
+  private final ChangePerformer m_changePerformer;
+  private final INode m_serverNode;
   //maps PlayerID->GamePlayer
   private Map m_gamePlayers = new HashMap();
-  private Transcript m_transcript;
 
+  private int m_currentRound = -1;
 
   public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, INode server)
   {
@@ -55,7 +56,7 @@ public class ClientGame implements IGame
     m_messenger = messenger;
     m_messenger.addMessageListener(m_messageListener);
     m_messageManager = new MessageManager(m_messenger);
-    m_transcript = new Transcript(m_messenger);
+
 
     Iterator iter = gamePlayers.iterator();
     while(iter.hasNext())
@@ -105,6 +106,7 @@ public class ClientGame implements IGame
 
   private void notifyGameStepChanged(String stepName, String delegateName, PlayerID id, int round)
   {
+
     Iterator iter = m_gameStepListeners.iterator();
     while(iter.hasNext())
     {
@@ -118,10 +120,6 @@ public class ClientGame implements IGame
     throw new UnsupportedOperationException();
   }
 
-  public Transcript getTranscript()
-  {
-    return m_transcript;
-  }
 
   private IMessageListener m_messageListener = new IMessageListener()
   {
@@ -130,12 +128,22 @@ public class ClientGame implements IGame
       if(msg instanceof StepChangedMessage)
       {
         StepChangedMessage stepChange = (StepChangedMessage) msg;
+
+        if(m_currentRound != stepChange.getRound())
+        {
+            m_currentRound = stepChange.getRound();
+            m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
+        }
+        m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer());
+
         notifyGameStepChanged(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getRound());
       }
       else if(msg instanceof ChangeMessage)
       {
         ChangeMessage changeMessage = (ChangeMessage) msg;
+        m_data.getHistory().getHistoryWriter().addChange(changeMessage.getChange());
         m_changePerformer.perform(changeMessage.getChange());
+
       }
       else if(msg instanceof PlayerStartStepMessage)
       {
@@ -149,6 +157,10 @@ public class ClientGame implements IGame
 
         PlayerStepEndedMessage response = new PlayerStepEndedMessage(playerStart.getStepName());
         m_messenger.send(response, m_serverNode);
+      }
+      else if(msg instanceof RemoteHistoryMessage)
+      {
+          ((RemoteHistoryMessage) msg).perform(m_data.getHistory().getHistoryWriter());
       }
     }
   };

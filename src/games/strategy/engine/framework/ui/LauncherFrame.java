@@ -161,7 +161,7 @@ public class LauncherFrame extends JFrame
     final ServerGame serverGame = new ServerGame(m_gameData, playerSet,(IServerMessenger) m_messenger, remotePlayers);
 
 
-    m_chat.getChat().showTranscript(serverGame.getTranscript());
+
 
     m_gameData.getGameLoader().startGame(serverGame, playerSet);
 
@@ -188,7 +188,6 @@ public class LauncherFrame extends JFrame
 
     ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger, ((ClientMessenger) m_messenger).getServerNode());
 
-    m_chat.getChat().showTranscript(clientGame.getTranscript());
 
     m_gameData.getGameLoader().startGame(clientGame, playerSet);
 

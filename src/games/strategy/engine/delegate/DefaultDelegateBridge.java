@@ -12,53 +12,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * DefaultDelegateBridge.java
- *
- * Created on October 27, 2001, 6:58 PM
- */
-
 package games.strategy.engine.delegate;
 
-import java.util.*;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.message.*;
-import games.strategy.engine.transcript.Transcript;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.message.Message;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.history.*;
+import games.strategy.engine.random.*;
 
 /**
  *
  * Default implementation of DelegateBridge
  *
  * @author  Sean Bridges
- * @version 1.0
  */
 public class DefaultDelegateBridge implements DelegateBridge
 {
 
   private final GameStep m_step;
   private PlayerID m_player;
-  private IGame m_game;
+  private final IGame m_game;
+  private final DelegateHistoryWriter m_historyWriter;
 
-  //the two players who involved in rolling the dice
-  //dice are rolled securly between these two
-  final private PlayerID m_diceRollerPlayer1;
-  final private PlayerID m_diceRollerPlayer2;
+  private IRandomSource m_randomSource = new PlainRandomSource();
+
 
   /** Creates new DefaultDelegateBridge */
-  public DefaultDelegateBridge(GameData data, GameStep step, IGame game, PlayerID dicePlayer1, PlayerID dicePlayer2)
+  public DefaultDelegateBridge(GameData data, GameStep step, IGame game, DelegateHistoryWriter historyWriter)
   {
     m_step = step;
     m_game = game;
     m_player = m_step.getPlayerID();
+    m_historyWriter = historyWriter;
 
-    m_diceRollerPlayer1= dicePlayer1;
-    m_diceRollerPlayer2 = dicePlayer2;
   }
 
   public PlayerID getPlayerID()
@@ -66,34 +56,9 @@ public class DefaultDelegateBridge implements DelegateBridge
     return m_player;
   }
 
-
-  /**
-   * Both getRandom and getRandomArray use this method to prepare both
-   * players to generate an integer or an array
-   */
-  private void startRandomGen(int max)
+  public void setRandomSource(IRandomSource randomSource)
   {
-    Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_TRIPLET,
-                                          new Integer(max));
-
-    // Send maximum value, request triplet
-    msg = sendMessage(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
-
-    // send triplet, request triplet
-    ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_TRIPLET;
-    msg = sendMessage(msg, (m_diceRollerPlayer2.getName() + "RandomDest"));
-
-    // send triplet, request key
-    ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_KEY;
-    msg = sendMessage(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
-
-    // send key, request key
-    ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_KEY;
-    msg = sendMessage(msg, (m_diceRollerPlayer2.getName() + "RandomDest"));
-
-    // send key, request nothing
-    ((RandomNumberMessage)msg).m_request = RandomNumberMessage.NO_REQUEST;
-    sendMessage(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
+    m_randomSource = randomSource;
   }
 
   /**
@@ -102,14 +67,7 @@ public class DefaultDelegateBridge implements DelegateBridge
    */
   public int getRandom(int max, String annotation)
   {
-    // Start the seeding operation and get the key
-    startRandomGen(max);
-
-    Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_RANDOM, null);
-
-    msg = sendMessage(msg, m_diceRollerPlayer2.getName() + "RandomDest");
-
-    return ((Integer)((RandomNumberMessage)msg).m_obj).intValue();
+    return m_randomSource.getRandom(max, annotation);
   }
 
   /**
@@ -117,15 +75,7 @@ public class DefaultDelegateBridge implements DelegateBridge
    */
   public int[] getRandom(int max, int count, String annotation)
   {
-    // Start the seeding operation and get the key
-    startRandomGen(max);
-
-    Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_RANDOM,
-                                          new Integer(count));
-
-    msg = sendMessage(msg, RandomDestination.getRandomDestination(m_diceRollerPlayer2.getName()));
-
-    return (int[])((RandomNumberMessage)msg).m_obj;
+    return m_randomSource.getRandom(max, count, annotation);
   }
 
 
@@ -171,10 +121,6 @@ public class DefaultDelegateBridge implements DelegateBridge
     return m_step.getName();
   }
 
-  public Transcript getTranscript()
-  {
-    return m_game.getTranscript();
-  }
 
   public void sendMessageNoResponse(Message message)
   {
@@ -184,5 +130,10 @@ public class DefaultDelegateBridge implements DelegateBridge
   public void sendMessageNoResponse(Message message, PlayerID player)
   {
     m_game.getMessageManager().sendNoResponse(message, player.getName());
+  }
+
+  public DelegateHistoryWriter getHistoryWriter()
+  {
+      return m_historyWriter;
   }
 }

@@ -109,7 +109,7 @@ public class ImageScrollerLargeView extends JComponent
   public ImageScrollerLargeView(Image image)
   {
     super();
-    this.setDoubleBuffered(false);
+
     try
     {
       Util.ensureImageLoaded(image, this);

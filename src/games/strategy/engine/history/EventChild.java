@@ -12,40 +12,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package games.strategy.engine.framework.message;
-
-import java.io.*;
-import java.util.zip.*;
-
-/*
- * DonePlayerSelectionMessage.java
- *
- *
- * Created on February 1, 2002, 4:15 PM
- */
+package games.strategy.engine.history;
 
 
-/**
- * Sent by the server when all the players have been selected.
- *
- * @author  Sean Bridges
- */
-public class DonePlayerSelectionMessage implements java.io.Serializable
+public class EventChild extends HistoryNode implements Renderable
 {
+  public final String m_text;
+  public final Object m_renderingData;
 
-  private byte[] m_gameData;
-
-  /**
-   * Creates a new instance of DonePlayerSelectionMessage
-   */
-  public DonePlayerSelectionMessage(byte[] gameData)
+  public EventChild(String text, Object renderingData)
   {
-    m_gameData = gameData;
+    super(text, true);
+    m_text = text;
+    m_renderingData = renderingData;
   }
 
-  public InputStream getGameData() throws IOException
+  public Object getRenderingData()
   {
-    return new ByteArrayInputStream(m_gameData);
+    return m_renderingData;
   }
 
 }

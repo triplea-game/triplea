@@ -12,40 +12,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package games.strategy.engine.framework.message;
 
-import java.io.*;
-import java.util.zip.*;
+package games.strategy.engine.history;
 
-/*
- * DonePlayerSelectionMessage.java
- *
- *
- * Created on February 1, 2002, 4:15 PM
- */
+import javax.swing.tree.DefaultMutableTreeNode;
+import games.strategy.engine.data.*;
 
-
-/**
- * Sent by the server when all the players have been selected.
- *
- * @author  Sean Bridges
- */
-public class DonePlayerSelectionMessage implements java.io.Serializable
+public class Step extends IndexedHistoryNode
 {
+    private String m_stepName;
+    private String m_delegateName;
+    private PlayerID m_player;
 
-  private byte[] m_gameData;
+    /** Creates a new instance of StepChangedMessage */
 
-  /**
-   * Creates a new instance of DonePlayerSelectionMessage
-   */
-  public DonePlayerSelectionMessage(byte[] gameData)
+  /** Creates a new instance of StepChangedMessage */
+  Step(String stepName, String delegateName, PlayerID player, int changeStartIndex)
   {
-    m_gameData = gameData;
+    super(stepName, changeStartIndex, true);
+
+    m_delegateName = delegateName;
+    m_player = player;
+    m_stepName = stepName;
   }
 
-  public InputStream getGameData() throws IOException
+  public PlayerID getPlayerID()
   {
-    return new ByteArrayInputStream(m_gameData);
+    return m_player;
   }
 
 }

@@ -25,6 +25,7 @@ import java.util.*;
 import games.strategy.engine.data.events.*;
 import games.strategy.engine.framework.*;
 import games.strategy.util.*;
+import games.strategy.engine.history.*;
 
 /**
  *
@@ -52,6 +53,7 @@ public class GameData implements java.io.Serializable
     private UnitsList m_unitsList = new UnitsList();
 
 	private IGameLoader m_loader;
+    private History m_gameHistory = new History(this);
 
 	/** Creates new GameData */
 	public GameData()
@@ -163,13 +165,13 @@ public class GameData implements java.io.Serializable
 		}
 	}
 
-	protected void notifyGameDataChanged()
+	protected void notifyGameDataChanged(Change aChange)
 	{
 		Iterator iter = m_dataChangeListeners.iterator();
 		while(iter.hasNext())
 		{
 			GameDataChangeListener listener = (GameDataChangeListener) iter.next();
-			listener.gameDataChanged();
+			listener.gameDataChanged(aChange);
 		}
 	}
 
@@ -203,6 +205,10 @@ public class GameData implements java.io.Serializable
 		return m_gameName;
 	}
 
+    public History getHistory()
+    {
+        return m_gameHistory;
+    }
 
 	public void postSerialize()
 	{

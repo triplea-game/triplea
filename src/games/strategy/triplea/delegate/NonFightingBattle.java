@@ -143,7 +143,7 @@ public class NonFightingBattle implements Battle
 			bridge.addChange(change);
 
 			String transcriptText = Formatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
-			bridge.getTranscript().write(transcriptText);
+            bridge.getHistoryWriter().startEvent(transcriptText);
 		}
 	}
 

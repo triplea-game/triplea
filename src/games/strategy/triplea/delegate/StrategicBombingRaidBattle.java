@@ -81,6 +81,8 @@ public class StrategicBombingRaidBattle implements Battle
 
   public void fight(DelegateBridge bridge)
   {
+    bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite);
+
     //sort according to least movement
     MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
     moveDelegate.sortAccordingToMovementLeft(m_units, false);
@@ -123,6 +125,8 @@ public class StrategicBombingRaidBattle implements Battle
 
     m_tracker.removeBattle(this);
 
+    bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + cost + Formatter.pluralize("ipc", cost));
+
     BattleEndMessage battleEnd = new BattleEndMessage("Bombing raid cost " + cost);
     bridge.sendMessage(battleEnd, m_attacker);
     bridge.sendMessage(battleEnd, m_defender);
@@ -155,13 +159,14 @@ public class StrategicBombingRaidBattle implements Battle
     bridge.sendMessage(notify, m_attacker);
     bridge.sendMessage(notify, m_defender);
 
+    bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
+
+
 
     m_units.removeAll(casualties);
     Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
     bridge.addChange(remove);
 
-    String transcriptText = Formatter.unitsToText(casualties) + " lost in bombing raid in " + m_battleSite.getName();
-    bridge.getTranscript().write(transcriptText);
   }
 
   /**
@@ -189,11 +194,12 @@ public class StrategicBombingRaidBattle implements Battle
     Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
     int have = m_defender.getResources().getQuantity(ipcs);
     int toRemove = Math.min(cost, have);
+
+
+
     Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
     bridge.addChange(change);
 
-    String transcriptText = "Bombing raid by " + m_attacker.getName() + " costs " + cost + " ipcs for " +  m_defender.getName();
-    bridge.getTranscript().write(transcriptText);
     return cost;
   }
 

@@ -31,8 +31,9 @@ import games.strategy.triplea.formatter.*;
 public class DiceRoll implements java.io.Serializable
 {
 
-  private int[][] m_rolls;
-  private int m_hits;
+  private final int[][] m_rolls;
+  private final int m_hits;
+  private final boolean m_hitOnlyIfEquals;
 
 
   public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge, Territory location)
@@ -51,7 +52,10 @@ public class DiceRoll implements java.io.Serializable
     {
       dice[i] = new int[0];
     }
-    return new DiceRoll(dice, hits);
+
+    DiceRoll roll = new DiceRoll(dice, hits);
+    bridge.getHistoryWriter().addChildToEvent("AA guns fire in" + location + " :" + Formatter.asDice(random), roll);
+    return roll;
   }
 
 
@@ -60,7 +64,7 @@ public class DiceRoll implements java.io.Serializable
                                   PlayerID player,
                                   DelegateBridge bridge)
   {
-    String annotation = player.getName() +  " rolling dice for units " + Formatter.unitsToTextNoOwner(units);
+    String annotation = player.getName() +  " rolling dice for " + Formatter.unitsToTextNoOwner(units);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
@@ -108,12 +112,34 @@ public class DiceRoll implements java.io.Serializable
       sortedDiceInt[i] = values;
     }
 
-    return new DiceRoll(sortedDiceInt, hitCount);
+   DiceRoll rVal = new  DiceRoll(sortedDiceInt, hitCount);
+   bridge.getHistoryWriter().addChildToEvent(annotation + " : " + Formatter.asDice(dice), rVal);
+   return rVal;
   }
 
-
-  private DiceRoll(int[][] dice, int hits)
+  /**
+   *
+   * @param dice int[] the dice, 0 based
+   * @param hits int - the number of hits
+   * @param rollAt int - what we roll at, [0,Constants.MAX_DICE]
+   * @param hitOnlyIfEquals boolean - do we get a hit only if we are equals, or do we hit when we are equal or less than
+   * for example a 5 is a hit when rolling at 6 for equal and less than, but is not for equals
+   */
+  public DiceRoll(int[] dice, int hits, int rollAt, boolean hitOnlyIfEquals)
   {
+    m_hitOnlyIfEquals = hitOnlyIfEquals;
+    m_rolls = new int[Constants.MAX_DICE][];
+    for(int i = 0; i < m_rolls.length; i++)
+    {
+      m_rolls[i] = new int[0];
+    }
+    m_rolls[rollAt] = dice;
+    m_hits = hits;
+  }
+
+  public DiceRoll(int[][] dice, int hits)
+  {
+    m_hitOnlyIfEquals = false;
     m_rolls = dice;
     m_hits = hits;
   }
@@ -132,5 +158,11 @@ public class DiceRoll implements java.io.Serializable
     return m_rolls[rollAt -1];
   }
 
+
+
+  public boolean getHitOnlyIfEquals()
+  {
+    return m_hitOnlyIfEquals;
+  }
 
 }

@@ -28,7 +28,8 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
 import games.strategy.net.DummyMessenger;
-import games.strategy.engine.transcript.Transcript;
+
+import games.strategy.engine.history.*;
 
 
 
@@ -145,12 +146,11 @@ public class TestDelegateBridge implements DelegateBridge
     return m_stepName;
   }
 
-  /**
-   * Get the games transcript.
-   */
-  public Transcript getTranscript()
+
+
+  public DelegateHistoryWriter getHistoryWriter()
   {
-    return new Transcript(new DummyMessenger());
+      return null;
   }
 
 }

@@ -30,37 +30,37 @@ import games.strategy.util.*;
  *
  * @author  Sean Bridges
  */
-public class Formatter 
+public class Formatter
 {
 
 	/**
 	 * Some exceptions to the rules.
 	 */
 	private static Map s_plural;
-	static 
+	static
 	{
 		s_plural = new HashMap();
 		s_plural.put("armour", "armour");
 		s_plural.put("infantry", "infantry");
 		s_plural.put("factory", "factories");
 	}
-	
+
 	public static String unitsToTextNoOwner(Collection units)
 	{
 		Iterator iter = units.iterator();
 		IntegerMap map = new IntegerMap();
-		
+
 		while(iter.hasNext())
 		{
 			Unit unit = (Unit) iter.next();
 			map.add(unit.getUnitType(), 1);
 		}
-		
+
 		StringBuffer buf = new StringBuffer();
-		
+
 		iter = map.keySet().iterator();
 		int count = map.keySet().size();
-		
+
 		while(iter.hasNext())
 		{
 			UnitType type = (UnitType) iter.next();
@@ -70,30 +70,30 @@ public class Formatter
 			buf.append( quantity > 1 ? pluralize(type.getName()) : type.getName());
 			count--;
 			if(count > 1)
-				buf.append(" , ");
+				buf.append(", ");
 			if(count == 1)
 				buf.append(" and ");
 		}
 		return buf.toString();
 	}
-	
+
 	public static String unitsToText(Collection units)
 	{
 		Iterator iter = units.iterator();
 		IntegerMap map = new IntegerMap();
-		
+
 		while(iter.hasNext())
 		{
 			Unit unit = (Unit) iter.next();
 			UnitOwner owner = new UnitOwner(unit.getType(), unit.getOwner());
 			map.add(owner, 1);
 		}
-		
+
 		StringBuffer buf = new StringBuffer();
-		
+
 		iter = map.keySet().iterator();
 		int count = map.keySet().size();
-		
+
 		while(iter.hasNext())
 		{
 			UnitOwner owner = (UnitOwner) iter.next();
@@ -111,21 +111,38 @@ public class Formatter
 		}
 		return buf.toString();
 	}
-	
-	
-	
 
-	
+
+
+  public static String pluralize(String in, int quantity)
+  {
+    if(quantity <=1)
+      return in;
+    return pluralize(in);
+  }
+
 	public static String pluralize(String in)
 	{
 		if(s_plural.containsKey(in))
 			return (String) s_plural.get(in);
-		
+
 		return in + "s";
 	}
-	
+
+  public static String asDice(int[] rolls)
+  {
+    StringBuffer buf = new StringBuffer(rolls.length * 2);
+    for(int i = 0; i < rolls.length; i++)
+    {
+      buf.append(rolls[i] + 1);
+      if(i + 1 < rolls.length)
+        buf.append(",");
+    }
+    return buf.toString();
+  }
+
 	/** Creates a new instance of Formatter */
-    private Formatter() 
+    private Formatter()
 	{
     }
 
@@ -153,5 +170,7 @@ class UnitOwner
 	{
 		return type.hashCode() ^ owner.hashCode();
 	}
+
+
 }
 
