@@ -20,6 +20,7 @@
 
 package games.strategy.util;
 
+
 import java.util.*;
 
 /**
@@ -42,6 +43,7 @@ public abstract class Match
 	 * A match that always returns true.
 	 */
 	public static final Match ALWAYS_MATCH = new AlwaysMatch();
+
 	/**
 	 * A match that always returns false.
 	 */
@@ -166,5 +168,4 @@ class AlwaysMatch extends Match
 	{
 		return true;
 	}
-
 }
