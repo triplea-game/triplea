@@ -32,6 +32,7 @@ import games.strategy.triplea.image.UnitIconImageFactory;
 
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.engine.gamePlayer.*;
+import games.strategy.triplea.delegate.*;
 
 
 /**
@@ -140,7 +141,19 @@ public class PlacePanel extends ActionPanel
   {
     public void territorySelected(Territory territory, MouseEvent e)
     {
+      //not our territory
+      if(!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer()))
+          return;
+
       Collection units = getCurrentPlayer().getUnits().getUnits();
+      if(territory.isWater())
+          units = Match.getMatches(units, Matches.UnitIsSea);
+       else
+           units = Match.getMatches(units, Matches.UnitIsNotSea);
+
+       if(units.isEmpty())
+           return;
+
       UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP, getData());
       String messageText = "Place units in " + territory.getName();
       int option = JOptionPane.showOptionDialog( (JFrame) getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
