@@ -25,7 +25,6 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 
 import java.util.*;

@@ -255,8 +255,16 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
                 return;
         } else
         {
+            int minIPCsNeededToBuild = Integer.MAX_VALUE;
+            Iterator prodRules = m_id.getProductionFrontier().getRules().iterator();
+            while(prodRules.hasNext())
+            {
+                ProductionRule rule = (ProductionRule) prodRules.next();
+                minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
+            }
+            
             //can we buy anything
-            if (m_id.getResources().getQuantity(Constants.IPCS) == 0)
+            if (m_id.getResources().getQuantity(Constants.IPCS) < minIPCsNeededToBuild)
                 return;
         }
 

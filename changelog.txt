@@ -22,10 +22,13 @@ Changes for 0.5.3
 
 * Fixed bug [ 1092852 ] bug in 2bysea Version .5.1 (sgb)
 
-* Fixed bug [ 1021352 ] advanced tech prob
+* Fixed bug [ 1021352 ] advanced tech prob (sgb)
 
-* Fixed bug [ 1021350 ] Tech Prompt
+* Fixed bug [ 1021350 ] Tech Prompt (sgb)
 
+* Fixed bug [ 1006050 ] Unable to conquer territories (sgb)
+
+* Fixed bug [ 1021351 ] No Buy Confirmation (sgb)
 
 Changes for 0.5.2
 
