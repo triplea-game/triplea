@@ -53,7 +53,7 @@ public class ScriptedRandomSource implements IRandomSource
         
         for(int i = 0; i < m_numbers.length; i++)
         {
-            m_numbers[i] = Integer.parseInt(tokenizer.nextToken());
+            m_numbers[i] = Integer.parseInt(tokenizer.nextToken()) -1;
         }
     }
     
