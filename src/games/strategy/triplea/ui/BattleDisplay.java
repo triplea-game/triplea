@@ -651,7 +651,14 @@ class DicePanel extends JPanel
     for(int dieIndex = 0; dieIndex < dice.length; dieIndex++)
     {
       int roll = dice[dieIndex] + 1;
-      dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(roll, roll <= rollAt)));
+      //if rolling at 6 we are an aa hit
+      //show red only if we are a six
+      boolean hit;
+      if(rollAt == 6)
+          hit = roll == 6;
+      else
+         hit = roll <= rollAt;
+      dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(roll, hit)));
       dicePanel.add(Box.createHorizontalStrut(2));
     }
     JScrollPane scroll = new JScrollPane(dicePanel);
