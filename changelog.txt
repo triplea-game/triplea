@@ -1,3 +1,15 @@
+Changes for 0.5.3
+
+* Added channel and remote messengers. (sgb)
+
+* Added game vault. (sgb)
+
+* Fixed bug [ 1053071 ] No non-combat movement (sgb)
+
+* Fixed bug where properties werent being updated on client (sgb)
+
+* Fixed bug [ 991810 ] Internet Bid Problem (sgb)
+
 Changes for 0.5.2
 
 * Added option to limit ipcs lost in a territory during one round. This is necessary to implement LHTR ruleset.
