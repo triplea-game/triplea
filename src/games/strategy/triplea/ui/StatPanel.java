@@ -31,6 +31,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameDataChangeListener;
 
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.Constants;
@@ -69,6 +70,10 @@ public class StatPanel extends JPanel
     // Strangely, this is enabled by default
     table.getTableHeader().setReorderingAllowed(false);
 
+    // Set width of country column
+    TableColumn column = table.getColumnModel().getColumn(0);
+    column.setPreferredWidth(175);
+
     JScrollPane scroll = new JScrollPane(table);
     // add(scroll, BorderLayout.NORTH);
     add(scroll);
@@ -81,7 +86,7 @@ public class StatPanel extends JPanel
     // The right way to do this is probably to get a FontMetrics object
     // and measure the pixel width of the longest technology name in the
     // current font.
-    TableColumn column = table.getColumnModel().getColumn(0);
+    column = table.getColumnModel().getColumn(0);
     column.setPreferredWidth(500);
 
     scroll = new JScrollPane(table);
@@ -101,7 +106,7 @@ public class StatPanel extends JPanel
     private GameData m_data;
     /* Column Header Names */
     private String[] colList = new String[]
-        {"Country", "IPCs", "Production", "Units"};
+        {"Country", "IPCs", "Production", "Units", "TUV"};
     /* Row Header Names */
     private String[] rowList;
     /* Underlying data for the table */
@@ -184,6 +189,7 @@ public class StatPanel extends JPanel
         int col1 = 0;
         int col2 = 0;
         int col3 = 0;
+	int col4 = 0;
 
         Iterator playerIDS = m_data.getAllianceTracker().getPlayersInAlliance(
             alliance).iterator();
@@ -194,11 +200,13 @@ public class StatPanel extends JPanel
           col1 += ( (Integer) data[row][1]).intValue();
           col2 += ( (Integer) data[row][2]).intValue();
           col3 += ( (Integer) data[row][3]).intValue();
+          col4 += ( (Integer) data[row][4]).intValue();
         }
 
         data[currentRow][1] = new Integer(col1);
         data[currentRow][2] = new Integer(col2);
         data[currentRow][3] = new Integer(col3);
+        data[currentRow][4] = new Integer(col4);
 
         currentRow++;
       }
@@ -247,20 +255,26 @@ public class StatPanel extends JPanel
         data[row][0] = rowList[row];
         data[row][1] = new Integer(tmpData[row][0]);
         data[row][2] = new Integer(tmpData[row][1]);
-        data[row][3] = new Integer(getUnitsPlaced(id));
+        fillMorePlayerData(data[row], id);
       }
     }
 
-    private int getUnitsPlaced(PlayerID id)
+    // Fill in player data for number of units and total unit value
+    private void fillMorePlayerData(Object[] row, PlayerID id)
     {
-      int placed = 0;
+      int nUnits = 0;
+      int tuv = 0;
+      IntegerMap costs = BattleCalculator.getCosts(id, m_data);
       Iterator territories = m_data.getMap().iterator();
       while (territories.hasNext())
       {
         Territory current = (Territory) territories.next();
-        placed += current.getUnits().getUnitCount(id);
+	UnitCollection units = current.getUnits();
+        nUnits += units.getUnitCount(id);
+	tuv += BattleCalculator.getTUV(units.getMatches(Matches.unitIsOwnedBy(id)), costs);
       }
-      return placed;
+      row[3] = new Integer(nUnits);
+      row[4] = new Integer(tuv);
     }
 
     /*

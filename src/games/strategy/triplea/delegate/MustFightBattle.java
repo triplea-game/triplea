@@ -1331,7 +1331,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if(m_killed.isEmpty())
             return;
         //a handy summary of all the units killed
-        bridge.getHistoryWriter().addChildToEvent("Battle casualty summary:", m_killed);
+	IntegerMap costs = BattleCalculator.getCosts(m_attacker, m_data);
+	int tuvLostAttacker = BattleCalculator.getTUV(m_killed, m_attacker, costs);
+	costs = BattleCalculator.getCosts(m_defender, m_data);
+	int tuvLostDefender = BattleCalculator.getTUV(m_killed, m_defender, costs);
+	int tuvChange = tuvLostDefender - tuvLostAttacker;
+        bridge.getHistoryWriter().addChildToEvent("Battle casualty summary: Battle score (TUV change) for attacker is " + tuvChange, m_killed);
         
     }
     

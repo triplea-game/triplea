@@ -204,6 +204,38 @@ public class BattleCalculator
   }
 
   /**
+   * Return the total unit value
+   * @param units A collection of units
+   * @param costs An integer map of unit types to costs.
+   * @return the total unit value.
+   */
+  public static int getTUV(Collection units, IntegerMap costs)
+  {
+    int tuv = 0;
+    Iterator unitsIter = units.iterator();
+    while (unitsIter.hasNext()) {
+      Unit u = (Unit)unitsIter.next();
+      int unitValue = costs.getInt(u.getType());
+      tuv += unitValue;
+    }
+    return tuv;
+  }
+
+  /**
+   * Return the total unit value for a certain player
+   * @param units A collection of units
+   * @param player The player to calculate the TUV for.
+   * @param costs An integer map of unit types to costs
+   * @return the total unit value.
+   */
+  public static int getTUV(Collection units, PlayerID player, IntegerMap costs)
+  {
+    Collection playerUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
+    return getTUV(playerUnits, costs);
+  }
+
+
+  /**
    * Checks if the given collections target are all of one category as
    * defined by UnitSeperator.categorize and they are not two hit units.
    * @param targets a collection of target units
