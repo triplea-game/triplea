@@ -1,5 +1,13 @@
 Changes for 0.5.1
 
+* Fully implemented Pact Of Steel mod (by Black Elk/Beagle). (Nekro)
+
+* Improved map directory structures and code for triplea concerning TerritoryData class. (NeKro)
+
+* Small iteration fix applied to PolygonGrabber to prevent crash. (Beagle)
+
+* Improve all map utilities so they are user friendly and better to use. (Nekro)
+
 * Fixed bug in 4th edition where air units could define retreat paths (they still can in classic). (Ali Ibrahim)
 
 * Added MersenneTwister Thread Safe (MT199937) Random Number Generator with Permission from Sean Luke. (Nekro)
