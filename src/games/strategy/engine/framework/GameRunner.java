@@ -54,7 +54,7 @@ public class GameRunner
 
   private static void installSecurityProvider()
   {
-    java.security.Security.addProvider( new com.sun.crypto.provider.SunJCE());
+//    java.security.Security.addProvider( new com.sun.crypto.provider.SunJCE());
   }
 
   public static void main(String[] args)
