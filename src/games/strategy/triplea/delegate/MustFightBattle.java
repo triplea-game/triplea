@@ -724,7 +724,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 			Collection transported = getTransportedUnits(units);
 			units.addAll(transported);
 		}
-		bridge.addChange(ChangeFactory.removeUnits(m_territory,units, true));
+		bridge.addChange(ChangeFactory.removeUnits(m_territory,units));
 		removeFromDependents(units, bridge);
 		
 		String transcriptText = Formatter.unitsToText(units) + " lost in " + m_territory.getName();

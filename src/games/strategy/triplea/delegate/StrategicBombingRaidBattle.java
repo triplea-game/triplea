@@ -103,7 +103,7 @@ public class StrategicBombingRaidBattle implements Battle
 		String text = hits + " hits from AA fire";
 		Collection casualties = BattleCalculator.selectCasualties(m_attacker, m_units,hits,bridge, text, m_data);
 		m_units.removeAll(casualties);		
-		Change remove = ChangeFactory.removeUnits(m_battleSite, casualties, true);		
+		Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);		
 		
 		
 		bridge.addChange(remove);

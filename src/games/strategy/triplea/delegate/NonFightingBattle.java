@@ -118,7 +118,7 @@ public class NonFightingBattle implements Battle
 		}
 		if(lost.size() != 0)
 		{
-			Change change = ChangeFactory.removeUnits(m_battleSite, lost, true);
+			Change change = ChangeFactory.removeUnits(m_battleSite, lost);
 			bridge.addChange(change);
 			
 			String transcriptText = Formatter.unitsToText(lost) + " lost in " + m_battleSite.getName();

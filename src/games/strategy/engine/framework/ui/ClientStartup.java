@@ -209,6 +209,8 @@ public class ClientStartup extends JFrame
 	
 	private void checkVersion(PlayerListingMessage msg)
 	{
+
+		System.out.println(msg);	
 		if(!msg.getGameName().equals(m_data.getGameName()) ||
 		   !msg.getGameVersion().equals(m_data.getGameVersion()) ||
 		   !msg.getEngineVersion().equals(EngineVersion.VERSION)
