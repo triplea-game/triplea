@@ -33,53 +33,65 @@ import games.strategy.engine.transcript.Transcript;
  * A class that communicates with the Delegate.
  * DelegateBridge co-ordinates comunication between the Delegate and both the players
  * and the game data.
- * 
+ *
  * The reason for communicating through a DelegateBridge is to achieve network
  * transparancy.
- * 
+ *
  * The delegateBridge allows the Delegate to talk to the player in a safe manner.
  */
-public interface DelegateBridge 
+public interface DelegateBridge
 {
   /**
    * Messages are sent to the current player
    */
   public Message sendMessage(Message message);
-	
+
+  /**
+   * Messages are sent to the current player without waiting for a response.
+   */
+  public void sendMessageNoResponse(Message message);
+
+
   /**
    * Sends a message to the given player.
    */
   public Message sendMessage(Message message, PlayerID player);
-		
+
+  /**
+   * Messages are sent to the given player without waiting for a response.
+   */
+  public void sendMessageNoResponse(Message message, PlayerID player);
+
+
   /**
    * Changing the player has the effect of commiting the current transaction.
    * Player is initialized to the player specified in the xml data.
    */
   public void setPlayerID(PlayerID aPlayer);
   public PlayerID getPlayerID();
-	
+
   /**
    * Returns the current step name
    */
   public String getStepName();
-	
+
   public void addChange(Change aChange);
-	
+
   /**
    * Delegates should not use random data that comes from any other source.
    */
   public int getRandom(int max);
   public int[] getRandom(int max, int count);
-	
+
   /**
    * Delegates should not use random data that comes from any other source
    * and should use these forms since they ensure 2 players are involved
    * in the creation of random data
    */
   public int getRandom(int max, PlayerID player1, PlayerID player2);
-  public int[] getRandomArray(int max, int count, 
+  public int[] getRandomArray(int max, int count,
                               PlayerID player1, PlayerID player2);
-	
+
   /**
    * Get the games transcript.
    */

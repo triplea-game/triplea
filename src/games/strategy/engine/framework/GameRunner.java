@@ -81,8 +81,22 @@ public class GameRunner
 //    java.security.Security.addProvider( new com.sun.crypto.provider.SunJCE());
   }
 
+  private static void checkJavaVersion()
+  {
+    try
+    {
+      java.nio.CharBuffer.class.toString();
+    } catch(NoClassDefFoundError e)
+    {
+      JOptionPane.showMessageDialog(null,  "You need java version 1.4 or greater.\n  Please download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
+      System.exit(-1);
+    }
+  }
+
   public static void main(String[] args)
   {
+
+    checkJavaVersion();
     try
     {
       UIManager.setLookAndFeel(new com.incors.plaf.kunststoff.KunststoffLookAndFeel());

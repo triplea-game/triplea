@@ -28,6 +28,8 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.message.*;
 import games.strategy.engine.transcript.Transcript;
 import games.strategy.engine.framework.*;
+import games.strategy.engine.message.Message;
+import games.strategy.engine.data.PlayerID;
 
 /**
  *
@@ -211,5 +213,15 @@ public class DefaultDelegateBridge implements DelegateBridge
   public Transcript getTranscript()
   {
     return m_game.getTranscript();
+  }
+
+  public void sendMessageNoResponse(Message message)
+  {
+    sendMessageNoResponse(message, getPlayerID());
+  }
+
+  public void sendMessageNoResponse(Message message, PlayerID player)
+  {
+    m_game.getMessageManager().sendNoResponse(message, player.getName());
   }
 }

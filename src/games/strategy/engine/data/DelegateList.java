@@ -63,7 +63,7 @@ public class DelegateList extends GameDataComponent
 
 	private void writeObject(ObjectOutputStream out)
 	{
-
+    System.out.println();
 	}
 
 	private void readObject(ObjectInputStream in)
