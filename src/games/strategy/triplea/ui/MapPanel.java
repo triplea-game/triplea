@@ -105,6 +105,7 @@ public class MapPanel extends ImageScrollerLargeView
         {
             m_routeDescription = null;
             m_mapsUnitDrawer.queueUpdate();
+            return;
         }
         RouteDescription newVal = new RouteDescription(route, start, end);
         if (m_routeDescription != null && m_routeDescription.equals(newVal))

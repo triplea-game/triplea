@@ -111,12 +111,21 @@ public class HistoryPanel extends JPanel
 
   public void goToEnd()
   {
-    HistoryNode last = m_data.getHistory().getLastNode();
-    gotoNode(last);
+    Runnable r = new Runnable()
+    {
+      public void run()
+      {
+          HistoryNode last = m_data.getHistory().getLastNode();
+          gotoNode(last);
 
-    TreePath path = new TreePath(last.getPath());
-    m_tree.expandPath(path);
-    m_tree.setSelectionPath(path);
+          TreePath path = new TreePath(last.getPath());
+          m_tree.expandPath(path);
+          m_tree.setSelectionPath(path);          
+      }
+      
+    };
+    SwingUtilities.invokeLater(r);
+      
   }
 
 }
