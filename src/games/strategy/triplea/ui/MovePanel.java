@@ -52,6 +52,8 @@ public class MovePanel extends ActionPanel
     private List m_forced;
     private boolean m_nonCombat;
     private UndoableMovesPanel m_undableMovesPanel;
+    
+    private Point m_mouseSelectedPoint;
 
     /** Creates new MovePanel */
     public MovePanel(GameData data, MapPanel map)
@@ -410,7 +412,7 @@ public class MovePanel extends ActionPanel
      */
     private void updateRoute(Route route)
     {
-        getMap().setRoute(route);
+        getMap().setRoute(route, m_mouseSelectedPoint);
     }
 
     /**
@@ -482,7 +484,7 @@ public class MovePanel extends ActionPanel
             }
             else
             {
-                leftButtonSelection(territory);
+                leftButtonSelection(territory, me);
             }
         }
 
@@ -504,15 +506,21 @@ public class MovePanel extends ActionPanel
                                  m_firstSelectedTerritory));
         }
 
-        private void leftButtonSelection(Territory territory)
+        private void leftButtonSelection(Territory territory, MouseEvent e)
         {
             if (m_firstSelectedTerritory == null)
             {
+                
                 if (!territory.getUnits().someMatch(Matches.unitIsOwnedBy(
                     getCurrentPlayer())))
                     return;
 
                 m_firstSelectedTerritory = territory;
+                m_mouseSelectedPoint = e.getPoint();
+                m_mouseSelectedPoint.x +=  getMap().getXOffset();
+                m_mouseSelectedPoint.y += getMap().getYOffset();
+                
+                
                 CANCEL_MOVE_ACTION.setEnabled(true);
                 updateRoute(getRoute(m_firstSelectedTerritory,
                                      m_firstSelectedTerritory));

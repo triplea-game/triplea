@@ -49,8 +49,7 @@ public class MapPanel extends ImageScrollerLargeView
     //could be null
     private MapPanelSmallView m_smallView;
 
-    //current route we are displaying, could be null
-    private Route m_route;
+    private RouteDescription m_routeDescription;
 
     private final MapUnitsDrawer m_mapsUnitDrawer;
 
@@ -92,19 +91,27 @@ public class MapPanel extends ImageScrollerLargeView
         super.setTopLeft(p.x - (getWidth() / 2), p.y - (getHeight() / 2));
     }
 
+    public void setRoute(Route route)
+    {
+        setRoute(route, null);
+    }
+    	
     /**
      * Set the route, could be null.
      */
-    public void setRoute(Route route)
+    public void setRoute(Route route, Point start)
     {
-
-        if (m_route != route || (m_route != null && !m_route.equals(route)))
+        if(start != null)
         {
-            m_route = route;
-            //get the territory to update
-            m_mapsUnitDrawer.queueUpdate();
-
+            start = new Point(start);
+            
         }
+        RouteDescription old = m_routeDescription;
+        m_routeDescription = new RouteDescription(route, start, null);
+        if(m_routeDescription != null && !m_routeDescription.equals(old))
+            m_mapsUnitDrawer.queueUpdate();
+        
+   
     }
 
     public void addMapSelectionListener(MapSelectionListener listener)
@@ -166,7 +173,7 @@ public class MapPanel extends ImageScrollerLargeView
         synchronized (m_mapsUnitDrawer.getLock())
         {
             super.paint(g);
-            MapRouteDrawer.drawRoute((Graphics2D) g, m_route, this);
+            MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
         }
     }
 
@@ -362,4 +369,66 @@ public class MapPanel extends ImageScrollerLargeView
 
     };
 
+}
+
+
+class RouteDescription
+{
+    private final Route m_route;
+    private final Point m_start;
+    private final Point m_end;
+    
+    public RouteDescription(Route route, Point start, Point end)
+    {
+        m_route = route;
+        m_start = start;
+        m_end = end;
+    }
+    
+    public boolean equals(Object o)
+    {
+        if(o == null)
+            return false;
+        if(o == this)
+            return true;
+        RouteDescription other = (RouteDescription) o;
+        
+        if(m_start == null && other.m_start != null ||
+           other.m_start == null && m_start != null ||
+           (m_start != other.m_start && !m_start.equals(other.m_start)) )
+            return false;
+        if(m_end == null && other.m_end != null ||
+                other.m_end == null && m_end != null ||     
+                (m_end != other.m_end && !m_end.equals(other.m_end)) )
+                 return false;
+        if(m_route == null && other.m_route != null ||
+                other.m_route == null && m_route != null ||     
+                (m_route != other.m_route && !m_route.equals(other.m_route)) )
+                 return false;
+
+        
+        return true;
+
+        
+    }
+
+    
+
+    public Route getRoute()
+    {
+        return m_route;
+    }
+
+    public Point getStart()
+    {
+        return m_start;
+    }
+ 
+    public Point getEnd()
+    {
+        return m_end;
+    }
+    
+    
+    
 }
