@@ -401,6 +401,21 @@ public class Matches
 		};
 	}
 
+  public static Match territoryIs(final Territory test)
+  {
+
+    return new Match()
+     {
+
+       public boolean match(Object o)
+       {
+         Territory t = (Territory) o;
+         return t.equals(test);
+       }
+     };
+
+  }
+
   public static Match territoryHasEnemyAA(final PlayerID player, final GameData data)
   {
 

@@ -283,9 +283,12 @@ public class MovePanel extends ActionPanel
     }
 
     //try to avoid aa guns if we can
-    //this fails if the end has an enemy aa gun (eg britian -> Germany)
-    //TODO - get this to ignore the last territory
-    Route noAARoute = getData().getMap().getRoute(start, end, new InverseMatch( Matches.territoryHasEnemyAA(getCurrentPlayer(), getData())));
+    CompositeMatch noAAMatch = new CompositeMatchOr();
+    noAAMatch.add(new InverseMatch( Matches.territoryHasEnemyAA(getCurrentPlayer(), getData())));
+    //ignore the destination
+    noAAMatch.add(Matches.territoryIs(end));
+
+    Route noAARoute = getData().getMap().getRoute(start, end, noAAMatch);
     if(noAARoute != null && noAARoute.getLength() == defaultRoute.getLength())
       return noAARoute;
 
