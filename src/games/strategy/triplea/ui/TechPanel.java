@@ -87,7 +87,7 @@ public class TechPanel extends ActionPanel
     return m_intMessage;
   }
 
-  private Action GetTechRollsAction = new AbstractAction("Roll Tech")
+  private Action GetTechRollsAction = new AbstractAction("Roll Tech...")
   {
     public void actionPerformed(ActionEvent event)
     {
