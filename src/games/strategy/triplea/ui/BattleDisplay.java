@@ -24,8 +24,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import games.strategy.engine.sound.ClipPlayer; //the player
+import games.strategy.triplea.sound.SoundPath; //the relative path of sounds
+
 import games.strategy.engine.data.*;
-import games.strategy.engine.sound.*;
 import games.strategy.engine.message.Message;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.message.*;
@@ -105,19 +107,19 @@ public class BattleDisplay extends JPanel
 
     if(message.getPlayer().equals(m_defender)) {
       if(m_location.isWater()) {
-            ClipPlayer.getInstance().playClip("naval_battle.wav", ClipPlayer.class);
+            ClipPlayer.getInstance().playClip("naval_battle.wav", SoundPath.class);
       }
       else {
-            ClipPlayer.getInstance().playClip("terrain_battle.wav", ClipPlayer.class);
+            ClipPlayer.getInstance().playClip("terrain_battle.wav", SoundPath.class);
       }
       m_defenderModel.removeCasualties(message);
     }
     else {
       if(m_location.isWater()) {
-            ClipPlayer.getInstance().playClip("naval_battle.wav", ClipPlayer.class);
+            ClipPlayer.getInstance().playClip("naval_battle.wav", SoundPath.class);
       }
       else {
-            ClipPlayer.getInstance().playClip("terrain_battle.wav", ClipPlayer.class);
+            ClipPlayer.getInstance().playClip("terrain_battle.wav", SoundPath.class);
       }
       m_attackerModel.removeCasualties(message);
 
