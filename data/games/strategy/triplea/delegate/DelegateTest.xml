@@ -439,7 +439,8 @@
 		<player name="Japanese" optional="false"/>
 		<player name="British" optional="false"/>
 		<player name="Americans" optional="false"/>
-		<alliance player1="Americans" player2="British"/>
+		<alliance player="Americans" alliance="imperial"/>
+		<alliance player="British" alliance="imperial"/>
 	</playerList>
 	<unitList>
 		<unit name="infantry"/>
