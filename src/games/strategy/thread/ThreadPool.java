@@ -13,177 +13,179 @@ import java.util.*;
  *
  * @author  Sean Bridges
  */
-public class ThreadPool 
-{	
-	private final int m_maxCount;
-	private List m_availableThreads = new LinkedList();
-	private List m_allThreads = new LinkedList();
-	private List m_pendingTasks = new LinkedList();
-	private List m_runningTasks = new LinkedList();
-	
-	private Object m_taskLock = new Object();
-	private Object m_doneLock = new Object();
-	
-	
-	/** 
-	 * Creates a new instance of ThreadPool 
-	 * max is the maximum number of threads the pool can have.
-	 * The pool may have fewer threads at any given time.
-	 */
-    public ThreadPool(int max) 
-	{
-		if(max < 1)
-			throw new IllegalArgumentException("Max must be >= 1, instead its:" + max);
-		m_maxCount = max;
+public class ThreadPool
+{
+  private final int m_maxCount;
+  private List m_availableThreads = new LinkedList();
+  private List m_allThreads = new LinkedList();
+  private List m_pendingTasks = new LinkedList();
+  private List m_runningTasks = new LinkedList();
+
+  private Object m_taskLock = new Object();
+  private Object m_doneLock = new Object();
+
+
+  /**
+   * Creates a new instance of ThreadPool
+   * max is the maximum number of threads the pool can have.
+   * The pool may have fewer threads at any given time.
+   */
+  public ThreadPool(int max)
+  {
+    if(max < 1)
+      throw new IllegalArgumentException("Max must be >= 1, instead its:" + max);
+    m_maxCount = max;
+  }
+
+  /**
+   * Create a new thread.
+   */
+  private void grow()
+  {
+    ThreadTracker tracker = new ThreadTracker();
+    Thread thread = new Thread(tracker);
+
+    m_allThreads.add(tracker);
+
+    thread.start();
+  }
+
+  /**
+   * Run the given task.  This method returns immediatly
+   */
+  public void runTask(Runnable task)
+  {
+    synchronized(m_taskLock)
+    {
+      if(m_availableThreads.isEmpty())
+      {
+        if(m_allThreads.size() < m_maxCount)
+        {
+          grow();
+        }
+      }
+      m_pendingTasks.add(task);
+      m_taskLock.notifyAll();
+    }
+  }
+
+  /**
+   * returns when all tasks run through the runTask method have finished.
+   */
+  public void waitForAll()
+  {
+    synchronized(m_doneLock)
+    {
+      synchronized(m_taskLock)
+      {
+        if(m_pendingTasks.isEmpty() && m_runningTasks.isEmpty())
+          return;
+      }
+
+      try
+      {
+        m_doneLock.wait();
+        } catch(InterruptedException e)
+            {}
+        waitForAll();
     }
 
-	/**
-	 * Create a new thread. 
-	 */
-	private void grow()
-	{
-		ThreadTracker tracker = new ThreadTracker();
-		Thread thread = new Thread(tracker);
-		
-		m_allThreads.add(tracker);
-		
-		thread.start();
-	}
-	
-	/**
-	 * Run the given task.  This method returns immediatly
-	 */ 
-	public void runTask(Runnable task)
-	{
-		synchronized(m_taskLock)
-		{
-			if(m_availableThreads.isEmpty())
-			{
-				if(m_allThreads.size() < m_maxCount)
-				{			
-					grow();
-				}
-			}	
-			m_pendingTasks.add(task);
-			m_taskLock.notifyAll();
-		}
-	}
-	
-	/**
-	 * returns when all tasks run through the runTask method have finished.
-	 */
-	public void waitForAll()
-	{
-		synchronized(m_doneLock)
-		{
-			if(m_pendingTasks.isEmpty() && m_runningTasks.isEmpty())
-				return;
-			else
-			{
-				try
-				{
-					m_doneLock.wait();
-				} catch(InterruptedException e)
-				{}
-				waitForAll();
-			}
-		}
-	}
+  }
 
-	/**
-	 * Shutdown the thread pool.
-	 * Currently running tasks will finish, but new tasks will not start.
-	 * All threads will shutdown after finishing any tasks they may
-	 * be currently running.
-	 * A call to shutDown() followed by waitForAll() will ensure 
-	 * that no threads are running.
-	 */
+  /**
+   * Shutdown the thread pool.
+   * Currently running tasks will finish, but new tasks will not start.
+   * All threads will shutdown after finishing any tasks they may
+   * be currently running.
+   * A call to shutDown() followed by waitForAll() will ensure
+   * that no threads are running.
+   */
 
-	public void shutDown()
-	{
-		synchronized(m_taskLock)
-		{
-			m_pendingTasks.clear();
-			Iterator iter = m_allThreads.iterator();
-			while(iter.hasNext())
-			{
-				ThreadTracker tracker = (ThreadTracker) iter.next();
-				tracker.stop();
-			}
-		}
-	}
-	
-	private class ThreadTracker implements Runnable
-	{
-		private boolean m_run = true;
-		private Thread m_thread;
-		
-		public void run()
-		{
-			m_thread = Thread.currentThread();
-			while(m_run)
-			{					
-				Runnable task = getTask();
-				if(task == null)
-					continue;
+  public void shutDown()
+  {
+    synchronized(m_taskLock)
+    {
+      m_pendingTasks.clear();
+      Iterator iter = m_allThreads.iterator();
+      while(iter.hasNext())
+      {
+        ThreadTracker tracker = (ThreadTracker) iter.next();
+        tracker.stop();
+      }
+    }
+  }
 
-				try
-				{
-					task.run();
-				} catch(Throwable t)
-				{
-					t.printStackTrace();
-				}
-				synchronized(m_taskLock)
-				{
-					m_runningTasks.remove(task);
-				}
-				
-				synchronized(m_doneLock)
-				{
-					m_doneLock.notifyAll();
-				}
-			}
+  private class ThreadTracker implements Runnable
+  {
+    private boolean m_run = true;
+    private Thread m_thread;
 
-			synchronized(m_taskLock)
-			{
-				m_allThreads.remove(this);
-			}
-		}
+    public void run()
+    {
+      m_thread = Thread.currentThread();
+      while(m_run)
+      {
+        Runnable task = getTask();
+        if(task == null)
+          continue;
 
-		public void stop()
-		{
-			m_run = false;
-			m_thread.interrupt();
-		}
-		
-		private Runnable getTask()
-		{
-			synchronized(ThreadPool.this.m_taskLock)
-			{
-				if(! m_run )
-					return null;
-				
-				if(m_pendingTasks.isEmpty())
-				{
-					try
-					{
-						m_availableThreads.add(this);
-						ThreadPool.this.m_taskLock.wait();
-						m_availableThreads.remove(this);
-					} catch(InterruptedException ie)
-					{}
-					return getTask();
-				}
-				else
-				{
-					Runnable task = (Runnable) m_pendingTasks.get(0);
-					m_pendingTasks.remove(0);
-					m_runningTasks.add(task);
-					return task;
-				}
-				
-			}
-		}
-	}
+        try
+        {
+          task.run();
+        } catch(Throwable t)
+        {
+          t.printStackTrace();
+        }
+        synchronized(m_taskLock)
+        {
+          m_runningTasks.remove(task);
+        }
+
+        synchronized(m_doneLock)
+        {
+          m_doneLock.notifyAll();
+        }
+      }
+
+      synchronized(m_taskLock)
+      {
+        m_allThreads.remove(this);
+      }
+    }
+
+    public void stop()
+    {
+      m_run = false;
+      m_thread.interrupt();
+    }
+
+    private Runnable getTask()
+    {
+      synchronized(ThreadPool.this.m_taskLock)
+      {
+        if(! m_run )
+          return null;
+
+        if(m_pendingTasks.isEmpty())
+        {
+          try
+          {
+            m_availableThreads.add(this);
+            ThreadPool.this.m_taskLock.wait();
+            m_availableThreads.remove(this);
+          } catch(InterruptedException ie)
+          {}
+          return getTask();
+        }
+        else
+        {
+          Runnable task = (Runnable) m_pendingTasks.get(0);
+          m_pendingTasks.remove(0);
+          m_runningTasks.add(task);
+          return task;
+        }
+
+      }
+    }
+  }
 }
