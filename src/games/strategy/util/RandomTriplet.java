@@ -25,7 +25,7 @@ package games.strategy.util;
  * @author  Ben Giddings
  * @version 1.0
  */
-public class RandomTriplet
+public class RandomTriplet implements java.io.Serializable
 {
   public byte[] m_encrypted_random;
   public byte[] m_encrypted_known;
@@ -56,14 +56,14 @@ public class RandomTriplet
     StringBuffer buff = new StringBuffer("RandomTriplet: <");
 
     buff.append("Encrypted Random: '");
-    for (int i=0; i<m_encrypted_random.length; i++) 
+    for (int i=0; i<m_encrypted_random.length; i++)
     {
       buff.append(Integer.toHexString((int)m_encrypted_random[i]));
     }
     buff.append("', ");
-    
+
     buff.append("Encrypted Known: '");
-    for (int i=0; i<m_encrypted_known.length; i++) 
+    for (int i=0; i<m_encrypted_known.length; i++)
     {
       buff.append(Integer.toHexString((int)m_encrypted_known[i]));
     }

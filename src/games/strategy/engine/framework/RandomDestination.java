@@ -39,13 +39,18 @@ import games.strategy.util.RandomTriplet;
  */
 public class RandomDestination implements IDestination
 {
+  public static String getRandomDestination(String playerName)
+  {
+    return playerName + "RandomDest";
+  }
+
   private RandomGen m_random_gen;
   private RandomGen m_remote_random_gen;
   private String m_name;
 
-  public RandomDestination(String name)
+  public RandomDestination(String playerName)
   {
-    m_name = name;
+    m_name = getRandomDestination(playerName);
   }
 
   public String getName()
@@ -65,7 +70,7 @@ public class RandomDestination implements IDestination
     }
     else
     {
-      throw new RuntimeException("Not a RandomNumberMessage");
+      throw new RuntimeException("Not a RandomNumberMessage, instead" + message);
     }
 
     switch (rnd_message.m_request)

@@ -238,7 +238,7 @@ class Connection
         {
           if(!m_shutdown)
           {
-
+            ioe.printStackTrace();
             Connection.this.shutDown();
             List unsent = new ArrayList(m_waitingToBeSent);
             unsent.add(next);
@@ -273,6 +273,7 @@ class Connection
         {
           if(!m_shutdown)
           {
+            ioe.printStackTrace();
             Connection.this.shutDown();
             List unsent = new ArrayList(m_waitingToBeSent);
             m_listener.fatalError(ioe, Connection.this, unsent);

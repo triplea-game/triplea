@@ -61,7 +61,7 @@ public class ServerGame implements IGame
   private Object m_remotePlayerStepLock = new Object();
   private Transcript m_transcript;
 
-  private Vector m_random_destinations = new Vector();
+
 
 
   /** Creates new Game */
@@ -80,8 +80,8 @@ public class ServerGame implements IGame
     Iterator iter = gamePlayers.iterator();
 
     //add a random destination for the null player
-    RandomDestination rnd_dest = new RandomDestination(PlayerID.NULL_PLAYERID.getName() + "RandomDest");
-    m_random_destinations.add(rnd_dest);
+    RandomDestination rnd_dest = new RandomDestination(PlayerID.NULL_PLAYERID.getName());
+
     m_messageManager.addDestination(rnd_dest);
 
     while(iter.hasNext())
@@ -94,9 +94,9 @@ public class ServerGame implements IGame
       m_messageManager.addDestination(gp);
 
       // Add a corresponding random destination for this GamePlayer
-      rnd_dest = new RandomDestination(gp.getName() + "RandomDest");
+      rnd_dest = new RandomDestination(gp.getName());
 
-      m_random_destinations.add(rnd_dest);
+
       m_messageManager.addDestination(rnd_dest);
     }
 
