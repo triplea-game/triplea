@@ -1,0 +1,802 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta name="generator" content="Bluefish">
+		<meta name="author" content="Unknown">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="description" content="">
+		<title>TripleA :: User Documentation</title>
+	</head>
+
+	<body>
+		<center><h1>TripleA User Documentation</h1></center>
+		<hr>
+		<h3><a name="top">Quick Nav</a></h3>
+		<ul>
+			<li><a href="#sec_a">Installing TripleA</a></li>
+			<li><a href="#sec_b">Installing TripleA From Source</a></li>
+			<li><a href="#sec_c">Running TripleA</a></li>
+			<ul>
+				<li><a href="#sec_c_1">Local Game</a></li>
+				<li><a href="#sec_c_2">Multiplayer Game</a></li>
+				<li><a href="#sec_c_3">Play By E-Mail</a></li>
+				<li><a href="#sec_c_4">Practical Guidlines for PBEM</a></li>
+				<li><a href="#sec_c_5">About Low Luck</a></li>
+			</ul>
+			<li><a href="#sec_d">Seeking Help</a></li>
+			<li><a href="#sec_e">Seeking Opponents</a></li>
+			<li><a href="#sec_f">F.A.Q.</a></li>
+		</ul>
+		<hr>
+		<br>
+	
+		<h2><a name="sec_a">Installing TripleA</a></h2>
+		<blockquote>
+			<p>
+				This section will go over installing TripleA from its pre-compiled form.
+				By this we mean that TripleA has been already pre-compiled and you don't
+				need to compile it.
+			</p>
+			
+			<p>
+				To play the game you must first install a java virtual machine on your
+				computer. The game requires at least the JDK 1.4. If you have already
+				installed a java virtual machine then you can skip this step.<br>
+				<br>
+				<b>Windows</b> and <b>Linux</b> users can download the Java Runtime Engine
+				(JRE) from Sun Microsystems at <a target="_blank" href="http://www.java.com/en/index.jsp">www.java.com/en/index.jsp</a>.
+				<br><br>
+				<b>Mac</b> users must be using <b>Mac OS X</b> to run the game. <b>Mac OS X</b>
+				comes pre-installed with a Java Virtual Machine (JVM), but it may only be Java 1.3.
+				<b>Mac</b> users can install Java 1.4 or greater from <a target="_blank" href="http://www.apple.com/macosx/features/java">here</a>.
+			</p>
+			
+			<p>
+				<b>Windows</b> users must update the path variable before playing the game.
+				Please see <a target="_blank" href="http://java.sun.com/j2se/1.4/install-windows.html">Step 5 Update the PATH variable<a>
+				for instructions.
+			</p>
+						
+			<p>
+				To install TripleA you will, obviously, need a downloaded copy of the
+				pre-compiled version of TripleA. Usually you can tell if it is pre-compiled
+				by looking at the name of the file. The file name should look like this:
+				<blockquote>
+				<code>
+					triplea_x_x_x.zip
+				</code>
+				</blockquote>
+				Where the <b>x</b> character is replaced by the version number. The non-compiled
+				version will have the word <b>source</b> appended to the end of the file name.
+				So if you accidently downloaded the source version and not the pre-compiled version,
+				then go back and download the pre-compiled version.
+			</p>
+			
+			<p>
+				You will need to decide where you want to install TripleA. We currently cannot
+				provide an automatic installer for all Operating System's platform so you will
+				need to extract the contents of the TripleA Zip file to a specified location on
+				your computer.<br>
+			</p>
+			
+			<p>
+				Once you have decided where on your system you would like to install TripleA, 
+				it is now time to extract (or unzip) the contents of the downloaded file. If 
+				your running a <a target="_blank" href="http://www.microsoft.com">Windows</a>
+				operating system you extract the file by using <a target="_blank" href="http://www.winzip.com">WinZip</a>
+				or <a target="_blank" href="http://www.rarlabs.com">WinRAR</a> software. If 
+				you have those installed on your computer, the file should have the WinZip or
+				WinRAR icon. You can double click on the file and the extraction program will
+				guide you to where you wish to unzip its contents.
+			</p>
+			
+			<p>
+				Alternatively if you use Unix or a Unix variant (such as Linux) you can unzip
+				the file using a GUI front end called <b>ARK</b>, or using command line tools
+				such as <b>unzip</b>. The unzip command should work on both <b>Linux</b> and
+				<b/>Mac OS X</b>:
+				<blockquote>
+				<code>
+					unzip -L triplea_x_x_x.zip
+				</code>
+				</blockquote>
+				That will extract all of the contents of the zip file into the current directory
+				you are in. Commands may vary from different flavors of *nix.
+			</p>
+			
+			<p>
+				By now you should have been able to extract the TripleA zip file into a directory.
+				You will notice that you now have a folder called <b>triplea_x_x_x</b> where TripleA's
+				game files are. Thats basically it on installing TripleA. You only need to extract all
+				the files into a directory or folder.<br>
+				<br>
+				From here you can proceed to <a href="#sec_c">Running TripleA</a>
+			</p>
+			
+			<a href="#top">- Top -</a>
+		</blockquote>
+	
+		<h2><a name="sec_b">Installing TripleA From Source</a></h2>
+		<blockquote>
+			<p>
+				Before we start please note that it is <b>NOT</b> required that you install Triplea
+				from source (that is compiling it your self). You can run the game using the pre-compiled
+				version as mentioned above in <a href="#sec_a">Installing TripleA</a>.
+			</p>
+		
+			<p>
+				There are actually many reasons, one being the type of Java Virtual Machine you have installed.
+				Some JVMs run differently and compile java source code differently and may act strange on other
+				JVMs. An example is running java byte code that has been compiled using Sun's JVM on a JVM done
+				by IBM for example.
+			</p>
+			
+			<p>
+				Some JVMs have different optimization features and other features that is beyond the scope of
+				this document. Though if you feel you need to compile from source because you use a different JVM
+				than SUN or maybe because you just like compiling everything from source, then go right ahead. No
+				one is stopping you :)
+			</p>
+			
+			<p>
+				To install TripleA from source you will need the source package which you can download from the
+				TripleA website. We shall assume you already have this file downloaded and are ready to extract
+				it's contents.
+			</p>
+			
+			<p>
+				The first step is to extract the contents of the zip file into a location of your choice.
+				Once you have extracted all the files, you will see a folder named <b>triplea_x_x_x</b>.
+				Note that it has the same name as the pre-compiled package so if you are going to install
+				both the source and the pre-compiled version, it is highly recommended that you create
+				separate directories for them first. If not one will overwrite the other.
+			</p>
+			
+			<p>
+				Before you even begin compiling, you need:
+				<ul>
+					<li>Apache ANT (<a target="_blank" href="http://ant.apache.org">http://ant.apache.org</a>)</li>
+					<li>Java JDK (<a target="_blank" href="http://java.sun.com">http://java.sun.com</a>)</li>
+					<li>Junit (<a target="_blank" href="http://www.junit.org">http://www.junit.org</a>)</li>
+					<li>.ant.properties (text file with config options)</li>
+				</ul>
+			</p>
+			
+			<p>
+				We assume you have <b>ANT</b> installed, as well as a suitable <b>Java JDK</b> whose version is 1.4.x or higher,
+				(a slight warning! if you use Java v1.5 you may experience instability and incompatibility with other version of
+				TripleA compiled against v1.4), and <b>Junit</b> installed (you only need to download the Junit package and unzip
+				it somewhere on your system. The <b>.ant.properties</b> file, if not included in the source package, you will have
+				to make your own, from which it will reference the Junit installation directory.
+			</p>
+			
+			<p>
+				Go into the directory where you extracted the TripleA source code. Create a text file and name it exactly like so
+				<b>.ant.properties</b> Open this file and add the following information:
+				<blockquote>
+				<code>
+					 unit.jar=PATH TO THE JUNIT JAR FILE<br>
+					 triplea.version=X_X_X
+				</code>
+				</blockquote>
+				For a more suitable example let me show you my <b>.ant.properties</b> file. It is on my Linux system where I have
+				<b>Junit</b> installed in my home directory.
+				<blockquote>
+				<code>
+					 junit.jar=/home/necro/junit3.8.1/junit3.8.1.jar<br>
+					 triplea.version=0_5_1
+				</code>
+				</blockquote>
+				These fields point to the location where <b>Junit</b> is installed so that <b>ANT</b> can use them while you compile.
+			</p>
+			
+			<p>
+				After you get a suitable <b>.ant.properties</b> file created, it is time to actually compile TripleA. You will need to
+				be in a DOS prompt, or some form of terminal/console/command prompt where you can type in commands. In the base directory
+				of TripleA, issue the command:
+				<blockquote>
+				<code>
+					ant compile
+				</code>
+				</blockquote>
+				If everything has been set up properly it should compile TripleA and yield a similar output as below. The output below is
+				what shows up when I run the command to compile my copy of TripleA:
+				<blockquote>
+				<code>
+					Buildfile: build.xml<br>
+					<br>
+					init:<br>
+					<br>
+					compile:<br>
+					<br>
+					[echo] looking for junit.jar in:/home/necro/javabox/junit3.8.1/junit.jar, edit .ant.properties to set junit location<br>
+					[mkdir] Created dir: /home/necro/CVS/triplea/classes<br>
+					[copy] Copying 452 files to /home/necro/CVS/triplea/classes<br>
+					[javac] Compiling 335 source files to /home/necro/CVS/triplea/classes<br>
+					<br>
+					BUILD SUCCESSFUL<br>
+					Total time: 18 seconds<br>
+				</code>
+				</blockquote>
+			</p>
+			
+			<p>
+				A small note on using the <b>ant</b> you can issue one of the following commands to
+				<b>ant</b>. Each will yield a different result:
+				<blockquote>
+					<ul>
+						<li><b>ant compile</b> (Compiles all source files)</li>
+						<li><b>ant clean</b> (removes all previously compiled files and folders)</li>
+						<li><b>ant compileClean</b> (executes <b>ant clean</b> then <b>ant compile</b> in one go)</li>
+						<li><b>ant zip</b> (Compiles the source code and packages it in a zip file)</li>
+						<li><b>ant zipSource</b> (Pacakges TripleA and the source in a zip file without compiling)</li>
+					</ul>
+				</blockquote>
+				There are more commands that can be used and you can find them in the <b>build.xml</b> file. You can even make your
+				own if you wish.<br>
+				<br>
+				After a successful compile, TripleA is now ready to be <a href="#sec_c">Run</a>.<br>
+				<br>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_c">Running TripleA</a></h2>
+		<blockquote>
+			<p>
+				Now that TripleA has been installed, either from the pre-compiled version or from source, it is now time to
+				actually run the game. This section will go over how to run the game on various operating systems.
+			</p>
+			
+			<p>
+				<h4>Running On Windows</h4>
+				Simply open Windows Explorer, or whatever program you use to browse files around your computer. Find your
+				TripleA folder and go inside the <b>bin</b> folder. Inside there you should find a file called <b>triplea.bat</b>
+				This is the file that Windows users are expected to double click on (or run through a DOS prompt) to get
+				the game started.<br>
+				<br>
+				You can make shortcuts pointing to <b>triplea.bat</b> and you can as well use some of our TripleA icons that are
+				provided in the <b>icons</b> folder.
+			</p>
+			
+			<p>
+				<h4>Running on Unix/Linux/Irix/Mac OS X</h4>
+				Go into the directory in which you installed TripleA. From there enter the <b>bin</b> directory. You should see a file
+				called <b>triplea.sh</b> You will need to change the permissions on that file in order to make it executable. Running
+				the command:
+				<blockquote>
+				<code>
+					 chmod +x triplea.sh
+				</code>
+				</blockquote>
+				That will give the file executable permissions. Once that is done you can run the actual file by issuing the command:
+				<blockquote>
+				<code>
+					./triplea.sh
+				</code>
+				</blockquote>
+				This will cause the game to be run. Though the <b>triplea.sh</b> file is not exactly a proper shell script it helps
+				us to distinguish the windows files from the others. Though if one wants, they can skip the step to <b>chmod</b> the
+				file and directly exectue it with the following:
+				<blockquote>
+				<code>
+					 sh triplea.sh
+				</code>
+				</blockquote>
+				The file itself contains the command:
+				<blockquote>
+				<code>
+					 java -cp ../lib/patch.jar:../classes:../lib/plastic-1.2.0.jar games.strategy.engine.framework.GameRunner
+				</code>
+				</blockquote>
+				This command can be run manually in the <b>bin</b> directory from a command prompt but it is quite lengthy and
+				tedious to write all the time. That Java command has proved to work on most Unix, Linux, Irix 6.5, and Mac OS X
+				systems. If you encounter problems with this command please log on to the <a target="_blank" href="http://maddlinks.com/triplea">TripleA message board</a>
+				and request further assistance.<br>
+				<br>
+				<a href="#top">- Top -</a>
+			</p>
+			
+			<h2><a name="sec_c_1">Local Game</a></h2>
+			<p>
+				This section goes over what a local game is and how to get one up and running.<br>
+				<br>
+				A local game is one where TripleA is played on a single computer with no other human opponents. You are basically
+				playing the all the nations on your own. There is an experimental computer opponent but it is very primitive. The
+				AI works best with Classic Edition and will not work well with 4th Edition games.
+			</p>
+			
+			<p>
+				When you run TripleA you should see a start up window with a given list of options, as described in <b>Fig 1.0</b>
+				<table align="center" border="0">
+					<tr>
+						<td>
+							<img src="images/TripleA_Doc_v1_html_m331252d3.png" width="276" height="323" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.0</b>
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				As can be seen, the <b>Local Game</b> option is chosen by default when the game is first run. You can see it in the first box labeled
+				<b>Game Type</b> that has two buttons. The button that has the label <b>Local Game</b> once clicked will drop down more options to
+				choose from.
+			</p>
+			
+			<p>
+				A local game can be of any type, by default the classic A&A game is chosen. You can of course change this by clicking on the
+				<b>File ...</b> button located in the second box labeled <b>File.</b> This will show you a window where you can select from
+				various game types.
+			</p>
+			
+			<p>
+				You can, as well, load a saved game. You do so by clicking on the <b>New</b> button that is located next to the text
+				<b>Start a New Game or Load a Saved?</b> By clicking on the button next to the text it will drop down more options.
+				You want to click on the <b>Saved</b> option that is presented once the button is clicked. Only after that do you
+				click on the <b>File ...</b> button and select the saved game you wish to load.
+			</p>
+			
+			<p>
+				Once you have made up your mind on what kind of game you would like to play. It is time to actually start the game.
+				You hit the mighty <b>Play</b> button and wait while the game loads. You could always hit <b>Exit</b> and go over
+				to your kitchen and get a refreshing drink.<br>
+				<br>
+				<a href="#top">- Top -</a>
+			</p>
+			
+			<h2><a name="sec_c_2">Multiplayer Game</a></h2>
+			<p>
+				To start any multi-player game you need one person to host a server and the other persons to connect to the server
+				as clients. Who gets to be the server is up to you and your opponents. Normally you would want the server to be
+				someone with a fast Internet connection that can handle multiple connections though this does not have to be the case.
+			</p>
+			
+			<p>
+				<h4>Starting A Server</h4>
+				To start a server you simple run TripleA as normal. When you see the start up window, select <b>Server</b> as your
+				game type like so in <b>Fig 1.1</b>
+				<table align="center" border="0">
+					<tr>
+						<td>
+							<img src="images/TripleA_Doc_v1_html_m612b180b.png" width="276" height="323" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.1</b>
+						</td>
+					</tr>
+				</table>
+				The moment you click on <b>Server</b> you will get a smaller window popping up that asks for two extra types of
+				input: Name and Port (<b>Fig 1.2</b>):
+				<table align="center" border="0">
+					<tr>
+						<td>
+							<img src="images/TripleA_Doc_v1_html_m5c78b93f.png" width="153" height="121" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.2</b>
+						</td>
+					</tr>
+				</table>
+				In the <b>Name</b> field you enter the name of the server. It does not have to be &quot;Server,&quot; it can be
+				your name or practically anything. It will be that name you choose that will identify you in the chat room.
+				That is merely the purpose of it.<br>
+				<br>
+				In the <b>Port</b> field you have to enter at what port number TripleA will listen to for connections. This will
+				also be the port number that the clients will have to connect to. The default port number TripleA sets is 3300.
+				This number can be changed to your heart's desire but note that on many Unix like systems any port number below
+				1024 is reserved and needs root (administrator) privileges to access. So it is always a good idea to have a port
+				number greater than 1024.
+			</p>
+			
+			<p>
+				If you have a firewall running and/or are behind a router, you will need to choose the port number carefully.
+				If you just run a firewall on your local machine, then make sure you choose a port that allows incoming and
+				outgoing connections on that specified port. If you are behind a router it is most likely that TripleA will
+				detect your computer's LAN IP address (that is those standard 198.162... ip addresses). Don't be alarmed for
+				this is the proper IP TripleA must see as it connects TripleA to the router. Now you will need to setup
+				<b>PORT FORWARDING</b> for your router. Making it forward all incomming and outgoing connections on port 3300
+				to your computer. This is a very important step as many users don't configure this properly. There is more
+				information about this as well with screenshots of how to setup port forwarding <a target="_blank" href="http://maddlinks.com/triplea/viewtopic.php?t=275">here</a>.
+			</p>
+			
+			<p>
+				Once you have selected an appropriate name (maybe something intimidating) and a port number you are sure will
+				work. It is time to hit the <b>OK</b> button and move on to the next stage. A chat window will appear that
+				will look like so in <b>Fig 1.3</b>:
+				<table align="center" border="0">
+					<tr>
+						<td>
+							<img src="images/TripleA_Doc_v1_html_43e1017.png" width="301" height="203" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.3</b>
+						</td>
+					</tr>
+				</table>
+				Some interesting things to note about the chat window. For every message being typed, the window will
+				automatically be brought to the front. This avoids you missing out on important messages if the window
+				gets lost behind other windows. For every message being sent a sound will play (you can disable this
+				once the game starts). Lastly, you can right click on a person's name and have the option to <b>Slap</b>
+				them. This will show a message that you <b>Slapped</b> them and the person being slapped with hear the
+				sound of a machine gun being played. You can use this to alter someone or something.
+			</p>
+			
+			<p>
+				Aside from the chat window, you will notice that the same start-up window is still there. What you need
+				to do is click on the <b>Server Tab</b> from which you can see some editable server properties. By default
+				the server is selected to play all countries, so your going to have to change that. You also get to see
+				what IP address TripleA is using for the multi-player game, see <b>Fig 1.4</b>:
+				<table align="center" border="0">
+					<tr>
+						<td>
+							<img src="images/TripleA_Doc_v1_html_5b06051b.png" width="275" height="323" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.4</b>
+						</td>
+					</tr>
+				</table>
+				This has become and increasingly troubling issue when you do not see the IP address that you use to log on
+				to the Internet but rather see your Ethernet address, LAN, address of local host address. You should not
+				be able to see your local host (127.0.0.1) address since TripleA automatically discards the loopback address.
+				If you do see your LAN ip address then that means your behind a router, and if you have port forwarding setup
+				correctly, the game will run fine. You just need to give them the internet address of your router so they
+				can connect to that.
+			</p>
+			
+			<p>
+				Assuming everything is going as planned, you can give out your IP address to your friends so that they can
+				connect to you. Then you wait for them to connect, chat a bit, edit some of the options...etc. Clicking on
+				the <b>Properties Tab</b> will allow you to change some game rules as seen in <b>Fig 1.5</b> for 4th Edition
+				Options.
+				<table align="center" border="0">
+					<tr>
+						<td>
+							<img src="images/TripleA_Doc_v1_html_1efc9d25.png" width="277" height="334" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.5</b>
+						</td>
+					</tr>
+				</table>
+				Only the Server can start the game by hitting the <b>Play</b> button.<br>
+				<br>
+				<a href="#top">- Top -</a>
+			</p>
+			
+			<p>
+				<h4>Connecting to a server as a client</h4>
+				When there is already one person acting as a server and you have their IP address and their port number,
+				then your ready to connect as a client. First off you need TripleA running (yes it is obvious), where
+				the <b>Game Type</b> labeled box is select <b>Client</b> like so in <b>Fig 1.6</b>:
+				<table align="center" border="0">
+					<tr>
+						<td>
+							<img src="images/TripleA_Doc_v1_html_m612b180b.png" width="276" height="323" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.6</b>
+						</td>
+					</tr>
+				</table>
+				The moment you click on <b>Client</b> you will be presented with a smaller window that will give you three
+				options: Name, Server Port, and Server Address, see <b>Fig 1.7</b>:
+				<table align="center" border="0">
+					<tr>
+						<td>
+							<img src="images/TripleA_Doc_v1_html_2a0c3a72.png" width="203" height="144" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.7</b>
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				In the <b>Name</b> field you simply enter in any name you want to use. This will identify your self in the
+				chat room. In the <b>Server Port</b> field you will enter the port number that the person hosting the server
+				decided to choose. This goes the same for the <b>Server Address</b> field. Whoever is the server will have
+				to give you those two piece of information for you to fill in. Once you filled in the appropriate fields
+				you can safely click on the <b>Connect</b> button.
+			</p>
+			
+			<p>
+				Once you see a chat window appear then you know you have successfully connected to the server. The server
+				is responsible for choosing what countries they will play and each client is responsible for picking what
+				country they will play. This can be done by looking at the TripleA start-up window and at the top clicking
+				on the <b>Client</b> tab. You will see a list of countries and check boxes adjacent to them.
+			</p>
+			
+			<p>
+				Once everyone has decided what country to play, it is up to the server to start the game. If the server is
+				taking a while, feel free to slap them in the chat room. Right click on their name and <b>Slap</b>. 
+			</p>
+			
+			<h2><a name="sec_c_3">Play By E-Mail</a></h2>
+			<p>
+				TripleA's PBEM mode allows multiple players to play a turn each and send each other the saved game file.
+				This allows them to play the game with each other with out being connected to the internet for long
+				periods of time. The dice rolls done in a PBEM game are rolled by a 3rd party who emails each player
+				the dice rolls and each email is PGP signed and can be verified from their website. The server being
+				used to roll the dice is located at <a target="_blank" href="http://www.irony.com/mailroll.html">http://www.irony.com/mailroll.html</a>
+			</p>
+			
+			<p>
+				<b>IMPORTANT NOTE</b> Although PBEM does work in TripleA there is one problem you will have to face.
+				When engaing in a battle, your opponent cannot select their own casualties! You have to select their
+				casualty for them! This may not be a big deal for some but it is for most.
+			</p>
+			
+			<p>
+				To start playing a PBEM game you have to load up TripleA. At the startup window you select the <b>PBEM</b>
+				option from the <b>Game Type</b> list. After that is done you will notice a <b>PBEM</b> tab show up next
+				to the <b>Properties</b> tab, you will click on that.
+			</p>
+			
+			<p>
+				There are multiple email address fields. You fill them out approprietly with your email address and your
+				opponent's email address. This means that when you play the game all dice rolls will be emailed to those
+				addresses you specified. To verify that those email addresses work and to verify that the dice rolling
+				server is also working, you click on the <b>Test Mail</b> button. You should see a small window appear
+				showing the results of the tests. It is also wise to check your email to see if the mail arrived and
+				what it says in there.
+				<table align="center" border="0">
+					<tr>
+						<td>
+							 <img src="images/TripleA_Doc_v1_html_26989e0b.png" width="277" height="325" border="0" alt="">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Fig 1.8</b>
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				Once the test succeeds then you can begin the game by hitting the <b>Play</b> button. You play your
+				turn and (as mentioned in the first paragraph above) during battle you have to select your opponent's
+				casualties because you cannot save the game in the middle of a battle. Once you finished your turn,
+				you save your game and send the saved game file to your opponent.
+			</p>
+			
+			<p>
+				The steps your opponent have to take to load the PBEM game are as follows. They load up TripleA as
+				normal. Select <b>PBEM</b> from the <b>Game Type</b> options list. Then, in the same place they
+				choose to load a <b>Saved</b> game. They browse their computer and select the PBEM saved game
+				file that their opponent sent them. Once they have selected the PBEM saved game file, they are
+				now ready to click on the <b>PBEM</b> tab located at the top of the window. Once they are in that
+				section, they have to fill out the email addresses approprietly as done above (can also opt to hit
+				<b>Test Mail</b>). When that is done they can hit the <b>Play</b> button. They will see that they
+				are now at the last place their opponent left off at (obviously). They do their turn and save it
+				when they are done and send it to their opponent. And the cycle continues.<br>
+				<br>
+				<a href="#top">- Top -</a>
+			</p>
+			
+			<h4>Possible PBEM Work Arounds</h4>
+			<p>
+				Since opponents cannot select their own casualties, you can have a general consensus with your
+				opponents on what casualties should be selected at what kinds of battle scenarios. These actions
+				can be double checked by checking the emails that the dice server sends. So if someone cheats and
+				kills off 5 tanks instead of 5 infantry, it will be painfully obvious of the foul play. 
+			</p>
+			
+			<p>
+				Players can engage in what is called a "Hot-Potato" game. This is when around a minimum of 2 or
+				a maximum of 5 players wish to play a game with each other. What happens is that one person plays
+				a local game on their computer being allies, conducts their turn, plays the battles, and at the
+				end of their turn they save the game. Once the game is saved they e-mail it to the next person
+				to play their turn. This goes on being saved and sent to each player until the game is over.
+			</p>
+			
+			<p>
+				Some rules need to be agreed on before doing such a game. One of them will be to agree on what
+				casualties to select when conducting a battle. Since a battle will be done by 1 person and that
+				person has to select the casualties of their opponents and whether or not to submerge their
+				submarines. Come to a general consensus about what to do. This is not a bad idea since you actually
+				can double check what each player did, thanks to TripleA's history mode. You can look back and see
+				exactly what happened, and what dice were rolled. This way you can verify if there was foul play.
+				Of course if you notice that someone has been cheating and killed off your fighters instead of
+				your infantry for example... then you can opt to stop the game and never play with that person
+				again. Choosing opponents will be of utmost importance here. Make sure you play with people who
+				won't cheat on you.
+			</p>
+			
+			<p>
+				One down side would that anyone could re-play their turn over and over until they get suitable
+				dice. You cannot do much about this but as mentioned above.. you should play with people who
+				you can trust will not do that. Even if this is done, in the end strategy wins over dice rolls.
+			</p>
+			
+			<h2><a name="sec_c_4">Practical Guidlines for PBEM</a></h2>
+			<p>
+				Playing TripleA over the net allows for continuous Axis and Ally game play. With it, you don’t
+				need five or six hours dedicated to one game. You can participate in a game whenever you can.
+				You can even start a game via the Client / Server model and continue it via PBE.  You can exchange
+				the save game file via instant messenger, FTP server, or email and pick it back up in a Client /
+				Server game whenever you can.  Here are some general guidelines to help you keep your game play going.
+			</p>
+
+			<p>
+				<h4>Selecting Casualties</h4>
+				When selecting casualties you should follow an agreed guideline. 
+				A common guidline is to select casualties according to the cost of the piece.  
+				For land units it would follow this order:  Infantry, Artillery, Armor, Fighters, Bombers.  
+				When losing a bomber in a land battle it would do well to consider the interest of your opponent.  
+				If you would lose the bomber before a fighter to hold onto the territory then do that with your opponent’s
+				best interest in mind
+			</p>
+
+			<p>
+				Continuing the example for sea battles, casualties would be selected in this order:  Transports, Submarines,
+				Fighters, Destroyers, Loaded Transports, Carriers, Battleships.  Submersible submarines give exception; if a
+				submarine is by itself or with empty transports then it submerges on the first round.<br>
+				<br>
+				<a href="#top">- Top -</a>
+			</p>
+			
+			<h4>Types of PBE play</h4>
+			
+			<p>
+				<b>Standard PBE</b>: this kind of game is described in the TripleA documentation.  You select the PBE option
+				and enter your email address and your opponents email address.  If there is more than two involved in the
+				game you enter your email address and the email address of the person whose turn follows yours.
+			</p>
+	
+			<p>
+				<b>Confirmable PBE</b>: we use this kind of game to keep the game easy on our inbox.  You select the PBE
+				option but you use the groups email address.  Create one email address for your group and send all dice
+				rolls to that address (use it for both email fields).  The group moderator should have the password to
+				this email account.  This way dice rolls can still be confirmed if they are called into question and no
+				inboxes get flooded with dice results.
+			</p>
+	
+			<p>
+				<b>Trust Game</b>:  In this game we do not use the PBE option.
+			</p>
+			
+			<p>
+				<h4>Naming Schemes</h4>
+				Once your turn is complete you send the save game file to the other players. It is helpful to use a
+				descriptive naming scheme. An example is using the first initial of every player round – turn and
+				version info.  For instance if nabiy, ud, and drec were playing version 0.4.6 and it was Russia’s
+				turn in the second round of play the name of the file should be: <b>nud2-1RS046.svg</b>
+			</p>
+			
+			<h2><a name="sec_c_5">About Low Luck</a></h2>
+			<p>
+				Low luck is a methodology for rolling dice which reduces the variance 
+				inherent in dice rolling. It guarantees that the number of hits in a 
+				certain set of rolls will not differ from the average number of hits by 
+				more than one. The details of the implementation as well as a general 
+				discussion of low luck can be found in the DAAK club at  
+				<a target="_blank" href="http://www.daak.de/aarll/aarllregel.php?sprache=e">http://www.daak.de/aarll/aarllregel.php?sprache=e</a>.
+			</p>
+			
+			<p>
+				The low luck option can be enabled by putting a checkmark in the box 
+				next to "Low Luck" in the properties tab before the game is started. 
+				This option must be specified by the server in a multiplayer game. Low 
+				luck has not been tested for PBEM games.  The current implementation 
+				does not support low luck rolling for SBR's or techs, instead normal 
+				rules are used in these two cases. The number of dice rolled in a phase 
+				of a battle should never be more than one. The number of hits will be 
+				indicated at the bottom of the combat window and will be equal to the 
+				number of guaranteed hits plus one if the only dice rolled is a hit. No 
+				dice may be rolled if the outcome is guaranteed because no fractional 
+				dice are needed.<br>
+				<br>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_d">Seeking Help</a></h2>
+		<blockquote>
+			<p>
+				The best place to seek help is at the TripleA message board.
+				<a target="_blank" href="http://maddlinks.com/triplea/index.php">http://maddlinks.com/triplea/index.php</a>
+				(Thanks to Felix Alicea)
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		
+		<h2><a name="sec_e">Seeking Opponents</a></h2>
+		<blockquote>
+			<p>
+				Please visit our comprehensive guide to finding opponents via the message board
+				and Internet Relay Chat (IRC) on our <a target="_blank" href="http://triplea.sourceforge.net/index.php?option=content&task=view&id=7&Itemid=29">website</a>.
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		<h2><a name="sec_f">F.A.Q.</a></h2>
+		<blockquote>
+			<p>
+				<b>Q:</b>I am using windows and I keep getting &quot;Bad command or file name&quot; what do I do?<br>
+				<b>A:</B>You haven’t installed or set up the java virtual machine correctly. Go to <a href="#sec_a">Installing TripleA</a>
+			</p>
+			
+			<p>
+				<b>Q:</b>I am a Linux or Mac OS X user and I keep getting &quot;Exception in thread "main" java.lang.NoClassDefFoundError: games/strategy/engine/framework/GameRunner&quot;<br>
+				<b>A:</b>Are you running the command in the <b>bin</b> directory? type <b>pwd</b>, and the result should end in <b>/bin</b>.
+				If you are not in the <b>bin</b> directory, change your directory. It could also mean your accidently downloaded the source package
+				of TripleA instead of the pre-compiled package. This happens when you run TripleA when it has not been compiled.
+			</p>
+			
+			<p>
+				<b>Q:</b>I get &quot;Unable to create server socket: Connection timed out: connect&quot;!<br>
+				<b>A:</b>This basically means TripleA could not find the server to connect to. Are you behind
+				a Firewall that is blocking you? Is the server behind a Firewall blocking your connections? Is
+				your router set up properly for Port Forwarding? Or maybe the server went offline.
+			</p>
+			
+			<p>
+				<b>Q:</b>No matter how many times I re-download TripleA, it keeps saying it is corrupted!<br>
+				<b>A:</b>Try using a different UnZipping utility. If that doesn't work try re-downloading TripleA
+				using a different program. There was a case where Mozilla browser kept saving the Zip file in a 
+				corrupted state.
+			</p>
+			
+			<p>
+				<b>Q:</b>Don't ask me how.. but I can't seem to turn on the AI, how can I do it manually?<br>
+				<b>A:</b>Visit this <a target="_blank" href="http://maddlinks.com/triplea/viewtopic.php?t=184">link</a>
+			</p>
+			
+			<p>
+				<b>Q:</b>What can I do if I spot a SeaZone connection problem and want to fix it fast?<br>
+				<b>A:</b>You can edit the XML game file manually as shown <a target="_blank" href="http://maddlinks.com/triplea/viewtopic.php?t=301">here</a>.
+			</p>
+			
+			<p>
+				<b>Q:</b>How do I report a bug?<br>
+				<b>A:</b>Report bugs either on the <a target="_blank" href="http://maddlinks.com/triplea">TripleA message board</a> or at the <a target="_blank" href="http://sourceforge.net/projects/triplea">Project home page.</a>
+				when doing so please follow this <a target="_blank" href="http://maddlinks.com/triplea/viewtopic.php?t=162">Bug Reporting guide</a>.
+			</p>
+			
+			<p>
+				<b>Q:</b>Any way of getting an observer in the game?<br>
+				<b>A:</b>Yes, by having the observer connect to your game and not selecting any countries.
+				You can have many observers. One warning. They cannot leave during the middle of the game!
+				If they do, it will halt the game and crash (not really crash but you guys would have to
+				start over from a saved game).
+			</p>
+			
+			<p>
+				<b>Q:</b>I keep seeing the wrong IP when I host as server, whats going on?<br>
+				<b>A:</b>Please go to <a href="#sec_c_2">Multiplayer Game</a> section and scroll down
+				till you see the sub-section about Firewalls and Routers. If that doesn't solve your
+				problem, then seek help at the message board or on IRC.
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		<!-- footer -->
+		<br>
+		<hr>
+		<a href="http://sourceforge.net"><img src="images/sflogo.png" width="125" height="37" border="0" alt=""></a>&nbsp;
+		<a href="http://sourceforge.net/donate/index.php?group_id=44492"><img src="images/project-support.jpg" width="88" height="32" border="0" alt=""></a>
+	</body>
+</html>
