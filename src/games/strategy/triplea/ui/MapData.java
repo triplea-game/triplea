@@ -142,7 +142,7 @@ public class MapData
 
     public boolean getHasRelief()
     {
-        return Boolean.valueOf(m_mapProperties.getProperty(HAS_RELIEF_IMAGES, "false")).booleanValue();
+        return Boolean.valueOf(m_mapProperties.getProperty(HAS_RELIEF_IMAGES, "true")).booleanValue();
     }
     
     private void initializeContains()
