@@ -126,6 +126,7 @@ public class ImageScrollerLargeView extends JComponent
     setPreferredSize( Util.getDimension(m_offscreenImage, this));
     setMaximumSize( Util.getDimension(m_offscreenImage, this));
 
+    addMouseWheelListener(MOUSE_WHEEL_LISTENER);
     addMouseListener(MOUSE_LISTENER);
 	addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
     addMouseMotionListener(MOUSE_MOTION_LISTENER);
@@ -323,7 +324,44 @@ public class ImageScrollerLargeView extends JComponent
       m_control.largeViewChangedSize();
     }
   };
+  /**
+   * used for the mouse wheel
+   */
+  private MouseWheelListener MOUSE_WHEEL_LISTENER = new MouseWheelListener()
+  {
 
+	public void mouseWheelMoved(MouseWheelEvent e)
+	{
+			m_inside = true;
+
+			int height = getHeight();
+			int width = getWidth();
+
+			if(m_edge == NONE)
+			  m_insideCount = 0;
+
+			//compute the amount to move
+			int dx = 0;
+			int dy = e.getWheelRotation()*50;
+
+			//move left and right and test for wrap
+			int newX = (m_x + dx);
+			if(newX > m_offscreenImage.getWidth(ImageScrollerLargeView.this)-getWidth())
+			  newX -= m_offscreenImage.getWidth(ImageScrollerLargeView.this);
+			if(newX < -getWidth())
+			  newX += m_offscreenImage.getWidth(ImageScrollerLargeView.this);
+
+			//move up and down and test for edges
+			int newY = m_y + dy;
+			newY = checkBounds(newY, m_offscreenImage.getHeight(ImageScrollerLargeView.this), height, false);
+
+			//update the map
+			setCoords(newX,newY);
+			m_control.setLargeCoords(m_x,m_y);
+
+	}
+  };
+  
 	/**
 	 * this is used to detect dragscrolling
 	 */
@@ -356,8 +394,8 @@ public class ImageScrollerLargeView extends JComponent
 			  m_insideCount = 0;
 
 			//compute the amount to move
-			int dx = m_drag_scrolling_lastx-x;
-			int dy = m_drag_scrolling_lasty-y;
+			int dx =-( m_drag_scrolling_lastx-x)*(m_offscreenImage.getWidth(ImageScrollerLargeView.this)-width)/width;
+			int dy =-( m_drag_scrolling_lasty-y)*(m_offscreenImage.getHeight(ImageScrollerLargeView.this)-height)/height;
 
 			//move left and right and test for wrap
 			int newX = (m_x + dx);
