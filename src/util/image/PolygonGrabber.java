@@ -43,6 +43,8 @@ import games.strategy.util.*;
 
 public class PolygonGrabber extends JFrame
 {
+    private static boolean islandMode;
+    private JCheckBoxMenuItem modeItem;
 
     private List m_current;                   // the current set of polyongs
     private Image m_image;                    // holds the map image
@@ -50,7 +52,8 @@ public class PolygonGrabber extends JFrame
     private Map m_polygons  = new HashMap();  // maps String -> List of polygons
     private Map m_centers;                    // holds the centers for the polygons
     private JLabel location = new JLabel();
-
+    
+    
     
     /**
        main(java.lang.String[])
@@ -170,46 +173,67 @@ public class PolygonGrabber extends JFrame
         this.getContentPane().setLayout(new BorderLayout());
         this.getContentPane().add(new JScrollPane(imagePanel),  BorderLayout.CENTER);
         this.getContentPane().add(location, BorderLayout.SOUTH);
+	
+	//set up the actions
+	
+	Action openAction = new AbstractAction("Load Polygons") {
+            public void actionPerformed(ActionEvent event) {
+                loadPolygons();
+            }
+        };
+        openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Polygon Points FIle");
 
-        JToolBar toolBar = new JToolBar();
-	
-	
-        /*
-	   Add a save button
-        */
-        toolBar.add(new AbstractAction("Save Polygons")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        Action saveAction = new AbstractAction("Save Polygons") {
+            public void actionPerformed(ActionEvent event) {
                 savePolygons();
+            }
+        };
+        saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Polygon Points To File");
+
+        Action exitAction = new AbstractAction("Exit") {
+            public void actionPerformed(ActionEvent event) {
+                System.exit(0);
+            }
+        };
+        exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+
+	//set up the menu items
+
+	JMenuItem openItem = new JMenuItem(openAction);
+        openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+
+        JMenuItem saveItem = new JMenuItem(saveAction);
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+
+        JMenuItem exitItem = new JMenuItem(exitAction);
+	
+	islandMode = false;
+	modeItem = new JCheckBoxMenuItem("Island Mode",false);
+        modeItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                islandMode = modeItem.getState();
+		repaint();
             }
         });
 
+	//set up the menu bar
 
-        /*
-	   Add a load button
-        */
-        toolBar.add(new AbstractAction("Load Polygons")
-        {
-           public void actionPerformed(ActionEvent e)
-           {
-               loadPolygons();
-           }
-        });
-
-
-        /*
-	   Add an exit button
-        */
-        toolBar.add(new AbstractAction("Exit")
-        {
-           public void actionPerformed(ActionEvent e)
-           {
-               System.exit(0);
-           }
-        });
-
-       this.getContentPane().add(toolBar, BorderLayout.NORTH);
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+	
+	JMenu fileMenu = new JMenu("File");
+	fileMenu.setMnemonic('F');
+	fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+	
+	JMenu editMenu = new JMenu("Edit");
+        editMenu.setMnemonic('E');
+	editMenu.add(modeItem);
+	
+	menuBar.add(fileMenu);
+        menuBar.add(editMenu);
 
     }//end constructor
 
@@ -250,7 +274,8 @@ public class PolygonGrabber extends JFrame
        zones are not recognized when filling in the sea zone
        with a color, so we just outline in red instead of
        filling. We fill for selecting territories only for
-       ease of use.
+       ease of use. We use var "islandMode" to dictate how
+       to paint the map.
        
        @return javax.swing.JPanel  the newly create panel
     */
@@ -272,24 +297,29 @@ public class PolygonGrabber extends JFrame
 		    Collection polygons = (Collection) ((Map.Entry) iter.next()).getValue();
                     Iterator iter2 = polygons.iterator();
                     
-		    while (iter2.hasNext())
-                    {
-                        Polygon item = (Polygon)iter2.next();
+		    if(islandMode)
+		    {
+		    	while (iter2.hasNext())
+                    	{
+                        	Polygon item = (Polygon)iter2.next();
 			
-			/*
-			  fills the final highlighted area a solid color but
-			  covers the encompasing islands. Will be a guessing
-			  game to get the islands once the sea zone is done.
-
-			  g.setColor(Color.yellow);
-                          g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
-			  g.setColor(Color.black);
-			*/
-			
-			g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
+				g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
                     
-		    }//while
-                
+		    	}//while
+		    }
+		    else
+		    {
+		    	while (iter2.hasNext())
+                    	{
+                        	Polygon item = (Polygon)iter2.next();
+				g.setColor(Color.yellow);
+                          	g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
+			  	g.setColor(Color.black);
+				g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
+                    
+		    	}//while
+		    }
+
 		}//while
 		
 		
