@@ -69,10 +69,6 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
         return getLastChildInternal((HistoryNode) node.getLastChild());
     }
 
-    List getChanges()
-    {
-        return m_changes;
-    }
 
     private int getLastChange(HistoryNode node)
     {
@@ -115,7 +111,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     }
 
-    public void gotoNode(HistoryNode node)
+    public synchronized void gotoNode(HistoryNode node)
     {
       if(m_currentNode == null)
         m_currentNode = getLastNode();
@@ -127,4 +123,18 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
         new ChangePerformer(m_data).perform(dataChange);
     }
 
+    synchronized void changeAdded(Change aChange)
+    {
+      m_changes.add(aChange);
+
+      if(m_currentNode == null)
+        return;
+      if(m_currentNode == getLastNode())
+        new ChangePerformer(m_data).perform(aChange);
+    }
+
+    List  getChanges()
+    {
+      return m_changes;
+    }
 }

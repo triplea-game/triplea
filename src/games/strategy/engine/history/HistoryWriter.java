@@ -142,7 +142,7 @@ public class HistoryWriter implements java.io.Serializable
   {
     if (!isCurrentEvent())
       throw new IllegalStateException("Not in an event, but trying to add change:" + change);
-    m_history.getChanges().add(change);
+    m_history.changeAdded(change);
   }
 
   public void setRenderingData(Object details)
@@ -150,7 +150,6 @@ public class HistoryWriter implements java.io.Serializable
     if (!isCurrentEvent())
       throw new IllegalStateException("Not in an event, but trying to set details:" + details);
     ( (Event) m_current).setRenderingData(details);
-    m_history.reload(m_current);
     m_history.reload(m_current);
   }
 }

@@ -14,41 +14,64 @@
 
 package games.strategy.engine.history;
 
+import javax.swing.*;
+import java.awt.event.*;
+
 /**
  * These events are written by the delegate, and need to be serialized and sent
-*  to all games.
+ *  to all games.
  */
 public class RemoteHistoryMessage implements java.io.Serializable
 {
-    private String m_event;
-    private Object m_renderingData;
+  //this is a little curious
+  //the final variables referenced by the anonymous
+  //inner class are serialized when the object is sent over the network
+  private Action m_action;
 
-    public RemoteHistoryMessage(String event)
-    {
-        m_event = event;
-    }
+  //this is set before the action is performed
+  //its only reason for existing is so I didnt have to create a new interface
+  //to pass it to the actions.
+  private transient HistoryWriter m_historyWriter;
 
-    public RemoteHistoryMessage(String text, Object renderingData)
+  public RemoteHistoryMessage(final String event)
+  {
+    m_action = new AbstractAction()
     {
-      m_renderingData = renderingData;
-      m_event = text;
-    }
+      public void actionPerformed(ActionEvent e)
+      {
+        m_historyWriter.startEvent(event);
+      }
+    };
+  }
 
-    public RemoteHistoryMessage(Object renderingData)
+  public RemoteHistoryMessage(final String text, final Object renderingData)
+  {
+    m_action = new AbstractAction()
     {
-      m_renderingData = renderingData;
-    }
+      public void actionPerformed(ActionEvent e)
+      {
+        m_historyWriter.addChildToEvent(new EventChild(text, renderingData));
+      }
+    };
 
-    public void perform(HistoryWriter writer)
+  }
+
+  public RemoteHistoryMessage(final Object renderingData)
+  {
+    m_action = new AbstractAction()
     {
-      //not that nice, we see what fields arent null to
-      //decide what to do.
-      //TODO make this better
-       if(m_event != null && m_renderingData != null)
-         writer.addChildToEvent(new EventChild(m_event, m_renderingData));
-       else if(m_event != null)
-            writer.startEvent(m_event);
-       else if (m_renderingData != null)
-          writer.setRenderingData(m_renderingData);
-    }
+      public void actionPerformed(ActionEvent e)
+      {
+        m_historyWriter.setRenderingData(renderingData);
+      }
+    };
+
+  }
+
+  public void perform(HistoryWriter writer)
+  {
+    m_historyWriter = writer;
+    m_action.actionPerformed(null);
+    m_historyWriter = null;
+  }
 }
