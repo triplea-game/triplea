@@ -1,3 +1,5 @@
+* fixed bug  [ 1070176 ] Mistakes in calculating Battlescore (change in TUV) (sgb)
+
 * fixed bug [ 1116632 ] v0.5.1.1 TripleA skipping battle in Borneo (sgb)
 
 * fixed bug [ 1145318 ] Another Error on 5.2.2 (sgb)
