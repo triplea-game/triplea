@@ -29,6 +29,8 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.*;
 
+import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
 import java.util.*;
 
 /**
@@ -1397,6 +1399,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     private ITripleaPlayer getRemote(PlayerID player, IDelegateBridge bridge)
     {
+        //if its the null player, return a do nothing proxy
+        if(player.isNull())
+            return (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, new NullInvocationHandler());
         return (ITripleaPlayer) bridge.getRemote(player);
     }
 
@@ -1596,5 +1601,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public boolean isAmphibious()
     {
         return m_amphibious;
+    }
+}
+
+
+class NullInvocationHandler implements InvocationHandler
+{
+
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+    {
+        return null;
     }
 }
