@@ -3,162 +3,212 @@
 
 <project name="TripleA" basedir="." default="compile">
 
-  <property file=".ant.properties"/>
+    <property file=".ant.properties"/>
 
-  <path id="full.path">
-    <pathelement path="${junit.jar}"/>
-    <pathelement path="lib\plastic-1.2.0.jar"/>
-    <pathelement path="${classpath}"/>
-    <pathelement path="classes/"/>
-  </path>
-
-  <target name="init">
-  </target>
-
-  <target name="all" depends="init,clean,compile,test,zip, zipSource">
-  </target>
-
-  <target name="clean" depends="init"
-          description="Remove all release, class and saved game files">
-    <delete dir="release"/>
-    <delete dir="classes"/>
-    <delete dir="savedGames"/>
-  </target>
-
-  <target name="compile" depends="init"
-          description="Compile the source files and copy over the resource files">
-    <echo message="looking for junit.jar in:${junit.jar}, edit .ant.properties to set junit location"/>
-    <mkdir dir="classes"/>
-    <copy todir="classes">
-      <fileset dir="data">
-        <include name="**/*.dtd"/>
-        <include name="**/*.gif"/>
-        <include name="**/*.png"/>
-        <include name="**/*.txt"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.wav"/>
-      </fileset>
-    </copy>
-    <javac srcdir="src/"
-           destdir="classes/"
-           debug="true"
-           deprecation="true"
-           classpathref="full.path"/>
-  </target>
-
-  <target name ="compileClean" depends="clean,compile"
-          description="Clean then compile"/>
-
-  <target name="zip" depends="init,compile"
-          description="create a zip file for end users">
-    <mkdir dir="release" />
-    <zip zipfile="release/triplea_${triplea.version}.zip" compress="true" >
-      <zipfileset dir="classes/" prefix="triplea_${triplea.version}/classes/">
-        <include name="**/*.class"/>
-		<!-- dont put Test classes in the main distribution -->
-		<exclude name="**/*Test.class"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.gif"/>
-        <include name="**/*.png"/>
-        <include name="**/*.txt"/>
-        <include name="**/*.wav"/>
-      </zipfileset>
-      <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
-        <include name="**/*.jar"/>
-      </zipfileset>
-      <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
-        <include name="**/*.html"/>
-        <include name="**/*.png"/>
-      </zipfileset>
-      <zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
-        <include name="gpl.txt"/>
-      </zipfileset>
-      <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
-        <include name="triplea.bat"/>
-        <include name="triplea.sh"/>
-        <include name="triplea_ai.sh"/>
-	<include name="triplea_ai.bat"/>
-      </zipfileset>
-      <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
-        <include name="*.xml"/>
-      </zipfileset>
-      <zipfileset dir="." prefix="triplea_${triplea.version}/">
-        <include name="readme.html"/>
-      </zipfileset>
-    </zip>
-  </target>
-
-  <target name="zipSource" depends="init"
-          description="create a zip file for developers">
-    <mkdir dir="release" />
-    <zip zipfile="release/triplea_source_${triplea.version}.zip" compress="true" >
-      <zipfileset dir="src/" prefix="triplea_${triplea.version}/src/">
-        <include name="**/*.java"/>
-      </zipfileset>
-      <zipfileset dir="junit/" prefix="triplea_${triplea.version}/junit/">
-        <include name="excluded.properties"/>
-      </zipfileset>
-      <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
-        <include name="**/*.jar"/>
-      </zipfileset>
-      <zipfileset dir="data/" prefix="triplea_${triplea.version}/data/">
-        <include name="**/*.dtd"/>
-        <include name="**/*.gif"/>
-        <include name="**/*.png"/>
-        <include name="**/*.txt"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.wav"/>
-      </zipfileset>
-      <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
-        <include name="triplea.bat"/>
-        <include name="triplea.sh"/>
-        <include name="triplea.irix.sh"/>
-      </zipfileset>
-      <zipfileset dir="." prefix ="triplea_${triplea.version}/">
-        <include name="build.xml"/>
-        <include name=".ant.properties"/>
-        <include name="readme.html"/>
-      </zipfileset>
-      <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
-        <include name="**/*.html"/>
-        <include name="**/*.png"/>
-      </zipfileset>
-      <zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
-        <include name="gpl.txt"/>
-      </zipfileset>
-      <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
-        <include name="*.xml"/>
-      </zipfileset>
-    </zip>
-  </target>
-
-  <target name="patch">
-	<jar destfile="patch.jar" basedir="classes" includes="**/*Connection.class"/>
-  </target>
-
-  <target name="javadoc" depends="init"
-          description="Generate JavaDoc documentation">
-    <delete dir="apidoc"/>
-    <mkdir dir="apidoc"/>
-    <javadoc destdir="apidoc" Verbose="off">
-      <package name="games.strategy.*"/>
-      <sourcepath>
-        <pathelement location="src/"/>
-      </sourcepath>
-    </javadoc>
-  </target>
-
-  <target name="test" depends="init,compile"
-          description="run junit tests">
-    <junit fork="yes" haltonerror="on">
-      <classpath>
+    <path id="full.path">
         <pathelement path="${junit.jar}"/>
+        <pathelement path="lib\plastic-1.2.0.jar"/>
         <pathelement path="${classpath}"/>
         <pathelement path="classes/"/>
-      </classpath>
-      <formatter type="plain" />
-      <test name="games.strategy.StrategyGameTest" />
-      <test name="games.strategy.triplea.delegate.DelegateTest" />
-    </junit>
-  </target>
+    </path>
+
+
+    <!-- init -->
+    <target name="init">
+    </target>
+
+
+    <!-- All -->
+    <target name="all" depends="init,clean,compile,test,zip, zipSource">
+    </target>
+
+
+    <!-- Clean -->
+    <target name="clean" depends="init" description="Remove all release, class and saved game files">
+        <delete dir="release"/>
+        <delete dir="classes"/>
+        <delete dir="savedGames"/>
+    </target>
+
+
+    <!-- Compile -->
+    <target name="compile" depends="init" description="Compile the source files and copy over the resource files">
+        <echo message="looking for junit.jar in:${junit.jar}, edit .ant.properties to set junit location"/>
+        <mkdir dir="classes"/>
+        <copy todir="classes">
+            <fileset dir="data">
+                <include name="**/*.dtd"/>
+                <include name="**/*.gif"/>
+                <include name="**/*.png"/>
+                <include name="**/*.txt"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.wav"/>
+            </fileset>
+        </copy>
+    
+        <javac srcdir="src/"
+            destdir="classes/"
+            debug="true"
+            deprecation="true"
+            classpathref="full.path"/>
+    </target>
+
+  
+    <!-- compileClean -->
+    <target name="compileClean" depends="clean,compile" description="Clean then compile"/>
+
+
+    <!-- zip -->
+    <target name="zip" depends="init,compile" description="create a zip file for end users">
+        <mkdir dir="release" />
+        
+	<zip zipfile="release/triplea_${triplea.version}.zip" compress="true" >
+        
+	<zipfileset dir="classes/" prefix="triplea_${triplea.version}/classes/">
+	    <include name="**/*.class"/>
+	    <exclude name="**/*Test.class"/>  <!-- dont put Test classes in the main distribution -->
+            <include name="**/*.dtd"/>
+            <include name="**/*.gif"/>
+            <include name="**/*.png"/>
+            <include name="**/*.txt"/>
+            <include name="**/*.wav"/>
+        </zipfileset>
+      
+        <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
+            <include name="**/*.jar"/>
+        </zipfileset>
+      
+        <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
+            <include name="**/*.html"/>
+            <include name="**/*.png"/>
+        </zipfileset>
+      
+        <zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
+            <include name="gpl.txt"/>
+        </zipfileset>
+      
+        <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
+            <include name="triplea.bat"/>
+            <include name="triplea.sh"/>
+            <include name="triplea_ai.sh"/>
+	    <include name="triplea_ai.bat"/>
+        </zipfileset>
+	
+        <zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
+            <include name="**/*.png"/>
+	    <include name="**/*.bmp"/>
+	    <include name="**/*.ico"/>
+        </zipfileset>
+	
+        <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
+            <include name="*.xml"/>
+        </zipfileset>
+	
+        <zipfileset dir="." prefix="triplea_${triplea.version}/">
+            <include name="readme.html"/>
+        </zipfileset>
+	
+        </zip>
+    </target>
+
+
+    <!-- zipSource -->
+    <target name="zipSource" depends="init" description="create a zip file for developers">
+        <mkdir dir="release" />
+	
+        <zip zipfile="release/triplea_source_${triplea.version}.zip" compress="true" >
+        
+	<zipfileset dir="src/" prefix="triplea_${triplea.version}/src/">
+            <include name="**/*.java"/>
+        </zipfileset>
+      
+        <zipfileset dir="junit/" prefix="triplea_${triplea.version}/junit/">
+            <include name="excluded.properties"/>
+        </zipfileset>
+      
+        <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
+            <include name="**/*.jar"/>
+        </zipfileset>
+      
+        <zipfileset dir="data/" prefix="triplea_${triplea.version}/data/">
+            <include name="**/*.dtd"/>
+            <include name="**/*.gif"/>
+            <include name="**/*.png"/>
+            <include name="**/*.txt"/>
+            <include name="**/*.xml"/>
+            <include name="**/*.wav"/>
+        </zipfileset>
+      
+        <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
+            <include name="triplea.bat"/>
+            <include name="triplea.sh"/>
+            <include name="triplea_ai.sh"/>
+	    <include name="triplea_ai.bat"/>
+        </zipfileset>
+      
+        <zipfileset dir="." prefix="triplea_${triplea.version}/">
+            <include name="build.xml"/>
+            <include name=".ant.properties"/>
+            <include name="readme.html"/>
+        </zipfileset>
+      
+        <zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
+            <include name="**/*.png"/>
+	    <include name="**/*.bmp"/>
+	    <include name="**/*.ico"/>
+        </zipfileset>
+      
+        <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
+            <include name="**/*.html"/>
+            <include name="**/*.png"/>
+        </zipfileset>
+      
+        <zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
+            <include name="gpl.txt"/>
+        </zipfileset>
+      
+        <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
+            <include name="*.xml"/>
+        </zipfileset>
+        
+	</zip>
+    </target>
+
+
+    <!-- patch -->
+    <target name="patch">
+        <jar destfile="patch.jar" basedir="classes" includes="**/*Connection.class"/>
+    </target>
+
+
+    <!-- javadoc -->
+    <target name="javadoc" depends="init" description="Generate JavaDoc documentation">
+        <delete dir="apidoc"/>
+        
+	<mkdir dir="apidoc"/>
+        
+	<javadoc destdir="apidoc" Verbose="off">
+	    <package name="games.strategy.*"/>
+                <sourcepath>
+                    <pathelement location="src/"/>
+                </sourcepath>
+        </javadoc>
+    </target>
+
+
+    <!-- test -->
+    <target name="test" depends="init,compile" description="run junit tests">
+        <junit fork="yes" haltonerror="on">
+            <classpath>
+                <pathelement path="${junit.jar}"/>
+                <pathelement path="${classpath}"/>
+                <pathelement path="classes/"/>
+            </classpath>
+
+            <formatter type="plain" />
+            <test name="games.strategy.StrategyGameTest" />
+            <test name="games.strategy.triplea.delegate.DelegateTest" />
+        </junit>
+    </target>
+
 </project>
