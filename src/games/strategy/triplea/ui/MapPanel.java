@@ -357,7 +357,6 @@ public class MapPanel extends ImageScrollerLargeView
           }
 
           Image img = UnitIconImageFactory.instance().getImage(current, player, m_data);
-          getOffscreenGraphics().drawImage(FlagIconImageFactory.instance().getSmallFlag(player), place.x + UnitIconImageFactory.UNIT_ICON_WIDTH - FlagIconImageFactory.SMALL_FLAG_ICON_WIDTH, place.y ,this);
           getOffscreenGraphics().drawImage(img, place.x, place.y, this);
           if(count != 1)
           {

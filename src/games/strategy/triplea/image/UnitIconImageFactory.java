@@ -68,7 +68,7 @@ public class UnitIconImageFactory
 
 
 
-  private static final String FILE_NAME = "images/units.gif";
+  private static final String FILE_NAME = "images/units2.gif";
 
   //maps Point -> image
   private final Map m_images = new HashMap();
@@ -115,20 +115,46 @@ public class UnitIconImageFactory
         load(observer);
       }
 
-      for(int row = 0; row <= 1; row++)
+
+      for (int column = 0; column <= 12; column++)
       {
-        for(int column = 0; column <= 12; column++)
-        {
-          copyImage(row, column, observer, image);
-        }
+          copyImage(0, column, observer, image);
       }
+
       m_loaded = true;
+  }
+
+  private void ensurePlayerLoaded(PlayerID player)
+  {
+    int row = getPlayerRow(player);
+    if(m_images.get(new Point(row, 0)) == null)
+    {
+      Point sourcePoint = new Point(0, 0);
+      Point destPoint = new Point(row, 0);
+      Image src = (Image) m_images.get(sourcePoint);
+      javax.swing.JComponent obs = new javax.swing.JLabel();
+      while(src != null)
+      {
+          Image image = Util.createImage(UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT);
+          Graphics g = image.getGraphics();
+          g.drawImage(src,0,0,  obs);
+          g.drawImage(FlagIconImageFactory.instance().getSmallFlag(player),0,0, obs);
+          m_images.put(new Point(destPoint), image);
+
+          destPoint.y++;
+
+          sourcePoint.y++;
+          src = (Image) m_images.get(sourcePoint);
+      }
+    }
   }
 
   public Image getImage(UnitType type, PlayerID player, GameData data)
   {
     if(m_loaded == false)
       throw new IllegalArgumentException("Images not loaded");
+
+    ensurePlayerLoaded(player);
 
     Image img = (Image) m_images.get(getImageLocation(type, player, data));
     if(img == null)
@@ -159,21 +185,7 @@ public class UnitIconImageFactory
     int row = 0;
     int column = 0;
 
-    //find the player
-//    if(id.getName().equals(Constants.RUSSIANS))
-//      row = 0;
-//    else if(id.getName().equals(Constants.GERMANS))
-//      row = 2;
-//    else if(id.getName().equals(Constants.BRITISH))
-//      row = 4;
-//    else if(id.getName().equals(Constants.JAPANESE))
-//      row = 6;
-//    else if(id.getName().equals(Constants.AMERICANS))
-//      row = 8;
-//    else if(id == PlayerID.NULL_PLAYERID)
-//      row = 8;
-//    else
-//      throw new IllegalArgumentException("player not recognized:" + id);
+    row = getPlayerRow(id);
 
     //find the type
     if(type.getName().equals(Constants.INFANTRY_TYPE))
@@ -243,5 +255,26 @@ public class UnitIconImageFactory
 
     return new Point(row, column);
   }
+
+private int getPlayerRow(PlayerID id) throws IllegalArgumentException
+{
+    int row;
+    //find the player
+    if(id.getName().equals(Constants.RUSSIANS))
+      row = 1;
+    else if(id.getName().equals(Constants.GERMANS))
+      row = 2;
+    else if(id.getName().equals(Constants.BRITISH))
+      row = 3;
+    else if(id.getName().equals(Constants.JAPANESE))
+      row = 4;
+    else if(id.getName().equals(Constants.AMERICANS))
+      row = 5;
+    else if(id == PlayerID.NULL_PLAYERID)
+      row = 0;
+    else
+      throw new IllegalArgumentException("player not recognized:" + id);
+    return row;
+}
 
 }
