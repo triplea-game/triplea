@@ -34,6 +34,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.engine.message.Message;
 
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.*;
 
 /**
  *
@@ -82,7 +83,7 @@ public class MovePanel extends ActionPanel
         this.add(leftBox(m_actionLabel));
         this.add(leftBox(new JButton(CANCEL_MOVE_ACTION)));
         this.add(leftBox(new JButton(DONE_MOVE_ACTION)));
-        this.add(Box.createVerticalStrut(40));
+        this.add(Box.createVerticalStrut(15));
 
 
         this.add(m_undableMovesPanel);
@@ -157,6 +158,10 @@ public class MovePanel extends ActionPanel
         }
     };
 
+    public void cancelMove()
+    {
+        CANCEL_MOVE_ACTION.actionPerformed(null);
+    }
 
     private final AbstractAction CANCEL_MOVE_ACTION = new AbstractAction(
         "Cancel")
@@ -220,8 +225,18 @@ public class MovePanel extends ActionPanel
 
         MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
 
-        Collection canMove = Match.getMatches(units, Matches.unitHasEnoughMovement(route.getLength(), mustMoveWith.getMovement()));
-        if(canMove.isEmpty())
+
+        //unit movement counts when the unit is loaded
+        //this fixes the case where a unit is loaded and then unloaded in the same turn
+        Collection canMove;
+        if (MoveValidator.isUnload(route))
+            canMove = units;
+        else
+            canMove = Match.getMatches(units,
+                                       Matches.unitHasEnoughMovement(route.
+                                       getLength(), mustMoveWith.getMovement()));
+
+        if (canMove.isEmpty())
             return null;
 
 
@@ -417,6 +432,11 @@ public class MovePanel extends ActionPanel
 
     public void undoMove(int moveIndex)
     {
+        //clean up any state we may have
+        CANCEL_MOVE_ACTION.actionPerformed(null);
+        getMap().setRoute(null);
+
+        //undo the move
         StringMessage results = (StringMessage) m_bridge.sendMessage(new
             UndoMoveMessage(moveIndex));
         if (results != null && results.isError())

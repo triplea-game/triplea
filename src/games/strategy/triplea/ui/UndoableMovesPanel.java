@@ -19,7 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 import games.strategy.engine.data.GameData;
@@ -27,10 +28,6 @@ import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import javax.swing.border.*;
-import java.awt.*;
-import java.awt.event.*;
-import games.strategy.triplea.delegate.message.*;
 
 public class UndoableMovesPanel extends JPanel
 {
@@ -60,6 +57,10 @@ public class UndoableMovesPanel extends JPanel
 
         items.setLayout(new BoxLayout(items, BoxLayout.Y_AXIS));
         Iterator iter = m_moves.iterator();
+
+        if(iter.hasNext())
+            add(new JLabel("Moves:"), BorderLayout.NORTH);
+
         Dimension seperatorSize = new Dimension(150,20);
         while (iter.hasNext())
         {
@@ -86,23 +87,20 @@ public class UndoableMovesPanel extends JPanel
 
     private JComponent createComponentForMove(UndoableMove move)
     {
-        Box units = new Box(BoxLayout.X_AXIS);
+        Box unitsBox = new Box(BoxLayout.X_AXIS);
+        unitsBox.add(new JLabel((move.getIndex() + 1) + ") "));
         Collection unitCategories = UnitSeperator.categorize(move.getUnits());
         Iterator iter = unitCategories.iterator();
-        int width = 0;
+        Dimension buttonSize = new Dimension(80,22);
         while (iter.hasNext())
         {
             UnitCategory category = (UnitCategory)iter.next();
             Icon icon = UnitIconImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data);
             JLabel label =  new JLabel("x" + category.getUnits().size() + " ",  icon , JLabel.LEFT );
-            units.add(label);
+            unitsBox.add(label);
         }
 
-        units.add(new JLabel("  "));
-        JButton cancelButton = new JButton(new UndoMoveAction(move.getIndex()));
-
-        units.add(cancelButton);
-        units.add(Box.createHorizontalGlue());
+        unitsBox.add(Box.createHorizontalGlue());
 
 
         JLabel text = new JLabel(move.getRoute().getStart() + " -> " + move.getRoute().getEnd());
@@ -110,12 +108,32 @@ public class UndoableMovesPanel extends JPanel
         textBox.add(text);
         textBox.add(Box.createHorizontalGlue());
 
+        JButton cancelButton = new JButton(new UndoMoveAction(move.getIndex()));
+        setSize(buttonSize, cancelButton);
+
+        JButton viewbutton = new JButton(new ViewAction(move));
+        setSize(buttonSize, viewbutton);
+
+        Box buttonsBox = new Box(BoxLayout.X_AXIS);
+        buttonsBox.add(viewbutton);
+        buttonsBox.add(cancelButton);
+        buttonsBox.add(Box.createHorizontalGlue());
+
         Box rVal = new Box(BoxLayout.Y_AXIS);
-        rVal.add(units);
+        rVal.add(unitsBox);
         rVal.add(textBox);
+        rVal.add(buttonsBox);
+        rVal.add(new JLabel(" "));
 
 
         return rVal;
+    }
+
+    private void setSize(Dimension buttonSize, JButton cancelButton)
+    {
+        cancelButton.setMinimumSize(buttonSize);
+        cancelButton.setPreferredSize(buttonSize);
+        cancelButton.setMaximumSize(buttonSize);
     }
 
     class UndoMoveAction extends  AbstractAction
@@ -130,6 +148,23 @@ public class UndoableMovesPanel extends JPanel
         public void actionPerformed(ActionEvent e)
         {
             m_movePanel.undoMove(m_moveIndex);
+        }
+    }
+
+    class ViewAction extends  AbstractAction
+    {
+        private final UndoableMove m_move;
+        public ViewAction(UndoableMove move)
+        {
+            super("Show");
+            m_move = move;
+        }
+
+        public void actionPerformed(ActionEvent e)
+        {
+           m_movePanel.cancelMove();
+           m_movePanel.getMap().centerOn(m_move.getRoute().getStart());
+           m_movePanel.getMap().setRoute(m_move.getRoute());
         }
     }
 

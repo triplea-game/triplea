@@ -104,14 +104,8 @@ public class BattleDelegate implements SaveableDelegate
     while(iter.hasNext())
     {
       Territory current = (Territory) iter.next();
-      /* START False: no targets to attack with rockets (Bug 515108) */
       if(current.isWater())
         continue;
-
-      // OLD CODE
-      //			if(!current.getOwner().equals(player))
-      //				continue;
-      /* END False: no targets to attack with rockets (Bug 515108) */
 
       if(current.getUnits().someMatch(ownedAA))
         targets.addAll(getTargetsWithinRange(current, data, player));

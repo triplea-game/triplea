@@ -269,7 +269,7 @@ public class BattleTracker implements java.io.Serializable
     }
   }
 
-  protected void takeOver(Territory territory, PlayerID id, DelegateBridge bridge, GameData data, UndoableMove changeTracker)
+  protected void takeOver(Territory territory, final PlayerID id, DelegateBridge bridge, GameData data, UndoableMove changeTracker)
   {
     OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 
@@ -287,8 +287,10 @@ public class BattleTracker implements java.io.Serializable
     TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
     if(ta.getCapital() != null)
     {
+        //if the capital is owned by the capitols player
+        //take the money
       PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
-      if(!whoseCapital.equals(id))
+      if(whoseCapital.equals(territory.getOwner()))
       {
         Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
         int capturedIPCCount = whoseCapital.getResources().getQuantity(ipcs);
@@ -311,12 +313,15 @@ public class BattleTracker implements java.io.Serializable
     DelegateFinder.moveDelegate(data).markNoMovement(nonCom);
 
     //non coms revert to their original owner if once allied
+    //unless there capital is not owned
     Iterator iter = nonCom.iterator();
     while(iter.hasNext())
     {
       Unit current = (Unit) iter.next();
       PlayerID originalOwner = origOwnerTracker.getOriginalOwner(current);
-      if(originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id))
+      if(originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id) &&
+         TerritoryAttatchment.getCapital(originalOwner, data).getOwner().equals(originalOwner)
+         )
       {
         Change capture = ChangeFactory.changeOwner(current, originalOwner);
         bridge.addChange(capture);
@@ -333,9 +338,12 @@ public class BattleTracker implements java.io.Serializable
     }
 
     //is this an allied territory
+    //revert to original owner if it is, unless they done own there captital
     PlayerID terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
     PlayerID newOwner;
-    if(terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id))
+    if(terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id) &&
+       TerritoryAttatchment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner)
+       )
       newOwner = terrOrigOwner;
      else
       newOwner = id;
@@ -343,7 +351,45 @@ public class BattleTracker implements java.io.Serializable
     Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
     bridge.addChange(takeOver);
     if(changeTracker != null)
-      changeTracker.addChange(takeOver);
+    {
+        changeTracker.addChange(takeOver);
+        changeTracker.addToConquered(territory);
+    }
+
+      //is this territory our capitol or a capitol of our ally
+      if(terrOrigOwner != null &&
+         TerritoryAttatchment.getCapital(terrOrigOwner, data).equals(territory) &&
+         data.getAllianceTracker().isAllied(terrOrigOwner, id)
+         )
+      {
+          //if it is give it back to the original owner
+          Collection originallyOwned = origOwnerTracker.getOriginallyOwned(terrOrigOwner);
+
+          CompositeMatch alliedOccupiedTerritories = new CompositeMatchAnd();
+          alliedOccupiedTerritories.add(Matches.IsTerritory);
+          alliedOccupiedTerritories.add(Matches.isTerritoryAllied(terrOrigOwner, data) );
+          List friendlyTerritories = Match.getMatches(originallyOwned,alliedOccupiedTerritories );
+
+          //give back the factories as well.
+          Iterator terrIter = friendlyTerritories.iterator();
+          while (terrIter.hasNext())
+          {
+              Territory item = (Territory)terrIter.next();
+              Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item,terrOrigOwner);
+               bridge.addChange(takeOverFriendlyTerritories);
+               if(changeTracker != null)
+                   changeTracker.addChange(takeOverFriendlyTerritories);
+               Collection units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsFactory);
+               if(!units.isEmpty())
+               {
+                   Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner);
+                   bridge.addChange(takeOverNonComUnits);
+                   if(changeTracker != null)
+                       changeTracker.addChange(takeOverNonComUnits);
+               }
+          }
+      }
+
 
     String transcriptText = territory.getName() + " now owned by " + newOwner.getName();
     bridge.getTranscript().write(transcriptText);

@@ -33,6 +33,24 @@ import games.strategy.triplea.*;
 public class Matches
 {
 
+    public static final Match IsUnit = new Match()
+    {
+      public boolean match(Object o)
+      {
+          return o != null && o instanceof Unit;
+      }
+    };
+
+    public static final Match IsTerritory = new Match()
+    {
+        public boolean match(Object o)
+        {
+            return o != null && o instanceof Territory;
+        }
+    };
+
+
+
 	public static final Match UnitIsSea = new Match()
 	{
 		public boolean match(Object obj)
@@ -353,6 +371,32 @@ public class Matches
 			}
 		};
 	}
+
+    public static Match isTerritoryAllied(final PlayerID player, final GameData data)
+    {
+        return new Match()
+        {
+            public boolean match(Object o)
+            {
+                Territory t = (Territory) o;
+                return data.getAllianceTracker().isAllied(player, t.getOwner());
+            }
+        };
+    }
+
+
+    public static Match isUnitAllied(final PlayerID player, final GameData data)
+    {
+        return new Match()
+        {
+            public boolean match(Object o)
+            {
+                Unit t = (Unit) o;
+                return data.getAllianceTracker().isAllied(player, t.getOwner());
+            }
+        };
+    }
+
 
 	public static Match isTerritoryFriendly(final PlayerID player, final GameData data)
 	{

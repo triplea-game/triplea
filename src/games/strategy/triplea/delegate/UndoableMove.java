@@ -50,6 +50,8 @@ public class UndoableMove implements Serializable
     //we cant be undone until this is empty
     private Set m_dependOnMe = new HashSet();
 
+    //list of countries we took over
+    private Set m_conquered = new HashSet();
 
     //maps unit -> transport, both of type Unit
     private transient Map m_loaded = new HashMap();
@@ -63,6 +65,11 @@ public class UndoableMove implements Serializable
     public Collection getUnits()
     {
         return m_units;
+    }
+
+    public void addToConquered(Territory t)
+    {
+        m_conquered.add(t);
     }
 
     public Route getRoute()
@@ -90,7 +97,9 @@ public class UndoableMove implements Serializable
         if(m_reasonCantUndo != null)
             return m_reasonCantUndo;
         else if(!m_dependOnMe.isEmpty())
-            return "Later moves move the same units that this move does, undo later moves first";
+            return "Move " +
+                   (((UndoableMove) m_dependOnMe.iterator().next() ).getIndex() + 1) +
+                   " must be undone first";
         else
             throw new IllegalStateException("no reason");
 
@@ -201,7 +210,12 @@ public class UndoableMove implements Serializable
             if( //if the other move has moves that depend on this
                 !Util.intersection(other.getUnits(), this.getUnits() ).isEmpty() ||
                 //if the other move has unloaded transports that we are trying to move
-                !Util.intersection(other.m_unloaded.entrySet(), this.getUnits()).isEmpty()
+                !Util.intersection(other.m_unloaded.entrySet(), this.getUnits()).isEmpty() ||
+                //or we are moving through a previously conqueured territory
+                //we should be able to take this out later
+                //we need to add logic for this move to take over the same territories
+                //when the other move is undone
+                !Util.intersection(other.m_conquered, m_route.getTerritories()).isEmpty()
                )
             {
                 m_iDependOn.add(other);

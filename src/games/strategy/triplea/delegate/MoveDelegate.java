@@ -208,7 +208,7 @@ public class MoveDelegate implements SaveableDelegate
     UndoableMove moveToUndo = (UndoableMove) m_movesToUndo.get(message.getIndex());
 
     if( !moveToUndo.getcanUndo())
-        return new StringMessage("Move cannot be undone:" + moveToUndo.getReasonCantUndo(), true);
+        return new StringMessage(moveToUndo.getReasonCantUndo(), true);
 
     moveToUndo.undo(m_bridge, m_alreadyMoved, DelegateFinder.battleDelegate(m_data).getBattleTracker(), m_transportTracker);
     m_movesToUndo.remove(message.getIndex());
@@ -360,6 +360,7 @@ private void updateUndoableMoveIndexes()
       return new StringMessage(error, true);
     //do the move
     m_currentMove = new UndoableMove(m_data, m_alreadyMoved, units, route);
+
     StringMessage rVal = moveUnits(units, route, id);
     if(!rVal.isError())
     {
@@ -815,8 +816,7 @@ private void updateUndoableMoveIndexes()
       DelegateFinder.battleDelegate(m_data).getBattleTracker().addBattle(route, arrivingUnits, m_transportTracker, bombing, id, m_data, m_bridge, m_currentMove);
     }
 
-    //note that this must be done after adding battles since the battles
-    //must be able to determine who transported who
+
 
     //TODO, put units in owned transports first
     Map transporting = mapTransports(route, units);
@@ -1207,19 +1207,6 @@ private void updateUndoableMoveIndexes()
     m_bridge.getTranscript().write(transcriptText);
   }
 
-  private IntegerMap getUnitTypeMap(Collection units)
-  {
-    IntegerMap map = new IntegerMap();
-    Iterator iter = units.iterator();
-    while(iter.hasNext())
-    {
-      Unit unit = (Unit) iter.next();
-      map.add(unit.getType(), 1);
-    }
-    return map;
-  }
-
-
   /**
    * Fire aa guns.  Returns units to remove.
    */
@@ -1269,7 +1256,7 @@ private void updateUndoableMoveIndexes()
     //once we fire the aa guns, we cant undo
     //otherwise you could keep undoing and redoing
     //until you got the roll you wanted
-    m_currentMove.setCantUndo("AA has fired.");
+    m_currentMove.setCantUndo("Move cannot be undone after AA has fired.");
     DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge);
     int hitCount = dice.getHits();
 

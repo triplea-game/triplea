@@ -75,5 +75,19 @@ public class OriginalOwnerTracker implements java.io.Serializable
 		m_originalOwner = new WeakHashMap((HashMap) in.readObject()  );
 	}
 
+    public Collection getOriginallyOwned(PlayerID player)
+    {
+        Collection rVal = new ArrayList();
+        Iterator iter = m_originalOwner.keySet().iterator();
+        while (iter.hasNext())
+        {
+            Object item = (Object)iter.next();
+            if(m_originalOwner.get(item).equals(player))
+            {
+                rVal.add(item);
+            }
+        }
+        return rVal;
+    }
 
 }
