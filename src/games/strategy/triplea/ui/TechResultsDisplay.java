@@ -33,9 +33,11 @@ public class TechResultsDisplay extends JPanel
       add(list,
         new GridBagConstraints(0,2,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,5,0), 0,0)
           );
+      list.setBackground(this.getBackground());
     }
 
     JPanel dice = new JPanel();
+
     dice.setLayout(new BoxLayout(dice,BoxLayout.X_AXIS));
     for(int i = 0; i < msg.getRolls().length; i++)
     {
@@ -46,7 +48,9 @@ public class TechResultsDisplay extends JPanel
       dice.add(Box.createHorizontalStrut(2));
       dice.setMaximumSize(new Dimension(200, (int)dice.getMaximumSize().getHeight()));
     }
-    add(new JScrollPane(dice),
+    JScrollPane diceScroll = new JScrollPane(dice);
+    diceScroll.setBorder(null);
+    add(diceScroll,
         new GridBagConstraints(0,3,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,5,0), 0,0)
         );
 
