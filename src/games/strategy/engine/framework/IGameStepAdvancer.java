@@ -11,48 +11,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-/*
- * PlayerStartStepMessage.java
- *
- * Created on January 1, 2002, 7:01 PM
- */
-
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.PlayerID;
-
-import java.io.Serializable;
+import games.strategy.net.IRemote;
 
 /**
  *
- * @author  Sean Bridges
+ * @author Sean Bridges
  */
-class PlayerStartStepMessage implements Serializable
+public interface IGameStepAdvancer extends IRemote
 {
-
-	private PlayerID m_id;
-	private String m_stepName;
-	
-	/** Creates a new instance of PlayerStartStepMessage */
-    PlayerStartStepMessage(String stepName, PlayerID player) 
-	{
-		m_id = player;
-		m_stepName = stepName;
-    }
-
-	public String getStepName()
-	{
-		return m_stepName;
-	}
-	
-	public PlayerID getPlayerID()
-	{
-		return m_id;
-	}
-	
-	public String toString()
-	{
-		return "PlayerStartMessage id:" + m_id + " stepName:" + m_stepName;
-	}
+    /**
+     * A server calls this methods on client game when a player
+     * starts a certain step.
+     *
+     * The method should not return until the player has finished the step.
+     */
+    
+    public void startPlayerStep(String stepName, PlayerID player);
 }

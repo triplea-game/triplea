@@ -279,7 +279,7 @@ public class LauncherFrame extends JFrame
         Map playerMapping = m_clientStartup.getLocalPlayerMapping();
         Set playerSet = m_gameData.getGameLoader().createPlayers(playerMapping);
 
-        ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger, ((ClientMessenger) m_messenger).getServerNode(),
+        ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger,
                 m_channelMessenger, m_remoteMessenger, m_messageManager);
 
         m_gameData.getGameLoader().startGame(clientGame, playerSet);

@@ -20,19 +20,17 @@
 
 package games.strategy.engine.framework;
 
-import java.util.*;
-import java.io.Serializable;
-
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.gamePlayer.*;
-import games.strategy.engine.message.*;
+import games.strategy.engine.history.EventChild;
+import games.strategy.engine.message.IMessageManager;
+import games.strategy.engine.random.*;
+import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
 import games.strategy.util.ListenerList;
 
-import games.strategy.engine.history.*;
-import games.strategy.engine.random.*;
-import games.strategy.engine.vault.Vault;
+import java.util.*;
 
 /**
  *
@@ -47,24 +45,30 @@ public class ClientGame implements IGame
   private final IRemoteMessenger m_remoteMessenger;
   private final IChannelMessenger m_channelMessenger;
   private final ChangePerformer m_changePerformer;
-  private final INode m_serverNode;
+  
   //maps PlayerID->GamePlayer
   private Map m_gamePlayers = new HashMap();
   private final Vault m_vault;
   
+  public static final String getRemoteStepAdvancerName(INode node)
+  {
+      return "games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName();  
+  }
 
-  public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, INode server, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, IMessageManager messageManager)
+  public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, IMessageManager messageManager)
   {
     m_data = data;
-    m_serverNode = server;
+    
     m_messenger = messenger;
-    m_messenger.addMessageListener(m_messageListener);
+    
+     
     m_messageManager = messageManager;
     m_remoteMessenger = remoteMessenger;
     m_channelMessenger = channelMessenger;
     m_vault = new Vault(m_channelMessenger);
     
     m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
+    m_remoteMessenger.registerRemote(IGameStepAdvancer.class, m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
 
 
     Iterator iter = gamePlayers.iterator();
@@ -187,24 +191,39 @@ public class ClientGame implements IGame
   
   
 
-  private IMessageListener m_messageListener = new IMessageListener()
+  private IGameStepAdvancer m_gameStepAdvancer = new IGameStepAdvancer()
   {
-    public void messageReceived(Serializable msg, INode from)
+      public void startPlayerStep(String stepName, PlayerID player)
     {
-      if(msg instanceof PlayerStartStepMessage)
-      {
-        PlayerStartStepMessage playerStart = (PlayerStartStepMessage) msg;
-        IGamePlayer gp = (IGamePlayer) m_gamePlayers.get(playerStart.getPlayerID());
+      
+        
+        //make sure we are in the correct step
+        //steps are advanced on a different channel, and the
+        //message advancing the step may be being processed in a different thread
+        while(!m_data.getSequence().getStep().getName().equals(stepName))
+        {
+            try
+            {
+                Thread.sleep(50);
+            } catch (InterruptedException e)
+            {
+                //no worries mate
+            }
+        }
+        
+        IGamePlayer gp = (IGamePlayer) m_gamePlayers.get(player);
 
         if(gp == null)
-          throw new IllegalStateException("Game player not found" + playerStart);
+          throw new IllegalStateException("Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
 
-        gp.start(playerStart.getStepName());
+        gp.start(stepName);
 
-        PlayerStepEndedMessage response = new PlayerStepEndedMessage(playerStart.getStepName());
-        m_messenger.send(response, m_serverNode);
+        
+       
       }
-    }
+    
+
+
   };
 
   /**

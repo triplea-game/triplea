@@ -63,7 +63,7 @@ public class ServerGame implements IGame
     //maps playerName -> INode
     //only for remote nodes
     private final Map m_remotePlayers;
-    private final Object m_remotePlayerStepLock = new Object();
+    
     private final RandomStats m_randomStats;
 
     private IRandomSource m_randomSource = new PlainRandomSource();
@@ -79,7 +79,7 @@ public class ServerGame implements IGame
         m_data = data;
 
         m_messenger = messenger;
-        m_messenger.addMessageListener(m_messageListener);
+        
         m_messageManager = messageManager;
         m_remoteMessenger = remoteMessenger;
         m_channelMessenger = channelMessenger;
@@ -267,21 +267,8 @@ public class ServerGame implements IGame
         {
             //a remote player
             INode destination = (INode) m_remotePlayers.get(playerID.getName());
-
-            synchronized (m_remotePlayerStepLock)
-            {
-                PlayerStartStepMessage msg = new PlayerStartStepMessage(getCurrentStep().getName(), playerID);
-
-                m_messenger.send(msg, destination);
-                try
-                {
-                    m_remotePlayerStepLock.wait();
-                }
-                catch (InterruptedException ie)
-                {
-                    ie.printStackTrace();
-                }
-            }
+            IGameStepAdvancer advancer = (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
+            advancer.startPlayerStep(getCurrentStep().getName(), playerID);
         }
     }
 
@@ -343,20 +330,6 @@ public class ServerGame implements IGame
         //let our channel subscribor do the change, 
         //that way all changes will happen in the same thread
     }
-
-    private IMessageListener m_messageListener = new IMessageListener()
-    {
-        public void messageReceived(Serializable msg, INode from)
-        {
-            if (msg instanceof PlayerStepEndedMessage)
-            {
-                synchronized (m_remotePlayerStepLock)
-                {
-                    m_remotePlayerStepLock.notifyAll();
-                }
-            }
-        }
-    };
 
     public boolean canSave()
     {
