@@ -33,6 +33,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
+import javax.swing.border.*;
 
 /**
  * Displays a running battle
@@ -314,6 +315,7 @@ public class BattleDisplay extends JPanel
     north.add(defenderUnits);
 
     m_steps = new BattleStepsPanel();
+    m_steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
     m_dicePanel = new DicePanel();
 
     m_actionPanel = new JPanel();
