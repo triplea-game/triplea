@@ -14,10 +14,20 @@
 
 package games.strategy.triplea.sound;
 
+import games.strategy.engine.sound.*;
+
 public class SoundPath {
 
+  public static final String NAVAL_BATTLE = "naval_battle.wav";
+  public static final String LAND_BATTLE = "terrain_battle.wav";
 
-        private SoundPath() {
+  public static void preLoadSounds()
+  {
+    ClipPlayer.getInstance().preLoadClip(NAVAL_BATTLE,SoundPath.class);
+    ClipPlayer.getInstance().preLoadClip(LAND_BATTLE,SoundPath.class);
+  }
 
-        }
+  private SoundPath()
+  {
+  }
 }

@@ -31,6 +31,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.gamePlayer.*;
+import games.strategy.triplea.sound.*;
 
 
 /**
@@ -110,6 +111,20 @@ public class TripleA implements IGameLoader
       frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 
 			connectPlayers(players, frame);
+
+      //load the sounds in a background thread,
+      //avoids the pause where sounds dont load right away
+      Runnable loadSounds = new Runnable()
+      {
+        public void run()
+        {
+          SoundPath.preLoadSounds();
+        }
+      };
+      new Thread(loadSounds).start();
+
+
+
 		} catch(IOException ioe)
 		{
 			ioe.printStackTrace();

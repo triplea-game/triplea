@@ -82,6 +82,7 @@ public class ClipPlayer
 
   }
 
+
   /**
    * Clips are located using Class.getResource().  All clips must have a position relative to a
    * class file.
@@ -100,6 +101,14 @@ public class ClipPlayer
       clip.setFramePosition(0);
       clip.loop(0);
     }
+  }
+
+  /**
+   * To reduce the delay when the clip is first played, we can preload clips here.
+   */
+  public void preLoadClip(String clipName, Class resourceLocation)
+  {
+    loadClip(clipName, resourceLocation);
   }
 
   private Clip loadClip(String clipName, Class resourceLocation)

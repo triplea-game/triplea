@@ -105,21 +105,27 @@ public class BattleDisplay extends JPanel
     //the sound will play even when there is no casualties to be removed... This
     //still sounds cool, like they fire and miss.
 
-    if(message.getPlayer().equals(m_defender)) {
-      if(m_location.isWater()) {
-            ClipPlayer.getInstance().playClip("naval_battle.wav", SoundPath.class);
+    if (message.getPlayer().equals(m_defender))
+    {
+      if (m_location.isWater())
+      {
+        ClipPlayer.getInstance().playClip(SoundPath.NAVAL_BATTLE, SoundPath.class);
       }
-      else {
-            ClipPlayer.getInstance().playClip("terrain_battle.wav", SoundPath.class);
+      else
+      {
+        ClipPlayer.getInstance().playClip(SoundPath.LAND_BATTLE, SoundPath.class);
       }
       m_defenderModel.removeCasualties(message);
     }
-    else {
-      if(m_location.isWater()) {
-            ClipPlayer.getInstance().playClip("naval_battle.wav", SoundPath.class);
+    else
+    {
+      if (m_location.isWater())
+      {
+        ClipPlayer.getInstance().playClip(SoundPath.NAVAL_BATTLE, SoundPath.class);
       }
-      else {
-            ClipPlayer.getInstance().playClip("terrain_battle.wav", SoundPath.class);
+      else
+      {
+        ClipPlayer.getInstance().playClip(SoundPath.LAND_BATTLE, SoundPath.class);
       }
       m_attackerModel.removeCasualties(message);
 
