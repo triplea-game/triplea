@@ -513,6 +513,8 @@
 			<step name="americanNonCombatMove" delegate="move" player="Americans"/>
 			<step name="americanPlace" delegate="place" player="Americans"/>
 			<step name="americanEndTurn" delegate="endTurn" player="Americans"/>
+			
+			<step name="endRoundStep" delegate="endRound"/>
 		</sequence>
 	</gamePlay>
 

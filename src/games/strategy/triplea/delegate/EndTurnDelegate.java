@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * EndTurnDelegate.java
  *
  * Created on November 2, 2001, 12:30 PM
@@ -11,6 +25,7 @@ import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
+import games.strategy.engine.transcript.*;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
@@ -24,9 +39,11 @@ import games.strategy.triplea.attatchments.*;
  */
 public class EndTurnDelegate implements Delegate
 {
-
 	private String m_name;
 	private GameData m_data;
+
+	//we only want to notify once that the game is over
+	private boolean m_gameOver = false;
 	
 	public void initialize(String name) 
 	{
@@ -46,7 +63,6 @@ public class EndTurnDelegate implements Delegate
 		if(!capital.getOwner().equals(player))
 			return;
 		
-		
 		Resource ipcs = gameData.getResourceList().getResource(Constants.IPCS);
 		//just collect resources
 		Collection territories = gameData.getMap().getTerritoriesOwnedBy(player);
@@ -57,7 +73,50 @@ public class EndTurnDelegate implements Delegate
 		
 		String transcriptText = player.getName() + " collects " + toAdd + " ipcs";
 		aBridge.getTranscript().write(transcriptText);
+
+		checkForWinner(aBridge);
+	}
+
+	private void checkForWinner(DelegateBridge bridge)
+	{
+		//only notify once
+		if(m_gameOver)
+			return;
+
+		//check allies
+		PlayerID russia = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
+		PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
+		PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 		
+		int count = 0;
+		
+		if(!getCapital(russia).getOwner().equals(russia))
+		{
+			count++;
+		}
+		if(!getCapital(british).getOwner().equals(british))
+		{
+			count++;
+		}
+		if(!getCapital(americans).getOwner().equals(americans))
+		{
+			count++;
+		}
+		if(count >= 2)
+		{
+			m_gameOver = true;
+			bridge.getTranscript().write("Axis are victorious", TranscriptMessage.PRIORITY_CHANNEL);
+		}
+
+		PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
+		PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
+
+	 	if(!getCapital(germans).getOwner().equals(germans) &&
+		!getCapital(japanese).getOwner().equals(japanese))
+		{
+			m_gameOver = true;
+			bridge.getTranscript().write("Allies are victorious", TranscriptMessage.PRIORITY_CHANNEL);
+		}
 	}
 	
 	private int getProduction(Collection territories)
@@ -115,5 +174,4 @@ public class EndTurnDelegate implements Delegate
 	{
 		DelegateFinder.battleDelegate(m_data).getBattleTracker().clear();
 	}
-
 }
