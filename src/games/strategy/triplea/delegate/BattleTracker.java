@@ -416,7 +416,7 @@ public class BattleTracker implements java.io.Serializable
   {
     if(m_dependencies.get(blocked) == null)
     {
-      m_dependencies.put(blocked, new ArrayList());
+      m_dependencies.put(blocked, new HashSet());
     }
     ((Collection) m_dependencies.get(blocked)).add(blocking);
   }

@@ -32,7 +32,7 @@ import games.strategy.triplea.formatter.Formatter;
 /**
  * Battle in which no fighting occurs.  <b>
  * Example is a naval invasion into an empty country,
- * but the battle cannot be fought until a naval battle 
+ * but the battle cannot be fought until a naval battle
  * occurs.
  *
  * @author  Sean Bridges
@@ -53,8 +53,8 @@ public class NonFightingBattle implements Battle
 	//if unit is lost in a battle we are dependent on
 	//then we lose the corresponding collection of units
 	private Map m_dependentUnits = new HashMap();
-	
-	public NonFightingBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, boolean neutral, GameData data, TransportTracker transportTracker) 
+
+	public NonFightingBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, boolean neutral, GameData data, TransportTracker transportTracker)
 	{
 		m_battleTracker = battleTracker;
 		m_attacker = attacker;
@@ -63,31 +63,31 @@ public class NonFightingBattle implements Battle
 		m_data = data;
 		m_transportTracker = transportTracker;
 	}
-	
-	public void fight(DelegateBridge bridge) 
+
+	public void fight(DelegateBridge bridge)
 	{
 		if(!m_battleTracker.getDependentOn(this).isEmpty())
 			throw new IllegalStateException("Must fight battles that this battle depends on first");
-		
+
 		//if any attacking non air units then win
 		CompositeMatch attackingLand = new CompositeMatchAnd();
 		attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
 		attackingLand.add(Matches.UnitIsLand);
 		if( m_battleSite.getUnits().someMatch(attackingLand))
 		{
-			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, m_data);	
+			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, m_data);
 			m_battleTracker.addToConquered(m_battleSite);
 		}
 		m_battleTracker.removeBattle(this);
 	}
-	
-	public boolean isBombingRun() 
+
+	public boolean isBombingRun()
 	{
 		return false;
 	}
-	
-	public void addAttack(Route route, Collection units) 
-	{	
+
+	public void addAttack(Route route, Collection units)
+	{
 		Map addedTransporting = m_transportTracker.transporting(units);
 		Iterator iter = addedTransporting.keySet().iterator();
 		while(iter.hasNext())
@@ -96,16 +96,16 @@ public class NonFightingBattle implements Battle
 			if(m_dependentUnits.get(unit) != null)
 				((Collection) m_dependentUnits.get(unit)).addAll( (Collection) addedTransporting.get(unit));
 			else
-				m_dependentUnits.put(unit, addedTransporting.get(unit));	
+				m_dependentUnits.put(unit, addedTransporting.get(unit));
 		}
 	}
-	
-	public Territory getTerritory() 
+
+	public Territory getTerritory()
 	{
 		return m_battleSite;
 	}
-	
-	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge) 
+
+	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
 	{
 		Iterator iter = units.iterator();
 		Collection lost = new ArrayList();
@@ -120,9 +120,30 @@ public class NonFightingBattle implements Battle
 		{
 			Change change = ChangeFactory.removeUnits(m_battleSite, lost);
 			bridge.addChange(change);
-			
+
 			String transcriptText = Formatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
 			bridge.getTranscript().write(transcriptText);
 		}
 	}
+
+    public int hashCode()
+    {
+      return m_battleSite.hashCode();
+    }
+
+    public boolean equals(Object o)
+    {
+      //2 battles are equal if they are both the same type (boming or not)
+      //and occur on the same territory
+      //equals in the sense that they should never occupy the same Set
+      //if these conditions are met
+      if (o == null || ! (o instanceof Battle))
+        return false;
+
+      Battle other = (Battle) o;
+      return other.getTerritory().equals(this.m_battleSite) &&
+          other.isBombingRun() == this.isBombingRun();
+    }
+
+
 }

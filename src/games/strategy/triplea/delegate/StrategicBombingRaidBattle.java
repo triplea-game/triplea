@@ -123,7 +123,7 @@ public class StrategicBombingRaidBattle implements Battle
 
   private void fireAA(DelegateBridge bridge)
   {
-    DiceRoll dice = DiceRoll.rollAA(m_units.size(),bridge, 
+    DiceRoll dice = DiceRoll.rollAA(m_units.size(),bridge,
                                     m_attacker, m_defender);
     removeAAHits(bridge, dice);
   }
@@ -195,6 +195,26 @@ public class StrategicBombingRaidBattle implements Battle
     //should never happen
     throw new IllegalStateException("say what, why you telling me that");
   }
+
+  public int hashCode()
+  {
+    return m_battleSite.hashCode();
+  }
+
+  public boolean equals(Object o)
+  {
+    //2 battles are equal if they are both the same type (boming or not)
+    //and occur on the same territory
+    //equals in the sense that they should never occupy the same Set
+    //if these conditions are met
+    if(o == null || ! (o instanceof Battle))
+      return false;
+
+    Battle other = (Battle) o;
+    return other.getTerritory().equals(this.m_battleSite) &&
+      other.isBombingRun() == this.isBombingRun();
+  }
+
 
   public Territory getTerritory()
   {
