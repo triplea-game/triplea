@@ -49,211 +49,210 @@ import games.strategy.debug.Console;
  */
 public class GameRunner
 {
-	private GameData m_data;
-	private final static int PORT = 932;
+  private GameData m_data;
+  private final static int PORT = 932;
 
-	public static void main(String[] args)
-	{
-		//Console c = Console.getConsole();
-		//c.displayStandardError();
-		//c.displayStandardOutput();
-		//c.show();
+  public static void main(String[] args)
+  {
+    //Console c = Console.getConsole();
+    //c.displayStandardError();
+    //c.displayStandardOutput();
+    //c.show();
 
-		GameRunner runner = new GameRunner();
+    GameRunner runner = new GameRunner();
 
-		if(args.length == 0)
-			runner.start();
-		else if(args[0].equalsIgnoreCase("server"))
-			runner.startServer();
-		else if(args[0].equalsIgnoreCase("client"))
-			runner.startClient();
-		else if(args[0].equalsIgnoreCase("local"))
-			runner.startLocalGame();
-	}
+    if(args.length == 0)
+      runner.start();
+    else if(args[0].equalsIgnoreCase("server"))
+      runner.startServer();
+    else if(args[0].equalsIgnoreCase("client"))
+      runner.startClient();
+    else if(args[0].equalsIgnoreCase("local"))
+      runner.startLocalGame();
+  }
 
-	/**
-	 * Get the root folder for the application
-	 */
-	public static File getRootFolder()
-	{
-		//TODO this is a bit hokey, we assume that we are running
-		//from the bin directory.
-	    return new File("..");
-	}
+  /**
+   * Get the root folder for the application
+   */
+  public static File getRootFolder()
+  {
+    //TODO this is a bit hokey, we assume that we are running
+    //from the bin directory.
+      return new File("..");
+  }
 
-	private void start()
-	{
-		selectClientServer();
-	}
+  private void start()
+  {
+    selectClientServer();
+  }
 
-	private void loadDataLocal()
-	{
-		String newString = "New Game";
-		String loadString = "Load Saved";
-		String[] options = new String[] {newString, loadString};
-		int choice = JOptionPane.showOptionDialog(null, "New game or load saved?", "New Game", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, newString);
-		System.out.println(choice);
-		if(choice == 1 )
-			m_data = new SavedGamedDataLoader().loadData();
-		else
-			m_data = new DefaultGameDataLoader().loadData();
+  private void loadDataLocal()
+  {
+    String newString = "New Game";
+    String loadString = "Load Saved";
+    String[] options = new String[] {newString, loadString};
+    int choice = JOptionPane.showOptionDialog(null, "New game or load saved?", "New Game", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, newString);
+    if(choice == 1 )
+      m_data = new SavedGamedDataLoader().loadData();
+    else
+      m_data = new DefaultGameDataLoader().loadData();
 
-	}
+  }
 
-	private void selectClientServer()
-	{
-		String server = "Server";
-		String client = "Client";
-		String local = "Local Game";
-		String[] options = {local, server, client};
-		JComboBox combo = new JComboBox(options);
-		combo.setSelectedIndex(0);
-		combo.setEditable(false);
+  private void selectClientServer()
+  {
+    String server = "Server";
+    String client = "Client";
+    String local = "Local Game";
+    String[] options = {local, server, client};
+    JComboBox combo = new JComboBox(options);
+    combo.setSelectedIndex(0);
+    combo.setEditable(false);
 
-		Object[] choices = {"OK"};
-		int option = JOptionPane.showOptionDialog(null, combo, "Select game type", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, null);
-		if(option != 0)
-			System.exit(0);
-		String type = options[combo.getSelectedIndex()];
+    Object[] choices = {"OK"};
+    int option = JOptionPane.showOptionDialog(null, combo, "Select game type", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, null);
+    if(option != 0)
+      System.exit(0);
+    String type = options[combo.getSelectedIndex()];
 
-		if(type == server)
-			startServer();
-		else if(type == client)
-			startClient();
-		else
-			startLocalGame();
-	}
+    if(type == server)
+      startServer();
+    else if(type == client)
+      startClient();
+    else
+      startLocalGame();
+  }
 
-	public void startServer()
-	{
-	     loadDataLocal();
+  public void startServer()
+  {
+       loadDataLocal();
 
-		System.out.println("Server");
-		ServerMessenger messenger = null;
+    System.out.println("Server");
+    ServerMessenger messenger = null;
 
-		ServerOptions options = new ServerOptions("Server", PORT);
-		options.show();
-		options.waitForOptions();
-		options.dispose();
+    ServerOptions options = new ServerOptions("Server", PORT);
+    options.show();
+    options.waitForOptions();
+    options.dispose();
 
-		String name = options.getName();
-		int port = options.getPort();
+    String name = options.getName();
+    int port = options.getPort();
 
-		try
-		{
-			 messenger= new ServerMessenger(name, port, new GameObjectStreamFactory(m_data));
-		} catch(IOException ioe)
-		{
-			ioe.printStackTrace();
-			System.exit(0);
-		}
+    try
+    {
+       messenger= new ServerMessenger(name, port, new GameObjectStreamFactory(m_data));
+    } catch(IOException ioe)
+    {
+      ioe.printStackTrace();
+      System.exit(0);
+    }
 
-		ChatFrame chatFrame = new ChatFrame(messenger);
-		chatFrame.show();
+    ChatFrame chatFrame = new ChatFrame(messenger);
+    chatFrame.show();
 
-		IGameLoader loader = m_data.getGameLoader();
+    IGameLoader loader = m_data.getGameLoader();
 
-		System.out.println("starting");
-		ServerStartup startup = new ServerStartup(loader, m_data, messenger);
-		startup.setVisible(true);
+    System.out.println("starting");
+    ServerStartup startup = new ServerStartup(loader, m_data, messenger);
+    startup.setVisible(true);
 
-		startup.waitForPlayers();
-		startup.dispose();
+    startup.waitForPlayers();
+    startup.dispose();
 
-		ServerWaitForClientMessageListener listener = new ServerWaitForClientMessageListener();
-		messenger.addMessageListener(listener);
+    ServerWaitForClientMessageListener listener = new ServerWaitForClientMessageListener();
+    messenger.addMessageListener(listener);
 
-		Map playerMapping = startup.getLocalPlayerMapping();
-		Set playerSet = loader.createPlayers(playerMapping);
-		Map remotePlayers = startup.getRemotePlayerMapping();
+    Map playerMapping = startup.getLocalPlayerMapping();
+    Set playerSet = loader.createPlayers(playerMapping);
+    Map remotePlayers = startup.getRemotePlayerMapping();
 
-		ServerGame serverGame = new ServerGame(m_data, playerSet, messenger, remotePlayers);
+    ServerGame serverGame = new ServerGame(m_data, playerSet, messenger, remotePlayers);
 
-		chatFrame.getChat().showTranscript(serverGame.getTranscript());
+    chatFrame.getChat().showTranscript(serverGame.getTranscript());
 
-		loader.startGame(serverGame, playerSet);
+    loader.startGame(serverGame, playerSet);
 
-		listener.waitFor( new HashSet(playerMapping.values()).size());
-		messenger.removeMessageListener(listener);
+    listener.waitFor( new HashSet(playerMapping.values()).size());
+    messenger.removeMessageListener(listener);
 
-		serverGame.startGame();
-	}
+    serverGame.startGame();
+  }
 
-	public void startClient()
-	{
-		System.out.println("Client");
+  public void startClient()
+  {
+    System.out.println("Client");
 
-		ClientOptions options = new ClientOptions("Client", PORT, "127.0.0.1");
-		options.show();
-		options.waitForOptions();
-		options.dispose();
+    ClientOptions options = new ClientOptions("Client", PORT, "127.0.0.1");
+    options.show();
+    options.waitForOptions();
+    options.dispose();
 
-		String name = options.getName();
-		int port = options.getPort();
-		String address = options.getAddress();
+    String name = options.getName();
+    int port = options.getPort();
+    String address = options.getAddress();
 
-		ClientMessenger messenger = null;
-		GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
-		try
-		{
-			messenger = new ClientMessenger(address, port, name, objectStreamFactory);
-		} catch(Exception e)
-		{
-			JOptionPane.showMessageDialog(null, e.getMessage());
-			startClient();
-			return;
-		}
+    ClientMessenger messenger = null;
+    GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
+    try
+    {
+      messenger = new ClientMessenger(address, port, name, objectStreamFactory);
+    } catch(Exception e)
+    {
+      JOptionPane.showMessageDialog(null, e.getMessage());
+      startClient();
+      return;
+    }
 
-		ChatFrame chatFrame = new ChatFrame(messenger);
+    ChatFrame chatFrame = new ChatFrame(messenger);
 
-		chatFrame.show();
-
-
-		m_data = new ClientGameLoader(messenger).loadData();
-		objectStreamFactory.setData(m_data);
-
-		IGameLoader loader = m_data.getGameLoader();
-
-		ClientStartup startup = new ClientStartup(loader, m_data, messenger);
-		startup.setVisible(true);
-
-		startup.waitForPlayers();
-		startup.dispose();
-
-		Map playerMapping = startup.getLocalPlayerMapping();
-		Set playerSet = loader.createPlayers(playerMapping);
+    chatFrame.show();
 
 
+    m_data = new ClientGameLoader(messenger).loadData();
+    objectStreamFactory.setData(m_data);
 
-		ClientGame clientGame = new ClientGame(m_data, playerSet, messenger, messenger.getServerNode());
+    IGameLoader loader = m_data.getGameLoader();
 
-		chatFrame.getChat().showTranscript(clientGame.getTranscript());
+    ClientStartup startup = new ClientStartup(loader, m_data, messenger);
+    startup.setVisible(true);
 
-		m_data.getGameLoader().startGame(clientGame, playerSet);
+    startup.waitForPlayers();
+    startup.dispose();
 
-		messenger.send(new ClientReady(), messenger.getServerNode());
-	}
+    Map playerMapping = startup.getLocalPlayerMapping();
+    Set playerSet = loader.createPlayers(playerMapping);
 
-	public void startLocalGame()
-	{
-	    loadDataLocal();
 
-		IServerMessenger messenger = new DummyMessenger();
 
-		java.util.List players = games.strategy.util.Util.toList(m_data.getPlayerList().getNames());
+    ClientGame clientGame = new ClientGame(m_data, playerSet, messenger, messenger.getServerNode());
 
-		Map localPlayerMap = new HashMap();
-		Iterator playerIter = players.iterator();
-		while(playerIter.hasNext())
-		{
-			localPlayerMap.put(playerIter.next(), "local");
-		}
+    chatFrame.getChat().showTranscript(clientGame.getTranscript());
 
-		Set gamePlayers = m_data.getGameLoader().createPlayers(localPlayerMap);
-		ServerGame game = new ServerGame(m_data, gamePlayers, messenger, new HashMap());
-		m_data.getGameLoader().startGame(game, gamePlayers);
-		game.startGame();
-	}
+    m_data.getGameLoader().startGame(clientGame, playerSet);
+
+    messenger.send(new ClientReady(), messenger.getServerNode());
+  }
+
+  public void startLocalGame()
+  {
+      loadDataLocal();
+
+    IServerMessenger messenger = new DummyMessenger();
+
+    java.util.List players = games.strategy.util.Util.toList(m_data.getPlayerList().getNames());
+
+    Map localPlayerMap = new HashMap();
+    Iterator playerIter = players.iterator();
+    while(playerIter.hasNext())
+    {
+      localPlayerMap.put(playerIter.next(), "local");
+    }
+
+    Set gamePlayers = m_data.getGameLoader().createPlayers(localPlayerMap);
+    ServerGame game = new ServerGame(m_data, gamePlayers, messenger, new HashMap());
+    m_data.getGameLoader().startGame(game, gamePlayers);
+    game.startGame();
+  }
 }
 
 class ClientReady implements Serializable
@@ -263,31 +262,31 @@ class ClientReady implements Serializable
 
 class ServerWaitForClientMessageListener implements IMessageListener
 {
-	int m_count = 0;
+  int m_count = 0;
 
-	public void messageReceived(Serializable msg, INode from)
-	{
-		if(msg instanceof ClientReady)
-		{
-			synchronized(this)
-			{
-				m_count++;
-				this.notifyAll();
-			}
-		}
-	}
+  public void messageReceived(Serializable msg, INode from)
+  {
+    if(msg instanceof ClientReady)
+    {
+      synchronized(this)
+      {
+        m_count++;
+        this.notifyAll();
+      }
+    }
+  }
 
-	public void waitFor(int target)
-	{
-		synchronized(this)
-		{
-			while(m_count < target)
-			{
-				try
-				{
-					this.wait();
-				} catch(InterruptedException ie) {}
-			}
-		}
-	}
+  public void waitFor(int target)
+  {
+    synchronized(this)
+    {
+      while(m_count < target)
+      {
+        try
+        {
+          this.wait();
+        } catch(InterruptedException ie) {}
+      }
+    }
+  }
 }
