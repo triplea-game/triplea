@@ -115,7 +115,7 @@ public class DiceRoll implements java.io.Serializable
         }
 
         sortedDice[strength - 1].add(new Integer(dice[diceIndex]));
-        if(TechTracker.hasHeavyBomber(player) &&
+        if(ua.isStrategicBomber()&& TechTracker.hasHeavyBomber(player) &&
            data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)!=null &&
            data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)==Boolean.TRUE)
         {
