@@ -42,7 +42,7 @@ public class MultiDestinationMessage
     //assumes messages are generated and seen in order
     //from a single source
     //if its not working for you then update the algorithm
-    boolean rVal = message.getID() < s_lastSeenID;
+    boolean rVal = message.getID() <= s_lastSeenID;
     s_lastSeenID = message.getID();
     return rVal;
   }
