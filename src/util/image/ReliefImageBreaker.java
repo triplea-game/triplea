@@ -101,7 +101,15 @@ public class ReliefImageBreaker
             System.exit(0);
 	}
 	
-        TerritoryData.setMapDir(mapDir);    //makes TripleA read all the text data files for the map.
+	try
+	{
+            TerritoryData.setMapDir(mapDir);    //makes TripleA read all the text data files for the map.
+        }
+	catch(NullPointerException npe)
+	{
+	    System.out.println("Bad data given, shutting down");
+	    System.exit(0);
+	}
 
         Iterator unitIter = TerritoryData.getInstance().getTerritories().iterator();
 
