@@ -1033,9 +1033,10 @@ class CountDownLatch
     
     public void await()
     {
-        while(m_count != 0)
+
+        synchronized (m_mutex)
         {
-            synchronized(m_mutex)
+            while (m_count != 0)
             {
                 try
                 {
