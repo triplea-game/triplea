@@ -699,7 +699,7 @@ public class MoveDelegate implements SaveableDelegate
             //if the air that we are moving and cant find another place to land,
             //see if the air we are moving can land in the given territory
             //and the air already there can land somewhere else
-            if(!canLand && MoveValidator.canLand(units, route.getEnd(), m_player, m_data))
+            if(!canLand && MoveValidator.canLand( Match.getMatches(units, Matches.UnitIsAir), route.getEnd(), m_player, m_data))
             {
                 Collection airAlreadyThere = Match.getMatches( MoveValidator.getFriendly(route.getEnd(), player, m_data), Matches.UnitIsAir);
                 distance = MoveValidator.getLeastMovement(airAlreadyThere, m_alreadyMoved);
