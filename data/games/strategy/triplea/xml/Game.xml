@@ -617,7 +617,7 @@
 			<frontierRules name="buyTransport"/>
 			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyBattleship"/>
-			<frontierRules name="buyCarrier"/>
+			<frontierRules name="buySubmarine"/>
 			<frontierRules name="buyAAGun"/>
 			<frontierRules name="buyFactory"/>	
 		</productionFrontier>
@@ -630,7 +630,7 @@
 			<frontierRules name="buyTransportIndustrialTechnology"/>
 			<frontierRules name="buyCarrierIndustrialTechnology"/>
 			<frontierRules name="buyBattleshipIndustrialTechnology"/>
-			<frontierRules name="buyCarrierIndustrialTechnology"/>
+			<frontierRules name="buySubmarineIndustrialTechnology"/>
 			<frontierRules name="buyAAGunIndustrialTechnology"/>
 			<frontierRules name="buyFactoryIndustrialTechnology"/>	
 		</productionFrontier>
@@ -1041,7 +1041,7 @@
 			<unitPlacement unitType="infantry" territory="East Indies" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="armour" territory="East Canada" quantity ="1" owner="British" /> 
 			<unitPlacement unitType="armour" territory="East Europe" quantity ="1" owner="Germans" /> 
-			<unitPlacement unitType="infantry" territory="East Europe" quantity ="2" owner="Germans" /> 
+			<unitPlacement unitType="infantry" territory="East Europe" quantity ="3" owner="Germans" /> 
 			<unitPlacement unitType="fighter" territory="East Europe" quantity ="1" owner="Germans" /> 
 			<unitPlacement unitType="infantry" territory="East US" quantity ="2" owner="Americans" /> 
 			<unitPlacement unitType="armour" territory="East US" quantity ="1" owner="Americans" /> 
