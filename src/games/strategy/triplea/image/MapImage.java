@@ -274,13 +274,27 @@ public class MapImage
       alpha[i] = (byte) i;
     }
 
-    byte[][] bytes = new byte[][] {
-      getCorrectComponent(2, model, rBytes, gBytes, bBytes, alpha),
-      getCorrectComponent(1, model, rBytes, gBytes, bBytes, alpha),
-      getCorrectComponent(0, model, rBytes, gBytes, bBytes, alpha),
-      getCorrectComponent(3, model, rBytes, gBytes, bBytes, alpha)
-};
-
+    byte[][] bytes;
+    if(System.getProperties().getProperty("os.name").indexOf("Windows") == -1)
+    {
+      //non windows world orients the bytes like this
+      bytes = new byte[][] {
+        getCorrectComponent(1, model, rBytes, gBytes, bBytes, alpha),
+        getCorrectComponent(2, model, rBytes, gBytes, bBytes, alpha),
+        getCorrectComponent(3, model, rBytes, gBytes, bBytes, alpha),
+        getCorrectComponent(0, model, rBytes, gBytes, bBytes, alpha)
+      };
+    }
+    else
+    {
+      //the windoes world orients the bytes like this
+      bytes = new byte[][] {
+        getCorrectComponent(2, model, rBytes, gBytes, bBytes, alpha),
+        getCorrectComponent(1, model, rBytes, gBytes, bBytes, alpha),
+        getCorrectComponent(0, model, rBytes, gBytes, bBytes, alpha),
+        getCorrectComponent(3, model, rBytes, gBytes, bBytes, alpha)
+      };
+    }
     LookupOp op = new LookupOp( new ByteLookupTable(0,bytes), null );
 
     return op;
