@@ -79,8 +79,7 @@ public class BattlePanel extends ActionPanel
 
     public void notifyRetreat(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
     {
-        SwingUtilities.invokeLater(
-        new Runnable()
+        SwingUtilities.invokeLater(new Runnable()
         {
             public void run()
             {
@@ -88,40 +87,34 @@ public class BattlePanel extends ActionPanel
                     m_battleDisplay.battleInfo(messageShort, messageLong, step);
             }
         }
-        
+
         );
-        
-        
+
     }
 
-    public void showDice(final String messageShort,final DiceRoll dice, final String step)
+    public void showDice(final String messageShort, final DiceRoll dice, final String step)
     {
-        SwingUtilities.invokeLater(
-                new Runnable()
-                {
-                    public void run()
-                    {
-                        if (m_battleDisplay != null)
-                            m_battleDisplay.battleInfo(messageShort, dice, step);
-                    }
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                if (m_battleDisplay != null)
+                    m_battleDisplay.battleInfo(messageShort, dice, step);
+            }
 
-                }
-        );
+        });
     }
 
     public void battleEndMessage(final GUID battleId, final String message)
     {
-        SwingUtilities.invokeLater(
-        new Runnable()        
+        SwingUtilities.invokeLater(new Runnable()
         {
-          public void run()  
-          {
-              m_battleDisplay.endBattle(message, m_battleFrame);      
-          }
-        }
-        );
-        
-        
+            public void run()
+            {
+                m_battleDisplay.endBattle(message, m_battleFrame);
+            }
+        });
+
     }
 
     /**
@@ -206,7 +199,14 @@ public class BattlePanel extends ActionPanel
                 m_battleFrame.setVisible(true);
                 m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-                m_battleFrame.toFront();
+                SwingUtilities.invokeLater(new Runnable()
+                {
+                    public void run()
+                    {
+                        m_battleFrame.toFront();
+                    }
+
+                });
             }
         });
 
@@ -263,8 +263,8 @@ public class BattlePanel extends ActionPanel
         m_battleDisplay.waitForConfirmation(message, step);
     }
 
-    public CasualtyDetails getCasualties(final String step, final Collection selectFrom, final Map dependents, final int count, final String message, final DiceRoll dice, final PlayerID hit,
-            final List defaultCasualties)
+    public CasualtyDetails getCasualties(final String step, final Collection selectFrom, final Map dependents, final int count, final String message,
+            final DiceRoll dice, final PlayerID hit, final List defaultCasualties)
     {
         //if the battle display is null, then this is a bombing raid
         if (m_battleDisplay == null)
@@ -276,7 +276,6 @@ public class BattlePanel extends ActionPanel
         }
 
     }
-    
 
     private CasualtyDetails getCasualtiesAA(String step, Collection selectFrom, Map dependents, int count, String message, DiceRoll dice,
             PlayerID hit, List defaultCasualties)
@@ -313,37 +312,33 @@ public class BattlePanel extends ActionPanel
     }
 
     public void gotoStep(GUID battleID, final String step)
-    {    
+    {
         //this method can be called outside the event dispatch thread.
         m_battleDisplay.setStep(step);
     }
 
     public void notifyRetreat(final Collection retreating)
     {
-    
-        SwingUtilities.invokeLater(
-                new Runnable()
-                {
-                    public void run()
-                    {        
-                        m_battleDisplay.notifyRetreat(retreating);
-                    }
-                }
-                );
+
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                m_battleDisplay.notifyRetreat(retreating);
+            }
+        });
     }
 
     public void bombingResults(final GUID battleID, final int[] dice, final int cost)
     {
-        SwingUtilities.invokeLater(
-                new Runnable()
-                {
-                    public void run()
-                    {
-                        m_battleDisplay.bombingResults(dice, cost);
-                    }
-                }
-        );
-        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                m_battleDisplay.bombingResults(dice, cost);
+            }
+        });
+
     }
 
     class FightBattleAction extends AbstractAction
