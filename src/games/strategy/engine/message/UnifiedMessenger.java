@@ -51,7 +51,7 @@ public class UnifiedMessenger
     //maps GUID-> collection of RemoteMethodResults
     private final Map m_methodCallResults = new HashMap();
 
-    //maps GUID -> number of clients we are awaiting responses from
+    //maps GUID -> CountDownLatch of clients we are awaiting responses from
     private final Map m_methodCallWaitCount = new HashMap();
 
     //synchronize on this to wait for the init lock to arrive
@@ -214,13 +214,14 @@ public class UnifiedMessenger
 
         //who do we call
         final INode[] remote = getNodesWithImplementors(endPointName);
-
+        CountDownLatch latch = new CountDownLatch(remote.length);
+        
         if (remote.length > 0)
         {
             synchronized (m_mutex)
             {
                 //we need to indicate how many returns we are waiting for
-                m_methodCallWaitCount.put(methodCallID, new Integer(remote.length));
+                m_methodCallWaitCount.put(methodCallID, latch);
             }
         }
 
@@ -241,27 +242,12 @@ public class UnifiedMessenger
         if (remote.length > 0)
         {
             s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName() + " with id:" + methodCallID);
-            int waitCount;
+            latch.await();
+            s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName() + " with id:" + methodCallID);
+            
+            
             synchronized (m_mutex)
             {
-                waitCount = ((Integer) m_methodCallWaitCount.get(methodCallID)).intValue();
-
-                //wait until the results are in
-                while (waitCount > 0)
-                {
-                    try
-                    {
-                        m_mutex.wait();
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace(System.out);
-                    }
-                    waitCount = ((Integer) m_methodCallWaitCount.get(methodCallID)).intValue();
-
-                }
-                
-                s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName() + " with id:" + methodCallID);
-
                 results.addAll((List) m_methodCallResults.get(methodCallID));
                 m_methodCallResults.remove(methodCallID);
                 m_methodCallWaitCount.remove(methodCallID);
@@ -510,27 +496,22 @@ public class UnifiedMessenger
 
                 GUID methodID = results.methodCallID;
 
-                int waitCount;
+                CountDownLatch latch;
                 synchronized (m_mutex)
                 {
+                    //add the results
                     if (!m_methodCallResults.containsKey(methodID))
                     {
                         m_methodCallResults.put(methodID, new ArrayList());
                     }
                     ((List) m_methodCallResults.get(methodID)).addAll(results.results);
 
-                    waitCount = ((Integer) m_methodCallWaitCount.get(methodID)).intValue();
-                    waitCount = waitCount - 1;
-                    m_methodCallWaitCount.put(methodID, new Integer(waitCount));
-
-                    if (waitCount < 0)
-                        throw new IllegalStateException("-ve wait count of:" + waitCount);
-                    if (waitCount == 0)
-                    {
-                        //wake up the waiter
-                        m_mutex.notifyAll();
-                    }
+                    //who should we notify
+                    latch = (CountDownLatch) m_methodCallWaitCount.get(methodID);
                 }
+                
+                //notify while not holding the mutex, just in case
+                latch.countDown();
 
             }
         }
@@ -1022,3 +1003,51 @@ class InvocationResults implements Serializable
     }
 
 }
+
+/**
+ * 
+ * TODO - use the version supplied in jdk 1.5 java.util.concurrent
+ *
+ *
+ * @author Sean Bridges
+ */
+class CountDownLatch
+{
+    private int m_count;
+    private final Object m_mutex = new Object();
+    
+    CountDownLatch(int count)
+    {
+        m_count = count;
+    }
+    
+    public void countDown()
+    {
+        synchronized(m_mutex)
+        {
+            m_count--;
+            if(m_count == 0)
+                m_mutex.notifyAll();
+        }
+    }
+    
+    public void await()
+    {
+        while(m_count != 0)
+        {
+            synchronized(m_mutex)
+            {
+                try
+                {
+                    m_mutex.wait();
+                } catch (InterruptedException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+}
+
