@@ -144,15 +144,15 @@ public class ClipPlayer
     }
     catch (LineUnavailableException e)
     {
-      e.printStackTrace();
+      e.printStackTrace(System.out);
     }
     catch (IOException e)
     {
-      e.printStackTrace();
+      e.printStackTrace(System.out);
     }
     catch(UnsupportedAudioFileException e)
     {
-      e.printStackTrace();
+      e.printStackTrace(System.out);
     }
     return null;
   }

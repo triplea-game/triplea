@@ -84,4 +84,9 @@ public interface IMessenger
      */
     public void addBroadcastListener(IBroadcastListener listener);
     public void removeBroadcastListener(IBroadcastListener listener);
+    
+    /**
+     * Pause the current thread until there are no messages are being processed.
+     */
+    public void waitForAllMessagsToBeProcessed();
 }

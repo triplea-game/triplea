@@ -45,7 +45,8 @@ public class ServerMessenger implements IServerMessenger
   private final ListenerList m_broadcastListeners = new ListenerList();
   private boolean m_acceptNewConnection = false;
   private IConnectionAccepter m_connectionAccepter = null;
-
+  
+  
   private IObjectStreamFactory m_inStreamFactory;
 
   public ServerMessenger(String name, int portNumber, IObjectStreamFactory streamFactory) throws IOException
@@ -390,6 +391,11 @@ public class ServerMessenger implements IServerMessenger
       IBroadcastListener item = (IBroadcastListener) iter.next();
       item.broadcastSent(message);
     }
+  }
+  
+  public void waitForAllMessagsToBeProcessed()
+  {
+      Connection.s_threadPool.waitForAll();
   }
 
 

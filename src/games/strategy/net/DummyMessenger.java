@@ -69,7 +69,7 @@ public class DummyMessenger implements IServerMessenger
 	 * Get a list of nodes.
 	 */
 	public Set getNodes()
-	{return null;}
+	{return Collections.EMPTY_SET;}
 
 	/**
 	 * test the connection.
@@ -120,5 +120,9 @@ public class DummyMessenger implements IServerMessenger
   public void removeBroadcastListener(IBroadcastListener listener)
   {}
 
+  public void waitForAllMessagsToBeProcessed()
+  {
+      
+  }
 
 }

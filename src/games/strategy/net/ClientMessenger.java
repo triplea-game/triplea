@@ -270,4 +270,9 @@ public class ClientMessenger implements IMessenger
     {
         return m_connection.getRemoteNode();
     }
+    
+    public void waitForAllMessagsToBeProcessed()
+    {
+        Connection.s_threadPool.waitForAll();
+    }
 }

@@ -23,7 +23,7 @@ import java.awt.event.*;
  */
 public class RemoteHistoryMessage implements java.io.Serializable
 {
-    private static long s_currentMessageIndex = 0;  
+    private static long s_currentMessageIndex = 1;  
     
     
     private final long m_messageIndex;
@@ -96,7 +96,7 @@ public class RemoteHistoryMessage implements java.io.Serializable
     {
         long waitCount = 0;
         //ensure messages get processed in the order they are generated
-        while(m_messageIndex > writer.getLastMessageReceived() + 1)
+        while(writer.getLastMessageReceived() +1 != m_messageIndex)
         {
             //messages are delivered in order to the client
             //but since each message is processed in its own thread, it is possible
@@ -104,16 +104,21 @@ public class RemoteHistoryMessage implements java.io.Serializable
             //we shouldnt have to wait long here,
             //the message before has already arrived, and it is being
             //processed, its just that our thread got scheduled to run first
-
             
             Thread.yield();
             waitCount++;
-            if(waitCount > 1000)
-                throw new IllegalStateException("cant process message");
+            if(waitCount == 10000)
+            {
+                System.err.println("cant process message " + m_messageIndex + " last message:" + writer.getLastMessageReceived()) ;
+                waitCount = 0;
+            }
         }
-        writer.setLastMessageReceived(m_messageIndex);
-        m_historyWriter = writer;
-        m_action.actionPerformed(null);
+        synchronized(writer)
+        {
+            writer.setLastMessageReceived(m_messageIndex);
+            m_historyWriter = writer;
+            m_action.actionPerformed(null);
+        }
         m_historyWriter = null;
     }
 }

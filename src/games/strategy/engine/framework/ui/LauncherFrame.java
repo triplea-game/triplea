@@ -225,6 +225,8 @@ public class LauncherFrame extends JFrame
 
     }
     
+    //make sure all the communicationis done
+    m_messenger.waitForAllMessagsToBeProcessed();
     
 
     Thread t = new Thread()

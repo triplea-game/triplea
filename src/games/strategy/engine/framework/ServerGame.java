@@ -274,7 +274,25 @@ public class ServerGame implements IGame
         }
 
         StepChangedMessage msg = new StepChangedMessage(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);
-        m_messenger.broadcast(msg);
+        
+        Set destinations = new HashSet();
+        
+        iter = m_messenger.getNodes().iterator();
+        while(iter.hasNext())
+        {
+            INode node = (INode) iter.next();
+            if(!node.equals(m_messenger.getLocalNode()))
+            {
+                destinations.add(node.toString() + ClientGame.STEP_CHANGE_LISTENER_DESTINATION);
+            }
+        }
+        
+        //we want to wait for everyone here, otherwise the client may receive and act upon the message 
+        //to start the next step before he has finished processing the step change message
+        m_messageManager.broadcastAndWait(msg, destinations);
+        
+        
+        
     }
 
     public IMessenger getMessenger()

@@ -21,6 +21,7 @@
 package games.strategy.engine.message;
 
 import games.strategy.net.INode;
+import java.util.Set;
 
 /**
  * A class for routing messages.
@@ -44,6 +45,9 @@ public interface IMessageManager
 	 */
 	public Message send(Message msg, String destination);
 	public void sendNoResponse(Message msg, String destination);
+	
+	public void broadcastAndWait(Message msg, Set destinations);
+
 	
 	/**
 	 * Do we know about this destination.  

@@ -23,54 +23,55 @@ package games.strategy.engine.framework;
 import java.io.*;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.GameObjectInputStream;
+import games.strategy.engine.message.Message;
 
 /**
  *
  * @author  Sean Bridges
  */
-class StepChangedMessage implements Serializable
+class StepChangedMessage implements Message
 {
-
-	private static final long serialVersionUID = 3330970682208872242L;
-
-	private String m_stepName;
-	private String m_delegateName;
-	private PlayerID m_player;
-  private int m_round;
-  private String m_displayName;
-
-	/** Creates a new instance of StepChangedMessage */
-  StepChangedMessage(String stepName, String delegateName, PlayerID player, int round, String displayName)
-  {
-    m_delegateName = delegateName;
-    m_player = player;
-    m_stepName = stepName;
-    m_round = round;
-    m_displayName = displayName;
-  }
-
-	public String getStepName()
-	{
-		return m_stepName;
-	}
-
-	public String getDelegateName()
-	{
-		return m_delegateName;
-	}
-
-	public PlayerID getPlayer()
-	{
-		return m_player;
-	}
-
-  public int getRound()
-  {
-    return m_round;
-  }
-
-  public String getDisplayName()
-  {
-    return m_displayName;
-  }
+    
+    private static final long serialVersionUID = 3330970682208872242L;
+    
+    private String m_stepName;
+    private String m_delegateName;
+    private PlayerID m_player;
+    private int m_round;
+    private String m_displayName;
+    
+    /** Creates a new instance of StepChangedMessage */
+    StepChangedMessage(String stepName, String delegateName, PlayerID player, int round, String displayName)
+    {
+        m_delegateName = delegateName;
+        m_player = player;
+        m_stepName = stepName;
+        m_round = round;
+        m_displayName = displayName;
+    }
+    
+    public String getStepName()
+    {
+        return m_stepName;
+    }
+    
+    public String getDelegateName()
+    {
+        return m_delegateName;
+    }
+    
+    public PlayerID getPlayer()
+    {
+        return m_player;
+    }
+    
+    public int getRound()
+    {
+        return m_round;
+    }
+    
+    public String getDisplayName()
+    {
+        return m_displayName;
+    }
 }

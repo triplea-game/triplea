@@ -35,7 +35,7 @@ import games.strategy.util.ListenerList;
  */
 class Connection
 {
-    private static final ThreadPool s_threadPool = new ThreadPool(10, "Connection Thread Pool");
+    static final ThreadPool s_threadPool = new ThreadPool(10, "Connection Thread Pool");
 
     private Socket m_socket;
     private ObjectOutputStream m_out;
@@ -124,7 +124,7 @@ class Connection
             }
         }
     }
-
+    
     public INode getLocalNode()
     {
         return m_localNode;

@@ -47,6 +47,8 @@ public class ClientGame implements IGame
   private final INode m_serverNode;
   //maps PlayerID->GamePlayer
   private Map m_gamePlayers = new HashMap();
+  
+  public static final String STEP_CHANGE_LISTENER_DESTINATION = "_StepChangeListener_";
 
   private int m_currentRound = -1;
 
@@ -57,6 +59,7 @@ public class ClientGame implements IGame
     m_messenger = messenger;
     m_messenger.addMessageListener(m_messageListener);
     m_messageManager = new MessageManager(m_messenger);
+    m_messageManager.addDestination(m_stepChangeDestination);
 
 
     Iterator iter = gamePlayers.iterator();
@@ -132,25 +135,43 @@ public class ClientGame implements IGame
     throw new UnsupportedOperationException();
   }
 
+  private IDestination m_stepChangeDestination = new IDestination()
+  {
+
+    public Message sendMessage(Message message)
+    {
+        if(message instanceof StepChangedMessage)
+        {
+          StepChangedMessage stepChange = (StepChangedMessage) message;
+
+          if(m_currentRound != stepChange.getRound())
+          {
+              m_currentRound = stepChange.getRound();
+              m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
+          }
+          m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getDisplayName());
+
+          notifyGameStepChanged(stepChange);
+          return null;
+        }
+        else 
+            throw new IllegalStateException("Message not recognized:" + message);
+    }
+
+    public String getName()
+    {
+        return m_messenger.getLocalNode() + STEP_CHANGE_LISTENER_DESTINATION;
+    }
+      
+  };
+  
+  
 
   private IMessageListener m_messageListener = new IMessageListener()
   {
     public void messageReceived(Serializable msg, INode from)
     {
-      if(msg instanceof StepChangedMessage)
-      {
-        StepChangedMessage stepChange = (StepChangedMessage) msg;
-
-        if(m_currentRound != stepChange.getRound())
-        {
-            m_currentRound = stepChange.getRound();
-            m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
-        }
-        m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getDisplayName());
-
-        notifyGameStepChanged(stepChange);
-      }
-      else if(msg instanceof ChangeMessage)
+      if(msg instanceof ChangeMessage)
       {
         ChangeMessage changeMessage = (ChangeMessage) msg;
         m_data.getHistory().getHistoryWriter().addChange(changeMessage.getChange());

@@ -46,6 +46,9 @@ public class MessageManager implements IMessageManager
 
     //Mpas GUID -> Message
     private final Map m_responses = Collections.synchronizedMap(new HashMap());
+    
+    //Maps GUID -> Integer
+    private final Map m_broadcastWaitCount = Collections.synchronizedMap(new HashMap());
 
     public MessageManager(IMessenger messenger)
     {
@@ -75,6 +78,64 @@ public class MessageManager implements IMessageManager
         m_messenger.broadcast(msg);
     }
 
+    /**
+     * Broadcast to the given destinations, and dont return until they have all received the message. 
+     */
+    public void broadcastAndWait(Message msg, Set destinations)
+    {
+        GUID id = new GUID();
+        Object lock = new Object();
+        m_locks.put(id, lock);
+        
+        synchronized(lock)
+        {
+            int waitCount = 0;
+            Iterator iter = destinations.iterator();
+            while(iter.hasNext())
+            {
+                String destination = (String) iter.next();
+                if(m_remote.containsKey(destination))
+                {
+                    INode node = (INode) m_remote.get(destination);
+                    BlockedMessage blockMessage = new BlockedMessage(msg, destination, id);
+                    m_messenger.send(blockMessage, node);
+                    waitCount++;
+                }
+                //TODO - it would be more efficient to send all the remote messages first
+                //we could then process the local messages while waiting for the remote ones to return
+                else if(m_local.containsKey(destination))
+                {
+                    sendLocal(msg, (IDestination) m_local.get(destination));
+                }
+                else
+                {
+                    throw new IllegalStateException("Destination not found");
+                }
+            }
+
+            if(waitCount > 0)
+            {
+                m_broadcastWaitCount.put(id, new Integer(waitCount));
+                try
+                {
+                    lock.wait();
+                }
+                catch(InterruptedException ie)
+                {
+                    ie.printStackTrace();
+                }
+                
+                
+            }
+
+            m_broadcastWaitCount.remove(id);
+            m_locks.remove(id);
+            m_responses.remove(id);
+
+        }
+
+    }
+    
     public void sendNoResponse(Message msg, String destination)
     {
         if (m_local.containsKey(destination))
@@ -108,9 +169,9 @@ public class MessageManager implements IMessageManager
 
     private Message sendRemote(Message msg, String destination, INode node)
     {
-        BlockedMessage blockedMessage = new BlockedMessage(msg, destination);
-        GUID id = blockedMessage.getID();
-
+        GUID id = new GUID();
+        BlockedMessage blockedMessage = new BlockedMessage(msg, destination, id);
+        
         Object lock = new Object();
 
         synchronized (lock)
@@ -195,7 +256,25 @@ public class MessageManager implements IMessageManager
             synchronized (lock)
             {
                 m_responses.put(id, clientMessage.getResponse());
-                lock.notifyAll();
+                if(m_broadcastWaitCount.get(id) != null)
+                {
+                    int count = ((Integer) m_broadcastWaitCount.get(id)).intValue();
+                    count--;
+                    if(count == 0)
+                    {
+                        lock.notifyAll();
+                    }
+                    else
+                    {
+                        m_broadcastWaitCount.put(id, new Integer(count));
+                    }
+                }
+                else
+                {
+                    lock.notifyAll();
+                }
+                
+                
             }
         }
     };
