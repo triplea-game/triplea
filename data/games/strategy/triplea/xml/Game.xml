@@ -348,6 +348,7 @@
 	    <connection t1="East Compass Sea Zone" t2="South Australia Sea Zone" />
 	    <connection t1="East Compass Sea Zone" t2="West Australia Sea Zone" />
 	    <connection t1="East Compass Sea Zone" t2="East Indies Sea Zone" />
+	    <connection t1="French Indo China Sea Zone" t2="East Indies Sea Zone" />
 	    <connection t1="Indian Ocean Sea Zone" t2="French Indo China Sea Zone" />
 	    <connection t1="Indian Ocean Sea Zone" t2="East Indies Sea Zone" />
 	    <connection t1="South Australia Sea Zone" t2="West Australia Sea Zone" />
