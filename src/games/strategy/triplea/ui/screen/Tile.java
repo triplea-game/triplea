@@ -46,7 +46,7 @@ public class Tile
 
     public Tile(final Rectangle bounds, int x, int y)
     {
-        s_logger.log(Level.FINER, "Tile created for:" + bounds);
+        //s_logger.log(Level.FINER, "Tile created for:" + bounds);
         m_bounds = bounds;
         m_x = x;
         m_y = y;
