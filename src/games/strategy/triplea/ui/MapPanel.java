@@ -170,7 +170,17 @@ public class MapPanel extends ImageScrollerLargeView
 
   private void initTerritories()
   {
-    m_mapsUnitDrawer.queueUpdate(m_data.getMap().getTerritories());
+    Set territoriesToUpdate = new HashSet();
+    Iterator iter =  m_data.getMap().getTerritories().iterator();
+    //only update the territories that need it, sea territories with no units dont need to be updated
+    while(iter.hasNext())
+    {
+      Territory territory = (Territory) iter.next();
+      if(!territory.isWater() || !territory.getUnits().isEmpty())
+        territoriesToUpdate.add(territory);
+    }
+
+    m_mapsUnitDrawer.queueUpdate(territoriesToUpdate);
     m_mapsUnitDrawer.waitForUpdates();
   }
 
