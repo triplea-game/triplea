@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * TechnolgoyDelegate.java 
  *
  *
@@ -33,9 +47,9 @@ public class TechnologyDelegate implements Delegate
 	private PlayerID m_player;
 
 	/** Creates new TechnolgoyDelegate */
-    public TechnologyDelegate() 
+	public TechnologyDelegate() 
 	{
-    }
+	}
 
 	public void initialize(String name) 
 	{
@@ -60,25 +74,31 @@ public class TechnologyDelegate implements Delegate
 		
 		chargeForTechRolls(techRolls);
 		int techHits = getTechHits(techRolls);
-		m_bridge.sendMessage( new StringMessage("You got " + techHits + " hits"));
+		m_bridge.sendMessage( new StringMessage("You got " + techHits +  (techHits == 1 ? " hit" : " hits")) );
 		if(techHits == 0)
 			return null;
 		
 		Collection advances = getTechAdvances(techHits);
 		
 		Iterator iter = advances.iterator();
+		int count = advances.size();
+		
 		StringBuffer text = new StringBuffer();
 		while(iter.hasNext())
 		{
 			TechAdvance advance = (TechAdvance) iter.next();
 			advance.perform(m_bridge.getPlayerID(),m_bridge, m_data );
 			text.append(advance.getName());
-			if(iter.hasNext())
+			count--;
+			
+			if(count > 1)
+				text.append(", ");
+			if(count == 1)
 				text.append(" and ");
 			m_techTracker.addAdvance(m_bridge.getPlayerID(), m_data, m_bridge, advance);
 		}
 		
-		String transcriptText =  m_bridge.getPlayerID().getName() + " discovers " + text.toString();
+		String transcriptText =  m_bridge.getPlayerID().getName() + " discover " + text.toString();
 		m_bridge.getTranscript().write(transcriptText);
 		
 		return new StringMessage("Youre scientists have discovered:" + text);
