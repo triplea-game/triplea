@@ -572,7 +572,7 @@ public class GameParser
      {
         Element stepProperty = (Element) iter.next();
         String name = stepProperty.getAttribute("name");
-        String value = stepProperty.getAttribute("name");
+        String value = stepProperty.getAttribute("value");
         rVal.setProperty(name, value);
      }
      return rVal;
