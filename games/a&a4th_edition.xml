@@ -4,7 +4,7 @@
 
 <game>
 
-	<info name="4th Edition" version="0.2"/>
+	<info name="4th Edition" version="0.3"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 
