@@ -272,6 +272,8 @@ class Connection
                     m_out.flush();
                 } catch (IOException ioe)
                 {
+                    if(ioe instanceof ObjectStreamException)
+                        System.err.println("Error writing:" + next);
                     if (!m_shutdown)
                     {
                         ioe.printStackTrace();
