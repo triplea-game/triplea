@@ -619,6 +619,7 @@
 			<frontierRules name="buyFighter"/>
 			<frontierRules name="buyBomber"/>
 			<frontierRules name="buyTransport"/>
+			<frontierRules name="buySubmarine"/>
 			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyBattleship"/>
 			<frontierRules name="buyCarrier"/>
