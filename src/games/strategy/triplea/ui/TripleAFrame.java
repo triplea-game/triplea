@@ -23,6 +23,7 @@ package games.strategy.triplea.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.net.URL;
 import javax.swing.*;
@@ -371,6 +372,10 @@ public class TripleAFrame extends JFrame
               JLabel label = new JLabel(key + " was rolled " + value + " times");
               panel.add(label);
           }
+          panel.add(new JLabel("  "));
+          DecimalFormat format = new DecimalFormat("#0.000");
+          panel.add(new JLabel("Average roll is :" + format.format( stats.getAverage())));
+          
           JOptionPane.showMessageDialog (TripleAFrame.this, panel, "Random Stats", JOptionPane.INFORMATION_MESSAGE);
 
       }

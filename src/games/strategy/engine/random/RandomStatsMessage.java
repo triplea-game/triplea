@@ -21,10 +21,25 @@ import games.strategy.util.IntegerMap;
 public class RandomStatsMessage implements Message
 {
     private final IntegerMap m_data;
+    private final float m_average;
     
     public RandomStatsMessage(IntegerMap data)
     {
         m_data = data;
+        
+        int total = 0;
+        for(int i = 1; i <= 6; i++)
+        {
+            total += i * m_data.getInt(new Integer(i));
+        }
+        m_average = ((float) total) / ((float) data.totalValues());
+        
+        
+    }
+    
+    public float getAverage()
+    {
+        return m_average;
     }
     
     public IntegerMap getData()

@@ -292,7 +292,7 @@ public class PlacementPicker extends JFrame
      {
 
         
-         String fileName = "/home/sgb/dev/triplea/data/games/strategy/triplea/image/images/maps/new_LargeMap.gif";
+         String fileName = "/home/sgb/dev/triplea/data/games/strategy/triplea/image/images/maps/revised/largeMap.gif";
          PlacementPicker picker = new PlacementPicker(fileName);
          picker.setSize(600,550);
          picker.show();

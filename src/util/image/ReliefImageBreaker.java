@@ -61,7 +61,8 @@ public class ReliefImageBreaker
 //    public static final boolean ONLY_DO_SEA_ZONES= false;
 
     //for the sea map
-    public static final String LARGE_MAP_FILENAME = "/home/sgb/dev/triplea/data/games/strategy/triplea/image/images/maps/new_LargeMap.gif";
+
+    public static final String LARGE_MAP_FILENAME = "/home/sgb/dev/triplea/data/games/strategy/triplea/image/images/maps/revised/largeMap.gif";
     public static final String SMALL_MAPS_LOCATION = "newImages";
     public static final boolean ONLY_DO_SEA_ZONES= true;
 
