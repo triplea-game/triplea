@@ -58,7 +58,7 @@ public class AutoPlacementFinder
 	
 	try
 	{
-            TerritoryData.setMapDir(mapDir);       //makes TripleA read all the text data files for the map.
+            MapData.setMapDir(mapDir);       //makes TripleA read all the text data files for the map.
 	}
 	catch(NullPointerException npe)
 	{
@@ -68,7 +68,7 @@ public class AutoPlacementFinder
 	    System.exit(0);
 	}
 	
-	Iterator terrIter = TerritoryData.getInstance().getTerritories().iterator();
+	Iterator terrIter = MapData.getInstance().getTerritories().iterator();
 	
 	System.out.println("Calculating, this may take a while...");
 	
@@ -77,28 +77,28 @@ public class AutoPlacementFinder
             String name = (String)terrIter.next();
             Collection points;
 	    
-            if(TerritoryData.getInstance().hasContainedTerritory(name))
+            if(MapData.getInstance().hasContainedTerritory(name))
             {
                 Set containedPolygons = new HashSet();
-                Iterator containedIter = TerritoryData.getInstance().getContainedTerritory(name).iterator();
+                Iterator containedIter = MapData.getInstance().getContainedTerritory(name).iterator();
 		
                 while (containedIter.hasNext())
 		{
                     String containedName = (String)containedIter.next();
-                    containedPolygons.addAll(TerritoryData.getInstance().getPolygons(containedName));
+                    containedPolygons.addAll(MapData.getInstance().getPolygons(containedName));
                 }
 
-                points = getPlacementsStartingAtTopLeft(TerritoryData.getInstance().getPolygons(name),
-                                                        TerritoryData.getInstance().getBoundingRect(name),
-                                                        TerritoryData.getInstance().getCenter(name),
+                points = getPlacementsStartingAtTopLeft(MapData.getInstance().getPolygons(name),
+                                                        MapData.getInstance().getBoundingRect(name),
+                                                        MapData.getInstance().getCenter(name),
                                                         containedPolygons);
                 m_placements.put(name, points);
             }
             else
             {
-                points = getPlacementsStartingAtMiddle(TerritoryData.getInstance().getPolygons(name),
-                TerritoryData.getInstance().getBoundingRect(name),
-                TerritoryData.getInstance().getCenter(name));
+                points = getPlacementsStartingAtMiddle(MapData.getInstance().getPolygons(name),
+                MapData.getInstance().getBoundingRect(name),
+                MapData.getInstance().getCenter(name));
                 m_placements.put(name, points);
             }
 	    

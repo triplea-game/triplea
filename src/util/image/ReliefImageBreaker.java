@@ -15,7 +15,7 @@
 package util.image;
 
 
-import games.strategy.triplea.ui.TerritoryData;
+import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.*;
 
 import java.awt.*;
@@ -100,7 +100,7 @@ public class ReliefImageBreaker
 	
 	try
 	{
-            TerritoryData.setMapDir(mapDir);    //makes TripleA read all the text data files for the map.
+            MapData.setMapDir(mapDir);    //makes TripleA read all the text data files for the map.
         }
 	catch(NullPointerException npe)
 	{
@@ -108,7 +108,7 @@ public class ReliefImageBreaker
 	    System.exit(0);
 	}
 
-        Iterator unitIter = TerritoryData.getInstance().getTerritories().iterator();
+        Iterator unitIter = MapData.getInstance().getTerritories().iterator();
 
         while (unitIter.hasNext())
         {
@@ -255,12 +255,12 @@ public class ReliefImageBreaker
     */
     private void processImage(String territory, Image map) throws IOException
     {
-        Rectangle bounds = TerritoryData.getInstance().getBoundingRect(territory);
+        Rectangle bounds = MapData.getInstance().getBoundingRect(territory);
         int width  = bounds.width;
         int height = bounds.height;
 
         BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
-        Iterator iter = TerritoryData.getInstance().getPolygons(territory).iterator();
+        Iterator iter = MapData.getInstance().getPolygons(territory).iterator();
 
         while (iter.hasNext())
         {
