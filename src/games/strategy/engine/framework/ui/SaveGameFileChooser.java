@@ -18,14 +18,13 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import games.strategy.engine.framework.GameRunner;
+import java.util.*;
 
 /**
- * <p>Title: TripleA</p>
- * <p> </p>
- * <p> Copyright (c) 2002</p>
- * <p> </p>
  * @author Sean Bridges
  *
  */
@@ -33,9 +32,41 @@ import games.strategy.engine.framework.GameRunner;
 public class SaveGameFileChooser extends JFileChooser
 {
 
-	public static final File DEFAULT_DIRECTORY = new File(GameRunner.getRootFolder(), "/savedGames/");
+	
 	public static final String AUTOSAVE_FILE_NAME = "autosave.svg";
 
+	public static final File DEFAULT_DIRECTORY;
+	
+	/*
+	 * The default is to store saved games in the save game folder, but a request was made to allow
+	 * them in the users home.
+	 * Check the value in triplea.properties to see where we want to save the saved games.
+	 * The change was suggested by William McQueen.
+	 */
+	static
+	{
+	    //the default
+	    File defaultDirectory = new File(GameRunner.getRootFolder(), "/savedGames/");
+	    URL url = ClassLoader.getSystemResource("triplea.properties");
+	    if(url != null)
+	    {
+	        Properties props = new Properties();
+	        try
+            {
+                props.load(url.openStream());
+    	        if(props.containsKey("triplea.saveGamesInHomeDir") && props.getProperty("triplea.saveGamesInHomeDir").equals("true"))
+    	        {
+    	            defaultDirectory = new File(System.getProperties().getProperty("user.home") +"/.triplea/savedGames/");
+    	        }
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+	    }
+	    DEFAULT_DIRECTORY = defaultDirectory;
+	}
+	
+	
 	private static SaveGameFileChooser s_instance;
 
 	public static SaveGameFileChooser getInstance()
@@ -55,13 +86,19 @@ public class SaveGameFileChooser extends JFileChooser
 
 	public static void ensureDefaultDirExists()
 	{
-		if(!DEFAULT_DIRECTORY.exists())
-		{
-			try
-			{
-				DEFAULT_DIRECTORY.mkdir();
-			} catch(Exception e){e.printStackTrace();}
-		}
+		ensureDirectoryExists(DEFAULT_DIRECTORY);
+	}
+	
+	private static void ensureDirectoryExists(File f)
+	{
+	    
+	    if(!f.getParentFile().exists())
+	        ensureDirectoryExists(f.getParentFile());
+	   
+	    if(!f.exists())
+	    {
+	        f.mkdir();
+	    }
 	}
 
 
