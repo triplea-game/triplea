@@ -241,6 +241,9 @@ public class UnitIconImageFactory
     {
       column = 6;
       row += 1;
+
+      if(getTechTracker(data).hasRocket(id))
+        column += 1;
     }
     else if(type.getName().equals(Constants.FACTORY_TYPE))
     {
