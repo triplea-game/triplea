@@ -505,11 +505,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     units.removeAll(retreating);
     if(units.isEmpty())
     {
+      endBattle(bridge);
       if(defender)
         defenderWins(bridge);
       else
         attackerWins(bridge);
-      endBattle(bridge);
     }
   }
 
@@ -521,21 +521,25 @@ public class MustFightBattle implements Battle, BattleStepStrings
     DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, firingPlayer, bridge);
 
     int hitCount = dice.getHits();
-    //they all due
+    //they all die
+    Collection casualties;
+
     if(hitCount >= attackableUnits.size())
     {
-      CasualtyNotificationMessage msg = new CasualtyNotificationMessage(stepName, attackableUnits, m_dependentUnits, hitPlayer, dice);
-
-      bridge.sendMessage(msg, firingPlayer);
-      bridge.sendMessage(msg, hitPlayer);
-
-      removeCasualties(attackableUnits, canReturnFire, !defender, bridge);
+      casualties = attackableUnits;
     }
     else
     {
-      Collection casualties = selectCasualties(stepName, bridge,attackableUnits, !defender, text, dice);
-      removeCasualties(casualties, canReturnFire, !defender, bridge);
+      casualties = selectCasualties(stepName, bridge,attackableUnits, !defender, text, dice);
     }
+
+    CasualtyNotificationMessage msg = new CasualtyNotificationMessage(stepName, casualties, m_dependentUnits, hitPlayer, dice);
+    msg.setAll(casualties.size() == attackableUnits.size());
+
+    bridge.sendMessage(msg, hitPlayer);
+    bridge.sendMessage(msg, firingPlayer);
+
+    removeCasualties(casualties, canReturnFire, !defender, bridge);
   }
 
   private void defendNonSubs(DelegateBridge bridge)
@@ -600,13 +604,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     PlayerID firing = defender ?  m_attacker : m_defender;
 
     Collection casualties =  BattleCalculator.selectCasualties(step, hit, attackableUnits, bridge, text, m_data, dice);
-
-   CasualtyNotificationMessage notification = new CasualtyNotificationMessage(step, casualties, null, hit, dice);
-
-    bridge.sendMessage(notification, firing);
-    bridge.sendMessage(notification, hit);
-
-//    bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, step), firing);
 
     return casualties;
   }
@@ -808,11 +805,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
   private void defenderWins(DelegateBridge bridge)
   {
-    //for symmetry
+
+    BattleEndMessage msg = new BattleEndMessage(m_defender.getName() + " wins");
+    bridge.sendMessage(msg, m_attacker);
+    bridge.sendMessage(msg, m_defender);
   }
 
   private void attackerWins(DelegateBridge bridge)
   {
+    BattleEndMessage msg = new BattleEndMessage(m_attacker.getName() + " wins");
+    bridge.sendMessage(msg, m_attacker);
+    bridge.sendMessage(msg, m_defender);
+
+
     //do we need to change ownership
     if(!m_territory.isWater())
     {
@@ -845,9 +850,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     clearWaitingToDie(bridge);
     m_over = true;
     m_tracker.removeBattle(this);
-    BattleStepMessage endBattleMessage = new BattleStepMessage(null, null, Collections.EMPTY_LIST, null);
-    bridge.sendMessage(endBattleMessage, m_attacker);
-    bridge.sendMessage(endBattleMessage, m_defender);
   }
 
   public String toString()

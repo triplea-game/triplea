@@ -403,6 +403,17 @@ public class TripleAFrame extends JFrame
     JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
+  public void battleEndMessage(BattleEndMessage message)
+  {
+    m_actionButtons.battleEndMessage(message);
+  }
+
+  public void bombingResults(BombingResults message)
+  {
+    m_actionButtons.bombingResults(message);
+  }
+
+
   public void notifyMessage(String message)
   {
     JOptionPane.showMessageDialog(this, message, message, JOptionPane.PLAIN_MESSAGE);

@@ -30,6 +30,7 @@ import games.strategy.engine.delegate.DelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
+import games.strategy.util.Match;
 
 
 /**
@@ -39,6 +40,9 @@ import games.strategy.triplea.formatter.Formatter;
  */
 public class StrategicBombingRaidBattle implements Battle
 {
+  private final static String RAID = "Strategic bombing raid";
+  private final static String FIRE_AA = "Fire AA";
+
   private Territory m_battleSite;
   private List m_units = new ArrayList();
   private PlayerID m_defender;
@@ -72,55 +76,87 @@ public class StrategicBombingRaidBattle implements Battle
     MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
     moveDelegate.sortAccordingToMovementLeft(m_units, false);
 
-    CompositeMatch hasAA = new CompositeMatchAnd();
-    hasAA.add(Matches.UnitIsAA);
-    hasAA.add(Matches.enemyUnit(m_attacker, m_data));
-    if(m_battleSite.getUnits().someMatch(hasAA))
+    Collection defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
+
+    BattleStartMessage startBattle = new BattleStartMessage(
+                   m_attacker,
+                   m_defender,
+                   m_battleSite,
+                   m_units,
+                   defendingUnits,
+                   null
+                   );
+    bridge.sendMessage(startBattle, m_attacker);
+    bridge.sendMessage(startBattle, m_defender);
+
+    CompositeMatch hasAAMatch = new CompositeMatchAnd();
+    hasAAMatch.add(Matches.UnitIsAA);
+    hasAAMatch.add(Matches.enemyUnit(m_attacker, m_data));
+
+    boolean hasAA = m_battleSite.getUnits().someMatch(hasAAMatch);
+
+    List steps = new ArrayList();
+    if(hasAA)
+      steps.add(FIRE_AA);
+    steps.add(RAID);
+
+    String title = "Bombing raid in " + m_battleSite.getName();
+
+    BattleStepMessage listSteps = new BattleStepMessage((String) steps.get(0), title, steps, m_battleSite);
+    bridge.sendMessage(listSteps, m_attacker);
+    bridge.sendMessage(listSteps, m_defender);
+
+
+    if(hasAA)
       fireAA(bridge);
 
-    conductRaid(bridge);
+    int cost = conductRaid(bridge);
 
     m_tracker.removeBattle(this);
+
+    BattleEndMessage battleEnd = new BattleEndMessage("Bombing raid cost " + cost);
+    bridge.sendMessage(battleEnd, m_attacker);
+    bridge.sendMessage(battleEnd, m_defender);
+
+
   }
 
   private void fireAA(DelegateBridge bridge)
   {
-
     DiceRoll dice = DiceRoll.rollAA(m_units.size(),bridge);
-    if(dice.getHits() == 0)
-    {
-      bridge.sendMessage(new StringMessage("No AA hits in " + m_battleSite.getName(), false));
-
-      StringMessage msg = new StringMessage("No AA hits in " + m_battleSite.getName(), false);
-      msg.setIgnore(m_attacker);
-      bridge.sendMessage(msg, m_defender);
-    }
-    else
-      removeAAHits(bridge, dice);
+    removeAAHits(bridge, dice);
   }
 
   private void removeAAHits(DelegateBridge bridge, DiceRoll dice)
   {
-    String text = dice.getHits() + " hits from AA fire";
-    Collection casualties = BattleCalculator.selectCasualties(m_attacker, m_units,bridge, text, m_data, dice);
+
+    Collection casualties = new ArrayList(dice.getHits());
+    for(int i = 0; i < dice.getHits() && i < m_units.size(); i++)
+    {
+      casualties.add(m_units.get(i));
+    }
+
+    CasualtyNotificationMessage notify = new CasualtyNotificationMessage(FIRE_AA, casualties, null, m_attacker, dice);
+    //an awful hack, set all so that the ui will pause and display this roll
+    //sorry, but im tired
+    notify.setAll(true);
+    bridge.sendMessage(notify, m_attacker);
+    bridge.sendMessage(notify, m_defender);
+
+
     m_units.removeAll(casualties);
     Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
-
-
     bridge.addChange(remove);
-
-    String msgText = m_attacker.getName() + " selects " + Formatter.unitsToText(casualties) + " as casualties from aa raid in " + m_battleSite.getName();
-    StringMessage msg = new StringMessage(msgText);
-    msg.setIgnore(m_attacker);
-
-    bridge.sendMessage(msg, m_defender);
-
 
     String transcriptText = Formatter.unitsToText(casualties) + " lost in bombing raid in " + m_battleSite.getName();
     bridge.getTranscript().write(transcriptText);
   }
 
-  private void conductRaid(DelegateBridge bridge)
+  /**
+   *
+   * @return how many ipcs the raid cost
+   */
+  private int conductRaid(DelegateBridge bridge)
   {
     int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount);
@@ -130,10 +166,11 @@ public class StrategicBombingRaidBattle implements Battle
     {
       cost += 1 + dice[i];
     }
-    bridge.sendMessage(new StringMessage("Bombing raid costs " + cost + " IPCS", false));
-    StringMessage msg = new StringMessage("Bombing raid costs " + cost + " IPCS", false);
-    msg.setIgnore(m_attacker);
-    bridge.sendMessage(msg, m_defender);
+
+    BombingResults results = new BombingResults(dice, cost);
+
+    bridge.sendMessage(results);
+    bridge.sendMessage(results, m_defender);
 
     //get resources
     Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
@@ -144,6 +181,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     String transcriptText = "Bombing raid by " + m_attacker.getName() + " costs " + cost + " ipcs for " +  m_defender.getName();
     bridge.getTranscript().write(transcriptText);
+    return cost;
   }
 
   public boolean isBombingRun()

@@ -178,6 +178,16 @@ public class ActionButtons extends JPanel
     m_battlePanel.casualtyNoticicationMessage( message);
   }
 
+  public void battleEndMessage(BattleEndMessage message)
+  {
+    m_battlePanel.battleEndMessage(message);
+  }
+
+  public void bombingResults(BombingResults message)
+  {
+    m_battlePanel.bombingResults(message);
+  }
+
 
   /**
    * Blocks until the user selects a country to retreat to.

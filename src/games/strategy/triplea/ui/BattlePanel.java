@@ -95,6 +95,16 @@ public class BattlePanel extends ActionPanel
     return null;
   }
 
+  public void battleEndMessage(BattleEndMessage message)
+  {
+    m_battleDisplay.endBattle(message);
+    m_battleDisplay = null;
+    m_battleFrame.setVisible(false);
+    m_battleFrame.dispose();
+    m_battleFrame = null;
+  }
+
+
   public Message listBattle(BattleStepMessage msg)
   {
     removeAll();
@@ -113,18 +123,9 @@ public class BattlePanel extends ActionPanel
     panel.add(text, BorderLayout.NORTH);
 
 
-    if(msg.getSteps().isEmpty())
-    {
-      m_battleDisplay = null;
-      m_battleFrame.setVisible(false);
-      m_battleFrame.dispose();
-      m_battleFrame = null;
-    }
-    else
-    {
-      getMap().centerOn(msg.getTerritory());
-      m_battleDisplay.listBattle(msg);
-    }
+    getMap().centerOn(msg.getTerritory());
+    m_battleDisplay.listBattle(msg);
+
     return null;
   }
 
@@ -168,7 +169,15 @@ public class BattlePanel extends ActionPanel
 
   public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
   {
-    m_battleDisplay.casualtyNoticicationMessage( message);
+    //if we are playing this player, then dont wait for the user
+    //to see the units, since the player selected the units, and knows
+    //what they are
+    //if all the units have died then wait, since the player
+    //hasnt been asked to select casualties
+    //if no units died, then wait, since the user hasnt had a chance to
+    //see the roll
+    boolean waitFOrUserInput = !m_parent.playing(message.getPlayer()) || message.getAll() || message.getUnits().isEmpty();
+    m_battleDisplay.casualtyNoticicationMessage( message, waitFOrUserInput);
   }
 
   public SelectCasualtyMessage getCasualties(SelectCasualtyQueryMessage msg)
@@ -188,11 +197,24 @@ public class BattlePanel extends ActionPanel
     boolean plural = msg.getCount() > 1;
     UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), getData());
 
-    String messageText = msg.getMessage() + " " + msg.getPlayer().getName() + " select " + msg.getCount() + (plural ? " casualties" :" casualty") + ".";
-    chooser.setTitle(messageText);
+    chooser.setTitle(msg.getMessage());
     chooser.setMax(msg.getCount());
+
+    DicePanel dice = new DicePanel();
+    dice.setDiceRoll(msg.getDice());
+
+    JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout());
+    panel.add(chooser, BorderLayout.CENTER);
+    dice.setMaximumSize(new Dimension(450, 600));
+
+    dice.setPreferredSize(new Dimension(300, (int) dice.getPreferredSize().getHeight()));
+    panel.add(dice, BorderLayout.SOUTH);
+
+
+
     String[] options = {"OK"};
-    int option = JOptionPane.showOptionDialog( getRootPane(), chooser, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+    int option = JOptionPane.showOptionDialog( getRootPane(), panel, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
     Collection choosen = chooser.getSelected(false);
     SelectCasualtyMessage response = new SelectCasualtyMessage(choosen);
     return response;
@@ -200,7 +222,7 @@ public class BattlePanel extends ActionPanel
 
   public Message battleStringMessage(BattleStringMessage message)
   {
-   //TODO
+    m_battleDisplay.setStep(message);
     return null;
   }
 
@@ -227,6 +249,13 @@ public class BattlePanel extends ActionPanel
 
     return null;
   }
+
+  public void bombingResults(BombingResults message)
+  {
+    m_battleDisplay.bombingResults(message);
+  }
+
+
 
   private class RetreatComponent extends JPanel
   {
@@ -262,7 +291,7 @@ public class BattlePanel extends ActionPanel
 
     FightBattleAction(Territory battleSite, boolean bomb)
     {
-      super( (bomb ? "Bombing raid in " :  "Battle in ") + battleSite.getName());
+      super( (bomb ? "Bombing raid in " :  "Battle in ") + battleSite.getName() + "...");
       m_territory = battleSite;
       m_bomb = bomb;
     }
@@ -284,6 +313,7 @@ public class BattlePanel extends ActionPanel
       }
     }
   }
+
 
   public String toString()
   {

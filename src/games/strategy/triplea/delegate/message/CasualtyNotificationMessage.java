@@ -21,6 +21,7 @@ public class CasualtyNotificationMessage extends BattleMessage
   private PlayerID m_player;
   private Collection m_units;
   private Map m_dependents;
+  private boolean m_all = false;
 
   public CasualtyNotificationMessage(String step, Collection units, Map dependents, PlayerID player, DiceRoll dice)
   {
@@ -52,5 +53,18 @@ public class CasualtyNotificationMessage extends BattleMessage
   public DiceRoll getDice()
   {
    return m_dice;
+  }
+
+  /**
+   * Flag to indicate that all of the players units have died.
+   */
+  public boolean getAll()
+  {
+    return m_all;
+  }
+
+  public void setAll(boolean aBool)
+  {
+    m_all = aBool;
   }
 }

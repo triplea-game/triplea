@@ -43,6 +43,9 @@ import games.strategy.triplea.util.*;
 
 public class BattleDisplay extends JPanel
 {
+  private final String DICE_KEY = "D";
+  private final String CASUALTIES_KEY = "C";
+
   private PlayerID m_defender;
   private PlayerID m_attacker;
   private Territory m_location;
@@ -54,7 +57,7 @@ public class BattleDisplay extends JPanel
   private BattleModel m_attackerModel;
   private BattleStepsPanel m_steps;
 
-  private Object m_selectCasualtyLock = new Object();
+  private Object m_continueLock = new Object();
   private SelectCasualtyMessage m_selectCasualtyResponse;
 
   private DicePanel m_dicePanel;
@@ -83,16 +86,27 @@ public class BattleDisplay extends JPanel
     initLayout();
   }
 
-  public void casualtyNoticicationMessage(CasualtyNotificationMessage message)
+  public void bombingResults(BombingResults message)
   {
+    m_dicePanel.setDiceRoll(message);
+    m_actionLayout.show(m_actionPanel, DICE_KEY);
+  }
+
+
+  public void casualtyNoticicationMessage(CasualtyNotificationMessage message, boolean waitFOrUserInput)
+  {
+    setStep(message);
     m_casualties.setNotication(message);
-    m_actionLayout.show(m_actionPanel, "C");
+    m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
 
     if(message.getPlayer().equals(m_defender))
       m_defenderModel.removeCasualties(message);
     else
       m_attackerModel.removeCasualties(message);
 
+    //if wait is true, then dont return until the user presses continue
+    if(!waitFOrUserInput)
+      return;
 
     m_actionButton.setAction(
         new AbstractAction("Continue")
@@ -100,9 +114,9 @@ public class BattleDisplay extends JPanel
 
       public void actionPerformed(ActionEvent e)
       {
-        synchronized(m_selectCasualtyLock)
+        synchronized(m_continueLock)
         {
-          m_selectCasualtyLock.notifyAll();
+          m_continueLock.notifyAll();
         }
       }
     }
@@ -110,9 +124,9 @@ public class BattleDisplay extends JPanel
 
     try
     {
-      synchronized(m_selectCasualtyLock)
+      synchronized(m_continueLock)
       {
-        m_selectCasualtyLock.wait();
+        m_continueLock.wait();
       }
       } catch(InterruptedException ie)
       {
@@ -122,10 +136,43 @@ public class BattleDisplay extends JPanel
     m_actionButton.setAction(null);
   }
 
+  public void endBattle(BattleEndMessage msg)
+  {
+    m_steps.walkToLastStep();
+
+    m_actionButton.setAction(
+        new AbstractAction(msg.getMessage() + " : (Click to close)")
+    {
+
+      public void actionPerformed(ActionEvent e)
+      {
+        synchronized(m_continueLock)
+        {
+          m_continueLock.notifyAll();
+        }
+      }
+    }
+    );
+
+    try
+    {
+      synchronized(m_continueLock)
+      {
+        m_continueLock.wait();
+      }
+      } catch(InterruptedException ie)
+      {
+
+      }
+
+      m_actionButton.setAction(null);
+
+  }
 
   public SelectCasualtyMessage getCasualties(final SelectCasualtyQueryMessage msg)
   {
-    m_actionLayout.show(m_actionPanel, "D");
+    setStep(msg);
+    m_actionLayout.show(m_actionPanel, DICE_KEY);
     m_dicePanel.setDiceRoll(msg.getDice());
     boolean plural = msg. getCount() > 1;
     final String btnText = msg.getPlayer().getName() + " select " + msg.getCount() + (plural ? " casualties" :" casualty");
@@ -155,9 +202,9 @@ public class BattleDisplay extends JPanel
         {
           SelectCasualtyMessage response = new SelectCasualtyMessage(choosen);
           m_selectCasualtyResponse = response;
-          synchronized(m_selectCasualtyLock)
+          synchronized(m_continueLock)
           {
-            m_selectCasualtyLock.notifyAll();
+            m_continueLock.notifyAll();
           }
         }
       }
@@ -165,9 +212,9 @@ public class BattleDisplay extends JPanel
 
     try
     {
-      synchronized(m_selectCasualtyLock)
+      synchronized(m_continueLock)
       {
-          m_selectCasualtyLock.wait();
+          m_continueLock.wait();
       }
     }
     catch (InterruptedException ex)
@@ -215,10 +262,8 @@ public class BattleDisplay extends JPanel
     m_actionPanel = new JPanel();
     m_actionPanel.setLayout(m_actionLayout);
 
-//    m_actionLayout.addLayoutComponent(m_dicePanel, "D");
-//    m_actionLayout.addLayoutComponent(m_casualties, "C");
-    m_actionPanel.add(m_dicePanel, "D");
-    m_actionPanel.add(m_casualties,"C");
+    m_actionPanel.add(m_dicePanel, DICE_KEY);
+    m_actionPanel.add(m_casualties, CASUALTIES_KEY);
 
     JPanel diceAndSteps = new JPanel();
     diceAndSteps.setLayout(new BorderLayout());
@@ -293,7 +338,7 @@ class BattleTable extends JTable
     setShowHorizontalLines(false);
 
     getTableHeader().setReorderingAllowed(false);
-    getTableHeader().setResizingAllowed(false);
+//    getTableHeader().setResizingAllowed(false);
   }
 }
 
@@ -530,6 +575,13 @@ class BattleStepsPanel extends JPanel
       }
   }
 
+  public void walkToLastStep()
+  {
+    if(m_list.getSelectedIndex() == m_list.getModel().getSize() - 1)
+      return;
+    walkStep(m_list.getSelectedIndex(), m_list.getModel().getSize() - 1);
+  }
+
   public void setStep(BattleMessage msg)
   {
     if(msg.getStep() != null)
@@ -555,39 +607,60 @@ class DicePanel extends JPanel
     removeAll();
   }
 
+  public void setDiceRoll(BombingResults results)
+  {
+    removeAll();
+
+    add(create(results.getDice(), -1));
+
+    add(Box.createVerticalGlue());
+    add(new JLabel("Cost:" + results.getCost()));
+
+    invalidate();
+  }
+
   public void setDiceRoll(DiceRoll diceRoll)
   {
     removeAll();
     for(int i = 1; i <= 6; i++)
     {
+
       int[] dice = diceRoll.getRolls(i);
       if(dice.length == 0)
         continue;
 
-      JPanel dicePanel = new JPanel();
-      dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
-      dicePanel.add(new JLabel("Rolled at " + i + ":"));
-      dicePanel.add(Box.createHorizontalStrut(5));
-      for(int dieIndex = 0; dieIndex < dice.length; dieIndex++)
-      {
-        dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(dice[dieIndex] + 1)));
-        dicePanel.add(Box.createHorizontalStrut(2));
-      }
-      JScrollPane scroll = new JScrollPane(dicePanel);
-      scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-      //we're adding to a box layout, so to prevent the component from
-      //grabbing extra space, set the max height.
-      //allow room for a dice and a scrollbar
-      scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
-      scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
-      scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
-      add(scroll);
+      add(create(diceRoll.getRolls(i), i));
     }
     add(Box.createVerticalGlue());
     add(new JLabel("Total hits:" + diceRoll.getHits()));
 
     invalidate();
   }
+
+  private JComponent create(int[] dice, int rollAt)
+  {
+    JPanel dicePanel = new JPanel();
+    dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
+    if(rollAt != -1)
+      dicePanel.add(new JLabel("Rolled at " + rollAt + ":"));
+    dicePanel.add(Box.createHorizontalStrut(5));
+    for(int dieIndex = 0; dieIndex < dice.length; dieIndex++)
+    {
+      dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(dice[dieIndex] + 1)));
+      dicePanel.add(Box.createHorizontalStrut(2));
+    }
+    JScrollPane scroll = new JScrollPane(dicePanel);
+    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    //we're adding to a box layout, so to prevent the component from
+    //grabbing extra space, set the max height.
+    //allow room for a dice and a scrollbar
+    scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
+    scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
+    scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
+
+    return scroll;
+  }
+
 }
 
 

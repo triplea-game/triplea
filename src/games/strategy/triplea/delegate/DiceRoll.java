@@ -44,8 +44,8 @@ public class DiceRoll implements java.io.Serializable
     }
 
     int[][] dice = new int[Constants.MAX_DICE][];
-    dice[0] = random;
-    for(int i = 1; i < dice[0].length; i++)
+    dice[5] = random;
+    for(int i = 0; i < 5; i++)
     {
       dice[i] = new int[0];
     }
@@ -115,7 +115,7 @@ public class DiceRoll implements java.io.Serializable
   }
 
   /**
-   * @param rollAt the strength of the roll, eg infantry roll at 2, tanks at 3
+   * @param rollAt the strength of the roll, eg infantry roll at 2, expecting a number in [1,6]
    * @return in int[] which shouldnt be modifed, the int[] is 0 based, ie 0..MAX_DICE
    */
   public int[] getRolls(int rollAt)
