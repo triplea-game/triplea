@@ -1,3 +1,5 @@
+* during battles the dice are sorted according to unit type so that when you review the dice rolls, you can tell what unit rolled for which dice
+
 * fix bug [ 1144356 ] alter email header on PBEM (this is really a feature request) (sgb)
 
 * added new chinese units and cruiser, halftrack, marine units (iron_cross)
