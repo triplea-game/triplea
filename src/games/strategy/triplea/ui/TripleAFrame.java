@@ -1177,6 +1177,8 @@ public class TripleAFrame extends JFrame
         JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333));
         JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75));
         JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666));
+        JRadioButtonMenuItem radioItem56 = new JRadioButtonMenuItem(new UnitSizeAction(0.5625));
+        JRadioButtonMenuItem radioItem50 = new JRadioButtonMenuItem(new UnitSizeAction(0.5));
 
         unitSizeGroup.add(radioItem125);
         unitSizeGroup.add(radioItem100);
@@ -1184,6 +1186,8 @@ public class TripleAFrame extends JFrame
         unitSizeGroup.add(radioItem83);
         unitSizeGroup.add(radioItem75);
         unitSizeGroup.add(radioItem66);
+        unitSizeGroup.add(radioItem56);
+        unitSizeGroup.add(radioItem50);
 
         radioItem100.setSelected(true);
 
@@ -1211,6 +1215,8 @@ public class TripleAFrame extends JFrame
         unitSizeMenu.add(radioItem83);
         unitSizeMenu.add(radioItem75);
         unitSizeMenu.add(radioItem66);
+        unitSizeMenu.add(radioItem56);
+        unitSizeMenu.add(radioItem50);
 
         parentMenu.add(unitSizeMenu);
     }
