@@ -269,16 +269,15 @@ public class ChatFrame extends JFrame
 
             if (m_nextMessage.getText().trim().length() == 0)
                 return;
-			m_ChatHistory.setHistory(m_nextMessage.getText());
-            if(Chat.getTense(m_nextMessage.getText())==1){
-                MeMessage msg = new MeMessage(m_nextMessage.getText().substring(4));
+            if(Chat.isThirdPerson(m_nextMessage.getText())){
+                MeMessage msg = new MeMessage(m_nextMessage.getText().substring(Chat.ME.length()));
                 m_chat.sendMessage(msg);
             	
             } else {
             	ChatMessage msg = new ChatMessage(m_nextMessage.getText());
             	m_chat.sendMessage(msg);
             }
-			m_ChatHistory.insertHistory("");
+			m_ChatHistory.insertHistory(m_nextMessage.getText());
             m_nextMessage.setText("");
         }
     };

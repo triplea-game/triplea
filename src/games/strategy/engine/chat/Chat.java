@@ -38,6 +38,7 @@ public class Chat
     private ChatFrame m_frame;
     private IMessenger m_messenger;
     
+	public static final String ME = "/me ";
 
     /** Creates a new instance of Chat */
     public Chat(IMessenger messenger, ChatFrame frame)
@@ -96,11 +97,8 @@ public class Chat
         m_frame.addMessage(msg, m_messenger.getLocalNode().getName());
     }
 
-    public static int getTense(String msg){
-		if(msg.length()>3&&msg.substring(0,4).compareToIgnoreCase("/me ")==0){
-			return 1;
-		}
-		return 3;
+    public static boolean isThirdPerson(String msg){
+		return msg.toLowerCase().startsWith(ME);
 	}
     private synchronized void updateConnections()
     {
