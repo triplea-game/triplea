@@ -240,7 +240,7 @@ public class PolygonGrabber extends JFrame
 
     public static void main(String[] args)
     {
-        String fileName = "/home/sgb/dev/triplea/baseMap.gif";
+        String fileName = "/home/sgb/dev/triplea/additonalImageData/new_baseMap.gif";
         PolygonGrabber grabber = new PolygonGrabber(fileName);
         grabber.setSize(600,550);
         grabber.show();
