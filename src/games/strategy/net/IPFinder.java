@@ -17,12 +17,12 @@ package games.strategy.net;
 /**
     @author Georlge El-Haddad
     nekromancer@users.sourceforge.net
- 
+
    Utility class for finding the local ip address of a machine with multiple network interfaces.
-   
+
    This class will discard any InetAddress whose isLoobackAddresS() returns true.
    It will also discard any InetAddress whose isLinkLocalAddress() returns true.
- 
+
    On most systems the IP addres it uses for internet communication will NOT be
    a LinkLocalAddress. Even if your system goes through a gateway, the standard
    192.168.0.1 address will be valid (not link local and not loopback). It is up
@@ -31,12 +31,12 @@ package games.strategy.net;
    and IP masquarading set properly. TripleA will be bound to their local address
    and all packets will be routed through the gateway. Opponents will be bound to the
    gateway address. In essence it should all work.
-   
-   IF the game is run on the system that is acting as the dedicated gateway, many IPs 
+
+   IF the game is run on the system that is acting as the dedicated gateway, many IPs
    will be found as valid. The 1st IP that will be detected will be used. According to
    some tests, the 1st ip tends to be the IP used by the gateway to connect to the net.
    This means that TripleA will still work.
-  
+
  */
 
 import java.util.*;
@@ -44,38 +44,47 @@ import java.net.*;
 
 public class IPFinder {
 
-    public static InetAddress findInetAddress() throws SocketException {
+	/**
+	   We iterate through an enumeration of network interfaces on the machine
+	   and picks the first IP that is not a loopback and not a link local.
+	   In the case of IRIX computers connected on a LAN through a central
+	   gateway running java off a telnet session will result in a null
+	   network interface (patched below).
 
-    Enumeration e = NetworkInterface.getNetworkInterfaces();
+	   @exception java.net.SocketException       required by InetAddress
+	   @exception java.net.UnknownHostException  required for getLocalHost()
 
-    while (e.hasMoreElements()) {
-        NetworkInterface netface = (NetworkInterface)e.nextElement();
-        Enumeration e2 = netface.getInetAddresses();
+	   @return    java.net.InetAddress           the ip address to use
+	*/
+	public static InetAddress findInetAddress() throws SocketException, UnknownHostException
+	{
+		Enumeration enum = NetworkInterface.getNetworkInterfaces();
 
-            while (e2.hasMoreElements()) {
-                InetAddress ip = (InetAddress) e2.nextElement();
+		// Test if null, no point taking a performance hit by
+		// letting the JVM check for a NullPointerException.
+		if(enum == null) {
+			InetAddress ip1 = InetAddress.getLocalHost();
+			return ip1;
+		}
+		else {
+			while (enum.hasMoreElements()) {
+				NetworkInterface netface = (NetworkInterface)enum.nextElement();
+				Enumeration enum2 = netface.getInetAddresses();
+				while (enum2.hasMoreElements()) {
+					InetAddress ip2 = (InetAddress) enum2.nextElement();
+					if(! ip2.isLoopbackAddress()) {
+					if(! ip2.isLinkLocalAddress()) {
+						return ip2;
+					}
+					}
+				}
+			}
+			//return null  <-- old code never throw null
+			//If all else fails we return the localhost
+			InetAddress ip3 = InetAddress.getLocalHost();
+			return ip3;
+		}//else
 
-                if( ! ip.isLoopbackAddress()) {
-                    //Un-comment for debugging.
-                    //System.out.println("Addres = "+ip.getHostAddress());
-                    //System.out.println("is wild card address  = "+ip.isAnyLocalAddress());
-                    //System.out.println("is link address       = "+ip.isLinkLocalAddress());
-                    //System.out.println();
+	}//end static findInetAddress()
 
-                    if ( ! ip.isLinkLocalAddress()) {
-                        //Un-comment for debugging.
-                        //System.out.println("Using IP = "+ip.getHostAddress());
-                        return ip;
-                    }//if
-
-                }//if
-
-            } //while2
-
-        } //while1
-
-        return null;   //or maybe "return InetAddress.getHostAddress()   for default ?
-
-    }//end findInetAddress()
-
-}//end class
+}//end class IPFinder
