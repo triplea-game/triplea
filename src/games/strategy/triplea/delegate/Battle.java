@@ -58,4 +58,6 @@ interface Battle extends java.io.Serializable
     * there are still units left to fight
      */
     public boolean isEmpty();
+    
+    public Collection getDependentUnits(Collection units);
 }

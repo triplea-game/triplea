@@ -470,7 +470,7 @@ public class BattleTracker implements java.io.Serializable
     while (iter.hasNext())
     {
       Battle battle = (Battle) iter.next();
-      if (battle.isBombingRun() == bombing)
+      if (!battle.isEmpty() && battle.isBombingRun() == bombing)
         battles.add(battle.getTerritory());
 
     }

@@ -595,10 +595,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (availableTerritories.isEmpty() && !(subs && canSubsSubmerge()))
             return;
 
-        //dont allow retreating units to retreat if a naval invasion depends on
-        // this
-        if (m_tracker.getBlocked(this).size() != 0 && !subs)
-            return;
+
 
         Collection units = defender ? m_defendingUnits : m_attackingUnits;
         if (subs)
@@ -652,9 +649,36 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 String messageLong = retreatingPlayer.getName() + " retreats " + (subs ? "subs" : "all units") + " to " + retreatTo.getName();
                 bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, step), nonRetreatingPlayer);
 
+                
+                
+                
             }
+            
         }
     }
+    
+    private Change retreatFromDependents(Collection units, DelegateBridge bridge, Territory retreatTo)
+    {
+        CompositeChange change = new CompositeChange();
+        Collection dependents = m_tracker.getBlocked(this);
+        Iterator iter = dependents.iterator();
+        while (iter.hasNext())
+        {
+            Battle dependent = (Battle) iter.next();
+            Route route = new Route();
+            route.setStart(m_battleSite);
+            route.add(dependent.getTerritory());
+            
+            Collection retreatedUnits = dependent.getDependentUnits(units);
+            
+            dependent.removeAttack(route, retreatedUnits);
+            
+            change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
+        }
+        
+        
+        return change;
+    }    
 
     private void submergeUnits(Collection submerging, boolean defender, DelegateBridge bridge)
     {
@@ -692,7 +716,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         String transcriptText = Formatter.unitsToTextNoOwner(retreating) + " retreated to " + to.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList(retreating));
 
-        Change change = ChangeFactory.moveUnits(m_battleSite, to, retreating);
+        CompositeChange change = new CompositeChange();
+        change.add(ChangeFactory.moveUnits(m_battleSite, to, retreating));
+        
+        if(m_over)
+        {
+            change.add(retreatFromDependents(retreating, bridge, to));
+        }
+        
         bridge.addChange(change);
 
         Collection units = defender ? m_defendingUnits : m_attackingUnits;
@@ -1165,20 +1196,28 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         return m_attackingUnits;
     }
+    
+    public Collection getDependentUnits(Collection units)
+    {
+        Collection rVal = new ArrayList();
+        
+        Iterator iter = units.iterator();
+		while(iter.hasNext())
+		{
+			Unit unit = (Unit) iter.next();
+			Collection dependent = (Collection) m_dependentUnits.get(unit);
+			if(dependent != null)
+				rVal.addAll(dependent);
+		}
+        return rVal;
+    }
+    
 
     public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
     {
 
-        Iterator iter = units.iterator();
-        Collection lost = new ArrayList();
-        while (iter.hasNext())
-        {
-            Unit unit = (Unit) iter.next();
-            Collection dependent = (Collection) m_dependentUnits.get(unit);
-            if (dependent != null)
-                lost.addAll(dependent);
-        }
-
+        Collection lost = getDependentUnits(units);
+        
         //if all the amphibious attacking land units are lost, then we are
         //no longer a naval invasion
         m_amphibiousLandAttackers.removeAll(lost);

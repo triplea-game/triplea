@@ -128,15 +128,8 @@ public class NonFightingBattle implements Battle
 
 	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
 	{
-		Iterator iter = units.iterator();
-		Collection lost = new ArrayList();
-		while(iter.hasNext())
-		{
-			Unit unit = (Unit) iter.next();
-			Collection dependent = (Collection) m_dependentUnits.get(unit);
-			if(dependent != null)
-				lost.addAll(dependent);
-		}
+		
+		Collection lost = getDependentUnits(units);
 		if(lost.size() != 0)
 		{
 			Change change = ChangeFactory.removeUnits(m_battleSite, lost);
@@ -146,6 +139,21 @@ public class NonFightingBattle implements Battle
             bridge.getHistoryWriter().startEvent(transcriptText);
 		}
 	}
+
+    public Collection getDependentUnits(Collection units)
+    {
+        Collection rVal = new ArrayList();
+        
+        Iterator iter = units.iterator();
+		while(iter.hasNext())
+		{
+			Unit unit = (Unit) iter.next();
+			Collection dependent = (Collection) m_dependentUnits.get(unit);
+			if(dependent != null)
+				rVal.addAll(dependent);
+		}
+        return rVal;
+    }
 
     public int hashCode()
     {

@@ -245,4 +245,10 @@ public class StrategicBombingRaidBattle implements Battle
 
         return m_battleSite;
     }
+    
+    public Collection getDependentUnits(Collection units)
+    {
+        return Collections.EMPTY_LIST;
+    }
+    
 }
