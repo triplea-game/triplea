@@ -68,11 +68,6 @@ public class TroxAIPlayer implements GamePlayer
 
   public Message sendMessage(Message message)
   {
-    if(message instanceof MultiDestinationMessage)
-    {
-      if(MultiDestinationMessage.shouldIgnore((MultiDestinationMessage) message))
-        return null;
-    }
 
 
     if(message instanceof SelectCasualtyQueryMessage)
