@@ -486,9 +486,19 @@
 		<delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
 		<delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
 		<delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+
+		<delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+		<delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+		
 		<sequence>
 
-			<step name="gameInitDelegate" delegate="initDelegate"/>
+			<step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+
+			<step name="germanBid" delegate="bid" player="Germans" maxRunCount="1"/>
+			<step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
+
+			<step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
+			<step name="japanesedPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
 
 			<step name="russianTech" delegate="tech" player="Russians"/>
 			<step name="russianPurchase" delegate="purchase" player="Russians"/>
@@ -1170,6 +1180,16 @@
 	<propertyList>
 		<property name="neutralCharge" value="3"/>
 		<property name="maxFactoriesPerTerritory" value="1"/>
+		<property name="Germans bid" value="0" editable="true">
+			<number min="0" max="10000"/>
+		</property>
+		<property name="Japanese bid" value="0" editable="true">
+			<number min="0" max="10000"/>
+		</property>
+
+
+
+		
 	</propertyList>
 	
 </game>
