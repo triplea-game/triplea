@@ -63,7 +63,11 @@ public class PurchasePanel extends ActionPanel
     add(new JButton(PURCHASE_ACTION));
     add(new JButton(DoneAction));
     m_purchasedSoFar.setText("");
+
+    add(Box.createVerticalStrut(9));
     add(m_purchasedSoFar);
+    add(Box.createVerticalStrut(4));
+
     m_unitsPanel.setUnitsFromProductionRuleMap(new IntegerMap(), id, getData());
     add(m_unitsPanel);
     add(Box.createVerticalGlue());
