@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Nadaboard" version="1.2"/>
+	<info name="Nadaboard" version="1.3"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -657,7 +657,58 @@
 	</production> 
 	
 	<attatchmentList>
-	    <attatchment name="unitAttatchment" 
+
+	    <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    	    <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="unitAttatchment"
 			 attatchTo="infantry"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
 			 type="unitType">

@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Battleship Row" version="0.1.3"/>
+	<info name="Battleship Row" version="0.1.5"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -496,35 +496,35 @@
 			<step name="russianPurchase" delegate="purchase" player="Russians"/>
 			<step name="russianCombatMove" delegate="move" player="Russians"/>
 			<step name="russianBattle" delegate="battle" player="Russians"/>
-			<step name="russianNonCombatMove" delegate="move" player="Russians"/>
+			<step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
 			<step name="russianPlace" delegate="place" player="Russians"/>
 			<step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
 			<step name="germanPurchase" delegate="purchase" player="Germans"/>
 			<step name="germanCombatMove" delegate="move" player="Germans"/>
 			<step name="germanBattle" delegate="battle" player="Germans"/>
-			<step name="germanNonCombatMove" delegate="move" player="Germans"/>
+			<step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
 			<step name="germanPlace" delegate="place" player="Germans"/>
 			<step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
 			<step name="britishPurchase" delegate="purchase" player="British"/>
 			<step name="britishCombatMove" delegate="move" player="British"/>
 			<step name="britishBattle" delegate="battle" player="British"/>
-			<step name="britishNonCombatMove" delegate="move" player="British"/>
+			<step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
 			<step name="britishPlace" delegate="place" player="British"/>
 			<step name="britishEndTurn" delegate="endTurn" player="British"/>
 
 			<step name="japanesePurchase" delegate="purchase" player="Japanese"/>
 			<step name="japaneseCombatMove" delegate="move" player="Japanese"/>
 			<step name="japaneseBattle" delegate="battle" player="Japanese"/>
-			<step name="japaneseNonCombatMove" delegate="move" player="Japanese"/>
+			<step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
 			<step name="japanesePlace" delegate="place" player="Japanese"/>
 			<step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
 
 			<step name="americanPurchase" delegate="purchase" player="Americans"/>
 			<step name="americanCombatMove" delegate="move" player="Americans"/>
 			<step name="americanBattle" delegate="battle" player="Americans"/>
-			<step name="americanNonCombatMove" delegate="move" player="Americans"/>
+			<step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
 			<step name="americanPlace" delegate="place" player="Americans"/>
 			<step name="americanEndTurn" delegate="endTurn" player="Americans"/>
 			
@@ -627,7 +627,7 @@
 			<frontierRules name="buyBattleship"/>
 			<frontierRules name="buyAAGun"/>
 		</productionFrontier>
-		
+
 		<productionFrontier name="productionIndustrialTechnology">
 			<frontierRules name="buyInfantryIndustrialTechnology"/>
 			<frontierRules name="buyArmourIndustrialTechnology"/>
@@ -647,10 +647,64 @@
 		<playerProduction player="Germans" frontier="production"/>
 		<playerProduction player="Russians" frontier="production"/>
 
-	</production> 
-	
+	</production>
+
 	<attatchmentList>
-	    <attatchment name="unitAttatchment" 
+
+
+	    <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    	    <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    	    <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+
+
+	    <attatchment name="unitAttatchment"
 			 attatchTo="infantry"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
 			 type="unitType">
@@ -659,7 +713,7 @@
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
 	    </attatchment>
-	    <attatchment name="unitAttatchment" 
+	    <attatchment name="unitAttatchment"
 			 attatchTo="armour"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
 			 type="unitType">
@@ -1048,7 +1102,7 @@
 			<unitPlacement unitType="armour" territory="East Europe" quantity ="1" owner="Germans" /> 
 			<unitPlacement unitType="infantry" territory="East Europe" quantity ="3" owner="Germans" /> 
 			<unitPlacement unitType="fighter" territory="East Europe" quantity ="1" owner="Germans" /> 
-			<unitPlacement unitType="infantry" territory="East US" quantity ="2" owner="Americans" /> 
+			<unitPlacement unitType="infantry" territory="East US" quantity ="2" owner="Americans" />
 			<unitPlacement unitType="armour" territory="East US" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="fighter" territory="East US" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="bomber" territory="East US" quantity ="1" owner="Americans" /> 
@@ -1091,7 +1145,7 @@
 			<unitPlacement unitType="infantry" territory="Philipines" quantity ="2" owner="Japanese" /> 
 			<unitPlacement unitType="fighter" territory="Philipines" quantity ="1" owner="Japanese" /> 
 			<unitPlacement unitType="armour" territory="Russia" quantity ="2" owner="Russians" /> 
-			<unitPlacement unitType="infantry" territory="Russia" quantity ="4" owner="Russians" /> 
+			<unitPlacement unitType="infantry" territory="Russia" quantity ="4" owner="Russians" />
 			<unitPlacement unitType="fighter" territory="Russia" quantity ="1" owner="Russians" /> 
 			<unitPlacement unitType="factory" territory="Russia" quantity ="1" owner="Russians" /> 
 			<unitPlacement unitType="aaGun" territory="Russia" quantity ="1" owner="Russians" /> 
@@ -1134,7 +1188,7 @@
 			<unitPlacement unitType="transport" territory="Central Mediteranean Sea Zone" quantity ="1" owner="Germans" /> 
 			<unitPlacement unitType="transport" territory="East Canada Sea Zone" quantity ="1" owner="British" /> 
 			<unitPlacement unitType="submarine" territory="East Mediteranean Sea Zone" quantity ="1" owner="British" /> 
-			<unitPlacement unitType="transport" territory="East US Sea Zone" quantity ="1" owner="Americans" /> 
+			<unitPlacement unitType="transport" territory="East US Sea Zone" quantity ="1" owner="Americans" />
 			<unitPlacement unitType="submarine" territory="Hawaii Sea Zone" quantity ="1" owner="Americans" /> 
 			<unitPlacement unitType="transport" territory="Indian Ocean Sea Zone" quantity ="1" owner="British" /> 
 			<unitPlacement unitType="battleship" territory="Japan Sea Zone" quantity ="1" owner="Japanese" /> 
@@ -1162,6 +1216,18 @@
 
 	<propertyList>
 		<property name="neutralCharge" value="3"/>
+		<property name="Two hit battleship" value="true" editable="true">
+			<boolean/>
+		</property>
+		<property name="maxFactoriesPerTerritory" value="1"/>
+		<property name="Germans bid" value="0" editable="true">
+			<number min="0" max="1000"/>
+		</property>
+		<property name="Japanese bid" value="0" editable="true">
+			<number min="0" max="1000"/>
+		</property>
+
+
 	</propertyList>
 	
 </game>

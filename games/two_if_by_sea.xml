@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="two_if_by_sea" version="0.3"/>
+	<info name="two_if_by_sea" version="0.4"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -616,7 +616,33 @@
 	</production> 
 	
 	<attatchmentList>
-	    <attatchment name="unitAttatchment" 
+
+
+	    <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+
+	    	    <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+
+
+
+	    <attatchment name="unitAttatchment"
 			 attatchTo="infantry"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
 			 type="unitType">
@@ -625,7 +651,7 @@
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
 	    </attatchment>
-	    <attatchment name="unitAttatchment" 
+	    <attatchment name="unitAttatchment"
 			 attatchTo="armour"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
 			 type="unitType">
@@ -635,13 +661,13 @@
 			 <option name="attack" value="3"/>
 			 <option name="defense" value="2"/>
 	    </attatchment>
-	    <attatchment name="unitAttatchment" 
+	    <attatchment name="unitAttatchment"
 			 attatchTo="fighter"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
 			 type="unitType">
 			 <option name="movement" value="4"/>
 			 <option name="carrierCost" value="1"/>
-			 <option name="isAir" value="true"/>   
+			 <option name="isAir" value="true"/>
 			 <option name="attack" value="3"/>
 			 <option name="defense" value="4"/>
 	    </attatchment>

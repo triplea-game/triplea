@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Classic" version="1.0"/>
+	<info name="Classic" version="1.2"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -507,7 +507,7 @@
 			<step name="russianPurchase" delegate="purchase" player="Russians"/>
 			<step name="russianCombatMove" delegate="move" player="Russians"/>
 			<step name="russianBattle" delegate="battle" player="Russians"/>
-			<step name="russianNonCombatMove" delegate="move" player="Russians"/>
+			<step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
 			<step name="russianPlace" delegate="place" player="Russians"/>
 			<step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
@@ -515,7 +515,7 @@
 			<step name="germanPurchase" delegate="purchase" player="Germans"/>
 			<step name="germanCombatMove" delegate="move" player="Germans"/>
 			<step name="germanBattle" delegate="battle" player="Germans"/>
-			<step name="germanNonCombatMove" delegate="move" player="Germans"/>
+			<step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
 			<step name="germanPlace" delegate="place" player="Germans"/>
 			<step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
@@ -523,7 +523,7 @@
 			<step name="britishPurchase" delegate="purchase" player="British"/>
 			<step name="britishCombatMove" delegate="move" player="British"/>
 			<step name="britishBattle" delegate="battle" player="British"/>
-			<step name="britishNonCombatMove" delegate="move" player="British"/>
+			<step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
 			<step name="britishPlace" delegate="place" player="British"/>
 			<step name="britishEndTurn" delegate="endTurn" player="British"/>
 
@@ -531,7 +531,7 @@
 			<step name="japanesePurchase" delegate="purchase" player="Japanese"/>
 			<step name="japaneseCombatMove" delegate="move" player="Japanese"/>
 			<step name="japaneseBattle" delegate="battle" player="Japanese"/>
-			<step name="japaneseNonCombatMove" delegate="move" player="Japanese"/>
+			<step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
 			<step name="japanesePlace" delegate="place" player="Japanese"/>
 			<step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
 
@@ -539,7 +539,7 @@
 			<step name="americanPurchase" delegate="purchase" player="Americans"/>
 			<step name="americanCombatMove" delegate="move" player="Americans"/>
 			<step name="americanBattle" delegate="battle" player="Americans"/>
-			<step name="americanNonCombatMove" delegate="move" player="Americans"/>
+			<step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
 			<step name="americanPlace" delegate="place" player="Americans"/>
 			<step name="americanEndTurn" delegate="endTurn" player="Americans"/>
 			
@@ -667,6 +667,57 @@
 	</production> 
 	
 	<attatchmentList>
+
+		    <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    	    <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	    <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="infantry"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
@@ -725,7 +776,8 @@
    			 <option name="attack" value="4"/>
 			 <option name="defense" value="4"/>
 			 <option name="canBombard" value="true"/>
-	    </attatchment>
+			 <option name="isTwoHit" value="false"/>
+		 </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="carrier"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
@@ -1180,13 +1232,16 @@
 	</initialize>
 
 	<propertyList>
+		<property name="Two hit battleship" value="false" editable="true">
+			<boolean/>
+		</property>
 		<property name="neutralCharge" value="3"/>
 		<property name="maxFactoriesPerTerritory" value="1"/>
 		<property name="Germans bid" value="0" editable="true">
-			<number min="0" max="10000"/>
+			<number min="0" max="1000"/>
 		</property>
 		<property name="Japanese bid" value="0" editable="true">
-			<number min="0" max="10000"/>
+			<number min="0" max="1000"/>
 		</property>
 
 
