@@ -137,8 +137,8 @@ public class UnitIconImageFactory
       {
           Image image = Util.createImage(UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT);
           Graphics g = image.getGraphics();
-          g.drawImage(src,0,0,  obs);
           g.drawImage(FlagIconImageFactory.instance().getSmallFlag(player),0,0, obs);
+          g.drawImage(src,0,0,  obs);
           m_images.put(new Point(destPoint), image);
 
           destPoint.y++;
