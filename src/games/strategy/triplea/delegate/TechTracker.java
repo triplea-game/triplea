@@ -40,7 +40,7 @@ public class TechTracker implements java.io.Serializable
   {
   }
 
-  public Collection getTechAdvances(PlayerID id)
+  public static Collection getTechAdvances(PlayerID id)
   {
     Collection rVal = new ArrayList();
     TechAttatchment attatchment = TechAttatchment.get(id);

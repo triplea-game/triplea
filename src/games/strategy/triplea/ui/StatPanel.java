@@ -35,6 +35,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.*;
 
 /**
  *
@@ -379,11 +380,6 @@ public class StatPanel extends JPanel
     {
       clearAdvances();
       Iterator playerIter = m_data.getPlayerList().getPlayers().iterator();
-      Map advanceProperty = (Map) m_data.getProperties().get(Constants.
-          TECH_PROPERTY);
-
-      if (advanceProperty == null)
-        return;
 
       while (playerIter.hasNext())
       {
@@ -394,14 +390,13 @@ public class StatPanel extends JPanel
 
         int col = ( (Integer) colMap.get(pid.getName())).intValue();
 
-        if (advanceProperty.get(pid) == null)
-          continue;
 
-        Iterator advances = ( (Collection) advanceProperty.get(pid)).iterator();
+
+        Iterator advances = TechTracker.getTechAdvances(pid).iterator();
 
         while (advances.hasNext())
         {
-          int row = ( (Integer) rowMap.get( (String) advances.next())).intValue();
+          int row = ( (Integer) rowMap.get( ((TechAdvance) advances.next() ).getName() ) ).intValue();
           // System.err.println("(" + row + ", " + col + ")");
           data[row][col] = "X";
           // data[row][col] = colList[col].substring(0, 1);

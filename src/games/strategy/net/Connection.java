@@ -273,7 +273,8 @@ class Connection
         {
           if(!m_shutdown)
           {
-            ioe.printStackTrace();
+            if(! (ioe instanceof EOFException))
+               ioe.printStackTrace();
             Connection.this.shutDown();
             List unsent = new ArrayList(m_waitingToBeSent);
             m_listener.fatalError(ioe, Connection.this, unsent);
