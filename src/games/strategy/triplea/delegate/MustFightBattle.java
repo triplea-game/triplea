@@ -879,6 +879,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         int hitCount = dice.getHits();
         Collection killed;
         Collection damaged = null;
+	boolean autoCalculated = false;
 
         //they all die
         if (hitCount >= getMaxHits(attackableUnits))
@@ -892,10 +893,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             SelectCasualtyMessage message = selectCasualties(stepName, bridge, attackableUnits, !defender, text, dice);
             killed = message.getKilled();
             damaged = message.getDamaged();
+	    autoCalculated = message.getAutoCalculated();
         }
 
         CasualtyNotificationMessage msg = new CasualtyNotificationMessage(stepName, killed, damaged, m_dependentUnits, hitPlayer, dice);
-        msg.setAll(killed.size() == attackableUnits.size());
+        msg.setAutoCalculated((killed.size() == attackableUnits.size()) || autoCalculated);
 
         bridge.sendMessage(msg, hitPlayer);
         bridge.sendMessage(msg, firingPlayer);
@@ -1068,7 +1070,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection casualties = selectCasualties(step, bridge, attackable, false, "AA guns fire,", dice).getKilled();
 
         CasualtyNotificationMessage msg = new CasualtyNotificationMessage(step, casualties, Collections.EMPTY_LIST, m_dependentUnits, m_attacker, dice);
-        msg.setAll(false);
+        msg.setAutoCalculated(false);
 
         bridge.sendMessage(msg, m_attacker);
         bridge.sendMessage(msg, m_defender);
