@@ -42,10 +42,14 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 {
     private final HistoryWriter m_writer = new HistoryWriter(this);
     private final List m_changes = new ArrayList();
+    private final GameData m_data;
+
+    private HistoryNode m_currentNode;
 
     public History(GameData data)
     {
         super(new HistoryNode("Game History", true));
+        m_data = data;
     }
 
     public HistoryWriter getHistoryWriter()
@@ -109,6 +113,18 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
        }
 
 
+    }
+
+    public void gotoNode(HistoryNode node)
+    {
+      if(m_currentNode == null)
+        m_currentNode = getLastNode();
+
+      Change dataChange = getDelta(m_currentNode, node);
+      m_currentNode = node;
+
+      if (dataChange != null)
+        new ChangePerformer(m_data).perform(dataChange);
     }
 
 }

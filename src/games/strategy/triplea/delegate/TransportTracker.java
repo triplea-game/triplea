@@ -25,6 +25,7 @@ import java.util.*;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.engine.data.*;
+import java.io.*;
 
 
 /**
@@ -200,7 +201,9 @@ public class TransportTracker implements java.io.Serializable
 	{
 		StringBuffer buf = new StringBuffer();
 		buf.append("transporting:").append(m_transporting).append("\n");
-		buf.append("transportedBy:").append( m_transportedBy);
+		buf.append("transportedBy:").append( m_transportedBy).append("\n");
+    buf.append("unloaded:").append(m_unloaded).append("\n");
+    buf.append("m_alliedLoadedThisTurn:").append(m_alliedLoadedThisTurn);
 		return buf.toString();
 	}
 

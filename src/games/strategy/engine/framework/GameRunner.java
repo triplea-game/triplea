@@ -20,26 +20,16 @@
 
 package games.strategy.engine.framework;
 
-import java.util.*;
-import java.net.*;
-import java.io.*;
-import org.xml.sax.SAXException;
-import java.awt.*;
-import javax.swing.*;
+import java.io.File;
+import java.io.Serializable;
 
-import games.strategy.util.Util;
-import games.strategy.net.*;
-import games.strategy.ui.*;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.GameParser;
-import games.strategy.engine.gamePlayer.GamePlayer;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.ui.*;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
-import games.strategy.engine.chat.*;
-
-
-import games.strategy.debug.Console;
+import games.strategy.engine.framework.ui.LauncherFrame;
 
 /**
  *
@@ -49,7 +39,6 @@ import games.strategy.debug.Console;
  */
 public class GameRunner
 {
-  private GameData m_data;
   public final static int PORT = 3300;
 
   public static Image getGameIcon(JFrame frame)
@@ -81,10 +70,6 @@ public class GameRunner
     return   System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
   }
 
-  private static void installSecurityProvider()
-  {
-//    java.security.Security.addProvider( new com.sun.crypto.provider.SunJCE());
-  }
 
   private static void checkJavaVersion()
   {
@@ -109,7 +94,14 @@ public class GameRunner
     checkJavaVersion();
     try
     {
-        //macs are already beautiful
+//        if(!isMac())
+//        {
+//          com.jgoodies.plaf.plastic.Plastic3DLookAndFeel.setTabStyle(com.jgoodies.plaf.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
+//          //com.jgoodies.plaf.plastic.PlasticXPLookAndFeel.setTabStyle(com.jgoodies.plaf.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
+//          UIManager.setLookAndFeel(new com.jgoodies.plaf.plastic.PlasticXPLookAndFeel());
+//        }
+
+      //macs are already beautiful
         if(!isMac())
             UIManager.setLookAndFeel(new com.incors.plaf.kunststoff.KunststoffLookAndFeel());
     }
@@ -117,8 +109,6 @@ public class GameRunner
     {
       ex.printStackTrace();
     }
-
-    installSecurityProvider();
 
 
     LauncherFrame frame = new LauncherFrame();

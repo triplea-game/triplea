@@ -75,7 +75,6 @@ public class MoveDelegate implements SaveableDelegate
     m_displayName = displayName;
   }
 
-
   /**
    * Want to make sure that all units in the sea that can be transported are
    * marked as being transported by something.
@@ -89,44 +88,44 @@ public class MoveDelegate implements SaveableDelegate
     m_firstRun = false;
     //check every territory
     Iterator allTerritories = m_data.getMap().getTerritories().iterator();
-    while(allTerritories.hasNext())
+    while (allTerritories.hasNext())
     {
-      Territory current =  (Territory) allTerritories.next();
+      Territory current = (Territory) allTerritories.next();
       //only care about water
-      if(!current.isWater())
+      if (!current.isWater())
         continue;
 
       Collection units = current.getUnits().getUnits();
-      if(units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand))
+      if (units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand))
         continue;
 
       //map transports, try to fill
       Collection transports = Match.getMatches(units, Matches.UnitIsTransport);
       Collection land = Match.getMatches(units, Matches.UnitIsLand);
       Iterator landIter = land.iterator();
-      while(landIter.hasNext())
+      while (landIter.hasNext())
       {
         Unit toLoad = (Unit) landIter.next();
         UnitAttatchment ua = UnitAttatchment.get(toLoad.getType());
         int cost = ua.getTransportCost();
-        if(cost == -1)
+        if (cost == -1)
           throw new IllegalStateException("Non transportable unit in sea");
 
         //find the next transport that can hold it
         Iterator transportIter = transports.iterator();
         boolean found = false;
-        while(transportIter.hasNext())
+        while (transportIter.hasNext())
         {
           Unit transport = (Unit) transportIter.next();
           int capacity = m_transportTracker.getAvailableCapacity(transport);
-          if(capacity >= cost)
+          if (capacity >= cost)
           {
             m_transportTracker.load(toLoad, transport, m_currentMove, m_player);
             found = true;
             break;
           }
         }
-        if(!found)
+        if (!found)
           throw new IllegalStateException("Cannot load all units");
       }
     }
@@ -137,9 +136,9 @@ public class MoveDelegate implements SaveableDelegate
    */
   public void start(DelegateBridge aBridge, GameData gameData)
   {
-    if(aBridge.getStepName().endsWith("NonCombatMove"))
+    if (aBridge.getStepName().endsWith("NonCombatMove"))
       m_nonCombat = true;
-    else if(aBridge.getStepName().endsWith("CombatMove"))
+    else if (aBridge.getStepName().endsWith("CombatMove"))
       m_nonCombat = false;
     else
       throw new IllegalStateException("Cannot determine combat or not");
@@ -147,17 +146,10 @@ public class MoveDelegate implements SaveableDelegate
     m_bridge = aBridge;
     PlayerID player = aBridge.getPlayerID();
 
-    //reset movement, dont do at end of turn since
-    //we move a couple times.
-    if(!m_nonCombat)
-    {
-      m_alreadyMoved.clear();
-      m_transportTracker.endOfRoundClearState();
-    }
     m_data = gameData;
     m_player = player;
 
-    if(m_firstRun)
+    if (m_firstRun)
       firstRun();
   }
 
@@ -176,16 +168,16 @@ public class MoveDelegate implements SaveableDelegate
    */
   public Message sendMessage(Message aMessage)
   {
-    if(aMessage instanceof MoveMessage)
-      return move((MoveMessage) aMessage, m_player);
-    else if(aMessage instanceof MustMoveAirQueryMessage)
-      return new TerritoryCollectionMessage( getTerritoriesWhereAirCantLand());
-    else if(aMessage instanceof MustMoveWithQuery)
-      return mustMoveWith((MustMoveWithQuery) aMessage);
-    else if(aMessage instanceof UndoMoveMessage)
-      return undoMove((UndoMoveMessage) aMessage);
+    if (aMessage instanceof MoveMessage)
+      return move( (MoveMessage) aMessage, m_player);
+    else if (aMessage instanceof MustMoveAirQueryMessage)
+      return new TerritoryCollectionMessage(getTerritoriesWhereAirCantLand());
+    else if (aMessage instanceof MustMoveWithQuery)
+      return mustMoveWith( (MustMoveWithQuery) aMessage);
+    else if (aMessage instanceof UndoMoveMessage)
+      return undoMove( (UndoMoveMessage) aMessage);
     else if (aMessage instanceof MoveCountRequestMessage)
-        return getMoveCount();
+      return getMoveCount();
     else
       throw new IllegalArgumentException("Move delegate received message of wrong type:" + aMessage);
   }
@@ -198,15 +190,15 @@ public class MoveDelegate implements SaveableDelegate
 
   private StringMessage undoMove(UndoMoveMessage message)
   {
-    if(m_movesToUndo.isEmpty())
-        return new StringMessage("No moves to undo", true);
-    if(message.getIndex() >= m_movesToUndo.size())
-        return new StringMessage("Undo move index out of range", true);
+    if (m_movesToUndo.isEmpty())
+      return new StringMessage("No moves to undo", true);
+    if (message.getIndex() >= m_movesToUndo.size())
+      return new StringMessage("Undo move index out of range", true);
 
     UndoableMove moveToUndo = (UndoableMove) m_movesToUndo.get(message.getIndex());
 
-    if( !moveToUndo.getcanUndo())
-        return new StringMessage(moveToUndo.getReasonCantUndo(), true);
+    if (!moveToUndo.getcanUndo())
+      return new StringMessage(moveToUndo.getReasonCantUndo(), true);
 
     moveToUndo.undo(m_bridge, m_alreadyMoved, DelegateFinder.battleDelegate(m_data).getBattleTracker(), m_transportTracker);
     m_movesToUndo.remove(message.getIndex());
@@ -215,17 +207,17 @@ public class MoveDelegate implements SaveableDelegate
     return null;
   }
 
-private void updateUndoableMoveIndexes()
-{
-    for(int i = 0; i < m_movesToUndo.size(); i++)
+  private void updateUndoableMoveIndexes()
+  {
+    for (int i = 0; i < m_movesToUndo.size(); i++)
     {
-        ((UndoableMove) m_movesToUndo.get(i) ).setIndex(i);
+      ( (UndoableMove) m_movesToUndo.get(i)).setIndex(i);
     }
-}
+  }
 
   private MustMoveWithReply mustMoveWith(MustMoveWithQuery query)
   {
-    return new MustMoveWithReply( mustMoveWith(query.getUnits(), query.getStart()), movementLeft(query.getUnits()));
+    return new MustMoveWithReply(mustMoveWith(query.getUnits(), query.getStart()), movementLeft(query.getUnits()));
   }
 
   private IntegerMap movementLeft(Collection units)
@@ -233,7 +225,7 @@ private void updateUndoableMoveIndexes()
     IntegerMap movement = new IntegerMap();
 
     Iterator iter = units.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Unit current = (Unit) iter.next();
       movement.put(current, MoveValidator.movementLeft(current, m_alreadyMoved));
@@ -260,7 +252,7 @@ private void updateUndoableMoveIndexes()
     //map transports
     Collection transports = Match.getMatches(units, Matches.UnitIsTransport);
     Iterator iter = transports.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Unit transport = (Unit) iter.next();
       Collection transporting = m_transportTracker.transporting(transport);
@@ -280,8 +272,7 @@ private void updateUndoableMoveIndexes()
 
     Collection alliedAir = start.getUnits().getMatches(friendlyNotOwnedAir);
 
-
-    if(alliedAir.isEmpty())
+    if (alliedAir.isEmpty())
       return Collections.EMPTY_MAP;
 
     //remove air that can be carried by allied
@@ -292,25 +283,23 @@ private void updateUndoableMoveIndexes()
 
     Collection alliedCarrier = start.getUnits().getMatches(friendlyNotOwnedCarrier);
 
-
     Iterator alliedCarrierIter = alliedCarrier.iterator();
-    while(alliedCarrierIter.hasNext())
+    while (alliedCarrierIter.hasNext())
     {
       Unit carrier = (Unit) alliedCarrierIter.next();
       Collection carrying = getCanCarry(carrier, alliedAir);
       alliedAir.removeAll(carrying);
     }
 
-    if(alliedAir.isEmpty())
+    if (alliedAir.isEmpty())
       return Collections.EMPTY_MAP;
 
     Map mapping = new HashMap();
     //get air that must be carried by our carriers
     Collection ownedCarrier = Match.getMatches(units, Matches.UnitIsCarrier);
 
-
     Iterator ownedCarrierIter = ownedCarrier.iterator();
-    while(ownedCarrierIter.hasNext())
+    while (ownedCarrierIter.hasNext())
     {
       Unit carrier = (Unit) ownedCarrierIter.next();
       Collection carrying = getCanCarry(carrier, alliedAir);
@@ -329,24 +318,21 @@ private void updateUndoableMoveIndexes()
 
     int available = ua.getCarrierCapacity();
     Iterator iter = selectFrom.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Unit plane = (Unit) iter.next();
       UnitAttatchment planeAttatchment = UnitAttatchment.get(plane.getUnitType());
       int cost = planeAttatchment.getCarrierCost();
-      if(available >= cost)
+      if (available >= cost)
       {
         available -= cost;
         canCarry.add(plane);
       }
-      if(available == 0)
+      if (available == 0)
         break;
     }
     return canCarry;
   }
-
-
-
 
   private StringMessage move(MoveMessage message, PlayerID id)
   {
@@ -354,18 +340,17 @@ private void updateUndoableMoveIndexes()
     Collection units = message.getUnits();
 
     String error = validateMove(units, route, id, message.getTransportsToLoad());
-    if(error != null)
+    if (error != null)
       return new StringMessage(error, true);
     //do the move
     m_currentMove = new UndoableMove(m_data, m_alreadyMoved, units, route);
 
-    String transcriptText = Formatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName();
+    String transcriptText = Formatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
     m_bridge.getHistoryWriter().startEvent(transcriptText);
     m_bridge.getHistoryWriter().setRenderingData(message);
 
-
     StringMessage rVal = moveUnits(units, route, id, message.getTransportsToLoad());
-    if(!rVal.isError())
+    if (!rVal.isError())
     {
       m_currentMove.markEndMovement(m_alreadyMoved);
       m_currentMove.initializeDependencies(m_movesToUndo);
@@ -376,58 +361,56 @@ private void updateUndoableMoveIndexes()
     return rVal;
   }
 
-
   private String validateMove(Collection units, Route route, PlayerID player, Collection transportsToLoad)
   {
     String error;
 
-    if(m_nonCombat)
+    if (m_nonCombat)
     {
       error = validateNonCombat(units, route, player);
-      if(error != null)
+      if (error != null)
         return error;
     }
 
-    if(!m_nonCombat)
+    if (!m_nonCombat)
     {
       error = validateCombat(units, route, player);
-      if(error != null)
+      if (error != null)
         return error;
     }
 
     error = validateBasic(units, route, player, transportsToLoad);
-    if(error != null)
+    if (error != null)
       return error;
 
     error = validateAirCanLand(units, route, player);
-    if(error != null)
+    if (error != null)
       return error;
 
     error = validateTransport(units, route, player, transportsToLoad);
-    if(error != null)
+    if (error != null)
       return error;
 
     error = validateCanal(units, route, player);
-    if(error != null)
+    if (error != null)
       return error;
-
 
     //dont let the user move out of a battle zone
     //note that this restricts planes who may be able to fly away
-    if(DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle(route.getStart(), false))
+    if (DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle(route.getStart(), false))
     {
       boolean unload = MoveValidator.isUnload(route);
       PlayerID endOwner = route.getEnd().getOwner();
       boolean attack = !m_data.getAllianceTracker().isAllied(endOwner, m_player);
       //unless they are unloading into another battle
-      if(! (unload  && attack ))
+      if (! (unload && attack))
         return "Cant move units out of battle zone";
     }
 
     //make sure we can afford to pay neutral fees
     int cost = getNeutralCharge(route);
     int resources = player.getResources().getQuantity(Constants.IPCS);
-    if(resources - cost < 0)
+    if (resources - cost < 0)
       return "Not enough money to pay for violating neutrality";
 
     //TODO
@@ -439,20 +422,18 @@ private void updateUndoableMoveIndexes()
     return null;
   }
 
-
   private String validateCanal(Collection units, Route route, PlayerID player)
   {
     //if no sea units then we can move
     if (Match.noneMatch(units, Matches.UnitIsSea))
       return null;
 
-
-    return MoveValidator.validateCanal( route, player, m_data);
+    return MoveValidator.validateCanal(route, player, m_data);
   }
 
   private String validateCombat(Collection units, Route route, PlayerID player)
   {
-    if(Match.someMatch(units, Matches.UnitIsAA))
+    if (Match.someMatch(units, Matches.UnitIsAA))
       return "Cant move aa guns in combat movement phase";
     return null;
   }
@@ -464,127 +445,127 @@ private void updateUndoableMoveIndexes()
     battle.add(Matches.isTerritoryEnemy(player, m_data));
     battle.add(Matches.TerritoryIsNuetral);
 
-    if(Match.allMatch(units, Matches.UnitIsAir))
+    if (Match.allMatch(units, Matches.UnitIsAir))
     {
-      if(route.someMatch(Matches.TerritoryIsNuetral))
+      if (route.someMatch(Matches.TerritoryIsNuetral))
         return "Air units cannot fly over neutral territories in non combat";
 
-      if( battle.match(route.getEnd()))
+      if (battle.match(route.getEnd()))
         return "Cant advance air units to battle in non combat";
     }
     else
     {
-      if(route.someMatch(battle))
+      if (route.someMatch(battle))
         return "Cant advance units to battle in non combat";
     }
     return null;
   }
 
-
   private String validateBasic(Collection units, Route route, PlayerID player, Collection transportsToLoad)
   {
     //make sure all units are actually in the start territory
-    if(!route.getStart().getUnits().containsAll(units))
+    if (!route.getStart().getUnits().containsAll(units))
     {
       return "Not enough units in starting territory";
     }
 
     //make sure transports in the destination
-    if(!route.getEnd().getUnits().containsAll(transportsToLoad))
+    if (!route.getEnd().getUnits().containsAll(transportsToLoad))
     {
       return "Transports not found in route end";
     }
 
     //make sure all units are at least friendly
-    if(!Match.allMatch(units, Matches.alliedUnit(m_player, m_data)))
+    if (!Match.allMatch(units, Matches.alliedUnit(m_player, m_data)))
       return "Can only move friendly units";
 
     //check we have enough movement
     //exclude transported units
     Collection moveTest;
-    if(route.getStart().isWater())
+    if (route.getStart().isWater())
     {
       moveTest = MoveValidator.getNonLand(units);
-    } else
+    }
+    else
     {
       moveTest = units;
     }
-    if(!MoveValidator.hasEnoughMovement(moveTest, m_alreadyMoved, route.getLength()))
+    if (!MoveValidator.hasEnoughMovement(moveTest, m_alreadyMoved, route.getLength()))
       return "Units do not enough movement";
 
     //TODO not for aircarft
     //check to see no enemy units on path
-    if(!MoveValidator.onlyAlliedUnitsOnPath(route, player, m_data))
-      if(! MoveValidator.isAir(units))
+    if (!MoveValidator.onlyAlliedUnitsOnPath(route, player, m_data))
+      if (!MoveValidator.isAir(units))
         return "Non allied units on path";
 
     //if there is a nuetral in the middle must stop unless all are air
-    if(MoveValidator.hasNuetralBeforeEnd(route))
+    if (MoveValidator.hasNuetralBeforeEnd(route))
     {
-      if(! MoveValidator.isAir(units))
+      if (!MoveValidator.isAir(units))
         return "Must stop land units when passing through nuetral territories";
     }
 
     //check if we are blitzing
     //if we are blitzing check that all units are capable
-    if(MoveValidator.isBlitz(route, player, m_data))
+    if (MoveValidator.isBlitz(route, player, m_data))
     {
-      if(!MoveValidator.canBlitz(Match.getMatches(units, Matches.UnitIsNotAir)))
+      if (!MoveValidator.canBlitz(Match.getMatches(units, Matches.UnitIsNotAir)))
         return "Cannot blitz with non blitzing units";
     }
 
     //make sure no conquered territories on route
-    if(MoveValidator.hasConqueredNonBlitzedOnRoute(route, m_data))
+    if (MoveValidator.hasConqueredNonBlitzedOnRoute(route, m_data))
     {
       //unless we are all air or we are in non combat
-      if( !Match.allMatch(units, Matches.UnitIsAir) && !m_nonCombat)
+      if (!Match.allMatch(units, Matches.UnitIsAir) && !m_nonCombat)
         return "Cannot move through newly captured territories";
     }
 
     //make sure that no non sea non transportable no carriable units
     //end at sea
-    if(route.getEnd().isWater())
+    if (route.getEnd().isWater())
     {
-      if( MoveValidator.hasUnitsThatCantGoOnWater(units))
+      if (MoveValidator.hasUnitsThatCantGoOnWater(units))
         return "Those units cannot end at water";
     }
 
     //if we are water make sure no land
-    if(MoveValidator.hasSea(units))
+    if (MoveValidator.hasSea(units))
     {
-      if(MoveValidator.hasLand(route))
+      if (MoveValidator.hasLand(route))
         return "Sea units cant go on land";
     }
 
     //make sure that we dont send aa guns to attack
-    if(Match.someMatch(units, Matches.UnitIsAA))
+    if (Match.someMatch(units, Matches.UnitIsAA))
     {
       //TODO
       //dont move if some were conquered
 
-      for(int i = 0; i < route.getLength(); i++)
+      for (int i = 0; i < route.getLength(); i++)
       {
         Territory current = route.at(i);
-        if(! (current.isWater() || current.getOwner().equals(m_player) ||
-           m_data.getAllianceTracker().isAllied(m_player, current.getOwner())))
+        if (! (current.isWater() || current.getOwner().equals(m_player) ||
+               m_data.getAllianceTracker().isAllied(m_player, current.getOwner())))
 
-           return "AA units cant advance to battle";
+          return "AA units cant advance to battle";
 
       }
     }
 
     //only allow aa into a terland territory if one already present.
-    if(Match.someMatch(units, Matches.UnitIsAA) &&
-       route.getEnd().getUnits().someMatch(Matches.UnitIsAA) &&
-       !route.getEnd().isWater())
+    if (Match.someMatch(units, Matches.UnitIsAA) &&
+        route.getEnd().getUnits().someMatch(Matches.UnitIsAA) &&
+        !route.getEnd().isWater())
     {
       return "Only one AA gun allowed in a territroy";
     }
 
     //only allow 1 aa to unload
-    if(route.getStart().isWater() &&
-       !route.getEnd().isWater() &&
-       Match.countMatches(units, Matches.UnitIsAA) > 1 )
+    if (route.getStart().isWater() &&
+        !route.getEnd().isWater() &&
+        Match.countMatches(units, Matches.UnitIsAA) > 1)
     {
       return "Only 1 AA gun allowed in a territory";
     }
@@ -600,7 +581,7 @@ private void updateUndoableMoveIndexes()
 
     //make sure air units have enough movement to land
 
-    if(!MoveValidator.hasAir(units))
+    if (!MoveValidator.hasAir(units))
       return null;
 
     //could be a war zone, make sure we only look at
@@ -610,7 +591,7 @@ private void updateUndoableMoveIndexes()
     friendly.addAll(units);
     Collection friendlyAir = Match.getMatches(friendly, Matches.UnitIsAir);
 
-    if( !MoveValidator.canLand(friendlyAir, route.getEnd(), player, m_data))
+    if (!MoveValidator.canLand(friendlyAir, route.getEnd(), player, m_data))
     {
       //get movement left of units that are moving
       //not enough carrier capacity at end
@@ -627,17 +608,17 @@ private void updateUndoableMoveIndexes()
       Collection neutrals = getEmptyNeutral(route);
       int ipcs = player.getResources().getQuantity(Constants.IPCS);
 
-      while(iter.hasNext() )
+      while (iter.hasNext())
       {
         Territory possible = (Territory) iter.next();
-        if(MoveValidator.canLand(air,possible, player, m_data))
+        if (MoveValidator.canLand(air, possible, player, m_data))
         {
           //make sure we can pay for the neutrals we will
           //overfly when we go to land
           Set overflownNeutrals = new HashSet();
           overflownNeutrals.addAll(neutrals);
           overflownNeutrals.addAll(getBestNeutralEmptyCollection(route.getEnd(), possible, distance));
-          if(ipcs >=  getNeutralCharge(overflownNeutrals.size()))
+          if (ipcs >= getNeutralCharge(overflownNeutrals.size()))
             canLand = true;
         }
       }
@@ -648,34 +629,33 @@ private void updateUndoableMoveIndexes()
       //fighter can land, but does not have enough movement to
       //make it to land.
       //Both can land somewhere, but there is no place where all can land
-      if(!canLand)
+      if (!canLand)
       {
-        if(air.size() == 1)
+        if (air.size() == 1)
           return "No place for the air unit to land.";
         else
           return "There is no place where all the air units can land. You may be able to move these units in smaller groups.";
       }
     }
 
-
     return null;
   }
 
   private String validateTransport(Collection units, Route route, PlayerID player, Collection transportsToLoad)
   {
-    if(Match.allMatch(units, Matches.UnitIsAir))
+    if (Match.allMatch(units, Matches.UnitIsAir))
       return null;
 
-    if(!MoveValidator.hasWater(route))
+    if (!MoveValidator.hasWater(route))
       return null;
 
     //if unloading make sure length of route is only 1
-    if(MoveValidator.isUnload(route))
+    if (MoveValidator.isUnload(route))
     {
-      if(route.getLength() > 1)
+      if (route.getLength() > 1)
         return "Unloading units must stop where they are unloaded";
 
-      if(m_transportTracker.wereAnyOfTheseLoadedOnAlliedTransportsThisTurn(units))
+      if (m_transportTracker.wereAnyOfTheseLoadedOnAlliedTransportsThisTurn(units))
         return "Cannot load and unload an allied transport in the same round";
     }
 
@@ -683,70 +663,69 @@ private void updateUndoableMoveIndexes()
     Collection land = Match.getMatches(units, Matches.UnitIsLand);
 
     //make sure we can be transported
-    if(! Match.allMatch(land, Matches.UnitCanBeTransported))
+    if (!Match.allMatch(land, Matches.UnitCanBeTransported))
       return "Unit cannot be transported";
 
     //make sure that the only the first or last territory is land
     //dont want situation where they go sea land sea
-    if(MoveValidator.hasLand(route) && !(route.getStart().isWater() || route.getEnd().isWater()))
+    if (MoveValidator.hasLand(route) && ! (route.getStart().isWater() || route.getEnd().isWater()))
       return "Invalid move, only start or end can be land when route has water.";
 
     //simply because I dont want to handle it yet
     //checks are done at the start and end, dont want to worry about just
     //using a transport as a bridge yet
     //TODO handle this
-    if( !route.getEnd().isWater()  && !route.getStart().isWater())
+    if (!route.getEnd().isWater() && !route.getStart().isWater())
       return "Must stop units at a transport on route";
 
-    if(route.getEnd().isWater() && route.getStart().isWater())
+    if (route.getEnd().isWater() && route.getStart().isWater())
     {
       //make sure units and transports stick together
       Iterator iter = units.iterator();
-      while(iter.hasNext())
+      while (iter.hasNext())
       {
         Unit unit = (Unit) iter.next();
         UnitAttatchment ua = UnitAttatchment.get(unit.getType());
         //make sure transports dont leave their units behind
-        if(ua.getTransportCapacity() != -1)
+        if (ua.getTransportCapacity() != -1)
         {
           Collection holding = m_transportTracker.transporting(unit);
-          if( holding != null && !units.containsAll(holding))
+          if (holding != null && !units.containsAll(holding))
           {
             return "Transport cannot leave their units";
           }
         }
         //make sure units dont leave their transports behind
-        if(ua.getTransportCost() != -1)
+        if (ua.getTransportCost() != -1)
         {
           Unit transport = m_transportTracker.transportedBy(unit);
-          if(transport != null && !units.contains(transport))
+          if (transport != null && !units.contains(transport))
           {
             return "Unit must stay with its transport while moving";
           }
         }
       }
-    }//end if end is water
+    } //end if end is water
 
-    if(MoveValidator.isLoad(route))
+    if (MoveValidator.isLoad(route))
     {
-      if(mapTransports(route, land, transportsToLoad) == null)
+      if (mapTransports(route, land, transportsToLoad) == null)
         return "Not enough transports";
 
-      if(route.getLength() != 1)
+      if (route.getLength() != 1)
         return "Units cannot move before loading onto transports";
 
       Iterator iter = units.iterator();
-      while(iter.hasNext())
+      while (iter.hasNext())
       {
-        Unit unit= (Unit) iter.next();
-        if(m_alreadyMoved.getInt(unit) != 0)
+        Unit unit = (Unit) iter.next();
+        if (m_alreadyMoved.getInt(unit) != 0)
           return "Units cannot move before loading onto transports";
       }
     }
 
     return null;
   }
-
 
   /**
    * We assume that the move is valid
@@ -758,7 +737,7 @@ private void updateUndoableMoveIndexes()
     markMovement(units, route);
 
     Collection arrivingUnits = units;
-    if(!m_nonCombat)
+    if (!m_nonCombat)
     {
       Collection aaCasualties = fireAA(route, units);
       arrivingUnits = Util.difference(units, aaCasualties);
@@ -774,8 +753,7 @@ private void updateUndoableMoveIndexes()
 
     Collection moved = Util.intersection(units, arrivingUnits);
 
-
-    if(route.someMatch(mustFightThrough ) && arrivingUnits.size() != 0)
+    if (route.someMatch(mustFightThrough) && arrivingUnits.size() != 0)
     {
       boolean bombing = false;
       //could it be a bombuing raid
@@ -786,27 +764,23 @@ private void updateUndoableMoveIndexes()
       enemyFactory.add(Matches.enemyUnit(id, m_data));
       boolean targetToBomb = route.getEnd().getUnits().someMatch(enemyFactory);
 
-      if(allCanBomb && targetToBomb)
+      if (allCanBomb && targetToBomb)
       {
         StrategicBombQuery query = new StrategicBombQuery(route.getEnd());
         Message response = m_bridge.sendMessage(query);
-        if(!(response instanceof BooleanMessage))
+        if (! (response instanceof BooleanMessage))
         {
           throw new IllegalStateException("Received message of wrong type. Message:" + response);
         }
-        bombing = ((BooleanMessage) response).getBoolean();
+        bombing = ( (BooleanMessage) response).getBoolean();
       }
 
       DelegateFinder.battleDelegate(m_data).getBattleTracker().addBattle(route, arrivingUnits, m_transportTracker, bombing, id, m_data, m_bridge, m_currentMove);
     }
 
-
-
     //TODO, put units in owned transports first
     Map transporting = mapTransports(route, units, transportsToLoad);
     markTransportsMovement(transporting, route);
-
-
 
     //actually move the units
     Change remove = ChangeFactory.removeUnits(route.getStart(), units);
@@ -817,11 +791,7 @@ private void updateUndoableMoveIndexes()
     m_currentMove.addChange(remove);
     m_currentMove.addChange(add);
 
-
-
-    m_currentMove.setDescription(Formatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName());
-
-
+    m_currentMove.setDescription(Formatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName());
 
     return new StringMessage("done");
   }
@@ -836,23 +806,22 @@ private void updateUndoableMoveIndexes()
 
     //get the obvious route
     Route route = m_data.getMap().getRoute(start, end);
-    if(route.getLength() > maxDistance)
+    if (route.getLength() > maxDistance)
       throw new IllegalStateException("No route short enough." + "route:" + route + " maxDistance:" + maxDistance);
 
     Collection neutral = getEmptyNeutral(route);
-    if(neutral.size() == 0)
+    if (neutral.size() == 0)
     {
       return neutral;
     }
-
 
     //see if we can do better
     Match emptyNeutral = new CompositeMatchAnd(Matches.TerritoryIsNuetral, Matches.TerritoryIsEmpty);
 
     Route alternate = m_data.getMap().getRoute(start, end, emptyNeutral);
-    if(alternate == null)
+    if (alternate == null)
       return neutral;
-    if(alternate.getLength() > maxDistance)
+    if (alternate.getLength() > maxDistance)
       return neutral;
     //route has no empty neutral states in path, no charge
     return new ArrayList();
@@ -865,22 +834,21 @@ private void updateUndoableMoveIndexes()
 
   private int getNeutralCharge(int numberOfTerritories)
   {
-    return numberOfTerritories *  games.strategy.triplea.Properties.getNeutralCharge(m_data);
+    return numberOfTerritories * games.strategy.triplea.Properties.getNeutralCharge(m_data);
   }
 
   private boolean hasConqueredNonBlitzed(Route route)
   {
     BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
 
-    for(int i = 0; i < route.getLength(); i++)
+    for (int i = 0; i < route.getLength(); i++)
     {
       Territory current = route.at(i);
-      if(tracker.wasConquered(current) && !tracker.wasBlitzed(current))
+      if (tracker.wasConquered(current) && !tracker.wasBlitzed(current))
         return true;
     }
     return false;
   }
-
 
   private Collection getEmptyNeutral(Route route)
   {
@@ -893,7 +861,7 @@ private void updateUndoableMoveIndexes()
   {
     int moved = route.getLength();
     Iterator iter = units.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Unit unit = (Unit) iter.next();
       m_alreadyMoved.add(unit, moved);
@@ -901,11 +869,11 @@ private void updateUndoableMoveIndexes()
 
     //if neutrals were taken over mark land units with 0 movement
     //if weve entered a non blitzed conquered territory, mark with 0 movement
-    if(!m_nonCombat && (getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
+    if (!m_nonCombat && (getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
     {
       Collection land = Match.getMatches(units, Matches.UnitIsLand);
       iter = land.iterator();
-      while(iter.hasNext())
+      while (iter.hasNext())
       {
         Unit unit = (Unit) iter.next();
         markNoMovement(unit);
@@ -919,17 +887,17 @@ private void updateUndoableMoveIndexes()
   private void markTransportsMovement(Map transporting, Route route)
   {
 
-    if(transporting == null)
+    if (transporting == null)
       return;
 
-    if(MoveValidator.isUnload(route))
+    if (MoveValidator.isUnload(route))
     {
 
       Collection units = new ArrayList();
       units.addAll(transporting.values());
       units.addAll(transporting.keySet());
       Iterator iter = units.iterator();
-      while(iter.hasNext())
+      while (iter.hasNext())
       {
         Unit unit = (Unit) iter.next();
         markNoMovement(unit);
@@ -937,7 +905,7 @@ private void updateUndoableMoveIndexes()
 
       //unload the transports
       Iterator unitIter = transporting.keySet().iterator();
-      while(unitIter.hasNext())
+      while (unitIter.hasNext())
       {
         Unit load = (Unit) unitIter.next();
         m_transportTracker.unload(load, m_currentMove);
@@ -945,11 +913,11 @@ private void updateUndoableMoveIndexes()
     }
 
     //load the transports
-    if(MoveValidator.isLoad(route))
+    if (MoveValidator.isLoad(route))
     {
       //mark transports as having transported
       Iterator units = transporting.keySet().iterator();
-      while(units.hasNext())
+      while (units.hasNext())
       {
 
         Unit load = (Unit) units.next();
@@ -962,7 +930,7 @@ private void updateUndoableMoveIndexes()
   public void markNoMovement(Collection units)
   {
     Iterator iter = units.iterator();
-    while(iter.hasNext())
+    while (iter.hasNext())
     {
       Unit unit = (Unit) iter.next();
       markNoMovement(unit);
@@ -980,11 +948,25 @@ private void updateUndoableMoveIndexes()
    */
   public void end()
   {
-    if(m_nonCombat)
+    if (m_nonCombat)
       removeAirThatCantLand();
     m_movesToUndo.clear();
-  }
 
+    //do at the end of the round
+    //if we do it at the start of non combat, then
+    //we may do it in the middle of the round, while loading.
+    if (m_nonCombat)
+    {
+      m_alreadyMoved.clear();
+      m_transportTracker.endOfRoundClearState();
+
+      if (DelegateFinder.techDelegate(m_data).getTechTracker().hasRocket(m_bridge.getPlayerID()))
+       {
+         RocketsFireHelper helper = new RocketsFireHelper();
+         helper.fireRockets(m_bridge, m_data, m_bridge.getPlayerID());
+       }
+    }
+  }
 
   /**
    * returns a map of unit -> transport.
@@ -994,9 +976,9 @@ private void updateUndoableMoveIndexes()
    */
   private Map mapTransports(Route route, Collection units, Collection transportsToLoad)
   {
-    if(MoveValidator.isLoad(route))
+    if (MoveValidator.isLoad(route))
       return mapTransportsToLoad(units, transportsToLoad);
-    if(MoveValidator.isUnload(route))
+    if (MoveValidator.isUnload(route))
       return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
     return mapTransportsAlreadyLoaded(units, units);
   }
@@ -1010,22 +992,21 @@ private void updateUndoableMoveIndexes()
   private Map mapTransportsAlreadyLoaded(Collection units, Collection transports)
   {
 
-
     Collection canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     Collection canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
 
     Map mapping = new HashMap();
     Iterator land = canBeTransported.iterator();
-    while(land.hasNext())
+    while (land.hasNext())
     {
       Unit currentTransported = (Unit) land.next();
       Unit transport = m_transportTracker.transportedBy(currentTransported);
       //already being transported, make sure it is in transports
-      if(transport == null)
+      if (transport == null)
         return null;
 
-      if(! canTransport.contains(transport))
-          return null;
+      if (!canTransport.contains(transport))
+        return null;
       mapping.put(currentTransported, transport);
     }
     return mapping;
@@ -1048,7 +1029,7 @@ private void updateUndoableMoveIndexes()
     IntegerMap addedLoad = new IntegerMap();
 
     Iterator landIter = canBeTransported.iterator();
-    while(landIter.hasNext())
+    while (landIter.hasNext())
     {
       Unit land = (Unit) landIter.next();
       UnitAttatchment landUA = UnitAttatchment.get(land.getType());
@@ -1057,12 +1038,12 @@ private void updateUndoableMoveIndexes()
 
       //check owned first
       Iterator transportIter = ownedTransport.iterator();
-      while(transportIter.hasNext() && !loaded)
+      while (transportIter.hasNext() && !loaded)
       {
         Unit transport = (Unit) transportIter.next();
         int capacity = m_transportTracker.getAvailableCapacity(transport);
         capacity -= addedLoad.getInt(transport);
-        if(capacity >= cost)
+        if (capacity >= cost)
         {
           addedLoad.add(transport, cost);
           mapping.put(land, transport);
@@ -1071,25 +1052,23 @@ private void updateUndoableMoveIndexes()
       }
       //check allied
       transportIter = canTransport.iterator();
-      while(transportIter.hasNext() && !loaded)
+      while (transportIter.hasNext() && !loaded)
       {
         Unit transport = (Unit) transportIter.next();
         int capacity = m_transportTracker.getAvailableCapacity(transport);
         capacity -= addedLoad.getInt(transport);
-        if(capacity >= cost)
+        if (capacity >= cost)
         {
           addedLoad.add(transport, cost);
           mapping.put(land, transport);
           loaded = true;
         }
       }
-      if(!loaded)
+      if (!loaded)
         return null;
     }
     return mapping;
   }
-
-
 
   public void sortAccordingToMovementLeft(List units, boolean ascending)
   {
@@ -1106,9 +1085,9 @@ private void updateUndoableMoveIndexes()
       int left1 = MoveValidator.movementLeft(u1, m_alreadyMoved);
       int left2 = MoveValidator.movementLeft(u2, m_alreadyMoved);
 
-      if(left1 == left2)
+      if (left1 == left2)
         return 0;
-      if(left1 > left2)
+      if (left1 > left2)
         return 1;
       return -1;
     }
@@ -1119,7 +1098,7 @@ private void updateUndoableMoveIndexes()
     public int compare(Object o1, Object o2)
     {
       //reverse the order, clever huh
-      return decreasingMovement.compare(o2,o1);
+      return decreasingMovement.compare(o2, o1);
     }
   };
 
@@ -1127,14 +1106,14 @@ private void updateUndoableMoveIndexes()
   {
     Collection cantLand = new ArrayList();
     Iterator territories = m_data.getMap().getTerritories().iterator();
-    while(territories.hasNext())
+    while (territories.hasNext())
     {
       Territory current = (Territory) territories.next();
       CompositeMatch ownedAir = new CompositeMatchAnd();
       ownedAir.add(Matches.UnitIsAir);
       ownedAir.add(Matches.alliedUnit(m_player, m_data));
       Collection air = current.getUnits().getMatches(ownedAir);
-      if(air.size() != 0 && !MoveValidator.canLand(air, current, m_player, m_data))
+      if (air.size() != 0 && !MoveValidator.canLand(air, current, m_player, m_data))
       {
         cantLand.add(current);
       }
@@ -1145,7 +1124,7 @@ private void updateUndoableMoveIndexes()
   private void removeAirThatCantLand()
   {
     Iterator territories = getTerritoriesWhereAirCantLand().iterator();
-    while(territories.hasNext())
+    while (territories.hasNext())
     {
       Territory current = (Territory) territories.next();
       CompositeMatch ownedAir = new CompositeMatchAnd();
@@ -1161,7 +1140,7 @@ private void updateUndoableMoveIndexes()
   {
     Collection toRemove = new ArrayList(airUnits.size());
     //if we cant land on land then none can
-    if(!territory.isWater())
+    if (!territory.isWater())
     {
       toRemove.addAll(airUnits);
     }
@@ -1172,12 +1151,12 @@ private void updateUndoableMoveIndexes()
       int capacity = MoveValidator.carrierCapacity(carriers);
 
       Iterator iter = airUnits.iterator();
-      while(iter.hasNext())
+      while (iter.hasNext())
       {
         Unit unit = (Unit) iter.next();
         UnitAttatchment ua = UnitAttatchment.get(unit.getType());
         int cost = ua.getCarrierCost();
-        if(cost == -1 || cost > capacity)
+        if (cost == -1 || cost > capacity)
           toRemove.add(unit);
         else
           capacity -= cost;
@@ -1186,9 +1165,8 @@ private void updateUndoableMoveIndexes()
 
     Change remove = ChangeFactory.removeUnits(territory, toRemove);
 
-    String transcriptText = Formatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName() + " and " + (toRemove.size() > 1 ? "were" : "was") +  " removed";
+    String transcriptText = Formatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName() + " and " + (toRemove.size() > 1 ? "were" : "was") + " removed";
     m_bridge.getHistoryWriter().startEvent(transcriptText);
-
 
     m_bridge.addChange(remove);
 
@@ -1199,7 +1177,7 @@ private void updateUndoableMoveIndexes()
    */
   private Collection fireAA(Route route, Collection units)
   {
-    if(Match.noneMatch(units, Matches.UnitIsAir))
+    if (Match.noneMatch(units, Matches.UnitIsAir))
       return Collections.EMPTY_LIST;
 
     List targets = Match.getMatches(units, Matches.UnitIsAir);
@@ -1215,12 +1193,12 @@ private void updateUndoableMoveIndexes()
     hasAA.add(Matches.UnitIsAA);
     hasAA.add(Matches.enemyUnit(m_player, m_data));
 
-    for(int i = 0; i  < route.getLength() -1 ; i++)
+    for (int i = 0; i < route.getLength() - 1; i++)
     {
       Territory current = route.at(i);
 
       //aa guns in transports shouldnt be able to fire
-      if(current.getUnits().someMatch(hasAA) && !current.isWater())
+      if (current.getUnits().someMatch(hasAA) && !current.isWater())
       {
         fireAA(current, targets);
       }
@@ -1228,7 +1206,7 @@ private void updateUndoableMoveIndexes()
 
     //check start as well, prevent user from moving to and from aa sites one
     //at a time
-    if( route.getStart().getUnits().someMatch(hasAA))
+    if (route.getStart().getUnits().someMatch(hasAA))
       fireAA(route.getStart(), targets);
 
     return Util.difference(originalTargets, targets);
@@ -1247,9 +1225,9 @@ private void updateUndoableMoveIndexes()
     DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge, territory);
     int hitCount = dice.getHits();
 
-    if(hitCount == 0)
+    if (hitCount == 0)
     {
-      m_bridge.sendMessage( new StringMessage("No aa hits in " + territory.getName()));
+      m_bridge.sendMessage(new StringMessage("No aa hits in " + territory.getName()));
     }
     else
       selectCasualties(dice, units, territory);
@@ -1295,11 +1273,11 @@ private void updateUndoableMoveIndexes()
   Serializable saveState(boolean saveUndo)
   {
     MoveState state = new MoveState();
-    state.m_firstRun= m_firstRun;
+    state.m_firstRun = m_firstRun;
     state.m_nonCombat = m_nonCombat;
     state.m_transportTracker = m_transportTracker;
     state.m_alreadyMoved = m_alreadyMoved;
-    if(saveUndo)
+    if (saveUndo)
       state.m_movesToUndo = m_movesToUndo;
     return state;
   }
@@ -1311,13 +1289,13 @@ private void updateUndoableMoveIndexes()
   public void loadState(Serializable aState)
   {
     MoveState state = (MoveState) aState;
-    m_firstRun= state.m_firstRun;
+    m_firstRun = state.m_firstRun;
     m_nonCombat = state.m_nonCombat;
     m_transportTracker = state.m_transportTracker;
     m_alreadyMoved = state.m_alreadyMoved;
     //if the undo state wasnt saved, then dont load it
     //prevents overwriting undo state when we restore from an undo move
-    if(state.m_movesToUndo != null)
+    if (state.m_movesToUndo != null)
       m_movesToUndo = state.m_movesToUndo;
   }
 }
@@ -1330,5 +1308,3 @@ class MoveState implements Serializable
   public IntegerMap m_alreadyMoved;
   public List m_movesToUndo;
 }
-
-

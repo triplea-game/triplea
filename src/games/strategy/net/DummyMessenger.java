@@ -18,7 +18,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * A messenger that doesnt do anything.  
+ * A messenger that doesnt do anything.
  */
 
 public class DummyMessenger implements IServerMessenger
@@ -28,72 +28,72 @@ public class DummyMessenger implements IServerMessenger
 	 */
 	public void send(Serializable msg, INode to)
 	{}
-	
+
 	/**
 	 *  Send a message to all nodes.
 	 */
 	public void broadcast(Serializable msg)
 	{}
-	
+
 	/**
 	 * Listen for messages of a certain type.
 	 */
 	public void addMessageListener(IMessageListener listener)
 	{}
-	
+
 	/**
 	 *  Stop listening to messages.
 	 */
 	public void removeMessageListener(IMessageListener listener)
 	{}
-	
+
 	/**
 	 * Listen for messages of a certain type.
 	 */
 	public void addErrorListener(IMessengerErrorListener listener)
 	{}
-	
+
 	/**
 	 *  Stop listening to messages.
 	 */
 	public void removeErrorListener(IMessengerErrorListener listener)
 	{}
-	
+
 	/**
 	 * Get the local node
 	 */
 	public INode getLocalNode()
 	{return null;}
-	
+
 	/**
 	 * Get a list of nodes.
 	 */
 	public Set getNodes()
 	{return null;}
-	
+
 	/**
 	 * test the connection.
 	 */
 	public boolean isConnected()
 	{return true;}
-	
+
 	/**
 	 * Shut the connection down.
 	 */
 	public void shutDown()
 	{}
-	
+
 	/**
 	 * Add a listener for change in connection status.
 	 **/
 	public void addConnectionChangeListener(IConnectionChangeListener  listener)	{}
-	
+
 	/**
 	 * Remove a listener for change in connection status.
 	 **/
-	public void removeConnectionChangeListener(IConnectionChangeListener  listener) 
+	public void removeConnectionChangeListener(IConnectionChangeListener  listener)
 	{}
-	
+
 	/**
 	 * Returns when all messages have been written over the network.
 	 * shutdown causes this method to return.
@@ -102,16 +102,23 @@ public class DummyMessenger implements IServerMessenger
 	public void flush()
 	{}
 
-	
+
 	public void setAcceptNewConnections(boolean accept)
 	{}
-	
+
 	/**
 	 * Can be set to null.
 	 * If not null the server will only accept connections that
 	 * the accepter accepts.
 	 */
 	public void setConnectionAccepter(IConnectionAccepter accepter)
-	{}	
+	{}
+
+  public void addBroadcastListener(IBroadcastListener listener)
+  {}
+
+  public void removeBroadcastListener(IBroadcastListener listener)
+  {}
+
 
 }

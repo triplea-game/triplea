@@ -24,7 +24,7 @@ import games.strategy.engine.history.RemoteHistoryMessage;
 import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-
+import games.strategy.net.*;
 
 /**
  * This class synchronizes a Game history by listening to the messages sent between the client
@@ -43,56 +43,67 @@ public class HistorySynchronizer
     m_currentRound = data.getSequence().getRound();
     m_messenger = messenger;
     m_messenger.addMessageListener(m_messageListener);
+    m_messenger.addBroadcastListener(m_broadcastListener);
   }
 
   public void deactivate()
   {
     m_messenger.removeMessageListener(m_messageListener);
+    m_messenger.removeBroadcastListener(m_broadcastListener);
   }
+
+  private IBroadcastListener m_broadcastListener = new IBroadcastListener()
+  {
+    public void broadcastSent(Serializable broadcast)
+    {
+      messageIn(broadcast);
+    }
+  };
 
   private IMessageListener m_messageListener = new IMessageListener()
   {
     public void messageReceived(final Serializable msg, INode from)
     {
-      SwingUtilities.invokeLater(
-        new Runnable()
-      {
-        public void run()
-        {
-          processMessage(translateIntoMyData(msg));
-        }
-      }
-      );
-
-    }
-
-
-
-    private void processMessage(Serializable msg)
-    {
-      if (msg instanceof StepChangedMessage)
-      {
-        StepChangedMessage stepChange = (StepChangedMessage) msg;
-
-        if (m_currentRound != stepChange.getRound())
-        {
-          m_currentRound = stepChange.getRound();
-          m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
-        }
-        m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getDisplayName());
-      }
-      else if (msg instanceof ChangeMessage)
-      {
-        ChangeMessage changeMessage = (ChangeMessage) msg;
-        m_data.getHistory().getHistoryWriter().addChange(changeMessage.getChange());
-      }
-      else if (msg instanceof RemoteHistoryMessage)
-      {
-        ( (RemoteHistoryMessage) msg).perform(m_data.getHistory().getHistoryWriter());
-      }
+      messageIn(msg);
     }
 
   };
+
+  private void messageIn(final Serializable msg)
+  {
+    SwingUtilities.invokeLater(
+      new Runnable()
+    {
+      public void run()
+      {
+        processMessage(translateIntoMyData(msg));
+      }
+    });
+  }
+
+  private void processMessage(Serializable msg)
+  {
+    if (msg instanceof StepChangedMessage)
+    {
+      StepChangedMessage stepChange = (StepChangedMessage) msg;
+
+      if (m_currentRound != stepChange.getRound())
+      {
+        m_currentRound = stepChange.getRound();
+        m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
+      }
+      m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getDisplayName());
+    }
+    else if (msg instanceof ChangeMessage)
+    {
+      ChangeMessage changeMessage = (ChangeMessage) msg;
+      m_data.getHistory().getHistoryWriter().addChange(changeMessage.getChange());
+    }
+    else if (msg instanceof RemoteHistoryMessage)
+    {
+      ( (RemoteHistoryMessage) msg).perform(m_data.getHistory().getHistoryWriter());
+    }
+  }
 
   /**
    * Serializes the object and then deserializes it, resolving object
@@ -127,7 +138,7 @@ public class HistorySynchronizer
         throw new RuntimeException(ex);
       }
     }
-    catch(IOException ioe)
+    catch (IOException ioe)
     {
       throw new RuntimeException(ioe);
     }

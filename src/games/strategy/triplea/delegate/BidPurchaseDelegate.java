@@ -72,5 +72,16 @@ public class BidPurchaseDelegate extends PurchaseDelegate
    }
 
 
+  /**
+   * Can the delegate be saved at the current time.
+   * @arg message, a String[] of size 1, hack to pass an error message back.
+   */
+  public boolean canSave(String[] message)
+  {
+    //if you want to change this, change
+    //the start() method so that it wont reset when loading
+    message[0] = "Cant save during bid purchase";
+    return false;
+  }
 
 }

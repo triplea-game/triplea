@@ -240,7 +240,7 @@ public class TripleAFrame extends JFrame
               }
 
               manager.saveGame(f, m_data);
-              JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",  JOptionPane.PLAIN_MESSAGE);
+              JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",  JOptionPane.INFORMATION_MESSAGE);
             }
 
           } catch(Exception se)
@@ -488,7 +488,7 @@ public class TripleAFrame extends JFrame
 
   public void notifyMessage(String message)
   {
-    JOptionPane.showMessageDialog(this, message, message, JOptionPane.PLAIN_MESSAGE);
+    JOptionPane.showMessageDialog(this, message, message, JOptionPane.INFORMATION_MESSAGE);
   }
 
   public boolean getOKToLetAirDie(String message)

@@ -301,6 +301,7 @@ public class ServerStartup extends JPanel
       players.add(row.getLocal());
     }
 
+    removeAll();
     add(players, BorderLayout.CENTER);
 
 

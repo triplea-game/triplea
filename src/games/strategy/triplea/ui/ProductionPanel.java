@@ -129,10 +129,10 @@ public class ProductionPanel extends JPanel
     }
 
 
-    add(m_left, new GridBagConstraints(0,3,30,1,1,1,GridBagConstraints.EAST,GridBagConstraints.NONE, new Insets(8,8,0,12),0,0));
+    add(m_left, new GridBagConstraints(0,3,30,1,1,1,GridBagConstraints.WEST,GridBagConstraints.NONE, new Insets(8,8,0,12),0,0));
     setLeft(ipcs);
 
-    add(new JButton(m_done_action), new GridBagConstraints(0,4,30,1,1,1,GridBagConstraints.WEST,GridBagConstraints.NONE, new Insets(0,0,8,0),0,0));
+    add(new JButton(m_done_action), new GridBagConstraints(0,4,30,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.NONE, new Insets(0,0,8,0),0,0));
 
 
 
