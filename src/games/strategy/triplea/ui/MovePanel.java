@@ -413,7 +413,41 @@ public class MovePanel extends ActionPanel
         getMap().setRoute(route);
     }
 
+    /**
+     * Allow the user to select what transports to load.
+     */
+    private Collection getTransportsToLoad(Route route)
+    {
+      Match alliedTransports = new CompositeMatchAnd(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
+      Collection transports = Match.getMatches(route.getEnd().getUnits().getUnits(), alliedTransports);
+      //nothing to choose
+      if(transports.isEmpty())
+        return Collections.EMPTY_LIST;
+      //only one, no need to choose
+      if(transports.size() == 1)
+        return transports;
 
+      //find out what they are transporting
+      Message msg = new MustMoveWithQuery(transports, route.getEnd());
+      Message response = m_bridge.sendMessage(msg);
+
+      if (! (response instanceof MustMoveWithReply))
+          throw new IllegalStateException("Message of wrong type:" + response);
+
+      MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
+
+      UnitChooser chooser = new UnitChooser(transports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement(), m_bridge.getGameData());
+      chooser.setTitle("What transports do you want to load");
+      int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                                                chooser, "What transports do you want to load",
+                                                JOptionPane.OK_CANCEL_OPTION,
+                                                JOptionPane.PLAIN_MESSAGE, null, null, null);
+      if (option != JOptionPane.OK_OPTION)
+        return Collections.EMPTY_LIST;
+
+
+      return chooser.getSelected(false);
+    }
 
 
     private final MapSelectionListener MAP_SELECTION_LISTENER = new
@@ -481,7 +515,13 @@ public class MovePanel extends ActionPanel
                 else
                 {
 
-                    MoveMessage message = new MoveMessage(units, route);
+                   Collection transports = null;
+                    if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
+                    {
+                      transports = getTransportsToLoad(route);
+                    }
+
+                    MoveMessage message = new MoveMessage(units, route, transports);
                     m_moveMessage = message;
                     m_firstSelectedTerritory = null;
                     m_forced = null;

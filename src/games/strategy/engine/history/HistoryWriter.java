@@ -27,7 +27,7 @@ public class HistoryWriter implements java.io.Serializable
   private final History m_history;
   private HistoryNode m_current;
 
-  HistoryWriter(History history)
+  public HistoryWriter(History history)
   {
     m_history = history;
   }

@@ -51,11 +51,19 @@ public class TestDelegateBridge implements DelegateBridge
 
   Random m_rand = new Random(System.currentTimeMillis());
 
+  private DelegateHistoryWriter m_historyWriter;
+
   /** Creates new TestDelegateBridge */
   public TestDelegateBridge(GameData data, PlayerID id)
   {
     m_data = data;
     m_id = id;
+    History history = new History(m_data);
+    HistoryWriter historyWriter = new HistoryWriter(history);
+    historyWriter.startNextStep("","",PlayerID.NULL_PLAYERID, "");
+    m_historyWriter = new DelegateHistoryWriter(historyWriter, new DummyMessenger());
+
+
   }
 
   /**
@@ -150,7 +158,7 @@ public class TestDelegateBridge implements DelegateBridge
 
   public DelegateHistoryWriter getHistoryWriter()
   {
-      return null;
+    return m_historyWriter;
   }
 
 }

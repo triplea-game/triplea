@@ -354,7 +354,7 @@ public class MoveDelegateTest extends DelegateTest
     //exast movement to force landing
     route.add(redSea);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
 
     assertEquals(18,egypt.getUnits().size());
     assertEquals(4,redSea.getUnits().size());
@@ -552,7 +552,7 @@ public class MoveDelegateTest extends DelegateTest
     Route route = new Route();
     route.setStart(egypt);
     route.add(redSea);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route,route.getEnd().getUnits().getUnits());
     assertValid((StringMessage) m_delegate.sendMessage(msg));
 
     map = new IntegerMap();
@@ -572,7 +572,7 @@ public class MoveDelegateTest extends DelegateTest
     Route route = new Route();
     route.setStart(egypt);
     route.add(redSea);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid((StringMessage) m_delegate.sendMessage(msg));
 
     map = new IntegerMap();
@@ -656,7 +656,7 @@ public class MoveDelegateTest extends DelegateTest
     IntegerMap map = new IntegerMap();
     map.put(armour, 1);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid((StringMessage) m_delegate.sendMessage(msg));
 
     //move two infantry to red sea
@@ -667,7 +667,7 @@ public class MoveDelegateTest extends DelegateTest
     map = new IntegerMap();
     map.put(infantry, 2);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    msg = new MoveMessage( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid((StringMessage) m_delegate.sendMessage(msg));
 
     //try to move 1 transport to indian ocean with 1 tank

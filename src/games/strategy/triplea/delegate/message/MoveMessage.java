@@ -33,19 +33,37 @@ import games.strategy.engine.data.*;
  */
 public class MoveMessage implements Message
 {
-    private static long s_ID = 0;
+  private static long s_ID = 0;
 
-	private Route m_route;
-	private Collection m_units;
-    private long m_ID;
+  private final Route m_route;
+  private final Collection m_units;
+  private final Collection m_transportsThatCanBeLoaded;
+  private final long m_ID;
 
-	/** Creates new BuyMessage */
-    public MoveMessage(Collection units, Route route)
-	{
-        m_ID = s_ID++;
-		m_route = route;
-		m_units = units;
+  public MoveMessage(Collection units, Route route)
+  {
+    this(units, route, Collections.EMPTY_LIST);
+  }
+
+  /** Creates new BuyMessage */
+  public MoveMessage(Collection units, Route route, Collection transportsThatCanBeLoaded)
+  {
+    synchronized(MoveMessage.class)
+    {
+      m_ID = s_ID++;
     }
+    m_route = route;
+    m_units = units;
+    if (transportsThatCanBeLoaded == null)
+      m_transportsThatCanBeLoaded = Collections.EMPTY_LIST;
+    else
+      m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
+  }
+
+  public Collection getTransportsToLoad()
+  {
+    return m_transportsThatCanBeLoaded;
+  }
 
 	public Collection getUnits()
 	{

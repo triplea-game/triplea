@@ -353,7 +353,7 @@ private void updateUndoableMoveIndexes()
     Route route = message.getRoute();
     Collection units = message.getUnits();
 
-    String error = validateMove(units, route, id);
+    String error = validateMove(units, route, id, message.getTransportsToLoad());
     if(error != null)
       return new StringMessage(error, true);
     //do the move
@@ -364,7 +364,7 @@ private void updateUndoableMoveIndexes()
     m_bridge.getHistoryWriter().setRenderingData(message);
 
 
-    StringMessage rVal = moveUnits(units, route, id);
+    StringMessage rVal = moveUnits(units, route, id, message.getTransportsToLoad());
     if(!rVal.isError())
     {
       m_currentMove.markEndMovement(m_alreadyMoved);
@@ -377,7 +377,7 @@ private void updateUndoableMoveIndexes()
   }
 
 
-  private String validateMove(Collection units, Route route, PlayerID player)
+  private String validateMove(Collection units, Route route, PlayerID player, Collection transportsToLoad)
   {
     String error;
 
@@ -395,7 +395,7 @@ private void updateUndoableMoveIndexes()
         return error;
     }
 
-    error = validateBasic(units, route, player);
+    error = validateBasic(units, route, player, transportsToLoad);
     if(error != null)
       return error;
 
@@ -403,7 +403,7 @@ private void updateUndoableMoveIndexes()
     if(error != null)
       return error;
 
-    error = validateTransport(units, route, player);
+    error = validateTransport(units, route, player, transportsToLoad);
     if(error != null)
       return error;
 
@@ -513,12 +513,18 @@ private void updateUndoableMoveIndexes()
   }
 
 
-  private String validateBasic(Collection units, Route route, PlayerID player)
+  private String validateBasic(Collection units, Route route, PlayerID player, Collection transportsToLoad)
   {
     //make sure all units are actually in the start territory
     if(!route.getStart().getUnits().containsAll(units))
     {
       return "Not enough units in starting territory";
+    }
+
+    //make sure transports in the destination
+    if(!route.getEnd().getUnits().containsAll(transportsToLoad))
+    {
+      return "Transports not found in route end";
     }
 
     //make sure all units are at least friendly
@@ -687,7 +693,7 @@ private void updateUndoableMoveIndexes()
     return null;
   }
 
-  private String validateTransport(Collection units, Route route, PlayerID player)
+  private String validateTransport(Collection units, Route route, PlayerID player, Collection transportsToLoad)
   {
     if(Match.allMatch(units, Matches.UnitIsAir))
       return null;
@@ -752,7 +758,7 @@ private void updateUndoableMoveIndexes()
 
     if(MoveValidator.isLoad(route))
     {
-      if(mapTransports(route, land) == null)
+      if(mapTransports(route, land, transportsToLoad) == null)
         return "Not enough transports";
 
       if(route.getLength() != 1)
@@ -774,7 +780,7 @@ private void updateUndoableMoveIndexes()
   /**
    * We assume that the move is valid
    */
-  private StringMessage moveUnits(Collection units, Route route, PlayerID id)
+  private StringMessage moveUnits(Collection units, Route route, PlayerID id, Collection transportsToLoad)
   {
 
     //mark movement
@@ -826,7 +832,7 @@ private void updateUndoableMoveIndexes()
 
 
     //TODO, put units in owned transports first
-    Map transporting = mapTransports(route, units);
+    Map transporting = mapTransports(route, units, transportsToLoad);
     markTransportsMovement(transporting, route);
 
 
@@ -1015,10 +1021,10 @@ private void updateUndoableMoveIndexes()
    * either because there is not sufficient transport capacity
    * or because a unit is not with its transport
    */
-  private Map mapTransports(Route route, Collection units)
+  private Map mapTransports(Route route, Collection units, Collection transportsToLoad)
   {
     if(MoveValidator.isLoad(route))
-      return mapTransportsToLoad(units, route.getEnd().getUnits().getUnits());
+      return mapTransportsToLoad(units, transportsToLoad);
     if(MoveValidator.isUnload(route))
       return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
     return mapTransportsAlreadyLoaded(units, units);
