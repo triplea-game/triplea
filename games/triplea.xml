@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="triplea" version="0.2.1"/>
+	<info name="triplea" version="0.2.2"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -1169,6 +1169,7 @@
 
 	<propertyList>
 		<property name="neutralCharge" value="3"/>
+		<property name="maxFactoriesPerTerritory" value="1"/>
 	</propertyList>
 	
 </game>

@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="two_empires" version="0.1"/>
+	<info name="two_if_by_sea" version="0.1"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -1030,6 +1030,10 @@
 
 	<propertyList>
 		<property name="neutralCharge" value="0"/>
+		<property name="maxFactoriesPerTerritory" value="20"/>
+		
+		<!-- notes appear in the notes menu in the main screen, format as html -->
+		<property name="notes" value="The same as triplea except that : &lt;br&gt; neutrals defend themselves &lt;br&gt; no neutral fee &lt;br&gt; each non original factory can produce 5 units, but you can have multiple factories in a territory"/>
 	</propertyList>
 	
 </game>
