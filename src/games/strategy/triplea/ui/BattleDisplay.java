@@ -769,7 +769,7 @@ class BattleStepsPanel extends JPanel
         {
             synchronized (lock)
             {
-                lock.wait(500);
+                lock.wait(350);
             }
         } catch (InterruptedException ie)
         {
