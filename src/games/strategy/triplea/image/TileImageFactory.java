@@ -12,19 +12,26 @@ package games.strategy.triplea.image;
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 import games.strategy.triplea.Constants;
 import games.strategy.ui.ImageIoCompletionWatcher;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.lang.ref.*;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.prefs.*;
+
+import javax.swing.*;
 
 public final class TileImageFactory
 {
-
+    //if this system property is set to true, we dont load any graphics
+    //this allows for faster start times
+    private static final boolean s_dontLoadImages = Boolean.valueOf(System.getProperties().getProperty("triplea.fastGraphics", "false")).booleanValue();
     private final Object m_mutex = new Object();
 
     // one instance in the application
@@ -111,6 +118,9 @@ public final class TileImageFactory
 
     private void prepareImage(String fileName)
     {
+        if(s_dontLoadImages)
+            return;
+        
         synchronized (m_mutex)
         {
             if (isImageLoaded(fileName) != null)
@@ -168,6 +178,9 @@ public final class TileImageFactory
      */
     private Image getImage(String fileName)
     {
+        if(s_dontLoadImages)
+            return null;
+        
         synchronized (m_mutex)
         {
             Image rVal = isImageLoaded(fileName);
@@ -204,22 +217,28 @@ public final class TileImageFactory
      * @param imageLocation
      * @return
      */
-    private Image startLoadingImage(URL imageLocation, String fileName)
+    private void startLoadingImage(URL imageLocation, String fileName)
     {
         synchronized (m_mutex)
         {
+//            try
+//            {
+//                Image img = ImageIO.read(imageLocation);
+//                ImageRef ref = new ImageRef(img);
+//                m_imageCache.put(fileName, ref);
+//                
+//                
+//            } catch (IOException e)
+//            {
+//                
+//                e.printStackTrace();
+//            }
+            
+            
             // use the local toolkit to load the image
             Image img = m_toolkit.createImage(imageLocation);
-
-            // force it to be loaded *now*
-            ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
-            boolean done = m_toolkit.prepareImage(img, -1, -1, watcher);
-            if(!done)
-                m_imageCache.put(fileName, new ImageRef(img, watcher));
-            else
-                m_imageCache.put(fileName, new ImageRef(img));
-
-            return img;
+            ImageRef ref = new ImageRef(img);
+            m_imageCache.put(fileName, ref);
         }
     }
 
@@ -236,34 +255,90 @@ public final class TileImageFactory
 
 class ImageRef
 {
+    public static final ReferenceQueue s_referenceQueue = new ReferenceQueue();
+    public static final Logger s_logger = Logger.getLogger(ImageRef.class.getName());
+    
+    private static final AtomicInteger s_imageCount = new AtomicInteger();
+    
+    static
+    {
+        Runnable r = new Runnable()
+        {
+            public void run()
+            {
+                while(true)
+                {
+                    try
+                    {
+                        s_referenceQueue.remove();
+                        s_logger.finer("Removed soft reference image. Image count:" + s_imageCount.decrementAndGet() );
+                    } catch (InterruptedException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.setDaemon(true);
+        t.start();
+        
+    }
+    
+    
     private final Reference m_image;
     private ImageIoCompletionWatcher m_watcher;
+    //private Object m_hardRef;
+    private final Object m_mutex = new Object();
 
     public ImageRef(final Image image)
     {
-        m_image = new SoftReference(image);
-    }
-
-    public ImageRef(final Image image, final ImageIoCompletionWatcher watcher)
-    {
-        this(image);
-        m_watcher = watcher;
+        m_image = new SoftReference(image, s_referenceQueue);
+        //m_hardRef = image;
+        s_logger.finer("Added soft reference image. Image count:" + s_imageCount.incrementAndGet() );
+        
+        
+        Action action = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent s)
+            {
+                synchronized (m_mutex)
+                {
+                    m_watcher = null;
+                }
+            }
+        };
+        
+        // start it loading
+        m_watcher = new ImageIoCompletionWatcher(action);
+        boolean done = Toolkit.getDefaultToolkit().prepareImage(image, -1, -1, m_watcher);
+        if(done)
+        {
+            m_watcher = null;
+        }
     }
 
     public Image getImage()
     {
-        if (m_watcher == null)
-            return (Image) m_image.get();
-        m_watcher.waitForCompletion();
-        m_watcher = null;
+        synchronized(m_mutex)
+        {
+	        if (m_watcher == null)
+	            return (Image) m_image.get();
+	        m_watcher.waitForCompletion();
+	        m_watcher = null;
+        }
 
         return (Image) m_image.get();
     }
 
     public void clear()
     {
+        m_image.enqueue();
         m_image.clear();
-        m_watcher = null;
     }
+    
 
 }
+
+
