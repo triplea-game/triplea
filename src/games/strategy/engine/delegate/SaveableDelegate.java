@@ -36,7 +36,7 @@ import games.strategy.engine.message.IDestination;
  * A Delegate that can be saved and loaded.
  * 
  */
-public interface SaveableDeleage extends Delegate
+public interface SaveableDelegate extends Delegate
 {
 	
 	/**
