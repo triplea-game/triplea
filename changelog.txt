@@ -1,4 +1,8 @@
-* put neutral player color in map.properties
+* add a copy to clipboard button on the console (sgb)
+
+* if available, console will print stack traces when enumerating threads (sgb)
+
+* put neutral player color in map.properties (sgb)
 
 Change for 0.5.2.2
 

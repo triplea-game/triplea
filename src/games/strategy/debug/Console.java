@@ -21,8 +21,11 @@
 package games.strategy.debug;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.*;
 import javax.swing.*;
 
@@ -72,6 +75,7 @@ public class Console extends JFrame
 		m_actions.add(m_threadDiagnoseAction);
 		m_actions.add(m_memoryAction);
 		m_actions.add(m_propertiesAction);
+		m_actions.add(m_copyAction);
 		
 		pack();
     }
@@ -107,10 +111,48 @@ public class Console extends JFrame
 		System.setOut(print);
 	}
 	
+	private Action m_copyAction = new AbstractAction("Copy to clipboard")
+	{
+	  public void actionPerformed(ActionEvent e)
+	  {
+	      String text = m_text.getText();
+	      StringSelection select = new StringSelection(text);
+	      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
+	  }
+	};
+	
 	private AbstractAction m_threadDiagnoseAction = new AbstractAction("Enumerate Threads")
 	{
 		public void actionPerformed(ActionEvent e)
 		{
+		    //call the jdk1.5 getAllStackTraces method
+		    //call using reflection so we are 1.4 compatable
+		    try
+            {
+                Method m = Thread.class.getMethod("getAllStackTraces", new Class[0]);
+                Map stackTraces = (Map) m.invoke(Thread.class, new Object[0]);
+                Iterator iter = stackTraces.keySet().iterator();
+                while (iter.hasNext())
+                {
+                    Thread t = (Thread) iter.next();
+                    System.out.println(t);
+                    StackTraceElement[] stackTrace = (StackTraceElement[]) stackTraces.get(t);
+                    for(int i = 0;  i < stackTrace.length; i++)
+                    {
+                        System.out.print("  ");
+                        System.out.println(stackTrace[i]);
+                    }
+                    System.out.println();
+                    
+                } 
+               
+                return;
+            } catch (Exception e1)
+            {
+                //wrong vm
+            }
+		    
+		    
 			Thread[] threads = new Thread[ Thread.activeCount()];
 			int count = Thread.enumerate(threads);
 			
