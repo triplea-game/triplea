@@ -14,6 +14,8 @@ Changes for 0.5.3
 
 * Fixed bug [ 1102812 ] flag image names not based on xml names (sgb)
 
+* Fixed bug [ 1102225 ] Error by adding better error messages (sgb)
+
 Changes for 0.5.2
 
 * Added option to limit ipcs lost in a territory during one round. This is necessary to implement LHTR ruleset.
