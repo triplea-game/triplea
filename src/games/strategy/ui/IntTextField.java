@@ -190,6 +190,7 @@ public class IntTextField extends JTextField
 			{
 				Integer.parseInt(proposedResult);
 				super.insertString(offs, str, a);
+				checkValue();
 				notifyListeners();
 			} catch(NumberFormatException e)
 			{
