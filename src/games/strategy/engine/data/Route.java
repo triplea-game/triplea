@@ -121,14 +121,10 @@ public class Route implements java.io.Serializable
          */
         public boolean crossesWater()
         {
-            boolean startLand = false;
+            boolean startLand = !m_start.isWater();
             boolean overWater = false;
             Iterator routeIter = m_route.iterator();
             Territory terr = null;
-            if (!routeIter.hasNext()) {
-                terr = (Territory) routeIter.next();
-                startLand = !terr.isWater();
-            }
             while (routeIter.hasNext()) {
                 terr = (Territory) routeIter.next();
                 if (terr.isWater()) {
