@@ -269,13 +269,9 @@ class HttpDiceRollerDialog extends JDialog
    will close the window and notify any waiting threads when
    completed succeddfully.
 
-   Before contacting Irony Dice Server, conduct 2 tests and
-   ping the e-mail domains to see if they exist. m_test variable
-   will not be used as the condition to conduct the tests because
-   the code needs to get executed no matter what, in order to
-   determine if "validMail" is true or false. We're gonna do this
-   anyways if we're gonna ping the e-mails before dice rolling.
-   Code segment add by NeKromancer
+   Before contacting Irony Dice Server, check if email
+   has a reasonable valid syntax.
+   @author NeKromancer
   */
   private void rollInSeperateThread()
   {
@@ -286,38 +282,13 @@ class HttpDiceRollerDialog extends JDialog
 
       int x = m_email1.indexOf('@');
       int y = m_email2.indexOf('@');
-      if(x != -1 && y != -1) {          //test 1
-          x = m_email1.lastIndexOf('.');
-          y = m_email2.lastIndexOf('.');
-          if(x != -1 && y != -1) {      //test 2
-              String domain1 = m_email1.substring(m_email1.indexOf('@')+1);
-              String domain2 = m_email2.substring(m_email2.indexOf('@')+1);
-              /** try connection to domain 1
-              */
-              appendText("Testing if "+domain1+" is up... ");
-              try {
-                  Socket s1 = new Socket(domain1,80);
-                  s1.close();
-                  appendText("Success!\n");
-                  validMail = true;
-              }catch(IOException e) {
-                  appendText("Failed!\n");
-                  validMail = false;
-              }
-              /** try connection to domain 2
-              */
-              appendText("Testing if "+domain2+" is up... ");
-              try {
-                  Socket s2 = new Socket(domain2,80);
-                  s2.close();
-                  appendText("Success!\n");
-                  //both must be successful to pass. do not make validMail true here
-              }catch(IOException e) {
-                  appendText("Failed!\n");
-                  validMail = false;
-              }
-          }//end test 2
-      }//end test 1
+      if(x != -1 && y != -1) {
+        x = m_email1.indexOf('.');
+        y = m_email2.indexOf('.');
+          if(x != -1 && y != -1) {
+                validMail = true;
+          }
+      }
 
       if(validMail) {  //execute below ONLY when we have 2 valid email addresses
 
