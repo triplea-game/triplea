@@ -1,5 +1,7 @@
 Changes for 0.5.2
 
+* Changed how bombardment works. Now users pick where to bombard before any battles are resolved. This allows users not to bombard with a unit (for example if they wish to move it during non-combat) by picking "None". This also fixes the bug where a a unit could retreat from a battle and bombard in the same turn. It also allows user to divide their bombardment shots however they like when there are multiple bombardment targets. (Ali Ibrahim)
+
 * Fixed bug #1067768 concerning the border of seazone 27 and Belgian Congo. (Nekro)
 
 * Fixed bug #1067331 by removing the connection between seazone 51 and 56 for Pact of Steel mod. (Nekro)
