@@ -25,6 +25,7 @@ import games.strategy.engine.framework.ui.LauncherFrame;
 
 import java.awt.*;
 import java.io.*;
+import java.net.*;
 import java.net.URL;
 import java.util.logging.LogManager;
 
@@ -163,7 +164,19 @@ public class GameRunner
         //we want to move up 1 directory for each  
         //package
         int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
-        File f = new File(url.getFile());
+        
+        String fileName = url.getFile();
+        try
+        {
+            //deal with spaces in the file name which would be url encoded
+            fileName  = URLDecoder.decode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        File f = new File(fileName);
+        
+        
         for(int i = 0; i < moveUpCount; i++)
         {
             f = f.getParentFile();
