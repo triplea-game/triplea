@@ -119,7 +119,7 @@ public class EndTurnDelegate implements Delegate, java.io.Serializable
 	 	if ( russia && !germany && britain && !japan && america)
 		{
 			m_gameOver = true;
-			bridge.getTranscript().write("Allies acheive a military victory", TranscriptMessage.PRIORITY_CHANNEL);
+			bridge.getTranscript().write("Allies achieve a military victory", TranscriptMessage.PRIORITY_CHANNEL);
 		}
 
 	}
