@@ -47,24 +47,21 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 public class ServerGame implements IGame
 {
   private ListenerList m_gameStepListeners = new ListenerList();
-  private GameData m_data;
+  private final GameData m_data;
   //maps PlayerID->GamePlayer
-  private Map m_gamePlayers = new HashMap();
+  private final Map m_gamePlayers = new HashMap();
 
-  private IServerMessenger m_messenger;
-  private IMessageManager m_messageManager;
-  private ChangePerformer m_changePerformer;
+  private final IServerMessenger m_messenger;
+  private final IMessageManager m_messageManager;
+  private final ChangePerformer m_changePerformer;
   //maps playerName -> INode
   //only for remote nodes
-  private Map m_remotePlayers;
-  private Object m_remotePlayerStepLock = new Object();
-  private Transcript m_transcript;
-
-
-
+  private final Map m_remotePlayers;
+  private final Object m_remotePlayerStepLock = new Object();
+  private final Transcript m_transcript;
 
   /** Creates new Game */
-  public ServerGame(GameData data, Set gamePlayers, IServerMessenger messenger, Map playerMapping)
+  public ServerGame(GameData data, Set gamePlayers, IServerMessenger messenger, Map remotePlayerMapping)
   {
     m_data = data;
 
@@ -73,7 +70,7 @@ public class ServerGame implements IGame
 
     m_transcript = new Transcript(m_messenger);
 
-    m_remotePlayers = new HashMap(playerMapping);
+    m_remotePlayers = new HashMap(remotePlayerMapping);
 
     m_messageManager = new MessageManager(m_messenger);
     Iterator iter = gamePlayers.iterator();
@@ -92,9 +89,8 @@ public class ServerGame implements IGame
       gp.initialize(bridge, player);
       m_messageManager.addDestination(gp);
 
-      // Add a corresponding random destination for this GamePlayer
+      // Add a random destination for this GamePlayer
       rnd_dest = new RandomDestination(gp.getName());
-
 
       m_messageManager.addDestination(rnd_dest);
     }

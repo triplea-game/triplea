@@ -87,7 +87,7 @@ public final class TerritoryImageFactory
   {
     // get the base image and the color to apply
     Image baseImage = getBaseImage(place);
-    Color newColor = (Color) m_playerColors.get(owner.getName());
+    Color newColor = getPlayerColour(owner);
 
     // Get the bounds. Note that the  source image should be completely loaded
     // before calling this method so its OK to use null observers.
@@ -134,6 +134,12 @@ public final class TerritoryImageFactory
     // done
     return workImage;
 
+  }
+
+  public Color getPlayerColour(PlayerID owner)
+  {
+      Color newColor = (Color) m_playerColors.get(owner.getName());
+      return newColor;
   }
 
   // dynamically a buffered version of the water image

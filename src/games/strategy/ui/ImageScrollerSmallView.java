@@ -132,6 +132,10 @@ public class ImageScrollerSmallView extends JComponent
     g.drawRect(m_selectionX +xOff - getWidth(), m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
   }
 
+  public Image getOffScreenImage()
+  {
+      return m_image;
+  }
 
   private void setSelection(int x, int y)
   {

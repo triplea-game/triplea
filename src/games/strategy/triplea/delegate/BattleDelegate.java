@@ -44,7 +44,6 @@ public class BattleDelegate implements SaveableDelegate
 
   private String m_name;
   private String m_displayName;
-  private GameData m_data;
   private DelegateBridge m_bridge;
   private BattleTracker m_battleTracker = new BattleTracker();
   private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
@@ -63,7 +62,6 @@ public class BattleDelegate implements SaveableDelegate
    */
   public void start(DelegateBridge aBridge, GameData gameData)
   {
-    m_data = gameData;
     m_bridge = aBridge;
     if(DelegateFinder.techDelegate(gameData).getTechTracker().hasRocket(aBridge.getPlayerID()))
       fireRockets(aBridge, gameData, aBridge.getPlayerID());

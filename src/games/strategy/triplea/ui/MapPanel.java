@@ -57,29 +57,33 @@ public class MapPanel extends ImageScrollerLargeView
   private final GameData m_data;
   private Territory m_currentTerritory; //the territory that the mouse is currently over
                                               //could be null
-  private JComponent m_smallImage;
+  private MapPanelSmallView m_smallView;
 
   //current image we are displaying, could be null
   private Route m_route;
 
+
   /** Creates new MapPanel */
-    public MapPanel(Image image, GameData data, JComponent smallImage) throws IOException
+  public MapPanel(Image image, GameData data, MapPanelSmallView smallImage) throws
+      IOException
   {
-    super(image);
-    m_smallImage = smallImage;
-    m_data = data;
-    data.addTerritoryListener(TERRITORY_LISTENER);
+      super(image);
+      m_smallView = smallImage;
+      m_data = data;
+      data.addTerritoryListener(TERRITORY_LISTENER);
 
-    initPolygons();
-    initCenters();
-    initPlacement();
+      initPolygons();
+      initCenters();
+      initPlacement();
 
-    checkTerritories();
-    initTerritories();
+      checkTerritories();
+      m_smallView.resetOffScreen();
+      initTerritories();
 
-    this.addMouseListener(MOUSE_LISTENER);
-    this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
-    }
+
+      this.addMouseListener(MOUSE_LISTENER);
+      this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
+  }
 
   private void initCenters() throws IOException
   {
@@ -268,7 +272,8 @@ public class MapPanel extends ImageScrollerLargeView
 
   private void initTerritories()
   {
-    clearOffscreen();
+    clearOffScreen();
+    m_smallView.resetOffScreen();
     Iterator iter = m_polygonTerritories.iterator();
     while(iter.hasNext())
     {
@@ -276,8 +281,9 @@ public class MapPanel extends ImageScrollerLargeView
       updateTerritory(terr);
     }
     drawRoute();
-    update();
 
+    update();
+    m_smallView.repaint();
   }
 
   /**
@@ -418,9 +424,31 @@ public class MapPanel extends ImageScrollerLargeView
           {
             getOffscreenGraphics().drawString(String.valueOf(count), place.x + (UnitIconImageFactory.UNIT_ICON_WIDTH / 4), place.y + UnitIconImageFactory.UNIT_ICON_HEIGHT);
           }
+
+           drawUnitOnSmallScreen(player, place);
+
+
         }
       }//end for each unit type
     }//end for each player
+  }
+
+  private void drawUnitOnSmallScreen(PlayerID player, Point place)
+  {
+      double smallLargeRatio = 1 / 9.967; // ((float) m_smallView.getHeight()) / ((float) getHeight());
+
+      Graphics smallOffscreen = m_smallView.getOffScreenImage().
+          getGraphics();
+      smallOffscreen.setColor(TerritoryImageFactory.getInstance().
+                              getPlayerColour(player).darker());
+      smallOffscreen.fillOval(
+          (int) (place.x * smallLargeRatio),
+          (int) (place.y * smallLargeRatio),
+          (int) (UnitIconImageFactory.UNIT_ICON_WIDTH *
+                 smallLargeRatio) + 2,
+          (int) (UnitIconImageFactory.UNIT_ICON_HEIGHT *
+                 smallLargeRatio) + 2
+          );
   }
 
   private MouseListener MOUSE_LISTENER = new MouseAdapter()
@@ -474,15 +502,8 @@ public class MapPanel extends ImageScrollerLargeView
     public void ownerChanged(Territory territory)
     {
       MapImage.getInstance().setOwner(territory, territory.getOwner());
-      m_smallImage.repaint();
+      m_smallView.resetOffScreen();
       initTerritories();
     }
   };
 }
-
-
-
-
-
-
-

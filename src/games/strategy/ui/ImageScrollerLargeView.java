@@ -69,7 +69,7 @@ public class ImageScrollerLargeView extends JComponent
   //how much we scroll
   private final static int SCROLL_DISTANCE = 30;
 
-  private ImageScrollControl m_control;
+  protected ImageScrollControl m_control;
 
   private int m_x = 0;
   private int m_y = 0;
@@ -355,7 +355,7 @@ public class ImageScrollerLargeView extends JComponent
    * Update will not be seen until update is called.
    * Resets the offscreen image to the original.
    */
-  public void clearOffscreen()
+  public void clearOffScreen()
   {
     ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
     if(!m_offscreenImage.getGraphics().drawImage(m_originalImage, 0,0,watcher))
@@ -382,6 +382,11 @@ public class ImageScrollerLargeView extends JComponent
   public Graphics getOffscreenGraphics()
   {
     return m_offscreenImage.getGraphics();
+  }
+
+  public Image getOffscreenImage()
+  {
+      return m_offscreenImage;
   }
 
   /**

@@ -59,7 +59,7 @@ public class TripleAFrame extends JFrame
   private final GameData m_data;
   private final IGame m_game;
   private MapPanel m_mapPanel;
-  private ImageScrollerSmallView m_smallView;
+  private MapPanelSmallView m_smallView;
   private JLabel m_message = new JLabel("No selection");
   private JLabel m_step = new JLabel("xxxxxx");
   private ActionButtons m_actionButtons;
@@ -102,7 +102,7 @@ public class TripleAFrame extends JFrame
     MapImage.getInstance().loadMaps(m_data);
 
     Image small = MapImage.getInstance().getSmallMapImage();
-    m_smallView = new ImageScrollerSmallView(small);
+    m_smallView = new MapPanelSmallView(small);
 
     Image large =  MapImage.getInstance().getLargeMapImage();
     m_mapPanel = new MapPanel(large,m_data, m_smallView);
@@ -110,7 +110,8 @@ public class TripleAFrame extends JFrame
 
     System.out.println(" done:" + (((double) System.currentTimeMillis() - now) / 1000.0) + "s");
 
-    ImageScrollControl control = new ImageScrollControl(m_mapPanel, m_smallView);
+    //link the small and large images
+    new ImageScrollControl(m_mapPanel, m_smallView);
 
     this.getContentPane().setLayout(new BorderLayout());
 
