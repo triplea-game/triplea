@@ -478,6 +478,8 @@
 		<unit name="submarine"/>
 		<unit name="factory"/>
 		<unit name="aaGun"/>
+		<unit name="artillery"/>
+		<unit name="destroyer"/>
 	</unitList>
 
 	<gamePlay>
@@ -552,6 +554,10 @@
 			<cost resource="IPCs" quantity="3" />
 			<result resourceOrUnit="infantry" quantity="1"/>
 		</productionRule>
+		<productionRule name="buyArtillery">
+			<cost resource="IPCs" quantity="4" />
+			<result resourceOrUnit="artillery" quantity="1"/>
+		</productionRule>
 		<productionRule name="buyArmour">
 			<cost resource="IPCs" quantity="5" />
 			<result resourceOrUnit="armour" quantity="1"/>
@@ -567,6 +573,10 @@
 		<productionRule name="buyTransport">
 			<cost resource="IPCs" quantity="8" />
 			<result resourceOrUnit="transport" quantity="1"/>
+		</productionRule>
+		<productionRule name="buyDestroyer">
+			<cost resource="IPCs" quantity="12" />
+			<result resourceOrUnit="destroyer" quantity="1"/>
 		</productionRule>
 		<productionRule name="buyCarrier">
 			<cost resource="IPCs" quantity="18" />
@@ -594,6 +604,10 @@
 			<cost resource="IPCs" quantity="2" />
 			<result resourceOrUnit="infantry" quantity="1"/>
 		</productionRule>
+		<productionRule name="buyArtilleryIndustrialTechnology">
+			<cost resource="IPCs" quantity="3" />
+			<result resourceOrUnit="artillery" quantity="1"/>
+		</productionRule>
 		<productionRule name="buyArmourIndustrialTechnology">
 			<cost resource="IPCs" quantity="4" />
 			<result resourceOrUnit="armour" quantity="1"/>
@@ -609,6 +623,10 @@
 		<productionRule name="buyTransportIndustrialTechnology">
 			<cost resource="IPCs" quantity="7" />
 			<result resourceOrUnit="transport" quantity="1"/>
+		</productionRule>
+		<productionRule name="buyDestroyerIndustrialTechnology">
+			<cost resource="IPCs" quantity="10" />
+			<result resourceOrUnit="destroyer" quantity="1"/>
 		</productionRule>
 		<productionRule name="buyCarrierIndustrialTechnology">
 			<cost resource="IPCs" quantity="17" />
@@ -717,7 +735,6 @@
 			   <option name="rocket" value="false"/>
 			   <option name="longRangeAir" value="false"/>
 	    </attatchment>
-
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="infantry"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
@@ -727,6 +744,16 @@
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
 			 <option name="artillerySupportable" value="true"/>
+	    </attatchment>
+	    <attatchment name="unitAttatchment" 
+			 attatchTo="artillery"
+			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
+			 type="unitType">
+			 <option name="movement" value="1"/>
+			 <option name="transportCost" value="3"/>
+			 <option name="attack" value="2"/>
+			 <option name="defense" value="2"/>
+			 <option name="artillery" value="true"/>
 	    </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="armour"
@@ -767,6 +794,16 @@
 			 <option name="transportCapacity" value="2"/>   
 			 <option name="attack" value="0"/>
 			 <option name="defense" value="1"/>
+	    </attatchment>
+	    <attatchment name="unitAttatchment" 
+			 attatchTo="destroyer"
+			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
+			 type="unitType">
+			 <option name="movement" value="2"/>
+			 <option name="isSea" value="true"/>   
+			 <option name="attack" value="3"/>
+			 <option name="defense" value="3"/>
+ 			 <option name="isDestroyer" value="true"/>
 	    </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="battleship"
@@ -1233,6 +1270,9 @@
 	</initialize>
 
 	<propertyList>
+		<property name="Use Destroyers and Artillery" value="false" editable="true">
+			<boolean/>
+		</property>
 		<property name="Two hit battleship" value="false" editable="true">
 			<boolean/>
 		</property>
