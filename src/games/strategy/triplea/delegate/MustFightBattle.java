@@ -739,7 +739,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     combat.add(new InverseMatch(Matches.UnitIsAAOrFactory));
 
     if(m_territory.isWater())
-      combat.add(Matches.UnitIsSea);
+      combat.add(new InverseMatch(Matches.UnitIsLand));
 
     return Match.getMatches(units, combat);
 
