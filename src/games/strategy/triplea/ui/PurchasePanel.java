@@ -75,15 +75,6 @@ public class PurchasePanel extends ActionPanel
     add(Box.createVerticalGlue());
     SwingUtilities.invokeLater(REFRESH);
     
-    //automatically "click" the buy button for us!
-    SwingUtilities.invokeLater(
-    		  new Runnable()
-    		 {
-    		  public void run()
-    		 {
-    		  PURCHASE_ACTION.actionPerformed(null);
-    		 }
-    		});
   }
 
   private void refreshActionLabelText()
@@ -95,6 +86,17 @@ public class PurchasePanel extends ActionPanel
   {
     m_bid = bid;
     refreshActionLabelText();
+    
+    //automatically "click" the buy button for us!
+    SwingUtilities.invokeLater(
+    		  new Runnable()
+    		 {
+    		  public void run()
+    		 {
+    		  PURCHASE_ACTION.actionPerformed(null);
+    		 }
+    		});
+    
 
     synchronized(getLock())
     {
