@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 
-<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "ant.dtd">
 
 <project name="TripleA" basedir="." default="compile">
 
