@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="4th Ed. Pact of Steel" version="1.5"/>
+        <info name="4th Ed. Pact of Steel" version="2.0"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1144,7 +1144,7 @@
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="French Madagascar" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
-                        <option name="production" value="0"/>
+                        <option name="production" value="1"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Yakut S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1604,6 +1604,7 @@
                         <unitPlacement unitType="infantry" territory="Western United States" quantity="3" owner="Americans"/>
                         <unitPlacement unitType="fighter" territory="Western United States" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="infantry" territory="Central United States" quantity="2" owner="Americans"/>
+			<unitPlacement unitType="armour" territory="Central United States" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="transport" territory="10 Sea Zone" quantity="2" owner="Americans"/>
                         <unitPlacement unitType="destroyer" territory="55 Sea Zone" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="destroyer" territory="10 Sea Zone" quantity="1" owner="Americans"/>
@@ -1616,7 +1617,7 @@
         
                 <resourceInitialize>
                         <resourceGiven player="Japanese" resource="IPCs" quantity="30"/>
-                        <resourceGiven player="British" resource="IPCs" quantity="32"/>
+                        <resourceGiven player="British" resource="IPCs" quantity="33"/>
                         <resourceGiven player="Americans" resource="IPCs" quantity="42"/>
                         <resourceGiven player="Russians" resource="IPCs" quantity="24"/>
                         <resourceGiven player="Germans" resource="IPCs" quantity="38"/>
