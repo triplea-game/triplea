@@ -65,5 +65,7 @@ public interface Constants
   public static final String BOMBER_TYPE = "bomber";
   public static final String FACTORY_TYPE = "factory";
   public static final String AAGUN_TYPE = "aaGun";
+  public static final String ARTILLERY = "artillery";
+  public static final String DESTROYER = "destroyer";
 
 }

@@ -319,6 +319,15 @@ public class Matches
 		}
 	};
 
+	public static final Match UnitIsArtillery = new Match()
+	{
+	    public boolean match(Object obj)
+	    {
+			UnitType type = ((Unit) obj).getUnitType();
+			return type.getName().equals(Constants.ARTILLERY);
+	    }
+	};
+	
 
 	public static final Match TerritoryIsWater = new Match()
 	{

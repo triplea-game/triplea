@@ -422,14 +422,35 @@ public class GameParser
     Iterator children = getChildren("property", root).iterator();
     while(children.hasNext())
     {
-      Element current = (Element) children.next();
-      String property = current.getAttribute("name");
-      String value = current.getAttribute("value");
-      properties.set(property,value);
 
-      String editable = current.getAttribute("editable");
-      if(editable != null && editable.equalsIgnoreCase("true"))
-        parseEditableProperty(current, property, value);
+        Element current = (Element) children.next();
+        String editable = current.getAttribute("editable");
+        String property = current.getAttribute("name");
+        String value = current.getAttribute("value");
+
+        if(editable != null && editable.equalsIgnoreCase("true"))
+            parseEditableProperty(current, property, value);
+        else
+        {
+            List children2 = getNonTextNodes(current);
+            if(children2.size() == 0)
+                properties.set(property,value);
+            else
+            {
+                String type = ((Element) children2.get(0)).getNodeName();
+                if(type.equals("boolean"))
+                {
+                    properties.set(property, Boolean.valueOf(value));
+                }
+                else
+                {
+                    properties.set(property,value);
+                }
+                  
+                 
+                   
+            }
+        }
     }
   }
 

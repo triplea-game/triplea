@@ -71,7 +71,9 @@ public class DiceRoll implements java.io.Serializable
     {
         return new DiceRoll(new int[Constants.MAX_DICE][0], 0 );
     }
-        
+
+    
+    
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
 
     List[] sortedDice = new List[Constants.MAX_DICE];
