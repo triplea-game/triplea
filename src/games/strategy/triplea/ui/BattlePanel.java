@@ -145,6 +145,17 @@ public class BattlePanel extends ActionPanel
     m_battleFrame.show();
     m_battleFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
+    SwingUtilities.invokeLater(
+      new Runnable()
+    {
+      public void run()
+      {
+        m_battleFrame.toFront();
+      }
+    }
+    );
+
+
     return null;
   }
 
