@@ -273,28 +273,17 @@ public class MovePanel extends ActionPanel
                 owned = Match.getMatches(owned, Matches.UnitIsAir);
                 owned.addAll(getUnitsThatCanBeUnload(route));
             }
-        }
+        } else if (route.crossesWater()) {
+	  // Eliminate land units if starting from land and
+	  // crossing water.
+	  owned = Match.getMatches(owned, Matches.UnitIsAir);
+	}
 
 
-        UnitChooser chooser = getUnitChooser(owned, route);
-        if(chooser == null)
-        {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), "No units can move that far", "No units", JOptionPane.INFORMATION_MESSAGE);
-            return Collections.EMPTY_LIST;
-        }
-        String text = "Select units to move from " + route.getStart().getName() + ".";
-        int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                                                  chooser, text,
-                                                  JOptionPane.OK_CANCEL_OPTION,
-                                                  JOptionPane.PLAIN_MESSAGE, null, null, null);
-
-        if (option != JOptionPane.OK_OPTION)
-            return Collections.EMPTY_LIST;
-
-        return chooser.getSelected();
+        return getUnitsChosen(owned, route);
     }
 
-    private UnitChooser getUnitChooser(Collection units, Route route)
+    private Collection getUnitsChosen(Collection units, Route route)
     {
         Message msg = new MustMoveWithQuery(units, route.getStart());
         Message response = m_bridge.sendMessage(msg);
@@ -315,11 +304,36 @@ public class MovePanel extends ActionPanel
                                        Matches.unitHasEnoughMovement(route.
                                        getLength(), mustMoveWith.getMovement()));
 
-        if (canMove.isEmpty())
-            return null;
+	Collection movedUnits = new ArrayList();
+	Map mustMoveWithMap = mustMoveWith.getMustMoveWith();
+        if (canMove.isEmpty()) {
+            JOptionPane.showMessageDialog(getTopLevelAncestor(), "No units can move that far", "No units", JOptionPane.INFORMATION_MESSAGE);
+            return Collections.EMPTY_LIST;
+	} else if (canMove.size() == 1) {
+          Object singleUnit = canMove.iterator().next();
+	  movedUnits.add(singleUnit);
+	  // Add dependents if necessary
+	  Collection dependents = (Collection) mustMoveWithMap.get(singleUnit);
+	  if (dependents != null) {
+	    movedUnits.addAll(dependents);
+	  }
+	  return movedUnits;
+	}
 
-        return new UnitChooser(canMove, mustMoveWith.getMustMoveWith(),
-                               mustMoveWith.getMovement(), m_bridge.getGameData());
+        UnitChooser chooser = new UnitChooser(canMove, mustMoveWithMap,
+					      mustMoveWith.getMovement(), m_bridge.getGameData());
+
+
+        String text = "Select units to move from " + route.getStart().getName() + ".";
+        int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                                                  chooser, text,
+                                                  JOptionPane.OK_CANCEL_OPTION,
+                                                  JOptionPane.PLAIN_MESSAGE, null, null, null);
+
+        if (option != JOptionPane.OK_OPTION)
+            return Collections.EMPTY_LIST;
+
+        return chooser.getSelected();
     }
 
     private Route getRoute(Territory start, Territory end)
