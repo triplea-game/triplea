@@ -52,6 +52,9 @@ public class GameDataManagerTest extends TestCase
 
   }
 
+ public void testNone()
+ {
 
+ }
 
 }

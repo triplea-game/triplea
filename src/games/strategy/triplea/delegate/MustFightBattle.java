@@ -734,7 +734,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
     //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
     // NEW VERSION
-    DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
+    DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge, m_territory);
 
     if(dice.getHits() == 0)
     {

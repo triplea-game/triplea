@@ -30,7 +30,6 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
 
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
 
 import games.strategy.triplea.delegate.message.*;
 
@@ -149,7 +148,7 @@ public class BattleDelegate implements SaveableDelegate
     Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
     //int cost = bridge.getRandom(Constants.MAX_DICE);
 
-    int cost = bridge.getRandom(Constants.MAX_DICE);
+    int cost = bridge.getRandom(Constants.MAX_DICE, "Rocket fired by " + player.getName() + " at " + attacked.getName());
 
     //account for 0 base
     cost++;
@@ -273,4 +272,3 @@ class BattleState implements Serializable
   public BattleTracker m_battleTracker = new BattleTracker();
   public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
 }
-

@@ -39,7 +39,7 @@ import games.strategy.engine.transcript.Transcript;
  * @version 1.0
  *
  *  Not for actual use, suitable for testing.
- *  Never returns messages, but can get random and implements changes 
+ *  Never returns messages, but can get random and implements changes
  *  immediately.
  */
 public class TestDelegateBridge implements DelegateBridge
@@ -47,104 +47,87 @@ public class TestDelegateBridge implements DelegateBridge
   GameData m_data;
   PlayerID m_id;
   String m_stepName = "no name specified";
-	
+
   Random m_rand = new Random(System.currentTimeMillis());
-	
+
   /** Creates new TestDelegateBridge */
-  public TestDelegateBridge(GameData data, PlayerID id) 
+  public TestDelegateBridge(GameData data, PlayerID id)
   {
     m_data = data;
     m_id = id;
   }
-	
+
   /**
    * Delegates should not use random data that comes from any other source.
    */
-  public int getRandom(int max) {
-    return m_rand.nextInt(max);
-  }	
-	
-  public int[] getRandom(int max, int count) {
-    int[] r = new int[count];
-    for(int i = 0; i < count; i++)
-    {
-      r[i] = getRandom(max);
-    }
-    return r;
-  }
-	
-  public int getRandom(int max, PlayerID player1, PlayerID player2)
-  {
+  public int getRandom(int max, String annotation) {
     return m_rand.nextInt(max);
   }
 
-  public int[] getRandomArray(int max, int count, 
-                            PlayerID player1, PlayerID player2)
-  {
+  public int[] getRandom(int max, int count, String annotation) {
     int[] r = new int[count];
     for(int i = 0; i < count; i++)
     {
-      r[i] = getRandom(max);
+      r[i] = getRandom(max, annotation);
     }
     return r;
   }
-
 
   /**
    * Changing the player has the effect of commiting the current transaction.
    * Player is initialized to the player specified in the xml data.
    */
-  public void setPlayerID(PlayerID aPlayer) 
+  public void setPlayerID(PlayerID aPlayer)
   {
     m_id = aPlayer;
-		
-  }	
+
+  }
 
   public boolean inTransaction() {
     return false;
   }
-	
-  public PlayerID getPlayerID() { 
+
+  public PlayerID getPlayerID() {
     return m_id;
   }
-	
+
   public void addChange(Change aChange) {
     aChange.perform(m_data);
   }
-	
+
   public void commit() {
   }
-	
+
   public void startTransaction() {
   }
-	
+
   /**
    * Messages are sent to the current player
    */
   public void sendMessageNoResponse(Message message) {
   }
-  
+
   /**
    * Messages are sent to the current player
    */
   public Message sendMessage(Message message) {
     return null;
   }
-	
+
   public void rollback() {
   }
-	
+
   /**
    * Sends a message to the given player.
    */
-  public void sendMessageNoResponse(Message message, PlayerID player) 
+  public void sendMessageNoResponse(Message message, PlayerID player)
   {
   }
 
   /**
    * Sends a message to the given player.
    */
-  public Message sendMessage(Message message, PlayerID player) 
+  public Message sendMessage(Message message, PlayerID player)
   {
     return null;
   }
@@ -153,15 +136,15 @@ public class TestDelegateBridge implements DelegateBridge
   {
     m_stepName = name;
   }
-	
+
   /**
    * Returns the current step name
    */
-  public String getStepName() 
+  public String getStepName()
   {
     return m_stepName;
   }
-		
+
   /**
    * Get the games transcript.
    */
@@ -169,5 +152,5 @@ public class TestDelegateBridge implements DelegateBridge
   {
     return new Transcript(new DummyMessenger());
   }
-	
+
 }

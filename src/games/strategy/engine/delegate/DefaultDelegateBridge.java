@@ -100,7 +100,7 @@ public class DefaultDelegateBridge implements DelegateBridge
    * All delegates should use random data that comes from both players
    * so that neither player cheats.
    */
-  public int getRandom(int max)
+  public int getRandom(int max, String annotation)
   {
     // Start the seeding operation and get the key
     startRandomGen(max);
@@ -115,7 +115,7 @@ public class DefaultDelegateBridge implements DelegateBridge
   /**
    * Delegates should not use random data that comes from any other source.
    */
-  public int[] getRandom(int max, int count)
+  public int[] getRandom(int max, int count, String annotation)
   {
     // Start the seeding operation and get the key
     startRandomGen(max);

@@ -71,17 +71,17 @@ public class FlagIconImageFactory
 
 		//TODO
 		//put these io one image
-		Image japanese = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/jap.gif"));
-		Image japaneseSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/jap_small.gif"));
-		Image british = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/uk.gif"));
-		Image britishSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/uk_small.gif"));
-		Image american = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/us.gif"));
-		Image americanSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/us_small.gif"));
-		Image german = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/ger.gif"));
-		Image germanSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/ger_small.gif"));
-		Image russian = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/rus.gif"));
-		Image russianSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/rus_small.gif"));
-		Image neutralSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/neutral_small.gif"));
+		Image japanese = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/jap.gif"));
+		Image japaneseSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/jap_small.gif"));
+		Image british = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/uk.gif"));
+		Image britishSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/uk_small.gif"));
+		Image american = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/us.gif"));
+		Image americanSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/us_small.gif"));
+		Image german = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/ger.gif"));
+		Image germanSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/ger_small.gif"));
+		Image russian = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/rus.gif"));
+		Image russianSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/rus_small.gif"));
+		Image neutralSmall = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource("images/flags/neutral_small.gif"));
 
 		MediaTracker tracker = new MediaTracker(observer);
 		tracker.addImage(japanese, 1);

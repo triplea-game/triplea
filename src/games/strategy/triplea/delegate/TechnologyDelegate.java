@@ -78,7 +78,7 @@ public class TechnologyDelegate implements SaveableDelegate
       return new StringMessage("Not enough money to pay for that many tech rolls", true);
 
     chargeForTechRolls(techRolls);
-    int[] random = m_bridge.getRandom(Constants.MAX_DICE, techRolls);
+    int[] random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, m_player.getName() + " rolling for tech.");
     int techHits = getTechHits(random);
 
     Collection advances = getTechAdvances(techHits);
@@ -153,7 +153,7 @@ public class TechnologyDelegate implements SaveableDelegate
 
     Collection newAdvances = new ArrayList(hits);
 
-    int random[] = m_bridge.getRandom(Constants.MAX_DICE, hits);
+    int random[] = m_bridge.getRandom(Constants.MAX_DICE, hits, m_player.getName() + " rolling to see what tech advances are aquired");
     for(int i = 0; i < random.length; i++)
     {
       int index = random[i] % available.size();

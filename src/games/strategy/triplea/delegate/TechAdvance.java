@@ -63,6 +63,7 @@ public abstract class TechAdvance implements java.io.Serializable
 	}
 
 	public abstract String getName();
+    public abstract String getShortName();
 	public abstract void perform(PlayerID id, DelegateBridge bridge, GameData data);
 
 	public boolean equals(Object o)
@@ -99,6 +100,11 @@ class SuperSubsAdvance extends TechAdvance
 		return "Super subs";
 	}
 
+    public String getShortName()
+    {
+        return "ss";
+    }
+
 	public void perform(PlayerID id, DelegateBridge bridge, GameData data)
 	{}
 }
@@ -109,6 +115,12 @@ class HeavyBomberAdvance extends TechAdvance
 	{
 		return "Heavy Bomber";
 	}
+
+    public String getShortName()
+    {
+        return "hb";
+    }
+
 
 	public void perform(PlayerID id, DelegateBridge bridge, GameData data)
 	{}
@@ -121,6 +133,12 @@ class IndustrialTechnologyAdvance extends TechAdvance
 	{
 		return "Industrial Technology";
 	}
+
+    public String getShortName()
+    {
+        return "it";
+    }
+
 
 	public void perform(PlayerID id, DelegateBridge bridge, GameData data)
 	{
@@ -137,6 +155,12 @@ class JetPowerAdvance extends TechAdvance
 		return "Jet Power";
 	}
 
+    public String getShortName()
+    {
+        return "jp";
+    }
+
+
 	public void perform(PlayerID id, DelegateBridge bridge, GameData data)
 	{	}
 
@@ -149,6 +173,12 @@ class RocketsAdvance extends TechAdvance
 		return "Rockets Advance";
 	}
 
+    public String getShortName()
+    {
+        return "ra";
+    }
+
+
 	public void perform(PlayerID id, DelegateBridge bridge, GameData data)
 	{	}
 
@@ -160,6 +190,13 @@ class LongRangeAircraftAdvance extends TechAdvance
 	{
 		return "Long Range Aircraft";
 	}
+
+    public String getShortName()
+    {
+        return "lr";
+    }
+
+
 
 	public void perform(PlayerID id, DelegateBridge bridge, GameData data)
 	{}

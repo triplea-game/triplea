@@ -55,6 +55,7 @@ public class ImageScrollerSmallView extends JComponent
     try
     {
       Util.ensureImageLoaded(image, this);
+      setDoubleBuffered(false);
     } catch(InterruptedException ie)
     {
       ie.printStackTrace();

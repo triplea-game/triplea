@@ -70,6 +70,7 @@ public class TripleAFrame extends JFrame
   public TripleAFrame(IGame game, Set players) throws IOException
   {
     super("TripleA");
+    TaskTimer total = new TaskTimer("Loading game");
 
     setIconImage(GameRunner.getGameIcon(this));
 
@@ -87,20 +88,16 @@ public class TripleAFrame extends JFrame
 
     createMenuBar();
 
-    System.out.print("Loading unit images");
-    long now = System.currentTimeMillis();
-    UnitIconImageFactory.instance().load(this);
-    System.out.println(" done:" + (((double) System.currentTimeMillis() - now) / 1000.0) + "s");;
+    TerritoryData.getInstance().verify(m_data);
 
-    System.out.print("Loading flag images");
-    now = System.currentTimeMillis();
-    FlagIconImageFactory.instance().load(this);
-    System.out.println(" done:" + (((double) System.currentTimeMillis() - now) / 1000.0) + "s");
 
-    System.out.print("Loading maps");
-    now = System.currentTimeMillis();
+
+    TaskTimer loadMaps = new TaskTimer("Loading maps");
     MapImage.getInstance().loadMaps(m_data);
+    loadMaps.done();
 
+    TaskTimer loadFlags = new TaskTimer("Loading flag images");
+    FlagIconImageFactory.instance().load(this);
     Image small = MapImage.getInstance().getSmallMapImage();
     m_smallView = new MapPanelSmallView(small);
 
@@ -108,7 +105,9 @@ public class TripleAFrame extends JFrame
     m_mapPanel = new MapPanel(large,m_data, m_smallView);
     m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
 
-    System.out.println(" done:" + (((double) System.currentTimeMillis() - now) / 1000.0) + "s");
+    loadFlags.done();
+
+
 
     //link the small and large images
     new ImageScrollControl(m_mapPanel, m_smallView);
@@ -120,6 +119,7 @@ public class TripleAFrame extends JFrame
     southPanel.add(m_message, BorderLayout.CENTER);
     m_message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     southPanel.add(m_step, BorderLayout.EAST);
+    southPanel.add(new MemoryMonitorLabel(), BorderLayout.WEST);
     m_step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
 
@@ -157,7 +157,7 @@ public class TripleAFrame extends JFrame
     mainPanel.add(rightHandSide, BorderLayout.EAST);
 
     this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-
+    total.done();
 
   }
 

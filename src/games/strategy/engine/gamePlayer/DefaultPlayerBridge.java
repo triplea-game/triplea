@@ -20,33 +20,28 @@
 
 package games.strategy.engine.gamePlayer;
 
-import java.util.*;
-
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.IGame;
 import games.strategy.engine.message.Message;
 
 /**
  * Default implementation of PlayerBridge.
  *
  * @author  Sean Bridges
- * @version 1.0
  *
  */
 public class DefaultPlayerBridge implements PlayerBridge
 {
 
 	private final IGame m_game;
-	private final GamePlayer m_player;
 	private String m_currentStep;
 	private String m_currentDelegate;
 
 	/** Creates new DefaultPlayerBridge */
-    public DefaultPlayerBridge(IGame aGame, GamePlayer aPlayer)
+    public DefaultPlayerBridge(IGame aGame)
 	{
-		m_player = aPlayer;
 		m_game = aGame;
 		m_game.addGameStepListener(m_gameStepListener);
     }

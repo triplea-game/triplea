@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import java.util.*;
 
 public class UndoableMovesPanel extends JPanel
 {
@@ -56,6 +57,10 @@ public class UndoableMovesPanel extends JPanel
         JPanel items = new JPanel();
 
         items.setLayout(new BoxLayout(items, BoxLayout.Y_AXIS));
+
+        //we want the newest move at the top
+        m_moves = new ArrayList(m_moves);
+        Collections.reverse(m_moves);
         Iterator iter = m_moves.iterator();
 
         if(iter.hasNext())

@@ -145,6 +145,7 @@ public class PlacePanel extends ActionPanel
       if(!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer()))
           return;
 
+      //get the units that can be placed on this territory.
       Collection units = getCurrentPlayer().getUnits().getUnits();
       if(territory.isWater())
           units = Match.getMatches(units, Matches.UnitIsSea);

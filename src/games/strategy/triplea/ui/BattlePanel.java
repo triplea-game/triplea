@@ -189,7 +189,7 @@ public class BattlePanel extends ActionPanel
     //if no units died, then wait, since the user hasnt had a chance to
     //see the roll
     boolean waitFOrUserInput = !m_parent.playing(message.getPlayer()) || message.getAll() || message.getUnits().isEmpty();
-    m_battleDisplay.casualtyNoticicationMessage( message, waitFOrUserInput);
+    m_battleDisplay.casualtyNotificationMessage( message, waitFOrUserInput);
   }
 
   public SelectCasualtyMessage getCasualties(SelectCasualtyQueryMessage msg)

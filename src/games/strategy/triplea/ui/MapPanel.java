@@ -45,21 +45,15 @@ import java.io.*;
  */
 public class MapPanel extends ImageScrollerLargeView
 {
-  private final static String CENTERS_FILENAME = "centers.txt";
-  private final static String POLYGONS_FILENAME = "polygons.txt";
-  private final static String PLACE_FILENAME = "place.txt";
 
-  private Map m_centers = new HashMap(); //maps Territory -> point
-  private Map m_place = new HashMap(); //maps Territory -> collection of points
-  private SortedSet m_polygonTerritories = new TreeSet(); //collection of PollygonTerritories
   private java.util.List m_mapSelectionListeners = new ArrayList();
 
   private final GameData m_data;
   private Territory m_currentTerritory; //the territory that the mouse is currently over
-                                              //could be null
+                                        //could be null
   private MapPanelSmallView m_smallView;
 
-  //current image we are displaying, could be null
+  //current route we are displaying, could be null
   private Route m_route;
 
 
@@ -68,16 +62,12 @@ public class MapPanel extends ImageScrollerLargeView
       IOException
   {
       super(image);
+      setDoubleBuffered(false);
       m_smallView = smallImage;
       m_data = data;
       data.addTerritoryListener(TERRITORY_LISTENER);
 
-      initPolygons();
-      initCenters();
-      initPlacement();
 
-      checkTerritories();
-      m_smallView.resetOffScreen();
       initTerritories();
 
 
@@ -85,32 +75,18 @@ public class MapPanel extends ImageScrollerLargeView
       this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
   }
 
-  private void initCenters() throws IOException
-  {
-    URL centers = TripleAFrame.class.getResource(CENTERS_FILENAME);
-    InputStream stream = centers.openStream();
-    Map tempCenters = new PointFileReaderWriter().readOneToOne(stream);
-    Iterator iter = tempCenters.keySet().iterator();
-    while(iter.hasNext())
-    {
-      String name = (String) iter.next();
-      Territory terr = m_data.getMap().getTerritory(name);
-      if(terr == null)
-        throw new IllegalStateException("Territory in centers file could not be found in game data. Territory name <" + name + ">");
-      m_centers.put(terr, tempCenters.get(name));
-    }
-  }
+
 
   public void centerOn(Territory territory)
   {
     if(territory == null)
       return;
 
-    Point p = (Point) m_centers.get(territory);
+    Point p =TerritoryData.getInstance().getCenter(territory);
 
     //when centering dont want the map to wrap around,
     //eg if centering on hawaii
-    super.setTopLeftNoWrap(p.x - (getWidth()/2), p.y- (getHeight()/2));
+    super.setTopLeft(p.x - (getWidth()/2), p.y- (getHeight()/2));
   }
 
   /**
@@ -127,94 +103,6 @@ public class MapPanel extends ImageScrollerLargeView
     }
   }
 
-  private void initPlacement() throws IOException
-  {
-    URL centers = TripleAFrame.class.getResource(PLACE_FILENAME);
-    InputStream stream = centers.openStream();
-    Map tempPlace = new PointFileReaderWriter().readOneToMany(stream);
-    Iterator iter = tempPlace.keySet().iterator();
-    while(iter.hasNext())
-    {
-      String name = (String) iter.next();
-      Territory terr = m_data.getMap().getTerritory(name);
-      if(terr == null)
-        throw new IllegalStateException("Territory in centers file could not be found in game data. Territory name <" + name + ">");
-      m_place.put(terr, tempPlace.get(name));
-    }
-  }
-
-
-  private void initPolygons() throws IOException
-  {
-    BufferedReader reader = null;
-    try
-    {
-      URL polygons = getClass().getResource(POLYGONS_FILENAME);
-      reader = new BufferedReader(new InputStreamReader(polygons.openStream()));
-
-      String current = reader.readLine();
-      while(current != null)
-      {
-        if(current.trim().length() != 0)
-        {
-          PolygonTerritory newPoly = PolygonTerritory.read(current, m_data);
-          if(getPolygon(newPoly.getTerritory()) != null)
-            throw new IllegalStateException("duplicate polygons for territory <" + newPoly.getTerritory().getName() + ">");
-
-          m_polygonTerritories.add(newPoly);
-        }
-        current = reader.readLine();
-      }
-    } finally
-    {
-      if(reader != null)
-        reader.close();
-    }
-  }
-
-  /**
-   * Check that all territories have a center and a polygon.
-   */
-  private void checkTerritories()
-  {
-    StringBuffer errors = new StringBuffer();
-    Iterator territories = m_data.getMap().getTerritories().iterator();
-
-    while(territories.hasNext())
-    {
-      Territory current = (Territory) territories.next();
-      if(getCenter(current) == null)
-        errors.append("No center for <" + current.getName() + ">\n");
-      if(getPolygon(current) == null)
-        errors.append("No polygon for <" + current.getName() + ">\n");
-    }
-    if(errors.length() != 0)
-    {
-      //com.geocities.sbridges_geo.debug.Inspector.inspectAndWait(m_polygonTerritories);
-      System.err.println("Missing data in centers or polygons file");
-      System.err.println(errors);
-      System.exit(0);
-    }
-  }
-
-  private Point getCenter(Territory terr)
-  {
-    return (Point) m_centers.get(terr);
-  }
-
-  private Polygon getPolygon(Territory terr)
-  {
-    Iterator polys = m_polygonTerritories.iterator();
-    while(polys.hasNext() )
-    {
-      PolygonTerritory poly = (PolygonTerritory) polys.next();
-      if(poly.getTerritory().equals(terr))
-      {
-        return poly.getPolygon();
-      }
-    }
-    return null;
-  }
 
   public void addMapSelectionListener(MapSelectionListener listener)
   {
@@ -260,24 +148,20 @@ public class MapPanel extends ImageScrollerLargeView
     else if(x > imageWidth)
       x-= imageWidth;
 
-    Iterator iter = m_polygonTerritories.iterator();
-    while(iter.hasNext() )
-    {
-      PolygonTerritory current = (PolygonTerritory) iter.next();
-      if(current.getPolygon().contains(x,y))
-        return current.getTerritory();
-    }
-    return null;
+      String name = TerritoryData.getInstance().getTerritoryAt(x,y);
+      if(name == null)
+          return null;
+      return m_data.getMap().getTerritory(name);
   }
 
   private void initTerritories()
   {
     clearOffScreen();
-    m_smallView.resetOffScreen();
-    Iterator iter = m_polygonTerritories.iterator();
+
+    Iterator iter = m_data.getMap().getTerritories().iterator();
     while(iter.hasNext())
     {
-      Territory terr = ((PolygonTerritory) iter.next()).getTerritory();
+      Territory terr = (Territory) iter.next();
       updateTerritory(terr);
     }
     drawRoute();
@@ -302,48 +186,95 @@ public class MapPanel extends ImageScrollerLargeView
 
     Territory current = m_route.getStart();
 
-    Point start = (Point) m_centers.get(current);
-    Ellipse2D oval = new Ellipse2D.Double(start.x - 3, start.y - 3, 6,6);
-    graphics.draw(oval);
+    Point currentStart =  TerritoryData.getInstance().getCenter(current);
+
+    Point previousPoint = null;
+    Point currentFinish = null;
+
+    if(m_route.getLength() > 0)
+        currentFinish = TerritoryData.getInstance().getCenter( m_route.at(0));
+
+    Point nextPoint = null;
+    if(m_route.getLength() > 1)
+        nextPoint = TerritoryData.getInstance().getCenter( m_route.at(1));
 
     for(int i = 0; i < m_route.getLength(); i++)
     {
-      Territory next = m_route.at(i);
-      start = (Point) m_centers.get(current);
-      start = new Point(start.x, start.y);
-      Point finish = (Point) m_centers.get(next);
-      finish = new Point(finish.x, finish.y);
+        if(i < m_route.getLength())
+        {
+            Ellipse2D oval = new Ellipse2D.Double(currentStart.x - 3,
+                currentStart.y - 3, 6, 6);
+            graphics.draw(oval);
+        }
 
-      Point nextPoint = null;
-      if(i + 1 != m_route.getLength())
-      {
-          nextPoint = (Point) m_centers.get( m_route.at(i+1));
-          drawCurvedLineSegment(graphics, start.x, start.y, finish.x, finish.y, nextPoint.x, nextPoint.y);
-      }
+        if (nextPoint != null)
+            drawCurvedLineWithNextPoint(graphics, currentStart.x,
+                                        currentStart.y, currentFinish.x,
+                                        currentFinish.y, nextPoint.x,
+                                        nextPoint.y);
+//        else if (previousPoint != null)
+//            drawCurvedLineWithNextPoint(graphics, currentFinish.x,
+//                                        currentFinish.y, currentStart.x,
+//                                        currentStart.y, previousPoint.x,
+//                                        previousPoint.y);
+        else
+            drawLineSegment(graphics, currentStart.x, currentStart.y,
+                            currentFinish.x, currentFinish.y);
+
+      previousPoint = currentStart;
+      currentStart = currentFinish;
+      currentFinish = nextPoint;
+      if(m_route.getLength() > i + 2)
+          nextPoint = TerritoryData.getInstance().getCenter( m_route.at(i + 2 ));
       else
-      {
-          drawLineSegment(graphics, start.x, start.y, finish.x, finish.y);
-      }
+          nextPoint = null;
 
-      current = next;
     }
   }
 
-  private void drawCurvedLineSegment(Graphics2D graphics, int x, int y, int xx, int yy, int xxx, int yyy)
+
+  /**
+   * (x,y) - the first point to draw from
+   * (xx, yy) - the point to draw too
+   * (xxx, yyy) - the next point that the line segment will be drawn to
+   */
+  private void drawCurvedLineWithNextPoint(Graphics2D graphics, int x, int y, int xx, int yy, int xxx, int yyy)
   {
-      final int maxControlLength = 100;
+      final int maxControlLength = 150;
       int controlDiffx = xx - xxx;
-      if( Math.abs(controlDiffx) > maxControlLength)
+      int controlDiffy = yy - yyy;
+
+
+
+      if( Math.abs(controlDiffx) > maxControlLength || Math.abs(controlDiffy) > maxControlLength)
       {
-          controlDiffx = controlDiffx < 0 ?  -maxControlLength : maxControlLength;
+          double ratio = 0.0;
+          try
+          {
+              ratio = Math.abs(controlDiffx / controlDiffy);
+          }
+          catch (ArithmeticException ex)
+          {
+              ratio = 1000;
+          }
+
+          if( Math.abs(controlDiffx) >  Math.abs(controlDiffy))
+          {
+              controlDiffx = controlDiffx < 0 ?  -maxControlLength : maxControlLength;
+              controlDiffy = controlDiffy < 0 ?  (int) (-maxControlLength / ratio) : (int) (maxControlLength / ratio);
+          }
+          else
+          {
+              controlDiffy = controlDiffy < 0 ?  -maxControlLength : maxControlLength;
+              controlDiffx = controlDiffx < 0 ?  (int) (-maxControlLength * ratio) : (int) (maxControlLength * ratio);
+
+          }
+//          controlDiffx = controlDiffx < 0 ?  -maxControlLength : maxControlLength;
+//          controlDiffx *= ration;
+//          controlDiffy = controlDiffy < 0 ? -maxControlLength ; max
+//          controlDiffy *= ratio;
       }
 
-      int controlDiffy = yy - yyy;
-      if (Math.abs(controlDiffy) > maxControlLength)
-      {
-          controlDiffy = controlDiffy < 0 ? -maxControlLength :
-              maxControlLength;
-      }
 
 
       int controlx = xx + controlDiffx;
@@ -351,10 +282,6 @@ public class MapPanel extends ImageScrollerLargeView
 
       QuadCurve2D.Double curve = new QuadCurve2D.Double(x,y,controlx, controly, xx,yy);
       graphics.draw(curve);
-
-      Ellipse2D oval = new Ellipse2D.Double(xx - 3, yy - 3, 6, 6);
-      graphics.draw(oval);
-
   }
 
   //http://www.experts-exchange.com/Programming/Programming_Languages/Java/Q_20627343.html
@@ -409,9 +336,11 @@ public class MapPanel extends ImageScrollerLargeView
 
   private void updateTerritory(Territory terr)
   {
-    getOffscreenGraphics().setColor(Color.white);
+    Graphics graphics = getOffscreenGraphics();
+    graphics.setColor(Color.white);
+    graphics.setFont(MapImage.MAP_FONT);
 
-    Iterator placementPoints = ((Collection) m_place.get(terr)).iterator();
+    Iterator placementPoints = TerritoryData.getInstance().getPlacementPoints(terr).iterator();
     if(placementPoints == null || !placementPoints.hasNext())
       throw new IllegalStateException("No where to palce units");
 
@@ -444,10 +373,10 @@ public class MapPanel extends ImageScrollerLargeView
           }
 
           Image img = UnitIconImageFactory.instance().getImage(current, player, m_data);
-          getOffscreenGraphics().drawImage(img, place.x, place.y, this);
+          graphics.drawImage(img, place.x, place.y, this);
           if(count != 1)
           {
-            getOffscreenGraphics().drawString(String.valueOf(count), place.x + (UnitIconImageFactory.UNIT_ICON_WIDTH / 4), place.y + UnitIconImageFactory.UNIT_ICON_HEIGHT);
+            graphics.drawString(String.valueOf(count), place.x + (UnitIconImageFactory.UNIT_ICON_WIDTH / 4), place.y + UnitIconImageFactory.UNIT_ICON_HEIGHT);
           }
 
            drawUnitOnSmallScreen(player, place);
@@ -460,7 +389,7 @@ public class MapPanel extends ImageScrollerLargeView
 
   private void drawUnitOnSmallScreen(PlayerID player, Point place)
   {
-      double smallLargeRatio = 1 / 9.967; // ((float) m_smallView.getHeight()) / ((float) getHeight());
+      double smallLargeRatio = 1 / 15.0; // ((float) m_smallView.getHeight()) / ((float) getHeight());
 
       Graphics2D smallOffscreen = (Graphics2D) m_smallView.getOffScreenImage().
           getGraphics();
@@ -471,12 +400,10 @@ public class MapPanel extends ImageScrollerLargeView
 
       Ellipse2D oval = new Ellipse2D.Double(place.x * smallLargeRatio - 3,
                                        place.y * smallLargeRatio - 3,
-                                       (UnitIconImageFactory.UNIT_ICON_WIDTH * smallLargeRatio) + 1,
-                                       (UnitIconImageFactory.UNIT_ICON_HEIGHT * smallLargeRatio) + 1);
+                                       4,
+                                       4);
 
       smallOffscreen.fill(oval);
-
-
   }
 
   private MouseListener MOUSE_LISTENER = new MouseAdapter()
@@ -530,7 +457,7 @@ public class MapPanel extends ImageScrollerLargeView
     public void ownerChanged(Territory territory)
     {
       MapImage.getInstance().setOwner(territory, territory.getOwner());
-      m_smallView.resetOffScreen();
+
       initTerritories();
     }
   };

@@ -20,30 +20,30 @@
 
 package games.strategy.triplea.image;
 
-import java.net.URL;
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.image.*;
+import java.util.Iterator;
+import java.util.List;
 
-import games.strategy.util.PointFileReaderWriter;
-import games.strategy.engine.data.*;
+import java.awt.*;
+import java.awt.image.ImageObserver;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.util.*;
+import games.strategy.triplea.ui.TerritoryData;
+import games.strategy.util.NullImageObserver;
 
 /**
- *
- * @author  Sean Bridges
+ * Responsible for drawing countries on the map.
+* Is not responsible for drawing things on top of the map, such as units, routes etc.
  */
 public class MapImage
 {
-  private static final String LOCATION = "countries/location.txt";
+
   private final static String LARGE_IMAGE_FILENAME = "images/largeMap.gif";
-  private final static String SMALL_IMAGE_FILENAME = "images/smallMap.gif";
 
   private static MapImage s_instance;
   private static final ImageObserver s_observer = new NullImageObserver();
-
 
   public static synchronized MapImage getInstance()
   {
@@ -70,17 +70,16 @@ public class MapImage
     }
   }
 
-  //Maps Country name -> Point
-  private Map m_topCorners = new HashMap();
   private Image m_largeMapImage;
   private Image m_smallMapImage;
-  private float m_smallLargeRatio;
+  private double m_smallLargeRatio = 15.0;
+  public static final Font MAP_FONT = new Font("Ariel", Font.BOLD, 12);
 
-  /** Creates a new instance of CountryImage */
-    public MapImage()
+    /** Creates a new instance of CountryImage */
+  public MapImage()
   {
-    initCorners();
-    }
+
+  }
 
 
   public Image getSmallMapImage()
@@ -102,7 +101,6 @@ public class MapImage
   private void loadMaps()
   {
     Image largeFromFile = loadImage(LARGE_IMAGE_FILENAME);
-    Image smallFromFile = loadImage(SMALL_IMAGE_FILENAME);
 
     //create from a component to make screen drawing faster
     //if you create an image from a component then no operations
@@ -111,18 +109,18 @@ public class MapImage
     Frame frame = new Frame();
     frame.addNotify();
     m_largeMapImage = frame.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer));
-    m_smallMapImage = frame.createImage(smallFromFile.getWidth(s_observer), smallFromFile.getHeight(s_observer));
+    m_smallMapImage = frame.createImage( (int) (largeFromFile.getWidth(s_observer) / m_smallLargeRatio),
+                                         (int) ( largeFromFile.getHeight(s_observer) / m_smallLargeRatio));
 
     frame.dispose();
     frame = null;
 
     m_largeMapImage.getGraphics().drawImage(largeFromFile, 0,0,s_observer);
-    m_smallMapImage.getGraphics().drawImage(smallFromFile, 0,0,s_observer);
-
+    m_smallMapImage.getGraphics().drawImage(largeFromFile, 0,0, m_smallMapImage.getWidth(null), m_smallMapImage.getHeight(null), s_observer);
 
     largeFromFile = null;
-    smallFromFile = null;
     System.gc();
+
   }
 
   private void initMaps(GameData data)
@@ -136,82 +134,120 @@ public class MapImage
       PlayerID id = current.getOwner();
 
       if(!current.isWater())
-        setOwner(current, id);
+        setOwnerInternal(current, id);
     }
-  }
 
-  private void initCorners()
-  {
-    try
+
+    //draw the names
+    territories = data.getMap().iterator();
+    while(territories.hasNext())
     {
-      URL centers = MapImage.class.getResource(LOCATION);
-      InputStream stream = centers.openStream();
-      m_topCorners = new PointFileReaderWriter().readOneToOne(stream);
-    } catch(IOException ioe)
-    {
-      System.err.println("Error reading " + LOCATION + "  file");
-      ioe.printStackTrace();
-      System.exit(0);
+      Territory current = (Territory) territories.next();
+      drawTerritoryName(current);
     }
+
+
   }
 
   public void setOwner(Territory territory, PlayerID id)
   {
-    if(territory.isWater())
-      return;
+      setOwnerInternal(territory, id);
 
-    BufferedImage country = TerritoryImageFactory.getInstance().getTerritoryImage(territory,id);
-    String name = territory.getName();
+      drawTerritoryName(territory);
 
-    Point p = (Point) m_topCorners.get(name);
-    if(p == null)
-      throw new IllegalStateException("No top corner could be found for:" + name);
 
-    m_largeMapImage.getGraphics().drawImage(country, p.x, p.y, s_observer);
-
-    if (!territory.isWater())
-    {
-      TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
-      Graphics g = m_largeMapImage.getGraphics();
-      FontMetrics fm = g.getFontMetrics();
-      int x = p.x;
-      int y = p.y;
-
-//			if (ta.getProduction() > 0)
-//				name += " (" + ta.getProduction() + ")";
-
-      x += country.getWidth(s_observer) >> 1;
-      y += country.getHeight(s_observer) >> 1;
-
-      x -= fm.stringWidth(name) >> 1;
-      y += fm.getAscent() >> 1;
-
-      g.drawString(name, x, y);
-
-      if (ta.getProduction() > 0)
-      {
-        String prod = new Integer(ta.getProduction()).toString();
-        x = p.x + ((country.getWidth(s_observer) - fm.stringWidth(prod))>> 1);
-        y += fm.getLeading() + fm.getAscent();
-        g.drawString(prod, x, y);
-      }
-    }
-
-    setOwnerOnSmallMap(territory, id, p);
 
   }
 
-private void setOwnerOnSmallMap(Territory territory, PlayerID id, Point p)
-{
-    BufferedImage country = TerritoryImageFactory.getInstance().getTerritoryImageNoRelief(territory, id);
+  private void setOwnerInternal(Territory territory, PlayerID id)
+  {
+    if(territory.isWater())
+      return;
 
-    int smallHeight = (int) (country.getHeight() / m_smallLargeRatio) + 3;
-    int smallWidth = (int) (country.getWidth() / m_smallLargeRatio) + 3;
 
-    Image small  = country.getScaledInstance(smallWidth, smallHeight , Image.SCALE_FAST);
+    Graphics largeGraphics = m_largeMapImage.getGraphics();
+    largeGraphics.setColor(TerritoryImageFactory.getInstance().getPlayerColour(id));
 
-    Point smallPoint = new Point( (int)( p.x / m_smallLargeRatio), (int) (p.y / m_smallLargeRatio));
-    m_smallMapImage.getGraphics().drawImage(small, smallPoint.x, smallPoint.y,  s_observer);
-}
+    Graphics smallGraphics = m_smallMapImage.getGraphics();
+    smallGraphics.setColor(TerritoryImageFactory.getInstance().getPlayerColour(id));
+
+    List polys = TerritoryData.getInstance().getPolygons(territory);
+    Iterator polyIter = polys.iterator();
+    while (polyIter.hasNext())
+    {
+        Polygon item = (Polygon)polyIter.next();
+        largeGraphics.fillPolygon(item);
+        smallGraphics.fillPolygon(scale(item, m_smallLargeRatio ));
+    }
+
+    Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
+
+
+
+    Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
+    m_largeMapImage.getGraphics().drawImage(reliefImage,dirty.x, dirty.y, s_observer);
+
+//    m_smallMapImage.getGraphics().drawImage(reliefImage,
+//                                            (int)  (dirty.x / m_smallLargeRatio ),
+//                                            (int)  (dirty.y / m_smallLargeRatio ),
+//                                            (int)  (dirty.width / m_smallLargeRatio ),
+//                                            (int)  (dirty.height / m_smallLargeRatio ),
+//                                            s_observer
+//                                            );
+
+
+  }
+
+  /**
+   * Scale the polygon by scale.
+   * returns a new polygon.
+   */
+  private static Polygon scale(Polygon p, double scale)
+  {
+      int[] xpoints = new int[p.npoints];
+      int[] ypoints = new int[p.npoints];
+
+      for(int i = 0; i < p.npoints; i++)
+      {
+          xpoints[i] = (int) (p.xpoints[i] / scale);
+          ypoints[i] = (int) (p.ypoints[i] / scale);
+      }
+
+      return new Polygon(xpoints, ypoints, p.npoints);
+
+  }
+
+
+  private void drawTerritoryName(Territory territory)
+  {
+      if (territory.isWater())
+          return;
+
+      Graphics g = m_largeMapImage.getGraphics();
+      Rectangle bounds = TerritoryData.getInstance().getBoundingRect(territory);
+      g.setFont(MAP_FONT);
+
+      TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+      g.setColor(Color.black);
+      FontMetrics fm = g.getFontMetrics();
+      int x = bounds.x;
+      int y = bounds.y;
+
+      x += (int) bounds.getWidth() >> 1;
+      y += (int) bounds.getHeight() >> 1;
+
+      x -= fm.stringWidth(territory.getName()) >> 1;
+      y += fm.getAscent() >> 1;
+
+      g.drawString(territory.getName(), x, y);
+
+      if (ta.getProduction() > 0)
+      {
+          String prod = new Integer(ta.getProduction()).toString();
+          x = bounds.x + ( ( ( (int) bounds.getWidth()) - fm.stringWidth(prod)) >> 1);
+          y += fm.getLeading() + fm.getAscent();
+          g.drawString(prod, x, y);
+      }
+  }
 
 }

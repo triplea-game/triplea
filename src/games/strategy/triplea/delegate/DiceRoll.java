@@ -20,6 +20,7 @@ import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.engine.delegate.DelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.formatter.*;
 
 /**
  * Used to store information about a dice roll.
@@ -34,9 +35,9 @@ public class DiceRoll implements java.io.Serializable
   private int m_hits;
 
 
-  public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge)
+  public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge, Territory location)
   {
-    int[] random = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits);
+    int[] random = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, "Rolling aa guns in " + location.getName());
     int hits = 0;
     for(int i = 0; i < random.length; i++)
     {
@@ -59,8 +60,10 @@ public class DiceRoll implements java.io.Serializable
                                   PlayerID player,
                                   DelegateBridge bridge)
   {
+    String annotation = player.getName() +  " rolling dice for units " + Formatter.unitsToTextNoOwner(units);
+
     int rollCount = BattleCalculator.getRolls(units, player, defending);
-    int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount);
+    int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
 
     List[] sortedDice = new List[Constants.MAX_DICE];
     for(int i = 0; i < sortedDice.length; i++)

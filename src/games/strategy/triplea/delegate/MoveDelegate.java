@@ -1257,7 +1257,7 @@ private void updateUndoableMoveIndexes()
     //otherwise you could keep undoing and redoing
     //until you got the roll you wanted
     m_currentMove.setCantUndo("Move cannot be undone after AA has fired.");
-    DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge);
+    DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge, territory);
     int hitCount = dice.getHits();
 
     if(hitCount == 0)

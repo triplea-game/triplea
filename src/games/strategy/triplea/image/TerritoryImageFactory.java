@@ -14,7 +14,6 @@ package games.strategy.triplea.image;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,254 +24,184 @@ import java.awt.image.BufferedImage;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.ui.ImageIoCompletionWatcher;
+import games.strategy.triplea.ui.*;
+import java.util.List;
+import java.util.*;
 
 public final class TerritoryImageFactory
 {
+    private final int CACHE_SIZE = 2;
 
-  private Territory m_lastTerritory = null;
-  private Image m_lastImage;
+    private LinkedList m_cahcedTerritories = new LinkedList();
 
-  // one instance in the application
-  private static TerritoryImageFactory s_singletonInstance = new
-      TerritoryImageFactory();
+    // one instance in the application
+    private static TerritoryImageFactory s_singletonInstance = new
+        TerritoryImageFactory();
 
-  // data
-  private Map m_playerColors = new HashMap();
+    // data
+    private Map m_playerColors = new HashMap();
 
-  private GraphicsConfiguration m_localGraphicSystem = null;
-  private BufferedImage m_waterImage = null;
+    private GraphicsConfiguration m_localGraphicSystem = null;
 
-  // return the singleton
-  public static TerritoryImageFactory getInstance()
-  {
-    return s_singletonInstance;
-  }
-
-  // returns the water image
-  public BufferedImage getWaterImage()
-  {
-    return m_waterImage;
-  }
-
-  public BufferedImage getTerritoryImageNoRelief(Territory place, PlayerID owner)
-  {
-    return  createTerritoryImage(place, owner, false);
-  }
-
-
-  // returns an image of the desired territory with the desired owner
-  public BufferedImage getTerritoryImage(Territory place, PlayerID owner)
-  {
-    return  createTerritoryImage(place, owner, true);
-  }
-
-  // constructor
-  private TerritoryImageFactory()
-  {
-
-    // local graphic system is used to create compatible bitmaps
-    m_localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
-        .getDefaultScreenDevice()
-        .getDefaultConfiguration();
-
-    // cache the player colors
-    m_playerColors.put("British", new Color(153, 102, 0));
-    m_playerColors.put("Americans", new Color(102, 102, 0));
-    m_playerColors.put("Russians", new Color(153, 51, 0));
-    m_playerColors.put("Germans", new Color(119, 119, 119));
-    m_playerColors.put("Japanese", new Color(255, 153, 0));
-    m_playerColors.put(PlayerID.NULL_PLAYERID.getName(), new Color(204, 153, 51));
-
-    // the water image can be pre-loaded
-    m_waterImage = createWaterImage();
-  }
-
-
-
-  // dynamically create a new territory image
-  private BufferedImage createTerritoryImage(Territory place, PlayerID owner, boolean addReliefHighlights)
-  {
-    // get the base image and the color to apply
-    Image baseImage = getBaseImage(place);
-    Color newColor = getPlayerColour(owner);
-
-    // Get the bounds. Note that the  source image should be completely loaded
-    // before calling this method so its OK to use null observers.
-    int width = baseImage.getWidth(null);
-    int height = baseImage.getHeight(null);
-
-    // Create a buffered image in the most optimal format, which allows a
-    //    fast blit to the screen.
-    BufferedImage workImage = m_localGraphicSystem.createCompatibleImage(width,
-        height,
-        Transparency.BITMASK);
-
-    // fill in the workImage with the desired color
-    Graphics2D gc = (Graphics2D) workImage.getGraphics();
-    gc.setColor(newColor);
-    gc.fillRect(0, 0, width, height);
-
-    // setup our composite
-    Composite prevComposite = gc.getComposite();
-    gc.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
-
-    // draw the image, and check for the possibility it doesn't complete now
-    ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
-    boolean drawComplete = gc.drawImage(baseImage, 0, 0, watcher);
-
-    // use the watcher to for the draw to finish
-    if (!drawComplete)
+    // return the singleton
+    public static TerritoryImageFactory getInstance()
     {
-      try
-      {
-        watcher.runUntilOpComplete();
-        watcher.join();
-      }
-      catch (InterruptedException ie)
-      {
-        return null;
-      }
+        return s_singletonInstance;
     }
 
-    // cleanup
-    gc.setComposite(prevComposite);
-    if(addReliefHighlights)
-        gc.drawImage(getReliefImage(place), 0,0, watcher );
-
-    // done
-    return workImage;
-
-  }
-
-  public Color getPlayerColour(PlayerID owner)
-  {
-      Color newColor = (Color) m_playerColors.get(owner.getName());
-      return newColor;
-  }
-
-  // dynamically a buffered version of the water image
-  private BufferedImage createWaterImage()
-  {
-
-    // get the base image
-    Image baseImage = loadImageCompletely(this.getClass().getResource(
-        "countries/water.gif"));
-
-    // Get the bounds. Note that the  source image should be completely loaded
-    // before calling this method so its OK to use null observers.
-    int width = baseImage.getWidth(null);
-    int height = baseImage.getHeight(null);
-
-    // Create a buffered image in the most optimal format, which allows a
-    //    fast blit to the screen.
-    BufferedImage workImage = m_localGraphicSystem.createCompatibleImage(width,
-        height,
-        Transparency.BITMASK);
-
-    // draw the image, and check for the possibility it doesn't complete now
-    ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
-    boolean drawComplete = workImage.getGraphics().drawImage(baseImage, 0, 0,
-        watcher);
-
-    // use the watcher to for the draw to finish
-    if (!drawComplete)
+    // returns an image of the desired territory with the desired owner
+    public BufferedImage getTerritoryImage(Territory place, PlayerID owner)
     {
-      try
-      {
-        watcher.runUntilOpComplete();
-        watcher.join();
-      }
-      catch (InterruptedException ie)
-      {
-        return null;
-      }
+        return createTerritoryImage(place, owner, true);
+    }
+
+    // constructor
+    private TerritoryImageFactory()
+    {
+
+        // local graphic system is used to create compatible bitmaps
+        m_localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
+            .getDefaultScreenDevice()
+            .getDefaultConfiguration();
+
+        // cache the player colors
+        m_playerColors.put("British", new Color(153, 102, 0));
+        m_playerColors.put("Americans", new Color(102, 102, 0));
+        m_playerColors.put("Russians", new Color(153, 51, 0));
+        m_playerColors.put("Germans", new Color(119, 119, 119));
+        m_playerColors.put("Japanese", new Color(255, 153, 0));
+        m_playerColors.put(PlayerID.NULL_PLAYERID.getName(), new Color(204, 153, 51));
+
+
+
+    }
+
+    // dynamically create a new territory image
+    private BufferedImage createTerritoryImage(Territory place, PlayerID owner, boolean addReliefHighlights)
+    {
+       Rectangle bounding = TerritoryData.getInstance().getBoundingRect(place);
+
+       BufferedImage workImage = m_localGraphicSystem.createCompatibleImage(bounding.width,
+           bounding.height,
+           Transparency.BITMASK);
+
+
+       List polys = TerritoryData.getInstance().getPolygons(place);
+       Iterator iter = polys.iterator();
+       Graphics graphics = workImage.getGraphics();
+       if(place.isWater())
+       {
+           graphics.setColor(Color.blue);
+       }
+       else
+       {
+           graphics.setColor(getPlayerColour(place.getOwner()));
+       }
+
+       while (iter.hasNext())
+       {
+           Polygon polygon = (Polygon)iter.next();
+           //use a copy
+           polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+
+           polygon.translate(-bounding.x, -bounding.y);
+           graphics.fillPolygon(polygon);
+       }
+       if(!place.isWater())
+           graphics.drawImage(getReliefImage(place), 0,0, new ImageIoCompletionWatcher());
+
+
+       return workImage;
+    }
+
+    public Color getPlayerColour(PlayerID owner)
+    {
+        Color newColor = (Color) m_playerColors.get(owner.getName());
+        return newColor;
     }
 
 
-
-    // done
-    return workImage;
-
-  }
-
-  private Image getReliefImage(Territory place)
-  {
-
-    String key = place.getName() + "_relief";
-
-
-    // load it on the fly
-
-    URL file = this.getClass().getResource("countries/new/"
-                                           + key.replace(' ', '_')
-                                           + ".png");
-    Image baseImage = loadImageCompletely(file);
-
-
-    // done!
-    return baseImage;
-
-  }
-
-
-
-  // returns the base territory image that the others are derived from
-  private Image getBaseImage(Territory place)
-  {
-
-    if(place == m_lastTerritory)
-        return m_lastImage;
-
-    String key = place.getName();
-
-
-    // load it on the fly
-
-    URL file = this.getClass().getResource("countries/"
-                                           + key.replace(' ', '_')
-                                           + ".gif");
-    Image baseImage = loadImageCompletely(file);
-
-    m_lastImage = baseImage;
-    m_lastTerritory = place;
-
-    // done!
-    return baseImage;
-
-  }
-
-  // loads an image and blocks until complete
-  private Image loadImageCompletely(URL imageLocation)
-  {
-
-    // name?
-    int pathLen = imageLocation.getFile().lastIndexOf("/");
-
-    // use the local toolkit to load the image
-    Toolkit tk = Toolkit.getDefaultToolkit();
-    Image img = tk.createImage(imageLocation);
-
-    // force it to be loaded *now*
-    ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
-    boolean isLoaded = tk.prepareImage(img, -1, -1, watcher);
-
-    // use the watcher to block while loading
-    if (!isLoaded)
+    public Image getReliefImage(Territory place)
     {
-      try
+        //is it in the cache?
+        for(int i = 0; i < m_cahcedTerritories.size(); i++)
+        {
+            ImageName current = (ImageName) m_cahcedTerritories.get(i);
+            if(current.name.equals(place.getName()))
+            {
+                return current.image;
+            }
+        }
+
+      String key = place.getName() + "_relief";
+      // load it on the fly
+
+      String fileName = "images/countries/" + key.replace(' ', '_')  + ".png";
+      URL file = this.getClass().getResource(fileName);
+      if(file == null)
+          throw new IllegalArgumentException("not found:" + fileName);
+      Image baseImage = loadImageCompletely(file);
+
+      //put it in the cache
+      m_cahcedTerritories.add(0, new ImageName(place.getName(), baseImage));
+      while(m_cahcedTerritories.size() > CACHE_SIZE)
       {
-        watcher.runUntilOpComplete();
-        watcher.join();
+          m_cahcedTerritories.remove(CACHE_SIZE);
       }
-      catch (InterruptedException ie)
-      {
-        return null;
-      }
+
+
+      // done!
+      return baseImage;
+
     }
 
-    // done!
-    return img;
 
-  }
+    private Image loadImageCompletely(URL imageLocation)
+    {
 
+      // name?
+      int pathLen = imageLocation.getFile().lastIndexOf("/");
+
+      // use the local toolkit to load the image
+      Toolkit tk = Toolkit.getDefaultToolkit();
+      Image img = tk.createImage(imageLocation);
+
+      // force it to be loaded *now*
+      ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
+      boolean isLoaded = tk.prepareImage(img, -1, -1, watcher);
+
+      // use the watcher to block while loading
+      if (!isLoaded)
+      {
+        try
+        {
+          watcher.runUntilOpComplete();
+          watcher.join();
+        }
+        catch (InterruptedException ie)
+        {
+          return null;
+        }
+      }
+
+      // done!
+      return img;
+
+    }
+
+
+
+
+}
+
+class ImageName
+{
+    public ImageName(String name, Image image)
+    {
+        this.name = name;
+        this.image = image;
+    }
+
+    public final String name;
+    public final Image image;
 }

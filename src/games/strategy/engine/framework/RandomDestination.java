@@ -12,19 +12,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * GamePlayer.java
- *
- * Created on October 27, 2001, 5:15 PM
- */
 
 package games.strategy.engine.framework;
 
-import java.util.*;
-
 import javax.crypto.SecretKey;
 
-import games.strategy.engine.data.PlayerID;
+
 import games.strategy.engine.message.*;
 import games.strategy.util.RandomGen;
 import games.strategy.util.RandomTriplet;

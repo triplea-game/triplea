@@ -56,7 +56,7 @@ public class DiceImageFactory
   {
     for(int i = 1; i <= 6; i++)
     {
-      Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT);
+      Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
 
       Graphics graphics = canvas.getGraphics();
 

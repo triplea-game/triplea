@@ -48,17 +48,18 @@ public class Util
 
 	public static Image copyImage(Image img, JComponent comp)
 	{
-		Image copy = createImage(img.getWidth(comp), img.getHeight(comp));
+		Image copy = createImage(img.getWidth(comp), img.getHeight(comp), false);
 		copy.getGraphics().drawImage(img, 0,0, comp);
 		return copy;
 	}
 
 
-	public static Image createImage(int width, int height)
+	public static BufferedImage createImage(int width, int height, boolean needAlpha)
 	{
-
-
-    return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        if(needAlpha)
+            return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        else
+            return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     //the code below should be the correct way to get graphics, but it is makes the ui quite
     //unresponsive when drawing the map (as seen when updating the map for different routes
     //in combat move phase)

@@ -22,23 +22,12 @@ import games.strategy.ui.*;
 
 public class MapPanelSmallView extends ImageScrollerSmallView
 {
-    //the image with the current map
-    private final Image m_mapImage;
 
     public  MapPanelSmallView(Image img)
     {
-        super(Util.createImage(img.getWidth(null), img.getHeight(null)));
-        m_mapImage = img;
+        super(img);
+
     }
 
-    public Image getMapImage()
-    {
-        return m_mapImage;
-    }
-
-    public void resetOffScreen()
-    {
-        getOffScreenImage().getGraphics().drawImage(m_mapImage, 0,0, this);
-    }
 
 }

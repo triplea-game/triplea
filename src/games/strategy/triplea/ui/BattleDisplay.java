@@ -92,7 +92,7 @@ public class BattleDisplay extends JPanel
   }
 
 
-  public void casualtyNoticicationMessage(CasualtyNotificationMessage message, boolean waitFOrUserInput)
+  public void casualtyNotificationMessage(CasualtyNotificationMessage message, boolean waitFOrUserInput)
   {
     setStep(message);
     m_casualties.setNotication(message);
@@ -229,8 +229,6 @@ public class BattleDisplay extends JPanel
 
   }
 
-
-
   private void initLayout()
   {
 
@@ -312,15 +310,9 @@ public class BattleDisplay extends JPanel
   {
     final int WIDTH = 100;
     final int HEIGHT = 100;
-    Image finalImage = Util.createImage(WIDTH, HEIGHT);
+    Image finalImage = Util.createImage(WIDTH, HEIGHT, true);
 
-    Image territory;
-    if(m_location.isWater())
-      //territory = games.strategy.triplea.image.MapImage.getWaterImage();
-      territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getWaterImage();
-    else
-      //territory = games.strategy.triplea.image.MapImage.getTerritoryImage(m_location, m_defender);
-      territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getTerritoryImage(m_location, m_defender);
+    Image territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getTerritoryImage(m_location, m_defender);
 
     finalImage.getGraphics().drawImage(territory,  0, 0, WIDTH, HEIGHT, this);
 

@@ -79,8 +79,8 @@ public interface DelegateBridge
   /**
    * Delegates should not use random data that comes from any other source.
    */
-  public int getRandom(int max);
-  public int[] getRandom(int max, int count);
+  public int getRandom(int max, String annotation);
+  public int[] getRandom(int max, int count, String annotation);
 
 
   /**

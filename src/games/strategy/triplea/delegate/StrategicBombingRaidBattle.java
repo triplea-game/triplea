@@ -119,7 +119,7 @@ public class StrategicBombingRaidBattle implements Battle
     if(hasAA)
       fireAA(bridge);
 
-    int cost = conductRaid(bridge);
+    int cost = conductRaid(bridge, m_attacker, m_defender, m_battleSite);
 
     m_tracker.removeBattle(this);
 
@@ -132,7 +132,7 @@ public class StrategicBombingRaidBattle implements Battle
 
   private void fireAA(DelegateBridge bridge)
   {
-    DiceRoll dice = DiceRoll.rollAA(m_units.size(),bridge);
+    DiceRoll dice = DiceRoll.rollAA(m_units.size(),bridge, m_battleSite);
     removeAAHits(bridge, dice);
   }
 
@@ -168,10 +168,11 @@ public class StrategicBombingRaidBattle implements Battle
    *
    * @return how many ipcs the raid cost
    */
-  private int conductRaid(DelegateBridge bridge)
+  private int conductRaid(DelegateBridge bridge, PlayerID attacker, PlayerID defender, Territory location)
   {
     int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
-    int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount);
+    String annotation = attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in " + location.getName();
+    int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
     int cost = 0;
 
     for(int i = 0; i < dice.length; i++)

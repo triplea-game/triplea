@@ -231,13 +231,14 @@ public class PolygonGrabber extends JFrame
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
         }
 
     }
 
     public static void main(String[] args)
     {
-        String fileName = "/home/sgb/dev/triplea/baseMap3500X2000.gif";
+        String fileName = "/home/sgb/dev/triplea/baseMap.gif";
         PolygonGrabber grabber = new PolygonGrabber(fileName);
         grabber.setSize(600,550);
         grabber.show();
@@ -309,8 +310,6 @@ public class PolygonGrabber extends JFrame
         while (centersiter.hasNext()) {
             Map.Entry item = (Map.Entry)centersiter.next();
             Point p = new Point((Point) item.getValue());
-            p.x *= 1.5;
-            p.y *= 1.5;
 
             Iterator currentIter = m_current.iterator();
             while (currentIter.hasNext()) {

@@ -23,11 +23,9 @@ package games.strategy.triplea.image;
 import java.io.*;
 import java.util.*;
 import java.awt.*;
-import java.awt.image.*;
 import games.strategy.triplea.Constants;
 import javax.swing.ImageIcon;
 
-import games.strategy.util.*;
 import games.strategy.ui.Util;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.PlayerID;
@@ -35,6 +33,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.engine.data.GameData;
+import java.net.*;
 
 /**
  *
@@ -56,23 +55,21 @@ public class UnitIconImageFactory
     return DelegateFinder.techDelegate(data).getTechTracker();
   }
 
-  boolean m_loaded = false;
   /**
    * Width of all icons.
    */
-  public static final int UNIT_ICON_WIDTH = 30;
+  public static final int UNIT_ICON_WIDTH = 48;
   /**
    * Height of all icons.
    **/
-  public static final int UNIT_ICON_HEIGHT = 28;
+  public static final int UNIT_ICON_HEIGHT = 48;
 
 
-
-  private static final String FILE_NAME = "images/units2.gif";
+  private static final String FILE_NAME_BASE = "images/units/";
 
   //maps Point -> image
   private final Map m_images = new HashMap();
-  //maps Point -> ICon
+  //maps Point -> Icon
   private final Map m_icons = new HashMap();
 
   /** Creates new IconImageFactory */
@@ -83,7 +80,7 @@ public class UnitIconImageFactory
 
   private void copyImage(int row, int column, Component comp, Image source)
   {
-    Image image = Util.createImage(UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT);
+    Image image = Util.createImage(UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT, false);
     Graphics g = image.getGraphics();
     int sx = column * UNIT_ICON_WIDTH;
     int sy = row * UNIT_ICON_HEIGHT;
@@ -92,189 +89,121 @@ public class UnitIconImageFactory
 
   }
 
-  /**
-   * Loads the images, does not return till all images
-   * have finished loading.
-   */
-  public synchronized void load(Component observer) throws IOException
-  {
-    if(m_loaded)
-      throw new IllegalStateException("Already loaded");
-
-    Image image = Toolkit.getDefaultToolkit().getImage( this.getClass().getResource(FILE_NAME));
-    //wait for the image to load
-    MediaTracker tracker = new MediaTracker(observer);
-    tracker.addImage(image, 1);
-    try
-    {
-      tracker.waitForAll();
-      } catch(InterruptedException e)
-      {
-        e.printStackTrace(System.out);
-        System.out.println("try again");
-        load(observer);
-      }
-
-
-      for (int column = 0; column <= 12; column++)
-      {
-          copyImage(0, column, observer, image);
-      }
-
-      m_loaded = true;
-  }
-
-  private void ensurePlayerLoaded(PlayerID player)
-  {
-    int row = getPlayerRow(player);
-    if(m_images.get(new Point(row, 0)) == null)
-    {
-      Point sourcePoint = new Point(0, 0);
-      Point destPoint = new Point(row, 0);
-      Image src = (Image) m_images.get(sourcePoint);
-      javax.swing.JComponent obs = new javax.swing.JLabel();
-      while(src != null)
-      {
-          Image image = Util.createImage(UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT);
-          Graphics g = image.getGraphics();
-          g.drawImage(FlagIconImageFactory.instance().getSmallFlag(player),0,0, obs);
-          g.drawImage(src,0,0,  obs);
-          m_images.put(new Point(destPoint), image);
-
-          destPoint.y++;
-
-          sourcePoint.y++;
-          src = (Image) m_images.get(sourcePoint);
-      }
-    }
-  }
-
   public Image getImage(UnitType type, PlayerID player, GameData data)
   {
-    if(m_loaded == false)
-      throw new IllegalArgumentException("Images not loaded");
+      String baseName = getBaseImageName(type, player, data);
+      String fullName = baseName + player.getName();
+      if(m_images.containsKey(fullName))
+      {
+          return (Image) m_images.get(fullName);
+      }
 
-    ensurePlayerLoaded(player);
+      Image baseImage = getBaseImage(baseName, player);
 
-    Image img = (Image) m_images.get(getImageLocation(type, player, data));
-    if(img == null)
-      throw new IllegalArgumentException("Image not found. Type:" + type.getName() + " Player:" + player + " point:" + getImageLocation(type, player, data));
-    return img;
+//      javax.swing.JComponent obs = new javax.swing.JLabel();
+//      Image playerImage = Util.createImage(UNIT_ICON_WIDTH, UNIT_ICON_HEIGHT);
+//      Graphics g = playerImage.getGraphics();
+//      Image flagImage = FlagIconImageFactory.instance().getSmallFlag(player);
+//      int x = UNIT_ICON_WIDTH - flagImage.getWidth(null);
+//      g.drawImage(flagImage ,x,0, obs);
+//      g.drawImage(baseImage,0,0,  obs);
+
+//      m_images.put(fullName, playerImage);
+//      return playerImage;
+
+      m_images.put(fullName, baseImage);
+      return baseImage;
+
+
+  }
+
+  private Image getBaseImage(String baseImageName, PlayerID id)
+  {
+      String fileName = FILE_NAME_BASE + id.getName() + "/"  + baseImageName  + ".png";
+      URL url = this.getClass().getResource(fileName);
+      if(url == null)
+          throw new IllegalStateException("Cant load :"+ baseImageName + " looking in:" + fileName);
+
+      Image image = Toolkit.getDefaultToolkit().getImage(url);
+      try
+      {
+          Util.ensureImageLoaded(image, new java.awt.Label());
+      }
+      catch (InterruptedException ex)
+      {
+          ex.printStackTrace();
+      }
+      return image;
+
   }
 
   public ImageIcon getIcon(UnitType type, PlayerID player, GameData data)
   {
-    if(m_loaded == false)
-      throw new IllegalArgumentException("Images not loaded");
+      String baseName = getBaseImageName(type, player, data);
+      String fullName = baseName + player.getName();
+      if(m_icons.containsKey(fullName))
+      {
+          return (ImageIcon) m_icons.get(fullName);
+      }
 
-    Point location =getImageLocation(type, player, data);
-    ImageIcon icon = (ImageIcon) m_icons.get(location);
-
-    if(icon == null)
-    {
       Image img = getImage(type, player, data);
-      icon = new ImageIcon(img);
-      m_icons.put(location, icon);
-    }
+      ImageIcon icon = new ImageIcon(img);
+      m_icons.put(fullName, icon);
 
-    return icon;
+      return icon;
   }
 
-  public Point getImageLocation(UnitType type, PlayerID id, GameData data)
+  public String getBaseImageName(UnitType type, PlayerID id, GameData data)
   {
-    int row = 0;
-    int column = 0;
+      StringBuffer name = new StringBuffer(32);
+      name.append(type.getName());
 
-    row = getPlayerRow(id);
+      if (type.getName().equals(Constants.FIGHTER_TYPE))
+      {
+          if (getTechTracker(data).hasLongRangeAir(id))
+          {
+              name.append("_lr");
+          }
+          if (getTechTracker(data).hasJetFighter(id))
+          {
+              name.append("_jp");
+          }
+      }
 
-    //find the type
-    if(type.getName().equals(Constants.INFANTRY_TYPE))
-    {
-      column = 1;
-    }
-    else if(type.getName().equals(Constants.ARMOUR_TYPE))
-    {
-      column = 0;
+      if (type.getName().equals(Constants.BOMBER_TYPE))
+      {
+          if (getTechTracker(data).hasLongRangeAir(id))
+          {
+              name.append("_lr");
+          }
 
-    }
-    else if(type.getName().equals(Constants.FIGHTER_TYPE))
-    {
-      column = 2;
+          if (getTechTracker(data).hasHeavyBomber(id))
+          {
+              name.append("_hb");
+          }
+      }
 
+      if (type.getName().equals(Constants.SUBMARINE_TYPE))
+      {
+          if (getTechTracker(data).hasSuperSubs(id))
+          {
+              name.append("_ss");
+          }
+          if (getTechTracker(data).hasRocket(id))
+          {}
+      }
 
-      boolean longRange = getTechTracker(data).hasLongRangeAir(id);
-      boolean jetFIghter = getTechTracker(data).hasJetFighter(id);
+      if (type.getName().equals(Constants.FACTORY_TYPE))
+      {
 
-      if(jetFIghter)
-        column = 10;
-    }
-    else if(type.getName().equals(Constants.BOMBER_TYPE))
-    {
-      column = 3;
+          if (getTechTracker(data).hasIndustrialTechnology(id))
+          {
+              name.append("_it");
+          }
+      }
 
-      boolean longRange = getTechTracker(data).hasLongRangeAir(id);
-      boolean heavyBomber = getTechTracker(data).hasHeavyBomber(id);
-
-      if(longRange)
-        column = 9;
-
-
-    }
-    else if(type.getName().equals(Constants.TRANSPORT_TYPE))
-    {
-      column = 5;
-    }
-    else if(type.getName().equals(Constants.SUBMARINE_TYPE))
-    {
-      column = 8;
-    }
-    else if(type.getName().equals(Constants.CARRIER_TYPE))
-    {
-      column = 4;
-    }
-    else if(type.getName().equals(Constants.BATTLESHIP_TYPE))
-    {
-      column = 6;
-    }
-    else if(type.getName().equals(Constants.AAGUN_TYPE))
-    {
-      column = 7;
-
-      if(getTechTracker(data).hasRocket(id))
-      {}
-    }
-    else if(type.getName().equals(Constants.FACTORY_TYPE))
-    {
-      column = 11;
-
-      if(getTechTracker(data).hasIndustrialTechnology(id))
-      {}
-    }
-    else
-      throw new IllegalArgumentException("unrecognized type:" + type);
-
-    return new Point(row, column);
+      return name.toString();
   }
 
-private int getPlayerRow(PlayerID id) throws IllegalArgumentException
-{
-    int row;
-    //find the player
-    if(id.getName().equals(Constants.RUSSIANS))
-      row = 1;
-    else if(id.getName().equals(Constants.GERMANS))
-      row = 2;
-    else if(id.getName().equals(Constants.BRITISH))
-      row = 3;
-    else if(id.getName().equals(Constants.JAPANESE))
-      row = 4;
-    else if(id.getName().equals(Constants.AMERICANS))
-      row = 5;
-    else if(id == PlayerID.NULL_PLAYERID)
-      row = 0;
-    else
-      throw new IllegalArgumentException("player not recognized:" + id);
-    return row;
-}
 
 }
