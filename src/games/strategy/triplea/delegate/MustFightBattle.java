@@ -1205,7 +1205,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win");
         showCasualties(bridge);
         
-        checkDefendingPlanesCanLand(bridge);
+        checkDefendingPlanesCanLand(bridge, m_defender);
         
     }
     
@@ -1213,7 +1213,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      * The defender has won, but there may be defending fighters that cant stay
      * in the sea zone due to insufficient carriers.
      */
-    private void checkDefendingPlanesCanLand(DelegateBridge bridge)
+    private void checkDefendingPlanesCanLand(DelegateBridge bridge, PlayerID defender)
     {
         
         //not water, not relevant.
@@ -1245,30 +1245,48 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 defendingAir.remove(currentUnit);
             }
         }
-        
-        //now defending air has what cant stay, is there a place we can go?
-        //check for an island in this sea zone
-        Set neighbors = m_data.getMap().getNeighbors(m_battleSite);
-        Iterator neighborsIter = neighbors.iterator();
-        while (neighborsIter.hasNext())
+
+	// Get land territories where air can land
+	Set neighbors = m_data.getMap().getNeighbors(m_battleSite);
+        CompositeMatch alliedLandTerritories = new CompositeMatchAnd(Matches.TerritoryIsLand, Matches.isTerritoryAllied(m_defender, m_data));
+        Collection canLandHere = Match.getMatches(neighbors, alliedLandTerritories);
+
+	// If fourth edition we need an adjacent land, while classic requires
+	// an island inside the seazone.
+        if (isFourthEdition() && canLandHere.size() > 0)
         {
-            Territory currentTerritory = (Territory) neighborsIter.next();
-            //we cant land them on water
-            if (currentTerritory.isWater())
-                continue;
-            //is it safe to move the planes there?
-            if (!m_data.getAllianceTracker().isAllied(m_defender, currentTerritory.getOwner()))
-                continue;
-            
+
+	  Territory territory = null;
+	  if (canLandHere.size() > 1) {
+            LandAirQueryMessage query = new LandAirQueryMessage(canLandHere, "Choose territory to land planes in");
+
+            LandAirMessage response = (LandAirMessage) bridge.sendMessage(query, m_defender);
+            territory = response.getTerritory();
+	  } else {
+            territory = (Territory)canLandHere.iterator().next();
+	  }
+	  bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToText(defendingAir) + " forced to land in " + territory.getName(), defendingAir);
+	  Change change = ChangeFactory.moveUnits(m_battleSite, territory, defendingAir);
+	  bridge.addChange(change);
+	  return;
+	}
+        else if (canLandHere.size() > 0) { // 2nd edition       
+	  //now defending air has what cant stay, is there a place we can go?
+	  //check for an island in this sea zone
+	  Iterator neighborsIter = canLandHere.iterator();
+	  while (neighborsIter.hasNext())
+	  {
+            Territory currentTerritory = (Territory) neighborsIter.next();            
             //only one neighbor, its an island.
             if (m_data.getMap().getNeighbors(currentTerritory).size() == 1)
             {
-                bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToText(defendingAir) + " forced to land in " + currentTerritory.getName(), defendingAir);
-                Change change = ChangeFactory.moveUnits(m_battleSite, currentTerritory, defendingAir);
-                bridge.addChange(change);
-                return;
+	      bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToText(defendingAir) + " forced to land in " + currentTerritory.getName(), defendingAir);
+	      Change change = ChangeFactory.moveUnits(m_battleSite, currentTerritory, defendingAir);
+	      bridge.addChange(change);
+	      return;
             }
-        }
+	  }
+	}
         
         //no were to go, they must die
         bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToText(defendingAir) + " could not land and were killed", defendingAir);
