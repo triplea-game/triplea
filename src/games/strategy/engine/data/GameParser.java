@@ -706,7 +706,7 @@ public class GameParser
 			else
 				owner = getPlayerID(current, "owner", false);
 			int quantity = Integer.parseInt(current.getAttribute("quantity"));
-			territory.getUnits().addAllUnits(type.createWithDeterministicID(quantity, owner));
+			territory.getUnits().addAllUnits(type.create(quantity, owner));
 		}
 	}
 
@@ -719,7 +719,7 @@ public class GameParser
 			PlayerID player = getPlayerID(current, "player", true);
 			UnitType type = getUnitType(current, "unitType", true);
 			int quantity = Integer.parseInt(current.getAttribute("quantity"));
-			player.getUnits().addAllUnits(type.createWithDeterministicID(quantity, player));
+			player.getUnits().addAllUnits(type.create(quantity, player));
 		}
 	}
 

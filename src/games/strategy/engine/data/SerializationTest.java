@@ -83,7 +83,7 @@ public class SerializationTest extends TestCase
 
 		PlayerID readID = (PlayerID) serialize(id);
 		PlayerID localID = m_dataSink.getPlayerList().getPlayerID("chretian");
-		assertTrue(localID == readID);
+		assertTrue(localID != readID);
 	}
 
 	public void testWriteUnitType() throws Exception
@@ -92,7 +92,7 @@ public class SerializationTest extends TestCase
 
 		Object read = serialize(orig);
 		Object local = m_dataSink.getUnitTypeList().getUnitType("inf");
-		assertTrue(local == read);
+		assertTrue(local != read);
 	}
 
 	public void testWriteTerritory() throws Exception
@@ -101,7 +101,7 @@ public class SerializationTest extends TestCase
 
 		Object read = serialize(orig);
 		Object local = m_dataSink.getMap().getTerritory("canada");
-		assertTrue(local == read);
+		assertTrue(local != read);
 	}
 
 	public void testWriteProductionRulte() throws Exception
@@ -111,7 +111,7 @@ public class SerializationTest extends TestCase
 
 		Object read = serialize(orig);
 		Object local = m_dataSink.getProductionRuleList().getProductionRule("infForSilver");
-		assertTrue(local == read);
+		assertTrue(local != read);
 	}
 
 	public void testWriteUnit() throws Exception
