@@ -205,7 +205,7 @@ public class BattlePanel extends ActionPanel
     public BombardmentSelectMessage getBombardment(BombardmentQueryMessage msg)
     {
         BombardComponent comp = new BombardComponent(msg);
-        int option = JOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION);
+        JOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION);
 
 	return new BombardmentSelectMessage(comp.getSelection());
     }

@@ -28,10 +28,10 @@ public class FileOpen
 
 	// Error messages
 	
-	private final String ERR_MSG_1 = "The file could not be found!";
-	private final String ERR_MSG_2 = "I/O Error occured with this file!\nTry loading it again.";
+	//private final String ERR_MSG_1 = "The file could not be found!";
+	//private final String ERR_MSG_2 = "I/O Error occured with this file!\nTry loading it again.";
 	private final String ERR_MSG_3 = "Warning! Could not load the file!";
-	private final String ERR_MSG_4 = "Warning! This is an empty file or the first line is NULL.";
+	//private final String ERR_MSG_4 = "Warning! This is an empty file or the first line is NULL.";
 	
 	private File file = null;
 

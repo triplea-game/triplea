@@ -34,6 +34,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.engine.message.Message;
 
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.attatchments.*;
 
@@ -45,7 +46,7 @@ import games.strategy.triplea.attatchments.*;
 public class MovePanel extends ActionPanel
 {
     private JLabel m_actionLabel = new JLabel();
-    private MoveMessage m_moveMessage;
+    private MoveDescription m_moveMessage;
     private Territory m_firstSelectedTerritory;
     private PlayerBridge m_bridge;
 
@@ -97,15 +98,17 @@ public class MovePanel extends ActionPanel
         SwingUtilities.invokeLater(REFRESH);
     }
 
+    private IMoveDelegate getDelegate()
+    {
+        return (IMoveDelegate) m_bridge.getRemote();
+    }
+    
     private void updateMoves()
     {
-        MoveCountReplyMessage moves = (MoveCountReplyMessage) m_bridge.
-            sendMessage(new MoveCountRequestMessage());
-
-        m_undableMovesPanel.setMoves(moves.getMoves());
+        m_undableMovesPanel.setMoves(getDelegate().getMovesMade());
     }
 
-    public MoveMessage waitForMove(PlayerBridge bridge)
+    public MoveDescription waitForMove(PlayerBridge bridge)
     {
         setUp(bridge);
         updateMoves();
@@ -194,14 +197,8 @@ public class MovePanel extends ActionPanel
         return Collections.EMPTY_LIST;
 
       //find out what they are transporting
-      Message msg = new MustMoveWithQuery(transports, route.getStart());
-      Message response = m_bridge.sendMessage(msg);
-
-      if (! (response instanceof MustMoveWithReply))
-          throw new IllegalStateException("Message of wrong type:" + response);
-
-      MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
-
+      MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getStart(), transports);
+      
       List candidateTransports = new ArrayList();
 
       //get the transports with units that we own
@@ -287,14 +284,8 @@ public class MovePanel extends ActionPanel
 
     private Collection getUnitsChosen(Collection units, Route route)
     {
-        Message msg = new MustMoveWithQuery(units, route.getStart());
-        Message response = m_bridge.sendMessage(msg);
-
-        if (! (response instanceof MustMoveWithReply))
-            throw new IllegalStateException("Message of wrong type:" + response);
-
-        MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
-
+        
+        MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getStart(), units);
 
         //unit movement counts when the unit is loaded
         //this fixes the case where a unit is loaded and then unloaded in the same turn
@@ -468,13 +459,7 @@ public class MovePanel extends ActionPanel
         return transports;
 
       //find out what they are transporting
-      Message msg = new MustMoveWithQuery(transports, route.getEnd());
-      Message response = m_bridge.sendMessage(msg);
-
-      if (! (response instanceof MustMoveWithReply))
-        throw new IllegalStateException("Message of wrong type:" + response);
-
-      MustMoveWithReply mustMoveWith = (MustMoveWithReply) response;
+      MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getEnd(), transports);
 
       List candidateTransports = new ArrayList();
 
@@ -585,7 +570,7 @@ public class MovePanel extends ActionPanel
                       transports = getTransportsToLoad(route);
                     }
 
-                    MoveMessage message = new MoveMessage(units, route, transports);
+                    MoveDescription message = new MoveDescription(units, route, transports);
                     m_moveMessage = message;
                     m_firstSelectedTerritory = null;
                     m_forced = null;
@@ -631,12 +616,11 @@ public class MovePanel extends ActionPanel
         getMap().setRoute(null);
 
         //undo the move
-        StringMessage results = (StringMessage) m_bridge.sendMessage(new
-            UndoMoveMessage(moveIndex));
-        if (results != null && results.isError())
+        String error = getDelegate().undoMove(moveIndex);
+        if (error != null)
         {
             JOptionPane.showMessageDialog(getTopLevelAncestor(),
-                                          results.getMessage(),
+                                          error,
                                           "Could not undo move",
                                           JOptionPane.ERROR_MESSAGE);
         }

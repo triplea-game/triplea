@@ -84,7 +84,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     public void initialize(String name, String displayName)
     {
-
         m_name = name;
         m_displayName = displayName;
     }
@@ -99,7 +98,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
      */
     private void firstRun()
     {
-
         m_firstRun = false;
         //check every territory
         Iterator allTerritories = m_data.getMap().getTerritories().iterator();
@@ -151,7 +149,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
      */
     public void start(DelegateBridge aBridge, GameData gameData)
     {
-
         if (aBridge.getStepName().endsWith("NonCombatMove"))
             m_nonCombat = true;
         else if (aBridge.getStepName().endsWith("CombatMove"))
@@ -186,43 +183,29 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
      */
     public Message sendMessage(Message aMessage)
     {
-
-        if (aMessage instanceof MoveMessage)
-            return move((MoveMessage) aMessage, m_player);
-        else if (aMessage instanceof MustMoveAirQueryMessage)
-            return new TerritoryCollectionMessage(getTerritoriesWhereAirCantLand());
-        else if (aMessage instanceof MustMoveWithQuery)
-            return mustMoveWith((MustMoveWithQuery) aMessage);
-        else if (aMessage instanceof UndoMoveMessage)
-            return undoMove((UndoMoveMessage) aMessage);
-        else if (aMessage instanceof MoveCountRequestMessage)
-            return getMoveCount();
-        else
-            throw new IllegalArgumentException("Move delegate received message of wrong type:" + aMessage);
+        throw new IllegalArgumentException("We dont do messages anymore");
     }
-
-    private MoveCountReplyMessage getMoveCount()
+   
+    public List getMovesMade()
     {
-
-        return new MoveCountReplyMessage(m_movesToUndo);
-
+        return new ArrayList(m_movesToUndo);
     }
-
-    private StringMessage undoMove(UndoMoveMessage message)
+    
+    public String undoMove(final int moveIndex)
     {
 
         if (m_movesToUndo.isEmpty())
-            return new StringMessage("No moves to undo", true);
-        if (message.getIndex() >= m_movesToUndo.size())
-            return new StringMessage("Undo move index out of range", true);
+            return "No moves to undo";
+        if (moveIndex >= m_movesToUndo.size())
+            return "Undo move index out of range";
 
-        UndoableMove moveToUndo = (UndoableMove) m_movesToUndo.get(message.getIndex());
+        UndoableMove moveToUndo = (UndoableMove) m_movesToUndo.get(moveIndex);
 
         if (!moveToUndo.getcanUndo())
-            return new StringMessage(moveToUndo.getReasonCantUndo(), true);
+            return moveToUndo.getReasonCantUndo();
 
         moveToUndo.undo(m_bridge, m_alreadyMoved, m_data);
-        m_movesToUndo.remove(message.getIndex());
+        m_movesToUndo.remove(moveIndex);
         updateUndoableMoveIndexes();
 
         return null;
@@ -237,10 +220,9 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
     }
 
-    private MustMoveWithReply mustMoveWith(MustMoveWithQuery query)
+    public MustMoveWithDetails getMustMoveWith(Territory start, Collection units)
     {
-
-        return new MustMoveWithReply(mustMoveWith(query.getUnits(), query.getStart()), movementLeft(query.getUnits()));
+        return new MustMoveWithDetails(mustMoveWith(units, start), movementLeft(units));
     }
 
     private IntegerMap movementLeft(Collection units)
@@ -366,32 +348,33 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return canCarry;
     }
 
-    private StringMessage move(MoveMessage message, PlayerID id)
+    public String move(Collection units, Route route)
     {
-
-        Route route = message.getRoute();
-        Collection units = message.getUnits();
-
-        String error = validateMove(units, route, id, message.getTransportsToLoad());
+        return move(units, route, Collections.EMPTY_LIST);
+    }
+    
+    public String move(Collection units, Route route, Collection transportsThatCanBeLoaded)
+    {
+        String error = validateMove(units, route, m_player, transportsThatCanBeLoaded);
         if (error != null)
-            return new StringMessage(error, true);
+            return error;
         //do the move
         m_currentMove = new UndoableMove(m_data, m_alreadyMoved, units, route);
 
         String transcriptText = Formatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);
-        m_bridge.getHistoryWriter().setRenderingData(message);
+        MoveDescription description = new MoveDescription(units, route);
+        m_bridge.getHistoryWriter().setRenderingData(description);
 
-        StringMessage rVal = moveUnits(units, route, id, message.getTransportsToLoad());
-        if (!rVal.isError())
-        {
-            m_currentMove.markEndMovement(m_alreadyMoved);
-            m_currentMove.initializeDependencies(m_movesToUndo);
-            m_movesToUndo.add(m_currentMove);
-            updateUndoableMoveIndexes();
-        }
-        m_currentMove = null;
-        return rVal;
+        moveUnits(units, route, m_player, transportsThatCanBeLoaded);
+
+ 	    m_currentMove.markEndMovement(m_alreadyMoved);
+        m_currentMove.initializeDependencies(m_movesToUndo);
+        m_movesToUndo.add(m_currentMove);
+        updateUndoableMoveIndexes();
+ 
+
+        return null;
     }
 
     private String validateMove(Collection units, Route route, PlayerID player, Collection transportsToLoad)
@@ -921,7 +904,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     /**
      * We assume that the move is valid
      */
-    private StringMessage moveUnits(Collection units, Route route, PlayerID id, Collection transportsToLoad)
+    private void moveUnits(Collection units, Route route, PlayerID id, Collection transportsToLoad)
     {
 
         //mark movement
@@ -1007,7 +990,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         m_currentMove.setDescription(Formatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName());
 
-        return new StringMessage("done");
+
     }
 
     private Collection getBestNeutralEmptyCollection(Territory start, Territory end, int maxDistance)
@@ -1364,7 +1347,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
     };
 
-    private Collection getTerritoriesWhereAirCantLand()
+    public Collection getTerritoriesWhereAirCantLand()
     {
 
         Collection cantLand = new ArrayList();

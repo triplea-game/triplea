@@ -95,7 +95,7 @@ public class AI
 			PlayerID p = (PlayerID)i1.next();
 			if(!m_allies.isAllied(m_id, p))
 			{
-				Territory temp = TerritoryAttatchment.getCapital(p, m_data);
+				//Territory temp = TerritoryAttatchment.getCapital(p, m_data);
 				//c.add(temp);
 				c.addAll(m.getTerritoriesOwnedBy(p));
 			}
@@ -134,7 +134,7 @@ public class AI
 						if(dist != -1 && dist < best && (m_allies.isAllied(m_id,t3.getOwner()) || m_id == t3.getOwner()))
 						{
 							Route r = m.getLandRoute(t1, t3);
-							MoveMessage m1 = new MoveMessage(u, r);
+							MoveDescription m1 = new MoveDescription(u, r);
 							if(r != null && u.size()>=1)
 							{
 								moves.add(m1);
@@ -201,7 +201,7 @@ public class AI
 							if(!m_allies.isAllied(r.at(q).getOwner(), m_id))
 								trap = false;
 						}
-						MoveMessage cow = new MoveMessage(newu, r);
+						MoveDescription cow = new MoveDescription(newu, r);
 						
 						if(trap && newu.size() >= 1 && newu.size() <= temp.size())
 						{
@@ -235,7 +235,7 @@ public class AI
 		Iterator cow = bestmoves.iterator();
 		while(cow.hasNext())
 		{
-			MoveMessage temp = (MoveMessage)cow.next();
+		    //MoveDescription temp = (MoveDescription)cow.next();
 			//System.out.println("Move " + temp.toString());
 		}
 		//if(bestmoves == null || bestmoves.isEmpty())
@@ -425,7 +425,7 @@ public class AI
 	
 	public Collection allocatecasualitieshelper(Collection a, int x)
 	{
-		int y = 0;
+		//int y = 0;
 		Unit min = null;
 		Collection c = new ArrayList();
 		if(x <= 0)
@@ -468,12 +468,12 @@ public class AI
 	
 	public IntegerMap selectPurchases()
 	{
-		int y = 0;
+		//int y = 0;
 		UnitType bestattack = null;
 		UnitType bestdefense = null;
 		double likebestattack = 0;
 		double likebestdefense = 0;
-		double likecurrent = 0;
+		
 		IntegerMap result = new IntegerMap();
 		
 		Iterator i = m_data.getUnitTypeList().iterator();
@@ -492,7 +492,7 @@ public class AI
 				{
 					Resource r = m_data.getResourceList().getResource("IPCs");
 					int cost = pr.getCosts().getInt(r);
-					likecurrent = attack / cost;
+					
 					if((1.0 *attack) / (1.0 *cost) > likebestattack)
 					{
 						likebestattack = (1.0 *attack) / cost;
@@ -547,7 +547,7 @@ public class AI
 
 	public Collection selectCasualities(Collection a, int x)
 	{
-		int y = 0;
+		//int y = 0;
 		Unit min = null;
 		if(x <= 0)
 		{

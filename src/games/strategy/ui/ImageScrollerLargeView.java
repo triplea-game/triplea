@@ -351,7 +351,7 @@ public class ImageScrollerLargeView extends JComponent
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 			int height = getHeight();
-			int width = getWidth();
+			//int width = getWidth();
 
 			if(m_edge == NONE)
 			  m_insideCount = 0;

@@ -232,12 +232,16 @@ public class TroxAIPlayer implements GamePlayer
   	Iterator iter2 = moves.iterator();
   	while(iter2.hasNext())
   	{
-  		MoveMessage m = (MoveMessage)iter2.next();
+  	    MoveDescription m = (MoveDescription)iter2.next();
   		if(m.getRoute() != null && m.getRoute().getLength() >= 1)
   		{
   			//System.out.println(""+m.toString());
   			//System.out.println("Attacking " + m.getRoute().getEnd().toString() + " Owned by " + m.getRoute().getEnd().getOwner().toString());
-  			StringMessage response = (StringMessage) m_bridge.sendMessage(m);
+  			IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
+  			String error = moveDel.move(m.getUnits(), m.getRoute());
+  			if(error != null)
+  			    break;
+  		    
 		    /*if(response!= null && response.isError())
     		{
     			 System.out.println(""+m.getRoute().toString() + " length " + m.getRoute().getLength() + " Units " + m.getUnits().size());

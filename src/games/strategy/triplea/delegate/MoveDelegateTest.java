@@ -88,12 +88,12 @@ public class MoveDelegateTest extends DelegateTest
     Route route = new Route();
     route.setStart(egypt);
     route.add(eastAfrica);
-    MoveMessage msg = new MoveMessage( armour.create(10, british), route);
+    String results = m_delegate.move( armour.create(10, british), route);
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(2, eastAfrica.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    assertError( results);
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(2, eastAfrica.getUnits().size());
@@ -106,12 +106,13 @@ public class MoveDelegateTest extends DelegateTest
     Route route = new Route();
     route.setStart(algeria);
     route.add(libya);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    
 
     assertEquals(1, algeria.getUnits().size());
     assertEquals(0, libya.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError( results);
 
     assertEquals(1, algeria.getUnits().size());
     assertEquals(0, libya.getUnits().size());
@@ -124,12 +125,13 @@ public class MoveDelegateTest extends DelegateTest
     Route route = new Route();
     route.setStart(egypt);
     route.add(eastAfrica);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(2, eastAfrica.getUnits().size());
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid( results);
 
     assertEquals(16, egypt.getUnits().size());
     assertEquals(4, eastAfrica.getUnits().size());
@@ -145,12 +147,13 @@ public class MoveDelegateTest extends DelegateTest
     route.add(eastAfrica);
     route.add(kenya);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(0, kenya.getUnits().size());
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid( results);
 
     assertEquals(16, egypt.getUnits().size());
     assertEquals(2, kenya.getUnits().size());
@@ -165,8 +168,8 @@ public class MoveDelegateTest extends DelegateTest
     route.add(southAtlantic);
     route.add(antarticSea);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid( results);
 
   }
 
@@ -182,12 +185,13 @@ public class MoveDelegateTest extends DelegateTest
     route.add(mozambiqueSeaZone);
     route.add(redSea);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(4, redSea.getUnits().size());
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid( results);
 
     assertEquals(16, egypt.getUnits().size());
     assertEquals(6, redSea.getUnits().size());
@@ -207,12 +211,13 @@ public class MoveDelegateTest extends DelegateTest
     route.add(mozambiqueSeaZone);
 
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(4, redSea.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError( results);
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(4, redSea.getUnits().size());
@@ -231,12 +236,13 @@ public class MoveDelegateTest extends DelegateTest
     route.add(mozambiqueSeaZone);
     route.add(redSea);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(4, redSea.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError( results);
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(4, redSea.getUnits().size());
@@ -251,12 +257,13 @@ public class MoveDelegateTest extends DelegateTest
     //exast movement to force landing
     route.add(eastMediteranean);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(0, eastMediteranean.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError( results);
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(0, eastMediteranean.getUnits().size());
@@ -272,12 +279,13 @@ public class MoveDelegateTest extends DelegateTest
     //exast movement to force landing
     route.add(mozambiqueSeaZone);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(4, redSea.getUnits().size());
     assertEquals(0, mozambiqueSeaZone.getUnits().size());
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid( results);
 
     assertEquals(2, redSea.getUnits().size());
     assertEquals(2, mozambiqueSeaZone.getUnits().size());
@@ -293,12 +301,13 @@ public class MoveDelegateTest extends DelegateTest
     //exast movement to force landing
     route.add(egypt);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(4, redSea.getUnits().size());
     assertEquals(18, egypt.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError( results);
 
     assertEquals(4, redSea.getUnits().size());
     assertEquals(18, egypt.getUnits().size());
@@ -315,12 +324,13 @@ public class MoveDelegateTest extends DelegateTest
     //exast movement to force landing
     route.add(congoSeaZone);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(4,equatorialAfrica.getUnits().size());
     assertEquals(11, congoSeaZone.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError( results);
 
     assertEquals(4,equatorialAfrica.getUnits().size());
     assertEquals(11, congoSeaZone.getUnits().size());
@@ -338,9 +348,9 @@ public class MoveDelegateTest extends DelegateTest
     route.add(redSea);
     route.add(syria);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    assertValid( results);
   }
 
   public void testLandMoveToWaterWithTransportsEmpty()
@@ -352,12 +362,13 @@ public class MoveDelegateTest extends DelegateTest
     //exast movement to force landing
     route.add(redSea);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+
 
     assertEquals(18,egypt.getUnits().size());
     assertEquals(4,redSea.getUnits().size());
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+    assertValid( results);
 
     assertEquals(16,egypt.getUnits().size());
     assertEquals(6,redSea.getUnits().size());
@@ -373,13 +384,15 @@ public class MoveDelegateTest extends DelegateTest
     route.add(libya);
     route.add(algeria);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(1, algeria.getUnits().size());
     assertEquals(libya.getOwner(), japanese);
-
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    
+    assertValid( results);
 
     assertEquals(16, egypt.getUnits().size());
     assertEquals(3, algeria.getUnits().size());
@@ -396,12 +409,13 @@ public class MoveDelegateTest extends DelegateTest
     route.add(westAfrica);
     route.add(algeria);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(4, equatorialAfrica.getUnits().size());
     assertEquals(1, algeria.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError( results);
 
     assertEquals(4, equatorialAfrica.getUnits().size());
     assertEquals(1, algeria.getUnits().size());
@@ -416,14 +430,15 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(4, equatorialAfrica.getUnits().size());
     assertEquals(0, westAfrica.getUnits().size());
     assertEquals(westAfrica.getOwner(), PlayerID.NULL_PLAYERID);
     assertEquals(35, british.getResources().getQuantity(ipcs));
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid( results);
 
     assertEquals(2, equatorialAfrica.getUnits().size());
     assertEquals(2, westAfrica.getUnits().size());
@@ -441,9 +456,9 @@ public class MoveDelegateTest extends DelegateTest
     route.add(algeria);
     route.add(equatorialAfrica);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    assertValid( results);
   }
 
   public void testOverrunNeutralMustStop()
@@ -454,9 +469,9 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    assertValid( results);
 
     map = new IntegerMap();
     map.put(armour, 2);
@@ -464,8 +479,8 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(westAfrica);
     route.add(equatorialAfrica);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError( results);
 
   }
 
@@ -478,12 +493,13 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(eastAfrica);
     route.add(kenya);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(2, eastAfrica.getUnits().size());
     assertEquals(0, kenya.getUnits().size());
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);    
+    assertValid( results);
 
     assertEquals(0, eastAfrica.getUnits().size());
     assertEquals(2, kenya.getUnits().size());
@@ -491,12 +507,13 @@ public class MoveDelegateTest extends DelegateTest
     route = new Route();
     route.setStart(kenya);
     route.add(egypt);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(2, kenya.getUnits().size());
     assertEquals(18, egypt.getUnits().size());
 
-    assertError( (StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);    
+    assertError( results);
 
     assertEquals(2, kenya.getUnits().size());
     assertEquals(18, egypt.getUnits().size());
@@ -511,12 +528,13 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(egypt);
     route.add(equatorialAfrica);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(18, egypt.getUnits().size());
     assertEquals(4, equatorialAfrica.getUnits().size());
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);    
+    assertValid( results);
 
     assertEquals(16, egypt.getUnits().size());
     assertEquals(6, equatorialAfrica.getUnits().size());
@@ -528,12 +546,13 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(equatorialAfrica);
     route.add(egypt);
     route.add(eastAfrica);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
+
 
     assertEquals(6, equatorialAfrica.getUnits().size());
     assertEquals(2, eastAfrica.getUnits().size());
 
-    assertValid( (StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);    
+    assertValid( results);
 
     assertEquals(4, equatorialAfrica.getUnits().size());
     assertEquals(4, eastAfrica.getUnits().size());
@@ -550,17 +569,18 @@ public class MoveDelegateTest extends DelegateTest
     Route route = new Route();
     route.setStart(egypt);
     route.add(redSea);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route,route.getEnd().getUnits().getUnits());
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    
+    String results = m_delegate.move( getUnits(map, route.getStart()), route,route.getEnd().getUnits().getUnits());
+    assertValid(results);
 
     map = new IntegerMap();
     map.put(transport, 2);
     route = new Route();
     route.setStart(redSea);
     route.add(indianOcean);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-
-    assertError((StringMessage)m_delegate.sendMessage(msg));
+    
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
   }
 
   public void testUnitsStayWithTransports()
@@ -570,17 +590,18 @@ public class MoveDelegateTest extends DelegateTest
     Route route = new Route();
     route.setStart(egypt);
     route.add(redSea);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    
+    String results = m_delegate.move( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+    assertValid(results);
 
     map = new IntegerMap();
     map.put(armour, 2);
     route = new Route();
     route.setStart(redSea);
     route.add(indianOcean);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-
-    assertError((StringMessage)m_delegate.sendMessage(msg));
+    
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
   }
 
   public void testUnload()
@@ -591,8 +612,9 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(congoSeaZone);
     route.add(equatorialAfrica);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
+    
   }
 
   public void testUnloadedCantMove()
@@ -603,8 +625,8 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(congoSeaZone);
     route.add(equatorialAfrica);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
 
     map = new IntegerMap();
@@ -616,8 +638,8 @@ public class MoveDelegateTest extends DelegateTest
     route.add(egypt);
 
     //units were unloaded, shouldnt be able to move any more
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
   }
 
   public void testUnloadingTransportsCantMove()
@@ -628,8 +650,8 @@ public class MoveDelegateTest extends DelegateTest
     route.setStart(congoSeaZone);
     route.add(equatorialAfrica);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     map = new IntegerMap();
     map.put(transport, 2);
@@ -638,8 +660,8 @@ public class MoveDelegateTest extends DelegateTest
     route.add(westAfricaSeaZone);
 
     //the transports unloaded so they cant move
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
 
 
   }
@@ -654,8 +676,8 @@ public class MoveDelegateTest extends DelegateTest
     IntegerMap map = new IntegerMap();
     map.put(armour, 1);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+    assertValid(results);
 
     //move two infantry to red sea
     route = new Route();
@@ -665,8 +687,8 @@ public class MoveDelegateTest extends DelegateTest
     map = new IntegerMap();
     map.put(infantry, 2);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+    assertValid(results);
 
     //try to move 1 transport to indian ocean with 1 tank
     route = new Route();
@@ -677,8 +699,8 @@ public class MoveDelegateTest extends DelegateTest
     map.put(armour, 1);
     map.put(transport, 1);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //move the other transport to west compass
     route = new Route();
@@ -689,8 +711,8 @@ public class MoveDelegateTest extends DelegateTest
     map.put(infantry, 2);
     map.put(transport, 1);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
   }
 
   public void testUseTransportsWithLowestMovement()
@@ -704,8 +726,8 @@ public class MoveDelegateTest extends DelegateTest
     map.put(transport, 1);
     map.put(infantry, 2);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //move transport back
     route = new Route();
@@ -716,8 +738,8 @@ public class MoveDelegateTest extends DelegateTest
     map.put(transport, 1);
     map.put(infantry, 2);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //move the other transport south, should
     //figure out that only 1 can move
@@ -730,8 +752,8 @@ public class MoveDelegateTest extends DelegateTest
     map.put(infantry, 2);
     map.put(transport, 1);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
 
   }
@@ -753,8 +775,8 @@ public class MoveDelegateTest extends DelegateTest
     IntegerMap map = new IntegerMap();
     map.put(armour, 2);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
 
   }
 
@@ -769,8 +791,8 @@ public class MoveDelegateTest extends DelegateTest
     IntegerMap map = new IntegerMap();
     map.put(fighter, 2);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
   }
 
   public void testNeutralConquered()
@@ -782,8 +804,9 @@ public class MoveDelegateTest extends DelegateTest
 
     IntegerMap map = new IntegerMap();
     map.put(armour, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
+
     assertTrue(DelegateFinder.battleDelegate(m_data).getBattleTracker().wasConquered(westAfrica));
     assertTrue(!DelegateFinder.battleDelegate(m_data).getBattleTracker().wasBlitzed(westAfrica));
 
@@ -799,15 +822,17 @@ public class MoveDelegateTest extends DelegateTest
     IntegerMap map = new IntegerMap();
     map.put(infantry, 2);
     map.put(transport, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //move again
     route = new Route();
     route.setStart(southAtlantic);
     route.add(angolaSeaZone);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
   }
 
@@ -821,8 +846,9 @@ public class MoveDelegateTest extends DelegateTest
 
     IntegerMap map = new IntegerMap();
     map.put(armour, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //make sure we cant move through it by land
     route = new Route();
@@ -832,8 +858,9 @@ public class MoveDelegateTest extends DelegateTest
 
     map = new IntegerMap();
     map.put(armour, 1);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
 
     //make sure we can still move units to the territory
     route = new Route();
@@ -842,8 +869,9 @@ public class MoveDelegateTest extends DelegateTest
 
     map = new IntegerMap();
     map.put(armour, 1);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
 
     //make sure air can though
@@ -855,8 +883,9 @@ public class MoveDelegateTest extends DelegateTest
 
     map = new IntegerMap();
     map.put(fighter, 3);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
   }
 
   public void testCanBlitzThroughConqueredEnemy()
@@ -868,8 +897,9 @@ public class MoveDelegateTest extends DelegateTest
 
     IntegerMap map = new IntegerMap();
     map.put(infantry, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //make sure we can still blitz through it
     route = new Route();
@@ -879,8 +909,9 @@ public class MoveDelegateTest extends DelegateTest
 
     map = new IntegerMap();
     map.put(armour, 1);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
   }
 
@@ -894,8 +925,9 @@ public class MoveDelegateTest extends DelegateTest
 
     IntegerMap map = new IntegerMap();
     map.put(armour, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //make sure the place cant use it to land
     //the only possibility would be newly conquered south africa
@@ -907,8 +939,9 @@ public class MoveDelegateTest extends DelegateTest
 
     map = new IntegerMap();
     map.put(fighter, 1);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
   }
 
   public void testMoveAndTransportUnload()
@@ -921,8 +954,9 @@ public class MoveDelegateTest extends DelegateTest
     IntegerMap map = new IntegerMap();
     map.put(transport, 1);
     map.put(infantry, 2);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     route = new Route();
     route.setStart(westAfricaSeaZone);
@@ -930,8 +964,9 @@ public class MoveDelegateTest extends DelegateTest
 
     map = new IntegerMap();
     map.put(infantry, 1);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
   }
 
@@ -944,8 +979,9 @@ public class MoveDelegateTest extends DelegateTest
 
     IntegerMap map = new IntegerMap();
     map.put(bomber, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     route = new Route();
     route.setStart(libya);
@@ -954,8 +990,8 @@ public class MoveDelegateTest extends DelegateTest
     //planes cannot leave a battle zone, but the territory was empty so no battle occured
     map = new IntegerMap();
     map.put(bomber, 1);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
   }
 
@@ -969,8 +1005,8 @@ public class MoveDelegateTest extends DelegateTest
 
     IntegerMap map = new IntegerMap();
     map.put(bomber, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
   }
 
   public void testLargeMove()
@@ -985,8 +1021,8 @@ public class MoveDelegateTest extends DelegateTest
     map.put(bomber, 6);
     map.put(fighter, 6);
     map.put(armour, 6);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
   }
 
   public void testAmphibiousAssaultAfterNavalBattle()
@@ -1000,8 +1036,8 @@ public class MoveDelegateTest extends DelegateTest
     map.put(transport, 2);
     map.put(infantry, 4);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //try to unload transports
     route = new Route();
@@ -1011,8 +1047,8 @@ public class MoveDelegateTest extends DelegateTest
     map = new IntegerMap();
     map.put(infantry, 4);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     Battle inBrazil = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(brazil, false);
     Battle inBrazilSea = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(southBrazilSeaZone, false);
@@ -1032,8 +1068,8 @@ public class MoveDelegateTest extends DelegateTest
     map.put(fighter, 3);
     map.put(bomber, 3);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
   }
 
   public void testNonCombatAttack()
@@ -1049,8 +1085,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map.put(armour, 2);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
 
   }
 
@@ -1067,8 +1103,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map.put(armour, 2);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
 
   }
 
@@ -1083,8 +1119,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map.put(armour, 1);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     //go to non combat
     m_bridge.setStepName("BritishNonCombatMove");
@@ -1099,8 +1135,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map.put(armour, 1);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
 
   }
@@ -1119,8 +1155,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map.put(armour, 2);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
 
@@ -1130,8 +1166,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map.clear();
     map.put(aaGun, 1);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
   }
 
   public void testBlitzConqueredNeutralInTwoSteps()
@@ -1145,8 +1181,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map.put(infantry, 1);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
 
@@ -1156,15 +1192,15 @@ public class MoveDelegateTest extends DelegateTest
     map.clear();
     map.put(armour, 1);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     route = new Route();
     route.setStart(westAfrica);
     route.add(algeria);
 
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertError((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertError(results);
   }
 
   public void testBlitzFactory()
@@ -1182,8 +1218,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map.put(infantry, 1);
 
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
 
     BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
@@ -1205,8 +1241,8 @@ public class MoveDelegateTest extends DelegateTest
 
     IntegerMap map = new IntegerMap();
     map.put(fighter, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
   }
 
   public void testAirDifferingRouts()
@@ -1223,8 +1259,8 @@ public class MoveDelegateTest extends DelegateTest
 
     IntegerMap map = new IntegerMap();
     map.put(fighter, 1);
-    MoveMessage msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    String results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
 
     route = new Route();
     route.setStart(congoSeaZone);
@@ -1234,8 +1270,8 @@ public class MoveDelegateTest extends DelegateTest
 
     map = new IntegerMap();
     map.put(fighter, 1);
-    msg = new MoveMessage( getUnits(map, route.getStart()), route);
-    assertValid((StringMessage) m_delegate.sendMessage(msg));
+    results = m_delegate.move( getUnits(map, route.getStart()), route);
+    assertValid(results);
   }
 
   public void testRoute()

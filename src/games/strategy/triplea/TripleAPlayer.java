@@ -202,34 +202,36 @@ public class TripleAPlayer implements GamePlayer
 
     private void move(boolean nonCombat)
     {
-        if (!hasUnitsThatCanMove())
+        if (!hasUnitsThatCanMove(nonCombat))
             return;
 
-        MoveMessage message = m_ui.getMove(m_id, m_bridge, nonCombat);
-        if (message == null)
+        MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat);
+        if (moveDescription == null)
         {
             if (nonCombat)
                 ensureAirCanLand();
             return;
         }
 
-        StringMessage response = (StringMessage) m_bridge.sendMessage(message);
-        if (response != null && response.isError())
-            m_ui.notifyError(response.getMessage());
-        move(nonCombat);
+        IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
+        String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded());
+        
+        if (error != null )
+            m_ui.notifyError(error);
+        move(nonCombat);	
     }
 
     private void ensureAirCanLand()
     {
-        TerritoryCollectionMessage response = (TerritoryCollectionMessage) m_bridge
-                .sendMessage(new MustMoveAirQueryMessage());
-        if (response.getTerritories().size() == 0)
+        Collection airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
+        
+        if (airCantLand.isEmpty())
             return;
         else
         {
             StringBuffer buf = new StringBuffer(
                     "Air in following territories cant land:");
-            Iterator iter = response.getTerritories().iterator();
+            Iterator iter = airCantLand.iterator();
             while (iter.hasNext())
             {
                 buf.append(((Territory) iter.next()).getName());
@@ -240,12 +242,16 @@ public class TripleAPlayer implements GamePlayer
         }
     }
 
-    private boolean hasUnitsThatCanMove()
+    private boolean hasUnitsThatCanMove(boolean nonCom)
     {
-        CompositeMatchAnd moveableUnitOwnedByMe = new CompositeMatchAnd(
-                new InverseMatch(Matches.UnitIsAAOrFactory), Matches
-                        .unitIsOwnedBy(m_id));
-
+        CompositeMatchAnd moveableUnitOwnedByMe = new CompositeMatchAnd();
+        moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_id));
+        //non com, can move aa units
+        if(nonCom)
+            moveableUnitOwnedByMe.add(new InverseMatch(Matches.UnitIsFactory));
+        else //combat move, cant move aa units
+            moveableUnitOwnedByMe.add(new InverseMatch(Matches.UnitIsAAOrFactory));
+        
         Iterator territoryIter = m_bridge.getGameData().getMap()
                 .getTerritories().iterator();
         while (territoryIter.hasNext())

@@ -681,7 +681,7 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForPurchase(bid);
     }
 
-    public MoveMessage getMove(PlayerID player, PlayerBridge bridge,
+    public MoveDescription getMove(PlayerID player, PlayerBridge bridge,
             boolean nonCombat)
     {
         m_actionButtons.changeToMove(player, nonCombat);
@@ -822,7 +822,7 @@ public class TripleAFrame extends JFrame
         String[] options = { "OK" };
         String message = "Select territory for air units to land";
 
-        int selection = JOptionPane.showOptionDialog(this, panel, message,
+        JOptionPane.showOptionDialog(this, panel, message,
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                 options, null);
 

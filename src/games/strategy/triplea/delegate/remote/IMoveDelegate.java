@@ -14,7 +14,13 @@
 
 package games.strategy.triplea.delegate.remote;
 
+import java.util.*;
+import java.util.Collection;
+
+import games.strategy.engine.data.*;
+import games.strategy.engine.data.Route;
 import games.strategy.net.IRemote;
+import games.strategy.triplea.delegate.message.MustMoveWithDetails;
 
 /**
  * Remote interface for MoveDelegate
@@ -23,5 +29,49 @@ import games.strategy.net.IRemote;
  */
 public interface IMoveDelegate extends IRemote
 {
+    /**
+     * 
+     * @param units - the units to move
+     * @param route - the route to move along
+     * @param m_transportsThatCanBeLoaded - transports that can be loaded while moving, must be non null
+     * @return an error message if the move cant be made, null otherwise
+     */
+    public String move(Collection units, Route route, Collection m_transportsThatCanBeLoaded );
 
+    /**
+     * equivalent to move(units, route, Collections.EMPTY_LIST)
+     * 
+     * @param units - the units to move
+     * @param route - the route to move along
+     * @return an error message if the move cant be made, null otherwise
+     */
+    public String move(Collection units, Route route);
+
+    /**
+     * Get the moves already made 
+     * @return a list of UndoableMoves
+     */
+    public List getMovesMade();
+    
+    /**
+     * 
+     * @param moveIndex - an index in the list getMovesMade
+     * @return an error string if the move could not be undone, null otherwise
+     */
+    public String undoMove(int moveIndex);
+    
+    /**
+     * Given a starting territory and a collection of units, returns
+     * what units must move with the given units.
+     * All units in units are either carriers or transports.
+     * All units are owned by the player whose current turn it is.
+     */
+    public MustMoveWithDetails getMustMoveWith(Territory start, Collection units);
+    
+    /**
+     * Get what air units must move before the end of the players turn
+     * @return a list of Territories with air units that must move
+     */
+    public Collection getTerritoriesWhereAirCantLand();
+    
 }

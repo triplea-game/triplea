@@ -58,16 +58,6 @@ public class PlaceDelegateTest extends DelegateTest
 		return suite;
 	}
 	
-	private void assertValid(String error)
-	{
-	    assertNull(error);
-	}
-	
-	private void assertError(String error)
-	{
-	    assertNotNull(error);
-	}
-	
 	private Collection getInfantry(int count, PlayerID player)
 	{
 	    return m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE).create(count, player);

@@ -36,7 +36,7 @@ import games.strategy.engine.data.*;
  * Units that must move are land units in transports, 
  * and friendly aircracft that must move with carriers.
  */
-public class MustMoveWithReply implements Message
+public class MustMoveWithDetails implements Message
 {
 	/**
 	 * Maps Unit -> Collection of units.
@@ -46,7 +46,7 @@ public class MustMoveWithReply implements Message
 	
 	
 	/** Creates new MustMoveWithReplay */
-    public MustMoveWithReply(Map mapping, IntegerMap movement) 
+    public MustMoveWithDetails(Map mapping, IntegerMap movement) 
 	{
 		m_mapping = mapping;
 		m_movement = movement;

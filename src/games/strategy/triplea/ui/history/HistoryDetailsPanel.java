@@ -68,9 +68,9 @@ public class HistoryDetailsPanel extends JPanel
         dicePanel.setDiceRoll((DiceRoll) details);
         add( dicePanel, mainConstraints);
       }
-      else if(details instanceof MoveMessage)
+      else if(details instanceof MoveDescription)
       {
-        MoveMessage moveMessage = (MoveMessage) details;
+        MoveDescription moveMessage = (MoveDescription) details;
         renderUnits(mainConstraints, moveMessage.getUnits());
         m_mapPanel.setRoute(moveMessage.getRoute());
         if(!m_mapPanel.isShowing(moveMessage.getRoute().getEnd()))

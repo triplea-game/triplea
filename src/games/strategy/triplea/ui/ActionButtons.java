@@ -134,7 +134,7 @@ public class ActionButtons extends JPanel
      * 
      * @return null if no move was made.
      */
-    public MoveMessage waitForMove(PlayerBridge bridge)
+    public MoveDescription waitForMove(PlayerBridge bridge)
     {
         return m_movePanel.waitForMove(bridge);
     }

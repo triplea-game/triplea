@@ -187,6 +187,17 @@ public class DelegateTest extends TestCase
 			fail(message.getMessage());
 	}
 
+	public void assertValid(String string)
+	{
+	    assertNull(string);
+	}
+	
+	public void assertError(String string)
+	{
+	    assertNotNull(string);
+	}
+	
+	
 	public static Test suite()
 	{
 		TestSuite suite = new TestSuite();
