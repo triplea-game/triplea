@@ -153,7 +153,15 @@ class HttpDiceRollerDialog extends JDialog
     getContentPane().add(new JScrollPane(m_text));
     m_text.setEditable(false);
 
+    //added Center to Screen code
+
+    Toolkit kit = Toolkit.getDefaultToolkit();
+    Dimension screenSize = kit.getScreenSize();
+    int screenHeight = screenSize.height;
+    int screenWidth  = screenSize.width;
+
     setSize(400, 300);
+    setLocation(screenWidth/2,screenHeight/2);
   }
 
   /**
@@ -261,56 +269,114 @@ class HttpDiceRollerDialog extends JDialog
   }
 
 
-  //should be called from a thread other than the event thread after we are open
-  //(or at least in the process of opening)
-  //will close the window and notify any waiting threads when
-  //completed succeddfully.
+ /**
+   should be called from a thread other than the event thread after we are open
+   (or at least in the process of opening)
+   will close the window and notify any waiting threads when
+   completed succeddfully.
+
+   Before contacting Irony Dice Server, conduct 2 tests and
+   ping the e-mail domains to see if they exist. m_test variable
+   will not be used as the condition to conduct the tests because
+   the code needs to get executed no matter what, in order to
+   determine if "validMail" is true or false. We're gonna do this
+   anyways if we're gonna ping the e-mails before dice rolling.
+   Code segment add by NeKromancer
+  */
   private void rollInSeperateThread()
   {
     if(SwingUtilities.isEventDispatchThread())
       throw new IllegalStateException("Wrong thread");
 
+      boolean validMail = false;
 
-    while(! isVisible())
-      Thread.currentThread().yield();
+      int x = m_email1.indexOf('@');
+      int y = m_email2.indexOf('@');
+      if(x != -1 && y != -1) {          //test 1
+          x = m_email1.lastIndexOf('.');
+          y = m_email2.lastIndexOf('.');
+          if(x != -1 && y != -1) {      //test 2
+              String domain1 = m_email1.substring(m_email1.indexOf('@')+1);
+              String domain2 = m_email2.substring(m_email2.indexOf('@')+1);
+              /** try connection to domain 1
+              */
+              appendText("Testing if "+domain1+" is up... ");
+              try {
+                  Socket s1 = new Socket(domain1,80);
+                  s1.close();
+                  appendText("Success!\n");
+                  validMail = true;
+              }catch(IOException e) {
+                  appendText("Failed!\n");
+                  validMail = false;
+              }
+              /** try connection to domain 2
+              */
+              appendText("Testing if "+domain2+" is up... ");
+              try {
+                  Socket s2 = new Socket(domain2,80);
+                  s2.close();
+                  appendText("Success!\n");
+                  //both must be successful to pass. do not make validMail true here
+              }catch(IOException e) {
+                  appendText("Failed!\n");
+                  validMail = false;
+              }
+          }//end test 2
+      }//end test 1
 
-    appendText(m_annotation + "\n");
-    appendText("Contacting  http://www.irony.com/mailroll.html...\n");
+      if(validMail) {  //execute below ONLY when we have 2 valid email addresses
 
-    String text = null;
-    try
-    {
-      text = DiceStatic.postRequest(m_email1, m_email2, m_count, m_annotation);
-      if(!m_test)
-        appendText("Contacted :" + text + "\n");
-      m_diceRoll = DiceStatic.getDice(text, m_count);
-      appendText("Success!");
-      if(!m_test)
-        closeAndReturn();
+        while(! isVisible())
+        Thread.currentThread().yield();
+
+        appendText(m_annotation + "\n");
+        appendText("Contacting  http://www.irony.com/mailroll.html...\n");
+
+        String text = null;
+        try
+        {
+        text = DiceStatic.postRequest(m_email1, m_email2, m_count, m_annotation);
+        if(!m_test)
+            appendText("Contacted :" + text + "\n");
+        m_diceRoll = DiceStatic.getDice(text, m_count);
+        appendText("Success!");
+        if(!m_test)
+            closeAndReturn();
+        }
+        catch (IOException ex)
+        {
+        try
+        {
+            appendText("Failure!  Did you enter valid email addresses?\n");
+
+            if(text != null) {
+            appendText("text from dice server:\n" +text + "\n");
+            }
+
+            StringWriter writer = new StringWriter();
+            ex.printStackTrace(new PrintWriter(writer));
+            writer.close();
+            appendText(writer.toString());
+            notifyError();
+        }
+        catch (IOException ex1)
+        {
+            ex1.printStackTrace();
+        }
+
+        }
     }
-    catch (IOException ex)
-    {
-      try
-      {
-        appendText("Failure!  Did you enter valid email addresses?\n");
+    else {  //enter here for invalid e-mail or non-reachable hosts
 
-        if(text != null)
-          appendText("text from dice server:\n" +text + "\n");
-
-        StringWriter writer = new StringWriter();
-        ex.printStackTrace(new PrintWriter(writer));
-        writer.close();
-        appendText(writer.toString());
-        notifyError();
-      }
-      catch (IOException ex1)
-      {
-        ex1.printStackTrace();
-      }
-
+        appendText("Invalid e-mail address, please re-check them.\n");
+        appendText("--\n");
+        appendText("If the e-mail addresses are valid and this message is shown,\n");
+        appendText("then this could mean that the mail server where either one of\n");
+        appendText("those address could be down or somehow unreachable.\n");
     }
 
-  }
+  }//end of method
 }
 
 class DiceStatic
