@@ -90,8 +90,6 @@
         <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
             <include name="triplea.bat"/>
             <include name="triplea.sh"/>
-            <include name="triplea_ai.sh"/>
-	    <include name="triplea_ai.bat"/>
         </zipfileset>
 	
         <zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
@@ -142,8 +140,6 @@
         <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
             <include name="triplea.bat"/>
             <include name="triplea.sh"/>
-            <include name="triplea_ai.sh"/>
-	    <include name="triplea_ai.bat"/>
         </zipfileset>
       
         <zipfileset dir="." prefix="triplea_${triplea.version}/">
