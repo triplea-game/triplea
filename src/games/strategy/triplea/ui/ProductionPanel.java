@@ -74,8 +74,8 @@ public class ProductionPanel extends JPanel
     s_panel.initLayout(id);
     s_panel.calculateLimits();
 
-    s_dialog.setLocationRelativeTo(parent);
     s_dialog.pack();
+    s_dialog.setLocationRelativeTo(parent);
     s_dialog.show();
 
     return s_panel.getProduction();
