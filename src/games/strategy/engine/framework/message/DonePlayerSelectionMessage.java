@@ -43,18 +43,9 @@ public class DonePlayerSelectionMessage implements java.io.Serializable
     m_gameData = gameData;
   }
 
-  public InputStream getGameData()
+  public InputStream getGameData() throws IOException
   {
-    ZipInputStream data = new ZipInputStream(new ByteArrayInputStream(m_gameData));
-    try
-    {
-        data.getNextEntry();
-    }
-    catch(IOException ioe)
-    {
-      throw new RuntimeException(ioe.getMessage());
-    }
-    return data;
+    return new GZIPInputStream(new ByteArrayInputStream(m_gameData));
   }
 
 }

@@ -197,7 +197,7 @@ public class GameTypePanel extends JPanel
       System.err.println(NewGameFileChooser.DEFAULT_DIRECTORY);
       System.err.println(defaultGame.getAbsolutePath());
       ex.printStackTrace();
-      
+
       //ignore, we're just loading the default file, no reason to cause a panic
     }
   }
@@ -344,8 +344,10 @@ public class GameTypePanel extends JPanel
     pane.setEditorKit(new javax.swing.text.html.HTMLEditorKit());
     pane.setText(helpText);
     pane.setPreferredSize(new Dimension(250,250));
-    JScrollPane scroll = new JScrollPane(pane);
-    JOptionPane.showMessageDialog(this, pane, "Game types", JOptionPane.PLAIN_MESSAGE);
+    final JScrollPane scroll = new JScrollPane(pane);
+
+
+    JOptionPane.showMessageDialog(this, scroll, "Game types", JOptionPane.PLAIN_MESSAGE);
 
 
 

@@ -113,16 +113,9 @@ public class ServerStartup extends JPanel
   {
     ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
 
-    ZipOutputStream zip = new ZipOutputStream(sink);
-    zip.setLevel(9);
-    zip.putNextEntry(new ZipEntry("gameData"));
-
-
-    new GameDataManager().saveGame(zip, m_data);
-    zip.flush();
-    zip.closeEntry();
-    zip.close();
-
+    new GameDataManager().saveGame(sink, m_data);
+    sink.flush();
+    sink.close();
 
     m_dataBytes = sink.toByteArray();
 
