@@ -153,7 +153,7 @@ public class PlacePanel extends ActionPanel
   {
     public void territorySelected(Territory territory, MouseEvent e)
     {
-      if(!getActive())
+      if(!getActive() || (e.getButton() != MouseEvent.BUTTON1))
         return;
 
       int maxUnits[] = new int[1];
