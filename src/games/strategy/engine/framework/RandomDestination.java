@@ -15,6 +15,8 @@
 
 package games.strategy.engine.framework;
 
+import java.util.*;
+
 import javax.crypto.SecretKey;
 
 
@@ -33,6 +35,20 @@ import games.strategy.util.RandomTriplet;
  */
 public class RandomDestination implements IDestination
 {
+   private static List s_verifiedRandomNumbers = new ArrayList(); 
+   
+   public synchronized static List getVerifiedRandomNumbers()
+   {
+       return new ArrayList(s_verifiedRandomNumbers);
+   }
+   
+   private synchronized static void addVerifiedRandomNumber(VerifiedRandomNumbers number)
+   {
+       s_verifiedRandomNumbers.add(number);
+   }
+
+   
+   
   public static String getRandomDestination(String playerName)
   {
     return playerName + "RandomDest";
@@ -151,7 +167,7 @@ public class RandomDestination implements IDestination
             throw new IllegalStateException("Could not verify remote known value");
         
         VerifiedRandomNumbers verified = new VerifiedRandomNumbers(m_random_gen.getAnnotation(), m_random_gen.getSharedRandomArr(m_remote_random_gen));
-        System.out.println("Verified random roll:" + verified);
+        RandomDestination.addVerifiedRandomNumber(verified);
         m_remote_random_gen = null;
       }
       return null;
@@ -165,20 +181,3 @@ public class RandomDestination implements IDestination
 }
 
 
-class VerifiedRandomNumbers
-{
-    private final int[] m_values;
-    private final String m_annotation;
-    
-    public VerifiedRandomNumbers(String annotation, int[] values)
-    {
-        m_values = values;
-        m_annotation = annotation;
-    }
-    
-    public String toString()
-    {
-        return "Rolled :" +  Formatter.asDice(m_values) + " for " + m_annotation;
-    }
-    
-}
