@@ -634,6 +634,27 @@ public class TripleAFrame extends JFrame
     return choice == 0;
   }
 
+  public LandAirMessage getLandAir(LandAirQueryMessage msg)
+  {
+    Collection territories = msg.getTerritories();	
+    JList list = new JList(new Vector(territories));
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    list.setSelectedIndex(0);
+    JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout());
+    JScrollPane scroll = new JScrollPane(list);
+    panel.add(scroll, BorderLayout.CENTER);
+    
+    String[] options = {"OK"};
+    String message = "Select territory for air units to land";
+        
+    int selection = JOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+    
+    Territory selected = (Territory) list.getSelectedValue();
+
+    return new LandAirMessage(selected);
+  }
+
   public Message getTechRolls(PlayerID id)
   {
     m_actionButtons.changeToTech(id);
