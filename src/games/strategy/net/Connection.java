@@ -15,6 +15,10 @@
 /*
  * Connection.java
  * 
+ * 
+ * This is the code that handles writing and reading objects over the socket.
+ * Each connection handles the threads and communications for 1 socket to 1 remote party.
+ * 
  * Created on December 11, 2001, 8:23 PM
  */
 
@@ -136,7 +140,7 @@ class Connection
         return m_remoteNode;
     }
 
-    public void send(Serializable msg)
+    public void send(MessageHeader msg)
     {
         m_waitingToBeSent.add(msg);
         synchronized(m_lock)
@@ -254,7 +258,7 @@ class Connection
             {
                 try
                 {
-                    final Serializable msg = (Serializable) m_in.readObject();
+                    final MessageHeader msg = (MessageHeader) m_in.readObject();
 
                     Runnable r = new Runnable()
                     {
@@ -266,7 +270,7 @@ class Connection
                     
                     //only one ordered message can be processed at a time
                     //delay processing until the last ordered message is done
-                    if(msg instanceof OrderedMessage)
+                    if(msg.getMessage() instanceof OrderedMessage)
                     {
                         if(m_orderedMessageHandler != null)
                             m_orderedMessageHandler.waitTillDone();
@@ -301,6 +305,7 @@ class Connection
 
 /**
  * Prevents multiple OrderedMessages from being run at the same time.
+ * 
  *  
  */
 class OrderedMessageHandler implements Runnable
@@ -320,15 +325,13 @@ class OrderedMessageHandler implements Runnable
         {
             m_runnable.run();
         }
-        catch(Throwable t)
+        finally
         {
-            t.printStackTrace();
-        }
-        
-        synchronized(m_lock)
-        {
-            m_done = true;
-            m_lock.notifyAll();
+	        synchronized(m_lock)
+	        {
+	            m_done = true;
+	            m_lock.notifyAll();
+	        }
         }
     }
     
