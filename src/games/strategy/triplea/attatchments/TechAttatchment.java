@@ -93,7 +93,7 @@ public class TechAttatchment extends DefaultAttatchment
     return "" + mindustrialTechnology;
   }
 
-  public String getsuperSub()
+  public String getSuperSub()
   {
     return "" + msuperSub;
   }
