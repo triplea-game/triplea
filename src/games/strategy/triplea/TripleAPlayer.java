@@ -167,6 +167,8 @@ public class TripleAPlayer implements GamePlayer
 	    purchase(true);
 	else if(name.endsWith("Tech"))
 	    tech();
+        else if (name.endsWith("TechActivation"))
+	    ; // the delegate handles everything
 	else if(name.endsWith("Purchase"))
 	    purchase(false);
 	else if(name.endsWith("Move"))
