@@ -434,7 +434,7 @@ public class TripleAFrame extends JFrame
         // add the sub menu to the menu
         menuGame.add(mapSubMenu);
 
-        final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
+        final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
 
         soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
         //temporarily disable sound
@@ -448,11 +448,10 @@ public class TripleAFrame extends JFrame
             }
         });
 
-        final JCheckBox showMapDetails = new JCheckBox("Show Map Details");
+        final JCheckBoxMenuItem showMapDetails = new JCheckBoxMenuItem("Show Map Details");
 
         showMapDetails.setSelected(TerritoryImageFactory.getShowReliefImages());
-        //temporarily disable sound
-
+       
         showMapDetails.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -496,13 +495,14 @@ public class TripleAFrame extends JFrame
 
         menuGame.add(soundCheckBox);
 
-        if (!m_data.getProperties().get(Constants.FOURTH_EDITION, false))
-            menuGame.add(showMapDetails);
-
+        
+        menuGame.add(showMapDetails);
+        showMapDetails.setEnabled(MapData.getInstance().getHasRelief());
+        
         if (m_game instanceof ClientGame)
             menuGame.add(showVerifiedDice);
 
-        final JCheckBox showEnemyCasualties = new JCheckBox(
+        final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem(
                 "Confirm Enemy Casualties");
         showEnemyCasualties.setSelected(BattleDisplay
                 .getShowEnemyCasualtyNotification());
@@ -1192,7 +1192,7 @@ public class TripleAFrame extends JFrame
 
         radioItem100.setSelected(true);
         
-        //select the closest to t
+        //select the closest to to the default size
         Enumeration enum = unitSizeGroup.getElements();
         boolean matchFound = false;
         while(enum.hasMoreElements())

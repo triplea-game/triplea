@@ -32,6 +32,7 @@ import java.util.List;
 public class MapData
 {
     private final String DEFAULT_UNIT_SCALE_PROPERTY = "units.scale";
+    private final String HAS_RELIEF_IMAGES = "map.hasRelief";
     
     private static final String CENTERS_FILE = "centers.txt";
     private static final String POLYGON_FILE = "polygons.txt";
@@ -83,6 +84,7 @@ public class MapData
         return s_instance;
     }
 
+    
     /**
      * Constructor TerritoryData(java.lang.String)
      * 
@@ -136,6 +138,11 @@ public class MapData
             e.printStackTrace();
             return 1.0;
         }
+    }
+
+    public boolean getHasRelief()
+    {
+        return Boolean.valueOf(m_mapProperties.getProperty(HAS_RELIEF_IMAGES, "false")).booleanValue();
     }
     
     private void initializeContains()
