@@ -494,10 +494,10 @@ public class BattleDisplay extends JPanel
 
     }
 
-    public void listBattle(String currentStep, List steps)
+    public void listBattle(List steps)
     {
 
-        m_steps.listBattle(currentStep, steps);
+        m_steps.listBattle(steps);
 
     }
 
@@ -721,7 +721,7 @@ class BattleStepsPanel extends JPanel
         m_list.setSelectionModel(m_listSelectionModel);
     }
 
-    public void listBattle(final String currentStep, List steps)
+    public void listBattle(List steps)
     {
         m_listModel.removeAllElements();
 
@@ -733,7 +733,7 @@ class BattleStepsPanel extends JPanel
         m_listSelectionModel.hiddenSetSelectionInterval(0);
 
         validate();
-        setStep(currentStep);
+        setStep((String) steps.get(0));
     }
 
     /**

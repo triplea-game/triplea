@@ -148,7 +148,7 @@ public class BattlePanel extends ActionPanel
         }
     }
 
-    public void listBattle(final GUID battleID, final String currentStep, final List steps)
+    public void listBattle(final GUID battleID, final List steps)
     {
         if (!SwingUtilities.isEventDispatchThread())
         {
@@ -157,7 +157,7 @@ public class BattlePanel extends ActionPanel
                 public void run()
                 {
                     //recursive call
-                    listBattle(battleID, currentStep, steps);
+                    listBattle(battleID, steps);
                 }
             };
             try
@@ -173,7 +173,7 @@ public class BattlePanel extends ActionPanel
         removeAll();
 
         getMap().centerOn(m_battleDisplay.getBattleLocation());
-        m_battleDisplay.listBattle(currentStep, steps);
+        m_battleDisplay.listBattle(steps);
     }
 
     public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection attackingUnits,

@@ -60,9 +60,9 @@ public class TripleaDisplay implements ITripleaDisplay
     /* (non-Javadoc)
      * @see games.strategy.triplea.ui.display.ITripleaDisplay#listBattleSteps(games.strategy.net.GUID, java.lang.String, java.util.List)
      */
-    public void listBattleSteps(GUID battleID, String currentStep, List steps)
+    public void listBattleSteps(GUID battleID, List steps)
     {
-       m_ui.getBattlePanel().listBattle(battleID, currentStep, steps);
+       m_ui.getBattlePanel().listBattle(battleID, steps);
         
     }
     /* 

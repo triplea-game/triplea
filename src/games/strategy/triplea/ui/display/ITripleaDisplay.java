@@ -48,7 +48,7 @@ public interface ITripleaDisplay extends IDisplay
      * @param currentStep - the current step
      * @param steps - a collection of strings denoting all steps in the battle 
      */
-    public void listBattleSteps(GUID battleID, String currentStep, List steps);
+    public void listBattleSteps(GUID battleID, List steps);
     
     /**
      * The given battle has eneded. 

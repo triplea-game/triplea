@@ -340,7 +340,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         ITripleaDisplay display = getDisplay(bridge);
         display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
 
-        display.listBattleSteps(m_battleID, (String) steps.get(0), steps);
+        display.listBattleSteps(m_battleID, steps);
 
         //take the casualties with least movement first
         BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
@@ -554,7 +554,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             List steps = determineStepStrings(false);
             ITripleaDisplay display = getDisplay(bridge);
-            display.listBattleSteps(m_battleID, (String) steps.get(0), steps);
+            display.listBattleSteps(m_battleID, steps);
         }
 
         m_round++;

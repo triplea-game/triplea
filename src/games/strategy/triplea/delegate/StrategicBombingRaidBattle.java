@@ -118,7 +118,7 @@ public class StrategicBombingRaidBattle implements Battle
             steps.add(FIRE_AA);
         steps.add(RAID);
 
-        getDisplay(bridge).listBattleSteps(m_battleID, (String) steps.get(0), steps);
+        getDisplay(bridge).listBattleSteps(m_battleID, steps);
 
         if (hasAA)
             fireAA(bridge);
