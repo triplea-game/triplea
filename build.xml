@@ -28,6 +28,7 @@
 
   <target name="compile" depends="init"
           description="Compile the source files and copy over the resource files">
+    <echo message="looking for junit.jar in:${junit.jar}, edit .ant.properties to set junit location"/>
     <mkdir dir="classes"/>
     <copy todir="classes">
       <fileset dir="data">
