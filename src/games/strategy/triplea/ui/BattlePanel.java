@@ -247,6 +247,10 @@ public class BattlePanel extends ActionPanel
       if(comp.getSelection() != null)
         return new RetreatMessage(comp.getSelection());
     }
+    else
+    {
+      return getRetreat(rqm);
+    }
 
     return null;
   }
