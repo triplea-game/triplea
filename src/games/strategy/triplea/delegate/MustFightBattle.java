@@ -75,6 +75,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //if unit is lost in a battle we are dependent on
     //then we lose the corresponding collection of units
     private Map m_dependentUnits = new HashMap();
+    
+    //keep track of all the units that die in the battle to show in the history window
+    private Collection m_killed = new ArrayList();
 
     public MustFightBattle(Territory battleSite, PlayerID attacker, GameData data, BattleTracker tracker, TransportTracker transportTracker)
     {
@@ -1146,7 +1149,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             killed.addAll(transported);
         }
         Change killedChange = ChangeFactory.removeUnits(m_battleSite, killed);
-
+        m_killed.addAll(killed);
+        
         String transcriptText = Formatter.unitsToText(killed) + " lost in " + m_battleSite.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText, killed);
 
@@ -1184,8 +1188,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         BattleEndMessage msg = new BattleEndMessage(m_defender.getName() + " win");
         bridge.sendMessage(msg, m_attacker);
         bridge.sendMessage(msg, m_defender);
-        bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win");
 
+        bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win");
+        showCasualties(bridge);
+        
         checkDefendingPlanesCanLand(bridge);
 
     }
@@ -1275,8 +1281,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
 
+        
         bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win");
+        showCasualties(bridge);
     }
+    
+    private void showCasualties(DelegateBridge bridge)
+    {
+        if(m_killed.isEmpty())
+            return;
+        //a handy summary of all the units killed
+        bridge.getHistoryWriter().addChildToEvent("Battle casualty summary:", m_killed);
+        
+    }
+    
 
     private void endBattle(DelegateBridge bridge)
     {

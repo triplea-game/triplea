@@ -71,6 +71,9 @@ public class EndRoundDelegate implements SaveableDelegate
 
 		m_data = gameData;
 
+		if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+		    return;
+		
 		int gProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.GERMANS));
 		int jProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.JAPANESE));
 

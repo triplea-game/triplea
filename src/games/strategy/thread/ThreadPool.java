@@ -112,6 +112,10 @@ public class ThreadPool
     public void shutDown()
     {
         m_run = false;
+        synchronized(m_taskLock)
+        {
+            m_taskLock.notifyAll();
+        }
     }
 
     private class ThreadTracker implements Runnable

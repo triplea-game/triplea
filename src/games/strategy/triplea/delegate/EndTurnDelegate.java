@@ -45,6 +45,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		//only notify once
 		if(m_gameOver)
 			return;
+		if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+		    return;
 
 
 		PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);

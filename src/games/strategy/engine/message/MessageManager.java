@@ -109,7 +109,9 @@ public class MessageManager implements IMessageManager
                 }
                 else
                 {
-                    throw new IllegalStateException("Destination not found");
+                    System.out.println("Local" + m_local);
+                    System.out.println("Remote" + m_remote);
+                    new IllegalStateException("Destination not found").printStackTrace(System.out);
                 }
             }
 

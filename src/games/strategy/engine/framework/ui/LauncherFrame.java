@@ -207,7 +207,7 @@ public class LauncherFrame extends JFrame
 
     m_gameData.getGameLoader().startGame(serverGame, localPlayerSet);
 
-    listener.waitFor( new HashSet(remotePlayers.values()).size());
+    listener.waitFor( m_messenger.getNodes().size() - 1);
     m_messenger.removeMessageListener(listener);
     
     if (useSecureRandomSource)
