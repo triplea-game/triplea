@@ -10,6 +10,10 @@ Changes for 0.5.3
 
 * Fixed bug [ 991810 ] Internet Bid Problem (sgb)
 
+* Fixed bug [ 1051937 ] Number of bid ipcs displayed (sgb)
+
+* Fixed bug [ 1102812 ] flag image names not based on xml names (sgb)
+
 Changes for 0.5.2
 
 * Added option to limit ipcs lost in a territory during one round. This is necessary to implement LHTR ruleset.

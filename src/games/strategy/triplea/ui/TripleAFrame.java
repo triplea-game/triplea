@@ -101,7 +101,6 @@ public class TripleAFrame extends JFrame
     {
         super("TripleA");
 
-        FlagIconImageFactory.instance().load(this);
         setIconImage(GameRunner.getGameIcon(this));
 
         m_game = game;
