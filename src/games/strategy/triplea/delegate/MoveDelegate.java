@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * MoveDelegate.java
  *
  * Created on November 2, 2001, 12:24 PM
@@ -931,6 +945,9 @@ public class MoveDelegate implements Delegate
 	{
 		Collection canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
 		Collection canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+		Collection ownedTransport = Match.getMatches(transports, Matches.unitIsOwnedBy(m_player));
+		canTransport = Util.difference(canTransport, ownedTransport);
+
 		Map mapping = new HashMap();
 		IntegerMap addedLoad = new IntegerMap();
 		
@@ -941,9 +958,10 @@ public class MoveDelegate implements Delegate
 			UnitAttatchment landUA = UnitAttatchment.get(land.getType());
 			int cost = landUA.getTransportCost();
 			boolean loaded = false;
-			
-			Iterator transportIter = canTransport.iterator();
-			while(transportIter.hasNext())
+		
+			//check owned first
+			Iterator transportIter = ownedTransport.iterator();
+			while(transportIter.hasNext() && !loaded)
 			{
 				Unit transport = (Unit) transportIter.next();
 				int capacity = m_transportTracker.getAvailableCapacity(transport);
@@ -953,7 +971,20 @@ public class MoveDelegate implements Delegate
 					addedLoad.add(transport, cost);
 					mapping.put(land, transport);
 					loaded = true;
-					break;
+				}
+			}
+			//check allied
+			transportIter = canTransport.iterator();
+			while(transportIter.hasNext() && !loaded)
+			{
+				Unit transport = (Unit) transportIter.next();
+				int capacity = m_transportTracker.getAvailableCapacity(transport);
+				capacity -= addedLoad.getInt(transport);
+				if(capacity >= cost)
+				{
+					addedLoad.add(transport, cost);
+					mapping.put(land, transport);
+					loaded = true;
 				}
 			}
 			if(!loaded)
