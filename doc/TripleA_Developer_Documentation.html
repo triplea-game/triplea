@@ -1,0 +1,1094 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta name="generator" content="Bluefish">
+		<meta name="author" content="Sean Bridges & George El-Haddad">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="description" content="">
+		<title>TripleA :: Developer Documentation</title>
+	</head>
+
+	<body>
+		<center><h1>TripleA Developer Documentation</h1></center>
+		<hr>
+		<h3><a name="top">Quick Nav</a></h3>
+		<ul>
+			<li><a href="#sec_a">Using CVS</a></li>
+			<li><a href="#sec_b">Compiling TripleA From Source</a></li>
+			<li><a href="#sec_c">Engine Code Overview</a></li>
+				<ul>
+					<li><a href="#sec_c_1">Design Goals</a></li>
+					<li><a href="#sec_c_2">The Big Picture</a></li>
+					<li><a href="#sec_c_3">Game Data</a></li>
+					<li><a href="#sec_c_4">Attachments</a></li>
+					<li><a href="#sec_c_5">Game Play Sequence</a></li>
+					<li><a href="#sec_c_6">Delegate</a></li>
+					<li><a href="#sec_c_7">Specifying Game Sequence</a></li>
+					<li><a href="#sec_c_8">Step Life Cycle</a></li>
+					<li><a href="#sec_c_9">Changing Game Data</a></li>
+					<li><a href="#sec_c_10">Game Players</a></li>
+					<li><a href="#sec_c_11">Communication</a></li>
+					<li><a href="#sec_c_12">Bridges</a></li>
+				</ul>
+			<li><a href="#sec_d">Creating Custom Games</a></li>
+				<ul>
+					<li><a href="#sec_d_1">Editing the file</a></li>
+					<li><a href="#sec_d_2">Sanity check</a></li>
+					<li><a href="#sec_d_3">Modifying unit placement</a></li>
+					<li><a href="#sec_d_4">Modifying territory ownership</a></li>
+					<li><a href="#sec_d_5">Changing player alliances</a></li>
+					<li><a href="#sec_d_6">Changing unit strengths</a></li>
+					<li><a href="#sec_d_7">Changing territory production</a></li>
+					<li><a href="#sec_d_8">Changing capital placement</a></li>
+					<li><a href="#sec_d_9">Changing turn sequence</a></li>
+					<li><a href="#sec_d_10">More...</a></li>
+				</ul>
+			<li><a href="#sec_e">Using Map Utilities</a></li>
+				<ul>
+					<li><a href="#sec_e_1">Order of Usage</a></li>
+					<li><a href="#sec_e_2">CenterPicker</a></li>
+					<li><a href="#sec_e_3">PolygonGrabber</a></li>
+					<li><a href="#sec_e_4">PlacementPicker</a></li>
+					<li><a href="#sec_e_5">AutoPlacementFinder</a></li>
+					<li><a href="#sec_e_6">ReliefImageBreaker</a></li>
+					<li><a href="#sec_e_7">How the Map Directory Structure Works</a></li>
+					<li><a href="#sec_e_8">Creating External MapPacks</a></li>
+				</ul>
+			<li><a href="#sec_f">Release Model</a></li>
+			<li><a href="#sec_g">Conventions</a></li>
+		</ul>
+		<hr>
+		<br>
+		
+		<h2><a name="sec_a">Using CVS</a></h2>
+		<blockquote>
+			<p>
+				This is mainly for Linux and Mac OS X users or anyone who has a UNIX type
+				of Operating System from which they can install and run command line CVS
+				applications. If you use a graphical CVS program or use CVS access from
+				within an IDE (ie. Eclipse) then skip this section. Here are a list of useful
+				CVS commands that are very useful.
+			</p>
+			
+			<p>
+				Developer CVS Check Out. <b>USERNAME</b> gets replaced with your sourceforge
+				account name.
+				<blockquote>
+				<code>
+					export CVS_RSH=ssh<br>
+					cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea checkout triplea
+				</code>
+				</blockquote>
+				
+				Anonymous CVS Check Out. Can be done without having to have a sourceforge account.
+				<blockquote>
+				<code>
+					cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/triplea checkout triplea
+				</code>
+				</blockquote>
+				
+				Adding new files to the CVS.
+				<blockquote>
+				<code>
+					cvs add <b>FILE NAME</b><br>
+					cvs commit
+				</code>
+				</blockquote>
+				
+				Commiting a changed pre-existing file.
+				<blockquote>
+				<code>
+					cvs commit <b>FILE NAME</b>
+				</code>
+				</blockquote>
+				
+				Let CVS commit all modified files by examining all files in the current directroy
+				and all files in your sub-directories recursively.
+				<blockquote>
+				<code>
+					cvs commit
+				</code>
+				</blockquote>
+				
+				Source forge also has this command that does the same thing.
+				<blockquote>
+				<code>
+					cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea commit -m "MESSAGES"
+				</code>
+				</blockquote>
+				
+				Updating your CVS with the recent CVS tree at sourceforge. By going into any directory
+				and typing:
+				<blockquote>
+				<code>
+					cvs update
+				</code>
+				</blockquote>
+				
+				A more robust way of updating your entire CVS copy that will also delte empty
+				folders that are not needed. Type this in the root of your TripleA dir.
+				<blockquote>
+				<code>
+					cvs -q update -dAP
+				</code>
+				</blockquote>
+				
+				Removing a single file from the CVS. Two examples are given below:
+				<blockquote>
+				<code>
+					rm fileName.java<br>
+					cvs remove<br>
+					<br>
+					or<br>
+					<br>
+					rm  *.txt<br>
+					cvs remove
+				</code>
+				</blockquote>
+				
+				Remove an entire directory from the CVS. Goes on the principle that you enter
+				the directory, physically remove the files you don't want. Issue the remove comand,
+				commit the changes. Then go one level up, issue the remove command for that specific
+				directory, then physically remove it from your file system.
+				<blockquote>
+				<code>
+					cd myDir<br>
+					rm *.java<br>
+					cvs remove<br>
+					cvs commit<br>
+					cd ..<br>
+					cvs remove myDir<br>
+					rm -rf myDir
+				</code>
+				</blockquote>
+				
+				This may have nothing to do with CVS but you are also given a sourceforge
+				shell account, or if you have access to modify the TripleA website account
+				this may prove useful. Example below is how to upload a picture to the triplea
+				website using SCP (secure copy).
+				<blockquote>
+				<code>
+					scp MyFile.png USERNAME@shell.sf.net:/home/groups/t/tr/triplea/htdocs
+				</code>
+				</blockquote>
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		<h2><a name="sec_b">Compiling TripleA From Source</a></h2>
+		<blockquote>
+			<p>
+				This will go over the whole compiliation process quickly and assuming you know
+				what your doing. If you need a very detailed and meticulious description then
+				head over to the <a href="TripleA_User_Documentation.html#sec_b">User Documentation</a>.
+			</p>
+			
+			<p>
+				Get the TripleA source code, either by downloading the source package off the TripleA
+				project site, or by checking out a copy of the CVS. Once that is done, open the console
+				and enter into the TripleA directory.<br>
+				<br>
+				We assume you have ANT and JUnit installed and that ANT is fully working. First thing you
+				need to do is edit the <b>.ant.properties</b> file. If it does not exist then create one.
+				Below is the data it should have:
+				<blockquote>
+				<code>
+					junit.jar=PATH TO THE JUNIT JAR FILE<br>
+					triplea.version=X_X_X
+				</code>
+				</blockquote>
+				
+				Here is a copy of my own <b>.ant.properties</b> file to give you a better idea:
+				<blockquote>
+				<code>
+					 junit.jar=/home/necro/junit3.8.1/junit3.8.1.jar<br>
+					 triplea.version=0_5_1
+				</code>
+				</blockquote>
+			</p>
+			
+			<p>
+				Your now ready to start your first compile. Run this command to compile:
+				<blockquote>
+				<code>
+					ant compile
+				</code>
+				</blockquote>
+				
+				It should put all the TripleA class files in a folder called <b>Classes</b>.
+				A small note on using the <b>ant</b> you can issue one of the following commands to
+				<b>ant</b>. Each will yield a different result:
+				<blockquote>
+					<ul>
+						<li><b>ant compile</b> (Compiles all source files)</li>
+						<li><b>ant clean</b> (removes all previously compiled files and folders)</li>
+						<li><b>ant compileClean</b> (executes <b>ant clean</b> then <b>ant compile</b> in one go)</li>
+						<li><b>ant zip</b> (Compiles the source code and packages it in a zip file)</li>
+						<li><b>ant zipSource</b> (Pacakges TripleA and the source in a zip file without compiling)</li>
+					</ul>
+				</blockquote>
+				
+				A quick tip. If you introduce a new file in the <b>data</b> directory, it's best you do a
+				complete re-compile. As always, whenever re-compiling be sure to clean everything first!
+				<blockquote>
+				<code>
+					ant clean<br>
+					ant compile<br>
+					<br>
+					or<br>
+					<br>
+					ant compileClean
+				</code>
+				</blockquote>
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		<h2><a name="sec_c">Engine Code Overview</a></h2>
+		<blockquote>
+			<p>
+				There are 5 components of the over view.
+			</p>
+				
+			<h4><a name="sec_c_1">1: Design Goals</a></h4>
+			<p>
+				The goal of the game engine is to provide a framework to build turn based strategy
+				games. The engine provides networking and data model support.
+			</p>
+				
+			<h4><a name="sec_c_2">2: The Big Picture</a></h4>
+			<p>
+				The developer of a game using the TripleA engine must do three things. Create a game.xml
+				file describing the game, write Delegates to handle game logic (or reuse existing delegates),
+				write GamePlayer classes that handle the user interaction (either human or automated).
+			</p>
+ 
+			<p>
+				The engine provides a parser to parse the game xml data, network transparent game data
+				updates, and handles network communication between Delegates and GamePlayers.
+			</p>
+			
+			<h4><a name="sec_c_3">3: Game Data</a></h4>
+			<p>
+				Game data is read from an xml file that follows the game.dtd schema. (in the data\games\strategy\engine\xml directory).
+			</p>
+ 
+			<p>
+				The game xml file specifies:
+				<ul>
+					<li>Game name and version</li>
+					<li>Class used to load the game</li>
+					<li>Territory names</li>
+					<li>Connection between territories</li>
+					<li>Resource types</li>
+					<li>Players and alliances</li>
+					<li>Unit types</li>
+					<li>Production rules</li>
+					<li>Initial unit placement</li>
+					<li>Initial territory ownership</li>
+					<li>Initial resource allocation</li>
+					<li>Attachments (more later)</li>
+					<li>Game play sequence (more later)</li>
+				</ul>
+				All the data above is parsed by the game, and can be accessed through the GameData object.
+			</p>
+				
+			<h4><a name="sec_c_4">3.1 Attachments</a></h4>
+			<p>
+				The xml file format must be general enough to describe the data for any turn based strategy
+				game, yet specific enough to be able to describe a game completely.
+			</p>
+ 
+			<p>
+				The problem is that each game differs in the type of data that must be specified. For example,
+				some games may need to specify how many hits a unit can take before it dies, while other games
+				don’t. In order for the xml file to be flexible enough to handle all games the concept of an
+				attachment is used.
+			</p>
+ 
+			<p>
+				An attachment is a set of name:value pairs. This set of name value pairs can be attached to unit
+				types, players, territories, or resources. An example of an attachment to the infantry unit type
+				in axis and allies is:
+				<blockquote>
+<xmp>
+<attatchment name="unitAttatchment" attatchTo="infantry"
+	     javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
+	     type="unitType">
+	<option name="attack" value="1"/>
+	<option name="defense" value="2"/>
+</attatchment>
+</xmp>
+				</blockquote>
+			</p>
+				
+			<p>
+				This tells the xml parser to create an instance of UnitAttatchment, attach it to the infantry unit type,
+				and initialize the attachment with an attack value of 1, and a defense value of 2.
+			</p>
+ 
+			<p>
+				The game parser uses the java bean syntax for setting the attatchment values. If an attachment has an
+				option name of code, then it will call <b>setCode(value)</b> to set the attachments value. The <b>setCode</b> method
+				will always use a string as its argument.
+			</p>
+ 
+			<p>
+				After an attachment is created, the engine validates it by calling <b>validate()</b>. This allows the attachment
+				to throw a <b>GameParseException</b> if it is initialized with an invalid state. Throwing a game parse exception
+				will stop the parser, and terminate the program.
+			</p>
+ 
+			<p>
+			Attachments can be found using the <b>Attatchable.getAttatchment(String key)</b>, where key is the name of the
+			attachment. In the above example key would be unitAttatchment. Objects implementing the <b>Attatchable</b> interface
+			are PlayerID, Resource, Territory, and UnitType.
+			</p>
+				
+			<h4><a name="sec_c_5">3.2 Game Play Sequence</a></h4>
+			<p>
+				Turn based strategy games generally go through a series of well defined steps. In axis and allies, these steps
+				are tech roll, purchase, combat move, battle, non combat move, place, collect resources.
+			</p>
+ 
+			<p>
+				The logic for each step is encapsulated in a delegate.
+			</p>
+				
+			<h4><a name="sec_c_6">3.2.1 Delegate</a></h4>
+			<p>
+				A delegate is the game logic for one step of the game. In axis and allies there would be a delegate for movement,
+				a delegate for purchase, a delegate for placing etc. A delegate is responsible for validating player actions,
+				and updating the game state to reflect player actions.
+			</p>
+ 
+			<p>
+				Ideally delegates would be independent of each other, and could be mixed and matched. For example if a risk game
+				and an axis and allies game were both implemented in using the TripleA framework, then you should be able to
+				create a new game that combines the axis and allies battle logic with the movement logic of risk, simply by
+				reusing the respective delegates. Currently this flexibility is not available because there is a degree of
+				interdependence between the delegates. In tripleA, the battle delegate uses services supplied by the movement
+				delegate, and vice versa. Other dependencies exist as well.
+			</p>
+ 
+			<p>
+				Delegates are restricted in what they are allowed to do. A delegate must talk to game players and get random
+				data through its DelegateBridge. Also a delegate cannot change the game data directly, but must use the
+				ChangeFactory to create changes, and then add them through the Delegates DelegateBridge.
+			</p>
+			
+			<h4><a name="sec_c_7">3.2.2 Specifying game sequence</a></h4>
+			<p>
+				In the game xml file you can specify the sequence of steps the game goes through in the gamePlay tag.
+			</p>
+ 
+			<p>
+				As an example:
+				<blockquote>
+<xmp>
+<gamePlay>
+	<delegate name="battle" javaClass="BattleDelegate"/>
+	<delegate name="move" javaClass="MoveDelegate"/>
+	<sequence>
+		<step name="usMove" delegate="move" player="bush"/>
+		<step name="usFight" delegate="battle" player="bush"/>
+		<step name="canMove" delegate="move" player="chretian"/>
+		<step name="canFight" delegate="battle" player="chretian"/>
+	</sequence>
+</gamePlay>
+</xmp>			
+				</blockquote>
+				This tells the engine that there are two delegates, battle and move, and that there are four steps,
+				usMove, usFight, canMove, canFight, and that the game cycles through these 4 steps until the game ends.
+			</p>
+			
+			<h4><a name="sec_c_8">3.2.3 Step Life Cycle</a></h4>
+			<p>
+				The following steps occur in sequencewhen a delegate runs:
+				<ul>
+					<li>1. The delegates start method is called. This gives the delegate a copy of GameData and its DelegateBridge.</li>
+					<li>2. If a GamePlayer is specified in the game xml file for the step, then the players start method is called. The argument to start is the name of the step specified in the game xml file.</li>
+					<li>3. The delegates end method is called. Signifying that the step is over.</li>
+				</ul>
+			</p>
+				
+			<h4><a name="sec_c_9">3.3 Changing Game Data</a></h4>
+			<p>
+				To preserve network transparency game data is not changed directly by the delegates. All changes to
+				game data are made by through the DelegateBridge.addChange(Change aChange). This allows the game
+				engine to synchronize changes in game data between machines.
+			</p>
+ 
+			<p>
+				The Change class encapsulates a change of game data. Changes are created using the ChangeFactory class.
+			</p>
+ 
+			<p>
+				For example, a Delegate wanting to change the owner of a territory would use the following code:
+				<blockquote>
+				<code>
+					Change aChange = ChangeFactory.changeOwner(aTerritory, aPlayer);<br>
+					aDelegateBridge.perform(aChange);
+				</code>
+				</blockquote>
+			</p>
+				
+			<h4><a name="sec_c_10">4 Game Players</a></h4>
+			<p>
+				A GamePlayer is responsible for making moves in a game. A game player can be anything from a GUI to
+				an AI to a PBEM interface.
+			</p>
+ 
+			<p>
+				A GamePlayer sends messages to the current game delegate saying what moves the player would like
+				to make. The Delegate will then validate the move, and if the move is valid, alter the GameData.
+			</p>
+				
+			<h4><a name="sec_c_11">5 Communication</a></h4>
+			<p>
+				Communication between delegates and game players is done through a simple message passing scheme.
+				A message is any object that implements the Message interface, which is simply an extension of Serializable.
+			</p>
+ 
+			<p>
+				A Delegate can send a message to any GamePlayer while it is executing (ie after its start method is called,
+				and before its end method returns) and a GamePlayer can send a message to the Delegate that is currently
+				running while the GamePlayer is after its start method is called and before its start method returns.
+			</p>
+				
+			<h4><a name="sec_c_12">5.1 Bridges</a></h4>
+			<p>
+				Because delegates and game players may not be on the same machine, communication is done through Bridges.
+			</p>
+ 
+			<p>
+				A delegate can send a message to a player through its delegateBridge using the sendMessage(..)
+				functions. A delegate can send a message to any GamePlayer.
+			</p>
+ 
+			<p>
+				A GamePlayer can only send a message to the games current delegate. The message is sent using
+				the GamePlayers PlayerBridge.
+			</p>
+			
+ 			<p>
+				The game engine takes care of routing these messages across the network if necessary.
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		<h2><a name="sec_d">Creating Custom Games</a></h2>
+		<blockquote>
+			<p>
+				The initial settings for each game are stored in a file that you can edit to create a
+				new game.  You can modify unit placement, territory ownership, number of players,
+				alliance of players, turn order, strengths of units, and other factors.
+			</p>
+		
+			<h4><a name="sec_d_1">Editing the file</a></h4>
+			<p>
+				Before you start make a copy of classic_a&a.xml and rename it mygame.xml.
+				You can modify this file without changing the way the game works normally.
+			</p>
+			
+			<p>
+				You can open the file in any text editor.  On windows you can use Notepad.
+				Simple start notepad, and then use the file-> open menu.  When you save the
+				game, make sure that you save the game with the correct extension (.xml).
+				When saving use file->save as, and before you save change the "Save as Type"
+				to be "All Files".
+			</p>
+			
+			<h4><a name="sec_d_2">Sanity check</a></h4>
+			<p>
+				Many of the values you can modify make no sense, and may cause the game
+				to become unstable while playing.  It is possiible for instance to specify
+				an attack value of 10 for an infantry unit, or to say that a nation has
+				two capitals, or none.  Needless to say this may cause the game to act
+				in weird ways.  This may be what you want, but be warned.
+			</p>
+			
+			<h4><a name="sec_d_3">Modifying unit placement</a></h4>
+			<p>
+				Look in the file for the line:
+<xmp>
+	<unitInitialize>
+</xmp>
+			</p>
+			
+			<p>
+				After that line you will see a series of lines that look something like:
+<xmp>
+	<unitPlacement unitType="infantry" territory="Alaska" quantity ="1" owner="Americans" />
+</xmp>
+			This line simply says to place 1 infantry in Alaska owned by the americans.  You can add, modify or delete lines to change where units are placed.  Be sure to get the spelling of the players and the territories right.
+			</p>
+			
+			<h4><a name="sec_d_4">Modifying territory ownership</a></h4>
+			<p>
+				Look in the file for the line:
+<xmp>
+	<ownerInitialize>
+</xmp>
+			</p>
+			
+			<p>
+				After this line you will see a series of lines like
+<xmp>
+	<territoryOwner territory="Alaska" owner = "Americans" />
+</xmp>
+
+				You can modify these lines to change the starting ownership of each country.
+				If you want a country to be neutral then remove the line for that territory.
+				If a country is neutral, add a new line to set it's ownership.
+			</p>
+			
+			<h4><a name="sec_d_5">Changing player alliances</a></h4>
+			<p>
+				Look in the file for the line,
+<xmp>
+	<playerList>
+</xmp>
+			</p>
+			
+			<p>
+				You will see a  series of lines like,
+<xmp>
+	<alliance player="Germans" alliance="Axis"/>
+</xmp>
+			</p>
+			
+			<p>
+				To switch the german player to be allied, you would simply change this line to be
+<xmp>
+	<alliance player="Germans" alliance="Allies"/>
+</xmp>					
+			</p>
+			
+			<h4><a name="sec_d_6">Changing unit strengths</a></h4>
+			<p>
+				To change the attack, defense or movement points of a unit look for a line that looks like
+<xmp>
+	<attatchmentList>
+</xmp>
+			</p>
+			
+			<p>
+				Beneath that you will see a series of lines like:
+<xmp>
+	<attatchment name="unitAttatchment"
+		     attatchTo="infantry"
+		     javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
+		     type="unitType">
+		<option name="movement" value="1"/>
+		<option name="transportCost" value="1"/>
+		<option name="attack" value="1"/>
+		<option name="defense" value="2"/>
+</xmp>
+				You can modify these lines to change the attack, defence and movement of an infantry.  You can make similiar adjustments for the other unit types.
+			</p>
+			
+			<h4><a name="sec_d_7">Changing territory production</a></h4>
+			<p>
+				To change the production value of the Caucus, look for a line that looks like
+<xmp>
+	<attatchment name="territoryAttatchment" 
+		     attatchTo="Caucaus"                      
+		     javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory" >
+		<option name="production" value="3" />
+	</attatchment>
+</xmp>
+			</p>
+
+			<p>
+				By changing the line:
+<xmp>
+	<option name="production" value="3" />
+</xmp>
+				to
+<xmp>
+	<option name="production" value="10" />
+</xmp>
+				You will change the production of the caucus to 10.
+			</p>
+			
+			
+			<h4><a name="sec_d_8">Changing capital placement</a></h4>
+			<p>
+				You can change the location of the capitals for each player by moving a line.
+				The capital for the us is specified in the capital setting below:
+<xmp>
+	<attatchment name="territoryAttatchment"  attatchTo="East US" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory" >
+		<option name="production" value="12" />
+		<option name="originalFactory" value="true" />
+		<option name="capital" value="Americans" />
+	</attatchment>
+</xmp>
+
+				By moving this line to another territory, you will change the capital of the US to a different state.
+			</p>
+			
+			
+			<h4><a name="sec_d_9">Changing turn sequence</a></h4>
+			<p>
+				You can change the sequence of who moves when.
+			</p>
+			
+			<p>
+				If you look for the line:
+<xmp>
+	<sequence>
+</xmp>
+				Below that are a series of lines like:
+<xmp>
+	<step name="russianTech" delegate="tech" player="Russians"/>
+</xmp>
+				The game will run the steps in the order listed.  To make the Russians move after the japanese, simply move all the russian step lines after the japanese step lines.
+			</p>
+			
+			<h4><a name="sec_d_10">And much more</a></h4>
+			<p>
+				You can write code to change the behaviour of the game in ways that the author never intended.
+				There is a brief  document that outlines the design of the engine.  The source code is released
+				under the gpl, and you are free to download it and modify it as long as you follow the terms of the gpl.
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		<h2><a name="sec_e">Using Map Utilities</a></h2>
+		<blockquote>
+			<p>
+				There are 5 main map utilities that can be used for TripleA:
+				<ul>
+					<li><b>CenterPicker</b>: Allows you to pick the center points for each territory (land & sea).</li>
+					<li><b>PolygonGrabber</b>: Creates a text file with all the polygon points that is needed by TripleA.</li>
+					<li><b>PlacementPicker</b>: Manually Select the placement area for units.</li>
+					<li><b>AutoPlacementFinder</b>: Automatically find placement areas (recomended).</li>
+					<li><b>ReliefImageBreaker</b>: Cuts up the map into relief images (PNG format). Can choose land and sea zones.</li>
+				</ul>
+			</p>
+			
+			<h4><a name="sec_e_1">Order of Usage</a></h4>
+			<p>
+				There is a general order in which you need to use the utilities. If your starting with a brand new
+				map then you would want to run your map through these utilities in this order:
+				<ul>
+					<li>1: Run it through the CenterPicker</li>
+					<li>2: Then through the PolygonGrabber</li>
+					<li>3: Run the AutoPlacementFinder</li>
+					<li>4: Lastly, run the ReliefImageBreaker</li>
+				</ul>
+				As you can see I skipped the PlacementPicker in favor of the AutoPlacementFinder. It is generally easier
+				to run the auto finder as it does a really nice job and you just let it go and it does everything
+				for you. If you insist on doing everything manually by hand, then run the PlacementPicker and do it all
+				manualy.
+			</p>
+		
+			<h4><a name="sec_e_2">How To: CenterPicker</a></h4>
+			<p>
+				To get the CenterPicker working you need to have compiled TripleA. Once you have compiled TripleA,
+				go inside the <b>classes</b> directory from the console or DOS Prompt. Once there run the folling
+				command to get the CenterPicker working:
+				<blockquote>
+				<code>
+					java util/image/CenterPicker
+				</code>
+				</blockquote>
+				The first thing it will ask you is to select the map image. Do as it says and select the image you
+				want. Normally you would want a GIF image since TripleA has been using GIF image for the base map 
+				since its birth. Using a PNG base map has not been tested and may cause instability.
+			</p>
+			
+			<p>
+				The next thing that will happen is that it will ask you to select a Polygons file. This is essentially
+				the text file filled with polygon coordinates that you would get from the PolygonGraber program, but
+				if you don't have one handy for your map, then press <b>Cancel</b>, the CenterPicker will continue without
+				it.
+			</p>
+			
+			<p>
+				You will see the map loaded within a frame and scroll bars. Your job now is to click in the center of a
+				territory (be it sea or land, your gonna have to do them all eventually) with the left mouse
+				button. You will see a small dialog popping infront of you with a default message "there be dragons."
+				You are supposed to replace it with the name of the territory. When done hit <b>OK</b> and then hit
+				<b>Yes</b> to verify what you have done. After that you will see a red dot on the territory. That is the
+				center point of the territory. Do this to ALL the territories and sea zones!
+			</p>
+			
+			<p>
+				When your done, you can click the <b>Save Centers</b> button to save all the center points to a file, which
+				will save in the current running directory. Alternatively if your using the utility to correct an error, you
+				can load a pre-defined centers file and continue your work or something like that.
+			</p>
+			
+			<h4><a name="sec_e_3">How To: PolygonGrabber</a></h4>
+			<p>
+				To get the PolygonGrabber working you need to have compiled TripleA. Once you have compiled TripleA,
+				go inside the <b>classes</b> directory from the console or DOS Prompt. Once there run the folling
+				command to get the PolygonGrabber working:
+				<blockquote>
+				<code>
+					java util/image/PolygonGrabber
+				</code>
+				</blockquote>
+				The first thing it will ask you is to select the map image. Do as it says and select the image you
+				want. Normally you would want a GIF image since TripleA has been using GIF image for the base map 
+				since its birth. Using a PNG base map has not been tested and may cause instability.
+			</p>
+			
+			<p>
+				After you select your map it will then ask you to select a <b>Centers</b> file. Yeah, you guessed it!
+				You need the output of center points from the CenterPicker. The PolygonGrabber needs this file to guess
+				the territory names.
+			</p>
+			
+			<p>
+				Once everything is loaded, you are presented with the map (again). You job here is to make sure the utility
+				has selected every territory and aquired its polygon points. To do this you click on a country with the 
+				<b>left mouse</b> button. It will highlight in RED, then you click again with the <b>right mouse</b> button
+				it will show you the name of the territory, to which you will have to verify. If it is correct then hit <b>OK</b>
+				and the territory will turn all BLACK to indicate it has been accounted for. You will need to do this to all
+				sea and land territories.
+			</p>
+			
+			<p>
+				Once done, you can press <b>Save Polygons</b> button to save all the polygon points to disk, which will be saved
+				at the current working directory you are at. Alternatively you can load a file with pre-defined polygon points if
+				you need to fix something.
+			</p>
+			
+			
+			<h4><a name="sec_e_4">How To: PlacementPicker</a></h4>
+			<p>
+				To get the PlacementPicker working you need to have compiled TripleA. Once you have compiled TripleA,
+				go inside the <b>classes</b> directory from the console or DOS Prompt. Once there run the folling
+				command to get the PlacementPicker working:
+				<blockquote>
+				<code>
+					java util/image/PlacementPicker
+				</code>
+				</blockquote>
+				The first thing it will ask you is to select the map image. Do as it says and select the image you
+				want. Normally you would want a GIF image since TripleA has been using GIF image for the base map 
+				since its birth. Using a PNG base map has not been tested and may cause instability.
+			</p>
+		
+			<p>
+				You will then be asked to choose a file with polygon points. This is not mandatory. You can run the
+				program without it, but if you have the polygon files done, it is recomended you load it.
+			</p>
+			
+			<p>
+				Once the map and/or polygons file are loaded, you will see the image of the map (yet again). Your
+				mouse cursor will be followed by a small red box. Even though I never got the PlacementPicker to function
+				right, here is sgb's notes on how to use it:
+				<ul>
+					<li>Left mouse button, start in territory.</li>
+					<li>Left mouse button + ctrl, add point.</li>
+					<li>Right button + ctrl, write.</li>
+					<li>Right button, remove last.</li>
+				</ul>
+				As usual when your done you can save the placement points to file.
+			</p>
+			
+			<h4><a name="sec_e_5">How To: AutoPlacementFinder</a></h4>
+			<p>
+				To get the AutoPlacementFinder working you need to have compiled TripleA. Once you have compiled TripleA,
+				go inside the <b>classes</b> directory from the console or DOS Prompt. Once there run the folling
+				command to get the AutoPlacementFinder working:
+				<blockquote>
+				<code>
+					java util/image/AutoPlacementFinder
+				</code>
+				</blockquote>
+			</p>
+			
+			<p>
+				There is a very large pre-requisite to satisfy before getting the AutoPlacementFinder to work. You
+				will need to have created the <b>centers.txt</b> and <b>polygons.txt</b> first and placed them with the
+				image map in a designated folder. Below is where you would have placed your folder. Lets say you 
+				wanted to call your map "Pacific," it would be like so:
+				<blockquote>
+				<code>
+					data/games/strategy/triplea/images/image/maps/pacific
+				</code>
+				</blockquote>
+				In that <b>pacific</b> folder you would have placed your "largeMap.gif" with that exact name and your
+				centers.txt and polygons.txt files there. Also keep note that the folder name <b>pacific</b> gets used
+				the AutoPlacementFinder!! and it is the same name that will be used to identify what map will be used
+				when writing your XML game file!
+			</p>
+			
+			<p>
+				Once you have everything set up, run the AutoPlacementFinder. It will ask you to enter the map name as
+				specified by the XML Game file. This is where you will enter <b>pacific</b>, if you were running it against
+				the revised map or the pact of steel map you would enter <b>revised</b> or <b>pact_of_steel</b> respectively.
+				Once you entered the name, it should begin calculating the placement points. This may take a while, perhaps
+				5 or 10 minutes. It will list the territories to the console as it finishes finding the placement points
+				for them, to give you an idea of where it is at. When it is done, it will write the placement points to file.
+			</p>
+			
+			<h4><a name="sec_e_6">How To: ReliefImageBreaker</a></h4>
+			<p>
+				To get the ReliefImageBreaker working you need to have compiled TripleA. Once you have compiled TripleA,
+				go inside the <b>classes</b> directory from the console or DOS Prompt. Once there run the folling
+				command to get the ReliefImageBreaker working:
+				<blockquote>
+				<code>
+					java util/image/ReliefImageBreaker
+				</code>
+				</blockquote>
+			</p>
+
+			<p>
+				There is a minor pre-requisite to satisfy before getting the AutoPlacementFinder to work. You
+				will need to have created the <b>centers.txt</b> and <b>polygons.txt</b> and (maybe) <b>place.txt</b>
+				first and placed them with the image map in a designated folder. Below is where you would have placed
+				your folder. Lets say you wanted to call your map "Pacific," it would be like so:
+				<blockquote>
+				<code>
+					data/games/strategy/triplea/images/image/maps/pacific
+				</code>
+				</blockquote>
+				You will also need to create a new directory called <b>newImages</b> in "classes" right before
+				running the ReliefImageBreaker! This is where it will store all newly created images. If it can not
+				find this folder it will crash.
+			</p>
+			
+			<p>
+				When you run the program you will need to select the image map. After that it will ask you if you want
+				to <b>Only do Sea Zones? [Y/N]</b>. Say <b>Y</b> if you want it to ONLY cut up the sea zones as relief
+				images (note this is how the regular revised map is). Say <b>N</b> if you want it to cut up only the land
+				territories as relief images (note this is how the classic map has it). After this you will be asked to enter
+				the map name as indicated by the XML game file. Here is where you enter the folder name, we mentioned above
+				as an example we will use "pacific" so enter that in. That will make it invoke TripleA's TerritoryData class
+				and make it find the map folder and read in those text files. After you do this it should be cutting up the
+				images and writing them in the "newImages" folder and verbosely displaying its status in the console.
+			</p>
+			
+			<p>
+				If you want to create both Land and SeaZone relief images, then you will have to run the program twice, each time
+				creating a "newImages" directory (which means you will have the change the name of the previously created one).
+				the sea zone relief images should be in a folder called "seazones" while the land relief images should be in a
+				folder called "countries" and they all should be moved into the designated folder in the data directory as
+				shown below for our "pacific" example:
+				<blockquote>
+				<code>
+					data/games/strategy/triplea/images/image/maps/pacific<br>
+					data/games/strategy/triplea/images/image/maps/pacific/seazones<br>
+					data/games/strategy/triplea/images/image/maps/pacific/countries<br>
+					data/games/strategy/triplea/images/image/maps/pacific/centers.txt<br>
+					data/games/strategy/triplea/images/image/maps/pacific/polygons.txt<br>
+					data/games/strategy/triplea/images/image/maps/pacific/place.txt<br>
+					data/games/strategy/triplea/images/image/maps/pacific/largeMap.gif
+				</code>
+				</blockquote>
+			</p>
+			
+			<h4><a name="sec_e_7">How the Map Directory Structure Works</a></h4>
+			<p>
+				All maps and their config files are in their own folders. As an example I will list how
+				the <b>Classic</b> and <b>Revised</b> map folders are in TripleA.
+				<blockquote>
+				<code>
+					triplea/data/games/strategy/triplea/image/images/maps<br>
+					<br>
+					has<br>
+					<br>
+					   classic/<br>
+					   revised/<br>
+					   pact_of_steel/
+				</code>
+				</blockquote>
+				
+				Inside the <b>classic</b> folder has these files in it:
+				<blockquote>
+				<code>
+					triplea/data/games/strategy/triplea/image/images/maps/classic<br>
+					<br>
+					has<br>
+					<br>
+					   centers.txt<br>
+					   place.txt<br>
+					   polygons.txt<br>
+					   largeMap.gif<br>
+					   seazones/<br>
+					   countries/<br>
+				</code>
+				</blockquote>
+				
+				Inside the <b>revised</b> folder has these files in it:
+				<blockquote>
+				<code>
+					triplea/data/games/strategy/triplea/image/images/maps/revised<br>
+					<br>
+					has<br>
+					<br>
+					   centers.txt<br>
+					   place.txt<br>
+					   polygons.txt<br>
+					   largeMap.gif<br>
+					   seazones/<br>
+				</code>
+				</blockquote>
+				As you can see they have identical names, but are placed in different folders. This makes it ideal for TripleA
+				to load multiple maps without the user needing to do any code changes. The XML Game file will already specify
+				what map to use from the very most bottom line:
+<xmp>
+	<property name="mapName" value="revised" editable="false"/>
+</xmp>
+				The value <b>revised</b> indicates the folder name which helps TripleA find the files it needs to load.
+			</p>
+			
+			<h4><a name="sec_e_8">Creating External MapPacks</a></h4>
+			<p>
+				Anyone can create their own map image and run it through the map utilities to produce the config files.
+				They can get it to work on their own computer and construct their own XML Game file for it.
+				What they can do is place all the files in a folder and Zip it up. Then anyone else can download the zip file
+				and extract it to <b>data/games/strategy/triplea/images/image/maps</b> and place the XML Game file in
+				<b>triplea/games</b> and then presto! They can run the game!.
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		<h2><a name="sec_f">Release Model</a></h2>
+		<blockquote>
+			<p>
+				This section will go over the three types of releases: <b>CVS</b>, <b>Unstable</b>, and <b>Stable</b>. It will also
+				discuss the numbering system of the packages and how they play a role in the development process. We also take into
+				account issues that need to be dealt with while developing TripleA using this release model. Certain issues such as
+				whitebox testing by developers and blackbox testing by the end user, adding new features, user requests of new features,
+				and many more which will be addressed in this section.
+			</p>
+			
+			<h4>TripleA Release Model</h4>
+			<p>
+				 CVS ---> Unstable ---> Stable ---> Future Requirements ---> CVS ...etc
+			</p>
+			
+			<p>
+				The release model follows a spiral pattern. This spiral pattern allows TripleA to be worked on in several stages,
+				thus being the CVS, Unstable, and Stable stage. A spiral pattern is imperative to any form of development, this
+				type of model ensures the software will be developed, tested, released, and improved over time.
+			</p>
+			
+			<h4>CVS</h4>
+			<p>
+				The CVS is meant to be used by developers only. Of course it is not strictly restricted to developers only, anyone
+				can check out a fresh copy of the CVS and run it, but it should be considered highly unstable. The CVS is where
+				the bulk of the coding will take place, this is basically the experimental developing grounds where new features
+				are coded. Below are a list of issues that we exepect from a CVS build at this stage:
+				<blockquote>
+					<b>1:</b> Expected to contain freshly developed features that may not exists in other builds.<br>
+					<b>2:</b> Expect high instability, program crashes, bugs, and run-time errors.<br>
+					<b>3:</b> Expect new builds of the CVS almost nightly.<br>
+					<b>4:</b> Should not be compile broken. The CVS must compile without errors.<br>
+					<b>5:</b> Testing grounds for the design and implementation of new features.<br>
+				</blockquote>
+				CVS will not be released as a package and placed on the main download site. Users can obtain a copy of the CVS
+				anonymously through sourceforge. Instructions for anonymous CVS access for non-developers can be found <a href="sec_a">here</a>.	
+			</p>
+			
+			<h4>Unstable</h4>
+			<p>
+				Once certain requirements are made and implemented into the CVS, it is ready for testing. An Unstable build is
+				released with a numbering system that portrays its version number and its release number. The version number
+				indicates if new features have been added since the last release of the build. The release number indicates
+				that no new features were added but various bug fixes were made. Examples are listed below:
+				<blockquote>
+				<code>
+					TripleA_Unstable_0_5_1
+				</code>
+				</blockquote>
+				<blockquote>
+					<b>1:</b> First string is the name of the project: "TripleA"<br>
+					<b>2:</b> Second string indicates what type of build it is: "Unstable"<br>
+					<b>3:</b> Third is the version number.<br>
+					<b>4:</b> The middle number is the version number.<br>
+					<b>5:</b> The last number is the release number.<br>
+				</blockquote>
+			</p>
+			
+			<p>
+				The unstable build is packaged and released in order to test the newly implemented features
+				that have been added during the CVS stage. This build is intended for use by developers and
+				the end user. The purpose of a testing build is to increase the speed of error detection and
+				possible bug fixes. Due to the nature of OpenSource projects, developers cannot devote 100%
+				of their efforts on this project due to lack of funds and other social constraints (ie. other
+				jobs, families...etc).
+			</p>
+			
+			<p>
+				This stage allows the community of users to test the new build and perform blackbox testing.
+				They are expected to test the new features of the software out and report bugs if any should
+				occur. Users are also encouraged to go a bit further and look into the source code to see if
+				they can offer a bug fix or a suggestion for new implementation.
+			</p>
+			
+			<p>
+				Developers (and programming knowledgable users) can perform whitebox testing where they look
+				at the source code of newly implemented features and purposely try to cause the software to
+				crash or behave unexpectidely. This helps to locate bugs and security holes from which
+				blackbox testing may over look. As usefull as whitebox testing may be, blackbox testing
+				helps find bugs in the over all useability of the software. Such things as bad user interface
+				design, complex use of images/colors, confusing actions that hurt playability (ie. too many
+				buttons, inproper implementation of mouse clicks, bad window behaviour ..etc).
+			</p>
+			
+			<p>
+				Unstable builds can be re-released with bug fixes so that it can be tested again. Once a
+				build has been in the testing stage for a solid duration of time that allows users to fully
+				use all the features (ie. 2 weeks or more) then a summary report can be made that outlines
+				the number of bugs found and the percentage of those bugs that have been fixed to those that
+				could not be fixed but work-arounds have been made. After that it will be up to the project
+				manager to discuss with the rest of the development team if a testing build is ready to be
+				released as Stable.
+			</p>
+			
+			<h4>Stable</h4>
+			<p>
+				A Stable release should indicate that the software is fully playable and the game can be
+				played from start to finish without any program crashes or bugs that will yield undesirable
+				side-effects. As this should hold true, life is not perfect. Stable builds are allowed to
+				contain a minimal amount of bugs that will not harm game-play (ie. non-combat moves during
+				combat stage, map abnormalities, anything that can be worked around).
+			</p>
+			
+			<p>
+				Stable builds should go through a minimum of 2 weeks of testings as an "Unstable" package
+				in order to weed out the obvious bugs.
+			</p>
+			<a href="#top">- Top -</a>
+		</blockquote>
+		
+		<h2><a name="sec_g">Conventions</a></h2>
+		<blockquote>
+			<p>
+				These are some of the conventions developers use when developing on TripleA and it is recomended
+				that all developers follow these conventions.
+				<ul>
+					<li>Programming: All braces { } are to be on separate lines.</li>
+					<li>Programming: Do not use Tabs, use 4 spaces instead.</li>
+					<li>Programming: Do not flood source code with comments. If needed place the comments
+					    in the method header.</li>
+					<li>Programming: It is considered nice to have comments providing the following for every method</li>
+						<ul>
+							<li>A method header showing the parameter types expected to be going in/out/returning</li>
+							<li>A description of what the method does and what each parameter represents</li>
+							<li>What is expected to be returned (if any).</li>
+						</ul>
+					<li>CVS: Be sure not to commit files that will break the compiliation process.</li>
+					<li>CVS: Generally good manners to send a message to the developer mailing list saying
+					    what changes you made in your last commit.</li>
+				</ul>
+			</p>
+		</blockquote>
+		<a href="#top">- Top -</a>
+		
+		<!-- footer -->
+		<br>
+		<hr>
+		<a href="http://sourceforge.net"><img src="images/sflogo.png" width="125" height="37" border="0" alt=""></a>&nbsp;
+		<a href="http://sourceforge.net/donate/index.php?group_id=44492"><img src="images/project-support.jpg" width="88" height="32" border="0" alt=""></a>
+	</body>
+</html>
