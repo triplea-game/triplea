@@ -87,7 +87,6 @@ public class PBEMStartup extends JPanel
   void m_testButton_actionPerformed(ActionEvent e)
   {
     IronyGamesDiceRollerRandomSource random = new IronyGamesDiceRollerRandomSource(m_email1TextField.getText(), m_email2TextField.getText());
-    random.setUI(this);
     random.test();
   }
 

@@ -82,12 +82,6 @@ public class TripleA implements IGameLoader
             TerritoryImageFactory.setFourthEdition(fourthEdition);
             
             TripleAFrame frame = new TripleAFrame(game, players);
-
-            //the pbem roller needs to know about the ui.
-            if (game.getRandomSource() != null && game.getRandomSource() instanceof IronyGamesDiceRollerRandomSource)
-            {
-                ((IronyGamesDiceRollerRandomSource) game.getRandomSource()).setUI(frame);
-            }
             
 
             frame.setVisible(true);

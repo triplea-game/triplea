@@ -34,7 +34,6 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
 {
   private final String m_player1Email;
   private final String m_player2Email;
-  private transient Component m_ui;
 
   public IronyGamesDiceRollerRandomSource(String player1Email, String player2Email)
   {
@@ -47,16 +46,11 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
    */
   public void test()
   {
-    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(JOptionPane.getFrameForComponent(m_ui), 1, "Test", m_player1Email, m_player2Email);
+    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getCocusedFrame(), 1, "Test", m_player1Email, m_player2Email);
     dialog.setTest();
 
     dialog.roll();
 
-  }
-
-  public void setUI(Component component)
-  {
-    m_ui = component;
   }
 
   /**
@@ -64,14 +58,30 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
    */
   public int[] getRandom(final int max, final int count, final String annotation)
   {
-    if (m_ui == null)
-      throw new IllegalStateException("No ui");
 
-    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(JOptionPane.getFrameForComponent(m_ui), count, annotation, m_player1Email, m_player2Email);
+    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getCocusedFrame(), count, annotation, m_player1Email, m_player2Email);
     dialog.roll();
     return dialog.getDiceRoll();
   }
 
+  private Frame getCocusedFrame()
+  {
+      Frame[] frames = Frame.getFrames();
+      Frame rVal = null;
+      for(int i = 0; i < frames.length; i++)
+      {
+          //find the window with focus, failing that, get something that is visible
+          if(frames[i].getFocusOwner() != null)
+              rVal = frames[i];
+          else if(rVal == null && frames[i].isVisible())
+          {
+              rVal = frames[i];
+          }
+      }
+      return rVal;
+      
+  }
+  
   /**
    * getRandom
    *
