@@ -133,14 +133,12 @@ public class ProductionPanel extends JPanel
         add(totalIPCs,
                 new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 
-        for (int x = 0; x < m_rules.size() / 2; x++)
+        for (int x = 0; x < m_rules.size(); x++)
         {
-            add((Rule) m_rules.get(2 * x), new GridBagConstraints(x, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+            boolean even = (x / 2) * 2 == x;
+            add((Rule) m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
                     nullInsets, 0, 0));
-            if ((2 * x) + 1 > m_rules.size())
-                ;
-            add((Rule) m_rules.get((2 * x) + 1), new GridBagConstraints(x, 2, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-                    nullInsets, 0, 0));
+
         }
 
         add(m_left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
