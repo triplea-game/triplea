@@ -141,8 +141,6 @@ public class TripleAFrame extends JFrame
 
     m_gameSouthPanel.add(stepPanel, BorderLayout.EAST);
 
-
-
     m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
 
     JPanel gameCenterPanel = new JPanel();
