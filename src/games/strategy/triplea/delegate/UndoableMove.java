@@ -160,7 +160,7 @@ public class UndoableMove implements Serializable
     {
 
         bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() +
-                                     " undo their last move.");
+                                     " undo move " + (m_index + 1)+ ".");
         bridge.getHistoryWriter().setRenderingData(new MoveMessage(m_units, m_route));
 
         //undo any changes to the game data
