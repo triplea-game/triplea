@@ -969,7 +969,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
 
         PlayerID hit = defender ? m_defender : m_attacker;
-        return BattleCalculator.selectCasualties(step, hit, attackableUnits, bridge, text, m_data, dice);
+        return BattleCalculator.selectCasualties(step, hit, attackableUnits, bridge, text, m_data, dice, defender);
     }
 
     private void removeCasualties(Collection killed, boolean canReturnFire, boolean defender, DelegateBridge bridge)
