@@ -1,7 +1,5 @@
 <?xml version="1.0" ?>
-<!--
 <!DOCTYPE game SYSTEM "game.dtd">
--->
 
 <game>
 	<map>
@@ -461,22 +459,6 @@
 		<sequence>
 
 			<step name="gameInitDelegate" delegate="initDelegate"/>
-
-			<step name="russianTech" delegate="tech" player="Russians"/>
-			<step name="russianPurchase" delegate="purchase" player="Russians"/>
-			<step name="russianCombatMove" delegate="move" player="Russians"/>
-			<step name="russianBattle" delegate="battle" player="Russians"/>
-			<step name="russianNonCombatMove" delegate="move" player="Russians"/>
-			<step name="russianPlace" delegate="place" player="Russians"/>
-			<step name="russianEndTurn" delegate="endTurn" player="Russians"/>
-
-			<step name="germanTech" delegate="tech" player="Germans"/>
-			<step name="germanPurchase" delegate="purchase" player="Germans"/>
-			<step name="germanCombatMove" delegate="move" player="Germans"/>
-			<step name="germanBattle" delegate="battle" player="Germans"/>
-			<step name="germanNonCombatMove" delegate="move" player="Germans"/>
-			<step name="germanPlace" delegate="place" player="Germans"/>
-			<step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
 			<step name="britishTech" delegate="tech" player="British"/>
 			<step name="britishPurchase" delegate="purchase" player="British"/>
@@ -1237,13 +1219,6 @@
 			<territoryOwner territory="India" owner="Americans"/>
 
 		</ownerInitialize>
-
-		<resourceInitialize>
-			<resourceGiven player="Japanese" resource="IPCs" quantity="35"/>
-			<resourceGiven player="British" resource="IPCs" quantity="35"/>
-			<resourceGiven player="Americans" resource="IPCs" quantity="35"/>
-
-		</resourceInitialize>
 		<unitInitialize>
 			<!-- india -->
 
@@ -1311,6 +1286,13 @@
 			<heldUnits unitType="aaGun" player="British" quantity="2"/>
 			<heldUnits unitType="transport" player="British" quantity="2"/>
 		</unitInitialize>
+		<resourceInitialize>
+			<resourceGiven player="Japanese" resource="IPCs" quantity="35"/>
+			<resourceGiven player="British" resource="IPCs" quantity="35"/>
+			<resourceGiven player="Americans" resource="IPCs" quantity="35"/>
+
+		</resourceInitialize>
+	
 		
 	</initialize>
 </game>

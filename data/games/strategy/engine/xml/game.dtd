@@ -1,18 +1,18 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!ELEMENT game (map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?)>
 
 <!ELEMENT map (territory+, connection+) >
 	<!ELEMENT territory EMPTY>
 	<!ATTLIST territory
-		name ID #REQUIRED
+		name CDATA #REQUIRED
 		water (true | false)  "false"
 	>
 	<!-- connections are two way -->
 	<!ELEMENT connection EMPTY>
 	<!ATTLIST connection
-		t1 IDREF #REQUIRED 
-		t2 IDREF #REQUIRED
+		t1 CDATA #REQUIRED 
+		t2 CDATA #REQUIRED
 	>
 
 <!ELEMENT resourceList (resource+) >
@@ -82,16 +82,16 @@
 		>
 	<!ELEMENT playerProduction EMPTY>
 	<!ATTLIST playerProduction
-	    player ID #REQUIRED
-	    frontier ID #REQUIRED
+	    player IDREF #REQUIRED
+	    frontier IDREF #REQUIRED
 	>
 	
 <!-- attatchments must implement Attatchment -->
 <!ELEMENT attatchmentList (attatchment+) >
 	<!ELEMENT attatchment (option+)>
 	<!ATTLIST attatchment 
-		name ID #REQUIRED
-		attatchTo IDREF #REQUIRED
+		name CDATA #REQUIRED
+		attatchTo CDATA #REQUIRED
 		javaClass CDATA #REQUIRED
 		type (unitType | territory | resource | player)  "unitType"
 	>
@@ -105,7 +105,7 @@
 	<!ELEMENT ownerInitialize (territoryOwner+) >
 		<!ELEMENT territoryOwner EMPTY>
 		<!ATTLIST territoryOwner 
-			territory IDREF #REQUIRED
+			territory CDATA #REQUIRED
 			owner IDREF #REQUIRED
 		>
 	<!ELEMENT unitInitialize (unitPlacement*, heldUnits*) >
@@ -113,7 +113,7 @@
 		<!ELEMENT unitPlacement EMPTY>
 		<!ATTLIST unitPlacement
 			unitType IDREF #REQUIRED
-			territory IDREF #REQUIRED
+			territory CDATA #REQUIRED
 			quantity CDATA #REQUIRED
 			owner IDREF #IMPLIED
 		>
