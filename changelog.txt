@@ -1,5 +1,13 @@
 Changes for 0.5.2
 
+* add confirmation prompt when exiting the game (sgb)
+
+* jdk 1.4 - 1.5 compatability (sgb)
+
+* Add has relief property to map.properties (sgb)
+
+* Add default unit scroll size to map.properties (sgb)
+
 * Changes to make TripleA compile under Sun JDK 1.5.x (George_H)
 
 * Added better unix shell scripts for TripleA, thanks DMan for the scripts (George_H)
