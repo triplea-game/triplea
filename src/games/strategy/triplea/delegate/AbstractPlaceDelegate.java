@@ -298,7 +298,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
         }
 
         //make sure only 1 AA
-        if (Match.countMatches(units, Matches.UnitIsAA) >= 1)
+        if (!isFourthEdition() &&  Match.countMatches(units, Matches.UnitIsAA) >= 1)
         {
             //if trying to place 2
             if (Match.countMatches(units, Matches.UnitIsAA) > 1)
@@ -375,7 +375,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
         boolean playerIsOriginalOwner = m_player.equals(getOriginalFactoryOwner(producer));
 
         //4th edition, you cant place factories in territories with no production
-        if(m_data.getProperties().get(Constants.FOURTH_EDITION, false) && ta.getProduction() ==0)
+        if(isFourthEdition() && ta.getProduction() ==0)
         {
             return new StringMessage("Cant place factory, that territory cant produce any units" + producer.getName(), true);
         }
@@ -403,6 +403,13 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
         
         return null;
+    }
+
+    
+    private boolean isFourthEdition()
+    {
+
+        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
     private boolean wasConquered(Territory t)
