@@ -158,9 +158,9 @@ public class TransportTracker implements java.io.Serializable
 
 	public void load(Unit unit, Unit transport, UndoableMove undoableMove)
 	{
-
 		loadTransport(transport, unit);
-        undoableMove.load(unit, transport);
+        if(undoableMove != null)
+            undoableMove.load(unit, transport);
 	}
 
 	private void loadTransport(Unit transport, Unit unit)
