@@ -41,12 +41,13 @@ import games.strategy.triplea.delegate.message.*;
  * @version 1.0
  */
 public class BattlePanel extends ActionPanel
-{
-	
+{	
 	private JLabel m_actionLabel = new JLabel();
 	private FightBattleMessage m_fightBattleMessage;
 	private DefaultListModel m_listModel = new DefaultListModel();
 	private JList m_list = new JList(m_listModel);
+	private MyListSelectionModel m_listSelectionModel = new MyListSelectionModel();
+	private TripleAFrame m_parent;
 	
 	private static Font BOLD;
 	static
@@ -57,10 +58,12 @@ public class BattlePanel extends ActionPanel
 	}
 	
 	/** Creates new BattlePanel */
-    public BattlePanel(GameData data, MapPanel map) 
+    public BattlePanel(GameData data, MapPanel map, TripleAFrame parent) 
 	{
 		super(data, map);
 		m_list.setBackground(this.getBackground());
+		m_list.setSelectionModel(m_listSelectionModel);
+		m_parent = parent;
     }
 	
 	public void display(PlayerID id, Collection battles, Collection bombing)
@@ -85,9 +88,29 @@ public class BattlePanel extends ActionPanel
 		SwingUtilities.invokeLater(REFRESH);
 	}
 	
+	public Message battleInfo(BattleInfoMessage msg)
+	{
+		if(!m_parent.playing(msg.getDontNotify()))
+		{
+			setStep(msg);
+			String ok = "OK";
+			String[] options =  {ok};
+			JOptionPane.showOptionDialog(getTopLevelAncestor(), msg.getMessage(), msg.getShortMessage(), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, ok);
+		}
+		return null;
+	}
+	
 	public Message listBattle(BattleStepMessage msg)
 	{
 		removeAll();
+		
+		if(msg.getSteps().isEmpty())
+		{
+			SwingUtilities.invokeLater(REFRESH);
+			return null;
+		}
+		
+		getMap().centerOn(msg.getTerritory());
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -110,7 +133,7 @@ public class BattlePanel extends ActionPanel
 		{
 			m_listModel.addElement(iter.next());
 		}
-		m_list.setSelectedIndex(0);
+		m_listSelectionModel.hiddenSetSelectionInterval(0);
 		panel.add(m_list, BorderLayout.CENTER);
 		add(panel);
 		SwingUtilities.invokeLater(REFRESH);
@@ -164,7 +187,7 @@ public class BattlePanel extends ActionPanel
 			{
 				public void run()
 				{	
-					m_list.setSelectedIndex(set);
+					m_listSelectionModel.hiddenSetSelectionInterval(set);
 				}
 			};
 			
@@ -236,8 +259,11 @@ public class BattlePanel extends ActionPanel
 		setStep(rqm);
 		
 		String message = rqm.getMessage();
-		int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Retreat?", JOptionPane.OK_CANCEL_OPTION);
-		boolean retreat = (choice == JOptionPane.YES_NO_OPTION);
+		String ok = "Retreat";
+		String cancel ="Cancel";
+		String[] options ={ok, cancel};
+		int choice = JOptionPane.showOptionDialog(getTopLevelAncestor(), message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
+		boolean retreat = (choice == 0);
 		if(!retreat)
 			return null;
 				
@@ -271,7 +297,7 @@ public class BattlePanel extends ActionPanel
 			m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			JScrollPane scroll = new JScrollPane(m_list);
 			add(scroll, BorderLayout.CENTER);
-			m_list.setSelectionInterval(0,0);
+			m_listSelectionModel.hiddenSetSelectionInterval(0);
 		}
 		
 		public Territory getSelection()
@@ -280,8 +306,6 @@ public class BattlePanel extends ActionPanel
 		}
 	}
 
-	
-	
 	class FightBattleAction extends AbstractAction
 	{
 		Territory m_territory;
@@ -308,4 +332,20 @@ public class BattlePanel extends ActionPanel
 	{
 		return "BattlePanel";
 	}	
+}
+
+/**
+ * Doesnt allow the user to change the selection, 
+ * must be done through hiddenSetSelectionInterval.
+ */
+class MyListSelectionModel extends DefaultListSelectionModel
+{
+	public void setSelectionInterval(int index0, int index1)
+	{
+	}
+
+	public void hiddenSetSelectionInterval(int index)
+	{
+		super.setSelectionInterval(index, index);
+	}
 }

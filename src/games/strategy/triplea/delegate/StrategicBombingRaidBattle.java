@@ -87,7 +87,13 @@ public class StrategicBombingRaidBattle implements Battle
 	{
 		int hits = BattleCalculator.getAAHits(m_units, bridge);
 		if(hits == 0)
+		{
 			bridge.sendMessage(new StringMessage("No AA hits in " + m_battleSite.getName(), false));
+		
+			StringMessage msg = new StringMessage("No AA hits in " + m_battleSite.getName(), false);
+			msg.setIgnore(m_attacker);
+			bridge.sendMessage(msg, m_defender);
+		}
 		else
 			removeAAHits(bridge, hits);	
 	}
@@ -99,6 +105,13 @@ public class StrategicBombingRaidBattle implements Battle
 		m_units.removeAll(casualties);
 		Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
 		bridge.addChange(remove);
+		
+		String msgText = m_attacker.getName() + " selects " + Formatter.unitsToText(casualties) + " as casualties from aa raid in " + m_battleSite.getName();
+		StringMessage msg = new StringMessage(msgText);
+		msg.setIgnore(m_attacker);
+		
+		bridge.sendMessage(msg, m_defender);
+		
 		
 		String transcriptText = Formatter.unitsToText(casualties) + " lost in bombing raid in " + m_battleSite.getName();
 		bridge.getTranscript().write(transcriptText);
@@ -115,6 +128,9 @@ public class StrategicBombingRaidBattle implements Battle
 			cost += 1 + dice[i];
 		}
 		bridge.sendMessage(new StringMessage("Bombing raid costs " + cost + " IPCS", false));
+		StringMessage msg = new StringMessage("Bombing raid costs " + cost + " IPCS", false);
+		msg.setIgnore(m_attacker);
+		bridge.sendMessage(msg, m_defender);
 		
 		//get resources 
 		Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);

@@ -27,19 +27,24 @@ import java.util.*;
 import java.net.URL;
 import javax.swing.*;
 
-import games.strategy.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.message.*;
-import games.strategy.engine.gamePlayer.PlayerBridge;
-import games.strategy.engine.data.events.*;
-import games.strategy.ui.*;
-import games.strategy.engine.transcript.*;
-import games.strategy.engine.framework.*;
 
-import games.strategy.triplea.Constants;
+import games.strategy.engine.data.*;
+import games.strategy.engine.data.events.*;
+import games.strategy.engine.framework.*;
+import games.strategy.engine.gamePlayer.PlayerBridge;
+import games.strategy.engine.message.*;
+import games.strategy.engine.transcript.*;
+
+import games.strategy.ui.*;
+import games.strategy.util.*;
+
+import games.strategy.triplea.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.delegate.message.*;
+
+
+
 
 /**
  *
@@ -55,13 +60,18 @@ public class TripleAFrame extends JFrame
 	private ImageScrollerSmallView m_smallView;
 	private JLabel m_message = new JLabel("No selection");
 	private ActionButtons m_actionButtons;
+	//a set of TripleAPlayers
+	private Set m_localPlayers;
 
 	/** Creates new TripleAFrame */
     public TripleAFrame(IGame game, Set players) throws IOException
 	{
+
 		super("TripleA");
+
 		
 		this.m_data = game.getData();
+		this.m_localPlayers = players;
 		
 		game.getTranscript().addTranscriptListener(m_transcriptListener);
 		
@@ -109,7 +119,7 @@ public class TripleAFrame extends JFrame
 		JTabbedPane tabs = new JTabbedPane();
 		rightHandSide.add(tabs, BorderLayout.CENTER);
 		
-		m_actionButtons = new ActionButtons(m_data, m_mapPanel);
+		m_actionButtons = new ActionButtons(m_data, m_mapPanel, this);
 		tabs.addTab( "Actions", m_actionButtons);
 		
 		StatPanel stats = new StatPanel(m_data);
@@ -232,6 +242,11 @@ public class TripleAFrame extends JFrame
 		return m_actionButtons.getRetreat(rqm);
 	}
 	
+	public Message battleInfo(BattleInfoMessage msg)
+	{
+		return m_actionButtons.battleInfo(msg);
+	}
+	
 	public void notifyError(String message)
 	{
 		JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
@@ -285,6 +300,21 @@ public class TripleAFrame extends JFrame
 		return new TerritoryMessage(selected);
 	}	
 
+	public boolean playing(PlayerID id)
+	{
+		if(id == null)
+			return false;
+		
+		Iterator iter = m_localPlayers.iterator();
+		while(iter.hasNext())
+		{
+			TripleAPlayer player = (TripleAPlayer) iter.next();
+			if(player.getID().equals(id))
+				return true;
+		}
+		return false;
+	}
+	
 	private ITranscriptListener m_transcriptListener = new ITranscriptListener()
 	{
 		public void messageRecieved(TranscriptMessage msg)

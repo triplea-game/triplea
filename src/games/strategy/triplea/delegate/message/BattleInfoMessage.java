@@ -13,9 +13,9 @@
  */
 
 /*
- * StringMessage.java
+ * BattleInfoMessage.java
  *
- * Created on November 7, 2001, 11:24 AM
+ * Created on February 4, 2002, 3:40 PM
  */
 
 package games.strategy.triplea.delegate.message;
@@ -23,51 +23,32 @@ package games.strategy.triplea.delegate.message;
 import games.strategy.engine.data.PlayerID;
 
 /**
- *
+ * Sent to inform the player of an event that occured during the battle.
  * 
  *
  * @author  Sean Bridges
- * @version 1.0
  */
-public class StringMessage implements games.strategy.engine.message.Message
+public class BattleInfoMessage extends BattleMessage
 {
-	private final String m_message;
-	private final boolean m_error;
-	//dont send this message if the given player is playing locally
-	private PlayerID m_ignore;
 	
-	/** Creates new ErrorMessage */
-    public StringMessage(String message) 
-	{
-		this(message, false);
-    }
+	/**
+	 * Dont send a notification to this player.
+	 * Allows the ui to ignore notifications if more than
+	 * one player is sharing the same ui.
+	 */
+	private PlayerID m_dontNotify;
+	private String m_message;
+	private String m_shortMessage;
 	
-	public StringMessage(String message, boolean error)
+	/**
+	 * Creates a new instance of BattleInfoMessage
+	 */
+	public BattleInfoMessage(String message, String shortMessage, PlayerID dontNotify, String step)
 	{
+		super(step);
+		m_dontNotify = dontNotify;
 		m_message = message;
-		m_error = error;
-	}
-	
-	/**
-	 * If the player is playing locally then dont send the 
-	 * message.
-	 */
-	public void setIgnore(PlayerID id)
-	{
-		m_ignore = id;
-	}
-	
-	/**
-	 * If the player is playing locally then dont send the message.
-	 */
-	public PlayerID getIgnore()
-	{
-		return m_ignore;
-	}
-
-	public boolean isError()
-	{
-		return m_error;
+		m_shortMessage = shortMessage;
 	}
 	
 	public String getMessage()
@@ -75,8 +56,13 @@ public class StringMessage implements games.strategy.engine.message.Message
 		return m_message;
 	}
 	
-	public String toString()
+	public String getShortMessage()
 	{
-		return "String message.  Value:" + m_message + " error:" + m_error;
+		return m_shortMessage;
+	}
+	
+	public PlayerID getDontNotify()
+	{
+		return m_dontNotify;
 	}
 }

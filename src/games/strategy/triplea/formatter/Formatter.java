@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Formatter.java
  *
  * Created on January 14, 2002, 4:06 PM
@@ -31,6 +45,38 @@ public class Formatter
 		s_plural.put("factory", "factories");
 	}
 	
+	public static String unitsToTextNoOwner(Collection units)
+	{
+		Iterator iter = units.iterator();
+		IntegerMap map = new IntegerMap();
+		
+		while(iter.hasNext())
+		{
+			Unit unit = (Unit) iter.next();
+			map.add(unit.getUnitType(), 1);
+		}
+		
+		StringBuffer buf = new StringBuffer();
+		
+		iter = map.keySet().iterator();
+		int count = map.keySet().size();
+		
+		while(iter.hasNext())
+		{
+			UnitType type = (UnitType) iter.next();
+			int quantity = map.getInt(type);
+			buf.append(quantity);
+			buf.append(" ");
+			buf.append( quantity > 1 ? pluralize(type.getName()) : type.getName());
+			count--;
+			if(count > 1)
+				buf.append(" , ");
+			if(count == 1)
+				buf.append(" and ");
+		}
+		return buf.toString();
+	}
+	
 	public static String unitsToText(Collection units)
 	{
 		Iterator iter = units.iterator();
@@ -46,6 +92,7 @@ public class Formatter
 		StringBuffer buf = new StringBuffer();
 		
 		iter = map.keySet().iterator();
+		int count = map.keySet().size();
 		
 		while(iter.hasNext())
 		{
@@ -56,7 +103,10 @@ public class Formatter
 			buf.append( quantity > 1 ? pluralize(owner.type.getName()) : owner.type.getName());
 			buf.append(" owned by the ");
 			buf.append(owner.owner.getName());
-			if(iter.hasNext())
+			count--;
+			if(count > 1)
+				buf.append(" , ");
+			if(count == 1)
 				buf.append(" and ");
 		}
 		return buf.toString();
