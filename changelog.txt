@@ -1,10 +1,10 @@
 Changes for 0.5.2
 
-* Added root folder path fix by Thomas Matthijs for Gentoo friendliness and extra changes for how triplea see file paths(Nekro)
+* Added root folder path fix by Thomas Matthijs for Gentoo friendliness and extra changes for how triplea see file paths (George_H)
 
-* Now all map utils have proper "save as" dialogs (Nekro)
+* Now all map utils have proper "save as" dialogs (George_H)
 
-* Added new class to prompt user to select a directory so map utils won't save files to a hardcoded dir (Nekro)
+* Added new class to prompt user to select a directory so map utils won't save files to a hardcoded dir (George_H)
 
 * Define player colour in map.properties to allow easy modification and adding new players (sgb)
 
@@ -24,13 +24,13 @@ Changes for 0.5.2
 
 * Changed how bombardment works. Now users pick where to bombard before any battles are resolved. This allows users not to bombard with a unit (for example if they wish to move it during non-combat) by picking "None". This also fixes the bug where a a unit could retreat from a battle and bombard in the same turn. It also allows user to divide their bombardment shots however they like when there are multiple bombardment targets. (Ali Ibrahim)
 
-* Fixed bug #1067768 concerning the border of seazone 27 and Belgian Congo. (Nekro)
+* Fixed bug #1067768 concerning the border of seazone 27 and Belgian Congo. (George_H)
 
-* Fixed bug #1067331 by removing the connection between seazone 51 and 56 for Pact of Steel mod. (Nekro)
+* Fixed bug #1067331 by removing the connection between seazone 51 and 56 for Pact of Steel mod. (George_H)
 
-* Fixed bug #1067073 by removing the connection between seazone 15 and 16 for Pact of Steel mod. (Nekro)
+* Fixed bug #1067073 by removing the connection between seazone 15 and 16 for Pact of Steel mod. (George_H)
 
-* Fixed bug #1043826 concerning missing sea zone border & missing pixles on border. (Nekro)
+* Fixed bug #1043826 concerning missing sea zone border & missing pixles on border. (George_H)
 
 * Added channel and remote messengers. (sgb)
 
@@ -70,23 +70,23 @@ Changes for 0.5.1
 
 * Fixed bug where transported AA guns fired in naval battles. (Ali Ibrahim)
 
-* Added a new developer document with map utils info. (Nekro)
+* Added a new developer document with map utils info. (George_H)
 
 * Added menu option to use small unit images on map. (Ali Ibrahim)
 
-* Large improvement and re-organizing of user documentation. (Nekro)
+* Large improvement and re-organizing of user documentation. (George_H)
 
-* Fully implemented Pact Of Steel mod (by Black Elk/Beagle). (Nekro)
+* Fully implemented Pact Of Steel mod (by Black Elk/Beagle). (George_H)
 
-* Improved map directory structures and code for triplea concerning TerritoryData class. (Nekro)
+* Improved map directory structures and code for triplea concerning TerritoryData class. (George_H)
 
 * Small iteration fix applied to PolygonGrabber to prevent crash. (Beagle)
 
-* Improve all map utilities so they are user friendly and better to use. (Nekro)
+* Improve all map utilities so they are user friendly and better to use. (George_H)
 
 * Fixed bug in 4th edition where air units could define retreat paths (they still can in classic). (Ali Ibrahim)
 
-* Added MersenneTwister Thread Safe (MT199937) Random Number Generator with Permission from Sean Luke. (Nekro)
+* Added MersenneTwister Thread Safe (MT199937) Random Number Generator with Permission from Sean Luke. (George_H)
 
 * Added Low Luck option following DAAK rules. However, the low luck rules were not implemented for sbr's and tech rolls. Also it is incompatible with the heavy bomber downgrade option. (Ali Ibrahim)
 
@@ -110,13 +110,13 @@ Changes for 0.5.0
 
 * Added TUV (total unit value) column in statistics panel. Added TUV lost in battle as part of battle end message. (Ali Ibrahim)
 
-* Fixed bug in statistics table when adding a player such as Italy (Nekro).
+* Fixed bug in statistics table when adding a player such as Italy (George_H).
 
 * Added logic to check production limits to display in production panel. (Kevin Sanders).
 
 * Added logic to not consider moving land units into water if there are no transports there. (Ali Ibrahim)
 
-* Added game defintion file, flags, color for Italian player. (Nekro).
+* Added game defintion file, flags, color for Italian player. (George_H).
 
 * Fixed bug where allied air units which are cargo attacked. (Ali Ibrahim)
 
@@ -124,7 +124,7 @@ Changes for 0.5.0
 
 * Fixed bug which didn't allow fighters to consider landing in gibralator due to issue with pathing and neutrals. (Ali Ibrahim)
 
-* Added warning for users using Java 1.5 about some serialization problems which cause an incompatibility with saved games in Java 1.4. (Nekro)
+* Added warning for users using Java 1.5 about some serialization problems which cause an incompatibility with saved games in Java 1.4. (George_H)
 
 Changes for 0.4.9
 
@@ -154,5 +154,5 @@ Changes for 0.4.8
 
 * TripleA Chat improvements. (lnxduk)
 
-* Fix for null network interface on IRIX 6.5 OS. (Nekro)
+* Fix for null network interface on IRIX 6.5 OS. (George_H)
 
