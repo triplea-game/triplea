@@ -445,15 +445,28 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if (m_over)
             return;
+        
+        //for 4th edition we need to find the defending subs before the attacking subs fire
+        //this allows the dead subs to return fire, even if they are selected as casualties
+        List defendingSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsSub);
+        
         attackSubs(bridge);
 
         if (isFourthEdition())
-            defendSubs(bridge);
+            defendSubs(bridge, defendingSubs);
 
         attackNonSubs(bridge);
 
         if (!isFourthEdition())
-            defendSubs(bridge);
+        {
+            Collection units = new ArrayList(m_defendingUnits.size() + m_defendingWaitingToDie.size());
+            units.addAll(m_defendingUnits);
+            units.addAll(m_defendingWaitingToDie);
+            units = Match.getMatches(units, Matches.UnitIsSub);
+            
+            defendSubs(bridge, units);
+            
+        }
         defendNonSubs(bridge);
 
         clearWaitingToDie(bridge);
@@ -845,14 +858,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         fire(DEFENDER_SELECT_SUB_CASUALTIES, firing, attacked, false, destroyersPresent, bridge, "Subs fire,");
     }
 
-    private void defendSubs(DelegateBridge bridge)
+    private void defendSubs(DelegateBridge bridge, Collection units)
     {
         if (m_attackingUnits.size() == 0)
             return;
-        Collection units = new ArrayList(m_defendingUnits.size() + m_defendingWaitingToDie.size());
-        units.addAll(m_defendingUnits);
-        units.addAll(m_defendingWaitingToDie);
-        units = Match.getMatches(units, Matches.UnitIsSub);
 
         if (units.isEmpty())
             return;
