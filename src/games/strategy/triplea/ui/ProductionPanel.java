@@ -117,15 +117,20 @@ public class ProductionPanel extends JPanel
     this.removeAll();
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     int ipcs = getIPCs();
-    add(new JLabel("You have:" + ipcs + " Ipc's to spend"));
+    add(Box.createVerticalStrut(5));
+    add(new JLabel("You have " + ipcs + " " + StringUtil.plural("IPC", ipcs) + "  to spend"));
+    add(Box.createVerticalStrut(10));
     Iterator iter = m_rules.iterator();
     while(iter.hasNext())
     {
       this.add( (Rule) iter.next());
     }
+    add(Box.createVerticalStrut(5));
     add(m_left);
     setLeft(ipcs);
+    add(Box.createVerticalStrut(10));
     add(new JButton(m_done_action));
+    add(Box.createVerticalStrut(10));
 
 
   }
