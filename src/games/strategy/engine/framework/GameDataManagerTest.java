@@ -47,38 +47,11 @@ public class GameDataManagerTest extends TestCase
 
     //get the source  data
     InputStream input= url.openStream();
-    Unit.clearUnits();
+
     m_dataSource = (new GameParser()).parse(input);
 
   }
 
-  public void testUnitID() throws Exception
-  {
-    GameDataManager manager = new GameDataManager();
-    ByteArrayOutputStream sink = new ByteArrayOutputStream();
 
-    Unit unit = ((Unit) Unit.getUnits().iterator().next());
-    int numberOfUnits = Unit.getUnits().size();
-
-    manager.saveGame(sink, m_dataSource);
-
-    Unit.clearUnits();
-
-    ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
-
-
-    manager.loadGame(source);
-    assertEquals(Unit.getUnits().size(), numberOfUnits);
-
-    Collection allUnitIDs = new ArrayList();
-    Iterator iter = Unit.getUnits().iterator();
-    while(iter.hasNext())
-    {
-      allUnitIDs.add( ((Unit) iter.next()).getID());
-    }
-
-    assertTrue(allUnitIDs.contains(unit.getID()));
-
-  }
 
 }

@@ -63,9 +63,32 @@ public class RandomGen
   private static final String ALGORITHM = "DES";
   private static final String KNOWN_VAL = "$Id$";
 
+  /**
+   * Knowing the seed gives a player an advantage.
+   * Do something a little more clever than current time.
+   * which could potentially be guessed
+   */
+  private static long getSeed()
+  {
+    //if the execution path is different before the first random
+    //call is made then the object will have a somewhat random
+    //adress in the virtual machine, especially if
+    //a lot of ui and networking objects are created
+    //in response to semi random mouse motion etc.
+    //if the excecution is always the same then
+    //this may vary slightly depending on the vm
+    Object seedObj = new Object();
+    long seed = seedObj.hashCode(); //hash code is an int, 32 bits
+    //seed with current time as well
+    seed += System.currentTimeMillis();
+    return seed;
+  }
+
+
+
   // These are used to do the work of generating
   // and working with the encrypted random numbers
-  private static Random s_seed_gen = new Random();
+  private static Random s_seed_gen = new Random(getSeed());
 
   private Cipher m_cryptor;
   private KeyGenerator m_keygen;
@@ -102,12 +125,12 @@ public class RandomGen
     m_max_num = in_max_num;
     m_random_seed = null;
   }
-  
+
   public int getSharedRandom(RandomGen other)
   {
     // DEBUG
     //System.out.println(this + "#getSharedRandom(" + other + ")");
-    //System.out.println(this + "#getSharedRandom() seed " + 
+    //System.out.println(this + "#getSharedRandom() seed " +
     //                   getRandomSeed() + " ^ " + other.getRandomSeed() + " => " +
     //                   (getRandomSeed() ^ other.getRandomSeed()));
 
@@ -122,7 +145,7 @@ public class RandomGen
     {
       rnd = rng.nextInt(m_max_num.intValue());
     }
-    
+
     return rnd;
   }
 
@@ -131,7 +154,7 @@ public class RandomGen
   {
     // DEBUG
     //System.out.println(this + "#getSharedRandom(" + other + ")");
-    //System.out.println(this + "#getSharedRandom() seed " + 
+    //System.out.println(this + "#getSharedRandom() seed " +
     //                   getRandomSeed() + " ^ " + other.getRandomSeed() + " => " +
     //                   (getRandomSeed() ^ other.getRandomSeed()));
 
@@ -166,11 +189,11 @@ public class RandomGen
     // System.out.println(this + "#createRandom()");
     try {
       m_keygen = KeyGenerator.getInstance(ALGORITHM);
-    
+
       m_key = m_keygen.generateKey();
 
       m_random_seed = new Long(s_seed_gen.nextLong());
-      
+
       m_cryptor = Cipher.getInstance(ALGORITHM);
       m_cryptor.init(Cipher.ENCRYPT_MODE, m_key);
     }
@@ -183,7 +206,7 @@ public class RandomGen
   }
 
   /**
-   * Sets the encrypted random number, the encrypted known number, 
+   * Sets the encrypted random number, the encrypted known number,
    * and the max random value
    */
   public void setTriplet(RandomTriplet triplet)
@@ -207,7 +230,7 @@ public class RandomGen
                              getEncryptedKnown(),
                              getMaxVal());
   }
-  
+
 
 
   /**
@@ -218,11 +241,11 @@ public class RandomGen
   {
     // DEBUG
     // System.out.println(this + "#getRandomSeed()");
-    if (null == m_random_seed) 
+    if (null == m_random_seed)
     {
       if ((null != m_enc_random_seed) && (null != m_key))
       {
-        // Here we must be trying to get a random number by 
+        // Here we must be trying to get a random number by
         // decrypting the remote side's random number
         try {
           m_cryptor = Cipher.getInstance(ALGORITHM);
@@ -232,7 +255,7 @@ public class RandomGen
           // DEBUG
           //System.out.println("About to decrypt this random: ");
           StringBuffer buff = new StringBuffer();
-          for (int i=0; i<m_enc_random_seed.length; i++) 
+          for (int i=0; i<m_enc_random_seed.length; i++)
           {
             buff.append(Integer.toHexString((int)m_enc_random_seed[i]));
           }
@@ -240,7 +263,7 @@ public class RandomGen
           //System.out.println(buff.toString());
           //System.out.println("Using this key");
           //System.out.println(m_key);
-          
+
 
 
           m_random_seed = new Long(byteArrToLong(m_cryptor.doFinal(m_enc_random_seed)));
@@ -251,7 +274,7 @@ public class RandomGen
       }
       else
       {
-        // Here we must be 
+        // Here we must be
         createRandom();
       }
     }
@@ -278,7 +301,7 @@ public class RandomGen
     // System.out.println(this + "#setMaxVal(" + max + ")");
     m_max_num = max;
   }
-  
+
   /**
    * Returns the maximum value random numbers can have, or null
    * if there is no maximum set.
@@ -314,12 +337,12 @@ public class RandomGen
    * Gets the encrypted random number, either the one set
    * explicitly or by encrypting one generated automatically.
    */
-  public byte[] getEncryptedRandomSeed() 
+  public byte[] getEncryptedRandomSeed()
   {
     // DEBUG
     // System.out.println(this + "#getEncryptedRandomSeed()");
     if (null == m_enc_random_seed) {
-      if (null == m_random_seed) 
+      if (null == m_random_seed)
       {
         createRandom();
       }
@@ -332,7 +355,7 @@ public class RandomGen
 
         // DEBUG
         // StringBuffer buff = new StringBuffer("Just created this random: '");
-        // for (int i=0; i<m_enc_random_seed.length; i++) 
+        // for (int i=0; i<m_enc_random_seed.length; i++)
         // {
         //   buff.append(Integer.toHexString((int)m_enc_random_seed[i]));
         // }
@@ -344,14 +367,14 @@ public class RandomGen
       catch (GeneralSecurityException ex) {
       }
     }
-    
+
     return m_enc_random_seed;
   }
 
   /**
    * Gets the known value encrypted by the appropriate key.
    */
-  public byte[] getEncryptedKnown() 
+  public byte[] getEncryptedKnown()
   {
     // DEBUG
     // System.out.println(this + "#getEncryptedKnown()");
@@ -361,7 +384,7 @@ public class RandomGen
         createRandom();
       }
 
-      byte[] ascii_known = 
+      byte[] ascii_known =
         {
           0x62, 0x75, 0x67
         };
@@ -379,7 +402,7 @@ public class RandomGen
         throw new RuntimeException(ex.getMessage());
       }
     }
-    
+
     return m_enc_known;
   }
 
@@ -390,7 +413,7 @@ public class RandomGen
     // System.out.println(this + "#verifyKnown()");
     if ((null != m_enc_known) && (null != m_key))
     {
-      // Here we must be trying to get a random number by 
+      // Here we must be trying to get a random number by
       // decrypting the remote side's random number
       String known = "BUG";
       try {
@@ -406,11 +429,11 @@ public class RandomGen
     }
     else
     {
-      // Here we must be 
+      // Here we must be
       // DEBUG
       // System.out.println("We should fix this");
       return false;
-    }  
+    }
   }
 
   /**
@@ -424,7 +447,7 @@ public class RandomGen
   }
 
   /**
-   * Gets the key used for encryption / decryption, creating 
+   * Gets the key used for encryption / decryption, creating
    * it if necessary
    */
   public SecretKey getKey()
@@ -498,33 +521,33 @@ public class RandomGen
     RandomGen local = new RandomGen(6);
 
     RandomTriplet triplet = local.getTriplet();
-    long random = local.getRandomSeed();    
+    long random = local.getRandomSeed();
 
     System.out.println("Got a triplet: " + triplet);
     System.out.println("Local random seed: " + random);
-    
+
 
     RandomGen remote = new RandomGen(triplet.m_max_num.intValue());
 
     remote.setTriplet(triplet);
 
     SecretKey m_key = local.getKey();
-    
+
 
     System.out.println("Got a key: " + m_key);
-    
+
 
     remote.setKey(m_key);
 
-    if (remote.verifyKnown()) 
+    if (remote.verifyKnown())
     {
       System.out.println("Known verified");
     }
-    else 
+    else
     {
       System.out.println("Known verify failed");
     }
-    
+
     System.out.println("Remote random: " + remote.getRandomSeed());
   }
 }

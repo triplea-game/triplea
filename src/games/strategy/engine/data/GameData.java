@@ -33,12 +33,11 @@ import games.strategy.util.*;
  */
 public class GameData implements java.io.Serializable
 {
-
 	private String m_gameName;
 	private Version m_gameVersion;
 
-	private transient ListenerList m_territoryListeners = new ListenerList();;
-	private transient ListenerList m_dataChangeListeners = new ListenerList();;
+	private transient ListenerList m_territoryListeners = new ListenerList();
+	private transient ListenerList m_dataChangeListeners = new ListenerList();
 
 	private final AllianceTracker m_alliances = new AllianceTracker(this);
 	private final  DelegateList m_delegateList;
@@ -50,6 +49,7 @@ public class GameData implements java.io.Serializable
 	private final GameSequence m_sequence = new GameSequence(this);
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
 	private final GameProperties m_properties = new GameProperties(this);
+    private UnitsList m_unitsList = new UnitsList();
 
 	private IGameLoader m_loader;
 
@@ -63,6 +63,11 @@ public class GameData implements java.io.Serializable
 	{
 		return m_map;
 	}
+
+    public UnitsList getUnits()
+    {
+        return m_unitsList;
+    }
 
 	public PlayerList getPlayerList()
 	{

@@ -36,8 +36,7 @@ public final class TerritoryImageFactory
       TerritoryImageFactory();
 
   // data
-  private HashMap m_playerColors = new HashMap();
-  private HashMap m_baseTerritoryImages = new HashMap();
+  private Map m_playerColors = new HashMap();
 
   private GraphicsConfiguration m_localGraphicSystem = null;
   private BufferedImage m_waterImage = null;
@@ -75,11 +74,13 @@ public final class TerritoryImageFactory
     m_playerColors.put("Russians", new Color(153, 51, 0));
     m_playerColors.put("Germans", new Color(119, 119, 119));
     m_playerColors.put("Japanese", new Color(255, 153, 0));
-    m_playerColors.put("no one", new Color(204, 153, 51));
+    m_playerColors.put(PlayerID.NULL_PLAYERID.getName(), new Color(204, 153, 51));
 
     // the water image can be pre-loaded
     m_waterImage = createWaterImage();
   }
+
+
 
   // dynamically create a new territory image
   private BufferedImage createTerritoryImage(Territory place, PlayerID owner)
@@ -128,6 +129,7 @@ public final class TerritoryImageFactory
 
     // cleanup
     gc.setComposite(prevComposite);
+    gc.drawImage(getReliefImage(place), 0,0, watcher );
 
     // done
     return workImage;
@@ -172,10 +174,33 @@ public final class TerritoryImageFactory
       }
     }
 
+
+
     // done
     return workImage;
 
   }
+
+  private Image getReliefImage(Territory place)
+  {
+
+    String key = place.getName() + "_relief";
+
+
+    // load it on the fly
+
+    URL file = this.getClass().getResource("countries/new/"
+                                           + key.replace(' ', '_')
+                                           + ".png");
+    Image baseImage = loadImageCompletely(file);
+
+
+    // done!
+    return baseImage;
+
+  }
+
+
 
   // returns the base territory image that the others are derived from
   private Image getBaseImage(Territory place)
@@ -183,9 +208,6 @@ public final class TerritoryImageFactory
 
     String key = place.getName();
 
-    // look in the cache first
-    if (m_baseTerritoryImages.containsKey(key))
-      return (Image) m_baseTerritoryImages.get(key);
 
     // load it on the fly
 
@@ -194,8 +216,6 @@ public final class TerritoryImageFactory
                                            + ".gif");
     Image baseImage = loadImageCompletely(file);
 
-    // cache for future use
-    m_baseTerritoryImages.put(key, baseImage);
 
     // done!
     return baseImage;
@@ -208,7 +228,6 @@ public final class TerritoryImageFactory
 
     // name?
     int pathLen = imageLocation.getFile().lastIndexOf("/");
-    String name = imageLocation.getFile().substring(pathLen + 1);
 
     // use the local toolkit to load the image
     Toolkit tk = Toolkit.getDefaultToolkit();

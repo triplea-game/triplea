@@ -82,14 +82,6 @@ public interface DelegateBridge
   public int getRandom(int max);
   public int[] getRandom(int max, int count);
 
-  /**
-   * Delegates should not use random data that comes from any other source
-   * and should use these forms since they ensure 2 players are involved
-   * in the creation of random data
-   */
-  public int getRandom(int max, PlayerID player1, PlayerID player2);
-  public int[] getRandomArray(int max, int count,
-                              PlayerID player1, PlayerID player2);
 
   /**
    * Get the games transcript.

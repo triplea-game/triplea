@@ -33,31 +33,10 @@ public class DiceRoll implements java.io.Serializable
   private int[][] m_rolls;
   private int m_hits;
 
-//   public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge)
-//   {
-//     int[] random = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits);
-//     int hits = 0;
-//     for(int i = 0; i < random.length; i++)
-//     {
-//       if(random[i] == 0)
-//         hits++;
-//     }
 
-//     int[][] dice = new int[Constants.MAX_DICE][];
-//     dice[5] = random;
-//     for(int i = 0; i < 5; i++)
-//     {
-//       dice[i] = new int[0];
-//     }
-//     return new DiceRoll(dice, hits);
-//   }
-
-  // NEW VERSION
-  public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge,
-                                PlayerID player1, PlayerID player2)
+  public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge)
   {
-    int[] random = bridge.getRandomArray(Constants.MAX_DICE, numberOfAirUnits,
-                                         player1, player2);
+    int[] random = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits);
     int hits = 0;
     for(int i = 0; i < random.length; i++)
     {
@@ -75,65 +54,13 @@ public class DiceRoll implements java.io.Serializable
   }
 
 
-//   public static DiceRoll rollDice(List units, boolean defending, PlayerID player, DelegateBridge bridge)
-//   {
-//     int rollCount = BattleCalculator.getRolls(units, player, defending);
-//     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount);
 
-//     List[] sortedDice = new List[Constants.MAX_DICE];
-//     for(int i = 0; i < sortedDice.length; i++)
-//     {
-//       sortedDice[i] = new ArrayList();
-//     }
-
-//     Iterator iter = units.iterator();
-
-//     int hitCount = 0;
-//     int diceIndex = 0;
-//     while(iter.hasNext())
-//     {
-//       Unit current = (Unit) iter.next();
-//       UnitAttatchment ua = UnitAttatchment.get(current.getType());
-//       int rolls = defending ? 1 : ua.getAttackRolls(player);
-//       for(int i = 0; i < rolls; i++)
-//       {
-//         int strength;
-//         if(defending)
-//           strength = ua.getDefense(current.getOwner());
-//         else
-//           strength = ua.getAttack(current.getOwner());
-
-//         sortedDice[strength - 1].add(new Integer(dice[diceIndex]));
-
-//         //dice is [0-MAX_DICE)
-//         if( strength > dice[diceIndex])
-//           hitCount++;
-//         diceIndex++;
-//       }
-//     }
-
-//     int[][] sortedDiceInt = new int[Constants.MAX_DICE][];
-//     for(int i = 0; i <  sortedDice.length; i++)
-//     {
-//       int[] values = new int[sortedDice[i].size()];
-//       for(int j = 0; j < sortedDice[i].size(); j++)
-//       {
-//         values[j] = ((Integer) sortedDice[i].get(j)).intValue();
-//       }
-//       sortedDiceInt[i] = values;
-//     }
-
-//     return new DiceRoll(sortedDiceInt, hitCount);
-//   }
-
-  // NEW VERSION
   public static DiceRoll rollDice(List units, boolean defending,
-                                  PlayerID player, PlayerID other_player,
+                                  PlayerID player,
                                   DelegateBridge bridge)
   {
     int rollCount = BattleCalculator.getRolls(units, player, defending);
-    int[] dice = bridge.getRandomArray(Constants.MAX_DICE, rollCount,
-                                       player, other_player);
+    int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount);
 
     List[] sortedDice = new List[Constants.MAX_DICE];
     for(int i = 0; i < sortedDice.length; i++)

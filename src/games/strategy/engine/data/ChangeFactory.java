@@ -12,7 +12,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/** 
+/**
  * ChangeFactory.java
  *
  * Created on October 25, 2001, 1:26 PM
@@ -291,12 +291,11 @@ class PlayerOwnerChange extends Change
 
 	protected void perform(GameData data)
 	{
-
 		Iterator iter = m_new.keySet().iterator();
 		while(iter.hasNext())
 		{
 			GUID id = (GUID) iter.next();
-			Unit unit = Unit.get(id);
+			Unit unit = data.getUnits().get(id);
 			String owner = (String) m_new.get(id);
 			PlayerID player = data.getPlayerList().getPlayerID(owner);
 			unit.setOwner(player);

@@ -114,7 +114,7 @@ public class FlagIconImageFactory
 		m_images.put("Germans", german);
 		m_images.put("RussiansSmall", russianSmall);
 		m_images.put("Russians", russian);
-		m_images.put("no oneSmall", neutralSmall);
+		m_images.put(PlayerID.NULL_PLAYERID.getName() + "Small", neutralSmall);
 
 		m_loaded = true;
 	}

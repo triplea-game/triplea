@@ -32,8 +32,6 @@ import games.strategy.net.GUID;
  */
 public class Unit extends GameDataComponent implements Serializable
 {
-  //maps GUID -> Unit
-  protected static Map s_allUnits = new WeakHashMap();
 
   static final long serialVersionUID = -4776804897761373923L;
 
@@ -43,52 +41,6 @@ public class Unit extends GameDataComponent implements Serializable
     return new GUID();
   }
 
-  protected static Unit get(GUID id)
-  {
-    return (Unit) s_allUnits.get(id);
-  }
-
-  public static void put(Unit unit)
-  {
-    s_allUnits.put(unit.getID(), unit);
-  }
-
-  /*
-   * Gets all units currently in the game
-   */
-  public static Collection getUnits()
-  {
-    return s_allUnits.values();
-  }
-
-  /**
-   * Clears all units, used when loading a game.
-   * Should not be called except by the GameDataManager.
-   */
-  public static void clearUnits()
-  {
-    s_allUnits.clear();
-  }
-
-  /*
-   * Gets all units for the specified player
-   * NOTE: implementation iterates over the entire list of units, so not extraordinarily efficient right now.
-   */
-  public static Collection getUnits(PlayerID player)
-  {
-    ArrayList out = new ArrayList(s_allUnits.size() / 5);
-    Iterator iter = s_allUnits.values().iterator();
-    Unit u;
-
-    while (iter.hasNext())
-    {
-      u = (Unit) iter.next();
-      if (u.getOwner().equals(player))
-        out.add(u);
-    }
-
-    return out;
-  }
 
   private PlayerID m_owner;
   private GUID m_uid;
@@ -105,7 +57,7 @@ public class Unit extends GameDataComponent implements Serializable
     super(data);
     init(type, owner, data);
     m_uid = new GUID(id);
-    s_allUnits.put(m_uid, this);
+    getData().getUnits().put(this);
   }
 
   /**
@@ -117,7 +69,7 @@ public class Unit extends GameDataComponent implements Serializable
     super(data);
     init(type, owner, data);
     m_uid = createUID();
-    s_allUnits.put(m_uid, this);
+    data.getUnits().put(this);
   }
 
   private void init(UnitType type, PlayerID owner, GameData data)

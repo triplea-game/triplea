@@ -521,8 +521,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     PlayerID firingPlayer = defender ? m_defender : m_attacker;
     PlayerID hitPlayer = defender ? m_attacker : m_defender;
 
-    DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender,
-                                      firingPlayer, hitPlayer, bridge);
+    DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, firingPlayer, bridge);
 
     int hitCount = dice.getHits();
     Collection casualties;
@@ -617,8 +616,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     PlayerID player = defending ? m_defender : m_attacker;
     int rollCount = BattleCalculator.getRolls(units, player, defending);
 
-    return bridge.getRandomArray(Constants.MAX_DICE, rollCount,
-                                 m_attacker, m_defender);
+    return bridge.getRandom(Constants.MAX_DICE, rollCount);
   }
 
   private int getCasualties(Collection units, boolean defending, DelegateBridge bridge, int[] dice)
@@ -715,7 +713,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
     //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
     // NEW VERSION
-    DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge, m_attacker, m_defender);
+    DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
 
     if(dice.getHits() == 0)
     {

@@ -1269,8 +1269,7 @@ public class MoveDelegate implements SaveableDelegate
     //otherwise you could keep undoing and redoing
     //until you got the roll you wanted
     m_currentMove.setCantUndo("AA has fired.");
-    DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge,
-                                    m_player, territory.getOwner());
+    DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge);
     int hitCount = dice.getHits();
 
     if(hitCount == 0)

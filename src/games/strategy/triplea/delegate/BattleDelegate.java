@@ -157,7 +157,7 @@ public class BattleDelegate implements SaveableDelegate
     Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
     //int cost = bridge.getRandom(Constants.MAX_DICE);
 
-    int cost = bridge.getRandom(Constants.MAX_DICE, player, attacked);
+    int cost = bridge.getRandom(Constants.MAX_DICE);
 
     //account for 0 base
     cost++;

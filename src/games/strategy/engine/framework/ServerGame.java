@@ -32,7 +32,6 @@ import games.strategy.engine.data.events.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.message.*;
-import games.strategy.engine.xml.*;
 import games.strategy.net.*;
 import games.strategy.engine.transcript.*;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -57,7 +56,7 @@ public class ServerGame implements IGame
   private ChangePerformer m_changePerformer;
   //maps playerName -> INode
   //only for remote nodes
-  private Map m_playerMapping;
+  private Map m_remotePlayers;
   private Object m_remotePlayerStepLock = new Object();
   private Transcript m_transcript;
 
@@ -74,7 +73,7 @@ public class ServerGame implements IGame
 
     m_transcript = new Transcript(m_messenger);
 
-    m_playerMapping = new HashMap(playerMapping);
+    m_remotePlayers = new HashMap(playerMapping);
 
     m_messageManager = new MessageManager(m_messenger);
     Iterator iter = gamePlayers.iterator();
@@ -131,10 +130,6 @@ public class ServerGame implements IGame
     return m_data;
   }
 
-  private GamePlayer getPlayer(PlayerID aPlayer)
-  {
-    return (GamePlayer) m_gamePlayers.get(aPlayer);
-  }
 
   private GameStep getCurrentStep()
   {
@@ -165,6 +160,41 @@ public class ServerGame implements IGame
     startNextStep();
   }
 
+  /**
+   * get the players who are involved in the secure dice roll
+   * this only really works for two players games, try to find one local
+   * and one remote player
+   * @return an array of two game players
+   */
+
+  private PlayerID[] getDicePlayers()
+  {
+      PlayerID[] dicePlayers = new PlayerID[2];
+      //all players are local
+      if (m_remotePlayers.isEmpty())
+      {
+          Iterator players = m_gamePlayers.keySet().iterator();
+          dicePlayers[0] = (PlayerID) players.next();
+          dicePlayers[1] = (PlayerID) players.next();
+
+      }
+      //all players are remote
+      else if (m_gamePlayers.isEmpty())
+      {
+          Iterator players = m_remotePlayers.keySet().iterator();
+          dicePlayers[0] = m_data.getPlayerList().getPlayerID( (String) players.next());
+          dicePlayers[1] = m_data.getPlayerList().getPlayerID( (String) players.next());
+      }
+      //one from each
+      else
+      {
+          dicePlayers[0] = (PlayerID) m_gamePlayers.keySet().iterator().next();
+          dicePlayers[1] = m_data.getPlayerList().getPlayerID( (String)m_remotePlayers.keySet().iterator().next());
+      }
+
+      return dicePlayers;
+  }
+
   private void startNextStep()
   {
     if(getCurrentStep().hasReachedMaxRunCount())
@@ -174,7 +204,8 @@ public class ServerGame implements IGame
       return;
     }
 
-    DelegateBridge bridge = new DefaultDelegateBridge(m_data, getCurrentStep(), this);
+    PlayerID[] dicePlayers = getDicePlayers();
+    DelegateBridge bridge = new DefaultDelegateBridge(m_data, getCurrentStep(), this, dicePlayers[0], dicePlayers[1]);
     getCurrentStep().getDelegate().start(bridge,m_data );
     notifyGameStepChanged();
 
@@ -219,7 +250,7 @@ public class ServerGame implements IGame
     else
     {
       //a remote player
-      INode destination = (INode) m_playerMapping.get(playerID.getName());
+      INode destination = (INode) m_remotePlayers.get(playerID.getName());
 
       synchronized(m_remotePlayerStepLock)
       {
@@ -310,5 +341,4 @@ public class ServerGame implements IGame
     m_messenger.shutDown();
 
   }
-
 }

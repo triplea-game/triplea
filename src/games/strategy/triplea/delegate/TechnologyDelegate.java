@@ -145,27 +145,33 @@ public class TechnologyDelegate implements SaveableDelegate
 
   private Collection getTechAdvances(int hits)
   {
-    //too many
-    Collection allAdvances = TechAdvance.getTechAdvances();
-    Collection playersAdvances = m_techTracker.getAdvances(m_bridge.getPlayerID());
-
-    List available = Util.difference(allAdvances, playersAdvances);
+    List available = getAvailableAdvances();
     if(available.isEmpty())
       return Collections.EMPTY_LIST;
     if(hits >= available.size())
       return available;
 
     Collection newAdvances = new ArrayList(hits);
-    while(hits > 0)
-    {
-      int random = m_bridge.getRandom(available.size());
 
-      newAdvances.add(available.get(random));
-      available.remove(random);
-      hits--;
+    int random[] = m_bridge.getRandom(Constants.MAX_DICE, hits);
+    for(int i = 0; i < random.length; i++)
+    {
+      int index = random[i] % available.size();
+      newAdvances.add(available.get(index));
+      available.remove(index);
     }
     return newAdvances;
   }
+
+private List getAvailableAdvances()
+{
+    //too many
+    Collection allAdvances = TechAdvance.getTechAdvances();
+    Collection playersAdvances = m_techTracker.getAdvances(m_bridge.getPlayerID());
+
+    List available = Util.difference(allAdvances, playersAdvances);
+    return available;
+}
 
   public String getName()
   {

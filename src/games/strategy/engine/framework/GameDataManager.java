@@ -47,7 +47,7 @@ public class GameDataManager
 
   public GameData loadGame(InputStream input) throws IOException
   {
-    return loadGame(new GameDataManagerObjectInputStream(input));
+    return loadGame(new ObjectInputStream(input));
   }
 
   public GameData loadGame(ObjectInputStream input) throws IOException
@@ -59,7 +59,7 @@ public class GameDataManager
       if(!engineVersion.equals(games.strategy.engine.EngineVersion.VERSION))
         throw new IOException("Incompatable engine versions");
 
-      Unit.clearUnits();
+
       GameData data = (GameData) input.readObject();
 
 
@@ -192,23 +192,3 @@ public class GameDataManager
 }
 
 
-
-class GameDataManagerObjectInputStream extends ObjectInputStream
-{
-  GameDataManagerObjectInputStream(InputStream in) throws IOException
-  {
-    super(in);
-
-    enableResolveObject(true);
-  }
-
-  protected Object resolveObject(Object obj) //throws IOException
-  {
-    //we want to register the units in the hash map.
-    if(obj instanceof Unit)
-    {
-      Unit.put( (Unit) obj);
-    }
-    return obj;
-  }
-}

@@ -114,18 +114,5 @@ public class SerializationTest extends TestCase
 		assertTrue(local != read);
 	}
 
-	public void testWriteUnit() throws Exception
-	{
-		UnitType type = m_dataSource.getUnitTypeList().getUnitType("inf");
-		PlayerID chretian = m_dataSource.getPlayerList().getPlayerID("chretian");
 
-		Unit orig = type.create(chretian);
-
-		assertTrue(Unit.get(orig.getID()).equals(orig));
-
-
-		Unit read = (Unit) serialize(orig);
-
-		assertTrue(read == orig);
-	}
 }
