@@ -26,7 +26,11 @@ import java.util.*;
 /**
  *
  * Represents a version string.
- * versions are of the form major.minor.point
+ * versions are of the form major.minor.point.micro
+ * 
+ * note that when doing comparisons, if the micro for two
+ * versions is the same, then the two versions are considered 
+ * equal
  * 
  * @author  Sean Bridges
  */
@@ -36,7 +40,9 @@ public class Version implements Serializable, Comparable
 	private final int m_major;
 	private final int m_minor;
 	private final int m_point;
-	
+	private final int m_micro;
+
+
     public Version(int major, int minor) 
 	{
 		this(major, minor, 0);
@@ -44,13 +50,19 @@ public class Version implements Serializable, Comparable
 
     public Version(int major, int minor, int point) 
 	{
+		this(major, minor, point, 0);
+    }
+
+    public Version(int major, int minor, int point, int micro) 
+	{
 		m_major = major;
 		m_minor = minor;
 		m_point = point;
+		m_micro = micro;
     }
 
 	/**
-	 *  version must be of the from xx.xx.xx or
+	 *  version must be of the from xx.xx.xx.xx or xx.xx.xx or
 	 *  xx.xx or xx where xx is a positive integer
 	 */
 	public Version(String version)
@@ -81,6 +93,15 @@ public class Version implements Serializable, Comparable
 			else
 			{
 				m_point = 0;
+			}
+			
+			if(tokens.hasMoreTokens())
+			{
+				m_micro = Integer.parseInt(tokens.nextToken());
+			}
+			else
+			{
+				m_micro = 0;
 			}
 		} catch(NumberFormatException e)
 		{
@@ -120,13 +141,15 @@ public class Version implements Serializable, Comparable
 			return 1;
 		else if(other.m_point < m_point)
 			return -1;
+		//dont compare micro
+		//if the only difference is micro, then ignore
 		else
 			return 0;
 	}
 	
 	public String toString()
 	{
-		return m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
+		return m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "") + (m_micro != 0 ? "." + m_micro : "");
 	}
 
 }

@@ -80,6 +80,18 @@ public class VersionTest extends TestCase
 		assertTrue(!v2.equals(v1));
 
 	}
+
+	public void testCompare5()
+	{
+	    //micro differences should have no difference
+		Version v1 = new Version(0,0,0,0);
+		Version v2 = new Version(0,0,0,1);
+
+		assertTrue(v1.equals(v2));
+		assertTrue(v2.equals(v1));
+
+	}
+	
 	public void testRead1()
 	{
 		assertTrue("1.2.3".equals(new Version("1.2.3").toString()));
