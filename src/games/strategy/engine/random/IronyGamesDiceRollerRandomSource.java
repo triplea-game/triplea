@@ -344,11 +344,7 @@ class HttpDiceRollerDialog extends JDialog
     }
     else {  //enter here for invalid e-mail or non-reachable hosts
 
-        appendText("Invalid e-mail address, please re-check them.\n");
-        appendText("--\n");
-        appendText("If the e-mail addresses are valid and this message is shown,\n");
-        appendText("then this could mean that the mail server where either one of\n");
-        appendText("those address could be down or somehow unreachable.\n");
+        appendText("Invalid e-mail syntax, please check again.\n");
     }
 
   }//end of method
