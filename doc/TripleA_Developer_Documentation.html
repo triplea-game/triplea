@@ -806,8 +806,12 @@
 			<p>
 				There is a very large pre-requisite to satisfy before getting the AutoPlacementFinder to work. You
 				will need to have created the <b>centers.txt</b> and <b>polygons.txt</b> first and placed them with the
-				image map in a designated folder. Below is where you would have placed your folder. Lets say you 
-				wanted to call your map "Pacific," it would be like so:
+				image map in a designated folder. Also you must create an empty <b>place.txt</b> in the same folder. This
+				mearly does nothing at all and has no particular role in creating the placements asside from preventing
+				certain errors from occuring. This is due to a tight coupling issue between the AutoPlacementFinder and
+				other classes that read the data in. Just be sure to create an empty <b>place.txt</b> there when you use
+				the tool, and then remove/replace it with the newly created placements file.Below is where you would have
+				placed your folder. Lets say you wanted to call your map "Pacific," it would be like so:
 				<blockquote>
 				<code>
 					data/games/strategy/triplea/images/image/maps/pacific
@@ -815,8 +819,8 @@
 				</blockquote>
 				In that <b>pacific</b> folder you would have placed your "largeMap.gif" with that exact name and your
 				centers.txt and polygons.txt files there. Also keep note that the folder name <b>pacific</b> gets used
-				the AutoPlacementFinder!! and it is the same name that will be used to identify what map will be used
-				when writing your XML game file!
+				the AutoPlacementFinder!! When it prompts you to enter in the "folder name" you enter <b>pacific</b> or
+				whatever folder you designated it.
 			</p>
 			
 			<p>
@@ -860,7 +864,7 @@
 				to <b>Only do Sea Zones? [Y/N]</b>. Say <b>Y</b> if you want it to ONLY cut up the sea zones as relief
 				images (note this is how the regular revised map is). Say <b>N</b> if you want it to cut up only the land
 				territories as relief images (note this is how the classic map has it). After this you will be asked to enter
-				the map name as indicated by the XML game file. Here is where you enter the folder name, we mentioned above
+				the folder name. Here is where you enter the folder name, we mentioned above
 				as an example we will use "pacific" so enter that in. That will make it invoke TripleA's TerritoryData class
 				and make it find the map folder and read in those text files. After you do this it should be cutting up the
 				images and writing them in the "newImages" folder and verbosely displaying its status in the console.
