@@ -57,18 +57,27 @@ public class Util
 	public static Image createImage(int width, int height)
 	{
 
-      // local graphic system is used to create compatible bitmaps
-      GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
-          .getDefaultScreenDevice()
-          .getDefaultConfiguration();
 
-      // Create a buffered image in the most optimal format, which allows a
-      //    fast blit to the screen.
-      BufferedImage workImage = localGraphicSystem.createCompatibleImage(width,
-          height,
-          Transparency.BITMASK);
+    return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    //the code below should be the correct way to get graphics, but it is makes the ui quite
+    //unresponsive when drawing the map (as seen when updating the map for different routes
+    //in combat move phase)
+    //For jdk1.3 on linux and windows, and jdk1.4 on linux there is a very
+    //noticeable difference
+    //jdk1.4 on windows doesnt have a difference
 
-      return workImage;
+//      // local graphic system is used to create compatible bitmaps
+//      GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
+//          .getDefaultScreenDevice()
+//          .getDefaultConfiguration();
+//
+//      // Create a buffered image in the most optimal format, which allows a
+//      //    fast blit to the screen.
+//      BufferedImage workImage = localGraphicSystem.createCompatibleImage(width,
+//          height,
+//          Transparency.BITMASK);
+//
+//      return workImage;
 
 	}
 
