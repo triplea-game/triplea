@@ -155,10 +155,8 @@ public class StrategicBombingRaidBattle implements Battle
             throw new IllegalStateException("Wrong number of casualties");
 
         CasualtyNotificationMessage notify = new CasualtyNotificationMessage(FIRE_AA, casualties, null, null, m_attacker, dice);
-        //an awful hack, set all so that the ui will pause and display this
-        // roll
-        //sorry, but im tired
-        notify.setAll(true);
+
+        notify.setAutoCalculated(true);
         bridge.sendMessage(notify, m_attacker);
         bridge.sendMessage(notify, m_defender);
 
