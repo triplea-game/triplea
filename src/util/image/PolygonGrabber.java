@@ -245,7 +245,12 @@ public class PolygonGrabber extends JFrame
     /**
        javax.swing.JPanel createMainPanel()
        
-       Creates a JPanel to be used.
+       Creates a JPanel to be used. Dictates how the map is 
+       painted. Current problem is that islands inside sea
+       zones are not recognized when filling in the sea zone
+       with a color, so we just outline in red instead of
+       filling. We fill for selecting territories only for
+       ease of use.
        
        @return javax.swing.JPanel  the newly create panel
     */
@@ -257,33 +262,45 @@ public class PolygonGrabber extends JFrame
             {
                 //super.paint(g);
                 g.drawImage(m_image, 0,0, this);
-                g.setColor(Color.black);
 		
                 Iterator iter = m_polygons.entrySet().iterator();
 		
+		g.setColor(Color.red);
+		
                 while (iter.hasNext())
                 {
-                    Collection polygons = (Collection) ( (Map.Entry) iter.next()).getValue();
+		    Collection polygons = (Collection) ((Map.Entry) iter.next()).getValue();
                     Iterator iter2 = polygons.iterator();
                     
 		    while (iter2.hasNext())
                     {
-                        Polygon item = (Polygon)  iter2.next();
-                        g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
+                        Polygon item = (Polygon)iter2.next();
+			
+			/*
+			  fills the final highlighted area a solid color but
+			  covers the encompasing islands. Will be a guessing
+			  game to get the islands once the sea zone is done.
+
+			  g.setColor(Color.yellow);
+                          g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
+			  g.setColor(Color.black);
+			*/
+			
+			g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
                     
 		    }//while
                 
 		}//while
 		
-                g.setColor(Color.red);
 		
+		g.setColor(Color.red);
                 if(m_current != null)
                 {
                     Iterator currentIter = m_current.iterator();
                     while (currentIter.hasNext())
                     {
                         Polygon item = (Polygon) currentIter.next();
-                        g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
+			g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
                     
 		    }//while
                 
@@ -376,6 +393,8 @@ public class PolygonGrabber extends JFrame
     /**
        mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
        
+       @see findPolygon(java.lang.int , java.lang.int)
+       
        @param java.awt.Point    point       a point clicked by mouse
        @param java.lang.boolean ctrlDown    true if ctrl key was hit
        @param java.lang.boolean rightMouse  true if the right mouse button was hit
@@ -389,11 +408,11 @@ public class PolygonGrabber extends JFrame
             return;
         }
 	
-	if(rightMouse && m_current != null)
+	if(rightMouse && m_current != null)     //right click and list of polys is not empty
         {
             doneCurrentGroup();
         }
-        else if(pointInCurrentPolygon(point))
+        else if(pointInCurrentPolygon(point))   //point clicked is already highlighted
         {
             System.out.println("rejecting");
             return;
@@ -411,6 +430,7 @@ public class PolygonGrabber extends JFrame
             m_current = new ArrayList();
             m_current.add(p);
         }
+	
         repaint();
     }
 
@@ -463,17 +483,33 @@ public class PolygonGrabber extends JFrame
         Iterator centersiter = m_centers.entrySet().iterator();
 
         guessCountryName(text, centersiter);
-        JOptionPane.showMessageDialog(this, text);
+        int option = JOptionPane.showConfirmDialog(this, text);
 	
-        if(!m_centers.keySet().contains(text.getText()))
+	//cancel = 2
+	//no  = 1
+	//yes = 0
+	
+        if(option == 0)
         {
-            //not a valid name
-            JOptionPane.showMessageDialog(this, "not a valid name");
-            return;
-        }
-	
-        m_polygons.put(text.getText(), m_current);
-        m_current = null;
+                if(!m_centers.keySet().contains(text.getText()))
+                {
+                        //not a valid name
+                        JOptionPane.showMessageDialog(this, "not a valid name");
+                        m_current = null;
+                        return;
+                }
+
+                m_polygons.put(text.getText(), m_current);
+                m_current = null;
+	}
+	else if(option > 0)
+	{
+               m_current = null;
+	}
+	else
+	{
+               System.out.println("something very invalid");
+	}
     }
 
 
@@ -512,24 +548,6 @@ public class PolygonGrabber extends JFrame
     }
 
 
-
-    /**
-       java.lang.boolean inBounds(java.lang.int, java.lang.int)
-       
-       Checks if the given x/y coordinate point is inbounds or not
-       
-       @param java.lang.int x   the x coordinate
-       @param java.lang.int y   the y coordinate
-       
-       @return java.lang.boolean
-    */
-    private final boolean inBounds(int x, int y)
-    {
-        return x >= 0 && x < m_image.getWidth(null) && y >= 0 && y < m_image.getHeight(null);
-    }
-
-
-
     /**
        java.lang.boolean isBlack(java.awt.Point)
        
@@ -565,7 +583,28 @@ public class PolygonGrabber extends JFrame
             return false;   //not inbounds, can't be black
         }
 	
-	return (m_bufferedImage.getRGB(x,y) & 0x00FFFFFF) == 0;
+	//gets ARGB integer value and we LOGICAL AND mask it
+	//with ARGB value of 00,FF,FF,FF to determine if it
+	//it black or not.
+	
+	return (m_bufferedImage.getRGB(x,y) & 0x00FFFFFF) == 0;   //maybe here ?
+    }
+
+
+
+    /**
+       java.lang.boolean inBounds(java.lang.int, java.lang.int)
+       
+       Checks if the given x/y coordinate point is inbounds or not
+       
+       @param java.lang.int x   the x coordinate
+       @param java.lang.int y   the y coordinate
+       
+       @return java.lang.boolean
+    */
+    private final boolean inBounds(int x, int y)
+    {
+        return x >= 0 && x < m_image.getWidth(null) && y >= 0 && y < m_image.getHeight(null);
     }
 
 
@@ -657,7 +696,7 @@ public class PolygonGrabber extends JFrame
         //walk up, find the first black point
 	
         Point startPoint = new Point(x,y);
-        while( inBounds(startPoint.x, startPoint.y -1) && !isBlack(startPoint.x, startPoint.y))
+        while(inBounds(startPoint.x, startPoint.y -1) && !isBlack(startPoint.x, startPoint.y))
         {
             startPoint.y--;
         }
