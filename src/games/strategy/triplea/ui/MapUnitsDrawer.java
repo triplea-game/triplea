@@ -118,7 +118,7 @@ public class MapUnitsDrawer
             if(dependents == null)
                 dependents = new HashSet();
             
-            Collection containedTerritorys = TerritoryData.getInstance().getContainedTerritory(territory.getName());
+            Collection containedTerritorys = MapData.getInstance().getContainedTerritory(territory.getName());
             if(containedTerritorys != null)
                 addAll(dependents, containedTerritorys);
         }
@@ -239,7 +239,7 @@ public class MapUnitsDrawer
       graphics.setColor(Color.white);
       graphics.setFont(MapImage.MAP_FONT);
 
-      Iterator placementPoints = TerritoryData.getInstance().getPlacementPoints(territory).iterator();
+      Iterator placementPoints = MapData.getInstance().getPlacementPoints(territory).iterator();
       if (placementPoints == null || !placementPoints.hasNext())
       {
           throw new IllegalStateException("No where to place units:" + territory.getName());
@@ -279,7 +279,7 @@ public class MapUnitsDrawer
 
           //check to see if we are drawing on another territory
           tempRectanlge.setFrame(place.x, place.y, UnitIconImageFactory.UNIT_ICON_HEIGHT, UnitIconImageFactory.UNIT_ICON_WIDTH);
-          Collection intersects = TerritoryData.getInstance().territoriesThatOverlap(tempRectanlge);
+          Collection intersects = MapData.getInstance().territoriesThatOverlap(tempRectanlge);
           if (!intersects.isEmpty())
              addAll(dependencies, intersects);
       }

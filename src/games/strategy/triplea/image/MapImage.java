@@ -23,7 +23,7 @@ package games.strategy.triplea.image;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.ui.TerritoryData;
+import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.Util;
 import games.strategy.util.NullImageObserver;
 
@@ -153,7 +153,7 @@ public class MapImage
 
   private void resetWaterTerritory(Territory territory)
   {
-      Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
+      Rectangle dirty = MapData.getInstance().getBoundingRect(territory);
 
       Image seaImage = TerritoryImageFactory.getInstance().getSeaImage(territory);
       m_largeMapImage.getGraphics().drawImage(seaImage, dirty.x, dirty.y, s_observer);
@@ -182,7 +182,7 @@ public class MapImage
 
     Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
 
-    List polys = TerritoryData.getInstance().getPolygons(territory);
+    List polys = MapData.getInstance().getPolygons(territory);
     Iterator polyIter = polys.iterator();
     while (polyIter.hasNext())
     {
@@ -198,7 +198,7 @@ public class MapImage
 
     }
 
-    Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
+    Rectangle dirty = MapData.getInstance().getBoundingRect(territory);
 
 
     if(reliefImage != null)
@@ -232,7 +232,7 @@ public class MapImage
         return;
 
       Graphics g = m_largeMapImage.getGraphics();
-      Rectangle bounds = TerritoryData.getInstance().getBoundingRect(territory);
+      Rectangle bounds = MapData.getInstance().getBoundingRect(territory);
       g.setFont(MAP_FONT);
 
       TerritoryAttatchment ta = TerritoryAttatchment.get(territory);

@@ -65,7 +65,7 @@ public class MapRouteDrawer
         //find all the points for this route
         for (int i = 0; i < numTerritories; i++)
         {
-            points[i] = (Point) TerritoryData.getInstance().getCenter((Territory) territories.get(i));
+            points[i] = (Point) MapData.getInstance().getCenter((Territory) territories.get(i));
         }
 
         if(routeDescription.getStart() != null)

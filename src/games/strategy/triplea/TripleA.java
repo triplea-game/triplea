@@ -82,7 +82,7 @@ public class TripleA implements IGameLoader
 	    */
             String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
-            TerritoryData.setMapDir(mapDir);          //tells TerritoryData where the txt files are
+            MapData.setMapDir(mapDir);          //tells TerritoryData where the txt files are
             TerritoryImageFactory.setMapDir(mapDir);  //tells the image factory where the images are
 
             TripleAFrame frame = new TripleAFrame(game, players);

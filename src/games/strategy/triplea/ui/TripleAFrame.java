@@ -113,7 +113,7 @@ public class TripleAFrame extends JFrame
 
         createMenuBar();
 
-        TerritoryData.getInstance().verify(m_data);
+        MapData.getInstance().verify(m_data);
         MapImage.getInstance().loadMaps(m_data);
 
         Image small = MapImage.getInstance().getSmallMapImage();
@@ -614,7 +614,7 @@ public class TripleAFrame extends JFrame
     private void UpdateMap(String mapdir) throws IOException
     {
 
-        TerritoryData.setMapDir(mapdir); // set mapdir
+        MapData.setMapDir(mapdir); // set mapdir
         TerritoryImageFactory.setMapDir(mapdir);
 
         MapImage.getInstance().loadMaps(m_data); // load map data

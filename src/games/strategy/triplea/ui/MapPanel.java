@@ -71,7 +71,7 @@ public class MapPanel extends ImageScrollerLargeView
     public boolean isShowing(Territory territory)
     {
 
-        Point territoryCenter = TerritoryData.getInstance().getCenter(territory);
+        Point territoryCenter = MapData.getInstance().getCenter(territory);
 
         Rectangle screenBounds = new Rectangle(super.getXOffset(), super.getYOffset(), super.getWidth(), super.getHeight());
         return screenBounds.contains(territoryCenter);
@@ -84,7 +84,7 @@ public class MapPanel extends ImageScrollerLargeView
         if (territory == null)
             return;
 
-        Point p = TerritoryData.getInstance().getCenter(territory);
+        Point p = MapData.getInstance().getCenter(territory);
 
         //when centering dont want the map to wrap around,
         //eg if centering on hawaii
@@ -175,7 +175,7 @@ public class MapPanel extends ImageScrollerLargeView
         else if (x > imageWidth)
             x -= imageWidth;
 
-        String name = TerritoryData.getInstance().getTerritoryAt(x, y);
+        String name = MapData.getInstance().getTerritoryAt(x, y);
         if (name == null)
             return null;
         return m_data.getMap().getTerritory(name);
