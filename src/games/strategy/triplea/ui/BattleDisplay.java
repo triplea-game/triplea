@@ -54,6 +54,7 @@ public class BattleDisplay extends JPanel
   private BattleModel m_attackerModel;
   private BattleStepsPanel m_steps;
 
+
   private Object m_continueLock = new Object();
   private SelectCasualtyMessage m_selectCasualtyResponse;
 
@@ -163,8 +164,65 @@ public class BattleDisplay extends JPanel
       }
 
       m_actionButton.setAction(null);
-
   }
+
+  public RetreatMessage getRetreat(RetreatQueryMessage rqm)
+  {
+    setStep(rqm);
+
+    String message = rqm.getMessage();
+    String ok = "Retreat";
+    String cancel ="Remain";
+    String[] options ={ok, cancel};
+    int choice = JOptionPane.showOptionDialog(this, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
+    boolean retreat = (choice == 0);
+    if(!retreat)
+      return null;
+
+    RetreatComponent comp = new RetreatComponent(rqm);
+    int option = JOptionPane.showConfirmDialog( this, comp,rqm.getMessage(), JOptionPane.OK_CANCEL_OPTION);
+    if(option == JOptionPane.OK_OPTION)
+    {
+      if(comp.getSelection() != null)
+        return new RetreatMessage(comp.getSelection());
+    }
+    else
+    {
+      return getRetreat(rqm);
+    }
+
+    return null;
+  }
+
+
+  private class RetreatComponent extends JPanel
+  {
+    RetreatQueryMessage m_query;
+    JList m_list;
+
+    RetreatComponent(RetreatQueryMessage rqm)
+    {
+      this.setLayout(new BorderLayout());
+
+      JLabel label = new JLabel("Retreat to...");
+      this.add(label, BorderLayout.NORTH);
+
+      m_query = rqm;
+      Vector listElements = new Vector(rqm.getTerritories());
+
+      m_list = new JList(listElements);
+      m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      JScrollPane scroll = new JScrollPane(m_list);
+      this.add(scroll, BorderLayout.CENTER);
+    }
+
+    public Territory getSelection()
+    {
+      return (Territory) m_list.getSelectedValue();
+    }
+  }
+
+
 
   public SelectCasualtyMessage getCasualties(final SelectCasualtyQueryMessage msg)
   {
@@ -261,6 +319,8 @@ public class BattleDisplay extends JPanel
 
     m_actionPanel.add(m_dicePanel, DICE_KEY);
     m_actionPanel.add(m_casualties, CASUALTIES_KEY);
+
+
 
     JPanel diceAndSteps = new JPanel();
     diceAndSteps.setLayout(new BorderLayout());
@@ -515,8 +575,9 @@ class BattleStepsPanel extends JPanel
     return null;
   }
 
-  public void listBattle(BattleStepMessage msg)
+  public void listBattle(final BattleStepMessage msg)
   {
+
     m_listModel.removeAllElements();
 
 
@@ -526,6 +587,8 @@ class BattleStepsPanel extends JPanel
       m_listModel.addElement(iter.next());
     }
     m_listSelectionModel.hiddenSetSelectionInterval(0);
+
+    validate();
 
   }
 

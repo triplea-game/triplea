@@ -28,6 +28,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
 import games.strategy.triplea.ui.TripleAFrame;
+import java.awt.*;
 
 
 /**
@@ -56,8 +57,6 @@ public class TripleA implements IGameLoader
 		{
 			TripleAFrame frame = new TripleAFrame(game, players);
 
-			frame.setSize(800,600);
-
       //the pbem roller needs to know about the ui.
       if(game.getRandomSource() != null && game.getRandomSource() instanceof IronyGamesDiceRollerRandomSource)
       {
@@ -65,10 +64,13 @@ public class TripleA implements IGameLoader
       }
 
 			frame.setVisible(true);
+
 			while(!frame.isVisible())
 			{
 				Thread.currentThread().yield();
 			}
+
+      frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 
 			connectPlayers(players, frame);
 		} catch(IOException ioe)

@@ -504,7 +504,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
   private Collection getEmptyOrFriendlySeaNeighbors(PlayerID player)
   {
     Collection possible = m_data.getMap().getNeighbors(m_battleSite);
-    Match match = new CompositeMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, m_data));
+    CompositeMatch match = new CompositeMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, m_data));
+
+    //make sure we can move through the any canals
+    Match canalMatch = new Match()
+    {
+      public boolean match(Object o)
+      {
+        Route r = new Route();
+        r.setStart(m_battleSite);
+        r.add((Territory) o);
+        return null == MoveValidator.validateCanal(r, m_defender, m_data);
+      }
+    };
+    match.add(canalMatch);
+
     possible = Match.getMatches(possible, match);
     return possible;
   }

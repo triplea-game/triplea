@@ -121,7 +121,7 @@ public class MoveDelegate implements SaveableDelegate
           int capacity = m_transportTracker.getAvailableCapacity(transport);
           if(capacity >= cost)
           {
-            m_transportTracker.load(toLoad, transport, m_currentMove);
+            m_transportTracker.load(toLoad, transport, m_currentMove, m_player);
             found = true;
             break;
           }
@@ -152,7 +152,7 @@ public class MoveDelegate implements SaveableDelegate
     if(!m_nonCombat)
     {
       m_alreadyMoved.clear();
-      m_transportTracker.clearUnloadedCapacity();
+      m_transportTracker.endOfRoundClearState();
     }
     m_data = gameData;
     m_player = player;
@@ -442,44 +442,12 @@ private void updateUndoableMoveIndexes()
 
   private String validateCanal(Collection units, Route route, PlayerID player)
   {
-    Collection territories = route.getTerritories();
+    //if no sea units then we can move
+    if (Match.noneMatch(units, Matches.UnitIsSea))
+      return null;
 
-    //check suez canal
-    Territory eastMed = m_data.getMap().getTerritory("East Mediteranean Sea Zone");
-    Territory redSea = m_data.getMap().getTerritory("Red Sea Zone");
-    if(territories.contains(eastMed) && territories.contains(redSea))
-    {
-      Territory egypt = m_data.getMap().getTerritory("Anglo Sudan Egypt");
-      Territory iraq = m_data.getMap().getTerritory("Syria Jordan");
 
-      if(! m_data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
-         ! m_data.getAllianceTracker().isAllied(player, iraq.getOwner()))
-        return "Must own Egypt and Syria/Jordan  to go through Suez Canal";
-
-      BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
-      if(tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
-        return "Cannot move through canal without owning Egypt and Syria/Jordan for an entire turn.";
-
-    }
-
-    //check panama canal
-    Territory carib = m_data.getMap().getTerritory("Carribean Sea Zone");
-    Territory westPan = m_data.getMap().getTerritory("West Panama Sea Zone");
-    if(territories.contains(carib) && territories.contains(westPan))
-    {
-      Territory panama = m_data.getMap().getTerritory("Panama");
-
-      if(! m_data.getAllianceTracker().isAllied(player, panama.getOwner()))
-
-        return "Must own panama to go through Panama Canal";
-
-      BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
-      if(tracker.wasConquered(panama))
-        return "Cannot move through canal without owning panama an entire turn.";
-    }
-
-    return null;
-
+    return MoveValidator.validateCanal( route, player, m_data);
   }
 
   private String validateCombat(Collection units, Route route, PlayerID player)
@@ -706,6 +674,9 @@ private void updateUndoableMoveIndexes()
     {
       if(route.getLength() > 1)
         return "Unloading units must stop where they are unloaded";
+
+      if(m_transportTracker.wereAnyOfTheseLoadedOnAlliedTransportsThisTurn(units))
+        return "Cannot load and unload an allied transport in the same round";
     }
 
     //if we are land make sure no water in route except for transport situations
@@ -983,7 +954,7 @@ private void updateUndoableMoveIndexes()
 
         Unit load = (Unit) units.next();
         Unit transport = (Unit) transporting.get(load);
-        m_transportTracker.load(load, transport, m_currentMove);
+        m_transportTracker.load(load, transport, m_currentMove, m_player);
       }
     }
   }

@@ -142,6 +142,7 @@ public class BattlePanel extends ActionPanel
     m_battleFrame.setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(m_battleFrame));
     m_battleFrame.getContentPane().add(m_battleDisplay);
     m_battleFrame.setSize(750, 500);
+    games.strategy.ui.Util.center(m_battleFrame);
     m_battleFrame.show();
     m_battleFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -237,30 +238,7 @@ public class BattlePanel extends ActionPanel
 
   public RetreatMessage getRetreat(RetreatQueryMessage rqm)
   {
-    m_battleDisplay.setStep(rqm);
-
-    String message = rqm.getMessage();
-    String ok = "Retreat";
-    String cancel ="Remain";
-    String[] options ={ok, cancel};
-    int choice = JOptionPane.showOptionDialog(m_battleDisplay, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, cancel);
-    boolean retreat = (choice == 0);
-    if(!retreat)
-      return null;
-
-    RetreatComponent comp = new RetreatComponent(rqm);
-    int option = JOptionPane.showConfirmDialog( m_battleDisplay, comp,rqm.getMessage(), JOptionPane.OK_CANCEL_OPTION);
-    if(option == JOptionPane.OK_OPTION)
-    {
-      if(comp.getSelection() != null)
-        return new RetreatMessage(comp.getSelection());
-    }
-    else
-    {
-      return getRetreat(rqm);
-    }
-
-    return null;
+    return m_battleDisplay.getRetreat(rqm);
   }
 
   public void bombingResults(BombingResults message)
@@ -268,34 +246,6 @@ public class BattlePanel extends ActionPanel
     m_battleDisplay.bombingResults(message);
   }
 
-
-
-  private class RetreatComponent extends JPanel
-  {
-    RetreatQueryMessage m_query;
-    JList m_list;
-
-    RetreatComponent(RetreatQueryMessage rqm)
-    {
-      this.setLayout(new BorderLayout());
-
-      JLabel label = new JLabel("Retreat to...");
-      this.add(label, BorderLayout.NORTH);
-
-      m_query = rqm;
-      Vector listElements = new Vector(rqm.getTerritories());
-
-      m_list = new JList(listElements);
-      m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      JScrollPane scroll = new JScrollPane(m_list);
-      this.add(scroll, BorderLayout.CENTER);
-    }
-
-    public Territory getSelection()
-    {
-      return (Territory) m_list.getSelectedValue();
-    }
-  }
 
   class FightBattleAction extends AbstractAction
   {

@@ -94,4 +94,25 @@ public class Util
 			System.exit(0);
 		}
 	};
+
+  public static void center(Window w)
+  {
+    int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+    int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+
+    int windowWidth = w.getWidth();
+    int windowHeight = w.getHeight();
+
+    if(windowHeight > screenHeight)
+      return;
+    if(windowWidth > screenWidth)
+      return;
+
+    int x = (screenWidth - windowWidth ) / 2;
+    int y = (screenHeight - windowHeight) /2;
+
+    w.setLocation(x,y);
+
+  }
+
 }

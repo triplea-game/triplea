@@ -44,6 +44,7 @@ public class MoveValidator
 	 */
 	public static boolean hasEnoughMovement(Collection units, IntegerMap alreadyMoved, int length)
 	{
+
 		Iterator iter = units.iterator();
 		while(iter.hasNext() )
 		{
@@ -402,6 +403,49 @@ public class MoveValidator
 		Match notAirOrSea = new CompositeMatchAnd(Matches.UnitIsNotAir, Matches.UnitIsNotSea);
 		return Match.someMatch(units, notAirOrSea);
 	}
+
+  public static String validateCanal(Route route, PlayerID player, GameData data)
+  {
+    Collection territories = route.getTerritories();
+
+    //check suez canal
+    Territory eastMed = data.getMap().getTerritory("East Mediteranean Sea Zone");
+    Territory redSea = data.getMap().getTerritory("Red Sea Zone");
+    if (territories.contains(eastMed) && territories.contains(redSea))
+    {
+      Territory egypt = data.getMap().getTerritory("Anglo Sudan Egypt");
+      Territory iraq = data.getMap().getTerritory("Syria Jordan");
+
+      if (!data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
+          !data.getAllianceTracker().isAllied(player, iraq.getOwner()))
+        return "Must own Egypt and Syria/Jordan  to go through Suez Canal";
+
+      BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
+      if (tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
+        return "Cannot move through canal without owning Egypt and Syria/Jordan for an entire turn.";
+
+    }
+
+    //check panama canal
+    Territory carib = data.getMap().getTerritory("Carribean Sea Zone");
+    Territory westPan = data.getMap().getTerritory("West Panama Sea Zone");
+    if (territories.contains(carib) && territories.contains(westPan))
+    {
+      Territory panama = data.getMap().getTerritory("Panama");
+
+      if (!data.getAllianceTracker().isAllied(player, panama.getOwner()))
+
+        return "Must own panama to go through Panama Canal";
+
+      BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
+      if (tracker.wasConquered(panama))
+        return "Cannot move through canal without owning panama an entire turn.";
+    }
+
+    return null;
+
+  }
+
 
 	/** Creates new MoveValidator */
     private MoveValidator()

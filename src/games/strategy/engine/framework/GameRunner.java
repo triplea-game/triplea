@@ -120,15 +120,14 @@ public class GameRunner
 
     installSecurityProvider();
 
-    //Console c = Console.getConsole();
-    //c.displayStandardError();
-    //c.displayStandardOutput();
-    //c.show();
 
     LauncherFrame frame = new LauncherFrame();
     frame.setIconImage(getGameIcon(frame));
     frame.pack();
+
+    games.strategy.ui.Util.center(frame);
     frame.show();
+
   }
 
   /**

@@ -60,7 +60,7 @@ public class ChatFrame extends JFrame
 
     StyleConstants.setBold(bold, true);
     setSize(300,200);
-    setDefaultCloseOperation(super.HIDE_ON_CLOSE);
+    setDefaultCloseOperation(super.DO_NOTHING_ON_CLOSE);
     }
 
   public Chat getChat()

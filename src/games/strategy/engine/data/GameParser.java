@@ -521,6 +521,8 @@ public class GameParser
       PlayerID player = getPlayerID(current, "player", false);
       String name = current.getAttribute("name");
       String displayName = null;
+      if(current.hasAttribute("display"))
+        displayName = current.getAttribute("display");
 
       GameStep step = new GameStep(name, displayName, player, delegate, data);
 

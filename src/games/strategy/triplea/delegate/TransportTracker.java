@@ -24,6 +24,7 @@ import java.util.*;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.engine.data.*;
 
 
 /**
@@ -39,23 +40,14 @@ public class TransportTracker implements java.io.Serializable
 
 	public static int getCost(Collection units)
 	{
-		if(units == null)
-			return 0;
-
-		Iterator iter = units.iterator();
-		int sum = 0;
-		while(iter.hasNext())
-		{
-			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
-			sum += ua.getTransportCost();
-		}
-		return sum;
+		return MoveValidator.getTransportCost(units);
 	}
 
 	private Map m_transporting = new HashMap(); //maps unit -> transporter
 	private Map m_transportedBy = new HashMap(); //maps transporter -> unit collection, inverse of m_transports
 	private Map m_unloaded = new HashMap();
+ private Map m_alliedLoadedThisTurn = new HashMap(); //maps unit->Collection of units
+                                                     //allied transports canot
 
 	/**
 	 * Returns the collection of units that the given transport is transporting.
@@ -114,7 +106,7 @@ public class TransportTracker implements java.io.Serializable
      */
     public void undoUnload(Unit unit, Unit transport)
     {
-        loadTransport(transport, unit);
+        loadTransport(transport, unit, null);
         Collection unload = (Collection) m_unloaded.get(transport);
         unload.remove(unit);
     }
@@ -149,23 +141,30 @@ public class TransportTracker implements java.io.Serializable
      * @param unit Unit
      * @param transport Unit
      */
-    public void undoLoad(Unit unit, Unit transport)
+    public void undoLoad(Unit unit, Unit transport, PlayerID id)
     {
+       //an allied transport
+        if(!transport.getOwner().equals(id))
+        {
+          Collection alliedLoaded = (Collection) m_alliedLoadedThisTurn.get(transport);
+          alliedLoaded.remove(unit);
+        }
+
         m_transportedBy.remove(transport);
         Collection carrying = (Collection) m_transporting.get(transport);
         carrying.remove(unit);
     }
 
-	public void load(Unit unit, Unit transport, UndoableMove undoableMove)
+	public void load(Unit unit, Unit transport, UndoableMove undoableMove, PlayerID id)
 	{
-		loadTransport(transport, unit);
+		loadTransport(transport, unit, id);
         if(undoableMove != null)
             undoableMove.load(unit, transport);
 	}
 
-	private void loadTransport(Unit transport, Unit unit)
+	private void loadTransport(Unit transport, Unit unit, PlayerID id)
 	{
-        m_transportedBy.put(unit, transport);
+    m_transportedBy.put(unit, transport);
 		Collection carrying = (Collection) m_transporting.get(transport);
 		if(carrying == null)
 		{
@@ -175,6 +174,17 @@ public class TransportTracker implements java.io.Serializable
 
 		if(!carrying.contains(unit))
 			carrying.add(unit);
+
+    //an allied transport
+    if(!transport.getOwner().equals(id))
+    {
+      if(!m_alliedLoadedThisTurn.containsKey(transport))
+      {
+        m_alliedLoadedThisTurn.put(transport, new ArrayList());
+      }
+      Collection units = (Collection) m_alliedLoadedThisTurn.get(transport);
+      units.add(unit);
+    }
 	}
 
 	/**
@@ -205,8 +215,22 @@ public class TransportTracker implements java.io.Serializable
 		return capacity - used - unloaded;
 	}
 
-	public void clearUnloadedCapacity()
+	public void endOfRoundClearState()
 	{
 		m_unloaded.clear();
+    m_alliedLoadedThisTurn.clear();
 	}
+
+  public boolean wereAnyOfTheseLoadedOnAlliedTransportsThisTurn(Collection units)
+  {
+    Iterator iter = m_alliedLoadedThisTurn.entrySet().iterator();
+    while (iter.hasNext())
+    {
+      Collection loadedInAlliedTransports = (Collection) ((Map.Entry) iter.next()).getValue();
+      if(!games.strategy.util.Util.intersection(units, loadedInAlliedTransports).isEmpty())
+        return true;
+    }
+    return false;
+  }
+
 }
