@@ -57,6 +57,15 @@ import games.strategy.net.INode;
  * where SomeConstant is defined in the class foo.fee.Fi<br> 
  * <br>
  * 
+ * 
+ * 
+ * <p><b>Channels and threading</b>
+ * <p>
+ * There will only be one thread calling methods in a channel at one time.  Methods will be 
+ * called on subscribors in the order that they are called on broadcasters.  This means that if you 
+ * block the current thread during a client invocation, no further methods can be called on that channel.
+ * 
+ * <p>
  * @author Sean Bridges
  */
 public interface IChannelMessenger

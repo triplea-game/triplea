@@ -203,7 +203,7 @@ public class UnifiedMessenger
 	        m_methodCallWaitCount.put(methodCallID, new Integer(remote.length));
         }
 
-        //invoke remotly
+        //invoke remotely
         Invoke invoke = new Invoke(methodCallID, true, remoteCall, endPointName);
         for(int i = 0; i <remote.length; i++)
         {
@@ -417,6 +417,15 @@ public class UnifiedMessenger
             {
                 final Invoke invoke = (Invoke) msg;
                 final EndPoint local = (EndPoint) m_localEndPoints.get(invoke.endPointName);
+
+                //something a bit strange here, it may be the case 
+                //that the endpoint was deleted locally
+                //regardless, the other side is expecting our reply
+                if(local == null)
+                {
+                    m_messenger.send(new InvocationResults(new ArrayList(), invoke.methodCallID), from);
+                    return;
+                }
                 //we dont want to block the message thread, only one thread is reading messages
                 //per connection, so run with out thread pool
                 Runnable task = new Runnable() {
@@ -763,7 +772,7 @@ class EndPointDestroyed implements Serializable
     }
 }
 
-//someone know has an implementor for an endpoint
+//someone now has an implementor for an endpoint
 class HasEndPointImplementor implements Serializable
 {
     public final String endPointName;
@@ -825,7 +834,7 @@ class Invoke implements Externalizable
     
     public String toString()
     {
-        return "invoke on:" + endPointName + " method name:" + call.getMethodName();
+        return "invoke on:" + endPointName + " method name:" + call.getMethodName() + " method call id:" + methodCallID;
     }
     
     public Invoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call, String endPointName)
@@ -865,6 +874,11 @@ class InvocationResults implements Serializable
     {
         this.results = results;
         this.methodCallID = methodCallID;
+    }
+    
+    public String toString()
+    {
+        return "Invocation results for method id:" + methodCallID + " number of results:" + results.size();
     }
     
 }

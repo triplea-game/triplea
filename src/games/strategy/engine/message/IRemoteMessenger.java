@@ -60,6 +60,11 @@ package games.strategy.engine.message;
  * where SomeConstant is defined in the class foo.fee.Fi<br> 
  * <br>
  * <br>
+ * 
+ * <p><b>Remotes and threading</b>
+ * <p>Remotes are multithreaded.  Method calls may arrive out of order that methods
+ * were called.  
+ * 
  * @see IRemote, java.lang.reflect.Proxy 
  * 
  * @author Sean Bridges
