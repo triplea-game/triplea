@@ -220,11 +220,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
     private boolean canProduceFightersOnCarriers()
     {
-
-        Boolean property = (Boolean) m_data.getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS);
-        if (property == null)
-            return false;
-        return property.booleanValue();
+        return m_data.getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);   
     }
 
     /**
@@ -275,16 +271,9 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
             if (canLand != null)
                 return canLand;
 
-            //make sure all units not the players are allied
-            Set playersWithUnits = to.getUnits().getPlayersWithUnits();
-            playersWithUnits.remove(player);
-            Iterator iter = playersWithUnits.iterator();
-            while (iter.hasNext())
-            {
-                PlayerID other = (PlayerID) iter.next();
-                if (!m_data.getAllianceTracker().isAllied(player, other))
-                    return new StringMessage("Cant place units in water when the enemy has units in the same Sea Zone :" + other.getName(), true);
-            }
+            if(!isFourthEdition() &&   to.getUnits().someMatch(Matches.enemyUnit( player, m_data ) ) )
+                return new StringMessage("None allied units in sea zone ", true);
+            //
 
         } else
         //if land
