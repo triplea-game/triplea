@@ -12,7 +12,7 @@
 
 /*
  * StrategicBombingRaidBattle.java
- * 
+ *
  * Created on November 29, 2001, 2:21 PM
  */
 
@@ -48,7 +48,7 @@ public class StrategicBombingRaidBattle implements Battle
     private GameData m_data;
     private BattleTracker m_tracker;
     private boolean m_isOver = false;
-    
+
     /** Creates new StrategicBombingRaidBattle */
     public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker)
     {
@@ -59,7 +59,7 @@ public class StrategicBombingRaidBattle implements Battle
         m_defender = defender;
         m_tracker = tracker;
     }
-    
+
     public boolean isOver()
     {
         return m_isOver;
@@ -130,9 +130,9 @@ public class StrategicBombingRaidBattle implements Battle
         BattleEndMessage battleEnd = new BattleEndMessage("Bombing raid cost " + cost);
         bridge.sendMessage(battleEnd, m_attacker);
         bridge.sendMessage(battleEnd, m_defender);
-        
+
         m_isOver = true;
-        
+
     }
 
     private void fireAA(DelegateBridge bridge)
@@ -179,19 +179,44 @@ public class StrategicBombingRaidBattle implements Battle
         int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
         if (rollCount == 0)
             return 0;
-        
+
         String annotation = attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in " + location.getName();
         int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
+        int[] newDice;
+        if(TechTracker.hasHeavyBomber(attacker) &&
+           m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)!=null &&
+           m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)==Boolean.TRUE)
+        {
+          newDice=new int[dice.length/2];
+          for(int i=0;i<dice.length;i+=2)
+          {
+            newDice[i/2]=Math.max(dice[i],dice[i+1]);
+            bridge.getHistoryWriter().addChildToEvent("Bomber rolled "+(dice[i]+1)+" and "+(dice[i+1]+1)+" and picked "+(newDice[i/2]+1));
+          }
+          dice=newDice;
+        }
+
         int cost = 0;
-        boolean fourthEdition = m_data.getProperties().get(Constants.FOURTH_EDITION, false); 
+        boolean fourthEdition = m_data.getProperties().get(Constants.FOURTH_EDITION, false);
         int production = TerritoryAttatchment.get(location).getProduction();
 
         Iterator iter = m_units.iterator();
         int index = 0;
-        
+
         while(iter.hasNext())
         {
-            final int rolls = BattleCalculator.getRolls( (Unit) iter.next(), attacker, false);
+            int rolls;
+            if(TechTracker.hasHeavyBomber(attacker) &&
+               m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) != null &&
+               m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)==Boolean.TRUE)
+            {
+              rolls = 1;
+              iter.next();
+            }
+            else
+            {
+              rolls = BattleCalculator.getRolls( (Unit) iter.next(), attacker, false);
+            }
             int costThisUnit = 0;
             for(int i = 0; i < rolls; i++)
             {
@@ -203,9 +228,9 @@ public class StrategicBombingRaidBattle implements Battle
             else
                 cost+=costThisUnit;
         }
-        
 
-        
+
+
         BombingResults results = new BombingResults(dice, cost);
 
         bridge.sendMessage(results);
@@ -260,10 +285,10 @@ public class StrategicBombingRaidBattle implements Battle
 
         return m_battleSite;
     }
-    
+
     public Collection getDependentUnits(Collection units)
     {
         return Collections.EMPTY_LIST;
     }
-    
+
 }
