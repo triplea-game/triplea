@@ -66,8 +66,8 @@ public class DiceRoll implements java.io.Serializable
     }
 
     int[][] dice = new int[Constants.MAX_DICE][];
-    dice[5] = random;
-    for(int i = 0; i < 5; i++)
+    dice[0] = random;
+    for(int i = 1; i < Constants.MAX_DICE; i++)
     {
       dice[i] = new int[0];
     }
@@ -127,12 +127,12 @@ public class DiceRoll implements java.io.Serializable
 //   }
 
   // NEW VERSION
-  public static DiceRoll rollDice(List units, boolean defending, 
-                                  PlayerID player, PlayerID other_player, 
+  public static DiceRoll rollDice(List units, boolean defending,
+                                  PlayerID player, PlayerID other_player,
                                   DelegateBridge bridge)
   {
     int rollCount = BattleCalculator.getRolls(units, player, defending);
-    int[] dice = bridge.getRandomArray(Constants.MAX_DICE, rollCount, 
+    int[] dice = bridge.getRandomArray(Constants.MAX_DICE, rollCount,
                                        player, other_player);
 
     List[] sortedDice = new List[Constants.MAX_DICE];

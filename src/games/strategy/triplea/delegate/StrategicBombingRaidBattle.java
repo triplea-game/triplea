@@ -137,6 +137,9 @@ public class StrategicBombingRaidBattle implements Battle
       casualties.add(m_units.get(i));
     }
 
+    if(casualties.size() != dice.getHits())
+        throw new IllegalStateException("Wrong number of casualties");
+
     CasualtyNotificationMessage notify = new CasualtyNotificationMessage(FIRE_AA, casualties, null, m_attacker, dice);
     //an awful hack, set all so that the ui will pause and display this roll
     //sorry, but im tired
