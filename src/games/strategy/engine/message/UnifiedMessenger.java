@@ -565,8 +565,9 @@ public class UnifiedMessenger
      */
     public void waitForEndPoint(String endPointName, long timeoutMS)
     {
+        //dont use Long.MAX_VALUE since that will overflow
         if (timeoutMS <= 0)
-            timeoutMS = Long.MAX_VALUE;
+            timeoutMS = Integer.MAX_VALUE;
 
         long endTime = timeoutMS + System.currentTimeMillis();
 
@@ -590,8 +591,9 @@ public class UnifiedMessenger
      */
     public void waitForImplementors(String endPointName, long timeoutMS)
     {
+        //dont use Long.MAX_VALUE since that will overflow
         if (timeoutMS <= 0)
-            timeoutMS = Long.MAX_VALUE;
+            timeoutMS = Integer.MAX_VALUE;
 
         long endTime = timeoutMS + System.currentTimeMillis();
 
