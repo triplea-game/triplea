@@ -54,6 +54,7 @@ public class MovePanel extends ActionPanel
     private UndoableMovesPanel m_undableMovesPanel;
     
     private Point m_mouseSelectedPoint;
+    private Point m_mouseCurrentPoint;
 
     /** Creates new MovePanel */
     public MovePanel(GameData data, MapPanel map)
@@ -412,7 +413,7 @@ public class MovePanel extends ActionPanel
      */
     private void updateRoute(Route route)
     {
-        getMap().setRoute(route, m_mouseSelectedPoint);
+        getMap().setRoute(route, m_mouseSelectedPoint, m_mouseCurrentPoint);
     }
 
     /**
@@ -517,8 +518,7 @@ public class MovePanel extends ActionPanel
 
                 m_firstSelectedTerritory = territory;
                 m_mouseSelectedPoint = e.getPoint();
-                m_mouseSelectedPoint.x +=  getMap().getXOffset();
-                m_mouseSelectedPoint.y += getMap().getYOffset();
+                adjustPointForMapOffset(m_mouseSelectedPoint);
                 
                 
                 CANCEL_MOVE_ACTION.setEnabled(true);
@@ -560,10 +560,22 @@ public class MovePanel extends ActionPanel
             }
         }
 
-        public void mouseEntered(Territory territory)
+        /**
+         * 
+         */
+        private  void adjustPointForMapOffset(Point p)
+        {
+            p.x +=  getMap().getXOffset();
+            p.y += getMap().getYOffset();
+        }
+
+        public void mouseMoved(Territory territory, MouseEvent me)
         {
             if (m_firstSelectedTerritory != null && territory != null)
             {
+                m_mouseCurrentPoint= me.getPoint();
+                adjustPointForMapOffset(m_mouseCurrentPoint);
+                
                 updateRoute(getRoute(m_firstSelectedTerritory, territory));
             }
         }

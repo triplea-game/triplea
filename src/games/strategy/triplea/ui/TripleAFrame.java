@@ -405,13 +405,11 @@ public class TripleAFrame extends JFrame
     }
   };
 
-  public final MapSelectionListener  MAP_SELECTION_LISTENER = new MapSelectionListener ()
+  public final MapSelectionListener  MAP_SELECTION_LISTENER = new DefaultMapSelectionListener ()
   {
     Territory in;
 
-    public void territorySelected(Territory territory, MouseEvent me)
-    {}
-
+    
     public void mouseEntered(Territory territory)
     {
       in = territory;

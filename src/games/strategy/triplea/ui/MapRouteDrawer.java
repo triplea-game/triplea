@@ -49,6 +49,7 @@ public class MapRouteDrawer
      */
     public static void drawRoute(Graphics2D graphics, RouteDescription routeDescription, ImageScrollerLargeView view)
     {
+        
         if(routeDescription == null)
             return;
         
@@ -163,6 +164,8 @@ public class MapRouteDrawer
 
     private static void drawWithTranslate(Graphics2D graphics, Shape shape, int translate)
     {
+        
+        
         if (shape instanceof Ellipse2D.Double)
         {
             Ellipse2D.Double elipse = (Ellipse2D.Double) shape;

@@ -156,8 +156,6 @@ public class MapUnitsDrawer
     {
         synchronized(m_lock)
         {
-          deleteme++;
-
             if (m_waitingToBeUpdated.isEmpty())
                 return;
 
@@ -218,7 +216,7 @@ public class MapUnitsDrawer
 
     }
 
-    private int deleteme = 0;
+    
 
     private void drawUnits(Territory territory)
     {
@@ -313,13 +311,30 @@ public class MapUnitsDrawer
         smallOffscreen.fill(oval);
     }
 
-    class QueueUpdate implements Runnable
+  	private Object thread_lock = new Object();
+  	private static long latestQueudUpdate = 0;
+    
+  	class QueueUpdate implements Runnable
     {
-        private Object thread_lock = new Object();
+  	    long scheduledTime = System.currentTimeMillis();
+  	    QueueUpdate()
+  	    {
+  	        synchronized(thread_lock)
+  	        {
+  	            latestQueudUpdate = scheduledTime;
+  	        }
+  	    }
+  	    
+  	    
+        
         public void run()
         {
             synchronized (thread_lock)
             {
+                //if something comes after us, ignore
+                if(scheduledTime < latestQueudUpdate)
+                    return;
+                
                 try
                 {
                     //hopefull we can merge changes together

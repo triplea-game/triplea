@@ -41,7 +41,7 @@ import games.strategy.triplea.delegate.*;
 public class MapPanel extends ImageScrollerLargeView
 {
 
-    private java.util.List m_mapSelectionListeners = new ArrayList();
+    private ListenerList m_mapSelectionListeners = new ListenerList();
 
     private GameData m_data;
     private Territory m_currentTerritory; //the territory that the mouse is
@@ -93,23 +93,29 @@ public class MapPanel extends ImageScrollerLargeView
 
     public void setRoute(Route route)
     {
-        setRoute(route, null);
+        setRoute(route, null, null);
     }
     	
     /**
      * Set the route, could be null.
      */
-    public void setRoute(Route route, Point start)
+    public void setRoute(Route route, Point start, Point end)
     {
-        if(start != null)
+        if(route == null)
         {
-            start = new Point(start);
-            
-        }
-        RouteDescription old = m_routeDescription;
-        m_routeDescription = new RouteDescription(route, start, null);
-        if(m_routeDescription != null && !m_routeDescription.equals(old))
+            m_routeDescription = null;
             m_mapsUnitDrawer.queueUpdate();
+        }
+        RouteDescription newVal = new RouteDescription(route, start, end);
+        if(m_routeDescription != null && m_routeDescription.equals(newVal))
+        {
+            return;
+        }
+        
+        
+        m_routeDescription = newVal; 
+        m_mapsUnitDrawer.queueUpdate();
+            
         
    
     }
@@ -129,25 +135,35 @@ public class MapPanel extends ImageScrollerLargeView
     private void notifyTerritorySelected(Territory t, MouseEvent me)
     {
 
-        java.util.List listeners = new ArrayList(m_mapSelectionListeners.size());
-        listeners.addAll(m_mapSelectionListeners);
+        Iterator iter = m_mapSelectionListeners.iterator();
 
-        for (int i = 0; i < listeners.size(); i++)
+        while(iter.hasNext())
         {
-            MapSelectionListener msl = (MapSelectionListener) listeners.get(i);
+            MapSelectionListener msl = (MapSelectionListener) iter.next();
             msl.territorySelected(t, me);
         }
     }
 
+    private void notifyMouseMoved(Territory t, MouseEvent me)
+    {
+
+        Iterator iter = m_mapSelectionListeners.iterator();
+
+        while(iter.hasNext())
+        {
+            MapSelectionListener msl = (MapSelectionListener) iter.next();
+            msl.mouseMoved(t, me);
+        }
+    }
+    
     private void notifyMouseEntered(Territory t)
     {
 
-        java.util.List listeners = new ArrayList(m_mapSelectionListeners.size());
-        listeners.addAll(m_mapSelectionListeners);
+        Iterator iter = m_mapSelectionListeners.iterator();
 
-        for (int i = 0; i < listeners.size(); i++)
+        while(iter.hasNext())
         {
-            MapSelectionListener msl = (MapSelectionListener) listeners.get(i);
+            MapSelectionListener msl = (MapSelectionListener) iter.next();
             msl.mouseEntered(t);
         }
     }
@@ -232,6 +248,9 @@ public class MapPanel extends ImageScrollerLargeView
                 m_currentTerritory = terr;
                 notifyMouseEntered(terr);
             }
+            
+            
+            notifyMouseMoved(terr, e);
         }
     };
 
@@ -397,17 +416,26 @@ class RouteDescription
            other.m_start == null && m_start != null ||
            (m_start != other.m_start && !m_start.equals(other.m_start)) )
             return false;
-        if(m_end == null && other.m_end != null ||
-                other.m_end == null && m_end != null ||     
-                (m_end != other.m_end && !m_end.equals(other.m_end)) )
-                 return false;
-        if(m_route == null && other.m_route != null ||
+        
+         if(m_route == null && other.m_route != null ||
                 other.m_route == null && m_route != null ||     
                 (m_route != other.m_route && !m_route.equals(other.m_route)) )
                  return false;
 
+         if(m_end == null && other.m_end != null ||
+                 other.m_end == null && m_end != null)
+                  return false;
+
+         //we dont want to be updating for every small change,
+         //if the end points are close enough, they are close enough
+         int xDiff = m_end.x - other.m_end.x;
+         xDiff *= xDiff;
+         int yDiff = m_end.y - other.m_end.y;
+         yDiff *= yDiff;
+         int endDiff = (int) Math.sqrt(xDiff + yDiff);
         
-        return true;
+         return endDiff < 15;
+         
 
         
     }

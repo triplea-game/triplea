@@ -85,6 +85,23 @@ public class Route implements java.io.Serializable
 		return joined;
 	}
 
+	public boolean equals(Object o)
+	{
+	    if(o == null)
+	        return false;
+	    Route other = (Route) o;
+	    if(! (other.getLength() == this.getLength()))
+	        return false;
+	    if(! other.getStart().equals(this.getStart()))
+	        return false;
+	    return other.getTerritories().equals(this.getTerritories());
+	}
+	
+	public int hashCode()
+	{
+	    return toString().hashCode();
+	}
+	
 	public void setStart(Territory t)
 	{
 		m_start = t;

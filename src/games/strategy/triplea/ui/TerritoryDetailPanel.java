@@ -43,11 +43,8 @@ public class TerritoryDetailPanel extends JPanel
         setBorder(new EmptyBorder(5, 5, 0, 0));
 
         mapPanel.addMapSelectionListener(
-            new MapSelectionListener()
+            new DefaultMapSelectionListener()
         {
-
-            public void territorySelected(Territory territory, MouseEvent me)
-            {}
 
             public void mouseEntered(Territory territory)
             {
