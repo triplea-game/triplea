@@ -66,12 +66,14 @@
 		display CDATA #IMPLIED
 	>
 	<!-- if no player given, then delegate is initialized with a null player -->
+	<!-- max run count is the maximum number of times that a delegate can run, if specified must be > 0, if not specified its infinity-->
 	<!ELEMENT sequence (step+)>
 		<!ELEMENT step EMPTY>
 		<!ATTLIST step
 			name ID #REQUIRED
 			delegate IDREF #REQUIRED
 			player IDREF #IMPLIED
+			maxRunCount CDATA #IMPLIED
 		>
 
 <!ELEMENT production (productionRule+, productionFrontier+, playerProduction+)>
@@ -150,8 +152,28 @@
 		>
 		
 <!ELEMENT propertyList (property*)>
-	<!ELEMENT property EMPTY>
+	<!ELEMENT property (boolean?, string?, number?, list?) >
+	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->
 	<!ATTLIST property
 		name CDATA #REQUIRED
 		value CDATA #REQUIRED
+		editable (true | false) "false"
 	>
+		<!ELEMENT boolean EMPTY>
+		<!ATTLIST boolean
+		>
+		<!ELEMENT string EMPTY>
+		<!ATTLIST string
+		>
+		<!ELEMENT number EMPTY>
+		<!-- currently only integers are supported -->
+		<!ATTLIST number
+			max CDATA #REQUIRED
+			min CDATA #REQUIRED
+		>
+		<!ELEMENT list EMPTY>
+		<!-- a comma seperated list of possible values -->
+		<!ATTLIST list
+			values CDATA #REQUIRED
+		>
+

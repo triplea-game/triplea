@@ -38,23 +38,25 @@ import games.strategy.engine.transcript.*;
  */
 public interface IGame
 {
-	public GameData getData();
+  public GameData getData();
 
-	public void addGameStepListener(GameStepListener listener);
-	public void removeGameStepListener(GameStepListener listener);
+  public void addGameStepListener(GameStepListener listener);
+  public void removeGameStepListener(GameStepListener listener);
 
-	public IMessageManager getMessageManager();
-	public IMessenger getMessenger();
+  public IMessageManager getMessageManager();
+  public IMessenger getMessenger();
 
-	/**
-	 * Should not be called outside of engine code.
-	 */
-	public void addChange(Change aChange);
+  /**
+   * Should not be called outside of engine code.
+   */
+  public void addChange(Change aChange);
 
-	/**
-	 * Get the ganes transcript.
-	 */
-	public Transcript getTranscript();
+  /**
+   * Get the ganes transcript.
+   */
+  public Transcript getTranscript();
 
-	public boolean canSave();
+  public boolean canSave();
+
+  public void shutdown();
 }

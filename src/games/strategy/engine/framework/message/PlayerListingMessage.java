@@ -36,51 +36,56 @@ import games.strategy.util.Version;
  */
 public class PlayerListingMessage implements Serializable
 {
-	/**
-	 * Maps String player name -> node Name
-	 * if ode name is null then the player is available to play.
-	 */
-	private Map m_playerListing = new HashMap();
-	private Version m_engineVersion;
-	private Version m_gameVersion;
-	private String m_gameName;
-	
-	/**
-	 * Creates a new instance of PlayerListingMessage
-	 */
-	public PlayerListingMessage(Map map, Version engineVersion, Version gameVersion, String gameName)
-	{
-		m_playerListing = new HashMap(map);
-		m_engineVersion = engineVersion;
-		m_gameVersion = gameVersion;
-		m_gameName = gameName;
-	}
-	
-	public Map getPlayerListing()
-	{
-		return m_playerListing;
-	}
-	
-	public String getGameName()
-	{
-		return m_gameName;
-	}
+  /**
+   * Maps String player name -> node Name
+   * if ode name is null then the player is available to play.
+   */
+  private Map m_playerListing = new HashMap();
+  private Version m_engineVersion;
+  private Version m_gameVersion;
+  private String m_gameName;
 
-	public Version getGameVersion()
-	{
-		return m_gameVersion;
-	}
+  /**
+   * Creates a new instance of PlayerListingMessage
+   */
+  public PlayerListingMessage(Map map, Version engineVersion, Version gameVersion, String gameName)
+  {
+    m_playerListing = new HashMap(map);
+    m_engineVersion = engineVersion;
+    m_gameVersion = gameVersion;
+    m_gameName = gameName;
+  }
 
-	public Version getEngineVersion()
-	{
-		return m_engineVersion;
-	}
-	
-	public String toString()
-	{
-		return "PlayerListingMessage:" + m_playerListing;
-	}
-	
-	
+  public Map getPlayerListing()
+  {
+    return m_playerListing;
+  }
+
+  public String getGameName()
+  {
+    return m_gameName;
+  }
+
+  public Version getGameVersion()
+  {
+    return m_gameVersion;
+  }
+
+  public Version getEngineVersion()
+  {
+    return m_engineVersion;
+  }
+
+  public String toString()
+  {
+    return "PlayerListingMessage:" + m_playerListing;
+  }
+
+  public Set getPlayers()
+  {
+    return m_playerListing.keySet();
+  }
+
+
 }
 

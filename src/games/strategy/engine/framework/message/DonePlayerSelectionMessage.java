@@ -21,6 +21,7 @@
 
 package games.strategy.engine.framework.message;
 
+
 /**
  * Sent by the server when all the players have been selected.
  *
@@ -28,11 +29,13 @@ package games.strategy.engine.framework.message;
  */
 public class DonePlayerSelectionMessage implements java.io.Serializable
 {
-	/**
-	 * Creates a new instance of DonePlayerSelectionMessage
-	 */
-	public DonePlayerSelectionMessage()
-	{
-	}
-	
+
+
+  /**
+   * Creates a new instance of DonePlayerSelectionMessage
+   */
+  public DonePlayerSelectionMessage()
+  {
+  }
+
 }

@@ -40,68 +40,78 @@ import games.strategy.triplea.delegate.message.*;
 public class PurchasePanel extends ActionPanel
 {
 
-	private JLabel actionLabel = new JLabel();
-	private IntegerMap m_purchase;
-	
-	/** Creates new PurchasePanel */
-    public PurchasePanel(GameData data,MapPanel map) 
-	{
-		super(data, map);
+  private JLabel actionLabel = new JLabel();
+  private IntegerMap m_purchase;
+  private boolean m_bid;
+
+
+  /** Creates new PurchasePanel */
+    public PurchasePanel(GameData data,MapPanel map)
+  {
+    super(data, map);
     }
 
-	public void display(PlayerID id)
-	{
-		super.display(id);
-		removeAll();
-		actionLabel.setText(id.getName() + " production");
-		add(actionLabel);
-		add(new JButton(PURCHASE_ACTION));
-		add(new JButton(DontBother));
-		SwingUtilities.invokeLater(REFRESH);
-	}
-	
-	public IntegerMap waitForPurchase()
-	{
-		synchronized(getLock())
-		{
-			try
-			{
-				getLock().wait();
-			} catch(InterruptedException ie)
-			{
-				waitForPurchase();
-			}
-			return m_purchase;
-		}
-	}
+  public void display(PlayerID id)
+  {
+    super.display(id);
+    removeAll();
+    actionLabel.setText(id.getName() + " production");
+    add(actionLabel);
+    add(new JButton(PURCHASE_ACTION));
+    add(new JButton(DontBother));
+    SwingUtilities.invokeLater(REFRESH);
+  }
 
-	
-	private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
-	{
-		public void actionPerformed(ActionEvent e)
-		{
-			m_purchase = ProductionPanel.show(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData());
-			synchronized(getLock())
-			{
-				getLock().notifyAll();
-			}
-		}
-	};
+  private void refreshActionLabelText()
+  {
+    actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
+  }
 
-	private Action DontBother = new AbstractAction("Done")
-	{
-		public void actionPerformed(ActionEvent event)
-		{
-			synchronized(getLock())
-			{
-				m_purchase = null;
-				getLock().notifyAll();
-			}
-		}
-	};
-	
-	public String toString()
-	{
-		return "PurchasePanel";
-	}
+  public IntegerMap waitForPurchase(boolean bid)
+  {
+    m_bid = bid;
+    refreshActionLabelText();
+
+    synchronized(getLock())
+    {
+      try
+      {
+        getLock().wait();
+      } catch(InterruptedException ie)
+      {
+        waitForPurchase(bid);
+      }
+      return m_purchase;
+    }
+  }
+
+
+  private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
+  {
+    public void actionPerformed(ActionEvent e)
+    {
+      m_purchase = ProductionPanel.show(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid);
+      synchronized(getLock())
+      {
+        getLock().notifyAll();
+      }
+    }
+  };
+
+  private Action DontBother = new AbstractAction("Done")
+  {
+    public void actionPerformed(ActionEvent event)
+    {
+      synchronized(getLock())
+      {
+        m_purchase = null;
+        getLock().notifyAll();
+      }
+    }
+  };
+
+  public String toString()
+  {
+    return "PurchasePanel";
+  }
 }
