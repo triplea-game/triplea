@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Classic" version="1.3"/>
+	<info name="Classic" version="1.4"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -1296,6 +1296,8 @@
 		<property name="Japanese bid" value="0" editable="true">
 			<number min="0" max="1000"/>
 		</property>
+		<property name="mapName" value="classic" editable="false" />
+
 
 
 

@@ -1226,6 +1226,8 @@
 		<property name="Japanese bid" value="0" editable="true">
 			<number min="0" max="1000"/>
 		</property>
+		<property name="mapName" value="classic" editable="false"/>
+
 
 
 	</propertyList>

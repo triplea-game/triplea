@@ -4,7 +4,7 @@
 
 <game>
 
-	<info name="4th Edition" version="1.1"/>
+	<info name="4th Edition" version="1.2"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1849,6 +1849,7 @@
 		<property name="Japanese bid" value="0" editable="true">
 			<number min="0" max="1000"/>
 		</property>
+		<property name="mapName" value="revised" editable="false"/>
 
 
 
