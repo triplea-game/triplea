@@ -276,53 +276,29 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
      */
     private StringMessage validateNewAirCanLandOnNewCarriers(Territory to, Collection units)
     {
-
-        Collection allProducedUnits = new ArrayList(units);
-        allProducedUnits.addAll(getAlreadyProduced(to));
-
-        int cost = MoveValidator.carrierCost(allProducedUnits);
-        int capacity = MoveValidator.carrierCapacity(allProducedUnits);
+        int cost = MoveValidator.carrierCost(units);
+        int capacity = MoveValidator.carrierCapacity(units);
 
         if (cost > capacity)
             return new StringMessage("Not enough new carriers to land all the fighters", true);
-        else
-            return null;
+
+	return null;
     }
 
     private StringMessage canUnitsBePlaced(Territory to, Collection units, PlayerID player)
     {
-        if (to.isWater())
-        {
-            CompositeMatch allowedAtSea = new CompositeMatchOr();
-            allowedAtSea.add(Matches.UnitIsSea);
-            if (canProduceFightersOnCarriers())
-                allowedAtSea.add(Matches.UnitCanLandOnCarrier);
 
-            //Land units wont do
-            if (!Match.allMatch(units, allowedAtSea))
-                return new StringMessage("Cant place those units in a sea zone", true);
-
-            CompositeMatch airThatCantLandOnCarrier = new CompositeMatchAnd();
-            airThatCantLandOnCarrier.add(Matches.UnitIsAir);
-            airThatCantLandOnCarrier.add(new InverseMatch(Matches.UnitCanLandOnCarrier));
-
-            //Can the air units be placed on a carrier?
-            //we can produce directly onto new carriers
-            //but if a unit cannot land on a carrier, dont allow it
-            if (Match.someMatch(units, airThatCantLandOnCarrier))
-                return new StringMessage("Air units must be able to land on carriers,", true);
-
-            StringMessage canLand = validateNewAirCanLandOnNewCarriers(to, units);
-            if (canLand != null)
-                return canLand;
-
-            if(!isFourthEdition() &&   to.getUnits().someMatch(Matches.enemyUnit( player, m_data ) ) )
-                return new StringMessage("None allied units in sea zone ", true);
-            //
-
-        } else
-        //if land
-        {
+        Collection allowedUnits = getUnitsToBePlaced(to, units, player);
+        if (allowedUnits == null || !allowedUnits.containsAll(units)) {
+	  return new StringMessage("Cannot place these units in " + to, true);
+        }
+	
+	if (to.isWater()) {
+          Territory producer = getProducer(to, player);
+          StringMessage canLand = validateNewAirCanLandOnNewCarriers(producer, units);
+          if (canLand != null)
+             return canLand;
+	} else {
             //make sure we own the territory
             if (!to.getOwner().equals(player))
                 return new StringMessage("You don't own " + to.getName(), true);
@@ -330,65 +306,8 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
             if (!Match.allMatch(units, Matches.UnitIsNotSea))
                 return new StringMessage("Cant place sea units on land", true);
         }
-
-         //make sure only 1 AA
-        if (!isFourthEdition() &&  Match.countMatches(units, Matches.UnitIsAA) >= 1)
-        {
-            //if trying to place 2
-            if (Match.countMatches(units, Matches.UnitIsAA) > 1)
-                return new StringMessage("Can only have 1 AA per territory", true);
-
-            //if one already exists
-            if (to.getUnits().someMatch(Matches.UnitIsAA))
-                return new StringMessage("Can only have 1 AA per territory", true);
-        }
-
-        Territory producer = getProducer(to, player);
-        
-         //if its an original factory then unlimited production
-         TerritoryAttatchment ta = TerritoryAttatchment.get(producer);
-         boolean originalFactory = ta.isOriginalFactory();
-         boolean playerIsOriginalOwner = m_player.equals(getOriginalFactoryOwner(producer));
- 
-        //make sure only max Factories
-        if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
-        {
-            //4th edition, you cant place factories in territories with no production
-            if(isFourthEdition() && ta.getProduction() == 0)
-                return new StringMessage("Cant place factory, that territory cant produce any units" + producer.getName(), true);
-
-            //if trying to place other untis with factory
-            if (units.size() > 1)
-                return new StringMessage("Factories cant produce until 1 turn after they are created", true);
-
-            //after placement this is how many factories there will be
-            int factoryCount = Match.countMatches(units, Matches.UnitIsFactory) + to.getUnits().getMatches(Matches.UnitIsFactory).size();
-
-            //max factories allowed
-            int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(m_data);
-
-            if (factoryCount > maxFactory)
-            {
-                return new StringMessage("Can only have " + maxFactory + " " + (maxFactory > 1 ? "factories" : "factory") + " per territory", true);
-            }
-        }
-
-        if (originalFactory && playerIsOriginalOwner)
-            return null;
-
-        
-        //a factory can produce the same number of units as the number of ipcs
-        // the
-        //territroy generates each turn
-        int unitCount = units.size() + getAlreadyProduced(producer).size();
-        int production = getProduction(producer);
-        if (production == 0)
-            production = 1; //if it has a factory then it can produce at least
-                            // 1
-        if (unitCount > production)
-            return new StringMessage("Can only produce " + production + " in " + producer.getName(), true);
-
-        return null;
+	
+	return null;
     }
 
     private Collection getUnitsToBePlaced(Territory to, Collection units, PlayerID player)
@@ -399,15 +318,16 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
         {
             //Land units wont do
             placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsSea));
-
-            if (canProduceFightersOnCarriers())
+	    Territory producer = getProducer(to, player);
+	    Collection allProducedUnits = new ArrayList(units);
+	    allProducedUnits.addAll(getAlreadyProduced(producer));
+            if (canProduceFightersOnCarriers() && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier))
             {
 	            CompositeMatch airThatCanLandOnCarrier = new CompositeMatchAnd();
 	            airThatCanLandOnCarrier.add(Matches.UnitIsAir);
 	            airThatCanLandOnCarrier.add(Matches.UnitCanLandOnCarrier);
 	
-	            if (validateNewAirCanLandOnNewCarriers(to, units) != null)
-	                placeableUnits.addAll(Match.getMatches(units, airThatCanLandOnCarrier));
+		    placeableUnits.addAll(Match.getMatches(units, airThatCanLandOnCarrier));
             }
             
             if(!isFourthEdition() && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
@@ -425,10 +345,11 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
                         placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsAA));
                 }
                 
-	            CompositeMatch groundUnits = new CompositeMatchAnd();
-	            groundUnits.add(Matches.UnitIsLand);
-	            groundUnits.add(new InverseMatch(Matches.UnitIsAAOrFactory));
+	        CompositeMatch groundUnits = new CompositeMatchAnd();
+		groundUnits.add(Matches.UnitIsLand);		
+		groundUnits.add(new InverseMatch(Matches.UnitIsAAOrFactory));
                 placeableUnits.addAll(Match.getMatches(units, groundUnits));
+		placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));
                 
             }
             
@@ -457,12 +378,13 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
     private int getMaxUnitsToBePlaced(Territory to, PlayerID player)
     {
-		Territory producer = getProducer(to, player);
-		
-		 //if its an original factory then unlimited production
-         TerritoryAttatchment ta = TerritoryAttatchment.get(producer);
-         boolean originalFactory = ta.isOriginalFactory();
-         boolean playerIsOriginalOwner = m_player.equals(getOriginalFactoryOwner(producer));
+        Territory producer = getProducer(to, player);
+       
+        //if its an original factory then unlimited production
+	TerritoryAttatchment ta = TerritoryAttatchment.get(producer);
+	Collection factoryUnits = producer.getUnits().getMatches(Matches.UnitIsFactory);
+	boolean originalFactory = ta.isOriginalFactory();
+	boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
  
          if (originalFactory && playerIsOriginalOwner)
             return 0;
@@ -529,32 +451,22 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
      */
     protected StringMessage checkProduction(Territory to, Collection units, PlayerID player)
     {
-       Territory producer = getProducer(to, player);
+        Territory producer = getProducer(to, player);
        
         //if its an original factory then unlimited production
         TerritoryAttatchment ta = TerritoryAttatchment.get(producer);
-        boolean originalFactory = ta.isOriginalFactory();
-        boolean playerIsOriginalOwner = m_player.equals(getOriginalFactoryOwner(producer));
-
+  
         //4th edition, you cant place factories in territories with no production
         if(isFourthEdition() && ta.getProduction() ==0)
         {
             return new StringMessage("Cant place factory, that territory cant produce any units" + producer.getName(), true);
         }
         
-        if (originalFactory && playerIsOriginalOwner)
-            return null;
-        
-        //a factory can produce the same number of units as the number of ipcs
-        // the
-        //territroy generates each turn
-        int unitCount = units.size() + getAlreadyProduced(producer).size();
-        int production = getProduction(producer);
-        if (production == 0)
-            production = 1; //if it has a factory then it can produce at least
-                            // 1
-        if (unitCount > production)
-            return new StringMessage("Can only produce " + production + " in " + producer.getName(), true);
+	
+
+	int maxUnitsToBePlaced = getMaxUnitsToBePlaced(to, player);
+	if (maxUnitsToBePlaced <= 0)
+            return new StringMessage("Cannot place " + units.size() + " more units in " + producer.getName(), true);
 
         return null;
     }
