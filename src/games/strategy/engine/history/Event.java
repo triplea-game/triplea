@@ -42,4 +42,30 @@ public class Event extends IndexedHistoryNode implements Renderable
     {
       m_renderingData = data;
     }
+
+
+    public SerializationWriter getWriter()
+    {
+        return new EventHistorySerializer(m_description, m_renderingData);
+    }
+}
+
+class EventHistorySerializer implements SerializationWriter
+{
+    private String m_eventName;
+    private Object m_renderingData;
+    
+    public EventHistorySerializer(String eventName, Object renderingData)
+    {
+        m_eventName = eventName;
+        m_renderingData = renderingData;
+    }
+    
+    public void write(HistoryWriter writer)
+    {
+        writer.startEvent(m_eventName);
+        if(m_renderingData != null)
+            writer.setRenderingData(m_renderingData);   
+    }
+    
 }

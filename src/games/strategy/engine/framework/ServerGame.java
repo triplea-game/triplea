@@ -97,7 +97,7 @@ public class ServerGame implements IGame
 
         setupDelegateMessaging(data);
 
-        m_changePerformer = new ChangePerformer(m_data);
+        m_changePerformer = new ChangePerformer(data);
         m_randomStats = new RandomStats(m_remoteMessenger);
     }
 

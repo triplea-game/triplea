@@ -30,6 +30,8 @@ import java.util.logging.Logger;
  */
 public class UnifiedMessenger
 {
+    
+    
   
     //a thread pool to run the invoke on
     private static games.strategy.thread.ThreadPool m_threadPool = new games.strategy.thread.ThreadPool(15, "UnifiedMessengerPool");

@@ -38,6 +38,8 @@ public class ChangePerformer
 	/** Creates a new instance of ChangePerformer */
     public ChangePerformer(GameData data)
 	{
+        if(data == null)
+            throw new IllegalArgumentException("Data cannot be null");
 		m_data = data;
     }
 

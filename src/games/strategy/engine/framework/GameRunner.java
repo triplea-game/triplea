@@ -96,14 +96,7 @@ public class GameRunner
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }
-        } else if (v15)
-        {
-            JOptionPane
-                    .showMessageDialog(
-                            null,
-                            "Running TripleA with Java v1.5.x will cause instability\n with serialized classes (bug #1027674)\nYou will get errors when playing other who use a differnt version!!\nWe highly recomend using Java v1.4.x",
-                            "WARNING", JOptionPane.WARNING_MESSAGE);
-        }
+        } 
 
     }//end checkJavaVersion()
 

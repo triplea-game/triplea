@@ -31,4 +31,27 @@ public class Round extends IndexedHistoryNode
          return m_RoundNo;
      }
 
-}
+     public SerializationWriter getWriter()
+     {
+         return new RoundHistorySerializer(m_RoundNo);
+     }
+
+ }
+
+ class RoundHistorySerializer implements SerializationWriter
+ {
+    private int m_roundNo;
+     
+    
+    
+    public RoundHistorySerializer(int roundNo)
+    {
+        m_roundNo = roundNo;
+    }
+    
+    public void write(HistoryWriter writer)
+    {
+        writer.startNextRound(m_roundNo);
+    }
+     
+ }

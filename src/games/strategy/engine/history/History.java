@@ -19,9 +19,10 @@ package games.strategy.engine.history;
 *
 * Stored as a tree, the data is organized as
 * Root
-*  -  Round *
-*   -   Step *
-*       -  Event *
+*  -  Round 
+*   -   Step 
+*       -  Event
+* 	      - Child 
 *           
 *
 *
@@ -33,9 +34,13 @@ package games.strategy.engine.history;
 *
  */
 
-import java.util.*;
-import javax.swing.tree.*;
 import games.strategy.engine.data.*;
+
+import java.io.*;
+import java.io.Serializable;
+import java.util.*;
+
+import javax.swing.tree.*;
 
 public class History  extends DefaultTreeModel implements java.io.Serializable
 {
@@ -47,7 +52,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     public History(GameData data)
     {
-        super(new HistoryNode("Game History", true));
+        super(new RootHistoryNode("Game History", true));
         m_data = data;
     }
 
@@ -67,7 +72,6 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
             return node;
         return getLastChildInternal((HistoryNode) node.getLastChild());
     }
-
 
     private int getLastChange(HistoryNode node)
     {
@@ -106,8 +110,6 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
        {
            return compositeChange.invert();
        }
-
-
     }
 
     public synchronized void gotoNode(HistoryNode node)
@@ -132,8 +134,109 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
         new ChangePerformer(m_data).perform(aChange);
     }
 
-    List  getChanges()
+    private Object writeReplace() throws ObjectStreamException
     {
-      return m_changes;
+        return new SerializedHistory(this, m_data, m_changes);
+    }
+    
+    List getChanges()
+    {
+        return m_changes;
     }
 }
+
+/**
+ * DefaultTreeModel is not serializable across jdk versions
+ * Instead we use an instance of this class to store our data
+ * 
+ */
+class SerializedHistory implements Serializable
+{
+    private final List m_Writers = new ArrayList();
+    private GameData m_data;
+    
+    public SerializedHistory(History history, GameData data, List changes)
+    {
+        m_data = data;
+        int changeIndex = 0;
+        Enumeration enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
+        enumeration.nextElement();
+        while(enumeration.hasMoreElements())
+        {
+            HistoryNode node = (HistoryNode) enumeration.nextElement();
+            
+            //write the changes to the start of the node
+            if(node instanceof IndexedHistoryNode)
+            {
+                while(changeIndex < ((IndexedHistoryNode) node).getChangeStartIndex())
+                {
+                 m_Writers.add(new ChangeSerializationWriter((Change) changes.get(changeIndex)));
+                 changeIndex++;
+                }
+            }
+
+            //write the node itself
+            m_Writers.add(node.getWriter()); 
+        }
+
+        //write out remaining changes
+        while(changeIndex < changes.size())
+        {
+         m_Writers.add(new ChangeSerializationWriter((Change) changes.get(changeIndex)));
+         changeIndex++;
+        }
+        
+    }
+    
+    public Object readResolve() throws ObjectStreamException
+    {
+        History rVal = new History(m_data);
+        HistoryWriter historyWriter = rVal.getHistoryWriter();
+        Iterator iter = m_Writers.iterator();
+        
+        while (iter.hasNext())
+        {
+            SerializationWriter element = (SerializationWriter) iter.next();
+            element.write(historyWriter);
+        }
+        
+        return rVal;
+    }
+
+}
+
+class RootHistoryNode extends HistoryNode
+{
+    public RootHistoryNode(String title, boolean allowsChildren)
+    {
+        super(title, allowsChildren);
+    }
+
+    public SerializationWriter getWriter()
+    {
+        throw new IllegalStateException("Not implemented");
+    }
+    
+    
+}
+
+interface SerializationWriter extends Serializable
+{
+    public void write(HistoryWriter writer);
+}
+
+class ChangeSerializationWriter implements SerializationWriter
+{
+    private Change aChange;
+    
+    public ChangeSerializationWriter(Change change)
+    {
+        aChange = change;
+    }
+    
+    public void write(HistoryWriter writer)
+    {
+        writer.addChange(aChange);
+    }
+}
+

@@ -4,7 +4,7 @@ import javax.swing.tree.*;
 import java.io.Serializable;
 
 
-public class HistoryNode extends DefaultMutableTreeNode implements Serializable
+public abstract class HistoryNode extends DefaultMutableTreeNode implements Serializable
 {
     public HistoryNode(String title, boolean allowsChildren)
     {
@@ -15,4 +15,6 @@ public class HistoryNode extends DefaultMutableTreeNode implements Serializable
     {
       return (String) super.getUserObject();
     }
+    
+    public abstract SerializationWriter getWriter();
 }

@@ -9,7 +9,7 @@ package games.strategy.engine.history;
  * @version 1.0
  */
 
-public class IndexedHistoryNode extends HistoryNode
+public abstract class IndexedHistoryNode extends HistoryNode
 {
     //points to the first change we are responsible for
    private final int m_changeStartIndex;
