@@ -59,7 +59,7 @@ public class ProductionPanel extends JPanel
    * Shows the production panel, and returns a map of
    * selected rules.
    */
-  public static IntegerMap show(PlayerID id, JFrame parent, GameData data, boolean bid)
+  public static IntegerMap show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap initialPurchase)
   {
 
     if(!(parent == s_owner))
@@ -70,7 +70,7 @@ public class ProductionPanel extends JPanel
 
     s_panel.m_bid = bid;
     s_panel.m_data = data;
-    s_panel.initRules(id, data);
+    s_panel.initRules(id, data, initialPurchase);
     s_panel.initLayout(id);
     s_panel.calculateLimits();
 
@@ -97,19 +97,23 @@ public class ProductionPanel extends JPanel
 
     }
 
-  private void initRules(PlayerID player, GameData data)
+  private void initRules(PlayerID player, GameData data, IntegerMap initialPurchase)
   {
+    m_id= player;
     Iterator iter = player.getProductionFrontier().getRules().iterator();
     while(iter.hasNext())
     {
-      m_rules.add(new Rule( (ProductionRule) iter.next(), data, player));
+      ProductionRule productionRule = (ProductionRule) iter.next();
+      Rule rule = new Rule(productionRule , data, player);
+      int initialQuantity = initialPurchase.getInt(productionRule);
+      rule.setQuantity(initialQuantity);
+      m_rules.add(rule);
     }
 
   }
 
   private void initLayout(PlayerID id)
   {
-    m_id= id;
     this.removeAll();
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     int ipcs = getIPCs();
@@ -219,6 +223,11 @@ public class ProductionPanel extends JPanel
     int getQuantity()
     {
       return m_text.getValue();
+    }
+
+    void setQuantity(int quantity)
+    {
+      m_text.setValue(quantity);
     }
 
     ProductionRule getProductionRule()

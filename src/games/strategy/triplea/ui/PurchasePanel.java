@@ -43,6 +43,8 @@ public class PurchasePanel extends ActionPanel
   private JLabel actionLabel = new JLabel();
   private IntegerMap m_purchase;
   private boolean m_bid;
+  private SimpleUnitPanel m_unitsPanel = new SimpleUnitPanel();
+  private JLabel m_purchasedSoFar = new JLabel();
 
 
   /** Creates new PurchasePanel */
@@ -54,11 +56,17 @@ public class PurchasePanel extends ActionPanel
   public void display(PlayerID id)
   {
     super.display(id);
+    m_purchase = new IntegerMap();
     removeAll();
     actionLabel.setText(id.getName() + " production");
     add(actionLabel);
     add(new JButton(PURCHASE_ACTION));
-    add(new JButton(DontBother));
+    add(new JButton(DoneAction));
+    m_purchasedSoFar.setText("");
+    add(m_purchasedSoFar);
+    m_unitsPanel.setUnitsFromProductionRuleMap(new IntegerMap(), id, getData());
+    add(m_unitsPanel);
+    add(Box.createVerticalGlue());
     SwingUtilities.invokeLater(REFRESH);
   }
 
@@ -90,21 +98,24 @@ public class PurchasePanel extends ActionPanel
   {
     public void actionPerformed(ActionEvent e)
     {
-      m_purchase = ProductionPanel.show(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid);
-      synchronized(getLock())
-      {
-        getLock().notifyAll();
-      }
+      m_purchase = ProductionPanel.show(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase);
+      m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, getCurrentPlayer(), getData());
+      if(m_purchase.totalValues() == 0)
+        m_purchasedSoFar.setText("");
+      else if(m_purchase.totalValues() == 1)
+        m_purchasedSoFar.setText("1 unit to be prooduced:");
+      else
+        m_purchasedSoFar.setText(m_purchase.totalValues() + " units to be produced:");
+
     }
   };
 
-  private Action DontBother = new AbstractAction("Done")
+  private Action DoneAction = new AbstractAction("Done")
   {
     public void actionPerformed(ActionEvent event)
     {
       synchronized(getLock())
       {
-        m_purchase = null;
         getLock().notifyAll();
       }
     }
