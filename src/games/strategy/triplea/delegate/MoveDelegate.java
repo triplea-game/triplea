@@ -442,12 +442,7 @@ public class MoveDelegate implements SaveableDelegate
         if (resources - cost < 0)
             return "Not enough money to pay for violating neutrality";
 
-        //TODO
-        //special cases, suez and panama canal, can only move if both are owned
-        //make sure aircraft carriers dont move away
-        //if we are going through nuetral make sure we can pay
-        //make sure if an aircraft must retreat through a nuetral
-        //it can pay as well
+
         return null;
     }
 
@@ -1119,7 +1114,7 @@ public class MoveDelegate implements SaveableDelegate
             m_alreadyMoved.clear();
             m_transportTracker.endOfRoundClearState();
 
-            if (TechTracker.hasRocket(m_bridge.getPlayerID()))
+            if (  TechTracker.hasRocket(m_bridge.getPlayerID()))
             {
                 RocketsFireHelper helper = new RocketsFireHelper();
                 helper.fireRockets(m_bridge, m_data, m_bridge.getPlayerID());

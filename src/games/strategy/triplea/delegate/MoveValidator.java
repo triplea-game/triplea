@@ -406,13 +406,36 @@ public class MoveValidator
       BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
       if (tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
         return "Cannot move through canal without owning Egypt and Syria/Jordan for an entire turn.";
-
     }
 
+    //suez 4th edition
+    Territory sz15 = data.getMap().getTerritory("15 Sea Zone");
+    Territory sz34 = data.getMap().getTerritory("34 Sea Zone");
+    if (territories.contains(sz15) && territories.contains(sz34))
+    {
+      Territory egypt = data.getMap().getTerritory("Anglo Egypt");
+      Territory iraq = data.getMap().getTerritory("Trans-Jordan");
+
+      if (!data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
+          !data.getAllianceTracker().isAllied(player, iraq.getOwner()))
+        return "Must own Egypt and Jordan  to go through Suez Canal";
+
+      BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
+      if (tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
+        return "Cannot move through canal without owning Egypt and Jordan for an entire turn.";
+
+    }
+    
     //check panama canal
     Territory carib = data.getMap().getTerritory("Carribean Sea Zone");
     Territory westPan = data.getMap().getTerritory("West Panama Sea Zone");
-    if (territories.contains(carib) && territories.contains(westPan))
+    
+    Territory sz19 = data.getMap().getTerritory("19 Sea Zone");
+    Territory sz20 = data.getMap().getTerritory("20 Sea Zone");
+
+    
+    if ( (territories.contains(carib) && territories.contains(westPan)) ||
+          (territories.contains(sz19) && territories.contains(sz20)) )
     {
       Territory panama = data.getMap().getTerritory("Panama");
 
