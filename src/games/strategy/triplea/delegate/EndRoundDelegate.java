@@ -40,9 +40,7 @@ import games.strategy.triplea.attatchments.TerritoryAttatchment;
 public class EndRoundDelegate implements Delegate, java.io.Serializable
 {
 	private final static int AXIS_ECONOMIC_VICTORY = 84;
-	/* START: Add Allied economic victory (BUG 518495)  */
 	private final static int ALLIES_ECONOMIC_VICTORY = 110;
-	/* END: Add Allied economic victory (BUG 518495)  */
 	
 	private String m_name;	
 	private String m_displayName;
@@ -86,20 +84,18 @@ public class EndRoundDelegate implements Delegate, java.io.Serializable
 			aBridge.getTranscript().write("Axis achieve economic victory", TranscriptMessage.PRIORITY_CHANNEL);
 		}
 		
-		/* START: Add Allied economic victory (BUG 518495)  */
 		int rProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.RUSSIANS));
 		int bProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.BRITISH));
 		int aProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.AMERICANS));
 
+		// Uncomment this to add allied economic victory when/if optional rules are implemented
+		/*
 		if(rProd + bProd + aProd >= ALLIES_ECONOMIC_VICTORY)
 		{
 			m_gameOver = true;
 			aBridge.getTranscript().write("Allies achieve economic victory", TranscriptMessage.PRIORITY_CHANNEL);
 		}
-		/* END: Add Allied economic victory (BUG 518495)  */
-		
-		if (!m_gameOver)
-			games.strategy.triplea.ui.TripleAFrame.save( "C:\\autosave.sav", m_data );
+		*/
 	}
 	
 	public String getName()
