@@ -59,6 +59,7 @@ public class ServerGame implements IGame
     //only for remote nodes
     private final Map m_remotePlayers;
     private final Object m_remotePlayerStepLock = new Object();
+    private final RandomStats m_randomStats;
 
     private IRandomSource m_randomSource = new PlainRandomSource();
 
@@ -122,6 +123,7 @@ public class ServerGame implements IGame
         }
 
         m_changePerformer = new ChangePerformer(m_data);
+        m_randomStats = new RandomStats(m_messageManager);
     }
 
     public GameData getData()
@@ -168,7 +170,12 @@ public class ServerGame implements IGame
         }
 
         
-        DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, getCurrentStep(), this, new DelegateHistoryWriter(m_data.getHistory().getHistoryWriter(), m_messenger));
+        DefaultDelegateBridge bridge = new DefaultDelegateBridge(
+                m_data, 
+                getCurrentStep(), this, 
+                new DelegateHistoryWriter(m_data.getHistory().getHistoryWriter(), m_messenger),
+                m_randomStats
+                );
         bridge.setRandomSource(m_randomSource);
 
 

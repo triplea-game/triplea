@@ -37,18 +37,19 @@ public class DefaultDelegateBridge implements DelegateBridge
   private PlayerID m_player;
   private final IGame m_game;
   private final DelegateHistoryWriter m_historyWriter;
+  private final RandomStats m_randomStats;
 
   private IRandomSource m_randomSource = new PlainRandomSource();
 
 
   /** Creates new DefaultDelegateBridge */
-  public DefaultDelegateBridge(GameData data, GameStep step, IGame game, DelegateHistoryWriter historyWriter)
+  public DefaultDelegateBridge(GameData data, GameStep step, IGame game, DelegateHistoryWriter historyWriter, RandomStats randomStats)
   {
     m_step = step;
     m_game = game;
     m_player = m_step.getPlayerID();
     m_historyWriter = historyWriter;
-
+    m_randomStats = randomStats;
   }
 
   public PlayerID getPlayerID()
@@ -67,7 +68,9 @@ public class DefaultDelegateBridge implements DelegateBridge
    */
   public int getRandom(int max, String annotation)
   {
-    return m_randomSource.getRandom(max, annotation);
+    int random = m_randomSource.getRandom(max, annotation);
+    m_randomStats.addRandom(random);
+    return random;
   }
 
   /**
@@ -75,7 +78,9 @@ public class DefaultDelegateBridge implements DelegateBridge
    */
   public int[] getRandom(int max, int count, String annotation)
   {
-    return m_randomSource.getRandom(max, count, annotation);
+      int[] rVal = m_randomSource.getRandom(max, count, annotation);
+      m_randomStats.addRandom(rVal);
+      return rVal;
   }
 
 

@@ -51,6 +51,8 @@ import games.strategy.engine.history.*;
 import games.strategy.triplea.ui.history.*;
 import games.strategy.engine.gamePlayer.*;
 
+import games.strategy.engine.random.RandomStats;
+import games.strategy.engine.random.RandomStatsMessage;
 import games.strategy.engine.sound.ClipPlayer;  //the player
 import games.strategy.triplea.sound.SoundPath;  //the relative path of sounds
 
@@ -341,16 +343,39 @@ public class TripleAFrame extends JFrame
       menuGame.addSeparator();
      
       menuGame.add(optionsAction);
-      menuGame.add(soundCheckBox);
-      if(!m_data.getProperties().get(Constants.FOURTH_EDITION, false))
-          menuGame.add(showMapDetails);
-      
-      if(m_game instanceof ClientGame)
-          menuGame.add(showVerifiedDice);
-      
+       
     }
 
+    menuGame.add(soundCheckBox);
+    if(!m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+        menuGame.add(showMapDetails);
+    
+    if(m_game instanceof ClientGame)
+        menuGame.add(showVerifiedDice);
 
+
+    Action showDiceStats = new AbstractAction("Show Dice Stats")
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+          RandomStatsMessage stats = (RandomStatsMessage) m_game.getMessageManager().send(new Message() {}, RandomStats.RANDOM_STATS_DESTINATION);
+          JPanel panel = new JPanel();
+          BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+          panel.setLayout(layout);
+          
+          Iterator iter = new TreeSet( stats.getData().keySet()).iterator();
+          while(iter.hasNext())
+          {
+              Object key = iter.next();
+              int value = stats.getData().getInt(key);
+              JLabel label = new JLabel(key + " was rolled " + value + " times");
+              panel.add(label);
+          }
+          JOptionPane.showMessageDialog (TripleAFrame.this, panel, "Random Stats", JOptionPane.INFORMATION_MESSAGE);
+
+      }
+    };
+    menuGame.add(showDiceStats);
 
     JMenu helpMenu = new JMenu("Help");
     menuBar.add(helpMenu);
