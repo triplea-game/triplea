@@ -274,22 +274,8 @@ public class TripleAFrame extends JFrame
     
 	menuBar.add(menuGame);
 
-	final JCheckBox smallUnitsBox = new JCheckBox("Use small units");
-	smallUnitsBox.setSelected(UnitIconImageFactory.instance().getScaleFactor() != 1);
-
-	smallUnitsBox.addActionListener(new ActionListener()
-	    {
-		public void actionPerformed(ActionEvent e)
-		{
-		    if (smallUnitsBox.isSelected()) {
-			UnitIconImageFactory.instance().setScaleFactor(.75);
-			m_mapPanel.initTerritories();
-		    } else {
-			UnitIconImageFactory.instance().setScaleFactor(1);
-			m_mapPanel.initTerritories();
-		    }
-		}
-	    });
+	// Put in unit size menu
+	menuGame.add(getUnitSizeMenu());
 
 	final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
 
@@ -349,7 +335,6 @@ public class TripleAFrame extends JFrame
 	}
 
 	menuGame.add(soundCheckBox);
-	menuGame.add(smallUnitsBox);
 
 	if(!m_data.getProperties().get(Constants.FOURTH_EDITION, false))
 	    menuGame.add(showMapDetails);
@@ -959,5 +944,57 @@ public class TripleAFrame extends JFrame
 	    return new IntegerMessage(0);
     }
   
+    private JMenu getUnitSizeMenu()
+    {
+	// This is the action listener used
+	class UnitSizeListener implements ActionListener
+	{
+	    private double m_scaleFactor;
 
+	    public UnitSizeListener(double scaleFactor)
+	    {
+		m_scaleFactor = scaleFactor;
+	    }
+		
+	    public void actionPerformed(ActionEvent e)
+	    {
+		UnitIconImageFactory.instance().setScaleFactor(m_scaleFactor);
+		m_mapPanel.initTerritories();
+	    }
+	}
+
+	JMenu unitSizeMenu = new JMenu();
+	unitSizeMenu.setText("Unit Size");
+	ButtonGroup unitSizeGroup = new ButtonGroup();
+	JRadioButtonMenuItem radioItem150 = new JRadioButtonMenuItem("125%");
+	radioItem150.addActionListener(new UnitSizeListener(1.25));
+	JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem("100%");
+	radioItem100.addActionListener(new UnitSizeListener(1.0));
+	JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem("87.5%");
+	radioItem87.addActionListener(new UnitSizeListener(.875));
+	JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem("83.33%");
+	radioItem83.addActionListener(new UnitSizeListener(.833333));
+	JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem("75%");
+	radioItem75.addActionListener(new UnitSizeListener(.75));
+	JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem("66.66%");
+	radioItem66.addActionListener(new UnitSizeListener(.666666));
+
+	unitSizeGroup.add(radioItem150);
+	unitSizeGroup.add(radioItem100);
+	unitSizeGroup.add(radioItem87);
+	unitSizeGroup.add(radioItem83);
+	unitSizeGroup.add(radioItem75);
+	unitSizeGroup.add(radioItem66);
+
+	radioItem100.setSelected(true);
+
+	unitSizeMenu.add(radioItem150);
+	unitSizeMenu.add(radioItem100);
+	unitSizeMenu.add(radioItem87);
+	unitSizeMenu.add(radioItem83);
+	unitSizeMenu.add(radioItem75);
+	unitSizeMenu.add(radioItem66);
+
+	return unitSizeMenu;
+    }
 }
