@@ -42,7 +42,7 @@ import games.strategy.triplea.delegate.message.*;
 
 /**
  *
- * @author  Sean Bridges
+ * @author  Troy Graber
  * @version 1.0
  */
 public class TroxAIPlayer implements GamePlayer
