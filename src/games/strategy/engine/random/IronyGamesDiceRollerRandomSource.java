@@ -46,7 +46,7 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
    */
   public void test()
   {
-    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 1, "Test", m_player1Email, m_player2Email);
+    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email);
     dialog.setTest();
 
     dialog.roll();
@@ -59,7 +59,7 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
   public int[] getRandom(final int max, final int count, final String annotation)
   {
 
-    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), count, annotation, m_player1Email, m_player2Email);
+    HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email);
     dialog.roll();
     return dialog.getDiceRoll();
   }
@@ -104,6 +104,7 @@ class HttpDiceRollerDialog extends JDialog
   private JTextArea m_text = new JTextArea();
   private int[] m_diceRoll;
   private final int m_count;
+  private final int m_max;
   private final String m_annotation;
   private final String m_email1;
   private final String m_email2;
@@ -111,9 +112,10 @@ class HttpDiceRollerDialog extends JDialog
   public boolean m_test = false;
   private JPanel m_buttons = new JPanel();
 
-  public HttpDiceRollerDialog(Frame owner, int count, String annotation, String email1, String email2)
+  public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2)
   {
     super(owner, "Dice roller", true);
+    m_max = max;
     m_count = count;
     m_annotation = annotation;
     m_email1 = email1;
@@ -311,7 +313,7 @@ class HttpDiceRollerDialog extends JDialog
         String text = null;
         try
         {
-        text = DiceStatic.postRequest(m_email1, m_email2, m_count, m_annotation);
+        text = DiceStatic.postRequest(m_email1, m_email2, m_max, m_count, m_annotation);
         if(!m_test)
             appendText("Contacted :" + text + "\n");
         m_diceRoll = DiceStatic.getDice(text, m_count);
@@ -353,7 +355,7 @@ class HttpDiceRollerDialog extends JDialog
 class DiceStatic
 {
 
-  public static String postRequest(String player1, String player2, int numDice, String text) throws IOException
+  public static String postRequest(String player1, String player2, int max, int numDice, String text) throws IOException
   {
      //text must be limited to 91 characters, not quite sure why
      //if we dont do this the dice roller will fail
@@ -371,7 +373,7 @@ class DiceStatic
 
     String content =
       "numdice=" + URLEncoder.encode(numDice + "", "UTF-8") +
-      "&numsides=" + URLEncoder.encode("6", "UTF-8") +
+      "&numsides=" + URLEncoder.encode(Integer.toString(max), "UTF-8") +
       "&modroll=" + URLEncoder.encode("No", "UTF-8") +
       //how many times to repeat
       "&numroll=" + URLEncoder.encode("1", "UTF-8") +
