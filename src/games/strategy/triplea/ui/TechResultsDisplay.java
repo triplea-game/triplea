@@ -22,7 +22,7 @@ public class TechResultsDisplay extends JPanel
   {
     setLayout(new GridBagLayout());
 
-    add(new JLabel("You got " + msg.getHits() + "hit" + (msg.getHits() != 1 ? "s" : "") + "."),
+    add(new JLabel("You got " + msg.getHits() + " hit" + (msg.getHits() != 1 ? "s" : "") + "."),
         new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,5,0), 0,0));
     if(msg.getHits() != 0)
     {
