@@ -20,11 +20,13 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameObjectOutputStream;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.RemoteHistoryMessage;
 import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.*;
+import games.strategy.engine.data.events.GameStepListener;
 
 /**
  * This class synchronizes a Game history by listening to the messages sent between the client
@@ -33,23 +35,33 @@ import games.strategy.net.*;
  */
 public class HistorySynchronizer
 {
+    
+  //Note the GameData here and the game are not the same
+  //we are keeping m_data in synch with the history of the game by listening 
+  //for changes
+  //we do this because our data can change depending where in the history we are
+  //we want to be able to do this without changing the data for the game
   private final GameData m_data;
   private int m_currentRound;
   private final IMessenger m_messenger;
+  private final IGame m_game;
 
-  public HistorySynchronizer(GameData data, IMessenger messenger)
+  public HistorySynchronizer(GameData data, IGame game)
   {
     m_data = data;
     m_currentRound = data.getSequence().getRound();
-    m_messenger = messenger;
+    m_messenger = game.getMessenger();
     m_messenger.addMessageListener(m_messageListener);
     m_messenger.addBroadcastListener(m_broadcastListener);
+    m_game = game;
+    m_game.addGameStepListener(m_stepChangeListener);
   }
 
   public void deactivate()
   {
     m_messenger.removeMessageListener(m_messageListener);
     m_messenger.removeBroadcastListener(m_broadcastListener);
+    m_game.removeGameStepListener(m_stepChangeListener);    
   }
 
   private IBroadcastListener m_broadcastListener = new IBroadcastListener()
@@ -81,20 +93,25 @@ public class HistorySynchronizer
     });
   }
 
+  private GameStepListener m_stepChangeListener = new GameStepListener()
+  {
+
+    public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+    {
+        
+        if (m_currentRound != round)
+        {
+            m_currentRound = round;
+            m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
+        }
+        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+    }
+  };
+ 
+  
   private void processMessage(Serializable msg)
   {
-    if (msg instanceof StepChangedMessage)
-    {
-      StepChangedMessage stepChange = (StepChangedMessage) msg;
-
-      if (m_currentRound != stepChange.getRound())
-      {
-        m_currentRound = stepChange.getRound();
-        m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
-      }
-      m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getDisplayName());
-    }
-    else if (msg instanceof ChangeMessage)
+    if (msg instanceof ChangeMessage)
     {
       ChangeMessage changeMessage = (ChangeMessage) msg;
       m_data.getHistory().getHistoryWriter().addChange(changeMessage.getChange());

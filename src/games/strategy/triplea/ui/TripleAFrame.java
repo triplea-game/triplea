@@ -778,7 +778,7 @@ public class TripleAFrame extends JFrame
           return;
 
       clonedGameData.getAllianceTracker();
-       m_historySyncher = new HistorySynchronizer(clonedGameData, m_game.getMessenger());
+       m_historySyncher = new HistorySynchronizer(clonedGameData, m_game);
 
 
       m_statsPanel.setGameData(clonedGameData);

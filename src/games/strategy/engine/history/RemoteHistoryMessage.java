@@ -118,7 +118,8 @@ public class RemoteHistoryMessage implements java.io.Serializable
             writer.setLastMessageReceived(m_messageIndex);
             m_historyWriter = writer;
             m_action.actionPerformed(null);
+            m_historyWriter = null;
         }
-        m_historyWriter = null;
+        
     }
 }
