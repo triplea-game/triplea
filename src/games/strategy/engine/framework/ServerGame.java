@@ -185,7 +185,7 @@ public class ServerGame implements IGame
 
         try
         {
-            if (m_data.getSequence().isFirstStep() && canSave())
+            if (m_data.getSequence().getStep().getName().indexOf("EndTurn") != -1)
             {
                 SaveGameFileChooser.ensureDefaultDirExists();
                 File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME);
@@ -193,6 +193,7 @@ public class ServerGame implements IGame
                 new GameDataManager().saveGame(autosaveFile, m_data);
                 System.out.println("done");
             }
+            
 
         }
         catch (Exception e)
