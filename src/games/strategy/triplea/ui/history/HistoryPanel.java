@@ -124,7 +124,10 @@ public class HistoryPanel extends JPanel
       }
       
     };
-    SwingUtilities.invokeLater(r);
+    if(SwingUtilities.isEventDispatchThread())
+        r.run();
+    else
+        SwingUtilities.invokeLater(r);
       
   }
 
