@@ -262,8 +262,6 @@ public class TripleAFrame extends JFrame
 
     fileMenu.add( menuFileSave );
 
-
-    /* Following change was made for personal convenience */
     JMenuItem menuFileExit = new JMenuItem( new AbstractAction("Exit")
       {
         public void actionPerformed(ActionEvent e)
@@ -302,6 +300,33 @@ public class TripleAFrame extends JFrame
                                       }
                                     });
 
+    
+    final JCheckBox showMapDetails = new JCheckBox("Show Map Details");
+
+    showMapDetails.setSelected(TerritoryImageFactory.getShowReliefImages());
+    //temporarily disable sound
+
+    showMapDetails.addActionListener(new ActionListener()
+                                    {
+                                      public void actionPerformed(ActionEvent e)
+                                      {
+                                        
+                                        TerritoryImageFactory.setShowReliefImages(showMapDetails.isSelected());
+                                        Thread t = new Thread()
+                                        {
+                                            public void run()
+                                            {
+                                                yield();
+                                                m_mapPanel.updateCounties(m_data.getMap().getTerritories());
+                                        
+                                            }
+                                        };
+                                        t.start();
+                                        
+                                      }
+                                    });
+    
+    
 
     if(!m_game.getData().getProperties().getEditableProperties().isEmpty())
     {
@@ -317,6 +342,8 @@ public class TripleAFrame extends JFrame
      
       menuGame.add(optionsAction);
       menuGame.add(soundCheckBox);
+      if(!m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+          menuGame.add(showMapDetails);
       
       if(m_game instanceof ClientGame)
           menuGame.add(showVerifiedDice);

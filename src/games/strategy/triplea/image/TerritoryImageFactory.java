@@ -27,14 +27,54 @@ import games.strategy.ui.ImageIoCompletionWatcher;
 import games.strategy.triplea.ui.*;
 import java.util.List;
 import java.util.*;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+
 import javax.imageio.*;
 import java.io.*;
 
 public final class TerritoryImageFactory
 {
+    
+    private static boolean s_showReliefImages = true;
+    private final static String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief";
+    
+    
+    static
+    {
+        Preferences prefs = Preferences.userNodeForPackage(TerritoryImageFactory.class);
+        s_showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, false);
+
+    }
+    
+    public static boolean getShowReliefImages()
+    {
+        return s_showReliefImages;
+    }
+    
+    public static void setShowReliefImages(boolean aBool)
+    {
+        s_showReliefImages = aBool;
+        Preferences prefs = Preferences.userNodeForPackage(TerritoryImageFactory.class);
+        prefs.putBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, s_showReliefImages);
+        try
+        {
+          prefs.flush();
+        }
+        catch (BackingStoreException ex)
+        {
+          ex.printStackTrace();
+        }
+    
+    }
+    
+    
     private final int CACHE_SIZE = 5;
 
     private static boolean s_fourthEdition;
+    
+    
+    
     
     public static void setFourthEdition(boolean aBool)
     {
@@ -136,7 +176,9 @@ public final class TerritoryImageFactory
     {
         if(place.isWater())
             return null;
-
+        if(!s_showReliefImages)
+            return null;
+        
         //is it in the cache?
         for(int i = 0; i < m_cachedTerritories.size(); i++)
         {
@@ -239,7 +281,7 @@ public final class TerritoryImageFactory
 
     }
 
-
+    
 
 
 }

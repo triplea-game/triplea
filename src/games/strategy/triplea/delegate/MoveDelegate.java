@@ -1143,13 +1143,23 @@ public class MoveDelegate implements SaveableDelegate
             m_alreadyMoved.clear();
             m_transportTracker.endOfRoundClearState();
 
+            m_submergedTracker.clear();
+        }
+        
+        //fourth edition, fires at end of combat move
+        //3rd edition, fires at end of non combat move
+        if( (m_nonCombat && !isFourEdition()) ||
+                (!m_nonCombat && isFourEdition() ) ) 
+        {
             if (  TechTracker.hasRocket(m_bridge.getPlayerID()))
             {
                 RocketsFireHelper helper = new RocketsFireHelper();
                 helper.fireRockets(m_bridge, m_data, m_bridge.getPlayerID());
             }
-            m_submergedTracker.clear();
-        }
+         }
+        
+            
+        
     }
 
     /**
