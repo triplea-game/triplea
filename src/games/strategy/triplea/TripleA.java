@@ -29,6 +29,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.*;
+import games.strategy.engine.random.*;
 
 
 /**
@@ -51,7 +52,7 @@ public class TripleA implements IGameLoader
 		return players;
 	}
 
-	public void startGame(IGame game, Set players)
+	public void startGame(final IGame game, Set players)
 	{
 		try
 		{
@@ -61,6 +62,21 @@ public class TripleA implements IGameLoader
       if(game.getRandomSource() != null && game.getRandomSource() instanceof IronyGamesDiceRollerRandomSource)
       {
         ((IronyGamesDiceRollerRandomSource) game.getRandomSource()).setUI(frame);
+      }
+      if(game.getRandomSource() != null && game.getRandomSource() instanceof CryptoRandomSource)
+      {
+        //the first roll takes a while, initialize
+        //here in the background so that the user doesnt notice
+        Thread t = new Thread()
+        {
+          public void run()
+          {
+            game.getRandomSource().getRandom(Constants.MAX_DICE,2,"Warming up crpyto random source");
+          }
+        };
+        t.start();
+
+
       }
 
 			frame.setVisible(true);

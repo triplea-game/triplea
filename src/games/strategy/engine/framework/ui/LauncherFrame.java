@@ -164,7 +164,8 @@ public class LauncherFrame extends JFrame
     Map remotePlayers = m_serverStartup.getRemotePlayerMapping();
 
     final ServerGame serverGame = new ServerGame(m_gameData, localPlayerSet,(IServerMessenger) m_messenger, remotePlayers);
-    if(!remotePlayers.isEmpty() && !localPlayerMapping.isEmpty())
+    boolean useSecureRandomSource = !remotePlayers.isEmpty() && !localPlayerMapping.isEmpty();
+    if(useSecureRandomSource)
     {
       //server game.
       //if we have two players, use a crypto random source.
@@ -192,6 +193,9 @@ public class LauncherFrame extends JFrame
     t.start();
 
     setVisible(false);
+
+
+
 
   }
 

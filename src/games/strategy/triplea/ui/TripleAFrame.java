@@ -152,7 +152,8 @@ public class TripleAFrame extends JFrame
 
     JPanel mapBorderPanel = new JPanel();
     mapBorderPanel.setLayout(new BorderLayout());
-    mapBorderPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+//    mapBorderPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    mapBorderPanel.setBorder(null);
     mapBorderPanel.add(m_mapPanel, BorderLayout.CENTER);
 
     gameCenterPanel.add(mapBorderPanel, BorderLayout.CENTER);

@@ -150,7 +150,7 @@ public class MapRouteDrawer
       {
         ((Polygon) shape).translate(translate, 0);
         graphics.fill(shape);
-        graphics.draw(shape);
+
         ((Polygon) shape).translate(-translate, 0);
       }
       if(shape instanceof Line2D)

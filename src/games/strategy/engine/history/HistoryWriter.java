@@ -137,7 +137,7 @@ public class HistoryWriter implements java.io.Serializable
       throw new IllegalStateException("Not in an event");
 
     m_current.add(node);
-    m_history.reload(node);
+    m_history.nodesWereInserted(m_current, new int[] {m_current.getChildCount() - 1});
   }
 
   /**

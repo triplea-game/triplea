@@ -265,6 +265,8 @@ class Connection
           };
 
           s_threadPool.runTask(r);
+          //allow the message to be processed
+          Thread.currentThread().yield();
 
         } catch(ClassNotFoundException cnfe)
         {
