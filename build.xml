@@ -73,7 +73,7 @@
             <include name="**/*.png"/>
             <include name="**/*.txt"/>
             <include name="**/*.wav"/>
-	        <include name="**/*.properties"/>
+	    <include name="**/*.properties"/>
         </zipfileset>
       
         <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
@@ -90,8 +90,8 @@
         </zipfileset>
       
         <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
-            <include name="triplea.bat"/>
-            <include name="triplea.sh"/>
+            <include name="**/*.sh"/>
+	    <include name="**/*.bat"/>
         </zipfileset>
 	
         <zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
@@ -106,6 +106,9 @@
 	
         <zipfileset dir="." prefix="triplea_${triplea.version}/">
             <include name="readme.html"/>
+	    <include name="*.bat"/>
+	    <include name="*.sh"/>
+	    <include name="changelog.txt"/>
         </zipfileset>
 	
         </zip>
