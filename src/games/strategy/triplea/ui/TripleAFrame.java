@@ -172,7 +172,7 @@ public class TripleAFrame extends JFrame
     menuBar.add(fileMenu);
 
     // menuFileSave = new JMenuItem("Save", KeyEvent.VK_S);
-    JMenuItem menuFileSave = new JMenuItem( new AbstractAction( "Save" )
+    JMenuItem menuFileSave = new JMenuItem( new AbstractAction( "Save..." )
       {
         public void actionPerformed(ActionEvent e)
         {
@@ -243,7 +243,7 @@ public class TripleAFrame extends JFrame
 
     JMenu helpMenu = new JMenu("Help");
     menuBar.add(helpMenu);
-    helpMenu.add( new AbstractAction("About")
+    helpMenu.add( new AbstractAction("About...")
       {
         public void actionPerformed(ActionEvent e)
         {
@@ -264,25 +264,26 @@ public class TripleAFrame extends JFrame
       }
     );
 
-        helpMenu.add( new AbstractAction("Hints")
-        {
-          public void actionPerformed(ActionEvent e)
-          {
-            //html formatted string
-            String hints =
-              "To force a path while moving, right click on each territory in turn.<br><br>" +
-              "You may be able to set game properties such as a bid in the Properties tab at game start up.";
-            JEditorPane editorPane = new JEditorPane();
-            editorPane.setEditable(false);
-            editorPane.setContentType("text/html");
-            editorPane.setText(hints);
+    helpMenu.add(new AbstractAction("Hints...")
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        //html formatted string
+        String hints =
+          "To force a path while moving, right click on each territory in turn.<br><br>" +
+          "You may be able to set game properties such as a bid in the Properties tab at game start up.";
+        JEditorPane editorPane = new JEditorPane();
+        editorPane.setEditable(false);
+        editorPane.setContentType("text/html");
+        editorPane.setText(hints);
 
-            JScrollPane scroll = new JScrollPane(editorPane);
+        JScrollPane scroll = new JScrollPane(editorPane);
 
-            JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "Hints", JOptionPane.PLAIN_MESSAGE);
-          }
-        }
-        );
+        JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "Hints",
+                                      JOptionPane.PLAIN_MESSAGE);
+      }
+    }
+    );
 
 
 
