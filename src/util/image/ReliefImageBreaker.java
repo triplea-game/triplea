@@ -83,10 +83,18 @@ public class ReliefImageBreaker
     {
 
         Image map     = loadImage();        //ask user to input image location
-	m_seaZoneOnly = doSeaZone();        //ask user wether it is sea zone only or not
-        String mapDir = getMapDirectory();  //ask user where the map is
 	
-	if(mapDir == null)
+	if(map == null)
+	{
+	    System.out.println("You need to select a map image for this to work");
+	    System.out.println("Shutting down");
+	    System.exit(0);
+	}
+	
+	m_seaZoneOnly = doSeaZone();        //ask user wether it is sea zone only or not
+	String mapDir = getMapDirectory();  //ask user where the map is
+	
+	if(mapDir == null || mapDir.equals(""))
 	{
 	    System.out.println("You need to specify a map name for this to work");
 	    System.out.println("Shutting down");
@@ -135,20 +143,29 @@ public class ReliefImageBreaker
 	while(true)
 	{ 
 	    ans = JOptionPane.showInputDialog(null, "Only Do Sea Zones? Enter [Y/N]");
-	
-	    if(ans.equalsIgnoreCase("Y"))
+	    
+	    if(ans == null) {
+	        System.out.println("Cannot leave this blank!");
+		System.out.println("Retry");
+	    }
+	    else 
 	    {
-	        return true;
-	    }
-	    else if(ans.equalsIgnoreCase("N"))
-	    {
-	        return false;
-	    }
-	    else {
-	        System.out.println("You must enter Y or N");
-		ans = "";
-	    }
-
+	    
+	    
+	        if(ans.equalsIgnoreCase("Y"))
+	        {
+	            return true;
+	        }
+	        else if(ans.equalsIgnoreCase("N"))
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            System.out.println("You must enter Y or N");
+	        }
+            }
+	    
 	}//while
     }
 
@@ -215,8 +232,7 @@ public class ReliefImageBreaker
             }
 	}
 	else {
-	    System.out.println("You need to select a map image for this to work");
-	    return loadImage();
+	    return null;
 	}
     }
 
