@@ -190,19 +190,76 @@ public class TripleAFrame extends JFrame
 		menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
 		fileMenu.add( menuFileExit );
 
-
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
 		helpMenu.add( new AbstractAction("About")
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					String text = "TripleA Engine version: " +  games.strategy.engine.EngineVersion.VERSION.toString() + "\n" +
-					"Web: http://sourceforge.net/projects/triplea" ;
-					JOptionPane.showMessageDialog(TripleAFrame.this,text, "TripleA", JOptionPane.PLAIN_MESSAGE);
+					String text = "Engine version: " +  games.strategy.engine.EngineVersion.VERSION.toString() + "<br>" +
+                     "Game: " + m_data.getGameName() + " Version:" + m_data.getGameVersion() + "<br><br>" +
+                    "<a hlink='http://sourceforge.net/projects/triplea'>http://sourceforge.net/projects/triplea</a>" ;
+
+                    JEditorPane editorPane = new JEditorPane();
+                    editorPane.setEditable(false);
+                    editorPane.setContentType("text/html");
+                    editorPane.setText(text);
+
+                    JScrollPane scroll = new JScrollPane(editorPane);
+
+
+					JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "TripleA", JOptionPane.PLAIN_MESSAGE);
 				}
 			}
 		);
+
+        helpMenu.add( new AbstractAction("Hints")
+        {
+          public void actionPerformed(ActionEvent e)
+          {
+            //html formatted string
+            String hints = "To select a path when moving, right click on territories";
+            JEditorPane editorPane = new JEditorPane();
+            editorPane.setEditable(false);
+            editorPane.setContentType("text/html");
+            editorPane.setText(hints);
+
+            JScrollPane scroll = new JScrollPane(editorPane);
+
+            JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "TripleA", JOptionPane.PLAIN_MESSAGE);
+          }
+        }
+        );
+
+
+
+        //allow the game developer to write notes that appear in the game
+        //displays whatever is in the notes field in html
+        final String notes = (String) m_data.getProperties().get("notes");
+        if(notes != null && notes.trim().length() != 0)
+        {
+          JMenu notesMenu = new JMenu("Notes");
+          menuBar.add(notesMenu);
+          notesMenu.add( new AbstractAction("Game Notes")
+              {
+                  public void actionPerformed(ActionEvent e)
+                  {
+
+                      JEditorPane editorPane = new JEditorPane();
+                      editorPane.setEditable(false);
+                      editorPane.setContentType("text/html");
+                      editorPane.setText(notes);
+
+                      JScrollPane scroll = new JScrollPane(editorPane);
+
+                      JOptionPane.showMessageDialog(TripleAFrame.this, editorPane, "Notes", JOptionPane.PLAIN_MESSAGE);
+                  }
+              }
+          );
+
+        }
+
+
 		this.setJMenuBar(menuBar);
 	}
 
