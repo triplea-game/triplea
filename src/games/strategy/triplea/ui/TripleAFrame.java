@@ -487,9 +487,8 @@ public class TripleAFrame extends JFrame
      */
     private void addMapSkinsMenu(JMenu menuGame)
     {
-        
-        //      beagles Mapskin code
-        //creates a sub menu of radiobuttons for each available mapdir
+        // beagles Mapskin code
+        // creates a sub menu of radiobuttons for each available mapdir
 
         JMenuItem mapMenuItem;
         JMenu mapSubMenu = new JMenu("Map Skins");
@@ -498,7 +497,7 @@ public class TripleAFrame extends JFrame
         // Create A String array of compatible MapDirs
 
         final String currentMapSubDir = TerritoryImageFactory.getMapDir();
-        final File mapsDir = new File(GameRunner.getRootFolder().getPath() + "/classes/" + Constants.MAP_DIR);
+        final File mapsDir = new File(GameRunner.getRootFolder().getPath() + java.io.File.separator + "classes" + Constants.MAP_SKINS_DIR);
 
         if (currentMapSubDir != null)
         {
@@ -528,7 +527,7 @@ public class TripleAFrame extends JFrame
                 mapMenuItemName = mapDirs[i].replaceFirst(currentMapSubDir, "");
                 if (mapMenuItemName.length() == 0)
                 {
-                    //	        mapMenuItemName="Original";
+                    // mapMenuItemName="Original";
                     mapMenuItem = new JRadioButtonMenuItem("Original");
                     mapMenuItem.setSelected(true);
                 } else
