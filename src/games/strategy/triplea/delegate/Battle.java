@@ -92,4 +92,6 @@ interface Battle extends java.io.Serializable
      * Return units which are dependent on the given units.
      */
     public Collection getDependentUnits(Collection units);
+    
+    public int getBattleRound();
 }

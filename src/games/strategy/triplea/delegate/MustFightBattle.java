@@ -38,9 +38,7 @@ import java.util.*;
  * Handles logic for battles in which fighting actually occurs.
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
- * Represents a battle.
  */
 public class MustFightBattle implements Battle, BattleStepStrings
 {
@@ -84,6 +82,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //keep track of all the units that die in the battle to show in the history
     // window
     private Collection m_killed = new ArrayList();
+    
+    private int m_round = 0;
 
     public MustFightBattle(Territory battleSite, PlayerID attacker,
             GameData data, BattleTracker tracker,
@@ -556,6 +556,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             display.listBattleSteps(m_battleID, (String) steps.get(0), steps);
         }
 
+        m_round++;
         fightLoop(bridge);
         return;
     }
@@ -999,7 +1000,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         final PlayerID hitPlayer = defender ? m_attacker : m_defender;
 
         DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender,
-                firingPlayer, bridge, m_data);
+                firingPlayer, bridge, m_data, this);
 
         int hitCount = dice.getHits();
         Collection killed;
@@ -1601,6 +1602,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public boolean isAmphibious()
     {
         return m_amphibious;
+    }
+    
+    public int getBattleRound()
+    {
+        return m_round;
     }
 }
 

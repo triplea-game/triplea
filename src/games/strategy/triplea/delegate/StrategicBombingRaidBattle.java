@@ -319,4 +319,10 @@ public class StrategicBombingRaidBattle implements Battle
     {
         return false;
     }
+    
+    public int getBattleRound()
+    {
+        return 0;
+    }
+    
 }

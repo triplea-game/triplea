@@ -75,17 +75,18 @@ public class DiceRoll implements java.io.Serializable
 
   /**
    * Roll dice for units.
+   * 
    */
   public static DiceRoll rollDice(List units, boolean defending,
 				  PlayerID player,
 				  IDelegateBridge bridge,
-				  GameData data)
+				  GameData data, Battle battle)
   {
     // Decide whether to use low luck rules or normal rules.
     if (data.getProperties().get(Constants.LOW_LUCK, false)) {
-      return rollDiceLowLuck(units, defending, player, bridge, data);
+      return rollDiceLowLuck(units, defending, player, bridge, data, battle);
     } else {
-      return rollDiceNormal(units, defending, player, bridge, data);
+      return rollDiceNormal(units, defending, player, bridge, data, battle);
     }
   }
 
@@ -96,9 +97,9 @@ public class DiceRoll implements java.io.Serializable
   private static DiceRoll rollDiceLowLuck(List units, boolean defending,
 					  PlayerID player,
 					  IDelegateBridge bridge,
-					  GameData data)
+					  GameData data, Battle battle)
   {
-    String annotation = player.getName() +  " roll dice for " + MyFormatter.unitsToTextNoOwner(units);
+    String annotation = getAnnotation(units, player, battle);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
     if(rollCount == 0)
@@ -177,9 +178,9 @@ public class DiceRoll implements java.io.Serializable
   private static DiceRoll rollDiceNormal(List units, boolean defending,
 					 PlayerID player,
 					 IDelegateBridge bridge,
-					 GameData data)
+					 GameData data, Battle battle)
   {
-    String annotation = player.getName() +  " roll dice for " + MyFormatter.unitsToTextNoOwner(units);
+    String annotation = getAnnotation(units, player, battle);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
     if(rollCount == 0)
@@ -266,6 +267,22 @@ public class DiceRoll implements java.io.Serializable
   }
 
   /**
+ * @param units
+ * @param player
+ * @param battle
+ * @return
+ */
+private static String getAnnotation(List units, PlayerID player, Battle battle)
+{
+    String annotation = player.getName() +  " roll dice for " + MyFormatter.unitsToTextNoOwner(units);
+    if(battle!= null)
+        annotation = annotation + " in " + battle.getTerritory().getName() + ", round " + battle.getBattleRound();
+    return annotation;
+    
+}
+
+
+/**
    *
    * @param dice int[] the dice, 0 based
    * @param hits int - the number of hits

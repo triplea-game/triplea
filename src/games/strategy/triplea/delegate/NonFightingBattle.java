@@ -193,4 +193,11 @@ public class NonFightingBattle implements Battle
     public boolean isAmphibious() {
 	return false;
     }
+    
+    public int getBattleRound()
+    {
+        return 0;
+    }
+
+    
 }
