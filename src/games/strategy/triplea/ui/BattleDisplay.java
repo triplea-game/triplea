@@ -468,11 +468,6 @@ class BattleStepsPanel extends JPanel
 
   public BattleStepsPanel()
   {
-    final int WIDTH = 150;
-    final int HEIGHT = 300;
-    setMinimumSize(new Dimension(WIDTH, HEIGHT));
-    setMaximumSize(new Dimension(WIDTH, HEIGHT));
-    setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
     setLayout(new BorderLayout());
     add(m_list, BorderLayout.CENTER);

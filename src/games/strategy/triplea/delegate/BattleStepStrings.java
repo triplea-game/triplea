@@ -38,17 +38,17 @@ public interface BattleStepStrings
   final static String DEFENDER_SELECT_SUB_CASUALTIES = "Select sneak attack casualties";
   final static String DEFENDER_REMOVE_SUB_CASUALTIES = "Remove sneak attack casualties";
 
-  final static String ATTACKER_FIRES = "Attacker fires";
-  final static String DEFENDER_SELECT_CASUALTIES = "Defender select casualties";
+  final static String ATTACKER_FIRES = " fire";
+  final static String DEFENDER_SELECT_CASUALTIES = " select casualties";
 
-  final static String DEFENDER_FIRES_SUBS = "Defender fires subs";
-  final static String ATTACKER_SELECT_SUB_CASUALTIES = "Attacker select sub casualties";
+  final static String DEFENDER_FIRES_SUBS = " subs fire";
+  final static String ATTACKER_SELECT_SUB_CASUALTIES = " select sub casualties";
 
-  final static String DEFENDER_FIRES = "Defender fires";
-  final static String ATTACKER_SELECT_CASUALTIES = "Attacker select casualties";
+  final static String DEFENDER_FIRES = " fire";
+  final static String ATTACKER_SELECT_CASUALTIES = " select casualties";
 
   final static String REMOVE_CASUALTIES = "Remove casualties";
-  final static String ATTACKER_SUBS_WITHDRAW = "Attacker subs withdraws?";
-  final static String DEFENDER_SUBS_WITHDRAW = "Defender subs withdraws?";
-  final static String ATTACKER_WITHDRAW = "Attacker withdraws?";
+  final static String ATTACKER_SUBS_WITHDRAW = " withdraw subs?";
+  final static String DEFENDER_SUBS_WITHDRAW = " withdraw subs?";
+  final static String ATTACKER_WITHDRAW = " withdraw?";
 }

@@ -266,8 +266,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //attacker fire
     if(Match.someMatch(m_attackingUnits, Matches.UnitIsNotSub))
     {
-      steps.add(ATTACKER_FIRES);
-      steps.add(DEFENDER_SELECT_CASUALTIES);
+      steps.add(m_attacker.getName() + ATTACKER_FIRES);
+      steps.add(m_defender.getName() +  DEFENDER_SELECT_CASUALTIES);
     }
 
     //defender subs
@@ -275,16 +275,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
       if(Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
       {
-        steps.add(DEFENDER_FIRES_SUBS);
-        steps.add(ATTACKER_SELECT_SUB_CASUALTIES);
+        steps.add(m_defender.getName() + DEFENDER_FIRES_SUBS);
+        steps.add(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES);
       }
     }
 
     if(Match.someMatch(m_defendingUnits, Matches.UnitIsNotSub))
     {
       //defender fire
-      steps.add(DEFENDER_FIRES);
-      steps.add(ATTACKER_SELECT_CASUALTIES);
+      steps.add(m_defender.getName() + DEFENDER_FIRES);
+      steps.add(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES);
     }
 
     //remove casualties
@@ -297,21 +297,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
       {
         if(Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
         {
-          steps.add(ATTACKER_SUBS_WITHDRAW);
+          steps.add(m_attacker.getName() + ATTACKER_SUBS_WITHDRAW);
         }
       }
       if(canDefenderRetreatSubs())
       {
         if(Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
         {
-          steps.add(DEFENDER_SUBS_WITHDRAW);
+          steps.add(m_defender.getName() + DEFENDER_SUBS_WITHDRAW);
         }
       }
     }
 
     if(canAttackerRetreat())
     {
-      steps.add(ATTACKER_WITHDRAW);
+      steps.add(m_attacker.getName() + ATTACKER_WITHDRAW);
     }
 
     return steps;
@@ -401,7 +401,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     Collection possible = getAttackerRetreatTerritories();
 
     if(!m_over)
-      queryRetreat(false,false,bridge, possible, ATTACKER_WITHDRAW);
+      queryRetreat(false,false,bridge, possible, m_attacker.getName() + ATTACKER_WITHDRAW);
   }
 
   private void attackerRetreatSubs(DelegateBridge bridge)
@@ -413,7 +413,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     //retreat subs
     if( Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
-      queryRetreat(false,true,bridge, possible, ATTACKER_SUBS_WITHDRAW);
+      queryRetreat(false,true,bridge, possible, m_attacker.getName() + ATTACKER_SUBS_WITHDRAW);
   }
 
 
@@ -428,7 +428,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
       return;
 
     if(!m_over)
-      queryRetreat(true,true,bridge, getEmptyOrFriendlySeaNeighbors(m_defender), DEFENDER_SUBS_WITHDRAW);
+      queryRetreat(true,true,bridge, getEmptyOrFriendlySeaNeighbors(m_defender),  m_defender.getName() + DEFENDER_SUBS_WITHDRAW);
   }
 
   private Collection getEmptyOrFriendlySeaNeighbors(PlayerID player)
@@ -468,14 +468,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     String step;
     if(defender)
     {
-      step = DEFENDER_SUBS_WITHDRAW;
+      step = m_defender.getName() + DEFENDER_SUBS_WITHDRAW;
     }
     else
     {
       if(subs)
-        step = ATTACKER_SUBS_WITHDRAW;
+        step = m_attacker.getName() + ATTACKER_SUBS_WITHDRAW;
       else
-        step = ATTACKER_WITHDRAW;
+        step = m_attacker.getName() + ATTACKER_WITHDRAW;
     }
 
     RetreatQueryMessage query = new RetreatQueryMessage(step, availableTerritories, subs, text);
@@ -558,7 +558,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     if(units.isEmpty() )
       return;
 
-    fire(ATTACKER_SELECT_CASUALTIES, units, m_attackingUnits, true, true, bridge, "Defenders fire, ");
+    fire(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES, units, m_attackingUnits, true, true, bridge, "Defenders fire, ");
   }
 
   private void attackNonSubs(DelegateBridge bridge)
@@ -570,7 +570,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     if(units.isEmpty())
       return;
 
-    fire(DEFENDER_SELECT_CASUALTIES,units, m_defendingUnits, false, true, bridge, "Attackers fire,");
+    fire(m_defender.getName() +  DEFENDER_SELECT_CASUALTIES,units, m_defendingUnits, false, true, bridge, "Attackers fire,");
   }
 
   private void attackSubs(DelegateBridge bridge)
@@ -598,7 +598,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     if(attacked.isEmpty())
       return;
 
-    fire(ATTACKER_SELECT_SUB_CASUALTIES, units,  attacked, true, true, bridge, "Subs defend, ");
+    fire(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES, units,  attacked, true, true, bridge, "Subs defend, ");
   }
 
   private Collection selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
@@ -874,7 +874,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
       "Battle in:" + m_territory +
       " attacked by:" + m_attackingUnits +
       " from:" + m_attackingFrom +
-      " defender:" + m_defender +
+      " defender:" + m_defender.getName() +
       " bombing:" + isBombingRun();
   }
 
