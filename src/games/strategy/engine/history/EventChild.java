@@ -31,7 +31,7 @@ public class EventChild extends HistoryNode implements Renderable
 
     public String toString()
     {
-        return "EventChild text:" + m_text;
+        return m_text;
     }
 
     public SerializationWriter getWriter()
