@@ -105,8 +105,7 @@ public class RandomDestination implements IDestination
       {
         // We're 'player2' and we're receiving the initial data from 'player1'
         m_random_gen = new RandomGen(((RandomTriplet)rnd_message.m_obj).m_max_num.intValue(), rnd_message.m_randomCount, rnd_message.m_annotation);        
-        m_remote_random_gen = new RandomGen();
-        m_remote_random_gen.setTriplet((RandomTriplet)rnd_message.m_obj);
+        m_remote_random_gen = new RandomGen((RandomTriplet)rnd_message.m_obj);
       }
       return new RandomNumberMessage(m_random_gen.getTriplet());
 
@@ -114,8 +113,7 @@ public class RandomDestination implements IDestination
       if (rnd_message.m_obj instanceof RandomTriplet)
       {
         // We're 'player1' and we're receiving the initial data from 'player2'
-        m_remote_random_gen = new RandomGen();
-        m_remote_random_gen.setTriplet((RandomTriplet)rnd_message.m_obj);
+        m_remote_random_gen = new RandomGen((RandomTriplet)rnd_message.m_obj);
       }
       else if (rnd_message.m_obj instanceof SecretKey)
       {

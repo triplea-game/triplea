@@ -37,7 +37,7 @@ public class RandomTriplet implements java.io.Serializable
 
   public RandomTriplet(byte[] enc_rnd, byte[] enc_known, Integer in_max_num, int count, String annotation)
   {
-    if(count <= 0)
+    if(count < 0)
         throw new IllegalArgumentException("Invalid count:" + count);
     if(annotation == null || annotation.length() == 0)
         throw new IllegalArgumentException("No annotation");

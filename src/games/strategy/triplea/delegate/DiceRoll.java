@@ -67,6 +67,11 @@ public class DiceRoll implements java.io.Serializable
     String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
+    if(rollCount == 0)
+    {
+        return new DiceRoll(new int[Constants.MAX_DICE][0], 0 );
+    }
+        
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
 
     List[] sortedDice = new List[Constants.MAX_DICE];

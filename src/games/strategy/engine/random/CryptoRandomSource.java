@@ -55,6 +55,9 @@ public class CryptoRandomSource implements IRandomSource
     */
    public int[] getRandom(int max, int count, String annotation)
    {
+     if(count <= 0)
+         throw new IllegalArgumentException("Invalid count");
+       
      // Start the seeding operation and get the key
      startRandomGen(max, count, annotation);
 

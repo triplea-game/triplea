@@ -32,14 +32,14 @@ public class VerifiedRandomNumbers
     /**
      * @return Returns the m_annotation.
      */
-    public String getM_annotation()
+    public String getAnnotation()
     {
         return m_annotation;
     }
     /**
      * @return Returns the m_values.
      */
-    public int[] getM_values()
+    public int[] getValues()
     {
         return m_values;
     }

@@ -62,7 +62,7 @@ import games.strategy.engine.random.*;
 public class RandomGen
 {
   private static final String ALGORITHM = "DES";
-  private static final String KNOWN_VAL = "$Id$";
+  private static final String KNOWN_VAL = "Random Gen known value.  This is that and nothing else";
 
 
 
@@ -84,20 +84,31 @@ public class RandomGen
   private byte[] m_enc_random_seed;
   private byte[] m_enc_known;
   
-  private String m_annotation;
-  private int m_randomCount = -1;
+  private final String m_annotation;
+  private final int m_randomCount;
 
-  public RandomGen()
+  public RandomGen(RandomTriplet triplet)
   {
     // DEBUG
     // System.out.println("RandomGen()");
     m_max_num = null;
     m_random_seed = null;
+    
+    setEncryptedRandomSeed(triplet.m_encrypted_random);
+    setEncryptedKnown(triplet.m_encrypted_known);
+    setMaxVal(triplet.m_max_num);
+    m_randomCount = triplet.getRandomCount();
+    m_annotation = triplet.getAnnotation();
+ 
+    
   }
 
   public RandomGen(int in_max_num, int randomCount, String annotation)
   {
-    // DEBUG
+    if(randomCount < 0)
+      throw new IllegalArgumentException("Random count must be >=0. not :" + randomCount);
+
+      // DEBUG
     // System.out.println("RandomGen(" + in_max_num + ")");
     m_max_num = new Integer(in_max_num);
     m_random_seed = null;
@@ -164,22 +175,7 @@ public class RandomGen
     }
   }
 
-  /**
-   * Sets the encrypted random number, the encrypted known number,
-   * and the max random value
-   */
-  public void setTriplet(RandomTriplet triplet)
-  {
-    // DEBUG
-    // System.out.println(this + "#setTriplet(" + triplet + ")");
-    setEncryptedRandomSeed(triplet.m_encrypted_random);
-    setEncryptedKnown(triplet.m_encrypted_known);
-    setMaxVal(triplet.m_max_num);
-    m_randomCount = triplet.getRandomCount();
-    m_annotation = triplet.getAnnotation();
-    
-  }
-
+  
   /**
    * Gets the encrypted random number, the encrypted known number
    * and the max random value

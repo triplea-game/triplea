@@ -22,8 +22,8 @@ public class RandomGenTest extends TestCase
     {
         RandomGen gen = new RandomGen(6,1, "test");
         RandomTriplet triplet = gen.getTriplet();
-        RandomGen other = new RandomGen();
-        other.setTriplet(triplet);
+        RandomGen other = new RandomGen(triplet);
+
         other.setKey(gen.getKey());
         
         assertEquals(other.getRandomSeed(), gen.getRandomSeed());   

@@ -176,6 +176,8 @@ public class StrategicBombingRaidBattle implements Battle
   private int conductRaid(DelegateBridge bridge, PlayerID attacker, PlayerID defender, Territory location)
   {
     int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
+    if(rollCount == 0)
+        return 0;
     String annotation = attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in " + location.getName();
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
     int cost = 0;
