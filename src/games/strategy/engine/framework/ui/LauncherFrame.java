@@ -184,6 +184,17 @@ public class LauncherFrame extends JFrame
 
   }
 
+  public static byte[] gameDataToBytes(GameData data) throws IOException
+  {
+      ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
+
+      new GameDataManager().saveGame(sink, data);
+      sink.flush();
+      sink.close();
+      return sink.toByteArray();
+  }
+
+  
   private void startServer()
   {
     m_serverStartup.cleanUpWaitForPlayers();
@@ -192,7 +203,17 @@ public class LauncherFrame extends JFrame
     ServerReady serverReady = new ServerReady();
     m_remoteMessenger.registerRemote(IServerReady.class, serverReady, CLIENT_READY_CHANNEL);
     
-    ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(m_serverStartup.getGameDataBytes());
+    byte[] gameDataAsBytes;
+    try
+    {
+        gameDataAsBytes = gameDataToBytes(m_gameData);
+    } catch (IOException e)
+    {
+        e.printStackTrace();
+        throw new IllegalStateException(e.getMessage());
+    }
+    
+    ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes);
 
     Map localPlayerMapping = m_serverStartup.getLocalPlayerMapping();
     Set localPlayerSet = m_gameData.getGameLoader().createPlayers(localPlayerMapping);

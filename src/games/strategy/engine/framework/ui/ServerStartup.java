@@ -22,14 +22,13 @@ package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.*;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.message.*;
+import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.net.*;
 import games.strategy.util.Version;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -55,8 +54,6 @@ public class ServerStartup extends JPanel
 
   //list of PlayerRows
   private List m_playerRows = Collections.EMPTY_LIST;
-
-  private byte[] m_dataBytes;
 
   private JPanel m_info = new JPanel();
   
@@ -101,15 +98,6 @@ public class ServerStartup extends JPanel
     m_loader = data.getGameLoader();
     m_data = data;
 
-    try
-    {
-      serializeGameData();
-    } catch(IOException ioe)
-    {
-        ioe.printStackTrace();
-      throw new RuntimeException(ioe.getMessage());
-    }
-
     updateGamePlayers();
     layoutPlayers();
     IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
@@ -120,28 +108,6 @@ public class ServerStartup extends JPanel
   public void setLauncerFrame(LauncherFrame frame)
   {
     m_launcher = frame;
-  }
-
-  /**
-   * store the game data as a byte array so that we can send it to the
-   * client
-   */
-  private void serializeGameData() throws IOException
-  {
-    ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
-
-    new GameDataManager().saveGame(sink, m_data);
-    sink.flush();
-    sink.close();
-
-    m_dataBytes = sink.toByteArray();
-
-
-  }
-
-  public byte[] getGameDataBytes()
-  {
-    return m_dataBytes;
   }
 
   /**

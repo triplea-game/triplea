@@ -36,7 +36,6 @@ public class GameProperties extends GameDataComponent
     private HashMap m_constantProperties = new HashMap();
 
     //a set of IEditableProperties
-    //dont serialize the editable data
     private HashMap m_editableProperties = new HashMap();
 
     // This list is used to keep track of order properties were
@@ -51,6 +50,7 @@ public class GameProperties extends GameDataComponent
 
     /**
      * Setting a property to null has the effect of unbinding the key.
+     * package access to prevent outsiders from setting properties
      */
     void set(String key, Object value)
     {
