@@ -436,11 +436,14 @@
 		<!-- axis -->
 		<player name="Japanese" optional="false"/>
 		<player name="Germans" optional="false"/>
-		<alliance player1="Germans" player2="Japanese"/>
 		<!-- allies -->
 		<player name="British" optional="false"/>
 		<player name="Americans" optional="false"/>
-	    	<player name="Russians" optional="false"/>
+		<player name="Russians" optional="false"/>
+
+		<!-- alliances -->
+		<alliance player1="Germans" player2="Japanese"/>
+
 		<alliance player1="Americans" player2="British"/>
 		<alliance player1="Americans" player2="Russians"/>
 		<alliance player1="British" player2="Russians"/>
