@@ -78,6 +78,8 @@ public class TerritoryData
 
     private void initializeContains()
     {
+        
+        
         m_contains = new HashMap();
 
         Iterator seaIter = getTerritories().iterator();
@@ -94,6 +96,7 @@ public class TerritoryData
                 String landTerritory = (String)landIter.next();
                 if(landTerritory.endsWith("Sea Zone"))
                     continue;
+                
                 Polygon landPoly = (Polygon) getPolygons(landTerritory).iterator().next();
                 Polygon seaPoly = (Polygon) getPolygons(seaTerritory).iterator().next();
                 if(seaPoly.contains(landPoly.getBounds()))
@@ -101,6 +104,7 @@ public class TerritoryData
                     contained.add(landTerritory);
                 }
             }
+            
             if(!contained.isEmpty())
                 m_contains.put(seaTerritory, contained);
         }

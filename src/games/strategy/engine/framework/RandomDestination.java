@@ -70,8 +70,7 @@ public class RandomDestination implements IDestination
 
   public Message sendMessage(Message message)
   {
-    // FIXME
-    //System.out.println("TripleAPlayer#handleRandomNumberMessage(" + message + ")");
+
     RandomNumberMessage rnd_message;
 
     if (message instanceof RandomNumberMessage)

@@ -853,6 +853,15 @@ public class MoveDelegate implements SaveableDelegate
                 if (m_alreadyMoved.getInt(unit) != 0)
                     return "Units cannot move before loading onto transports";
             }
+            
+            CompositeMatch enemyNonSubmerged = new CompositeMatchAnd(
+                    Matches.enemyUnit(m_player, m_data),
+                    new InverseMatch( Matches.unitIsSubmerged(m_data))
+            );
+            if(route.getEnd().getUnits().someMatch(enemyNonSubmerged))
+            {
+                return "Cant load when enemy sea units are present";
+            }
         }
 
         return null;
@@ -1194,7 +1203,21 @@ public class MoveDelegate implements SaveableDelegate
     private Map mapTransportsToLoad(Collection units, Collection transports)
     {
 
-        Collection canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+        List canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+        Comparator c = new Comparator()
+        {
+            public int compare(Object o1, Object o2)
+            {
+                int cost1 = UnitAttatchment.get( ((Unit) o1).getUnitType()).getTransportCost();
+                int cost2 = UnitAttatchment.get( ((Unit) o2).getUnitType()).getTransportCost();
+                return cost2 - cost1;
+             }
+        };
+        //fill the units with the highest cost first.
+        //allows easy loading of 2 infantry and 2 tanks on 2 transports
+        //in 4th edition rules.
+        Collections.sort(canBeTransported, c);
+        
         Collection canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
         Collection ownedTransport = Match.getMatches(transports, Matches.unitIsOwnedBy(m_player));
         canTransport = Util.difference(canTransport, ownedTransport);

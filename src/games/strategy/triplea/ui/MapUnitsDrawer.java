@@ -117,7 +117,15 @@ public class MapUnitsDrawer
 
         //add territories what we are dependent on
         Set dependents = (Set) m_updateDependencies.get(territory);
-
+        if(territory.isWater())
+        { 
+            if(dependents == null)
+                dependents = new HashSet();
+            
+            Collection containedTerritorys = TerritoryData.getInstance().getContainedTerritory(territory.getName());
+            if(containedTerritorys != null)
+                addAll(dependents, containedTerritorys);
+        }
 
         if(dependents != null)
         {
@@ -166,7 +174,7 @@ public class MapUnitsDrawer
                Territory territory = (Territory)dependencyIter.next();
                addDependentsToQueue(territory);
            }
-
+           
             //clear the sea zones first
             //they can overlap with land zones
             Iterator iter = Match.getMatches(m_waitingToBeUpdated, Matches.TerritoryIsWater).iterator();
