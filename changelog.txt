@@ -1,5 +1,7 @@
 Changes for 0.5.2
 
+* Fixed bug in Irony PBEM random source: It did not use the max parameter passed to the random methods. This fixes the 4th edition AA casualty selection problem in PBEM. (Ali Ibrahim)
+
 * Added new technology activation delegate to allow control of when technologies actually take effect. This is used to allow delay of technology activation in LHTR. (Ali Ibrahim)
 
 * Changed mouse behavior such that only the left button is used to select a territory to put units in. (Ali Ibrahim)
