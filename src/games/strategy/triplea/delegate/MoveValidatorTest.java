@@ -126,57 +126,10 @@ public class MoveValidatorTest extends DelegateTest
 		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data, false));	
 	}
 	
-	public void testIsBlitz()
-	{
-		Route route = new Route();
-		assertTrue(!MoveValidator.isBlitz(route, british, m_data));
-		
-		route.add(egypt);
-		assertTrue(!MoveValidator.isBlitz(route, british, m_data));
-		
-		//doesnt count last territory
-		route.add(libya);
-		assertTrue(!MoveValidator.isBlitz(route, british, m_data));
-		
-		//now wed be blitzing through libya
-		route.add(algeria);
-		assertTrue(MoveValidator.isBlitz(route, british, m_data));
-	}
+
 	
-	public void testIsBlitzNuetral()
-	{
-		Route route = new Route();
-		route.add(egypt);
-		//nuetral
-		route.add(equatorialAfrica);
-		route.add(libya);
-		
-		assertTrue(!MoveValidator.isBlitz(route, british, m_data));
-	}
-	
-	public void testIsBlitzEnemyUnits()
-	{
-		Route route = new Route();
-		route.add(egypt);
-		//congo has 1 japanese unit. shouldnt be able to blitz
-		route.add(congo);
-		route.add(kenya);
-		
-		assertTrue(!MoveValidator.isBlitz(route, british, m_data));
-	}
-	
-	public void testCasBlitz()
-	{
-		Collection units = new ArrayList();
-		
-		assertTrue(MoveValidator.canBlitz(units));
-		
-		units.addAll( armour.create(3,british));
-		assertTrue(MoveValidator.canBlitz(units));
-		
-		units.addAll( infantry.create(3,british));
-		assertTrue(!MoveValidator.canBlitz(units));
-	}
+
+
 	
 	public void testHasNeutralBeforEnd()
 	{

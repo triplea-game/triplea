@@ -107,52 +107,39 @@ public class MoveValidator
 	}
 
 
-	/**
-	 * A blitz means no nuetral territories before end,
-	 * at least one enemy territory with no units before end.
-	 * no enemy units before end (excepting aa and factories).
-	 * No water before end.
-	 */
-	public static boolean isBlitz(Route route, PlayerID player, GameData data)
+	public static boolean isBlitzable(Territory current, GameData data, PlayerID player)
 	{
-		if(route.getLength() < 2)
+	    if(current.isWater())
 			return false;
-
-		Match nonCombatOrAllied = new CompositeMatchOr(Matches.UnitIsAAOrFactory,
-													   Matches.alliedUnit(player, data));
-
-		boolean blitzableFound = false;
-
-		for(int i = 0; i < route.getLength() - 1; i++)
-		{
-			Territory current = route.at(i);
-
-			//if was previously blitzed then still a blitz route
-			if(DelegateFinder.battleDelegate(data).getBattleTracker().wasBlitzed(current))
-				blitzableFound = true;
-
-			//if conquered but not blitzed then cant blitz through it
-			if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(current) &&
-			   !DelegateFinder.battleDelegate(data).getBattleTracker().wasBlitzed(current))
-				return false;
-
-			//cant blitz through water
-			if(current.isWater())
-				return false;
-
-
-
-			if(ownedByNonNeutralEnemy(current, player, data))
-			{
-				//cant blitz through units that arent factories or aa
-				//CompositeMatch match = new
-				if(!current.getUnits().allMatch(nonCombatOrAllied))
-					return false;
-				blitzableFound = true;
-			}
-		}
-		return blitzableFound;
+	    
+	    if(current.getOwner().isNull())
+	        return false;
+	   
+	    if(data.getAllianceTracker().isAllied(player, current.getOwner()))
+	        return false;
+	    
+	    if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(current) &&
+		   !DelegateFinder.battleDelegate(data).getBattleTracker().wasBlitzed(current))
+			return false;
+	    
+	    CompositeMatch blitzableUnits = new CompositeMatchOr();
+	    blitzableUnits.add(Matches.alliedUnit(player, data));
+	    boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
+	    //4th edition, cant blitz through factories and aa guns
+	    //2nd edition you can 
+	    if(!fourthEdition)
+	    {
+	        blitzableUnits.add(Matches.UnitIsAAOrFactory);
+	    }
+	    
+	    if(!current.getUnits().allMatch(blitzableUnits))
+	        return false;
+	    
+	    return true;
 	}
+	
+	
+
 
 	public static boolean isUnload(Route route)
 	{
@@ -166,29 +153,8 @@ public class MoveValidator
 		return !route.getStart().isWater() && route.getEnd().isWater();
 	}
 
-	private static boolean ownedByNonNeutralEnemy(Territory territory, PlayerID player, GameData data)
-	{
-		PlayerID owner = territory.getOwner();
-		if( isFriendly(owner, player, data))
-			return false;
-		//neutral is null
-		if(owner.equals(PlayerID.NULL_PLAYERID))
-			return false;
-		return true;
-	}
 
-	public static boolean canBlitz(Collection units)
-	{
-		Iterator iter = units.iterator();
-		while(iter.hasNext() )
-		{
-			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getUnitType());
-			if(!ua.getCanBlitz())
-				return false;
-		}
-		return true;
-	}
+
 
 	public static boolean hasNuetralBeforeEnd(Route route)
 	{

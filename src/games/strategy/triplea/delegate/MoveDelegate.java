@@ -566,14 +566,44 @@ public class MoveDelegate implements SaveableDelegate
                 return "Must stop land units when passing through nuetral territories";
         }
 
-        //check if we are blitzing
-        //if we are blitzing check that all units are capable
-        if (MoveValidator.isBlitz(route, player, m_data))
+        if(Match.someMatch(units, Matches.UnitIsLand) && route.getLength() >=1)
         {
-            if (!MoveValidator.canBlitz(Match.getMatches(units, Matches.UnitIsNotAir)))
-                return "Cannot blitz with non blitzing units";
+        	//check all the territories but the end, 
+        	//if there are enemy territories, make sure they are blitzable
+        	//if they are not blitzable, or we arent all blit units
+        	//fail
+            int enemyCount = 0;
+            boolean allEnemyBlitzable = true;
+            
+            for(int i = 0; i < route.getLength() - 1; i++)
+            {
+                Territory current = route.at(i);
+                
+                if(current.isWater())
+                	continue;
+                	
+                if(!m_data.getAllianceTracker().isAllied(current.getOwner(), m_player)  ||
+                        DelegateFinder.battleDelegate(m_data).getBattleTracker().wasConquered(current ))
+                        {
+                    		enemyCount++;
+                    		allEnemyBlitzable &= MoveValidator.isBlitzable(current, m_data, m_player);
+                        }
+            }
+            
+            if(enemyCount > 0 && ! allEnemyBlitzable)
+            {
+            	return "Cant blitz on that route";
+           }
+           else if(enemyCount > 0 && allEnemyBlitzable)
+           {
+           	    Match blitzingUnit = new CompositeMatchOr(Matches.UnitCanBlitz, Matches.UnitIsAir);
+            	if(!Match.allMatch(units, blitzingUnit))
+            		return "Not all units can blitz";
+            }
+            
         }
-
+        
+       
         //make sure no conquered territories on route
         if (MoveValidator.hasConqueredNonBlitzedOnRoute(route, m_data))
         {

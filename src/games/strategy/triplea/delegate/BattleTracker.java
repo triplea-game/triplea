@@ -88,13 +88,7 @@ public class BattleTracker implements java.io.Serializable
     return m_conquered.contains(t);
   }
 
-  /**
-   * add to the conquered.
-   */
-  void addToBlitzed(Collection territories)
-  {
-    m_blitzed.addAll(territories);
-  }
+ 
 
   /**
    * True if the territory was conquered.
@@ -109,7 +103,7 @@ public class BattleTracker implements java.io.Serializable
     return m_foughBattles.contains(t);
   }
 
-  public void undoBattle(Route route, Collection units)
+  public void undoBattle(Route route, Collection units, PlayerID player)
   {
     Iterator iter = new ArrayList(m_pendingBattles).iterator();
     while (iter.hasNext())
@@ -124,6 +118,19 @@ public class BattleTracker implements java.io.Serializable
         }
       }
     }
+    
+    //if we have no longer conquered it, clear the blitz state
+    iter = route.getTerritories().iterator();
+    while(iter.hasNext())
+    {
+        Territory current = (Territory) iter.next();
+        if(!current.getOwner().equals(player)  && m_conquered.contains(current))
+        {
+            m_conquered.remove(current);
+            m_blitzed.remove(current);
+        }
+    }
+    
   }
 
   private void removeBattleForUndo(Battle battle)
@@ -177,23 +184,41 @@ public class BattleTracker implements java.io.Serializable
   /**
    * No enemies, but not neutral.
    */
-  private void addEmptyBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge, UndoableMove changeTracker)
+  private void addEmptyBattle(Route route, Collection units, TransportTracker tracker, final PlayerID id, final GameData data, DelegateBridge bridge, UndoableMove changeTracker)
   {
     if (!Match.someMatch(units, Matches.UnitIsLand))
       return;
 
     //find the territories that are considered blitz
-    CompositeMatch canBlitz = new CompositeMatchAnd();
-    canBlitz.add(Matches.TerritoryIsEmptyOfCombatUnits);
-    canBlitz.add(Matches.isTerritoryEnemy(id, data));
-    canBlitz.addInverse(Matches.TerritoryIsNuetral);
+    Match canBlitz = new Match()
+    {
+        public boolean match(Object o)
+        {
+            Territory territory = (Territory) o;
+            return  MoveValidator.isBlitzable(territory, data, id);
+        }
+    };
+    
+    CompositeMatch conquerable = new CompositeMatchAnd();
+    conquerable.add(Matches.TerritoryIsEmptyOfCombatUnits);
+    conquerable.add(Matches.isTerritoryEnemy(id, data));
+    conquerable.addInverse(Matches.TerritoryIsNuetral);
+  
     //check the last territory specially to see if its a naval invasion
     Collection blitzed = route.getMatches(canBlitz);
+    Collection conquered = route.getMatches(conquerable);	
+    
+    //we handle the end of the route later
     blitzed.remove(route.getEnd());
+    conquered.remove(route.getEnd());
+    
+    if(!conquered.containsAll(blitzed))
+        throw new IllegalStateException("Blitzed but not conqured!");
+    
     m_blitzed.addAll(blitzed);
-    m_conquered.addAll(blitzed);
+    m_conquered.addAll(conquered);
 
-    Iterator iter = blitzed.iterator();
+    Iterator iter = conquered.iterator();
     while (iter.hasNext())
     {
       Territory current = (Territory) iter.next();
@@ -202,14 +227,17 @@ public class BattleTracker implements java.io.Serializable
     }
 
     //check the last territory
-    if (canBlitz.match(route.getEnd()))
+    if (conquerable.match(route.getEnd()))
     {
 
       Battle precede = getDependentAmphibiousAssault(route);
       if (precede == null)
       {
         takeOver(route.getEnd(), id, bridge, data, changeTracker);
-        m_blitzed.add(route.getEnd());
+        if(canBlitz.match(route.getEnd()))
+        {
+         m_blitzed.add(route.getEnd());   
+        }
         m_conquered.add(route.getEnd());
       }
       else
