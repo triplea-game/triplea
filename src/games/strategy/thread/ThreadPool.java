@@ -43,7 +43,7 @@ public class ThreadPool
   private void grow()
   {
     ThreadTracker tracker = new ThreadTracker();
-    Thread thread = new Thread(tracker);
+    Thread thread = new Thread(tracker, getClass().getName() + ":" + m_allThreads.size());
 
     m_allThreads.add(tracker);
 
@@ -85,10 +85,10 @@ public class ThreadPool
       try
       {
         m_doneLock.wait();
-        } catch(InterruptedException e)
-            {}
-        waitForAll();
+      } catch(InterruptedException e)
+      {}
     }
+    waitForAll();
 
   }
 
@@ -136,16 +136,20 @@ public class ThreadPool
         {
           t.printStackTrace();
         }
-        synchronized(m_taskLock)
-        {
-          m_runningTasks.remove(task);
-        }
-
+        //NOTE - get the done lock first,
+        //wait for all gets the locks in the order done, task
+        //so to avoid deadlock we must do things in the same order here
         synchronized(m_doneLock)
         {
+
+          synchronized(m_taskLock)
+          {
+            m_runningTasks.remove(task);
+          }
+
           m_doneLock.notifyAll();
         }
-      }
+      }//end while run
 
       synchronized(m_taskLock)
       {
@@ -161,7 +165,7 @@ public class ThreadPool
 
     private Runnable getTask()
     {
-      synchronized(ThreadPool.this.m_taskLock)
+      synchronized(m_taskLock)
       {
         if(! m_run )
           return null;
@@ -172,9 +176,13 @@ public class ThreadPool
           {
             m_availableThreads.add(this);
             ThreadPool.this.m_taskLock.wait();
-            m_availableThreads.remove(this);
+
           } catch(InterruptedException ie)
           {}
+          finally
+          {
+            m_availableThreads.remove(this);
+          }
           return getTask();
         }
         else
