@@ -59,7 +59,7 @@ public interface ITripleaDisplay extends IDisplay
      * Notify that the casuatlies occured
      *  
      */
-    public void casualtyNotification(
+    public void casualtyNotification(GUID battleID,
             String step,
             DiceRoll dice,
             PlayerID player,
@@ -92,7 +92,7 @@ public interface ITripleaDisplay extends IDisplay
      * @param battleId
      * @param dice
      */
-    public void showDice(GUID battleId, DiceRoll dice, String stepName, PlayerID ignore);
+    public void notifyDice(GUID battleId, DiceRoll dice, String stepName, PlayerID ignore);
 
     
     public void gotoBattleStep(GUID battleId, String step);

@@ -408,7 +408,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#confirmCasualties(games.strategy.net.GUID, java.lang.String, java.lang.String)
      */
-    public void confirmCasualties(GUID battleId, String message, String step)
+    public void confirmOwnCasualties(GUID battleId, String message, String step)
     {
     }
 

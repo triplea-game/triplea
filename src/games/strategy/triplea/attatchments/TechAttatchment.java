@@ -28,7 +28,11 @@ public class TechAttatchment extends DefaultAttatchment
 
   public static TechAttatchment get(PlayerID id)
   {
-    return (TechAttatchment) id.getAttatchment(Constants.TECH_ATTATCHMENT_NAME);
+    TechAttatchment attatchment = (TechAttatchment) id.getAttatchment(Constants.TECH_ATTATCHMENT_NAME);
+    //dont crash
+    if(attatchment == null)
+        return new TechAttatchment();
+    return attatchment;
   }
 
   private boolean m_heavyBomber;

@@ -900,22 +900,22 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         //if we are moving out of a battle zone, mark it
         //this can happen for air units moving out of a battle zone
-        Battle battleLand = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(route.getStart(), false);
-        Battle battleAir = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(route.getStart(), true);
-        if (battleLand != null || battleAir != null)
+        Battle nonBombingBattle = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(route.getStart(), false);
+        Battle bombingBattle = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(route.getStart(), true);
+        if (nonBombingBattle != null || bombingBattle != null)
         {
             Iterator iter = units.iterator();
             while (iter.hasNext())
             {
                 Unit unit = (Unit) iter.next();
                 Route routeUnitUsedToMove = getRouteUsedToMoveInto(unit, route.getStart());
-                if (battleLand != null)
+                if (nonBombingBattle != null)
                 {
-                    battleLand.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                    nonBombingBattle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
                 }
-                if (battleAir != null)
+                if (bombingBattle != null)
                 {
-                    battleAir.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                    bombingBattle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
                 }
             }
         }

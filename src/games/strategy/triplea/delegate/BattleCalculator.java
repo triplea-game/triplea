@@ -94,7 +94,7 @@ public class BattleCalculator
     {
         int hits = dice.getHits();
         if (hits == 0)
-            return new CasualtyDetails(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
+            return new CasualtyDetails(Collections.EMPTY_LIST, Collections.EMPTY_LIST, true);
 
         Map dependents = getDependents(targets, data);
 

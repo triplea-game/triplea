@@ -142,4 +142,6 @@ public interface ITripleaPlayer extends IRemote
      */
     public void confirmEnemyCasualties(GUID battleId, String message, String step, PlayerID hitPlayer);
     
+    public void confirmOwnCasualties(GUID battleId, String message, String step);
+    
 }

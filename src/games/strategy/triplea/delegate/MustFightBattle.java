@@ -113,6 +113,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public void removeAttack(Route route, Collection units)
     {
         m_attackingUnits.removeAll(units);
+        
+        //the route could be null, in the case of a unit in a territory where a sub is submerged.
+        if(route == null)
+            return;
         Territory attackingFrom = getAttackFrom(route);
 
         Collection attackingFromMapUnits = (Collection) m_attackingFromMap
@@ -774,7 +778,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         getDisplay(bridge).gotoBattleStep(m_battleID, step);
         Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, submerge, availableTerritories, text, step);
         
-        if(retreatTo != null && !availableTerritories.contains(retreatTo))
+        if(retreatTo != null && !availableTerritories.contains(retreatTo) && !subs)
         {
             System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.territoriesToText(availableTerritories));
             Thread.dumpStack();
@@ -999,26 +1003,31 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection killed;
         Collection damaged = Collections.EMPTY_LIST;
         
+        getDisplay(bridge).notifyDice(m_battleID, dice, stepName, hitPlayer);
 
         //they all die
         if (hitCount >= getMaxHits(attackableUnits))
         {
             killed = attackableUnits;
+            getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue", stepName);
         } else
         {            
-            getDisplay(bridge).showDice(m_battleID, dice, stepName, hitPlayer);
-
             CasualtyDetails message = selectCasualties(stepName, bridge,
                     attackableUnits, !defender, text, dice);
+            
+            //the user hasnt had a chance to see these yet
+            if(message.getAutoCalculated())
+                getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue", stepName);
+            
             killed = message.getKilled();
             damaged = message.getDamaged();
             
         }
 
          
-        getDisplay(bridge).casualtyNotification(stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
+        getDisplay(bridge).casualtyNotification(m_battleID, stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
         
-        getRemote(firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Continue", stepName, hitPlayer);
+        getRemote(firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", stepName, hitPlayer);
         
         if (damaged != null)
             markDamaged(damaged, bridge);
@@ -1199,7 +1208,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //send attacker the dice roll so he can see what the dice are while he
         // waits for
         //attacker to select casualties
-        getDisplay(bridge).showDice(m_battleID,  dice, step, m_attacker);
+        getDisplay(bridge).notifyDice(m_battleID,  dice, step, m_attacker);
 
         Collection casualties = null;
         Collection attackable = Match.getMatches(m_attackingUnits,
@@ -1219,7 +1228,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     "AA guns fire,", dice).getKilled();
         }
 
-        getDisplay(bridge).casualtyNotification(step,dice, m_attacker, casualties, Collections.EMPTY_LIST, m_dependentUnits);
+        getDisplay(bridge).casualtyNotification(m_battleID, step,dice, m_attacker, casualties, Collections.EMPTY_LIST, m_dependentUnits);
         removeCasualties(casualties, false, false, bridge);
 
     }

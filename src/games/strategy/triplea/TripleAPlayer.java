@@ -347,9 +347,17 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         //no need, we have already confirmed since we are firing player
         if(m_ui.playing(hitPlayer))
             return;
-        m_ui.getBattlePanel().confirmCasualties(battleId, message);
+        //we dont want to confirm enemy casualties
+        if(!BattleDisplay.getShowEnemyCasualtyNotification())
+            return;
+        
+        m_ui.getBattlePanel().confirmCasualties(battleId, message, step);
     }
 
+    public void confirmOwnCasualties(GUID battleId, String message, String step)
+    {
+        m_ui.getBattlePanel().confirmCasualties(battleId, message, step);
+    }
     
     
 }

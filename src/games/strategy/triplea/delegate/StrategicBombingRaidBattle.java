@@ -29,6 +29,7 @@ import games.strategy.util.*;
 
 import java.util.*;
 
+
 /**
  * @author Sean Bridges
  * @version 1.0
@@ -169,7 +170,7 @@ public class StrategicBombingRaidBattle implements Battle
         if (casualties.size() != dice.getHits())
             throw new IllegalStateException("Wrong number of casualties");
 
-        getDisplay(bridge).casualtyNotification(FIRE_AA, dice, m_attacker, casualties, Collections.EMPTY_LIST, Collections.EMPTY_MAP);
+        getDisplay(bridge).casualtyNotification(m_battleID, FIRE_AA, dice, m_attacker, casualties, Collections.EMPTY_LIST, Collections.EMPTY_MAP);
 
         bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
 

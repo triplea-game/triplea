@@ -130,13 +130,25 @@ public class BattleDisplay extends JPanel
         {
             m_attackerModel.removeCasualties(killed);
         }
-        
     }
     
     
     
-    public void waitForConfirmation(final String message)
+    public void waitForConfirmation(final String message, String step)
     {
+        if(SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("This cant be in dispatch thread");
+        
+        //wait for the step to display.
+        while(!m_steps.getStep().equals(step))
+        {
+            try
+            {
+                Thread.sleep(50);
+            } catch (InterruptedException e)
+            {
+            }
+        }
                 
         if(!getShowEnemyCasualtyNotification())
             return;
@@ -219,6 +231,7 @@ public class BattleDisplay extends JPanel
         m_attackerModel.notifyRetreat(retreating);        
     }
     
+
     public Territory getRetreat(String step, String message, Collection possible, boolean submerge)
     {
         if (!submerge)
@@ -832,6 +845,14 @@ class BattleStepsPanel extends JPanel
         if (m_list.getSelectedIndex() == m_list.getModel().getSize() - 1)
             return;
         walkStep(m_list.getSelectedIndex(), m_list.getModel().getSize() - 1);
+    }
+    
+    public String getStep()
+    {
+        synchronized(this)
+        {
+        	return (String) m_list.getSelectedValue();
+        }
     }
     
     public void setStep(String step)

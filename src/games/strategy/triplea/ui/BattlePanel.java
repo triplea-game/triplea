@@ -258,9 +258,9 @@ public class BattlePanel extends ActionPanel
         });
     }
 
-    public void confirmCasualties(final GUID battleId, final String message)
+    public void confirmCasualties(final GUID battleId, final String message, String step)
     {
-        m_battleDisplay.waitForConfirmation(message);
+        m_battleDisplay.waitForConfirmation(message, step);
     }
 
     public CasualtyDetails getCasualties(final String step, final Collection selectFrom, final Map dependents, final int count, final String message, final DiceRoll dice, final PlayerID hit,
