@@ -21,7 +21,6 @@ package games.strategy.engine.history;
 public class RemoteHistoryMessage implements java.io.Serializable
 {
     private String m_event;
-    private EventChild m_eventChild;
     private Object m_renderingData;
 
     public RemoteHistoryMessage(String event)
@@ -31,7 +30,8 @@ public class RemoteHistoryMessage implements java.io.Serializable
 
     public RemoteHistoryMessage(String text, Object renderingData)
     {
-       m_eventChild = new EventChild(text, renderingData);
+      m_renderingData = renderingData;
+      m_event = text;
     }
 
     public RemoteHistoryMessage(Object renderingData)
@@ -41,11 +41,14 @@ public class RemoteHistoryMessage implements java.io.Serializable
 
     public void perform(HistoryWriter writer)
     {
-        if(m_event != null)
+      //not that nice, we see what fields arent null to
+      //decide what to do.
+      //TODO make this better
+       if(m_event != null && m_renderingData != null)
+         writer.addChildToEvent(new EventChild(m_event, m_renderingData));
+       else if(m_event != null)
             writer.startEvent(m_event);
-        if(m_eventChild != null)
-          writer.addChildToEvent(m_eventChild);
-        if (m_renderingData != null)
+       else if (m_renderingData != null)
           writer.setRenderingData(m_renderingData);
     }
 }
