@@ -66,21 +66,18 @@ public final class TerritoryImageFactory
         {
           ex.printStackTrace();
         }
-
     }
 
 
     private final int CACHE_SIZE = 5;
 
-    
-
     private static String s_mapDir;
-
 
     public static String getMapDir()
     {
       return s_mapDir;
     }
+    
     public static void setMapDir(String dir)
     {
       s_mapDir=dir;
@@ -89,8 +86,7 @@ public final class TerritoryImageFactory
     private LinkedList m_cachedTerritories = new LinkedList();
 
     // one instance in the application
-    private static TerritoryImageFactory s_singletonInstance = new
-        TerritoryImageFactory();
+    private static TerritoryImageFactory s_singletonInstance = new TerritoryImageFactory();
 
     // data
     private Map m_playerColors = new HashMap();
@@ -284,22 +280,23 @@ public final class TerritoryImageFactory
 
       // done!
       return img;
-
     }
 
+}//end class TerritoryImageFactory
 
 
-
-}
-
+/**
+  Inner Class ImageName
+*/
 class ImageName
 {
     public ImageName(String name, Image image)
     {
-        this.name = name;
+        this.name  = name;
         this.image = image;
     }
 
     public final String name;
     public final Image image;
-}
+
+}//end inner class ImageName
