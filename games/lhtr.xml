@@ -1505,6 +1505,33 @@
         </initialize>
 
         <propertyList>
+
+		<!-- Low Luck, this has to be false with heavy bomber downgrade -->
+                <property name="Low Luck" value="false" editable="true">
+                        <boolean/>
+                </property>
+
+                <!-- Bids -->
+		<property name="Germans bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+                
+                <property name="Japanese bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
+                <property name="Americans bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
+                <property name="British bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
+                <property name="Russians bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
                 <!-- Use 4th Edition Rules -->
 		<property name="4th Edition" value="true" editable="false">
                         <boolean/>
@@ -1541,32 +1568,6 @@
 		<!-- Territory turn limits -->
                 <property name="Territory Turn Limit" value="true" editable="false">
                         <boolean/>
-                </property>
-
-		<!-- Low Luck, this has to be false with heavy bomber downgrade -->
-                <property name="Low Luck" value="false" editable="false">
-                        <boolean/>
-                </property>
-
-                <!-- Bids -->
-		<property name="Germans bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-                
-                <property name="Japanese bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-
-                <property name="Americans bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-
-                <property name="British bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-
-                <property name="Russians bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
                 </property>
 
                 <!-- Map Name: also used for map utils when asked -->
