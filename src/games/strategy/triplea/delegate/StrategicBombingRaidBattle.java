@@ -101,9 +101,7 @@ public class StrategicBombingRaidBattle implements Battle
 
         bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite);
 
-        //sort according to least movement
-        MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
-        moveDelegate.sortAccordingToMovementLeft(m_units, false);
+        BattleCalculator.sortPreBattle(m_units, m_data);
 
         Collection defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
         String title = "Bombing raid in " + m_battleSite.getName();

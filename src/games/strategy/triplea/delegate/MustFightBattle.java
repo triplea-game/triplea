@@ -57,7 +57,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private Set m_attackingFrom = new HashSet();
     private Collection m_amphibiousAttackFrom = new ArrayList();
     private Collection m_amphibiousLandAttackers = new ArrayList();
-    private Collection m_defendingUnits = new LinkedList();
+    private List m_defendingUnits = new LinkedList();
     private Collection m_defendingWaitingToDie = new ArrayList();
     private Collection m_bombardingUnits = new ArrayList();
     private boolean m_amphibious = false;
@@ -330,8 +330,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
         }
 
-        MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
-
         // Add dependent defending units to dependent unit map
         Map dependencies = transporting(m_defendingUnits);
         addDependentUnits(dependencies);
@@ -345,7 +343,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         display.listBattleSteps(m_battleID, (String) steps.get(0), steps);
 
         //take the casualties with least movement first
-        moveDelegate.sortAccordingToMovementLeft(m_attackingUnits, false);
+        BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
+        System.out.print(m_attackingUnits);
+        BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
+        System.out.print(m_defendingUnits);
 
         fightStart(bridge);
         fightLoop(bridge);

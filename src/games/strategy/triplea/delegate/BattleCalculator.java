@@ -42,6 +42,32 @@ import java.util.*;
 public class BattleCalculator
 {
 
+    //we want to sort in a determined way so that those looking at the dice results 
+    //can tell what dice is for who
+    //we also want to sort by movement, so casualties will be choosen as the 
+    //units with least movement
+    public static void sortPreBattle(List units, GameData data)
+    {
+        final MoveDelegate moveDelegate = DelegateFinder.moveDelegate(data);
+        
+        Comparator comparator = new Comparator()
+        {
+          public int compare(Object o1, Object o2)
+          {
+              Unit u1 = (Unit) o1;
+              Unit u2 = (Unit) o2;
+              
+              if(u1.getUnitType().equals(u2.getUnitType()))
+                  return  moveDelegate.compareAccordingToMovementLeft(u1,u2);
+              
+              return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
+          }
+        };
+        
+        Collections.sort(units, comparator);
+        
+    }
+    
     public static int getAAHits(Collection units, IDelegateBridge bridge, int[] dice)
     {
         int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);

@@ -58,7 +58,20 @@ public class MyFormatter
 
 		StringBuffer buf = new StringBuffer();
 
-		iter = map.keySet().iterator();
+		//sort on unit name
+		List sortedList = new ArrayList(map.keySet());
+		Comparator comp = new Comparator()
+		{
+		  public int compare(Object o1, Object o2)
+		  {
+		      UnitType u1 = (UnitType) o1;
+		      UnitType u2 = (UnitType) o2;
+		      return u1.getName().compareTo(u2.getName());
+		  }
+		};
+		Collections.sort(sortedList, comp);
+		
+		iter = sortedList.iterator();
 		int count = map.keySet().size();
 
 		while(iter.hasNext())

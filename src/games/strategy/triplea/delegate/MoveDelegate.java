@@ -1286,12 +1286,11 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return mapping;
     }
 
-    public void sortAccordingToMovementLeft(List units, boolean ascending)
+    public int compareAccordingToMovementLeft(Unit u1, Unit u2)
     {
-
-        Collections.sort(units, ascending ? increasingMovement : decreasingMovement);
-    }
-
+        return decreasingMovement.compare(u1,u2);
+    };
+    
     private Comparator decreasingMovement = new Comparator()
     {
 
@@ -1322,6 +1321,8 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             return decreasingMovement.compare(o2, o1);
         }
     };
+
+    
 
     public Collection getTerritoriesWhereAirCantLand()
     {
