@@ -151,45 +151,56 @@ public class CenterPicker extends JFrame
         this.getContentPane().add(new JScrollPane(imagePanel),  BorderLayout.CENTER);
         this.getContentPane().add(m_location, BorderLayout.SOUTH);
 
-        JToolBar toolBar = new JToolBar();
+        
+	//set up the actions
 	
-        /*
-	   Add a save button
-        */
-        toolBar.add(new AbstractAction("Save Centers")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                saveCenters();
-            }
-        });
-
-
-        /*
-	   Add a load button
-        */
-        toolBar.add(new AbstractAction("Load Centers")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+	Action openAction = new AbstractAction("Load Centers") {
+            public void actionPerformed(ActionEvent event) {
                 loadCenters();
             }
-       });
-       
-       
-        /*
-	   Add an exit button
-        */
-        toolBar.add(new AbstractAction("Exit")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        };
+        openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
+
+
+        Action saveAction = new AbstractAction("Save Centers") {
+            public void actionPerformed(ActionEvent event) {
+                saveCenters();
+            }
+        };
+        saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Center Points To File");
+
+
+        Action exitAction = new AbstractAction("Exit") {
+            public void actionPerformed(ActionEvent event) {
                 System.exit(0);
             }
-       });
-       
+        };
+        exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
 
-       this.getContentPane().add(toolBar, BorderLayout.NORTH);
+       	//set up the menu items
+
+	JMenuItem openItem = new JMenuItem(openAction);
+        openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+
+        JMenuItem saveItem = new JMenuItem(saveAction);
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+
+        JMenuItem exitItem = new JMenuItem(exitAction);
+	
+	
+	//set up the menu bar
+
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+	
+	JMenu fileMenu = new JMenu("File");
+	fileMenu.setMnemonic('F');
+	fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+
+	menuBar.add(fileMenu);
 
     }//end constructor
 
