@@ -417,6 +417,10 @@ class BattleModel extends DefaultTableModel
     }
   }
 
+  public boolean isCellEditable(int row, int column)
+  {
+    return false;
+  }
 
 }
 
