@@ -21,8 +21,11 @@ package games.strategy.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
+import java.util.List;
 
 /**
  * 
@@ -96,22 +99,15 @@ public class ImageScrollerLargeView extends JComponent
     private boolean m_inside = false;
     private int m_insideCount = 0;
     private int m_edge = NONE;
+    private List m_scrollListeners = new ArrayList();
 
     /** Creates new ImageScroller */
-    public ImageScrollerLargeView(Image image)
+    public ImageScrollerLargeView(Dimension dimensions)
     {
         super();
 
-        try
-        {
-            Util.ensureImageLoaded(image, this);
-        } catch (InterruptedException ie)
-        {
-            ie.printStackTrace();
-        }
-
         
-        m_dimensions = Util.getDimension(image, this);
+        m_dimensions = dimensions;
 
         setPreferredSize(m_dimensions);
         setMaximumSize(m_dimensions);
@@ -197,9 +193,30 @@ public class ImageScrollerLargeView extends JComponent
         m_x = x;
         m_y = y;
 
-        repaint();
-
+        notifyScollListeners();
     }
+    
+    public void addScrollListener(ScrollListener s)
+    {
+        m_scrollListeners.add(s);
+    }
+    
+    public void removeScrollListener(ScrollListener s)
+    {
+        m_scrollListeners.remove(s);
+    }
+    
+    private void notifyScollListeners()
+    {
+        Iterator iter = new ArrayList(m_scrollListeners).iterator();
+        while (iter.hasNext())
+        {
+            ScrollListener element = (ScrollListener) iter.next();
+            element.scrolled(m_x, m_y);
+            
+        }
+    }
+    
 
     private int checkBounds(int dim, int max, int width)
     {

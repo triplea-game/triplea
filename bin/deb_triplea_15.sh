@@ -1,0 +1,1 @@
+~/dev/java/jdk1.5.0_01/bin/java -Xdebug -Xrunjdwp:transport=dt_socket,address=7777,server=y,suspend=n -cp  ../lib/patch.jar:../classes:../lib/plastic-1.2.0.jar games.strategy.engine.framework.GameRunner 

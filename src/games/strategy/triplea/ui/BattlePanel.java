@@ -189,7 +189,7 @@ public class BattlePanel extends ActionPanel
                     cleanUpBattleWindow();
                 }
 
-                m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID);
+                m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
 
                 m_battleFrame = new JFrame(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
                 m_battleFrame.setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(m_battleFrame));

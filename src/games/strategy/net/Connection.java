@@ -61,7 +61,6 @@ class Connection
 
     public void log(MessageHeader header, boolean read)
     {
-
         Logger logger = Logger.getLogger(this.getClass().getName());
         if (!logger.isLoggable(Level.FINEST))
             return;

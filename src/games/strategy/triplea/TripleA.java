@@ -23,7 +23,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.triplea.image.TerritoryImageFactory;
+import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.troxAI.TroxAIPlayer;
@@ -85,7 +85,7 @@ public class TripleA implements IGameLoader
             String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
             MapData.setMapDir(mapDir);                //tells TerritoryData where the txt files are
-            TerritoryImageFactory.setMapDir(mapDir);  //tells the image factory where the images are
+            TileImageFactory.setMapDir(mapDir);  //tells the image factory where the images are
 
             final TripleAFrame frame = new TripleAFrame(game, players);
            

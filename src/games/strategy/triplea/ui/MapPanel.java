@@ -21,10 +21,10 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.ui.screen.*;
 import games.strategy.ui.*;
-import games.strategy.ui.Util;
-import games.strategy.util.*;
+import games.strategy.util.ListenerList;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -47,41 +47,57 @@ public class MapPanel extends ImageScrollerLargeView
     //could be null
     private MapPanelSmallView m_smallView;
 
+    private SmallMapImageManager m_smallMapImageManager;
+    
+    //keep a reference to the images from the last paint to
+    //prevent them from being gcd
+    private Set m_images = new HashSet();;
+    
     private RouteDescription m_routeDescription;
 
-    private final MapUnitsDrawer m_mapsUnitDrawer;
-
-    private Image m_offscreenImage;
-
+    private TileManager m_tileManager = new TileManager();
+    
     /** Creates new MapPanel */
-    public MapPanel(Image image, GameData data, MapPanelSmallView smallView) throws IOException
+    public MapPanel(Dimension imageDimensions, GameData data, MapPanelSmallView smallView) throws IOException
     {
+        super(imageDimensions);
+        
+        setDoubleBuffered(false);
+       
 
-        super(image);
-        m_offscreenImage = image;
         m_smallView = smallView;
-        m_mapsUnitDrawer = new MapUnitsDrawer(m_data, m_smallView, this);
+        m_smallMapImageManager = new SmallMapImageManager(smallView, MapImage.getInstance().getSmallMapImage(),  m_tileManager);
+        
         setGameData(data);
-        initTerritories();
 
         this.addMouseListener(MOUSE_LISTENER);
         this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
+        
+        this.addScrollListener(new ScrollListener()
+        {
 
-    }
+            public void scrolled(int x, int y)
+            {
+                repaint();
+            }
+            
+        });
+        m_tileManager.createTiles(new Rectangle(imageDimensions), data, MapData.getInstance());
+        m_tileManager.resetTiles(data, MapData.getInstance());
+    } 
+     
+    
 
     // Beagle Code used to chnage map skin
-    public void changeImage(Image image)
+    public void changeImage(Dimension newDimensions)
     {
-        try
-        {
-            Util.ensureImageLoaded(image, this);
-        } catch (InterruptedException ie)
-        {
-            ie.printStackTrace();
-        }
+ 
+       
+        super.setDimensions(newDimensions);
+        m_tileManager.createTiles(new Rectangle(newDimensions), m_data, MapData.getInstance());
+        m_tileManager.resetTiles(m_data, MapData.getInstance());
 
-        m_offscreenImage = image;
-        super.setDimensions(Util.getDimension(image, this));
+        
     }
 
     public boolean isShowing(Territory territory)
@@ -120,7 +136,7 @@ public class MapPanel extends ImageScrollerLargeView
         if (route == null)
         {
             m_routeDescription = null;
-            m_mapsUnitDrawer.queueUpdate();
+            repaint();
             return;
         }
         RouteDescription newVal = new RouteDescription(route, start, end);
@@ -130,7 +146,7 @@ public class MapPanel extends ImageScrollerLargeView
         }
 
         m_routeDescription = newVal;
-        m_mapsUnitDrawer.queueUpdate();
+        repaint();
 
     }
 
@@ -197,23 +213,14 @@ public class MapPanel extends ImageScrollerLargeView
         return m_data.getMap().getTerritory(name);
     }
 
-    public void initTerritories()
+    public void resetMap()
     {
-
-        Set territoriesToUpdate = new HashSet();
-        Iterator iter = m_data.getMap().getTerritories().iterator();
-        //only update the territories that need it, sea territories with no
-        // units dont need to be updated
-        while (iter.hasNext())
-        {
-            Territory territory = (Territory) iter.next();
-            //    if (!territory.isWater() || !territory.getUnits().isEmpty())
-            territoriesToUpdate.add(territory);
-        }
-
-        m_mapsUnitDrawer.queueUpdate(territoriesToUpdate);
-        m_mapsUnitDrawer.waitForUpdates();
+       m_tileManager.resetTiles(m_data, MapData.getInstance());
+       repaint();
     }
+    
+    
+    
 
     private MouseListener MOUSE_LISTENER = new MouseAdapter()
     {
@@ -259,8 +266,10 @@ public class MapPanel extends ImageScrollerLargeView
 
     public void updateCounties(Collection countries)
     {
-
-        m_mapsUnitDrawer.queueUpdate(countries);
+        m_tileManager.updateTerritories(countries, m_data, MapData.getInstance());
+        m_smallMapImageManager.update(m_data, MapData.getInstance());
+        m_smallView.repaint();
+        repaint();
     }
 
     public void setGameData(GameData data)
@@ -275,9 +284,11 @@ public class MapPanel extends ImageScrollerLargeView
 
         m_data = data;
         m_data.addTerritoryListener(TERRITORY_LISTENER);
-        m_mapsUnitDrawer.setData(m_data);
+        
         m_data.addDataChangeListener(TECH_UPDATE_LISTENER);
         m_data.addDataChangeListener(UNITS_HIT_LISTENER);
+        
+        m_tileManager.resetTiles(m_data, MapData.getInstance());
 
     }
 
@@ -286,14 +297,15 @@ public class MapPanel extends ImageScrollerLargeView
 
         public void unitsChanged(Territory territory)
         {
-
-            m_mapsUnitDrawer.queueUpdate(territory);
+            updateCounties(Collections.singleton(territory));
+            repaint();
         }
 
         public void ownerChanged(Territory territory)
         {
-
-            m_mapsUnitDrawer.queueUpdate(territory);
+            m_smallMapImageManager.updateTerritoryOwner(territory, m_data, MapData.getInstance());
+            updateCounties(Collections.singleton(territory));
+            repaint();
         }
     };
 
@@ -308,35 +320,10 @@ public class MapPanel extends ImageScrollerLargeView
             if (!(aChange instanceof UnitHitsChange))
                 return;
 
-            Collection units = ((UnitHitsChange) aChange).getUnits();
-            Collection invalidatedTerritories = new ArrayList();
-
-            //find where the units whose hits have changed are
-            Iterator iter = m_data.getMap().getTerritories().iterator();
-            while (iter.hasNext())
-            {
-                Territory territory = (Territory) iter.next();
-                if (territory.getUnits().size() == 0)
-                    continue;
-
-                if (games.strategy.util.Util.someIntersect(units, territory.getUnits().getUnits()))
-                {
-                    invalidatedTerritories.add(territory);
-                }
-            }
-
-            m_mapsUnitDrawer.queueUpdate(invalidatedTerritories);
+            m_tileManager.resetTiles(m_data, MapData.getInstance());
         }
     };
 
-    /**
-     * Updates will not appear until update has been called. Updates made here
-     * can be made outside the swing event thread.
-     */
-    public Graphics getOffscreenGraphics()
-    {
-        return m_offscreenImage.getGraphics();
-    }
 
     private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener()
     {
@@ -351,25 +338,11 @@ public class MapPanel extends ImageScrollerLargeView
             if (playersWithTechChange.isEmpty())
                 return;
 
-            Set territories = new HashSet();
-            //find the territories that need to redrawn
-            Iterator iter = playersWithTechChange.iterator();
-            while (iter.hasNext())
-            {
-                PlayerID player = (PlayerID) iter.next();
-                territories.addAll(getTerritoriesWithPlayersUnits(player));
-            }
-
-            m_mapsUnitDrawer.queueUpdate(territories);
+            m_tileManager.resetTiles(m_data, MapData.getInstance());
+            repaint();
         }
 
-        private Collection getTerritoriesWithPlayersUnits(PlayerID id)
-        {
-
-            Match match = Matches.territoryHasUnitsOwnedBy(id);
-            return Match.getMatches(m_data.getMap().getTerritories(), match);
-        }
-
+       
         private void getPlayersWithTechChanges(Change aChange, Set players)
         {
 
@@ -399,43 +372,87 @@ public class MapPanel extends ImageScrollerLargeView
 
     };
 
+        
     public void paint(Graphics g)
     {
         super.paint(g);
+        Set images = new HashSet();
 
-        synchronized (m_mapsUnitDrawer.getLock())
+        //handle wrapping off the screen to the left
+        if(m_x < 0)
         {
-
-            //TODO what if the graphics is the same size as the image
-
-            Rectangle center = new Rectangle(m_x, m_y, getWidth(), getHeight());
-            Rectangle left = new Rectangle(m_x - (int) m_dimensions.getWidth(), m_y, getWidth(), getHeight());
-            Rectangle right = new Rectangle(m_x + (int) m_dimensions.getWidth(), m_y, getWidth(), getHeight());
-
-            drawVisible(g, center);
-            drawVisible(g, left);
-            drawVisible(g, right);
-
-            MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
+            Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
+            Iterator tiles = m_tileManager.getTiles(leftBounds).iterator();
+            
+            while (tiles.hasNext())
+            {
+                Tile tile = (Tile) tiles.next();
+                Image img = tile.getImage(m_data, MapData.getInstance());
+                g.drawImage(img, tile.getBounds().x -leftBounds.x, tile.getBounds().y - m_y, this);
+                images.add(tile);
+            }
+        }
+        
+        Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
+        Iterator tiles = m_tileManager.getTiles(mainBounds).iterator();
+        
+        while (tiles.hasNext())
+        {
+            Tile tile = (Tile) tiles.next();
+            Image img = tile.getImage(m_data, MapData.getInstance());
+            g.drawImage(img, tile.getBounds().x - m_x, tile.getBounds().y - m_y, this);
+            images.add(tile);
         }
 
+        double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
+        //handle wrapping off the screen to the left
+        if(leftOverlap > 0)
+        {
+            Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
+            tiles = m_tileManager.getTiles(rightBounds).iterator();
+            rightBounds.translate((int) (leftOverlap - getWidth()), 0);
+            
+            while (tiles.hasNext())
+            {
+                Tile tile = (Tile) tiles.next();
+                Image img = tile.getImage(m_data, MapData.getInstance());
+                g.drawImage(img, tile.getBounds().x -rightBounds.x, tile.getBounds().y - m_y, this);
+                images.add(tile);
+            }
+        }
+
+        
+        MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
+        
+        m_images.clear();
+        m_images.addAll(images);
     }
 
-    private void drawVisible(Graphics g, Rectangle center)
+    
+    public Image getTerritoryImage(Territory territory)
     {
-        Rectangle visible = new Rectangle(0, 0, m_dimensions.width, m_dimensions.height);
-        Rectangle intersection = center.intersection(visible);
-
-        if (intersection.getWidth() == 0)
-            return;
-
-        int x = intersection.x == center.x ? 0 : (int) center.getWidth() - (int) intersection.getWidth();
-
-        g.drawImage(m_offscreenImage, x, 0, x + (int) intersection.getWidth(), 0 + (int) intersection.getHeight(),
-
-        intersection.x, intersection.y, intersection.x + (int) intersection.getWidth(), intersection.y + (int) intersection.getHeight(), this);
+        return m_tileManager.createTerritoryImage(territory, m_data,MapData.getInstance());
     }
 
+
+
+    /**
+     * 
+     */
+    public void initSmallMap()
+    {
+        Iterator territories = m_data.getMap().getTerritories().iterator();
+        
+        while (territories.hasNext())
+        {
+            Territory territory = (Territory) territories.next();
+            m_smallMapImageManager.updateTerritoryOwner(territory, m_data, MapData.getInstance());
+            
+        }
+        
+        m_smallMapImageManager.update(m_data, MapData.getInstance());
+        
+    }  
 }
 
 class RouteDescription
@@ -502,5 +519,8 @@ class RouteDescription
     {
         return m_end;
     }
+
+    
+    
 
 }

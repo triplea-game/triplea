@@ -22,6 +22,8 @@ package games.strategy.engine.data;
 
 import java.util.*;
 
+import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantLock;
+
 import games.strategy.engine.data.events.*;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.*;
@@ -41,8 +43,8 @@ import games.strategy.engine.history.*;
  */
 public class GameData implements java.io.Serializable
 {
-    private transient boolean m_changeLockAcquired = false;
-    private transient Object m_changeLockMutex = new Object();
+    private transient ReentrantLock m_relentrantLock = new ReentrantLock();
+
     
     private String m_gameName;
 	private Version m_gameVersion;
@@ -222,10 +224,10 @@ public class GameData implements java.io.Serializable
 
 	public void postDeSerialize()
 	{
+	    m_relentrantLock = new ReentrantLock();
+
 		m_territoryListeners = new ListenerList();
 		m_dataChangeListeners = new ListenerList();
-		m_changeLockAcquired = false;
-		m_changeLockMutex = new Object();
 		
 	}
 	
@@ -237,33 +239,13 @@ public class GameData implements java.io.Serializable
 	 */
 	public void acquireChangeLock()
 	{	
-	    synchronized(m_changeLockMutex)
-	    {
-	        while(m_changeLockAcquired)
-	        {
-	            try
-                {
-                    m_changeLockMutex.wait();
-                } catch (InterruptedException e)
-                {
-                   
-                }
-	        }
-	        m_changeLockAcquired = true;
-	    }
+	  m_relentrantLock.lock();
 	}
 	
 	
 	public void releaseChangeLock()
 	{
-	    synchronized(m_changeLockMutex)
-	    {
-	        if(!m_changeLockAcquired)
-	            throw new IllegalStateException("Change lock not acquired, but trying to release");
-	        
-	        m_changeLockAcquired = false;
-	        m_changeLockMutex.notifyAll();
-	    }
+	   m_relentrantLock.unlock();
 	}
 	
 }

@@ -20,13 +20,13 @@
 
 package games.strategy.debug;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.event.*;
+
 import javax.swing.*;
 
 /**

@@ -52,8 +52,6 @@ public class PropertiesUI extends JPanel
 
   }
 
-
-
   public PropertiesUI(GameProperties properties, boolean editable)
   {
     init();

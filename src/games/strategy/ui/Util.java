@@ -27,100 +27,111 @@ import java.awt.image.*;
 import javax.swing.JComponent;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
 public class Util
 {
-	//all we have is static methods
-	private Util() {}
+    //all we have is static methods
+    private Util()
+    {
+    }
 
+    public static void ensureImageLoaded(Image anImage, Component comp) throws InterruptedException
+    {
+        MediaTracker tracker = new MediaTracker(comp);
+        tracker.addImage(anImage, 1);
+        tracker.waitForAll();
+    }
 
+    public static Image copyImage(Image img, JComponent comp)
+    {
+        Image copy = createImage(img.getWidth(comp), img.getHeight(comp), false);
+        copy.getGraphics().drawImage(img, 0, 0, comp);
+        return copy;
+    }
 
-	public static void ensureImageLoaded(Image anImage, Component comp) throws InterruptedException
-	{
-		MediaTracker tracker = new MediaTracker(comp);
-		tracker.addImage(anImage, 1);
-		tracker.waitForAll();
-	}
+    public static Image createVolatileImage(int width, int height)
+    {
 
-	public static Image copyImage(Image img, JComponent comp)
-	{
-		Image copy = createImage(img.getWidth(comp), img.getHeight(comp), false);
-		copy.getGraphics().drawImage(img, 0,0, comp);
-		return copy;
-	}
+        GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+                .getDefaultConfiguration();
+        return localGraphicSystem.createCompatibleVolatileImage(width, height);
 
-        
-	/**	   
-	   Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
-	   problems. Fix is to use 3Byte rather than INT.
-	*/
-	public static BufferedImage createImage(int width, int height, boolean needAlpha)
-	{
-            if(needAlpha)
-	    {
-                return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+    }
+
+    /**
+     * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
+     * problems. Fix is to use 3Byte rather than INT.
+     */
+    public static BufferedImage createImage(int width, int height, boolean needAlpha)
+    {
+
+        //
+
+                if (needAlpha)
+                {
+                    return new BufferedImage(width, height,
+         BufferedImage.TYPE_4BYTE_ABGR);
+                } else
+                {
+                    return new BufferedImage(width, height,
+         BufferedImage.TYPE_3BYTE_BGR);
+                }
+
+        //the code below should be the correct way to get graphics, but it is
+        // makes the ui quite
+        //unresponsive when drawing the map (as seen when updating the map for
+        // different routes
+        //in combat move phase)
+        //For jdk1.3 on linux and windows, and jdk1.4 on linux there is a very
+        //noticeable difference
+        //jdk1.4 on windows doesnt have a difference
+
+        // local graphic system is used to create compatible bitmaps
+//        GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+//                .getDefaultConfiguration();
+//
+//        // Create a buffered image in the most optimal format, which allows a
+//        // fast blit to the screen.
+//        BufferedImage workImage = localGraphicSystem.createCompatibleImage(width, height, needAlpha ? Transparency.TRANSLUCENT : Transparency.OPAQUE);
+//
+//        return workImage;
+
+    }
+
+    public static Dimension getDimension(Image anImage, ImageObserver obs)
+    {
+        return new Dimension(anImage.getWidth(obs), anImage.getHeight(obs));
+    }
+
+    public static final WindowListener EXIT_ON_CLOSE_WINDOW_LISTENER = new WindowAdapter()
+    {
+        public void windowClosing(WindowEvent e)
+        {
+            System.exit(0);
         }
-	    else
-	    {
-                return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-	    }
-	    
-    //the code below should be the correct way to get graphics, but it is makes the ui quite
-    //unresponsive when drawing the map (as seen when updating the map for different routes
-    //in combat move phase)
-    //For jdk1.3 on linux and windows, and jdk1.4 on linux there is a very
-    //noticeable difference
-    //jdk1.4 on windows doesnt have a difference
+    };
 
-//      // local graphic system is used to create compatible bitmaps
-//      GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
-//          .getDefaultScreenDevice()
-//          .getDefaultConfiguration();
-//
-//      // Create a buffered image in the most optimal format, which allows a
-//      //    fast blit to the screen.
-//      BufferedImage workImage = localGraphicSystem.createCompatibleImage(width,
-//          height,
-//          Transparency.BITMASK);
-//
-//      return workImage;
+    public static void center(Window w)
+    {
+        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 
-	}
+        int windowWidth = w.getWidth();
+        int windowHeight = w.getHeight();
 
-	public static Dimension getDimension(Image anImage, ImageObserver obs)
-	{
-		return new Dimension(anImage.getWidth(obs), anImage.getHeight(obs) );
-	}
+        if (windowHeight > screenHeight)
+            return;
+        if (windowWidth > screenWidth)
+            return;
 
-	public static final WindowListener EXIT_ON_CLOSE_WINDOW_LISTENER = new WindowAdapter()
-	{
-		public void windowClosing(WindowEvent e)
-		{
-			System.exit(0);
-		}
-	};
+        int x = (screenWidth - windowWidth) / 2;
+        int y = (screenHeight - windowHeight) / 2;
 
-  public static void center(Window w)
-  {
-    int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-    int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+        w.setLocation(x, y);
 
-    int windowWidth = w.getWidth();
-    int windowHeight = w.getHeight();
-
-    if(windowHeight > screenHeight)
-      return;
-    if(windowWidth > screenWidth)
-      return;
-
-    int x = (screenWidth - windowWidth ) / 2;
-    int y = (screenHeight - windowHeight) /2;
-
-    w.setLocation(x,y);
-
-  }
+    }
 
 }

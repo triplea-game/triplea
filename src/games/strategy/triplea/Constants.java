@@ -77,6 +77,7 @@ public interface Constants
   public static final String MAP_SKINS_DIR = java.io.File.separator+"games"+java.io.File.separator+"strategy"+java.io.File.separator+"triplea"+java.io.File.separator+"image"+java.io.File.separator+"images"+java.io.File.separator+"maps"+java.io.File.separator;
   
   public static final String LARGE_MAP_FILENAME = "largeMap.gif";
+  public static final String SMALL_MAP_FILENAME = "smallMap.jpeg";
   public static final String MAP_NAME = "mapName";
   
   public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";

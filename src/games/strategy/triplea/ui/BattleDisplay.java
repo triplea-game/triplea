@@ -65,16 +65,18 @@ public class BattleDisplay extends JPanel
     private JPanel m_actionPanel;
     private CardLayout m_actionLayout = new CardLayout();
     private JPanel m_messagePanel = new JPanel();
+    private final MapPanel m_mapPanel; 
 
     private JLabel m_messageLabel = new JLabel();
 
     public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection attackingUnits,
-            Collection defendingUnits, GUID battleID)
+            Collection defendingUnits, GUID battleID, MapPanel mapPanel)
     {
         m_battleID = battleID;
         m_defender = defender;
         m_attacker = attacker;
         m_location = territory;
+        m_mapPanel = mapPanel;
         m_data = data;
         m_casualties = new CasualtyNotificationPanel(data);
 
@@ -516,11 +518,8 @@ public class BattleDisplay extends JPanel
 
         Image finalImage = Util.createImage(WIDTH, HEIGHT, true);
 
-        Image territory;
-        if (m_location.isWater())
-            territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getSeaImage(m_location);
-        else
-            territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getTerritoryImage(m_location, m_defender);
+        Image territory = m_mapPanel.getTerritoryImage(m_location);
+       
 
         finalImage.getGraphics().drawImage(territory, 0, 0, WIDTH, HEIGHT, this);
 

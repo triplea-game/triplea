@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.debug.Console;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.data.properties.PropertiesUI;
@@ -121,15 +122,15 @@ public class TripleAFrame extends JFrame
 
         Image small = MapImage.getInstance().getSmallMapImage();
         m_smallView = new MapPanelSmallView(small);
-
-        Image large = MapImage.getInstance().getLargeMapImage();
-        m_mapPanel = new MapPanel(large, m_data, m_smallView);
+        
+        m_mapPanel = new MapPanel(MapData.getInstance().getMapDimensions(), m_data, m_smallView);
         m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
 
         //link the small and large images
         ImageScrollControl control = new ImageScrollControl(m_mapPanel, m_smallView);
         control.setScrollWrapX(MapData.getInstance().scrollWrapX());
-        
+
+        m_mapPanel.initSmallMap();
 
         m_gameMainPanel.setLayout(new BorderLayout());
 
@@ -228,8 +229,20 @@ public class TripleAFrame extends JFrame
 
         addHintsMenu(helpMenu);
         addGameNotesMenu(helpMenu);
+        addConsoleMenu(helpMenu);
     }
 
+    private void addConsoleMenu(JMenu parentMenu)
+    {
+        parentMenu.add(new AbstractAction("Show Console")
+                {
+            		public void actionPerformed(ActionEvent e)
+            		{
+            		   Console.getConsole().setVisible(true);   
+            		}
+                });
+    }
+    
     /**
      * @param parentMenu
      */
@@ -460,14 +473,14 @@ public class TripleAFrame extends JFrame
     {
         final JCheckBoxMenuItem showMapDetails = new JCheckBoxMenuItem("Show Map Details");
 
-        showMapDetails.setSelected(TerritoryImageFactory.getShowReliefImages());
+        showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
 
         showMapDetails.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
 
-                TerritoryImageFactory.setShowReliefImages(showMapDetails.isSelected());
+                TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
                 Thread t = new Thread()
                 {
                     public void run()
@@ -499,7 +512,7 @@ public class TripleAFrame extends JFrame
 
         // Create A String array of compatible MapDirs
 
-        final String currentMapSubDir = TerritoryImageFactory.getMapDir();
+        final String currentMapSubDir = TileImageFactory.getMapDir();
         final File mapsDir = new File(GameRunner.getRootFolder() + java.io.File.separator + "classes" + Constants.MAP_SKINS_DIR);
 
         if (currentMapSubDir != null)
@@ -553,7 +566,7 @@ public class TripleAFrame extends JFrame
                         {
                             try
                             {
-                                UpdateMap(currentMapSubDir);
+                                updateMap(currentMapSubDir);
                             } catch (Exception se)
                             {
                                 se.printStackTrace();
@@ -563,7 +576,7 @@ public class TripleAFrame extends JFrame
                         {
                             try
                             {
-                                UpdateMap(currentMapSubDir + e.getActionCommand());
+                                updateMap(currentMapSubDir + e.getActionCommand());
                             } catch (Exception se)
                             {
                                 se.printStackTrace();
@@ -674,23 +687,23 @@ public class TripleAFrame extends JFrame
     }
 
     // Beagle Code Called to Change Mapskin
-    private void UpdateMap(String mapdir) throws IOException
+    private void updateMap(String mapdir) throws IOException
     {
 
         MapData.setMapDir(mapdir); // set mapdir
-        TerritoryImageFactory.setMapDir(mapdir);
+        TileImageFactory.setMapDir(mapdir);
 
         MapImage.getInstance().loadMaps(m_data); // load map data
         m_mapPanel.setGameData(m_data);
 
         // update mappanels to use new image
-        Image large = MapImage.getInstance().getLargeMapImage();
-        m_mapPanel.changeImage(large);
+        
+        m_mapPanel.changeImage(MapData.getInstance().getMapDimensions());
 
         Image small = MapImage.getInstance().getSmallMapImage();
         m_smallView.changeImage(small);
 
-        m_mapPanel.initTerritories(); // redraw territories
+        m_mapPanel.resetMap(); // redraw territories
     }
 
     private final WindowListener WINDOW_LISTENER = new WindowAdapter()
@@ -1163,7 +1176,7 @@ public class TripleAFrame extends JFrame
             public void actionPerformed(ActionEvent e)
             {
                 UnitIconImageFactory.instance().setScaleFactor(m_scaleFactor);
-                m_mapPanel.initTerritories();
+                m_mapPanel.resetMap();
             }
         }
 

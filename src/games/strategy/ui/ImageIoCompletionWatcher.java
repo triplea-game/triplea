@@ -25,7 +25,7 @@ import java.awt.*;
 public class ImageIoCompletionWatcher implements ImageObserver
 {
   private volatile boolean m_complete = false;
-  private Object m_lock = new Object();
+  private final Object m_lock = new Object();
 
   public void waitForCompletion()
   {

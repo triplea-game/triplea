@@ -20,9 +20,7 @@
 
 package games.strategy.ui;
 
-import java.awt.*;
-
-import javax.swing.JFrame;
+import java.awt.Dimension;
 
 /**
  *
@@ -44,26 +42,26 @@ public class ImageScrollControl
 
 	public static void main(String[] args)
 	{
-		if(args.length != 2)
-		{
-			System.out.println("Usage: first arg name of large image, second arg name of small image");
-			System.exit(0);
-		}
-
-		Image smallImage = Toolkit.getDefaultToolkit().getImage( args[1]);
-		Image largeImage = Toolkit.getDefaultToolkit().getImage( args[0]);
-
-		ImageScrollerLargeView large = new ImageScrollerLargeView(largeImage);
-		ImageScrollerSmallView small = new ImageScrollerSmallView(smallImage);
-		new ImageScrollControl(large, small);
-
-		ImageScroller scroller= new ImageScroller(large, small);
-
-		JFrame l = new JFrame("large");
-		l.setSize(900,600);
-		l.addWindowListener(Util.EXIT_ON_CLOSE_WINDOW_LISTENER);
-		l.getContentPane().add(scroller);
-		l.setVisible(true);
+//		if(args.length != 2)
+//		{
+//			System.out.println("Usage: first arg name of large image, second arg name of small image");
+//			System.exit(0);
+//		}
+//
+//		Image smallImage = Toolkit.getDefaultToolkit().getImage( args[1]);
+//		Image largeImage = Toolkit.getDefaultToolkit().getImage( args[0]);
+//
+//		ImageScrollerLargeView large = new ImageScrollerLargeView(largeImage);
+//		ImageScrollerSmallView small = new ImageScrollerSmallView(smallImage);
+//		new ImageScrollControl(large, small);
+//
+//		ImageScroller scroller= new ImageScroller(large, small);
+//
+//		JFrame l = new JFrame("large");
+//		l.setSize(900,600);
+//		l.addWindowListener(Util.EXIT_ON_CLOSE_WINDOW_LISTENER);
+//		l.getContentPane().add(scroller);
+//		l.setVisible(true);
 	}
 
 	/** Creates new ImageScrollControl */

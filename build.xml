@@ -8,6 +8,7 @@
     <path id="full.path">
         <pathelement path="${junit.jar}"/>
         <pathelement path="lib\plastic-1.2.0.jar"/>
+        <pathelement path="lib\backport-util-concurrent.jar"/>
         <pathelement path="${classpath}"/>
         <pathelement path="classes/"/>
     </path>
@@ -41,6 +42,7 @@
                 <include name="**/*.gif"/>
                 <include name="**/*.png"/>
                 <include name="**/*.txt"/>
+                <include name="**/*.jpeg"/>
                 <include name="**/*.xml"/>
                 <include name="**/*.wav"/>
 		<include name="**/*.properties"/>

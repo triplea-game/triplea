@@ -342,6 +342,14 @@ public class MapData
         return seaName;
 
     }
+    
+    public Dimension getMapDimensions()
+    {
+        int width = Integer.parseInt(m_mapProperties.getProperty("map.width"));
+        int height = Integer.parseInt(m_mapProperties.getProperty("map.height"));
+        
+        return new Dimension(width, height);
+    }
 
     public Rectangle getBoundingRect(Territory terr)
     {

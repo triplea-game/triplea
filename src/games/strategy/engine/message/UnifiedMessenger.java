@@ -13,6 +13,8 @@
  */
 package games.strategy.engine.message;
 
+import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicLong;
 import games.strategy.net.*;
 import games.strategy.util.Match;
 
@@ -20,7 +22,6 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.logging.*;
-import java.util.logging.Logger;
 
 /**
  * A messenger general enough that both Channel and Remote messenger can be
@@ -55,7 +56,7 @@ public class UnifiedMessenger
     private final Map m_methodCallWaitCount = new HashMap();
 
     //synchronize on this to wait for the init lock to arrive
-    private final Object m_initLock = new Object();
+    private final CountDownLatch m_initCountDownLatch = new CountDownLatch(1);
 
     //lock on this for modifications to internal state
     private final Object m_mutex = new Object();
@@ -75,18 +76,13 @@ public class UnifiedMessenger
             m_messenger.addMessageListener(m_serverMessageListener);
         } else
         {
-            //we want to wait till we are initialized before the constructor
-            // returns
-            synchronized (m_initLock)
+
+            m_messenger.broadcast(new UnifiedInitRequest());
+            try
             {
-                m_messenger.broadcast(new UnifiedInitRequest());
-                try
-                {
-                    m_initLock.wait();
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                m_initCountDownLatch.await();
+            } catch (InterruptedException e)
+            {
             }
         }
     }
@@ -215,14 +211,15 @@ public class UnifiedMessenger
         //who do we call
         final INode[] remote = getNodesWithImplementors(endPointName);
         CountDownLatch latch = new CountDownLatch(remote.length);
-        
+
         if (remote.length > 0)
         {
-            synchronized (m_mutex)
+            synchronized(m_mutex)
             {
                 //we need to indicate how many returns we are waiting for
                 m_methodCallWaitCount.put(methodCallID, latch);
             }
+         
         }
 
         //invoke remotely
@@ -241,11 +238,19 @@ public class UnifiedMessenger
         //wait for the remote calls to finish
         if (remote.length > 0)
         {
-            s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName() + " with id:" + methodCallID);
-            latch.await();
-            s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName() + " with id:" + methodCallID);
-            
-            
+            s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
+                    + " with id:" + methodCallID);
+            try
+            {
+                latch.await();
+            } catch (InterruptedException e)
+            {
+                s_logger.log(Level.WARNING, e.getMessage());
+            }
+
+            s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
+                    + " with id:" + methodCallID);
+
             synchronized (m_mutex)
             {
                 results.addAll((List) m_methodCallResults.get(methodCallID));
@@ -509,7 +514,7 @@ public class UnifiedMessenger
                     //who should we notify
                     latch = (CountDownLatch) m_methodCallWaitCount.get(methodID);
                 }
-                
+
                 //notify while not holding the mutex, just in case
                 latch.countDown();
 
@@ -548,11 +553,7 @@ public class UnifiedMessenger
                     currentEndPoints.addAll(initEndPoints);
                 }
             }
-            //release mutex lock before acquiring init lock
-            synchronized (m_initLock)
-            {
-                m_initLock.notifyAll();
-            }
+            m_initCountDownLatch.countDown();
         }
     };
 
@@ -622,7 +623,7 @@ public class UnifiedMessenger
 class EndPoint
 {
     //the next number we are going to give
-    private long m_nextGivenNumber = 0;
+    private final AtomicLong m_nextGivenNumber = new AtomicLong();
     //the next number we can run
     private long m_currentRunnableNumber = 0;
 
@@ -646,20 +647,15 @@ class EndPoint
 
     public long takeANumber()
     {
-        synchronized (m_numberMutext)
-        {
-            long rVal = m_nextGivenNumber;
-            m_nextGivenNumber++;
-            return rVal;
-        }
+        return m_nextGivenNumber.getAndIncrement();
     }
 
     private void waitTillCanBeRun(long aNumber)
     {
         synchronized (m_numberMutext)
         {
-	        while (aNumber > m_currentRunnableNumber)
-	        {
+            while (aNumber > m_currentRunnableNumber)
+            {
                 try
                 {
                     m_numberMutext.wait();
@@ -753,13 +749,13 @@ class EndPoint
      */
     public List invokeLocal(final RemoteMethodCall call, long number)
     {
-        
+
         try
         {
             if (m_singleThreaded)
             {
                 waitTillCanBeRun(number);
-                
+
                 return invokeMultiple(call);
 
             } else
@@ -823,9 +819,12 @@ class EndPoint
 
         } catch (InvocationTargetException e)
         {
+            //print the stack trace here to make sure its recorded
+            e.printStackTrace();
             return new RemoteMethodCallResults(e.getTargetException());
         } catch (IllegalAccessException e)
         {
+            //this shouldnt happen
             e.printStackTrace();
             throw new IllegalStateException(e.getMessage());
         }
@@ -988,6 +987,7 @@ class Invoke implements Externalizable
 
 class InvocationResults implements Serializable
 {
+    //a collection of RemoteMethodCallResults
     public final Collection results;
     public final GUID methodCallID;
 
@@ -1002,53 +1002,5 @@ class InvocationResults implements Serializable
         return "Invocation results for method id:" + methodCallID + " number of results:" + results.size();
     }
 
-}
-
-/**
- * 
- * TODO - use the version supplied in jdk 1.5 java.util.concurrent
- *
- *
- * @author Sean Bridges
- */
-class CountDownLatch
-{
-    private int m_count;
-    private final Object m_mutex = new Object();
-    
-    CountDownLatch(int count)
-    {
-        m_count = count;
-    }
-    
-    public void countDown()
-    {
-        synchronized(m_mutex)
-        {
-            m_count--;
-            if(m_count == 0)
-                m_mutex.notifyAll();
-        }
-    }
-    
-    public void await()
-    {
-
-        synchronized (m_mutex)
-        {
-            while (m_count != 0)
-            {
-                try
-                {
-                    m_mutex.wait();
-                } catch (InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    
 }
 
