@@ -753,7 +753,7 @@ public class TripleAFrame extends JFrame
       {
           GameDataManager manager = new GameDataManager();
           ByteArrayOutputStream sink = new ByteArrayOutputStream(10000);
-          manager.saveGame(sink, m_data);
+          manager.saveGame(sink, m_data, false);
           sink.close();
           ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
           sink = null;
