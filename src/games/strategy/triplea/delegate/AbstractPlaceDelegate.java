@@ -395,7 +395,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   private PlayerID getOriginalFactoryOwner(Territory territory)
   {
     Collection factoryUnits = territory.getUnits().getMatches(Matches.UnitIsFactory);
-    if(factoryUnits.size() != 1)
+    if(factoryUnits.size() == 0)
       throw new IllegalStateException("No factory in terrtroy:" + territory);
 
     Unit factory = (Unit) factoryUnits.iterator().next();
