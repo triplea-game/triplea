@@ -118,7 +118,6 @@ class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
                         hasFocus);
         if (value instanceof Step)
         {
-
            PlayerID player = ((Step) value).getPlayerID();
            if(player != null)
            {

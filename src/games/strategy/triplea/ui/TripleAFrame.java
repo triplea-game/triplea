@@ -239,18 +239,18 @@ public class TripleAFrame extends JFrame
     menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
     fileMenu.add( menuFileExit );
 
-    JMenu menuHistory = new JMenu("History");
-    menuHistory.add(m_showGameAction);
-    menuHistory.add(m_showHistoryAction);
+    JMenu menuGame = new JMenu("Game");
+    menuGame.add(m_showGameAction);
+    menuGame.add(m_showHistoryAction);
 
-    menuBar.add(menuHistory);
+    menuBar.add(menuGame);
 
 
 
 
     if(!m_game.getData().getProperties().getEditableProperties().isEmpty())
     {
-      JMenu optionsMenu = new JMenu("Options");
+
 
       AbstractAction optionsAction = new AbstractAction("View Game Options...")
       {
@@ -260,9 +260,9 @@ public class TripleAFrame extends JFrame
           JOptionPane.showMessageDialog(TripleAFrame.this, ui, "Game options", JOptionPane.PLAIN_MESSAGE );
         }
       };
+      menuGame.addSeparator();
+      menuGame.add(optionsAction);
 
-      optionsMenu.add(optionsAction);
-      menuBar.add(optionsMenu);
     }
 
 
@@ -318,9 +318,9 @@ public class TripleAFrame extends JFrame
         final String notes = (String) m_data.getProperties().get("notes");
         if(notes != null && notes.trim().length() != 0)
         {
-          JMenu notesMenu = new JMenu("Notes");
-          menuBar.add(notesMenu);
-          notesMenu.add( new AbstractAction("Game Notes")
+
+
+          helpMenu.add( new AbstractAction("Game Notes...")
               {
                   public void actionPerformed(ActionEvent e)
                   {

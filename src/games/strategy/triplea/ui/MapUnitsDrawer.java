@@ -31,33 +31,31 @@ import games.strategy.util.*;
 import java.awt.geom.*;
 import games.strategy.triplea.util.*;
 
-
 /**
  * Used to draw units on a map.
-*
+ *
+ *
  */
 
 public class MapUnitsDrawer
 {
     private static ThreadPool s_threadPool = new ThreadPool(1);
 
-    private Object m_lock = new Object();
-    private final GameData m_data;
-    private MapPanelSmallView m_smallView;
-    private MapPanel m_mapPanel;
+    private final Object m_lock = new Object();
+    private GameData m_data;
+    private final MapPanelSmallView m_smallView;
+    private final MapPanel m_mapPanel;
 
     /**
      * A set of Territories
      */
-    private Set m_waitingToBeUpdated = new HashSet();
+    private final Set m_waitingToBeUpdated = new HashSet();
 
     /**
-     * Maps Territory -> Set of Territory names as Strings
+     * Maps Territory name as String -> Set of Territory
      * marks which territories have units that spill onto other territories.
      */
-    private Map m_updateDependencies = new HashMap();
-
-
+    private final Map m_updateDependencies = new HashMap();
 
     public MapUnitsDrawer(GameData data, MapPanelSmallView smallView, MapPanel mapPanel)
     {
@@ -65,6 +63,12 @@ public class MapUnitsDrawer
         m_smallView = smallView;
         m_mapPanel = mapPanel;
     }
+
+    public void setData(GameData data)
+    {
+      m_data = data;
+    }
+
 
     /**
      * Doesnt return until all updates are finished.
@@ -106,15 +110,19 @@ public class MapUnitsDrawer
      */
     private void addDependentsToQueue(Territory territory)
     {
+
+
         //add territories what we are dependent on
         Set dependents = (Set) m_updateDependencies.get(territory);
+
+
         if(dependents != null)
         {
             Iterator iter = dependents.iterator();
             while (iter.hasNext())
             {
-                String territoryName = (String) iter.next();
-                Territory newTerritory = m_data.getMap().getTerritory(territoryName);
+
+                Territory newTerritory = (Territory) iter.next();
                 if (!m_waitingToBeUpdated.contains(newTerritory))
                 {
                     m_waitingToBeUpdated.add(newTerritory);
@@ -133,7 +141,7 @@ public class MapUnitsDrawer
             if(m_waitingToBeUpdated.contains(newTerritory ))
                 continue;
 
-            if( ((Set) entry.getValue()).contains(territory.getName()) )
+            if( ((Set) entry.getValue()).contains(territory) )
             {
                 m_waitingToBeUpdated.add(newTerritory);
                 addDependentsToQueue(newTerritory);
@@ -145,7 +153,7 @@ public class MapUnitsDrawer
     {
         synchronized(m_lock)
         {
-
+          deleteme++;
 
             if (m_waitingToBeUpdated.isEmpty())
                 return;
@@ -157,7 +165,6 @@ public class MapUnitsDrawer
                Territory territory = (Territory)dependencyIter.next();
                addDependentsToQueue(territory);
            }
-
 
             //clear the sea zones first
             //they can overlap with land zones
@@ -190,15 +197,38 @@ public class MapUnitsDrawer
 
     }
 
+    /**
+     * Add the given Territory names to the set of Territories, using the GameData's
+     * map to convert
+     */
+    private void addAll(Collection addTo, Collection territoryNames)
+    {
+
+      Iterator containedIter = territoryNames.iterator();
+      while (containedIter.hasNext())
+      {
+        String containedTerrName = (String)containedIter.next();
+        Territory containedTerritory = m_data.getMap().getTerritory(containedTerrName);
+        addTo.add(containedTerritory);
+
+      }
+
+    }
+
+    private int deleteme = 0;
+
     private void drawUnits(Territory territory)
     {
+
+
       Set dependencies = new HashSet();
 
       //add the territories that are contained inside of this territory.
       //this includes islands surrounded by sea zones.
       if(TerritoryData.getInstance().hasContainedTerritory(territory.getName()))
       {
-          dependencies.addAll(TerritoryData.getInstance().getContainedTerritory(territory.getName()));
+        Collection contained = TerritoryData.getInstance().getContainedTerritory(territory.getName());
+        addAll(dependencies, contained);
       }
 
       Graphics graphics = m_mapPanel.getOffscreenGraphics();
@@ -208,7 +238,9 @@ public class MapUnitsDrawer
 
       Iterator placementPoints = TerritoryData.getInstance().getPlacementPoints(territory).iterator();
       if (placementPoints == null || !placementPoints.hasNext())
+      {
           throw new IllegalStateException("No where to place units");
+      }
 
       Point lastPlace = null;
 
@@ -246,16 +278,17 @@ public class MapUnitsDrawer
           tempRectanlge.setFrame(place.x, place.y, UnitIconImageFactory.UNIT_ICON_HEIGHT, UnitIconImageFactory.UNIT_ICON_WIDTH);
           Collection intersects = TerritoryData.getInstance().territoriesThatOverlap(tempRectanlge);
           if (!intersects.isEmpty())
-              dependencies.addAll(intersects);
+             addAll(dependencies, intersects);
       }
 
       //remove yourself
-      dependencies.remove(territory.getName());
+      dependencies.remove(territory);
 
       if (dependencies.isEmpty())
           m_updateDependencies.remove(territory);
       else
           m_updateDependencies.put(territory, dependencies);
+
 
 
   }

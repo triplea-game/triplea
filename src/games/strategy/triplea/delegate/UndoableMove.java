@@ -21,6 +21,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.DelegateBridge;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.*;
+import games.strategy.triplea.delegate.message.*;
 
 /**
  * Contains all the data to describe a move and to undo it.
@@ -159,7 +160,8 @@ public class UndoableMove implements Serializable
     {
 
         bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() +
-                                     " undoes his last move.");
+                                     " undoes his a move.");
+        bridge.getHistoryWriter().setRenderingData(new MoveMessage(m_units, m_route));
 
         //undo any changes to the game data
         bridge.addChange(m_undoChange.invert());

@@ -38,7 +38,7 @@ public class DiceRoll implements java.io.Serializable
 
   public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge, Territory location)
   {
-    int[] random = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, "Rolling aa guns in " + location.getName());
+    int[] random = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, "Roll aa guns in " + location.getName());
     int hits = 0;
     for(int i = 0; i < random.length; i++)
     {
@@ -64,7 +64,7 @@ public class DiceRoll implements java.io.Serializable
                                   PlayerID player,
                                   DelegateBridge bridge)
   {
-    String annotation = player.getName() +  " rolling dice for " + Formatter.unitsToTextNoOwner(units);
+    String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);

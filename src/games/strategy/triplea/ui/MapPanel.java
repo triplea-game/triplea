@@ -49,7 +49,7 @@ public class MapPanel extends ImageScrollerLargeView
   //current route we are displaying, could be null
   private Route m_route;
 
-  private MapUnitsDrawer m_mapsUnitDrawer;
+  private final MapUnitsDrawer m_mapsUnitDrawer;
 
 
   /** Creates new MapPanel */
@@ -58,11 +58,13 @@ public class MapPanel extends ImageScrollerLargeView
   {
       super(image);
       m_smallView = smallView;
+      m_mapsUnitDrawer = new MapUnitsDrawer(m_data, m_smallView, this);
       setGameData(data);
       initTerritories();
 
       this.addMouseListener(MOUSE_LISTENER);
       this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
+
   }
 
 
@@ -211,7 +213,7 @@ public class MapPanel extends ImageScrollerLargeView
 
       m_data = data;
       m_data.addTerritoryListener(TERRITORY_LISTENER);
-      m_mapsUnitDrawer = new MapUnitsDrawer(m_data, m_smallView, this);
+      m_mapsUnitDrawer.setData(m_data);
 
 
   }

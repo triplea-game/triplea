@@ -396,7 +396,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   {
     Collection factoryUnits = territory.getUnits().getMatches(Matches.UnitIsFactory);
     if(factoryUnits.size() != 1)
-      throw new IllegalStateException("No factory in territroy:" + territory);
+      throw new IllegalStateException("No factory in terrtroy:" + territory);
 
     Unit factory = (Unit) factoryUnits.iterator().next();
     return DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(factory);

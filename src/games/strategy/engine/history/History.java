@@ -45,7 +45,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     public History(GameData data)
     {
-        super(new HistoryNode("in media res", true));
+        super(new HistoryNode("Game History", true));
     }
 
     public HistoryWriter getHistoryWriter()
@@ -93,16 +93,10 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
         int firstChange = getLastChange(start);
         int lastChange = getLastChange(end);
 
-      System.out.println("***");
-      System.out.println("from:" + start.getUserObject() + " to " + end.getUserObject());
-      System.out.println("lastChange:" + lastChange + " firstChange:" + firstChange + " totalChanges:" + m_changes.size());
-
       if(firstChange == lastChange)
           return null;
 
        List changes = m_changes.subList( Math.min(firstChange, lastChange), Math.max(firstChange, lastChange  ) );
-
-       System.out.println(changes);
 
        Change compositeChange = new CompositeChange(changes);
        if(lastChange >= firstChange )
