@@ -149,8 +149,7 @@ public class LauncherFrame extends JFrame
   {
     m_serverStartup.cleanUpWaitForPlayers();
 
-    m_messenger.broadcast(new DonePlayerSelectionMessage());
-    m_serverStartup.broadcastGameData();
+    m_messenger.broadcast(new DonePlayerSelectionMessage(m_serverStartup.getGameDataBytes()));
 
     ServerWaitForClientMessageListener listener = new ServerWaitForClientMessageListener();
     m_messenger.addMessageListener(listener);

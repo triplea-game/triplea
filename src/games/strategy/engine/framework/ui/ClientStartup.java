@@ -33,6 +33,7 @@ import games.strategy.engine.framework.message.*;
 import games.strategy.net.*;
 
 import games.strategy.engine.EngineVersion;
+import java.io.*;
 
 /**
  *
@@ -254,10 +255,18 @@ public class ClientStartup extends JPanel
     {
       if(msg instanceof DonePlayerSelectionMessage)
       {
-        ClientGameLoader loader = new ClientGameLoader((ClientMessenger) m_messenger);
-        m_launcher.setGameData(loader.loadData());
+        GameData data = null;
+        try
+        {
+          data  = new GameDataManager().loadGame(((DonePlayerSelectionMessage) msg).getGameData());
+        }
+        catch (IOException ex)
+        {
+          ex.printStackTrace();
+        }
+
+        m_launcher.setGameData(data);
         m_launcher.startClient();
-        m_messenger.send(new ClientReady(), from);
       }
       if(msg instanceof PlayerListingMessage)
       {

@@ -23,9 +23,11 @@ package games.strategy.engine.framework.ui;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.zip.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
@@ -45,8 +47,6 @@ public class ServerStartup extends JPanel
   private IGameLoader m_loader;
   private final IServerMessenger m_messenger;
   private GameData m_data;
-  private GameDataResponse m_savedGameData;
-
 
   private JTextField m_portField;
   private JTextField m_addressField;
@@ -54,6 +54,8 @@ public class ServerStartup extends JPanel
 
   //list of PlayerRows
   private List m_playerRows = Collections.EMPTY_LIST;
+
+  private byte[] m_dataBytes;
 
   /**
    * Creates a new instance of ServerStartup
@@ -110,8 +112,26 @@ public class ServerStartup extends JPanel
   private void serializeGameData() throws IOException
   {
     ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
-    new GameDataManager().saveGame(sink, m_data);
-    m_savedGameData = new GameDataResponse(sink.toByteArray());
+
+    ZipOutputStream zip = new ZipOutputStream(sink);
+    zip.setLevel(9);
+    zip.putNextEntry(new ZipEntry("gameData"));
+
+
+    new GameDataManager().saveGame(zip, m_data);
+    zip.flush();
+    zip.closeEntry();
+    zip.close();
+
+
+    m_dataBytes = sink.toByteArray();
+
+
+  }
+
+  public byte[] getGameDataBytes()
+  {
+    return m_dataBytes;
   }
 
   /**
@@ -363,12 +383,6 @@ public class ServerStartup extends JPanel
     m_launcher.setWidgetActivation();
   }
 
-
-
-  public void broadcastGameData()
-  {
-    m_messenger.broadcast(m_savedGameData);
-  }
 
   private IMessageListener m_messageListener = new IMessageListener()
   {

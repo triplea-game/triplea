@@ -12,14 +12,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+package games.strategy.engine.framework.message;
+
+import java.io.*;
+import java.util.zip.*;
+
 /*
  * DonePlayerSelectionMessage.java
  *
  *
  * Created on February 1, 2002, 4:15 PM
  */
-
-package games.strategy.engine.framework.message;
 
 
 /**
@@ -30,12 +33,28 @@ package games.strategy.engine.framework.message;
 public class DonePlayerSelectionMessage implements java.io.Serializable
 {
 
+  private byte[] m_gameData;
 
   /**
    * Creates a new instance of DonePlayerSelectionMessage
    */
-  public DonePlayerSelectionMessage()
+  public DonePlayerSelectionMessage(byte[] gameData)
   {
+    m_gameData = gameData;
+  }
+
+  public InputStream getGameData()
+  {
+    ZipInputStream data = new ZipInputStream(new ByteArrayInputStream(m_gameData));
+    try
+    {
+        data.getNextEntry();
+    }
+    catch(IOException ioe)
+    {
+      throw new RuntimeException(ioe.getMessage());
+    }
+    return data;
   }
 
 }
