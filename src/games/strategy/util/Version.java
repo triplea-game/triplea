@@ -118,7 +118,7 @@ public class Version implements Serializable, Comparable
 			return -1;
 		else if(other.m_point > m_point)
 			return 1;
-		else if(other.m_minor < m_point)
+		else if(other.m_point < m_point)
 			return -1;
 		else
 			return 0;
