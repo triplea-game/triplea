@@ -473,7 +473,9 @@ public class MoveDelegate implements SaveableDelegate
     private String validateCombat(Collection units, Route route, PlayerID player)
     {
 
-        if (Match.someMatch(units, Matches.UnitIsAA))
+      // Don't allow aa guns to move in non-combat unless they are in a transport
+        if (Match.someMatch(units, Matches.UnitIsAA)
+	    && (!route.getStart().isWater() || !route.getEnd().isWater()))
             return "Cant move aa guns in combat movement phase";
         return null;
     }
