@@ -27,8 +27,6 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
 import games.strategy.engine.delegate.DelegateBridge;
 
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.Formatter;
 
@@ -665,49 +663,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
   {
 
     PlayerID hit = defender ?  m_defender : m_attacker;
-    PlayerID firing = defender ?  m_attacker : m_defender;
-
     Collection casualties =  BattleCalculator.selectCasualties(step, hit, attackableUnits, bridge, text, m_data, dice);
 
     return casualties;
   }
 
-  private int[] getRandom(Collection units, boolean defending, DelegateBridge bridge)
-  {
-    PlayerID player = defending ? m_defender : m_attacker;
-    int rollCount = BattleCalculator.getRolls(units, player, defending);
-
-    return bridge.getRandom(Constants.MAX_DICE, rollCount);
-  }
-
-  private int getCasualties(Collection units, boolean defending, DelegateBridge bridge, int[] dice)
-  {
-    Iterator iter = units.iterator();
-    PlayerID player = defending ? m_defender : m_attacker;
-
-    int hitCount = 0;
-    int diceIndex = 0;
-    while(iter.hasNext())
-    {
-      Unit current = (Unit) iter.next();
-      UnitAttatchment ua = UnitAttatchment.get(current.getType());
-      int rolls = defending ? 1 : ua.getAttackRolls(player);
-      for(int i = 0; i < rolls; i++)
-      {
-        int strength;
-        if(defending)
-          strength = ua.getDefense(current.getOwner());
-        else
-          strength = ua.getAttack(current.getOwner());
-
-        //dice is [0-MAX_DICE)
-        if( strength > dice[diceIndex])
-          hitCount++;
-        diceIndex++;
-      }
-    }
-    return hitCount;
-  }
 
   private void removeCasualties(Collection casualties, boolean canReturnFire, boolean defender, DelegateBridge bridge)
   {
@@ -903,21 +863,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_tracker.takeOver(m_territory, m_attacker, bridge, m_data, null);
       }
     }
-  }
-
-  /**
-   * Returns a map of UnitType
-   */
-  private IntegerMap toIntegerMap(Collection units)
-  {
-    IntegerMap rVal = new IntegerMap();
-    Iterator iter = units.iterator();
-    while(iter.hasNext())
-    {
-      Unit unit = (Unit) iter.next();
-      rVal.add(unit.getType(), 1);
-    }
-    return rVal;
   }
 
   private void endBattle(DelegateBridge bridge)

@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * MoveValidator.java
  *
  * Created on November 9, 2001, 4:05 PM
@@ -17,20 +31,19 @@ import games.strategy.triplea.attatchments.*;
 /**
  *
  * @author  Sean Bridges
- * @version 1.0
  *
  * Provides some static methods for validating movement.
  */
-public class MoveValidator 
+public class MoveValidator
 {
 
 	/**
-	 * Tests the given collection of units to see if they have the movement neccessary 
+	 * Tests the given collection of units to see if they have the movement neccessary
 	 * to move.
 	 * @arg alreadyMoved maps Unit -> movement
 	 */
 	public static boolean hasEnoughMovement(Collection units, IntegerMap alreadyMoved, int length)
-	{		
+	{
 		Iterator iter = units.iterator();
 		while(iter.hasNext() )
 		{
@@ -43,7 +56,7 @@ public class MoveValidator
 		}
 		return true;
 	}
-	
+
 
 	/**
 	 * Checks that there are no enemy units on the route except possibly at the end.
@@ -60,22 +73,22 @@ public class MoveValidator
 		}
 		return true;
 	}
-	
-	
+
+
 	public static boolean hasConqueredNonBlitzedOnRoute(Route route, GameData data)
 	{
 		for(int i = 0; i < route.getLength() - 1; i++)
 		{
 			Territory current = route.at(i);
-			if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(current) && 
+			if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(current) &&
 			   !DelegateFinder.battleDelegate(data).getBattleTracker().wasBlitzed(current))
 				return true;
 		}
 		return false;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * A blitz means no nuetral territories before end,
 	 * at least one enemy territory with no units before end.
@@ -86,64 +99,64 @@ public class MoveValidator
 	{
 		if(route.getLength() < 2)
 			return false;
-		
+
 		Match nonCombatOrAllied = new CompositeMatchOr(Matches.UnitIsAAOrFactory,
 													   Matches.alliedUnit(player, data));
-		
+
 		boolean blitzableFound = false;
-		
+
 		for(int i = 0; i < route.getLength() - 1; i++)
 		{
 			Territory current = route.at(i);
-			
+
 			//if was previously blitzed then still a blitz route
 			if(DelegateFinder.battleDelegate(data).getBattleTracker().wasBlitzed(current))
 				blitzableFound = true;
-			
+
 			//if conquered but not blitzed then cant blitz through it
-			if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(current) && 
+			if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(current) &&
 			   !DelegateFinder.battleDelegate(data).getBattleTracker().wasBlitzed(current))
 				return false;
-			
+
 			//cant blitz through water
-			if(current.isWater())				
+			if(current.isWater())
 				return false;
-			
-			
-			
+
+
+
 			if(ownedByNonNeutralEnemy(current, player, data))
 			{
 				//cant blitz through units that arent factories or aa
-				//CompositeMatch match = new 
+				//CompositeMatch match = new
 				if(!current.getUnits().allMatch(nonCombatOrAllied))
 					return false;
-				blitzableFound = true;		
+				blitzableFound = true;
 			}
 		}
 		return blitzableFound;
 	}
-	
+
 	public static boolean isUnload(Route route)
 	{
 		return route.getStart().isWater() && !route.getEnd().isWater();
 	}
-	
+
 	public static boolean isLoad(Route route)
 	{
 		return !route.getStart().isWater() && route.getEnd().isWater();
 	}
-	
+
 	private static boolean ownedByNonNeutralEnemy(Territory territory, PlayerID player, GameData data)
-	{		
+	{
 		PlayerID owner = territory.getOwner();
 		if( isFriendly(owner, player, data))
 			return false;
 		//neutral is null
 		if(owner.equals(PlayerID.NULL_PLAYERID))
 			return false;
-		return true;        
+		return true;
 	}
-	
+
 	public static boolean canBlitz(Collection units)
 	{
 		Iterator iter = units.iterator();
@@ -156,7 +169,7 @@ public class MoveValidator
 		}
 		return true;
 	}
-	
+
 	public static boolean hasNuetralBeforeEnd(Route route)
 	{
 		for(int i = 0; i < route.getLength() - 1; i++)
@@ -168,34 +181,18 @@ public class MoveValidator
 		}
 		return false;
 	}
-	
+
 	public static boolean hasSea(Collection units)
 	{
-		Iterator iter = units.iterator();
-		while(iter.hasNext())
-		{
-			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
-			if( ua.isSea())
-				return true;
-		}
-		return false;
+        return Match.someMatch(units, Matches.UnitIsSea);
 	}
 
 	public static boolean hasAir(Collection units)
 	{
-		Iterator iter = units.iterator();
-		while(iter.hasNext())
-		{
-			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
-			if( ua.isAir())
-				return true;
-		}
-		return false;
+		return Match.someMatch(units, Matches.UnitIsAir);
 	}
 
-	
+
 	public static boolean hasUnitsThatCantGoOnWater(Collection units)
 	{
 		Iterator iter = units.iterator();
@@ -205,7 +202,7 @@ public class MoveValidator
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 			if(!ua.isSea())
 			{
-				
+
 				if(ua.isAir() )
 				{
 					return false;
@@ -218,21 +215,13 @@ public class MoveValidator
 		return false;
 	}
 
-	
+
 	public static boolean isAir(Collection units)
 	{
-		Iterator iter = units.iterator();
-		while(iter.hasNext())
-		{
-			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
-			if(! ua.isAir())
-				return false;
-		}
-		return true;
+        return Match.allMatch(units, Matches.UnitIsAir);
 	}
-	
-	
+
+
 	public static int carrierCapacity(Collection units)
 	{
 		int sum = 0;
@@ -248,7 +237,7 @@ public class MoveValidator
 		}
 		return sum;
 	}
-	
+
 	public static int carrierCost(Collection units)
 	{
 		int sum = 0;
@@ -267,16 +256,16 @@ public class MoveValidator
 	{
 		if(route.getStart().isWater())
 			return true;
-		
+
 		return route.someMatch(Matches.TerritoryIsWater);
 	}
 
-	
+
 	public static boolean hasLand(Route route)
 	{
 		if(!route.getStart().isWater())
 			return true;
-		
+
 		for(int i = 0; i < route.getLength(); i++)
 		{
 			Territory t = route.at(i);
@@ -285,11 +274,11 @@ public class MoveValidator
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns true if the given air units can land in the
 	 * given territory.
-	 * Does not take into account whether a battle has been 
+	 * Does not take into account whether a battle has been
 	 * fought in the territory already.
 	 *
 	 * Note units must only be air units
@@ -298,23 +287,23 @@ public class MoveValidator
 	{
 		if( !Match.allMatch(airUnits, Matches.UnitIsAir))
 			throw new IllegalArgumentException("can only test if air will land");
-		
-		
+
+
 		if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(territory))
 			return false;
-		
+
 		if(territory.isWater())
 		{
 			//if they cant all land on carriers
 			if(! Match.allMatch(airUnits, Matches.UnitCanLandOnCarrier))
 				return false;
-			
-			//when doing the calculation, make sure to include the units 
+
+			//when doing the calculation, make sure to include the units
 			//in the territory
 			Set friendly = new HashSet();
 			friendly.addAll(getFriendly(territory, player, data));
 			friendly.addAll(airUnits);
-			
+
 			//make sure we have the carrier capacity
 			int capacity = carrierCapacity(friendly);
 			int cost = carrierCost(friendly);
@@ -325,41 +314,33 @@ public class MoveValidator
 			return isFriendly(player, territory.getOwner(), data);
 		}
 	}
-		
+
 	public static Collection getNonLand(Collection units)
 	{
-		Collection nonLand = new ArrayList(units.size());
-		Iterator iter = units.iterator();
-		while(iter.hasNext())
-		{
-			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getUnitType());
-			if(ua.isAir() || ua.isSea())
-			{
-				nonLand.add(unit);
-			}
-		}
-		return nonLand;
+        CompositeMatch match = new CompositeMatchOr();
+        match.add(Matches.UnitIsAir);
+        match.add(Matches.UnitIsSea);
+        return Match.getMatches(units, match);
 	}
-	
+
 	public static Collection getFriendly(Territory territory, PlayerID player, GameData data)
 	{
 		return territory.getUnits().getMatches(Matches.alliedUnit(player,data));
 	}
-	
+
 	public static boolean isFriendly(PlayerID p1, PlayerID p2, GameData data)
 	{
 		if(p1.equals(p2) )
 			return true;
 		else return data.getAllianceTracker().isAllied(p1,p2);
 	}
-	
+
 	public static boolean ownedByFriendly(Unit unit, PlayerID player, GameData data)
 	{
 		PlayerID owner = unit.getOwner();
 		return(isFriendly(owner, player, data));
 	}
-	
+
 
 	public static int getLeastMovement(Collection units, IntegerMap alreadyMoved)
 	{
@@ -376,19 +357,19 @@ public class MoveValidator
 		}
 		return least;
 	}
-	
+
 	public static int movementLeft(Unit unit, IntegerMap alreadyMoved)
 	{
-	
+
 		int already = alreadyMoved.getInt(unit);
 		int canMove = UnitAttatchment.get(unit.getType()).getMovement(unit.getOwner());
 		return canMove - already;
-	
+
 	}
-	
+
 	public static int getTransportCapacityFree(Territory territory, PlayerID id, GameData data, TransportTracker tracker)
 	{
-		Match friendlyTransports = new CompositeMatchAnd(Matches.UnitIsTransport, 
+		Match friendlyTransports = new CompositeMatchAnd(Matches.UnitIsTransport,
 		                                                 Matches.alliedUnit(id, data));
 		Collection transports = territory.getUnits().getMatches(friendlyTransports);
 		int sum = 0;
@@ -400,15 +381,15 @@ public class MoveValidator
 		}
 		return sum;
 	}
-	
+
 	public static boolean hasSomeLand(Collection units)
 	{
 		Match notAirOrSea = new CompositeMatchAnd(Matches.UnitIsNotAir, Matches.UnitIsNotSea);
 		return Match.someMatch(units, notAirOrSea);
 	}
-	
+
 	/** Creates new MoveValidator */
-    private MoveValidator() 
+    private MoveValidator()
 	{
     }
 }
