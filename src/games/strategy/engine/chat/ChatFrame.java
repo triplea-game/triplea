@@ -173,19 +173,7 @@ public class ChatFrame extends JFrame
     {
 
         addMessage(msg.getMessage(), from);
-        if (SwingUtilities.isEventDispatchThread())
-        {
-            this.toFront();
-        } else
-        {
-            SwingUtilities.invokeLater(new Runnable()
-            {
-                public void run()
-                {
-                    toFront();
-                }
-            });
-        }
+   
 
     }
 
@@ -211,6 +199,8 @@ public class ChatFrame extends JFrame
                 }
                 if (!isVisible())
                     setVisible(true);
+   
+                toFront();
                 
                 ClipPlayer.getInstance().playClip(SoundPath.MESSAGE, SoundPath.class);                
             }
