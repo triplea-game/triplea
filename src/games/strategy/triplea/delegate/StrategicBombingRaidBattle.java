@@ -123,7 +123,8 @@ public class StrategicBombingRaidBattle implements Battle
 
   private void fireAA(DelegateBridge bridge)
   {
-    DiceRoll dice = DiceRoll.rollAA(m_units.size(),bridge);
+    DiceRoll dice = DiceRoll.rollAA(m_units.size(),bridge, 
+                                    m_attacker, m_defender);
     removeAAHits(bridge, dice);
   }
 

@@ -61,6 +61,8 @@ public class ServerGame implements IGame
   private Object m_remotePlayerStepLock = new Object();
   private Transcript m_transcript;
 
+  private Vector m_random_destinations = new Vector();
+
 
   /** Creates new Game */
     public ServerGame(GameData data, Set gamePlayers, IServerMessenger messenger, Map playerMapping)
@@ -84,6 +86,14 @@ public class ServerGame implements IGame
       PlayerBridge bridge = new DefaultPlayerBridge(this, gp);
       gp.initialize(bridge, player);
       m_messageManager.addDestination(gp);
+
+      System.err.println("Added destination: " + gp.getName());
+
+      // Add a corresponding random destination for this GamePlayer
+      RandomDestination rnd_dest = new RandomDestination(gp.getName() + "RandomDest");
+
+      m_random_destinations.add(rnd_dest);
+      m_messageManager.addDestination(rnd_dest);
     }
 
     //add a null destination for the null player.

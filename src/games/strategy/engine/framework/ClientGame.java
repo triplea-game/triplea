@@ -46,6 +46,7 @@ public class ClientGame implements IGame
   //maps PlayerID->GamePlayer
   private Map m_gamePlayers = new HashMap();
   private Transcript m_transcript;
+  private Vector m_random_destinations = new Vector();
 
   public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, INode server)
   {
@@ -67,10 +68,16 @@ public class ClientGame implements IGame
       gp.initialize(bridge, player);
 
       m_messageManager.addDestination(gp);
+
+      // Add a corresponding random destination for this GamePlayer
+      RandomDestination rnd_dest = new RandomDestination(gp.getName() + "RandomDest");
+
+      m_random_destinations.add(rnd_dest);
+      m_messageManager.addDestination(rnd_dest);
     }
 
     m_changePerformer = new ChangePerformer(m_data);
-    }
+  }
 
   public IMessageManager getMessageManager()
   {

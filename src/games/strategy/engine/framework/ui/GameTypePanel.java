@@ -194,6 +194,10 @@ public class GameTypePanel extends JPanel
     }
     catch (IOException ex)
     {
+      System.err.println(NewGameFileChooser.DEFAULT_DIRECTORY);
+      System.err.println(defaultGame.getAbsolutePath());
+      ex.printStackTrace();
+      
       //ignore, we're just loading the default file, no reason to cause a panic
     }
   }

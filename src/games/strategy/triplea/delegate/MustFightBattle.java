@@ -50,7 +50,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
   private Collection m_attackingNonCombatants;
   private Set m_attackingFrom = new HashSet();
   private Collection m_amphibiousAttackFrom = new ArrayList();
-    private Collection m_amphibiousLandAttackers = new ArrayList();
+  private Collection m_amphibiousLandAttackers = new ArrayList();
   private Collection m_defendingUnits = new LinkedList();
   private Collection m_defendingWaitingToDie = new ArrayList();
   private Collection m_defendingNonCombatants;
@@ -58,7 +58,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
   private boolean m_over = false;
   private BattleTracker m_tracker;
 
-    private TransportTracker m_transportTracker;
+  private TransportTracker m_transportTracker;
 
   private PlayerID m_defender;
   private PlayerID m_attacker;
@@ -77,7 +77,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     m_tracker = tracker;
     m_territory = battleSite;
     m_attacker = attacker;
-        m_transportTracker = transportTracker;
+    m_transportTracker = transportTracker;
 
     m_defendingUnits.addAll(m_territory.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
     m_defender = findDefender(battleSite);
@@ -102,7 +102,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
        Match.someMatch(units, Matches.UnitIsLand))
     {
       m_amphibiousAttackFrom.add(attackFrom);
-            m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
+      m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
       m_amphibious = true;
     }
 
@@ -111,18 +111,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
     Collection nonAir = Match.getMatches(units, Matches.UnitIsNotAir);
     DelegateFinder.moveDelegate(m_data).markNoMovement(nonAir);
 
-        //dependencies
-        Map dependencies = transporting(units);
-        Iterator iter = dependencies.keySet().iterator();
-        while(iter.hasNext())
-        {
-          Unit transport = (Unit) iter.next();
-          Collection transporting = (Collection) dependencies.get(transport);
-          if(m_dependentUnits.get(transport) != null)
-            ((Collection) m_dependentUnits.get(transport)).addAll(transporting);
-          else
-            m_dependentUnits.put(transport, transporting);
-        }
+    //dependencies
+    Map dependencies = transporting(units);
+    Iterator iter = dependencies.keySet().iterator();
+    while(iter.hasNext())
+    {
+      Unit transport = (Unit) iter.next();
+      Collection transporting = (Collection) dependencies.get(transport);
+      if(m_dependentUnits.get(transport) != null)
+        ((Collection) m_dependentUnits.get(transport)).addAll(transporting);
+      else
+        m_dependentUnits.put(transport, transporting);
+    }
   }
 
   private String getBattleTitle()
@@ -205,14 +205,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     List steps = determineStepStrings(true);
 
     BattleStartMessage battleStart =
-        new BattleStartMessage(
-          m_attacker,
-          m_defender,
-          m_territory,
-          removeNonCombatants(m_attackingUnits),
-          removeNonCombatants(m_defendingUnits),
-          m_dependentUnits
-        );
+      new BattleStartMessage(
+                             m_attacker,
+                             m_defender,
+                             m_territory,
+                             removeNonCombatants(m_attackingUnits),
+                             removeNonCombatants(m_defendingUnits),
+                             m_dependentUnits
+                             );
     bridge.sendMessage(battleStart);
     bridge.sendMessage(battleStart, m_defender);
 
@@ -368,11 +368,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //if so we can no longer retreat there
     Collection possible = Match.getMatches(m_attackingFrom, Matches.territoryHasNoEnemyUnits(m_attacker, m_data));
 
-        if(Match.someMatch(m_attackingUnits, Matches.UnitIsLand) && !m_territory.isWater())
-          possible = Match.getMatches(possible,  Matches.TerritoryIsLand);
+    if(Match.someMatch(m_attackingUnits, Matches.UnitIsLand) && !m_territory.isWater())
+      possible = Match.getMatches(possible,  Matches.TerritoryIsLand);
 
-        if(Match.someMatch(m_attackingUnits, Matches.UnitIsSea))
-          possible = Match.getMatches(possible,  Matches.TerritoryIsWater);
+    if(Match.someMatch(m_attackingUnits, Matches.UnitIsSea))
+      possible = Match.getMatches(possible,  Matches.TerritoryIsWater);
 
 
     return possible;
@@ -518,12 +518,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
     PlayerID firingPlayer = defender ? m_defender : m_attacker;
     PlayerID hitPlayer = defender ? m_attacker : m_defender;
 
-    DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, firingPlayer, bridge);
+    //DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, firingPlayer, bridge);
+
+    // NEW VERSION
+    DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, 
+                                      firingPlayer, hitPlayer, bridge);
 
     int hitCount = dice.getHits();
-    //they all die
     Collection casualties;
 
+    //they all die
     if(hitCount >= attackableUnits.size())
     {
       casualties = attackableUnits;
@@ -612,7 +616,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
   {
     PlayerID player = defending ? m_defender : m_attacker;
     int rollCount = BattleCalculator.getRolls(units, player, defending);
-    return bridge.getRandom(Constants.MAX_DICE, rollCount);
+
+    return bridge.getRandomArray(Constants.MAX_DICE, rollCount, 
+                                 m_attacker, m_defender);
   }
 
   private int getCasualties(Collection units, boolean defending, DelegateBridge bridge, int[] dice)
@@ -672,16 +678,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     if(bombard.size() > 0 && attacked.size() > 0)
       fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, true, bridge, "Bombard");
-        markBombardingSources();
+    markBombardingSources();
   }
 
-    /**
-     * Marks all the naval origins as having been the source for a bombardment
-     */
-    private void markBombardingSources()
-    {
-        m_tracker.addPreviouslyNavalBombardmentSource(m_amphibiousAttackFrom);
-    }
+  /**
+   * Marks all the naval origins as having been the source for a bombardment
+   */
+  private void markBombardingSources()
+  {
+    m_tracker.addPreviouslyNavalBombardmentSource(m_amphibiousAttackFrom);
+  }
 
   private Collection getBombardingUnits()
   {
@@ -707,7 +713,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
       return;
 
     int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
-    DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
+    //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
+    // NEW VERSION
+    DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge, m_attacker, m_defender);
 
     if(dice.getHits() == 0)
     {
@@ -855,11 +863,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
   public String toString()
   {
     return
-    "Battle in:" + m_territory +
-    " attacked by:" + m_attackingUnits +
-    " from:" + m_attackingFrom +
-    " defender:" + m_defender +
-    " bombing:" + isBombingRun();
+      "Battle in:" + m_territory +
+      " attacked by:" + m_attackingUnits +
+      " from:" + m_attackingFrom +
+      " defender:" + m_defender +
+      " bombing:" + isBombingRun();
   }
 
 
@@ -875,20 +883,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
         lost.addAll(dependent);
     }
 
-        //if all the amphibious attacking land units are lost, then we are
-        //no longer a naval invasion
-        m_amphibiousLandAttackers.removeAll(lost);
-        if(m_amphibiousLandAttackers.isEmpty())
-          m_amphibious = false;
+    //if all the amphibious attacking land units are lost, then we are
+    //no longer a naval invasion
+    m_amphibiousLandAttackers.removeAll(lost);
+    if(m_amphibiousLandAttackers.isEmpty())
+      m_amphibious = false;
 
     if(lost.size() != 0)
     {
       m_attackingUnits.removeAll(lost);
-            remove(lost, bridge);
+      remove(lost, bridge);
     }
   }
 
-   /**
+  /**
    * Returns a map of transport -> collection of transported units.
    */
   private Map transporting(Collection units)

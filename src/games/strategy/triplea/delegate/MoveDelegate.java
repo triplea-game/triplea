@@ -1219,7 +1219,8 @@ public class MoveDelegate implements SaveableDelegate
    */
   private void fireAA(Territory territory, Collection units)
   {
-    DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge);
+    DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge, 
+                                    m_player, territory.getOwner());
     int hitCount = dice.getHits();
 
     if(hitCount == 0)
