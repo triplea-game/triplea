@@ -102,6 +102,7 @@ public class FlagIconImageFactory
 			e.printStackTrace(System.out);
 			System.out.println("try again");
 			load(observer);
+      return;
 		}
 
 		m_images.put("JapaneseSmall", japaneseSmall);

@@ -60,6 +60,31 @@ public class HistoryPanel extends JPanel
         m_tree.expandPath(new TreePath(m_currentNode.getPath() ));
         m_tree.setSelectionPath( new TreePath( m_currentNode.getPath() ));
 
+        m_tree.getModel().addTreeModelListener(
+    new TreeModelListener()
+    {
+      public void treeNodesChanged(TreeModelEvent e)
+      {
+        goToEnd();
+      }
+
+      public void treeNodesInserted(TreeModelEvent e)
+      {
+        goToEnd();
+      }
+
+      public void treeNodesRemoved(TreeModelEvent e)
+      {}
+
+      public void treeStructureChanged(TreeModelEvent e)
+      {
+        goToEnd();
+      }
+
+    }
+
+    );
+
         m_tree.addTreeSelectionListener(
         new TreeSelectionListener()
         {
@@ -95,7 +120,16 @@ public class HistoryPanel extends JPanel
     {
         HistoryNode last = m_data.getHistory().getLastNode();
         gotoNode(last);
+
+
+
+        TreePath path = new TreePath(last.getPath());
+        m_tree.expandPath(path);
+        m_tree.setSelectionPath(path);
+        System.out.println("at end 4654");
     }
+
+
 
 }
 
