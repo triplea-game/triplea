@@ -279,7 +279,17 @@ public class TripleAFrame extends JFrame
 
     menuBar.add(menuGame);
 
+    final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
 
+    soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
+    menuGame.add(soundCheckBox);
+    soundCheckBox.addActionListener(new ActionListener()
+                                    {
+                                      public void actionPerformed(ActionEvent e)
+                                      {
+                                        ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
+                                      }
+                                    });
 
 
     if(!m_game.getData().getProperties().getEditableProperties().isEmpty())
