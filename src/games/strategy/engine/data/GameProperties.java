@@ -68,6 +68,22 @@ public class GameProperties extends GameDataComponent
     return m_constantProperties.get(key);
   }
 
+  public boolean get(String key, boolean defaultValue)
+  {
+      Object value = get(key);
+      if(value == null)
+          return defaultValue;
+      return ((Boolean) value).booleanValue();
+  }
+  
+  public Object get(String key, Object defaultValue)
+  {
+      Object value = get(key);
+      if(value == null)
+          return defaultValue;
+      return defaultValue;
+  }
+  
   public void addEditableProperty(IEditableProperty property)
   {
     //add to the editable properties

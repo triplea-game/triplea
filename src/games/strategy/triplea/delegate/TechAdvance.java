@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import java.util.*;
 
+import games.strategy.triplea.Constants;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
@@ -44,12 +45,14 @@ public abstract class TechAdvance implements java.io.Serializable
     public static final TechAdvance HEAVY_BOMBER = new HeavyBomberAdvance();
     public static final TechAdvance DESTROYER_BOMBARD = new DestroyerBombardTechAdvance();
 
-    public static List getTechAdvances(boolean thirdEdition)
+    public static List getTechAdvances(GameData data)
     {
-        if(thirdEdition)
-            return s_3rdEditionAdvances;
-        else
+        boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
+        
+        if(fourthEdition)
             return s_4thEditionAdvances;
+        else
+            return s_3rdEditionAdvances;
     }
 
     //initialize the advances, note s_advances is made unmodifiable

@@ -177,7 +177,7 @@ public class TechnologyDelegate implements SaveableDelegate
 private List getAvailableAdvances()
 {
     //too many
-    Collection allAdvances = TechAdvance.getTechAdvances(true);
+    Collection allAdvances = TechAdvance.getTechAdvances(m_data);
     Collection playersAdvances = TechTracker.getTechAdvances(m_bridge.getPlayerID());
 
     List available = Util.difference(allAdvances, playersAdvances);
