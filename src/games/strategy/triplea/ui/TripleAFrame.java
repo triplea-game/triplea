@@ -151,8 +151,8 @@ public class TripleAFrame extends JFrame
 		);		
 		menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		
-		fileMenu.add( menuFileSave );		
-		fileMenu.addSeparator();
+		//fileMenu.add( menuFileSave );		
+		//fileMenu.addSeparator();
 		
 		/* Following change was made for personal convenience */		
 		JMenuItem menuFileExit = new JMenuItem( new AbstractAction("Exit")
@@ -176,7 +176,8 @@ public class TripleAFrame extends JFrame
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					String text = "TripleA version:" +  games.strategy.engine.EngineVersion.VERSION.toString() + "\nhttp://sourceforge.net/projects/triplea";
+					String text = "TripleA Engine version: " +  games.strategy.engine.EngineVersion.VERSION.toString() + "\n" + 
+					"Web: http://sourceforge.net/projects/triplea" ;
 					JOptionPane.showMessageDialog(TripleAFrame.this,text, "TripleA", JOptionPane.PLAIN_MESSAGE);
 				}
 			}
