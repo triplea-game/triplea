@@ -246,6 +246,7 @@ public class BattleDisplay extends JPanel
     JPanel defenderUnits = new JPanel();
     defenderUnits.setLayout(new BoxLayout(defenderUnits, BoxLayout.Y_AXIS));
     defenderUnits.add(getPlayerComponent(m_defender));
+    defenderUnits.add(Box.createGlue());
     JTable defenderTable = new BattleTable(m_defenderModel);
     defenderUnits.add(defenderTable);
     defenderUnits.add(defenderTable.getTableHeader());
@@ -311,16 +312,14 @@ public class BattleDisplay extends JPanel
     final int WIDTH = 100;
     final int HEIGHT = 100;
     Image finalImage = Util.createImage(WIDTH, HEIGHT);
+
+    Image territory;
     if(m_location.isWater())
-    {
-      finalImage.getGraphics().setColor(Color.blue);
-      finalImage.getGraphics().fillRect(0,0,WIDTH, HEIGHT);
-    }
+      territory = games.strategy.triplea.image.MapImage.getWaterImage();
     else
-    {
-      Image territory = games.strategy.triplea.image.MapImage.getTerritoryImage(m_location, m_defender);
-      finalImage.getGraphics().drawImage(territory,  0,0,WIDTH, HEIGHT, this);
-    }
+      territory = games.strategy.triplea.image.MapImage.getTerritoryImage(m_location, m_defender);
+
+    finalImage.getGraphics().drawImage(territory,  0, 0, WIDTH, HEIGHT, this);
 
     return new JLabel( new ImageIcon(finalImage));
 

@@ -174,18 +174,24 @@ public class MapImage
     }
   }
 
+
+  public static BufferedImage getWaterImage()
+  {
+    Image country = loadImage("countries/water.gif");
+
+    BufferedImage newImage = new BufferedImage(country.getWidth(s_observer), country.getHeight(s_observer), BufferedImage.TYPE_INT_ARGB);
+    newImage.getGraphics().drawImage(country, 0,0, s_observer);
+    return newImage;
+  }
+
   /**
    * Note, this method only works for land territories
    */
   public static BufferedImage getTerritoryImage(Territory territory, PlayerID id)
   {
-    //we dont store these yet in seperate files
-    if(territory.isWater())
-      throw new IllegalArgumentException("can't load sea images");
+    String name = territory.getName() +  ".png";
 
-    String name = territory.getName();
-
-    String fileName = "countries/" + name.replace(' ', '_')+  ".png";
+    String fileName = "countries/" + name.replace(' ', '_');
     Image country = loadImage(fileName);
 
     BufferedImage newImage = new BufferedImage(country.getWidth(s_observer), country.getHeight(s_observer), BufferedImage.TYPE_INT_ARGB);
