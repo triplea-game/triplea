@@ -23,39 +23,50 @@ import java.util.*;
  * @author lnxduk
  *
  */
-public class ChatHistory {
-	private Vector m_History;
+public class ChatHistory
+{
+	private ArrayList m_History;
+	private ArrayList m_CurrentHistory;
 	private int m_HistoryPosition;
-	ChatHistory(){
-		m_History=new Vector();
-		m_History.addElement("");
+	ChatHistory()
+	{
+		m_History=new ArrayList();
+		m_CurrentHistory=new ArrayList();
+		m_CurrentHistory.add("");
 		m_HistoryPosition=0;
-
 	}
-	boolean hasNextHistory(){
-		if(m_HistoryPosition<m_History.size()-1)
+	boolean hasNextHistory()
+	{
+		if(m_HistoryPosition<m_CurrentHistory.size()-1)
 			return true;
 		return false;
 	}
-	boolean hasPrevHistory(){
+	boolean hasPrevHistory()
+	{
 		if(m_HistoryPosition>0)
 			return true;
 		return false;
 	}
-	void setHistory(String s){
-		m_History.set(m_HistoryPosition,s);
+	void setHistory(String s)
+	{
+		m_CurrentHistory.set(m_HistoryPosition,s);
 	}
-	void nextHistory(){
+	void nextHistory()
+	{
 		m_HistoryPosition++;
 	}
-	void prevHistory(){
+	void prevHistory()
+	{
 		m_HistoryPosition--;
 	}
-	String getHistory(){
-		return m_History.elementAt(m_HistoryPosition).toString();
+	String getHistory()
+	{
+		return m_CurrentHistory.get(m_HistoryPosition).toString();
 	}
 	void insertHistory(String s){
 		m_History.add(s);
-		nextHistory();
+		m_HistoryPosition=m_History.size();
+		m_CurrentHistory=new ArrayList(m_History);
+		m_CurrentHistory.add("");
 	}
 }
