@@ -440,7 +440,13 @@ public class MoveDelegate implements SaveableDelegate
         int cost = getNeutralCharge(route);
         int resources = player.getResources().getQuantity(Constants.IPCS);
         if (resources - cost < 0)
-            return "Not enough money to pay for violating neutrality";
+        {
+            if(isFourEdition())
+                return "Cant violate neutrality";
+            else
+                return "Not enough money to pay for violating neutrality";
+            
+        }
 
 
         return null;
@@ -980,7 +986,7 @@ public class MoveDelegate implements SaveableDelegate
 
     private int getNeutralCharge(int numberOfTerritories)
     {
-
+        
         return numberOfTerritories * games.strategy.triplea.Properties.getNeutralCharge(m_data);
     }
 
