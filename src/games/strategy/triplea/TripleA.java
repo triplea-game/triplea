@@ -77,11 +77,15 @@ public class TripleA implements IGameLoader
     {
         try
         {
-            boolean fourthEdition = game.getData().getProperties().get(Constants.FOURTH_EDITION, false);
-            String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
-            TerritoryData.setFourthEdition(fourthEdition);
             
-            TerritoryImageFactory.setMapDir(mapDir);
+	    /*
+	       Retreive the map name from xml file
+	       This is the key for triplea to find the maps
+	    */
+            String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
+
+            TerritoryData.setMapDir(mapDir);          //tells TerritoryData where the txt files are
+	    TerritoryImageFactory.setMapDir(mapDir);  //tells the image factory where the images are
 
             TripleAFrame frame = new TripleAFrame(game, players);
 
