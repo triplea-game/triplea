@@ -412,6 +412,7 @@
 	    <connection t1="Mexico" t2="West US" />
 	    <connection t1="West US" t2="West Canada" />
 	    <connection t1="West US Sea Zone" t2="West US" />
+		<connection t1="West US Sea Zone" t2="Mexico Sea Zone" />
 	    <connection t1="Hawaii Sea Zone" t2="Wake Island Sea Zone" />
 	    <connection t1="Hawaii Sea Zone" t2="Solomon Islands Sea Zone" />
 	    <connection t1="West Canada" t2="East Canada" />
