@@ -59,12 +59,14 @@ public class BattleCalculator
   {
     Collection casualties = new ArrayList();
     int hits = dice.getHits();
-    Object[] planesArray = planes.toArray();
+    List planesList = new ArrayList(planes);
 
     // We need to choose which planes die randomnly
     for (int i = 0; i < hits; i++)
     {
-      Object unit = planesArray[bridge.getRandom(planesArray.length, "Deciding which planes should die due to AA fire")];
+      int pos = bridge.getRandom(planesList.size(), "Deciding which planes should die due to AA fire");
+      Object unit = planesList.get(pos);
+      planesList.remove(pos);
       casualties.add(unit);
     }
     return casualties;
