@@ -275,7 +275,9 @@ public class BattleDisplay extends JPanel
     add(diceAndSteps, BorderLayout.CENTER);
 
     add(m_actionButton, BorderLayout.SOUTH);
+    m_actionButton.setBackground(Color.lightGray.darker());
     m_actionButton.setEnabled(false);
+    m_actionButton.setForeground(Color.white);
   }
 
   public void setStep(BattleMessage message)
