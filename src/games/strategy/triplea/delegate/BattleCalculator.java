@@ -78,13 +78,13 @@ public class BattleCalculator
     if ( ! (casualties.size() == dice.getHits()) )
     {
       bridge.sendMessage( new StringMessage("Wrong number of casualties selected", true), player);
-      selectCasualties(player, targets, bridge,text, data, dice);
+      return selectCasualties(player, targets, bridge,text, data, dice);
     }
     //check we have enough of each type
     if(!targets.containsAll(casualties))
     {
       bridge.sendMessage( new StringMessage("Cannot remove enough units of those types", true), player);
-      selectCasualties(player, targets, bridge,text, data, dice);
+      return selectCasualties(player, targets, bridge,text, data, dice);
     }
     return casualties;
   }
