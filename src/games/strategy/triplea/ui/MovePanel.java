@@ -274,8 +274,8 @@ public class MovePanel extends ActionPanel
                 owned.addAll(getUnitsThatCanBeUnload(route));
             }
         } else if (route.crossesWater()) {
-	  // Eliminate land units if starting from land and
-	  // crossing water.
+	  // Eliminate land units if starting from land, crossing water, and
+	  // back to land
 	  owned = Match.getMatches(owned, Matches.UnitIsAir);
 	}
 
