@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Match.java
  *
  * Created on November 8, 2001, 4:12 PM
@@ -16,14 +30,14 @@ import java.util.*;
  *
  * Static utility methods allow you to find what elements in a collection satisfy a match, <br>
  * count the number of matches, see if any elements match etc.
- * 
- * 
+ *
+ *
  * @author  Sean Bridges
  * @version 1.0
  */
-public abstract class Match 
+public abstract class Match
 {
-	
+
 	/**
 	 * A match that always returns true.
 	 */
@@ -32,7 +46,7 @@ public abstract class Match
 	 * A match that always returns false.
 	 */
 	public static final Match NEVER_MATCH = new NeverMatch();
-	
+
 	/**
 	 * Returns the elements of the collection that match.
 	 */
@@ -48,10 +62,10 @@ public abstract class Match
 		}
 		return matches;
 	}
-	
+
 	/**
 	 * Only returns the first n matches.
-	 * If n matches cannot be found will return all matches that 
+	 * If n matches cannot be found will return all matches that
 	 * can be found.
 	 */
 	public static final List getNMatches(Collection collection, int max, Match aMatch)
@@ -60,7 +74,7 @@ public abstract class Match
 			return Collections.EMPTY_LIST;
 		if(max < 0)
 			throw new IllegalArgumentException("max must be positive, instead its:" + max);
-		
+
 		List matches = new ArrayList(max);
 		Iterator iter = collection.iterator();
 		while(iter.hasNext())
@@ -73,7 +87,7 @@ public abstract class Match
 		}
 		return matches;
 	}
-	
+
 	/**
 	 * returns true if all elements in the collection match.
 	 */
@@ -120,7 +134,6 @@ public abstract class Match
 	public static final int countMatches(Collection collection, Match aMatch)
 	{
 		int count = 0;
-		Collection matches = new ArrayList();
 		Iterator iter = collection.iterator();
 		while(iter.hasNext())
 		{
@@ -131,7 +144,7 @@ public abstract class Match
 		return count;
 	}
 
-	
+
 	/**
 	 * Subclasses must override this method.
 	 * Returns true if the object matches some condition.
@@ -141,17 +154,17 @@ public abstract class Match
 
 class NeverMatch extends Match
 {
-	public boolean match(Object o) 
+	public boolean match(Object o)
 	{
 		return false;
-	}	
+	}
 }
 
 class AlwaysMatch extends Match
 {
-	public boolean match(Object o) 
+	public boolean match(Object o)
 	{
 		return true;
 	}
-	
+
 }
