@@ -296,11 +296,10 @@ class MessageListener implements IMessageListener
 	private ArrayList messages = new ArrayList();
 	private ArrayList senders = new ArrayList();
 	private Object lock = new Object();
-	private String name;
 
 	public MessageListener(String name)
 	{
-		this.name = name;
+		
 	}
 
 

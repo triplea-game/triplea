@@ -21,6 +21,7 @@ import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.engine.delegate.DelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.*;
+import games.strategy.util.Match;
 
 /**
  * Used to store information about a dice roll.
@@ -64,6 +65,7 @@ public class DiceRoll implements java.io.Serializable
                                   PlayerID player,
                                   DelegateBridge bridge)
   {
+      
     String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
@@ -73,6 +75,9 @@ public class DiceRoll implements java.io.Serializable
     }
 
     
+    int artillerySupportAvailable = 0;
+    if(!defending)
+        artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
     
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
 
@@ -97,7 +102,14 @@ public class DiceRoll implements java.io.Serializable
         if(defending)
           strength = ua.getDefense(current.getOwner());
         else
+        {
           strength = ua.getAttack(current.getOwner());
+          if(ua.isArtillerySupportable() && artillerySupportAvailable > 0)
+          {
+            strength++;
+            artillerySupportAvailable--;
+          }
+        }
 
         sortedDice[strength - 1].add(new Integer(dice[diceIndex]));
 

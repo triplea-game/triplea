@@ -55,6 +55,8 @@ public class UnitAttatchment extends DefaultAttatchment
   private boolean m_isStrategicBomber = false;
   private boolean m_isTwoHit = false;
   private boolean m_isDestroyer = false;
+  private boolean m_isArtillery = false;
+  private boolean m_isArtillerySupportable = false;
 
   //-1 if cant transport
   private int m_transportCapacity = -1;
@@ -230,6 +232,29 @@ public class UnitAttatchment extends DefaultAttatchment
     m_carrierCost = getInt(s);
   }
 
+  public boolean isArtillery()
+  {
+    return m_isArtillery;
+  }
+
+  public void setArtillery(String s)
+  {
+    m_isArtillery = getBool(s);
+  }
+  
+  public boolean isArtillerySupportable()
+  {
+    return m_isArtillerySupportable;
+  }
+
+  public void setArtillerySupportable(String s)
+  {
+    m_isArtillerySupportable = getBool(s);
+  }
+
+  
+  
+  
   public int getCarrierCost()
   {
     return m_carrierCost;

@@ -156,40 +156,7 @@ public class ServerGame implements IGame
         startNextStep();
     }
 
-    /**
-     * get the players who are involved in the secure dice roll
-     * this only really works for two players games, try to find one local
-     * and one remote player
-     * @return an array of two game players
-     */
-
-    private PlayerID[] getDicePlayers()
-    {
-        PlayerID[] dicePlayers = new PlayerID[2];
-        //all players are local
-        if (m_remotePlayers.isEmpty())
-        {
-            Iterator players = m_gamePlayers.keySet().iterator();
-            dicePlayers[0] = (PlayerID) players.next();
-            dicePlayers[1] = (PlayerID) players.next();
-
-        }
-        //all players are remote
-        else if (m_gamePlayers.isEmpty())
-        {
-            Iterator players = m_remotePlayers.keySet().iterator();
-            dicePlayers[0] = m_data.getPlayerList().getPlayerID( (String) players.next());
-            dicePlayers[1] = m_data.getPlayerList().getPlayerID( (String) players.next());
-        }
-        //one from each
-        else
-        {
-            dicePlayers[0] = (PlayerID) m_gamePlayers.keySet().iterator().next();
-            dicePlayers[1] = m_data.getPlayerList().getPlayerID( (String) m_remotePlayers.keySet().iterator().next());
-        }
-
-        return dicePlayers;
-    }
+  
 
     private void startNextStep()
     {

@@ -54,7 +54,6 @@ public class GameTypePanel extends JPanel
   private JButton m_fileButton = new JButton();
   private BorderLayout borderLayout2 = new BorderLayout();
   private FlowLayout flowLayout2 = new FlowLayout();
-  private ButtonGroup m_newLoadButtonGroup = new ButtonGroup();
   private JPanel m_gameTypePanel = new JPanel();
   private Border border3;
   private TitledBorder titledBorder2;

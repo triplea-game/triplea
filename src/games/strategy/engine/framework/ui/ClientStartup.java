@@ -241,13 +241,7 @@ public class ClientStartup extends JPanel
     m_launcher = launcher;
   }
 
-  private Action m_cancelAction = new AbstractAction("Quit")
-  {
-    public void actionPerformed(ActionEvent e)
-    {
-      System.exit(0);
-    }
-  };
+
 
   private IMessageListener m_messageListener = new IMessageListener()
   {

@@ -33,7 +33,7 @@ import games.strategy.engine.data.*;
 public class GameDataManagerTest extends TestCase
 {
 
-  private GameData m_dataSource;
+  
 
   public GameDataManagerTest(String name)
   {
@@ -48,7 +48,7 @@ public class GameDataManagerTest extends TestCase
     //get the source  data
     InputStream input= url.openStream();
 
-    m_dataSource = (new GameParser()).parse(input);
+     (new GameParser()).parse(input);
 
   }
 

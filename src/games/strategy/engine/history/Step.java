@@ -20,10 +20,8 @@ import games.strategy.engine.data.*;
 
 public class Step extends IndexedHistoryNode
 {
-    private String m_stepName;
-    private String m_delegateName;
     private PlayerID m_player;
-    private String m_displayName;
+
 
     /** Creates a new instance of StepChangedMessage */
 
@@ -32,10 +30,8 @@ public class Step extends IndexedHistoryNode
   {
     super(displayName, changeStartIndex, true);
 
-    m_delegateName = delegateName;
+
     m_player = player;
-    m_stepName = stepName;
-    m_displayName = displayName;
   }
 
   public PlayerID getPlayerID()

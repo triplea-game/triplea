@@ -171,19 +171,7 @@ public class IntTextField extends JTextField
 		return value <= m_max && value >= m_min;
 	}	
 	
-	private boolean isGood(String value)
-	{
-		try
-		{
-			int asInt = Integer.parseInt(value);
-			return isGood(asInt);
-		}
-		catch(NumberFormatException e)
-		{
-			return false;
-		}
-		
-	}
+
 	
 	/**
 	 * Make sure that no non numeric data is typed.

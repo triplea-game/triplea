@@ -78,6 +78,9 @@ public class Matches
 		}
 	};
 
+	
+	
+	
 	public static final Match UnitIsSub = new Match()
 	{
 		public boolean match(Object obj)
@@ -328,11 +331,22 @@ public class Matches
 	    public boolean match(Object obj)
 	    {
 			UnitType type = ((Unit) obj).getUnitType();
-			return type.getName().equals(Constants.ARTILLERY);
+			UnitAttatchment ua = UnitAttatchment.get(type);
+			return ua.isArtillery();
 	    }
 	};
 	
+	public static final Match UnitIsArtillerySupportable = new Match()
+	{
+	    public boolean match(Object obj)
+	    {
+			UnitType type = ((Unit) obj).getUnitType();
+			UnitAttatchment ua = UnitAttatchment.get(type);
+			return ua.isArtillerySupportable();
+	    }
+	};
 
+	
 	public static final Match TerritoryIsWater = new Match()
 	{
 		public boolean match(Object o)

@@ -38,7 +38,7 @@ public class ManagerTest extends TestCase
 	private IMessenger m_client1;
 	private IMessenger m_client2;
 
-	private IMessageManager m_serverMM;
+	
 	private IMessageManager m_client1MM;
 	private IMessageManager m_client2MM;
 
@@ -65,7 +65,7 @@ public class ManagerTest extends TestCase
 		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
 		m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
 
-		m_serverMM = new MessageManager(m_server);
+		new MessageManager(m_server);
 		m_server.flush();
 		m_client1MM = new MessageManager(m_client1);
 		m_client1.flush();
