@@ -30,6 +30,7 @@ import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.*;
 import games.strategy.engine.random.*;
+import games.strategy.engine.gamePlayer.*;
 
 
 /**
@@ -41,6 +42,7 @@ public class TripleA implements IGameLoader
 {
   private static final String HUMAN_PLAYER_TYPE = "Human";
   private static final String COMPUTER_PLAYER_TYPE = "Computer";
+  private static final String CLIENT_PLAYER_TYPE = "Client";
 
 
 
@@ -56,7 +58,7 @@ public class TripleA implements IGameLoader
       {
         throw new IllegalStateException("TODO - create a GamePlayer instance for computer players here");
       }
-      else if (type.equals(HUMAN_PLAYER_TYPE) )
+      else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
       {
         TripleAPlayer player = new TripleAPlayer(name);
         players.add(player);
@@ -120,8 +122,9 @@ public class TripleA implements IGameLoader
 		Iterator iter = players.iterator();
 		while(iter.hasNext())
 		{
-			TripleAPlayer player = (TripleAPlayer) iter.next();
-			player.setFrame(frame);
+      GamePlayer player = (GamePlayer) iter.next();
+      if(player instanceof TripleAPlayer)
+         ((TripleAPlayer) player).setFrame(frame);
 		}
 	}
 
@@ -143,7 +146,7 @@ public class TripleA implements IGameLoader
 	 */
 	public String[] getClientPlayerTypes()
 	{
-		String[] players = {"Client"};
+		String[] players = {CLIENT_PLAYER_TYPE};
 		return players;
 	}
 }

@@ -49,6 +49,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.delegate.*;
 import games.strategy.engine.history.*;
 import games.strategy.triplea.ui.history.*;
+import games.strategy.engine.gamePlayer.*;
 
 /**
  *
@@ -555,9 +556,11 @@ public class TripleAFrame extends JFrame
     Iterator iter = m_localPlayers.iterator();
     while(iter.hasNext())
     {
-      TripleAPlayer player = (TripleAPlayer) iter.next();
-      if(player.getID().equals(id))
-        return true;
+      GamePlayer gamePlayer = (GamePlayer) iter.next();
+      if(gamePlayer.getID().equals(id) && gamePlayer instanceof TripleAPlayer)
+      {
+          return true;
+      }
     }
     return false;
   }
