@@ -172,7 +172,7 @@ public class GameRunner
         if(!f.exists())
         {
             System.err.println("Could not find root folder, does  not exist:" + f);
-            return new File(".");
+            return new File(System.getProperties().getProperty("user.dir"));
         }
         
         return f;
