@@ -79,6 +79,7 @@ public class ChangeFactory
 
 	public static Change moveUnits(Territory start, Territory end, Collection units)
 	{
+    units = new ArrayList(units);
 		List changes = new ArrayList(2);
 		changes.add(removeUnits(start,units));
 		changes.add(addUnits(end, units));
@@ -105,10 +106,15 @@ public class ChangeFactory
 		return new SetPropertyChange(property, value, data.getProperties());
 	}
 
-    public static Change unitsHit(IntegerMap newHits)
-    {
-        return new UnitHitsChange(newHits);
-    }
+  public static Change unitsHit(IntegerMap newHits)
+  {
+    return new UnitHitsChange(newHits);
+  }
+
+  public static Change attatchmentPropertyChange(Attatchment attatchment, String newValue, String property)
+  {
+    return new ChangeAttatchmentChange(attatchment, newValue, property);
+  }
 
 	/** Creates new ChangeFactory.  No need */
     private ChangeFactory() { }
@@ -170,7 +176,7 @@ class RemoveUnits extends Change
 	RemoveUnits(String name, Collection units)
 	{
 		 m_units = Collections.unmodifiableCollection(units);
-         m_name = name;
+     m_name = name;
 	}
 
 	RemoveUnits(String name, Collection units, boolean isCasualty)
@@ -473,21 +479,23 @@ class ProductionFrontierChange extends Change
 
 class ChangeAttatchmentChange extends Change
 {
-  private final Attatchment m_attatchment;
+  private final Attatchable m_attatchedTo;
+  private final String m_attatchmentName;
   private final String m_newValue;
   private String m_oldValue;
   private final String m_property;
 
   public ChangeAttatchmentChange(Attatchment attatchment, String newValue, String property)
   {
-    m_attatchment = attatchment;
+    m_attatchedTo = attatchment.getAttatchedTo();
+    m_attatchmentName = attatchment.getName();
     m_newValue = newValue;
     m_property = property;
 
     try
      {
-       Method getter = m_attatchment.getClass().getMethod("get" + capitalizeFirstLetter(property), new Class[0]);
-       m_oldValue = (String) getter.invoke(m_attatchment, new Object[0]);
+       Method getter = attatchment.getClass().getMethod("get" + capitalizeFirstLetter(property), new Class[0]);
+       m_oldValue = (String) getter.invoke(attatchment, new Object[0]);
      }
      catch(Exception e)
      {
@@ -495,9 +503,10 @@ class ChangeAttatchmentChange extends Change
      }
   }
 
-  public ChangeAttatchmentChange(Attatchment attatchment, String newValue, String oldValue, String property)
+  public ChangeAttatchmentChange(Attatchable attatchTo, String attatchmentName, String newValue, String oldValue, String property)
   {
-    m_attatchment = attatchment;
+    m_attatchmentName = attatchmentName;
+    m_attatchedTo = attatchTo;
     m_newValue = newValue;
     m_oldValue = oldValue;
     m_property = property;
@@ -517,9 +526,10 @@ class ChangeAttatchmentChange extends Change
   {
     try
     {
-      Method setter = m_attatchment.getClass().getMethod("set" + capitalizeFirstLetter(m_property), new Class[]
+      Attatchment attatchment = m_attatchedTo.getAttatchment(m_attatchmentName);
+      Method setter = attatchment.getClass().getMethod("set" + capitalizeFirstLetter(m_property), new Class[]
         {String.class});
-      setter.invoke(m_attatchment, new Object[] {m_newValue});
+      setter.invoke(attatchment, new Object[] {m_newValue});
     }
     catch(Exception e)
     {
@@ -530,7 +540,7 @@ class ChangeAttatchmentChange extends Change
 
   public Change invert()
   {
-    return new ChangeAttatchmentChange(m_attatchment, m_oldValue, m_newValue, m_property);
+    return new ChangeAttatchmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
   }
 
 

@@ -40,7 +40,7 @@ public class ListProperty extends AEditableProperty
     m_value = defaultValue;
   }
 
-  public String getValue()
+  public Object getValue()
   {
     return m_value;
   }

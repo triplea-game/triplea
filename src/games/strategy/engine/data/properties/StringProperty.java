@@ -44,7 +44,7 @@ public class StringProperty extends AEditableProperty
     return text;
   }
 
-  public String getValue()
+  public Object getValue()
   {
     return m_value;
   }

@@ -447,7 +447,7 @@ public class GameParser
 
     if(childName.equals("boolean"))
     {
-      editableProperty = new BooleanProperty(name, Boolean.getBoolean(defaultValue));
+      editableProperty = new BooleanProperty(name, Boolean.valueOf(defaultValue).booleanValue());
     }
     else if(childName.equals("list"))
     {
@@ -520,8 +520,9 @@ public class GameParser
       Delegate delegate = getDelegate(current, "delegate", true);
       PlayerID player = getPlayerID(current, "player", false);
       String name = current.getAttribute("name");
+      String displayName = null;
 
-      GameStep step = new GameStep(name, player, delegate, data);
+      GameStep step = new GameStep(name, displayName, player, delegate, data);
 
       if(current.hasAttribute("maxRunCount"))
       {
@@ -655,6 +656,8 @@ public class GameParser
       //attatch
       String name = current.getAttribute("name");
       attatchable.addAttatchment(name, attatchment);
+      attatchment.setAttatchedTo(attatchable);
+      attatchment.setName(name);
     }
   }
 

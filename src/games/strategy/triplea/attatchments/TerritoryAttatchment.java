@@ -67,10 +67,11 @@ public class TerritoryAttatchment extends DefaultAttatchment
 	private boolean m_originalFactory = false;
 	private int m_production = 2;
 
-	/** Creates new TerritoryAttatchment */
-    public TerritoryAttatchment()
-	{
-    }
+
+  /** Creates new TerritoryAttatchment */
+  public TerritoryAttatchment()
+  {
+  }
 
 	public void setCapital(String value)
 	{

@@ -40,7 +40,7 @@ public class NumberProperty extends AEditableProperty
     m_value = 0;
   }
 
-  public String getValue()
+  public Object getValue()
   {
     return "" + m_value;
   }

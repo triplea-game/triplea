@@ -141,7 +141,6 @@ public class ServerGame implements IGame
      */
     public void startGame()
     {
-        m_data.getHistory().getHistoryWriter().startNextRound(1);
         while (true)
             startNextStep();
     }
@@ -291,9 +290,10 @@ public class ServerGame implements IGame
     {
         String stepName = getCurrentStep().getName();
         String delegateName = getCurrentStep().getDelegate().getName();
+        String displayName = getCurrentStep().getDisplayName();
         PlayerID id = getCurrentStep().getPlayerID();
 
-        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, id);
+        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, id, displayName);
 
         Iterator iter = m_gameStepListeners.iterator();
         while (iter.hasNext())
@@ -302,7 +302,7 @@ public class ServerGame implements IGame
             listener.gameStepChanged(stepName, delegateName, id, m_data.getSequence().getRound());
         }
 
-        StepChangedMessage msg = new StepChangedMessage(stepName, delegateName, id, m_data.getSequence().getRound());
+        StepChangedMessage msg = new StepChangedMessage(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);
         m_messenger.broadcast(msg);
     }
 

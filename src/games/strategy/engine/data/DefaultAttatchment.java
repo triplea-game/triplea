@@ -31,6 +31,8 @@ public class DefaultAttatchment implements Attatchment
 {
 
 	private GameData m_data;
+  private Attatchable m_attatchedTo;
+  private String m_name;
 
 	/**
 	 * Throws an error if format is invalid.
@@ -78,10 +80,32 @@ public class DefaultAttatchment implements Attatchment
 	{
 	}
 
-	/** Creates new Attatchment */
-    public DefaultAttatchment()
-	{
+  public Attatchable getAttatchedTo()
+  {
+    return m_attatchedTo;
+  }
 
-    }
+  public void setAttatchedTo(Attatchable attatchable)
+  {
+    m_attatchedTo = attatchable;
+  }
+
+
+  /** Creates new Attatchment */
+  public DefaultAttatchment()
+  {
+
+  }
+  public String getName()
+  {
+    return m_name;
+  }
+
+  public void setName(String aString)
+  {
+    m_name = aString;
+  }
+
+
 
 }

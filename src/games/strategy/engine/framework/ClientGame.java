@@ -134,7 +134,7 @@ public class ClientGame implements IGame
             m_currentRound = stepChange.getRound();
             m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
         }
-        m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer());
+        m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getDisplayName());
 
         notifyGameStepChanged(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getRound());
       }

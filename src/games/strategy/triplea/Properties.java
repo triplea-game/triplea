@@ -25,31 +25,44 @@ import games.strategy.engine.data.*;
 public class Properties implements Constants
 {
 
-	public static int getNeutralCharge(GameData data)
-	{
-        try
-        {
-          return Integer.parseInt((String) data.getProperties().get(NEUTRAL_CHARGE_PROPERTY) );
-        } catch(Exception e)
-        {
-          return 3;
-        }
-	}
-
-
-    public static int getFactoriesPerCountry(GameData data)
+  public static int getNeutralCharge(GameData data)
+  {
+    try
     {
-      try
-      {
-        return Integer.parseInt((String) data.getProperties().get(FACTORIES_PER_COUNTRY_PROPERTY) );
-      } catch(Exception e)
-      {
-        return 1;
-      }
+      return Integer.parseInt( (String) data.getProperties().get(NEUTRAL_CHARGE_PROPERTY));
+    }
+    catch (Exception e)
+    {
+      return 3;
+    }
+  }
 
+  public static int getFactoriesPerCountry(GameData data)
+  {
+    try
+    {
+      return Integer.parseInt( (String) data.getProperties().get(FACTORIES_PER_COUNTRY_PROPERTY));
+    }
+    catch (Exception e)
+    {
+      return 1;
     }
 
-    private Properties()
+  }
+
+  public static boolean getTwoHitBattleships(GameData data)
+  {
+    try
     {
+      return ( (Boolean) data.getProperties().get(TWO_HIT_BATTLESHIP_PROPERTY) ).booleanValue();
     }
+    catch(Exception e)
+    {
+      return false;
+    }
+  }
+
+  private Properties()
+  {
+  }
 }

@@ -36,16 +36,18 @@ class StepChangedMessage implements Serializable
 	private String m_stepName;
 	private String m_delegateName;
 	private PlayerID m_player;
-    private int m_round;
+  private int m_round;
+  private String m_displayName;
 
 	/** Creates a new instance of StepChangedMessage */
-    StepChangedMessage(String stepName, String delegateName, PlayerID player, int round)
-	{
-		m_delegateName = delegateName;
-		m_player = player;
-		m_stepName = stepName;
-        m_round = round;
-    }
+  StepChangedMessage(String stepName, String delegateName, PlayerID player, int round, String displayName)
+  {
+    m_delegateName = delegateName;
+    m_player = player;
+    m_stepName = stepName;
+    m_round = round;
+    m_displayName = displayName;
+  }
 
 	public String getStepName()
 	{
@@ -62,8 +64,13 @@ class StepChangedMessage implements Serializable
 		return m_player;
 	}
 
-    public int getRound()
-    {
-      return m_round;
-    }
+  public int getRound()
+  {
+    return m_round;
+  }
+
+  public String getDisplayName()
+  {
+    return m_displayName;
+  }
 }

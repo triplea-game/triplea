@@ -22,8 +22,6 @@ public class BooleanProperty extends AEditableProperty
 {
   private boolean mValue;
 
-  private JComboBox m_editor = new JComboBox(new String[] {"Enable", "Disable"});
-
   public BooleanProperty(String name, boolean defaultValue)
   {
     super(name);
@@ -31,9 +29,9 @@ public class BooleanProperty extends AEditableProperty
   }
 
 
-  public String getValue()
+  public Object getValue()
   {
-    return mValue ? Boolean.TRUE.toString() : Boolean.FALSE.toString();
+    return mValue ? Boolean.TRUE : Boolean.FALSE;
   }
 
   /**
@@ -42,13 +40,13 @@ public class BooleanProperty extends AEditableProperty
    */
   public JComponent getEditorComponent()
   {
-    final JComboBox box = new JComboBox(new String[] {"Enable", "Disable"});
-    box.setSelectedIndex(mValue ? 0 : 1);
+    final JCheckBox box = new JCheckBox("");
+    box.setSelected(mValue);
     box.addActionListener(new ActionListener()
     {
                           public void actionPerformed(ActionEvent e)
                           {
-                            mValue = box.getSelectedIndex() == 0;
+                            mValue = box.isSelected();
                           }
     }
 

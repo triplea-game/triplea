@@ -14,7 +14,7 @@ import javax.swing.JComponent;
 public interface IEditableProperty
 {
   public String getName();
-  public String getValue();
+  public Object getValue();
 
   /**
    *

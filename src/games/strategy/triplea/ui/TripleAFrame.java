@@ -680,6 +680,8 @@ public class TripleAFrame extends JFrame
       getContentPane().removeAll();
       getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
 
+      m_mapPanel.setRoute(null);
+
       validate();
   }
 

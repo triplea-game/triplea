@@ -443,7 +443,8 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     Collection units = player.getUnits().getUnits();
     if(!units.isEmpty())
     {
-        m_bridge.getHistoryWriter().startEvent(Formatter.unitsToTextNoOwner(units) + " produced but not placed");
+        m_bridge.getHistoryWriter().startEvent(Formatter.unitsToTextNoOwner(units) + " were produced but were not placed");
+        m_bridge.getHistoryWriter().setRenderingData(units);
 
       Change change = ChangeFactory.removeUnits( player, units);
       m_bridge.addChange(change);

@@ -40,7 +40,8 @@ public class GameObjectStreamData implements Serializable
 		   obj instanceof PlayerID ||
 		   obj instanceof UnitType ||
 		   obj instanceof Territory ||
-		   obj instanceof ProductionRule;
+		   obj instanceof ProductionRule ||
+       obj instanceof Attatchment;
 	}
 
 	private String m_name;
@@ -94,4 +95,3 @@ public class GameObjectStreamData implements Serializable
 		else throw new IllegalArgumentException("Type not known:" + m_type);
 	}
 }
-

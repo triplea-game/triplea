@@ -37,21 +37,17 @@ public class GameStep extends GameDataComponent
   private int m_runCount = 0;
   private int m_maxRunCount = -1;
 
-  /** Creates new GameStep */
-  public GameStep(String name, PlayerID player, Delegate delegate, GameData data)
-  {
-    this(name, name, player, delegate, data);
-  }
+
 
   /** Creates new GameStep */
-    public GameStep(String name, String displayName, PlayerID player, Delegate delegate, GameData data)
+  public GameStep(String name, String displayName, PlayerID player, Delegate delegate, GameData data)
   {
     super(data);
     m_name = name;
     m_displayName = displayName;
     m_player = player;
     m_delegate = delegate.getName();
-    }
+  }
 
   public String getName()
   {
@@ -116,5 +112,10 @@ public class GameStep extends GameDataComponent
     }
 
     return m_hashCode;
+  }
+
+  public String getDisplayName()
+  {
+    return getDelegate().getDisplayName();
   }
 }

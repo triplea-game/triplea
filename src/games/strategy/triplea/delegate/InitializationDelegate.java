@@ -28,6 +28,8 @@ import java.io.Serializable;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
+import games.strategy.triplea.*;
+import games.strategy.triplea.attatchments.*;
 
 
 /**
@@ -62,6 +64,16 @@ public class InitializationDelegate implements Delegate
 
   protected void init(GameData data, DelegateBridge aBridge)
   {
+    boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
+    UnitAttatchment battleShipAttatchment = UnitAttatchment.get(data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE));
+    boolean defaultEnabled = battleShipAttatchment.isTwoHit();
+
+    if(userEnabled != defaultEnabled)
+    {
+      aBridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
+      aBridge.addChange(ChangeFactory.attatchmentPropertyChange(battleShipAttatchment, "" + userEnabled, Constants.TWO_HIT));
+    }
+
     OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
     Iterator territories = data.getMap().iterator();
     while(territories.hasNext())

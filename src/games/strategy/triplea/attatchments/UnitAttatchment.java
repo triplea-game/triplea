@@ -70,9 +70,11 @@ public class UnitAttatchment extends DefaultAttatchment
   private int m_attack = 0;
   private int m_defense = 0;
 
+
   /** Creates new UnitAttatchment */
-    public UnitAttatchment()
-  {}
+  public UnitAttatchment()
+  {
+  }
 
   private TechTracker getTechTracker()
   {
@@ -174,6 +176,11 @@ public class UnitAttatchment extends DefaultAttatchment
   public void setIsTwoHit(String s)
   {
       m_isTwoHit = getBool(s);
+  }
+
+  public String getIsTwoHit()
+  {
+    return "" + m_isTwoHit;
   }
 
   public boolean isTwoHit()
