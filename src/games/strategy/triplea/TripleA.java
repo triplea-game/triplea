@@ -27,6 +27,7 @@ import java.util.*;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
+import games.strategy.triplea.troxAI.TroxAIPlayer;
 import games.strategy.triplea.ui.TerritoryData;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.*;
@@ -59,7 +60,7 @@ public class TripleA implements IGameLoader
             String type = (String) playerNames.get(name);
             if (type.equals(COMPUTER_PLAYER_TYPE))
             {
-                throw new IllegalStateException("TODO - create a GamePlayer instance for computer players here");
+                players.add(new TroxAIPlayer(name));
             } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
             {
                 TripleAPlayer player = new TripleAPlayer(name);
@@ -83,13 +84,6 @@ public class TripleA implements IGameLoader
             TerritoryImageFactory.setMapDir(mapDir);
 
             TripleAFrame frame = new TripleAFrame(game, players);
-
-            //the pbem roller needs to know about the ui.
-            /*if (game.getRandomSource() != null && game.getRandomSource() instanceof IronyGamesDiceRollerRandomSource)
-            {
-                ((IronyGamesDiceRollerRandomSource) game.getRandomSource()).setUI(frame);
-            }*/
-
 
             frame.setVisible(true);
 
