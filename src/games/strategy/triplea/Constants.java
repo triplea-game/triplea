@@ -30,9 +30,9 @@ package games.strategy.triplea;
 public interface Constants
 {
   //Player names
-  public static final String AMERICANS = "Americans";
-  public static final String BRITISH = "British";
-  public static final String GERMANS = "Germans";
+  public static final String AMERICANS= "Americans";
+  public static final String BRITISH  = "British";
+  public static final String GERMANS  = "Germans";
   public static final String JAPANESE = "Japanese";
   public static final String RUSSIANS = "Russians";
   public static final String ITALIANS = "Italians";
@@ -41,7 +41,7 @@ public interface Constants
   public static final String TECH_ATTATCHMENT_NAME = "techAttatchment";
   public static final String TERRITORY_ATTATCHMENT_NAME = "territoryAttatchment";
   public static final String IPCS = "IPCs";
-  public static final int MAX_DICE = 6;
+  public static final int    MAX_DICE = 6;
   public static final String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
   public static final String FACTORIES_PER_COUNTRY_PROPERTY ="maxFactoriesPerTerritory";
   public static final String TWO_HIT_BATTLESHIP_PROPERTY = "Two hit battleship";
@@ -73,9 +73,8 @@ public interface Constants
   public static final String ARTILLERY = "artillery";
   public static final String DESTROYER = "destroyer";
 
-  // MAP_DIR =  /games/strategy/triplea/image/images/maps/
-  
-  public static final String MAP_DIR = java.io.File.separator+"games"+java.io.File.separator+"strategy"+java.io.File.separator+"triplea"+java.io.File.separator+"image"+java.io.File.separator+"images"+java.io.File.separator+"maps"+java.io.File.separator;
+  public static final String MAP_DIR = "/games/strategy/triplea/image/images/maps/";
+  public static final String MAP_SKINS_DIR = java.io.File.separator+"games"+java.io.File.separator+"strategy"+java.io.File.separator+"triplea"+java.io.File.separator+"image"+java.io.File.separator+"images"+java.io.File.separator+"maps"+java.io.File.separator;
   
   public static final String LARGE_MAP_FILENAME = "largeMap.gif";
   public static final String MAP_NAME = "mapName";
