@@ -290,6 +290,8 @@ class Connection
                 {
                     if (!m_shutdown)
                     {
+                        //these normally occur when the socket is closed
+                        //ignore
                         if (!(ioe instanceof EOFException))
                             ioe.printStackTrace();
                         shutDown();

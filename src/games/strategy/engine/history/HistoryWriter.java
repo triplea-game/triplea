@@ -35,7 +35,7 @@ public class HistoryWriter implements java.io.Serializable
   /**
    * Can only be called if we are currently in a round or a step
    */
-  public void startNextStep(String stepName, String delegateName, PlayerID player, String stepDisplayName)
+  public synchronized void startNextStep(String stepName, String delegateName, PlayerID player, String stepDisplayName)
   {
     //we are being called for the first time
     if (m_current == null)
@@ -59,7 +59,7 @@ public class HistoryWriter implements java.io.Serializable
     m_current = currentStep;
   }
 
-  public void startNextRound(int round)
+  public synchronized void startNextRound(int round)
   {
     if (isCurrentEvent())
       closeCurrent();
@@ -96,7 +96,7 @@ public class HistoryWriter implements java.io.Serializable
     m_current = (HistoryNode) m_current.getParent();
   }
 
-  public void startEvent(String eventName)
+  public synchronized void startEvent(String eventName)
   {
     //close the current event
     if (isCurrentEvent())
@@ -131,10 +131,14 @@ public class HistoryWriter implements java.io.Serializable
   /**
    * Add a child to the current event.
    */
-  public void addChildToEvent(EventChild node)
+  public synchronized void addChildToEvent(EventChild node)
   {
     if (!isCurrentEvent())
-      throw new IllegalStateException("Not in an event");
+    {
+        new IllegalStateException("Not in an event, but trying to add child:" + node).printStackTrace(System.out);
+        startEvent("???");
+    }
+      
 
     m_current.add(node);
     m_history.nodesWereInserted(m_current, new int[] {m_current.getChildCount() - 1});
@@ -143,17 +147,23 @@ public class HistoryWriter implements java.io.Serializable
   /**
    * Add a change to the current event.
    */
-  public void addChange(Change change)
+  public synchronized void addChange(Change change)
   {
     if (!isCurrentEvent())
-      throw new IllegalStateException("Not in an event, but trying to add change:" + change);
+    {
+      new IllegalStateException("Not in an event, but trying to add change:" + change).printStackTrace(System.out);
+      startEvent("????");
+    }
     m_history.changeAdded(change);
   }
 
-  public void setRenderingData(Object details)
+  public synchronized void setRenderingData(Object details)
   {
     if (!isCurrentEvent())
-      throw new IllegalStateException("Not in an event, but trying to set details:" + details);
+    {
+      new IllegalStateException("Not in an event, but trying to set details:" + details).printStackTrace(System.out);
+      startEvent("???");
+    }
     ( (Event) m_current).setRenderingData(details);
     m_history.reload(m_current);
   }
