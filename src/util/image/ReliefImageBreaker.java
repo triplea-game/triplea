@@ -14,7 +14,6 @@
 
 package util.image;
 
-
 import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.*;
 
@@ -36,13 +35,11 @@ import javax.swing.*;
   To create territories, he must choose "N" at the prompt.
   
   sea zone images directory must be renamed to "seazone
- 
- 
  */
 
 public class ReliefImageBreaker
 {
-    private static final String SMALL_MAPS_LOCATION = "newImages"; //used as the directory to store the images
+    private static final String SMALL_MAPS_LOCATION = new FileSave("Where to save Reliefe Images?").getPathString();
     
     private static JFrame observer = new JFrame();
     
@@ -191,7 +188,7 @@ public class ReliefImageBreaker
     */
     private static String getMapDirectory()
     {
-	String mapDir = JOptionPane.showInputDialog(null, "Enter the folder name (ie. map name)");
+	String mapDir = JOptionPane.showInputDialog(null, "Enter the name of the map (ie. revised)");
 	    
 	if(mapDir != null)
 	{
