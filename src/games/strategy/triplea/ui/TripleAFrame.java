@@ -320,9 +320,13 @@ public class TripleAFrame extends JFrame
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setSelectedIndex(0);
 		JScrollPane scroll = new JScrollPane(list);
-		String[] options = {"OK"};
-		JOptionPane.showOptionDialog(this, scroll, "Select rocket attack", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-		Territory selected = (Territory) list.getSelectedValue();
+		String[] options = {"OK", "Dont attack"};
+		int selection = JOptionPane.showOptionDialog(this, scroll, "Select rocket attack", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		
+		Territory selected = null;
+		if(selection == 0) //OK
+			selected = (Territory) list.getSelectedValue();
+		
 		return new TerritoryMessage(selected);
 	}	
 

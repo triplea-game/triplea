@@ -85,7 +85,8 @@ public class BattleDelegate implements Delegate
 		}
 		
 		PlayerID attacked = getTarget(targets, player, bridge);
-		fireRocket(player, attacked, bridge, data);
+		if(attacked != null)
+			fireRocket(player, attacked, bridge, data);
 	}
 	
 	private Collection getTargetsWithinRange(GameData data, PlayerID player)
@@ -140,7 +141,10 @@ public class BattleDelegate implements Delegate
 		Message response = bridge.sendMessage(new RocketAttackQuery(targets), player);
 		if(!(response instanceof TerritoryMessage))
 			throw new IllegalStateException("Message of wrong type:" + response);
-		return ((TerritoryMessage) response).getTerritory().getOwner(); 
+		TerritoryMessage territoryMessage = (TerritoryMessage) response;
+		if(territoryMessage.getTerritory() == null)
+			return null;
+		return territoryMessage.getTerritory().getOwner(); 
 	}
 	
 	private void fireRocket(PlayerID player, PlayerID attacked,  DelegateBridge bridge, GameData data)
