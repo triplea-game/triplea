@@ -145,8 +145,13 @@ public class BattleTracker implements java.io.Serializable
     else
     {
       addMustFightBattle(route, units, tracker, id, data);
-      addNeutralBattle(route, units, tracker, id, data, bridge, changeTracker);
-      addEmptyBattle(route, units, tracker, id, data, bridge, changeTracker);
+      //battles resulting from
+      //emerging subs cant be neutral or empty
+      if(route.getLength() != 0)
+      {
+          addNeutralBattle(route, units, tracker, id, data, bridge, changeTracker);
+          addEmptyBattle(route, units, tracker, id, data, bridge, changeTracker);
+      }
     }
   }
 
@@ -399,13 +404,19 @@ public class BattleTracker implements java.io.Serializable
 
   private void addMustFightBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data)
   {
+    //it is possible to add a battle with a route that is just
+    //the start territory, ie the units did not move into the country
+    //they were there to start with
+    //this happens when you have submerged subs emerging
     Territory site = route.getEnd();
+    if(site == null)
+        site = route.getStart();
 
     if (!Matches.territoryHasEnemyUnits(id, data).match(site))
       return;
 
     //if just a factory then no battle
-    if (route.getEnd().getUnits().allMatch(Matches.UnitIsAAOrFactory))
+    if (route.getEnd() != null && route.getEnd().getUnits().allMatch(Matches.UnitIsAAOrFactory))
       return;
 
     Battle battle = getPendingBattle(site, false);

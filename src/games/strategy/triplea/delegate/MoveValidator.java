@@ -156,6 +156,8 @@ public class MoveValidator
 
 	public static boolean isUnload(Route route)
 	{
+	    if(route.getLength() == 0)
+	        return false;
 		return route.getStart().isWater() && !route.getEnd().isWater();
 	}
 

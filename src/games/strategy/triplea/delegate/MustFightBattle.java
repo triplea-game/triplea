@@ -152,7 +152,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         //are we amphibious
-        if (route.getStart().isWater() && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand))
+        if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand))
         {
             m_amphibiousAttackFrom.add(getAttackFrom(route));
             m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
@@ -180,14 +180,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private Territory getAttackFrom(Route route)
     {
-
         int routeSize = route.getLength();
-        Territory attackFrom;
-        if (routeSize == 1)
-            attackFrom = route.getStart();
+
+        if (routeSize <= 1)
+            return route.getStart();
         else
-            attackFrom = route.at(routeSize - 2);
-        return attackFrom;
+            return route.at(routeSize - 2);
     }
 
     private String getBattleTitle()
@@ -386,7 +384,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             if (canSubsSubmerge())
             {
-                if (canAttackerRetreatSubs() )
+                if (canAttackerRetreatSubs())
                 {
                     if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
                     {
@@ -401,7 +399,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     }
                 }
 
-                
             } else
             {
                 if (canAttackerRetreatSubs())
@@ -444,13 +441,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_over)
             return;
         attackSubs(bridge);
-        
-        if(isFourthEdition())
+
+        if (isFourthEdition())
             defendSubs(bridge);
 
         attackNonSubs(bridge);
 
-        if(!isFourthEdition())
+        if (!isFourthEdition())
             defendSubs(bridge);
         defendNonSubs(bridge);
 
@@ -490,6 +487,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //its possible that a sub retreated to a territory we came from,
         //if so we can no longer retreat there
         Collection possible = Match.getMatches(m_attackingFrom, Matches.territoryHasNoEnemyUnits(m_attacker, m_data));
+        //the battle site is in the attacking from
+        //if sea units are fighting a submerged sub
+        possible.remove(m_battleSite);
 
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsLand) && !m_battleSite.isWater())
             possible = Match.getMatches(possible, Matches.TerritoryIsLand);
@@ -512,12 +512,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         return true;
     }
-    
+
     private boolean canAttackerRetreatSubs()
     {
-        if(Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
+        if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
             return false;
-        
+
         return canAttackerRetreat() || canSubsSubmerge();
     }
 
@@ -548,9 +548,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private boolean canDefenderRetreatSubs()
     {
-        if( Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
+        if (Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
             return false;
-        
+
         return getEmptyOrFriendlySeaNeighbors(m_defender).size() != 0 || canSubsSubmerge();
     }
 
@@ -637,14 +637,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
             //if attacker retreating non subs then its all over
             if (!defender & !subs)
                 m_over = true;
-            
-            if(query.getSubmerge())
+
+            if (query.getSubmerge())
             {
                 submergeUnits(units, defender, bridge);
                 String messageShort = retreatingPlayer.getName() + " submerges subs";
                 bridge.sendMessage(new BattleInfoMessage(messageShort, messageShort, step), nonRetreatingPlayer);
-            }
-            else
+            } else
             {
                 Territory retreatTo = ((RetreatMessage) response).getRetreatTo();
                 retreatUnits(units, retreatTo, defender, bridge);
@@ -652,7 +651,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 String messageShort = retreatingPlayer.getName() + " retreats";
                 String messageLong = retreatingPlayer.getName() + " retreats " + (subs ? "subs" : "all units") + " to " + retreatTo.getName();
                 bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, step), nonRetreatingPlayer);
-    
+
             }
         }
     }
@@ -660,10 +659,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void submergeUnits(Collection submerging, boolean defender, DelegateBridge bridge)
     {
         String transcriptText = Formatter.unitsToTextNoOwner(submerging) + " Submerged";
-      
+
         Collection units = defender ? m_defendingUnits : m_attackingUnits;
         DelegateFinder.moveDelegate(m_data).getSubmergedTracker().submerge(submerging);
-        
+
         units.removeAll(submerging);
         if (units.isEmpty() || m_over)
         {
@@ -672,18 +671,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 attackerWins(bridge);
             else
                 defenderWins(bridge);
-        }
-        else
+        } else
         {
             RetreatNotificationMessage msg = new RetreatNotificationMessage(submerging);
             bridge.sendMessage(msg, m_attacker);
-            bridge.sendMessage(msg, m_defender);  
+            bridge.sendMessage(msg, m_defender);
         }
-        
+
         bridge.getHistoryWriter().addChildToEvent(transcriptText, submerging);
-        
+
     }
-    
+
     private void retreatUnits(Collection retreating, Territory to, boolean defender, DelegateBridge bridge)
     {
 
@@ -707,13 +705,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 attackerWins(bridge);
             else
                 defenderWins(bridge);
-        }
-        else
+        } else
         {
             RetreatNotificationMessage msg = new RetreatNotificationMessage(retreating);
             bridge.sendMessage(msg, m_attacker);
-            bridge.sendMessage(msg, m_defender);            
-          
+            bridge.sendMessage(msg, m_defender);
+
         }
     }
 
@@ -872,7 +869,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         //4th edition, bombardment casualties cant return fire
         boolean canReturnFire = !isFourthEdition();
-        
+
         if (bombard.size() > 0 && attacked.size() > 0)
             fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, canReturnFire, bridge, "Bombard");
         markBombardingSources();
@@ -1162,6 +1159,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
 
         return "Battle in:" + m_battleSite + " attacked by:" + m_attackingUnits + " from:" + m_attackingFrom + " defender:" + m_defender.getName() + " bombing:" + isBombingRun();
+    }
+
+    public Collection getAttackingUnits()
+    {
+        return m_attackingUnits;
     }
 
     public void unitsLost(Battle battle, Collection units, DelegateBridge bridge)
