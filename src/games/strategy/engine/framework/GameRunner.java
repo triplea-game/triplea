@@ -159,7 +159,7 @@ public class GameRunner
 	}
 	else
 	{
-		return new File("..");
+		return new File(".");
 	}
     }
 
