@@ -1170,7 +1170,6 @@
 	    
 	    <attatchment name="territoryAttatchment"  attatchTo="West Europe" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory" >
 		    <option name="production" value="6" />
-                    <option name="originalFactory" value="true" />
 	    </attatchment>
 	    
 	    <attatchment name="territoryAttatchment"  attatchTo="West US" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory" >
