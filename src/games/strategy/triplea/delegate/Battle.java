@@ -37,6 +37,8 @@ import games.strategy.triplea.Constants;
  */
 interface Battle extends java.io.Serializable
 {
+        public static int SUBS_RETREAT_TYPE = 1;
+        public static int PLANES_RETREAT_TYPE = 2;
 
 	public void addAttack(Route route, Collection units);
 
@@ -47,9 +49,9 @@ interface Battle extends java.io.Serializable
 	public void fight(DelegateBridge bridge);
 
 	public boolean isOver();
-	
+
 	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge);
-	
+
     /**
      *  This occurs when a move has been undone
      */
@@ -60,6 +62,6 @@ interface Battle extends java.io.Serializable
     * there are still units left to fight
      */
     public boolean isEmpty();
-    
+
     public Collection getDependentUnits(Collection units);
 }

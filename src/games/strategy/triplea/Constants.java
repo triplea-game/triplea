@@ -47,14 +47,14 @@ public interface Constants
   public static final String TWO_HIT_BATTLESHIP_PROPERTY = "Two hit battleship";
   public static final String ALWAYS_ON_AA_PROPERTY = "Always on AA";
   //allow fighters to be placed on newly produced carriers
-  public static final String CAN_PRODUCE_FIGHTERS_ON_CARRIERS = "Produce fighters on carriers";  
+  public static final String CAN_PRODUCE_FIGHTERS_ON_CARRIERS = "Produce fighters on carriers";
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
   public static final String FOURTH_EDITION = "4th Edition";
-  public static final String SUBMERSIBLE_SUBS = "Submersible Subs";  
+  public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
   public static final String TWO_HIT = "isTwoHit";
   public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
-  
+
   public static final int TECH_ROLL_COST = 5;
 
   public static final String INFANTRY_TYPE = "infantry";
@@ -69,5 +69,9 @@ public interface Constants
   public static final String AAGUN_TYPE = "aaGun";
   public static final String ARTILLERY = "artillery";
   public static final String DESTROYER = "destroyer";
+
+  public static final  String MAP_DIR = "images"+java.io.File.separator+"maps"+java.io.File.separator;
+  public static final String LARGE_MAP_FILENAME = "largeMap.gif";
+  public static final String MAP_NAME = "mapName";
 
 }

@@ -14,8 +14,8 @@
 
 /*
  * TripleA.java
- * 
- * 
+ *
+ *
  * Created on November 2, 2001, 8:56 PM
  */
 
@@ -45,7 +45,7 @@ public class TripleA implements IGameLoader
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String COMPUTER_PLAYER_TYPE = "Computer";
 
-    
+
     /**
      * @see IGameLoader.createPlayers(playerNames)
      */
@@ -77,12 +77,20 @@ public class TripleA implements IGameLoader
         try
         {
             boolean fourthEdition = game.getData().getProperties().get(Constants.FOURTH_EDITION, false);
+            String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
             TerritoryData.setFourthEdition(fourthEdition);
             MapImage.setFourthEdition(fourthEdition);
             TerritoryImageFactory.setFourthEdition(fourthEdition);
-            
+            TerritoryImageFactory.setMapDir(mapDir);
+
             TripleAFrame frame = new TripleAFrame(game, players);
-            
+
+            //the pbem roller needs to know about the ui.
+            if (game.getRandomSource() != null && game.getRandomSource() instanceof IronyGamesDiceRollerRandomSource)
+            {
+                ((IronyGamesDiceRollerRandomSource) game.getRandomSource()).setUI(frame);
+            }
+
 
             frame.setVisible(true);
 
@@ -127,7 +135,7 @@ public class TripleA implements IGameLoader
     }
 
     /**
-     * Return an array of player types that can play on the server.
+     * Return an array of player types that can play on the server. This array must not contain any entries that could play on the client.
      */
     public String[] getServerPlayerTypes()
     {

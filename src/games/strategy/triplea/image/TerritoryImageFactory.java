@@ -25,6 +25,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.ui.ImageIoCompletionWatcher;
 import games.strategy.triplea.ui.*;
+import games.strategy.triplea.*;
 import java.util.List;
 import java.util.*;
 import java.util.prefs.BackingStoreException;
@@ -35,23 +36,23 @@ import java.io.*;
 
 public final class TerritoryImageFactory
 {
-    
+
     private static boolean s_showReliefImages = true;
     private final static String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief";
-    
-    
+
+
     static
     {
         Preferences prefs = Preferences.userNodeForPackage(TerritoryImageFactory.class);
         s_showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, false);
-
+        s_mapDir="classic";//default to using the classic map files
     }
-    
+
     public static boolean getShowReliefImages()
     {
         return s_showReliefImages;
     }
-    
+
     public static void setShowReliefImages(boolean aBool)
     {
         s_showReliefImages = aBool;
@@ -65,22 +66,31 @@ public final class TerritoryImageFactory
         {
           ex.printStackTrace();
         }
-    
+
     }
-    
-    
+
+
     private final int CACHE_SIZE = 5;
 
     private static boolean s_fourthEdition;
-    
-    
-    
-    
+
+    private static String s_mapDir;
+
+
     public static void setFourthEdition(boolean aBool)
     {
         s_fourthEdition = aBool;
     }
-    
+
+    public static String getMapDir()
+    {
+      return s_mapDir;
+    }
+    public static void setMapDir(String dir)
+    {
+      s_mapDir=dir;
+    }
+
     private LinkedList m_cachedTerritories = new LinkedList();
 
     // one instance in the application
@@ -145,7 +155,7 @@ public final class TerritoryImageFactory
        }
 
        Image img = getReliefImage(place);
-       
+
        while (iter.hasNext())
        {
            Polygon polygon = (Polygon)iter.next();
@@ -178,7 +188,7 @@ public final class TerritoryImageFactory
             return null;
         if(!s_showReliefImages)
             return null;
-        
+
         //is it in the cache?
         for(int i = 0; i < m_cachedTerritories.size(); i++)
         {
@@ -196,7 +206,7 @@ public final class TerritoryImageFactory
       String key = place.getName() + "_relief";
       // load it on the fly
 
-      String fileName = "images/" + (s_fourthEdition ? "new/" : "") + "countries/" + key.replace(' ', '_')  + ".png";
+      String fileName = Constants.MAP_DIR+s_mapDir+"countries"+java.io.File.separator + key.replace(' ', '_')  + ".png";
       URL file = this.getClass().getResource(fileName);
       if(file == null)
           return null;
@@ -219,27 +229,27 @@ public final class TerritoryImageFactory
 
     public Image getSeaImage(Territory place)
     {
-        if(!place.isWater())
-            throw new IllegalArgumentException(place + " is not a sea zone");
+      if(!place.isWater())
+          throw new IllegalArgumentException(place + " is not a sea zone");
 
-        //is it in the cache?
-        for(int i = 0; i < m_cachedTerritories.size(); i++)
-        {
-            ImageName current = (ImageName) m_cachedTerritories.get(i);
-            if(current.name.equals(place.getName()))
-            {
-              //move it to the front of the cache
-              m_cachedTerritories.remove(i);
-              m_cachedTerritories.add(0, current);
+      //is it in the cache?
+      for(int i = 0; i < m_cachedTerritories.size(); i++)
+      {
+          ImageName current = (ImageName) m_cachedTerritories.get(i);
+          if(current.name.equals(place.getName()))
+          {
+            //move it to the front of the cache
+            m_cachedTerritories.remove(i);
+            m_cachedTerritories.add(0, current);
 
-              return current.image;
-            }
-        }
-
+            return current.image;
+          }
+      }
       String key = place.getName();
       // load it on the fly
 
-      String fileName = "images/" + (s_fourthEdition ? "new/" : "") + "seaZones/" + key.replace(' ', '_')  + ".png";
+      String fileName = Constants.MAP_DIR+s_mapDir+java.io.File.separator+
+        "seazones"+java.io.File.separator+ key.replace(' ', '_')  + ".png";
       URL file = this.getClass().getResource(fileName);
       if(file == null)
           throw new IllegalArgumentException("not found:" + fileName);
@@ -281,7 +291,7 @@ public final class TerritoryImageFactory
 
     }
 
-    
+
 
 
 }

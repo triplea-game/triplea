@@ -12,7 +12,7 @@
 
 /*
  * Battle.java
- * 
+ *
  * Created on November 15, 2001, 12:39 PM
  */
 
@@ -31,12 +31,12 @@ import games.strategy.triplea.formatter.Formatter;
 import games.strategy.triplea.attatchments.*;
 
 /**
- * 
+ *
  * Handles logic for battles in which fighting actually occurs.
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
- * 
+ *
  * Represents a battle.
  */
 public class MustFightBattle implements Battle, BattleStepStrings
@@ -90,7 +90,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         return m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
     }
-    
+
     public boolean isOver()
     {
         return m_over;
@@ -422,7 +422,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
             }
         }
-
         if (canAttackerRetreat())
         {
             steps.add(m_attacker.getName() + ATTACKER_WITHDRAW);
@@ -445,11 +444,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if (m_over)
             return;
-        
+
         //for 4th edition we need to find the defending subs before the attacking subs fire
         //this allows the dead subs to return fire, even if they are selected as casualties
         List defendingSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsSub);
-        
+
         attackSubs(bridge);
 
         if (isFourthEdition())
@@ -463,9 +462,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
             units.addAll(m_defendingUnits);
             units.addAll(m_defendingWaitingToDie);
             units = Match.getMatches(units, Matches.UnitIsSub);
-            
+
             defendSubs(bridge, units);
-            
+
         }
         defendNonSubs(bridge);
 
@@ -485,6 +484,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         attackerRetreatSubs(bridge);
         defenderRetreatSubs(bridge);
+        if(isFourthEdition() && m_amphibious)
+          attackerRetreatPlanes(bridge);
         attackerRetreat(bridge);
 
         if (!m_over)
@@ -539,6 +540,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return canAttackerRetreat() || canSubsSubmerge();
     }
 
+    private boolean canAttackerRetreatPlanes()
+    {
+        if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
+            return false;
+
+        return canAttackerRetreat() || canSubsSubmerge();
+    }
+
+
     private void attackerRetreat(DelegateBridge bridge)
     {
 
@@ -548,7 +558,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection possible = getAttackerRetreatTerritories();
 
         if (!m_over)
-            queryRetreat(false, false, bridge, possible);
+            queryRetreat(false, 0, bridge, possible);
     }
 
     private void attackerRetreatSubs(DelegateBridge bridge)
@@ -561,8 +571,22 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         //retreat subs
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
-            queryRetreat(false, true, bridge, possible);
+            queryRetreat(false, SUBS_RETREAT_TYPE, bridge, possible);
     }
+
+    private void attackerRetreatPlanes(DelegateBridge bridge)
+    {
+        //planes retreat to the same square the battle is in, and then should
+        //move during non combat to their landing site, or be scrapped if they
+        //can't find one.
+        Collection possible = new ArrayList(2);
+        possible.add(m_battleSite);
+
+        //retreat planes
+        if (Match.someMatch(m_attackingUnits, Matches.UnitIsAir))
+            queryRetreat(false, PLANES_RETREAT_TYPE, bridge, possible);
+    }
+
 
     private boolean canDefenderRetreatSubs()
     {
@@ -579,7 +603,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
 
         if (!m_over)
-            queryRetreat(true, true, bridge, getEmptyOrFriendlySeaNeighbors(m_defender));
+            queryRetreat(true, SUBS_RETREAT_TYPE, bridge, getEmptyOrFriendlySeaNeighbors(m_defender));
     }
 
     private Collection getEmptyOrFriendlySeaNeighbors(PlayerID player)
@@ -607,9 +631,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return possible;
     }
 
-    private void queryRetreat(boolean defender, boolean subs, DelegateBridge bridge, Collection availableTerritories)
+    private void queryRetreat(boolean defender, int retreatType, DelegateBridge bridge, Collection availableTerritories)
     {
-
+        boolean subs;
+        boolean planes;
+        planes= retreatType == PLANES_RETREAT_TYPE;
+        subs= retreatType == SUBS_RETREAT_TYPE;
         if (availableTerritories.isEmpty() && !(subs && canSubsSubmerge()))
             return;
 
@@ -617,6 +644,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (subs)
         {
             units = Match.getMatches(units, Matches.UnitIsSub);
+        }
+        else if (planes)
+        {
+            units = Match.getMatches(units, Matches.UnitIsAir);
         }
 
         if (Match.someMatch(units, Matches.UnitIsSea))
@@ -629,26 +660,33 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         PlayerID retreatingPlayer = defender ? m_defender : m_attacker;
         PlayerID nonRetreatingPlayer = defender ? m_attacker : m_defender;
-        String text = retreatingPlayer.getName() + " retreat" + (subs ? " subs" : "") + "?";
-
+        String text;
+        if(subs)
+          text = retreatingPlayer.getName() + " retreat subs?";
+        else if(planes)
+          text = retreatingPlayer.getName() + " retreat planes?";
+        else
+          text = retreatingPlayer.getName() + " retreat?";
         String step;
         if (defender)
         {
             step = m_defender.getName() + (canSubsSubmerge() ? SUBS_SUBMERGE : SUBS_WITHDRAW);
-        } else
+        }
+        else
         {
             if (subs)
                 step = m_attacker.getName() + (canSubsSubmerge() ? SUBS_SUBMERGE : SUBS_WITHDRAW);
+            else if (planes)
+                step = m_attacker.getName() + PLANES_WITHDRAW;
             else
                 step = m_attacker.getName() + ATTACKER_WITHDRAW;
         }
-
         RetreatQueryMessage query = new RetreatQueryMessage(subs && canSubsSubmerge(), step, availableTerritories, text);
         Message response = bridge.sendMessage(query, retreatingPlayer);
         if (response != null)
         {
             //if attacker retreating non subs then its all over
-            if (!defender & !subs)
+            if (!defender && !subs &&!planes)
                 m_over = true;
 
             if (query.getSubmerge())
@@ -656,13 +694,28 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 submergeUnits(units, defender, bridge);
                 String messageShort = retreatingPlayer.getName() + " submerges subs";
                 bridge.sendMessage(new BattleInfoMessage(messageShort, messageShort, step), nonRetreatingPlayer);
-            } else
+            } else if(planes)
             {
-                Territory retreatTo = ((RetreatMessage) response).getRetreatTo();
+                retreatPlanes(units,defender,bridge);
+                String messageShort = retreatingPlayer.getName() + " retreats planes";
+                bridge.sendMessage(new BattleInfoMessage(messageShort, messageShort, step), nonRetreatingPlayer);
+            }
+            else
+            {
+                Territory retreatTo;
+                if(availableTerritories.size()==1)
+                  retreatTo=(Territory)availableTerritories.iterator().next();
+                else retreatTo = ((RetreatMessage) response).getRetreatTo();
                 retreatUnits(units, retreatTo, defender, bridge);
 
                 String messageShort = retreatingPlayer.getName() + " retreats";
-                String messageLong = retreatingPlayer.getName() + " retreats " + (subs ? "subs" : "all units") + " to " + retreatTo.getName();
+                String messageLong;
+                if(subs)
+                  messageLong = retreatingPlayer.getName() + " retreats subs to " + retreatTo.getName();
+                else if(planes)
+                  messageLong = retreatingPlayer.getName() + " retreats planes to " + retreatTo.getName();
+                else
+                  messageLong = retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
                 bridge.sendMessage(new BattleInfoMessage(messageLong, messageShort, step), nonRetreatingPlayer);
 
             }
@@ -691,7 +744,32 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         return change;
     }
+    private void retreatPlanes(Collection retreating, boolean defender, DelegateBridge bridge)
+    {
+        String transcriptText = Formatter.unitsToTextNoOwner(retreating) + " retreated";
 
+        Collection units = defender ? m_defendingUnits : m_attackingUnits;
+        /** @todo Does this need to happen with planes retreating too? */
+        //DelegateFinder.moveDelegate(m_data).getSubmergedTracker().submerge(retreating);
+
+        units.removeAll(retreating);
+        if (units.isEmpty() || m_over)
+        {
+            endBattle(bridge);
+            if (defender)
+                attackerWins(bridge);
+            else
+                defenderWins(bridge);
+        } else
+        {
+            RetreatNotificationMessage msg = new RetreatNotificationMessage(retreating);
+            bridge.sendMessage(msg, m_attacker);
+            bridge.sendMessage(msg, m_defender);
+        }
+
+        bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
+
+    }
     private void submergeUnits(Collection submerging, boolean defender, DelegateBridge bridge)
     {
         String transcriptText = Formatter.unitsToTextNoOwner(submerging) + " Submerged";

@@ -22,10 +22,11 @@ package games.strategy.triplea.image;
 
 import java.util.Iterator;
 import java.util.List;
-
+import java.io.*;
+import java.net.*;
 import java.awt.*;
 import java.awt.image.ImageObserver;
-
+import games.strategy.triplea.*;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -37,24 +38,20 @@ import java.awt.image.*;
 
 /**
  * Responsible for drawing countries on the map.
-* Is not responsible for drawing things on top of the map, such as units, routes etc.
+ * Is not responsible for drawing things on top of the map, such as units, routes etc.
  */
 public class MapImage
 {
 
-  private final static String LARGE_IMAGE_FILENAME = "images/maps/largeMap.gif";
-  private final static String NEW_LARGE_IMAGE_FILENAME = "images/maps/new_LargeMap.gif";  
-
   private static MapImage s_instance;
   private static final ImageObserver s_observer = new NullImageObserver();
-
   private static boolean s_fourthEdition;
   public static void setFourthEdition(boolean fourthEdition)
   {
-      s_fourthEdition = fourthEdition;
-      s_instance = new MapImage();
+    s_fourthEdition = fourthEdition;
+    s_instance = new MapImage();
   }
-  
+
   public static synchronized MapImage getInstance()
   {
     return s_instance;
@@ -62,14 +59,16 @@ public class MapImage
 
   private static Image loadImage(String name)
   {
-    Image img =  Toolkit.getDefaultToolkit().createImage(MapImage.class.getResource(name));
+    URL mapFileUrl=MapImage.class.getResource(name);
+    Image img =  Toolkit.getDefaultToolkit().createImage(mapFileUrl.getFile().substring(1));
     MediaTracker tracker = new MediaTracker( new Panel());
     tracker.addImage(img,1 );
     try
     {
       tracker.waitForAll();
       return img;
-    } catch(InterruptedException ie)
+    }
+    catch(InterruptedException ie)
     {
       ie.printStackTrace();
       return loadImage(name);
@@ -81,12 +80,11 @@ public class MapImage
   private double m_smallLargeRatio = 15.0;
   public static final Font MAP_FONT = new Font("Ariel", Font.BOLD, 12);
 
-    /** Creates a new instance of CountryImage */
+  /** Creates a new instance of CountryImage */
   public MapImage()
   {
 
   }
-
 
   public Image getSmallMapImage()
   {
@@ -106,13 +104,13 @@ public class MapImage
 
   private void loadMaps()
   {
-    Image largeFromFile = loadImage(s_fourthEdition ? NEW_LARGE_IMAGE_FILENAME : LARGE_IMAGE_FILENAME);
+    Image largeFromFile = loadImage(Constants.MAP_DIR+TerritoryImageFactory.getMapDir()+java.io.File.separator+Constants.LARGE_MAP_FILENAME);
 
     //NOTE
     //the following line causes a lot of problems in windows (windows xp with jdk1.4.0)
     //it looks like the frame.createImage creates an image that only works for the screen size.
     //areas of the image that are outside of the boundaries of the screen do not update correctly
-   // m_largeMapImage = frame.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer));
+    // m_largeMapImage = frame.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer));
 
     m_largeMapImage = Util.createImage(largeFromFile.getWidth(s_observer), largeFromFile.getHeight(s_observer), false);
     m_smallMapImage = Util.createImage( (int) (largeFromFile.getWidth(s_observer) / m_smallLargeRatio),
@@ -136,18 +134,16 @@ public class MapImage
    */
   public void resetTerritory(Territory territory)
   {
-      resetTerritoryInternal(territory);
-      drawTerritoryName(territory);
+    resetTerritoryInternal(territory);
+    drawTerritoryName(territory);
   }
 
   private void resetTerritoryInternal(Territory territory)
   {
     if(territory.isWater())
-        resetWaterTerritory(territory);
+      resetWaterTerritory(territory);
     else
-        resetLandTerritory(territory);
-
-
+      resetLandTerritory(territory);
   }
 
   private void resetWaterTerritory(Territory territory)
@@ -158,50 +154,50 @@ public class MapImage
       m_largeMapImage.getGraphics().drawImage(seaImage, dirty.x, dirty.y, s_observer);
 
       m_smallMapImage.getGraphics().drawImage(seaImage,
-                                              (int) (dirty.x / m_smallLargeRatio),
-                                              (int) (dirty.y / m_smallLargeRatio),
-                                              (int) (dirty.width / m_smallLargeRatio),
-                                              (int) (dirty.height / m_smallLargeRatio),
-                                              s_observer
-                                              );
+                  (int) (dirty.x / m_smallLargeRatio),
+                  (int) (dirty.y / m_smallLargeRatio),
+                  (int) (dirty.width / m_smallLargeRatio),
+                  (int) (dirty.height / m_smallLargeRatio),
+                  s_observer
+                  );
 
   }
 
   private void resetLandTerritory(Territory territory)
   {
-      PlayerID id = territory.getOwner();
+    PlayerID id = territory.getOwner();
 
-      Graphics largeGraphics = m_largeMapImage.getGraphics();
-      
-      Color playerColour = TerritoryImageFactory.getInstance().getPlayerColour(id);
-      largeGraphics.setColor(playerColour);
+    Graphics largeGraphics = m_largeMapImage.getGraphics();
 
-      Graphics smallGraphics = m_smallMapImage.getGraphics();
-      smallGraphics.setColor(playerColour);
+    Color playerColour = TerritoryImageFactory.getInstance().getPlayerColour(id);
+    largeGraphics.setColor(playerColour);
 
-      Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
-      
-      List polys = TerritoryData.getInstance().getPolygons(territory);
-      Iterator polyIter = polys.iterator();
-      while (polyIter.hasNext())
+    Graphics smallGraphics = m_smallMapImage.getGraphics();
+    smallGraphics.setColor(playerColour);
+
+    Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
+
+    List polys = TerritoryData.getInstance().getPolygons(territory);
+    Iterator polyIter = polys.iterator();
+    while (polyIter.hasNext())
+    {
+      Polygon poly = (Polygon) polyIter.next();
+      largeGraphics.fillPolygon(poly);
+      smallGraphics.fillPolygon(scale(poly, m_smallLargeRatio));
+      if(reliefImage == null)
       {
-          Polygon poly = (Polygon) polyIter.next();
-          largeGraphics.fillPolygon(poly);
-          smallGraphics.fillPolygon(scale(poly, m_smallLargeRatio));
-          if(reliefImage == null)
-          {
-              largeGraphics.setColor(Color.BLACK);
-              largeGraphics.drawPolygon(poly);
-              largeGraphics.setColor(playerColour);
-          }
-          
+        largeGraphics.setColor(Color.BLACK);
+        largeGraphics.drawPolygon(poly);
+        largeGraphics.setColor(playerColour);
       }
 
-      Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
+    }
+
+    Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
 
 
-      if(reliefImage != null)
-          largeGraphics.drawImage(reliefImage, dirty.x, dirty.y, s_observer);
+    if(reliefImage != null)
+      largeGraphics.drawImage(reliefImage, dirty.x, dirty.y, s_observer);
 
   }
 
@@ -216,8 +212,8 @@ public class MapImage
 
       for(int i = 0; i < p.npoints; i++)
       {
-          xpoints[i] = (int) (p.xpoints[i] / scale);
-          ypoints[i] = (int) (p.ypoints[i] / scale);
+        xpoints[i] = (int) (p.xpoints[i] / scale);
+        ypoints[i] = (int) (p.ypoints[i] / scale);
       }
 
       return new Polygon(xpoints, ypoints, p.npoints);
@@ -228,7 +224,7 @@ public class MapImage
   private void drawTerritoryName(Territory territory)
   {
       if (territory.isWater())
-          return;
+        return;
 
       Graphics g = m_largeMapImage.getGraphics();
       Rectangle bounds = TerritoryData.getInstance().getBoundingRect(territory);
@@ -250,11 +246,10 @@ public class MapImage
 
       if (ta.getProduction() > 0)
       {
-          String prod = new Integer(ta.getProduction()).toString();
-          x = bounds.x + ( ( ( (int) bounds.getWidth()) - fm.stringWidth(prod)) >> 1);
-          y += fm.getLeading() + fm.getAscent();
-          g.drawString(prod, x, y);
+        String prod = new Integer(ta.getProduction()).toString();
+        x = bounds.x + ( ( ( (int) bounds.getWidth()) - fm.stringWidth(prod)) >> 1);
+        y += fm.getLeading() + fm.getAscent();
+        g.drawString(prod, x, y);
       }
   }
-
 }
