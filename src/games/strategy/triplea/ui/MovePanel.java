@@ -279,12 +279,7 @@ public class MovePanel extends ActionPanel
 	  owned = Match.getMatches(owned, Matches.UnitIsAir);
 	}
 
-	// CM.  We want the Units chosen to be automatic if there
-	// is only one possible unit to move.
-	if ( owned.size() == 1 )
-	   return owned;
-	else
-	   return getUnitsChosen(owned, route);
+	return getUnitsChosen(owned, route);
     }
 
     private Collection getUnitsChosen(Collection units, Route route)
