@@ -39,7 +39,7 @@ import javax.swing.*;
 
 public class ReliefImageBreaker
 {
-    private static final String SMALL_MAPS_LOCATION = new FileSave("Where to save Reliefe Images?").getPathString();
+    private static final String SMALL_MAPS_LOCATION = new FileSave("Where to save Reliefe Images?",null).getPathString();
     
     private static JFrame observer = new JFrame();
     

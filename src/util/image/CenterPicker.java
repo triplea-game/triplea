@@ -269,7 +269,7 @@ public class CenterPicker extends JFrame
 
         try
         {
-            String fileName = JOptionPane.showInputDialog(this, "Save Center Points as");
+            String fileName = new FileSave("Where To Save centers.txt ?","centers.txt").getPathString();
 	    
 	    if(fileName == null)
 	    {

@@ -30,15 +30,16 @@ public class FileSave
 	/**
 	   Default Constructor.
 	   
-	   @param java.lang.String title  the title of the JFileChooser
-	   
-	   @exception java.lang.Exception  ex
-	   
 	   Creates a file selection dialog starting at the current
 	   working directory. The user will specify what directory
 	   or folder they want their files to be saved in.
+	   
+	   @param java.lang.String title  the title of the JFileChooser
+	   @param java.lang.String name   a recomended name
+	   
+	   @exception java.lang.Exception  ex
 	*/
-	public FileSave(String title) 
+	public FileSave(String title, String name) 
 	{
 		JFileChooser chooser = new JFileChooser();
 		
@@ -63,7 +64,13 @@ public class FileSave
 
 		if (r == JFileChooser.APPROVE_OPTION)
 		{
-			file = new File(chooser.getSelectedFile().getPath());
+			if(name != null)
+			{
+				file = new File(chooser.getSelectedFile().getPath()+File.separator+name);
+			}
+			else {
+				file = new File(chooser.getSelectedFile().getPath());
+			}
 		}
 	}
 	

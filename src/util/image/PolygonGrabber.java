@@ -353,8 +353,8 @@ public class PolygonGrabber extends JFrame
     {
         try
         {
-            String polyName = JOptionPane.showInputDialog(this, "Save Polygon File As");
-
+	    String polyName = new FileSave("Where To Save Polygons.txt ?","polygons.txt").getPathString();
+	    
 	    if(polyName == null)
             {
 	        return;

@@ -108,7 +108,7 @@ public class AutoPlacementFinder
 
         try
         {
-	    String fileName = JOptionPane.showInputDialog(null, "Save Placements File As");
+	    String fileName = new FileSave("Where To Save place.txt ?","place.txt").getPathString();
 	    
 	    if (fileName == null)
 	    {
