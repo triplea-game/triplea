@@ -394,6 +394,7 @@
 	    <connection t1="Japan Sea Zone" t2="North Pacific Sea Zone" />
 	    <connection t1="Japan Sea Zone" t2="Okinawa Sea Zone" />
 	    <connection t1="Japan Sea Zone" t2="Philipines Sea Zone" />
+	    <connection t1="Japan Sea Zone" t2="Kwangtung Sea Zone" />
 	    <connection t1="Okinawa Sea Zone" t2="Philipines Sea Zone" />
 	    <connection t1="Okinawa Sea Zone" t2="Wake Island Sea Zone" />
 	    <connection t1="Borneo Sea Zone" t2="Philipines Sea Zone" />
@@ -409,6 +410,7 @@
 	    <connection t1="Midway Sea Zone" t2="West Canada Sea Zone" />
 	    <connection t1="West US Sea Zone" t2="Hawaii Sea Zone" />
 	    <connection t1="Hawaii Sea Zone" t2="Mexico Sea Zone" />
+	    <connection t1="Hawaii Sea Zone" t2="North Pacific Sea Zone" />
 	    <connection t1="Mexico Sea Zone" t2="Mexico" />
 	    <connection t1="Mexico" t2="West US" />
 	    <connection t1="West US" t2="West Canada" />
