@@ -15,70 +15,92 @@
 
 package games.strategy.triplea.ui;
 
-import java.util.*;
-import java.text.*;
-
-import games.strategy.util.*;
 import java.io.*;
-import games.strategy.engine.data.*;
-import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.awt.geom.Rectangle2D;
+import java.text.*;
+import java.awt.*;
 import java.awt.geom.*;
+import java.awt.geom.Rectangle2D;
+import games.strategy.util.*;
+import games.strategy.engine.data.*;
+
 
 /**
  * contains data about the territories useful for drawing
  */
 
-
 public class TerritoryData
 {
-    private static final String CENTERS_FILE = "centers.txt";
-    private static final String POLYGON_FILE = "polygons.txt";
+    private static final String CENTERS_FILE   = "centers.txt";
+    private static final String POLYGON_FILE   = "polygons.txt";
     private static final String PLACEMENT_FILE = "place.txt";
 
     //maps String -> List of points
     private Map m_place;
+    
     //maps String -> Collection of Polygons
     private Map m_polys;
+    
     //maps String -> Point
     private Map m_centers;
+    
     //maps String -> List of String
     private Map m_contains;
 
     private static TerritoryData s_instance;
 
-    public static void setFourthEdition(boolean aVal)
+
+    /**
+       setMapDir(java.lang.String)
+       
+       sets the map dir from outside
+       
+       @param java.lang.String mapDir  the given map directory
+    */
+    public static void setMapDir(String mapDir)
     {
-        s_instance = new TerritoryData(aVal);
+        s_instance = new TerritoryData(mapDir);
     }
+    
     
     public static TerritoryData getInstance()
     {
         return s_instance;
     }
 
-    private TerritoryData(boolean fourthEdition)
+    
+    /**
+       Constructor
+       TerritoryData(java.lang.String)
+       
+       Sets the map directory for this instance of
+       TerritoryData
+       
+       @param java.lang.String mapDir the given map directory
+       
+    */
+    private TerritoryData(String mapDir)
     {
         try
-        {
-            String prefix = fourthEdition ? "new_" : "";
-            m_place = PointFileReaderWriter.readOneToMany(this.getClass().getResourceAsStream(prefix + PLACEMENT_FILE));
-            m_polys = PointFileReaderWriter.readOneToManyPolygons(this.getClass().getResourceAsStream(prefix + POLYGON_FILE));
-            m_centers = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CENTERS_FILE));
+	{
+	    String prefix = "../image/images/maps/"+mapDir+"/";
 
-            initializeContains();
-
-        }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
-        }
+	    m_place   = PointFileReaderWriter.readOneToMany(this.getClass().getResourceAsStream(prefix+PLACEMENT_FILE));
+	    m_polys   = PointFileReaderWriter.readOneToManyPolygons(this.getClass().getResourceAsStream(prefix+POLYGON_FILE));
+	    m_centers = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix+CENTERS_FILE));
+	    
+	    initializeContains();
+	}
+	catch (IOException ex)
+	{
+	    ex.printStackTrace();
+	}
     }
+
 
     private void initializeContains()
     {
-        
         
         m_contains = new HashMap();
 
@@ -299,7 +321,5 @@ public class TerritoryData
         return rVal;
 
     }
-
-
 
 }
