@@ -20,7 +20,7 @@ Changes for 0.5.0
 
 * Added logic to not consider moving land units into water if there are no transports there. (Ali Ibrahim)
 
-* Added game defintion file, flags, color for Italian player. (unknown).
+* Added game defintion file, flags, color for Italian player. (Nekro).
 
 * Fixed bug where allied air units which are cargo attacked. (Ali Ibrahim)
 
