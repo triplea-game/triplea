@@ -116,27 +116,30 @@ public class ChatFrame extends JFrame
   }
 
   /**
+
+
+  /**
    * thread safe.
    */
   void addMessage(ChatMessage msg, String from)
   {
     addMessage(msg.getMessage(), from);
-    if(SwingUtilities.isEventDispatchThread())
+    if (SwingUtilities.isEventDispatchThread())
     {
       this.toFront();
     }
     else
     {
       SwingUtilities.invokeLater(
-  new Runnable()
-  {
+        new Runnable()
+      {
 
-    public void run()
-    {
-      toFront();
-    }
-  }
-  );
+        public void run()
+        {
+          toFront();
+        }
+      }
+      );
     }
 
   }
