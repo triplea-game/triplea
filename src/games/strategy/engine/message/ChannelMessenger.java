@@ -37,6 +37,9 @@ public class ChannelMessenger implements IChannelMessenger
     //maps channelName as String -> Channel
     private final Map m_channels = Collections.synchronizedMap(new HashMap());
     
+    //modifications to m_channels should synchronize on this
+    private final Object m_mutex = new Object();
+    
     public ChannelMessenger(IMessenger messenger)
     {
         m_messenger = messenger;
@@ -119,9 +122,24 @@ public class ChannelMessenger implements IChannelMessenger
         if(!channelInterface.isInterface())
             throw new IllegalArgumentException(channelInterface.getName() +  " must be an interface");
 
-        Channel channel = new Channel(channelInterface, channelName);
+        synchronized(m_mutex)
+        {
+            //does the channel already exist?
+            Channel alreadyExisting = (Channel) m_channels.get(channelName);
+            if(alreadyExisting != null)
+            {
+                //it does, make sure its equivalient
+                if(!alreadyExisting.getChannelInterface().equals(channelInterface))
+                {
+                    throw new IllegalStateException("Channel already exists, but different interfaces, existing:" + alreadyExisting.getChannelInterface() + " trying to create" + channelInterface);
+                }
+                return;
+            }
+            
+            Channel channel = new Channel(channelInterface, channelName);
+            m_channels.put(channelName, channel);
+        }
         
-        m_channels.put(channelName, channel);
     }
     
      
@@ -149,7 +167,10 @@ public class ChannelMessenger implements IChannelMessenger
             else if(msg instanceof ChannelDestroyed)
             {
                 ChannelDestroyed destroyMsg = (ChannelDestroyed) msg;
-                m_channels.remove(destroyMsg.m_channelName);
+                synchronized(m_mutex)
+                {
+                    m_channels.remove(destroyMsg.m_channelName);
+                }
             }
             else if( msg instanceof RemoteMethodCall)
             {
@@ -220,6 +241,14 @@ public class ChannelMessenger implements IChannelMessenger
     public boolean hasChannel(String channelName)
     {
        return m_channels.containsKey(channelName);
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.net.IChannelMessenger#getLocalNode()
+     */
+    public INode getLocalNode()
+    {
+        return m_messenger.getLocalNode();
     }
 
       

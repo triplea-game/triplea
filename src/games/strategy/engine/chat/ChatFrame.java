@@ -48,7 +48,7 @@ public class ChatFrame extends JFrame
 
     private final SimpleAttributeSet bold = new SimpleAttributeSet();
     private final SimpleAttributeSet normal = new SimpleAttributeSet();
-    private final IMessenger m_messenger;
+    private final IChannelMessenger m_channelMessenger;
 
     /** Creates a new instance of ChatFrame */
     public ChatFrame(IMessenger messenger, IChannelMessenger channelMessenger)
@@ -56,7 +56,7 @@ public class ChatFrame extends JFrame
 
         super("Chat");
 
-        m_messenger = messenger;
+        m_channelMessenger = channelMessenger;
         setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(this));
 
         createComponents();
@@ -157,7 +157,7 @@ public class ChatFrame extends JFrame
             return;
         final String playerName = m_listModel.get(index).toString();
         //you cant slap yourself
-        if(playerName.equals(m_messenger.getLocalNode().getName()))
+        if(playerName.equals(m_channelMessenger.getLocalNode().getName()))
                 return;
         
         Action slap = new AbstractAction("Slap " + playerName)

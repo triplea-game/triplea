@@ -59,11 +59,15 @@ public class DummyMessenger implements IServerMessenger
 	public void removeErrorListener(IMessengerErrorListener listener)
 	{}
 
+	
+	private final INode m_node = new Node("dummy", null, 0);
 	/**
 	 * Get the local node
 	 */
 	public INode getLocalNode()
-	{return null;}
+	{
+	    return m_node;
+	}
 
 	/**
 	 * Get a list of nodes.

@@ -103,4 +103,6 @@ public interface IChannelMessenger
      * on a seperate IChannelMessenger may take a while to be propogated. 
      */
     public boolean hasChannel(String channelName);
+    
+    public INode getLocalNode();
 }

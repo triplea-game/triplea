@@ -97,17 +97,17 @@ public class Chat implements IChatter
         if (destination != null)
         {          
             IChatter remote = (IChatter) m_channelMessenger.getChannelBroadcastor(CHAT_CHANNEL);
-            remote.slap(m_messenger.getLocalNode(), destination);
+            remote.slap(m_channelMessenger.getLocalNode(), destination);
         }
     }
     
     public void slap(INode from, INode to)
     {
-        if(to.equals(m_messenger.getLocalNode()))
+        if(to.equals(m_channelMessenger.getLocalNode()))
         {
             m_frame.addMessage("You were slapped by " + from.getName(), from.getName(), false);
         }
-        else if(from.equals(m_messenger.getLocalNode()))
+        else if(from.equals(m_channelMessenger.getLocalNode()))
         {
             m_frame.addMessage("You just slapped " + to.getName(), from.getName(), false);
         }
@@ -118,9 +118,9 @@ public class Chat implements IChatter
         
         IChatter remote = (IChatter) m_channelMessenger.getChannelBroadcastor(CHAT_CHANNEL);
         if(meMessage)
-            remote.meMessage(message, m_messenger.getLocalNode());
+            remote.meMessage(message, m_channelMessenger.getLocalNode());
         else
-            remote.chat(message, m_messenger.getLocalNode());
+            remote.chat(message, m_channelMessenger.getLocalNode());
     }
 
 
