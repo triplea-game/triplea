@@ -29,15 +29,15 @@ public class CryptoRandomSource implements IRandomSource
 
   //the two players who involved in rolling the dice
   //dice are rolled securly between these two
-  final private PlayerID m_diceRollerPlayer1;
-  final private PlayerID m_diceRollerPlayer2;
+  final private PlayerID m_remotePlayer;
+  final private PlayerID m_localPlayer;
   final private IMessageManager  m_messageManager;
 
 
   public CryptoRandomSource(PlayerID dicePlayer1, PlayerID dicePlayer2, IMessageManager MessageManager)
   {
-    m_diceRollerPlayer1 = dicePlayer1;
-    m_diceRollerPlayer2 = dicePlayer2;
+    m_remotePlayer = dicePlayer1;
+    m_localPlayer = dicePlayer2;
     m_messageManager = MessageManager;
   }
 
@@ -47,14 +47,7 @@ public class CryptoRandomSource implements IRandomSource
     */
    public int getRandom(int max, String annotation)
    {
-     // Start the seeding operation and get the key
-     startRandomGen(max);
-
-     Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_RANDOM, null);
-
-     msg = m_messageManager.send(msg, m_diceRollerPlayer2.getName() + "RandomDest");
-
-     return ((Integer)((RandomNumberMessage)msg).m_obj).intValue();
+       return getRandom(max, 1, annotation)[0];
    }
 
    /**
@@ -63,12 +56,11 @@ public class CryptoRandomSource implements IRandomSource
    public int[] getRandom(int max, int count, String annotation)
    {
      // Start the seeding operation and get the key
-     startRandomGen(max);
+     startRandomGen(max, count, annotation);
 
      Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_RANDOM,
                                            new Integer(count));
-
-     msg =  m_messageManager.send(msg, RandomDestination.getRandomDestination(m_diceRollerPlayer2.getName()));
+     msg =  m_messageManager.send(msg, RandomDestination.getRandomDestination(m_localPlayer.getName()));
 
      return (int[])((RandomNumberMessage)msg).m_obj;
    }
@@ -77,29 +69,36 @@ public class CryptoRandomSource implements IRandomSource
     * Both getRandom and getRandomArray use this method to prepare both
     * players to generate an integer or an array
     */
-   private void startRandomGen(int max)
+   private void startRandomGen(int max, int randomCount, String annotation)
    {
      Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_TRIPLET,
                                            new Integer(max));
+     
 
+     ((RandomNumberMessage) msg).m_randomCount = randomCount;
+     ((RandomNumberMessage) msg).m_annotation = annotation;     
+     
      // Send maximum value, request triplet
-     msg =  m_messageManager.send(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
+     msg =  m_messageManager.send(msg, (m_remotePlayer.getName() + "RandomDest"));
 
      // send triplet, request triplet
      ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_TRIPLET;
-     msg =  m_messageManager.send(msg, (m_diceRollerPlayer2.getName() + "RandomDest"));
+     ((RandomNumberMessage) msg).m_randomCount = randomCount;
+     ((RandomNumberMessage) msg).m_annotation = annotation;     
+
+     msg =  m_messageManager.send(msg, (m_localPlayer.getName() + "RandomDest"));
 
      // send triplet, request key
      ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_KEY;
-     msg =  m_messageManager.send(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
+     msg =  m_messageManager.send(msg, (m_remotePlayer.getName() + "RandomDest"));
 
      // send key, request key
      ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_KEY;
-     msg =  m_messageManager.send(msg, (m_diceRollerPlayer2.getName() + "RandomDest"));
+     msg =  m_messageManager.send(msg, (m_localPlayer.getName() + "RandomDest"));
 
      // send key, request nothing
      ((RandomNumberMessage)msg).m_request = RandomNumberMessage.NO_REQUEST;
-      m_messageManager.send(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
+      m_messageManager.send(msg, (m_remotePlayer.getName() + "RandomDest"));
    }
 
 

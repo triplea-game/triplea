@@ -83,6 +83,9 @@ public class RandomGen
 
   private byte[] m_enc_random_seed;
   private byte[] m_enc_known;
+  
+  private String m_annotation;
+  private int m_randomCount = -1;
 
   public RandomGen()
   {
@@ -92,67 +95,41 @@ public class RandomGen
     m_random_seed = null;
   }
 
-  public RandomGen(int in_max_num)
+  public RandomGen(int in_max_num, int randomCount, String annotation)
   {
     // DEBUG
     // System.out.println("RandomGen(" + in_max_num + ")");
     m_max_num = new Integer(in_max_num);
     m_random_seed = null;
+    m_randomCount = randomCount;
+    m_annotation = annotation;
   }
 
-  public RandomGen(Integer in_max_num)
-  {
-    // DEBUG
-    // System.out.println("RandomGen(" + in_max_num + ")");
-    m_max_num = in_max_num;
-    m_random_seed = null;
-  }
 
-  public int getSharedRandom(RandomGen other)
+  public int[] getSharedRandomArr(RandomGen other)
   {
+      
+      if(m_randomCount == -1)
+          throw new IllegalStateException("Count not set");
     // DEBUG
     //System.out.println(this + "#getSharedRandom(" + other + ")");
     //System.out.println(this + "#getSharedRandom() seed " +
     //                   getRandomSeed() + " ^ " + other.getRandomSeed() + " => " +
-    //                   (getRandomSeed() ^ other.getRandomSeed()));
+    //                    (getRandomSeed() ^ other.getRandomSeed()));
 
     Random rng = new Random(getRandomSeed() ^ other.getRandomSeed());
-    int rnd;
+    int[] rnds = new int[m_randomCount];
 
     if (null == m_max_num)
     {
-      rnd = rng.nextInt();
-    }
-    else
-    {
-      rnd = rng.nextInt(m_max_num.intValue());
-    }
-
-    return rnd;
-  }
-
-
-  public int[] getSharedRandomArr(RandomGen other, int count)
-  {
-    // DEBUG
-    //System.out.println(this + "#getSharedRandom(" + other + ")");
-    //System.out.println(this + "#getSharedRandom() seed " +
-    //                   getRandomSeed() + " ^ " + other.getRandomSeed() + " => " +
-    //                   (getRandomSeed() ^ other.getRandomSeed()));
-
-    Random rng = new Random(getRandomSeed() ^ other.getRandomSeed());
-    int[] rnds = new int[count];
-
-    if (null == m_max_num)
-    {
-      for (int i=0; i<count; i++)
+      for (int i=0; i<m_randomCount; i++)
       {
         rnds[i] = rng.nextInt();
       }
     }
     else
     {
-      for (int i=0; i<count; i++)
+      for (int i=0; i<m_randomCount; i++)
       {
         rnds[i] = rng.nextInt(m_max_num.intValue());
       }
@@ -198,6 +175,9 @@ public class RandomGen
     setEncryptedRandomSeed(triplet.m_encrypted_random);
     setEncryptedKnown(triplet.m_encrypted_known);
     setMaxVal(triplet.m_max_num);
+    m_randomCount = triplet.getRandomCount();
+    m_annotation = triplet.getAnnotation();
+    
   }
 
   /**
@@ -210,7 +190,10 @@ public class RandomGen
     // System.out.println(this + "#getTriplet()");
     return new RandomTriplet(getEncryptedRandomSeed(),
                              getEncryptedKnown(),
-                             getMaxVal());
+                             getMaxVal(),
+                             m_randomCount,
+                             m_annotation
+                             );
   }
 
 
@@ -346,7 +329,9 @@ public class RandomGen
         // System.out.println("Using this key: " + m_key);
 
       }
-      catch (GeneralSecurityException ex) {
+      catch (GeneralSecurityException ex) 
+      {
+          ex.printStackTrace();
       }
     }
 
@@ -444,92 +429,21 @@ public class RandomGen
     return m_key;
   }
 
-  private byte[] intToByteArr(int num)
+  public static byte[] longToByteArr(long num)
   {
-    byte[] bytes = new byte[4];
-    int offset;
-    for (int i=0; i<bytes.length; i++)
-    {
-      offset = 8 * (bytes.length - i - 1);
-      bytes[i] = (byte)((num & (0xFF << offset)) >>> offset);
-    }
-
-    return bytes;
-  }
-
-  private byte[] longToByteArr(long num)
-  {
-    byte[] bytes = new byte[8];
-    int offset;
-    for (int i=0; i<bytes.length; i++)
-    {
-      offset = 8 * (bytes.length - i - 1);
-      bytes[i] = (byte)((num & (0xFF << offset)) >>> offset);
-    }
-
-    return bytes;
-  }
-
-  private int byteArrToInt(byte[] arr)
-  {
-    int num = 0;
-    int offset;
-    for (int i=0; i<arr.length; i++)
-    {
-      offset = 8 * (arr.length - i - 1);
-      num |= ((int)((0 > arr[i]) ? (256 + (int)arr[i]) : arr[i])) << offset;
-    }
-
-    return num;
+      return ("" + num).getBytes();
   }
 
 
-  private long byteArrToLong(byte[] arr)
+  public static long byteArrToLong(byte[] arr)
   {
-    long num = 0L;
-    int offset;
-    for (int i=0; i<arr.length; i++)
-    {
-      offset = 8 * (arr.length - i - 1);
-      num |= ((long)((0 > arr[i]) ? (256L + (long)arr[i]) : arr[i])) << offset;
-    }
-
-    return num;
+    return Long.parseLong(new String(arr));
   }
 
-  public static void main(String args[])
+
+  public String getAnnotation()
   {
-    System.out.println("Self test:");
-    RandomGen local = new RandomGen(6);
-
-    RandomTriplet triplet = local.getTriplet();
-    long random = local.getRandomSeed();
-
-    System.out.println("Got a triplet: " + triplet);
-    System.out.println("Local random seed: " + random);
-
-
-    RandomGen remote = new RandomGen(triplet.m_max_num.intValue());
-
-    remote.setTriplet(triplet);
-
-    SecretKey m_key = local.getKey();
-
-
-    System.out.println("Got a key: " + m_key);
-
-
-    remote.setKey(m_key);
-
-    if (remote.verifyKnown())
-    {
-      System.out.println("Known verified");
-    }
-    else
-    {
-      System.out.println("Known verify failed");
-    }
-
-    System.out.println("Remote random: " + remote.getRandomSeed());
+      return m_annotation;
   }
+ 
 }

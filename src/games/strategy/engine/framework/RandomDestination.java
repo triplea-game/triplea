@@ -19,6 +19,7 @@ import javax.crypto.SecretKey;
 
 
 import games.strategy.engine.message.*;
+import games.strategy.triplea.formatter.Formatter;
 import games.strategy.util.RandomGen;
 import games.strategy.util.RandomTriplet;
 
@@ -71,13 +72,23 @@ public class RandomDestination implements IDestination
     case RandomNumberMessage.SEND_TRIPLET:
       if (rnd_message.m_obj instanceof Integer)
       {
+          //when we verify the random number at the end, 
+          //we set our remote random get to null
+          //only the client does this
+          //if this hasnt been set to null, then the 
+          //last random number hasnt been verified, which 
+          //means the other player can cheat
+          if (m_remote_random_gen != null)
+              throw new IllegalStateException("Someone is trying to get a random number before we have received the key to verify the last one");
+          
+          
         // We're 'player1' and we're starting things off
-        m_random_gen = new RandomGen(((Integer)rnd_message.m_obj).intValue());
+        m_random_gen = new RandomGen(((Integer)rnd_message.m_obj).intValue(), rnd_message.m_randomCount, rnd_message.m_annotation);
       }
       else if (rnd_message.m_obj instanceof RandomTriplet)
       {
         // We're 'player2' and we're receiving the initial data from 'player1'
-        m_random_gen = new RandomGen(((RandomTriplet)rnd_message.m_obj).m_max_num);
+        m_random_gen = new RandomGen(((RandomTriplet)rnd_message.m_obj).m_max_num.intValue(), rnd_message.m_randomCount, rnd_message.m_annotation);        
         m_remote_random_gen = new RandomGen();
         m_remote_random_gen.setTriplet((RandomTriplet)rnd_message.m_obj);
       }
@@ -103,15 +114,17 @@ public class RandomDestination implements IDestination
         // We're 'player1' and we're receiving the secret key from 'player2'
         m_remote_random_gen.setKey((SecretKey)rnd_message.m_obj);
 
-        int the_random = m_random_gen.getSharedRandom(m_remote_random_gen);
+        int the_random = m_random_gen.getSharedRandomArr(m_remote_random_gen)[0];
         return new RandomNumberMessage(new Integer(the_random));
       }
       else if (rnd_message.m_obj instanceof Integer)
       {
+        if(!m_remote_random_gen.verifyKnown())
+            throw new IllegalStateException("Could not verify remote known value");
+          
         // We're one of the two players and all of the data has already
         // been exchanged, simply return the random array of the size requested
-        int[] random_arr = m_random_gen.getSharedRandomArr(m_remote_random_gen,
-                                                           ((Integer)rnd_message.m_obj).intValue());
+        int[] random_arr = m_random_gen.getSharedRandomArr(m_remote_random_gen);
 
         return new RandomNumberMessage(random_arr);
       }
@@ -119,7 +132,7 @@ public class RandomDestination implements IDestination
       {
         // We're one of the two players and all of the data has already
         // been exchanged, so simply return the random
-        int the_random = m_random_gen.getSharedRandom(m_remote_random_gen);
+        int the_random = m_random_gen.getSharedRandomArr(m_remote_random_gen)[0];
         return new RandomNumberMessage(new Integer(the_random));
       }
 
@@ -132,7 +145,14 @@ public class RandomDestination implements IDestination
       if (rnd_message.m_obj instanceof SecretKey)
       {
         // We're 'player1' and we're receiving the secret key from 'player2'
-        m_remote_random_gen.setKey((SecretKey)rnd_message.m_obj);
+        m_remote_random_gen.setKey((SecretKey)rnd_message.m_obj); 
+        
+        if(!m_remote_random_gen.verifyKnown())
+            throw new IllegalStateException("Could not verify remote known value");
+        
+        VerifiedRandomNumbers verified = new VerifiedRandomNumbers(m_random_gen.getAnnotation(), m_random_gen.getSharedRandomArr(m_remote_random_gen));
+        System.out.println("Verified random roll:" + verified);
+        m_remote_random_gen = null;
       }
       return null;
 
@@ -140,4 +160,25 @@ public class RandomDestination implements IDestination
       return new ErrorMessage("Bad RandomNumberMessage received");
     }
   }
+  
+  
+}
+
+
+class VerifiedRandomNumbers
+{
+    private final int[] m_values;
+    private final String m_annotation;
+    
+    public VerifiedRandomNumbers(String annotation, int[] values)
+    {
+        m_values = values;
+        m_annotation = annotation;
+    }
+    
+    public String toString()
+    {
+        return "Rolled :" +  Formatter.asDice(m_values) + " for " + m_annotation;
+    }
+    
 }

@@ -35,6 +35,10 @@ public class RandomNumberMessage implements Message
 
   public int m_request;
   public Object m_obj;
+  
+  //the following only are used for the SEND_TRIPLET message
+  public String m_annotation;
+  public int m_randomCount;
 
 
   public RandomNumberMessage(Object in_obj)

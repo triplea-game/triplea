@@ -27,28 +27,26 @@ package games.strategy.util;
  */
 public class RandomTriplet implements java.io.Serializable
 {
-  public byte[] m_encrypted_random;
-  public byte[] m_encrypted_known;
-  public Integer m_max_num;
+  public final byte[] m_encrypted_random;
+  public final byte[] m_encrypted_known;
+  public final Integer m_max_num;
+  private final String m_annotation;
+  private final int m_count;
+  
 
-  public RandomTriplet(byte[] enc_rnd, byte[] enc_known)
-  {
-    m_encrypted_random = enc_rnd;
-    m_encrypted_known = enc_known;
-  }
 
-  public RandomTriplet(byte[] enc_rnd, byte[] enc_known, int in_max_num)
+  public RandomTriplet(byte[] enc_rnd, byte[] enc_known, Integer in_max_num, int count, String annotation)
   {
-    m_encrypted_random = enc_rnd;
-    m_encrypted_known = enc_known;
-    m_max_num = new Integer(in_max_num);
-  }
-
-  public RandomTriplet(byte[] enc_rnd, byte[] enc_known, Integer in_max_num)
-  {
+    if(count <= 0)
+        throw new IllegalArgumentException("Invalid count:" + count);
+    if(annotation == null || annotation.length() == 0)
+        throw new IllegalArgumentException("No annotation");
+      
     m_encrypted_random = enc_rnd;
     m_encrypted_known = enc_known;
     m_max_num = in_max_num;
+    m_count = count;
+    m_annotation = annotation;
   }
 
   public String toString()
@@ -77,5 +75,15 @@ public class RandomTriplet implements java.io.Serializable
     buff.append(">");
 
     return buff.toString();
+  }
+  
+  public String getAnnotation()
+  {
+      return m_annotation;
+  }
+  
+  public int getRandomCount()
+  {
+      return m_count;
   }
 }
