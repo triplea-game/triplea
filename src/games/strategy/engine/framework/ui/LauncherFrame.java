@@ -58,6 +58,7 @@ public class LauncherFrame extends JFrame
   private ClientStartup m_clientStartup;
   private GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
   private PBEMStartup m_pbemStartup;
+  private LocalPlayerSelectionPanel m_localPlayerTypes = new LocalPlayerSelectionPanel();
 
 
   public LauncherFrame()
@@ -105,7 +106,9 @@ public class LauncherFrame extends JFrame
   public void setGameData(GameData data)
   {
     m_gameData = data;
+     m_localPlayerTypes.setGameData(m_gameData);
     updatePropertiesPanel();
+    setWidgetActivation();
 
     if(m_serverStartup != null)
       m_serverStartup.setGameData(data);
@@ -114,6 +117,26 @@ public class LauncherFrame extends JFrame
 
 
   }
+
+  private void updateLocalPlayerTypes()
+  {
+    m_mainTabPanel.remove(m_localPlayerTypes);
+
+    //we dont do this on client play
+    if(!m_gameTypePanel.isLocal())
+      return;
+
+    if(m_gameData == null)
+      return;
+
+    if (m_gameData.getGameLoader().getServerPlayerTypes().length != 1 )
+    {
+      int tabIndex = m_propertuesUI == null ? 1 :2;
+      m_mainTabPanel.add(m_localPlayerTypes, "Player Types", tabIndex);
+
+    }
+  }
+
 
   private void updatePropertiesPanel()
   {
@@ -129,6 +152,9 @@ public class LauncherFrame extends JFrame
 
     m_propertuesUI = new PropertiesUI(m_gameData.getProperties(), true);
     m_mainTabPanel.add(m_propertuesUI, "Properties", 1);
+
+
+
     m_mainTabPanel.setTabPlacement(1);
   }
 
@@ -237,7 +263,8 @@ public class LauncherFrame extends JFrame
         Iterator playerIter = players.iterator();
         while(playerIter.hasNext())
         {
-          localPlayerMap.put(playerIter.next(), "local");
+          String playerName = (String) playerIter.next();
+          localPlayerMap.put(playerName, m_localPlayerTypes.getPlayerType(playerName));
         }
 
         Set gamePlayers = m_gameData.getGameLoader().createPlayers(localPlayerMap);
@@ -408,10 +435,7 @@ public class LauncherFrame extends JFrame
   void setWidgetActivation()
   {
     setPlayActivation();
-
-
-
-
+    updateLocalPlayerTypes();
   }
 
   private void setPlayActivation()

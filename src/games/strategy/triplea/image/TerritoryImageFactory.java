@@ -27,6 +27,8 @@ import games.strategy.ui.ImageIoCompletionWatcher;
 import games.strategy.triplea.ui.*;
 import java.util.List;
 import java.util.*;
+import javax.imageio.*;
+import java.io.*;
 
 public final class TerritoryImageFactory
 {

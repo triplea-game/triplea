@@ -31,7 +31,7 @@ import games.strategy.engine.framework.ui.NewGameFileChooser;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: </p>
- * @author unascribed
+ * @author Sean Bridges
  * @version 1.0
  */
 

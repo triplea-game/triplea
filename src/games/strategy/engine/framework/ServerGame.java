@@ -62,7 +62,12 @@ public class ServerGame implements IGame
 
     private IRandomSource m_randomSource = new PlainRandomSource();
 
-    /** Creates new Game */
+    /**
+     *
+     * @param localPlayers Set - A set of GamePlayers
+     * @param messenger IServerMessenger
+     * @param remotePlayerMapping Map
+     */
     public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping)
     {
         m_data = data;

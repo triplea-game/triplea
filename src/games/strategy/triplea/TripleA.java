@@ -39,6 +39,11 @@ import games.strategy.engine.random.*;
  */
 public class TripleA implements IGameLoader
 {
+  private static final String HUMAN_PLAYER_TYPE = "Human";
+  private static final String COMPUTER_PLAYER_TYPE = "Computer";
+
+
+
 	public Set createPlayers(Map playerNames)
 	{
 		Set players = new HashSet();
@@ -46,8 +51,20 @@ public class TripleA implements IGameLoader
 		while(iter.hasNext())
 		{
 			String name = (String) iter.next();
-			TripleAPlayer player = new TripleAPlayer(name);
-			players.add(player);
+      String type = (String) playerNames.get(name);
+      if(type.equals(COMPUTER_PLAYER_TYPE))
+      {
+        throw new IllegalStateException("TODO - create a GamePlayer instance for computer players here");
+      }
+      else if (type.equals(HUMAN_PLAYER_TYPE) )
+      {
+        TripleAPlayer player = new TripleAPlayer(name);
+        players.add(player);
+      }
+      else
+      {
+        throw new IllegalStateException("Player type not recognized:" + type);
+      }
 		}
 		return players;
 	}
@@ -114,8 +131,10 @@ public class TripleA implements IGameLoader
 	 */
 	public String[] getServerPlayerTypes()
 	{
-		String[] players = {"Server"};
-		return players;
+    if(System.getProperties().getProperty("triplea.ai") != null)
+      return new String[] {HUMAN_PLAYER_TYPE, COMPUTER_PLAYER_TYPE};
+    else
+      return new String[] {HUMAN_PLAYER_TYPE};
 	}
 
 	/**
