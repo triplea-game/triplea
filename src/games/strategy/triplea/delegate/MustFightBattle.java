@@ -507,9 +507,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
       endBattle(bridge);
       if(defender)
-        defenderWins(bridge);
-      else
         attackerWins(bridge);
+      else
+        defenderWins(bridge);
     }
   }
 
