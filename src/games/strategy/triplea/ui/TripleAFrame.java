@@ -46,6 +46,7 @@ import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.triplea.delegate.*;
 
 /**
  *
@@ -459,7 +460,9 @@ public class TripleAFrame extends JFrame
     TechResultsDisplay display = new TechResultsDisplay(msg);
     if(msg.getHits() != 0)
     {
-      m_mapPanel.refreshMap();
+        Match match = Matches.territoryHasUnitsOwnedBy(msg.getPlayer());
+        Collection updatedCountries = Match.getMatches( m_data.getMap().getTerritories(), match);
+        m_mapPanel.updateCounties(updatedCountries);
     }
     JOptionPane.showOptionDialog(this, display, "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK");
 

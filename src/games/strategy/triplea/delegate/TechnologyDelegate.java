@@ -107,7 +107,7 @@ public class TechnologyDelegate implements SaveableDelegate
     String transcriptText =  m_bridge.getPlayerID().getName() + " discover " + text.toString();
     m_bridge.getTranscript().write(transcriptText);
 
-    return new TechResultsMessage(random, techHits, advancesAsString);
+    return new TechResultsMessage(random, techHits, advancesAsString, m_player);
 
 
   }

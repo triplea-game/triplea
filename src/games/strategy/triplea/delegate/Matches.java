@@ -457,6 +457,21 @@ public class Matches
 		return new InverseMatch(alliedUnit(player, data));
 	}
 
+    public static Match unitOwnedBy(final PlayerID player)
+    {
+        return new Match()
+        {
+            public boolean match(Object o)
+            {
+                Unit unit = (Unit) o;
+                return unit.getOwner().equals(player);
+            }
+        };
+
+    }
+
+
+
 	public static Match alliedUnit(final PlayerID player, final GameData data)
 	{
 		return new Match()
@@ -483,6 +498,22 @@ public class Matches
          return t.equals(test);
        }
      };
+
+  }
+
+  public static Match territoryHasUnitsOwnedBy(final PlayerID player)
+  {
+      final Match unitOwnedBy = unitIsOwnedBy(player);
+
+      return new Match()
+  {
+
+    public boolean match(Object o)
+    {
+      Territory t = (Territory) o;
+      return t.getUnits().someMatch(unitOwnedBy);
+    }
+  };
 
   }
 

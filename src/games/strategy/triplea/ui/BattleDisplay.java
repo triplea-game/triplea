@@ -338,7 +338,12 @@ public class BattleDisplay extends JPanel
     final int HEIGHT = 100;
     Image finalImage = Util.createImage(WIDTH, HEIGHT, true);
 
-    Image territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getTerritoryImage(m_location, m_defender);
+
+    Image territory;
+    if(m_location.isWater())
+       territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getSeaImage(m_location);
+   else
+       territory = games.strategy.triplea.image.TerritoryImageFactory.getInstance().getTerritoryImage(m_location, m_defender);
 
     finalImage.getGraphics().drawImage(territory,  0, 0, WIDTH, HEIGHT, this);
 

@@ -29,6 +29,7 @@ import java.awt.event.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.ui.ImageScrollerLargeView;
+import java.util.*;
 
 /**
  * Responsible for drawing the large map and keeping it updated.
@@ -197,10 +198,9 @@ public class MapPanel extends ImageScrollerLargeView
     }
   };
 
-  public void refreshMap()
+  public void updateCounties(Collection countries)
   {
-    initTerritories();
-
+      m_mapsUnitDrawer.queueUpdate(countries);
   }
 
   private final TerritoryListener TERRITORY_LISTENER = new TerritoryListener()
