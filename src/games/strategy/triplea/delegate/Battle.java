@@ -37,9 +37,6 @@ import games.strategy.triplea.Constants;
  */
 interface Battle extends java.io.Serializable
 {
-        public static int SUBS_RETREAT_TYPE = 1;
-        public static int PLANES_RETREAT_TYPE = 2;
-
 	public void addAttack(Route route, Collection units);
 
 	public boolean isBombingRun();

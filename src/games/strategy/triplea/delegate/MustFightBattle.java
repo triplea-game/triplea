@@ -41,7 +41,11 @@ import games.strategy.triplea.attatchments.*;
  */
 public class MustFightBattle implements Battle, BattleStepStrings
 {
+    public static int DEFAULT_RETREAT_TYPE = 0;
+    public static int SUBS_RETREAT_TYPE = 1;
+    public static int PLANES_RETREAT_TYPE = 2;
 
+    
     private final Territory m_battleSite;
 
     //maps Territory-> units
@@ -540,14 +544,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return canAttackerRetreat() || canSubsSubmerge();
     }
 
-    private boolean canAttackerRetreatPlanes()
-    {
-        if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
-            return false;
-
-        return canAttackerRetreat() || canSubsSubmerge();
-    }
-
 
     private void attackerRetreat(DelegateBridge bridge)
     {
@@ -558,7 +554,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection possible = getAttackerRetreatTerritories();
 
         if (!m_over)
-            queryRetreat(false, 0, bridge, possible);
+            queryRetreat(false, DEFAULT_RETREAT_TYPE, bridge, possible);
     }
 
     private void attackerRetreatSubs(DelegateBridge bridge)

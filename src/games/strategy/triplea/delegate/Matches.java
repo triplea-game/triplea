@@ -602,6 +602,26 @@ public class Matches
 
 	}
 
+	public static Match territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data)
+	{
+
+	    final CompositeMatch match = new CompositeMatchAnd();
+	    match.add(enemyUnit(player,data));
+	    match.add(new InverseMatch( unitIsSubmerged(data)));
+	    
+	    return new Match()
+		{
+		    
+			public boolean match(Object o)
+			{
+				Territory t = (Territory) o;
+				return t.getUnits().someMatch( match );
+			}
+		};
+
+	}
+
+	
 	public static Match territoryHasEnemyUnits(final PlayerID player, final GameData data)
 	{
 		return new Match()

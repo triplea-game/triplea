@@ -926,7 +926,7 @@ public class MoveDelegate implements SaveableDelegate
         //not owned)
         CompositeMatch mustFightThrough = new CompositeMatchOr();
         mustFightThrough.add(Matches.isTerritoryEnemy(id, m_data));
-        mustFightThrough.add(Matches.territoryHasEnemyUnits(id, m_data));
+        mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, m_data));
 
         Collection moved = Util.intersection(units, arrivingUnits);
 
