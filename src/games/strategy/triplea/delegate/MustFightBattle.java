@@ -408,7 +408,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     }
                 }
 
-            } else
+            } else //not water
             {
                 if (canAttackerRetreatSubs())
                 {
@@ -429,6 +429,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (canAttackerRetreat())
         {
             steps.add(m_attacker.getName() + ATTACKER_WITHDRAW);
+        }
+        else if(canAttackerRetreatPlanes())
+        {
+            steps.add(m_attacker.getName() + PLANES_WITHDRAW);
         }
 
         return steps;
@@ -488,7 +492,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         attackerRetreatSubs(bridge);
         defenderRetreatSubs(bridge);
-        if(isFourthEdition() && m_amphibious)
+        if(canAttackerRetreatPlanes())
           attackerRetreatPlanes(bridge);
         attackerRetreat(bridge);
 
@@ -502,6 +506,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         fightLoop(bridge);
         return;
+    }
+
+    /**
+     * @return
+     */
+    private boolean canAttackerRetreatPlanes()
+    {
+        return isFourthEdition() && m_amphibious && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
     }
 
     private Collection getAttackerRetreatTerritories()
