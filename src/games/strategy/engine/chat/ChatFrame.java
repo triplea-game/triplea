@@ -277,7 +277,7 @@ public class ChatFrame extends JFrame
             	ChatMessage msg = new ChatMessage(m_nextMessage.getText());
             	m_chat.sendMessage(msg);
             }
-			m_ChatHistory.insertHistory(m_nextMessage.getText());
+			m_ChatHistory.append(m_nextMessage.getText());
             m_nextMessage.setText("");
         }
     };
@@ -286,11 +286,9 @@ public class ChatFrame extends JFrame
 
 		public void actionPerformed(ActionEvent e)
 		{
-			if(m_ChatHistory.hasNextHistory()){
-				m_ChatHistory.setHistory(m_nextMessage.getText());
-				m_ChatHistory.nextHistory();
-				m_nextMessage.setText(m_ChatHistory.getHistory());
-			}
+		    m_ChatHistory.next();
+		    m_nextMessage.setText(m_ChatHistory.current());
+
 		}
 	};
 	private Action m_UpAction = new AbstractAction()
@@ -298,11 +296,8 @@ public class ChatFrame extends JFrame
 
 		public void actionPerformed(ActionEvent e)
 		{
-			if(m_ChatHistory.hasPrevHistory()){
-				m_ChatHistory.setHistory(m_nextMessage.getText());
-				m_ChatHistory.prevHistory();
-				m_nextMessage.setText(m_ChatHistory.getHistory());
-			}
+		    m_ChatHistory.prev();
+		    m_nextMessage.setText(m_ChatHistory.current());
 		}
 	};
 }

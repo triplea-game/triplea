@@ -25,48 +25,35 @@ import java.util.*;
  */
 public class ChatHistory
 {
-	private ArrayList m_History;
-	private ArrayList m_CurrentHistory;
+	
+	private final List m_history =new ArrayList();
 	private int m_HistoryPosition;
+	
 	ChatHistory()
 	{
-		m_History=new ArrayList();
-		m_CurrentHistory=new ArrayList();
-		m_CurrentHistory.add("");
-		m_HistoryPosition=0;
 	}
-	boolean hasNextHistory()
+	
+	public void next()
 	{
-		if(m_HistoryPosition<m_CurrentHistory.size()-1)
-			return true;
-		return false;
+		m_HistoryPosition = Math.min( m_HistoryPosition + 1, m_history.size());	
 	}
-	boolean hasPrevHistory()
+	
+	public void prev()
 	{
-		if(m_HistoryPosition>0)
-			return true;
-		return false;
+	  	m_HistoryPosition = Math.max( m_HistoryPosition -1, 0);
 	}
-	void setHistory(String s)
+	
+	public String current()
 	{
-		m_CurrentHistory.set(m_HistoryPosition,s);
+	    if(m_HistoryPosition == m_history.size())
+	        return "";
+	    
+		return m_history.get(m_HistoryPosition).toString();
 	}
-	void nextHistory()
+	
+	public void append(String s)
 	{
-		m_HistoryPosition++;
-	}
-	void prevHistory()
-	{
-		m_HistoryPosition--;
-	}
-	String getHistory()
-	{
-		return m_CurrentHistory.get(m_HistoryPosition).toString();
-	}
-	void insertHistory(String s){
-		m_History.add(s);
-		m_HistoryPosition=m_History.size();
-		m_CurrentHistory=new ArrayList(m_History);
-		m_CurrentHistory.add("");
+	    m_history.add(s);
+		m_HistoryPosition=m_history.size();
 	}
 }
