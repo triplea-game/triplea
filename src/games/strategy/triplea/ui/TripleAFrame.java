@@ -91,18 +91,10 @@ public class TripleAFrame extends JFrame
   public TripleAFrame(IGame game, Set players) throws IOException
   {
     super("TripleA");
-    
-    //TaskTimer total = new TaskTimer("Loading game");
-    //TaskTimer loadFlags = new TaskTimer("Loading flag images");
-    
+
     FlagIconImageFactory.instance().load(this);
-    //loadFlags.done();
-
-
     setIconImage(GameRunner.getGameIcon(this));
 
-    
-    
     m_game = game;
 
     game.getMessenger().addErrorListener(m_messengerErrorListener);
@@ -115,8 +107,6 @@ public class TripleAFrame extends JFrame
     createMenuBar();
 
     TerritoryData.getInstance().verify(m_data);
-
-    //TaskTimer loadMaps = new TaskTimer("Loading maps");
     MapImage.getInstance().loadMaps(m_data);
 
     Image small = MapImage.getInstance().getSmallMapImage();
@@ -125,8 +115,6 @@ public class TripleAFrame extends JFrame
     Image large =  MapImage.getInstance().getLargeMapImage();
     m_mapPanel = new MapPanel(large,m_data, m_smallView);
     m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
-
-    //loadMaps.done();
 
     //link the small and large images
     new ImageScrollControl(m_mapPanel, m_smallView);
@@ -189,15 +177,12 @@ public class TripleAFrame extends JFrame
     gameCenterPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
 
     m_gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
-    //total.done();
 
     game.addGameStepListener(m_stepListener);
     updateStep();
 
     //there are a lot of images that can be gcd right now
     System.gc();
-
-
   }
 
   private void shutdown()
@@ -403,7 +388,7 @@ public class TripleAFrame extends JFrame
         {
           String text = "<h2>TripleA</h2>  " +
           
-              		    "<b>Engine Version:</b> " +games.strategy.engine.EngineVersion.VERSION.toString()  + "<br>" +
+              		"<b>Engine Version:</b> " +games.strategy.engine.EngineVersion.VERSION.toString()  + "<br>" +
                         "<b>Game:</b> " + m_data.getGameName() + "<br>"+ 
                         "<b>Game Version:</b>" + m_data.getGameVersion() + "<br>" +
                         "<br>" +
