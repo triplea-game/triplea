@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 /** ChangeFactory.java
  *
  * Created on October 25, 2001, 1:26 PM
@@ -50,7 +64,12 @@ public class ChangeFactory
 		return new RemoveUnits(territory.getUnits(), units);
 	}
 	
-	public static Change addUnits(PlayerID player, Collection units)
+	public static Change removeUnits(Territory territory, Collection units, boolean isCasualty)
+	{
+		return new RemoveUnits(territory.getUnits(), units, isCasualty);
+	}
+	
+		public static Change addUnits(PlayerID player, Collection units)
 	{
 		return new AddUnits(player.getUnits(), units);
 	}
@@ -58,6 +77,11 @@ public class ChangeFactory
 	public static Change removeUnits(PlayerID player, Collection units)
 	{
 		return new RemoveUnits(player.getUnits(), units);
+	}
+	
+	public static Change removeUnits(PlayerID player, Collection units, boolean isCasualty)
+	{
+		return new RemoveUnits(player.getUnits(), units, isCasualty);
 	}
 	
 	public static Change moveUnits(Territory start, Territory end, Collection units)
@@ -139,17 +163,31 @@ class RemoveUnits extends Change
 
 	private final String m_name;
 	private final Collection m_units;
+	// Indicates whether the removal is the result of taking casualties
+	private final boolean m_isCasualty;
 
 	RemoveUnits(UnitCollection collection, Collection units)
 	{
+		this(collection, units, false);
+	}
+
+	RemoveUnits(UnitCollection collection, Collection units, boolean isCasualty)
+	{
 		m_units = Collections.unmodifiableCollection(units);
 		m_name = collection.getHolder().getName();
+		m_isCasualty = isCasualty;
 	}
 
 	RemoveUnits(String name, Collection units)
 	{
+		this(name, units, false);
+	}
+	
+	RemoveUnits(String name, Collection units, boolean isCasualty)
+	{
 		m_units = Collections.unmodifiableCollection(units);
 		m_name = name;
+		m_isCasualty = isCasualty;
 	}
 
 	public Change invert() 
@@ -161,11 +199,18 @@ class RemoveUnits extends Change
 	{
 		UnitHolder holder = data.getUnitHolder(m_name);
 		holder.getUnits().removeAllUnits(m_units);
+		if (m_isCasualty)
+		{
+			Iterator iter = m_units.iterator();
+			while (iter.hasNext())
+				Unit.removeUnit((Unit) iter.next());	
+		}
+			
 	}
 	
 	public String toString()
 	{
-		return "Remove unit message.  Remove from:" + m_name + " units:" + m_units;
+		return "Remove unit message.  (" + (m_isCasualty ? "Casualty" : "Non-Casualty") + ") Remove from:" + m_name + " units:" + m_units;
 	}
 }
 

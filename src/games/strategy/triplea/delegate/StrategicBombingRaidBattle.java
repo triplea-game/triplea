@@ -102,8 +102,10 @@ public class StrategicBombingRaidBattle implements Battle
 	{	
 		String text = hits + " hits from AA fire";
 		Collection casualties = BattleCalculator.selectCasualties(m_attacker, m_units,hits,bridge, text, m_data);
-		m_units.removeAll(casualties);
-		Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
+		m_units.removeAll(casualties);		
+		Change remove = ChangeFactory.removeUnits(m_battleSite, casualties, true);		
+		
+		
 		bridge.addChange(remove);
 		
 		String msgText = m_attacker.getName() + " selects " + Formatter.unitsToText(casualties) + " as casualties from aa raid in " + m_battleSite.getName();

@@ -62,6 +62,15 @@ public class Unit extends GameDataComponent implements Serializable
 	}
 
 	/*
+	 * Removes the given unit from the mapping 
+	 * NOTE: This should only be used when the unit is removed as a casualty
+	 */
+	public static void removeUnit(Unit unit) 
+	{
+		s_allUnits.remove(unit.getID());	
+	}
+
+	/*
 	 * Gets all units for the specified player
 	 * NOTE: implementation iterates over the entire list of units, so not extraordinarily efficient right now.
 	 */	
