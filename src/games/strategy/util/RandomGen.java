@@ -70,7 +70,8 @@ public class RandomGen
 
   // These are used to do the work of generating
   // and working with the encrypted random numbers
-  private static Random s_seed_gen = new Random(PlainRandomSource.getSeed());
+  
+  private static MersenneTwister s_seed_gen = new MersenneTwister(PlainRandomSource.getSeed());
 
   private Cipher m_cryptor;
   private KeyGenerator m_keygen;
@@ -128,7 +129,7 @@ public class RandomGen
     //                   getRandomSeed() + " ^ " + other.getRandomSeed() + " => " +
     //                    (getRandomSeed() ^ other.getRandomSeed()));
 
-    Random rng = new Random(getRandomSeed() ^ other.getRandomSeed());
+    MersenneTwister rng = new MersenneTwister(getRandomSeed() ^ other.getRandomSeed());
     int[] rnds = new int[m_randomCount];
 
     if (null == m_max_num)
