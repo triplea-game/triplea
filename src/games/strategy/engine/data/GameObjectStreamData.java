@@ -33,6 +33,7 @@ public class GameObjectStreamData implements Serializable
 	private final static int UNITTYPE = 2;
 	private final static int TERRITORY = 3;
 	private final static int PRODUCTIONRULE = 4;
+	private final static int PRODUCTIONFRONTIER = 5;
 
 	public static boolean canSerialize(Named obj)
 	{
@@ -41,7 +42,8 @@ public class GameObjectStreamData implements Serializable
 		   obj instanceof UnitType ||
 		   obj instanceof Territory ||
 		   obj instanceof ProductionRule ||
-       obj instanceof Attatchment;
+		   obj instanceof Attatchment ||
+		   obj instanceof ProductionFrontier;
 	}
 
 	private String m_name;
@@ -68,6 +70,10 @@ public class GameObjectStreamData implements Serializable
 		{
 			m_type = PRODUCTIONRULE;
 		}
+		else if(named instanceof ProductionFrontier)
+		{
+		    m_type = PRODUCTIONFRONTIER;
+		}
 		else throw new IllegalArgumentException("Wrong type:" + named);
     }
 
@@ -91,6 +97,10 @@ public class GameObjectStreamData implements Serializable
 		else if(m_type == PRODUCTIONRULE)
 		{
 			return data.getProductionRuleList().getProductionRule(m_name);
+		}
+		else if(m_type == PRODUCTIONFRONTIER)
+		{
+		    return data.getProductionFrontierList().getProductionFrontier(m_name);
 		}
 		else throw new IllegalArgumentException("Type not known:" + m_type);
 	}

@@ -39,8 +39,6 @@ public class GameDataComponent implements java.io.Serializable
 		m_data = data;
     }
 
-	GameDataComponent()
-	{}
 
 	protected GameData getData()
 	{
