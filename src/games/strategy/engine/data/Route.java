@@ -112,6 +112,26 @@ public class Route implements java.io.Serializable
 		return m_start;
 	}
 
+        /**
+         * Determines if the route crosses water by checking
+         * if any of the territories except the start are sea
+	 * territories.
+	 * @return whether the route encounters water other than
+	 * at the start of the route.
+	 */
+        public boolean crossesWater()
+        {
+	  Iterator routeIter = m_route.iterator();
+	  while (routeIter.hasNext())
+	  {
+	    Territory terr = (Territory) routeIter.next();
+	    if (terr.isWater()) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+
 	public void addFirst(Territory t)
 	{
 		if(m_route.contains(t))
