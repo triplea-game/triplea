@@ -37,6 +37,7 @@
         <include name="**/*.png"/>
         <include name="**/*.txt"/>
         <include name="**/*.xml"/>
+        <include name="**/*.wav"/>
       </fileset>
     </copy>
     <javac srcdir="src/"
@@ -61,6 +62,7 @@
         <include name="**/*.gif"/>
         <include name="**/*.png"/>
         <include name="**/*.txt"/>
+        <include name="**/*.wav"/>
       </zipfileset>
       <zipfileset dir="lib/" prefix="lib/">
         <include name="**/*.jar"/>
@@ -104,6 +106,7 @@
         <include name="**/*.png"/>
         <include name="**/*.txt"/>
         <include name="**/*.xml"/>
+        <include name="**/*.wav"/>
       </zipfileset>
       <zipfileset dir="bin/" prefix="bin/">
         <include name="triplea.bat"/>
