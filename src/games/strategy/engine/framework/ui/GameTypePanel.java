@@ -20,6 +20,7 @@ import java.awt.*;
 import javax.swing.border.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.prefs.*;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
@@ -109,12 +110,14 @@ public class GameTypePanel extends JPanel
     m_gameFilePanel.setLayout(borderLayout2);
     m_fileNameTextField.setEditable(false);
     m_fileNameTextField.setColumns(15);
+    
     m_fileButton.setText("File...");
     m_fileButton.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(ActionEvent e)
       {
         m_fileButton_actionPerformed(e);
+
       }
     });
     m_fileNamePanel.setLayout(flowLayout2);
@@ -187,7 +190,11 @@ public class GameTypePanel extends JPanel
 
   public void initializeWithDefaultFile()
   {
-    File defaultGame =  new File(NewGameFileChooser.DEFAULT_DIRECTORY, "classic_a&a.xml");
+  	//load the previously saved value
+	Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+	String s=prefs.get("FileName", "classic_a&a.xml");
+  	
+    File defaultGame =  new File(NewGameFileChooser.DEFAULT_DIRECTORY, s);
     try
     {
       loadFile(defaultGame);
@@ -301,6 +308,12 @@ public class GameTypePanel extends JPanel
     m_gameVersion.setText(data.getGameVersion().toString());
 
     m_fileNameTextField.setText(file.getCanonicalPath());
+    
+	//store this name for later loads      
+  Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+  String s=file.getName();
+  prefs.put("FileName", s);
+   
   }
 
   public void setLocal()
