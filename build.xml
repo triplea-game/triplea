@@ -73,6 +73,7 @@
             <include name="**/*.png"/>
             <include name="**/*.txt"/>
             <include name="**/*.wav"/>
+	    <include name="**/*.properties"/>
         </zipfileset>
       
         <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
@@ -136,6 +137,7 @@
             <include name="**/*.txt"/>
             <include name="**/*.xml"/>
             <include name="**/*.wav"/>
+	    <include name="**/*.properties"/>
         </zipfileset>
       
         <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
