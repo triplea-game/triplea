@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Parser.java
  *
  * Created on October 12, 2001, 12:55 PM
@@ -7,6 +21,7 @@
 package games.strategy.engine.data;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.lang.reflect.*;
 import javax.xml.parsers.*;
@@ -79,11 +94,14 @@ public class GameParser
 	private Document getDocument(InputStream input) throws SAXException, IOException, ParserConfigurationException
 	{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		//TODO this should be set to true. Where do we store the dtd though?
-		factory.setValidating(false);
+		factory.setValidating(true);
+		
+		//get the dtd location
+		URL url = GameParser.class.getResource("../xml/");
+		String system = url.toExternalForm();
 
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		return builder.parse(input);
+		return builder.parse(input, system);
 	}
 	
 	/** 
