@@ -20,6 +20,10 @@
 
 package games.strategy;
 
+import games.strategy.engine.message.RemoteMessengerTest;
+import games.strategy.engine.random.CryptoRandomSourceTest;
+import games.strategy.net.ChannelMessengerTest;
+import games.strategy.util.*;
 import junit.framework.*;
 
 /**
@@ -42,6 +46,12 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(games.strategy.net.MessengerTest.class);
 		suite.addTestSuite(games.strategy.thread.ThreadPoolTest.class);
 		suite.addTestSuite(games.strategy.engine.framework.GameDataManagerTest.class);
+		suite.addTestSuite(ChannelMessengerTest.class);
+		suite.addTestSuite(RemoteMessengerTest.class);
+		suite.addTestSuite(CryptoRandomSourceTest.class);
+		suite.addTestSuite(VersionTest.class);
+		
+		
 
 		return suite;
 	}
