@@ -16,129 +16,157 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.history.EventChild;
-
+import javax.swing.SwingUtilities;
 import java.io.*;
 
 /**
- * This class synchronizes a Game history by listening to the messages sent between the client
- * and the server.
- * Its a bit of a hack.
+ * Synchronizes a GameData by listening on the history channel for messages.
+ * 
+ * All modifications to the History are done in the SwingEventThread, so 
+ * this class can be used to display a history tree to the user.
  */
 public class HistorySynchronizer
 {
-    
-  //Note the GameData here and the game are not the same
-  //we are keeping m_data in synch with the history of the game by listening 
-  //for changes
-  //we do this because our data can change depending where in the history we are
-  //we want to be able to do this without changing the data for the game
-  private final GameData m_data;
-  private int m_currentRound;
-  
-  private final IGame m_game;
 
-  public HistorySynchronizer(GameData data, IGame game)
-  {
-    //this is not the way to use this.
-    if(game.getData() == data)
-        throw new IllegalStateException("You dont need a history synchronizer to synchronize game data that is managed by an IGame");
-      
-    m_data = data;
-    m_currentRound = data.getSequence().getRound();
-    
-    m_game = game;
-    m_game.getChannelMessenger().registerChannelSubscriber(m_gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
-  }
+    //Note the GameData here and the game are not the same
+    //we are keeping m_data in synch with the history of the game by listening
+    //for changes
+    //we do this because our data can change depending where in the history we
+    // are
+    //we want to be able to do this without changing the data for the game
+    private final GameData m_data;
+    private int m_currentRound;
 
-  private IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel() 
-  {
+    private final IGame m_game;
 
-    public void gameDataChanged(Change aChange)
+    public HistorySynchronizer(GameData data, IGame game)
     {
-        Change localizedChange = (Change) translateIntoMyData(aChange);
-        m_data.getHistory().getHistoryWriter().addChange(localizedChange);
+        //this is not the way to use this.
+        if (game.getData() == data)
+            throw new IllegalStateException("You dont need a history synchronizer to synchronize game data that is managed by an IGame");
+
+        m_data = data;
+        m_currentRound = data.getSequence().getRound();
+
+        m_game = game;
+        m_game.getChannelMessenger().registerChannelSubscriber(m_gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
     }
 
-    public void startHistoryEvent(String event)
+    private IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel()
     {
-        m_data.getHistory().getHistoryWriter().startEvent(event);
-        
-    }
 
-    public void addChildToEvent(String text, Object renderingData)
-    {
-        Object translatedRenderingData = translateIntoMyData(renderingData);
-        m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, translatedRenderingData));
-        
-    }
-
-    public void setRenderingData(Object renderingData)
-    {
-        Object translatedRenderingData = translateIntoMyData(renderingData);
-        m_data.getHistory().getHistoryWriter().setRenderingData(translatedRenderingData);
-        
-    }
-
-    public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
-    {
-        if (m_currentRound != round)
+        public void gameDataChanged(final Change aChange)
         {
-            m_currentRound = round;
-            m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+
+                    Change localizedChange = (Change) translateIntoMyData(aChange);
+                    m_data.getHistory().getHistoryWriter().addChange(localizedChange);
+                }
+            });
         }
-        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
-        
-    }
-    
-  };
-  
-  
-  public void deactivate()
-  {
-       
-    m_game.getChannelMessenger().unregisterChannelSubscriber(m_gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
-  }
- 
- 
-  
 
-  /**
-   * Serializes the object and then deserializes it, resolving object
-   * references into m_data.
-   * Note the the history we are synching may refer to a different game data than
-   * the GaneData held by the IGame.  A clone is made so that we can walk up and down
-   * the history without changing the game.
-   */
-  private Object translateIntoMyData(Object msg)
-  {
-    try
+        public void startHistoryEvent(final String event)
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+
+                    m_data.getHistory().getHistoryWriter().startEvent(event);
+                }
+            });
+
+        }
+
+        public void addChildToEvent(final String text, final Object renderingData)
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+
+                    Object translatedRenderingData = translateIntoMyData(renderingData);
+                    m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, translatedRenderingData));
+                }
+            });
+        }
+
+        public void setRenderingData(final Object renderingData)
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+
+                    Object translatedRenderingData = translateIntoMyData(renderingData);
+                    m_data.getHistory().getHistoryWriter().setRenderingData(translatedRenderingData);
+                }
+            });
+
+        }
+
+        public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+                    if (m_currentRound != round)
+                    {
+                        m_currentRound = round;
+                        m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
+                    }
+                    m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+                }
+            });
+
+        }
+
+    };
+
+    public void deactivate()
     {
-      ByteArrayOutputStream sink = new ByteArrayOutputStream();
-      GameObjectOutputStream out = new GameObjectOutputStream(sink);
-      out.writeObject(msg);
-      out.flush();
-      out.close();
-
-      ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
-      sink = null;
-
-      GameObjectStreamFactory factory = new GameObjectStreamFactory(m_data);
-      ObjectInputStream in = factory.create(source);
-      try
-      {
-        
-        return in.readObject();
-      }
-      catch (ClassNotFoundException ex)
-      {
-        //should never happen
-        throw new RuntimeException(ex);
-      }
+        m_game.getChannelMessenger().unregisterChannelSubscriber(m_gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
     }
-    catch (IOException ioe)
+
+    /**
+     * Serializes the object and then deserializes it, resolving object
+     * references into m_data. Note the the history we are synching may refer to
+     * a different game data than the GaneData held by the IGame. A clone is
+     * made so that we can walk up and down the history without changing the
+     * game.
+     */
+    private Object translateIntoMyData(Object msg)
     {
-      throw new RuntimeException(ioe);
+        try
+        {
+            ByteArrayOutputStream sink = new ByteArrayOutputStream();
+            GameObjectOutputStream out = new GameObjectOutputStream(sink);
+            out.writeObject(msg);
+            out.flush();
+            out.close();
+
+            ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
+            sink = null;
+
+            GameObjectStreamFactory factory = new GameObjectStreamFactory(m_data);
+            ObjectInputStream in = factory.create(source);
+            try
+            {
+
+                return in.readObject();
+            } catch (ClassNotFoundException ex)
+            {
+                //should never happen
+                throw new RuntimeException(ex);
+            }
+        } catch (IOException ioe)
+        {
+            throw new RuntimeException(ioe);
+        }
     }
-  }
 
 }
