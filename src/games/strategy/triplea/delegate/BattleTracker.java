@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * BattleTracker.java
  *
  * Created on November 15, 2001, 11:18 AM
@@ -21,25 +35,25 @@ import games.strategy.triplea.Constants;
  *
  * Used to keep track of where battles have occured
  */
-public class BattleTracker 
-{	
+public class BattleTracker
+{
 	//List of pending battles
 	private Set m_pendingBattles = new HashSet();
-	
+
 	//List of battle dependencies
 	//maps blocked -> Collection of battles that must precede
 	private Map m_dependencies = new HashMap();
-	
+
 	//enemy and neutral territories that have been conquered
 	//blitzed is a subset of this
 	private Set m_conquered = new HashSet();
-	
+
 	//blitzed territories
 	private Set m_blitzed = new HashSet();
-	
+
 	//territories where a battle occured
 	private Set m_foughBattles = new HashSet();
-	
+
 	/**
 	 * True if a battle is to be fought in the given territory.
 	 */
@@ -55,7 +69,7 @@ public class BattleTracker
 	{
 		m_conquered.addAll(territories);
 	}
-	
+
 	void addToConquered(Territory territory)
 	{
 		m_conquered.add(territory);
@@ -76,7 +90,7 @@ public class BattleTracker
 	{
 		m_blitzed.addAll(territories);
 	}
-	
+
 	/**
 	 * True if the territory was conquered.
 	 */
@@ -89,7 +103,7 @@ public class BattleTracker
 	{
 		return m_foughBattles.contains(t);
 	}
-		
+
 	void addBattle(Route route, Collection units,TransportTracker tracker,  boolean bombing, PlayerID id, GameData data, DelegateBridge bridge)
 	{
 		if(bombing)
@@ -101,26 +115,26 @@ public class BattleTracker
 			addEmptyBattle(route, units, tracker, id, data, bridge);
 		}
 	}
-	
+
 	private void addBombingBattle(Route route, Collection units, PlayerID attacker, GameData data)
 	{
 		//TODO, resolve dependencies here
-		
+
 		Battle battle =  getPendingBattle(route.getEnd(), true);
 		if(battle == null)
 		{
 			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
 			m_pendingBattles.add(battle);
 		}
-		
+
 		battle.addAttack(route, units);
-		
+
 		//dont let land battles in the same territory occur before bombing battles
 		Battle dependent = getPendingBattle(route.getEnd(), false);
 		if(dependent != null)
 			addDependency(dependent, battle);
 	}
-	
+
 	/**
 	 * No enemies, but not neutral.
 	 */
@@ -128,7 +142,7 @@ public class BattleTracker
 	{
 		if(!Match.someMatch(units, Matches.UnitIsLand))
 			return;
-		
+
 		//find the territories that are considered blitz
 		CompositeMatch canBlitz = new CompositeMatchAnd();
 		canBlitz.add(Matches.TerritoryIsEmptyOfCombatUnits);
@@ -137,24 +151,24 @@ public class BattleTracker
 		//check the last territory specially to see if its a naval invasion
 		Collection blitzed = route.getMatches(canBlitz);
 		blitzed.remove(route.getEnd());
-		m_blitzed.addAll(blitzed);		
+		m_blitzed.addAll(blitzed);
 		m_conquered.addAll(blitzed);
-		
+
 		Iterator iter = blitzed.iterator();
 		while(iter.hasNext())
 		{
 			Territory current = (Territory) iter.next();
-			
+
 			takeOver(current, id, bridge, data);
 		}
-		
+
 		//check the last territory
 		if(canBlitz.match(route.getEnd()))
 		{
-		
+
 			Battle precede = getDependentAmphibiousAssault(route);
 			if(precede == null)
-			{	
+			{
 				takeOver(route.getEnd(), id, bridge, data);
 				m_blitzed.add(route.getEnd());
 				m_conquered.add(route.getEnd());
@@ -164,43 +178,43 @@ public class BattleTracker
 				Battle nonFight = getPendingBattle(route.getEnd(), false);
 				if(nonFight == null)
 				{
-					nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data, tracker);	
+					nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data, tracker);
 					m_pendingBattles.add(nonFight);
 				}
-				
+
 				nonFight.addAttack(route, units);
 				addDependency(nonFight, precede);
 			}
 		}
-		
+
 	}
-	
+
 	private void addNeutralBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data, DelegateBridge bridge)
-	{	
+	{
 		//TODO check for pre existing battles at the sight
 		//here and in empty battle
-		
+
 		Collection neutral = route.getMatches(Matches.TerritoryIsNuetral);
 		//deal with the end seperately
 		neutral.remove(route.getEnd());
 
 		m_conquered.addAll(neutral);
-		
+
 		Iterator iter = neutral.iterator();
 		while(iter.hasNext())
 		{
 			Territory current = (Territory) iter.next();
 			takeOver(current, id, bridge, data);
 		}
-		
-		//deal with end territory, may be the case that 
+
+		//deal with end territory, may be the case that
 		//a naval battle must precede th
 		if(Matches.TerritoryIsNuetral.match(route.getEnd()))
 		{
 			Battle precede = getDependentAmphibiousAssault(route);
 			if(precede == null)
-			{	
-	
+			{
+
 				m_conquered.add(route.getEnd());
 				takeOver(route.getEnd(), id, bridge, data);
 			}
@@ -209,20 +223,20 @@ public class BattleTracker
 				Battle nonFight = getPendingBattle(route.getEnd(), false);
 				if(nonFight == null)
 				{
-					nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data, tracker);	
+					nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data, tracker);
 					m_pendingBattles.add(nonFight);
 				}
-				
+
 				nonFight.addAttack(route, units);
 				addDependency(nonFight, precede);
 			}
 		}
 	}
-	
+
 	protected void takeOver(Territory territory, PlayerID id, DelegateBridge bridge, GameData data)
 	{
 		OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
-		
+
 		//if neutral
 		if(territory.getOwner().isNull())
 		{
@@ -230,7 +244,7 @@ public class BattleTracker
 			Change neutralFee = ChangeFactory.changeResourcesChange(id, ipcs, Constants.NEUTRAL_CHARGE);
 			bridge.addChange(neutralFee);
 		}
-		
+
 		//if its a capital we take the money
 		TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
 		if(ta.getCapital() != null)
@@ -246,14 +260,14 @@ public class BattleTracker
 				bridge.addChange(add);
 			}
 		}
-		
+
 		//take over non combatants
 		CompositeMatch enemyNonCom = new CompositeMatchAnd();
 		enemyNonCom.add(Matches.UnitIsAAOrFactory);
 		enemyNonCom.add(Matches.enemyUnit(id, data));
 		Collection nonCom = territory.getUnits().getMatches(enemyNonCom);
 		DelegateFinder.moveDelegate(data).markNoMovement(nonCom);
-		
+
 		//non coms revert to their original owner if once allied
 		Iterator iter = nonCom.iterator();
 		while(iter.hasNext())
@@ -271,7 +285,7 @@ public class BattleTracker
 				bridge.addChange(capture);
 			}
 		}
-		
+
 		//is this an allied territory
 		PlayerID terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
 		PlayerID newOwner;
@@ -279,65 +293,59 @@ public class BattleTracker
 			newOwner = terrOrigOwner;
 		 else
 			newOwner = id;
-		
+
 		Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
 		bridge.addChange(takeOver);
-		
+
 		String transcriptText = territory.getName() + " now owned by " + newOwner.getName();
 		bridge.getTranscript().write(transcriptText);
 	}
-	
+
 	private void addMustFightBattle(Route route, Collection units, TransportTracker tracker, PlayerID id, GameData data)
-	{		
+	{
 		Territory site = route.getEnd();
-		
+
 		if(!Matches.territoryHasEnemyUnits(id,data).match(site))
 			return;
-		
+
 		//if just a factory then no battle
 		if( route.getEnd().getUnits().allMatch(Matches.UnitIsAAOrFactory))
 			return;
-		
+
 		Battle battle = getPendingBattle(site, false);
 		if(battle == null)
 		{
-			battle = new MustFightBattle(site, id, data, this, transporting(tracker, units));
+			battle = new MustFightBattle(site, id, data, this, tracker);
 			m_pendingBattles.add(battle);
 		}
 		battle.addAttack(route, units);
-		
+
 		//TODO check for bombing dependencies
 		//if we bomb and attack we want to make sure the bombing happens first
-		
+
 		//make amphibious assaults dependent on possible naval invasions
-		
+
 		Battle precede = getDependentAmphibiousAssault(route);
 		if(precede != null)
 		{
 			addDependency(battle, precede);
 		}
-		
+
 		//dont let land battles in the same territory occur before bombing battles
 		Battle bombing = getPendingBattle(route.getEnd(), true);
 		if(bombing != null)
 			addDependency(battle, bombing);
 	}
 
-	/**
-	 * Returns a map of transport -> collection of transported units.
-	 */
-	private Map transporting(TransportTracker tracker, Collection units)
-	{
-		return tracker.transporting(units);
-	}
-	
+
+
 	private Battle getDependentAmphibiousAssault(Route route)
 	{
 		if( !MoveValidator.isUnload(route))
 			return null;
 		return getPendingBattle(route.getStart(), false);
 	}
-	
+
 	public Battle getPendingBattle(Territory t, boolean bombing)
 	{
 		Iterator iter = m_pendingBattles.iterator();
@@ -349,7 +357,7 @@ public class BattleTracker
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns a collection of Territories where battles are pending.
 	 */
@@ -362,25 +370,25 @@ public class BattleTracker
 			Battle battle = (Battle) iter.next();
 			if(battle.isBombingRun() == bombing)
 				battles.add(battle.getTerritory());
-			
+
 		}
 		return battles;
 	}
 
 	/**
-	 * Returns the battle that must occur before dependent can 
+	 * Returns the battle that must occur before dependent can
 	 * occur
 	 */
 	public Collection getDependentOn(Battle blocked)
 	{
 		Collection dependent = (Collection) m_dependencies.get(blocked);
-		
+
 		if(dependent == null)
 			return Collections.EMPTY_LIST;
 		else
 			return dependent;
 	}
-	
+
 	/**
 	 * return the battle that cannot occur until the given battle occurs.
 	 */
@@ -395,9 +403,9 @@ public class BattleTracker
 			if(currentBlockedBy.contains(blocking))
 				allBlocked.add(current);
 		}
-		return allBlocked;		
+		return allBlocked;
 	}
-	
+
 	private void addDependency(Battle blocked, Battle blocking)
 	{
 		if(m_dependencies.get(blocked) == null)
@@ -406,7 +414,7 @@ public class BattleTracker
 		}
 		((Collection) m_dependencies.get(blocked)).add(blocking);
 	}
-	
+
 	private void removeDependency(Battle blocked, Battle blocking)
 	{
 		Collection dependencies = (Collection) m_dependencies.get(blocked);
@@ -416,24 +424,24 @@ public class BattleTracker
 			m_dependencies.remove(blocked);
 		}
 	}
-	
+
 	private Collection getDependentBattles()
 	{
 		return m_dependencies.keySet();
 	}
-	
+
 	public void removeBattle(Battle battle)
 	{
 		Iterator blocked = getBlocked(battle).iterator();
 		while(blocked.hasNext())
-		{	
+		{
 			Battle current = (Battle) blocked.next();
 			removeDependency(current , battle);
 		}
 		m_pendingBattles.remove(battle);
 		m_foughBattles.add(battle.getTerritory());
 	}
-	
+
 	public void clear()
 	{
 		m_pendingBattles.clear();
@@ -442,7 +450,7 @@ public class BattleTracker
 		m_conquered.clear();
 		m_dependencies.clear();
 	}
-	
+
 	public String toString()
 	{
 		return "BattleTracker:" + "\n" +

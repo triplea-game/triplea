@@ -29,61 +29,51 @@ import games.strategy.net.GUID;
  * 1) Create a change with a ChangeFactory.change** or ChangeFactory.set** method <br>
  * 2) Execute that change through DelegateBridge.addChange()). <p>
  * In this way changes to the game data can be co-ordinated across the network.
- * 
- * 
+ *
+ *
  * @author  Sean Bridges
  * @version 1.0
  */
-public class ChangeFactory 
+public class ChangeFactory
 {
-	
+
 	public static Change changeOwner(Territory territory, PlayerID owner)
 	{
 		return new OwnerChange(territory, owner);
 	}
-	
+
 	public static Change changeOwner(Collection units, PlayerID owner)
 	{
 		return new PlayerOwnerChange(units, owner);
 	}
-	
+
 	public static Change changeOwner(Unit unit, PlayerID owner)
 	{
 		ArrayList list = new ArrayList(1);
 		list.add(unit);
 		return new PlayerOwnerChange(list, owner);
 	}
-	
+
 	public static Change addUnits(Territory territory, Collection units)
-	{	
+	{
 		return new AddUnits(territory.getUnits(), units);
 	}
-	
+
 	public static Change removeUnits(Territory territory, Collection units)
 	{
 		return new RemoveUnits(territory.getUnits(), units);
 	}
-	
-	public static Change removeUnits(Territory territory, Collection units, boolean isCasualty)
-	{
-		return new RemoveUnits(territory.getUnits(), units, isCasualty);
-	}
-	
-		public static Change addUnits(PlayerID player, Collection units)
+
+	public static Change addUnits(PlayerID player, Collection units)
 	{
 		return new AddUnits(player.getUnits(), units);
 	}
-	
+
 	public static Change removeUnits(PlayerID player, Collection units)
 	{
 		return new RemoveUnits(player.getUnits(), units);
 	}
-	
-	public static Change removeUnits(PlayerID player, Collection units, boolean isCasualty)
-	{
-		return new RemoveUnits(player.getUnits(), units, isCasualty);
-	}
-	
+
 	public static Change moveUnits(Territory start, Territory end, Collection units)
 	{
 		List changes = new ArrayList(2);
@@ -91,7 +81,7 @@ public class ChangeFactory
 		changes.add(addUnits(end, units));
 		return new CompositeChange(changes);
 	}
-	
+
 	public static Change changeProductionFrontier(PlayerID player, ProductionFrontier frontier)
 	{
 		return new ProductionFrontierChange(frontier, player);
@@ -106,12 +96,12 @@ public class ChangeFactory
 	{
 		return new ProductionFrontierChange(newFrontier, player);
 	}
-		
+
 	public static Change setProperty(String property, Object value, GameData data)
 	{
 		return new SetPropertyChange(property, value, data.getProperties());
 	}
-	
+
 	/** Creates new ChangeFactory.  No need */
     private ChangeFactory() { }
 
@@ -139,17 +129,17 @@ class AddUnits extends Change
 		m_name = name;
 	}
 
-	public Change invert() 
+	public Change invert()
 	{
 		return new RemoveUnits(m_name, m_units);
 	}
 
-	protected void perform(GameData data) 
+	protected void perform(GameData data)
 	{
 		UnitHolder holder = data.getUnitHolder(m_name);
-		holder.getUnits().addAllUnits(m_units);	
+		holder.getUnits().addAllUnits(m_units);
 	}
-	
+
 	public String toString()
 	{
 		return "Add unit message.  Add to:" + m_name + " units:" + m_units;
@@ -163,58 +153,42 @@ class RemoveUnits extends Change
 
 	private final String m_name;
 	private final Collection m_units;
-	// Indicates whether the removal is the result of taking casualties
-	private final boolean m_isCasualty;
 
 	RemoveUnits(UnitCollection collection, Collection units)
 	{
-		this(collection, units, false);
-	}
-
-	RemoveUnits(UnitCollection collection, Collection units, boolean isCasualty)
-	{
-		m_units = Collections.unmodifiableCollection(units);
-		m_name = collection.getHolder().getName();
-		m_isCasualty = isCasualty;
+		this(collection.getHolder().getName(), units);
 	}
 
 	RemoveUnits(String name, Collection units)
 	{
-		this(name, units, false);
+		 m_units = Collections.unmodifiableCollection(units);
+         m_name = name;
 	}
-	
+
 	RemoveUnits(String name, Collection units, boolean isCasualty)
 	{
 		m_units = Collections.unmodifiableCollection(units);
 		m_name = name;
-		m_isCasualty = isCasualty;
 	}
 
-	public Change invert() 
+	public Change invert()
 	{
 		return new AddUnits(m_name, m_units);
 	}
 
-	protected void perform(GameData data) 
+	protected void perform(GameData data)
 	{
 		UnitHolder holder = data.getUnitHolder(m_name);
 		holder.getUnits().removeAllUnits(m_units);
-		if (m_isCasualty)
-		{
-			Iterator iter = m_units.iterator();
-			while (iter.hasNext())
-				Unit.removeUnit((Unit) iter.next());	
-		}
-			
 	}
-	
+
 	public String toString()
 	{
-		return "Remove unit message.  (" + (m_isCasualty ? "Casualty" : "Non-Casualty") + ") Remove from:" + m_name + " units:" + m_units;
+		return "Remove unit message. Remove from:" + m_name + " units:" + m_units;
 	}
 }
 
-/** 
+/**
  * Changes ownership of a territory.
  */
 class OwnerChange extends Change
@@ -227,7 +201,7 @@ class OwnerChange extends Change
 	private final String m_old;
 	private final String m_new;
 	private final String m_territory;
-	
+
 	/**
 	 * newOwner can be null
 	 */
@@ -259,22 +233,22 @@ class OwnerChange extends Change
 		return data.getPlayerList().getPlayerID(name);
 	}
 
-	public Change invert() 
+	public Change invert()
 	{
 		return new OwnerChange(m_territory, m_old, m_new);
-	}		
+	}
 
-	protected void perform(GameData data) 
+	protected void perform(GameData data)
 	{
 		//both names could be null
 		data.getMap().getTerritory(m_territory).setOwner( getPlayerID(m_new, data));
 	}
-	
+
 	public String toString()
 	{
 		return "Owner change message.  Territory:" + m_territory + " to:" + m_new + " from:" + m_old;
 	}
-	
+
 }
 
 /**
@@ -287,9 +261,9 @@ class PlayerOwnerChange extends Change
 	 */
 	private final Map m_old;
 	private final Map m_new;
-	
+
 	private static final long serialVersionUID = -9154938431233632882L;
-	
+
 	PlayerOwnerChange(Collection units, PlayerID newOwner)
 	{
 		m_old = new HashMap();
@@ -302,21 +276,21 @@ class PlayerOwnerChange extends Change
 			m_new.put(unit.getID(), newOwner.getName());
 		}
 	}
-	
+
 	PlayerOwnerChange(Map newOwner, Map oldOwner)
 	{
 		m_old = oldOwner;
 		m_new = newOwner;
 	}
 
-	public Change invert() 
+	public Change invert()
 	{
 		return new PlayerOwnerChange(m_old, m_new);
-	}		
+	}
 
-	protected void perform(GameData data) 
+	protected void perform(GameData data)
 	{
-		
+
 		Iterator iter = m_new.keySet().iterator();
 		while(iter.hasNext())
 		{
@@ -334,7 +308,7 @@ class PlayerOwnerChange extends Change
  */
 class ChangeResourceChange extends Change
 {
-	
+
 	static final long serialVersionUID = -2304294240555842126L;
 
 	private final String m_player;
@@ -355,12 +329,12 @@ class ChangeResourceChange extends Change
 		m_quantity = quantity;
 	}
 
-	public Change invert() 
+	public Change invert()
 	{
 		return new ChangeResourceChange(m_player, m_resource, -m_quantity);
 	}
 
-	protected void perform(GameData data) 
+	protected void perform(GameData data)
 	{
 		Resource resource = data.getResourceList().getResource(m_resource);
 		ResourceCollection resources = 	data.getPlayerList().getPlayerID(m_player).getResources();
@@ -369,7 +343,7 @@ class ChangeResourceChange extends Change
 		else if(m_quantity < 0)
 			resources.removeResource(resource, -m_quantity);
 	}
-	
+
 	public String toString()
 	{
 		return "Change resource.  Resource:" + m_resource +  " quantity:" + m_quantity;
@@ -381,51 +355,51 @@ class SetPropertyChange extends Change
 	private final String m_property;
 	private final Object m_value;
 	private final Object m_oldValue;
-	
+
 	SetPropertyChange(String property, Object value, GameProperties properties)
 	{
 		m_property = property;
 		m_value = value;
 		m_oldValue = properties.get(property);
 	}
-	
+
 	private SetPropertyChange(String property, Object value, Object oldValue)
 	{
 		m_property = property;
 		m_value = value;
 		m_oldValue = oldValue;
 	}
-	
+
 	public Change invert()
 	{
 		return new SetPropertyChange(m_property, m_oldValue, m_value);
-	}	
-	
+	}
+
 	protected void perform(GameData data)
 	{
 		data.getProperties().set(m_property, m_value);
 	}
-	
+
 }
 
 /**
  * Change a players production frontier.
- */	
+ */
 class ProductionFrontierChange extends Change
 {
 	private final String m_startFrontier;
 	private final String m_endFrontier;
 	private final String m_player;
-	
+
 	private static final long serialVersionUID = 3336145814067456701L;
-	
+
 	ProductionFrontierChange(ProductionFrontier newFrontier, PlayerID player)
 	{
 		m_startFrontier = player.getProductionFrontier().getName();
 		m_endFrontier = newFrontier.getName();
 		m_player = player.getName();
 	}
-	
+
 	ProductionFrontierChange(String startFrontier, String endFrontier, String player)
 	{
 		m_startFrontier = startFrontier;
@@ -433,18 +407,18 @@ class ProductionFrontierChange extends Change
 		m_player = player;
 	}
 
-	
+
 	protected void perform(GameData data)
 	{
 		PlayerID player = data.getPlayerList().getPlayerID(m_player);
 		ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(m_endFrontier);
 		player.setProductionFrontier(frontier);
 	}
-	
+
 	public Change invert()
 	{
 		return new ProductionFrontierChange(m_endFrontier, m_startFrontier, m_player);
 	}
-	
-	
+
+
 }
