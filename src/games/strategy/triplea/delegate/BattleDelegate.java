@@ -61,6 +61,7 @@ public class BattleDelegate implements SaveableDelegate
     {
         m_bridge = aBridge;
         m_data = gameData;
+	addBombardmentSources();
         setupSeaUnitsInSameSeaZoneBattles();
     }
 
@@ -141,7 +142,108 @@ public class BattleDelegate implements SaveableDelegate
     {
         return m_originalOwnerTracker;
     }
-    
+
+    /**
+     * Add bombardment units to battles.
+     */
+    private void addBombardmentSources()
+    {
+	PlayerID attacker = m_bridge.getPlayerID();
+        Match ownedAndCanBombard = new CompositeMatchAnd(Matches.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
+        Map adjBombardment = getPossibleBombardingTerritories();
+	Iterator territories = adjBombardment.keySet().iterator();
+        while (territories.hasNext())
+        {
+            Territory t = (Territory) territories.next();
+            if (!m_battleTracker.hasPendingBattle(t, false))
+	    {
+		Collection battles = (Collection)adjBombardment.get(t);
+		battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
+		if (!battles.isEmpty()) {
+		    Iterator bombarding = t.getUnits().getMatches(ownedAndCanBombard).iterator();
+		    while (bombarding.hasNext()) {
+			Unit u = (Unit) bombarding.next();
+			Battle battle = selectBombardingBattle(u, t, battles);
+			if (battle != null)
+			{
+			    battle.addBombardingUnit(u);
+			}
+		    }
+		}
+            }
+        }
+    }
+
+    /**
+     * Return map of adjacent territories to battles.
+     */
+    private Map getPossibleBombardingTerritories() {
+	Map possibleBombardingTerritories = new HashMap();
+	Iterator battleTerritories = m_battleTracker.getPendingBattleSites(false).iterator();
+	while (battleTerritories.hasNext())
+	{
+	    Territory t = (Territory)battleTerritories.next();
+	    Battle battle = (Battle)m_battleTracker.getPendingBattle(t, false);
+	    Iterator bombardingTerritories = ((Collection)m_data.getMap().getNeighbors(t)).iterator();
+	    while (bombardingTerritories.hasNext())
+	    {
+		Territory neighbor = (Territory)bombardingTerritories.next();
+		Collection battles = (Collection)possibleBombardingTerritories.get(neighbor);
+		if (battles == null)
+		{
+		    battles = new ArrayList();
+		    possibleBombardingTerritories.put(neighbor, battles);
+		}
+		battles.add(battle);
+	    }
+	}
+
+	return possibleBombardingTerritories;
+    }
+
+    /**
+     * Select which territory to bombard.
+     */
+    private Battle selectBombardingBattle(Unit u, Territory uTerritory, Collection battles)
+    {
+	boolean hasNotMoved = DelegateFinder.moveDelegate(m_data).hasNotMoved(u);
+	// If only one battle to select from just return that battle
+	if ((battles.size() == 1) && !hasNotMoved)
+	{
+	    return (Battle)battles.iterator().next();
+	}
+
+
+	List territories = new ArrayList();
+	Map battleTerritories = new HashMap();
+	Iterator battlesIter = battles.iterator();
+	while (battlesIter.hasNext())
+	{
+	    Battle battle = (Battle)battlesIter.next();
+	    territories.add(battle.getTerritory());
+	    battleTerritories.put(battle.getTerritory(), battle);
+	}
+
+	PlayerID attacker = m_bridge.getPlayerID();
+
+	Message msg = new BombardmentQueryMessage(u, uTerritory, territories, hasNotMoved);
+	Message response = m_bridge.sendMessage(msg, attacker);
+	if(!(response instanceof BombardmentSelectMessage))
+	{
+	    throw new IllegalStateException("Message of wrong type:" + response);
+	}
+	
+	BombardmentSelectMessage bsm = (BombardmentSelectMessage) response;
+
+	if (bsm.getTerritory() != null)
+	{
+	    return (Battle)battleTerritories.get(bsm.getTerritory());
+	}
+
+
+	return null; // User elected not to bombard with this unit
+    }
+
     /**
      * Setup the battles where the battle occurs because sea units are in the same sea
      * zone. This happens when subs emerge (after being submerged), and when naval units are 

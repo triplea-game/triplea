@@ -59,6 +59,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private Collection m_amphibiousLandAttackers = new ArrayList();
     private Collection m_defendingUnits = new LinkedList();
     private Collection m_defendingWaitingToDie = new ArrayList();
+    private Collection m_bombardingUnits = new ArrayList();
     private boolean m_amphibious = false;
     private boolean m_over = false;
     private BattleTracker m_tracker;
@@ -348,19 +349,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
         List steps = new ArrayList();
         if (showFirstRun)
         {
-            if (!m_battleSite.isWater())
+	    if (canFireAA())
+	    {
+		steps.add(AA_GUNS_FIRE);
+		steps.add(SELECT_AA_CASUALTIES);
+		steps.add(REMOVE_AA_CASUALTIES);
+	    }
+
+            if (!m_battleSite.isWater() && !getBombardingUnits().isEmpty())
             {
-                if (canFireAA())
-                {
-                    steps.add(AA_GUNS_FIRE);
-                    steps.add(SELECT_AA_CASUALTIES);
-                    steps.add(REMOVE_AA_CASUALTIES);
-                }
-                if (!getBombardingUnits().isEmpty())
-                {
-                    steps.add(NAVAL_BOMBARDMENT);
-                    steps.add(SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
-                }
+		steps.add(NAVAL_BOMBARDMENT);
+		steps.add(SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
             }
         }
         
@@ -1063,15 +1062,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection bombard = getBombardingUnits();
         Collection attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsDestructible);
         
+	//bombarding units cant move after bombarding
+	DelegateFinder.moveDelegate(m_data).markNoMovement(bombard);
+
         //4th edition, bombardment casualties cant return fire
         boolean canReturnFire = !isFourthEdition();
         
         if (bombard.size() > 0 && attacked.size() > 0)
+	{
             fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, canReturnFire, bridge, "Bombard");
-        markBombardingSources();
-        
-        //these units cant move after bombarding
-        DelegateFinder.moveDelegate(m_data).markNoMovement(bombard);
+	}
         
     }
     
@@ -1085,38 +1085,33 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     
     /**
-     * Marks all the naval origins as having been the source for a bombardment
+     * Return the territories where there are amphibious attacks.
      */
-    private void markBombardingSources()
+    public Collection getAmphibiousAttackTerritories()
     {
-        
-        m_tracker.addPreviouslyNavalBombardmentSource(m_amphibiousAttackFrom);
+        return m_amphibiousAttackFrom;
     }
     
+    /**
+     * Add bombarding unit.
+     */
+    public void addBombardingUnit(Unit unit) {
+	m_bombardingUnits.add(unit);
+    }
+
+    /**
+     * Return bombarding units.
+     */
     private Collection getBombardingUnits()
     {
-        
-        Match ownedAndCanBombard = new CompositeMatchAnd(Matches.unitCanBombard(m_attacker), Matches.unitIsOwnedBy(m_attacker));
-        Iterator territories = m_amphibiousAttackFrom.iterator();
-        Collection bombard = new HashSet();
-        while (territories.hasNext())
-        {
-            Territory possible = (Territory) territories.next();
-            if (m_tracker.hasPendingBattle(possible, false))
-                throw new IllegalStateException("Navel battle pending where amphibious assault originated");
-            if (!m_tracker.wasBattleFought(possible) && !m_tracker.wasNavalBombardmentSource(possible))
-            {
-                bombard.addAll(possible.getUnits().getMatches(ownedAndCanBombard));
-            }
-        }
-        return bombard;
+	return m_bombardingUnits;
     }
     
     private void fireAAGuns(DelegateBridge bridge)
     {
         
         String step = SELECT_AA_CASUALTIES;
-        if (!canFireAA() || m_battleSite.isWater())
+        if (!canFireAA())
             return;
         
         int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
@@ -1155,7 +1150,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean canFireAA()
     {
         
-        return Match.someMatch(m_defendingUnits, Matches.UnitIsAA) && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
+        return Match.someMatch(m_defendingUnits, Matches.UnitIsAA) && Match.someMatch(m_attackingUnits, Matches.UnitIsAir) &&  !m_battleSite.isWater();
     }
     
     /**
@@ -1422,13 +1417,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //no longer a naval invasion
         m_amphibiousLandAttackers.removeAll(lost);
         if (m_amphibiousLandAttackers.isEmpty())
+	{
             m_amphibious = false;
+	    m_bombardingUnits.clear();
+	}
         
-        if (lost.size() != 0)
-        {
-            m_attackingUnits.removeAll(lost);
-            remove(lost, bridge);
-        }
+	m_attackingUnits.removeAll(lost);
+	remove(lost, bridge);
         
         if (m_attackingUnits.isEmpty())
             m_tracker.removeBattle(this);
@@ -1441,5 +1436,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         
         return m_transportTracker.transporting(units);
+    }
+
+    /**
+     * Return whether battle is amphibious.
+     */
+    public boolean isAmphibious() {
+	return m_amphibious;
     }
 }

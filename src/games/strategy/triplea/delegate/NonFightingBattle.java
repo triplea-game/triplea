@@ -181,5 +181,18 @@ public class NonFightingBattle implements Battle
           other.isBombingRun() == this.isBombingRun();
     }
 
+    /**
+     * Add bombarding unit. Doesn't make sense here so just do
+     * nothing.
+     */
+    public void addBombardingUnit(Unit unit) {
+	// nothing
+    }
 
+    /**
+     * Return whether battle is amphibious.
+     */
+    public boolean isAmphibious() {
+	return false;
+    }
 }

@@ -37,17 +37,48 @@ import games.strategy.triplea.Constants;
  */
 interface Battle extends java.io.Serializable
 {
-	public void addAttack(Route route, Collection units);
+    /**
+     *  Add a bunch of attacking units to the battle.
+     */
+    public void addAttack(Route route, Collection units);
+    
 
-	public boolean isBombingRun();
+    /**
+     * Return whether this battle is a bombing run.
+     */
+    public boolean isBombingRun();
+    
+    /**
+     * Return what territory this battle is occuring in.
+     */
+    public Territory getTerritory();
+    
+    /**
+     * Fight this battle.
+     */
+    public void fight(DelegateBridge bridge);
+    
+    /**
+     * Return whether this battle is over or not.
+     */
+    public boolean isOver();
+    
+    /**
+     * Call this method when units are lost in another battle.
+     * This is needed to remove dependent units who have been
+     * lost in another battle.
+     */
+    public void unitsLost(Battle battle, Collection units, DelegateBridge bridge);
 
-	public Territory getTerritory();
+    /**
+     * Add a bombardment unit.
+     */
+    public void addBombardingUnit(Unit u);
 
-	public void fight(DelegateBridge bridge);
-
-	public boolean isOver();
-
-	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge);
+    /**
+     * Return whether battle is amphibious
+     */
+    public boolean isAmphibious();
 
     /**
      *  This occurs when a move has been undone
@@ -60,5 +91,8 @@ interface Battle extends java.io.Serializable
      */
     public boolean isEmpty();
 
+    /**
+     * Return units which are dependent on the given units.
+     */
     public Collection getDependentUnits(Collection units);
 }

@@ -1145,6 +1145,9 @@ public class MoveDelegate implements SaveableDelegate
         }
     }
 
+    /**
+     * Mark units as having no movement.
+     */
     public void markNoMovement(Collection units)
     {
 
@@ -1154,6 +1157,14 @@ public class MoveDelegate implements SaveableDelegate
             Unit unit = (Unit) iter.next();
             markNoMovement(unit);
         }
+    }
+
+    /**
+     * Return whether unit has not moved.
+     */
+    public boolean hasNotMoved(Unit unit)
+    {
+	return m_alreadyMoved.getInt(unit) == 0;
     }
 
     private void markNoMovement(Unit unit)

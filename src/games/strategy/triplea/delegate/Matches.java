@@ -427,6 +427,15 @@ public class Matches
 		}
 	};
 
+    public static final Match BattleIsAmphibious = new Match()
+	{
+		public boolean match(Object o)
+		{
+			Battle battle = (Battle) o;
+			return battle.isAmphibious();
+		}
+	};
+
 
     /**
      *  Match units that have at least lower limit movement

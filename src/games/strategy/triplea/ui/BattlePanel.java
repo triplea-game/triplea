@@ -42,261 +42,312 @@ import games.strategy.triplea.delegate.message.*;
 public class BattlePanel extends ActionPanel
 {
 
-  private static Font BOLD;
-  static
-  {
-    Map atts = new HashMap();
-    atts.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
-    BOLD = new Font(atts);
-  }
-
-  private JLabel m_actionLabel = new JLabel();
-  private FightBattleMessage m_fightBattleMessage;
-  private TripleAFrame m_parent;
-
-  private BattleDisplay m_battleDisplay;
-  private JFrame m_battleFrame;
-
-  /** Creates new BattlePanel */
-  public BattlePanel(GameData data, MapPanel map, TripleAFrame parent)
-  {
-    super(data, map);
-    m_parent = parent;
-  }
-
-  public void display(PlayerID id, Collection battles, Collection bombing)
-  {
-    super.display(id);
-    removeAll();
-    m_actionLabel.setText(id.getName() + " battle");
-    add(m_actionLabel);
-   Iterator iter = battles.iterator();
-    while(iter.hasNext() )
+    private static Font BOLD;
+    static
     {
-      Action action = new FightBattleAction((Territory) iter.next(), false);
-      add(new JButton(action));
+	Map atts = new HashMap();
+	atts.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+	BOLD = new Font(atts);
     }
 
-    iter = bombing.iterator();
-    while(iter.hasNext() )
+    private JLabel m_actionLabel = new JLabel();
+    private FightBattleMessage m_fightBattleMessage;
+    private TripleAFrame m_parent;
+
+    private BattleDisplay m_battleDisplay;
+    private JFrame m_battleFrame;
+
+    /** Creates new BattlePanel */
+    public BattlePanel(GameData data, MapPanel map, TripleAFrame parent)
     {
-      Action action = new FightBattleAction((Territory) iter.next(), true);
-      add(new JButton(action));
+	super(data, map);
+	m_parent = parent;
     }
-    SwingUtilities.invokeLater(REFRESH);
-  }
 
-  public Message battleInfo(BattleInfoMessage msg)
-  {
-    if(m_battleDisplay != null)
-      m_battleDisplay.battleInfo(msg);
-
-    return null;
-  }
-
-  public void battleEndMessage(BattleEndMessage message)
-  {
-    m_battleDisplay.endBattle(message);
-    m_battleDisplay = null;
-    m_battleFrame.setVisible(false);
-    m_battleFrame.dispose();
-    m_battleFrame = null;
-  }
-
-
-  public Message listBattle(final BattleStepMessage msg)
-  {
-    if(!SwingUtilities.isEventDispatchThread())
+    public void display(PlayerID id, Collection battles, Collection bombing)
     {
-        Runnable r = new Runnable()
-        {
-            public void run()
-            {
-                listBattle(msg);
-            }
-        };
-        try
-        {
-            SwingUtilities.invokeAndWait(r);
-        } catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return null;
+	super.display(id);
+	removeAll();
+	m_actionLabel.setText(id.getName() + " battle");
+	add(m_actionLabel);
+	Iterator iter = battles.iterator();
+	while(iter.hasNext() )
+	{
+	    Action action = new FightBattleAction((Territory) iter.next(), false);
+	    add(new JButton(action));
+	}
+
+	iter = bombing.iterator();
+	while(iter.hasNext() )
+	{
+	    Action action = new FightBattleAction((Territory) iter.next(), true);
+	    add(new JButton(action));
+	}
+	SwingUtilities.invokeLater(REFRESH);
     }
+
+    public Message battleInfo(BattleInfoMessage msg)
+    {
+	if(m_battleDisplay != null)
+	    m_battleDisplay.battleInfo(msg);
+
+	return null;
+    }
+
+    public void battleEndMessage(BattleEndMessage message)
+    {
+	m_battleDisplay.endBattle(message);
+	m_battleDisplay = null;
+	m_battleFrame.setVisible(false);
+	m_battleFrame.dispose();
+	m_battleFrame = null;
+    }
+
+
+    public Message listBattle(final BattleStepMessage msg)
+    {
+	if(!SwingUtilities.isEventDispatchThread())
+	{
+	    Runnable r = new Runnable()
+		{
+		    public void run()
+		    {
+			listBattle(msg);
+		    }
+		};
+	    try
+	    {
+		SwingUtilities.invokeAndWait(r);
+	    } catch(Exception e)
+	    {
+		e.printStackTrace();
+	    }
+	    return null;
+	}
       
       
       
-    removeAll();
+	removeAll();
 
-    JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
+	JPanel panel = new JPanel();
+	panel.setLayout(new BorderLayout());
 
-    JTextArea text = new JTextArea();
+	JTextArea text = new JTextArea();
 
-    text.setFont(BOLD);
-    text.setEditable(false);
-    text.setBackground(this.getBackground());
-    text.setText(msg.getTitle());
-    text.setLineWrap(true);
-    text.setWrapStyleWord(true);
-    panel.add(text, BorderLayout.NORTH);
+	text.setFont(BOLD);
+	text.setEditable(false);
+	text.setBackground(this.getBackground());
+	text.setText(msg.getTitle());
+	text.setLineWrap(true);
+	text.setWrapStyleWord(true);
+	panel.add(text, BorderLayout.NORTH);
 
 
-    getMap().centerOn(msg.getTerritory());
-    m_battleDisplay.listBattle(msg);
+	getMap().centerOn(msg.getTerritory());
+	m_battleDisplay.listBattle(msg);
 
-    return null;
-  }
-
-  public Message battleStartMessage(BattleStartMessage msg)
-  {
-    if(!(m_battleDisplay == null))
-    {
-      throw new IllegalStateException("Battle display already showing");
+	return null;
     }
 
-    m_battleDisplay = new BattleDisplay(getData(), msg.getTerritory(), msg.getAttacker(), msg.getDefender(), msg.getAttackingUnits(), msg.getDefendingUnits());
-
-    m_battleFrame = new JFrame(msg.getAttacker().getName() + " attacks " + msg.getDefender().getName() + " in " + msg.getTerritory().getName());
-    m_battleFrame.setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(m_battleFrame));
-    m_battleFrame.getContentPane().add(m_battleDisplay);
-    m_battleFrame.setSize(750, 500);
-    games.strategy.ui.Util.center(m_battleFrame);
-    m_battleFrame.show();
-    m_battleFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-    SwingUtilities.invokeLater(
-      new Runnable()
+    public Message battleStartMessage(BattleStartMessage msg)
     {
-      public void run()
-      {
-        m_battleFrame.toFront();
-      }
+	if(!(m_battleDisplay == null))
+	{
+	    throw new IllegalStateException("Battle display already showing");
+	}
+
+	m_battleDisplay = new BattleDisplay(getData(), msg.getTerritory(), msg.getAttacker(), msg.getDefender(), msg.getAttackingUnits(), msg.getDefendingUnits());
+
+	m_battleFrame = new JFrame(msg.getAttacker().getName() + " attacks " + msg.getDefender().getName() + " in " + msg.getTerritory().getName());
+	m_battleFrame.setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(m_battleFrame));
+	m_battleFrame.getContentPane().add(m_battleDisplay);
+	m_battleFrame.setSize(750, 500);
+	games.strategy.ui.Util.center(m_battleFrame);
+	m_battleFrame.show();
+	m_battleFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+	SwingUtilities.invokeLater(
+	    new Runnable()
+	    {
+		public void run()
+		{
+		    m_battleFrame.toFront();
+		}
+	    }
+	    );
+
+
+	return null;
     }
-    );
 
-
-    return null;
-  }
-
-  public FightBattleMessage waitForBattleSelection()
-  {
-    try
+    public FightBattleMessage waitForBattleSelection()
     {
-      synchronized(getLock())
-      {
-        getLock().wait();
-      }
-      } catch(InterruptedException ie)
-      {
-        waitForBattleSelection();
-      }
+	try
+	{
+	    synchronized(getLock())
+	    {
+		getLock().wait();
+	    }
+	} catch(InterruptedException ie)
+	{
+	    waitForBattleSelection();
+	}
 
-      if(m_fightBattleMessage != null)
-        getMap().centerOn(m_fightBattleMessage.getTerritory());
+	if(m_fightBattleMessage != null)
+	    getMap().centerOn(m_fightBattleMessage.getTerritory());
 
-      return m_fightBattleMessage;
-  }
-
-
-  public void casualtyNotificationMessage(CasualtyNotificationMessage message)
-  {
-    //if we are playing this player, then dont wait for the user
-    //to see the units, since the player selected the units, and knows
-    //what they are
-    //if all the units to be removed have been calculated automatically
-    // then wait so user can see units which have been removed.
-    //if no units died, then wait, since the user hasnt had a chance to
-    //see the roll
-    boolean waitFOrUserInput = !m_parent.playing(message.getPlayer()) || message.getAutoCalculated() || message.isEmpty();
-    m_battleDisplay.casualtyNotificationMessage( message, waitFOrUserInput);
-  }
-
-  public SelectCasualtyMessage getCasualties(SelectCasualtyQueryMessage msg)
-  {
-    //if the battle display is null, then this is a bombing raid
-    if(m_battleDisplay == null)
-      return getCasualtiesAA(msg);
-    else
-    {
-      m_battleDisplay.setStep(msg);
-      return m_battleDisplay.getCasualties(msg);
+	return m_fightBattleMessage;
     }
-  }
 
-  private SelectCasualtyMessage getCasualtiesAA(SelectCasualtyQueryMessage msg)
-  {
-    UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), getData(), false);
+    /**
+     * Ask user which territory to bombard with a given unit.
+     */
+    public BombardmentSelectMessage getBombardment(BombardmentQueryMessage msg)
+    {
+        BombardComponent comp = new BombardComponent(msg);
+        int option = JOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION);
 
-    chooser.setTitle(msg.getMessage());
-    chooser.setMax(msg.getCount());
+	return new BombardmentSelectMessage(comp.getSelection());
+    }
 
-    DicePanel dice = new DicePanel();
-    dice.setDiceRoll(msg.getDice());
+    public void casualtyNotificationMessage(CasualtyNotificationMessage message)
+    {
+	//if we are playing this player, then dont wait for the user
+	//to see the units, since the player selected the units, and knows
+	//what they are
+	//if all the units to be removed have been calculated automatically
+	// then wait so user can see units which have been removed.
+	//if no units died, then wait, since the user hasnt had a chance to
+	//see the roll
+	boolean waitFOrUserInput = !m_parent.playing(message.getPlayer()) || message.getAutoCalculated() || message.isEmpty();
+	m_battleDisplay.casualtyNotificationMessage( message, waitFOrUserInput);
+    }
 
-    JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.add(chooser, BorderLayout.CENTER);
-    dice.setMaximumSize(new Dimension(450, 600));
+    public SelectCasualtyMessage getCasualties(SelectCasualtyQueryMessage msg)
+    {
+	//if the battle display is null, then this is a bombing raid
+	if(m_battleDisplay == null)
+	    return getCasualtiesAA(msg);
+	else
+	{
+	    m_battleDisplay.setStep(msg);
+	    return m_battleDisplay.getCasualties(msg);
+	}
+    }
 
-    dice.setPreferredSize(new Dimension(300, (int) dice.getPreferredSize().getHeight()));
-    panel.add(dice, BorderLayout.SOUTH);
+    private SelectCasualtyMessage getCasualtiesAA(SelectCasualtyQueryMessage msg)
+    {
+	UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDependent(), getData(), false);
 
-    String[] options = {"OK"};
-    JOptionPane.showOptionDialog( getRootPane(), panel, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-    List killed = chooser.getSelected(false);
-    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, chooser.getSelectedFirstHit(), false);
-    return response;
-  }
+	chooser.setTitle(msg.getMessage());
+	chooser.setMax(msg.getCount());
 
-  public Message battleStringMessage(BattleStringMessage message)
-  {
-    m_battleDisplay.setStep(message);
-    return null;
-  }
+	DicePanel dice = new DicePanel();
+	dice.setDiceRoll(msg.getDice());
 
-  public RetreatMessage getRetreat(RetreatQueryMessage rqm)
-  {
-    return m_battleDisplay.getRetreat(rqm);
-  }
+	JPanel panel = new JPanel();
+	panel.setLayout(new BorderLayout());
+	panel.add(chooser, BorderLayout.CENTER);
+	dice.setMaximumSize(new Dimension(450, 600));
+
+	dice.setPreferredSize(new Dimension(300, (int) dice.getPreferredSize().getHeight()));
+	panel.add(dice, BorderLayout.SOUTH);
+
+	String[] options = {"OK"};
+	JOptionPane.showOptionDialog( getRootPane(), panel, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+	List killed = chooser.getSelected(false);
+	SelectCasualtyMessage response = new SelectCasualtyMessage(killed, chooser.getSelectedFirstHit(), false);
+	return response;
+    }
+
+    public Message battleStringMessage(BattleStringMessage message)
+    {
+	m_battleDisplay.setStep(message);
+	return null;
+    }
+
+    public RetreatMessage getRetreat(RetreatQueryMessage rqm)
+    {
+	return m_battleDisplay.getRetreat(rqm);
+    }
   
-  public void notifyRetreat(RetreatNotificationMessage msg)
-  {
-      m_battleDisplay.notifyRetreat(msg);
-  }
-
-  public void bombingResults(BombingResults message)
-  {
-    m_battleDisplay.bombingResults(message);
-  }
-
-
-  class FightBattleAction extends AbstractAction
-  {
-    Territory m_territory;
-    boolean m_bomb;
-
-    FightBattleAction(Territory battleSite, boolean bomb)
+    public void notifyRetreat(RetreatNotificationMessage msg)
     {
-      super( (bomb ? "Bombing raid in " :  "Battle in ") + battleSite.getName() + "...");
-      m_territory = battleSite;
-      m_bomb = bomb;
+	m_battleDisplay.notifyRetreat(msg);
     }
 
-    public void actionPerformed(ActionEvent actionEvent)
+    public void bombingResults(BombingResults message)
     {
-      m_fightBattleMessage = new FightBattleMessage(m_territory, m_bomb);
-      synchronized(getLock())
-      {
-        getLock().notify();
-      }
+	m_battleDisplay.bombingResults(message);
     }
-  }
 
-  public String toString()
-  {
-    return "BattlePanel";
-  }
+
+    class FightBattleAction extends AbstractAction
+    {
+	Territory m_territory;
+	boolean m_bomb;
+
+	FightBattleAction(Territory battleSite, boolean bomb)
+	{
+	    super( (bomb ? "Bombing raid in " :  "Battle in ") + battleSite.getName() + "...");
+	    m_territory = battleSite;
+	    m_bomb = bomb;
+	}
+
+	public void actionPerformed(ActionEvent actionEvent)
+	{
+	    m_fightBattleMessage = new FightBattleMessage(m_territory, m_bomb);
+	    synchronized(getLock())
+	    {
+		getLock().notify();
+	    }
+	}
+    }
+
+    public String toString()
+    {
+	return "BattlePanel";
+    }
+
+    private class BombardComponent extends JPanel
+    {
+        
+        private JList m_list;
+        
+        BombardComponent(BombardmentQueryMessage bqm)
+        {
+            
+            this.setLayout(new BorderLayout());
+            
+	    String unitName = bqm.getUnit().getUnitType().getName()
+		+ " in " + bqm.getUnitTerritory();
+            JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
+            this.add(label, BorderLayout.NORTH);
+            
+            Vector listElements = new Vector(bqm.getTerritories());
+	    if (bqm.isNoneAvailable())
+	    {
+		listElements.add(0, "None");
+	    }
+            
+            m_list = new JList(listElements);
+            m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            if (listElements.size() >= 1)
+                m_list.setSelectedIndex(0);
+            JScrollPane scroll = new JScrollPane(m_list);
+            this.add(scroll, BorderLayout.CENTER);
+        }
+        
+        public Territory getSelection()
+        {
+            Object selected = m_list.getSelectedValue();
+	    if (selected instanceof Territory)
+	    {
+		return (Territory) selected;
+	    }
+	    
+	    return null; // User selected "None" option
+        }
+    }
 }
 

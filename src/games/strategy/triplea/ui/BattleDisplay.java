@@ -257,9 +257,7 @@ public class BattleDisplay extends JPanel
     
     private class RetreatComponent extends JPanel
     {
-        
-        RetreatQueryMessage m_query;
-        JList m_list;
+        private JList m_list;
         
         RetreatComponent(RetreatQueryMessage rqm)
         {
@@ -269,7 +267,6 @@ public class BattleDisplay extends JPanel
             JLabel label = new JLabel("Retreat to...");
             this.add(label, BorderLayout.NORTH);
             
-            m_query = rqm;
             Vector listElements = new Vector(rqm.getTerritories());
             
             m_list = new JList(listElements);

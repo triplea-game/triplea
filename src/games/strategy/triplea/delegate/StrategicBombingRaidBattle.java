@@ -300,4 +300,18 @@ public class StrategicBombingRaidBattle implements Battle
         return Collections.EMPTY_LIST;
     }
 
+    /**
+     * Add bombarding unit. Doesn't make sense here so just do
+     * nothing.
+     */
+    public void addBombardingUnit(Unit unit) {
+	// nothing
+    }
+
+    /**
+     * Return whether battle is amphibious.
+     */
+    public boolean isAmphibious() {
+	return false;
+    }
 }
