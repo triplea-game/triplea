@@ -89,13 +89,11 @@ public class BattleDisplay extends JPanel
         initLayout();
     }
 
-    /**
-     * Play a sound when strat bombing. At this stage something will get hit. No
-     * need to check dice.
-     */
+
     public void bombingResults(BombingResults message)
     {
 
+        ClipPlayer.getInstance().playClip(SoundPath.BOMB, SoundPath.class); //play sound
         m_dicePanel.setDiceRoll(message);
         m_actionLayout.show(m_actionPanel, DICE_KEY);
     }
