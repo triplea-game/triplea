@@ -318,8 +318,6 @@ public class MapPanel extends ImageScrollerLargeView
 
       current = next;
     }
-
-    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
   }
 
   //http://www.experts-exchange.com/Programming/Programming_Languages/Java/Q_20627343.html
@@ -437,18 +435,21 @@ public class MapPanel extends ImageScrollerLargeView
   {
       double smallLargeRatio = 1 / 9.967; // ((float) m_smallView.getHeight()) / ((float) getHeight());
 
-      Graphics smallOffscreen = m_smallView.getOffScreenImage().
+      Graphics2D smallOffscreen = (Graphics2D) m_smallView.getOffScreenImage().
           getGraphics();
+      smallOffscreen.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
       smallOffscreen.setColor(TerritoryImageFactory.getInstance().
                               getPlayerColour(player).darker());
-      smallOffscreen.fillOval(
-          (int) (place.x * smallLargeRatio),
-          (int) (place.y * smallLargeRatio),
-          (int) (UnitIconImageFactory.UNIT_ICON_WIDTH *
-                 smallLargeRatio) + 2,
-          (int) (UnitIconImageFactory.UNIT_ICON_HEIGHT *
-                 smallLargeRatio) + 2
-          );
+
+      Ellipse2D oval = new Ellipse2D.Double(place.x * smallLargeRatio - 3,
+                                       place.y * smallLargeRatio - 3,
+                                       (UnitIconImageFactory.UNIT_ICON_WIDTH * smallLargeRatio) + 1,
+                                       (UnitIconImageFactory.UNIT_ICON_HEIGHT * smallLargeRatio) + 1);
+
+      smallOffscreen.fill(oval);
+
+
   }
 
   private MouseListener MOUSE_LISTENER = new MouseAdapter()
