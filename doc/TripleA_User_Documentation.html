@@ -10,11 +10,16 @@
 
 	<body>
 		<center><h1>TripleA User Documentation</h1></center>
-		<hr>
+		<hr/>
 		<h3><a name="top">Quick Nav</a></h3>
 		<ul>
 			<li><a href="#sec_a">Installing TripleA</a></li>
-			<li><a href="#sec_b">Installing TripleA From Source</a></li>
+			<li><a href="#sec_b">Compiling TripleA Source Code (optional)</a></li>
+			<ul>
+				<li><a href="#sec_b_1">On a Windows platform</a></li>
+				<li><a href="#sec_b_2">On a LINUX platform</a></li>
+			</ul>
+			
 			<li><a href="#sec_c">Running TripleA</a></li>
 			<ul>
 				<li><a href="#sec_c_1">Local Game</a></li>
@@ -27,8 +32,8 @@
 			<li><a href="#sec_e">Seeking Opponents</a></li>
 			<li><a href="#sec_f">F.A.Q.</a></li>
 		</ul>
-		<hr>
-		<br>
+		<hr/>
+		<br/>
 	
 		<h2><a name="sec_a">Installing TripleA</a></h2>
 		<blockquote>
@@ -41,11 +46,11 @@
 			<p>
 				To play the game you must first install a java virtual machine on your
 				computer. The game requires at least the JDK 1.4. If you have already
-				installed a java virtual machine then you can skip this step.<br>
-				<br>
+				installed a java virtual machine then you can skip this step.<br/>
+				<br/>
 				<b>Windows</b> and <b>Linux</b> users can download the Java Runtime Engine
 				(JRE) from Sun Microsystems at <a target="_blank" href="http://www.java.com/en/index.jsp">www.java.com/en/index.jsp</a>.
-				<br><br>
+				<br/><br/>
 				<b>Mac</b> users must be using <b>Mac OS X</b> to run the game. <b>Mac OS X</b>
 				comes pre-installed with a Java Virtual Machine (JVM), but it may only be Java 1.3.
 				<b>Mac</b> users can install Java 1.4 or greater from <a target="_blank" href="http://www.apple.com/macosx/features/java">here</a>.
@@ -76,7 +81,7 @@
 				You will need to decide where you want to install TripleA. We currently cannot
 				provide an automatic installer for all Operating System's platform so you will
 				need to extract the contents of the TripleA Zip file to a specified location on
-				your computer.<br>
+				your computer.<br/>
 			</p>
 			
 			<p>
@@ -108,27 +113,27 @@
 				By now you should have been able to extract the TripleA zip file into a directory.
 				You will notice that you now have a folder called <b>triplea_x_x_x</b> where TripleA's
 				game files are. Thats basically it on installing TripleA. You only need to extract all
-				the files into a directory or folder.<br>
-				<br>
+				the files into a directory or folder.<br/>
+				<br/>
 				From here you can proceed to <a href="#sec_c">Running TripleA</a>
 			</p>
 			
 			<a href="#top">- Top -</a>
 		</blockquote>
 	
-		<h2><a name="sec_b">Installing TripleA From Source</a></h2>
+		<h2><a name="sec_b">Compiling TripleA Source Code</a></h2>
 		<blockquote>
 			<p>
-				Before we start please note that it is <b>NOT</b> required that you install Triplea
+				Before we start, please note that it is <b>NOT</b> required that you install Triplea
 				from source (that is compiling it your self). You can run the game using the pre-compiled
 				version as mentioned above in <a href="#sec_a">Installing TripleA</a>.
 			</p>
 		
 			<p>
-				There are actually many reasons, one being the type of Java Virtual Machine you have installed.
-				Some JVMs run differently and compile java source code differently and may act strange on other
-				JVMs. An example is running java byte code that has been compiled using Sun's JVM on a JVM done
-				by IBM for example.
+				There are actually many reasons, one being the type of Java Virtual Machine you have installed,
+				to want to compile TripleA from source and install it. Some JVMs run differently and compile
+				java source code differently and may act strange on other JVMs. An example is running java byte
+				code that has been compiled using Sun's JVM on a JVM done by IBM for example.
 			</p>
 			
 			<p>
@@ -138,6 +143,279 @@
 				one is stopping you :)
 			</p>
 			
+			<p>
+				This section will be devided into two sections, one for the Win32 (Windows) platform and the
+				other for the GNU/Linux platform. The instructions on how to compile TripleA on GNU/Linux are
+				relatively similar (if not exactly the same) as the Mac OS X platform and other UNIX variants
+				that are out there. Compiling instructions on other platforms are not supported by the TripleA
+				team unless someone wishes to donate instructions.
+			</p>
+			
+			<h2><a name="sec_b_1">Compiling on Windows</a></h2>
+			<blockquote>
+				<p>
+					To install TripleA from source you will need the source package which you can download from the
+					TripleA website. We shall assume you already have this file downloaded and are ready to extract
+					it's contents.
+				</p>
+				
+				<p>
+					The first step is to extract the contents of the zip file into a location of your choice.
+					Once you have extracted all the files, you will see a folder named <b>triplea_x_x_x</b>.
+					Note that it has the same name as the pre-compiled package so if you are going to install
+					both the source and the pre-compiled version, it is highly recommended that you create
+					separate directories for them first. If not one will overwrite the other.
+				</p>
+			
+				<p>
+					Before you even begin compiling, you need:
+					<ul>
+						<li>Apache ANT (<a target="_blank" href="http://ant.apache.org">http://ant.apache.org</a>)</li>
+						<li>Java JDK (<a target="_blank" href="http://java.sun.com">http://java.sun.com</a>)</li>
+						<li>Junit (<a target="_blank" href="http://www.junit.org">http://www.junit.org</a>)</li>
+						<li>.ant.properties (text file with config options)</li>
+					</ul>
+				
+					The <i>.ant.properties</i> file should be included with your Triplea source download. 
+					You will need to modify it in using <b>Word Pad</b> <i>not</i> Note Pad.<br/>
+					<br/>
+					F.Y.I. make sure you download Java SDK SE (Standard Edition) and <i>not</i> the EE (Enterprise Edition.)
+					Most users find it difficult to get the Enterprise Edition working. On top of that you don't need it
+					to compile TripleA.
+				</p>
+				
+				<p>
+					You should consider installing both the <b>Java SDK</b> and <b>Ant</b> at the root level of the C: drive.
+					It is known that <b>Ant</b> in particular sometimes doesn't like spaces in the path name (nor for the path to be extremely long).
+					You'll notice that the typical default Windows install location of <b>&quot;Program Files&quot;</b> will
+					in fact have a space in its path. It is not known how often this truly causes a problem (if ever), but the "pros"
+					say they install their compiling programs to their root C: directory to avoid pitfalls so it is recommended
+					that you do the same. The last thing we would want is &quot;extra&quot; problems.
+				</p>
+				
+				<p>
+					For simplicity's sake, we shall install both the <b>Java SDK SE</b> and <b>Ant</b> at the root or C: Drive  
+					as well as <b>TripleA</b> and <b>JUnit</b>. JUnit is easily installed, you just need to extract the contents
+					of it into it's own folder. TripleA just needs to use a single JAR file that comes with JUnit.
+				</p>
+				
+				<p>
+					Once you've installed the <b>Java SDK SE</b>, <b>JUnit</b> and <b>Ant</b> on your PC, start the Command Prompt
+					(terminal) program. In Windows XP it's under: 
+					<blockquote>
+					<code>
+						Start > All Programs > Accessories > Command Prompt.
+					</code>
+					</blockquote>
+				</p>
+				
+				<p>
+					In Command Prompt, enter &quot;Java -version&quot; (without the quotes) and hit enter. If you see information
+					for the default Windows Java version instead of the new Java SDK SE you've just downloaded and installed...
+					then Windows is not recognizing your newer Java install as the proper default. That's okay, fact it's almost
+					to be expected.
+				</p>
+				
+				<p>
+					Now in Command Prompt enter &quot;Ant -version&quot; (without quotes) and hit enter. You will probably see a
+					message as such:
+					<blockquote>
+					<code>
+						&quot;Ant is not recognized as a internal or external command, operable program or batch file.&quot;
+					</code>
+					</blockquote>
+					
+					I had the same problem myself and it took me a couple days searching online and reading to find what you need
+					to do on a PC. Even though you've correctly installed Java SDK and Ant, Windows doesn't seem to recognize this.
+					We can fix that.
+				</p>
+				
+				<p>
+					To get Windows to recognize <b>Java SDK SE</b> and <b>Ant</b> from the Command Prompt, here's what you need to do.
+					Go to:
+					<blockquote>
+					<code>
+						 Control Panel > System > Advanced (tab) > Environmental Variables (button)
+					</code>
+					</blocquote>
+				</p> 
+
+				<p>
+					Here we will add information for Windows to recognize both programs so it will pass your Command Prompt calls
+					to the right place. You will want to make the following additions to the &quot;User Variables&quot; section
+					at the top and <b>NOT</b> the System Variables.
+				</p>
+				
+				<p>
+					There is no good reason to make these additions as System Variables unless you absolutely need all user
+					accounts on your PC to be able to run these command line programs. Are the kids really going to be
+					compiling Triplea using their own Windows log-in? Yikes! Besides, messing around with your System Variables
+					is risky because (unlike the User Variables) it has the potential to really mess your system up if you enter
+					something wrong. So let's take the safe road and simply enter the following as User Variables. 
+				</p>
+				
+				<p>
+					Under &quot;User Variables&quot;, (not system variables) click on the &quot;New&quot; button and enter the
+					following information:
+					<blockquote>
+					<code>
+						Variable name: JAVA_HOME<br/>
+						Variable value: C:\j2sdk1.4.2_04
+					</code>
+					</blockquote>
+					
+					The Variable Name should be entered exactly as indicated. The Variable Value will be your exact path to
+					the <b>Java SDK SE</b> folder... so obviously your entry here may vary depending on your install path
+					and the folder name you've chosen. I've only shown my Variable Value entry an example here.
+				</p>
+				
+				
+				<p>
+					The easiest way to get this path exactly correct is to open the <b>Java SDK SE</b> folder and select a subfolder
+					inside (<b>bin</b> folder, for example) then view the properties on it. The "Location" shown in the properties
+					window will be the path you need to enter here, and you can simply select it and copy/paste it in to avoid any typos. 
+					<blockquote>
+					<code>
+						Click OK
+					</code>
+					</blockquote>
+				</p>
+
+				<p>
+					Under &quot;User Variables&quot;, click on the &quot;New&quot; button again and enter the following information:
+					<blockquote>
+					<code>
+						Variable name: ANT_HOME<br/>
+						Variable value: C:\apache-ant-1.6.2
+					</code>
+					</blockquote>
+				</p>
+
+				<p>
+					Here again the Variable Name should be entered exactly as indicated. The Variable Value will be the path to
+					your Ant folder and again, your exact entry may vary. I've only shown my entry as an example here. Use the
+					trick above to get the path right using copy/paste. 
+					<blockquote>
+					<code>
+						Click OK
+					</code>
+					</blockquote>
+				</p>
+				
+				<p>
+					Under &quot;User Variables&quot;, click on the &quot;New&quot; button one last time and enter the following information:
+					<blockquote>
+					<code>
+						Variable name: PATH<br/>
+						Variable value: C:\j2sdk1.4.2_04\bin\;C:\apache-ant-1.6.2\bin\
+					</code>
+					</blockquote>
+
+					The Variable Name should be entered exactly as shown. The Variable Value will be your exact paths to the BIN folders
+					located inside both the Java SDK and Ant folders, with the 2 entries separated by a semi-colon &quot;;&quot; and no spaces between
+					them. Once again, my entry is shown for example only. Be sure to include the trailing \ after bin (\bin\) in the path names. 
+				</p>
+				
+				<p>
+					Click OK. Now click OK to the Environmental Variables window, then OK to the System Properties window.
+				</p> 
+				
+				<p>
+					Now for an important step. In order for these changes to take effect you must either log out then back in, OR restart your PC. 
+				</p>
+				
+				<p>
+					Once you have done that, then fire up the Command Prompt program again.<br/>
+					Enter "java -version" again and hit enter. This time you should see something like:
+					<blockquote>
+					<code>
+						Java version "1.4.2_04"<br/>
+						Java (TM) 2 Runtime Environment, Standard Edition (build 1.4.2_04-b05)<br/>
+						Java HotSpot(TM) Client VM (build 1.4.2_04-b05, mixed mode)
+					</code>
+					</blockquote>
+				</p>
+
+				<p>
+					Now enter "ant -version" again and hit enter.<br/>
+					This time you should see something like:
+					<blockquote>
+					<code>
+						Apache Ant version 1.6.2 compiled on July 16 2004
+					</code>
+					</blockquote>
+
+					If you get an error... recheck your Environmental Variables entries and proofread your paths very carefully.
+					Did you copy/paste the paths to avoid typos? You did restart or log out/in didn't you? Review the instructions
+					again and double check everything. But if all goes well you should get the proper returns from your Command
+					Prompt version check.
+				</p>
+
+				<p>
+					OK, now that Windows is ready to pass the Command Prompt commands to the proper places you're ready to give
+					this a spin. You've already modified the .ant.properties file in the Triplea source folder to point to Junit,
+					right? The Users Manual covers editing this to point to the junit.jar file, but just for sake of completeness
+					my .ant.properties file was edited in Wordpad like so:
+					<blockquote>
+					<code>
+						junit.jar=C:junit3.8.1\junit.jar<br/>
+						triplea.version=0_5_1
+					</code>
+					</blockquote>
+				</p>
+
+				<p>
+					In the Command Prompt, before issuing the &quot;ant compile&quot; command I found it necessary to change the directory
+					to point to the Triplea source folder first. Otherwise it wouldn't work. I even tried using an nifty Ant
+					specific command which is supposed to prompt Ant to look through the directories hierarchy searching for
+					a suitable build.XML file. But this didn't work for me either.
+				</p>
+
+				<p>
+					To change directories in Command Prompt you use the &quot;cd&quot; command. Type in &quot;cd C:\&quot; and hit enter.
+					This will take you to the root level of the C: drive. If you enter &quot;dir&quot; and hit enter, this will display
+					the contents of your present directory (including all the invisible system files).
+				</p>
+
+				<p>
+					Now if you placed your Triplea source folder at C: root level, simply change directory again &quot;cd&quot; to the
+					Triplea source folder by entering: &quot;cd triplea_0_5_1&quot; (of course you could have done all of this in one
+					shot... by entering &quot;cd C:\triplea_0_5_1&quot; ...just giving you an idea how to navigate around directories using the
+					cd command.)
+				</p>
+				
+				<p>
+					Command Prompt should now look like this:
+					<blockquote>
+					<code>
+						C:\triplea_0_5_1>
+					</code>
+					</blockquote>
+
+					Now you are ready to issue the &quot;ant compile&quot; command in Command Prompt and hit enter... 
+					You should see something like this:
+					<blockquote>
+					<code>
+						Buildfile: build.xml<br/>
+						init:<br/>
+						compile:<br/>
+						[echo] looking for junit.jar in:C:junit3.8.1junit.jar, edit .ant.properties to set junit location<br/>
+						[mkdir] Created dir: C:\Triplea_0_5_1\classes<br/>
+						[copy] Copying 359 files to C:\triplea_0_5_1\classes<br/>
+						BUILD SUCCESSFUL<br/>
+						Total time: 29 seconds
+					</code>
+					</blockquote>
+					Success!<br/><br/>
+					TripleA is now ready to be <a href="#sec_c">Run</a>.
+					<br/>
+					<br/>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			<h2><a name="sec_b_2">Compiling on GNU/Linux and other variants</a></h2>
+			<blockquote>
 			<p>
 				To install TripleA from source you will need the source package which you can download from the
 				TripleA website. We shall assume you already have this file downloaded and are ready to extract
@@ -173,17 +451,20 @@
 			<p>
 				Go into the directory where you extracted the TripleA source code. Create a text file and name it exactly like so
 				<b>.ant.properties</b> Open this file and add the following information:
+				
 				<blockquote>
 				<code>
-					 unit.jar=PATH TO THE JUNIT JAR FILE<br>
+					 junit.jar=PATH TO THE JUNIT JAR FILE<br/>
 					 triplea.version=X_X_X
 				</code>
 				</blockquote>
+				
 				For a more suitable example let me show you my <b>.ant.properties</b> file. It is on my Linux system where I have
 				<b>Junit</b> installed in my home directory.
+				
 				<blockquote>
 				<code>
-					 junit.jar=/home/necro/junit3.8.1/junit3.8.1.jar<br>
+					 junit.jar=/home/necro/junit3.8.1/junit3.8.1.jar<br/>
 					 triplea.version=0_5_1
 				</code>
 				</blockquote>
@@ -203,19 +484,16 @@
 				what shows up when I run the command to compile my copy of TripleA:
 				<blockquote>
 				<code>
-					Buildfile: build.xml<br>
-					<br>
-					init:<br>
-					<br>
-					compile:<br>
-					<br>
-					[echo] looking for junit.jar in:/home/necro/javabox/junit3.8.1/junit.jar, edit .ant.properties to set junit location<br>
-					[mkdir] Created dir: /home/necro/CVS/triplea/classes<br>
-					[copy] Copying 452 files to /home/necro/CVS/triplea/classes<br>
-					[javac] Compiling 335 source files to /home/necro/CVS/triplea/classes<br>
-					<br>
-					BUILD SUCCESSFUL<br>
-					Total time: 18 seconds<br>
+					Buildfile: build.xml<br/>
+					init:<br/>
+					compile:<br/>
+					[echo] looking for junit.jar in:/home/necro/javabox/junit3.8.1/junit.jar, edit .ant.properties to set junit location<br/>
+					[mkdir] Created dir: /home/necro/CVS/triplea/classes<br/>
+					[copy] Copying 452 files to /home/necro/CVS/triplea/classes<br/>
+					[javac] Compiling 335 source files to /home/necro/CVS/triplea/classes<br/>
+					<br/>
+					BUILD SUCCESSFUL<br/>
+					Total time: 18 seconds<br/>
 				</code>
 				</blockquote>
 			</p>
@@ -233,10 +511,10 @@
 					</ul>
 				</blockquote>
 				There are more commands that can be used and you can find them in the <b>build.xml</b> file. You can even make your
-				own if you wish.<br>
-				<br>
-				After a successful compile, TripleA is now ready to be <a href="#sec_c">Run</a>.<br>
-				<br>
+				own if you wish.<br/>
+				<br/>
+				After a successful compile, TripleA is now ready to be <a href="#sec_c">Run</a>.<br/>
+				<br/>
 				<a href="#top">- Top -</a>
 			</p>
 		</blockquote>
@@ -253,8 +531,8 @@
 				Simply open Windows Explorer, or whatever program you use to browse files around your computer. Find your
 				TripleA folder and go inside the <b>bin</b> folder. Inside there you should find a file called <b>triplea.bat</b>
 				This is the file that Windows users are expected to double click on (or run through a DOS prompt) to get
-				the game started.<br>
-				<br>
+				the game started.<br/>
+				<br/>
 				You can make shortcuts pointing to <b>triplea.bat</b> and you can as well use some of our TripleA icons that are
 				provided in the <b>icons</b> folder.
 			</p>
@@ -292,15 +570,15 @@
 				This command can be run manually in the <b>bin</b> directory from a command prompt but it is quite lengthy and
 				tedious to write all the time. That Java command has proved to work on most Unix, Linux, Irix 6.5, and Mac OS X
 				systems. If you encounter problems with this command please log on to the <a target="_blank" href="http://maddlinks.com/triplea">TripleA message board</a>
-				and request further assistance.<br>
-				<br>
+				and request further assistance.<br/>
+				<br/>
 				<a href="#top">- Top -</a>
 			</p>
 			
 			<h2><a name="sec_c_1">Local Game</a></h2>
 			<p>
-				This section goes over what a local game is and how to get one up and running.<br>
-				<br>
+				This section goes over what a local game is and how to get one up and running.<br/>
+				<br/>
 				A local game is one where TripleA is played on a single computer with no other human opponents. You are basically
 				playing the all the nations on your own. There is an experimental computer opponent but it is very primitive. The
 				AI works best with Classic Edition and will not work well with 4th Edition games.
@@ -344,8 +622,8 @@
 			<p>
 				Once you have made up your mind on what kind of game you would like to play. It is time to actually start the game.
 				You hit the mighty <b>Play</b> button and wait while the game loads. You could always hit <b>Exit</b> and go over
-				to your kitchen and get a refreshing drink.<br>
-				<br>
+				to your kitchen and get a refreshing drink.<br/>
+				<br/>
 				<a href="#top">- Top -</a>
 			</p>
 			
@@ -388,8 +666,8 @@
 				</table>
 				In the <b>Name</b> field you enter the name of the server. It does not have to be &quot;Server,&quot; it can be
 				your name or practically anything. It will be that name you choose that will identify you in the chat room.
-				That is merely the purpose of it.<br>
-				<br>
+				That is merely the purpose of it.<br/>
+				<br/>
 				In the <b>Port</b> field you have to enter at what port number TripleA will listen to for connections. This will
 				also be the port number that the clients will have to connect to. The default port number TripleA sets is 3300.
 				This number can be changed to your heart's desire but note that on many Unix like systems any port number below
@@ -474,8 +752,8 @@
 						</td>
 					</tr>
 				</table>
-				Only the Server can start the game by hitting the <b>Play</b> button.<br>
-				<br>
+				Only the Server can start the game by hitting the <b>Play</b> button.<br/>
+				<br/>
 				<a href="#top">- Top -</a>
 			</p>
 			
@@ -590,9 +868,8 @@
 				section, they have to fill out the email addresses approprietly as done above (can also opt to hit
 				<b>Test Mail</b>). When that is done they can hit the <b>Play</b> button. They will see that they
 				are now at the last place their opponent left off at (obviously). They do their turn and save it
-				when they are done and send it to their opponent. And the cycle continues.<br>
-				<br>
-				<a href="#top">- Top -</a>
+				when they are done and send it to their opponent. And the cycle continues.<br/>
+				<br/>
 			</p>
 			
 			<h4>Possible PBEM Work Arounds</h4>
@@ -628,6 +905,9 @@
 				One down side would that anyone could re-play their turn over and over until they get suitable
 				dice. You cannot do much about this but as mentioned above.. you should play with people who
 				you can trust will not do that. Even if this is done, in the end strategy wins over dice rolls.
+				<br/>
+				<br/>
+				<a href="#top">- Top -</a>
 			</p>
 			
 			<h2><a name="sec_c_4">Practical Guidlines for PBEM</a></h2>
@@ -652,9 +932,7 @@
 			<p>
 				Continuing the example for sea battles, casualties would be selected in this order:  Transports, Submarines,
 				Fighters, Destroyers, Loaded Transports, Carriers, Battleships.  Submersible submarines give exception; if a
-				submarine is by itself or with empty transports then it submerges on the first round.<br>
-				<br>
-				<a href="#top">- Top -</a>
+				submarine is by itself or with empty transports then it submerges on the first round.
 			</p>
 			
 			<h4>Types of PBE play</h4>
@@ -683,6 +961,9 @@
 				descriptive naming scheme. An example is using the first initial of every player round – turn and
 				version info.  For instance if nabiy, ud, and drec were playing version 0.4.6 and it was Russia’s
 				turn in the second round of play the name of the file should be: <b>nud2-1RS046.svg</b>
+				<br/>
+				<br/>
+				<a href="#top">- Top -</a>
 			</p>
 			
 			<h2><a name="sec_c_5">About Low Luck</a></h2>
@@ -706,8 +987,8 @@
 				indicated at the bottom of the combat window and will be equal to the 
 				number of guaranteed hits plus one if the only dice rolled is a hit. No 
 				dice may be rolled if the outcome is guaranteed because no fractional 
-				dice are needed.<br>
-				<br>
+				dice are needed.<br/>
+				<br/>
 				<a href="#top">- Top -</a>
 			</p>
 		</blockquote>
@@ -729,55 +1010,59 @@
 				Please visit our comprehensive guide to finding opponents via the message board
 				and Internet Relay Chat (IRC) on our <a target="_blank" href="http://triplea.sourceforge.net/index.php?option=content&task=view&id=7&Itemid=29">website</a>.
 			</p>
+			<p>
+				There is also a community War Club for TripleA which can be found at: <a href="http://www.tripleawarclub.org">www.TripleaWarClub.org</a>
+			</p>
+			
 			<a href="#top">- Top -</a>
 		</blockquote>
 		
 		<h2><a name="sec_f">F.A.Q.</a></h2>
 		<blockquote>
 			<p>
-				<b>Q:</b>I am using windows and I keep getting &quot;Bad command or file name&quot; what do I do?<br>
+				<b>Q:</b>I am using windows and I keep getting &quot;Bad command or file name&quot; what do I do?<br/>
 				<b>A:</B>You haven’t installed or set up the java virtual machine correctly. Go to <a href="#sec_a">Installing TripleA</a>
 			</p>
 			
 			<p>
-				<b>Q:</b>I am a Linux or Mac OS X user and I keep getting &quot;Exception in thread "main" java.lang.NoClassDefFoundError: games/strategy/engine/framework/GameRunner&quot;<br>
+				<b>Q:</b>I am a Linux or Mac OS X user and I keep getting &quot;Exception in thread "main" java.lang.NoClassDefFoundError: games/strategy/engine/framework/GameRunner&quot;<br/>
 				<b>A:</b>Are you running the command in the <b>bin</b> directory? type <b>pwd</b>, and the result should end in <b>/bin</b>.
 				If you are not in the <b>bin</b> directory, change your directory. It could also mean your accidently downloaded the source package
 				of TripleA instead of the pre-compiled package. This happens when you run TripleA when it has not been compiled.
 			</p>
 			
 			<p>
-				<b>Q:</b>I get &quot;Unable to create server socket: Connection timed out: connect&quot;!<br>
+				<b>Q:</b>I get &quot;Unable to create server socket: Connection timed out: connect&quot;!<br/>
 				<b>A:</b>This basically means TripleA could not find the server to connect to. Are you behind
 				a Firewall that is blocking you? Is the server behind a Firewall blocking your connections? Is
 				your router set up properly for Port Forwarding? Or maybe the server went offline.
 			</p>
 			
 			<p>
-				<b>Q:</b>No matter how many times I re-download TripleA, it keeps saying it is corrupted!<br>
+				<b>Q:</b>No matter how many times I re-download TripleA, it keeps saying it is corrupted!<br/>
 				<b>A:</b>Try using a different UnZipping utility. If that doesn't work try re-downloading TripleA
 				using a different program. There was a case where Mozilla browser kept saving the Zip file in a 
 				corrupted state.
 			</p>
 			
 			<p>
-				<b>Q:</b>Don't ask me how.. but I can't seem to turn on the AI, how can I do it manually?<br>
+				<b>Q:</b>Don't ask me how.. but I can't seem to turn on the AI, how can I do it manually?<br/>
 				<b>A:</b>Visit this <a target="_blank" href="http://maddlinks.com/triplea/index.php?showtopic=184">link</a>
 			</p>
 			
 			<p>
-				<b>Q:</b>What can I do if I spot a SeaZone connection problem and want to fix it fast?<br>
+				<b>Q:</b>What can I do if I spot a SeaZone connection problem and want to fix it fast?<br/>
 				<b>A:</b>You can edit the XML game file manually as shown <a target="_blank" href="http://maddlinks.com/triplea/index.php?showtopic=301">here</a>.
 			</p>
 			
 			<p>
-				<b>Q:</b>How do I report a bug?<br>
+				<b>Q:</b>How do I report a bug?<br/>
 				<b>A:</b>Report bugs either on the <a target="_blank" href="http://maddlinks.com/triplea">TripleA message board</a> or at the <a target="_blank" href="http://sourceforge.net/projects/triplea">Project home page.</a>
 				when doing so please follow this <a target="_blank" href="http://maddlinks.com/triplea/index.php?showtopic=162">Bug Reporting guide</a>.
 			</p>
 			
 			<p>
-				<b>Q:</b>Any way of getting an observer in the game?<br>
+				<b>Q:</b>Any way of getting an observer in the game?<br/>
 				<b>A:</b>Yes, by having the observer connect to your game and not selecting any countries.
 				You can have many observers. One warning. They cannot leave during the middle of the game!
 				If they do, it will halt the game and crash (not really crash but you guys would have to
@@ -785,7 +1070,7 @@
 			</p>
 			
 			<p>
-				<b>Q:</b>I keep seeing the wrong IP when I host as server, whats going on?<br>
+				<b>Q:</b>I keep seeing the wrong IP when I host as server, whats going on?<br/>
 				<b>A:</b>Please go to <a href="#sec_c_2">Multiplayer Game</a> section and scroll down
 				till you see the sub-section about Firewalls and Routers. If that doesn't solve your
 				problem, then seek help at the message board or on IRC.
@@ -794,8 +1079,8 @@
 		</blockquote>
 		
 		<!-- footer -->
-		<br>
-		<hr>
+		<br/>
+		<hr/>
 		<a href="http://sourceforge.net"><img src="images/sflogo.png" width="125" height="37" border="0" alt=""></a>&nbsp;
 		<a href="http://sourceforge.net/donate/index.php?group_id=44492"><img src="images/project-support.jpg" width="88" height="32" border="0" alt=""></a>
 	</body>
