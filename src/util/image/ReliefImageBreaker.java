@@ -61,7 +61,7 @@ public class ReliefImageBreaker
 //    public static final boolean ONLY_DO_SEA_ZONES= false;
 
     //for the sea map
-    public static final String LARGE_MAP_FILENAME = "/home/sgb/dev/triplea/data/games/strategy/triplea/image/images/maps/largeMap.gif";
+    public static final String LARGE_MAP_FILENAME = "/home/sgb/dev/triplea/baseMap.gif";
     public static final String SMALL_MAPS_LOCATION = "newImages";
     public static final boolean ONLY_DO_SEA_ZONES= true;
 
@@ -76,7 +76,8 @@ public class ReliefImageBreaker
     {
 
         Image map = loadImage(LARGE_MAP_FILENAME);
-
+        
+        TerritoryData.setFourthEdition(true);
         Iterator unitIter = TerritoryData.getInstance().getTerritories().iterator();
 
         while (unitIter.hasNext())

@@ -43,16 +43,20 @@ public class MapImage
 {
 
   private final static String LARGE_IMAGE_FILENAME = "images/maps/largeMap.gif";
+  private final static String NEW_LARGE_IMAGE_FILENAME = "images/maps/new_LargeMap.gif";  
 
   private static MapImage s_instance;
   private static final ImageObserver s_observer = new NullImageObserver();
 
+  private static boolean s_fourthEdition;
+  public static void setFourthEdition(boolean fourthEdition)
+  {
+      s_fourthEdition = fourthEdition;
+      s_instance = new MapImage();
+  }
+  
   public static synchronized MapImage getInstance()
   {
-    if(s_instance == null)
-    {
-      s_instance = new MapImage();
-    }
     return s_instance;
   }
 
@@ -102,7 +106,7 @@ public class MapImage
 
   private void loadMaps()
   {
-    Image largeFromFile = loadImage(LARGE_IMAGE_FILENAME);
+    Image largeFromFile = loadImage(s_fourthEdition ? NEW_LARGE_IMAGE_FILENAME : LARGE_IMAGE_FILENAME);
 
     //NOTE
     //the following line causes a lot of problems in windows (windows xp with jdk1.4.0)

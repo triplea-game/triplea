@@ -28,11 +28,14 @@ public class AutoPlacementFinder
     private static final int PLACEWIDTH = 46;
     private static final int PLACEHEIGHT = 46;
 
-
+    
+    
     static void calculate()
     {
         Map m_placements = new HashMap();
 
+        TerritoryData.setFourthEdition(true);
+        
         Iterator terrIter = TerritoryData.getInstance().getTerritories().iterator();
         while (terrIter.hasNext())
         {

@@ -48,12 +48,12 @@ public class PlacementPicker extends JFrame
 
     public PlacementPicker(String fileName)
     {
-        super("Center Picker");
+        super("Placement Picker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         try
         {
-            m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream("polygons.txt"));
+            m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream("/home/sgb/dev/triplea/data/games/strategy/triplea/ui/new_polygons.txt"));
         }
         catch (IOException ex1)
         {
@@ -290,7 +290,7 @@ public class PlacementPicker extends JFrame
 
     public static void main(String[] args)
      {
-         String fileName = "/home/sgb/dev/triplea/additonalImageData/baseMap.gif";
+         String fileName = "baseMap.gif";
          PlacementPicker picker = new PlacementPicker(fileName);
          picker.setSize(600,550);
          picker.show();

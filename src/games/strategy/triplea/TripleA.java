@@ -27,10 +27,13 @@ import java.util.*;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
+import games.strategy.triplea.ui.TerritoryData;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.gamePlayer.*;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.TerritoryImageFactory;
 import games.strategy.triplea.sound.*;
 
 /**
@@ -73,6 +76,11 @@ public class TripleA implements IGameLoader
     {
         try
         {
+            boolean fourthEdition = game.getData().getProperties().get(Constants.FOURTH_EDITION, false);
+            TerritoryData.setFourthEdition(fourthEdition);
+            MapImage.setFourthEdition(fourthEdition);
+            TerritoryImageFactory.setFourthEdition(fourthEdition);
+            
             TripleAFrame frame = new TripleAFrame(game, players);
 
             //the pbem roller needs to know about the ui.

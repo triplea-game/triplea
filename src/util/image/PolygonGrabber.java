@@ -42,21 +42,23 @@ import java.awt.event.*;
 
 public class PolygonGrabber extends JFrame
 {
-    private static Map s_centers;
-    static
-    {
-        try
+
+        private static Map s_centers;
+        static
         {
-            s_centers = PointFileReaderWriter.readOneToOne(
-                new FileInputStream(
-                "/home/sgb/dev/triplea/data/games/strategy/triplea/ui/centers.txt"));
+            try
+            {
+                s_centers = PointFileReaderWriter.readOneToOne(
+                    new FileInputStream(
+                    "/home/sgb/dev/triplea/data/games/strategy/triplea/ui/new_centers.txt"
+     ));
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+                System.exit(0);
+            }
         }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
-            System.exit(0);
-        }
-    }
 
      private Image m_image;
 
@@ -247,6 +249,8 @@ public class PolygonGrabber extends JFrame
     private void mouseEvent(Point point, boolean ctrlDown, boolean rightMouse)
     {
         Polygon p =findPolygon(point.x, point.y);
+        if(p == null)
+            return;
         if(rightMouse && m_current != null)
         {
             doneCurrentGroup();
@@ -399,8 +403,17 @@ public class PolygonGrabber extends JFrame
         int currentDirection = 2;
         Point currentPoint = new Point(startPoint);
 
+        int iterCount = 0;
+        
         while(!currentPoint.equals(startPoint) || points.size() == 1)
         {
+            iterCount ++;
+            
+            if(iterCount > 100000)
+            {
+                JOptionPane.showMessageDialog(this, "FAIL" + currentPoint);
+                return null;
+            }
             int tempDirection;
             for(int i = 2; i>=-3; i--)
             {

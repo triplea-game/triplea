@@ -49,7 +49,7 @@ public class CenterPicker extends JFrame
 
         try
         {
-            m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream("polygons.txt"));
+            m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream("/home/sgb/dev/triplea/data/games/strategy/triplea/ui/new_polygons.txt"));
         }
         catch (IOException ex1)
         {
@@ -237,6 +237,12 @@ public class CenterPicker extends JFrame
     private void mouseEvent(Point point, boolean ctrlDown, boolean rightMouse)
     {
         String name = findTerritoryName(point);
+        JTextField message = new JTextField();
+        message.setText(name);
+        JOptionPane.showMessageDialog(this, message);
+        name = message.getText();
+        
+        
         int rVal = JOptionPane.showConfirmDialog(this, name);
         if(rVal == JOptionPane.OK_OPTION)
         {

@@ -552,7 +552,7 @@ public class TripleAFrame extends JFrame
     return choice == 0;
   }
 
-  public IntegerMessage getTechRolls(PlayerID id)
+  public Message getTechRolls(PlayerID id)
   {
     m_actionButtons.changeToTech(id);
     return m_actionButtons.waitForTech();

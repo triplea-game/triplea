@@ -136,7 +136,7 @@ public class ActionButtons extends JPanel
    * Blocks until the user selects the number of tech rolls.
    * @return null if no tech roll was made.
    */
-  public IntegerMessage waitForTech()
+  public Message waitForTech()
   {
     return m_techPanel.waitForTech();
   }

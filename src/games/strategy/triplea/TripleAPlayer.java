@@ -178,7 +178,7 @@ public class TripleAPlayer implements GamePlayer
     if(m_id.getResources().getQuantity(Constants.IPCS) == 0)
       return;
 
-    IntegerMessage message = m_ui.getTechRolls(m_id);
+    Message message = m_ui.getTechRolls(m_id);
     if(message != null)
     {
       Message msg =  m_bridge.sendMessage(message);

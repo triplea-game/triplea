@@ -34,6 +34,13 @@ public final class TerritoryImageFactory
 {
     private final int CACHE_SIZE = 5;
 
+    private static boolean s_fourthEdition;
+    
+    public static void setFourthEdition(boolean aBool)
+    {
+        s_fourthEdition = aBool;
+    }
+    
     private LinkedList m_cachedTerritories = new LinkedList();
 
     // one instance in the application
@@ -147,7 +154,7 @@ public final class TerritoryImageFactory
       String key = place.getName() + "_relief";
       // load it on the fly
 
-      String fileName = "images/countries/" + key.replace(' ', '_')  + ".png";
+      String fileName = "images/" + (s_fourthEdition ? "new/" : "") + "countries/" + key.replace(' ', '_')  + ".png";
       URL file = this.getClass().getResource(fileName);
       if(file == null)
           return null;
@@ -190,7 +197,7 @@ public final class TerritoryImageFactory
       String key = place.getName();
       // load it on the fly
 
-      String fileName = "images/seaZones/" + key.replace(' ', '_')  + ".png";
+      String fileName = "images/" + (s_fourthEdition ? "new/" : "") + "seaZones/" + key.replace(' ', '_')  + ".png";
       URL file = this.getClass().getResource(fileName);
       if(file == null)
           throw new IllegalArgumentException("not found:" + fileName);

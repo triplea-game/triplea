@@ -71,6 +71,12 @@ public class TechnologyDelegate implements SaveableDelegate
     m_player = aBridge.getPlayerID();
   }
 
+  
+  private boolean isFourthEdition()
+  {
+      return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+  } 	
+  
   private Message rollTech(IntegerMessage msg)
   {
     int techRolls = msg.getMessage();
@@ -86,8 +92,20 @@ public class TechnologyDelegate implements SaveableDelegate
     m_bridge.getHistoryWriter().setRenderingData(new DiceRoll(random, techHits, 5, true));
 
 
+    
 
-    Collection advances = getTechAdvances(techHits);
+    Collection advances;
+    if(isFourthEdition())
+    {
+        if(techHits > 0)
+            advances = Collections.singletonList(((TechRollMessage) msg).getTech());
+        else
+            advances = Collections.EMPTY_LIST;
+    } else
+    {
+        advances = getTechAdvances(techHits);
+    }
+    
     List advancesAsString = new ArrayList();
 
     Iterator iter = advances.iterator();

@@ -25,6 +25,7 @@ import java.awt.*;
 import java.util.List;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.*;
+
 /**
  * contains data about the territories useful for drawing
  */
@@ -45,20 +46,26 @@ public class TerritoryData
     //maps String -> List of String
     private Map m_contains;
 
-    private static TerritoryData s_instance = new TerritoryData();
+    private static TerritoryData s_instance;
 
+    public static void setFourthEdition(boolean aVal)
+    {
+        s_instance = new TerritoryData(aVal);
+    }
+    
     public static TerritoryData getInstance()
     {
         return s_instance;
     }
 
-    private TerritoryData()
+    private TerritoryData(boolean fourthEdition)
     {
         try
         {
-            m_place = PointFileReaderWriter.readOneToMany(this.getClass().getResourceAsStream(PLACEMENT_FILE));
-            m_polys = PointFileReaderWriter.readOneToManyPolygons(this.getClass().getResourceAsStream(POLYGON_FILE));
-            m_centers = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(CENTERS_FILE));
+            String prefix = fourthEdition ? "new_" : "";
+            m_place = PointFileReaderWriter.readOneToMany(this.getClass().getResourceAsStream(prefix + PLACEMENT_FILE));
+            m_polys = PointFileReaderWriter.readOneToManyPolygons(this.getClass().getResourceAsStream(prefix + POLYGON_FILE));
+            m_centers = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CENTERS_FILE));
 
             initializeContains();
 

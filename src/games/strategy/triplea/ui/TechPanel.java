@@ -23,14 +23,20 @@ package games.strategy.triplea.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
+
 import javax.swing.*;
 
 import games.strategy.ui.*;
 import games.strategy.util.*;
+import games.strategy.util.Util;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
+import games.strategy.engine.message.Message;
 
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.attatchments.*;
 
@@ -42,7 +48,7 @@ import games.strategy.triplea.attatchments.*;
 public class TechPanel extends ActionPanel
 {
   private JLabel m_actionLabel = new JLabel();
-  private IntegerMessage m_intMessage;
+  private Message m_intMessage;
 
   /** Creates new BattlePanel */
     public TechPanel(GameData data, MapPanel map)
@@ -68,7 +74,7 @@ public class TechPanel extends ActionPanel
     return "TechPanel";
   }
 
-  public IntegerMessage waitForTech()
+  public Message waitForTech()
   {
     try
     {
@@ -84,16 +90,49 @@ public class TechPanel extends ActionPanel
     if(m_intMessage == null)
       return null;
 
-    if(m_intMessage.getMessage() == 0)
+    if( ((IntegerMessage) m_intMessage).getMessage() == 0)
       return null;
 
     return m_intMessage;
   }
 
+  private List getAvailableTechs()
+  {
+      Collection currentAdvances  =TechTracker.getTechAdvances(getCurrentPlayer());
+      Collection allAdvances =  TechAdvance.getTechAdvances(getData());
+      
+      return Util.difference(allAdvances, currentAdvances);
+  }
+  
+  private boolean isFourthEdition()
+  {
+      return getData().getProperties().get(Constants.FOURTH_EDITION, false);
+  }
+  
   private Action GetTechRollsAction = new AbstractAction("Roll Tech...")
   {
     public void actionPerformed(ActionEvent event)
     {
+      TechAdvance advance = null;
+      if(isFourthEdition())
+      {
+          List available = getAvailableTechs();
+          if(available.isEmpty())
+          {
+              JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
+              return;
+          }
+          
+          JList list = new JList(new Vector(available));
+          JPanel panel = new JPanel();
+          panel.setLayout(new BorderLayout());
+          panel.add(list, BorderLayout.CENTER);
+          panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
+          list.setSelectedIndex(0);
+          JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent( TechPanel.this), panel, "Select advance", JOptionPane.PLAIN_MESSAGE);
+          advance = (TechAdvance) list.getSelectedValue();
+      }
+        
       int ipcs = getCurrentPlayer().getResources().getQuantity(Constants.IPCS);
       String message = "Roll Tech";
       TechRollPanel techRollPanel = new TechRollPanel(ipcs);
@@ -102,7 +141,10 @@ public class TechPanel extends ActionPanel
         return;
 
       int quantity = techRollPanel.getValue();
-      m_intMessage =  new IntegerMessage(quantity);
+      if(advance == null)
+          m_intMessage =  new IntegerMessage(quantity);
+      else
+          m_intMessage = new TechRollMessage(advance, quantity);
       synchronized(getLock())
       {
         getLock().notifyAll();

@@ -63,7 +63,7 @@ public class GameParser
       doc = getDocument(stream);
     } catch(Exception e)
     {
-      //not terribly elegant, but we cant deal with the error here
+       //not terribly elegant, but we cant deal with the error here
       throw new SAXException("Error parsing stream:" + e.getMessage(), e);
     }
 
