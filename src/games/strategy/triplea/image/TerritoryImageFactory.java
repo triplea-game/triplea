@@ -16,7 +16,7 @@ package games.strategy.triplea.image;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.ui.TerritoryData;
+import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.ImageIoCompletionWatcher;
 
 import java.awt.*;
@@ -81,9 +81,6 @@ public final class TerritoryImageFactory
     // one instance in the application
     private static TerritoryImageFactory s_singletonInstance = new TerritoryImageFactory();
 
-    // data
-    private Map m_playerColors = new HashMap();
-
     private GraphicsConfiguration m_localGraphicSystem = null;
 
     // return the singleton
@@ -106,28 +103,19 @@ public final class TerritoryImageFactory
         m_localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
             .getDefaultScreenDevice()
             .getDefaultConfiguration();
-
-        // cache the player colors
-        m_playerColors.put("British",   new Color(153, 102, 0));
-        m_playerColors.put("Americans", new Color(102, 102, 0));
-        m_playerColors.put("Russians",  new Color(153, 51, 0));
-        m_playerColors.put("Germans",   new Color(119, 119, 119));
-        m_playerColors.put("Japanese",  new Color(255, 153, 0));
-        m_playerColors.put("Italians",  new Color(90, 90, 90));
-        m_playerColors.put(PlayerID.NULL_PLAYERID.getName(), new Color(204, 153, 51));
     }
 
     // dynamically create a new territory image
     private BufferedImage createTerritoryImage(Territory place, PlayerID owner, boolean addReliefHighlights)
     {
-       Rectangle bounding = TerritoryData.getInstance().getBoundingRect(place);
+       Rectangle bounding = MapData.getInstance().getBoundingRect(place);
 
        BufferedImage workImage = m_localGraphicSystem.createCompatibleImage(bounding.width,
            bounding.height,
            Transparency.BITMASK);
 
 
-       List polys = TerritoryData.getInstance().getPolygons(place);
+       List polys = MapData.getInstance().getPolygons(place);
        Iterator iter = polys.iterator();
        Graphics graphics = workImage.getGraphics();
        if(place.isWater())
@@ -162,8 +150,7 @@ public final class TerritoryImageFactory
 
     public Color getPlayerColour(PlayerID owner)
     {
-        Color newColor = (Color) m_playerColors.get(owner.getName());
-        return newColor;
+        return MapData.getInstance().getPlayerColor(owner.getName());
     }
 
 

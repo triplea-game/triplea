@@ -1,5 +1,7 @@
 Changes for 0.5.2
 
+* Define player colour in map.properties to allow easy modification and adding new players (sgb)
+
 * Added option to limit ipcs lost in a territory during one round. This is necessary to implement LHTR ruleset.
 
 * Fixed bug in Irony PBEM random source: It did not use the max parameter passed to the random methods. This fixes the 4th edition AA casualty selection problem in PBEM. (Ali Ibrahim)
