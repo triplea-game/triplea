@@ -1,5 +1,9 @@
 Changes for 0.5.2
 
+* Now all map utils have proper "save as" dialogs (Nekro)
+
+* Added new class to prompt user to select a directory so map utils won't save files to a hardcoded dir (Nekro)
+
 * Define player colour in map.properties to allow easy modification and adding new players (sgb)
 
 * Added option to limit ipcs lost in a territory during one round. This is necessary to implement LHTR ruleset.
