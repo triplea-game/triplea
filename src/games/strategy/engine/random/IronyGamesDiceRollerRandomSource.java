@@ -349,6 +349,9 @@ class DiceStatic
 
   public static String postRequest(String player1, String player2, int numDice, String text) throws IOException
   {
+     if(text.length() > 91)
+         text=text.substring(0,90);
+      
     URL url = new URL("http://www.irony.com/cgi-bin/mroll-query");
     URLConnection urlConn = url.openConnection();
     urlConn.setDoInput(true);
