@@ -28,5 +28,5 @@ import games.strategy.util.Version;
  */
 public class EngineVersion
 {
-  public static final Version VERSION = new Version(0,5,2,1);
+  public static final Version VERSION = new Version(0,5,2,2);
 }
