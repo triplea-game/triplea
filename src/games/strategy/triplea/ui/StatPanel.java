@@ -353,7 +353,7 @@ public class StatPanel extends JPanel
        * when using an Italian player.
        */
        
-      data = new String[TechAdvance.getTechAdvances(m_data).size()+1][colList.length + 1];
+      data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];
       
       /* Load the technology -> row mapping */
       rowMap = new HashMap();
@@ -375,7 +375,7 @@ public class StatPanel extends JPanel
     {
 
       /* Initialize the table with the tech names */
-      for (int i = 0; i < data[0].length; i++) {
+      for (int i = 0; i < data.length; i++) {
         for (int j = 1; j <= colList.length; j++) {
           data[i][j] = "";
         }
@@ -455,7 +455,7 @@ public class StatPanel extends JPanel
 
     public int getRowCount()
     {
-      return data[0].length;
+      return data.length;
     }
 
     public void gameDataChanged(Change aChange)
