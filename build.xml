@@ -19,7 +19,7 @@
   <target name="all" depends="init,clean,compile,test,zip, zipSource">
   </target>
 
-  <target name="clean" depends="init" 
+  <target name="clean" depends="init"
           description="Remove all release, class and saved game files">
     <delete dir="release"/>
     <delete dir="classes"/>
@@ -39,22 +39,24 @@
         <include name="**/*.xml"/>
       </fileset>
     </copy>
-    <javac srcdir="src/" 
-           destdir="classes/" 
-           debug="true" 
+    <javac srcdir="src/"
+           destdir="classes/"
+           debug="true"
            deprecation="true"
            classpathref="full.path"/>
   </target>
 
-  <target name ="compileClean" depends="clean,compile" 
+  <target name ="compileClean" depends="clean,compile"
           description="Clean then compile"/>
 
-  <target name="zip" depends="init,compile" 
+  <target name="zip" depends="init,compile"
           description="create a zip file for end users">
     <mkdir dir="release" />
     <zip zipfile="release/triplea.zip" compress="true" >
       <zipfileset dir="classes/" prefix="classes/">
         <include name="**/*.class"/>
+		<!-- dont put Test classes in the main distribution -->
+		<exclude name="**/*Test.class"/>
         <include name="**/*.dtd"/>
         <include name="**/*.gif"/>
         <include name="**/*.png"/>
@@ -65,14 +67,14 @@
       </zipfileset>
       <zipfileset dir="doc/" prefix="doc/">
         <include name="**/*.html"/>
-      </zipfileset>			
+      </zipfileset>
       <zipfileset dir="liscence/" prefix="liscence/">
         <include name="gpl.txt"/>
       </zipfileset>
       <zipfileset dir="bin/" prefix="bin/">
         <include name="triplea.bat"/>
         <include name="triplea.sh"/>
-        <include name="triplea.irix.sh"/>				
+        <include name="triplea.irix.sh"/>
       </zipfileset>
       <zipfileset dir="games/" prefix="games/">
         <include name="*.xml"/>
@@ -83,7 +85,7 @@
     </zip>
   </target>
 
-  <target name="zipSource" depends="init" 
+  <target name="zipSource" depends="init"
           description="create a zip file for developers">
     <mkdir dir="release" />
     <zip zipfile="release/triplea_source.zip" compress="true" >
@@ -105,8 +107,8 @@
       </zipfileset>
       <zipfileset dir="bin/" prefix="bin/">
         <include name="triplea.bat"/>
-        <include name="triplea.sh"/>				
-        <include name="triplea.irix.sh"/>				
+        <include name="triplea.sh"/>
+        <include name="triplea.irix.sh"/>
       </zipfileset>
       <zipfileset dir=".">
         <include name="build.xml"/>
@@ -115,7 +117,7 @@
       </zipfileset>
       <zipfileset dir="doc/" prefix="doc/">
         <include name="**/*.html"/>
-      </zipfileset>						
+      </zipfileset>
       <zipfileset dir="liscence/" prefix="liscence/">
         <include name="gpl.txt"/>
       </zipfileset>
@@ -137,7 +139,7 @@
     </javadoc>
   </target>
 
-  <target name="test" depends="init,compile" 
+  <target name="test" depends="init,compile"
           description="run junit tests">
     <junit fork="yes" haltonerror="on">
       <classpath>
