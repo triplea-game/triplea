@@ -124,6 +124,18 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
 		setCoords(newX, newY);
 		m_control.setLargeCoords(newX,newY);		
 	}
+
+	protected void setTopLeftNoWrap(int x, int y)
+	{
+		int newX = x;
+		newX = checkBounds(newX, m_originalImage.getWidth(this), this.getWidth(), false);
+		
+		int newY = y;
+		newY = checkBounds(newY, m_originalImage.getHeight(this), this.getHeight(), false);
+		
+		setCoords(newX, newY);
+		m_control.setLargeCoords(newX,newY);		
+	}
 	
 	void setCoords(int x, int y)
 	{
