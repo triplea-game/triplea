@@ -910,10 +910,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
   private void defenderWins(DelegateBridge bridge)
   {
 
-    BattleEndMessage msg = new BattleEndMessage(m_defender.getName() + " wins");
+    BattleEndMessage msg = new BattleEndMessage(m_defender.getName() + " win");
     bridge.sendMessage(msg, m_attacker);
     bridge.sendMessage(msg, m_defender);
-    bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " wins");
+    bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win");
 
     checkDefendingPlanesCanLand(bridge);
 
@@ -988,7 +988,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
   private void attackerWins(DelegateBridge bridge)
   {
-    BattleEndMessage msg = new BattleEndMessage(m_attacker.getName() + " wins");
+    BattleEndMessage msg = new BattleEndMessage(m_attacker.getName() + " win");
     bridge.sendMessage(msg, m_attacker);
     bridge.sendMessage(msg, m_defender);
 
@@ -1003,7 +1003,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
       }
     }
 
-    bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " wins");
+    bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win");
   }
 
   private void endBattle(DelegateBridge bridge)
