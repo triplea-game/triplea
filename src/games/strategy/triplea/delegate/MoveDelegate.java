@@ -487,10 +487,14 @@ public class MoveDelegate implements SaveableDelegate
         
         if(route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, m_data)))
         {
+            //are we moving some destroyers
             boolean someDestroyers = Match.someMatch(units, Matches.UnitIsDestroyer);
             if(someDestroyers)
                return "Cant advance to battle in non combat";
-            if(!route.getEnd().getUnits().allMatch(Matches.unitIsSubmerged(m_data)))
+            CompositeMatch friendlyOrSubmerged = new CompositeMatchOr();
+            friendlyOrSubmerged.add(Matches.alliedUnit(m_player, m_data));
+            friendlyOrSubmerged.add(Matches.unitIsSubmerged(m_data));
+            if(!route.getEnd().getUnits().allMatch(friendlyOrSubmerged))
             {
                 return "Cant advance to battle in non combat";
             }
@@ -958,11 +962,10 @@ public class MoveDelegate implements SaveableDelegate
         //actually move the units
         Change remove = ChangeFactory.removeUnits(route.getStart(), units);
         Change add = ChangeFactory.addUnits(route.getEnd(), arrivingUnits);
-        m_bridge.addChange(remove);
-        m_bridge.addChange(add);
-
-        m_currentMove.addChange(remove);
-        m_currentMove.addChange(add);
+        CompositeChange change = new CompositeChange(add, remove);
+        m_bridge.addChange(change);
+        
+        m_currentMove.addChange(change);
 
         m_currentMove.setDescription(Formatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName());
 
