@@ -393,6 +393,11 @@ public class MoveDelegate implements Delegate
 			if(! m_data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
 			   ! m_data.getAllianceTracker().isAllied(player, iraq.getOwner()))
 				return "Must own egypt and syria to go through Suez Canal";
+			
+			BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
+			if(tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
+				return "Cannot move through canal without owning syria and iraq for  an entire turn.";
+
 		}
 		
 		//check panama canal
@@ -405,6 +410,10 @@ public class MoveDelegate implements Delegate
 			if(! m_data.getAllianceTracker().isAllied(player, panama.getOwner()))
 			
 				return "Must own panama to go through Panama Canal";
+
+			BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
+			if(tracker.wasConquered(panama)) 
+				return "Cannot move through canal without owning panama an entire turn.";
 		}
 		
 		return null;
@@ -685,8 +694,19 @@ public class MoveDelegate implements Delegate
 		{
 			if(mapTransports(route, land) == null)
 				return "Not enough transports";
-		}
 		
+			if(route.getLength() != 1)
+				return "Units cannot move before loading onto transports";
+
+			Iterator iter = units.iterator();
+			while(iter.hasNext())
+			{
+				Unit unit= (Unit) iter.next();
+				if(m_alreadyMoved.getInt(unit) != 0)
+					return "Units cannot move before loading onto transports";
+			}
+		}
+
 		return null;
 	}
 
