@@ -76,6 +76,22 @@ public class ImageScrollerSmallView extends JComponent
     this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
     }
 
+
+  // Beagle Code used to change map skin
+  public void changeImage(Image image)
+  {
+      try
+      {
+          Util.ensureImageLoaded(image, this);
+          setDoubleBuffered(false);
+      }
+      catch(InterruptedException ie)
+      {
+          ie.printStackTrace();
+      }
+      m_image = image;
+  }
+
   private int getInsetsWidth()
   {
     return getInsets().left + getInsets().right;

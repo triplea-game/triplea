@@ -129,13 +129,29 @@ public class ImageScrollerLargeView extends JComponent
 
     addMouseWheelListener(MOUSE_WHEEL_LISTENER);
     addMouseListener(MOUSE_LISTENER);
-	addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
+    addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
     addMouseMotionListener(MOUSE_MOTION_LISTENER);
-	addMouseMotionListener(MOUSE_DRAG_LISTENER);
+    addMouseMotionListener(MOUSE_DRAG_LISTENER);
     addComponentListener(COMPONENT_LISTENER);
 
     m_timer.start();
     }
+
+    // Beagle Code used to chnage map skin
+    public void changeImage(Image image)
+    {
+        try
+	{
+            Util.ensureImageLoaded(image, this);
+        }
+	catch(InterruptedException ie)
+	{
+            ie.printStackTrace();
+        }
+
+        m_offscreenImage = image;
+    }
+
 
   /**
    * For subclasses needing to set the location
@@ -325,6 +341,7 @@ public class ImageScrollerLargeView extends JComponent
       m_control.largeViewChangedSize();
     }
   };
+  
   /**
    * used for the mouse wheel
    */
