@@ -116,22 +116,10 @@ public class MapPanel extends ImageScrollerLargeView
   {
     if(m_route != route || (m_route != null && !m_route.equals(route)))
     {
-      //we can just redraw the route in this case,
-      //no need to redraw the whole screen
-      if(m_route == null ||
-         route != null && route.extend( m_route))
-      {
-        m_route = route;
-        drawRoute();
-        update();
-      }
-      //for now we have to redraw the whole screen
-      //we should find a better way
-      else
-      {
-        m_route = route;
-        initTerritories();
-      }
+
+      m_route = route;
+      initTerritories();
+
     }
   }
 
@@ -320,18 +308,73 @@ public class MapPanel extends ImageScrollerLargeView
       Point finish = (Point) m_centers.get(next);
       finish = new Point(finish.x, finish.y);
 
-
-      Shape line = new Line2D.Double(start.x, start.y, finish.x, finish.y);
-
-      graphics.draw(line );
-      oval = new Ellipse2D.Double(finish.x - 3, finish.y - 3, 6,6);
-      graphics.draw(oval);
+      drawLineSegment(graphics, start.x, start.y, finish.x , finish.y, i + 1 == m_route.getLength());
 
       current = next;
     }
 
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
   }
+
+  //http://www.experts-exchange.com/Programming/Programming_Languages/Java/Q_20627343.html
+  private void drawLineSegment( Graphics2D graphics, int x, int y, int xx, int yy, boolean lastLineSegment )
+  {
+    float arrowWidth = 12.0f ;
+    float theta = 0.7f ;
+    int[] xPoints = new int[ 3 ] ;
+    int[] yPoints = new int[ 3 ] ;
+    float[] vecLine = new float[ 2 ] ;
+    float[] vecLeft = new float[ 2 ] ;
+    float fLength;
+    float th;
+    float ta;
+    float baseX, baseY ;
+
+    xPoints[ 0 ] = xx ;
+    yPoints[ 0 ] = yy ;
+
+    // build the line vector
+    vecLine[ 0 ] = (float)xPoints[ 0 ] - x ;
+    vecLine[ 1 ] = (float)yPoints[ 0 ] - y ;
+
+    // build the arrow base vector - normal to the line
+    vecLeft[ 0 ] = -vecLine[ 1 ] ;
+    vecLeft[ 1 ] = vecLine[ 0 ] ;
+
+    // setup length parameters
+    fLength = (float)Math.sqrt( vecLine[0] * vecLine[0] + vecLine[1] * vecLine[1] ) ;
+    th = arrowWidth / ( 2.0f * fLength ) ;
+    ta = arrowWidth / ( 2.0f * ( (float)Math.tan( theta ) / 2.0f ) * fLength ) ;
+
+    // find the base of the arrow
+    baseX = ( (float)xPoints[ 0 ] - ta * vecLine[0]);
+    baseY = ( (float)yPoints[ 0 ] - ta * vecLine[1]);
+
+    // build the points on the sides of the arrow
+    xPoints[ 1 ] = (int)( baseX + th * vecLeft[0] );
+    yPoints[ 1 ] = (int)( baseY + th * vecLeft[1] );
+    xPoints[ 2 ] = (int)( baseX - th * vecLeft[0] );
+    yPoints[ 2 ] = (int)( baseY - th * vecLeft[1] );
+
+    //draw a dot at the end of the line
+    if(!lastLineSegment)
+    {
+      Shape line = new Line2D.Double(x, y, xx, yy);
+      graphics.draw(line);
+      Ellipse2D oval = new Ellipse2D.Double(xx - 3, yy - 3, 6, 6);
+      graphics.draw(oval);
+    }
+    //draw an arrow
+    else
+    {
+      Shape line = new Line2D.Double( x, y, (int)baseX, (int)baseY);
+      graphics.draw(line);
+
+      graphics.fillPolygon(xPoints, yPoints, 3);
+    }
+
+  }
+
 
   private void updateTerritory(Territory terr)
   {
