@@ -26,6 +26,7 @@ import games.strategy.engine.message.Message;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.delegate.remote.*;
+import games.strategy.triplea.formatter.Formatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.*;
 import games.strategy.util.*;
@@ -331,7 +332,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         return m_ui.getBattlePanel().getCasualties(step, selectFrom, dependents, count, message, dice,hit, defaultCasualties);
     }
 
-    /* (non-Javadoc)
+    /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit, games.strategy.engine.data.Territory, java.util.Collection, boolean)
      */
     public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection territories, boolean noneAvailable)
@@ -375,6 +376,16 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     public void retreatNotificationMessage(Collection units)
     {
         m_ui.notifyRetreat(units);   
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
+     */
+    public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
+    {
+        String question = "AA guns will fire in " + Formatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
+        return m_ui.getOK(question);
+        
     }
     
     

@@ -109,4 +109,12 @@ public interface ITripleaPlayer extends IRemote
      */
     public void retreatNotificationMessage(Collection units);
     
+    /**
+     * The attempted move will incur aa fire, confirm that you still want to move
+     * 
+     * @param  aaFiringTerritories - the territories where aa will fire
+     */
+    public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories);
+    
+    
 }

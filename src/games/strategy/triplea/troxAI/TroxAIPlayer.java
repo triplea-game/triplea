@@ -421,4 +421,12 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
         
     }
 
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
+     */
+    public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
+    {
+        return true;
+    }
+
 }

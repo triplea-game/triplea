@@ -112,7 +112,27 @@ public class Formatter
 		return buf.toString();
 	}
 
-
+	/**
+	 * Equivalent to  territoriesToText(teritories, ",");
+	 */
+	public static String territoriesToText(Collection teritories)
+	{
+	    return territoriesToText(teritories, ",");
+	}
+	
+	public static String territoriesToText(Collection teritories, String seperator)
+	{
+	    Iterator iter = teritories.iterator();
+	    StringBuffer buffer = new StringBuffer();
+	    while(iter.hasNext())
+	    {
+	        buffer.append(((Territory) iter.next() ).getName());
+	        if(iter.hasNext())
+	            buffer.append(" ").append(seperator).append(" ");
+	            
+	    }
+	    return buffer.toString();
+	}
 
   public static String pluralize(String in, int quantity)
   {
