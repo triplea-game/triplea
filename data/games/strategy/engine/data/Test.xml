@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<!--
+<!DOCTYPE game SYSTEM "game.dtd">
+-->
+
+<game>
+	<map>
+		<territory name="canada"/>
+		<territory name="greenland"/>
+		<territory name="us"/>
+		<connection t1="canada" t2="us"/>
+		<connection t1="canada" t2="greenland"/>
+	</map>
+	<resourceList>
+		<resource name="gold"/>
+		<resource name="silver"/>
+	</resourceList>
+	<playerList>
+		<player name="chretian" optional="true"/>
+		<player name="bush" optional="false"/>
+		<player name="castro" optional="false"/>
+		<alliance player1="chretian" player2="castro"/>
+	</playerList>
+	<unitList>
+		<unit name="inf"/>
+	</unitList>
+	<gamePlay>
+		<delegate name="battle" javaClass="games.strategy.engine.xml.TestDelegate"/>
+		<delegate name="move" javaClass="games.strategy.engine.xml.TestDelegate"/>
+		<sequence>
+			<step name="noPlayer" delegate="move" />
+			<step name="usMove" delegate="move" player="bush"/>
+			<step name="usFight" delegate="battle" player="bush"/>
+			<step name="canMove" delegate="move" player="chretian"/>
+			<step name="canFight" delegate="battle" player="chretian"/>
+		</sequence>
+	</gamePlay>
+	<production>
+		<productionRule name="infForGold">
+			<cost resource="gold" quantity="3" />
+			<result resourceOrUnit="inf" quantity="1"/>
+		</productionRule>
+		<productionRule name="infForSilver">
+			<cost resource="silver" quantity="5" />
+			<result resourceOrUnit="inf" quantity="1"/>
+		</productionRule>
+		<productionRule name="infForSilverAndGold">
+			<cost resource="silver" quantity="1" />
+			<cost resource="silver" quantity="1" />
+			<result resourceOrUnit="inf" quantity="5"/>
+		</productionRule>
+
+		<productionFrontier name="usProd">
+			<frontierRules name="infForGold"/>
+			<frontierRules name="infForSilver"/>
+		</productionFrontier>
+		<productionFrontier name="canProd">
+			<frontierRules name="infForSilverAndGold"/>
+		</productionFrontier>
+		<playerProduction player="bush" frontier="usProd" />
+		<playerProduction player="chretian" frontier="canProd" />
+	</production> 
+
+	<attatchmentList>
+		<attatchment name="infAttatchment" attatchTo="inf" javaClass="games.strategy.engine.xml.TestAttatchment" type="unitType">
+			<option name="value" value="inf"/>
+		</attatchment>
+		<attatchment name="resourceAttatchment" attatchTo="gold" javaClass="games.strategy.engine.xml.TestAttatchment" type="resource">
+			<option name="value" value="gold"/>
+		</attatchment>
+		<attatchment name="territoryAttatchment" attatchTo="us" javaClass="games.strategy.engine.xml.TestAttatchment" type="territory">
+			<option name="value" value="us of a"/>
+		</attatchment>
+		<attatchment name="playerAttatchment" attatchTo="chretian" javaClass="games.strategy.engine.xml.TestAttatchment" type="player">
+			<option name="value" value="liberal"/>
+		</attatchment>
+	</attatchmentList>
+	<initialize>
+		<ownerInitialize>
+			<territoryOwner territory="us" owner="bush"/>
+			<territoryOwner territory="greenland" owner="chretian"/>
+			<territoryOwner territory="canada" owner="chretian"/>
+		</ownerInitialize>
+		<unitInitialize>
+			<unitPlacement unitType="inf" territory="canada" quantity="5" />
+			<unitPlacement unitType="inf" territory="us" quantity="150" />
+			<heldUnits unitType="inf" player="bush" quantity="20"/>
+			<heldUnits unitType="inf" player="chretian" quantity="10"/>
+		</unitInitialize>
+		<resourceInitialize>
+			<resourceGiven player="chretian" resource="gold" quantity="100"/>
+			<resourceGiven player="chretian" resource="silver" quantity="200"/>
+		</resourceInitialize>
+	</initialize>
+</game>

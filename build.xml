@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+
+<project name="myapp" basedir="." default="compile">
+
+	
+	<target name="init">
+    </target>
+
+	<target name="all" depends="init,clean,compile,test,zip, zipSource">
+	</target>
+
+    <target name="clean" depends="init" >
+		<delete dir="release"/>
+		<delete dir="classes"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<mkdir dir="classes"/>
+		<copy todir="classes">
+			<fileset dir="data">
+				<include name="**/*.dtd"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.png"/>
+				<include name="**/*.txt"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<javac srcdir="src/" destdir="classes/" debug="true" deprecation="true">
+        </javac>
+    </target>
+
+	<target name ="compileClean" depends="clean,compile"/>
+
+
+	<target name="zip" depends="init,compile" description="create a zip file for end users">
+		<mkdir dir="release" />
+		<zip zipfile="release/triplea.zip" compress="true" >
+			<zipfileset dir="classes/" prefix="classes/">
+				<include name="**/Game.xml"/>
+				<include name="**/*.class"/>
+				<include name="**/*.dtd"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.png"/>
+				<include name="**/*.txt"/>
+			</zipfileset>
+			<zipfileset dir="lib/" prefix="lib/">
+				<include name="**/*.jar"/>
+			</zipfileset>
+			<zipfileset dir="bin/" prefix="bin/">
+				<include name="triplea.bat"/>
+			</zipfileset>
+		</zip>
+    </target>
+
+	<target name="zipSource" depends="init" description="create a zip file for developers">
+		<mkdir dir="release" />
+		<zip zipfile="release/triplea_source.zip" compress="true" >
+			<zipfileset dir="src/" prefix="src/">
+				<include name="**/*.java"/>
+			</zipfileset>
+			<zipfileset dir="junit/" prefix="junit/">
+				<include name="excluded.properties"/>
+			</zipfileset>
+			<zipfileset dir="lib/" prefix="lib/">
+				<include name="**/*.jar"/>
+			</zipfileset>
+			<zipfileset dir="data/" prefix="data/">
+				<include name="**/*.dtd"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.png"/>
+				<include name="**/*.txt"/>
+				<include name="**/*.xml"/>
+			</zipfileset>
+			<zipfileset dir="bin/" prefix="bin/">
+				<include name="triplea.bat"/>
+			</zipfileset>
+			<zipfileset dir=".">
+				<include name="build.xml"/>
+			</zipfileset>
+		</zip>
+	</target>
+
+
+    <target name="javadoc" depends="init">
+		<delete dir="apidoc"/>
+        <mkdir dir="apidoc"/>
+		<javadoc destdir="apidoc" Verbose="off">
+			<package name="games.strategy.*"/>
+            <sourcepath>
+				<pathelement location="src/"/>
+            </sourcepath>
+        </javadoc>
+    </target>
+
+	<target name="test" depends="init,compile" description="run junit tests">
+		<junit fork="yes" haltonerror="on">
+			<classpath>
+				<pathelement path="${classpath}"/>
+				<pathelement path="classes/"/>
+			</classpath>
+			<formatter type="plain" />
+			<test name="games.strategy.StrategyGameTest" />
+			<test name="games.strategy.triplea.delegate.DelegateTest" />
+		</junit>
+	</target>
+</project>

@@ -1,0 +1,154 @@
+/*
+ *
+ * Created on October 30, 2001, 6:57 PM
+ */
+
+package games.strategy.ui;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+
+/**
+ *
+ * @author  Sean Bridges
+ * @version 1.0
+ *
+  * A small image that tracks a selection area within a small image.
+ * Generally used in conjunction with a ImageScrollerLarrgeView.
+ * 
+ * Notifies the controller when the selected area has been moved.
+ */
+public class ImageScrollerSmallView extends JComponent
+{
+
+	private ImageScrollControl m_control;
+	
+	//width of the selection box
+	private int m_selectionHeight = 50;
+	private int m_selectionWidth = 50;
+	//location of the selection width and height
+	private int m_selectionX;
+	private int m_selectionY;
+	private Image m_image;
+	
+	/** Creates new ImageScrollControl */
+    public ImageScrollerSmallView(Image image) 
+	{
+		try
+		{
+			Util.ensureImageLoaded(image, this);
+		} catch(InterruptedException ie)
+		{
+			ie.printStackTrace();
+		}
+		m_image = image;
+		
+		this.setBorder( new LineBorder(Color.darkGray, 3));
+		
+		int prefWidth = getInsetsWidth() + m_image.getWidth(this);
+		int prefHeight = getInsetsHeight() + m_image.getHeight(this);
+		Dimension prefSize = new Dimension(prefWidth, prefHeight);
+		
+		setPreferredSize( prefSize);
+		setMinimumSize( prefSize);
+		setMaximumSize( prefSize);
+		
+		this.addMouseListener(MOUSE_LISTENER);
+		this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
+    }
+	
+	private int getInsetsWidth()
+	{
+		return getInsets().left + getInsets().right;
+	}
+	
+	private int getInsetsHeight()
+	{
+		return getInsets().top + getInsets().bottom;
+	}
+	
+	//called by the controller
+	void setSelectionBound(int width, int height)
+	{
+		m_selectionWidth = width;
+		m_selectionHeight = height;
+		repaint();
+	}
+		
+	void setController(ImageScrollControl control)
+	{
+		m_control = control;
+	}
+	
+	void setCoords(int x, int y)
+	{
+		m_selectionX = x;
+		m_selectionY = y;
+		repaint();
+	}
+	
+	public Dimension getImageDimensions()
+	{
+		return Util.getDimension(m_image,this);
+	}
+	
+	public void paint(Graphics g)
+	{	
+		super.paint(g);
+		int xOff = getInsets().left;
+		int yOff = getInsets().top;
+		
+		g.drawImage(m_image, xOff,yOff, this);
+		g.setColor(Color.white);
+		g.drawRect(m_selectionX +xOff, m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
+	}
+	
+	private void setSelection(int x, int y)
+	{
+		if(y + m_selectionHeight > getHeight() - getInsetsHeight())
+			//take off 1 more so the rectangle will be visible
+			y = getHeight() - m_selectionHeight - getInsetsHeight() - 1 ;
+
+		if(x + m_selectionWidth > getWidth() - getInsetsWidth())
+			//take off 1 more so the rectangle will be visible
+			x = getWidth() - m_selectionWidth - getInsetsWidth() - 1;
+
+		if(x < 0)
+			x = 0;
+		if(y < 0)
+			y = 0;
+		
+		m_selectionX = x;
+		m_selectionY = y;
+		m_control.setSmallCoords(x,y);
+		repaint();		
+	}
+
+	private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
+	{
+		public void mouseDragged(MouseEvent e)
+		{
+			//try to center around the click		
+			int x = e.getX() - (m_selectionWidth / 2);
+			int y = e.getY() - (m_selectionHeight / 2);
+			
+			setSelection(x,y);
+		}
+	};
+	
+	private final MouseAdapter MOUSE_LISTENER = new MouseAdapter()
+	{		
+		public void mouseClicked(MouseEvent e)
+		{
+			//try to center around the click		
+			int x = e.getX() - (m_selectionWidth / 2);
+			int y = e.getY() - (m_selectionHeight / 2);
+			
+			setSelection(x,y);
+		}
+	};
+}

@@ -1,0 +1,183 @@
+/*
+ * DelegateTest.java
+ *
+ * Created on November 9, 2001, 3:29 PM
+ */
+
+package games.strategy.triplea.delegate;
+
+import junit.framework.*;
+
+import java.util.*;
+import java.io.*;
+import java.net.URL;
+
+import games.strategy.engine.data.*;
+import games.strategy.engine.xml.*;
+import games.strategy.engine.delegate.*;
+import games.strategy.engine.message.*;
+
+import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.attatchments.*;
+
+/**
+ *
+ * @author  Sean Bridges
+ * @version 1.0
+ */
+public class DelegateTest extends TestCase
+{
+
+	protected GameData m_data;
+	
+	protected PlayerID british;
+	protected PlayerID japanese;
+	
+	protected Territory northSea;
+	protected Territory uk;
+	protected Territory germany;
+	protected Territory japan;
+	protected Territory brazil;
+	protected Territory westCanada;
+	protected Territory egypt;
+	protected Territory congo;
+	protected Territory kenya;
+	protected Territory blackSea;
+	protected Territory eastAfrica;
+	protected Territory syria;
+	protected Territory japanSeaZone;
+	protected Territory libya;
+	protected Territory algeria;
+	protected Territory equatorialAfrica;
+	protected Territory redSea;
+	protected Territory westAfrica;
+	protected Territory angola;
+	protected Territory angolaSeaZone;
+	protected Territory eastCompass;
+	protected Territory westCompass;
+	protected Territory mozambiqueSeaZone;
+	protected Territory eastMediteranean;
+	protected Territory congoSeaZone;
+	protected Territory indianOcean;
+	protected Territory westAfricaSeaZone;
+	protected Territory southAfrica;
+	protected Territory saudiArabia;
+	protected Territory india;
+	protected Territory southAtlantic;
+	protected Territory southAfricaSeaZone;
+	protected Territory antarticSea;
+	protected Territory southBrazilSeaZone;
+	protected Territory spain;
+	protected Territory gibraltar;
+	protected Territory russia;
+	
+	protected UnitType armour;
+	protected UnitType infantry;
+	protected UnitType transport;
+	protected UnitType factory;
+	protected UnitType aaGun;
+	protected UnitType fighter;
+	protected UnitType bomber;
+	protected UnitType carrier;
+
+	
+	
+	protected Resource ipcs;
+	
+	
+	/** Creates new PlaceDelegateTest */
+    public DelegateTest(String name) 
+	{
+		super(name);
+    }
+
+
+	public void setUp() throws Exception
+	{
+		
+		//get the xml file
+		URL url = this.getClass().getResource("DelegateTest.xml");
+		
+		InputStream input= url.openStream();
+		m_data = (new GameParser()).parse(input);
+		
+		british = m_data.getPlayerList().getPlayerID("British");
+		japanese = m_data.getPlayerList().getPlayerID("Japanese");
+		
+		northSea = m_data.getMap().getTerritory("North Sea Zone");
+		blackSea = m_data.getMap().getTerritory("Black Sea Zone");
+		uk = m_data.getMap().getTerritory("United Kingdom");
+		japan = m_data.getMap().getTerritory("Japan");
+		japanSeaZone = m_data.getMap().getTerritory("Japan Sea Zone");
+		brazil = m_data.getMap().getTerritory("Brazil");
+		westCanada = m_data.getMap().getTerritory("West Canada");
+		germany = m_data.getMap().getTerritory("Germany");
+		syria = m_data.getMap().getTerritory("Syria Jordan");
+		egypt= m_data.getMap().getTerritory("Anglo Sudan Egypt");
+		congo= m_data.getMap().getTerritory("Congo");
+		congoSeaZone = m_data.getMap().getTerritory("Congo Sea Zone");
+		kenya= m_data.getMap().getTerritory("Kenya-Rhodesnia");
+		eastAfrica = m_data.getMap().getTerritory("Italian East Africa");
+		libya = m_data.getMap().getTerritory("Libya");
+		algeria = m_data.getMap().getTerritory("Algeria");
+		equatorialAfrica = m_data.getMap().getTerritory("French Equatorial Africa");
+		redSea = m_data.getMap().getTerritory("Red Sea Zone");
+		westAfrica = m_data.getMap().getTerritory("French West Africa");
+		angola = m_data.getMap().getTerritory("Angola");
+		angolaSeaZone = m_data.getMap().getTerritory("Angola Sea Zone");
+		eastCompass = m_data.getMap().getTerritory("East Compass Sea Zone");
+		westCompass = m_data.getMap().getTerritory("West Compass Sea Zone");
+		mozambiqueSeaZone  = m_data.getMap().getTerritory("Mozambique Sea Zone");
+		eastMediteranean  = m_data.getMap().getTerritory("East Mediteranean Sea Zone");
+		indianOcean  = m_data.getMap().getTerritory("Indian Ocean Sea Zone");
+		westAfricaSeaZone = m_data.getMap().getTerritory("West Africa Sea Zone");
+		southAfrica = m_data.getMap().getTerritory("South Africa");
+		saudiArabia = m_data.getMap().getTerritory("Saudi Arabia");
+		india = m_data.getMap().getTerritory("India");
+		southAtlantic = m_data.getMap().getTerritory("South Atlantic Sea Zone");
+		antarticSea = m_data.getMap().getTerritory("Antartic Sea Zone");
+		southAfricaSeaZone = m_data.getMap().getTerritory("South Africa Sea Zone");
+		southBrazilSeaZone = m_data.getMap().getTerritory("South Brazil Sea Zone");
+		russia = m_data.getMap().getTerritory("Russia");
+		spain= m_data.getMap().getTerritory("Spain");
+		gibraltar = m_data.getMap().getTerritory("Gibraltar");
+		
+		armour = m_data.getUnitTypeList().getUnitType("armour");
+		infantry = m_data.getUnitTypeList().getUnitType("infantry");
+		transport = m_data.getUnitTypeList().getUnitType("transport");
+		factory = m_data.getUnitTypeList().getUnitType("factory");
+		aaGun = m_data.getUnitTypeList().getUnitType("aaGun");
+		fighter = m_data.getUnitTypeList().getUnitType("fighter");
+		bomber = m_data.getUnitTypeList().getUnitType("bomber");
+		carrier = m_data.getUnitTypeList().getUnitType("carrier");
+		
+		ipcs = m_data.getResourceList().getResource("IPCs");
+	}
+
+	public void assertError(StringMessage message)
+	{
+		assertNotNull(message);
+		if(!message.isError() )
+			fail(message.getMessage());
+	}
+	
+	public void assertValid(StringMessage message)
+	{
+		if(message == null)
+			return;
+		if(message.isError() )
+			fail(message.getMessage());
+	}
+
+	public static Test suite()
+	{
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(PlaceDelegateTest.class);
+		suite.addTestSuite(MoveDelegateTest.class);
+		suite.addTestSuite(MoveValidatorTest.class);
+		return suite;
+	}
+	
+}

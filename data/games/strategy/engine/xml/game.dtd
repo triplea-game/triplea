@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+
+<!ELEMENT game (map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?)>
+
+<!ELEMENT map (territory+, connection+) >
+	<!ELEMENT territory EMPTY>
+	<!ATTLIST territory
+		name ID #REQUIRED
+		water (true | false)  "false"
+	>
+	<!-- connections are two way -->
+	<!ELEMENT connection EMPTY>
+	<!ATTLIST connection
+		t1 IDREF #REQUIRED 
+		t2 IDREF #REQUIRED
+	>
+
+<!ELEMENT resourceList (resource+) >
+	<!ELEMENT resource EMPTY>
+	<!ATTLIST resource 
+		name ID #REQUIRED
+	>
+
+<!ELEMENT unitList (unit+) >
+	<!ELEMENT unit EMPTY>
+	<!ATTLIST unit 
+		name ID #REQUIRED
+	>
+
+<!ELEMENT playerList (player+, alliance*) >
+	<!ELEMENT player EMPTY>
+	<!ATTLIST player
+		name ID #REQUIRED
+		optional (true | false) "false"
+	>
+	<!-- alliances are two way -->
+	<!ELEMENT alliance EMPTY>
+	<!ATTLIST alliance
+		player1 IDREF #REQUIRED 
+		player2 IDREF #REQUIRED
+	>
+		
+<!ELEMENT gamePlay (delegate+, sequence)>
+	<!ELEMENT delegate EMPTY>
+	<!-- javaClass must implement Delegate
+		 1 instance created per delegate declaraction, ie 1 instance per name -->
+	<!ATTLIST delegate
+		name ID #REQUIRED
+		javaClass CDATA #REQUIRED
+	>
+	<!-- if no player given, then delegate is initialized with a null player -->
+	<!ELEMENT sequence (step+)>
+		<!ELEMENT step EMPTY>
+		<!ATTLIST step
+			name ID #REQUIRED
+			delegate IDREF #REQUIRED
+			player IDREF #IMPLIED
+		>
+
+<!ELEMENT production (productionRule+, productionFrontier+, playerProduction+)>
+	<!ELEMENT productionRule (cost+ , result+)>
+	<!ATTLIST productionRule 
+		name ID #REQUIRED
+	>
+		<!ELEMENT cost EMPTY>
+		<!ATTLIST cost
+			resource IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+		>
+		<!ELEMENT result EMPTY>
+		<!ATTLIST result
+			resourceOrUnit IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+		>
+	<!ELEMENT productionFrontier (frontierRules+)>
+	<!ATTLIST productionFrontier
+		name ID #REQUIRED
+	>
+		<!ELEMENT frontierRules EMPTY>
+		<!ATTLIST frontierRules 
+			name IDREF #REQUIRED
+		>
+	<!ELEMENT playerProduction EMPTY>
+	<!ATTLIST playerProduction
+	    player ID #REQUIRED
+	    frontier ID #REQUIRED
+	>
+	
+<!-- attatchments must implement Attatchment -->
+<!ELEMENT attatchmentList (attatchment+) >
+	<!ELEMENT attatchment (option+)>
+	<!ATTLIST attatchment 
+		name ID #REQUIRED
+		attatchTo IDREF #REQUIRED
+		javaClass CDATA #REQUIRED
+		type (unitType | territory | resource | player)  "unitType"
+	>
+		<!ELEMENT option EMPTY> 
+		<!ATTLIST option
+			name CDATA #REQUIRED
+			value CDATA #REQUIRED
+		>
+
+<!ELEMENT initialize (ownerInitialize?, unitInitialize?, resourceInitialize?) >
+	<!ELEMENT ownerInitialize (territoryOwner+) >
+		<!ELEMENT territoryOwner EMPTY>
+		<!ATTLIST territoryOwner 
+			territory IDREF #REQUIRED
+			owner IDREF #REQUIRED
+		>
+	<!ELEMENT unitInitialize (unitPlacement*, heldUnits*) >
+		<!-- units are owned by no one if owner isnt set -->
+		<!ELEMENT unitPlacement EMPTY>
+		<!ATTLIST unitPlacement
+			unitType IDREF #REQUIRED
+			territory IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+			owner IDREF #IMPLIED
+		>
+		<!-- units that have not been placed yet -->
+		<!ELEMENT heldUnits EMPTY>
+		<!ATTLIST heldUnits 
+			unitType IDREF #REQUIRED
+			player IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+		>
+	<!ELEMENT resourceInitialize (resourceGiven+) >
+		<!ELEMENT resourceGiven EMPTY>
+		<!ATTLIST resourceGiven
+			player IDREF #REQUIRED
+			resource IDREF #REQUIRED
+			quantity CDATA #REQUIRED
+		>
+			
