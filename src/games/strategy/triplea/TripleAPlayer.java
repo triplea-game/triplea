@@ -282,7 +282,7 @@ public class TripleAPlayer implements GamePlayer
       if(m_id.getUnits().size() == 0)
         return;
 
-      PlaceMessage message = m_ui.getPlace(m_id, bid);
+      PlaceMessage message = m_ui.getPlace(m_id, bid, m_bridge);
       if(message == null)
         return;
       else

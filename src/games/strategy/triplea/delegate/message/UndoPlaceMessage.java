@@ -18,7 +18,7 @@ package games.strategy.triplea.delegate.message;
 import games.strategy.engine.message.*;
 
 
-public class UndoMoveMessage implements Message
+public class UndoPlaceMessage implements Message
 {
 
 

@@ -69,6 +69,8 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
   private IntegerMap m_alreadyProduced = new IntegerMap(); //maps Territory-> alreadyProduced this turn
   private Set m_producedFactory = new HashSet();
   private PlayerID m_player;
+  //a list of CompositeChanges
+  private List m_placements = new ArrayList();
 
   public void initialize(String name)
   {
@@ -108,9 +110,33 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
    */
   public Message sendMessage(Message aMessage)
   {
-    if(! (aMessage instanceof PlaceMessage))
+    if((aMessage instanceof PlaceMessage))
+      return place(aMessage);
+    else if (aMessage instanceof UndoPlaceMessage)
+    {
+      undoPlace();
+      return null;
+    }
+    else if (aMessage instanceof PlaceCountQueryMessage)
+    {
+      return new StringMessage("" + m_placements.size(), false);
+    }
+    else
       throw new IllegalArgumentException("Place delegate received message of wrong type:" + aMessage);
 
+
+  }
+
+  private void undoPlace()
+  {
+    int lastChange = m_placements.size() -1;
+    Change change = (Change) m_placements.get(lastChange);
+    m_bridge.addChange(change.invert());
+    m_placements.remove(lastChange);
+  }
+
+  private Message place(Message aMessage)
+  {
     PlaceMessage placeMessage = (PlaceMessage) aMessage;
 
     Message error = isValidPlacement(placeMessage, m_player);
@@ -390,8 +416,14 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
     Change remove= ChangeFactory.removeUnits(player, units);
     Change place = ChangeFactory.addUnits(placeMessage.getTo(), units);
-    m_bridge.addChange(remove);
-    m_bridge.addChange(place);
+
+    CompositeChange change = new CompositeChange();
+    change.add(remove);
+    change.add(place);
+
+    m_bridge.addChange(change);
+    m_placements.add(change);
+
 
     String transcriptText = Formatter.unitsToText(units) + " placed in " +placeMessage.getTo().getName();
     m_bridge.getTranscript().write(transcriptText);
@@ -416,7 +448,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     //reset ourseleves for next turn
     m_alreadyProduced = new IntegerMap();
     m_producedFactory.clear();
-
+    m_placements.clear();
   }
 
   /**

@@ -31,6 +31,7 @@ import games.strategy.engine.data.events.*;
 import games.strategy.triplea.image.UnitIconImageFactory;
 
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.engine.gamePlayer.*;
 
 
 /**
@@ -44,6 +45,7 @@ public class PlacePanel extends ActionPanel
   private JLabel actionLabel = new JLabel();
   private PlaceMessage m_placeMessage;
   private UnitPanel m_unitsToPlace = new UnitPanel();
+  private PlayerBridge m_bridge;
 
   /** Creates new PlacePanel */
     public PlacePanel(GameData data, MapPanel map)
@@ -58,6 +60,7 @@ public class PlacePanel extends ActionPanel
     removeAll();
     actionLabel.setText(id.getName() + " place");
     add(actionLabel);
+    add(new JButton(UNDO_PLACE_ACTION));
     add(new JButton(DONE_PLACE_ACTION));
     SwingUtilities.invokeLater(REFRESH);
 
@@ -67,14 +70,23 @@ public class PlacePanel extends ActionPanel
 
   }
 
+  private void refreshUndoButton() throws NumberFormatException
+  {
+    String reply = ((StringMessage) m_bridge.sendMessage(new PlaceCountQueryMessage())).getMessage();
+    int placeCount = Integer.parseInt( reply);
+    UNDO_PLACE_ACTION.setEnabled(placeCount > 0);
+  }
+
   private void refreshActionLabelText(boolean bid)
   {
     actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));
   }
 
-  public PlaceMessage waitForPlace(boolean bid)
+  public PlaceMessage waitForPlace(boolean bid, PlayerBridge bridge)
   {
+    m_bridge = bridge;
     refreshActionLabelText(bid);
+    refreshUndoButton();
     try
     {
       synchronized(getLock())
@@ -85,13 +97,26 @@ public class PlacePanel extends ActionPanel
       }
     } catch(InterruptedException ie)
     {
-      return waitForPlace(bid);
+      return waitForPlace(bid, bridge);
     }
 
     removeAll();
+    m_bridge = null;
     SwingUtilities.invokeLater(REFRESH);
     return m_placeMessage;
   }
+
+  private final AbstractAction UNDO_PLACE_ACTION = new AbstractAction("Undo Last Placement")
+  {
+    public void actionPerformed(ActionEvent e)
+    {
+       m_bridge.sendMessage(new UndoPlaceMessage());
+       refreshUndoButton();
+       m_unitsToPlace.setUnits(getCurrentPlayer(), getData());
+       validate();
+    }
+  };
+
 
   private final AbstractAction DONE_PLACE_ACTION = new AbstractAction("Done")
   {

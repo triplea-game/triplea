@@ -368,10 +368,10 @@ public class TripleAFrame extends JFrame
     return m_actionButtons.waitForMove(bridge);
   }
 
-  public PlaceMessage getPlace(PlayerID player, boolean bid)
+  public PlaceMessage getPlace(PlayerID player, boolean bid, PlayerBridge bridge)
   {
     m_actionButtons.changeToPlace(player);
-    return m_actionButtons.waitForPlace(bid);
+    return m_actionButtons.waitForPlace(bid, bridge);
   }
 
   public Message listBattle(BattleStepMessage msg)

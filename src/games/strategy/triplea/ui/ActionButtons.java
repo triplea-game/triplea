@@ -140,9 +140,9 @@ public class ActionButtons extends JPanel
    * Blocks until the user selects units to place.
    * @return null if no placement was made.
    */
-  public PlaceMessage waitForPlace(boolean bid)
+  public PlaceMessage waitForPlace(boolean bid, PlayerBridge bridge)
   {
-    return m_placePanel.waitForPlace(bid);
+    return m_placePanel.waitForPlace(bid, bridge);
   }
 
   /**
