@@ -756,7 +756,7 @@
 			 javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
 			 type="unitType">
 			 <option name="movement" value="1"/>
-			 <option name="transportCost" value="3"/>
+			 <option name="transportCost" value="1"/>
 			 <option name="attack" value="2"/>
 			 <option name="defense" value="2"/>
 			 <option name="artillery" value="true"/>
