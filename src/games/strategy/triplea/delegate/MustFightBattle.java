@@ -168,6 +168,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     return m_territory;
   }
 
+  public int hashCode()
+  {
+    return m_territory.hashCode();
+  }
+
   public boolean equals(Object o)
   {
     //2 battles are equal if they are both the same type (boming or not)
@@ -521,7 +526,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, firingPlayer, bridge);
 
     // NEW VERSION
-    DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, 
+    DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender,
                                       firingPlayer, hitPlayer, bridge);
 
     int hitCount = dice.getHits();
@@ -617,7 +622,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     PlayerID player = defending ? m_defender : m_attacker;
     int rollCount = BattleCalculator.getRolls(units, player, defending);
 
-    return bridge.getRandomArray(Constants.MAX_DICE, rollCount, 
+    return bridge.getRandomArray(Constants.MAX_DICE, rollCount,
                                  m_attacker, m_defender);
   }
 
