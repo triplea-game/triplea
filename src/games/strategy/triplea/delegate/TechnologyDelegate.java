@@ -41,194 +41,195 @@ import games.strategy.triplea.delegate.message.*;
 public class TechnologyDelegate implements SaveableDelegate
 {
 
-	private String m_name;
-	private String m_displayName;
-	private GameData m_data;
-	private DelegateBridge m_bridge;
-	private TechTracker m_techTracker = new TechTracker();
-	private PlayerID m_player;
+  private String m_name;
+  private String m_displayName;
+  private GameData m_data;
+  private DelegateBridge m_bridge;
+  private TechTracker m_techTracker = new TechTracker();
+  private PlayerID m_player;
 
-	/** Creates new TechnolgoyDelegate */
-	public TechnologyDelegate()
-	{
-	}
+  /** Creates new TechnolgoyDelegate */
+  public TechnologyDelegate()
+  {
+  }
 
-	public void initialize(String name)
-	{
-		initialize(name, name);
-	}
+  public void initialize(String name)
+  {
+    initialize(name, name);
+  }
 
-	public void initialize(String name, String displayName)
-	{
-		m_name = name;
-		m_displayName = displayName;
-	}
+  public void initialize(String name, String displayName)
+  {
+    m_name = name;
+    m_displayName = displayName;
+  }
 
-	/**
-	 * Called before the delegate will run.
-	 */
-	public void start(DelegateBridge aBridge, GameData gameData)
-	{
-		m_bridge = aBridge;
-		m_data = gameData;
-		m_player = aBridge.getPlayerID();
-	}
+  /**
+   * Called before the delegate will run.
+   */
+  public void start(DelegateBridge aBridge, GameData gameData)
+  {
+    m_bridge = aBridge;
+    m_data = gameData;
+    m_player = aBridge.getPlayerID();
+  }
 
-	private Message rollTech(IntegerMessage msg)
-	{
-		int techRolls = msg.getMessage();
-		boolean canPay = checkEnoughMoney(techRolls);
-		if(!canPay)
-			return new StringMessage("Not enough money to pay for that many tech rolls", true);
+  private Message rollTech(IntegerMessage msg)
+  {
+    int techRolls = msg.getMessage();
+    boolean canPay = checkEnoughMoney(techRolls);
+    if(!canPay)
+      return new StringMessage("Not enough money to pay for that many tech rolls", true);
 
-		chargeForTechRolls(techRolls);
-		int techHits = getTechHits(techRolls);
-		m_bridge.sendMessage( new StringMessage("You got " + techHits +  (techHits == 1 ? " hit" : " hits")) );
-		if(techHits == 0)
-			return null;
+    chargeForTechRolls(techRolls);
+    int[] random = m_bridge.getRandom(Constants.MAX_DICE, techRolls);
+    int techHits = getTechHits(random);
 
-		Collection advances = getTechAdvances(techHits);
+    Collection advances = getTechAdvances(techHits);
+    List advancesAsString = new ArrayList();
 
-		Iterator iter = advances.iterator();
-		int count = advances.size();
+    Iterator iter = advances.iterator();
+    int count = advances.size();
 
-		StringBuffer text = new StringBuffer();
-		while(iter.hasNext())
-		{
-			TechAdvance advance = (TechAdvance) iter.next();
-			advance.perform(m_bridge.getPlayerID(),m_bridge, m_data );
-			text.append(advance.getName());
-			count--;
+    StringBuffer text = new StringBuffer();
+    while(iter.hasNext())
+    {
+      TechAdvance advance = (TechAdvance) iter.next();
+      advance.perform(m_bridge.getPlayerID(),m_bridge, m_data );
+      text.append(advance.getName());
+      count--;
 
-			if(count > 1)
-				text.append(", ");
-			if(count == 1)
-				text.append(" and ");
-			m_techTracker.addAdvance(m_bridge.getPlayerID(), m_data, m_bridge, advance);
-		}
+      advancesAsString.add(advance.getName());
 
-		String transcriptText =  m_bridge.getPlayerID().getName() + " discover " + text.toString();
-		m_bridge.getTranscript().write(transcriptText);
+      if(count > 1)
+        text.append(", ");
+      if(count == 1)
+        text.append(" and ");
+      m_techTracker.addAdvance(m_bridge.getPlayerID(), m_data, m_bridge, advance);
+    }
 
-		return new StringMessage("Youre scientists have discovered:" + text);
+    String transcriptText =  m_bridge.getPlayerID().getName() + " discover " + text.toString();
+    m_bridge.getTranscript().write(transcriptText);
 
-
-	}
-
-	boolean checkEnoughMoney(int rolls)
-	{
-		Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-		int cost = rolls * Constants.TECH_ROLL_COST;
-		int has = m_bridge.getPlayerID().getResources().getQuantity(ipcs);
-		return has >= cost;
-	}
-
-	private void chargeForTechRolls(int rolls)
-	{
-		Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-		int cost = rolls * Constants.TECH_ROLL_COST;
-		Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), ipcs, -cost);
-		m_bridge.addChange(charge);
-
-		String transcriptText = m_bridge.getPlayerID().getName() + " spends " + cost + " on tech rolls";
-		m_bridge.getTranscript().write(transcriptText);
-	}
-
-	private int getTechHits(int rolls)
-	{
-		int[] random = m_bridge.getRandom(Constants.MAX_DICE, rolls);
-		int count = 0;
-		for(int i = 0; i < rolls; i++)
-		{
-			if(random[i] == Constants.MAX_DICE - 1)
-				count++;
-		}
-		return count;
-	}
-
-	private Collection getTechAdvances(int hits)
-	{
-		//too many
-		Collection allAdvances = TechAdvance.getTechAdvances();
-		Collection playersAdvances = m_techTracker.getAdvances(m_bridge.getPlayerID());
-
-		List available = Util.difference(allAdvances, playersAdvances);
-		if(available.isEmpty())
-			return Collections.EMPTY_LIST;
-		if(hits >= available.size())
-			return available;
-
-		Collection newAdvances = new ArrayList(hits);
-		while(hits > 0)
-		{
-			int random = m_bridge.getRandom(available.size());
-
-			newAdvances.add(available.get(random));
-			available.remove(random);
-			hits--;
-		}
-		return newAdvances;
-	}
-
-	public String getName()
-	{
-		return m_name;
-	}
-
-	public String getDisplayName()
-	{
-		return m_displayName;
-	}
+    return new TechResultsMessage(random, techHits, advancesAsString);
 
 
-	/**
-	 * A message from the given player.
-	 */
-	public Message sendMessage(Message aMessage)
-	{
-		if((aMessage instanceof IntegerMessage))
-			return rollTech((IntegerMessage) aMessage);
-		else
-			throw new IllegalStateException("Message of wrong type:" + aMessage);
+  }
 
-	}
+  boolean checkEnoughMoney(int rolls)
+  {
+    Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+    int cost = rolls * Constants.TECH_ROLL_COST;
+    int has = m_bridge.getPlayerID().getResources().getQuantity(ipcs);
+    return has >= cost;
+  }
 
-	public TechTracker getTechTracker()
-	{
-		return m_techTracker;
-	}
+  private void chargeForTechRolls(int rolls)
+  {
+    Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+    int cost = rolls * Constants.TECH_ROLL_COST;
+    Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), ipcs, -cost);
+    m_bridge.addChange(charge);
 
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	public void end()
-	{
-	}
+    String transcriptText = m_bridge.getPlayerID().getName() + " spends " + cost + " on tech rolls";
+    m_bridge.getTranscript().write(transcriptText);
 
-	/**
-	 * Can the delegate be saved at the current time.
-	 * @arg message, a String[] of size 1, hack to pass an error message back.
-	 */
-	public boolean canSave(String[] message)
-	{
-		return true;
-	}
+  }
 
-	/**
-	 * Returns the state of the Delegate.
-	 */
-	public Serializable saveState()
-	{
-		return m_techTracker;
-	}
+  private int getTechHits(int[] random)
+  {
+    int count = 0;
+    for(int i = 0; i < random.length; i++)
+    {
+      if(random[i] == Constants.MAX_DICE - 1)
+        count++;
+    }
+    return count;
+  }
 
-	/**
-	 * Loads the delegates state
-	 */
-	public void loadState(Serializable state)
-	{
-		m_techTracker = (TechTracker) state;
-	}
+  private Collection getTechAdvances(int hits)
+  {
+    //too many
+    Collection allAdvances = TechAdvance.getTechAdvances();
+    Collection playersAdvances = m_techTracker.getAdvances(m_bridge.getPlayerID());
+
+    List available = Util.difference(allAdvances, playersAdvances);
+    if(available.isEmpty())
+      return Collections.EMPTY_LIST;
+    if(hits >= available.size())
+      return available;
+
+    Collection newAdvances = new ArrayList(hits);
+    while(hits > 0)
+    {
+      int random = m_bridge.getRandom(available.size());
+
+      newAdvances.add(available.get(random));
+      available.remove(random);
+      hits--;
+    }
+    return newAdvances;
+  }
+
+  public String getName()
+  {
+    return m_name;
+  }
+
+  public String getDisplayName()
+  {
+    return m_displayName;
+  }
+
+
+  /**
+   * A message from the given player.
+   */
+  public Message sendMessage(Message aMessage)
+  {
+    if((aMessage instanceof IntegerMessage))
+      return rollTech((IntegerMessage) aMessage);
+    else
+      throw new IllegalStateException("Message of wrong type:" + aMessage);
+
+  }
+
+  public TechTracker getTechTracker()
+  {
+    return m_techTracker;
+  }
+
+  /**
+   * Called before the delegate will stop running.
+   */
+  public void end()
+  {
+  }
+
+  /**
+   * Can the delegate be saved at the current time.
+   * @arg message, a String[] of size 1, hack to pass an error message back.
+   */
+  public boolean canSave(String[] message)
+  {
+    return true;
+  }
+
+  /**
+   * Returns the state of the Delegate.
+   */
+  public Serializable saveState()
+  {
+    return m_techTracker;
+  }
+
+  /**
+   * Loads the delegates state
+   */
+  public void loadState(Serializable state)
+  {
+    m_techTracker = (TechTracker) state;
+  }
 
 
 }

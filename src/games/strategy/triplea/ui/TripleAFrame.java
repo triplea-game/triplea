@@ -418,6 +418,13 @@ public class TripleAFrame extends JFrame
     return choice == JOptionPane.OK_OPTION;
   }
 
+  public void notifyTechResults(TechResultsMessage msg)
+  {
+    TechResultsDisplay display = new TechResultsDisplay(msg);
+    JOptionPane.showOptionDialog(this, display, "Tech roll result", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK");
+
+  }
+
   public boolean getStrategicBombingRaid(StrategicBombQuery query)
   {
     String message = "Bomb in " + query.getLocation().getName();

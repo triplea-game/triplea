@@ -151,17 +151,20 @@ public class TripleAPlayer implements GamePlayer
     IntegerMessage message = m_ui.getTechRolls(m_id);
     if(message != null)
     {
-      StringMessage msg = (StringMessage) m_bridge.sendMessage(message);
+      Message msg =  m_bridge.sendMessage(message);
       if(msg == null)
         return;
-      if(msg.isError())
+
+      if(msg instanceof StringMessage)
       {
-        m_ui.notifyError(msg.getMessage());
+        StringMessage error = (StringMessage) msg;
+        m_ui.notifyError(error.getMessage());
         tech();
       }
       else
       {
-        m_ui.notifyMessage(msg.getMessage());
+        TechResultsMessage techResults = (TechResultsMessage) msg;
+        m_ui.notifyTechResults(techResults);
       }
     }
   }
