@@ -1,9 +1,24 @@
-package util.image;
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 
 /*
   @author George El-Haddad
   @email  nekromancer@usrs.sourceforge.net
  */
+
+package util.image;
 
 import java.io.*;
 import javax.swing.*;
@@ -23,15 +38,18 @@ public class FileOpen
 	/**
 	   Default Constructor.
 	   
+	   @param java.lang.String title  the title of the JFileChooser
+	   
+	   @exception java.lang.Exception  ex
+	   
 	   Creates a file selection dialog starting at the current
 	   working directory. Filters out all non-txt files and
 	   handles possible file load errors.
-
-	   @exception java.lang.Exception  ex
 	*/
-	public FileOpen() 
+	public FileOpen(String title) 
 	{
 		JFileChooser chooser = new JFileChooser();
+		chooser.setDialogTitle(title);
 		chooser.setCurrentDirectory(new File(System.getProperties().getProperty("user.dir")));
 
 		/*
@@ -71,8 +89,8 @@ public class FileOpen
 		}
 
 	}//constructor
-
-
+	
+	
 	/**
 	   Returns the newly selected file.
 	   Will return null if no file is selected.

@@ -39,16 +39,50 @@ public class CenterPicker extends JFrame
     private JLabel m_location = new JLabel();
 
 
+
+    /**
+       main(java.lang.String[])
+       
+       Main program begins here.
+       Asks the user to select the map then runs the
+       the actual picker.
+       
+       @param java.lang.String[] args  the command line arguments
+       
+       @see Picker(java.lang.String) picker
+    */
+    public static void main(String[] args)
+    {
+         System.out.println("Select the map");
+         String mapName = new FileOpen("Select The Map").getPathString();
+
+	 if(mapName != null)
+	 {
+	     System.out.println("Map : "+mapName);
+	     
+             CenterPicker picker = new CenterPicker(mapName);
+             picker.setSize(600,550);
+             picker.show();
+	 }
+	 else {
+	 	System.out.println("No Image Map Selected. Shutting down.");
+		System.exit(0);
+	}
+     
+     }//end main
+
+
+
     /**
        Constructor CenterPicker(java.lang.String)
-       
-       @param java.lang.String  fileName  name of polygons file
        
        Setus up all GUI components, initializes variables with
        default or needed values, and prepares the map for user
        commands.
+       
+       @param java.lang.String  mapName  name of map file
     */
-    public CenterPicker(String fileName)
+    public CenterPicker(String mapName)
     {
         super("Center Picker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,8 +90,7 @@ public class CenterPicker extends JFrame
         try
         {
 	    System.out.println("Select the Polygons file");
-	    
-	    String polyPath = new FileOpen().getPathString();
+	    String polyPath = new FileOpen("Select A Polygon File").getPathString();
 	    
 	    if(polyPath != null)
 	    {
@@ -66,7 +99,7 @@ public class CenterPicker extends JFrame
             }
 	    else
 	    {
-	        System.out.println("Polygons file not given. Will Run without");
+	        System.out.println("Polygons file not given. Will run regardless");
 	    }
 	}
         catch (IOException ex1)
@@ -74,18 +107,8 @@ public class CenterPicker extends JFrame
             ex1.printStackTrace();
         }
 
-        m_image = Toolkit.getDefaultToolkit().createImage(fileName);
-
-        try
-        {
-            Util.ensureImageLoaded(m_image, this);
-        }
-        catch (InterruptedException ex)
-        {
-            ex.printStackTrace();
-        }
-
-
+        createImage(mapName);
+	
         JPanel imagePanel = createMainPanel();
 
 
@@ -93,8 +116,7 @@ public class CenterPicker extends JFrame
 	   Add a mouse listener to show
 	   X : Y coordinates on the lower
 	   left corner of the screen.
-	*/
-	
+        */
         imagePanel.addMouseMotionListener(
             new MouseMotionAdapter()
             {
@@ -110,8 +132,7 @@ public class CenterPicker extends JFrame
            Add a mouse listener to monitor
 	   for right mouse button being
 	   clicked.	
-	*/
-	
+        */
         imagePanel.addMouseListener(
             new MouseAdapter()
             {
@@ -136,9 +157,9 @@ public class CenterPicker extends JFrame
 
         JToolBar toolBar = new JToolBar();
 	
-	/*
+        /*
 	   Add a save button
-	*/
+        */
         toolBar.add(new AbstractAction("Save Centers")
         {
             public void actionPerformed(ActionEvent e)
@@ -150,7 +171,7 @@ public class CenterPicker extends JFrame
 
         /*
 	   Add a load button
-	*/
+        */
         toolBar.add(new AbstractAction("Load Centers")
         {
             public void actionPerformed(ActionEvent e)
@@ -162,7 +183,7 @@ public class CenterPicker extends JFrame
        
         /*
 	   Add an exit button
-	*/
+        */
         toolBar.add(new AbstractAction("Exit")
         {
             public void actionPerformed(ActionEvent e)
@@ -175,6 +196,31 @@ public class CenterPicker extends JFrame
        this.getContentPane().add(toolBar, BorderLayout.NORTH);
 
     }//end constructor
+
+
+
+    /**
+       createImage(java.lang.String)
+       
+       creates the image map and makes sure
+       it is properly loaded.
+       
+       @param java.lang.String mapName  the path of image map
+    */
+    private void createImage(String mapName)
+    {
+         m_image = Toolkit.getDefaultToolkit().createImage(mapName);
+
+         try
+         {
+             Util.ensureImageLoaded(m_image, this);
+         }
+         catch (InterruptedException ex)
+         {
+             ex.printStackTrace();
+         }
+    }
+
 
 
     /**
@@ -247,7 +293,7 @@ public class CenterPicker extends JFrame
 
 
     /**
-       load()
+       loadCenters()
        
        Loads a pre-defined file with map center points.
     */
@@ -255,14 +301,15 @@ public class CenterPicker extends JFrame
     {
         try
          {
-             String fileName = new FileOpen().getPathString();
+	     System.out.println("Load a center file");
+             String centerName = new FileOpen("Load A Center File").getPathString();
 
-	     if(fileName == null)
+	     if(centerName == null)
 	     {
                  return;
 	     }
 	      
-             FileInputStream in = new FileInputStream(fileName);
+             FileInputStream in = new FileInputStream(centerName);
              m_centers = PointFileReaderWriter.readOneToOne(in);
              repaint();
          }
@@ -284,11 +331,10 @@ public class CenterPicker extends JFrame
     /**
         java.lang.String findTerritoryName(java.awt.Point)
 	
-	@param java.awt.point p  a point on the map
-	
 	Finds a land territory name or
 	some sea zone name.
-    
+	
+	@param java.awt.point p  a point on the map
     */
     private String findTerritoryName(Point p)
     {
@@ -303,9 +349,11 @@ public class CenterPicker extends JFrame
             String name = (String)keyIter.next();
             Collection polygons = (Collection) m_polygons.get(name);
             Iterator polyIter = polygons.iterator();
+	    
             while (polyIter.hasNext())
             {
                 Polygon poly = (Polygon)polyIter.next();
+		
                 if(poly.contains(p))
                 {
                     if(name.endsWith("Sea Zone"))
@@ -333,7 +381,6 @@ public class CenterPicker extends JFrame
        @param java.awt.Point    point       a point clicked by mouse
        @param java.lang.boolean ctrlDown    true if ctrl key was hit
        @param java.lang.boolean rightMouse  true if the right mouse button was hit
-    
     */
     private void mouseEvent(Point point, boolean ctrlDown, boolean rightMouse)
     {
@@ -351,38 +398,5 @@ public class CenterPicker extends JFrame
         }
         repaint();
     }
-
-
-    /**
-       main(java.lang.String[])
-       
-       @param java.lang.String[] args  the command line arguments
-       
-       Main program begins here.
-       Asks the user to select the map then runs the
-       the actual picker.
-       
-       @see Picker(java.lang.String) picker
-       
-    */
-    public static void main(String[] args)
-    {
-         System.out.println("Select the map");
-	 
-         String fileName = new FileOpen().getPathString();
-	 
-	 System.out.println("Map : "+fileName);
-	 
-	 if(fileName != null)
-	 {
-             CenterPicker picker = new CenterPicker(fileName);
-             picker.setSize(600,550);
-             picker.show();
-	 }
-	 else {
-	 	System.out.println("No Image Map Selected. Shutting down.");
-		System.exit(0);
-	}
-     }
 
 }//end class CenterPicker

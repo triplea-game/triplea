@@ -14,97 +14,233 @@
 
 package util.image;
 
-import games.strategy.util.PointFileReaderWriter;
+
 import java.io.*;
-import java.util.Map;
-import games.strategy.ui.Util;
-import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
 import javax.swing.*;
 import javax.imageio.*;
+import java.util.Map;
+import java.awt.*;
+import java.awt.image.*;
 import java.awt.Graphics2D;
+
+import games.strategy.ui.Util;
 import games.strategy.ui.*;
 import games.strategy.triplea.ui.*;
+import games.strategy.util.PointFileReaderWriter;
 
 /**
- * Utility for breaking an image into seperate smaller images.
+  Utility for breaking an image into seperate smaller images.
+  
+  User must make a new directory called "newImages"
+  and then run the utility first.
+  
+  To create sea zones only, he must choose "Y" at the prompt.
+  To create territories, he must choose "N" at the prompt.
+  
+  sea zone images directory must be renamed to "seazone
+ 
+ 
  */
 
 public class ReliefImageBreaker
 {
+    private static final String SMALL_MAPS_LOCATION = "newImages"; //used as the directory to store the images
+    
     private static JFrame observer = new JFrame();
-
-    private static Image loadImage(String name)
-    {
-        File f = new File(name);
-        if(!f.exists())
-            throw new IllegalArgumentException("file not found");
-        Image img = Toolkit.getDefaultToolkit().createImage(name);
-        MediaTracker tracker = new MediaTracker(new Panel());
-        tracker.addImage(img, 1);
-        try
-        {
-            tracker.waitForAll();
-            return img;
-        }
-        catch (InterruptedException ie)
-        {
-            ie.printStackTrace();
-            return loadImage(name);
-        }
-    }
-
-    //for the relief map
-//    public static final String LARGE_MAP_FILENAME = "../additonalImageData/relief.png";
-//    public static final String SMALL_MAPS_LOCATION = "newImages";
-//    public static final boolean ONLY_DO_SEA_ZONES= false;
-
-    //for the sea map
-
-    public static final String LARGE_MAP_FILENAME = "/home/sgb/dev/triplea/data/games/strategy/triplea/image/images/maps/revised/largeMap.gif";
-    public static final String SMALL_MAPS_LOCATION = "newImages";
-    public static final boolean ONLY_DO_SEA_ZONES= true;
+    
+    private boolean m_seaZoneOnly;
 
 
-
+    /**
+       main(java.lang.String[] args)
+       
+       Main program begins here. Creates a new instance
+       of ReliefImageBreaker and calls createMaps()
+       method to start the computations.
+       
+       @param java.lang.String[] args  the command line parameters
+       
+       @exception java.lang.Exception  throws
+    */
     public static void main(String[] args) throws Exception
     {
         new ReliefImageBreaker().createMaps();
     }
 
+
+    /**
+       createMaps()
+       
+       One of the main methods that is used to create
+       the actual maps. Calls on various methods to get
+       user input and create the maps.
+       
+       @exception java.io.IOException throws
+    
+    */
     public void createMaps() throws IOException
     {
 
-        Image map = loadImage(LARGE_MAP_FILENAME);
-        
-        TerritoryData.setFourthEdition(true);
+        Image map     = loadImage();        //ask user to input image location
+	m_seaZoneOnly = doSeaZone();        //ask user wether it is sea zone only or not
+        String mapDir = getMapDirectory();  //ask user where the map is
+	
+	if(mapDir == null)
+	{
+	    System.out.println("You need to specify a map name for this to work");
+	    System.out.println("Shutting down");
+            System.exit(0);
+	}
+	
+        TerritoryData.setMapDir(mapDir);    //makes TripleA read all the text data files for the map.
+
         Iterator unitIter = TerritoryData.getInstance().getTerritories().iterator();
 
         while (unitIter.hasNext())
         {
-
             String territoryName = (String) unitIter.next();
-            boolean seaZone = territoryName.endsWith("Sea Zone");
-            if(!seaZone && ONLY_DO_SEA_ZONES)
+	    boolean seaZone = territoryName.endsWith("Sea Zone");
+            
+	    if(!seaZone && m_seaZoneOnly)
+	    {
                 continue;
-            if(seaZone && !ONLY_DO_SEA_ZONES)
+            }
+	    
+	    if(seaZone && !m_seaZoneOnly)
+	    {
                 continue;
-
+            }
 
             processImage(territoryName, map);
+        }
+    
+        System.out.println("All Finished!");
+	System.exit(0);
+    }
+
+
+
+    /**
+       java.lang.boolean doSeaZone()
+       
+       Asks user wether to do sea zones only or not
+       
+       @return java.lang.boolean  TRUE to do seazones only. 
+    */
+    private static boolean doSeaZone()
+    {
+        String ans = "";
+	
+	while(true)
+	{ 
+	    ans = JOptionPane.showInputDialog(null, "Only Do Sea Zones? Enter [Y/N]");
+	
+	    if(ans.equalsIgnoreCase("Y"))
+	    {
+	        return true;
+	    }
+	    else if(ans.equalsIgnoreCase("N"))
+	    {
+	        return false;
+	    }
+	    else {
+	        System.out.println("You must enter Y or N");
+		ans = "";
+	    }
+
+	}//while
+    }
+
+
+
+   /**
+      java.lang.String getMapDirectory()
+      
+      Asks the user to input a valid map name that
+      will be used to form the map directory in the
+      core of TripleA in the class TerritoryData.
+   
+      we need the exact map name as indicated in the XML game file
+      ie."revised" "classic" "pact_of_steel" of course, without the
+      quotes.
+      
+      @return java.lang.String mapDir  the map name
+    */
+    private static String getMapDirectory()
+    {
+	String mapDir = JOptionPane.showInputDialog(null, "Enter the map name as indicated in the XML Game file");
+	    
+	if(mapDir != null)
+	{
+	    return mapDir;
+	}
+	else
+	{
+	    return null;
         }
     }
 
 
+
+    /**
+       java.awt.Image loadImage()
+       
+       Asks the user to select an image and then
+       it loads it up into an Image object and
+       returns it to the calling class.
+       
+       @return java.awt.Image img  the loaded image
+    */
+    private static Image loadImage()
+    {
+	System.out.println("Select the map");
+        String mapName = new FileOpen("Select The Map").getPathString();
+	
+	if(mapName != null)
+	{
+	    Image img = Toolkit.getDefaultToolkit().createImage(mapName);
+            MediaTracker tracker = new MediaTracker(new Panel());
+            tracker.addImage(img, 1);
+	
+            try
+            {
+                tracker.waitForAll();
+                return img;
+            }
+            catch (InterruptedException ie)
+            {
+                ie.printStackTrace();
+                return loadImage();
+            }
+	}
+	else {
+	    System.out.println("You need to select a map image for this to work");
+	    return loadImage();
+	}
+    }
+
+
+
+    /**
+        processImage(java.lang.String, java.awt.Image)
+	
+	This method does the actual processing of the relief images
+	
+	@param java.lang.String territory  the territory name
+	@param java.awt.Image   map        the image map
+	
+	@exception java.io.IOException throws
+    */
     private void processImage(String territory, Image map) throws IOException
     {
         Rectangle bounds = TerritoryData.getInstance().getBoundingRect(territory);
-        int width = bounds.width;
+        int width  = bounds.width;
         int height = bounds.height;
 
         BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
         Iterator iter = TerritoryData.getInstance().getPolygons(territory).iterator();
+
         while (iter.hasNext())
         {
             Polygon item = (Polygon)iter.next();
@@ -113,39 +249,52 @@ public class ReliefImageBreaker
             alphaChannelImage.getGraphics().fillPolygon(item);
         }
 
-        GraphicsConfiguration   m_localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
+        GraphicsConfiguration m_localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment()
        .getDefaultScreenDevice()
        .getDefaultConfiguration();
 
-        BufferedImage relief = m_localGraphicSystem.createCompatibleImage(width,
-            height,
-            ONLY_DO_SEA_ZONES ? Transparency.BITMASK :  Transparency.TRANSLUCENT);
+        BufferedImage relief = m_localGraphicSystem.createCompatibleImage(width, height, m_seaZoneOnly ? Transparency.BITMASK :  Transparency.TRANSLUCENT);
         relief.getGraphics().drawImage(map, 0,0, width, height, bounds.x, bounds.y, bounds.x + width, bounds.y + height, observer);
 
         blankOutline(alphaChannelImage, relief);
 
         String outFileName = SMALL_MAPS_LOCATION + "/" + territory;
-        if (!ONLY_DO_SEA_ZONES)
+
+        if (!m_seaZoneOnly)
+	{
             outFileName += "_relief.png";
-        else
+        }
+	else {
             outFileName += ".png";
+        }
 
-          outFileName = outFileName.replace(' ', '_');
-
-          ImageIO.write(relief, "png" , new File(outFileName));
+	outFileName = outFileName.replace(' ', '_');
+        ImageIO.write(relief, "png" , new File(outFileName));
+	System.out.println("wrote "+outFileName);
     }
 
-  
-    //set the alpha channel to the same as that of the base image
+
+
+    /**
+       blankOutLine(java.awt.Image, java.awt.Image.BufferedImage)
+
+       Sets the alpha channel to the same as that of the base image
+       
+       @param java.awt.Image                alphaChannelImage
+       @param java.awt.Image.BufferedImage  relief
+    */
     private void blankOutline(Image alphaChannelImage, BufferedImage relief)
     {
         Graphics2D gc = (Graphics2D) relief.getGraphics();
-        // setup our composite
-        Composite prevComposite = gc.getComposite();
+
+        Composite prevComposite = gc.getComposite();  // setup our composite
+	
         gc.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
 
-        // draw the image, and check for the possibility it doesn't complete now
-        ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
+        /*
+	   draw the image, and check for the possibility it doesn't complete now
+        */
+	ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
         boolean drawComplete = gc.drawImage(alphaChannelImage, 0, 0, watcher);
 
         // use the watcher to for the draw to finish
@@ -158,5 +307,4 @@ public class ReliefImageBreaker
         gc.setComposite(prevComposite);
     }
 
-
-}
+}//end class ReliefImageBreaker
