@@ -6,13 +6,10 @@
 
 package games.strategy.engine.xml;
 
-import java.util.*;
-
-import games.strategy.engine.framework.IGameLoader;
-import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.*;
 import games.strategy.engine.message.*;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.triplea.player.ITripleaPlayer;
+
+import java.util.*;
 
 /**
  *

@@ -283,7 +283,14 @@ public class LauncherFrame extends JFrame
 
         ((IServerReady) m_remoteMessenger.getRemote(LauncherFrame.CLIENT_READY_CHANNEL)).clientReady();
 
-        setVisible(false);
+        SwingUtilities.invokeLater( new Runnable()
+        {
+            public void run()
+            {
+                setVisible(false);                
+            }
+        });
+        
         
     }
 

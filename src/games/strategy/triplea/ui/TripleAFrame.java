@@ -41,6 +41,7 @@ import games.strategy.util.IntegerMap;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -895,15 +896,29 @@ public class TripleAFrame extends JFrame
         if (m_data.getSequence().getStep() == null)
             return;
 
+        //we nee d to invoke and wait here since
+        //if we switch to the history as a result of a history 
+        //change, we need to ensure that no further history 
+        //events are run until our historySynchronizer is set up
         if (!SwingUtilities.isEventDispatchThread())
         {
-            SwingUtilities.invokeLater(new Runnable()
+            try
             {
-                public void run()
+                SwingUtilities.invokeAndWait(new Runnable()
                 {
-                    updateStep();
-                }
-            });
+                    public void run()
+                    {
+                        updateStep();
+                    }
+                });
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            } catch (InvocationTargetException e)
+            {
+                e.getCause().printStackTrace();
+                throw new IllegalStateException(e.getCause().getMessage());
+            }
             return;
         }
 
