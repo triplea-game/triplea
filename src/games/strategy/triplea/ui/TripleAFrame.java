@@ -94,10 +94,7 @@ public class TripleAFrame extends JFrame
 
     TaskTimer loadMaps = new TaskTimer("Loading maps");
     MapImage.getInstance().loadMaps(m_data);
-    loadMaps.done();
 
-    TaskTimer loadFlags = new TaskTimer("Loading flag images");
-    FlagIconImageFactory.instance().load(this);
     Image small = MapImage.getInstance().getSmallMapImage();
     m_smallView = new MapPanelSmallView(small);
 
@@ -105,8 +102,11 @@ public class TripleAFrame extends JFrame
     m_mapPanel = new MapPanel(large,m_data, m_smallView);
     m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
 
-    loadFlags.done();
+    loadMaps.done();
 
+    TaskTimer loadFlags = new TaskTimer("Loading flag images");
+    FlagIconImageFactory.instance().load(this);
+    loadFlags.done();
 
 
     //link the small and large images

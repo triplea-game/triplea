@@ -126,75 +126,67 @@ public class MapImage
   private void initMaps(GameData data)
   {
     m_smallLargeRatio = ((float) m_largeMapImage.getHeight(s_observer)) / ((float) m_smallMapImage.getHeight(s_observer));
-
-    Iterator territories = data.getMap().iterator();
-    while(territories.hasNext())
-    {
-      Territory current = (Territory) territories.next();
-      PlayerID id = current.getOwner();
-
-      if(!current.isWater())
-        setOwnerInternal(current, id);
-    }
-
-
-    //draw the names
-    territories = data.getMap().iterator();
-    while(territories.hasNext())
-    {
-      Territory current = (Territory) territories.next();
-      drawTerritoryName(current);
-    }
-
-
   }
 
-  public void setOwner(Territory territory, PlayerID id)
+  /**
+   * Clear the territory to its originl state
+   */
+  public void resetTerritory(Territory territory)
   {
-      setOwnerInternal(territory, id);
-
+      resetTerritoryInternal(territory);
       drawTerritoryName(territory);
-
-
-
   }
 
-  private void setOwnerInternal(Territory territory, PlayerID id)
+  private void resetTerritoryInternal(Territory territory)
   {
     if(territory.isWater())
-      return;
+        resetWaterTerritory(territory);
+    else
+        resetLandTerritory(territory);
 
 
-    Graphics largeGraphics = m_largeMapImage.getGraphics();
-    largeGraphics.setColor(TerritoryImageFactory.getInstance().getPlayerColour(id));
+  }
 
-    Graphics smallGraphics = m_smallMapImage.getGraphics();
-    smallGraphics.setColor(TerritoryImageFactory.getInstance().getPlayerColour(id));
+  private void resetWaterTerritory(Territory territory)
+  {
+      Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
 
-    List polys = TerritoryData.getInstance().getPolygons(territory);
-    Iterator polyIter = polys.iterator();
-    while (polyIter.hasNext())
-    {
-        Polygon item = (Polygon)polyIter.next();
-        largeGraphics.fillPolygon(item);
-        smallGraphics.fillPolygon(scale(item, m_smallLargeRatio ));
-    }
+      Image seaImage = TerritoryImageFactory.getInstance().getSeaImage(territory);
+      m_largeMapImage.getGraphics().drawImage(seaImage, dirty.x, dirty.y, s_observer);
 
-    Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
+      m_smallMapImage.getGraphics().drawImage(seaImage,
+                                              (int) (dirty.x / m_smallLargeRatio),
+                                              (int) (dirty.y / m_smallLargeRatio),
+                                              (int) (dirty.width / m_smallLargeRatio),
+                                              (int) (dirty.height / m_smallLargeRatio),
+                                              s_observer
+                                              );
 
+  }
 
+  private void resetLandTerritory(Territory territory)
+  {
+      PlayerID id = territory.getOwner();
 
-    Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
-    m_largeMapImage.getGraphics().drawImage(reliefImage,dirty.x, dirty.y, s_observer);
+      Graphics largeGraphics = m_largeMapImage.getGraphics();
+      largeGraphics.setColor(TerritoryImageFactory.getInstance().getPlayerColour(id));
 
-//    m_smallMapImage.getGraphics().drawImage(reliefImage,
-//                                            (int)  (dirty.x / m_smallLargeRatio ),
-//                                            (int)  (dirty.y / m_smallLargeRatio ),
-//                                            (int)  (dirty.width / m_smallLargeRatio ),
-//                                            (int)  (dirty.height / m_smallLargeRatio ),
-//                                            s_observer
-//                                            );
+      Graphics smallGraphics = m_smallMapImage.getGraphics();
+      smallGraphics.setColor(TerritoryImageFactory.getInstance().getPlayerColour(id));
 
+      List polys = TerritoryData.getInstance().getPolygons(territory);
+      Iterator polyIter = polys.iterator();
+      while (polyIter.hasNext())
+      {
+          Polygon item = (Polygon) polyIter.next();
+          largeGraphics.fillPolygon(item);
+          smallGraphics.fillPolygon(scale(item, m_smallLargeRatio));
+      }
+
+      Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
+
+      Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
+      m_largeMapImage.getGraphics().drawImage(reliefImage, dirty.x, dirty.y, s_observer);
 
   }
 

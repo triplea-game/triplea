@@ -123,6 +123,9 @@ public final class TerritoryImageFactory
 
     public Image getReliefImage(Territory place)
     {
+        if(place.isWater())
+            throw new IllegalArgumentException(place + " is a sea zone");
+
         //is it in the cache?
         for(int i = 0; i < m_cahcedTerritories.size(); i++)
         {
@@ -137,6 +140,45 @@ public final class TerritoryImageFactory
       // load it on the fly
 
       String fileName = "images/countries/" + key.replace(' ', '_')  + ".png";
+      URL file = this.getClass().getResource(fileName);
+      if(file == null)
+          throw new IllegalArgumentException("not found:" + fileName);
+      Image baseImage = loadImageCompletely(file);
+
+      //put it in the cache
+      m_cahcedTerritories.add(0, new ImageName(place.getName(), baseImage));
+      while(m_cahcedTerritories.size() > CACHE_SIZE)
+      {
+          m_cahcedTerritories.remove(CACHE_SIZE);
+      }
+
+
+      // done!
+      return baseImage;
+
+    }
+
+
+
+    public Image getSeaImage(Territory place)
+    {
+        if(!place.isWater())
+            throw new IllegalArgumentException(place + " is not a sea zone");
+
+        //is it in the cache?
+        for(int i = 0; i < m_cahcedTerritories.size(); i++)
+        {
+            ImageName current = (ImageName) m_cahcedTerritories.get(i);
+            if(current.name.equals(place.getName()))
+            {
+                return current.image;
+            }
+        }
+
+      String key = place.getName();
+      // load it on the fly
+
+      String fileName = "images/seaZones/" + key.replace(' ', '_')  + ".png";
       URL file = this.getClass().getResource(fileName);
       if(file == null)
           throw new IllegalArgumentException("not found:" + fileName);

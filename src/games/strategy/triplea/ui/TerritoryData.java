@@ -42,7 +42,7 @@ public class TerritoryData
     private Map m_polys;
     //maps String -> Point
     private Map m_centers;
-    //maps String -> String
+    //maps String -> List of String
     private Map m_contains;
 
     private static TerritoryData s_instance = new TerritoryData();
@@ -71,19 +71,14 @@ public class TerritoryData
 
     private void initializeContains()
     {
-
         m_contains = new HashMap();
 
         Iterator seaIter = getTerritories().iterator();
         while (seaIter.hasNext())
         {
+            List contained = new ArrayList();
             String seaTerritory = (String) seaIter.next();
             if (!seaTerritory.endsWith("Sea Zone"))
-                continue;
-
-            //dont look,
-            //an awful viscous hack
-            if(seaTerritory.equals("North Sea Zone"))
                 continue;
 
             Iterator landIter = getTerritories().iterator();
@@ -95,8 +90,12 @@ public class TerritoryData
                 Polygon landPoly = (Polygon) getPolygons(landTerritory).iterator().next();
                 Polygon seaPoly = (Polygon) getPolygons(seaTerritory).iterator().next();
                 if(seaPoly.contains(landPoly.getBounds()))
-                    m_contains.put(seaTerritory, landTerritory);
+                {
+                    contained.add(landTerritory);
+                }
             }
+            if(!contained.isEmpty())
+                m_contains.put(seaTerritory, contained);
         }
     }
 
@@ -111,13 +110,21 @@ public class TerritoryData
     }
 
     /**
+     * Does this territory have any territories contained within it
+     */
+    public boolean hasContainedTerritory(String territoryName)
+    {
+        return m_contains.containsKey(territoryName);
+    }
+
+    /**
      * returns the name of the territory contained in the given territory.
      * This applies to islands within sea zones.
-     * @return possible null
+     * @return possiblly null
      */
-    public String hasContainedTerritory(String territoryName)
+    public List getContainedTerritory(String territoryName)
     {
-        return (String) m_contains.get(territoryName);
+        return (List) m_contains.get(territoryName);
     }
 
 

@@ -73,8 +73,6 @@ public class ImageScrollerLargeView extends JComponent
 
   private int m_x = 0;
   private int m_y = 0;
-  private Image m_image;
-  private Image m_originalImage;
   private Image m_offscreenImage;
 
   private ActionListener mTimerAction = new ActionListener()
@@ -120,11 +118,10 @@ public class ImageScrollerLargeView extends JComponent
       ie.printStackTrace();
     }
 
-    m_originalImage = image;
-    m_offscreenImage = Util.copyImage(image, this);
+    m_offscreenImage = image;
 
-    setPreferredSize( Util.getDimension(m_originalImage, this));
-    setMaximumSize( Util.getDimension(m_originalImage, this));
+    setPreferredSize( Util.getDimension(m_offscreenImage, this));
+    setMaximumSize( Util.getDimension(m_offscreenImage, this));
 
     addMouseListener(MOUSE_LISTENER);
     addMouseMotionListener(MOUSE_MOTION_LISTENER);
@@ -143,7 +140,7 @@ public class ImageScrollerLargeView extends JComponent
     //newX = checkBounds(newX, m_originalImage.getWidth(this), this.getWidth(), true);
 
     int newY = y;
-    newY = checkBounds(newY, m_originalImage.getHeight(this), this.getHeight(), false);
+    newY = checkBounds(newY, m_offscreenImage.getHeight(this), this.getHeight(), false);
 
     setCoords(newX, newY);
     m_control.setLargeCoords(newX,newY);
@@ -152,10 +149,10 @@ public class ImageScrollerLargeView extends JComponent
   protected void setTopLeftNoWrap(int x, int y)
   {
     int newX = x;
-    newX = checkBounds(newX, m_originalImage.getWidth(this), this.getWidth(), false);
+    newX = checkBounds(newX, m_offscreenImage.getWidth(this), this.getWidth(), false);
 
     int newY = y;
-    newY = checkBounds(newY, m_originalImage.getHeight(this), this.getHeight(), false);
+    newY = checkBounds(newY, m_offscreenImage.getHeight(this), this.getHeight(), false);
 
     setCoords(newX, newY);
     m_control.setLargeCoords(newX,newY);
@@ -219,14 +216,14 @@ public class ImageScrollerLargeView extends JComponent
       dx = SCROLL_DISTANCE;
 
     int newX = (m_x + dx);
-    if(newX > m_originalImage.getWidth(this))
+    if(newX > m_offscreenImage.getWidth(this))
       newX = 0;
     if(newX < -getWidth())
-      newX = m_originalImage.getWidth(this) - getHeight();
+      newX = m_offscreenImage.getWidth(this) - getHeight();
    // newX = checkBounds(newX, m_originalImage.getWidth(this), this.getWidth(), true);
 
     int newY = m_y + dy;
-    newY = checkBounds(newY, m_originalImage.getHeight(this), this.getHeight(), false);
+    newY = checkBounds(newY, m_offscreenImage.getHeight(this), this.getHeight(), false);
 
     setCoords(newX,newY);
     m_control.setLargeCoords(m_x,m_y);
@@ -234,7 +231,7 @@ public class ImageScrollerLargeView extends JComponent
 
   public Dimension getImageDimensions()
   {
-    return Util.getDimension(m_originalImage,this);
+    return Util.getDimension(m_offscreenImage,this);
   }
 
   void setController(ImageScrollControl control)
@@ -341,39 +338,12 @@ public class ImageScrollerLargeView extends JComponent
     }
   };
 
-  //for subclasses
-  /**
-   * Replaces a section of the offscreen image with the original.
-   */
-  public void clearOffscreen(int x, int y, int height, int width)
-  {
-    m_offscreenImage.getGraphics().drawImage(m_originalImage, x,y,height, width, x,y,width,height,this);
-  }
-
 
   /**
    * Update will not be seen until update is called.
    * Resets the offscreen image to the original.
    */
-  public void clearOffScreen()
-  {
-    ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
-    if(!m_offscreenImage.getGraphics().drawImage(m_originalImage, 0,0,watcher))
-    {
-        System.out.println("here");
-        try
-        {
-            watcher.runUntilOpComplete();
-            watcher.join();
-        }
-        catch (InterruptedException ie)
-        {
 
-            return;
-        }
-
-    }
-  }
 
   /**
    * Updates will not appear until update has been called.
@@ -401,7 +371,7 @@ public class ImageScrollerLargeView extends JComponent
     if(SwingUtilities.isEventDispatchThread())
     {
         //this fixes a strange bug on linux where the graphics werent being updated correctly
-        getOffscreenGraphics().draw3DRect(0,0,1,1,false);
+       // getOffscreenGraphics().draw3DRect(0,0,1,1,false);
         repaint();
     }
     else

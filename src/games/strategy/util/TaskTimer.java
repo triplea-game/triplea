@@ -23,7 +23,7 @@ public class TaskTimer
     public void done()
     {
         long done = System.currentTimeMillis();
-        System.out.println(m_name + " done in " + (done - m_start)  / 1000.0 + " s");
+        System.out.println(m_name + ", done in " + (done - m_start)  / 1000.0 + " s");
     }
 
 }
