@@ -438,6 +438,9 @@
 	    <connection t1="East Indies Sea Zone" t2="Borneo Sea Zone" />
 	    <connection t1="Caroline Islands Sea Zone" t2="New Guinea Sea Zone" />
 	    <connection t1="Caroline Islands Sea Zone" t2="Caroline Islands" />
+	    <connection t1="Soviet Far East Sea Zone" t2="North Pacific Sea Zone" />
+	    <connection t1="Solomon Islands Sea Zone" t2="New Guinea Sea Zone" />	    
+	    <connection t1="Borneo Sea Zone" t2="New Guinea Sea Zone" />	    
 	</map>
 	
 	<resourceList>
