@@ -355,7 +355,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		//its possible that a sub retreated to a territory we came from,
 		//if so we can no longer retreat there
 		Collection possible = Match.getMatches(m_attackingFrom, Matches.territoryHasNoEnemyUnits(m_attacker, m_data));
-        if(Match.someMatch(m_attackingUnits, Matches.UnitIsLand))
+
+        if(Match.someMatch(m_attackingUnits, Matches.UnitIsLand) && !m_territory.isWater())
           possible = Match.getMatches(possible,  Matches.TerritoryIsLand);
 
         if(Match.someMatch(m_attackingUnits, Matches.UnitIsSea))
