@@ -68,6 +68,11 @@ public class MoveDelegate implements SaveableDelegate
     //The current move
     private UndoableMove m_currentMove;
 
+    private static final String CANT_VIOLATE_NEUTRALITY  =
+        "Can't violate neutrality";
+    private static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = 
+        "Not enough money to pay for violating neutrality";
+
     /** Creates new MoveDelegate */
     public MoveDelegate()
     {
@@ -442,10 +447,9 @@ public class MoveDelegate implements SaveableDelegate
         if (resources - cost < 0)
         {
             if(isFourEdition())
-                return "Cant violate neutrality";
+	        return CANT_VIOLATE_NEUTRALITY;
             else
-                return "Not enough money to pay for violating neutrality";
-            
+                return TOO_POOR_TO_VIOLATE_NEUTRALITY;
         }
 
 
@@ -500,8 +504,16 @@ public class MoveDelegate implements SaveableDelegate
         
         if (Match.allMatch(units, Matches.UnitIsAir))
         {
-            if (route.someMatch(Matches.TerritoryIsNuetral))
-                return "Air units cannot fly over neutral territories in non combat";
+  	    if (route.someMatch(Matches.TerritoryIsNuetral))
+            {
+	        if (isFourEdition())
+                {
+ 		    return CANT_VIOLATE_NEUTRALITY;
+		} else
+                {
+                    return "Air units cannot fly over neutral territories in non combat";
+		}
+	    }
         } else
         {
             CompositeMatch neutralOrEnemy = new CompositeMatchOr(Matches.TerritoryIsNuetral, Matches.isTerritoryEnemy(player, m_data));
@@ -674,6 +686,13 @@ public class MoveDelegate implements SaveableDelegate
         {
             return "Only 1 AA gun allowed in a territory";
         }
+
+
+        String errorMsg = canCrossNeutralTerritory(route, player);
+        if ( errorMsg != null) {
+	  return errorMsg;
+	}
+
         return null;
     }
 
@@ -743,7 +762,25 @@ public class MoveDelegate implements SaveableDelegate
         return null;
     }
 
-    
+    // Determines whether we can pay the neutral territory charge for a 
+    // given route for air units. We can't cross neutral territories
+    // in 4th Edition.
+    private String canCrossNeutralTerritory(Route route, PlayerID player)
+    {
+        //neutrals we will overfly in the first place
+        Collection neutrals = getEmptyNeutral(route);
+        int ipcs = player.getResources().getQuantity(Constants.IPCS);
+        if (isFourEdition() && (neutrals.size() > 0))
+        {
+  	    return CANT_VIOLATE_NEUTRALITY;
+        }
+	if (ipcs < getNeutralCharge(neutrals.size()))
+        {
+  	    return TOO_POOR_TO_VIOLATE_NEUTRALITY;
+	}
+	return null;
+    }
+
     private boolean canFindAPlaceToLand(Route route, PlayerID player, Collection air, int distance)
     {
         Set neighbors = m_data.getMap().getNeighbors(route.getEnd(), distance);
