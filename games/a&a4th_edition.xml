@@ -1532,6 +1532,11 @@
                 
                 <property name="maxFactoriesPerTerritory" value="1"/>
 
+		<!-- Low Luck -->
+                <property name="Low Luck" value="false" editable="true">
+                        <boolean/>
+                </property>
+
                 <!-- Bids -->
 		<property name="Germans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
@@ -1551,11 +1556,6 @@
 
                 <property name="Russians bid" value="0" editable="true">
                         <number min="0" max="1000"/>
-                </property>
-
-                <!-- Low Luck -->
-                <property name="Low Luck" value="false" editable="true">
-                        <boolean/>
                 </property>
 
                 <!-- Map Name: also used for map utils when asked -->
