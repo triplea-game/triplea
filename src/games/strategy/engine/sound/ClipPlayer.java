@@ -33,8 +33,9 @@ public class ClipPlayer
 {
   private static final String SOUND_PREFERENCE = "beSilent";
   private static ClipPlayer s_clipPlayer;
-  private boolean m_beSilent = false;
+  private boolean m_beSilent = true;
   private HashMap m_sounds = new HashMap();
+  private static final boolean m_tempDisable = true;
 
   public static synchronized ClipPlayer getInstance()
   {
@@ -68,6 +69,9 @@ public class ClipPlayer
    */
   public void setBeSilent(boolean aBool)
   {
+    if(m_tempDisable)
+        return;
+      
     m_beSilent = aBool;
     Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     prefs.putBoolean(SOUND_PREFERENCE, m_beSilent);
@@ -92,6 +96,9 @@ public class ClipPlayer
    */
   public void playClip(String clipName, Class resourceLocation)
   {
+     if(m_tempDisable)
+         return;
+      
     if(m_beSilent)
       return;
 
@@ -108,6 +115,10 @@ public class ClipPlayer
    */
   public void preLoadClip(String clipName, Class resourceLocation)
   {
+    if(m_tempDisable)
+      return;
+      
+      
     loadClip(clipName, resourceLocation);
   }
 

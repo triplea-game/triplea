@@ -20,11 +20,13 @@ public class SoundPath {
 
   public static final String NAVAL_BATTLE = "naval_battle.wav";
   public static final String LAND_BATTLE = "terrain_battle.wav";
+  public static final String START_TURN = "start.wav";
 
   public static void preLoadSounds()
   {
     ClipPlayer.getInstance().preLoadClip(NAVAL_BATTLE,SoundPath.class);
     ClipPlayer.getInstance().preLoadClip(LAND_BATTLE,SoundPath.class);
+    ClipPlayer.getInstance().preLoadClip(START_TURN,SoundPath.class);    
   }
 
   private SoundPath()
