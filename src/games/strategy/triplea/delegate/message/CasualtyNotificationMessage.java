@@ -23,7 +23,7 @@ public class CasualtyNotificationMessage extends BattleMessage
   private Collection m_killed;
   private Collection m_damaged;
   private Map m_dependents;
-  private boolean m_all = false;
+  private boolean m_autoCalculated = false;
 
   public CasualtyNotificationMessage(String step, Collection killed, Collection damaged, Map dependents, PlayerID player, DiceRoll dice)
   {
@@ -72,15 +72,15 @@ public class CasualtyNotificationMessage extends BattleMessage
   }
 
   /**
-   * Flag to indicate that all of the players units have died.
+   * Flag to indicate that all casualties were calculated by the computer
    */
-  public boolean getAll()
+  public boolean getAutoCalculated()
   {
-    return m_all;
+    return m_autoCalculated;
   }
 
-  public void setAll(boolean aBool)
+  public void setAutoCalculated(boolean aBool)
   {
-    m_all = aBool;
+    m_autoCalculated = aBool;
   }
 }
