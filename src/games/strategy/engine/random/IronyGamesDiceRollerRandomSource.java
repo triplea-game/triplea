@@ -277,9 +277,10 @@ class HttpDiceRollerDialog extends JDialog
     appendText(m_annotation + "\n");
     appendText("Contacting  http://www.irony.com/mailroll.html...\n");
 
+    String text = null;
     try
     {
-      String text = DiceStatic.postRequest(m_email1, m_email2, m_count, m_annotation);
+      text = DiceStatic.postRequest(m_email1, m_email2, m_count, m_annotation);
       if(!m_test)
         appendText("Contacted :" + text + "\n");
       m_diceRoll = DiceStatic.getDice(text, m_count);
@@ -292,6 +293,10 @@ class HttpDiceRollerDialog extends JDialog
       try
       {
         appendText("Failure!  Did you enter valid email addresses?\n");
+
+        if(text != null)
+          appendText("text from dice server:\n" +text + "\n");
+
         StringWriter writer = new StringWriter();
         ex.printStackTrace(new PrintWriter(writer));
         writer.close();
