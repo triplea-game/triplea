@@ -185,7 +185,8 @@ public class MapImage
       Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
 
       Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
-      m_largeMapImage.getGraphics().drawImage(reliefImage, dirty.x, dirty.y, s_observer);
+      if(reliefImage != null)
+          m_largeMapImage.getGraphics().drawImage(reliefImage, dirty.x, dirty.y, s_observer);
 
   }
 

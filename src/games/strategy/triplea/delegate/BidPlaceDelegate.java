@@ -25,7 +25,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
   }
 
 
-  protected StringMessage canProduce(PlaceMessage placeMessage, PlayerID player, IntegerMap alreadyProduced)
+  protected StringMessage canProduce(PlaceMessage placeMessage, PlayerID player)
   {
     Territory to = placeMessage.getTo();
     Collection units = placeMessage.getUnits();

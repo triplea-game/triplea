@@ -107,7 +107,11 @@ public final class TerritoryImageFactory
            graphics.fillPolygon(polygon);
        }
        if(!place.isWater())
-           graphics.drawImage(getReliefImage(place), 0,0, new ImageIoCompletionWatcher());
+       {
+           Image img = getReliefImage(place);
+           if(img != null)
+               graphics.drawImage(img, 0,0, new ImageIoCompletionWatcher());
+       }
 
 
        return workImage;
@@ -145,7 +149,7 @@ public final class TerritoryImageFactory
       String fileName = "images/countries/" + key.replace(' ', '_')  + ".png";
       URL file = this.getClass().getResource(fileName);
       if(file == null)
-          throw new IllegalArgumentException("not found:" + fileName);
+          return null;
       Image baseImage = loadImageCompletely(file);
 
       //put it in the cache

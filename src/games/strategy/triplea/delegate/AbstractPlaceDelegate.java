@@ -68,7 +68,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     private DelegateBridge m_bridge;
     private GameData m_data;
     //maps Territory-> Collection of units
-    private Map m_produced = new HashMap();
+    protected Map m_produced = new HashMap();
     private PlayerID m_player;
     //a list of CompositeChanges
     private List m_placements = new ArrayList();
@@ -249,10 +249,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
     private StringMessage canUnitsBePlaced(Territory to, Collection units, PlayerID player)
     {
 
-        //check we havent just put a factory there
-        if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactory))
-            return new StringMessage("Factories cant produce until 1 turn after they are created", true);
-
+   
         if (to.isWater())
         {
             CompositeMatch allowedAtSea = new CompositeMatchOr();
@@ -398,6 +395,13 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
                             // 1
         if (unitCount > production)
             return new StringMessage("Can only produce " + production + " in " + producer.getName(), true);
+        
+        
+        //check we havent just put a factory there
+        if (Match.someMatch(getAlreadyProduced(placeMessage.getTo()), Matches.UnitIsFactory))
+            return new StringMessage("Factories cant produce until 1 turn after they are created", true);
+
+        
         return null;
     }
 
