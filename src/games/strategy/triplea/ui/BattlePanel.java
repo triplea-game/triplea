@@ -205,11 +205,11 @@ public class BattlePanel extends ActionPanel
     //if we are playing this player, then dont wait for the user
     //to see the units, since the player selected the units, and knows
     //what they are
-    //if all the units have died then wait, since the player
-    //hasnt been asked to select casualties
+    //if all the units to be removed have been calculated automatically
+    // then wait so user can see units which have been removed.
     //if no units died, then wait, since the user hasnt had a chance to
     //see the roll
-    boolean waitFOrUserInput = !m_parent.playing(message.getPlayer()) || message.getAll() || message.isEmpty();
+    boolean waitFOrUserInput = !m_parent.playing(message.getPlayer()) || message.getAutoCalculated() || message.isEmpty();
     m_battleDisplay.casualtyNotificationMessage( message, waitFOrUserInput);
   }
 
@@ -246,7 +246,7 @@ public class BattlePanel extends ActionPanel
     String[] options = {"OK"};
     JOptionPane.showOptionDialog( getRootPane(), panel, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
     List killed = chooser.getSelected(false);
-    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, chooser.getSelectedFirstHit());
+    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, chooser.getSelectedFirstHit(), false);
     return response;
   }
 

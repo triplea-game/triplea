@@ -305,7 +305,7 @@ public class BattleDisplay extends JPanel
                     JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", msg.getPlayer().getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
                 } else
                 {
-                    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, damaged);
+                    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, damaged, false);
                     m_selectCasualtyResponse = response;
                     synchronized (m_continueLock)
                     {
