@@ -175,7 +175,9 @@ public class MessageManager implements IMessageManager
 
     private void sendRemoteNoResponse(Message msg, String destination, INode node)
     {
-        NoResponseMessage noResponse = new NoResponseMessage(msg, destination);
+        NoResponseMessage noResponse = msg instanceof OrderedMessage ?
+                new OrderedNoResponseMessage(msg, destination) :             
+                new NoResponseMessage(msg, destination);
         m_messenger.send(noResponse, node);
     }
 
@@ -381,4 +383,14 @@ class NoResponseMessage implements java.io.Serializable
         return m_destination;
     }
 
+}
+
+class OrderedNoResponseMessage extends NoResponseMessage
+{
+    OrderedNoResponseMessage(Message msg, String destination)
+    {
+        super(msg, destination);
+       
+    }
+    
 }

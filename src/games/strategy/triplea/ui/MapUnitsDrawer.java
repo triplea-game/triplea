@@ -349,6 +349,8 @@ public class MapUnitsDrawer
                 {
                     //hopefull we can merge changes together
                     //wait and give other changes a chace to happen
+                    //this works because as we wait, more territories
+                    //can be scheduled for update	
                     thread_lock.wait(60);
                 }
                 catch (InterruptedException ex)

@@ -135,7 +135,7 @@ public class HistoryWriter implements java.io.Serializable
   {
     if (!isCurrentEvent())
     {
-        new IllegalStateException("Not in an event, but trying to add child:" + node).printStackTrace(System.out);
+        new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" + m_current).printStackTrace(System.out);
         startEvent("???");
     }
       
@@ -151,7 +151,7 @@ public class HistoryWriter implements java.io.Serializable
   {
     if (!isCurrentEvent())
     {
-      new IllegalStateException("Not in an event, but trying to add change:" + change).printStackTrace(System.out);
+      new IllegalStateException("Not in an event, but trying to add change:" + change + " current is:" + m_current).printStackTrace(System.out);
       startEvent("????");
     }
     m_history.changeAdded(change);
@@ -161,7 +161,7 @@ public class HistoryWriter implements java.io.Serializable
   {
     if (!isCurrentEvent())
     {
-      new IllegalStateException("Not in an event, but trying to set details:" + details).printStackTrace(System.out);
+      new IllegalStateException("Not in an event, but trying to set details:" + details + " current is:" + m_current).printStackTrace(System.out);
       startEvent("???");
     }
     ( (Event) m_current).setRenderingData(details);

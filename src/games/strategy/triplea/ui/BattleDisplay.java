@@ -133,21 +133,30 @@ public class BattleDisplay extends JPanel
         waitForConfirmation("Continue");
     }
     
-    public void waitForConfirmation(String message)
+    private void waitForConfirmation(final String message)
     {
         final Object continueLock = new Object();
         
-        m_actionButton.setAction(new AbstractAction(message)
-                {
-            public void actionPerformed(ActionEvent e)
-            {
-                synchronized (continueLock)
-                {
-                    continueLock.notifyAll();
-                }
-            }
-                });
+        //set the action in the swing thread.
         
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run()
+            {
+                m_actionButton.setAction(new AbstractAction(message)
+                        {
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        synchronized (continueLock)
+                        {
+                            continueLock.notifyAll();
+                        }
+                    }
+                        });
+            }
+            
+        });
+        
+        //wait for the button to be pressed.
         try
         {
             synchronized (continueLock)
@@ -159,7 +168,18 @@ public class BattleDisplay extends JPanel
             
         }
         
-        m_actionButton.setAction(null);
+        
+        SwingUtilities.invokeLater(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        m_actionButton.setAction(null);                        
+                    }
+                }
+        );
+        
+
         
         
     }
@@ -279,39 +299,45 @@ public class BattleDisplay extends JPanel
         m_actionButton.setEnabled(true);
         
         final Object continueLock = new Object();
-        
-        m_actionButton.setAction(new AbstractAction(btnText)
+        SwingUtilities.invokeLater(
+                new Runnable()
                 {
-            
-            public void actionPerformed(ActionEvent e)
-            {
-                
-                String messageText = msg.getMessage() + " " + btnText + ".";
-                UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDefaultCasualties(), msg.getDependent(), m_data, true);
-                
-                chooser.setTitle(messageText);
-                chooser.setMax(msg.getCount());
-                String[] options = {"Ok", "Cancel"};
-                int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-                if (option != 0)
-                    return;
-                List killed = chooser.getSelected(false);
-                List damaged = chooser.getSelectedFirstHit();
-                
-                if (killed.size() + damaged.size() != msg.getCount())
-                {
-                    JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", msg.getPlayer().getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
-                } else
-                {
-                    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, damaged, false);
-                    m_selectCasualtyResponse = response;
-                    synchronized (continueLock)
+                    
+                    public void run()
                     {
-                        continueLock.notifyAll();
-                    }
-                }
-            }
-                });
+                        m_actionButton.setAction(new AbstractAction(btnText)
+                                {
+                            
+                            public void actionPerformed(ActionEvent e)
+                            {
+                                
+                                String messageText = msg.getMessage() + " " + btnText + ".";
+                                UnitChooser chooser = new UnitChooser(msg.getSelectFrom(), msg.getDefaultCasualties(), msg.getDependent(), m_data, true);
+                                
+                                chooser.setTitle(messageText);
+                                chooser.setMax(msg.getCount());
+                                String[] options = {"Ok", "Cancel"};
+                                int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, msg.getPlayer().getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+                                if (option != 0)
+                                    return;
+                                List killed = chooser.getSelected(false);
+                                List damaged = chooser.getSelectedFirstHit();
+                                
+                                if (killed.size() + damaged.size() != msg.getCount())
+                                {
+                                    JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", msg.getPlayer().getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
+                                } else
+                                {
+                                    SelectCasualtyMessage response = new SelectCasualtyMessage(killed, damaged, false);
+                                    m_selectCasualtyResponse = response;
+                                    synchronized (continueLock)
+                                    {
+                                        continueLock.notifyAll();
+                                    }
+                                }
+                            }
+                                });
+                    }});
         
         try
         {
@@ -325,7 +351,15 @@ public class BattleDisplay extends JPanel
         
         m_dicePanel.clear();
         m_actionButton.setEnabled(false);
-        m_actionButton.setAction(null);
+        
+        SwingUtilities.invokeLater(new Runnable() 
+        {    
+            public void run()
+            {
+                m_actionButton.setAction(null);
+            }
+        });
+        
         SelectCasualtyMessage rVal = m_selectCasualtyResponse;
         m_selectCasualtyResponse = null;
         return rVal;
