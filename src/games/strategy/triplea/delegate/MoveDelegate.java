@@ -60,6 +60,7 @@ public class MoveDelegate implements SaveableDelegate
     private boolean m_nonCombat;
     private TransportTracker m_transportTracker = new TransportTracker();
     private IntegerMap m_alreadyMoved = new IntegerMap();
+    private IntegerMap m_ipcsLost = new IntegerMap();
     private SubmergedTracker m_submergedTracker = new SubmergedTracker();
     
     // A collection of UndoableMoves
@@ -1183,17 +1184,6 @@ public class MoveDelegate implements SaveableDelegate
         if (m_nonCombat)
             removeAirThatCantLand();
         m_movesToUndo.clear();
-
-        //do at the end of the round
-        //if we do it at the start of non combat, then
-        //we may do it in the middle of the round, while loading.
-        if (m_nonCombat)
-        {
-            m_alreadyMoved.clear();
-            m_transportTracker.endOfRoundClearState();
-
-            m_submergedTracker.clear();
-        }
         
         //fourth edition, fires at end of combat move
         //3rd edition, fires at end of non combat move
@@ -1206,8 +1196,17 @@ public class MoveDelegate implements SaveableDelegate
                 helper.fireRockets(m_bridge, m_data, m_bridge.getPlayerID());
             }
          }
-        
-            
+
+        //do at the end of the round
+        //if we do it at the start of non combat, then
+        //we may do it in the middle of the round, while loading.
+        if (m_nonCombat)
+        {
+            m_alreadyMoved.clear();
+            m_transportTracker.endOfRoundClearState();
+	    m_ipcsLost.clear();
+            m_submergedTracker.clear();
+        }
         
     }
 
@@ -1544,9 +1543,24 @@ public class MoveDelegate implements SaveableDelegate
             
     }
 
+    /**
+     * Return the number of ipcs that have been lost by bombing, rockets, etc.
+     */
+    public int ipcsAlreadyLost(Territory t)
+    {
+	return m_ipcsLost.getInt(t);
+    }
+
+    /**
+     * Add more ipcs lost to a territory due to bombing, rockets, etc.
+     */
+    public void ipcsLost(Territory t, int amt)
+    {
+	m_ipcsLost.add(t, amt);
+    }
+
     public TransportTracker getTransportTracker()
     {
-
         return m_transportTracker;
     }
 
@@ -1582,6 +1596,7 @@ public class MoveDelegate implements SaveableDelegate
         if (saveUndo)
             state.m_movesToUndo = m_movesToUndo;
         state.m_submergedTracker = m_submergedTracker;
+	state.m_ipcsLost = m_ipcsLost;
         return state;
     }
 
@@ -1602,6 +1617,7 @@ public class MoveDelegate implements SaveableDelegate
         if (state.m_movesToUndo != null)
             m_movesToUndo = state.m_movesToUndo;
         m_submergedTracker = state.m_submergedTracker;
+	m_ipcsLost = state.m_ipcsLost;
     }
     
     public SubmergedTracker getSubmergedTracker()
@@ -1613,11 +1629,11 @@ public class MoveDelegate implements SaveableDelegate
 
 class MoveState implements Serializable
 {
-    
     public boolean m_firstRun = true;
     public boolean m_nonCombat;
     public TransportTracker m_transportTracker;
     public IntegerMap m_alreadyMoved;
+    public IntegerMap m_ipcsLost;
     public List m_movesToUndo;
     public SubmergedTracker m_submergedTracker;
     

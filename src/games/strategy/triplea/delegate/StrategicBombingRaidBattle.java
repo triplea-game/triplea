@@ -230,15 +230,22 @@ public class StrategicBombingRaidBattle implements Battle
             for(int i = 0; i < rolls; i++)
             {
                 costThisUnit += dice[index] + 1;
-                index++;
+		index++;
             }
-            if(fourthEdition)
-                cost+= Math.min(costThisUnit, production);
-            else
-                cost+=costThisUnit;
+
+	    if(fourthEdition)
+		cost += Math.min(costThisUnit, production);
+	    else
+		cost += costThisUnit;
         }
 
-
+	// Limit ipcs lost if we would like to cap ipcs lost at territory value
+	if (m_data.getProperties().get(Constants.IPC_CAP, false))
+	{
+	    int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(location);
+	    int limit = Math.max(0, production - alreadyLost);
+	    cost = Math.min(cost, limit);
+	}
 
         BombingResults results = new BombingResults(dice, cost);
 
@@ -249,6 +256,9 @@ public class StrategicBombingRaidBattle implements Battle
         Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
         int have = m_defender.getResources().getQuantity(ipcs);
         int toRemove = Math.min(cost, have);
+
+	// Record ipcs lost
+	DelegateFinder.moveDelegate(m_data).ipcsLost(location, toRemove);
 
         Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
         bridge.addChange(change);

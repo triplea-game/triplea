@@ -170,7 +170,16 @@ public class RocketsFireHelper
         if (data.getProperties().get(Constants.FOURTH_EDITION, false))
         {
             int territoryProduction = TerritoryAttatchment.get(attackedTerritory).getProduction();
-            if (cost > territoryProduction)
+	    // If we are limiting total ipcs lost then take that into
+	    // account
+	    if (data.getProperties().get(Constants.IPC_CAP, false))
+	    {
+		int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
+		territoryProduction -= alreadyLost;
+		territoryProduction = Math.max(0, territoryProduction);
+	    }
+            
+	    if (cost > territoryProduction)
             {
                 cost = territoryProduction;
             }
@@ -180,6 +189,9 @@ public class RocketsFireHelper
         int availForRemoval = attacked.getResources().getQuantity(ipcs);
         if (cost > availForRemoval)
             cost = availForRemoval;
+
+	// Record the ipcs lost
+	DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
 
         bridge.sendMessage(new StringMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost));
 

@@ -1538,7 +1538,12 @@
                 
                 <property name="maxFactoriesPerTerritory" value="1"/>
 
-		<!-- Low Luck -->
+		<!-- Territory turn limits -->
+                <property name="Territory Turn Limit" value="true" editable="false">
+                        <boolean/>
+                </property>
+
+		<!-- Low Luck, this has to be false with heavy bomber downgrade -->
                 <property name="Low Luck" value="false" editable="false">
                         <boolean/>
                 </property>
