@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="4th Edition" version="1.2"/>
+        <info name="LHTR 4th Edition" version="1.0"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -581,56 +581,56 @@
                         <!-- Russians Game Sequence -->
                         
                         <step name="russianTech" delegate="tech" player="Russians"/>
-                        <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
                         <step name="russianPurchase" delegate="purchase" player="Russians"/>
                         <step name="russianCombatMove" delegate="move" player="Russians"/>
                         <step name="russianBattle" delegate="battle" player="Russians"/>
                         <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
                         <step name="russianPlace" delegate="place" player="Russians"/>
+                        <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
                         <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
                         <!-- Germans Game Sequence -->
 
                         <step name="germanTech" delegate="tech" player="Germans"/>
-                        <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
                         <step name="germanPurchase" delegate="purchase" player="Germans"/>
                         <step name="germanCombatMove" delegate="move" player="Germans"/>
                         <step name="germanBattle" delegate="battle" player="Germans"/>
                         <step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
                         <step name="germanPlace" delegate="place" player="Germans"/>
+                        <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
                         <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
                         <!-- British Game Sequence -->
 
                         <step name="britishTech" delegate="tech" player="British"/>
-                        <step name="britishTechActivation" delegate="tech_activation" player="British"/>
                         <step name="britishPurchase" delegate="purchase" player="British"/>
                         <step name="britishCombatMove" delegate="move" player="British"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
                         <step name="britishPlace" delegate="place" player="British"/>
+                        <step name="britishTechActivation" delegate="tech_activation" player="British"/>
                         <step name="britishEndTurn" delegate="endTurn" player="British"/>
 
                         <!-- Japanese Game Sequence -->
 
                         <step name="japaneseTech" delegate="tech" player="Japanese"/>
-                        <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
                         <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
                         <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
                         <step name="japaneseBattle" delegate="battle" player="Japanese"/>
                         <step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
                         <step name="japanesePlace" delegate="place" player="Japanese"/>
+                        <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
                         <step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
 
                         <!-- Americans Game Sequence -->
 
                         <step name="americanTech" delegate="tech" player="Americans"/>
-                        <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
                         <step name="americanPurchase" delegate="purchase" player="Americans"/>
                         <step name="americanCombatMove" delegate="move" player="Americans"/>
                         <step name="americanBattle" delegate="battle" player="Americans"/>
                         <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
                         <step name="americanPlace" delegate="place" player="Americans"/>
+                        <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
                         <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
                         
                         <step name="endRoundStep" delegate="endRound"/>
@@ -1526,7 +1526,7 @@
                         <boolean/>
                 </property>
                 
-                <property name="Always on AA" value="true" editable="true">
+                <property name="Always on AA" value="true" editable="false">
                         <boolean/>
                 </property>
                 
@@ -1539,7 +1539,7 @@
                 <property name="maxFactoriesPerTerritory" value="1"/>
 
 		<!-- Low Luck -->
-                <property name="Low Luck" value="false" editable="true">
+                <property name="Low Luck" value="false" editable="false">
                         <boolean/>
                 </property>
 

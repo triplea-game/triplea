@@ -577,6 +577,7 @@
         <gamePlay>
                 <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
                 <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+                <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
                 <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
                 <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
                 <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
@@ -611,6 +612,7 @@
                         
                         <!-- Italians Game Sequence -->
                         <step name="italianTech" delegate="tech" player="Italians"/>
+                        <step name="italianTechActivation" delegate="tech_activation" player="Italians"/>
                         <step name="italianPurchase" delegate="purchase" player="Italians"/>
                         <step name="italianCombatMove" delegate="move" player="Italians"/>
                         <step name="italianBattle" delegate="battle" player="Italians"/>
@@ -620,6 +622,7 @@
                         
                         <!-- Russians Game Sequence -->
                         <step name="russianTech" delegate="tech" player="Russians"/>
+                        <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
                         <step name="russianPurchase" delegate="purchase" player="Russians"/>
                         <step name="russianCombatMove" delegate="move" player="Russians"/>
                         <step name="russianBattle" delegate="battle" player="Russians"/>
@@ -629,6 +632,7 @@
 
                         <!-- Germans Game Sequence -->
                         <step name="germanTech" delegate="tech" player="Germans"/>
+                        <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
                         <step name="germanPurchase" delegate="purchase" player="Germans"/>
                         <step name="germanCombatMove" delegate="move" player="Germans"/>
                         <step name="germanBattle" delegate="battle" player="Germans"/>
@@ -638,6 +642,7 @@
 
                         <!-- British Game Sequence -->
                         <step name="britishTech" delegate="tech" player="British"/>
+                        <step name="britishTechActivation" delegate="tech_activation" player="British"/>
                         <step name="britishPurchase" delegate="purchase" player="British"/>
                         <step name="britishCombatMove" delegate="move" player="British"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
@@ -647,6 +652,7 @@
 
                         <!-- Japanese Game Sequence -->
                         <step name="japaneseTech" delegate="tech" player="Japanese"/>
+                        <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
                         <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
                         <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
                         <step name="japaneseBattle" delegate="battle" player="Japanese"/>
@@ -656,6 +662,7 @@
 
                         <!-- Americans Game Sequence -->
                         <step name="americanTech" delegate="tech" player="Americans"/>
+                        <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
                         <step name="americanPurchase" delegate="purchase" player="Americans"/>
                         <step name="americanCombatMove" delegate="move" player="Americans"/>
                         <step name="americanBattle" delegate="battle" player="Americans"/>
