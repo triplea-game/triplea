@@ -1,3 +1,7 @@
+* fixed [ 1158469 ] Missing units in Purchase Menu when odd number of choices (sgb)
+
+* you can now specify victory cities in xml using a territory attachement (sgb)
+
 * added tile map drawing (sgb)
 
 * add a copy to clipboard button on the console (sgb)
