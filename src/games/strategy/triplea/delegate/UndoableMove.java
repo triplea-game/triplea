@@ -1,0 +1,213 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package games.strategy.triplea.delegate;
+
+import java.io.Serializable;
+import java.util.*;
+
+import games.strategy.engine.data.*;
+import games.strategy.engine.delegate.DelegateBridge;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.*;
+
+/**
+ * Contains all the data to describe a move and to undo it.
+ */
+
+public class UndoableMove implements Serializable
+{
+    /**
+     * Stores data about a move so that it can be undone.
+     * Stores the serialized state of the move and battle delegates (just
+     * as if they were saved), and a CompositeChange that represents all the changes that
+     * were made during the move.
+     *
+     * Some moves (such as those following an aa fire) can't be undone.
+     */
+    private int m_index;
+    private transient CompositeChange m_undoChange = new CompositeChange();
+    private String m_reasonCantUndo;
+    private String m_description;
+    private transient IntegerMap m_changedMovement;
+    private transient IntegerMap m_startingMovement; //needed so we can calculate the change when done
+
+    //this move is dependent on these moves
+    //these moves cant be undone until this one has been
+    private Set m_iDependOn = new HashSet();
+    //these moves depend on me
+    //we cant be undone until this is empty
+    private Set m_dependOnMe = new HashSet();
+
+
+    //maps unit -> transport, both of type Unit
+    private transient Map m_loaded = new HashMap();
+
+    //maps unit -> transport, both of type Unit
+    private transient Map m_unloaded = new HashMap();
+
+    private final Route m_route;
+    private final Collection m_units;
+
+    public Collection getUnits()
+    {
+        return m_units;
+    }
+
+    public Route getRoute()
+    {
+        return m_route;
+    }
+
+    public int getIndex()
+    {
+        return m_index;
+    }
+
+    public void setIndex(int index)
+    {
+        m_index = index;
+    }
+
+    public boolean getcanUndo()
+    {
+        return m_reasonCantUndo == null && m_dependOnMe.isEmpty();
+    }
+
+    public String getReasonCantUndo()
+    {
+        if(m_reasonCantUndo != null)
+            return m_reasonCantUndo;
+        else if(!m_dependOnMe.isEmpty())
+            return "Later moves move the same units that this move does, undo later moves first";
+        else
+            throw new IllegalStateException("no reason");
+
+    }
+
+    public void setCantUndo(String reason)
+    {
+        m_reasonCantUndo = reason;
+    }
+
+    public void addChange(Change aChange)
+    {
+        m_undoChange.add(aChange);
+    }
+
+    public String getDescription()
+    {
+        return m_description;
+    }
+
+    public void setDescription(String description)
+    {
+        m_description = description;
+    }
+
+    public UndoableMove(GameData data, IntegerMap startMovement,
+                        Collection units, Route route)
+    {
+        m_startingMovement = startMovement.copy();
+        m_route = route;
+        m_units = units;
+    }
+
+    public void load(Unit unit, Unit transport)
+    {
+        m_loaded.put(unit, transport);
+    }
+
+    public void unload(Unit unit, Unit transport)
+    {
+        m_unloaded.put(unit, transport);
+    }
+
+    public void markEndMovement(IntegerMap endMovement)
+    {
+        //start - change
+        m_changedMovement = m_startingMovement.copy();
+        m_changedMovement.subtract(endMovement);
+        //we dont need this any more
+        m_startingMovement = null;
+
+    }
+
+    public void undo(DelegateBridge bridge, IntegerMap movement,
+                     BattleTracker battleTracker,
+                     TransportTracker transportTracker)
+    {
+        //undo any changes to the game data
+        bridge.addChange(m_undoChange.invert());
+
+        bridge.getTranscript().write(bridge.getPlayerID().getName() +
+                                     " undoes his last move.");
+        movement.add(m_changedMovement);
+        if (m_loaded != null)
+        {
+            Iterator loaded = m_loaded.keySet().iterator();
+            while (loaded.hasNext())
+            {
+                Unit unit = (Unit) loaded.next();
+                Unit transport = (Unit) m_loaded.get(unit);
+                transportTracker.undoLoad(unit, transport);
+
+            }
+        }
+
+        if (m_unloaded != null)
+        {
+            Iterator unloaded = m_unloaded.keySet().iterator();
+            while (unloaded.hasNext())
+            {
+                Unit unit = (Unit) unloaded.next();
+                Unit transport = (Unit) m_unloaded.get(unit);
+                transportTracker.undoUnload(unit, transport);
+            }
+        }
+        battleTracker.undoBattle(m_route, m_units);
+
+        //clean up dependencies
+        Iterator iter = m_iDependOn.iterator();
+        while (iter.hasNext()) {
+            UndoableMove other = (UndoableMove)iter.next();
+            other.m_dependOnMe.remove(this);
+
+        }
+
+    }
+
+    /**
+     * Update the dependencies.
+     */
+    public void initializeDependencies(List undoableMoves)
+    {
+        Iterator iter = undoableMoves.iterator();
+        while (iter.hasNext())
+        {
+            UndoableMove other = (UndoableMove)iter.next();
+
+            if( //if the other move has moves that depend on this
+                !Util.intersection(other.getUnits(), this.getUnits() ).isEmpty() ||
+                //if the other move has unloaded transports that we are trying to move
+                !Util.intersection(other.m_unloaded.entrySet(), this.getUnits()).isEmpty()
+               )
+            {
+                m_iDependOn.add(other);
+                other.m_dependOnMe.add(this);
+            }
+        }
+    }
+
+}
