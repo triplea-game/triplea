@@ -612,7 +612,8 @@ public class MoveDelegate implements SaveableDelegate
         }
 
         //only allow aa into a terland territory if one already present.
-        if (Match.someMatch(units, Matches.UnitIsAA) && route.getEnd().getUnits().someMatch(Matches.UnitIsAA) && !route.getEnd().isWater())
+        if (  !isFourEdition() &&
+                Match.someMatch(units, Matches.UnitIsAA) && route.getEnd().getUnits().someMatch(Matches.UnitIsAA) && !route.getEnd().isWater())
         {
             return "Only one AA gun allowed in a territroy";
         }
@@ -625,6 +626,11 @@ public class MoveDelegate implements SaveableDelegate
         return null;
     }
 
+    private boolean isFourEdition()
+    {
+        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+    }
+    
     private String validateAirCanLand(Collection units, Route route, PlayerID player)
     {
 
