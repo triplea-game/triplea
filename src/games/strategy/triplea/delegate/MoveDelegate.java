@@ -693,30 +693,20 @@ public class MoveDelegate implements SaveableDelegate
             int distance = MoveValidator.getLeastMovement(air, m_alreadyMoved);
             distance = distance - route.getLength();
 
-            Set neighbors = m_data.getMap().getNeighbors(route.getEnd(), distance);
+            boolean canLand = canFindAPlaceToLand(route, player, air, distance);
 
-            boolean canLand = false;
-            Iterator iter = neighbors.iterator();
-
-            //neutrals we will overfly in the first place
-            Collection neutrals = getEmptyNeutral(route);
-            int ipcs = player.getResources().getQuantity(Constants.IPCS);
-
-            while (iter.hasNext())
+            //this is a hack
+            //if the air that we are moving and cant find another place to land,
+            //see if the air we are moving can land in the given territory
+            //and the air already there can land somewhere else
+            if(!canLand && MoveValidator.canLand(units, route.getEnd(), m_player, m_data))
             {
-                Territory possible = (Territory) iter.next();
-                if (MoveValidator.canLand(air, possible, player, m_data))
-                {
-                    //make sure we can pay for the neutrals we will
-                    //overfly when we go to land
-                    Set overflownNeutrals = new HashSet();
-                    overflownNeutrals.addAll(neutrals);
-                    overflownNeutrals.addAll(getBestNeutralEmptyCollection(route.getEnd(), possible, distance));
-                    if (ipcs >= getNeutralCharge(overflownNeutrals.size()))
-                        canLand = true;
-                }
+                Collection airAlreadyThere = Match.getMatches( MoveValidator.getFriendly(route.getEnd(), player, m_data), Matches.UnitIsAir);
+                distance = MoveValidator.getLeastMovement(airAlreadyThere, m_alreadyMoved);
+                canLand = canFindAPlaceToLand(route, player, airAlreadyThere, distance);
+                    
             }
-
+            
             //TODO - may be able to split air units up and land in different
             // groups
             //eg a bomber and a fighter move to a carrier. Bomber can land on
@@ -734,6 +724,35 @@ public class MoveDelegate implements SaveableDelegate
         }
 
         return null;
+    }
+
+    
+    private boolean canFindAPlaceToLand(Route route, PlayerID player, Collection air, int distance)
+    {
+        Set neighbors = m_data.getMap().getNeighbors(route.getEnd(), distance);
+
+        boolean canLand = false;
+        Iterator iter = neighbors.iterator();
+
+        //neutrals we will overfly in the first place
+        Collection neutrals = getEmptyNeutral(route);
+        int ipcs = player.getResources().getQuantity(Constants.IPCS);
+
+        while (iter.hasNext())
+        {
+            Territory possible = (Territory) iter.next();
+            if (MoveValidator.canLand(air, possible, player, m_data))
+            {
+                //make sure we can pay for the neutrals we will
+                //overfly when we go to land
+                Set overflownNeutrals = new HashSet();
+                overflownNeutrals.addAll(neutrals);
+                overflownNeutrals.addAll(getBestNeutralEmptyCollection(route.getEnd(), possible, distance));
+                if (ipcs >= getNeutralCharge(overflownNeutrals.size()))
+                    canLand = true;
+            }
+        }
+        return canLand;
     }
 
     private String validateTransport(Collection units, Route route, PlayerID player, Collection transportsToLoad)
