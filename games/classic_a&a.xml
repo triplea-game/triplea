@@ -1235,6 +1235,9 @@
 		<property name="Two hit battleship" value="false" editable="true">
 			<boolean/>
 		</property>
+		<property name="Produce fighters on carriers" value="false" editable="true">
+			<boolean/>
+		</property>
 		<property name="Always on AA" value="false" editable="true">
 			<boolean/>
 		</property>
