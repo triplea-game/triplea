@@ -24,7 +24,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
+import javax.swing.border.*;
 
 /**
  *
@@ -61,7 +61,7 @@ public class ImageScrollerSmallView extends JComponent
     }
     m_image = image;
 
-    this.setBorder( new LineBorder(Color.darkGray, 3));
+    this.setBorder( new EtchedBorder());
 
     int prefWidth = getInsetsWidth() + m_image.getWidth(this);
     int prefHeight = getInsetsHeight() + m_image.getHeight(this);
