@@ -1017,9 +1017,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean isFourthEdition()
     {
-
-        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+      return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
+
 
     /**
      * Marks all the naval origins as having been the source for a bombardment
@@ -1066,11 +1066,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //attacker to select casualties
         bridge.sendMessageNoResponse(new BattleInfoMessage(dice, "aa hits", step), m_defender);
 
-        Collection attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
-        Collection casualties = selectCasualties(step, bridge, attackable, false, "AA guns fire,", dice).getKilled();
+	Collection casualties = null;
+	Collection attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
+	boolean autoCalculated = false;
+	// if 4th edition choose casualties randomnly
+	// we can do that by removing planes at positions in the list where
+	// there was a corresponding hit in the dice roll.
+	if (isFourthEdition()) {
+	  casualties = BattleCalculator.fourthEditionAACasualties(attackable, dice);
+	  autoCalculated = true;
+	} else {
+	  casualties = selectCasualties(step, bridge, attackable, false, "AA guns fire,", dice).getKilled();
+	}
 
         CasualtyNotificationMessage msg = new CasualtyNotificationMessage(step, casualties, Collections.EMPTY_LIST, m_dependentUnits, m_attacker, dice);
-        msg.setAutoCalculated(false);
+        msg.setAutoCalculated(autoCalculated);
 
         bridge.sendMessage(msg, m_attacker);
         bridge.sendMessage(msg, m_defender);

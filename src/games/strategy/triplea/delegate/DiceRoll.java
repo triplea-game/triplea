@@ -36,6 +36,9 @@ public class DiceRoll implements java.io.Serializable
   private final int m_hits;
   private final boolean m_hitOnlyIfEquals;
 
+  public static boolean aaHit(int die) {
+    return die == 0;
+  }
 
   public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge, Territory location)
   {
@@ -43,7 +46,7 @@ public class DiceRoll implements java.io.Serializable
     int hits = 0;
     for(int i = 0; i < random.length; i++)
     {
-      if(random[i] == 0)
+      if(aaHit(random[i]))
         hits++;
     }
 

@@ -1465,10 +1465,18 @@ public class MoveDelegate implements SaveableDelegate
     {
 
         String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
+	// If fourth edition, select casualties randomnly
+	Collection casualties = null;
+	if (isFourEdition()) {
+          casualties = BattleCalculator.fourthEditionAACasualties(units, dice);
+	} else {
+	  SelectCasualtyMessage casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false);
+	  casualties = casualtyMsg.getKilled();
+	}
 
-        SelectCasualtyMessage casualties = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false);
-        m_bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(), casualties.getKilled());
-        units.removeAll(casualties.getKilled());
+	m_bridge.sendMessage(new StringMessage(dice.getHits() + " AA hits in " + territory.getName()));
+        m_bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
+        units.removeAll(casualties);
     }
     
     /**

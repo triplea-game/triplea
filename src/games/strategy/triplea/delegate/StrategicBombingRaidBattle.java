@@ -142,30 +142,41 @@ public class StrategicBombingRaidBattle implements Battle
         removeAAHits(bridge, dice);
     }
 
+    /**
+     * @return
+     */
+    private boolean isFourthEdition()
+    {
+      return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+    }
+
     private void removeAAHits(DelegateBridge bridge, DiceRoll dice)
     {
-
-        Collection casualties = new ArrayList(dice.getHits());
+      Collection casualties = null;
+      if (isFourthEdition()) {
+        casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice);
+      } else {
+        casualties = new ArrayList(dice.getHits());
         for (int i = 0; i < dice.getHits() && i < m_units.size(); i++)
         {
             casualties.add(m_units.get(i));
         }
+      }
+        
+      if (casualties.size() != dice.getHits())
+	throw new IllegalStateException("Wrong number of casualties");
+      
+      CasualtyNotificationMessage notify = new CasualtyNotificationMessage(FIRE_AA, casualties, null, null, m_attacker, dice);
+      
+      notify.setAutoCalculated(true);
+      bridge.sendMessage(notify, m_attacker);
+      bridge.sendMessage(notify, m_defender);
+      
+      bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
 
-        if (casualties.size() != dice.getHits())
-            throw new IllegalStateException("Wrong number of casualties");
-
-        CasualtyNotificationMessage notify = new CasualtyNotificationMessage(FIRE_AA, casualties, null, null, m_attacker, dice);
-
-        notify.setAutoCalculated(true);
-        bridge.sendMessage(notify, m_attacker);
-        bridge.sendMessage(notify, m_defender);
-
-        bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
-
-        m_units.removeAll(casualties);
-        Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
-        bridge.addChange(remove);
-
+      m_units.removeAll(casualties);
+      Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
+      bridge.addChange(remove);
     }
 
     /**

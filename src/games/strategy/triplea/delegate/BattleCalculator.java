@@ -55,6 +55,26 @@ public class BattleCalculator
     return hitCount;
   }
 
+  public static Collection fourthEditionAACasualties(Collection planes, DiceRoll dice) 
+  {
+    Collection casualties = new ArrayList();
+    int[] aaRolls = dice.getRolls(1);
+    Iterator planesIter = planes.iterator();
+    // Number of dice rolls must be equal to number of planes
+    if (planes.size() != aaRolls.length) {
+      throw new IllegalStateException("Number of aa rolls not equal to number of planes");
+    }
+    for (int i = 0; i < aaRolls.length; i++)
+    {
+      Object unit = planesIter.next();
+      if (DiceRoll.aaHit(aaRolls[i]))
+      {
+	casualties.add(unit);
+      }
+    }
+    return casualties;
+  }
+
   public static SelectCasualtyMessage selectCasualties(PlayerID player, Collection targets, DelegateBridge bridge, String text, GameData data, DiceRoll dice, boolean defending)
   {
     return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
@@ -85,7 +105,7 @@ public class BattleCalculator
 
 
     // Create production cost map, Maybe should do this elsewhere, but in case prices
-    // we do it here.
+    // change, we do it here.
     IntegerMap costs = getCosts(player, data);
 
     List defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
