@@ -277,18 +277,113 @@ public class TripleAFrame extends JFrame
 	// Put in unit size menu
 	menuGame.add(getUnitSizeMenu());
 
+    //beagles Mapskin code
+    //creates a sub menu of radiobuttons for each available mapdir
+    
+    JMenuItem mapMenuItem; 
+    menuGame.addSeparator();
+    JMenu mapSubMenu = new JMenu("Map Skins");
+    ButtonGroup mapButtonGroup = new ButtonGroup();
+    
+    // Create A String array of compatible MapDirs
+    
+    final String currentMapSubDir = TerritoryImageFactory.getMapDir();
+    final File mapsDir = new File(System.getProperty("user.dir")+"/../classes/games/strategy/triplea/image/"+Constants.MAP_DIR);
+
+    if (currentMapSubDir != null)
+    {
+        //Filter only MapDirs that start with the originals name
+	
+        FilenameFilter filter = new FilenameFilter()   
+	{
+            public boolean accept(File mapsDir, String name)
+	    { 
+	        if (name.startsWith(currentMapSubDir))
+		{
+		    File file = new File(mapsDir+"/"+name);
+		    return file.isDirectory();
+	        }
+	        return (false);
+	    }
+        };
+	String[] mapDirs = mapsDir.list(filter);
+	
+	//create entry for each mapdir
+	String mapMenuItemName;
+        for (int i = 0; i < mapDirs.length; i++)
+	{
+	    mapMenuItemName=mapDirs[i].replaceFirst(currentMapSubDir,"");
+	    if (mapMenuItemName.length()==0)
+	    {
+//	        mapMenuItemName="Original";
+		mapMenuItem = new  JRadioButtonMenuItem("Original");
+		mapMenuItem.setSelected(true);
+	    }
+	    else
+	    {
+	        mapMenuItem = new  JRadioButtonMenuItem(mapMenuItemName);
+	    }
+	    
+	    // add item to button group and sub menu
+	    
+	    mapButtonGroup.add(mapMenuItem);
+	    mapSubMenu.add(mapMenuItem);
+	    
+	    
+	    //add the listening code
+	    
+	    mapMenuItem.addActionListener(new ActionListener()
+	    {
+	        public void actionPerformed(ActionEvent e)
+		{
+		    if (e.getActionCommand()=="Original")
+		    {
+			try
+			{
+			    UpdateMap (currentMapSubDir);
+			}
+			catch(Exception se)
+			{
+			    se.printStackTrace();
+                            JOptionPane.showMessageDialog(TripleAFrame.this, se.getMessage(), "Error Changing Map Skin", JOptionPane.OK_OPTION);
+			}
+		    }
+		    else
+		    {
+			try
+			{
+			    UpdateMap (currentMapSubDir+e.getActionCommand());
+			}
+			catch(Exception se)
+			{
+			    se.printStackTrace();
+                            JOptionPane.showMessageDialog(TripleAFrame.this, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
+			}
+			
+		    }//else
+		    
+		}//actionPerformed
+	    });
+	    
+        }//for
+    
+    }//if
+    
+    // add the sub menu to the menu
+    menuGame.add(mapSubMenu);
+
 	final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
 
 	soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
 	//temporarily disable sound
 
 	soundCheckBox.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent e)
 	    {
-		public void actionPerformed(ActionEvent e)
-		{
-		    ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
-		}
-	    });
+                ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
+	    }
+        });
 
     
 	final JCheckBox showMapDetails = new JCheckBox("Show Map Details");
@@ -435,8 +530,6 @@ public class TripleAFrame extends JFrame
 	    }
 	    );
 
-
-
         //allow the game developer to write notes that appear in the game
         //displays whatever is in the notes field in html
         final String notes = (String) m_data.getProperties().get("notes");
@@ -465,6 +558,28 @@ public class TripleAFrame extends JFrame
 
 	this.setJMenuBar(menuBar);
     }
+
+
+    // Beagle Code Called to Change Mapskin
+    private void UpdateMap (String mapdir) throws IOException 
+    {
+        
+        TerritoryData.setMapDir(mapdir);          // set mapdir
+        TerritoryImageFactory.setMapDir(mapdir);
+        
+        MapImage.getInstance().loadMaps(m_data);  // load map data
+        m_mapPanel.setGameData(m_data);
+	
+        // update mappanels to use new image
+        Image large =  MapImage.getInstance().getLargeMapImage(); 
+        m_mapPanel.changeImage(large);
+	
+        Image small = MapImage.getInstance().getSmallMapImage();
+        m_smallView.changeImage(small);
+
+        m_mapPanel.initTerritories(); // redraw territories
+    }
+
 
     private final WindowListener WINDOW_LISTENER = new WindowAdapter()
 	{
