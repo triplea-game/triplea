@@ -87,7 +87,8 @@ public class TechnologyDelegate implements SaveableDelegate
     int[] random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, m_player.getName() + " rolling for tech.");
     int techHits = getTechHits(random);
 
-    m_bridge.getHistoryWriter().startEvent(m_player.getName() + (random.hashCode() > 0 ? " roll " : " rolls : ") + Formatter.asDice(random) + " and gets " + techHits + " " + Formatter.pluralize("hit", techHits));
+    String directedTechInfo = isFourthEdition() ? " for " + ((TechRollMessage)msg).getTech() : "";
+    m_bridge.getHistoryWriter().startEvent(m_player.getName() + (random.hashCode() > 0 ? " roll " : " rolls : ") + Formatter.asDice(random) + directedTechInfo + " and gets " + techHits + " " + Formatter.pluralize("hit", techHits));
     m_bridge.getHistoryWriter().setRenderingData(new DiceRoll(random, techHits, 5, true));
 
 
