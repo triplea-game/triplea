@@ -32,7 +32,7 @@ import java.io.*;
  */
 public class MessengerTest extends TestCase
 {
-	private static int SERVER_PORT = 12021;
+	private static int SERVER_PORT = 12022;
 
 	private IServerMessenger m_server;
 	private IMessenger m_client1;
