@@ -20,6 +20,8 @@
 
 package games.strategy.engine.data;
 
+import java.util.Properties;
+
 import games.strategy.engine.delegate.*;
 
 /**
@@ -35,18 +37,19 @@ public class GameStep extends GameDataComponent
   private final String m_delegate;
   private int m_hashCode = -1;
   private int m_runCount = 0;
-  private int m_maxRunCount = -1;
-
+  private int m_maxRunCount = -1; 
+  private final Properties m_properties;
 
 
   /** Creates new GameStep */
-  public GameStep(String name, String displayName, PlayerID player, IDelegate delegate, GameData data)
+  public GameStep(String name, String displayName, PlayerID player, IDelegate delegate, GameData data, Properties stepProperties)
   {
     super(data);
     m_name = name;
     m_displayName = displayName;
     m_player = player;
     m_delegate = delegate.getName();
+    m_properties = stepProperties;
   }
 
   public String getName()
@@ -120,5 +123,10 @@ public class GameStep extends GameDataComponent
       return getDelegate().getDisplayName();
     else
       return m_displayName;
+  }
+  
+  public Properties getProperties()
+  {
+      return m_properties;
   }
 }

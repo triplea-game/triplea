@@ -25,6 +25,7 @@ import games.strategy.engine.framework.*;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.*;
 
+import java.util.*;
 import java.util.Random;
 
 /**
@@ -159,6 +160,11 @@ public class TestDelegateBridge implements IDelegateBridge
     public IChannelSubscribor getDisplayChannelBroadcaster()
     {
         return null;
+    }
+    
+    public Properties getStepProperties()
+    {
+        return new Properties();
     }
 
 

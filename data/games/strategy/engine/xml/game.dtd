@@ -68,7 +68,7 @@
 	<!-- if no player given, then delegate is initialized with a null player -->
 	<!-- max run count is the maximum number of times that a delegate can run, if specified must be > 0, if not specified its infinity-->
 	<!ELEMENT sequence (step+)>
-		<!ELEMENT step EMPTY>
+		<!ELEMENT step (stepProperty*)>
 		<!ATTLIST step
 			name ID #REQUIRED
 			delegate IDREF #REQUIRED
@@ -76,6 +76,12 @@
 			maxRunCount CDATA #IMPLIED
 			display CDATA #IMPLIED
 		>
+			<!ELEMENT stepProperty EMPTY>
+			<!ATTLIST stepProperty
+				name CDATA #REQUIRED
+				value CDATA #REQUIRED
+			>
+		
 
 <!ELEMENT production (productionRule+, productionFrontier+, playerProduction+)>
 	<!ELEMENT productionRule (cost+ , result+)>

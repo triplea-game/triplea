@@ -14,6 +14,8 @@
 
 package games.strategy.engine.delegate;
 
+import java.util.Properties;
+
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -130,5 +132,10 @@ public class DefaultDelegateBridge implements IDelegateBridge
     public IChannelSubscribor getDisplayChannelBroadcaster()
     {
         return m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.DISPLAY_CHANNEL);
+    }
+    
+    public Properties getStepProperties()
+    {
+        return m_step.getProperties();
     }
 }

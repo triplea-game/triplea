@@ -538,15 +538,19 @@ public class GameParser
     for(int i = 0; i < stepList.size(); i++)
     {
       Element current = (Element) stepList.get(i);
-
+      
       IDelegate delegate = getDelegate(current, "delegate", true);
       PlayerID player = getPlayerID(current, "player", false);
       String name = current.getAttribute("name");
       String displayName = null;
+
+      List propertyElements = getChildren("stepProperty", current);
+      Properties stepProperties = pareStepProperties(propertyElements);
+      
       if(current.hasAttribute("display"))
         displayName = current.getAttribute("display");
 
-      GameStep step = new GameStep(name, displayName, player, delegate, data);
+      GameStep step = new GameStep(name, displayName, player, delegate, data, stepProperties);
 
       if(current.hasAttribute("maxRunCount"))
       {
@@ -560,6 +564,20 @@ public class GameParser
     }
   }
 
+  private Properties pareStepProperties(List properties)
+  {
+     Properties rVal = new Properties();
+     Iterator iter = properties.iterator();
+     while (iter.hasNext())
+     {
+        Element stepProperty = (Element) iter.next();
+        String name = stepProperty.getAttribute("name");
+        String value = stepProperty.getAttribute("name");
+        rVal.setProperty(name, value);
+     }
+     return rVal;
+  }
+  
   private void parseProduction(Node root) throws GameParseException
   {
     parseProductionRules( getChildren("productionRule", root));

@@ -20,6 +20,8 @@
 
 package games.strategy.engine.delegate;
 
+import java.util.Properties;
+
 import games.strategy.engine.data.*;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.message.*;
@@ -94,5 +96,7 @@ public interface IDelegateBridge
     public DelegateHistoryWriter getHistoryWriter();
     
     public IChannelSubscribor getDisplayChannelBroadcaster();
+    
+    public Properties getStepProperties();
 
 }
