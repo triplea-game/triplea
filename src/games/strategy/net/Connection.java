@@ -19,6 +19,14 @@
  * This is the code that handles writing and reading objects over the socket.
  * Each connection handles the threads and communications for 1 socket to 1 remote party.
  * 
+ * Connections write objects in the order that they are sent, and read them in the order that
+ * they arrive, but since each object is processed in a seperate thread, it
+ * is possible for messages to arrive out of sequence.
+ * 
+ * To fix this, an OrderedMessage marker interface was introduced.  An OrderedMessage will
+ * not be processed until the previous OrderedMessage read on this connection
+ * has finished processing.
+ * 
  * Created on December 11, 2001, 8:23 PM
  */
 
@@ -196,7 +204,7 @@ class Connection
                         m_waitingToBeSent.remove(0);
 
                         /**
-                         * Flush may need to be wokren up
+                         * flush() may need to be wokren up
                          */
                         if (m_waitingToBeSent.isEmpty())
                             m_lock.notifyAll();

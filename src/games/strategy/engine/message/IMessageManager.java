@@ -26,12 +26,19 @@ import java.util.Set;
 /**
  * A class for routing messages.
  * 
- * You can add a destination to a message manager on one machine, 
- * and messages sent to a message manager on another machine will
- * reach the destination.
+ * An IMessageManager differs from an IMessenger in 2 respects.
  * 
- * You can use this to synchonize, since when sending a message the current 
- * thread will block until a response is received.
+ * 1) Messages sent via a IMessageManager are sent to a particular destination,
+ * while messages sent to an IMessenger are sent to all the listeners
+ * of the IMessenger.
+ * 
+ * 2) The IMessageManager has the ability to block the sending thread until the
+ * message has been recieved, and return a response.  You can think of it as a 
+ * very simple rmi with only 1 method Obejt send(Object message)
+ * 
+ * The IMessageManager is meant to sit on top of an IMessenger, adding
+ * the thread blocking and routing abilities to the simpler IMessenger.
+ * 
  * 
  * @author  Sean Bridges
  */

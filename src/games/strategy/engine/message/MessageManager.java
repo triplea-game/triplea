@@ -29,25 +29,32 @@ import games.strategy.net.*;
 /**
  * @author Sean Bridges
  * 
- * A message manger built on top of an IMessenger
+ * See the comments on IMessageManager for more details.
  */
 public class MessageManager implements IMessageManager
 {
     private final IMessenger m_messenger;
 
     //maps String -> IDestination
+    //the local destinations
     private final Map m_local = Collections.synchronizedMap(new HashMap());
 
     //maps String -> INode
+    //the remote destinations
     private final Map m_remote = Collections.synchronizedMap(new HashMap());
 
     //maps GUID -> Object
+    //threads sending messages to remote destintaions are blocked on the objects in this map until a 
+    //respnse is recieved
     private final Map m_locks = Collections.synchronizedMap(new HashMap());
 
-    //Mpas GUID -> Message
+    //Maps GUID -> Message
+    //When a response is recieved to a message delivered remotely, the response is placed
+    //here.  When the sending thread is awoken, it gets the Response from here.
     private final Map m_responses = Collections.synchronizedMap(new HashMap());
     
     //Maps GUID -> Integer
+    //how many responses the broadcast is waiting for.
     private final Map m_broadcastWaitCount = Collections.synchronizedMap(new HashMap());
 
     public MessageManager(IMessenger messenger)
@@ -189,6 +196,8 @@ public class MessageManager implements IMessageManager
 
             try
             {
+                //when we get a response, a notifyAll will be called
+                //on lock, and the response will be in m_responses
                 lock.wait();
             } catch (InterruptedException ie)
             {
@@ -233,7 +242,10 @@ public class MessageManager implements IMessageManager
         {
             if (!(msg instanceof BlockedMessage))
                 return;
-
+         
+            //We are recieving a message that has blocked a thread on the sending side.
+            //Process the message and send a response to Unblock the remote calling thread.         
+            
             BlockedMessage clientMessage = (BlockedMessage) msg;
 
             if (!m_local.containsKey(clientMessage.getDestination()))
@@ -253,6 +265,7 @@ public class MessageManager implements IMessageManager
         }
     };
 
+    
     private IMessageListener m_unblockMessageListener = new IMessageListener()
     {
         public void messageReceived(Serializable msg, INode from)
@@ -260,6 +273,11 @@ public class MessageManager implements IMessageManager
             if (!(msg instanceof UnblockMessage))
                 return;
 
+            //We have a thread blocked waiting for a response from a remote client
+            //and we have just recieved the response
+            //put the response where the blocked thread can find it
+            //and notify the calling thread
+            
             UnblockMessage clientMessage = (UnblockMessage) msg;
             GUID id = clientMessage.getID();
             Object lock = m_locks.get(id);
@@ -293,6 +311,7 @@ public class MessageManager implements IMessageManager
         }
     };
 
+    //Deals with messages internal to the state of the MessageManger
     private IMessageListener m_stateListener = new IMessageListener()
     {
         public void messageReceived(Serializable msg, INode from)

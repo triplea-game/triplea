@@ -26,6 +26,34 @@ import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.*;
 
 /**
+ * Useful match interfaces.
+ * 
+ * Rather than writing code like,
+ * 
+ * 
+ * <pre>
+ * boolean hasLand = false;
+ * Iterator iter = someCollection.iterator();
+ * 
+ * while(iter.hasNext())
+ * {
+ * 	  Unit unit = (Unit) iter.next();
+ *    UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+ *	  if(ua.isAir)
+ *	  {
+ *	    hasAir = true;
+ *	    break;
+ *	  }
+ * }
+ * 
+ * </pre>
+ * 
+ * You can write code like,
+ * 
+ * boolean hasLand = Match.someMatch(someCollection, Matches.UnitIsAir);
+ * 
+ * 
+ * The benefits should be obvious to any right minded person.
  *
  * @author  Sean Bridges
  * @version 1.0

@@ -17,6 +17,25 @@ package games.strategy.net;
 import java.io.*;
 import java.util.*;
 
+/**
+ * A simple way to connect multiple socket end points.
+ * An IMessenger listens for incoming messages, and sends
+ * them to all registered listeners.
+ * 
+ * Messages are recieved and sent in order, but because each 
+ * recieved message is processed in a seperate thread, messages may be processed
+ * of order.
+ * 
+ * If the order of the messages is important, you should use an OrderedMessage.
+ * OrderedMessage is a marker interface.  The IMessenger will not start
+ * processing an OrderedMessage until the previous OrderedMessage has finished processing.
+ * 
+ * If you want messages to be routed to a particular destination, or you want to block 
+ * the thread sending message and recieve a response, you should consider using
+ * IMessageManager instead.  The IMessageManager is built on top of
+ * the IMesseneger
+ *  
+ */
 public interface IMessenger
 {
     /**

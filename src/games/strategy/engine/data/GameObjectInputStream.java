@@ -24,7 +24,8 @@ import java.io.*;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 
 /**
- *
+ * Please refer to the comments on GameObjectOutputStream
+ * 
  * @author  Sean Bridges
  * @version 1.0
  */
