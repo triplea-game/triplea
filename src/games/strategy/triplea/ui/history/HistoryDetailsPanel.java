@@ -48,6 +48,7 @@ public class HistoryDetailsPanel extends JPanel
 
   public void render(HistoryNode node)
   {
+    System.out.println("rendering 8943234");
     removeAll();
     m_mapPanel.setRoute(null);
 

@@ -8,7 +8,7 @@
   <path id="full.path">
     <pathelement path="${junit.home}"/>
     <pathelement path="${junit.jar}"/>
-    <pathelement path="lib\kunststoff.jar"/>
+    <pathelement path="lib\plastic-1.2.0.jar"/>
     <pathelement path="${classpath}"/>
     <pathelement path="classes/"/>
   </path>
