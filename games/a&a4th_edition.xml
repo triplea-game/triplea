@@ -4,7 +4,7 @@
 
 <game>
 
-	<info name="4th Edition" version="0.3"/>
+	<info name="4th Edition" version="1.0"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -349,6 +349,7 @@
 	    <connection t1="36 Sea Zone" t2="French Indochina"/>
 	    <connection t1="37 Sea Zone" t2="48 Sea Zone"/>
 	    <connection t1="38 Sea Zone" t2="46 Sea Zone"/>
+	    <connection t1="52 Sea Zone" t2="56 Sea Zone"/>
 
 	    <connection t1="37 Sea Zone" t2="47 Sea Zone"/>
 	    <connection t1="37 Sea Zone" t2="38 Sea Zone"/>
