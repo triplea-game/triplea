@@ -348,6 +348,7 @@
 	    <connection t1="36 Sea Zone" t2="59 Sea Zone"/>
 	    <connection t1="36 Sea Zone" t2="French Indochina"/>
 	    <connection t1="37 Sea Zone" t2="48 Sea Zone"/>
+	    <connection t1="38 Sea Zone" t2="46 Sea Zone"/>
 
 	    <connection t1="37 Sea Zone" t2="47 Sea Zone"/>
 	    <connection t1="37 Sea Zone" t2="38 Sea Zone"/>
