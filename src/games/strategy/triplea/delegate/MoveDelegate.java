@@ -1466,7 +1466,7 @@ public class MoveDelegate implements SaveableDelegate
 
         String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
 
-        SelectCasualtyMessage casualties = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice);
+        SelectCasualtyMessage casualties = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false);
         m_bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(), casualties.getKilled());
         units.removeAll(casualties.getKilled());
     }

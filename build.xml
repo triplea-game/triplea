@@ -130,6 +130,7 @@
       </zipfileset>
     </zip>
   </target>
+
   <target name="patch">
 	<jar destfile="patch.jar" basedir="classes" includes="**/*Connection.class"/>
   </target>
@@ -145,6 +146,7 @@
       </sourcepath>
     </javadoc>
   </target>
+
   <target name="test" depends="init,compile"
           description="run junit tests">
     <junit fork="yes" haltonerror="on">
