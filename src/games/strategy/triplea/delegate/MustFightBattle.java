@@ -763,6 +763,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
   private Collection getBombardingUnits()
   {
+    Match ownedAndCanBombard = new CompositeMatchAnd(Matches.UnitCanBombard, Matches.unitIsOwnedBy(m_attacker));
     Iterator territories = m_amphibiousAttackFrom.iterator();
     Collection bombard = new HashSet();
     while (territories.hasNext())
@@ -772,7 +773,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         throw new IllegalStateException("Navel battle pending where amphibious assault originated");
       if (!m_tracker.wasBattleFought(possible) && !m_tracker.wasNavalBombardmentSource(possible))
       {
-        bombard.addAll(possible.getUnits().getMatches(Matches.UnitCanBombard));
+        bombard.addAll(possible.getUnits().getMatches(ownedAndCanBombard));
       }
     }
     return bombard;
