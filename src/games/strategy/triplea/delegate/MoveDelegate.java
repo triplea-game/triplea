@@ -28,7 +28,6 @@ import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
-import games.strategy.engine.transcript.*;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
@@ -557,8 +556,8 @@ public class MoveDelegate implements SaveableDelegate
     //make sure no conquered territories on route
     if(MoveValidator.hasConqueredNonBlitzedOnRoute(route, m_data))
     {
-      //unless we are all air
-      if( !Match.allMatch(units, Matches.UnitIsAir))
+      //unless we are all air or we are in non combat
+      if( !Match.allMatch(units, Matches.UnitIsAir) && !m_nonCombat)
         return "Cannot move through newly captured territories";
     }
 
@@ -916,7 +915,7 @@ public class MoveDelegate implements SaveableDelegate
 
     //if neutrals were taken over mark land units with 0 movement
     //if weve entered a non blitzed conquered territory, mark with 0 movement
-    if(getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route))
+    if(!m_nonCombat && (getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
     {
       Collection land = Match.getMatches(units, Matches.UnitIsLand);
       iter = land.iterator();
