@@ -47,10 +47,10 @@ public class MapPanel extends ImageScrollerLargeView
 {
   private final static String CENTERS_FILENAME = "centers.txt";
   private final static String POLYGONS_FILENAME = "polygons.txt";
-  private final static String PLACE_FILENAME = "place.txt";
+
 
   private Map m_centers = new HashMap(); //maps Territory -> point
-  private Map m_place = new HashMap(); //maps Territory -> collection of points
+
   private SortedSet m_polygonTerritories = new TreeSet(); //collection of PollygonTerritories
   private java.util.List m_mapSelectionListeners = new ArrayList();
 
@@ -72,10 +72,10 @@ public class MapPanel extends ImageScrollerLargeView
 
     initPolygons();
     initCenters();
-    initPlacement();
+
 
     checkTerritories();
-    initTerritories();
+
 
     this.addMouseListener(MOUSE_LISTENER);
     this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
@@ -116,26 +116,26 @@ public class MapPanel extends ImageScrollerLargeView
   {
     if(m_route != route || (m_route != null && !m_route.equals(route)))
     {
+      //clearing the offscreen image is expensive
+      //avoid if we can.
+      //we need to refresh only if we need to erase the old route
+
+      //if we are clearing the route we have to refresh
+      if (route == null)
+         clearOffscreen();
+      //if the new route extends the old route, we dont need to refresh
+      else if(m_route != null )
+      {
+        if(!route.extend(m_route))
+            clearOffscreen();
+      }
       m_route = route;
-      initTerritories();
+      drawRoute();
+      update();
     }
   }
 
-  private void initPlacement() throws IOException
-  {
-    URL centers = TripleAFrame.class.getResource(PLACE_FILENAME);
-    InputStream stream = centers.openStream();
-    Map tempPlace = new PointFileReaderWriter().readOneToMany(stream);
-    Iterator iter = tempPlace.keySet().iterator();
-    while(iter.hasNext())
-    {
-      String name = (String) iter.next();
-      Territory terr = m_data.getMap().getTerritory(name);
-      if(terr == null)
-        throw new IllegalStateException("Territory in centers file could not be found in game data. Territory name <" + name + ">");
-      m_place.put(terr, tempPlace.get(name));
-    }
-  }
+
 
 
   private void initPolygons() throws IOException
@@ -264,52 +264,18 @@ public class MapPanel extends ImageScrollerLargeView
     return null;
   }
 
-  /**
-   * Updating is an expensive operation.
-   * Merge updates that occur close together into one larger update operation.
-   */
-  private volatile boolean updateScheduled = false;
   private void initTerritories()
   {
-    //if an update is scheduled, return
-    if(updateScheduled)
-        return;
 
-    //schedule an update
-    updateScheduled = true;
-    Runnable r = new Runnable()
-    {
-      public void run()
+      clearOffscreen();
+      Iterator iter = m_polygonTerritories.iterator();
+      while (iter.hasNext())
       {
-        synchronized(this)
-        {
-            try
-            {
-                wait(50);
-            }
-            catch (InterruptedException ex)
-            {
-            }
-            performInitTerritories();
-        }
+          Territory terr = ( (PolygonTerritory) iter.next()).getTerritory();
+          updateTerritory(terr);
       }
-    };
-
-    new Thread(r).start();
-  }
-
-  private synchronized void performInitTerritories()
-  {
-    updateScheduled = false;
-    clearOffscreen();
-    Iterator iter = m_polygonTerritories.iterator();
-    while(iter.hasNext())
-    {
-      Territory terr = ((PolygonTerritory) iter.next()).getTerritory();
-      updateTerritory(terr);
-    }
-    drawRoute();
-    update();
+      drawRoute();
+      update();
 
   }
 
@@ -318,6 +284,7 @@ public class MapPanel extends ImageScrollerLargeView
    */
   private void drawRoute()
   {
+
     Route route = m_route;
     if(route == null)
       return;
@@ -357,49 +324,8 @@ public class MapPanel extends ImageScrollerLargeView
 
   private void updateTerritory(Territory terr)
   {
-    getOffscreenGraphics().setColor(Color.white);
+    MapImage.getInstance().updateTerritory(terr);
 
-    Iterator placementPoints = ((Collection) m_place.get(terr)).iterator();
-    if(placementPoints == null || !placementPoints.hasNext())
-      throw new IllegalStateException("No where to palce units");
-
-    Point lastPlace = null;
-
-    UnitCollection units = terr.getUnits();
-    Iterator players = units.getPlayersWithUnits().iterator();
-
-    while(players.hasNext())
-    {
-      PlayerID player = (PlayerID) players.next();
-
-      Iterator types = m_data.getUnitTypeList().iterator();
-      while(types.hasNext())
-      {
-        UnitType current = (UnitType) types.next();
-        int count = units.getUnitCount(current, player);
-        if(count != 0)
-        {
-          Point place;
-          if(placementPoints.hasNext())
-          {
-            place = (Point) placementPoints.next();
-            lastPlace = new Point(place.x, place.y);
-          }
-          else
-          {
-            place = lastPlace;
-            lastPlace.x += UnitIconImageFactory.UNIT_ICON_WIDTH;
-          }
-
-          Image img = UnitIconImageFactory.instance().getImage(current, player, m_data);
-          getOffscreenGraphics().drawImage(img, place.x, place.y, this);
-          if(count != 1)
-          {
-            getOffscreenGraphics().drawString(String.valueOf(count), place.x + (UnitIconImageFactory.UNIT_ICON_WIDTH / 4), place.y + UnitIconImageFactory.UNIT_ICON_HEIGHT);
-          }
-        }
-      }//end for each unit type
-    }//end for each player
   }
 
   private MouseListener MOUSE_LISTENER = new MouseAdapter()
@@ -443,19 +369,26 @@ public class MapPanel extends ImageScrollerLargeView
     initTerritories();
   }
 
+  public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height)
+  {
+     return super.imageUpdate(img, infoflags, x,y,width, height);
+  }
+
   private final TerritoryListener TERRITORY_LISTENER = new TerritoryListener()
   {
     public void unitsChanged(Territory territory)
     {
-      initTerritories();
+      MapImage.getInstance().updateTerritory(territory);
+      clearOffscreen();
+      update();
     }
 
     public void ownerChanged(Territory territory)
     {
-      MapImage.getInstance().setOwner(territory, territory.getOwner());
-      m_smallImage.repaint();
-      initTerritories();
-    }
+      MapImage.getInstance().updateTerritory(territory);
+      clearOffscreen();
+      update();
+     }
   };
 }
 

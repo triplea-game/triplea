@@ -29,6 +29,7 @@ import java.awt.image.*;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.ui.TripleAFrame;
 
 /**
  *
@@ -39,6 +40,7 @@ public class MapImage
   private static final String LOCATION = "countries/location.txt";
   private final static String LARGE_IMAGE_FILENAME = "images/largeMap.gif";
   private final static String SMALL_IMAGE_FILENAME = "images/smallMap.gif";
+  private final static String PLACE_FILENAME = "place.txt";
 
   private static MapImage s_instance;
   private static Component s_observer;
@@ -75,6 +77,8 @@ public class MapImage
   private Image m_largeMapImage;
   private Image m_smallMapImage;
   private float m_smallLargeRatio;
+  private Map m_place = new HashMap(); //maps Territory -> collection of points
+  private GameData m_data;
 
   /** Creates a new instance of CountryImage */
     public MapImage()
@@ -82,16 +86,38 @@ public class MapImage
     initCorners();
     }
 
+    private void initPlacement() throws IOException
+    {
+        URL centers = TripleAFrame.class.getResource(PLACE_FILENAME);
+        InputStream stream = centers.openStream();
+        Map tempPlace = new PointFileReaderWriter().readOneToMany(stream);
+        Iterator iter = tempPlace.keySet().iterator();
+        while (iter.hasNext())
+        {
+            String name = (String) iter.next();
+            Territory terr = m_data.getMap().getTerritory(name);
+            if (terr == null)
+                throw new IllegalStateException(
+                    "Territory in centers file could not be found in game data. Territory name <" +
+                    name + ">");
+            m_place.put(terr, tempPlace.get(name));
+        }
+    }
+
+
 
   public Image getSmallMapImage()
   {
     return m_smallMapImage;
   }
 
-  public void loadMaps(GameData data)
+  public void loadMaps(GameData data) throws IOException
   {
+    m_data = data;
+    initPlacement();
     loadMaps();
     initMaps(data);
+
   }
 
   public Image getLargeMapImage()
@@ -132,10 +158,7 @@ public class MapImage
     while(territories.hasNext())
     {
       Territory current = (Territory) territories.next();
-      PlayerID id = current.getOwner();
-
-      if(!current.isWater())
-        setOwner(current, id);
+      updateTerritory(current);
     }
   }
 
@@ -154,8 +177,64 @@ public class MapImage
     }
   }
 
+  public void updateTerritory(Territory terr)
+  {
+    setOwner(terr, terr.getOwner());
+    updateUnits(terr);
+  }
+
+  private void updateUnits(Territory terr)
+  {
+
+    Iterator placementPoints = ((Collection) m_place.get(terr)).iterator();
+    if(placementPoints == null || !placementPoints.hasNext())
+      throw new IllegalStateException("No where to palce units");
+
+    Point lastPlace = null;
+
+    UnitCollection units = terr.getUnits();
+    Iterator players = units.getPlayersWithUnits().iterator();
+
+    while(players.hasNext())
+    {
+      PlayerID player = (PlayerID) players.next();
+
+      Iterator types = m_data.getUnitTypeList().iterator();
+      while(types.hasNext())
+      {
+        UnitType current = (UnitType) types.next();
+        int count = units.getUnitCount(current, player);
+        if(count != 0)
+        {
+          Point place;
+          if(placementPoints.hasNext())
+          {
+            place = (Point) placementPoints.next();
+            lastPlace = new Point(place.x, place.y);
+          }
+          else
+          {
+            place = lastPlace;
+            lastPlace.x += UnitIconImageFactory.UNIT_ICON_WIDTH;
+          }
+
+          Image img = UnitIconImageFactory.instance().getImage(current, player, m_data);
+          m_largeMapImage.getGraphics().drawImage(img, place.x, place.y, s_observer);
+          if(count != 1)
+          {
+            Graphics g = m_largeMapImage.getGraphics();
+            g.setColor(Color.white);
+            g.drawString(String.valueOf(count), place.x + (UnitIconImageFactory.UNIT_ICON_WIDTH / 4), place.y + UnitIconImageFactory.UNIT_ICON_HEIGHT);
+          }
+        }
+      }//end for each unit type
+    }//end for each player
+
+  }
+
   public void setOwner(Territory territory, PlayerID id)
   {
+
     if(territory.isWater())
       return;
 

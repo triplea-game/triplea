@@ -338,13 +338,29 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
     m_offscreenImage.getGraphics().drawImage(m_originalImage, x,y,height, width, x,y,width,height,this);
   }
 
+
+
+
   /**
    * Update will not be seen until update is called.
    * Resets the offscreen image to the original.
    */
   public void clearOffscreen()
   {
-    m_offscreenImage.getGraphics().drawImage(m_originalImage, 0,0,this);
+    ImageIoCompletionWatcher watcher = new ImageIoCompletionWatcher();
+    if(!m_offscreenImage.getGraphics().drawImage(m_originalImage, 0,0,watcher))
+    {
+        try
+        {
+            watcher.runUntilOpComplete();
+            watcher.join();
+        }
+        catch (InterruptedException ie)
+        {
+            return;
+        }
+
+    }
   }
 
   /**
@@ -384,13 +400,7 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
    */
   private void updateOnScreen()
   {
-    //int height = m_originalImage.getHeight(this);
-    //int width = m_originalImage.getWidth(this);
 
-    //m_image.getGraphics().drawImage(m_offscreenImage, 0,0,this);
-
-    //m_image.getGraphics().drawImage(m_offscreenImage, 0,0,height, width,
-      //                              0,0,width,height,this);
     repaint();
   }
 
