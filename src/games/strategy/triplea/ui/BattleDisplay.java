@@ -315,9 +315,11 @@ public class BattleDisplay extends JPanel
 
     Image territory;
     if(m_location.isWater())
-      territory = games.strategy.triplea.image.MapImage.getWaterImage();
+      //territory = games.strategy.triplea.image.MapImage.getWaterImage();
+      territory = games.strategy.triplea.image.MapImage.getInstance().getWaterImage();
     else
-      territory = games.strategy.triplea.image.MapImage.getTerritoryImage(m_location, m_defender);
+      //territory = games.strategy.triplea.image.MapImage.getTerritoryImage(m_location, m_defender);
+      territory = games.strategy.triplea.image.MapImage.getInstance().getTerritoryImage(m_location, m_defender);
 
     finalImage.getGraphics().drawImage(territory,  0, 0, WIDTH, HEIGHT, this);
 
@@ -649,7 +651,8 @@ class DicePanel extends JPanel
     dicePanel.add(Box.createHorizontalStrut(5));
     for(int dieIndex = 0; dieIndex < dice.length; dieIndex++)
     {
-      dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(dice[dieIndex] + 1)));
+      int roll = dice[dieIndex] + 1;
+      dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(roll, roll <= rollAt)));
       dicePanel.add(Box.createHorizontalStrut(2));
     }
     JScrollPane scroll = new JScrollPane(dicePanel);

@@ -154,10 +154,20 @@ public class ImageScrollerSmallView extends JComponent
     repaint();
   }
 
+  private long mLastUpdate = 0;
+  private long MIN_UPDATE_DELAY = 100;
+
   private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
   {
     public void mouseDragged(MouseEvent e)
     {
+
+      long now = System.currentTimeMillis();
+      if(now < mLastUpdate + MIN_UPDATE_DELAY)
+        return;
+
+      mLastUpdate = now;
+
       Rectangle bounds = (Rectangle) getBounds().clone();
       //if the mouse is a little off the screen, allow it to still scroll the screen
       bounds.grow(30,0);

@@ -70,7 +70,7 @@ public class ClientGame implements IGame
       m_messageManager.addDestination(gp);
 
       // Add a corresponding random destination for this GamePlayer
-      RandomDestination rnd_dest = new RandomDestination(gp.getName() + "RandomDest");
+      RandomDestination rnd_dest = new RandomDestination(gp.getName() );
 
       m_random_destinations.add(rnd_dest);
       m_messageManager.addDestination(rnd_dest);
@@ -104,13 +104,13 @@ public class ClientGame implements IGame
     m_gameStepListeners.remove(listener);
   }
 
-  private void notifyGameStepChanged(String stepName, String delegateName, PlayerID id)
+  private void notifyGameStepChanged(String stepName, String delegateName, PlayerID id, int round)
   {
     Iterator iter = m_gameStepListeners.iterator();
     while(iter.hasNext())
     {
       GameStepListener listener = (GameStepListener) iter.next();
-      listener.gameStepChanged(stepName, delegateName, id);
+      listener.gameStepChanged(stepName, delegateName, id, round);
     }
   }
 
@@ -131,7 +131,7 @@ public class ClientGame implements IGame
       if(msg instanceof StepChangedMessage)
       {
         StepChangedMessage stepChange = (StepChangedMessage) msg;
-        notifyGameStepChanged(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer());
+        notifyGameStepChanged(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getRound());
       }
       else if(msg instanceof ChangeMessage)
       {

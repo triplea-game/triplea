@@ -30,7 +30,8 @@ import java.util.*;
 public class GameSequence extends GameDataComponent
 {
 	private final List m_steps = new ArrayList();
-	private int m_currentIndex = 0;
+	private int m_currentIndex;
+    private int m_round = 1;
 
 	public GameSequence(GameData data)
 	{
@@ -57,17 +58,19 @@ public class GameSequence extends GameDataComponent
 	{
 		m_steps.remove(index);
 	}
-	/*
-	public int size()
-	{
-		return m_steps.size();
-	}
-	*/
+
+    public int getRound()
+    {
+      return m_round;
+    }
 
 	public void next() {
 		m_currentIndex++;
 		if (m_currentIndex == m_steps.size())
-			m_currentIndex = 0;
+        {
+          m_currentIndex = 0;
+          m_round++;
+        }
 	}
 
 	public GameStep getStep()

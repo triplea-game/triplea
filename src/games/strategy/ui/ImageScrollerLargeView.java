@@ -84,7 +84,7 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
   private int m_edge = NONE;
 
   /** Creates new ImageScroller */
-    public ImageScrollerLargeView(Image image)
+  public ImageScrollerLargeView(Image image)
   {
     super();
     this.setDoubleBuffered(false);
@@ -152,7 +152,9 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
   {
     m_x = x;
     m_y = y;
+
     repaint();
+
   }
 
   private int checkBounds(int dim, int max, int width, boolean scrollThroughBorders)
@@ -236,6 +238,7 @@ public class ImageScrollerLargeView extends JComponent implements ActionListener
   {
     Rectangle visible = new Rectangle(0,0, m_offscreenImage.getWidth(this), m_offscreenImage.getHeight(this));
     Rectangle intersection = center.intersection(visible);
+
 
     if(intersection.getWidth() == 0)
       return;

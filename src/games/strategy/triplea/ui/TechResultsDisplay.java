@@ -40,7 +40,8 @@ public class TechResultsDisplay extends JPanel
     for(int i = 0; i < msg.getRolls().length; i++)
     {
       //add 1 since dice are 0 based
-      JLabel die = new JLabel(DiceImageFactory.getInstance().getDieIcon(msg.getRolls()[i] + 1));
+      int roll = msg.getRolls()[i] + 1;
+      JLabel die = new JLabel(DiceImageFactory.getInstance().getDieIcon(roll, roll ==6));
       dice.add(die);
       dice.add(Box.createHorizontalStrut(2));
       dice.setMaximumSize(new Dimension(200, (int)dice.getMaximumSize().getHeight()));

@@ -189,7 +189,7 @@ public class MapImage
    */
   public static BufferedImage getTerritoryImage(Territory territory, PlayerID id)
   {
-    String name = territory.getName() +  ".png";
+    String name = territory.getName() +  ".gif";
 
     String fileName = "countries/" + name.replace(' ', '_');
     Image country = loadImage(fileName);
@@ -281,70 +281,19 @@ public class MapImage
     }
 
     byte[][] bytes;
-    if(System.getProperties().getProperty("os.name").indexOf("Windows") == -1)
+    if(System.getProperties().getProperty("os.name").indexOf("Windows") == -1 &&
+       System.getProperties().getProperty("os.name").indexOf("Irix") == -1)
     {
-      //non windows world orients the bytes like this
-      bytes = new byte[][] {
-        getCorrectComponent(1, model, rBytes, gBytes, bBytes, alpha),
-        getCorrectComponent(2, model, rBytes, gBytes, bBytes, alpha),
-        getCorrectComponent(3, model, rBytes, gBytes, bBytes, alpha),
-        getCorrectComponent(0, model, rBytes, gBytes, bBytes, alpha)
-      };
+      //linux and bsd systems orientate this way
+      bytes = new byte[][] {gBytes, rBytes, alpha, bBytes};
     }
-    else
+    else //windows and irix orientate this way
     {
-      //the windoes world orients the bytes like this
-      bytes = new byte[][] {
-        getCorrectComponent(2, model, rBytes, gBytes, bBytes, alpha),
-        getCorrectComponent(1, model, rBytes, gBytes, bBytes, alpha),
-        getCorrectComponent(0, model, rBytes, gBytes, bBytes, alpha),
-        getCorrectComponent(3, model, rBytes, gBytes, bBytes, alpha)
-      };
+      bytes = new byte[][] {rBytes, gBytes, bBytes, alpha};
     }
     LookupOp op = new LookupOp( new ByteLookupTable(0,bytes), null );
 
     return op;
-  }
-
-//	static boolean first = true;
-
-  private static byte[] getCorrectComponent(int num, DirectColorModel model, byte[] r, byte[] g, byte[] b, byte[] a)
-  {
-//	    if(first)
-//		{
-//			System.out.println( model);
-//			first = false;
-//		}
-
-    int mask = -1;
-    switch(num)
-    {
-      case 0 :
-        mask = 0x000000ff;
-        break;
-      case 1 :
-        mask = 0x0000ff00;
-        break;
-      case 2 :
-        mask = 0x00ff0000;
-        break;
-      case 3:
-        mask = 0xff000000;
-        break;
-      default :
-        throw new IllegalArgumentException("" + num);
-
-    }
-
-    if(model.getRedMask() == mask)
-      return r;
-    else if(model.getBlueMask() == mask)
-      return b;
-    else if(model.getGreenMask() == mask)
-      return g;
-    else if(model.getAlphaMask() == mask)
-      return a;
-    else throw new IllegalStateException("No color could be mapped num:" + num + " mask:" + mask);
   }
 
 }

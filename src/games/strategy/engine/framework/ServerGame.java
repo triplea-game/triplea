@@ -65,7 +65,7 @@ public class ServerGame implements IGame
 
 
   /** Creates new Game */
-    public ServerGame(GameData data, Set gamePlayers, IServerMessenger messenger, Map playerMapping)
+  public ServerGame(GameData data, Set gamePlayers, IServerMessenger messenger, Map playerMapping)
   {
     m_data = data;
 
@@ -78,6 +78,12 @@ public class ServerGame implements IGame
 
     m_messageManager = new MessageManager(m_messenger);
     Iterator iter = gamePlayers.iterator();
+
+    //add a random destination for the null player
+    RandomDestination rnd_dest = new RandomDestination(PlayerID.NULL_PLAYERID.getName() + "RandomDest");
+    m_random_destinations.add(rnd_dest);
+    m_messageManager.addDestination(rnd_dest);
+
     while(iter.hasNext())
     {
       GamePlayer gp = (GamePlayer) iter.next();
@@ -87,10 +93,8 @@ public class ServerGame implements IGame
       gp.initialize(bridge, player);
       m_messageManager.addDestination(gp);
 
-      System.err.println("Added destination: " + gp.getName());
-
       // Add a corresponding random destination for this GamePlayer
-      RandomDestination rnd_dest = new RandomDestination(gp.getName() + "RandomDest");
+      rnd_dest = new RandomDestination(gp.getName() + "RandomDest");
 
       m_random_destinations.add(rnd_dest);
       m_messageManager.addDestination(rnd_dest);
@@ -258,10 +262,10 @@ public class ServerGame implements IGame
     while(iter.hasNext())
     {
       GameStepListener listener = (GameStepListener) iter.next();
-      listener.gameStepChanged(stepName, delegateName, id);
+      listener.gameStepChanged(stepName, delegateName, id, m_data.getSequence().getRound());
     }
 
-    StepChangedMessage msg = new StepChangedMessage(stepName, delegateName, id);
+    StepChangedMessage msg = new StepChangedMessage(stepName, delegateName, id, m_data.getSequence().getRound());
     m_messenger.broadcast(msg);
   }
 

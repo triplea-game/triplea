@@ -50,7 +50,7 @@ import games.strategy.debug.Console;
 public class GameRunner
 {
   private GameData m_data;
-  public final static int PORT = 932;
+  public final static int PORT = 3300;
 
   public static Image getGameIcon(JFrame frame)
   {

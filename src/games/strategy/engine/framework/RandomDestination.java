@@ -48,18 +48,18 @@ public class RandomDestination implements IDestination
     m_name = name;
   }
 
-  public String getName() 
+  public String getName()
   {
     return m_name;
   }
-  
-  public Message sendMessage(Message message) 
+
+  public Message sendMessage(Message message)
   {
     // FIXME
     //System.out.println("TripleAPlayer#handleRandomNumberMessage(" + message + ")");
     RandomNumberMessage rnd_message;
 
-    if (message instanceof RandomNumberMessage) 
+    if (message instanceof RandomNumberMessage)
     {
       rnd_message = (RandomNumberMessage)message;
     }
@@ -110,22 +110,22 @@ public class RandomDestination implements IDestination
       }
       else if (rnd_message.m_obj instanceof Integer)
       {
-        // We're one of the two players and all of the data has already 
+        // We're one of the two players and all of the data has already
         // been exchanged, simply return the random array of the size requested
-        int[] random_arr = m_random_gen.getSharedRandomArr(m_remote_random_gen, 
+        int[] random_arr = m_random_gen.getSharedRandomArr(m_remote_random_gen,
                                                            ((Integer)rnd_message.m_obj).intValue());
 
         return new RandomNumberMessage(random_arr);
       }
-      else 
+      else
       {
-        // We're one of the two players and all of the data has already 
+        // We're one of the two players and all of the data has already
         // been exchanged, so simply return the random
         int the_random = m_random_gen.getSharedRandom(m_remote_random_gen);
         return new RandomNumberMessage(new Integer(the_random));
       }
 
-      // At this point both sides should have all the data they need to 
+      // At this point both sides should have all the data they need to
       // generate random numbers.  This step can happen either before or after
       // the NO_REQUEST step.
 

@@ -28,6 +28,7 @@ import javax.swing.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
+import games.strategy.triplea.image.UnitIconImageFactory;
 
 import games.strategy.triplea.delegate.message.*;
 
@@ -42,6 +43,7 @@ public class PlacePanel extends ActionPanel
 
   private JLabel actionLabel = new JLabel();
   private PlaceMessage m_placeMessage;
+  private UnitPanel m_unitsToPlace = new UnitPanel();
 
   /** Creates new PlacePanel */
     public PlacePanel(GameData data, MapPanel map)
@@ -58,6 +60,10 @@ public class PlacePanel extends ActionPanel
     add(actionLabel);
     add(new JButton(DONE_PLACE_ACTION));
     SwingUtilities.invokeLater(REFRESH);
+
+    add(new JLabel("Units left to place:"));
+    add(m_unitsToPlace);
+    m_unitsToPlace.setUnits(id, getData());
 
   }
 
@@ -118,6 +124,7 @@ public class PlacePanel extends ActionPanel
         Collection choosen = chooser.getSelected();
         PlaceMessage message = new PlaceMessage(choosen, territory);
         m_placeMessage = message;
+        m_unitsToPlace.setUnits(getCurrentPlayer(), getData());
         synchronized(getLock())
         {
           getLock().notify();
@@ -130,5 +137,31 @@ public class PlacePanel extends ActionPanel
   {
     return "PlacePanel";
   }
+
+
+
+}
+
+
+class UnitPanel extends JPanel
+{
+
+  public void setUnits(PlayerID player, GameData data)
+  {
+    removeAll();
+    setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+
+    Iterator iter = player.getUnits().getUnitsByType().keySet().iterator();
+    while(iter.hasNext())
+    {
+      JLabel label = new JLabel();
+      label.setHorizontalTextPosition(JLabel.RIGHT);
+      UnitType unit = (UnitType) iter.next();
+      label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player, data));
+      label.setText(" x " +  player.getUnits().getUnitCount(unit));
+      add(label);
+    }
+  }
+
 
 }

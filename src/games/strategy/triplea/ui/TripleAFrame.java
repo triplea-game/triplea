@@ -45,6 +45,7 @@ import games.strategy.triplea.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.engine.data.PlayerID;
 
 /**
  *
@@ -60,6 +61,7 @@ public class TripleAFrame extends JFrame
   private MapPanel m_mapPanel;
   private ImageScrollerSmallView m_smallView;
   private JLabel m_message = new JLabel("No selection");
+  private JLabel m_step = new JLabel("xxxxxx");
   private ActionButtons m_actionButtons;
   //a set of TripleAPlayers
   private Set m_localPlayers;
@@ -79,6 +81,7 @@ public class TripleAFrame extends JFrame
     m_localPlayers = players;
 
     game.getTranscript().addTranscriptListener(m_transcriptListener);
+    game.addGameStepListener(m_stepListener);
 
     this.addWindowListener(WINDOW_LISTENER);
 
@@ -110,7 +113,16 @@ public class TripleAFrame extends JFrame
     ImageScrollControl control = new ImageScrollControl(m_mapPanel, m_smallView);
 
     this.getContentPane().setLayout(new BorderLayout());
-    this.getContentPane().add(m_message, BorderLayout.SOUTH);
+
+    JPanel southPanel = new JPanel();
+    southPanel.setLayout(new BorderLayout());
+    southPanel.add(m_message, BorderLayout.CENTER);
+    m_message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    southPanel.add(m_step, BorderLayout.EAST);
+    m_step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
+
+    this.getContentPane().add(southPanel, BorderLayout.SOUTH);
 
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout());
@@ -127,11 +139,12 @@ public class TripleAFrame extends JFrame
     rightHandSide.add(m_smallView, BorderLayout.NORTH);
 
     JTabbedPane tabs = new JTabbedPane();
-    tabs.setBorder(new EtchedBorder());
+    tabs.setBorder(null);
     rightHandSide.add(tabs, BorderLayout.CENTER);
 
     m_actionButtons = new ActionButtons(m_data, m_mapPanel, this);
     tabs.addTab( "Actions", m_actionButtons);
+    m_actionButtons.setBorder(null);
 
     StatPanel stats = new StatPanel(m_data);
     tabs.addTab("Stats", stats);
@@ -521,6 +534,8 @@ public class TripleAFrame extends JFrame
     }
   };
 
+
+
   public static int save(String filename, GameData m_data) {
     FileOutputStream fos = null;
     ObjectOutputStream oos = null;
@@ -543,5 +558,15 @@ public class TripleAFrame extends JFrame
       try { oos.close(); } catch (Exception ignore) { }
     }
   }
+
+  GameStepListener m_stepListener = new GameStepListener()
+  {
+
+    public void gameStepChanged(String stepName, String delegateName,
+                                PlayerID player, int round)
+    {
+        m_step.setText("Round: " + round + " ");
+    }
+  };
 
 }
