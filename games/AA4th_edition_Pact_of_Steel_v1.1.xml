@@ -506,7 +506,6 @@
                 <connection t1="Evanki National Okrug" t2="Novisibirsk"/>
                 <connection t1="Novisibirsk" t2="Yakut S.S.R."/>
                 <connection t1="Novisibirsk" t2="Sinkiang"/>
-                <connection t1="Sinkiang" t2="China"/>
                 <connection t1="Yakut S.S.R." t2="Soviet Far East"/>
                 <connection t1="Yakut S.S.R." t2="Burytia S.S.R."/>
                 <connection t1="Burytia S.S.R." t2="Manchuria"/>
