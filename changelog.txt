@@ -1,5 +1,9 @@
 Changes for 0.5.1
 
+* Fixed bug where defending transported units were not correctly removed when their transports were killed. (Ali Ibrahim)
+
+* Fixed bug where transported AA guns fired in naval battles. (Ali Ibrahim)
+
 * Added a new developer document with map utils info. (Nekro)
 
 * Added menu option to use small unit images on map. (Ali Ibrahim)
