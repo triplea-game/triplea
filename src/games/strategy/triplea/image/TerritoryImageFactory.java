@@ -39,9 +39,6 @@ public final class TerritoryImageFactory
   private HashMap m_playerColors = new HashMap();
   private HashMap m_baseTerritoryImages = new HashMap();
 
-  //this can get quite large, use soft references
-  //allow reclaiming if the memory is needed
-  private HashMap m_ownedTerritoryImages = new HashMap();
   private GraphicsConfiguration m_localGraphicSystem = null;
   private BufferedImage m_waterImage = null;
 
@@ -60,23 +57,7 @@ public final class TerritoryImageFactory
   // returns an image of the desired territory with the desired owner
   public BufferedImage getTerritoryImage(Territory place, PlayerID owner)
   {
-
-    BufferedImage terrImage = null;
-
-    // lookup via a composite key
-    String key = place.getName() + " owned by " + owner.getName();
-
-    SoftReference ref = (SoftReference) m_ownedTerritoryImages.get(key);
-    if(ref != null)
-      terrImage = (BufferedImage) ref.get();
-
-    if(terrImage == null)
-    { // load it if not found
-      terrImage = createTerritoryImage(place, owner);
-      m_ownedTerritoryImages.put(key, new SoftReference(terrImage));
-    }
-
-    return terrImage;
+    return  createTerritoryImage(place, owner);
   }
 
   // constructor
