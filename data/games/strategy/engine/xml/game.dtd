@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?)>
+<!ELEMENT game (info, loader, map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -44,14 +44,17 @@
 	<!ELEMENT player EMPTY>
 	<!ATTLIST player
 		name ID #REQUIRED
-		optional (true | false) "false"
+		optional (true | false) 'false'
 	>
-	<!-- alliances are two way -->
 	<!ELEMENT alliance EMPTY>
+
 	<!ATTLIST alliance
-		player1 IDREF #REQUIRED 
-		player2 IDREF #REQUIRED
+		player IDREF #REQUIRED 
+		alliance CDATA #REQUIRED
 	>
+
+	
+
 		
 <!ELEMENT gamePlay (delegate+, sequence)>
 	<!ELEMENT delegate EMPTY>
@@ -145,4 +148,10 @@
 			resource IDREF #REQUIRED
 			quantity CDATA #REQUIRED
 		>
-			
+		
+<!ELEMENT propertyList (property*)>
+	<!ELEMENT property EMPTY>
+	<!ATTLIST property
+		name CDATA #REQUIRED
+		value CDATA #REQUIRED
+	>
