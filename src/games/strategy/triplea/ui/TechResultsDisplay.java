@@ -3,8 +3,9 @@ package games.strategy.triplea.ui;
 import java.util.Vector;
 import java.awt.*;
 import javax.swing.*;
+
+import games.strategy.triplea.delegate.message.TechResults;
 import games.strategy.triplea.image.DiceImageFactory;
-import games.strategy.triplea.delegate.message.TechResultsMessage;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.engine.sound.ClipPlayer;
 
@@ -21,7 +22,7 @@ import games.strategy.engine.sound.ClipPlayer;
 public class TechResultsDisplay extends JPanel
 {
 
-  public TechResultsDisplay(TechResultsMessage msg)
+  public TechResultsDisplay(TechResults msg)
   {
     setLayout(new GridBagLayout());
 

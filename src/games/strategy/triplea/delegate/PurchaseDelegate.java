@@ -29,6 +29,7 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
 
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.Formatter;
 
 /**
@@ -43,7 +44,7 @@ import games.strategy.triplea.formatter.Formatter;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class PurchaseDelegate implements Delegate
+public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 {
   private String m_name;
   private String m_displayName;
@@ -89,13 +90,7 @@ public class PurchaseDelegate implements Delegate
    */
   public Message sendMessage(Message aMessage)
   {
-    if(aMessage instanceof BuyMessage)
-    {
-      return buy( (BuyMessage) aMessage, m_player);
-    } else
-    {
-      throw new IllegalArgumentException("Purchase delegate received message of wrong type:" + aMessage);
-    }
+      throw new IllegalArgumentException("We dont respond to messages"); 
   }
 
   /**
@@ -109,42 +104,42 @@ public class PurchaseDelegate implements Delegate
   /**
    * Returns an error code, or null if all is good.
    */
-  private Message buy(BuyMessage buy, PlayerID player)
+  public String purchase(IntegerMap productionRules)
   {
-    IntegerMap costs = getCosts(buy);
-    IntegerMap results = getResults(buy);
+    IntegerMap costs = getCosts(productionRules);
+    IntegerMap results = getResults(productionRules);
 
-    if(!(canAfford(costs, player)))
-      return new StringMessage("Not enough resources", true);
+    if(!(canAfford(costs, m_player)))
+      return "Not enough resources";
 
-    addToPlayer(player, results);
-    removeFromPlayer(player, costs);
+    addToPlayer(m_player, results);
+    removeFromPlayer(m_player, costs);
 
-    return new StringMessage("done");
+    return null;
   }
 
-  private IntegerMap getCosts(BuyMessage buy)
+  private IntegerMap getCosts(IntegerMap productionRules)
   {
     IntegerMap costs = new IntegerMap();
 
-    Iterator rules = buy.getPurchase().keySet().iterator();
+    Iterator rules = productionRules.keySet().iterator();
     while(rules.hasNext() )
     {
       ProductionRule rule = (ProductionRule) rules.next();
-      costs.addMultiple(rule.getCosts(), buy.getPurchase().getInt(rule));
+      costs.addMultiple(rule.getCosts(), productionRules.getInt(rule));
     }
     return costs;
   }
 
-  private IntegerMap getResults(BuyMessage buy)
+  private IntegerMap getResults(IntegerMap productionRules)
   {
     IntegerMap costs = new IntegerMap();
 
-    Iterator rules = buy.getPurchase().keySet().iterator();
+    Iterator rules = productionRules.keySet().iterator();
     while(rules.hasNext() )
     {
       ProductionRule rule = (ProductionRule) rules.next();
-      costs.addMultiple(rule.getResults(), buy.getPurchase().getInt(rule));
+      costs.addMultiple(rule.getResults(), productionRules.getInt(rule));
     }
     return costs;
   }
@@ -207,5 +202,12 @@ public class PurchaseDelegate implements Delegate
   }
 
 
+	/* 
+	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+	 */
+	public Class getRemoteType()
+	{
+	    return IPurchaseDelegate.class;
+	}
 }
 

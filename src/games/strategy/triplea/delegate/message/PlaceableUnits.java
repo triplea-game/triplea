@@ -27,20 +27,20 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.*;
 
 
-public class ProductionResponseMessage implements Message
+public class PlaceableUnits implements java.io.Serializable
 {
 	
-	StringMessage m_message;
-	Collection m_units;
-	int m_maxUnits;
+	private String m_errorMessage;
+	private Collection m_units;
+	private int m_maxUnits;
 	
 	/** Creates new ProductionResponseMessage */
-    public ProductionResponseMessage(StringMessage message) 
+    public PlaceableUnits(String errorMessage) 
 	{
-		m_message = message;
+		m_errorMessage = errorMessage;
     }
 
-    public ProductionResponseMessage(Collection units, int maxUnits) 
+    public PlaceableUnits(Collection units, int maxUnits) 
 	{
 		m_units = units;
 	    m_maxUnits = maxUnits;
@@ -60,17 +60,14 @@ public class ProductionResponseMessage implements Message
 	    return m_maxUnits;
 	}
 	
-	public String getMessage()
+	public String getErrorMessage()
 	{
-	    return m_message.getMessage();
+	    return m_errorMessage;
 	}
 	
 	public boolean isError()
 	{
-	    if (m_message != null)
-	        return m_message.isError();
-	    
-	    return false;
+	   return m_errorMessage != null;
 	}
 	
 	public String toString()

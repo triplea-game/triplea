@@ -12,14 +12,47 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/*
+ * Delegate.java
+ *
+ * Created on October 13, 2001, 4:27 PM
+ */
 
-package games.strategy.triplea.delegate.message;
+package games.strategy.engine.delegate;
 
+import java.util.*;
+import java.io.Serializable;
+
+import games.strategy.engine.data.*;
 import games.strategy.engine.message.*;
+import games.strategy.engine.message.IDestination;
 
 
-public class UndoPlaceMessage implements Message
+/**
+ *
+ * @author  Sean Bridges
+ * @version 1.0
+ *
+ * A Delegate that can be saved and loaded.
+ * 
+ */
+public interface ISaveableDelegate extends IDelegate
 {
+	
+	/**
+	 * Can the delegate be saved at the current time.
+	 * @arg message, a String[] of size 1, hack to pass an error message back.
+	 */
+	public boolean canSave(String[] message);
 
+	/**
+	 * Returns the state of the Delegate.
+	 */
+	public Serializable saveState();
+	
+	/**
+	 * Loads the delegates state
+	 */
+	public void loadState(Serializable state);	
 
 }

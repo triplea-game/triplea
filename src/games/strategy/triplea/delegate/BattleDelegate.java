@@ -30,12 +30,13 @@ import games.strategy.engine.message.*;
 import games.strategy.triplea.Constants;
 
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.remote.IBattleDelegate;
 
 /**
  * @author Sean Bridges
  * @version 1.0
  */
-public class BattleDelegate implements SaveableDelegate
+public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
 {
 
     private String m_name;
@@ -315,6 +316,14 @@ public class BattleDelegate implements SaveableDelegate
         BattleState state = (BattleState) aState;
         m_battleTracker = state.m_battleTracker;
         m_originalOwnerTracker = state.m_originalOwnerTracker;
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+     */
+    public Class getRemoteType()
+    {
+        return IBattleDelegate.class;
     }
 }
 

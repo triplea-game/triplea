@@ -48,7 +48,7 @@ import games.strategy.triplea.attatchments.*;
 public class TechPanel extends ActionPanel
 {
   private JLabel m_actionLabel = new JLabel();
-  private Message m_intMessage;
+  private TechRoll m_techRoll;
 
   /** Creates new BattlePanel */
     public TechPanel(GameData data, MapPanel map)
@@ -74,7 +74,7 @@ public class TechPanel extends ActionPanel
     return "TechPanel";
   }
 
-  public Message waitForTech()
+  public TechRoll waitForTech()
   {
     try
     {
@@ -87,13 +87,13 @@ public class TechPanel extends ActionPanel
       waitForTech();
     }
 
-    if(m_intMessage == null)
+    if(m_techRoll == null)
       return null;
 
-    if( ((IntegerMessage) m_intMessage).getMessage() == 0)
+    if(m_techRoll.getRolls() == 0)
       return null;
 
-    return m_intMessage;
+    return m_techRoll;
   }
 
   private List getAvailableTechs()
@@ -142,9 +142,9 @@ public class TechPanel extends ActionPanel
 
       int quantity = techRollPanel.getValue();
       if(advance == null)
-          m_intMessage =  new IntegerMessage(quantity);
+          m_techRoll =  new TechRoll(null,quantity);
       else
-          m_intMessage = new TechRollMessage(advance, quantity);
+          m_techRoll = new TechRoll(advance, quantity);
       synchronized(getLock())
       {
         getLock().notifyAll();
@@ -159,7 +159,7 @@ public class TechPanel extends ActionPanel
     {
       synchronized(getLock())
       {
-        m_intMessage = null;
+        m_techRoll = null;
         getLock().notifyAll();
       }
     }

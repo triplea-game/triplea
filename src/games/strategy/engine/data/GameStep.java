@@ -40,7 +40,7 @@ public class GameStep extends GameDataComponent
 
 
   /** Creates new GameStep */
-  public GameStep(String name, String displayName, PlayerID player, Delegate delegate, GameData data)
+  public GameStep(String name, String displayName, PlayerID player, IDelegate delegate, GameData data)
   {
     super(data);
     m_name = name;
@@ -59,7 +59,7 @@ public class GameStep extends GameDataComponent
     return m_player;
   }
 
-  public Delegate getDelegate()
+  public IDelegate getDelegate()
   {
     return getData().getDelegateList().getDelegate(m_delegate);
   }

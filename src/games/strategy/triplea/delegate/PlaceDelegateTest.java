@@ -58,6 +58,16 @@ public class PlaceDelegateTest extends DelegateTest
 		return suite;
 	}
 	
+	private void assertValid(String error)
+	{
+	    assertNull(error);
+	}
+	
+	private void assertError(String error)
+	{
+	    assertNotNull(error);
+	}
+	
 	private Collection getInfantry(int count, PlayerID player)
 	{
 	    return m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE).create(count, player);
@@ -92,16 +102,14 @@ public class PlaceDelegateTest extends DelegateTest
 		IntegerMap map = new IntegerMap();
 		map.add(infantry ,2);
 		
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), uk);
-		StringMessage response = (StringMessage) m_delegate.isValidPlacement(message, british);
+		String response = m_delegate.placeUnits(getUnits(map, british), uk);
 		assertValid(response);
 	}
 	
 	public void testNotCorrectUnitsValid()
 	{
 		
-		PlaceMessage message = new PlaceMessage(infantry.create(3, british), uk);
-		StringMessage response = (StringMessage) m_delegate.playerHasEnoughUnits(message, british);
+		String response = m_delegate.placeUnits(infantry.create(3, british), uk);
 		assertError(response);
 	}
 
@@ -110,8 +118,7 @@ public class PlaceDelegateTest extends DelegateTest
 		IntegerMap map = new IntegerMap();
 		map.add(infantry ,2);
 		
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), northSea);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
+		String response = m_delegate.canUnitsBePlaced(northSea, getUnits(map, british), british);
 		assertError(response);
 	}
 
@@ -120,9 +127,7 @@ public class PlaceDelegateTest extends DelegateTest
 		IntegerMap map = new IntegerMap();
 		map.add(transport ,2);
 		
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), northSea);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
-
+		String response = m_delegate.canUnitsBePlaced(northSea, getUnits(map, british), british);
 		assertValid(response );
 	}	
 	
@@ -131,8 +136,7 @@ public class PlaceDelegateTest extends DelegateTest
 		IntegerMap map = new IntegerMap();
 		map.add(infantry ,2);
 		
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), uk);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
+		String response = m_delegate.placeUnits(getUnits(map, british), uk);
 		assertValid(response );
 	}
 
@@ -141,9 +145,7 @@ public class PlaceDelegateTest extends DelegateTest
 		IntegerMap map = new IntegerMap();
 		map.add(transport ,2);
 		
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), uk);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
-
+		String response = m_delegate.canUnitsBePlaced(uk,getUnits(map, british),british);
 		assertError(response);
 	}	
 	
@@ -151,8 +153,7 @@ public class PlaceDelegateTest extends DelegateTest
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(transport, 2);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), northSea);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, japanese);
+		String response = m_delegate.canUnitsBePlaced(northSea, getUnits(map, british), british);		
 		assertError(response);
 		
 	}
@@ -161,8 +162,8 @@ public class PlaceDelegateTest extends DelegateTest
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(infantry, 2);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), japan);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
+		String response = m_delegate.canUnitsBePlaced(japan, getUnits(map, british), british);
+		
 		assertError(response);
 	}
 	
@@ -170,8 +171,8 @@ public class PlaceDelegateTest extends DelegateTest
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(factory, 1);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), uk);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
+		String response = m_delegate.canUnitsBePlaced(uk, getUnits(map, british), british);
+		
 		assertError(response );
 	}
 
@@ -179,8 +180,7 @@ public class PlaceDelegateTest extends DelegateTest
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(aaGun, 1);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), uk);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
+		String response = m_delegate.canUnitsBePlaced(uk, getUnits(map, british), british);
 		assertError(response );
 	}
 
@@ -188,8 +188,7 @@ public class PlaceDelegateTest extends DelegateTest
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(aaGun, 2);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
+		String response = m_delegate.canUnitsBePlaced(westCanada, getUnits(map, british), british);
 		assertError(response );
 	}
 	
@@ -197,8 +196,7 @@ public class PlaceDelegateTest extends DelegateTest
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(factory, 1);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), egypt);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
+		String response = m_delegate.canUnitsBePlaced(egypt, getUnits(map, british), british);
 		assertValid(response );
 	}
 
@@ -206,8 +204,7 @@ public class PlaceDelegateTest extends DelegateTest
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(infantry, 2);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), germany);
-		StringMessage response = (StringMessage) m_delegate.canUnitsBePlaced(message, british);
+		String response = m_delegate.canUnitsBePlaced(germany, getUnits(map, british), british);
 		assertError(response );
 	}
 
@@ -217,18 +214,16 @@ public class PlaceDelegateTest extends DelegateTest
 		IntegerMap map = new IntegerMap();
 		
 		map.add(infantry, 2);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response = m_delegate.canProduce(message, british);
-		assertValid(response );
+		PlaceableUnits response = m_delegate.getPlaceableUnits(getUnits(map, british), westCanada);
+		assertFalse(response.isError() );
 	}
 	
 	public void testCanProduceInSea()
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(transport, 2);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), northSea);
-		StringMessage response = m_delegate.canProduce(message, british);
-		assertValid(response );
+		PlaceableUnits response = m_delegate.getPlaceableUnits(getUnits(map, british), northSea);
+		assertFalse(response.isError() );
 	}
 	
 	
@@ -237,9 +232,8 @@ public class PlaceDelegateTest extends DelegateTest
 		IntegerMap map = new IntegerMap();
 		
 		map.add(infantry, 3);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response = m_delegate.canProduce(message, british);
-		assertError(response);
+		PlaceableUnits response = m_delegate.getPlaceableUnits(getUnits(map, british), westCanada);
+		assertTrue(response.isError() );
 	}
 	
 	public void testAlreadyProducedUnits()
@@ -249,9 +243,8 @@ public class PlaceDelegateTest extends DelegateTest
 		alreadyProduced.put(westCanada, getInfantry(2, british));
 		m_delegate.setProduced(alreadyProduced);
 		map.add(infantry, 1);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response =  m_delegate.canProduce(message, british);
-		assertError(response);
+		PlaceableUnits response = m_delegate.getPlaceableUnits(getUnits(map, british), westCanada);
+		assertTrue(response.isError() );
 	}
 	
 	public void testMultipleFactories()
@@ -261,8 +254,8 @@ public class PlaceDelegateTest extends DelegateTest
 		alreadyProduced.put(westCanada, getInfantry(2, british));
 		m_delegate.setProduced(alreadyProduced);
 		map.add(infantry, 1);
-		PlaceMessage message = new PlaceMessage(getUnits(map, british), westCanada);
-		StringMessage response =  m_delegate.canProduce(message, british);
-		assertError(response );
+		PlaceableUnits response = m_delegate.getPlaceableUnits(getUnits(map, british), westCanada);
+		
+		assertTrue(response.isError() );
 	}
 }

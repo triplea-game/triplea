@@ -169,10 +169,10 @@ public class GameParser
   /**
    * If mustfind is true and cannot find the Delegate an exception will be thrown.
    */
-  private Delegate getDelegate(Element element, String attribute, boolean mustFind) throws GameParseException
+  private IDelegate getDelegate(Element element, String attribute, boolean mustFind) throws GameParseException
   {
     String name = element.getAttribute(attribute);
-    Delegate delegate = data.getDelegateList().getDelegate(name);
+    IDelegate delegate = data.getDelegateList().getDelegate(name);
     if(delegate == null && mustFind)
       throw new GameParseException("Could not find delegate. name:" + name);
 
@@ -506,11 +506,11 @@ public class GameParser
       Element current = (Element) delegateList.get(i);
       //load the class
       String className = current.getAttribute("javaClass");
-      Delegate delegate = null;
+      IDelegate delegate = null;
 
       try
       {
-        delegate = (Delegate) getInstance(className);
+        delegate = (IDelegate) getInstance(className);
       } catch(ClassCastException cce)
       {
         throw new GameParseException("Class <" + className + "> is not a delegate.");
@@ -538,7 +538,7 @@ public class GameParser
     {
       Element current = (Element) stepList.get(i);
 
-      Delegate delegate = getDelegate(current, "delegate", true);
+      IDelegate delegate = getDelegate(current, "delegate", true);
       PlayerID player = getPlayerID(current, "player", false);
       String name = current.getAttribute("name");
       String displayName = null;

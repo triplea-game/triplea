@@ -112,7 +112,6 @@ public class DiceRoll implements java.io.Serializable
     if(!defending)
       artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
 
-    Collection leftOverUnits = new ArrayList();
     Iterator iter = units.iterator();
 
     int power = 0;

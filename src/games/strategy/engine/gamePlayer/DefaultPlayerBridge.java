@@ -23,8 +23,11 @@ package games.strategy.engine.gamePlayer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.message.Message;
+import games.strategy.net.IRemote;
 
 /**
  * Default implementation of PlayerBridge.
@@ -86,5 +89,15 @@ public class DefaultPlayerBridge implements PlayerBridge
             m_currentDelegate = delegateName;
         }
     };
+
+
+    /* 
+     * @see games.strategy.engine.gamePlayer.PlayerBridge#getRemote()
+     */
+    public IRemote getRemote()
+    {
+        IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
+        return m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate));
+    }
     
 }

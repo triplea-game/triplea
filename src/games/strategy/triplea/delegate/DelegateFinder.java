@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * DelegateFinder.java
  *
  * Created on November 28, 2001, 2:58 PM
@@ -19,7 +33,7 @@ public class DelegateFinder
 
 	public static final BattleDelegate battleDelegate(GameData data)
 	{
-		Delegate delegate =  data.getDelegateList().getDelegate("battle");
+		IDelegate delegate =  data.getDelegateList().getDelegate("battle");
 		if(delegate == null)
 			throw new IllegalStateException("Battle delegate not found");
 		return (BattleDelegate) delegate;
@@ -28,7 +42,7 @@ public class DelegateFinder
 	
 	public static final MoveDelegate moveDelegate(GameData data)
 	{
-		Delegate delegate =  data.getDelegateList().getDelegate("move");
+		IDelegate delegate =  data.getDelegateList().getDelegate("move");
 		if(delegate == null)
 			throw new IllegalStateException("Move delegate not found");
 		return (MoveDelegate) delegate;
@@ -37,7 +51,7 @@ public class DelegateFinder
 
 	public static final TechnologyDelegate techDelegate(GameData data)
 	{
-		Delegate delegate =  data.getDelegateList().getDelegate("tech");
+		IDelegate delegate =  data.getDelegateList().getDelegate("tech");
 		if(delegate == null)
 			throw new IllegalStateException("Tech delegate not found");
 		return (TechnologyDelegate) delegate;

@@ -31,24 +31,29 @@ import games.strategy.engine.delegate.*;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.*;
 
 /**
- * Logic for dealing with player tech rolls.
- * This class requires the TechActivationDelegate which
- * actually activates the tech.
- *
- * @author  Sean Bridges
+ * Logic for dealing with player tech rolls. This class requires the
+ * TechActivationDelegate which actually activates the tech.
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
-public class TechnologyDelegate implements SaveableDelegate
+public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
 {
 
     private String m_name;
+
     private String m_displayName;
+
     private GameData m_data;
+
     private DelegateBridge m_bridge;
+
     private PlayerID m_player;
+
     private HashMap m_techs;
 
     /** Creates new TechnolgoyDelegate */
@@ -56,12 +61,11 @@ public class TechnologyDelegate implements SaveableDelegate
     {
     }
 
-
     public void initialize(String name, String displayName)
     {
-	m_name = name;
-	m_displayName = displayName;
-	m_techs = new HashMap();
+        m_name = name;
+        m_displayName = displayName;
+        m_techs = new HashMap();
     }
 
     /**
@@ -69,169 +73,175 @@ public class TechnologyDelegate implements SaveableDelegate
      */
     public void start(DelegateBridge aBridge, GameData gameData)
     {
-	m_bridge = aBridge;
-	m_data = gameData;
-	m_player = aBridge.getPlayerID();
+        m_bridge = aBridge;
+        m_data = gameData;
+        m_player = aBridge.getPlayerID();
     }
 
     public Map getAdvances()
     {
-	return m_techs;
+        return m_techs;
     }
 
     private boolean isFourthEdition()
     {
-	return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
-    } 	
-  
-    private Message rollTech(IntegerMessage msg)
+        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+    }
+
+    public TechResults rollTech(int techRolls, TechAdvance techToRollFor)
     {
-	int techRolls = msg.getMessage();
-	boolean canPay = checkEnoughMoney(techRolls);
-	if(!canPay)
-	    return new StringMessage("Not enough money to pay for that many tech rolls", true);
+        boolean canPay = checkEnoughMoney(techRolls);
+        if (!canPay)
+            return new TechResults("Not enough money to pay for that many tech rolls");
 
-	chargeForTechRolls(techRolls);
-	int[] random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, m_player.getName() + " rolling for tech.");
-	int techHits = getTechHits(random);
+        chargeForTechRolls(techRolls);
+        int[] random = m_bridge.getRandom(Constants.MAX_DICE, techRolls,
+                m_player.getName() + " rolling for tech.");
+        int techHits = getTechHits(random);
 
-	String directedTechInfo = isFourthEdition() ? " for " + ((TechRollMessage)msg).getTech() : "";
-	m_bridge.getHistoryWriter().startEvent(m_player.getName() + (random.hashCode() > 0 ? " roll " : " rolls : ") + Formatter.asDice(random) + directedTechInfo + " and gets " + techHits + " " + Formatter.pluralize("hit", techHits));
-	m_bridge.getHistoryWriter().setRenderingData(new DiceRoll(random, techHits, 5, true));
+        String directedTechInfo = isFourthEdition() ? " for "
+                + techToRollFor : "";
+        m_bridge.getHistoryWriter().startEvent(
+                m_player.getName()
+                        + (random.hashCode() > 0 ? " roll " : " rolls : ")
+                        + Formatter.asDice(random) + directedTechInfo
+                        + " and gets " + techHits + " "
+                        + Formatter.pluralize("hit", techHits));
+        m_bridge.getHistoryWriter().setRenderingData(
+                new DiceRoll(random, techHits, 5, true));
 
+        Collection advances;
+        if (isFourthEdition())
+        {
+            if (techHits > 0)
+                advances = Collections.singletonList(techToRollFor);
+            else
+                advances = Collections.EMPTY_LIST;
+        } else
+        {
+            advances = getTechAdvances(techHits);
+        }
 
-	Collection advances;
-	if(isFourthEdition())
-	{
-	    if(techHits > 0)
-		advances = Collections.singletonList(((TechRollMessage) msg).getTech());
-	    else
-		advances = Collections.EMPTY_LIST;
-	} else
-	{
-	    advances = getTechAdvances(techHits);
-	}
-    
-	// Put in techs so they can be activated later.
-	m_techs.put(m_player, advances);
+        // Put in techs so they can be activated later.
+        m_techs.put(m_player, advances);
 
-	List advancesAsString = new ArrayList();
+        List advancesAsString = new ArrayList();
 
-	Iterator iter = advances.iterator();
-	int count = advances.size();
+        Iterator iter = advances.iterator();
+        int count = advances.size();
 
-	StringBuffer text = new StringBuffer();
-	while(iter.hasNext())
-	{
-	    TechAdvance advance = (TechAdvance) iter.next();
-	    text.append(advance.getName());
-	    count--;
+        StringBuffer text = new StringBuffer();
+        while (iter.hasNext())
+        {
+            TechAdvance advance = (TechAdvance) iter.next();
+            text.append(advance.getName());
+            count--;
 
-	    advancesAsString.add(advance.getName());
+            advancesAsString.add(advance.getName());
 
-	    if(count > 1)
-		text.append(", ");
-	    if(count == 1)
-		text.append(" and ");
-	}
+            if (count > 1)
+                text.append(", ");
+            if (count == 1)
+                text.append(" and ");
+        }
 
-	String transcriptText =  m_player.getName() + " discover " + text.toString();
-	if(advances.size() > 0)
-	    m_bridge.getHistoryWriter().startEvent(transcriptText);
+        String transcriptText = m_player.getName() + " discover "
+                + text.toString();
+        if (advances.size() > 0)
+            m_bridge.getHistoryWriter().startEvent(transcriptText);
 
-	return new TechResultsMessage(random, techHits, advancesAsString, m_player);
-
+        return new TechResults(random, techHits, advancesAsString,
+                m_player);
 
     }
 
     boolean checkEnoughMoney(int rolls)
     {
-	Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-	int cost = rolls * Constants.TECH_ROLL_COST;
-	int has = m_bridge.getPlayerID().getResources().getQuantity(ipcs);
-	return has >= cost;
+        Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+        int cost = rolls * Constants.TECH_ROLL_COST;
+        int has = m_bridge.getPlayerID().getResources().getQuantity(ipcs);
+        return has >= cost;
     }
 
     private void chargeForTechRolls(int rolls)
     {
-	Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-	int cost = rolls * Constants.TECH_ROLL_COST;
+        Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+        int cost = rolls * Constants.TECH_ROLL_COST;
 
-	String transcriptText = m_bridge.getPlayerID().getName() + " spends " + cost + " on tech rolls";
-	m_bridge.getHistoryWriter().startEvent(transcriptText);
+        String transcriptText = m_bridge.getPlayerID().getName() + " spends "
+                + cost + " on tech rolls";
+        m_bridge.getHistoryWriter().startEvent(transcriptText);
 
-
-	Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), ipcs, -cost);
-	m_bridge.addChange(charge);
+        Change charge = ChangeFactory.changeResourcesChange(m_bridge
+                .getPlayerID(), ipcs, -cost);
+        m_bridge.addChange(charge);
     }
 
     private int getTechHits(int[] random)
     {
-	int count = 0;
-	for(int i = 0; i < random.length; i++)
-	{
-	    if(random[i] == Constants.MAX_DICE - 1)
-		count++;
-	}
-	return count;
+        int count = 0;
+        for (int i = 0; i < random.length; i++)
+        {
+            if (random[i] == Constants.MAX_DICE - 1)
+                count++;
+        }
+        return count;
     }
 
     private Collection getTechAdvances(int hits)
     {
-	List available = getAvailableAdvances();
-	if(available.isEmpty())
-	    return Collections.EMPTY_LIST;
-	if(hits >= available.size())
-	    return available;
-	if(hits == 0)
-	    return Collections.EMPTY_LIST;
+        List available = getAvailableAdvances();
+        if (available.isEmpty())
+            return Collections.EMPTY_LIST;
+        if (hits >= available.size())
+            return available;
+        if (hits == 0)
+            return Collections.EMPTY_LIST;
 
-	Collection newAdvances = new ArrayList(hits);
+        Collection newAdvances = new ArrayList(hits);
 
-	int random[] = m_bridge.getRandom(Constants.MAX_DICE, hits, m_player.getName() + " rolling to see what tech advances are aquired");
-	m_bridge.getHistoryWriter().startEvent("Rolls to resolve tech hits:" + Formatter.asDice(random) );
-	for(int i = 0; i < random.length; i++)
-	{
-	    int index = random[i] % available.size();
-	    newAdvances.add(available.get(index));
-	    available.remove(index);
-	}
-	return newAdvances;
+        int random[] = m_bridge.getRandom(Constants.MAX_DICE, hits, m_player
+                .getName()
+                + " rolling to see what tech advances are aquired");
+        m_bridge.getHistoryWriter().startEvent(
+                "Rolls to resolve tech hits:" + Formatter.asDice(random));
+        for (int i = 0; i < random.length; i++)
+        {
+            int index = random[i] % available.size();
+            newAdvances.add(available.get(index));
+            available.remove(index);
+        }
+        return newAdvances;
     }
 
     private List getAvailableAdvances()
     {
-	//too many
-	Collection allAdvances = TechAdvance.getTechAdvances(m_data);
-	Collection playersAdvances = TechTracker.getTechAdvances(m_bridge.getPlayerID());
+        //too many
+        Collection allAdvances = TechAdvance.getTechAdvances(m_data);
+        Collection playersAdvances = TechTracker.getTechAdvances(m_bridge
+                .getPlayerID());
 
-	List available = Util.difference(allAdvances, playersAdvances);
-	return available;
+        List available = Util.difference(allAdvances, playersAdvances);
+        return available;
     }
 
     public String getName()
     {
-	return m_name;
+        return m_name;
     }
 
     public String getDisplayName()
     {
-	return m_displayName;
+        return m_displayName;
     }
-
 
     /**
      * A message from the given player.
      */
     public Message sendMessage(Message aMessage)
     {
-	if((aMessage instanceof IntegerMessage))
-	    return rollTech((IntegerMessage) aMessage);
-	else
-	    throw new IllegalStateException("Message of wrong type:" + aMessage);
-
+        throw new IllegalStateException("Messaging not supported" + aMessage);
     }
-
 
     /**
      * Called before the delegate will stop running.
@@ -242,11 +252,12 @@ public class TechnologyDelegate implements SaveableDelegate
 
     /**
      * Can the delegate be saved at the current time.
+     * 
      * @arg message, a String[] of size 1, hack to pass an error message back.
      */
     public boolean canSave(String[] message)
     {
-	return true;
+        return true;
     }
 
     /**
@@ -254,7 +265,7 @@ public class TechnologyDelegate implements SaveableDelegate
      */
     public Serializable saveState()
     {
-	return m_techs;
+        return m_techs;
     }
 
     /**
@@ -262,8 +273,15 @@ public class TechnologyDelegate implements SaveableDelegate
      */
     public void loadState(Serializable state)
     {
-	m_techs = (HashMap)state;
+        m_techs = (HashMap) state;
     }
 
+    /*
+     * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+     */
+    public Class getRemoteType()
+    {
+        return ITechDelegate.class;
+    }
 
 }

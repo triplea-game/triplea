@@ -54,6 +54,9 @@ public class ServerGame implements IGame
     private final IServerMessenger m_messenger;
     private final IMessageManager m_messageManager;
     private final ChangePerformer m_changePerformer;
+    
+    private final IRemoteMessenger m_remoteMessenger;
+    private final IChannelMessenger m_channelMessenger;
 
     //maps playerName -> INode
     //only for remote nodes
@@ -76,6 +79,8 @@ public class ServerGame implements IGame
         m_messenger = messenger;
         m_messenger.addMessageListener(m_messageListener);
         m_messageManager = new MessageManager(m_messenger);
+        m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
+        m_channelMessenger = new ChannelMessenger(m_messenger);
 
         m_remotePlayers = new HashMap(remotePlayerMapping);
 
@@ -115,15 +120,31 @@ public class ServerGame implements IGame
 
         m_messageManager.addDestination(nullDest);
 
-        localPlayersIter = data.getDelegateList().iterator();
-        while (localPlayersIter.hasNext())
-        {
-            Delegate delegate = (Delegate) localPlayersIter.next();
-            m_messageManager.addDestination(delegate);
-        }
+        setupDelegateMessaging(data);
 
         m_changePerformer = new ChangePerformer(m_data);
         m_randomStats = new RandomStats(m_messageManager);
+    }
+
+    private void setupDelegateMessaging(GameData data)
+    {
+        Iterator delegateIter = data.getDelegateList().iterator();
+        while (delegateIter.hasNext())
+        {
+            IDelegate delegate = (IDelegate) delegateIter.next();
+            m_messageManager.addDestination(delegate);
+            
+            Class remoteType = delegate.getRemoteType();
+            //if its null then it shouldnt be added as an IRemote
+            if(remoteType == null)
+                continue;
+            m_remoteMessenger.registerRemote(delegate.getRemoteType(), delegate, getRemoteName(delegate));
+        }
+    }
+    
+    public static String getRemoteName(IDelegate delegate)
+    {
+        return "games.strategy.engine.framework.ServerGame.DELEGATE_REMOTE." + delegate.getName();
     }
 
     public GameData getData()
@@ -303,6 +324,15 @@ public class ServerGame implements IGame
     public IMessageManager getMessageManager()
     {
         return m_messageManager;
+    }
+    
+    public IChannelMessenger getChannelMessenger()
+    {
+        return m_channelMessenger;
+    }
+    public IRemoteMessenger getRemoteMessenger()
+    {
+        return m_remoteMessenger;
     }
 
     public void addChange(Change aChange)

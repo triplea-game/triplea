@@ -88,10 +88,10 @@ public class GameDataManager
             String displayName = (String) input.readObject();
             String className = (String) input.readObject();
 
-            Delegate instance;
+            IDelegate instance;
             try
             {
-                instance = (Delegate) Class.forName(className).newInstance();
+                instance = (IDelegate) Class.forName(className).newInstance();
                 instance.initialize(name, displayName);
                 data.getDelegateList().addDelegate(instance);
             } catch (Exception e)
@@ -103,7 +103,7 @@ public class GameDataManager
             String next = (String) input.readObject();
             if (next.equals(DELEGATE_DATA_NEXT))
             {
-                ((SaveableDelegate) instance).loadState((Serializable) input.readObject());
+                ((ISaveableDelegate) instance).loadState((Serializable) input.readObject());
             }
         }
     }
@@ -159,16 +159,16 @@ public class GameDataManager
         {
             out.writeObject(DELEGATE_START);
 
-            Delegate delegate = (Delegate) iter.next();
+            IDelegate delegate = (IDelegate) iter.next();
 
             //write out the delegate info
             out.writeObject(delegate.getName());
             out.writeObject(delegate.getDisplayName());
             out.writeObject(delegate.getClass().getName());
 
-            if (delegate instanceof SaveableDelegate)
+            if (delegate instanceof ISaveableDelegate)
             {
-                SaveableDelegate saveable = (SaveableDelegate) delegate;
+                ISaveableDelegate saveable = (ISaveableDelegate) delegate;
                 String[] message = new String[1];
                 if (!saveable.canSave(message))
                 {

@@ -28,6 +28,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
 import games.strategy.engine.delegate.*;
 
+import games.strategy.net.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.message.*;
 import games.strategy.triplea.formatter.*;
@@ -39,7 +40,7 @@ import games.strategy.triplea.formatter.*;
  * @author Ali Ibrahim
  * @version 1.0
  */
-public class TechActivationDelegate implements SaveableDelegate
+public class TechActivationDelegate implements ISaveableDelegate
 {
 
     private String m_name;
@@ -156,6 +157,14 @@ public class TechActivationDelegate implements SaveableDelegate
     public void loadState(Serializable state)
     {
     
+    }
+
+    /* 
+     * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+     */
+    public Class getRemoteType()
+    {
+        return  null;
     }
 
 

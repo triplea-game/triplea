@@ -27,9 +27,11 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
 
+import games.strategy.net.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.Formatter;
 import java.io.*;
 
@@ -48,7 +50,7 @@ import sun.security.provider.MD5;
  * @version 1.0
  *  
  */
-public class MoveDelegate implements SaveableDelegate
+public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 {
 
     private String m_name;
@@ -1580,6 +1582,15 @@ public class MoveDelegate implements SaveableDelegate
         return saveState(true);
     }
 
+    /* 
+     * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+     */
+    public Class getRemoteType()
+    {
+        return  IMoveDelegate.class;
+    }
+
+    
     /**
      * Returns the state of the Delegate. We dont want to save the undoState if
      * we are saving the state for an undo move (we dont need it, it will just

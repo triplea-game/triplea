@@ -11,45 +11,35 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-/*
- * ProductionRequestMessage.java
- *
- * Created on August 28, 2004
- */
-
 package games.strategy.triplea.delegate.message;
 
-import java.util.Collection;
-
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.message.*;
+import games.strategy.engine.message.Message;
+import games.strategy.triplea.delegate.TechAdvance;
 
 
-public class ProductionRequestMessage implements Message
+/**
+ * Used to describe a tech roll.
+ * advance may be null if the game does not support rolling for
+ * specific techs (ie aa 2nd edition)
+ */
+public class TechRoll
 {
-	Collection m_units;
-	Territory m_to;
-	
-	/** Creates new ProductionRequestMessage */
-    public ProductionRequestMessage(Collection units, Territory to) 
-	{
-		m_units = units;
-		m_to = to;
+    private final TechAdvance m_tech;
+    private final int m_rolls;
+    
+    public TechRoll(TechAdvance advance, int rolls)
+    {
+        m_rolls = rolls;
+        m_tech = advance;  
     }
-
-	public Collection getUnits()
-	{
-		return m_units;
-	}
-	
-	public Territory getTo()
-	{
-		return m_to;
-	}
-	
-	public String toString()
-	{
-		return "ProductionRequestMessage units:" + m_units + " to::" + m_to;
-	}
+    
+    public int getRolls()
+    {
+        return m_rolls;
+    }
+    
+    public TechAdvance getTech()
+    {
+        return m_tech;
+    }
 }

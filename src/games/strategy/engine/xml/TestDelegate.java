@@ -23,6 +23,7 @@ package games.strategy.engine.xml;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
+import games.strategy.net.IRemote;
 
 /**
  *
@@ -32,7 +33,7 @@ import games.strategy.engine.message.Message;
  * A simple dumb delegate, dont acutally call these methods.
  * Simply to satisfy the interface requirements for testing.
  */
-public final class TestDelegate implements Delegate
+public final class TestDelegate implements IDelegate
 {
 	private String m_name;
 
@@ -51,5 +52,6 @@ public final class TestDelegate implements Delegate
 	public Message sendMessage(Message aMessage) {return null;	}
 	public void end() {	}
 	public String getDisplayName() {return "displayName";}
+	public Class getRemoteType() {return IRemote.class;}
 
 }

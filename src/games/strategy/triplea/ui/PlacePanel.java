@@ -33,6 +33,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitIconImageFactory;
 
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.message.Message;
 import games.strategy.triplea.delegate.*;
@@ -48,7 +49,7 @@ public class PlacePanel extends ActionPanel
 {
 
   private JLabel actionLabel = new JLabel();
-  private PlaceMessage m_placeMessage;
+  private PlaceData m_placeData;
   private SimpleUnitPanel m_unitsToPlace = new SimpleUnitPanel();
   private PlayerBridge m_bridge;
 
@@ -77,9 +78,8 @@ public class PlacePanel extends ActionPanel
 
   private void refreshUndoButton() throws NumberFormatException
   {
-    String reply = ((StringMessage) m_bridge.sendMessage(new PlaceCountQueryMessage())).getMessage();
-    int placeCount = Integer.parseInt( reply);
-    UNDO_PLACE_ACTION.setEnabled(placeCount > 0);
+    IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
+    UNDO_PLACE_ACTION.setEnabled(placeDel.getPlacementsMade() > 0);
   }
 
   private void refreshActionLabelText(boolean bid)
@@ -87,7 +87,7 @@ public class PlacePanel extends ActionPanel
     actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));
   }
 
-  public PlaceMessage waitForPlace(boolean bid, PlayerBridge bridge)
+  public PlaceData waitForPlace(boolean bid, PlayerBridge bridge)
   {
     m_bridge = bridge;
     refreshActionLabelText(bid);
@@ -108,14 +108,15 @@ public class PlacePanel extends ActionPanel
     removeAll();
     m_bridge = null;
     SwingUtilities.invokeLater(REFRESH);
-    return m_placeMessage;
+    return m_placeData;
   }
 
   private final AbstractAction UNDO_PLACE_ACTION = new AbstractAction("Undo Last Placement")
   {
     public void actionPerformed(ActionEvent e)
     {
-       m_bridge.sendMessage(new UndoPlaceMessage());
+       IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
+       placeDel.undoLastPlacement();
        refreshUndoButton();
        updateUnits();
        validate();
@@ -135,7 +136,7 @@ public class PlacePanel extends ActionPanel
 
       synchronized(getLock())
       {
-        m_placeMessage = null;
+          m_placeData = null;
         getLock().notify();
       }
     }
@@ -170,8 +171,8 @@ public class PlacePanel extends ActionPanel
       if(option == JOptionPane.OK_OPTION)
       {
         Collection choosen = chooser.getSelected();
-        PlaceMessage message = new PlaceMessage(choosen, territory);
-        m_placeMessage = message;
+        
+        m_placeData = new PlaceData(choosen, territory);
         updateUnits();
         synchronized(getLock())
         {
@@ -205,16 +206,14 @@ public class PlacePanel extends ActionPanel
        if(units.isEmpty())
            return Collections.EMPTY_LIST;
       
-       Message msg = new ProductionRequestMessage(units, territory);
-       Message response = m_bridge.sendMessage(msg);
+       IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
        
-       if (! (response instanceof ProductionResponseMessage))
-           throw new IllegalStateException("Message of wrong type:" + response);
+    
+       PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
 
-       ProductionResponseMessage production = (ProductionResponseMessage) response;
        if (production.isError())
        {
-           JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getMessage(), "No units", JOptionPane.INFORMATION_MESSAGE);
+           JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getErrorMessage(), "No units", JOptionPane.INFORMATION_MESSAGE);
            return Collections.EMPTY_LIST;
        }
        

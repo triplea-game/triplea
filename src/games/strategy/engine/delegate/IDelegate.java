@@ -25,6 +25,7 @@ import java.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.*;
 import games.strategy.engine.message.IDestination;
+import games.strategy.net.IRemote;
 
 
 /**
@@ -44,10 +45,8 @@ import games.strategy.engine.message.IDestination;
  * Delegates start executing with the start method, and stop with the end message.
  *
  */
-public interface Delegate extends IDestination
+public interface IDelegate extends IDestination
 {
-
-
 	/*
 	 * Uses name as the interal unique name and displayName for display to users
 	 */
@@ -70,4 +69,15 @@ public interface Delegate extends IDestination
 	public String getName();
 
 	public String getDisplayName();
+	
+	/**
+	 * Get the remote type of this delegate for use 
+	 * by a RemoteMessenger.
+	 * 
+	 * Class must be an interface that extends IRemote
+	 * 
+	 * If the return value is null, then it indicates that this 
+	 * delegate should not be used as in IRemote.
+	 */
+	public Class getRemoteType();
 }

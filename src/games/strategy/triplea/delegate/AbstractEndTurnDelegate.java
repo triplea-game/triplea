@@ -26,6 +26,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.*;
 
+import games.strategy.net.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.formatter.Formatter;
@@ -40,7 +41,7 @@ import games.strategy.util.Match;
  *
  * At the end of the turn collect income.
  */
-public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Serializable
+public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Serializable
 {
 	private String m_name;
 	private String m_displayName;
@@ -172,4 +173,14 @@ public abstract class AbstractEndTurnDelegate implements Delegate, java.io.Seria
 	{
 		DelegateFinder.battleDelegate(m_data).getBattleTracker().clear();
 	}
+
+	/* 
+     * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+     */
+    public Class getRemoteType()
+    {
+        return null;
+    }
+
+	
 }

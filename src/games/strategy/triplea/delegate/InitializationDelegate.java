@@ -28,6 +28,7 @@ import java.io.Serializable;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
+import games.strategy.net.IRemote;
 import games.strategy.triplea.*;
 import games.strategy.triplea.attatchments.*;
 
@@ -36,7 +37,7 @@ import games.strategy.triplea.attatchments.*;
  *
  * @author  Sean Bridges
  */
-public class InitializationDelegate implements Delegate
+public class InitializationDelegate implements IDelegate
 {
   private String m_name;
   private String m_displayName;
@@ -145,6 +146,14 @@ public class InitializationDelegate implements Delegate
   public boolean canSave(String[] message)
   {
     return true;
+  }
+
+  /* 
+   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+   */
+  public Class getRemoteType()
+  {
+      return null;
   }
 
 

@@ -28,6 +28,7 @@ import games.strategy.engine.message.*;
 import games.strategy.engine.delegate.*;
 
 
+import games.strategy.net.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 
@@ -38,7 +39,7 @@ import games.strategy.triplea.attatchments.TerritoryAttatchment;
  *
  * @author  Sean Bridges
  */
-public class EndRoundDelegate implements SaveableDelegate
+public class EndRoundDelegate implements ISaveableDelegate
 {
 	private final static int AXIS_ECONOMIC_VICTORY = 84;
 
@@ -161,6 +162,15 @@ public class EndRoundDelegate implements SaveableDelegate
 	{
 		m_gameOver = ((Boolean) state).booleanValue();
 	}
+
+	
+    /* 
+     * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+     */
+    public Class getRemoteType()
+    {
+        return null;
+    }
 
 
 }

@@ -41,7 +41,7 @@ public class DelegateList extends GameDataComponent
 		super(data);
     }
 
-	public void addDelegate(Delegate del)
+	public void addDelegate(IDelegate del)
 	{
 		m_delegates.put(del.getName(), del);
 	}
@@ -56,9 +56,9 @@ public class DelegateList extends GameDataComponent
 		return m_delegates.values().iterator();
 	}
 
-	public Delegate getDelegate(String name)
+	public IDelegate getDelegate(String name)
 	{
-		return (Delegate) m_delegates.get(name);
+		return (IDelegate) m_delegates.get(name);
 	}
 
 	private void writeObject(ObjectOutputStream out)

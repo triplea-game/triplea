@@ -38,6 +38,8 @@ import java.io.*;
 
 
 import games.strategy.triplea.delegate.message.*;
+import games.strategy.triplea.delegate.remote.*;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 
 
 /**
@@ -117,7 +119,6 @@ public class TroxAIPlayer implements GamePlayer
     else if(message instanceof StrategicBombQuery)
     {
        return new BooleanMessage(false);
-      
     }
     else if (message instanceof RocketAttackQuery)
     {
@@ -202,25 +203,7 @@ public class TroxAIPlayer implements GamePlayer
 
   private void tech()
   {
-    IntegerMessage message = null;//m_ui.getTechRolls(m_id);
-    if(message != null)
-    {
-      Message msg =  m_bridge.sendMessage(message);
-      if(msg == null)
-        return;
-
-      if(msg instanceof StringMessage)
-      {
-        StringMessage error = (StringMessage) msg;
-   
-        return;
-      }
-      else
-      {
-        TechResultsMessage techResults = (TechResultsMessage) msg;
-   
-      }
-    }
+    
   }
 
   private void move(boolean nonCombat)
@@ -318,20 +301,17 @@ public class TroxAIPlayer implements GamePlayer
 	}
 	IntegerMap prod = m_ai.selectPurchases();
 	
-	//IntegerMap prod = m_ui.getProduction(m_id, bid);
     if(prod == null)
       return;
-    BuyMessage message = new BuyMessage(prod);
-    //System.out.println(message.toString());
-    Message response = m_bridge.sendMessage(message);
-    if(response != null && response instanceof StringMessage)
+
+    IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
+    String error = purchaseDel.purchase(prod);
+
+   
+    if(error != null)
     {
-      StringMessage error = (StringMessage) response;
-      if(error.isError())
-      {
-        System.err.println(error.getMessage());
-        purchase(bid);
-      }
+        System.err.println(error);
+        purchase(bid); 
     }
     return;
   }
@@ -375,24 +355,15 @@ public class TroxAIPlayer implements GamePlayer
       if(m_id.getUnits().size() == 0)
         return;
         
-      //added by Troy Graber
+        //added by Troy Graber
       	GameData g = m_bridge.getGameData();
-  	
-  		PlaceMessage message = null;
+  	  		
   		TerritoryAttatchment.getCapital(m_id, g);
-  		message = new PlaceMessage(m_id.getUnits().getUnits(), TerritoryAttatchment.getCapital(m_id, g));
   		
-	   //end additions
-
-      //PlaceMessage message = m_ui.getPlace(m_id, bid, m_bridge);
-      if(message == null)
-        return;
-      else
-      {
-        StringMessage response = (StringMessage) m_bridge.sendMessage(message);
-        if(response.isError())
-          System.err.println(response.getMessage() );
-      }
+  		//we need to check for 4th edition to see if there is a limit on the
+  		//number of units that can be produced in the capital
+  		IAbstractPlaceDelegate del = (IAbstractPlaceDelegate) m_bridge.getRemote();
+  		del.placeUnits(m_id.getUnits().getUnits(), TerritoryAttatchment.getCapital(m_id, g));
     }
   }
 }

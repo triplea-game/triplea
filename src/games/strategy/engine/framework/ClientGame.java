@@ -43,6 +43,8 @@ public class ClientGame implements IGame
   private final GameData m_data;
   private final IMessenger m_messenger;
   private final IMessageManager m_messageManager;
+  private final IRemoteMessenger m_remoteMessenger;
+  private final IChannelMessenger m_channelMessenger;
   private final ChangePerformer m_changePerformer;
   private final INode m_serverNode;
   //maps PlayerID->GamePlayer
@@ -59,6 +61,9 @@ public class ClientGame implements IGame
     m_messenger = messenger;
     m_messenger.addMessageListener(m_messageListener);
     m_messageManager = new MessageManager(m_messenger);
+    m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
+    m_channelMessenger = new ChannelMessenger(m_messenger);
+    
     m_messageManager.addDestination(m_stepChangeDestination);
 
 
@@ -98,6 +103,15 @@ public class ClientGame implements IGame
     return m_messenger;
   }
 
+  public IChannelMessenger getChannelMessenger()
+  {
+      return m_channelMessenger;
+  }
+  public IRemoteMessenger getRemoteMessenger()
+  {
+      return m_remoteMessenger;
+  }
+  
   public void addGameStepListener(GameStepListener listener)
   {
     m_gameStepListeners.add(listener);
