@@ -291,6 +291,7 @@
 	    <connection t1="10 Sea Zone" t2="11 Sea Zone"/>
 	    <connection t1="10 Sea Zone" t2="19 Sea Zone"/>
 	    <connection t1="10 Sea Zone" t2="Eastern United States"/>
+	    <connection t1="Mexico" t2="Eastern United States"/>
           <connection t1="10 Sea Zone" t2="Panama"/>
 	    <connection t1="11 Sea Zone" t2="12 Sea Zone"/>
 	    <connection t1="11 Sea Zone" t2="18 Sea Zone"/>
