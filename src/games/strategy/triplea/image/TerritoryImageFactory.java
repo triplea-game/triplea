@@ -34,7 +34,7 @@ public final class TerritoryImageFactory
 {
     private final int CACHE_SIZE = 5;
 
-    private LinkedList m_cahcedTerritories = new LinkedList();
+    private LinkedList m_cachedTerritories = new LinkedList();
 
     // one instance in the application
     private static TerritoryImageFactory s_singletonInstance = new
@@ -97,6 +97,8 @@ public final class TerritoryImageFactory
            graphics.setColor(getPlayerColour(place.getOwner()));
        }
 
+       Image img = getReliefImage(place);
+       
        while (iter.hasNext())
        {
            Polygon polygon = (Polygon)iter.next();
@@ -108,7 +110,6 @@ public final class TerritoryImageFactory
        }
        if(!place.isWater())
        {
-           Image img = getReliefImage(place);
            if(img != null)
                graphics.drawImage(img, 0,0, new ImageIoCompletionWatcher());
        }
@@ -127,17 +128,17 @@ public final class TerritoryImageFactory
     public Image getReliefImage(Territory place)
     {
         if(place.isWater())
-            throw new IllegalArgumentException(place + " is a sea zone");
+            return null;
 
         //is it in the cache?
-        for(int i = 0; i < m_cahcedTerritories.size(); i++)
+        for(int i = 0; i < m_cachedTerritories.size(); i++)
         {
-            ImageName current = (ImageName) m_cahcedTerritories.get(i);
+            ImageName current = (ImageName) m_cachedTerritories.get(i);
             if(current.name.equals(place.getName()))
             {
                 //move it to the front of the cache
-                m_cahcedTerritories.remove(i);
-                m_cahcedTerritories.add(0, current);
+                m_cachedTerritories.remove(i);
+                m_cachedTerritories.add(0, current);
 
                 return current.image;
             }
@@ -153,10 +154,10 @@ public final class TerritoryImageFactory
       Image baseImage = loadImageCompletely(file);
 
       //put it in the cache
-      m_cahcedTerritories.add(0, new ImageName(place.getName(), baseImage));
-      while(m_cahcedTerritories.size() > CACHE_SIZE)
+      m_cachedTerritories.add(0, new ImageName(place.getName(), baseImage));
+      while(m_cachedTerritories.size() > CACHE_SIZE)
       {
-          m_cahcedTerritories.remove(CACHE_SIZE);
+          m_cachedTerritories.remove(CACHE_SIZE);
       }
 
 
@@ -173,14 +174,14 @@ public final class TerritoryImageFactory
             throw new IllegalArgumentException(place + " is not a sea zone");
 
         //is it in the cache?
-        for(int i = 0; i < m_cahcedTerritories.size(); i++)
+        for(int i = 0; i < m_cachedTerritories.size(); i++)
         {
-            ImageName current = (ImageName) m_cahcedTerritories.get(i);
+            ImageName current = (ImageName) m_cachedTerritories.get(i);
             if(current.name.equals(place.getName()))
             {
               //move it to the front of the cache
-              m_cahcedTerritories.remove(i);
-              m_cahcedTerritories.add(0, current);
+              m_cachedTerritories.remove(i);
+              m_cachedTerritories.add(0, current);
 
               return current.image;
             }
@@ -196,10 +197,10 @@ public final class TerritoryImageFactory
       Image baseImage = loadImageCompletely(file);
 
       //put it in the cache
-      m_cahcedTerritories.add(0, new ImageName(place.getName(), baseImage));
-      while(m_cahcedTerritories.size() > CACHE_SIZE)
+      m_cachedTerritories.add(0, new ImageName(place.getName(), baseImage));
+      while(m_cachedTerritories.size() > CACHE_SIZE)
       {
-          m_cahcedTerritories.remove(CACHE_SIZE);
+          m_cachedTerritories.remove(CACHE_SIZE);
       }
 
 

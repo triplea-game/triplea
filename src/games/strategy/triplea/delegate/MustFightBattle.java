@@ -345,6 +345,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
 
+        if (isFourthEdition() && m_battleSite.isWater())
+        {
+            if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+            {
+                steps.add(m_defender.getName() + DEFENDER_FIRES_SUBS);
+                steps.add(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES);
+            }
+        }
+
         //attacker fire
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotSub))
         {
@@ -352,8 +361,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             steps.add(m_defender.getName() + DEFENDER_SELECT_CASUALTIES);
         }
 
-        //defender subs
-        if (m_battleSite.isWater())
+        //defender subs, note this happens earlier for fourth edition
+        if (!isFourthEdition() && m_battleSite.isWater())
         {
             if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             {
@@ -435,8 +444,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_over)
             return;
         attackSubs(bridge);
+        
+        if(isFourthEdition())
+            defendSubs(bridge);
+
         attackNonSubs(bridge);
-        defendSubs(bridge);
+
+        if(!isFourthEdition())
+            defendSubs(bridge);
         defendNonSubs(bridge);
 
         clearWaitingToDie(bridge);
@@ -814,7 +829,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (attacked.isEmpty())
             return;
 
-        fire(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES, units, attacked, true, true, bridge, "Subs defend, ");
+        boolean destroyersPresent = Match.someMatch(attacked, Matches.UnitIsDestroyer);
+        fire(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES, units, attacked, true, destroyersPresent, bridge, "Subs defend, ");
     }
 
     private SelectCasualtyMessage selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, boolean defender, String text, DiceRoll dice)
@@ -853,11 +869,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsDestructible);
 
         //4th edition, bombardment casualties cant return fire
-        boolean canReturnFire = !m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+        boolean canReturnFire = !isFourthEdition();
         
         if (bombard.size() > 0 && attacked.size() > 0)
             fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, canReturnFire, bridge, "Bombard");
         markBombardingSources();
+    }
+
+    /**
+     * @return
+     */
+    private boolean isFourthEdition()
+    {
+
+        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
     /**

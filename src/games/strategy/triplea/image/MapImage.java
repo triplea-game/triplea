@@ -168,25 +168,36 @@ public class MapImage
       PlayerID id = territory.getOwner();
 
       Graphics largeGraphics = m_largeMapImage.getGraphics();
-      largeGraphics.setColor(TerritoryImageFactory.getInstance().getPlayerColour(id));
+      
+      Color playerColour = TerritoryImageFactory.getInstance().getPlayerColour(id);
+      largeGraphics.setColor(playerColour);
 
       Graphics smallGraphics = m_smallMapImage.getGraphics();
-      smallGraphics.setColor(TerritoryImageFactory.getInstance().getPlayerColour(id));
+      smallGraphics.setColor(playerColour);
 
+      Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
+      
       List polys = TerritoryData.getInstance().getPolygons(territory);
       Iterator polyIter = polys.iterator();
       while (polyIter.hasNext())
       {
-          Polygon item = (Polygon) polyIter.next();
-          largeGraphics.fillPolygon(item);
-          smallGraphics.fillPolygon(scale(item, m_smallLargeRatio));
+          Polygon poly = (Polygon) polyIter.next();
+          largeGraphics.fillPolygon(poly);
+          smallGraphics.fillPolygon(scale(poly, m_smallLargeRatio));
+          if(reliefImage == null)
+          {
+              largeGraphics.setColor(Color.BLACK);
+              largeGraphics.drawPolygon(poly);
+              largeGraphics.setColor(playerColour);
+          }
+          
       }
 
       Rectangle dirty = TerritoryData.getInstance().getBoundingRect(territory);
 
-      Image reliefImage = TerritoryImageFactory.getInstance().getReliefImage(territory);
+
       if(reliefImage != null)
-          m_largeMapImage.getGraphics().drawImage(reliefImage, dirty.x, dirty.y, s_observer);
+          largeGraphics.drawImage(reliefImage, dirty.x, dirty.y, s_observer);
 
   }
 
