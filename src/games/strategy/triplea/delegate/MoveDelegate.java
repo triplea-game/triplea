@@ -333,6 +333,13 @@ public class MoveDelegate implements Delegate
 				return error;
 		}
 
+		if(!m_nonCombat)
+		{
+			error = validateCombat(units, route, player);
+			if(error != null)
+				return error;
+		}
+
 		error = validateBasic(units, route, player);
 		if(error != null)
 			return error;
@@ -418,6 +425,13 @@ public class MoveDelegate implements Delegate
 		
 		return null;
 		
+	}
+	
+	private String validateCombat(Collection units, Route route, PlayerID player)
+	{
+		if(Match.someMatch(units, Matches.UnitIsAA))
+			return "Cant move aa guns in combat movement phase";
+		return null;
 	}
 	
 	private String validateNonCombat(Collection units, Route route, PlayerID player)
