@@ -41,301 +41,307 @@ import games.strategy.triplea.delegate.*;
  */
 public class TripleAPlayer implements GamePlayer
 {
-  private final String m_name;
-  private PlayerID m_id;
-  private TripleAFrame m_ui;
-  private PlayerBridge m_bridge;
+    private final String m_name;
+    private PlayerID m_id;
+    private TripleAFrame m_ui;
+    private PlayerBridge m_bridge;
 
-  /** Creates new TripleAPlayer */
-  public TripleAPlayer(String name)
-  {
-    m_name = name;
-  }
-
-  public void setFrame(TripleAFrame frame)
-  {
-    m_ui = frame;
-  }
-
-  public String getName()
-  {
-    return m_name;
-  }
-
-  public Message sendMessage(Message message)
-  {
-    if(message instanceof MultiDestinationMessage)
+    /** Creates new TripleAPlayer */
+    public TripleAPlayer(String name)
     {
-      if(MultiDestinationMessage.shouldIgnore((MultiDestinationMessage) message))
-        return null;
+	m_name = name;
     }
 
-
-    if(message instanceof SelectCasualtyQueryMessage)
-      return m_ui.getCasualties((SelectCasualtyQueryMessage) message);
-    else if(message instanceof StringMessage)
+    public void setFrame(TripleAFrame frame)
     {
-      StringMessage smsg = (StringMessage) message;
-      if(!m_ui.playing(smsg.getIgnore()))
-      {
-        if(smsg.isError())
-          m_ui.notifyError(smsg.getMessage());
-        else
-          m_ui.notifyMessage(smsg.getMessage());
-      }
-    }
-    else if (message instanceof BattleStepMessage)
-    {
-      return m_ui.listBattle((BattleStepMessage) message);
-    }
-    else if(message instanceof CasualtyNotificationMessage)
-    {
-      m_ui.casualtyNoticicationMessage((CasualtyNotificationMessage) message);
-      return null;
-    }
-    else if (message instanceof BattleInfoMessage)
-    {
-      return m_ui.battleInfo((BattleInfoMessage) message);
-    }
-    else if (message instanceof BattleStringMessage)
-    {
-      return m_ui.battleStringMessage((BattleStringMessage) message);
-    }
-    else if(message instanceof MoveFightersToNewCarrierMessage)
-    {
-        return m_ui.moveFightersToCarrier((MoveFightersToNewCarrierMessage) message);
-    }
-    if(message instanceof BattleStartMessage)
-    {
-      m_ui.battleStartMessage((BattleStartMessage) message);
-    }
-    else if(message instanceof RetreatQueryMessage)
-    {
-      return m_ui.getRetreat( (RetreatQueryMessage) message);
-    }
-    else if (message instanceof RetreatNotificationMessage)
-    {
-      m_ui.notifyRetreat( (RetreatNotificationMessage) message);
-      return null;
-    }
-    else if (message instanceof LandAirQueryMessage)
-    {
-      return m_ui.getLandAir( (LandAirQueryMessage) message);
-    }
-    else if(message instanceof StrategicBombQuery)
-    {
-      return new BooleanMessage( m_ui.getStrategicBombingRaid((StrategicBombQuery) message));
-    }
-    else if (message instanceof RocketAttackQuery)
-    {
-      return m_ui.getRocketAttack( (RocketAttackQuery) message);
-    }
-    else if(message instanceof BattleEndMessage)
-    {
-      m_ui.battleEndMessage((BattleEndMessage) message);
-      return null;
-    }
-    else if(message instanceof BombingResults)
-    {
-      m_ui.bombingResults((BombingResults) message);
-      return null;
+	m_ui = frame;
     }
 
-    return null;
-  }
-
-  public PlayerID getID()
-  {
-    return m_id;
-  }
-
-  public void initialize(PlayerBridge bridge, PlayerID id)
-  {
-    m_bridge = bridge;
-    m_id = id;
-  }
-
-  public void start(String name)
-  {
-    if(name.endsWith("Bid"))
-      purchase(true);
-    else if(name.endsWith("Tech"))
-      tech();
-    else if(name.endsWith("Purchase"))
-      purchase(false);
-    else if(name.endsWith("Move"))
-      move(name.endsWith("NonCombatMove"));
-    else if(name.endsWith("Battle"))
-      battle();
-    else if(name.endsWith("Place"))
-      place(name.indexOf("Bid") != -1);
-    else if(name.endsWith("EndTurn"))
-      ;//intentionally blank
-    else
-      throw new IllegalArgumentException("Unrecognized step name:" + name);
-
-  }
-
-  private void tech()
-  {
-    //can we tech?
-    if(m_id.getResources().getQuantity(Constants.IPCS) == 0)
-      return;
-
-    Message message = m_ui.getTechRolls(m_id);
-    if(message != null)
+    public String getName()
     {
-      Message msg =  m_bridge.sendMessage(message);
-      if(msg == null)
-        return;
-
-      if(msg instanceof StringMessage)
-      {
-        StringMessage error = (StringMessage) msg;
-        m_ui.notifyError(error.getMessage());
-        tech();
-      }
-      else
-      {
-        TechResultsMessage techResults = (TechResultsMessage) msg;
-        m_ui.notifyTechResults(techResults);
-      }
-    }
-  }
-
-  private void move(boolean nonCombat)
-  {
-    if(!hasUnitsThatCanMove())
-      return;
-
-    MoveMessage message = m_ui.getMove(m_id, m_bridge, nonCombat);
-    if(message == null)
-    {
-      if(nonCombat)
-        ensureAirCanLand();
-      return;
+	return m_name;
     }
 
-
-    StringMessage response = (StringMessage) m_bridge.sendMessage(message);
-    if(response!= null && response.isError())
-      m_ui.notifyError(response.getMessage());
-    move(nonCombat);
-  }
-
-  private void ensureAirCanLand()
-  {
-    TerritoryCollectionMessage response = (TerritoryCollectionMessage) m_bridge.sendMessage(new MustMoveAirQueryMessage());
-    if(response.getTerritories().size() == 0)
-      return;
-    else
+    public Message sendMessage(Message message)
     {
-      StringBuffer buf = new StringBuffer("Air in following territories cant land:");
-      Iterator iter = response.getTerritories().iterator();
-      while(iter.hasNext())
-      {
-        buf.append( ((Territory) iter.next()).getName());
-        buf.append(" ");
-      }
-      if(! m_ui.getOKToLetAirDie(buf.toString()))
-        move(true);
-    }
-  }
+	if(message instanceof MultiDestinationMessage)
+	{
+	    if(MultiDestinationMessage.shouldIgnore((MultiDestinationMessage) message))
+		return null;
+	}
 
-  private boolean hasUnitsThatCanMove()
-  {
-    CompositeMatchAnd moveableUnitOwnedByMe = new CompositeMatchAnd(new InverseMatch(Matches.UnitIsAAOrFactory),
-                                                    Matches.unitIsOwnedBy(m_id));
+
+	if(message instanceof SelectCasualtyQueryMessage)
+	{
+	    return m_ui.getCasualties((SelectCasualtyQueryMessage) message);
+	}
+	else if(message instanceof BombardmentQueryMessage)
+	{
+	    return m_ui.getBombardment((BombardmentQueryMessage) message);
+	}
+	else if(message instanceof StringMessage)
+	{
+	    StringMessage smsg = (StringMessage) message;
+	    if(!m_ui.playing(smsg.getIgnore()))
+	    {
+		if(smsg.isError())
+		    m_ui.notifyError(smsg.getMessage());
+		else
+		    m_ui.notifyMessage(smsg.getMessage());
+	    }
+	}
+	else if (message instanceof BattleStepMessage)
+	{
+	    return m_ui.listBattle((BattleStepMessage) message);
+	}
+	else if(message instanceof CasualtyNotificationMessage)
+	{
+	    m_ui.casualtyNotificationMessage((CasualtyNotificationMessage) message);
+	    return null;
+	}
+	else if (message instanceof BattleInfoMessage)
+	{
+	    return m_ui.battleInfo((BattleInfoMessage) message);
+	}
+	else if (message instanceof BattleStringMessage)
+	{
+	    return m_ui.battleStringMessage((BattleStringMessage) message);
+	}
+	else if(message instanceof MoveFightersToNewCarrierMessage)
+	{
+	    return m_ui.moveFightersToCarrier((MoveFightersToNewCarrierMessage) message);
+	}
+	if(message instanceof BattleStartMessage)
+	{
+	    m_ui.battleStartMessage((BattleStartMessage) message);
+	}
+	else if(message instanceof RetreatQueryMessage)
+	{
+	    return m_ui.getRetreat( (RetreatQueryMessage) message);
+	}
+	else if (message instanceof RetreatNotificationMessage)
+	{
+	    m_ui.notifyRetreat( (RetreatNotificationMessage) message);
+	    return null;
+	}
+	else if (message instanceof LandAirQueryMessage)
+	{
+	    return m_ui.getLandAir( (LandAirQueryMessage) message);
+	}
+	else if(message instanceof StrategicBombQuery)
+	{
+	    return new BooleanMessage( m_ui.getStrategicBombingRaid((StrategicBombQuery) message));
+	}
+	else if (message instanceof RocketAttackQuery)
+	{
+	    return m_ui.getRocketAttack( (RocketAttackQuery) message);
+	}
+	else if(message instanceof BattleEndMessage)
+	{
+	    m_ui.battleEndMessage((BattleEndMessage) message);
+	    return null;
+	}
+	else if(message instanceof BombingResults)
+	{
+	    m_ui.bombingResults((BombingResults) message);
+	    return null;
+	}
+
+	return null;
+    }
+
+    public PlayerID getID()
+    {
+	return m_id;
+    }
+
+    public void initialize(PlayerBridge bridge, PlayerID id)
+    {
+	m_bridge = bridge;
+	m_id = id;
+    }
+
+    public void start(String name)
+    {
+	if(name.endsWith("Bid"))
+	    purchase(true);
+	else if(name.endsWith("Tech"))
+	    tech();
+	else if(name.endsWith("Purchase"))
+	    purchase(false);
+	else if(name.endsWith("Move"))
+	    move(name.endsWith("NonCombatMove"));
+	else if(name.endsWith("Battle"))
+	    battle();
+	else if(name.endsWith("Place"))
+	    place(name.indexOf("Bid") != -1);
+	else if(name.endsWith("EndTurn"))
+	    ;//intentionally blank
+	else
+	    throw new IllegalArgumentException("Unrecognized step name:" + name);
+
+    }
+
+    private void tech()
+    {
+	//can we tech?
+	if(m_id.getResources().getQuantity(Constants.IPCS) == 0)
+	    return;
+
+	Message message = m_ui.getTechRolls(m_id);
+	if(message != null)
+	{
+	    Message msg =  m_bridge.sendMessage(message);
+	    if(msg == null)
+		return;
+
+	    if(msg instanceof StringMessage)
+	    {
+		StringMessage error = (StringMessage) msg;
+		m_ui.notifyError(error.getMessage());
+		tech();
+	    }
+	    else
+	    {
+		TechResultsMessage techResults = (TechResultsMessage) msg;
+		m_ui.notifyTechResults(techResults);
+	    }
+	}
+    }
+
+    private void move(boolean nonCombat)
+    {
+	if(!hasUnitsThatCanMove())
+	    return;
+
+	MoveMessage message = m_ui.getMove(m_id, m_bridge, nonCombat);
+	if(message == null)
+	{
+	    if(nonCombat)
+		ensureAirCanLand();
+	    return;
+	}
+
+
+	StringMessage response = (StringMessage) m_bridge.sendMessage(message);
+	if(response!= null && response.isError())
+	    m_ui.notifyError(response.getMessage());
+	move(nonCombat);
+    }
+
+    private void ensureAirCanLand()
+    {
+	TerritoryCollectionMessage response = (TerritoryCollectionMessage) m_bridge.sendMessage(new MustMoveAirQueryMessage());
+	if(response.getTerritories().size() == 0)
+	    return;
+	else
+	{
+	    StringBuffer buf = new StringBuffer("Air in following territories cant land:");
+	    Iterator iter = response.getTerritories().iterator();
+	    while(iter.hasNext())
+	    {
+		buf.append( ((Territory) iter.next()).getName());
+		buf.append(" ");
+	    }
+	    if(! m_ui.getOKToLetAirDie(buf.toString()))
+		move(true);
+	}
+    }
+
+    private boolean hasUnitsThatCanMove()
+    {
+	CompositeMatchAnd moveableUnitOwnedByMe = new CompositeMatchAnd(new InverseMatch(Matches.UnitIsAAOrFactory),
+									Matches.unitIsOwnedBy(m_id));
     
-    Iterator territoryIter = m_bridge.getGameData().getMap().getTerritories().iterator();
-    while (territoryIter.hasNext())
-    {
-      Territory item = (Territory) territoryIter.next();
-      if (item.getUnits().someMatch(moveableUnitOwnedByMe))
-      {
-        return true;
-      }
-    }
-    return false;
+	Iterator territoryIter = m_bridge.getGameData().getMap().getTerritories().iterator();
+	while (territoryIter.hasNext())
+	{
+	    Territory item = (Territory) territoryIter.next();
+	    if (item.getUnits().someMatch(moveableUnitOwnedByMe))
+	    {
+		return true;
+	    }
+	}
+	return false;
 
-  }
-
-  private void purchase(boolean bid)
-  {
-    if(bid)
-    {
-      String propertyName = m_id.getName() + " bid";
-      if(Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString()) == 0)
-        return;
-    }
-    else
-    {
-      //can we buy anything
-      if (m_id.getResources().getQuantity(Constants.IPCS) == 0)
-        return;
     }
 
-
-    IntegerMap prod = m_ui.getProduction(m_id, bid);
-    if(prod == null)
-      return;
-    BuyMessage message = new BuyMessage(prod);
-    Message response = m_bridge.sendMessage(message);
-    if(response != null && response instanceof StringMessage)
+    private void purchase(boolean bid)
     {
-      StringMessage error = (StringMessage) response;
-      if(error.isError())
-      {
-        m_ui.notifyError(error.getMessage());
-        purchase(bid);
-      }
-    }
-    return;
-  }
+	if(bid)
+	{
+	    String propertyName = m_id.getName() + " bid";
+	    if(Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString()) == 0)
+		return;
+	}
+	else
+	{
+	    //can we buy anything
+	    if (m_id.getResources().getQuantity(Constants.IPCS) == 0)
+		return;
+	}
 
-  private void battle()
-  {
-    while(true)
+
+	IntegerMap prod = m_ui.getProduction(m_id, bid);
+	if(prod == null)
+	    return;
+	BuyMessage message = new BuyMessage(prod);
+	Message response = m_bridge.sendMessage(message);
+	if(response != null && response instanceof StringMessage)
+	{
+	    StringMessage error = (StringMessage) response;
+	    if(error.isError())
+	    {
+		m_ui.notifyError(error.getMessage());
+		purchase(bid);
+	    }
+	}
+	return;
+    }
+
+    private void battle()
     {
+	while(true)
+	{
 
-      Message response = m_bridge.sendMessage(new GetBattles());
-      if(response instanceof BattleListingMessage)
-      {
-        BattleListingMessage battles = (BattleListingMessage) response;
-        if(battles.isEmpty())
-        {
-          return;
-        }
-        response = m_bridge.sendMessage(m_ui.getBattle(m_id, battles.getBattles(), battles.getStrategicRaids()));
-        if(response instanceof StringMessage)
-        {
-          StringMessage msg = (StringMessage) response;
-          if(msg.isError())
-            m_ui.notifyError(((StringMessage) response).getMessage());
-        }
+	    Message response = m_bridge.sendMessage(new GetBattles());
+	    if(response instanceof BattleListingMessage)
+	    {
+		BattleListingMessage battles = (BattleListingMessage) response;
+		if(battles.isEmpty())
+		{
+		    return;
+		}
+		response = m_bridge.sendMessage(m_ui.getBattle(m_id, battles.getBattles(), battles.getStrategicRaids()));
+		if(response instanceof StringMessage)
+		{
+		    StringMessage msg = (StringMessage) response;
+		    if(msg.isError())
+			m_ui.notifyError(((StringMessage) response).getMessage());
+		}
 
-      }
-      else
-        throw new IllegalArgumentException("Received response of wrong type:" + response);
+	    }
+	    else
+		throw new IllegalArgumentException("Received response of wrong type:" + response);
+	}
     }
-  }
 
-  private void place(boolean bid)
-  {
-    while(true)
+    private void place(boolean bid)
     {
-      if(m_id.getUnits().size() == 0)
-        return;
+	while(true)
+	{
+	    if(m_id.getUnits().size() == 0)
+		return;
 
-      PlaceMessage message = m_ui.getPlace(m_id, bid, m_bridge);
-      if(message == null)
-        return;
-      else
-      {
-        StringMessage response = (StringMessage) m_bridge.sendMessage(message);
-        if(response.isError())
-          m_ui.notifyError(response.getMessage() );
-      }
+	    PlaceMessage message = m_ui.getPlace(m_id, bid, m_bridge);
+	    if(message == null)
+		return;
+	    else
+	    {
+		StringMessage response = (StringMessage) m_bridge.sendMessage(message);
+		if(response.isError())
+		    m_ui.notifyError(response.getMessage() );
+	    }
+	}
     }
-  }
 }
