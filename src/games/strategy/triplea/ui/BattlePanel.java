@@ -29,9 +29,8 @@ import javax.swing.*;
 import java.util.List;
 import games.strategy.engine.data.*;
 import games.strategy.engine.message.Message;
-
-
 import games.strategy.triplea.delegate.message.*;
+
 
 /**
  *

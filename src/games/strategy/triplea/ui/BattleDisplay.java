@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.sound.*;
 import games.strategy.engine.message.Message;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.message.*;
@@ -98,10 +99,29 @@ public class BattleDisplay extends JPanel
     m_casualties.setNotication(message);
     m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
 
-    if(message.getPlayer().equals(m_defender))
+    //Play the battle sound when either the attack or defender removes casualties.
+    //the sound will play even when there is no casualties to be removed... This
+    //still sounds cool, like they fire and miss.
+
+    if(message.getPlayer().equals(m_defender)) {
+      if(m_location.isWater()) {
+            ClipPlayer.getInstance().playClip("naval_battle.wav", ClipPlayer.class);
+      }
+      else {
+            ClipPlayer.getInstance().playClip("terrain_battle.wav", ClipPlayer.class);
+      }
       m_defenderModel.removeCasualties(message);
-    else
+    }
+    else {
+      if(m_location.isWater()) {
+            ClipPlayer.getInstance().playClip("naval_battle.wav", ClipPlayer.class);
+      }
+      else {
+            ClipPlayer.getInstance().playClip("terrain_battle.wav", ClipPlayer.class);
+      }
       m_attackerModel.removeCasualties(message);
+
+    }
 
     //if wait is true, then dont return until the user presses continue
     if(!waitFOrUserInput)
@@ -232,6 +252,7 @@ public class BattleDisplay extends JPanel
     setStep(msg);
     m_actionLayout.show(m_actionPanel, DICE_KEY);
     m_dicePanel.setDiceRoll(msg.getDice());
+
     boolean plural = msg. getCount() > 1;
     final String btnText = msg.getPlayer().getName() + " select " + msg.getCount() + (plural ? " casualties" :" casualty");
     m_actionButton.setEnabled(true);

@@ -50,6 +50,7 @@ import games.strategy.triplea.delegate.*;
 import games.strategy.engine.history.*;
 import games.strategy.triplea.ui.history.*;
 import games.strategy.engine.gamePlayer.*;
+import games.strategy.engine.sound.*;
 
 /**
  *
@@ -653,6 +654,7 @@ public class TripleAFrame extends JFrame
    else if(player != null && !player.isNull() && playing(player) && m_inHistory)
    {
      showGame();
+     ClipPlayer.getInstance().playClip("start.wav", ClipPlayer.class); //play sound
    }
 
   }
