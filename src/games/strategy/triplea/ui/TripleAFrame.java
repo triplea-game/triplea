@@ -205,89 +205,110 @@ public class TripleAFrame extends JFrame
     {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu fileMenu = new JMenu("File");
-        menuBar.add(fileMenu);
+        createFileMenu(menuBar);
 
-        // menuFileSave = new JMenuItem("Save", KeyEvent.VK_S);
-        JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
+        createGameMenu(menuBar);
+
+        createHelpMenu(menuBar);
+
+        this.setJMenuBar(menuBar);
+    }
+
+    /**
+     * @param menuBar
+     */
+    private void createHelpMenu(JMenuBar menuBar)
+    {
+        JMenu helpMenu = new JMenu("Help");
+        menuBar.add(helpMenu);
+        helpMenu.add(new AbstractAction("About...")
         {
             public void actionPerformed(ActionEvent e)
             {
-                if (!m_game.canSave())
-                {
-                    JOptionPane
-                            .showMessageDialog(
-                                    TripleAFrame.this,
-                                    "You cannot save the game if you are playing as a client",
-                                    "Cant save", JOptionPane.OK_OPTION);
-                    return;
-                }
+                String text = "<h2>TripleA</h2>  "
+                        +
 
-                GameDataManager manager = new GameDataManager();
+                        "<b>Engine Version:</b> "
+                        + games.strategy.engine.EngineVersion.VERSION
+                                .toString()
+                        + "<br>"
+                        + "<b>Game:</b> "
+                        + m_data.getGameName()
+                        + "<br>"
+                        + "<b>Game Version:</b>"
+                        + m_data.getGameVersion()
+                        + "<br>"
+                        + "<br>"
+                        + "For more information please visit, <p>"
+                        +
 
-                try
-                {
-                    JFileChooser fileChooser = SaveGameFileChooser
-                            .getInstance();
+                        "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><p>";
 
-                    int rVal = fileChooser.showSaveDialog(TripleAFrame.this);
-                    if (rVal == JFileChooser.APPROVE_OPTION)
-                    {
-                        File f = fileChooser.getSelectedFile();
+                JEditorPane editorPane = new JEditorPane();
+                editorPane.setBorder(null);
+                editorPane.setBackground(getBackground());
+                editorPane.setEditable(false);
+                editorPane.setContentType("text/html");
+                editorPane.setText(text);
 
-                        //A small warning so users will not over-write a file,
-                        // added by NeKromancer
-                        if (f.exists())
-                        {
-                            int choice = JOptionPane
-                                    .showConfirmDialog(
-                                            TripleAFrame.this,
-                                            "A file by that name already exists. Do you wish to over write it?",
-                                            "Over-write?",
-                                            JOptionPane.YES_NO_OPTION,
-                                            JOptionPane.WARNING_MESSAGE);
-                            if (choice != JOptionPane.OK_OPTION)
-                            {
-                                return;
-                            }
-                        }//end if exists
+                JScrollPane scroll = new JScrollPane(editorPane);
+                scroll.setBorder(null);
 
-                        if (!f.getName().toLowerCase().endsWith(".svg"))
-                        {
-                            f = new File(f.getParent(), f.getName() + ".svg");
-                        }
-
-                        manager.saveGame(f, m_data);
-                        JOptionPane.showMessageDialog(TripleAFrame.this,
-                                "Game Saved", "Game Saved",
-                                JOptionPane.INFORMATION_MESSAGE);
-                    }
-
-                } catch (Exception se)
-                {
-                    se.printStackTrace();
-                    JOptionPane.showMessageDialog(TripleAFrame.this, se
-                            .getMessage(), "Error Saving Game",
-                            JOptionPane.OK_OPTION);
-                }
+                JOptionPane.showMessageDialog(TripleAFrame.this, editorPane,
+                        "About", JOptionPane.PLAIN_MESSAGE);
             }
         });
-        menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                ActionEvent.CTRL_MASK));
 
-        fileMenu.add(menuFileSave);
-
-        JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
+        helpMenu.add(new AbstractAction("Hints...")
         {
             public void actionPerformed(ActionEvent e)
             {
-                shutdown();
+                //html formatted string
+                String hints = "To force a path while moving, right click on each territory in turn.<br><br>"
+                        + "You may be able to set game properties such as a bid in the Properties tab at game start up.";
+                JEditorPane editorPane = new JEditorPane();
+                editorPane.setEditable(false);
+                editorPane.setContentType("text/html");
+                editorPane.setText(hints);
+
+                JScrollPane scroll = new JScrollPane(editorPane);
+
+                JOptionPane.showMessageDialog(TripleAFrame.this, scroll,
+                        "Hints", JOptionPane.PLAIN_MESSAGE);
             }
         });
-        menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
-                ActionEvent.CTRL_MASK));
-        fileMenu.add(menuFileExit);
 
+        //allow the game developer to write notes that appear in the game
+        //displays whatever is in the notes field in html
+        final String notes = (String) m_data.getProperties().get("notes");
+        if (notes != null && notes.trim().length() != 0)
+        {
+
+            helpMenu.add(new AbstractAction("Game Notes...")
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+
+                    JEditorPane editorPane = new JEditorPane();
+                    editorPane.setEditable(false);
+                    editorPane.setContentType("text/html");
+                    editorPane.setText(notes);
+
+                    JScrollPane scroll = new JScrollPane(editorPane);
+
+                    JOptionPane.showMessageDialog(TripleAFrame.this, scroll,
+                            "Notes", JOptionPane.PLAIN_MESSAGE);
+                }
+            });
+
+        }
+    }
+
+    /**
+     * @param menuBar
+     */
+    private void createGameMenu(JMenuBar menuBar)
+    {
         JMenu menuGame = new JMenu("Game");
         menuGame.add(m_showGameAction);
         menuGame.add(m_showHistoryAction);
@@ -531,92 +552,95 @@ public class TripleAFrame extends JFrame
             }
         };
         menuGame.add(showDiceStats);
+    }
 
-        JMenu helpMenu = new JMenu("Help");
-        menuBar.add(helpMenu);
-        helpMenu.add(new AbstractAction("About...")
+    /**
+     * @param menuBar
+     */
+    private void createFileMenu(JMenuBar menuBar)
+    {
+        JMenu fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+
+        // menuFileSave = new JMenuItem("Save", KeyEvent.VK_S);
+        JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
         {
             public void actionPerformed(ActionEvent e)
             {
-                String text = "<h2>TripleA</h2>  "
-                        +
-
-                        "<b>Engine Version:</b> "
-                        + games.strategy.engine.EngineVersion.VERSION
-                                .toString()
-                        + "<br>"
-                        + "<b>Game:</b> "
-                        + m_data.getGameName()
-                        + "<br>"
-                        + "<b>Game Version:</b>"
-                        + m_data.getGameVersion()
-                        + "<br>"
-                        + "<br>"
-                        + "For more information please visit, <p>"
-                        +
-
-                        "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><p>";
-
-                JEditorPane editorPane = new JEditorPane();
-                editorPane.setBorder(null);
-                editorPane.setBackground(getBackground());
-                editorPane.setEditable(false);
-                editorPane.setContentType("text/html");
-                editorPane.setText(text);
-
-                JScrollPane scroll = new JScrollPane(editorPane);
-                scroll.setBorder(null);
-
-                JOptionPane.showMessageDialog(TripleAFrame.this, editorPane,
-                        "About", JOptionPane.PLAIN_MESSAGE);
-            }
-        });
-
-        helpMenu.add(new AbstractAction("Hints...")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                //html formatted string
-                String hints = "To force a path while moving, right click on each territory in turn.<br><br>"
-                        + "You may be able to set game properties such as a bid in the Properties tab at game start up.";
-                JEditorPane editorPane = new JEditorPane();
-                editorPane.setEditable(false);
-                editorPane.setContentType("text/html");
-                editorPane.setText(hints);
-
-                JScrollPane scroll = new JScrollPane(editorPane);
-
-                JOptionPane.showMessageDialog(TripleAFrame.this, scroll,
-                        "Hints", JOptionPane.PLAIN_MESSAGE);
-            }
-        });
-
-        //allow the game developer to write notes that appear in the game
-        //displays whatever is in the notes field in html
-        final String notes = (String) m_data.getProperties().get("notes");
-        if (notes != null && notes.trim().length() != 0)
-        {
-
-            helpMenu.add(new AbstractAction("Game Notes...")
-            {
-                public void actionPerformed(ActionEvent e)
+                if (!m_game.canSave())
                 {
-
-                    JEditorPane editorPane = new JEditorPane();
-                    editorPane.setEditable(false);
-                    editorPane.setContentType("text/html");
-                    editorPane.setText(notes);
-
-                    JScrollPane scroll = new JScrollPane(editorPane);
-
-                    JOptionPane.showMessageDialog(TripleAFrame.this, scroll,
-                            "Notes", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane
+                            .showMessageDialog(
+                                    TripleAFrame.this,
+                                    "You cannot save the game if you are playing as a client",
+                                    "Cant save", JOptionPane.OK_OPTION);
+                    return;
                 }
-            });
 
-        }
+                GameDataManager manager = new GameDataManager();
 
-        this.setJMenuBar(menuBar);
+                try
+                {
+                    JFileChooser fileChooser = SaveGameFileChooser
+                            .getInstance();
+
+                    int rVal = fileChooser.showSaveDialog(TripleAFrame.this);
+                    if (rVal == JFileChooser.APPROVE_OPTION)
+                    {
+                        File f = fileChooser.getSelectedFile();
+
+                        //A small warning so users will not over-write a file,
+                        // added by NeKromancer
+                        if (f.exists())
+                        {
+                            int choice = JOptionPane
+                                    .showConfirmDialog(
+                                            TripleAFrame.this,
+                                            "A file by that name already exists. Do you wish to over write it?",
+                                            "Over-write?",
+                                            JOptionPane.YES_NO_OPTION,
+                                            JOptionPane.WARNING_MESSAGE);
+                            if (choice != JOptionPane.OK_OPTION)
+                            {
+                                return;
+                            }
+                        }//end if exists
+
+                        if (!f.getName().toLowerCase().endsWith(".svg"))
+                        {
+                            f = new File(f.getParent(), f.getName() + ".svg");
+                        }
+
+                        manager.saveGame(f, m_data);
+                        JOptionPane.showMessageDialog(TripleAFrame.this,
+                                "Game Saved", "Game Saved",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                } catch (Exception se)
+                {
+                    se.printStackTrace();
+                    JOptionPane.showMessageDialog(TripleAFrame.this, se
+                            .getMessage(), "Error Saving Game",
+                            JOptionPane.OK_OPTION);
+                }
+            }
+        });
+        menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+                ActionEvent.CTRL_MASK));
+
+        fileMenu.add(menuFileSave);
+
+        JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                shutdown();
+            }
+        });
+        menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
+                ActionEvent.CTRL_MASK));
+        fileMenu.add(menuFileExit);
     }
 
     // Beagle Code Called to Change Mapskin
@@ -1130,15 +1154,16 @@ public class TripleAFrame extends JFrame
     private JMenu getUnitSizeMenu()
     {
         // This is the action listener used
-        class UnitSizeListener implements ActionListener
+        class UnitSizeAction extends AbstractAction
         {
             private double m_scaleFactor;
 
-            public UnitSizeListener(double scaleFactor)
+            public UnitSizeAction(double scaleFactor)
             {
                 m_scaleFactor = scaleFactor;
+                putValue(Action.NAME, DecimalFormat.getInstance().format(m_scaleFactor * 100) + "%");
             }
-
+            
             public void actionPerformed(ActionEvent e)
             {
                 UnitIconImageFactory.instance().setScaleFactor(m_scaleFactor);
@@ -1149,20 +1174,16 @@ public class TripleAFrame extends JFrame
         JMenu unitSizeMenu = new JMenu();
         unitSizeMenu.setText("Unit Size");
         ButtonGroup unitSizeGroup = new ButtonGroup();
-        JRadioButtonMenuItem radioItem150 = new JRadioButtonMenuItem("125%");
-        radioItem150.addActionListener(new UnitSizeListener(1.25));
-        JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem("100%");
-        radioItem100.addActionListener(new UnitSizeListener(1.0));
-        JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem("87.5%");
-        radioItem87.addActionListener(new UnitSizeListener(.875));
-        JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem("83.33%");
-        radioItem83.addActionListener(new UnitSizeListener(.833333));
-        JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem("75%");
-        radioItem75.addActionListener(new UnitSizeListener(.75));
-        JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem("66.66%");
-        radioItem66.addActionListener(new UnitSizeListener(.666666));
+        JRadioButtonMenuItem radioItem125 = new JRadioButtonMenuItem(new UnitSizeAction(1.25) );
+        
+        JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem(new UnitSizeAction(1.0) );
+        JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem(new UnitSizeAction(0.875) );
+        JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333) );
+        JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75) );
+        JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666) );
+       
 
-        unitSizeGroup.add(radioItem150);
+        unitSizeGroup.add(radioItem125);
         unitSizeGroup.add(radioItem100);
         unitSizeGroup.add(radioItem87);
         unitSizeGroup.add(radioItem83);
@@ -1170,8 +1191,27 @@ public class TripleAFrame extends JFrame
         unitSizeGroup.add(radioItem66);
 
         radioItem100.setSelected(true);
+        
+        //select the closest to t
+        Enumeration enum = unitSizeGroup.getElements();
+        boolean matchFound = false;
+        while(enum.hasMoreElements())
+        {
+            JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum.nextElement();
+             UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
+             if(Math.abs(action.m_scaleFactor - MapData.getInstance().getDefaultUnitScale()) < 0.01 )
+             {
+                 menuItem.setSelected(true);
+                 matchFound = true;
+                 break;
+             }
+        }
+        
+        if(!matchFound)
+            System.err.println("default unit size does not match any menu item");
+        
 
-        unitSizeMenu.add(radioItem150);
+        unitSizeMenu.add(radioItem125);
         unitSizeMenu.add(radioItem100);
         unitSizeMenu.add(radioItem87);
         unitSizeMenu.add(radioItem83);

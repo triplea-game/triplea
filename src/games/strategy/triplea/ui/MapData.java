@@ -31,6 +31,8 @@ import java.util.List;
 
 public class MapData
 {
+    private final String DEFAULT_UNIT_SCALE_PROPERTY = "units.scale";
+    
     private static final String CENTERS_FILE = "centers.txt";
     private static final String POLYGON_FILE = "polygons.txt";
     private static final String PLACEMENT_FILE = "place.txt";
@@ -120,6 +122,22 @@ public class MapData
         }
     }
 
+    public double getDefaultUnitScale()
+    {
+        
+        if(m_mapProperties.getProperty(DEFAULT_UNIT_SCALE_PROPERTY) == null)
+            return 1.0;
+        
+        try
+        {
+            return Double.parseDouble(m_mapProperties.getProperty(DEFAULT_UNIT_SCALE_PROPERTY));
+        } catch (NumberFormatException e)
+        {
+            e.printStackTrace();
+            return 1.0;
+        }
+    }
+    
     private void initializeContains()
     {
 

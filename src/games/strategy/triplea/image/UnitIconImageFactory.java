@@ -23,6 +23,7 @@ package games.strategy.triplea.image;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.Util;
 
 import java.awt.*;
@@ -64,7 +65,7 @@ public class UnitIconImageFactory
   //maps Point -> Icon
   private final Map m_icons = new HashMap();
   // Scaling factor for unit images
-  private double m_scaleFactor = 1;
+  private double m_scaleFactor = MapData.getInstance().getDefaultUnitScale();
 
   /** Creates new IconImageFactory */
   private UnitIconImageFactory()
