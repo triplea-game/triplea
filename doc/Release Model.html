@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html><head>
+	<meta http-equiv="CONTENT-TYPE" content="text/html" charset="utf-8">
+	<meta name="AUTHOR" content="George El-Haddad"><title>TripleA Release Model</title></head>
+
+<body>
+<center><h2>TripleA Release Model</h2></center>
+
+<h3>Introduction:</h3>
+
+<p>This document is intended for developers. This document will go over
+the three types of releases: CVS, Unstable, and Stable. It will also
+discuss the numbering system of the packages and how they play a role
+in the development process. We also take into account issues that need
+to be dealt with while developing TripleA using this release model.
+Certain issues such as whitebox testing by developers and blackbox
+testing by the end user, adding new features, user requests of new
+features, and many more which will be addressed in this document.</p>
+
+<h3>TripleA Release Model:</h3>
+<blockquote>
+	CVS ---&gt; Unstable ---&gt; Stable ---&gt; Future Requirements ---&gt; CVS ...etc
+</blockquote>
+
+<p>The release model follows a spiral pattern. This spiral pattern
+allows TripleA to be worked on in several stages, thus being the CVS,
+Unstable, and Stable stage. A spiral pattern is imperative to any form
+of development, this type of model ensures the software will be
+developed, tested, released, and improved over time.</p>
+
+<h3>CVS:</h3>
+
+<p>The CVS is meant to be used by developers only. Of course it is not
+strictly restricted to developers only, anyone can check out a fresh
+copy of the CVS and run it, but it should be considered highly
+unstable. The CVS is where the bulk of the coding will take place, this
+is basically the experimental developing grounds where new features are
+coded. Below are a list of issues that we exepect from a CVS build at
+this stage:</p>
+
+<blockquote>
+	<b>1:</b> Expected to contain freshly developed features that may not exists in other builds.<br>
+	<b>2:</b> Expect high instability, program crashes, bugs, and run-time errors.<br>
+	<b>3:</b> Expect new builds of the CVS almost nightly.<br>
+	<b>4:</b> Should not be compile broken. The CVS must compile without errors.<br>
+	<b>5:</b> Testing grounds for the design and implementation of new features.<br>
+</blockquote>
+
+<p>CVS will not be released as a package and placed on the main
+download site. Users can obtain a copy of the CVS anonymously through
+sourceforge. Instructions for anonymous CVS access for non-developers
+can be found <a href="http://sourceforge.net/cvs/?group_id=44492">here</a>.</p>
+
+<h3>Unstable:</h3>
+
+<p>Once certain requirements are made and implemented into the CVS, it
+is ready for testing. An Unstable build is released with a numbering
+system that portrays its version number and its release number. The
+version number indicates if new features have been added since the last
+release of the build. The release number indicates that no new features
+were added but various bug fixes were made. Examples are listed below:</p>
+<p>TripleA  Unstable  1 . 0</p>
+
+<blockquote>
+	<b>1:</b> First string is the name of the project: "TripleA"<br>
+	<b>2:</b> Second string indicates what type of build it is: "Unstable"<br>
+	<b>3:</b> Third is a number separated by one decimal.<br>
+		<b>3.1:</b> The first number is the version number.<br>
+		<b>3.2:</b> The second number is the release number.<br>
+	<b>4:</b> An example file name would be "TripleA_Unstable_2.4.zip"<br>
+</blockquote>
+
+<p>The unstable build is packaged and released in order to test the
+newly implemented features that have been added during the CVS stage.
+This build is intended for use by developers and the end user. The
+purpose of a testing build is to increase the speed of error detection
+and possible bug fixes. Due to the nature of OpenSource projects,
+developers cannot devote 100% of their efforts on this project due to
+lack of funds and other social constraints (ie. other jobs,
+families...etc).</p>
+<p>This stage allows the community of users to test the new build and
+perform blackbox testing. They are expected to test the new features of
+the software out and report bugs if any should occur. Users are also
+encouraged to go a bit further and look into the source code to see if
+they can offer a bug fix or a suggestion for new implementation.</p>
+<p>Developers (and programming knowledgable users) can perform whitebox
+testing where they look at the source code of newly implemented
+features and purposely try to cause the software to crash or behave
+unexpectidely. This helps to locate bugs and security holes from which
+blackbox testing may over look. As usefull as whitebox testing may be,
+blackbox testing helps find bugs in the over all useability of the
+software. Such things as bad user interface design, complex use of
+images/colors, confusing actions that hurt playability (ie. too many
+buttons, inproper implementation of mouse clicks, bad window behaviour
+..etc).</p>
+<p>Unstable builds can be re-released with bug fixes so that it can be
+tested again. Once a build has been in the testing stage for a solid
+duration of time that allows users to fully use all the features (ie. 2
+weeks or more) then a summary report can be made that outlines the
+number of bugs found and the percentage of those bugs that have been
+fixed to those that could not be fixed but work-arounds have been made.
+After that it will be up to the project manager to discuss with the
+rest of the development team if a testing build is ready to be released
+as Stable.</p>
+
+<h3>Stable:</h3>
+
+<p>A Stable release should indicate that the software is fully playable
+and the game can be played from start to finish without any program
+crashes or bugs that will yield undesirable side-effects. As this
+should hold true, life is not perfect. Stable builds are allowed to
+contain a minimal amount of bugs that will not harm game-play (ie.
+non-combat moves during combat stage, map abnormalities, anything that
+can be worked around).</p>
+<p>Stable builds should go through a minimum of 2 weeks of testings as an "Unstable" package in order to weed out the obvious bugs.</p>
+
+</body></html>
