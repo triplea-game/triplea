@@ -202,9 +202,7 @@ public final class TerritoryImageFactory
       return (Image) m_baseTerritoryImages.get(key);
 
     // load it on the fly
-    /*String fileName = this.getClass().getResource("countries/"
-                                                  + key.replace(' ', '_')
-                                                  + ".gif");*/
+
     URL file = this.getClass().getResource("countries/"
                                            + key.replace(' ', '_')
                                            + ".gif");

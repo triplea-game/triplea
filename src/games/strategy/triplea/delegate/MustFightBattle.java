@@ -521,9 +521,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     PlayerID firingPlayer = defender ? m_defender : m_attacker;
     PlayerID hitPlayer = defender ? m_attacker : m_defender;
 
-    //DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender, firingPlayer, bridge);
-
-    // NEW VERSION
     DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender,
                                       firingPlayer, hitPlayer, bridge);
 

@@ -118,7 +118,7 @@ public class ThreadPool
   private class ThreadTracker implements Runnable
   {
     private boolean m_run = true;
-    private Thread m_thread;
+    private volatile Thread m_thread;
 
     public void run()
     {

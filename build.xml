@@ -72,6 +72,7 @@
       <zipfileset dir="bin/" prefix="bin/">
         <include name="triplea.bat"/>
         <include name="triplea.sh"/>
+        <include name="triplea.irix.sh"/>				
       </zipfileset>
       <zipfileset dir="games/" prefix="games/">
         <include name="*.xml"/>
@@ -105,9 +106,11 @@
       <zipfileset dir="bin/" prefix="bin/">
         <include name="triplea.bat"/>
         <include name="triplea.sh"/>				
+        <include name="triplea.irix.sh"/>				
       </zipfileset>
       <zipfileset dir=".">
         <include name="build.xml"/>
+        <include name=".ant.properties"/>
         <include name="readme.html"/>
       </zipfileset>
       <zipfileset dir="doc/" prefix="doc/">
