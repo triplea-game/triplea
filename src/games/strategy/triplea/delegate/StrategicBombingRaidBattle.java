@@ -193,8 +193,7 @@ public class StrategicBombingRaidBattle implements Battle
                 + location.getName();
         int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
         int[] newDice;
-        if (TechTracker.hasHeavyBomber(attacker) && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) != null
-                && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) == Boolean.TRUE)
+        if (TechTracker.hasHeavyBomber(attacker) && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE, false))
         {
             newDice = new int[dice.length / 2];
             for (int i = 0; i < dice.length; i += 2)
@@ -216,8 +215,7 @@ public class StrategicBombingRaidBattle implements Battle
         while (iter.hasNext())
         {
             int rolls;
-            if (TechTracker.hasHeavyBomber(attacker) && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) != null
-                    && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE) == Boolean.TRUE)
+            if (TechTracker.hasHeavyBomber(attacker) && m_data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE, false))
             {
                 rolls = 1;
                 iter.next();

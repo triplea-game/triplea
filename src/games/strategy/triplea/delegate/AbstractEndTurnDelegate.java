@@ -53,10 +53,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 
 	private boolean doBattleShipsRepair()
 	{
-	    Boolean property = (Boolean) m_data.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN);
-	    if(property == null)
-	        return false;
-	    return property.booleanValue();
+	    return m_data.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN, false);
 	}
 	
 

@@ -42,8 +42,7 @@ public class DiceRoll implements java.io.Serializable
     int[] dice = new int[0];
     int[][] sortedDiceInt = new int[Constants.MAX_DICE][0];
 
-    if (data.getProperties().get(Constants.LOW_LUCK) != null
-	&& ((Boolean)data.getProperties().get(Constants.LOW_LUCK)).booleanValue()) {
+    if (data.getProperties().get(Constants.LOW_LUCK, false)) {
       // Low luck rolling
       hits = numberOfAirUnits / Constants.MAX_DICE;
       int hitsFractional = numberOfAirUnits % Constants.MAX_DICE;
@@ -83,8 +82,7 @@ public class DiceRoll implements java.io.Serializable
 				  GameData data)
   {
     // Decide whether to use low luck rules or normal rules.
-    if (data.getProperties().get(Constants.LOW_LUCK) != null
-	&& ((Boolean)data.getProperties().get(Constants.LOW_LUCK)).booleanValue()) {
+    if (data.getProperties().get(Constants.LOW_LUCK, false)) {
       return rollDiceLowLuck(units, defending, player, bridge, data);
     } else {
       return rollDiceNormal(units, defending, player, bridge, data);
@@ -117,7 +115,7 @@ public class DiceRoll implements java.io.Serializable
     int power = 0;
     int hitCount = 0;
 
-    // We can through the units to find the total strength of the units
+    // We iterate through the units to find the total strength of the units
     while(iter.hasNext())
     {
       Unit current = (Unit) iter.next();
@@ -139,8 +137,7 @@ public class DiceRoll implements java.io.Serializable
         }
 
         if(!defending&&ua.isStrategicBomber()&& TechTracker.hasHeavyBomber(player) &&
-           data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)!=null &&
-           ((Boolean)data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)).booleanValue())
+           data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE, false))
         {
 	  // We don't support heavy rolls with Low Luck yet.
 	  throw new IllegalStateException("Cannot use heavy bomber downgrade option with low luck");
@@ -211,6 +208,9 @@ public class DiceRoll implements java.io.Serializable
     {
       Unit current = (Unit) iter.next();
       UnitAttatchment ua = UnitAttatchment.get(current.getType());
+
+      
+
       int rolls = defending ? 1 : ua.getAttackRolls(player);
       int lowerRollForBomber=Constants.MAX_DICE;
       String bomberRollFeedback="Bomber rolled:";
@@ -231,8 +231,7 @@ public class DiceRoll implements java.io.Serializable
 
         sortedDice[strength - 1].add(new Integer(dice[diceIndex]));
         if(!defending&&ua.isStrategicBomber()&& TechTracker.hasHeavyBomber(player) &&
-           data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)!=null &&
-           data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)==Boolean.TRUE)
+           data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE, false))
         {
           bomberRollFeedback+=" "+dice[diceIndex];
           if(lowerRollForBomber>dice[diceIndex])

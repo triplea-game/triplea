@@ -138,11 +138,8 @@ public class PlacePanel extends ActionPanel
   };
 
   private boolean canProduceFightersOnCarriers()
-  {
-      Boolean property = (Boolean) getData().getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS);
-      if(property == null)
-          return false;
-      return property.booleanValue();
+  {    
+      return getData().getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
   }
   
   private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
