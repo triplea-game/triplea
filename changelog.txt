@@ -1,5 +1,7 @@
 Changes for 0.5.2
 
+* Fixed bug #1067073 by removing the connection between seazone 15 and 16 for Pact of Steel mod. (Nekro)
+
 * Fixed bug #1043826 concerning missing sea zone border & missing pixles on border. (Nekro)
 
 Changes for 0.5.1
