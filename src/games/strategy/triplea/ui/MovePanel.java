@@ -49,7 +49,7 @@ public class MovePanel extends ActionPanel
     private PlayerBridge m_bridge;
 
     private List m_forced;
-
+    private boolean m_nonCombat;
     private UndoableMovesPanel m_undableMovesPanel;
 
     /** Creates new MovePanel */
@@ -77,6 +77,7 @@ public class MovePanel extends ActionPanel
     public void display(PlayerID id, boolean nonCombat)
     {
         super.display(id);
+        m_nonCombat = nonCombat;
         removeAll();
         m_actionLabel.setText(id.getName() +
                               (nonCombat ? " non combat" : " combat") + " move");
@@ -181,6 +182,8 @@ public class MovePanel extends ActionPanel
         CompositeMatch ownedNotFactory = new CompositeMatchAnd();
         ownedNotFactory.add(Matches.UnitIsNotFactory);
         ownedNotFactory.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
+        if(!m_nonCombat)
+            ownedNotFactory.add(new InverseMatch( Matches.UnitIsAA));
 
         Collection owned = route.getStart().getUnits().getMatches(ownedNotFactory);
 
