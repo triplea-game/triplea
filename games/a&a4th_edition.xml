@@ -817,6 +817,7 @@
 			 <option name="isSea" value="true"/>   
 			 <option name="attack" value="3"/>
 			 <option name="defense" value="3"/>
+ 			 <option name="isDestroyer" value="true"/>
 	    </attatchment>
 	    <attatchment name="unitAttatchment" 
 			 attatchTo="carrier"
