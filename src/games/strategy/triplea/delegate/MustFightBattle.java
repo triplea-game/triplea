@@ -756,10 +756,26 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Collection retreatedUnits = dependent.getDependentUnits(units);
             
             dependent.removeAttack(route, retreatedUnits);
-            
-            change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
+
+	    Collection transports = Match.getMatches(units, Matches.UnitCanTransport);
+
+	    // Put units back on their transports
+            Iterator transportsIter = transports.iterator();
+            while (transportsIter.hasNext())
+            {
+
+	      Unit transport = (Unit) transportsIter.next();
+	      Collection unloaded = m_transportTracker.unloaded(transport);
+	      Iterator unloadedIter = unloaded.iterator();
+	      while (unloadedIter.hasNext()) {
+
+		Unit load = (Unit)unloadedIter.next();
+		m_transportTracker.undoUnload(load, transport, m_attacker);
+	      }
+	      
+	      change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
+	    }
         }
-        
         return change;
     }
     private void retreatPlanes(Collection retreating, boolean defender, DelegateBridge bridge)
