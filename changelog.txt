@@ -1,5 +1,7 @@
 Changes for 0.5.1
 
+* Added MersenneTwister Thread Safe (MT199937) Random Number Generator with Permission from Sean Luke. (Nekro)
+
 * Added Low Luck option following DAAK rules. However, the low luck rules were not implemented for sbr's and tech rolls. Also it is incompatible with the heavy bomber downgrade option. (Ali Ibrahim)
 
 * Allowed transports carrying aa guns to move in combat, although the aa guns still cannot be loaded/unloaded in the combat move. (Ali Ibrahim)
