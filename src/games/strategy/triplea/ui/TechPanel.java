@@ -130,20 +130,23 @@ class TechRollPanel extends JPanel
 {
   int m_ipcs;
   JLabel m_left = new JLabel();
-  ScrollableTextField m_text;
+  ScrollableTextField m_textField;
 
   TechRollPanel(int ipcs)
   {
-    setLayout(new BorderLayout());
+    setLayout(new GridBagLayout());
     m_ipcs = ipcs;
     JLabel title = new JLabel("Select the number of tech rolls:");
     title.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
-    m_text = new ScrollableTextField(0, ipcs / Constants.TECH_ROLL_COST);
-    m_text.addChangeListener(m_listener);
+    m_textField = new ScrollableTextField(0, ipcs / Constants.TECH_ROLL_COST);
+    m_textField.addChangeListener(m_listener);
+    JLabel costLabel = new JLabel("x5");
     setLabel(ipcs);
-    add(title, BorderLayout.NORTH);
-    add(m_text, BorderLayout.CENTER);
-    add(m_left, BorderLayout.SOUTH);
+    int space = 0;
+    add(title, new GridBagConstraints(0,0,3,1,1,1,GridBagConstraints.WEST,GridBagConstraints.NONE, new Insets(5,5,space,space),0,0));
+    add(m_textField, new GridBagConstraints(0,1,1,1,0.5,1,GridBagConstraints.EAST,GridBagConstraints.NONE, new Insets(8,10,space,space),0,0));
+    add(costLabel, new GridBagConstraints(1,1,1,1,0.5,1,GridBagConstraints.WEST,GridBagConstraints.NONE, new Insets(8,5,space,2),0,0));
+    add(m_left, new GridBagConstraints(0,2,3,1,1,1,GridBagConstraints.WEST,GridBagConstraints.NONE, new Insets(10,5,space,space),0,0));
   }
 
   private void setLabel(int ipcs)
@@ -155,12 +158,12 @@ class TechRollPanel extends JPanel
   {
     public void changedValue(ScrollableTextField stf)
     {
-      setLabel(m_ipcs - (Constants.TECH_ROLL_COST * m_text.getValue()));
+      setLabel(m_ipcs - (Constants.TECH_ROLL_COST * m_textField.getValue()));
     }
   };
 
   public int getValue()
   {
-    return m_text.getValue();
+    return m_textField.getValue();
   }
 }
