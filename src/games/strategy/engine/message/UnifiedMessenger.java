@@ -656,10 +656,10 @@ class EndPoint
 
     private void waitTillCanBeRun(long aNumber)
     {
-        while (aNumber > m_currentRunnableNumber)
+        synchronized (m_numberMutext)
         {
-            synchronized (m_numberMutext)
-            {
+	        while (aNumber > m_currentRunnableNumber)
+	        {
                 try
                 {
                     m_numberMutext.wait();
