@@ -378,7 +378,7 @@ public class ServerStartup extends JPanel
 
     public void releasePlayer(INode who, String playerName)
     {
-        takePlayerInternal(who, true, playerName);
+        takePlayerInternal(who, false, playerName);
     }
 
   };
