@@ -24,6 +24,8 @@ Changes for 0.5.3
 
 * Fixed bug [ 1021352 ] advanced tech prob
 
+* Fixed bug [ 1021350 ] Tech Prompt
+
 
 Changes for 0.5.2
 
