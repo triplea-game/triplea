@@ -55,7 +55,7 @@ public class HistoryWriter implements java.io.Serializable
 
     Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
     m_current.add(currentStep);
-    m_history.reload(m_current);
+    m_history.nodesWereInserted(m_current,  new int[] {m_current.getChildCount() -1} );
     m_current = currentStep;
   }
 
@@ -82,7 +82,12 @@ public class HistoryWriter implements java.io.Serializable
     {
       HistoryNode parent = (HistoryNode) m_current.getParent();
       if (m_current.getChildCount() == 0)
+      {
+        int index = parent.getChildCount()  -1;
         parent.remove(m_current);
+        m_history.nodesWereRemoved(parent, new int[] {index}, new Object[] {m_current});
+      }
+
       m_current = parent;
       return;
     }
@@ -132,7 +137,7 @@ public class HistoryWriter implements java.io.Serializable
       throw new IllegalStateException("Not in an event");
 
     m_current.add(node);
-    m_history.reload(m_current);
+    m_history.reload(node);
   }
 
   /**
