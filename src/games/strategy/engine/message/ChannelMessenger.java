@@ -70,6 +70,37 @@ public class ChannelMessenger implements IChannelMessenger
         
         return rVal;
     }
+    
+//    /**
+//     * returns a channel broadcaster that will return only when all the recipients have processed the
+//     * received message. 
+//     */
+//    public IChannelSubscribor getBlockingChannelBroadcastor(String channelName)
+//    {
+//        final IChannelSubscribor remote = getChannelBroadcastor(channelName);
+//        final Channel channel = (Channel) m_channels.get(channelName);
+//        
+//        
+//        InvocationHandler ih = new InvocationHandler()
+//        {
+//            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+//            {
+//                Object rVal = method.invoke(remote, args);
+//                //TODO
+//                //this is just a hack, fix later
+//                try
+//                {
+//                    Thread.sleep(3000);
+//                } catch(InterruptedException e)
+//                {}
+//                return rVal;
+//                
+//            }
+//        };
+//        
+//        return (IChannelSubscribor) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {channel.getChannelInterface()}, ih);
+//        
+//    }
 
     /* 
      * @see games.strategy.net.IChannelMessenger#registerChannelSubscriber(java.lang.Object, java.lang.String)

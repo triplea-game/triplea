@@ -11,40 +11,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+package games.strategy.engine.framework.ui;
 
-package games.strategy.engine.framework.message;
-
-import java.io.*;
-
-/*
- * DonePlayerSelectionMessage.java
- *
- *
- * Created on February 1, 2002, 4:15 PM
- */
-
+import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.net.IChannelSubscribor;
 
 /**
- * Sent by the server when all the players have been selected.
+ * 
  *
- * @author  Sean Bridges
+ *
+ * @author Sean Bridges
  */
-public class DonePlayerSelectionMessage implements java.io.Serializable
+public interface IClientChannel extends IChannelSubscribor
 {
-
-  private byte[] m_gameData;
-
-  /**
-   * Creates a new instance of DonePlayerSelectionMessage
-   */
-  public DonePlayerSelectionMessage(byte[] gameData)
-  {
-    m_gameData = gameData;
-  }
-
-  public InputStream getGameData() throws IOException
-  {
-    return new ByteArrayInputStream(m_gameData);
-  }
-
+    public static final String CHANNEL_NAME = "games.strategy.engine.framework.ui.IClientChannel.CHANNEL";
+    
+    public void playerListingChanged(PlayerListing listing);
+    public void doneSelectingPlayers(byte[] gameData);
 }

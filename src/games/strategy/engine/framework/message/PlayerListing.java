@@ -13,7 +13,7 @@
  */
 
 /*
- * PlayerListingMessage.java
+ * PlayerListinge.java
  *
  * Created on February 1, 2002, 2:34 PM
  */
@@ -26,19 +26,19 @@ import java.util.*;
 import games.strategy.util.Version;
 
 /**
- * A message from the server indicating what players are available to be
+ * data from the server indicating what players are available to be
  * taken, and what players are being played.
  *
- * The message also contains versioning info which the client should
+ * This object also contains versioning info which the client should
  * check to ensure that it is playing the same game as the server.
  *
  * @author  Sean Bridges
  */
-public class PlayerListingMessage implements Serializable
+public class PlayerListing implements Serializable
 {
   /**
    * Maps String player name -> node Name
-   * if ode name is null then the player is available to play.
+   * if node name is null then the player is available to play.
    */
   private Map m_playerListing = new HashMap();
   private Version m_engineVersion;
@@ -48,7 +48,7 @@ public class PlayerListingMessage implements Serializable
   /**
    * Creates a new instance of PlayerListingMessage
    */
-  public PlayerListingMessage(Map map, Version engineVersion, Version gameVersion, String gameName)
+  public PlayerListing(Map map, Version engineVersion, Version gameVersion, String gameName)
   {
     m_playerListing = new HashMap(map);
     m_engineVersion = engineVersion;

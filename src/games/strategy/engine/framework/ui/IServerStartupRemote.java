@@ -11,30 +11,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+package games.strategy.engine.framework.ui;
 
-/*
- * ListPlayerRequest.java
- *
- *
- * Created on February 2, 2002, 4:47 PM
- */
-
-package games.strategy.engine.framework.message;
+import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.net.*;
+import games.strategy.net.IRemote;
 
 /**
+ * 
  *
- * Sent by the client when it joins, requesting that the server
- * broadcast a PlayerListingMessage
  *
- * @author  Sean Bridges
+ * @author Sean Bridges
  */
-public class ListPlayerRequest implements java.io.Serializable
+public interface IServerStartupRemote extends IRemote
 {
-	/**
-	 * Creates a new instance of ListPlayerRequest
-	 */
-	public ListPlayerRequest()
-	{
-	}
-	
+    /**
+     * 
+     * @return a listing of the players in the game
+     */
+    public PlayerListing getPlayerListing();
+    
+    public void takePlayer(INode who, String playerName);
+    
+    public void releasePlayer(INode who, String playerName);
+    
+    
 }

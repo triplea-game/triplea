@@ -27,7 +27,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 /**
- * UI for choosing server options.
+ * UI for choosing client options.
  *
  * @author  Sean Bridges
  */
@@ -40,7 +40,7 @@ public class ClientOptions extends JDialog
   private boolean m_okPressed;
 
   /**
-   * Creates a new instance of ServerOptions
+   * Creates a new instance of ClientOptions
    */
   public ClientOptions(Frame parent, String defaultName, int defaultPort, String defaultAddress)
   {

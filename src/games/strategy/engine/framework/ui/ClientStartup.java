@@ -20,20 +20,19 @@
 
 package games.strategy.engine.framework.ui;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.List;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-
-import games.strategy.engine.data.*;
+import games.strategy.engine.EngineVersion;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.message.*;
 import games.strategy.net.*;
 
-import games.strategy.engine.EngineVersion;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.*;
+import java.util.*;
+import java.util.List;
+
+import javax.swing.*;
 
 /**
  *
@@ -45,7 +44,9 @@ public class ClientStartup extends JPanel
 {
   private static final Insets BUTTON_INSETS = new Insets(0,0,0,0);
 
-  private final IMessenger m_messenger;
+  private final IChannelMessenger m_channelMessenger;
+  private final IRemoteMessenger m_remoteMessenger;
+  
   private JLabel m_nameLabel;
   private LauncherFrame m_launcher;
   private Set m_players = Collections.EMPTY_SET;
@@ -56,16 +57,22 @@ public class ClientStartup extends JPanel
   /**
    * Creates a new instance of ServerStartup
    */
-  public ClientStartup(IMessenger messenger)
+  public ClientStartup(IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
   {
-    m_messenger = messenger;
+    m_channelMessenger = channelMessenger;
+    m_remoteMessenger = remoteMessenger;
+  
 
+    if(!m_channelMessenger.hasChannel(IClientChannel.CHANNEL_NAME ))
+        m_channelMessenger.createChannel(IClientChannel.class, IClientChannel.CHANNEL_NAME );
+    m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
+    
     initComponents();
     layoutComponents();
     setWidgetActivation();
   }
 
-  public void refreshPlayers(PlayerListingMessage message)
+  public void refreshPlayers(PlayerListing message)
   {
     m_players = message.getPlayers();
     initComponents();
@@ -116,18 +123,24 @@ public class ClientStartup extends JPanel
 
   public void waitForPlayers()
   {
-    m_messenger.addMessageListener(m_messageListener);
-    m_messenger.broadcast(new ListPlayerRequest());
+      IServerStartupRemote server = getRemoteServer();
+      PlayerListing listing = server.getPlayerListing();
+      updatePlayerListing(listing); 
   }
 
-  public void cleanupWaitForPlayers()
-  {
-    m_messenger.removeMessageListener(m_messageListener);
-  }
 
-  private void initComponents()
+  /**
+ * @return
+ */
+private IServerStartupRemote getRemoteServer()
+{
+    IServerStartupRemote server = (IServerStartupRemote) m_remoteMessenger.getRemote(ServerStartup.SERVER_REMOTE_NAME);
+    return server;
+}
+
+private void initComponents()
   {
-    m_nameLabel = new JLabel("Name:" + m_messenger.getLocalNode().getName());
+    m_nameLabel = new JLabel("Name:" + m_channelMessenger.getLocalNode().getName());
 
     m_playerRows = new ArrayList();
     Iterator iter = m_players.iterator();
@@ -206,7 +219,7 @@ public class ClientStartup extends JPanel
     validate();
   }
 
-  private void checkVersion(PlayerListingMessage msg)
+  private void checkVersion(PlayerListing msg)
   {
     if(!msg.getEngineVersion().equals(EngineVersion.VERSION))
     {
@@ -223,7 +236,7 @@ public class ClientStartup extends JPanel
         System.err.println(version.toString());
 
         JOptionPane.showMessageDialog(this, version.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-        m_messenger.shutDown();
+       
       } finally
       {
         System.exit(0);
@@ -241,18 +254,21 @@ public class ClientStartup extends JPanel
     m_launcher = launcher;
   }
 
-
-
-  private IMessageListener m_messageListener = new IMessageListener()
+  private IClientChannel m_channelListener = new IClientChannel()
   {
-    public void messageReceived(Serializable msg, INode from)
+
+    public void playerListingChanged(PlayerListing listing)
     {
-      if(msg instanceof DonePlayerSelectionMessage)
-      {
+        updatePlayerListing(listing);
+        
+    }
+
+    public void doneSelectingPlayers(byte[] gameData)
+    {
         GameData data = null;
         try
         {
-          data  = new GameDataManager().loadGame(((DonePlayerSelectionMessage) msg).getGameData());
+          data  = new GameDataManager().loadGame(new ByteArrayInputStream(gameData));
         }
         catch (IOException ex)
         {
@@ -261,11 +277,17 @@ public class ClientStartup extends JPanel
 
         m_launcher.setGameData(data);
         m_launcher.startClient();
-      }
-      if(msg instanceof PlayerListingMessage)
-      {
-        final PlayerListingMessage playerListingMessage = (PlayerListingMessage) msg;
+    }
+      
+  };
 
+
+
+    /**
+     * @param playerListingMessage
+     */
+    private void updatePlayerListing(final PlayerListing playerListingMessage)
+    {
         checkVersion(playerListingMessage);
 
         m_launcher.setGameInfo(playerListingMessage.getGameName(), playerListingMessage.getGameVersion().toString());
@@ -279,9 +301,8 @@ public class ClientStartup extends JPanel
         };
 
         SwingUtilities.invokeLater(refresh);
-      }
     }
-  };
+  
 
   class PlayerRow
   {
@@ -327,7 +348,7 @@ public class ClientStartup extends JPanel
       {
         m_playerLabel.setText(playerName);
 
-        if(playerName.equals(m_messenger.getLocalNode().getName()))
+        if(playerName.equals(m_channelMessenger.getLocalNode().getName()))
         {
           JButton button = new JButton(m_dontTakeAction);
           button.setMargin(BUTTON_INSETS);
@@ -342,7 +363,7 @@ public class ClientStartup extends JPanel
 
     public boolean isPlaying()
     {
-      return m_playerLabel.getText().equals(m_messenger.getLocalNode().getName());
+      return m_playerLabel.getText().equals(m_channelMessenger.getLocalNode().getName());
     }
 
     public JComponent getPlayerComponent()
@@ -359,9 +380,7 @@ public class ClientStartup extends JPanel
     {
       public void actionPerformed(ActionEvent e)
       {
-        TakePlayerMessage msg = new TakePlayerMessage(m_nameLabel.getText(), true);
-        //TODO send to server only
-        m_messenger.broadcast(msg);
+          getRemoteServer().takePlayer(m_channelMessenger.getLocalNode(), m_nameLabel.getText());
       }
     };
 
@@ -369,10 +388,10 @@ public class ClientStartup extends JPanel
     {
       public void actionPerformed(ActionEvent e)
       {
-        TakePlayerMessage msg = new TakePlayerMessage(m_nameLabel.getText(), false);
-        //TODO send to server only
-        m_messenger.broadcast(msg);
+          getRemoteServer().releasePlayer(m_channelMessenger.getLocalNode(), m_nameLabel.getText());
       }
     };
   }
+  
+  
 }

@@ -53,9 +53,7 @@ public class Util
 	}
 
         
-	/**
-	   Change by Beagle.
-	   
+	/**	   
 	   Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
 	   problems. Fix is to use 3Byte rather than INT.
 	*/
@@ -64,7 +62,7 @@ public class Util
             if(needAlpha)
 	    {
                 return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-            }
+        }
 	    else
 	    {
                 return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);

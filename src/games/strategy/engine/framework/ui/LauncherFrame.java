@@ -19,7 +19,7 @@ import games.strategy.engine.chat.ChatFrame;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.message.DonePlayerSelectionMessage;
+import games.strategy.engine.message.*;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.random.*;
 import games.strategy.net.*;
@@ -45,6 +45,9 @@ import javax.swing.*;
 
 public class LauncherFrame extends JFrame
 {
+    
+  public static final String CLIENT_READY_CHANNEL = "games.strategy.engine.framework.ui.LauncherFrame.CLIENT_READY_CHANNEL";  
+    
   private JTabbedPane m_mainTabPanel = new JTabbedPane();
   private JPanel m_buttonPanel = new JPanel();
   private JButton m_playButton = new JButton();
@@ -54,6 +57,8 @@ public class LauncherFrame extends JFrame
   private PropertiesUI m_propertuesUI;
   private IMessenger m_messenger;
   private IChannelMessenger m_channelMessenger;
+  private IRemoteMessenger m_remoteMessenger;
+  private IMessageManager m_messageManager;
   private ChatFrame m_chat;
   private ServerStartup m_serverStartup;
   private ClientStartup m_clientStartup;
@@ -182,17 +187,18 @@ public class LauncherFrame extends JFrame
   private void startServer()
   {
     m_serverStartup.cleanUpWaitForPlayers();
+    m_serverStartup.cleanUp();
 
-    m_messenger.broadcast(new DonePlayerSelectionMessage(m_serverStartup.getGameDataBytes()));
-
-    ServerWaitForClientMessageListener listener = new ServerWaitForClientMessageListener();
-    m_messenger.addMessageListener(listener);
+    ServerReady serverReady = new ServerReady();
+    m_remoteMessenger.registerRemote(IServerReady.class, serverReady, CLIENT_READY_CHANNEL);
+    
+    ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(m_serverStartup.getGameDataBytes());
 
     Map localPlayerMapping = m_serverStartup.getLocalPlayerMapping();
     Set localPlayerSet = m_gameData.getGameLoader().createPlayers(localPlayerMapping);
     Map remotePlayers = m_serverStartup.getRemotePlayerMapping();
 
-    final ServerGame serverGame = new ServerGame(m_gameData, localPlayerSet,(IServerMessenger) m_messenger, remotePlayers, m_channelMessenger);
+    final ServerGame serverGame = new ServerGame(m_gameData, localPlayerSet,(IServerMessenger) m_messenger, remotePlayers, m_channelMessenger, m_remoteMessenger, m_messageManager);
     boolean useSecureRandomSource = !remotePlayers.isEmpty() && !localPlayerMapping.isEmpty();
     if(useSecureRandomSource)
     {
@@ -209,8 +215,9 @@ public class LauncherFrame extends JFrame
 
     m_gameData.getGameLoader().startGame(serverGame, localPlayerSet);
 
-    listener.waitFor( m_messenger.getNodes().size() - 1);
-    m_messenger.removeMessageListener(listener);
+    
+    serverReady.waitFor( m_messenger.getNodes().size() - 1);
+    m_remoteMessenger.unregisterRemote(CLIENT_READY_CHANNEL);
     
     if (useSecureRandomSource)
     {
@@ -252,15 +259,13 @@ public class LauncherFrame extends JFrame
     Map playerMapping = m_clientStartup.getLocalPlayerMapping();
     Set playerSet =  m_gameData.getGameLoader().createPlayers(playerMapping);
 
-    ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger, ((ClientMessenger) m_messenger).getServerNode(), m_channelMessenger);
+    ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger, ((ClientMessenger) m_messenger).getServerNode(), m_channelMessenger, m_remoteMessenger, m_messageManager);
 
 
     m_gameData.getGameLoader().startGame(clientGame, playerSet);
 
-    m_messenger.send(new ClientReady(), ((ClientMessenger) m_messenger).getServerNode());
-
-    m_clientStartup.cleanupWaitForPlayers();
-
+    ((IServerReady) m_remoteMessenger.getRemote(LauncherFrame.CLIENT_READY_CHANNEL)).clientReady();
+ 
     setVisible(false);
   }
 
@@ -279,6 +284,11 @@ public class LauncherFrame extends JFrame
       public void run()
       {
         IServerMessenger messenger = new DummyMessenger();
+        m_messenger = messenger;
+        m_channelMessenger = new ChannelMessenger(m_messenger);
+        m_messageManager = new MessageManager(m_messenger);
+        m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
+
         java.util.List players = games.strategy.util.Util.toList(m_gameData.getPlayerList().getNames());
 
         Map localPlayerMap = new HashMap();
@@ -290,7 +300,7 @@ public class LauncherFrame extends JFrame
         }
 
         Set gamePlayers = m_gameData.getGameLoader().createPlayers(localPlayerMap);
-        ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap(), new ChannelMessenger(messenger));
+        ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap(), m_channelMessenger, m_remoteMessenger, m_messageManager);
         if(m_gameTypePanel.isPBEM())
         {
           IronyGamesDiceRollerRandomSource randomSource = new IronyGamesDiceRollerRandomSource(m_pbemStartup.getEmail1(), m_pbemStartup.getEmail2());
@@ -406,11 +416,13 @@ public class LauncherFrame extends JFrame
 
     m_messenger = messenger;
     m_channelMessenger = new ChannelMessenger(m_messenger);
+    m_messageManager = new MessageManager(m_messenger);
+    m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
     
     m_chat = new ChatFrame(messenger, m_channelMessenger);
     m_chat.show();
 
-    m_serverStartup = new ServerStartup( messenger);
+    m_serverStartup = new ServerStartup( messenger, m_remoteMessenger, m_channelMessenger);
     if(m_gameData != null)
       m_serverStartup.setGameData(m_gameData);
 
@@ -466,11 +478,13 @@ public class LauncherFrame extends JFrame
     }
 
     m_channelMessenger = new ChannelMessenger(m_messenger);
+    m_messageManager = new MessageManager(m_messenger);
+    m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
     	
     m_chat= new ChatFrame(m_messenger, m_channelMessenger);
     m_chat.show();
 
-    m_clientStartup = new ClientStartup(m_messenger);
+    m_clientStartup = new ClientStartup(m_channelMessenger, m_remoteMessenger);
     m_clientStartup.setLauncherFrame(this);
 
 
@@ -521,21 +535,29 @@ public class LauncherFrame extends JFrame
 
 }
 
+/**
+ * 
+ * Allows for the server to wait for all clients to finish initialization before starting the game
+ *
+ * @author Sean Bridges
+ */
+interface IServerReady extends IRemote
+{
+    public void clientReady();
+}
 
-class ServerWaitForClientMessageListener implements IMessageListener
+class ServerReady implements IServerReady
 {
   int m_count = 0;
 
-  public void messageReceived(Serializable msg, INode from)
+  public void clientReady()
   {
-    if(msg instanceof ClientReady)
-    {
       synchronized(this)
       {
         m_count++;
         this.notifyAll();
       }
-    }
+    
   }
 
   public void waitFor(int target)
@@ -551,11 +573,5 @@ class ServerWaitForClientMessageListener implements IMessageListener
       }
     }
   }
-}
-
-
-class ClientReady implements Serializable
-{
-
 }
 

@@ -56,10 +56,10 @@ public class GameData implements java.io.Serializable
 	private final GameSequence m_sequence = new GameSequence(this);
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
 	private final GameProperties m_properties = new GameProperties(this);
-    private UnitsList m_unitsList = new UnitsList();
+    private final UnitsList m_unitsList = new UnitsList();
 
 	private IGameLoader m_loader;
-    private History m_gameHistory = new History(this);
+    private final History m_gameHistory = new History(this);
 
 	/** Creates new GameData */
 	public GameData()

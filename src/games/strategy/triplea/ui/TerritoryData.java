@@ -269,6 +269,9 @@ public class TerritoryData
     public Rectangle getBoundingRect(String name)
     {
         List polys = getPolygons(name);
+        if(polys == null)
+            throw new IllegalStateException("No polygons found for:" + name);
+        
         Rectangle bounds = null;
 
 

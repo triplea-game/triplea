@@ -22,14 +22,13 @@ package games.strategy.engine.history;
 *  -  Round *
 *   -   Step *
 *       -  Event *
-*           - ??
+*           
 *
 *
 *
 * Round - the current round in the game, eg 1, 2, 3
 * Step - the current step, eg Britian Combat Move
 * Event - an event that happened in the game, eg Russia buys 8 inf.
-* An event can have arbitrary children
 *
 *
  */

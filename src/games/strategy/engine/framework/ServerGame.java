@@ -74,14 +74,14 @@ public class ServerGame implements IGame
      * @param messenger IServerMessenger
      * @param remotePlayerMapping Map
      */
-    public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping, IChannelMessenger channelMessenger)
+    public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, IMessageManager messageManager)
     {
         m_data = data;
 
         m_messenger = messenger;
         m_messenger.addMessageListener(m_messageListener);
-        m_messageManager = new MessageManager(m_messenger);
-        m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
+        m_messageManager = messageManager;
+        m_remoteMessenger = remoteMessenger;
         m_channelMessenger = channelMessenger;
         m_vault = new Vault(m_channelMessenger);
         

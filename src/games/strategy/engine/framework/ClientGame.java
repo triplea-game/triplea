@@ -56,14 +56,14 @@ public class ClientGame implements IGame
 
   private int m_currentRound = -1;
 
-  public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, INode server, IChannelMessenger channelMessenger)
+  public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, INode server, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, IMessageManager messageManager)
   {
     m_data = data;
     m_serverNode = server;
     m_messenger = messenger;
     m_messenger.addMessageListener(m_messageListener);
-    m_messageManager = new MessageManager(m_messenger);
-    m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
+    m_messageManager = messageManager;
+    m_remoteMessenger = remoteMessenger;
     m_channelMessenger = channelMessenger;
     m_vault = new Vault(m_channelMessenger);
     

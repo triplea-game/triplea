@@ -44,6 +44,8 @@ public class RemoteMessenger implements IRemoteMessenger
     private final Map m_localRemotes = Collections.synchronizedMap(new HashMap());
     
     
+    private final Object m_doneInitLock = new Object();
+    
     /* 
      * @see games.strategy.net.IRemoteMessenger#getRemote(java.lang.String)
      */
@@ -52,7 +54,22 @@ public class RemoteMessenger implements IRemoteMessenger
         m_messageManager = messageManager;
         m_messenger = messenger;
         m_messenger.addMessageListener(m_messageListener);
-        m_messenger.broadcast(new RemoteInitRequest());
+        if(!messenger.isServer())
+        {
+            m_messenger.broadcast(new RemoteInitRequest());
+ 
+            //wait to be initialized
+            synchronized(m_doneInitLock)
+            {
+                try
+                {
+                    m_doneInitLock.wait();
+                } catch (InterruptedException e)
+                {
+                    //lets not worry too much about this
+                }
+            }
+        }
     }
     
   
@@ -126,7 +143,7 @@ public class RemoteMessenger implements IRemoteMessenger
            {
                unregisterLocal((RemoteMessengerKeyRemoved) msg);
            }
-           if(msg instanceof RemoteInitRequest)
+           else if(msg instanceof RemoteInitRequest)
            {
                //only the server should respond
                if(!m_messenger.isServer())
@@ -139,7 +156,18 @@ public class RemoteMessenger implements IRemoteMessenger
                   String className = ((Class) mapping.get(name) ).getName();
                   m_messenger.send(new RemoteMessengerKeyAdded(name, className), from);
                }
+               m_messenger.send(new DoneInit(), from);
            }
+           else if(msg instanceof DoneInit)
+           {
+               synchronized(m_doneInitLock)
+               {
+                   m_doneInitLock.notifyAll();
+               }
+           }
+        
+        
+               
         }
     };
     
@@ -322,6 +350,11 @@ class RemoteMethodCallResults implements Message
     {
         return m_rVal;
     }
+}
+
+class DoneInit implements Serializable
+{
+    
 }
 
 /**

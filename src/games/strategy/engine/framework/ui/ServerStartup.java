@@ -45,6 +45,8 @@ public class ServerStartup extends JPanel
   private LauncherFrame m_launcher;
   private IGameLoader m_loader;
   private final IServerMessenger m_messenger;
+  private final IRemoteMessenger m_remoteMessenger;
+  private final IChannelMessenger m_channelMessenger;
   private GameData m_data;
 
   private JTextField m_portField;
@@ -58,18 +60,30 @@ public class ServerStartup extends JPanel
 
   private JPanel m_info = new JPanel();
   
+  public static final String SERVER_REMOTE_NAME = "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE";
+  
   /**
    * Creates a new instance of ServerStartup
    */
-  public ServerStartup(IServerMessenger messenger)
+  public ServerStartup(IServerMessenger messenger, IRemoteMessenger remoteMessenger, IChannelMessenger channelmessenger)
   {
     m_messenger = messenger;
-
+    m_remoteMessenger = remoteMessenger;
+    m_remoteMessenger.registerRemote(IServerStartupRemote.class, m_serverStartupRemote, SERVER_REMOTE_NAME);
+    m_channelMessenger = channelmessenger;
+    
+    m_channelMessenger.createChannel(IClientChannel.class, IClientChannel.CHANNEL_NAME);
+    
     initComponents();
     layoutComponents();
     setWidgetActivation();
   }
 
+  public void cleanUp()
+  {
+      m_remoteMessenger.unregisterRemote(SERVER_REMOTE_NAME);
+  }
+  
   public boolean allPlayersFilled()
   {
     Iterator iter = m_playerRows.iterator();
@@ -98,7 +112,9 @@ public class ServerStartup extends JPanel
 
     updateGamePlayers();
     layoutPlayers();
-    m_messenger.broadcast(getPlayerListing());
+    IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+    channel.playerListingChanged(getPlayerListingInternal());
+    
   }
 
   public void setLauncerFrame(LauncherFrame frame)
@@ -168,7 +184,6 @@ public class ServerStartup extends JPanel
 
   public void waitForPlayers()
   {
-    m_messenger.addMessageListener(m_messageListener);
     m_messenger.addErrorListener(m_messengerErrorListener);
 
     m_messenger.setConnectionAccepter(m_connectionAccepter);
@@ -181,22 +196,22 @@ public class ServerStartup extends JPanel
     m_messenger.setAcceptNewConnections(false);
     m_messenger.setConnectionAccepter(null);
 
-    m_messenger.removeMessageListener(m_messageListener);
+   
     m_messenger.removeErrorListener(m_messengerErrorListener);
 
   }
 
   private void initComponents()
   {
-    m_portField = new JTextField("" + m_messenger.getLocalNode().getPort());
+    m_portField = new JTextField("" + m_channelMessenger.getLocalNode().getPort());
     m_portField.setEnabled(false);
     m_portField.setColumns(6);
 
-    m_addressField = new JTextField(m_messenger.getLocalNode().getAddress().getHostAddress());
+    m_addressField = new JTextField(m_channelMessenger.getLocalNode().getAddress().getHostAddress());
     m_addressField.setEnabled(false);
     m_addressField.setColumns(20);
 
-    m_nameField = new JTextField(m_messenger.getLocalNode().getName());
+    m_nameField = new JTextField(m_channelMessenger.getLocalNode().getName());
     m_nameField.setEnabled(false);
     m_nameField.setColumns(20);
   }
@@ -312,12 +327,12 @@ public class ServerStartup extends JPanel
   {
   }
 
-  private PlayerListingMessage getPlayerListing()
+  private PlayerListing getPlayerListingInternal()
   {
     HashMap mapping = new HashMap();
 
     if(m_data == null)
-      return new PlayerListingMessage(mapping, EngineVersion.VERSION, new Version(0,0), "");
+      return new PlayerListing(mapping, EngineVersion.VERSION, new Version(0,0), "");
 
     Iterator iter = m_playerRows.iterator();
     while(iter.hasNext())
@@ -338,15 +353,15 @@ public class ServerStartup extends JPanel
       }
     }
 
-    return new PlayerListingMessage(mapping, EngineVersion.VERSION, m_data.getGameVersion(), m_data.getGameName());
+    return new PlayerListing(mapping, EngineVersion.VERSION, m_data.getGameVersion(), m_data.getGameName());
   }
 
-  private void takePlayerMessageReceived(TakePlayerMessage msg, INode from)
+  private void takePlayerInternal(INode from, boolean take, String playerName)
   {
     //synchronize to make sure two adds arent executed at once
     synchronized(this)
     {
-      String playerName = msg.getPlayerName();
+      
 
       Iterator iter = m_playerRows.iterator();
       while(iter.hasNext())
@@ -354,12 +369,14 @@ public class ServerStartup extends JPanel
         PlayerRow row = (PlayerRow) iter.next();
         if(!row.isLocal())
         {
-          if(msg.play())
+          if(take)
           {
             if(row.getNode() == null && row.getPlayerName().equals(playerName))
             {
               row.setNode(from);
-              m_messenger.broadcast(getPlayerListing());
+              IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+              channel.playerListingChanged(getPlayerListingInternal());
+
             }
           }
           else
@@ -367,7 +384,9 @@ public class ServerStartup extends JPanel
             if(row.getNode() != null && row.getNode().equals(from) && row.getPlayerName().equals(playerName))
             {
               row.setNode(null);
-              m_messenger.broadcast(getPlayerListing());
+              IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+              channel.playerListingChanged(getPlayerListingInternal());
+
             }
           }
         }
@@ -377,23 +396,29 @@ public class ServerStartup extends JPanel
     m_launcher.setWidgetActivation();
   }
 
-
-  private IMessageListener m_messageListener = new IMessageListener()
+  private IServerStartupRemote m_serverStartupRemote = new IServerStartupRemote()
   {
-    public void messageReceived(Serializable msg, INode from)
+
+    public PlayerListing getPlayerListing()
     {
-      if(msg instanceof ListPlayerRequest)
-      {
-        m_messenger.broadcast(getPlayerListing());
-      }
-      else if(msg instanceof TakePlayerMessage)
-      {
-         takePlayerMessageReceived( (TakePlayerMessage) msg, from);
-      }
+        return getPlayerListingInternal();
+    }
+
+    public void takePlayer(INode who, String playerName)
+    {
+        takePlayerInternal(who, true, playerName);
+    }
+
+    public void releasePlayer(INode who, String playerName)
+    {
+        takePlayerInternal(who, true, playerName);
     }
 
   };
 
+ 
+
+  
   class PlayerRow
   {
     private JLabel m_nameLabel;
@@ -479,7 +504,9 @@ public class ServerStartup extends JPanel
         m_node = null;
         setWidgetActivation();
         m_launcher.setWidgetActivation();
-        m_messenger.broadcast(getPlayerListing());
+        IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+        channel.playerListingChanged(getPlayerListingInternal());
+
       }
     };
   }
