@@ -36,52 +36,165 @@ public class DiceRoll implements java.io.Serializable
   private final int m_hits;
   private final boolean m_hitOnlyIfEquals;
 
-  public static boolean aaHit(int die) {
-    return die == 0;
-  }
-
-  public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge, Territory location)
+  public static DiceRoll rollAA(int numberOfAirUnits, DelegateBridge bridge, Territory location, GameData data)
   {
-    int[] random = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, "Roll aa guns in " + location.getName());
     int hits = 0;
-    for(int i = 0; i < random.length; i++)
-    {
-      if(aaHit(random[i]))
-        hits++;
+    int[] dice = new int[0];
+    int[][] sortedDiceInt = new int[Constants.MAX_DICE][0];
+
+    if (data.getProperties().get(Constants.LOW_LUCK) != null
+	&& ((Boolean)data.getProperties().get(Constants.LOW_LUCK)).booleanValue()) {
+      // Low luck rolling
+      hits = numberOfAirUnits / Constants.MAX_DICE;
+      int hitsFractional = numberOfAirUnits % Constants.MAX_DICE;
+      
+      if (hitsFractional > 0) {
+	dice = bridge.getRandom(Constants.MAX_DICE, 1, "Roll aa guns in " + location.getName());
+	sortedDiceInt[hitsFractional - 1] = dice;
+	if (hitsFractional > dice[0]) {
+	  hits++;
+	}
+      }
+
+    } else {
+      // Normal rolling
+      dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, "Roll aa guns in " + location.getName());
+      for(int i = 0; i < dice.length; i++)
+      {
+	if(dice[i] == 0)
+	  hits++;
+      }
+      sortedDiceInt[0] = dice;
     }
 
-    int[][] dice = new int[Constants.MAX_DICE][];
-    dice[0] = random;
-    for(int i = 1; i < Constants.MAX_DICE; i++)
-    {
-      dice[i] = new int[0];
-    }
 
-    DiceRoll roll = new DiceRoll(dice, hits);
-    bridge.getHistoryWriter().addChildToEvent("AA guns fire in" + location + " :" + Formatter.asDice(random), roll);
+    DiceRoll roll = new DiceRoll(sortedDiceInt, hits);
+    bridge.getHistoryWriter().addChildToEvent("AA guns fire in" + location + " :" + Formatter.asDice(dice), roll);
     return roll;
   }
 
 
-
+  /**
+   * Roll dice for units.
+   */
   public static DiceRoll rollDice(List units, boolean defending,
-                                  PlayerID player,
-                                  DelegateBridge bridge,
-                                  GameData data)
+				  PlayerID player,
+				  DelegateBridge bridge,
+				  GameData data)
   {
+    // Decide whether to use low luck rules or normal rules.
+    if (data.getProperties().get(Constants.LOW_LUCK) != null
+	&& ((Boolean)data.getProperties().get(Constants.LOW_LUCK)).booleanValue()) {
+      return rollDiceLowLuck(units, defending, player, bridge, data);
+    } else {
+      return rollDiceNormal(units, defending, player, bridge, data);
+    }
+  }
 
+  /**
+   * Roll dice for units using low luck rules. Low luck rules based
+   * on rules in DAAK.
+   */
+  private static DiceRoll rollDiceLowLuck(List units, boolean defending,
+					  PlayerID player,
+					  DelegateBridge bridge,
+					  GameData data)
+  {
     String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
 
     int rollCount = BattleCalculator.getRolls(units, player, defending);
     if(rollCount == 0)
     {
-        return new DiceRoll(new int[Constants.MAX_DICE][0], 0 );
+      return new DiceRoll(new int[Constants.MAX_DICE][0], 0 );
+    }
+
+    int artillerySupportAvailable = 0;
+    if(!defending)
+      artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
+
+    Collection leftOverUnits = new ArrayList();
+    Iterator iter = units.iterator();
+
+    int power = 0;
+    int hitCount = 0;
+
+    // We can through the units to find the total strength of the units
+    while(iter.hasNext())
+    {
+      Unit current = (Unit) iter.next();
+      UnitAttatchment ua = UnitAttatchment.get(current.getType());
+      int rolls = defending ? 1 : ua.getAttackRolls(player);
+      for(int i = 0; i < rolls; i++)
+      {
+        int strength;
+        if(defending)
+          strength = ua.getDefense(current.getOwner());
+        else
+        {
+          strength = ua.getAttack(current.getOwner());
+          if(ua.isArtillerySupportable() && artillerySupportAvailable > 0)
+          {
+            strength++;
+            artillerySupportAvailable--;
+          }
+        }
+
+        if(!defending&&ua.isStrategicBomber()&& TechTracker.hasHeavyBomber(player) &&
+           data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)!=null &&
+           ((Boolean)data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE)).booleanValue())
+        {
+	  // We don't support heavy rolls with Low Luck yet.
+	  throw new IllegalStateException("Cannot use heavy bomber downgrade option with low luck");
+        }
+
+	power += strength;
+      }
+    }
+
+    // Get number of hits
+    hitCount = power / Constants.MAX_DICE;
+
+    // Create sorted dice array with zero length arrays
+    int[][] sortedDiceInt = new int[Constants.MAX_DICE][0];
+    int[] dice = new int[0];
+
+    // We need to roll dice for the fractional part of the dice.
+    power = power % Constants.MAX_DICE;
+    if (power != 0) {
+      dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+      sortedDiceInt[power - 1] = new int[1];
+      sortedDiceInt[power - 1][0] = dice[0];
+      if (power > dice[0]) {
+	hitCount++;
+      }
+    }
+    
+    // Create DiceRoll object
+    DiceRoll rVal = new  DiceRoll(sortedDiceInt, hitCount);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + Formatter.asDice(dice), rVal);
+    return rVal;
+  }
+
+  /**
+   * Roll dice for units per normal rules.
+   */
+  private static DiceRoll rollDiceNormal(List units, boolean defending,
+					 PlayerID player,
+					 DelegateBridge bridge,
+					 GameData data)
+  {
+    String annotation = player.getName() +  " roll dice for " + Formatter.unitsToTextNoOwner(units);
+
+    int rollCount = BattleCalculator.getRolls(units, player, defending);
+    if(rollCount == 0)
+    {
+      return new DiceRoll(new int[Constants.MAX_DICE][0], 0 );
     }
 
 
     int artillerySupportAvailable = 0;
     if(!defending)
-        artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
+      artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
 
     int[] dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
 
@@ -130,6 +243,7 @@ public class DiceRoll implements java.io.Serializable
           bridge.getHistoryWriter().addChildToEvent(bomberRollFeedback+", picked "+lowerRollForBomber);
           strength=lowerRollForBomber;
         }
+
         //dice is [0-MAX_DICE)
         if( strength > dice[diceIndex])
           hitCount++;
@@ -148,9 +262,9 @@ public class DiceRoll implements java.io.Serializable
       sortedDiceInt[i] = values;
     }
 
-   DiceRoll rVal = new  DiceRoll(sortedDiceInt, hitCount);
-   bridge.getHistoryWriter().addChildToEvent(annotation + " : " + Formatter.asDice(dice), rVal);
-   return rVal;
+    DiceRoll rVal = new  DiceRoll(sortedDiceInt, hitCount);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + Formatter.asDice(dice), rVal);
+    return rVal;
   }
 
   /**

@@ -55,22 +55,17 @@ public class BattleCalculator
     return hitCount;
   }
 
-  public static Collection fourthEditionAACasualties(Collection planes, DiceRoll dice) 
+  public static Collection fourthEditionAACasualties(Collection planes, DiceRoll dice, DelegateBridge bridge) 
   {
     Collection casualties = new ArrayList();
-    int[] aaRolls = dice.getRolls(1);
-    Iterator planesIter = planes.iterator();
-    // Number of dice rolls must be equal to number of planes
-    if (planes.size() != aaRolls.length) {
-      throw new IllegalStateException("Number of aa rolls not equal to number of planes");
-    }
-    for (int i = 0; i < aaRolls.length; i++)
+    int hits = dice.getHits();
+    Object[] planesArray = planes.toArray();
+
+    // We need to choose which planes die randomnly
+    for (int i = 0; i < hits; i++)
     {
-      Object unit = planesIter.next();
-      if (DiceRoll.aaHit(aaRolls[i]))
-      {
-	casualties.add(unit);
-      }
+      Object unit = planesArray[bridge.getRandom(planesArray.length, "Deciding which planes should die due to AA fire")];
+      casualties.add(unit);
     }
     return casualties;
   }

@@ -138,7 +138,7 @@ public class StrategicBombingRaidBattle implements Battle
     private void fireAA(DelegateBridge bridge)
     {
 
-        DiceRoll dice = DiceRoll.rollAA(m_units.size(), bridge, m_battleSite);
+        DiceRoll dice = DiceRoll.rollAA(m_units.size(), bridge, m_battleSite, m_data);
         removeAAHits(bridge, dice);
     }
 
@@ -154,7 +154,7 @@ public class StrategicBombingRaidBattle implements Battle
     {
       Collection casualties = null;
       if (isFourthEdition()) {
-        casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice);
+        casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice, bridge);
       } else {
         casualties = new ArrayList(dice.getHits());
         for (int i = 0; i < dice.getHits() && i < m_units.size(); i++)

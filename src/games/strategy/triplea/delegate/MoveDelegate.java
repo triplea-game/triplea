@@ -1484,7 +1484,7 @@ public class MoveDelegate implements SaveableDelegate
         //otherwise you could keep undoing and redoing
         //until you got the roll you wanted
         m_currentMove.setCantUndo("Move cannot be undone after AA has fired.");
-        DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge, territory);
+        DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge, territory, m_data);
         int hitCount = dice.getHits();
 
         if (hitCount == 0)
@@ -1505,7 +1505,7 @@ public class MoveDelegate implements SaveableDelegate
 	// If fourth edition, select casualties randomnly
 	Collection casualties = null;
 	if (isFourEdition()) {
-          casualties = BattleCalculator.fourthEditionAACasualties(units, dice);
+          casualties = BattleCalculator.fourthEditionAACasualties(units, dice, m_bridge);
 	} else {
 	  SelectCasualtyMessage casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false);
 	  casualties = casualtyMsg.getKilled();

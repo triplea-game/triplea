@@ -56,7 +56,8 @@ public interface Constants
   public static final String TWO_HIT = "isTwoHit";
   public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
   public static final String HEAVY_BOMBER_DOWNGRADE = "Heavy Bombers Pick 1 of 2 Dice";
-
+  public static final String LOW_LUCK = "Low Luck";
+  
   public static final int TECH_ROLL_COST = 5;
 
   public static final String INFANTRY_TYPE = "infantry";

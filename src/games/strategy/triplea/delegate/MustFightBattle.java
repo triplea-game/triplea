@@ -1085,7 +1085,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         int attackingAirCount = Match.countMatches(m_attackingUnits, Matches.UnitIsAir);
         //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
         // NEW VERSION
-        DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge, m_battleSite);
+        DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge, m_battleSite, m_data);
         
         //send attacker the dice roll so he can see what the dice are while he
         // waits for
@@ -1099,7 +1099,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         // we can do that by removing planes at positions in the list where
         // there was a corresponding hit in the dice roll.
         if (isFourthEdition()) {
-            casualties = BattleCalculator.fourthEditionAACasualties(attackable, dice);
+            casualties = BattleCalculator.fourthEditionAACasualties(attackable, dice, bridge);
             autoCalculated = true;
         } else {
             casualties = selectCasualties(step, bridge, attackable, false, "AA guns fire,", dice).getKilled();
