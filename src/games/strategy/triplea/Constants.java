@@ -42,6 +42,8 @@ public interface Constants
 	public static final String IPCS = "IPCs";
 	public static final int MAX_DICE = 6;
 	public static final String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
+    public static final String FACTORIES_PER_COUNTRY_PROPERTY ="maxFactoriesPerTerritory";
+
 	public static final int TECH_ROLL_COST = 5;
 	public static final String TECH_PROPERTY = "TECH PROPERTY";
 

@@ -37,6 +37,7 @@ import games.strategy.triplea.formatter.Formatter;
  *
  * Logic for placing units.  <p>
  *
+ *
  * @author  Sean Bridges
  * @version 1.0
  *

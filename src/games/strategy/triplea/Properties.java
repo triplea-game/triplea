@@ -27,9 +27,27 @@ public class Properties implements Constants
 
 	public static int getNeutralCharge(GameData data)
 	{
-		return Integer.parseInt((String) data.getProperties().get(NEUTRAL_CHARGE_PROPERTY) );
+        try
+        {
+          return Integer.parseInt((String) data.getProperties().get(NEUTRAL_CHARGE_PROPERTY) );
+        } catch(Exception e)
+        {
+          return 3;
+        }
 	}
 
+
+    public static int getFactoriesPerCountry(GameData data)
+    {
+      try
+      {
+        return Integer.parseInt((String) data.getProperties().get(FACTORIES_PER_COUNTRY_PROPERTY) );
+      } catch(Exception e)
+      {
+        return 1;
+      }
+
+    }
 
     private Properties()
     {

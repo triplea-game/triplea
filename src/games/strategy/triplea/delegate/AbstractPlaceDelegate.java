@@ -193,18 +193,20 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 				return new StringMessage("Can only have 1 AA per territory", true);
 		}
 
-		//make sure only 1 Factory
+		//make sure only max Factories
 		if(Match.countMatches(units, Matches.UnitIsFactory) >= 1)
 		{
-			//trying to place factories
+            //after placement this is how many factories there will be
+            int factoryCount = Match.countMatches(units, Matches.UnitIsFactory) +
+                               to.getUnits().getMatches(Matches.UnitIsFactory ).size();
 
-			//error if one already exists
-			if(Match.countMatches(units, Matches.UnitIsFactory) > 1)
-				return new StringMessage("Can only have 1 Factory per territory", true);
+            //max factories allowed
+            int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(m_data);
 
-			//error if we want to place 2
-			if(to.getUnits().someMatch(Matches.UnitIsFactory))
-				return new StringMessage("Can only have 1 Factory per territory", true);
+            if(factoryCount > maxFactory)
+            {
+            	return new StringMessage("Can only have " + maxFactory + " " + (maxFactory > 1 ? "factories" : "factory") +  " per territory", true);
+            }
 		}
 		return null;
 	}
