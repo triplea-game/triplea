@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="triplea" version="0.1"/>
+	<info name="triplea" version="0.2.1"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
