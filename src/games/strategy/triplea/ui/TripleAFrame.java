@@ -111,6 +111,7 @@ public class TripleAFrame extends JFrame
         m_data = game.getData();
         m_localPlayers = players;
 
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(WINDOW_LISTENER);
 
         createMenuBar();
