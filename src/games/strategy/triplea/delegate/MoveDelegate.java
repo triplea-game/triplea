@@ -41,14 +41,14 @@ import games.strategy.triplea.formatter.Formatter;
  * Responsible for moving units on the board. <p>
  * Responible for checking the validity of a move, and for moving
  * the units.  <br>
- * 
+ *
  *
  * @author  Sean Bridges
  * @version 1.0
  *
  */
 public class MoveDelegate implements Delegate
-{	
+{
 	private String m_name;
 	private String m_displayName;
 	private DelegateBridge m_bridge;
@@ -57,33 +57,33 @@ public class MoveDelegate implements Delegate
 	private boolean m_firstRun = true;
 	private boolean m_nonCombat;
 	private TransportTracker m_transportTracker = new TransportTracker();
-	
+
 	private IntegerMap m_alreadyMoved = new IntegerMap();
-	
+
 	/** Creates new MoveDelegate */
-    public MoveDelegate() 
+    public MoveDelegate()
 	{
     }
 
-	public void initialize(String name) 
+	public void initialize(String name)
 	{
 		initialize(name, name);
 	}
 
-	public void initialize(String name, String displayName) 
+	public void initialize(String name, String displayName)
 	{
 		m_name = name;
 		m_displayName = displayName;
 	}
 
-	
+
 	/**
 	 * Want to make sure that all units in the sea that can be transported are
 	 * marked as being transported by something.
 	 *
-	 * We assume that all transportable units in the sea are 
+	 * We assume that all transportable units in the sea are
 	 * in a transport, no exceptions.
-	 * 
+	 *
 	 */
 	private void firstRun()
 	{
@@ -96,11 +96,11 @@ public class MoveDelegate implements Delegate
 			//only care about water
 			if(!current.isWater())
 				continue;
-			
+
 			Collection units = current.getUnits().getUnits();
 			if(units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand))
 				continue;
-			
+
 			//map transports, try to fill
 			Collection transports = Match.getMatches(units, Matches.UnitIsTransport);
 			Collection land = Match.getMatches(units, Matches.UnitIsLand);
@@ -112,7 +112,7 @@ public class MoveDelegate implements Delegate
 				int cost = ua.getTransportCost();
 				if(cost == -1)
 					throw new IllegalStateException("Non transportable unit in sea");
-				
+
 				//find the next transport that can hold it
 				Iterator transportIter = transports.iterator();
 				boolean found = false;
@@ -120,7 +120,7 @@ public class MoveDelegate implements Delegate
 				{
 					Unit transport = (Unit) transportIter.next();
 					int capacity = m_transportTracker.getAvailableCapacity(transport);
-					if(capacity >= cost) 
+					if(capacity >= cost)
 					{
 						m_transportTracker.load(toLoad, transport);
 						found = true;
@@ -132,22 +132,22 @@ public class MoveDelegate implements Delegate
 			}
 		}
 	}
-	
+
 	/**
 	 * Called before the delegate will run.
 	 */
-	public void start(DelegateBridge aBridge, GameData gameData) 
-	{		
+	public void start(DelegateBridge aBridge, GameData gameData)
+	{
 		if(aBridge.getStepName().endsWith("NonCombatMove"))
 			m_nonCombat = true;
 		else if(aBridge.getStepName().endsWith("CombatMove"))
 			m_nonCombat = false;
 		else
 			throw new IllegalStateException("Cannot determine combat or not");
-		
+
 		m_bridge = aBridge;
 		PlayerID player = aBridge.getPlayerID();
-	
+
 		//reset movement, dont do at end of turn since
 		//we move a couple times.
 		if(!m_nonCombat)
@@ -157,20 +157,20 @@ public class MoveDelegate implements Delegate
 		}
 		m_data = gameData;
 		m_player = player;
-		
+
 		if(m_firstRun)
 			firstRun();
 	}
-	
-	public String getName() 
+
+	public String getName()
 	{
 		return m_name;
 	}
-	
+
 	/**
 	 * A message from the given player.
 	 */
-	public Message sendMessage(Message aMessage) 
+	public Message sendMessage(Message aMessage)
 	{
 		if(aMessage instanceof MoveMessage)
 			return move((MoveMessage) aMessage, m_player);
@@ -179,10 +179,10 @@ public class MoveDelegate implements Delegate
 		else if(aMessage instanceof MustMoveWithQuery)
 			return mustMoveWith((MustMoveWithQuery) aMessage);
 		else
-			throw new IllegalArgumentException("Move delegate received message of wrong type:" + aMessage);	
+			throw new IllegalArgumentException("Move delegate received message of wrong type:" + aMessage);
 	}
-	
-	private MustMoveWithReply mustMoveWith(MustMoveWithQuery query) 
+
+	private MustMoveWithReply mustMoveWith(MustMoveWithQuery query)
 	{
 		return new MustMoveWithReply( mustMoveWith(query.getUnits(), query.getStart()), movementLeft(query.getUnits()));
 	}
@@ -190,31 +190,31 @@ public class MoveDelegate implements Delegate
 	private IntegerMap movementLeft(Collection units)
 	{
 		IntegerMap movement = new IntegerMap();
-		
+
 		Iterator iter = units.iterator();
 		while(iter.hasNext())
 		{
 			Unit current = (Unit) iter.next();
 			movement.put(current, MoveValidator.movementLeft(current, m_alreadyMoved));
 		}
-	
+
 		return movement;
 	}
-	
+
 	private Map mustMoveWith(Collection units, Territory start)
 	{
 		List sortedUnits = new ArrayList(units);
 
-		
-		
+
+
 		Collections.sort(sortedUnits, increasingMovement);
-		
+
 		Map mapping = new HashMap();
 		mapping.putAll(transportsMustMoveWith(sortedUnits));
 		mapping.putAll(carrierMustMoveWith(sortedUnits, start));
 		return mapping;
 	}
-	
+
 	private Map transportsMustMoveWith(Collection units)
 	{
 		Map mustMoveWith = new HashMap();
@@ -229,7 +229,7 @@ public class MoveDelegate implements Delegate
 		}
 		return mustMoveWith;
 	}
-	
+
 	private Map carrierMustMoveWith(Collection units, Territory start)
 	{
 		//we want to get all air units that are owned by our allies
@@ -238,22 +238,22 @@ public class MoveDelegate implements Delegate
 		friendlyNotOwnedAir.add(Matches.alliedUnit(m_player, m_data));
 		friendlyNotOwnedAir.addInverse(Matches.unitIsOwnedBy(m_player));
 		friendlyNotOwnedAir.add(Matches.UnitCanLandOnCarrier);
-			
+
 		Collection alliedAir = start.getUnits().getMatches(friendlyNotOwnedAir);
-		
-		
+
+
 		if(alliedAir.isEmpty())
 			return Collections.EMPTY_MAP;
-		
-		//remove air that can be carried by allied 
+
+		//remove air that can be carried by allied
 		CompositeMatch friendlyNotOwnedCarrier = new CompositeMatchAnd();
 		friendlyNotOwnedCarrier.add(Matches.UnitIsCarrier);
 		friendlyNotOwnedCarrier.add(Matches.alliedUnit(m_player, m_data));
 		friendlyNotOwnedCarrier.addInverse(Matches.unitIsOwnedBy(m_player));
-		
+
 		Collection alliedCarrier = start.getUnits().getMatches(friendlyNotOwnedCarrier);
-		
-		
+
+
 		Iterator alliedCarrierIter = alliedCarrier.iterator();
 		while(alliedCarrierIter.hasNext())
 		{
@@ -261,33 +261,33 @@ public class MoveDelegate implements Delegate
 			Collection carrying = getCanCarry(carrier, alliedAir);
 			alliedAir.removeAll(carrying);
 		}
-		
+
 		if(alliedAir.isEmpty())
 			return Collections.EMPTY_MAP;
-		
+
 		Map mapping = new HashMap();
 		//get air that must be carried by our carriers
 		Collection ownedCarrier = Match.getMatches(units, Matches.UnitIsCarrier);
-		
-		
+
+
 		Iterator ownedCarrierIter = ownedCarrier.iterator();
 		while(ownedCarrierIter.hasNext())
 		{
 			Unit carrier = (Unit) ownedCarrierIter.next();
 			Collection carrying = getCanCarry(carrier, alliedAir);
 			alliedAir.removeAll(carrying);
-			
+
 			mapping.put(carrier, carrying);
 		}
-		
+
 		return mapping;
 	}
-	
+
 	private Collection getCanCarry(Unit carrier, Collection selectFrom)
 	{
 		UnitAttatchment ua = UnitAttatchment.get(carrier.getUnitType());
 		Collection canCarry = new ArrayList();
-		
+
 		int available = ua.getCarrierCapacity();
 		Iterator iter = selectFrom.iterator();
 		while(iter.hasNext())
@@ -305,10 +305,10 @@ public class MoveDelegate implements Delegate
 		}
 		return canCarry;
 	}
-	
-	
 
-	
+
+
+
 	private StringMessage move(MoveMessage message, PlayerID id)
 	{
 		Route route = message.getRoute();
@@ -321,11 +321,11 @@ public class MoveDelegate implements Delegate
 		return moveUnits(units, route, id);
 	}
 
-	
+
 	private String validateMove(Collection units, Route route, PlayerID player)
 	{
 		String error;
-		
+
 		if(m_nonCombat)
 		{
 			error = validateNonCombat(units, route, player);
@@ -343,7 +343,7 @@ public class MoveDelegate implements Delegate
 		error = validateBasic(units, route, player);
 		if(error != null)
 			return error;
-		
+
 		error = validateAirCanLand(units, route, player);
 		if(error != null)
 			return error;
@@ -351,12 +351,12 @@ public class MoveDelegate implements Delegate
 		error = validateTransport(units, route, player);
 		if(error != null)
 			return error;
-		
+
 		error = validateCanal(units, route, player);
 		if(error != null)
 			return error;
 
-		
+
 		//dont let the user move out of a battle zone
 		//note that this restricts planes who may be able to fly away
 		if(DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle(route.getStart(), false))
@@ -368,27 +368,27 @@ public class MoveDelegate implements Delegate
 			if(! (unload  && attack ))
 				return "Cant move units out of battle zone";
 		}
-					
+
 		//make sure we can afford to pay neutral fees
 		int cost = getNeutralCharge(route);
 		int resources = player.getResources().getQuantity(Constants.IPCS);
 		if(cost + resources < 0)
 			return "Not enough money to pay for violating neutrality";
-		
+
 		//TODO
 		//special cases, suez and panama canal, can only move if both are owned
 		//make sure aircraft carriers dont move away
 		//if we are going through nuetral make sure we can pay
-		//make sure if an aircraft must retreat through a nuetral 
+		//make sure if an aircraft must retreat through a nuetral
 		//it can pay as well
 		return null;
 	}
 
-	
+
 	private String validateCanal(Collection units, Route route, PlayerID player)
 	{
 		Collection territories = route.getTerritories();
-		
+
 		//check suez canal
 		Territory eastMed = m_data.getMap().getTerritory("East Mediteranean Sea Zone");
 		Territory redSea = m_data.getMap().getTerritory("Red Sea Zone");
@@ -396,74 +396,68 @@ public class MoveDelegate implements Delegate
 		{
 			Territory egypt = m_data.getMap().getTerritory("Anglo Sudan Egypt");
 			Territory iraq = m_data.getMap().getTerritory("Syria Jordan");
-			
+
 			if(! m_data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
 			   ! m_data.getAllianceTracker().isAllied(player, iraq.getOwner()))
 				return "Must own egypt and syria to go through Suez Canal";
-			
+
 			BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
 			if(tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
 				return "Cannot move through canal without owning syria and iraq for  an entire turn.";
 
 		}
-		
+
 		//check panama canal
 		Territory carib = m_data.getMap().getTerritory("Carribean Sea Zone");
 		Territory westPan = m_data.getMap().getTerritory("West Panama Sea Zone");
 		if(territories.contains(carib) && territories.contains(westPan))
-		{	
+		{
 			Territory panama = m_data.getMap().getTerritory("Panama");
-			
+
 			if(! m_data.getAllianceTracker().isAllied(player, panama.getOwner()))
-			
+
 				return "Must own panama to go through Panama Canal";
 
 			BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
-			if(tracker.wasConquered(panama)) 
+			if(tracker.wasConquered(panama))
 				return "Cannot move through canal without owning panama an entire turn.";
 		}
-		
+
 		return null;
-		
+
 	}
-	
+
 	private String validateCombat(Collection units, Route route, PlayerID player)
 	{
 		if(Match.someMatch(units, Matches.UnitIsAA))
 			return "Cant move aa guns in combat movement phase";
 		return null;
 	}
-	
+
 	private String validateNonCombat(Collection units, Route route, PlayerID player)
-	{			
+	{
 		CompositeMatch battle = new CompositeMatchOr();
 		battle.add(Matches.territoryHasEnemyUnits(player, m_data));
 		battle.add(Matches.isTerritoryEnemy(player, m_data));
 		battle.add(Matches.TerritoryIsNuetral);
 
-		CompositeMatch foughtOver = new CompositeMatchAnd();
-		foughtOver.add(Matches.territoryWasFoughOver(DelegateFinder.battleDelegate(m_data).getBattleTracker()));
-		foughtOver.addInverse(Matches.TerritoryIsWater);
-
-		battle.add(foughtOver);
-		
 		if(Match.allMatch(units, Matches.UnitIsAir))
 		{
 			if(route.someMatch(Matches.TerritoryIsNuetral))
 				return "Air units cannot fly over neutral territories in non combat";
-			
+
 			if( battle.match(route.getEnd()))
-				return "Cant advance air units to battle zone in non combat";
+				return "Cant advance air units to battle in non combat";
 		}
 		else
 		{
 			if(route.someMatch(battle))
-				return "Cant advance units to battle zones in non combat";
+				return "Cant advance units to battle in non combat";
 		}
 		return null;
 	}
 
-	
+
 	private String validateBasic(Collection units, Route route, PlayerID player)
 	{
 		//make sure all units are actually in the start territory
@@ -471,11 +465,11 @@ public class MoveDelegate implements Delegate
 		{
 			return "Not enough units in starting territory";
 		}
-		
+
 		//make sure all units are at least friendly
 		if(!Match.allMatch(units, Matches.alliedUnit(m_player, m_data)))
 			return "Can only move friendly units";
-		
+
 		//check we have enough movement
 		//exclude transported units
 		Collection moveTest;
@@ -493,23 +487,23 @@ public class MoveDelegate implements Delegate
 		//check to see no enemy units on path
 		if(!MoveValidator.onlyAlliedUnitsOnPath(route, player, m_data))
 			if(! MoveValidator.isAir(units))
-				return "Non allied units on path";		
-		
+				return "Non allied units on path";
+
 		//if there is a nuetral in the middle must stop unless all are air
 		if(MoveValidator.hasNuetralBeforeEnd(route))
 		{
 			if(! MoveValidator.isAir(units))
 				return "Must stop land units when passing through nuetral territories";
 		}
-		
-		//check if we are blitzing 
+
+		//check if we are blitzing
 		//if we are blitzing check that all units are capable
 		if(MoveValidator.isBlitz(route, player, m_data))
 		{
 			if(!MoveValidator.canBlitz(Match.getMatches(units, Matches.UnitIsNotAir)))
 				return "Cannot blitz with non blitzing units";
-		} 
-		
+		}
+
 		//make sure no conquered territories on route
 		if(MoveValidator.hasConqueredNonBlitzedOnRoute(route, m_data))
 		{
@@ -517,7 +511,7 @@ public class MoveDelegate implements Delegate
 			if( !Match.allMatch(units, Matches.UnitIsAir))
 				return "Cannot move through newly captured territories";
 		}
-		
+
 		//make sure that no non sea non transportable no carriable units
 		//end at sea
 		if(route.getEnd().isWater())
@@ -535,24 +529,24 @@ public class MoveDelegate implements Delegate
 
 		//make sure that we dont send aa guns to attack
 		if(Match.someMatch(units, Matches.UnitIsAA))
-		{	
+		{
 			//TODO
-			//dont move if some were conquered			
+			//dont move if some were conquered
 			BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
-			
+
 			for(int i = 0; i < route.getLength(); i++)
 			{
 				Territory current = route.at(i);
-				if(! (current.isWater() || current.getOwner().equals(m_player) || 
+				if(! (current.isWater() || current.getOwner().equals(m_player) ||
 				   m_data.getAllianceTracker().isAllied(m_player, current.getOwner())))
-				   
+
 				   return "AA units cant advance to battle";
-				
+
 				if(tracker.wasConquered(current))
 					return "Cant move AA to newly conquered territories";
-			}	
+			}
 		}
-		
+
 		//only allow aa into a terland territory if one already present.
 		if(Match.someMatch(units, Matches.UnitIsAA) &&
 		   route.getEnd().getUnits().someMatch(Matches.UnitIsAA) &&
@@ -560,7 +554,7 @@ public class MoveDelegate implements Delegate
 		{
 			return "Only one AA gun allowed in a territroy";
 		}
-		
+
 		//only allow 1 aa to unload
 		if(route.getStart().isWater() &&
 		   !route.getEnd().isWater() &&
@@ -570,36 +564,36 @@ public class MoveDelegate implements Delegate
 		}
 		return null;
 	}
-	
+
 	private String validateAirCanLand(Collection units, Route route, PlayerID player)
-	{	
-		//TODO, 
-		//if they cant all land in one territory then 
-		//they an error will be returned, even 
+	{
+		//TODO,
+		//if they cant all land in one territory then
+		//they an error will be returned, even
 		//if they could land in multiple territories
-		
+
 		//make sure air units have enough movement to land
-		
+
 		if(!MoveValidator.hasAir(units))
 			return null;
-				
+
 		//could be a war zone, make sure we only look at
 		//friendly units that will be in the territory after
 		//the move
 		Collection friendly = MoveValidator.getFriendly(route.getEnd(), player, m_data);
 		friendly.addAll(units);
 		Collection friendlyAir = Match.getMatches(friendly, Matches.UnitIsAir);
-		
-		if( !MoveValidator.canLand(friendlyAir, route.getEnd(), player, m_data)) 
+
+		if( !MoveValidator.canLand(friendlyAir, route.getEnd(), player, m_data))
 		{
 			//get movement left of units that are moving
 			//not enough carrier capacity at end
 			Collection air = Match.getMatches(units, Matches.UnitIsAir);
 			int distance = MoveValidator.getLeastMovement(air, m_alreadyMoved);
 			distance = distance - route.getLength();
-			
+
 			Set neighbors = m_data.getMap().getNeighbors(route.getEnd(), distance);
-			
+
 			boolean canLand = false;
 			Iterator iter = neighbors.iterator();
 
@@ -621,12 +615,12 @@ public class MoveDelegate implements Delegate
 						canLand = true;
 				}
 			}
-			
+
 			//TODO - may be able to split air units up and land in different groups
-			//eg a bomber and a fighter move to a carrier. Bomber can land on 
+			//eg a bomber and a fighter move to a carrier. Bomber can land on
 			//carrier but has enough movment to make it to land,
-			//fighter can land, but does not have enough movement to 
-			//make it to land.  
+			//fighter can land, but does not have enough movement to
+			//make it to land.
 			//Both can land somewhere, but there is no place where all can land
 			if(!canLand)
 			{
@@ -636,16 +630,16 @@ public class MoveDelegate implements Delegate
 					return "There is no place where all the air units can land. You may be able to move these units in smaller groups.";
 			}
 		}
-		
-		
+
+
 		return null;
 	}
-	
+
 	private String validateTransport(Collection units, Route route, PlayerID player)
 	{
 		if(Match.allMatch(units, Matches.UnitIsAir))
 			return null;
-		
+
 		if(!MoveValidator.hasWater(route))
 			return null;
 
@@ -676,7 +670,7 @@ public class MoveDelegate implements Delegate
 			return "Must stop units at a transport on route";
 
 		if(route.getEnd().isWater() && route.getStart().isWater())
-		{	
+		{
 			//make sure units and transports stick together
 			Iterator iter = units.iterator();
 			while(iter.hasNext())
@@ -701,14 +695,14 @@ public class MoveDelegate implements Delegate
 						return "Unit must stay with its transport while moving";
 					}
 				}
-			}	
+			}
 		}//end if end is water
-		
+
 		if(MoveValidator.isLoad(route))
 		{
 			if(mapTransports(route, land) == null)
 				return "Not enough transports";
-		
+
 			if(route.getLength() != 1)
 				return "Units cannot move before loading onto transports";
 
@@ -724,22 +718,22 @@ public class MoveDelegate implements Delegate
 		return null;
 	}
 
-	
+
 	/**
 	 * We assume that the move is valid
 	 */
 	private StringMessage moveUnits(Collection units, Route route, PlayerID id)
-	{		
+	{
 		//mark movement
 		markMovement(units, route);
-	
+
 		Collection arrivingUnits = units;
 		if(!m_nonCombat)
 		{
 			Collection aaCasualties = fireAA(route, units);
 			arrivingUnits = Util.difference(units, aaCasualties);
 		}
-	
+
 		//if any non enemy territories on route
 		//or if any enemy units on route the
 		//battles on (note water could have enemy but its
@@ -747,18 +741,18 @@ public class MoveDelegate implements Delegate
 		CompositeMatch mustFightThrough = new CompositeMatchOr();
 		mustFightThrough.add(Matches.isTerritoryEnemy(id, m_data));
 		mustFightThrough.add(Matches.territoryHasEnemyUnits(id, m_data));
- 
+
 		if(route.someMatch(mustFightThrough ) && arrivingUnits.size() != 0)
 		{
 			boolean bombing = false;
 			//could it be a bombuing raid
 			boolean allCanBomb = Match.allMatch(units, Matches.UnitIsStrategicBomber);
-			
+
 			CompositeMatch enemyFactory = new CompositeMatchAnd();
 			enemyFactory.add(Matches.UnitIsFactory);
 			enemyFactory.add(Matches.enemyUnit(id, m_data));
 			boolean targetToBomb = route.getEnd().getUnits().someMatch(enemyFactory);
-			
+
 			if(allCanBomb && targetToBomb)
 			{
 				StrategicBombQuery query = new StrategicBombQuery(route.getEnd());
@@ -769,47 +763,47 @@ public class MoveDelegate implements Delegate
 				}
 				bombing = ((BooleanMessage) response).getBoolean();
 			}
-			
+
 			DelegateFinder.battleDelegate(m_data).getBattleTracker().addBattle(route, arrivingUnits, m_transportTracker, bombing, id, m_data, m_bridge);
 		}
-		
+
 		//note that this must be done after adding battles since the battles
 		//must be able to determine who transported who
-		
+
 		//TODO, put units in owned transports first
 		Map transporting = mapTransports(route, units);
 		markTransportsMovement(transporting, route);
-		
+
 		//actually move the units
 		Change remove = ChangeFactory.removeUnits(route.getStart(), units);
 		Change add = ChangeFactory.addUnits(route.getEnd(), arrivingUnits);
 		m_bridge.addChange(remove);
 		m_bridge.addChange(add);
-		
+
 		Collection moved = Util.intersection(units, arrivingUnits);
 		String transcriptText = Formatter.unitsToText(moved) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName();
-			
+
 		m_bridge.getTranscript().write(transcriptText);
-		
+
 		return new StringMessage("done");
 	}
-	
+
 	private Collection getBestNeutralEmptyCollection(Territory start, Territory end, int maxDistance)
 	{
 		//TODO fix this.  If there are two neutral territories
-		//on the route, we may be able to find 
-		//a route with only one, currently its either 
+		//on the route, we may be able to find
+		//a route with only one, currently its either
 		//take the obvious unless a perfect route
 		//with no neutrals can be found
-		
+
 		//get the obvious route
 		Route route = m_data.getMap().getRoute(start, end);
 		if(route.getLength() > maxDistance)
 			throw new IllegalStateException("No route short enough." + "route:" + route + " maxDistance:" + maxDistance);
-		
+
 		Collection neutral = getEmptyNeutral(route);
 		if(neutral.size() == 0)
-		{	
+		{
 			return neutral;
 		}
 
@@ -835,11 +829,11 @@ public class MoveDelegate implements Delegate
 	{
 		return numberOfTerritories * Constants.NEUTRAL_CHARGE;
 	}
-	
+
 	private boolean hasConqueredNonBlitzed(Route route)
 	{
 		BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
-		
+
 		for(int i = 0; i < route.getLength(); i++)
 		{
 			Territory current = route.at(i);
@@ -848,17 +842,17 @@ public class MoveDelegate implements Delegate
 		}
 		return false;
 	}
-	
-			
+
+
 	private Collection getEmptyNeutral(Route route)
 	{
 		Match emptyNeutral = new CompositeMatchAnd(Matches.TerritoryIsEmpty, Matches.TerritoryIsNuetral);
 		Collection neutral = route.getMatches(emptyNeutral);
 		return neutral;
 	}
-			
+
 	private void markMovement(Collection units, Route route)
-	{		
+	{
 		int moved = route.getLength();
 		Iterator iter = units.iterator();
 		while(iter.hasNext())
@@ -886,13 +880,13 @@ public class MoveDelegate implements Delegate
 	 */
 	private void markTransportsMovement(Map transporting, Route route)
 	{
-		
+
 		if(transporting == null)
 			return;
-		
+
 		if(MoveValidator.isUnload(route))
-		{	
-			
+		{
+
 			Collection units = new ArrayList();
 			units.addAll(transporting.values());
 			units.addAll(transporting.keySet());
@@ -902,7 +896,7 @@ public class MoveDelegate implements Delegate
 				Unit unit = (Unit) iter.next();
 				markNoMovement(unit);
 			}
-			
+
 			//unload the transports
 			Iterator unitIter = transporting.keySet().iterator();
 			while(unitIter.hasNext())
@@ -919,7 +913,7 @@ public class MoveDelegate implements Delegate
 			Iterator units = transporting.keySet().iterator();
 			while(units.hasNext())
 			{
-				
+
 				Unit load = (Unit) units.next();
 				Unit transport = (Unit) transporting.get(load);
 				m_transportTracker.load(load, transport);
@@ -936,23 +930,23 @@ public class MoveDelegate implements Delegate
 			markNoMovement(unit);
 		}
 	}
-	
+
 	private void markNoMovement(Unit unit)
 	{
 		UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 		m_alreadyMoved.put(unit, ua.getMovement(unit.getOwner()));
 	}
-	
+
 	/**
 	 * Called before the delegate will stop running.
 	 */
-	public void end() 
+	public void end()
 	{
 		if(m_nonCombat)
 			removeAirThatCantLand();
-	}	
-	
-	
+	}
+
+
 	/**
 	 * returns a map of unit -> transport.
 	 * returns null if no mapping can be done
@@ -965,19 +959,19 @@ public class MoveDelegate implements Delegate
 			return mapTransportsToLoad(units, route.getEnd().getUnits().getUnits());
 		if(MoveValidator.isUnload(route))
 			return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
-		return mapTransportsAlreadyLoaded(units, units);	
+		return mapTransportsAlreadyLoaded(units, units);
 	}
-	
-	/** 
+
+	/**
 	 * Returns a map of unit -> transport.
-	 * Unit must already be loaded in the transport, 
+	 * Unit must already be loaded in the transport,
 	 * if the unit is in a transport not in transports then
 	 * null will be returned.
 	 */
 	private Map mapTransportsAlreadyLoaded(Collection units, Collection transports)
 	{
-		
-		
+
+
 		Collection canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
 		Collection canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
 
@@ -990,19 +984,19 @@ public class MoveDelegate implements Delegate
 			//already being transported, make sure it is in transports
 			if(transport == null)
 				return null;
-			
+
 			if(! canTransport.contains(transport))
 					return null;
 			mapping.put(currentTransported, transport);
 		}
 		return mapping;
 	}
-		
+
 	/**
 	 * Returns a map of unit -> transport.
 	 * Tries to find transports to load all units.
 	 * If it cant suceed returns null.
-	 * 
+	 *
 	 */
 	private Map mapTransportsToLoad(Collection units, Collection transports)
 	{
@@ -1013,7 +1007,7 @@ public class MoveDelegate implements Delegate
 
 		Map mapping = new HashMap();
 		IntegerMap addedLoad = new IntegerMap();
-		
+
 		Iterator landIter = canBeTransported.iterator();
 		while(landIter.hasNext())
 		{
@@ -1021,7 +1015,7 @@ public class MoveDelegate implements Delegate
 			UnitAttatchment landUA = UnitAttatchment.get(land.getType());
 			int cost = landUA.getTransportCost();
 			boolean loaded = false;
-		
+
 			//check owned first
 			Iterator transportIter = ownedTransport.iterator();
 			while(transportIter.hasNext() && !loaded)
@@ -1056,23 +1050,23 @@ public class MoveDelegate implements Delegate
 		return mapping;
 	}
 
-	
+
 
 	public void sortAccordingToMovementLeft(List units, boolean ascending)
 	{
 		Collections.sort(units, ascending ? increasingMovement : decreasingMovement);
 	}
-	
+
 	private Comparator decreasingMovement = new Comparator()
 	{
 		public int compare(Object o1, Object o2)
 		{
 			Unit u1 = (Unit) o1;
 			Unit u2 = (Unit) o2;
-			
+
 			int left1 = MoveValidator.movementLeft(u1, m_alreadyMoved);
 			int left2 = MoveValidator.movementLeft(u2, m_alreadyMoved);
-			
+
 			if(left1 == left2)
 				return 0;
 			if(left1 > left2)
@@ -1080,7 +1074,7 @@ public class MoveDelegate implements Delegate
 			return -1;
 		}
 	};
-	
+
 	private Comparator increasingMovement = new Comparator()
 	{
 		public int compare(Object o1, Object o2)
@@ -1088,8 +1082,8 @@ public class MoveDelegate implements Delegate
 			//reverse the order, clever huh
 			return decreasingMovement.compare(o2,o1);
 		}
-	};	
-	
+	};
+
 	private Collection getTerritoriesWhereAirCantLand()
 	{
 		Collection cantLand = new ArrayList();
@@ -1108,9 +1102,9 @@ public class MoveDelegate implements Delegate
 		}
 		return cantLand;
 	}
-	
+
 	private void removeAirThatCantLand()
-	{		
+	{
 		Iterator territories = getTerritoriesWhereAirCantLand().iterator();
 		while(territories.hasNext())
 		{
@@ -1119,11 +1113,11 @@ public class MoveDelegate implements Delegate
 			ownedAir.add(Matches.UnitIsAir);
 			ownedAir.add(Matches.alliedUnit(m_player, m_data));
 			Collection air = current.getUnits().getMatches(ownedAir);
-			
+
 			removeAirThatCantLand(current, air);
 		}
 	}
-	
+
 	private void removeAirThatCantLand(Territory territory, Collection airUnits)
 	{
 		Collection toRemove = new ArrayList(airUnits.size());
@@ -1137,7 +1131,7 @@ public class MoveDelegate implements Delegate
 			//find the carrier capacity
 			Collection carriers = territory.getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
 			int capacity = MoveValidator.carrierCapacity(carriers);
-			
+
 			Iterator iter = airUnits.iterator();
 			while(iter.hasNext())
 			{
@@ -1150,17 +1144,17 @@ public class MoveDelegate implements Delegate
 					capacity -= cost;
 			}
 		}
-		
+
 		Change remove = ChangeFactory.removeUnits(territory, toRemove);
-		
-		
-		
+
+
+
 		m_bridge.addChange(remove);
-		
+
 		String transcriptText = Formatter.unitsToText(toRemove) + " could not land in " + territory.getName() + " and " + (toRemove.size() > 1 ? "were" : "was") +  " removed";
 		m_bridge.getTranscript().write(transcriptText);
 	}
-	
+
 	private IntegerMap getUnitTypeMap(Collection units)
 	{
 		IntegerMap map = new IntegerMap();
@@ -1172,8 +1166,8 @@ public class MoveDelegate implements Delegate
 		}
 		return map;
 	}
-	
-	
+
+
 	/**
 	 * Fire aa guns.  Returns units to remove.
 	 */
@@ -1181,47 +1175,47 @@ public class MoveDelegate implements Delegate
 	{
 		if(Match.noneMatch(units, Matches.UnitIsAir))
 			return Collections.EMPTY_LIST;
-		
+
 		List targets = Match.getMatches(units, Matches.UnitIsAir);
-		
+
 		//select units with lowest movement first
 		Collections.sort(targets, decreasingMovement);
 		Collection originalTargets = new ArrayList(targets);
-		
+
 		//dont iteratate over the end
 		//that will be a battle
-		//and handled else where in this tangled mess		
+		//and handled else where in this tangled mess
 		CompositeMatch hasAA = new CompositeMatchAnd();
 		hasAA.add(Matches.UnitIsAA);
 		hasAA.add(Matches.enemyUnit(m_player, m_data));
-		
+
 		for(int i = 0; i  < route.getLength() -1 ; i++)
 		{
 			Territory current = route.at(i);
-		
+
 			//aa guns in transports shouldnt be able to fire
 			if(current.getUnits().someMatch(hasAA) && !current.isWater())
 			{
 				fireAA(current, targets);
 			}
 		}
-		
+
 		//check start as well, prevent user from moving to and from aa sites one
 		//at a time
 		if( route.getStart().getUnits().someMatch(hasAA))
 			fireAA(route.getStart(), targets);
-		
+
 		return Util.difference(originalTargets, targets);
 	}
-	
-	/** 
-	 * Fire the aa units in the given territory, 
+
+	/**
+	 * Fire the aa units in the given territory,
 	 * hits are removed from units
 	 */
 	private void fireAA(Territory territory, Collection units)
 	{
 		int hitCount = BattleCalculator.getAAHits(units, m_bridge);
-		
+
 		if(hitCount == 0)
 		{
 			m_bridge.sendMessage( new StringMessage("No aa hits in " + territory.getName()));
@@ -1229,19 +1223,19 @@ public class MoveDelegate implements Delegate
 		else
 			selectCasualties(hitCount, units, territory);
 	}
-	
+
 	/**
-	 * hits are removed from units.  Note that units are removed in the 
+	 * hits are removed from units.  Note that units are removed in the
 	 * order that the iterator will move through them.
 	 */
 	private void selectCasualties(int hitCount, Collection units, Territory territory)
-	{	
+	{
 		String text = "Select " + hitCount + " casualties from aa fire in " + territory.getName();
-		
-		Collection casualties = BattleCalculator.selectCasualties(m_player, units, hitCount, m_bridge, text, m_data);		
+
+		Collection casualties = BattleCalculator.selectCasualties(m_player, units, hitCount, m_bridge, text, m_data);
 		units.removeAll(casualties);
 	}
-	
+
 	public TransportTracker getTransportTracker()
 	{
 		return m_transportTracker;
