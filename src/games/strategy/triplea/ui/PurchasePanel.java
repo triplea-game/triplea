@@ -30,6 +30,7 @@ import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
 
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.message.*;
 
 /**
@@ -132,6 +133,17 @@ public class PurchasePanel extends ActionPanel
     {
       synchronized(getLock())
       {
+        boolean hasPurchased = m_purchase.totalValues() != 0;
+        if(!hasPurchased)
+        {
+            int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "Are you sure you dont want to buy anything?", "End Pruchase", JOptionPane.YES_NO_OPTION);
+            if(rVal != JOptionPane.YES_OPTION)
+            {
+                return;
+            }
+        }
+        
+          
         getLock().notifyAll();
       }
     }
