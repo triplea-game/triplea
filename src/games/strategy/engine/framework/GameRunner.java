@@ -85,10 +85,10 @@ public class GameRunner
   private static void checkJavaVersion()
   {
      String strV = System.getProperties().getProperty("java.version");
-     int v14 = strV.indexOf("1.4");
-     int v15 = strV.indexOf("1.5");
+     boolean v14 = strV.indexOf("1.4") != -1;
+     boolean v15 = strV.indexOf("1.5") != -1;
 
-     if(v14 == -1 && v15 == -1) {
+     if(v14 && v15) {
           if(!isMac()) {
                JOptionPane.showMessageDialog(null, "You need java version 1.4.x\nPlease download a newer version of java from http://java.sun.com/", "ERROR", JOptionPane.ERROR_MESSAGE);
                System.exit( -1);
@@ -98,7 +98,7 @@ public class GameRunner
                System.exit( -1);
 	   }
       }
-      else if(v15 != -1) {
+      else if(v15) {
                JOptionPane.showMessageDialog(null, "Running TripleA with Java v1.5.x will cause instability\n with serialized classes (bug #1027674)\nYou will get errors when playing other who use a differnt version!!\nWe highly recomend using Java v1.4.x", "WARNING", JOptionPane.WARNING_MESSAGE);
       }
 
