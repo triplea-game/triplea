@@ -65,6 +65,7 @@ public class TripleAFrame extends JFrame
   private MapPanelSmallView m_smallView;
   private JLabel m_message = new JLabel("No selection");
   private JLabel m_step = new JLabel("xxxxxx");
+  private JLabel m_round = new JLabel("xxxxxx");
   private ActionButtons m_actionButtons;
   //a set of TripleAPlayers
   private Set m_localPlayers;
@@ -133,8 +134,18 @@ public class TripleAFrame extends JFrame
     m_gameSouthPanel.setLayout(new BorderLayout());
     m_gameSouthPanel.add(m_message, BorderLayout.CENTER);
     m_message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    m_gameSouthPanel.add(m_step, BorderLayout.EAST);
+
+    JPanel stepPanel = new JPanel();
+    stepPanel.setLayout(new GridBagLayout());
+    stepPanel.add(m_step, new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
+    stepPanel.add(m_round, new GridBagConstraints(1,0,1,1,0,0,GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
+
     m_step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    m_round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    m_step.setHorizontalTextPosition( SwingConstants.LEADING);
+
+    m_gameSouthPanel.add(stepPanel, BorderLayout.EAST);
+
 
 
     m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
@@ -583,11 +594,12 @@ public class TripleAFrame extends JFrame
   {
 
     public void gameStepChanged(String stepName, String delegateName,
-                                PlayerID player, int round)
+                                PlayerID player, int round, String stepDisplayName)
     {
-        m_step.setText("Round: " + round + " ");
+       m_round.setText("Round:" + round + " ");
+        m_step.setText(stepDisplayName);
         if(player != null)
-            m_step.setIcon(new ImageIcon(FlagIconImageFactory.instance().getFlag(player)));
+            m_round.setIcon(new ImageIcon(FlagIconImageFactory.instance().getFlag(player)));
     }
   };
 

@@ -105,14 +105,14 @@ public class ClientGame implements IGame
     m_gameStepListeners.remove(listener);
   }
 
-  private void notifyGameStepChanged(String stepName, String delegateName, PlayerID id, int round)
+  private void notifyGameStepChanged(StepChangedMessage msg)
   {
 
     Iterator iter = m_gameStepListeners.iterator();
     while(iter.hasNext())
     {
       GameStepListener listener = (GameStepListener) iter.next();
-      listener.gameStepChanged(stepName, delegateName, id, round);
+      listener.gameStepChanged(msg.getStepName(), msg.getDelegateName(), msg.getPlayer(), msg.getRound(), msg.getDisplayName());
     }
   }
 
@@ -137,7 +137,7 @@ public class ClientGame implements IGame
         }
         m_data.getHistory().getHistoryWriter().startNextStep(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getDisplayName());
 
-        notifyGameStepChanged(stepChange.getStepName(), stepChange.getDelegateName(), stepChange.getPlayer(), stepChange.getRound());
+        notifyGameStepChanged(stepChange);
       }
       else if(msg instanceof ChangeMessage)
       {

@@ -73,7 +73,7 @@ public class DefaultPlayerBridge implements PlayerBridge
 
 	private GameStepListener m_gameStepListener = new GameStepListener()
 	{
-		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round)
+		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
 		{
 			m_currentStep = stepName;
 			m_currentDelegate = delegateName;

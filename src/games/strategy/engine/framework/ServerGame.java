@@ -290,7 +290,7 @@ public class ServerGame implements IGame
         while (iter.hasNext())
         {
             GameStepListener listener = (GameStepListener) iter.next();
-            listener.gameStepChanged(stepName, delegateName, id, m_data.getSequence().getRound());
+            listener.gameStepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), getCurrentStep().getDisplayName());
         }
 
         StepChangedMessage msg = new StepChangedMessage(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);
