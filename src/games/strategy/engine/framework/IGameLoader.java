@@ -30,6 +30,9 @@ import java.util.*;
  */
 public interface IGameLoader extends java.io.Serializable
 {
+    
+  public static final String CLIENT_PLAYER_TYPE = "Client";  
+    
   /**
    * Return an array of player types that can play on the server.
    * This array must not contain any entries that could play on the client.
@@ -39,16 +42,8 @@ public interface IGameLoader extends java.io.Serializable
   String[] getServerPlayerTypes();
 
   /**
-   * Return an array of player types that can play on the client.
-   * This array must not contain any entries that could play on the server.
-   *
-   * It is assumed that all players can play on either server or client.
-   */
-  String[] getClientPlayerTypes();
-
-  /**
    * Create the players.  Given a map of playerName -> type,
-   * where type is one of the Strings returned by a get*PlayerType() method.
+   * where type is one of the Strings returned by a getServerPlayerTypes() or IGameLoader.CLIENT_PLAYER_TYPE.
    *
    * @return a Set of GamePlayers
    */

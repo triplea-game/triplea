@@ -135,7 +135,7 @@ public class ClientStartup extends JPanel
     while(iter.hasNext())
     {
       String name = (String) iter.next();
-      m_playerRows.add(new PlayerRow(name, "Client"));
+      m_playerRows.add(new PlayerRow(name, IGameLoader.CLIENT_PLAYER_TYPE));
     }
   }
 
