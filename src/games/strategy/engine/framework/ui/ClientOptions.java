@@ -106,7 +106,7 @@ public class ClientOptions extends JFrame
 		Insets fieldSpacing = new Insets(3,5,0,7);
 		
 		GridBagConstraints labelConstraints = new GridBagConstraints();
-		labelConstraints.anchor = GridBagConstraints.WEST;
+		labelConstraints.anchor = GridBagConstraints.EAST;
 		labelConstraints.gridx = 0;
 		labelConstraints.insets = labelSpacing;
 		
@@ -121,8 +121,8 @@ public class ClientOptions extends JFrame
 		fields.setLayout(layout);
 		
 		JLabel nameLabel = new JLabel("Name:");
-		JLabel portLabel = new JLabel("Port:");
-		JLabel addressLabel = new JLabel("Address:");
+		JLabel portLabel = new JLabel("Server Port:");
+		JLabel addressLabel = new JLabel("Server Address:");
 		
 		layout.setConstraints(portLabel, labelConstraints);
 		layout.setConstraints(nameLabel, labelConstraints);
