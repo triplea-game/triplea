@@ -132,18 +132,27 @@ public class GameDataManager
     }
 
     public void saveGame(OutputStream sink, GameData data, boolean saveDelegateInfo) throws IOException
-    {
+    {        
         //write internally first in case of error
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
         ObjectOutputStream outStream = new ObjectOutputStream(bytes);
 
         outStream.writeObject(games.strategy.engine.EngineVersion.VERSION);
-        outStream.writeObject(data);
-        if (saveDelegateInfo)
-            writeDelegates(data, outStream);
-        else
-            outStream.writeObject(DELEGATE_LIST_END);
-
+        data.acquireChangeLock();
+        try
+        {
+            outStream.writeObject(data);
+                
+	        if (saveDelegateInfo)
+	            writeDelegates(data, outStream);
+	        else
+	            outStream.writeObject(DELEGATE_LIST_END);
+        }
+        finally
+        {
+            data.releaseChangeLock();
+        }
+        
         GZIPOutputStream zippedOut = new GZIPOutputStream(sink);
         //now write to file
         zippedOut.write(bytes.toByteArray());
