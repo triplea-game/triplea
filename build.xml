@@ -70,7 +70,7 @@
         <include name="**/*.html"/>
         <include name="**/*.png"/>
       </zipfileset>
-      <zipfileset dir="licence/" prefix="triplea_${triplea.version}/licence/">
+      <zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
         <include name="gpl.txt"/>
       </zipfileset>
       <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
@@ -122,7 +122,7 @@
         <include name="**/*.html"/>
         <include name="**/*.png"/>
       </zipfileset>
-      <zipfileset dir="licence/" prefix="triplea_${triplea.version}/licence/">
+      <zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
         <include name="gpl.txt"/>
       </zipfileset>
       <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
