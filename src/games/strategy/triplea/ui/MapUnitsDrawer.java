@@ -311,17 +311,19 @@ public class MapUnitsDrawer
         smallOffscreen.fill(oval);
     }
 
-  	private Object thread_lock = new Object();
-  	private static long latestQueudUpdate = 0;
+  	
+  	private static Long latestQueudUpdate = new Long(0);
     
   	class QueueUpdate implements Runnable
     {
-  	    long scheduledTime = System.currentTimeMillis();
+  	    private Object thread_lock = new Object();    
+  	    private long scheduledTime = System.currentTimeMillis();
+  	    
   	    QueueUpdate()
   	    {
   	        synchronized(thread_lock)
   	        {
-  	            latestQueudUpdate = scheduledTime;
+  	            latestQueudUpdate = new Long( scheduledTime);
   	        }
   	    }
   	    
@@ -332,14 +334,14 @@ public class MapUnitsDrawer
             synchronized (thread_lock)
             {
                 //if something comes after us, ignore
-                if(scheduledTime < latestQueudUpdate)
+                if(scheduledTime < latestQueudUpdate.longValue())
                     return;
                 
                 try
                 {
                     //hopefull we can merge changes together
                     //wait and give other changes a chace to happen
-                    thread_lock.wait(50);
+                    thread_lock.wait(60);
                 }
                 catch (InterruptedException ex)
                 { //not a big deal

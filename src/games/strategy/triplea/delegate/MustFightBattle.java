@@ -904,6 +904,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (bombard.size() > 0 && attacked.size() > 0)
             fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, canReturnFire, bridge, "Bombard");
         markBombardingSources();
+        
+        //these units cant move after bombarding
+        DelegateFinder.moveDelegate(m_data).markNoMovement(bombard);
+        
     }
 
     /**

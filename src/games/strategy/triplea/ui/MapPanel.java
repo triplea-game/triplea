@@ -95,29 +95,26 @@ public class MapPanel extends ImageScrollerLargeView
     {
         setRoute(route, null, null);
     }
-    	
+
     /**
      * Set the route, could be null.
      */
     public void setRoute(Route route, Point start, Point end)
     {
-        if(route == null)
+        if (route == null)
         {
             m_routeDescription = null;
             m_mapsUnitDrawer.queueUpdate();
         }
         RouteDescription newVal = new RouteDescription(route, start, end);
-        if(m_routeDescription != null && m_routeDescription.equals(newVal))
+        if (m_routeDescription != null && m_routeDescription.equals(newVal))
         {
             return;
         }
-        
-        
-        m_routeDescription = newVal; 
+
+        m_routeDescription = newVal;
         m_mapsUnitDrawer.queueUpdate();
-            
-        
-   
+
     }
 
     public void addMapSelectionListener(MapSelectionListener listener)
@@ -137,7 +134,7 @@ public class MapPanel extends ImageScrollerLargeView
 
         Iterator iter = m_mapSelectionListeners.iterator();
 
-        while(iter.hasNext())
+        while (iter.hasNext())
         {
             MapSelectionListener msl = (MapSelectionListener) iter.next();
             msl.territorySelected(t, me);
@@ -149,19 +146,19 @@ public class MapPanel extends ImageScrollerLargeView
 
         Iterator iter = m_mapSelectionListeners.iterator();
 
-        while(iter.hasNext())
+        while (iter.hasNext())
         {
             MapSelectionListener msl = (MapSelectionListener) iter.next();
             msl.mouseMoved(t, me);
         }
     }
-    
+
     private void notifyMouseEntered(Territory t)
     {
 
         Iterator iter = m_mapSelectionListeners.iterator();
 
-        while(iter.hasNext())
+        while (iter.hasNext())
         {
             MapSelectionListener msl = (MapSelectionListener) iter.next();
             msl.mouseEntered(t);
@@ -248,8 +245,7 @@ public class MapPanel extends ImageScrollerLargeView
                 m_currentTerritory = terr;
                 notifyMouseEntered(terr);
             }
-            
-            
+
             notifyMouseMoved(terr, e);
         }
     };
@@ -305,24 +301,23 @@ public class MapPanel extends ImageScrollerLargeView
             if (!(aChange instanceof UnitHitsChange))
                 return;
 
-            
-            Collection units  = ((UnitHitsChange) aChange).getUnits();
+            Collection units = ((UnitHitsChange) aChange).getUnits();
             Collection invalidatedTerritories = new ArrayList();
-            
+
             //find where the units whose hits have changed are
             Iterator iter = m_data.getMap().getTerritories().iterator();
             while (iter.hasNext())
             {
                 Territory territory = (Territory) iter.next();
-                if(territory.getUnits().size() == 0)
+                if (territory.getUnits().size() == 0)
                     continue;
-                
-                if( Util.someIntersect(units, territory.getUnits().getUnits() ))
+
+                if (Util.someIntersect(units, territory.getUnits().getUnits()))
                 {
                     invalidatedTerritories.add(territory);
                 }
             }
-            
+
             m_mapsUnitDrawer.queueUpdate(invalidatedTerritories);
         }
     };
@@ -393,54 +388,46 @@ public class MapPanel extends ImageScrollerLargeView
 
 class RouteDescription
 {
+
     private final Route m_route;
     private final Point m_start;
     private final Point m_end;
-    
+
     public RouteDescription(Route route, Point start, Point end)
     {
         m_route = route;
         m_start = start;
         m_end = end;
     }
-    
+
     public boolean equals(Object o)
     {
-        if(o == null)
+        if (o == null)
             return false;
-        if(o == this)
+        if (o == this)
             return true;
         RouteDescription other = (RouteDescription) o;
-        
-        if(m_start == null && other.m_start != null ||
-           other.m_start == null && m_start != null ||
-           (m_start != other.m_start && !m_start.equals(other.m_start)) )
+
+        if (m_start == null && other.m_start != null || other.m_start == null && m_start != null || (m_start != other.m_start && !m_start.equals(other.m_start)))
             return false;
-        
-         if(m_route == null && other.m_route != null ||
-                other.m_route == null && m_route != null ||     
-                (m_route != other.m_route && !m_route.equals(other.m_route)) )
-                 return false;
 
-         if(m_end == null && other.m_end != null ||
-                 other.m_end == null && m_end != null)
-                  return false;
+        if (m_route == null && other.m_route != null || other.m_route == null && m_route != null || (m_route != other.m_route && !m_route.equals(other.m_route)))
+            return false;
 
-         //we dont want to be updating for every small change,
-         //if the end points are close enough, they are close enough
-         int xDiff = m_end.x - other.m_end.x;
-         xDiff *= xDiff;
-         int yDiff = m_end.y - other.m_end.y;
-         yDiff *= yDiff;
-         int endDiff = (int) Math.sqrt(xDiff + yDiff);
-        
-         return endDiff < 15;
-         
+        if (m_end == null && other.m_end != null || other.m_end == null && m_end != null)
+            return false;
 
-        
+        //we dont want to be updating for every small change,
+        //if the end points are close enough, they are close enough
+        int xDiff = m_end.x - other.m_end.x;
+        xDiff *= xDiff;
+        int yDiff = m_end.y - other.m_end.y;
+        yDiff *= yDiff;
+        int endDiff = (int) Math.sqrt(xDiff + yDiff);
+
+        return endDiff < 6;
+
     }
-
-    
 
     public Route getRoute()
     {
@@ -451,12 +438,10 @@ class RouteDescription
     {
         return m_start;
     }
- 
+
     public Point getEnd()
     {
         return m_end;
     }
-    
-    
-    
+
 }

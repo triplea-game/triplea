@@ -47,7 +47,7 @@ interface Battle extends java.io.Serializable
 	public void fight(DelegateBridge bridge);
 
 	public void unitsLost(Battle battle, Collection units, DelegateBridge bridge);
-
+	
     /**
      *  This occurs when a move has been undone
      */

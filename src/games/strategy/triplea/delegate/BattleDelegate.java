@@ -149,10 +149,8 @@ public class BattleDelegate implements SaveableDelegate
      */
     private void setupSeaUnitsInSameSeaZoneBattles()
     {
-        
-        
         //we want to match all sea zones with our units and enemy units
-        CompositeMatch seaWithOwnAndEnemy = new CompositeMatchOr();
+        CompositeMatch seaWithOwnAndEnemy = new CompositeMatchAnd();
         seaWithOwnAndEnemy.add(Matches.TerritoryIsWater);
         seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(m_bridge.getPlayerID()));
         seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(m_bridge.getPlayerID(), m_data));
@@ -163,6 +161,7 @@ public class BattleDelegate implements SaveableDelegate
         while(territories.hasNext())
         {
             Territory territory = (Territory) territories.next();
+            
             List attackingUnits = territory.getUnits().getMatches(ownedUnit);
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
             Route route = new Route();
