@@ -24,28 +24,34 @@ import java.util.*;
 
 public class PlainRandomSource implements IRandomSource
 {
+
   /**
-   * Knowing the seed gives a player an advantage.
-   * Do something a little more clever than current time.
-   * which could potentially be guessed
+     Knowing the seed gives a player an advantage.
+     Do something a little more clever than current time.
+     which could potentially be guessed
+   
+     If the execution path is different before the first random
+     call is made then the object will have a somewhat random
+     adress in the virtual machine, especially if
+     a lot of ui and networking objects are created
+     in response to semi random mouse motion etc.
+     if the excecution is always the same then
+     this may vary depending on the vm
+   
    */
   public static long getSeed()
   {
-    //if the execution path is different before the first random
-    //call is made then the object will have a somewhat random
-    //adress in the virtual machine, especially if
-    //a lot of ui and networking objects are created
-    //in response to semi random mouse motion etc.
-    //if the excecution is always the same then
-    //this may vary depending on the vm
+    
     Object seedObj = new Object();
-    long seed = seedObj.hashCode(); //hash code is an int, 32 bits
-    //seed with current time as well
-    seed += System.currentTimeMillis();
+    long seed = seedObj.hashCode();     //hash code is an int, 32 bits
+
+    seed += System.currentTimeMillis(); //seed with current time as well
     return seed;
   }
 
-  private static Random s_random;
+
+  //private static Random s_random;
+    private static MersenneTwister s_random;
 
   public synchronized int[] getRandom(int max, int count, String annotation)
   {
@@ -57,13 +63,15 @@ public class PlainRandomSource implements IRandomSource
     return numbers;
   }
 
+
   public synchronized int getRandom(int max, String annotation)
   {
     if (s_random == null)
-      s_random = new Random(getSeed());
+      s_random = new MersenneTwister(getSeed());
     return s_random.nextInt(max);
 
   }
+  
   
   public static void main(String[] args)
   {

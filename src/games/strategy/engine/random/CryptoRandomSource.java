@@ -20,10 +20,11 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 
 /**
- *  A random source that generates numbers using a secure algorithm shared between two players.
-*
-*  Code originally contributed by Ben Giddings.
+   A random source that generates numbers using a secure algorithm shared between two players.
+
+   Code originally contributed by Ben Giddings.
  */
+ 
 public class CryptoRandomSource implements IRandomSource
 {
 
@@ -36,8 +37,8 @@ public class CryptoRandomSource implements IRandomSource
 
   public CryptoRandomSource(PlayerID dicePlayer1, PlayerID dicePlayer2, IMessageManager MessageManager)
   {
-    m_remotePlayer = dicePlayer1;
-    m_localPlayer = dicePlayer2;
+    m_remotePlayer   = dicePlayer1;
+    m_localPlayer    = dicePlayer2;
     m_messageManager = MessageManager;
   }
 
