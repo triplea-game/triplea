@@ -421,8 +421,19 @@ public class Matches
     comp.add(UnitIsAA);
     comp.add(enemyUnit(player, data));
     return comp;
-
   }
+
+  public static Match unitIsInTerritory(final Territory territory)
+  {
+      return new Match()
+      {
+          public boolean match(Object o)
+          {
+              return territory.getUnits().getUnits().contains(o);
+          }
+      };
+  }
+
 
 	public static Match isTerritoryEnemy(final PlayerID player, final GameData data)
 	{

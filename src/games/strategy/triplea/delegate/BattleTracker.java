@@ -414,8 +414,6 @@ public class BattleTracker implements java.io.Serializable
     }
     battle.addAttack(route, units);
 
-    //TODO check for bombing dependencies
-    //if we bomb and attack we want to make sure the bombing happens first
 
     //make amphibious assaults dependent on possible naval invasions
 

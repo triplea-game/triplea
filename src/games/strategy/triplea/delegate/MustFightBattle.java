@@ -245,6 +245,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
   public void fight(DelegateBridge bridge)
   {
+     removeAirNoLongerInTerritory();
+
     //it is possible that no attacking units are present, if so
     //end now
     if(m_attackingUnits.size() == 0)
@@ -287,6 +289,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     fightStart(bridge);
     fightLoop(bridge);
+  }
+
+  private void removeAirNoLongerInTerritory()
+  {
+      //remove any air units that were once in this attack, but have now moved out of the territory
+      //this is an ilegant way to handle this bug
+      CompositeMatch airNotInTerritory = new CompositeMatchAnd();
+      airNotInTerritory.add( new InverseMatch(Matches.unitIsInTerritory(m_territory)));
+      airNotInTerritory.getMatches( m_attackingUnits, Matches.UnitIsAir);
+
+      m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits,airNotInTerritory));
+
   }
 
   public List determineStepStrings(boolean showFirstRun)
