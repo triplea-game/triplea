@@ -87,18 +87,8 @@ public class RemoteRandom implements IRemoteRandom
         m_max = max;
         
         int[] localRandom = m_plainRandom.getRandom(max, count, annotation);
-        System.out.println("Generating random :" + Formatter.asDice(localRandom));
+       
         m_localVaultID = m_game.getVault().lock(CryptoRandomSource.intsToBytes(localRandom));
-        System.out.println(Formatter.asDice(  CryptoRandomSource.bytesToInts( CryptoRandomSource.intsToBytes(localRandom))));
-        try
-        {
-            System.out.println("vaulted random:" + Formatter.asDice( CryptoRandomSource.bytesToInts(m_game.getVault().get(m_localVaultID)) ));
-        } catch (NotUnlockedException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
         m_game.getVault().waitForID(remoteVaultID, 15000);
         
         return m_localVaultID;
@@ -130,8 +120,6 @@ public class RemoteRandom implements IRemoteRandom
             throw new IllegalStateException("Could not unlock numbers, cheating suspected");
         }
         int[] verifiedNumbers = CryptoRandomSource.xor(remoteNumbers, localNumbers, m_max);
-
-        System.out.println(m_localVaultID + " " + m_remoteVaultID);
         
         addVerifiedRandomNumber(new VerifiedRandomNumbers(m_annotation, verifiedNumbers));
         m_waitingForUnlock = false;

@@ -14,16 +14,12 @@
 
 package games.strategy.engine.random;
 
-import java.util.*;
-
-import games.strategy.engine.message.*;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.vault.NotUnlockedException;
 import games.strategy.engine.vault.Vault;
 import games.strategy.engine.vault.VaultID;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.triplea.formatter.Formatter;
 
 /**
  * A random source that generates numbers using a secure algorithm shared
@@ -46,24 +42,29 @@ public class CryptoRandomSource implements IRandomSource
 
         for (int i = 0; i < ints.length; i++)
         {
-            rVal[4 * i] = (byte) ints[i];
-            rVal[(4 * i) + 1] = (byte) (ints[i] >> 8);
-            rVal[(4 * i) + 2] = (byte) (ints[i] >> 16);
-            rVal[(4 * i) + 3] = (byte) (ints[i] >> 24);
+            rVal[4 * i] = (byte) (0x000000FF & ints[i]);
+            rVal[(4 * i) + 1] = (byte) ((0x000000FF & (ints[i] >> 8)));
+            rVal[(4 * i) + 2] = (byte) ((0x000000FF & (ints[i] >> 16)));
+            rVal[(4 * i) + 3] = (byte) ((0x000000FF & (ints[i] >> 24)));
         }
 
         return rVal;
     }
 
+    static int byteToIntUnsigned(byte val)
+    {
+        return ((int) val) & 0xff;  
+    }
+    
     public static int[] bytesToInts(byte[] bytes)
     {
         int[] rVal = new int[bytes.length / 4];
         for (int i = 0; i < rVal.length; i++)
         {
-            rVal[i] = bytes[i * 4] + 
-                     ((int) bytes[(4 * i) + 1] << 8) +
-                     ((int) bytes[(4 * i) + 2] << 16) +
-            	     ((int) bytes[(4 * i) + 3] << 24);
+            rVal[i] = byteToIntUnsigned(bytes[4*i]) +
+            		  (byteToIntUnsigned(bytes[4*i + 1]) << 8) +
+            		  (byteToIntUnsigned(bytes[4*i + 2]) << 16) +
+            		  (byteToIntUnsigned(bytes[4*i + 3]) << 24);
         }
 
         return rVal;
@@ -81,11 +82,6 @@ public class CryptoRandomSource implements IRandomSource
             rVal[i] = (val1[i] + val2[i]) % max;
         }
 
-        System.out.println("******");
-        System.out.println(Formatter.asDice(val1));
-        System.out.println(Formatter.asDice(val2));
-        System.out.println(Formatter.asDice(rVal));
-        
         return rVal;
 
     }
@@ -124,7 +120,7 @@ public class CryptoRandomSource implements IRandomSource
 
         //generate numbers locally, and put them in the vault
         int[] localRandom = m_plainRandom.getRandom(max, count, annotation);
-        System.out.println("Generating random :" + Formatter.asDice(localRandom));
+        
         VaultID localID = vault.lock(intsToBytes(localRandom));
 
         //ask the remote to generate numbers
