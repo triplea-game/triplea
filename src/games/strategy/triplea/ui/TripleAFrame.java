@@ -91,11 +91,12 @@ public class TripleAFrame extends JFrame
   public TripleAFrame(IGame game, Set players) throws IOException
   {
     super("TripleA");
-    TaskTimer total = new TaskTimer("Loading game");
-
-    TaskTimer loadFlags = new TaskTimer("Loading flag images");
+    
+    //TaskTimer total = new TaskTimer("Loading game");
+    //TaskTimer loadFlags = new TaskTimer("Loading flag images");
+    
     FlagIconImageFactory.instance().load(this);
-    loadFlags.done();
+    //loadFlags.done();
 
 
     setIconImage(GameRunner.getGameIcon(this));
@@ -115,7 +116,7 @@ public class TripleAFrame extends JFrame
 
     TerritoryData.getInstance().verify(m_data);
 
-    TaskTimer loadMaps = new TaskTimer("Loading maps");
+    //TaskTimer loadMaps = new TaskTimer("Loading maps");
     MapImage.getInstance().loadMaps(m_data);
 
     Image small = MapImage.getInstance().getSmallMapImage();
@@ -125,7 +126,7 @@ public class TripleAFrame extends JFrame
     m_mapPanel = new MapPanel(large,m_data, m_smallView);
     m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
 
-    loadMaps.done();
+    //loadMaps.done();
 
     //link the small and large images
     new ImageScrollControl(m_mapPanel, m_smallView);
@@ -188,7 +189,7 @@ public class TripleAFrame extends JFrame
     gameCenterPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
 
     m_gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
-    total.done();
+    //total.done();
 
     game.addGameStepListener(m_stepListener);
     updateStep();
