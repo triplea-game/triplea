@@ -501,7 +501,7 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
         Collection factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrFactory);
         DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().addOriginalOwner(factoryAndAA, m_player);
-
+        
         String transcriptText = Formatter.unitsToTextNoOwner(units) + " placed in " + placeMessage.getTo().getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);
         m_bridge.getHistoryWriter().setRenderingData(units);
@@ -513,8 +513,6 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
         change.add(remove);
         change.add(place);
 
-        m_bridge.addChange(change);
-        m_placements.add(new UndoPlace(m_data, this, change));
 
         Territory producer = getProducer(placeMessage.getTo(), player);
         Collection produced = new ArrayList();
@@ -523,7 +521,85 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
         m_produced.put(producer, produced);
 
+        //can we move planes to land there 
+        moveAirOntoNewCarriers(placeMessage.getTo(), units, player, change);
+        m_bridge.addChange(change);
+        m_placements.add(new UndoPlace(m_data, this, change));
+
+        
         return new StringMessage("done");
+    }
+    
+    private void moveAirOntoNewCarriers(Territory territory, Collection units, PlayerID player, CompositeChange placeChange)
+    {
+        //not water, dont bother
+        if(!territory.isWater())
+            return;
+        //not enabled
+        if(!m_data.getProperties().get(Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false))
+            return;
+        if(Match.noneMatch(units, Matches.UnitIsCarrier))
+            return;
+        
+        //do we have any spare carrier capacity
+        int capacity = MoveValidator.carrierCapacity(units);
+        //subtract fighters that have already been produced with this carrier this turn.
+        capacity  -= MoveValidator.carrierCost(units);
+        if(capacity <= 0)
+            return;
+        
+        Collection neighbors = m_data.getMap().getNeighbors(territory, 1);
+        Iterator iter = neighbors.iterator();
+        CompositeMatch ownedFactories = new CompositeMatchAnd(Matches.UnitIsFactory, Matches.unitIsOwnedBy(player));
+        CompositeMatch ownedFighters = new CompositeMatchAnd(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
+        
+        while(iter.hasNext())
+        {
+            Territory neighbor = (Territory) iter.next();
+            if(neighbor.isWater())
+                continue;
+            //check to see if we have a factory, only fighters from territories that could
+            //have produced the carrier can move there
+            if(!neighbor.getUnits().someMatch(ownedFactories))
+                continue;
+            //are there some fighers there that can be moved?
+            if(!neighbor.getUnits().someMatch(ownedFighters))
+                continue;
+            if(wasConquered(neighbor))
+                continue;
+            if( Match.someMatch(getAlreadyProduced(neighbor) , Matches.UnitIsFactory ))
+               continue;
+            
+            List fighters = neighbor.getUnits().getMatches(ownedFighters);
+            while(fighters.size() > 0 && MoveValidator.carrierCost(fighters) > capacity)
+            {
+                fighters.remove(0);
+            }
+            
+            if(fighters.size() == 0)
+                continue;
+            
+            IntegerMessage response = (IntegerMessage) m_bridge.sendMessage(new MoveFightersToNewCarrierMessage(fighters.size(), territory));
+            if(response.getMessage() == 0)
+                continue;
+            
+            List movedFighters = fighters.subList(0, response.getMessage());
+            
+            
+            Change change = ChangeFactory.moveUnits(neighbor, territory, movedFighters);
+            placeChange.add(change);
+            m_bridge.getHistoryWriter().addChildToEvent(Formatter.unitsToTextNoOwner(movedFighters) + "  moved from " + neighbor.getName() + " to " + territory);
+            
+            
+            //only allow 1 movement
+            //technically only the territory that produced the 
+            //carrier should be able to move fighters to the new 
+            //territory
+            break;
+        }
+        
+        
+        
     }
 
     /**

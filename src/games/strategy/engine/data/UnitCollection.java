@@ -273,9 +273,9 @@ public class UnitCollection extends GameDataComponent
 		return false;
 	}
 
-	public Collection getMatches(Match matcher)
+	public List getMatches(Match matcher)
 	{
-		Collection values = new ArrayList();
+		List values = new ArrayList();
 		Iterator iter = m_units.iterator();
 		while(iter.hasNext() )
 		{

@@ -832,5 +832,24 @@ public class TripleAFrame extends JFrame
       };
   };
 
+  public IntegerMessage moveFightersToCarrier(MoveFightersToNewCarrierMessage msg)
+  {
+      JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      
+      ScrollableTextField text = new ScrollableTextField(0, msg.getNumberOfFighters() );
+      text.setBorder(new EmptyBorder(8,8,8,8));
+      panel.add(text, BorderLayout.CENTER);
+      panel.add(new JLabel("How many fighters do you want to move from " + msg.getTerritory().getName() + " to new carrier?"), BorderLayout.NORTH);
+      
+      int choice = JOptionPane.showOptionDialog(this, panel, "Place fighters on new carrier?", JOptionPane.PLAIN_MESSAGE,   JOptionPane.OK_CANCEL_OPTION, null, new String[] {"OK", "Cancel"}, "OK" );
+      if(choice == 0)
+      {
+          return new IntegerMessage(text.getValue());
+      }
+      else 
+          return new IntegerMessage(0);
+  }
+  
 
 }

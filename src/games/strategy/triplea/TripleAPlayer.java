@@ -101,6 +101,10 @@ public class TripleAPlayer implements GamePlayer
     {
       return m_ui.battleStringMessage((BattleStringMessage) message);
     }
+    else if(message instanceof MoveFightersToNewCarrierMessage)
+    {
+        return m_ui.moveFightersToCarrier((MoveFightersToNewCarrierMessage) message);
+    }
     if(message instanceof BattleStartMessage)
     {
       m_ui.battleStartMessage((BattleStartMessage) message);
