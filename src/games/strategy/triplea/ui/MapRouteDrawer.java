@@ -26,7 +26,15 @@ import java.awt.geom.QuadCurve2D;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.ui.ImageScrollerLargeView;
+import java.util.*;
+import java.util.List;
+import java.awt.geom.*;
 
+/**
+ *   Draws a route on a map.
+ *   This code is really ugly, bad and it barely works.
+ *   It should be rewritten.
+ */
 
 public class MapRouteDrawer
 {
@@ -60,31 +68,52 @@ public class MapRouteDrawer
       if(m_route.getLength() > 1)
           nextPoint = TerritoryData.getInstance().getCenter( m_route.at(1));
 
+      int yOffset = view.getYOffset();
+      int xOffset = view.getXOffset();
+
+      List shapes = new ArrayList();
+
+
       for(int i = 0; i < m_route.getLength(); i++)
       {
           if(i < m_route.getLength())
           {
-              Ellipse2D oval = new Ellipse2D.Double(currentStart.x - 3 - view.getXOffset(),
-                  currentStart.y - view.getYOffset() - 3, 6, 6);
+              Ellipse2D oval = new Ellipse2D.Double(currentStart.x - 3 - xOffset,
+                  currentStart.y - yOffset - 3, 6, 6);
 
-
-
-              graphics.draw(oval);
+              shapes.add(oval);
           }
 
+          //correct for the map going over the edge
+          if (Math.abs(currentFinish.x - currentStart.x) > view.getImageWidth() / 2)
+          {
+            currentFinish = new Point(currentFinish);
+            if (currentFinish.x > currentStart.x)
+            {
+              currentFinish.x -= view.getImageWidth();
+            }
+            else
+            {
+              currentFinish.x += view.getImageWidth();
+            }
+          }
+
+
+
+
           if (nextPoint != null)
-              drawCurvedLineWithNextPoint(graphics, currentStart.x - view.getXOffset(),
-                                          currentStart.y - view.getYOffset(), currentFinish.x - view.getXOffset(),
-                                          currentFinish.y - view.getYOffset(), nextPoint.x - view.getXOffset(),
-                                          nextPoint.y - view.getYOffset());
+              drawCurvedLineWithNextPoint(graphics, currentStart.x - xOffset,
+                                          currentStart.y - yOffset, currentFinish.x - xOffset,
+                                          currentFinish.y - yOffset, nextPoint.x - xOffset,
+                                          nextPoint.y - yOffset, shapes);
 //        else if (previousPoint != null)
 //            drawCurvedLineWithNextPoint(graphics, currentFinish.x,
 //                                        currentFinish.y, currentStart.x,
 //                                        currentStart.y, previousPoint.x,
 //                                        previousPoint.y);
           else
-              drawLineSegment(graphics, currentStart.x - view.getXOffset(), currentStart.y - view.getYOffset(),
-                              currentFinish.x - view.getXOffset(), currentFinish.y - view.getYOffset());
+              drawLineSegment(graphics, currentStart.x - xOffset, currentStart.y - yOffset,
+                              currentFinish.x - xOffset, currentFinish.y - yOffset, shapes);
 
         previousPoint = currentStart;
         currentStart = currentFinish;
@@ -95,6 +124,52 @@ public class MapRouteDrawer
             nextPoint = null;
 
       }
+
+
+      for(int i = 0; i < shapes.size(); i ++)
+      {
+        Shape shape = (Shape) shapes.get(i);
+
+        drawWithTranslate(graphics, shape, 0);
+        int translate = -view.getImageWidth();
+        drawWithTranslate(graphics, shape, translate);
+        drawWithTranslate(graphics, shape, -translate);
+      }
+
+    }
+
+    private static void drawWithTranslate(Graphics2D graphics, Shape shape, int translate)
+    {
+      if(shape instanceof Ellipse2D.Double)
+      {
+        Ellipse2D.Double elipse = (Ellipse2D.Double) shape;
+        elipse = new Ellipse2D.Double(elipse.x + translate, elipse.y, elipse.width, elipse.height);
+        graphics.draw(elipse);
+      }
+      if(shape instanceof Polygon)
+      {
+        ((Polygon) shape).translate(translate, 0);
+        graphics.fill(shape);
+        graphics.draw(shape);
+        ((Polygon) shape).translate(-translate, 0);
+      }
+      if(shape instanceof Line2D)
+      {
+         Line2D  line = (Line2D) shape;
+         Point2D p1 = new Point2D.Double( line.getP1().getX() + translate , line.getP1().getY());
+         Point2D p2 = new Point2D.Double( line.getP2().getX() + translate , line.getP2().getY());
+         graphics.draw(new Line2D.Double(p1,p2));
+      }
+      if(shape instanceof QuadCurve2D)
+      {
+        QuadCurve2D.Double curve = (QuadCurve2D.Double) shape;
+        curve = new QuadCurve2D.Double(curve.x1 + translate, curve.y1,
+                                       curve.ctrlx + translate, curve.ctrly ,
+                                       curve.x2 + translate, curve.y2
+                                       );
+        graphics.draw(curve);
+
+      }
     }
 
 
@@ -103,7 +178,7 @@ public class MapRouteDrawer
      * (xx, yy) - the point to draw too
      * (xxx, yyy) - the next point that the line segment will be drawn to
      */
-    private static void drawCurvedLineWithNextPoint(Graphics2D graphics, int x, int y, int xx, int yy, int xxx, int yyy)
+    private static void drawCurvedLineWithNextPoint(Graphics2D graphics, int x, int y, int xx, int yy, int xxx, int yyy, List shapes)
     {
         final int maxControlLength = 150;
         int controlDiffx = xx - xxx;
@@ -144,11 +219,11 @@ public class MapRouteDrawer
         int controly = yy + controlDiffy;
 
         QuadCurve2D.Double curve = new QuadCurve2D.Double(x,y,controlx, controly, xx,yy);
-        graphics.draw(curve);
+        shapes.add(curve);
     }
 
     //http://www.experts-exchange.com/Programming/Programming_Languages/Java/Q_20627343.html
-    private static void drawLineSegment( Graphics2D graphics, int x, int y, int xx, int yy)
+    private static void drawLineSegment( Graphics2D graphics, int x, int y, int xx, int yy, List shapes)
     {
       float arrowWidth = 12.0f ;
       float theta = 0.7f ;
@@ -189,9 +264,10 @@ public class MapRouteDrawer
 
       //draw an arrow
       Shape line = new Line2D.Double(x, y, (int) baseX, (int) baseY);
-      graphics.draw(line);
+      shapes.add(line);
 
-      graphics.fillPolygon(xPoints, yPoints, 3);
+      Polygon poly = new Polygon(xPoints, yPoints, 3);
+      shapes.add(poly);
     }
 
 }
