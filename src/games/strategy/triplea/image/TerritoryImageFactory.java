@@ -26,6 +26,7 @@ import games.strategy.ui.Util;
 //import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.*;
 import games.strategy.ui.*;
+import java.lang.ref.*;
 
 public final class TerritoryImageFactory
 {
@@ -38,9 +39,9 @@ public final class TerritoryImageFactory
   private HashMap m_playerColors = new HashMap();
   private HashMap m_baseTerritoryImages = new HashMap();
 
-  //this can get quite large, make it a weak hash map to
+  //this can get quite large, use soft references
   //allow reclaiming if the memory is needed
-  private WeakHashMap m_ownedTerritoryImages = new WeakHashMap();
+  private HashMap m_ownedTerritoryImages = new HashMap();
   private GraphicsConfiguration m_localGraphicSystem = null;
   private BufferedImage m_waterImage = null;
 
@@ -65,15 +66,14 @@ public final class TerritoryImageFactory
     // lookup via a composite key
     String key = place.getName() + " owned by " + owner.getName();
 
-    // look in the cache first
-    if (m_ownedTerritoryImages.containsKey(key))
-      terrImage = (BufferedImage) m_ownedTerritoryImages.get(key);
+    SoftReference ref = (SoftReference) m_ownedTerritoryImages.get(key);
+    if(ref != null)
+      terrImage = (BufferedImage) ref.get();
 
-    //its a weak hash map, so it may be empty
     if(terrImage == null)
     { // load it if not found
       terrImage = createTerritoryImage(place, owner);
-      m_ownedTerritoryImages.put(key, terrImage);
+      m_ownedTerritoryImages.put(key, new SoftReference(terrImage));
     }
 
     return terrImage;
