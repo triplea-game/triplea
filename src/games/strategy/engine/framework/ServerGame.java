@@ -28,6 +28,8 @@ import games.strategy.util.ListenerList;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
 import games.strategy.engine.delegate.*;
+import games.strategy.engine.display.*;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
@@ -46,6 +48,8 @@ import games.strategy.engine.vault.Vault;
  */
 public class ServerGame implements IGame
 {
+    public static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.ServerGame.DISPLAY_CHANNEL";
+    
     private ListenerList m_gameStepListeners = new ListenerList();
     private final GameData m_data;
 
@@ -89,6 +93,8 @@ public class ServerGame implements IGame
 
         m_channelMessenger.createChannel(IGameModifiedChannel.class, IGame.GAME_MODIFICATION_CHANNEL);
         m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+        
+        m_channelMessenger.createChannel(data.getGameLoader().getDisplayType(), DISPLAY_CHANNEL);
         
         
         setupLocalPlayers(localPlayers);
@@ -393,4 +399,23 @@ public class ServerGame implements IGame
         }
         
     };
+
+    /* 
+     * @see games.strategy.engine.framework.IGame#addDisplay(games.strategy.engine.display.IDisplay)
+     */
+    public void addDisplay(IDisplay display)
+    {
+       display.initialize(new DefaultDisplayBridge(m_data));
+       m_channelMessenger.registerChannelSubscriber(display, DISPLAY_CHANNEL);
+        
+        
+    }
+
+    /* 
+     * @see games.strategy.engine.framework.IGame#removeDisplay(games.strategy.engine.display.IDisplay)
+     */
+    public void removeDisplay(IDisplay display)
+    {
+        m_channelMessenger.unregisterChannelSubscriber(display, DISPLAY_CHANNEL);
+    }
 }

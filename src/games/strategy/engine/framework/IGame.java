@@ -26,6 +26,7 @@ import games.strategy.engine.message.IMessageManager;
 import games.strategy.net.*;
 import games.strategy.net.IMessenger;
 import games.strategy.engine.data.Change;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 
@@ -66,4 +67,15 @@ public interface IGame
   public void shutdown();
 
   public IRandomSource getRandomSource();
+
+  /**
+   * add a display that will recieve broadvasts from the IDelegateBridge.getDisplayBroadvaster
+   */
+  public void addDisplay(IDisplay display);
+  
+  
+  /**
+   * remove a display
+   */
+  public void removeDisplay(IDisplay display);
 }

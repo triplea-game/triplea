@@ -179,5 +179,13 @@ public class TestDelegateBridge implements IDelegateBridge
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
+     */
+    public IChannelSubscribor getDisplayChannelBroadcaster()
+    {
+        return null;
+    }
+
 
 }

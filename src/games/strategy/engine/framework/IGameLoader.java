@@ -54,5 +54,11 @@ public interface IGameLoader extends java.io.Serializable
    */
   public void startGame(IGame game, Set players);
   
+  /**
+   * Get the type of the display
+   * @return an interface that extends IChannelSubscrobor
+   */
+  public Class getDisplayType();
+  
 
 }

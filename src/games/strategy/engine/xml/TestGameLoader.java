@@ -10,6 +10,7 @@ import java.util.*;
 
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.IGame;
+import games.strategy.net.IChannelSubscribor;
 
 /**
  *
@@ -48,5 +49,15 @@ public class TestGameLoader implements IGameLoader
 	public Set createPlayers(Map players)
 	{
 		return null;
-	}	
+	}
+
+    /* 
+     * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
+     */
+    public Class getDisplayType()
+    {
+        return IChannelSubscribor.class;
+    }	
+	
+	
 }

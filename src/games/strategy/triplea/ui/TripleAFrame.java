@@ -55,7 +55,7 @@ import javax.swing.border.*;
  * 
  * Main frame for the triple a game
  */
-public class TripleAFrame extends JFrame
+public class TripleAFrame extends JFrame 
 {
     private final GameData m_data;
 
@@ -1225,5 +1225,7 @@ public class TripleAFrame extends JFrame
     {
         return m_actionButtons.getPurchasePanel();
     }
+
+    
     
 }

@@ -19,6 +19,7 @@ import games.strategy.engine.framework.*;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.message.Message;
 import games.strategy.engine.random.*;
+import games.strategy.net.*;
 import games.strategy.net.IRemote;
 
 /**
@@ -122,10 +123,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
         return m_step.getName();
     }
 
-    public void sendMessageNoResponse(Message message)
-    {
-        sendMessageNoResponse(message, getPlayerID());
-    }
+
 
     public void sendMessageNoResponse(Message message, PlayerID player)
     {
@@ -152,5 +150,13 @@ public class DefaultDelegateBridge implements IDelegateBridge
     {
         return m_game.getRemoteMessenger().getRemote(
                 ServerGame.getRemoteName(id));
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
+     */
+    public IChannelSubscribor getDisplayChannelBroadcaster()
+    {
+        return m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.DISPLAY_CHANNEL);
     }
 }

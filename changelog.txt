@@ -1,4 +1,28 @@
-Changes for 0.5.3
+Changes for 0.5.2
+
+* Added option to limit ipcs lost in a territory during one round. This is necessary to implement LHTR ruleset.
+
+* Fixed bug in Irony PBEM random source: It did not use the max parameter passed to the random methods. This fixes the 4th edition AA casualty selection problem in PBEM. (Ali Ibrahim)
+
+* Added new technology activation delegate to allow control of when technologies actually take effect. This is used to allow delay of technology activation in LHTR. (Ali Ibrahim)
+
+* Changed mouse behavior such that only the left button is used to select a territory to put units in. (Ali Ibrahim)
+
+* Added more options for unit size using submenu. (Ali Ibrahim)
+
+* Changed ordering of properties in the launcher properties tab to use ordering in game XML file. (Ali Ibrahim)
+
+* Added Map Skins code to allow multiple (1 and greater) map skins to be used for each game based on a directory search pattern. Skins must be in maps folder with game name as prefix (ie. revisedMySkin). (Beagle)
+
+* Changed how bombardment works. Now users pick where to bombard before any battles are resolved. This allows users not to bombard with a unit (for example if they wish to move it during non-combat) by picking "None". This also fixes the bug where a a unit could retreat from a battle and bombard in the same turn. It also allows user to divide their bombardment shots however they like when there are multiple bombardment targets. (Ali Ibrahim)
+
+* Fixed bug #1067768 concerning the border of seazone 27 and Belgian Congo. (Nekro)
+
+* Fixed bug #1067331 by removing the connection between seazone 51 and 56 for Pact of Steel mod. (Nekro)
+
+* Fixed bug #1067073 by removing the connection between seazone 15 and 16 for Pact of Steel mod. (Nekro)
+
+* Fixed bug #1043826 concerning missing sea zone border & missing pixles on border. (Nekro)
 
 * Added channel and remote messengers. (sgb)
 
@@ -30,31 +54,7 @@ Changes for 0.5.3
 
 * Fixed bug [ 1021351 ] No Buy Confirmation (sgb)
 
-Changes for 0.5.2
-
-* Added option to limit ipcs lost in a territory during one round. This is necessary to implement LHTR ruleset.
-
-* Fixed bug in Irony PBEM random source: It did not use the max parameter passed to the random methods. This fixes the 4th edition AA casualty selection problem in PBEM. (Ali Ibrahim)
-
-* Added new technology activation delegate to allow control of when technologies actually take effect. This is used to allow delay of technology activation in LHTR. (Ali Ibrahim)
-
-* Changed mouse behavior such that only the left button is used to select a territory to put units in. (Ali Ibrahim)
-
-* Added more options for unit size using submenu. (Ali Ibrahim)
-
-* Changed ordering of properties in the launcher properties tab to use ordering in game XML file. (Ali Ibrahim)
-
-* Added Map Skins code to allow multiple (1 and greater) map skins to be used for each game based on a directory search pattern. Skins must be in maps folder with game name as prefix (ie. revisedMySkin). (Beagle)
-
-* Changed how bombardment works. Now users pick where to bombard before any battles are resolved. This allows users not to bombard with a unit (for example if they wish to move it during non-combat) by picking "None". This also fixes the bug where a a unit could retreat from a battle and bombard in the same turn. It also allows user to divide their bombardment shots however they like when there are multiple bombardment targets. (Ali Ibrahim)
-
-* Fixed bug #1067768 concerning the border of seazone 27 and Belgian Congo. (Nekro)
-
-* Fixed bug #1067331 by removing the connection between seazone 51 and 56 for Pact of Steel mod. (Nekro)
-
-* Fixed bug #1067073 by removing the connection between seazone 15 and 16 for Pact of Steel mod. (Nekro)
-
-* Fixed bug #1043826 concerning missing sea zone border & missing pixles on border. (Nekro)
+* Add micro to Version, ie version can now be xx.xx.xx.xx
 
 Changes for 0.5.1
 

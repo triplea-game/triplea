@@ -22,6 +22,8 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
+import games.strategy.engine.display.*;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.message.IMessageManager;
@@ -253,5 +255,23 @@ public class ClientGame implements IGame
 	    return m_vault;
 	}
 
+    /* 
+     * @see games.strategy.engine.framework.IGame#addDisplay(games.strategy.engine.display.IDisplay)
+     */
+    public void addDisplay(IDisplay display)
+    {
+        display.initialize(new DefaultDisplayBridge(m_data));
+        m_channelMessenger.registerChannelSubscriber(display, ServerGame.DISPLAY_CHANNEL);
+        
+    }
 
+    /* 
+     * @see games.strategy.engine.framework.IGame#removeDisplay(games.strategy.engine.display.IDisplay)
+     */
+    public void removeDisplay(IDisplay display)
+    {
+        m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.DISPLAY_CHANNEL);
+    }
+	
+	
 }
