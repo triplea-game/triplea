@@ -1,0 +1,814 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./tripleaDesign_files/filelist.xml">
+<title>Design Goals</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Geoff Bridges</o:Author>
+  <o:LastAuthor>The Bridges Family</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>18</o:TotalTime>
+  <o:Created>2002-02-18T05:06:00Z</o:Created>
+  <o:LastSaved>2002-02-18T05:06:00Z</o:LastSaved>
+  <o:Pages>5</o:Pages>
+  <o:Words>1137</o:Words>
+  <o:Characters>6486</o:Characters>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:DoNotHyphenateCaps/>
+  <w:PunctuationKerning/>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.3in;
+	text-indent:-.3in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	mso-list:l1 level1 lfo3;
+	tab-stops:list .3in;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-font-kerning:16.0pt;}
+h2
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.4in;
+	text-indent:-.4in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	mso-list:l1 level2 lfo3;
+	tab-stops:list .4in;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h3
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.5in;
+	text-indent:-.5in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	mso-list:l1 level3 lfo3;
+	tab-stops:list .5in;
+	font-size:13.0pt;
+	font-family:Arial;}
+h4
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.6in;
+	text-indent:-.6in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:4;
+	mso-list:l1 level4 lfo3;
+	tab-stops:list .6in;
+	font-size:14.0pt;
+	font-family:"Times New Roman";}
+h5
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.7in;
+	text-indent:-.7in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:5;
+	mso-list:l1 level5 lfo3;
+	tab-stops:list .7in;
+	font-size:13.0pt;
+	font-family:"Times New Roman";
+	font-style:italic;}
+h6
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.8in;
+	text-indent:-.8in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:6;
+	mso-list:l1 level6 lfo3;
+	tab-stops:list .8in;
+	font-size:11.0pt;
+	font-family:"Times New Roman";}
+p.MsoHeading7, li.MsoHeading7, div.MsoHeading7
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:.9in;
+	text-indent:-.9in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:7;
+	mso-list:l1 level7 lfo3;
+	tab-stops:list .9in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoHeading8, li.MsoHeading8, div.MsoHeading8
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:1.0in;
+	text-indent:-1.0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:8;
+	mso-list:l1 level8 lfo3;
+	tab-stops:list 1.0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-style:italic;}
+p.MsoHeading9, li.MsoHeading9, div.MsoHeading9
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:1.1in;
+	text-indent:-1.1in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:9;
+	mso-list:l1 level9 lfo3;
+	tab-stops:list 1.1in;
+	font-size:11.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+code
+	{mso-ascii-font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:34811902;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-625072566 67698703 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:1.5in;
+	mso-level-number-position:right;
+	text-indent:-9.0pt;}
+@list l0:level4
+	{mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level5
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level6
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:3.0in;
+	mso-level-number-position:right;
+	text-indent:-9.0pt;}
+@list l0:level7
+	{mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level8
+	{mso-level-number-format:alpha-lower;
+	mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l0:level9
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:4.5in;
+	mso-level-number-position:right;
+	text-indent:-9.0pt;}
+@list l1
+	{mso-list-id:714933095;
+	mso-list-template-ids:67698725;}
+@list l1:level1
+	{mso-level-style-link:"Heading 1";
+	mso-level-text:%1;
+	mso-level-tab-stop:.3in;
+	mso-level-number-position:left;
+	margin-left:.3in;
+	text-indent:-.3in;}
+@list l1:level2
+	{mso-level-style-link:"Heading 2";
+	mso-level-text:"%1\.%2";
+	mso-level-tab-stop:.4in;
+	mso-level-number-position:left;
+	margin-left:.4in;
+	text-indent:-.4in;}
+@list l1:level3
+	{mso-level-style-link:"Heading 3";
+	mso-level-text:"%1\.%2\.%3";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	margin-left:.5in;
+	text-indent:-.5in;}
+@list l1:level4
+	{mso-level-style-link:"Heading 4";
+	mso-level-text:"%1\.%2\.%3\.%4";
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l1:level5
+	{mso-level-style-link:"Heading 5";
+	mso-level-text:"%1\.%2\.%3\.%4\.%5";
+	mso-level-tab-stop:.7in;
+	mso-level-number-position:left;
+	margin-left:.7in;
+	text-indent:-.7in;}
+@list l1:level6
+	{mso-level-style-link:"Heading 6";
+	mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
+	mso-level-tab-stop:.8in;
+	mso-level-number-position:left;
+	margin-left:.8in;
+	text-indent:-.8in;}
+@list l1:level7
+	{mso-level-style-link:"Heading 7";
+	mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
+	mso-level-tab-stop:.9in;
+	mso-level-number-position:left;
+	margin-left:.9in;
+	text-indent:-.9in;}
+@list l1:level8
+	{mso-level-style-link:"Heading 8";
+	mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-1.0in;}
+@list l1:level9
+	{mso-level-style-link:"Heading 9";
+	mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
+	mso-level-tab-stop:1.1in;
+	mso-level-number-position:left;
+	margin-left:1.1in;
+	text-indent:-1.1in;}
+@list l2
+	{mso-list-id:1202933414;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-310081308 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l2:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;
+	mso-bidi-font-family:"Times New Roman";}
+@list l2:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l2:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;
+	mso-bidi-font-family:"Times New Roman";}
+@list l2:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;
+	mso-bidi-font-family:"Times New Roman";}
+@list l2:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l2:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;
+	mso-bidi-font-family:"Times New Roman";}
+@list l2:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;
+	mso-bidi-font-family:"Times New Roman";}
+@list l2:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l2:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;
+	mso-bidi-font-family:"Times New Roman";}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1 align=center style='margin-left:0in;text-align:center;text-indent:0in;
+mso-list:none;tab-stops:.5in'>A brief overview of the TripleA Game Engine </h1>
+
+<h1 align=center style='margin-left:0in;text-align:center;text-indent:0in;
+mso-list:none;tab-stops:.5in'>for developers</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1><![if !supportLists]>1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Design Goals</h1>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:Arial;
+mso-font-kerning:16.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoNormal>The goal of the game engine is to provide a framework to
+build turn based strategy games.<span style="mso-spacerun: yes">  </span>The
+engine provides networking and data model support.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1><![if !supportLists]>2<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>The big picture</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The developer of a game using the TripleA engine must do
+three things.<span style="mso-spacerun: yes">  </span>Create a game.xml file
+describing the game, write Delegates to handle game logic (or reuse existing
+delegates), write GamePlayer classes that handle the user interaction (either
+human or automated).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The engine provides a parser to parse the game xml data,
+network transparent game data updates, and handles network communication
+between Delegates and GamePlayers.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1><![if !supportLists]>3<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Game Data</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Game data is read from an xml file that follows the game.dtd
+schema.<span style="mso-spacerun: yes">   </span>(in the
+data\games\strategy\engine\xml directory).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The game xml file specifies </p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Game
+     name and version</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Class
+     used to load the game</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Territory
+     names</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Connection
+     between territories</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Resource
+     types</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Players
+     and alliances</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Unit
+     types</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Production
+     rules</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Initial
+     unit placement, </li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Initial
+     territory ownership </li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Initial
+     resource allocation</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Attachments
+     (more later)</li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo1;tab-stops:list .5in'>Game
+     play sequence<span style="mso-spacerun: yes">  </span>(more later)</li>
+</ul>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>All the data above is parsed by the game, and can be
+accessed through the GameData object.<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2><![if !supportLists]>3.1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Attachments</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The xml file format must be general enough to describe the
+data for any turn based strategy game, yet specific enough to be able to
+describe a game completely. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The problem is that each game differs in the type of data
+that must be specified.<span style="mso-spacerun: yes">   </span>For example,
+some games may need to specify how many hits a unit can take before it dies,
+while other games don’t.<span style="mso-spacerun: yes">  </span>In order for
+the xml file to be flexible enough to handle all games the concept of an
+attachment is used.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>An attachment is a set of name:value pairs.<span
+style="mso-spacerun: yes">  </span>This set of name value pairs can be attached
+to unit types, players, territories, or resources.<span style="mso-spacerun:
+yes">  </span>An example of an attachment to the infantry unit type in axis and
+allies is,</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;attatchment
+name=&quot;unitAttatchment&quot; <o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><span
+style='mso-tab-count:1'>      </span>attatchTo=&quot;infantry&quot; <o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-left:.5in'><code><span style='font-size:10.0pt;
+font-family:"Courier New"'>javaClass=&quot;games.strategy.triplea.attatchments.UnitAttatchment&quot;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><span
+style='mso-tab-count:1'>      </span>type=&quot;unitType&quot;&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><span
+style='mso-tab-count:1'>      </span>&lt;option name=&quot;attack&quot;
+value=&quot;1&quot;/&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='text-indent:.5in'><code><span style='font-size:10.0pt;
+font-family:"Courier New"'>&lt;option name=&quot;defense&quot;
+value=&quot;2&quot;/&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;/attatchment&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This tells the xml parser to create an instance of
+UnitAttatchment, attach it to the infantry unit type, and initialize the
+attachment with an attack value of 1, and a defense value of 2.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The game parser uses the java bean syntax for setting the
+attatchment values.<span style="mso-spacerun: yes">  </span>If an attachment
+has an option name of code, then it will call setCode(value) to set the
+attachments value.<span style="mso-spacerun: yes">  </span>The setCode method
+will always use a string as its argument.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>After an attachment is created, the engine validates it by
+calling validate().<span style="mso-spacerun: yes">  </span>This allows the
+attachment to throw a GameParseException if it is initialized with an invalid
+state.<span style="mso-spacerun: yes">  </span>Throwing a game parse exception
+will stop the parser, and terminate the program.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Attachments can be found using the Attatchable.<code><span
+style='mso-ansi-font-size:12.0pt;mso-bidi-font-size:12.0pt;mso-ascii-font-family:
+"Times New Roman";mso-hansi-font-family:"Times New Roman"'><a
+href="file:///\\CR426776-A\TIGGER\Cs426776-anew%20computerseanjavatripleatripleaapidocgamesstrategyenginedataAttatchable.html#getAttatchment(java.lang.String)"><span
+style='color:windowtext'>getAttatchment</span></a>(String&nbsp;key)</span></code>,
+where key is the name of the attachment.<span style="mso-spacerun: yes"> 
+</span>In the above example key would be unitAttatchment.<span
+style="mso-spacerun: yes">  </span>Objects implementing the Attatchable
+interface are PlayerID, Resource, Territory, and UnitType.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2><![if !supportLists]>3.2<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Game Play Sequence</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Turn based strategy games generally go through a series of
+well defined steps.<span style="mso-spacerun: yes">  </span>In axis and allies,
+these steps are tech roll, purchase, combat move, battle, non combat move,
+place, collect resources.<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The logic for each step is encapsulated in a delegate.<span
+style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><![if !supportLists]>3.2.1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Delegate</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A delegate is the game logic for one step of the game.<span
+style="mso-spacerun: yes">  </span>In axis and allies there would be a delegate
+for movement, a delegate for purchase, a delegate for placing etc.<span
+style="mso-spacerun: yes">   </span>A delegate is responsible for validating
+player actions, and updating the game state to reflect player actions.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Ideally delegates would be independent of each other, and
+could be mixed and matched.<span style="mso-spacerun: yes">  </span>For example
+if a risk game and an axis and allies game were both implemented in using the
+TripleA framework, then you should be able to create a new game that combines
+the axis and allies battle logic with the movement logic of risk, simply by reusing
+the respective delegates.<span style="mso-spacerun: yes">  </span>Currently
+this flexibility is not available because there is a degree of interdependence
+between the delegates.<span style="mso-spacerun: yes">  </span>In tripleA, the
+battle delegate uses services supplied by the movement delegate, and vice
+versa.<span style="mso-spacerun: yes">  </span>Other dependencies exist as
+well.<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Delegates are restricted in what they are allowed to do. A
+delegate must talk to game players and get random data through its
+DelegateBridge.<span style="mso-spacerun: yes">  </span>Also a delegate cannot
+change the game data directly, but must use the ChangeFactory to create
+changes, and then add them through the Delegates DelegateBridge.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><![if !supportLists]>3.2.2<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Specifying game sequence</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In the game xml file you can specify the sequence of steps
+the game goes through in the gamePlay tag. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>As an example,</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;gamePlay&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-left:.5in'><code><span style='font-size:10.0pt;
+font-family:"Courier New"'>&lt;delegate name=&quot;battle&quot;
+javaClass=&quot;BattleDelegate&quot;/&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-left:.5in'><code><span style='font-size:10.0pt;
+font-family:"Courier New"'>&lt;delegate name=&quot;move&quot;
+javaClass=&quot;MoveDelegate&quot;/&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><span
+style='mso-tab-count:1'>      </span>&lt;sequence&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><span
+style='mso-tab-count:1'>      </span><span style='mso-tab-count:1'>      </span>&lt;step
+name=&quot;usMove&quot; delegate=&quot;move&quot; player=&quot;bush&quot;/&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><span
+style='mso-tab-count:1'>      </span><span style='mso-tab-count:1'>      </span>&lt;step
+name=&quot;usFight&quot; delegate=&quot;battle&quot;
+player=&quot;bush&quot;/&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><code><span
+style='font-size:10.0pt;font-family:"Courier New"'>&lt;step
+name=&quot;canMove&quot; delegate=&quot;move&quot;
+player=&quot;chretian&quot;/&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><span
+style='mso-tab-count:1'>      </span><span style='mso-tab-count:1'>      </span>&lt;step
+name=&quot;canFight&quot; delegate=&quot;battle&quot;
+player=&quot;chretian&quot;/&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><span
+style='mso-tab-count:1'>      </span>&lt;/sequence&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;/gamePlay&gt;<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This tells the engine that there are two delegates, battle
+and move, and that there are four steps, usMove, usFight, canMove, canFight,
+and that the game cycles through these 4 steps until the game ends.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><![if !supportLists]>3.2.3<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Step Life Cycle</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The following steps occur in sequencewhen a delegate runs</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo2;tab-stops:list .5in'>The
+     delegates start method is called.<span style="mso-spacerun: yes"> 
+     </span>This gives the delegate a copy of GameData and its DelegateBridge.</li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo2;tab-stops:list .5in'>If a
+     GamePlayer is specified in the game xml file for the step, then the
+     players start method is called.<span style="mso-spacerun: yes"> 
+     </span>The argument to start is the name of the step specified in the game
+     xml file.</li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo2;tab-stops:list .5in'>The
+     delegates end method is called.<span style="mso-spacerun: yes">  </span>Signifying
+     that the step is over.</li>
+</ol>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2><![if !supportLists]>3.3<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Changing Game Data</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>To preserve network transparency game data is not changed
+directly by the delegates.<span style="mso-spacerun: yes">  </span>All changes
+to game data are made by through the DelegateBridge.addChange(Change
+aChange).<span style="mso-spacerun: yes">  </span>This allows the game engine
+to synchronize changes in game data between machines. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The Change class encapsulates a change of game data.<span
+style="mso-spacerun: yes">  </span>Changes are created using the ChangeFactory
+class.<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>For example, a Delegate wanting to change the owner of a
+territory would use the following code,</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'>Change
+aChange = ChangeFactory.changeOwner(aTerritory, aPlayer);<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'>aDelegateBridge.perform(aChange);<o:p></o:p></span></code></p>
+
+<p class=MsoNormal><code><span style='font-size:10.0pt;font-family:"Courier New"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></code></p>
+
+<h1><![if !supportLists]>4<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Game Players</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A GamePlayer is responsible for making moves in a game.<span
+style="mso-spacerun: yes">  </span>A game player can be anything from a GUI to
+an AI to a PBEM interface.<span style="mso-spacerun: yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A GamePlayer sends messages to the current game delegate
+saying what moves the player would like to make.<span style="mso-spacerun:
+yes">  </span>The Delegate will then validate the move, and if the move is
+valid, alter the GameData.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1><![if !supportLists]>5<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Communication</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Communication between delegates and game players is done
+through a simple message passing scheme.<span style="mso-spacerun: yes"> 
+</span>A message is any object that implements the Message interface, which is
+simply an extension of Serializable.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A Delegate can send a message to any GamePlayer while it is
+executing (ie after its start method is called, and before its end method
+returns) and a GamePlayer can send a message to the Delegate that is currently
+running while the GamePlayer is after its start method is called and before its
+start method returns.</p>
+
+<h2><![if !supportLists]>5.1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Bridges</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Because delegates and game players may not be on the same
+machine, communication is done through Bridges.<span style="mso-spacerun:
+yes">  </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A delegate can send a message to a player through its
+delegateBridge using the sendMessage(..) functions.<span style="mso-spacerun:
+yes">  </span>A delegate can send a message to any GamePlayer.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A GamePlayer can only send a message to the games current
+delegate.<span style="mso-spacerun: yes">  </span>The message is sent using the
+GamePlayers PlayerBridge.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The game engine takes care of routing these messages across
+the network if necessary.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>
+

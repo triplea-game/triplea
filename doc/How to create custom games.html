@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Creating custom games</title>
+</head>
+<body>
+<h1>Creating your own game</h1>
+<br>
+The initial settings for each game are stored in a file that you can
+edit to create a new game.&nbsp; You can modify unit placement,
+territory ownership, number of players, alliance of players, turn
+order, strengths of units, and other factors.<br>
+<br>
+<h2>Editing the file</h2>
+Before you start make a copy of classic_a&amp;a.xml and rename it
+mygame.xml.&nbsp; You can modify this file without changing the way the
+game works normally.<br>
+<br>
+You can open the file in any text editor.&nbsp; On windows you can use
+Notepad.&nbsp; Simple start notepad, and then use the file-&gt; open
+menu.&nbsp; When you save the game, make sure that you save the game
+with the correct extension (.xml).&nbsp; When saving use file-&gt;save
+as, and before you save change the "Save as Type" to be "All Files".<br>
+<br>
+<h2>Sanity check<br>
+</h2>
+Many of the values you can modify make no sense, and may cause the game
+to become unstable while playing.&nbsp; It is possiible for instance to
+specify an attack value of 10 for an infantry unit, or to say that a
+nation has two capitals, or none.&nbsp; Needless to say this may cause
+the game to act in weird ways.&nbsp; This may be what you want, but be
+warned.<br>
+<br>
+<h2>Modifying unit placement</h2>
+Look in the file for the line,<br>
+<br>
+<code>&lt;unitInitialize&gt;</code><br>
+<br>
+After that line you will see a series of lines that look something like,<br>
+<code><br>
+&lt;unitPlacement unitType="infantry" territory="Alaska" quantity ="1"
+owner="Americans" /&gt;</code> <br>
+<br>
+This line simply says to place 1 infantry in Alaska owned by the
+americans.&nbsp; You can add, modify or delete lines to change where
+units are placed.&nbsp; Be sure to get the spelling of the players and
+the territories right.<br>
+<br>
+<h2>Modifying territory ownership</h2>
+Look in the file for the line,<br>
+<br>
+<code>&lt;ownerInitialize&gt;</code><br>
+<br>
+After this line you will see a series of lines like <br>
+<br>
+<code>&lt;territoryOwner territory="Alaska" owner = "Americans" /&gt;</code><br>
+<br>
+You can modify these lines to change the starting ownership of each
+country.&nbsp; If you want a country to be neutral then remove the line
+for that territory.&nbsp; If a country is neutral, add a new line to
+set it's ownership/<br>
+<br>
+<h2>Changing player alliances</h2>
+Look in the file for the line,<br>
+<br>
+<code>&lt;playerList&gt;</code><br>
+<br>
+You will see a&nbsp; series of lines like,<br>
+<br>
+<code>&lt;alliance player="Germans" alliance="Axis"/&gt;</code><br>
+<br>
+To switch the german player to be allied, you would simply change this
+line to be <br>
+<br>
+<code>&lt;alliance player="Germans" alliance="Allies"/&gt;</code><br>
+<br>
+<h2>Changing unit strengths</h2>
+To change the attack, defense or movement points of a unit look for a
+line that looks like<br>
+<br>
+<code>&lt;attatchmentList&gt;</code><br>
+<br>
+Beneath that you will see a series of lines like<br>
+<br>
+<code>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;attatchment
+name="unitAttatchment" <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;attatchTo="infantry"<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;javaClass="games.strategy.triplea.attatchments.UnitAttatchment"<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;type="unitType"&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&lt;option name="movement" value="1"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&lt;option name="transportCost" value="1"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&lt;option name="attack" value="1"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&lt;option name="defense" value="2"/&gt;<br>
+<br>
+</code>You can modify these lines to change the attack, defence and
+movement of an infantry.&nbsp; You can make similiar adjustments for
+the other unit types.<br>
+<br>
+<h2>Changing territory production<br>
+</h2>
+To change the production value of the Caucus, look for a line that
+looks like<br>
+<br>
+<code>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;attatchment
+name="territoryAttatchment"&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+attatchTo="Caucaus"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment"
+type="territory" &gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">&lt;option name="production" value="3" /&gt;</span><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/attatchment&gt;<br>
+</code><br>
+By changing the line <br>
+<br>
+<code>&lt;option name="production" <span style="font-weight: bold;">value="3"</span>
+/&gt;<br>
+<br>
+</code>to <code><br>
+<br>
+</code><code>&lt;option name="production" <span
+ style="font-weight: bold;">value="10"</span> /&gt;<br>
+<br>
+</code>You will change the production of the caucus to 10.<code><br>
+</code><br>
+<br>
+<h2>Changing capital placement</h2>
+You can change the location of the capitals for each player by moving a
+line.&nbsp; The capital for the us is specified in the capital setting
+below<br>
+<br>
+<code>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;attatchment
+name="territoryAttatchment"&nbsp; attatchTo="East US"
+javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment"
+type="territory" &gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;option
+name="production" value="12" /&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;option
+name="originalFactory" value="true" /&gt;<br>
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;option name="capital" value="Americans" /&gt;</span><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/attatchment&gt;<br>
+</code><br>
+By moving this line to another territory, you will change the capital
+of the US to a different state.<br>
+<br>
+<h2>Changing turn sequence</h2>
+You can change the sequence of who moves when.<br>
+<br>
+If you look for the line<br>
+<code><br>
+&lt;sequence&gt;</code><br>
+<br>
+Below that are a series of lines like <br>
+<br>
+<code>&lt;step name="russianTech" delegate="tech" player="Russians"/&gt;<br>
+<br>
+</code>The game will run the steps in the order listed.&nbsp; To make
+the Russians move after the japanese, simply move all the russian step
+lines after the japanese step lines.<br>
+<br>
+<br>
+<h2><code></code>And much more</h2>
+<br>
+You can write code to change the behaviour of the game in ways that the
+author never intended.&nbsp; There is a brief&nbsp; <a
+ href="http://sourceforge.net/docman/display_doc.php?docid=9602&amp;group_id=44492">document</a>
+that outlines the design of the engine.&nbsp; The source code is
+released under the gpl, and you are free to download it and modify it
+as long as you follow the terms of the gpl.<br>
+<br>
+<h2><code></code></h2>
+<code></code>
+</body>
+</html>
+
