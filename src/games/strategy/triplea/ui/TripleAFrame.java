@@ -27,7 +27,6 @@ import java.util.*;
 import java.net.URL;
 import javax.swing.*;
 
-
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.*;
 import games.strategy.engine.framework.*;
@@ -37,14 +36,12 @@ import games.strategy.engine.transcript.*;
 
 import games.strategy.ui.*;
 import games.strategy.util.*;
+import games.strategy.net.*;
 
 import games.strategy.triplea.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.delegate.message.*;
-
-
-
 
 /**
  *
@@ -64,11 +61,11 @@ public class TripleAFrame extends JFrame
 	private Set m_localPlayers;
 
 	/** Creates new TripleAFrame */
-    public TripleAFrame(IGame game, Set players) throws IOException
+	public TripleAFrame(IGame game, Set players) throws IOException
 	{
-
 		super("TripleA");
-
+		
+		game.getMessenger().addErrorListener(m_messengerErrorListener);
 		
 		this.m_data = game.getData();
 		this.m_localPlayers = players;
@@ -99,8 +96,7 @@ public class TripleAFrame extends JFrame
 		Image large =  MapImage.getInstance().getLargeMapImage();
 		m_mapPanel = new MapPanel(large,m_data, m_smallView);
 		m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
-		
-		
+			
 		System.out.println(" done:" + (((double) System.currentTimeMillis() - now) / 1000.0) + "s");
 		
 		ImageScrollControl control = new ImageScrollControl(m_mapPanel, m_smallView);
@@ -128,7 +124,7 @@ public class TripleAFrame extends JFrame
 		mainPanel.add(rightHandSide, BorderLayout.EAST);
 		
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-    }
+	}
 
 	private void createMenuBar()
 	{
@@ -324,6 +320,21 @@ public class TripleAFrame extends JFrame
 				JOptionPane.showMessageDialog(TripleAFrame.this, msg.getMessage(), "Game Over", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
+	};
+	
+	private  IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
+	{
+		public void connectionLost(INode node, Exception reason, java.util.List unsent)
+		{
+			String message = "Connection lost to " + node.getName() + ". Game over.";
+			JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		public void messengerInvalid(IMessenger messenger, Exception reason, java.util.List unsent)
+		{
+			String message = "Network connection lost. Game over.";
+			JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE);
+		}			
 	};
 
 }
