@@ -51,6 +51,8 @@ public class MovePanel extends ActionPanel
   private List m_forced;
   private JLabel m_moveLabel = new JLabel();
 
+  private String[] m_currentMoves = null;
+
 
   /** Creates new MovePanel */
     public MovePanel(GameData data, MapPanel map)
@@ -70,17 +72,19 @@ public class MovePanel extends ActionPanel
     this.add(new JLabel("  "));
     this.add(m_moveLabel);
     this.add(new JButton(UNDO_MOVE_ACTION));
-
+    this.add(new JButton(SHOW_MOVES_ACTION));
 
     SwingUtilities.invokeLater(REFRESH);
   }
 
   private void updateMoveLabel()
   {
-    StringMessage moves = (StringMessage) m_bridge.sendMessage(new MoveCountRequestMessage());
-    int moveCount = Integer.parseInt(moves.getMessage() );
+    MoveCountReplyMessage moves = (MoveCountReplyMessage) m_bridge.sendMessage(new MoveCountRequestMessage());
+    int moveCount = moves.getMoveCount();
     m_moveLabel.setText("Moves:" + moveCount);
+    m_currentMoves = moves.getMoves();
     UNDO_MOVE_ACTION.setEnabled(moveCount != 0);
+    SHOW_MOVES_ACTION.setEnabled(moveCount != 0);
   }
 
   public MoveMessage waitForMove(PlayerBridge bridge)
@@ -290,6 +294,37 @@ public class MovePanel extends ActionPanel
     }
   }
 
+  private final Action SHOW_MOVES_ACTION = new AbstractAction("Show Moves...")
+  {
+    public void actionPerformed(ActionEvent e)
+    {
+
+      JEditorPane editorPane = new JEditorPane();
+      editorPane.setEditable(false);
+      editorPane.setContentType("text/html");
+
+      StringBuffer text = new StringBuffer();
+      for(int i =0; i < m_currentMoves.length; i++)
+      {
+        text.append("<b>");
+        text.append(i + 1);
+        text.append(")</b> ");
+        text.append(m_currentMoves[i]);
+        text.append(".<br>");
+      }
+      editorPane.setText(text.toString());
+
+      JScrollPane scroll = new JScrollPane(editorPane);
+      scroll.setPreferredSize(new Dimension(350,200));
+      scroll.setMaximumSize(new Dimension(350,200));
+
+      JOptionPane.showMessageDialog(MovePanel.this, scroll, "Moves Made", JOptionPane.PLAIN_MESSAGE);
+
+
+
+
+    }
+  };
 
   private final MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
   {

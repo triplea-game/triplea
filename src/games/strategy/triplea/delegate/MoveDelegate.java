@@ -191,9 +191,24 @@ public class MoveDelegate implements SaveableDelegate
     else if(aMessage instanceof UndoMoveMessage)
       return undoMove();
     else if (aMessage instanceof MoveCountRequestMessage)
-        return new StringMessage(m_movesToUndo.size() + "");
+        return getMoveCount();
     else
       throw new IllegalArgumentException("Move delegate received message of wrong type:" + aMessage);
+  }
+
+  private MoveCountReplyMessage getMoveCount()
+  {
+    String[] moves = new String[m_movesToUndo.size()];
+    int index = 0;
+
+    Iterator iter = m_movesToUndo.iterator();
+    while (iter.hasNext()) {
+      UndoableMove item = (UndoableMove)iter.next();
+      moves[index] = item.getDescription();
+      index++;
+    }
+    return new MoveCountReplyMessage(moves);
+
   }
 
   private StringMessage undoMove()
@@ -819,6 +834,8 @@ public class MoveDelegate implements SaveableDelegate
     Collection moved = Util.intersection(units, arrivingUnits);
     String transcriptText = Formatter.unitsToText(moved) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName();
 
+    m_currentMove.setDescription(Formatter.unitsToTextNoOwner(moved) + " moved from " + route.getStart().getName() + " to " +  route.getEnd().getName());
+
     m_bridge.getTranscript().write(transcriptText);
 
     return new StringMessage("done");
@@ -1355,6 +1372,7 @@ class UndoableMove implements Serializable
   byte[] m_data;  //the serialized state of the battle and move delegates
   private CompositeChange m_undoChange = new CompositeChange();
   private String m_reasonCantUndo;
+  private String m_description;
 
   public boolean getcanUndo()
   {
@@ -1374,6 +1392,16 @@ class UndoableMove implements Serializable
   public void addChange(Change aChange)
   {
     m_undoChange.add(aChange);
+  }
+
+  public String getDescription()
+  {
+    return m_description;
+  }
+
+  public void setDescription(String description)
+  {
+    m_description = description;
   }
 
   public UndoableMove(GameData data)
