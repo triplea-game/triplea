@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * TripleAFrame.java
  *
  * Created on November 5, 2001, 1:32 PM
@@ -19,12 +33,13 @@ import games.strategy.engine.message.*;
 import games.strategy.engine.gamePlayer.PlayerBridge;
 import games.strategy.engine.data.events.*;
 import games.strategy.ui.*;
+import games.strategy.engine.transcript.*;
+import games.strategy.engine.framework.*;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.delegate.message.*;
-
 
 /**
  *
@@ -42,11 +57,13 @@ public class TripleAFrame extends JFrame
 	private ActionButtons m_actionButtons;
 
 	/** Creates new TripleAFrame */
-    public TripleAFrame(GameData data, Set players) throws IOException
+    public TripleAFrame(IGame game, Set players) throws IOException
 	{
 		super("TripleA");
 		
-		this.m_data = data;
+		this.m_data = game.getData();
+		
+		game.getTranscript().addTranscriptListener(m_transcriptListener);
 		
 		this.addWindowListener(WINDOW_LISTENER);
 		
@@ -222,7 +239,7 @@ public class TripleAFrame extends JFrame
 	
 	public void notifyMessage(String message)
 	{
-		JOptionPane.showMessageDialog(this, message, "Message", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(this, message, message, JOptionPane.PLAIN_MESSAGE);
 	}
 
 	public boolean getOKToLetAirDie(String message)
@@ -236,15 +253,18 @@ public class TripleAFrame extends JFrame
 	
 	public boolean getOK(String message)
 	{
-		int choice = JOptionPane.showConfirmDialog(this, message, "", JOptionPane.OK_CANCEL_OPTION);
+		int choice = JOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION);
 		return choice == JOptionPane.OK_OPTION;
 	}
 	
 	public boolean getStrategicBombingRaid(StrategicBombQuery query)
 	{
 		String message = "Bomb in " + query.getLocation().getName();
-		int choice = JOptionPane.showConfirmDialog(this, message, "", JOptionPane.OK_CANCEL_OPTION);
-		return choice == JOptionPane.OK_OPTION;
+		String bomb = "Bomb";
+		String normal = "Attack";
+		String[] choices = {bomb, normal};
+		int choice = JOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, choices, bomb);
+		return choice == 0;
 	}
 	
 	public IntegerMessage getTechRolls(PlayerID id)
@@ -264,4 +284,16 @@ public class TripleAFrame extends JFrame
 		Territory selected = (Territory) list.getSelectedValue();
 		return new TerritoryMessage(selected);
 	}	
+
+	private ITranscriptListener m_transcriptListener = new ITranscriptListener()
+	{
+		public void messageRecieved(TranscriptMessage msg)
+		{
+			if(msg.getChannel() == TranscriptMessage.PRIORITY_CHANNEL)
+			{
+				JOptionPane.showMessageDialog(TripleAFrame.this, msg.getMessage(), "Game Over", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+	};
+
 }

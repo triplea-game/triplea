@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * StatPanel.java
  *
  * Created on January 6, 2002, 4:07 PM
@@ -27,7 +41,7 @@ public class StatPanel extends JPanel
 	private final GameData m_data;
 	private final StatsCalculator m_calc;
 	private JTextArea m_text;
-	private Collection m_playerStats = new ArrayList();
+	private java.util.List m_playerStats = new ArrayList();
 	
 	/** Creates a new instance of InfoPanel */
     public StatPanel(GameData data) 
@@ -57,6 +71,8 @@ public class StatPanel extends JPanel
 		{
 			m_playerStats.add( new PlayerStats( (PlayerID) iter.next(), m_calc));
 		}
+
+		Collections.sort(m_playerStats);
 	}
 	
 	private void updateStats()
@@ -79,7 +95,7 @@ public class StatPanel extends JPanel
 	};
 }
 
-class PlayerStats 
+class PlayerStats implements Comparable
 {
 	private PlayerID m_id;
 	private StatsCalculator m_calc;
@@ -89,26 +105,34 @@ class PlayerStats
 		m_id = id;
 		m_calc = calc;
 	}
+
+	public int compareTo(Object o)
+	{
+		if(!(o instanceof PlayerStats))
+			return -1;
+
+		return m_id.getName().compareTo( ((PlayerStats) o).m_id.getName());
+	}
 	
 	public String getStats()
 	{
 		StringBuffer buf = new StringBuffer();
 		buf.append(m_id.getName());
 		buf.append("\n");
-		buf.append("IPCS");
+		buf.append("   IPCS: ");
 		buf.append(String.valueOf( m_calc.getIPCSinHand(m_id)));
 		buf.append("\n");
-		buf.append("Production:");
+		buf.append("   Production: ");
 		buf.append(String.valueOf(m_calc.getProduction(m_id)));
 		buf.append("\n");
-		buf.append("Units:");
+		buf.append("   Units: ");
 		buf.append(String.valueOf(m_calc.getUnitsPlaced(m_id).totalValues() + m_calc.getUnitsNotPlaced(m_id).totalValues()));
 		buf.append("\n");
 		
 		String advances = m_calc.getAdvances(m_id);
 		if(advances != null)
 		{
-			buf.append("Tech advances:").append("\n");
+			buf.append("   Tech advances:").append("\n");
 			buf.append(advances);
 			buf.append("\n");
 		}
@@ -119,7 +143,7 @@ class PlayerStats
 	}	
 }
 
-class StatsCalculator 
+class StatsCalculator
 {
 	private final GameData m_data;
 	

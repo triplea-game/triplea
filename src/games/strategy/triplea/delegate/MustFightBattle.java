@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * Battle.java
  *
  * Created on November 15, 2001, 12:39 PM
@@ -34,7 +48,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	private List m_attackingUnits = new LinkedList();
 	private Collection m_attackingWaitingToDie = new ArrayList();
 	private Collection m_attackingNonCombatants;
-	private Collection m_attackingFrom = new ArrayList();
+	private Set m_attackingFrom = new HashSet();
 	private Collection m_amphibiousAttackFrom = new ArrayList();
 	private Collection m_defendingUnits = new LinkedList();
 	private Collection m_defendingWaitingToDie = new ArrayList();
@@ -212,8 +226,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		}
 	
 		//attacker fire
-		steps.add(ATTACKER_FIRES);
-		steps.add(DEFENDER_SELECT_CASUALTIES);
+		if(Match.someMatch(m_attackingUnits, Matches.UnitIsNotSub))
+		{
+			steps.add(ATTACKER_FIRES);
+			steps.add(DEFENDER_SELECT_CASUALTIES);
+		}
 		
 		//defender subs
 		if(m_territory.isWater())
@@ -224,9 +241,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
 				steps.add(ATTACKER_SELECT_SUB_CASUALTIES);
 			}
 		}
-		//defender fire
-		steps.add(DEFENDER_FIRES);
-		steps.add(ATTACKER_SELECT_CASUALTIES);
+		
+		if(Match.someMatch(m_defendingUnits, Matches.UnitIsNotSub))
+		{
+			//defender fire
+			steps.add(DEFENDER_FIRES);
+			steps.add(ATTACKER_SELECT_CASUALTIES);
+		}
 		
 		//remove casualties
 		steps.add(REMOVE_CASUALTIES);
@@ -290,8 +311,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 			return;
 		}
 		
+		attackerRetreatSubs(bridge);
+		defenderRetreatSubs(bridge);
 		attackerRetreat(bridge);
-		defenderRetreat(bridge);
 		
 		List steps = determineStepStrings(false);
 		bridge.sendMessage( new BattleStepMessage((String) steps.get(0), getBattleTitle(),  steps));
@@ -328,20 +350,29 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		
 		Collection possible = getAttackerRetreatTerritories();
 		
-		//retreat subs
-		if( Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
-			queryRetreat(false,true,bridge, m_attackingFrom);
-		//retreat all
 		if(!m_over)
 			queryRetreat(false,false,bridge, m_attackingFrom);
 	}
-		
-	private boolean canDefenderRetreatSubs()
+	
+	private void attackerRetreatSubs(DelegateBridge bridge)
 	{
-		return  getEmptyOrFriendlySeaNeighbors(m_defender).size() != 0;
+		if(!canAttackerRetreat())
+			return;
+		
+		Collection possible = getAttackerRetreatTerritories();
+		
+		//retreat subs
+		if( Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
+			queryRetreat(false,true,bridge, m_attackingFrom);
 	}
 	
-	private void defenderRetreat(DelegateBridge bridge)
+	
+	private boolean canDefenderRetreatSubs()
+	{
+		return getEmptyOrFriendlySeaNeighbors(m_defender).size() != 0;
+	}
+	
+	private void defenderRetreatSubs(DelegateBridge bridge)
 	{
 		if(!canDefenderRetreatSubs())
 			return;
@@ -453,10 +484,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	
 	private void defendNonSubs(DelegateBridge bridge)
 	{
+		if(m_attackingUnits.size() == 0)
+			return;
 		Collection units = new ArrayList(m_defendingUnits.size() + m_defendingWaitingToDie.size());
 		units.addAll(m_defendingUnits);
 		units.addAll(m_defendingWaitingToDie);
 		units = Match.getMatches(units, Matches.UnitIsNotSub);
+		
+		if(units.isEmpty() )
+			return;
+		
 		fire(ATTACKER_SELECT_CASUALTIES, units, m_attackingUnits, true, true, bridge, "Defenders fire, ");
 	}
 	
@@ -465,28 +502,31 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		if(m_defendingUnits.size() == 0)
 			return;
 		Collection units = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
+		
+		if(units.isEmpty())
+			return;
+		
 		fire(DEFENDER_SELECT_CASUALTIES,units, m_defendingUnits, false, true, bridge, "Attackers fire,");
 	}
 	
 	private void attackSubs(DelegateBridge bridge)
 	{
-		Collection attacker = Match.getMatches(m_attackingUnits, Matches.UnitIsSub);
-		if(attacker.isEmpty())
+		Collection firing = Match.getMatches(m_attackingUnits, Matches.UnitIsSub);
+		if(firing.isEmpty())
 			return;
 		Collection attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsNotAir);
-		fire(DEFENDER_SELECT_SUB_CASUALTIES, attacker, attacked, false, false, bridge, "Subs fire,");
+		fire(DEFENDER_SELECT_SUB_CASUALTIES, firing, attacked, false, false, bridge, "Subs fire,");
 	}
 
 	private void defendSubs(DelegateBridge bridge)
 	{
-		Collection attacker = Match.getMatches(m_defendingUnits, Matches.UnitIsSub);
-		if(attacker.isEmpty())
+		Collection firing = Match.getMatches(m_defendingUnits, Matches.UnitIsSub);
+		if(firing.isEmpty())
 			return;
 		Collection attacked = Match.getMatches(m_attackingUnits, Matches.UnitIsNotAir);
-		fire(ATTACKER_SELECT_SUB_CASUALTIES, attacker, attacked, true, true, bridge, "Subs defend, ");
+		fire(ATTACKER_SELECT_SUB_CASUALTIES, firing, attacked, true, true, bridge, "Subs defend, ");
 	}
 
-	
 	private Collection selectCasualties(String step, DelegateBridge bridge, Collection attackableUnits, int hitCount, boolean defender, String text)
 	{
 		if(hitCount == 0)
@@ -576,7 +616,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	
 	private void fireAAGuns(DelegateBridge bridge)
 	{
-		String step = AA_GUNS_FIRE;
+		String step = SELECT_AA_CASUALTIES;
 		if(!canFireAA())
 			return;
 		
@@ -645,7 +685,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		
 		String transcriptText = Formatter.unitsToText(units) + " lost in " + m_territory.getName();
 		bridge.getTranscript().write(transcriptText);
-		
 	}
 	
 	private void removeFromDependents(Collection units, DelegateBridge bridge)
@@ -732,6 +771,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 				lost.addAll(dependent);
 		}
 		if(lost.size() != 0)
+		{
+			m_attackingUnits.removeAll(lost);
 			remove(lost, bridge);
+		}
 	}		
 }

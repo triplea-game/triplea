@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * PurchasePanel.java
  *
  * Created on December 4, 2001, 7:00 PM
@@ -62,7 +76,7 @@ public class PurchasePanel extends ActionPanel
 	}
 
 	
-	private final AbstractAction PURCHASE_ACTION = new AbstractAction("buy")
+	private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
 	{
 		public void actionPerformed(ActionEvent e)
 		{
@@ -74,7 +88,7 @@ public class PurchasePanel extends ActionPanel
 		}
 	};
 
-	private Action DontBother = new AbstractAction("Dont Bother")
+	private Action DontBother = new AbstractAction("Done")
 	{
 		public void actionPerformed(ActionEvent event)
 		{

@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * PlacePanel.java
  *
  * Created on December 4, 2001, 7:45 PM
@@ -67,7 +81,7 @@ public class PlacePanel extends ActionPanel
 		return m_placeMessage;
 	}
 
-	private final AbstractAction DONE_PLACE_ACTION = new AbstractAction("done")
+	private final AbstractAction DONE_PLACE_ACTION = new AbstractAction("Done")
 	{
 		public void actionPerformed(ActionEvent e)
 		{
@@ -81,7 +95,7 @@ public class PlacePanel extends ActionPanel
 
 	private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
 	{
-		public void territorySelected(Territory territory) 
+		public void territorySelected(Territory territory, MouseEvent e) 
 		{
 			Collection units = getCurrentPlayer().getUnits().getUnits();
 			UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP);

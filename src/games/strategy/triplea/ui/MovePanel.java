@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * MovePanel.java
  *
  * Created on December 4, 2001, 6:59 PM
@@ -50,8 +64,8 @@ public class MovePanel extends ActionPanel
 		removeAll();
 		m_actionLabel.setText(id.getName() + " move");
 		add(m_actionLabel);
-		add(new JButton(DONE_MOVE_ACTION));
 		add(new JButton(CANCEL_MOVE_ACTION));
+		add(new JButton(DONE_MOVE_ACTION));
 		
 		SwingUtilities.invokeLater(REFRESH);	
 	}
@@ -99,7 +113,7 @@ public class MovePanel extends ActionPanel
 		return getMap();
 	}
 	
-	private final AbstractAction DONE_MOVE_ACTION = new AbstractAction("done")
+	private final AbstractAction DONE_MOVE_ACTION = new AbstractAction("Done")
 	{
 		public void actionPerformed(ActionEvent e)
 		{
@@ -111,7 +125,7 @@ public class MovePanel extends ActionPanel
 		}
 	};
 	
-	private final AbstractAction CANCEL_MOVE_ACTION = new AbstractAction("cancel")
+	private final AbstractAction CANCEL_MOVE_ACTION = new AbstractAction("Cancel")
 	{
 		public void actionPerformed(ActionEvent e)
 		{
@@ -301,6 +315,7 @@ public class MovePanel extends ActionPanel
 					m_firstSelectedTerritory = null;
 					m_forced = null;
 					updateRoute(null);
+					CANCEL_MOVE_ACTION.setEnabled(false);
 					return;
 				}
 				else
