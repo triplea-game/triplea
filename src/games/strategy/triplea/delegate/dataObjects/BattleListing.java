@@ -20,8 +20,8 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
-import java.util.*;
-import games.strategy.engine.message.Message;
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Sent by the battle delegate to the game player to indicate 
@@ -30,7 +30,7 @@ import games.strategy.engine.message.Message;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class BattleListing implements Message
+public class BattleListing implements Serializable
 {
 
 	private Collection m_battles;

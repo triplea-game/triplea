@@ -18,14 +18,11 @@ import java.io.Serializable;
  * All the info neccassary to describe a method call in one handy
  * serializable package.
  * 
- * Can be used both by MessageManager and Messenger.
  */
-public class RemoteMethodCall implements Serializable, Message
+public class RemoteMethodCall implements Serializable
 {
     private final String m_remoteName;
-
     private final String m_methodName;
-
     private final Object[] m_args;
 
     //stored as a String[] so we can be serialzed
@@ -72,7 +69,7 @@ public class RemoteMethodCall implements Serializable, Message
         return stringsToClasses(m_argTypes);
     }
 
-    private static Class[] stringsToClasses(String[] strings)
+    public static Class[] stringsToClasses(String[] strings)
     {
         Class[] rVal = new Class[strings.length];
         for (int i = 0; i < strings.length; i++)
@@ -114,7 +111,7 @@ public class RemoteMethodCall implements Serializable, Message
         return rVal;
     }
     
-    private static String[] classesToString(Class[] classes)
+    public static String[] classesToString(Class[] classes)
     {
         String[] rVal = new String[classes.length];
         for(int i = 0; i < classes.length; i++)
@@ -123,6 +120,4 @@ public class RemoteMethodCall implements Serializable, Message
         }
         return rVal;
     }
-
-    
 }

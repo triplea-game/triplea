@@ -21,6 +21,7 @@
 package games.strategy.net;
 
 import java.io.*;
+import java.rmi.dgc.VMID;
 
 /**
  *
@@ -36,27 +37,16 @@ public class GUID implements Externalizable
     //intern it to reduce memory consumption
     //by getting a reference to the interned string
     //when we deserialize
-    private static final String vm_prefix = new java.rmi.dgc.VMID().toString().intern();
+    private static final VMID vm_prefix = new java.rmi.dgc.VMID();
     
     //the local identifier
+    //this coupled with the unique vm prefix comprise
+    //our unique id
     private static int s_lastID = 0;
     
 	private int m_id;
-	private String m_prefix;
+	private VMID m_prefix;
 	
-	/**
-	 * Creates an id based on the given int. <br>
-	 * GUID's created in this way will be distinct from GUID's 
-	 * created with the default constructor. <br>
-	 * GUID's created in this way will be equivalent across
-	 * vm's.
-	 */
-	public GUID(int id) 
-	{
-		m_id = id;
-		m_prefix = "autoGen";
-	}
-
 	public GUID() 
 	{
 		synchronized(GUID.class)
@@ -65,7 +55,7 @@ public class GUID implements Externalizable
 		}
 		m_prefix = vm_prefix;
 		
-	}	
+	}
 	
 	public boolean equals(Object o)
 	{
@@ -75,6 +65,7 @@ public class GUID implements Externalizable
 			return false;
 		
 		GUID other = (GUID) o;
+
 		return other.m_prefix.equals(this.m_prefix) && this.m_id == other.m_id;
 	}
 	
@@ -87,20 +78,21 @@ public class GUID implements Externalizable
 	{
 		return "GUID:" + m_prefix + ":" + m_id;
 	}
-
 	
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         m_id = in.readInt();
-        m_prefix = ((String) in.readObject() ).intern();
+        m_prefix = (VMID) in.readObject() ;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeInt(m_id);
         out.writeObject(m_prefix);
-        
     }
-	
-	
+    
+    public static void main(String[] args)
+    {
+        System.out.println(new GUID().toString());
+    }
 }

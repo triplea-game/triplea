@@ -14,6 +14,7 @@
 
 package games.strategy.net;
 
+import games.strategy.engine.message.*;
 import games.strategy.engine.message.ChannelMessenger;
 
 import java.io.IOException;
@@ -40,12 +41,12 @@ public class ChannelMessengerTest extends TestCase
     
 	public void setUp() throws IOException
 	{
-        
+        SERVER_PORT++;
 		m_server = new ServerMessenger("Server", SERVER_PORT);
 		m_server.setAcceptNewConnections(true);
 		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
-		m_serverMessenger = new ChannelMessenger(m_server);
-		m_clientMessenger = new ChannelMessenger(m_client1);
+		m_serverMessenger = new ChannelMessenger( new UnifiedMessenger(m_server));
+		m_clientMessenger = new ChannelMessenger(new UnifiedMessenger(m_client1));
 		
 	}
 	
@@ -96,20 +97,9 @@ public class ChannelMessengerTest extends TestCase
 	    ChannelSubscribor subscribor1 = new ChannelSubscribor();
 	    m_serverMessenger.registerChannelSubscriber(subscribor1, "testRemote" );
 	    
-	    int waitCount = 0;
-	    while(waitCount < 10 &&  !m_clientMessenger.hasChannel("testRemote"))
-	    {   
-	        try
-            {
-                Thread.sleep(100);
-            } catch (InterruptedException e)
-            {
-                //like, whatever man
-                e.printStackTrace();
-            }   
-            waitCount++;
-	    }
-	    assertTrue(m_clientMessenger.hasChannel("testRemote"));
+	    
+	    assertHasChannel("testRemote", m_clientMessenger);
+	    assertTrue(m_clientMessenger.hasSubscribors("testRemote"));
 	    
 	    IChannelTest channelTest = (IChannelTest) m_clientMessenger.getChannelBroadcastor("testRemote");
 	    channelTest.testNoParams();
@@ -125,6 +115,79 @@ public class ChannelMessengerTest extends TestCase
 	    assertCallCountIs(subscribor1, 4);
 
 	    
+	}
+
+	/**
+     * @param channelName
+     */
+    private void assertHasSubscribor(String channelName, ChannelMessenger channel)
+    {
+        int waitCount = 0;
+	    while(waitCount < 10 &&  !channel.hasSubscribors(channelName))
+	    {   
+	        try
+            {
+                Thread.sleep(100);
+            } catch (InterruptedException e)
+            {
+                //like, whatever man
+                e.printStackTrace();
+            }   
+            waitCount++;
+	    }
+	    assertTrue(channel.hasSubscribors(channelName));
+	    
+    }
+	
+	/**
+     * @param channelName
+     */
+    private void assertHasChannel(String channelName, ChannelMessenger channel)
+    {
+        int waitCount = 0;
+	    while(waitCount < 10 &&  !channel.hasChannel(channelName))
+	    {   
+	        try
+            {
+                Thread.sleep(100);
+            } catch (InterruptedException e)
+            {
+                //like, whatever man
+                e.printStackTrace();
+            }   
+            waitCount++;
+	    }
+	    assertTrue(channel.hasChannel(channelName));
+	    
+    }
+
+    public void testMultipleChannels()
+	{
+	    m_serverMessenger.createChannel(IChannelTest.class, "testRemote");
+	    m_serverMessenger.createChannel(IChannelTest.class, "testRemote2");
+	    m_serverMessenger.createChannel(IChannelTest.class, "testRemote3");
+	    
+	    assertHasChannel("testRemote", m_clientMessenger);
+	    assertHasChannel("testRemote2", m_clientMessenger);
+	    assertHasChannel("testRemote3", m_clientMessenger);
+	   
+
+	    ChannelSubscribor subscribor2 = new ChannelSubscribor();
+	    m_clientMessenger.registerChannelSubscriber(subscribor2, "testRemote2");
+
+	    ChannelSubscribor subscribor3 = new ChannelSubscribor();
+	    m_clientMessenger.registerChannelSubscriber(subscribor3, "testRemote3");
+	    
+	    assertHasSubscribor("testRemote2",m_serverMessenger);
+	    assertHasSubscribor("testRemote3",m_serverMessenger);
+	    
+	    IChannelTest channelTest2 = (IChannelTest) m_serverMessenger.getChannelBroadcastor("testRemote2");
+	    channelTest2.testNoParams();
+	    assertCallCountIs(subscribor2, 1);
+
+	    IChannelTest channelTest3 = (IChannelTest) m_serverMessenger.getChannelBroadcastor("testRemote3");
+	    channelTest3.testNoParams();
+	    assertCallCountIs(subscribor3, 1);
 	}
 	
 	private void assertCallCountIs(ChannelSubscribor subscribor, int expected)
@@ -145,7 +208,28 @@ public class ChannelMessengerTest extends TestCase
 	    }
 	    assertEquals(expected, subscribor.getCallCount());
 	}
-    
+ 
+	   public void testInit() throws Exception
+	    {
+	        m_serverMessenger.createChannel(IChannelTest.class, "testInit");
+	        
+	       
+	        ClientMessenger client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
+	        try
+	        {
+	            ChannelMessenger client2Messenger = new ChannelMessenger(new UnifiedMessenger(client2));	            
+	            assert(client2Messenger.hasChannel("testInit"));
+
+	        }
+	        finally
+	        {
+	            client2.shutDown();
+	        }
+	        
+	        
+	    }
+	    
+	
 } 
 
 interface IChannelTest extends IChannelSubscribor
@@ -190,5 +274,5 @@ class ChannelSubscribor implements IChannelTest
         incrementCount();
     }
 
-    
+ 
 }

@@ -82,7 +82,7 @@ public class ServerGame implements IGame
         
         m_remoteMessenger = remoteMessenger;
         m_channelMessenger = channelMessenger;
-        m_vault = new Vault(m_channelMessenger);
+        m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
         
         m_remotePlayers = new HashMap(remotePlayerMapping);
 

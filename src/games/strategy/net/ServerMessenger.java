@@ -371,13 +371,7 @@ public class ServerMessenger implements IServerMessenger
     }
   };
 
- 
-  
-  public void waitForAllMessagsToBeProcessed()
-  {
-      Connection.s_threadPool.waitForAll();
-  }
-  
+
   public boolean isServer()
   {
       return true;

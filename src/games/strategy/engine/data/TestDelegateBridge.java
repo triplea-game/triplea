@@ -23,7 +23,6 @@ package games.strategy.engine.data;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.*;
-import games.strategy.engine.message.Message;
 import games.strategy.net.*;
 
 import java.util.Random;
@@ -54,7 +53,7 @@ public class TestDelegateBridge implements IDelegateBridge
         History history = new History(m_data);
         HistoryWriter historyWriter = new HistoryWriter(history);
         historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
-        m_historyWriter = new DelegateHistoryWriter(new ChannelMessenger( new DummyMessenger()));
+        m_historyWriter = new DelegateHistoryWriter(new ChannelMessenger( new UnifiedMessenger( new DummyMessenger())));
 
     }
 
@@ -109,39 +108,11 @@ public class TestDelegateBridge implements IDelegateBridge
     {
     }
 
-    /**
-     * Messages are sent to the current player
-     */
-    public void sendMessageNoResponse(Message message)
-    {
-    }
-
-    /**
-     * Messages are sent to the current player
-     */
-    public Message sendMessage(Message message)
-    {
-        return null;
-    }
-
     public void rollback()
     {
     }
 
-    /**
-     * Sends a message to the given player.
-     */
-    public void sendMessageNoResponse(Message message, PlayerID player)
-    {
-    }
 
-    /**
-     * Sends a message to the given player.
-     */
-    public Message sendMessage(Message message, PlayerID player)
-    {
-        return null;
-    }
 
     public void setStepName(String name)
     {

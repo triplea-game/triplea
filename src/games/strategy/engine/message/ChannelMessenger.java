@@ -14,16 +14,9 @@
 
 package games.strategy.engine.message;
 
-import java.io.Serializable;
-import java.lang.reflect.*;
-import java.lang.reflect.InvocationHandler;
-import java.util.*;
-import java.util.HashMap;
-
 import games.strategy.net.*;
-import games.strategy.net.IChannelMessenger;
-import games.strategy.net.IChannelSubscribor;
-import games.strategy.net.IMessenger;
+
+import java.lang.reflect.*;
 
 /**
  * Implementation of IChannelMessenger built on top of an IMessenger
@@ -32,24 +25,21 @@ import games.strategy.net.IMessenger;
  */
 public class ChannelMessenger implements IChannelMessenger
 {
-    //the messenger upon which we are built
-    private final IMessenger m_messenger;
-    //maps channelName as String -> Channel
-    private final Map m_channels = Collections.synchronizedMap(new HashMap());
+    UnifiedMessenger m_unifiedMessenger;
     
-    //modifications to m_channels should synchronize on this
-    private final Object m_mutex = new Object();
-    
-    public ChannelMessenger(IMessenger messenger)
+    public ChannelMessenger(UnifiedMessenger messenger)
     {
-        m_messenger = messenger;
-        m_messenger.addMessageListener(m_messageListener);
-        m_messenger.broadcast(new ChannelRequestInit());
+        m_unifiedMessenger = messenger;
+    }
+    
+    private static String getUnifiedName(String channelName)
+    {
+        return "C:" + channelName;
     }
     
     private void assertChannelExists(String channelName)
     {
-        if(!m_channels.containsKey(channelName))
+        if(!m_unifiedMessenger.isAwareOfEndPoint(getUnifiedName(channelName)))
             throw new IllegalStateException("No channel called " + channelName);
     }
     
@@ -61,67 +51,33 @@ public class ChannelMessenger implements IChannelMessenger
         //return an IChannelSubscribor  that knows how to call the methods correctly
         assertChannelExists(channelName);
      
-        Channel channel = (Channel) m_channels.get(channelName);
-        InvocationHandler ih = new ChannelProxyInvocationHandler(channel, m_messenger);
+        String unifiedName = getUnifiedName(channelName);
+        
+        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,unifiedName, true, false);
         
         IChannelSubscribor rVal = (IChannelSubscribor) Proxy.newProxyInstance(
                   Thread.currentThread().getContextClassLoader(), 
-                  new Class[] {channel.getChannelInterface()}, ih );
+                  m_unifiedMessenger.getTypes(unifiedName), ih );
         
         return rVal;
     }
-    
-//    /**
-//     * returns a channel broadcaster that will return only when all the recipients have processed the
-//     * received message. 
-//     */
-//    public IChannelSubscribor getBlockingChannelBroadcastor(String channelName)
-//    {
-//        final IChannelSubscribor remote = getChannelBroadcastor(channelName);
-//        final Channel channel = (Channel) m_channels.get(channelName);
-//        
-//        
-//        InvocationHandler ih = new InvocationHandler()
-//        {
-//            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-//            {
-//                Object rVal = method.invoke(remote, args);
-//                //TODO
-//                //this is just a hack, fix later
-//                try
-//                {
-//                    Thread.sleep(3000);
-//                } catch(InterruptedException e)
-//                {}
-//                return rVal;
-//                
-//            }
-//        };
-//        
-//        return (IChannelSubscribor) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {channel.getChannelInterface()}, ih);
-//        
-//    }
+   
 
     /* 
      * @see games.strategy.net.IChannelMessenger#registerChannelSubscriber(java.lang.Object, java.lang.String)
      */
     public void registerChannelSubscriber(Object implementor, String channelName)
     {
-        assertChannelExists(channelName);
-        Channel channel = (Channel) m_channels.get(channelName);
-        channel.addSubscribor(implementor);
+        m_unifiedMessenger.addImplementor(getUnifiedName(channelName),implementor );
     }
 
 
-    /* (non-Javadoc)
+    /* 
      * @see games.strategy.net.IChannelMessenger#unregisterChannelSubscriber(java.lang.Object, java.lang.String)
      */
     public void unregisterChannelSubscriber(Object implementor, String channelName)
     {
-        Channel channel = (Channel) m_channels.get(channelName);
-        if(channel == null)
-            return;
-        channel.removeSubscribor(implementor);
+        m_unifiedMessenger.removeImplementor(getUnifiedName(channelName), implementor);
     }    
     
     /* 
@@ -129,8 +85,12 @@ public class ChannelMessenger implements IChannelMessenger
      */
     public void createChannel(Class channelInterface, String channelName)
     {
-        m_messenger.broadcast(new ChannelCreated(channelName, channelInterface.getName()));
-        createChannelInternal(channelInterface, channelName);
+        if(!IChannelSubscribor.class.isAssignableFrom(channelInterface))
+            throw new IllegalArgumentException(channelInterface.getName() +  "does not implement IRemote");
+        if(!channelInterface.isInterface())
+            throw new IllegalArgumentException(channelInterface.getName() +  " must be an interface");
+        
+        m_unifiedMessenger.createEndPoint(getUnifiedName(channelName), new Class[] {channelInterface, IChannelSubscribor.class}, true);
     }
 
     /* 
@@ -138,140 +98,28 @@ public class ChannelMessenger implements IChannelMessenger
      */
     public void destroyChannel(String channelName)
     {
-        assertChannelExists(channelName);
-        m_messenger.broadcast(new ChannelDestroyed(channelName));
-        m_channels.remove(channelName);
+        m_unifiedMessenger.destroyEndPoint(getUnifiedName(channelName));
     }
-
-    /**
-     * @param creationMsg
-     */
-    private void createChannelInternal(Class channelInterface, String channelName)
-    {
-        if(! IChannelSubscribor.class.isAssignableFrom(channelInterface))
-            throw new IllegalArgumentException(channelInterface.getName() +  " does not implement IChannelSubscribor");
-        if(!channelInterface.isInterface())
-            throw new IllegalArgumentException(channelInterface.getName() +  " must be an interface");
-
-        synchronized(m_mutex)
-        {
-            //does the channel already exist?
-            Channel alreadyExisting = (Channel) m_channels.get(channelName);
-            if(alreadyExisting != null)
-            {
-                //it does, make sure its equivalient
-                if(!alreadyExisting.getChannelInterface().equals(channelInterface))
-                {
-                    throw new IllegalStateException("Channel already exists, but different interfaces, existing:" + alreadyExisting.getChannelInterface() + " trying to create" + channelInterface);
-                }
-                return;
-            }
-            
-            Channel channel = new Channel(channelInterface, channelName);
-            m_channels.put(channelName, channel);
-        }
-        
-    }
-    
-     
-    IMessageListener m_messageListener = new IMessageListener()
-    {
-        public void messageReceived(Serializable msg, INode from)
-        {
-            if(msg instanceof ChannelCreated)
-            {
-                ChannelCreated creationMsg = (ChannelCreated) msg;
-                
-                Class channelInterface;
-                try
-                {
-                    channelInterface = Class.forName(creationMsg.m_className);
-                } catch (ClassNotFoundException e)
-                {
-                    //Should never happen
-                    e.printStackTrace();
-                    return;
-                }
-                
-                createChannelInternal(channelInterface, creationMsg.m_channelName);
-            }
-            else if(msg instanceof ChannelDestroyed)
-            {
-                ChannelDestroyed destroyMsg = (ChannelDestroyed) msg;
-                synchronized(m_mutex)
-                {
-                    m_channels.remove(destroyMsg.m_channelName);
-                }
-            }
-            else if( msg instanceof RemoteMethodCall)
-            {
-                //a remote method has been called somewhere,
-                //invoke locally
-
-                RemoteMethodCall methodCall = (RemoteMethodCall) msg;
-                
-                assertChannelExists(methodCall.getRemoteName());
-                Channel channel = (Channel) m_channels.get(methodCall.getRemoteName());
-                Class[] argTypes = methodCall.getArgTypes();
-                channel.invokeLocal(methodCall.getMethodName(), argTypes, methodCall.getArgs() );
-            }
-            else if (msg instanceof ChannelRequestInit)
-            {
-                //no need for everyone to respond
-                if(!m_messenger.isServer())
-                    return;
-                Map channels = new HashMap();
-                Iterator iter = m_channels.keySet().iterator();
-                while(iter.hasNext())
-                {
-                    String name = (String) iter.next();
-                    channels.put(name, ((Channel) m_channels.get(name)).getChannelInterface().getName());
-                    m_messenger.send(new ChannelInit(channels), from);
-                }
-            }
-            else if(msg instanceof ChannelInit)
-            {
-                ChannelInit init = (ChannelInit) msg;
-                Iterator iter = init.m_channels.keySet().iterator();
-                while(iter.hasNext())
-                {
-                    String name = (String) iter.next();
-                    Class channelInterface;
-                    try
-                    {
-                        channelInterface = Class.forName( (String) init.m_channels.get(name) );
-                    } catch (ClassNotFoundException e)
-                    {
-                        // should never happen
-                        e.printStackTrace();
-                        throw new IllegalStateException(e.getMessage());
-                    }
-                    createChannelInternal(channelInterface, name);
-                }
-                
-            }
-        }
-        
-    };
 
     /* 
      * @see games.strategy.net.IChannelMessenger#getLocalSubscriborCount(java.lang.String)
      */
     public int getLocalSubscriborCount(String channelName)
     {
-        Channel channel = (Channel) m_channels.get(channelName);
-        if(channel == null)
-            return 0;
-        return channel.getSubscribors().size();
-        
+        return m_unifiedMessenger.getLocalImplementorCount(getUnifiedName(channelName));
     }
-
+    
+    public boolean hasSubscribors(String channelName)
+    {
+        return m_unifiedMessenger.isAwareOfImplementors(getUnifiedName(channelName));
+    }
+    
     /* 
      * @see games.strategy.net.IChannelMessenger#hasChannel(java.lang.String)
      */
     public boolean hasChannel(String channelName)
     {
-       return m_channels.containsKey(channelName);
+       return m_unifiedMessenger.isAwareOfEndPoint(getUnifiedName(channelName));
     }
 
     /* (non-Javadoc)
@@ -279,185 +127,28 @@ public class ChannelMessenger implements IChannelMessenger
      */
     public INode getLocalNode()
     {
-        return m_messenger.getLocalNode();
+        return m_unifiedMessenger.getLocalNode();
     }
 
-      
-}
-
-/**
- * The actual channel itself.
- * 
- */
-class Channel
-{
-    private final Class m_channelInterface;
-    private final List m_subscribors = Collections.synchronizedList(new ArrayList());
-    private final String m_name;
-
-    public Channel(Class channelInterface, String name)
+    public void flush()
     {
-        m_channelInterface = channelInterface;
-        m_name = name;
+        m_unifiedMessenger.flush();
+    }
+    
+    public boolean isServer()
+    {
+        return m_unifiedMessenger.isServer();
     }
 
-    /**
-     * @return Returns the channelInterface.
+    /* 
+     * @see games.strategy.net.IChannelMessenger#waitForChannelToExist(java.lang.String, long)
      */
-    public Class getChannelInterface()
+    public void waitForChannelToExist(String channelName, long timeoutMS)
     {
-        return m_channelInterface;
+       m_unifiedMessenger.waitForEndPoint(getUnifiedName(channelName), timeoutMS); 
     }
-    /**
-     * @return Returns the name.
-     */
-    public String getName()
-    {
-        return m_name;
-    }
-    /**
-     * @return Returns the subscribors.
-     */
-    public List getSubscribors()
-    {
-        return new ArrayList(m_subscribors);
-    }
-    
-    public void addSubscribor(Object subscribor)
-    {
-        if(! m_channelInterface.isAssignableFrom(subscribor.getClass())  )
-            throw new IllegalArgumentException(subscribor.getClass().getName() + " does not implement " + m_channelInterface);
-        
-        m_subscribors.add(subscribor);
-    }
-    
-    public void removeSubscribor(Object subscribor)
-    {
-        m_subscribors.remove(subscribor);
-    }
-    
-    void invokeLocal(String methodName, Class[] argTypes, Object[] args)
-    {
-        Iterator iter = getSubscribors().iterator();
-        while(iter.hasNext())
-        {
-            Object subscribor = iter.next();
-            Method method;
-            try
-            {
-                method = subscribor.getClass().getMethod(methodName, argTypes);
-                //make sure we can call it
-                //this may fail depending on how the security is set up
-                method.setAccessible(true);
-            } catch (SecurityException e)
-            {
-                e.printStackTrace();
-                //oh well, we tried
-                continue;
-            } catch (NoSuchMethodException e)
-            {
-                //should never happen
-                e.printStackTrace();
-                continue;
-            }
-            try
-            {
-                method.invoke(subscribor, args);
-            }
-            //we cannot return the thrown exception to the caller, 
-            //simply print to standard error
-            catch (Throwable invocationError)
-            {
-                invocationError.printStackTrace();
-            }      
-        }
-    }
-}
 
-/**
- * Broadcast when a channel is created
- */
-class ChannelCreated implements Serializable
-{
-    public final String m_channelName;
-    public final String m_className;
-    
-    /**
-     * @param channelName
-     * @param className
-     */
-    public ChannelCreated(String channelName, String className)
-    {
-        this.m_channelName = channelName;
-        this.m_className = className;
-    }
-}
-
-/**
- * A response to a channels request to be initialized
- */
-class ChannelInit implements Serializable
-{
-
-    //maps String -> Class Name
-    Map m_channels;
-    
-    public ChannelInit(Map channels)
-    {
-        m_channels = channels;
-    }
 
 }
 
-/**
- * A channelMessenger has just joined the network and request
- * to be initialized
- */
-class ChannelRequestInit implements Serializable
-{
-    
-}
-
-/**
- * Broadcasted when a channel is destroyed
- */
-class ChannelDestroyed implements Serializable
-{
-    public final String m_channelName;
-    
-    public ChannelDestroyed(String channelName)
-    {
-        m_channelName = channelName;
-    }
-}
-
-/**
- * Handles the invocation for a channel
- */
-class ChannelProxyInvocationHandler implements InvocationHandler
-{
-    private final Channel m_channel;
-    private final IMessenger m_messenger;
-    
-   
-    public ChannelProxyInvocationHandler(final Channel channel,
-            final IMessenger messenger)
-    {
-        m_channel = channel;
-        m_messenger = messenger;
-    }
-    
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-    {
-        //do the remote invocation first
-        //allows the objects to start travelling over the web as soon as possible
-        //without being delayed by what may be a length local invocation
-        RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(m_channel.getName(), method.getName(), args, method.getParameterTypes());
-        m_messenger.broadcast(remoteMethodMsg);
-        
-        m_channel.invokeLocal(method.getName(), method.getParameterTypes(), args);
-        return null;
-    }
-    
-}
 

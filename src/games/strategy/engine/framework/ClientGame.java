@@ -62,7 +62,7 @@ public class ClientGame implements IGame
     
     m_remoteMessenger = remoteMessenger;
     m_channelMessenger = channelMessenger;
-    m_vault = new Vault(m_channelMessenger);
+    m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
     
     m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
     m_remoteMessenger.registerRemote(IGameStepAdvancer.class, m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));

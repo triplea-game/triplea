@@ -15,6 +15,7 @@ package games.strategy.engine.vault;
 
 import java.io.IOException;
 
+import games.strategy.engine.message.*;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.DummyMessenger;
@@ -29,7 +30,7 @@ import junit.framework.TestCase;
 public class VaultTest extends TestCase
 {
 
-	private static int SERVER_PORT = 12022;
+	private static int SERVER_PORT = 12122;
 
 	private IServerMessenger m_server;
 	private IMessenger m_client1;
@@ -42,11 +43,18 @@ public class VaultTest extends TestCase
         SERVER_PORT++;
 		m_server = new ServerMessenger("Server", SERVER_PORT);
 		m_server.setAcceptNewConnections(true);
-		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
+		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");		
 		
+		UnifiedMessenger serverUM = new UnifiedMessenger(m_server);
+		UnifiedMessenger clientUM = new UnifiedMessenger(m_client1);		
 		
-		m_serverVault = new Vault(new ChannelMessenger(m_server));
-		m_clientVault = new Vault(new ChannelMessenger(m_client1));
+		m_serverVault = new Vault(new ChannelMessenger(serverUM), new RemoteMessenger(serverUM));
+		m_clientVault =  new Vault(new ChannelMessenger(clientUM), new RemoteMessenger(clientUM));
+		
+		Thread.yield();
+		m_server.flush();
+		m_client1.flush();
+		
 		
 	}
  
@@ -70,7 +78,6 @@ public class VaultTest extends TestCase
 			e.printStackTrace();
 		}
 
-		
 	}
 	
 	
@@ -91,9 +98,12 @@ public class VaultTest extends TestCase
     public void testLocal() throws NotUnlockedException
     {
         DummyMessenger messenger = new DummyMessenger();
-        ChannelMessenger channelMessenger = new ChannelMessenger(messenger);
         
-        Vault vault = new Vault(channelMessenger);
+        UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
+        ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
+        RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
+        
+        Vault vault = new Vault(channelMessenger, remoteMessenger);
         
         byte[] data = new byte[] {0,1,2,3,4,5};
         VaultID id = vault.lock(data);
@@ -104,7 +114,7 @@ public class VaultTest extends TestCase
     
     public void testServerLock() throws NotUnlockedException
     {
-        byte[] data = new byte[] {0,1,2,3,4,5};
+        byte[] data = new byte[] {0,1,2,3,4,5};     
         VaultID id = m_serverVault.lock(data);
         m_clientVault.waitForID(id, 1000);
         
@@ -119,10 +129,7 @@ public class VaultTest extends TestCase
         assertEquals(m_serverVault.get(id), m_clientVault.get(id));        
         
         m_clientVault.release(id);
-        
-        
-        
-        
+
     }
 
     public void testClientLock() throws NotUnlockedException
@@ -157,8 +164,8 @@ public class VaultTest extends TestCase
         VaultID id1 = m_serverVault.lock(data1);
         VaultID id2 = m_serverVault.lock(data2);        
         
-        m_clientVault.waitForID(id1, 1000);
-        m_clientVault.waitForID(id2, 1000);        
+        m_clientVault.waitForID(id1, 2000);
+        m_clientVault.waitForID(id2, 2000);        
         
         assertTrue(m_clientVault.knowsAbout(id1));        
         assertTrue(m_clientVault.knowsAbout(id2));        

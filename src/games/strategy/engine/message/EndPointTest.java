@@ -11,33 +11,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-/*
- * ErrorMessage.java
- *
- * Created on March 12, 2003, 8:19 PM
- */
-
 package games.strategy.engine.message;
 
+import java.util.List;
+
+import junit.framework.TestCase;
+
 /**
- *
- * @author  Ben Giddings
- * @version 1.0
+ * @author Sean Bridges
  */
-public class ErrorMessage implements Message
+public class EndPointTest extends TestCase
 {
-  public String error;
-  public String description;
-
-  public ErrorMessage(String in_error)
-  {
-    error = in_error;
-  }
-
-  public ErrorMessage(String in_error, String in_description)
-  {
-    error = in_error;
-    description = in_description;
-  }
+    public void testEndPoint()
+    {
+        EndPoint endPoint = new EndPoint("", new Class[] {String.class}, false);
+        endPoint.addImplementor("test");
+        RemoteMethodCall call = new RemoteMethodCall("", "toString", new Object[0], new Class[0]);
+        List results = endPoint.invokeLocal(call);
+        assertEquals(results.size(), 1);
+        assertEquals("test", ((RemoteMethodCallResults) results.iterator().next()).getRVal() );    
+    }
 }

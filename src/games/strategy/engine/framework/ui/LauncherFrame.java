@@ -64,8 +64,8 @@ public class LauncherFrame extends JFrame
     private PropertiesUI m_propertuesUI;
     private IMessenger m_messenger;
     private IChannelMessenger m_channelMessenger;
+    private UnifiedMessenger m_unifiedMessenger;
     private IRemoteMessenger m_remoteMessenger;
-    private IMessageManager m_messageManager;
     private ChatFrame m_chat;
     private ServerStartup m_serverStartup;
     private ClientStartup m_clientStartup;
@@ -258,9 +258,6 @@ public class LauncherFrame extends JFrame
 
         }
 
-        //make sure all the communicationis done
-        m_messenger.waitForAllMessagsToBeProcessed();
-
         Thread t = new Thread()
         {
             public void run()
@@ -305,9 +302,10 @@ public class LauncherFrame extends JFrame
             {
                 IServerMessenger messenger = new DummyMessenger();
                 m_messenger = messenger;
-                m_channelMessenger = new ChannelMessenger(m_messenger);
-                m_messageManager = new MessageManager(m_messenger);
-                m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
+                
+                m_unifiedMessenger = new UnifiedMessenger(m_messenger);
+                m_channelMessenger = new ChannelMessenger(m_unifiedMessenger);
+                m_remoteMessenger = new RemoteMessenger(m_unifiedMessenger);
 
                 java.util.List players = games.strategy.util.Util.toList(m_gameData.getPlayerList().getNames());
 
@@ -433,9 +431,9 @@ public class LauncherFrame extends JFrame
         }
 
         m_messenger = messenger;
-        m_channelMessenger = new ChannelMessenger(m_messenger);
-        m_messageManager = new MessageManager(m_messenger);
-        m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
+        m_unifiedMessenger = new UnifiedMessenger(m_messenger);
+        m_channelMessenger = new ChannelMessenger(m_unifiedMessenger);
+        m_remoteMessenger = new RemoteMessenger(m_unifiedMessenger);
 
         m_chat = new ChatFrame(messenger, m_channelMessenger);
         m_chat.show();
@@ -496,9 +494,9 @@ public class LauncherFrame extends JFrame
             return;
         }
 
-        m_channelMessenger = new ChannelMessenger(m_messenger);
-        m_messageManager = new MessageManager(m_messenger);
-        m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
+        m_unifiedMessenger = new UnifiedMessenger(m_messenger);
+        m_channelMessenger = new ChannelMessenger(m_unifiedMessenger);
+        m_remoteMessenger = new RemoteMessenger(m_unifiedMessenger);
 
         m_chat = new ChatFrame(m_messenger, m_channelMessenger);
         m_chat.show();

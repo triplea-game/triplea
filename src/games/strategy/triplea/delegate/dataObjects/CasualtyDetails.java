@@ -20,8 +20,7 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
-import games.strategy.engine.message.Message;
-
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ import java.util.List;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class CasualtyDetails implements Message
+public class CasualtyDetails implements Serializable
 {
   private final List m_killed;
   private final  List m_damaged;

@@ -105,4 +105,21 @@ public interface IChannelMessenger
     public boolean hasChannel(String channelName);
     
     public INode getLocalNode();
+    
+    /**
+     * wait for the underlying transport layer to finish transmitting all data queued
+     */
+    public void flush();
+    
+    public boolean isServer();
+    
+    /**
+     * 
+     * Wait for the channel messenger to be aware of a channel.  Channels created
+     * on other vms will not instantly be visible to all messengers.
+     * 
+     * @param channelName - the channel to wait for
+     * @param timeoutMS - if -1 means wait forever
+     */
+    public void waitForChannelToExist(String channelName, long timeoutMS);
 }

@@ -24,7 +24,7 @@ public class ClientMessenger implements IMessenger
 {
     private final INode m_node;
     private Set m_allNodes;
-    private ListenerList m_listeners = new ListenerList();
+    private final ListenerList m_listeners = new ListenerList();
     private final Connection m_connection;
     private final ListenerList m_errorListeners = new ListenerList();
     private final ListenerList m_connectionListeners = new ListenerList();
@@ -104,6 +104,7 @@ public class ClientMessenger implements IMessenger
     private synchronized void initMessageReceived(ClientInitServerMessage msg)
     {
         m_allNodes = msg.getAllNodes();
+        this.notifyAll();
     }
 
     /*
@@ -252,11 +253,7 @@ public class ClientMessenger implements IMessenger
     {
         return m_connection.getRemoteNode();
     }
-    
-    public void waitForAllMessagsToBeProcessed()
-    {
-        Connection.s_threadPool.waitForAll();
-    }
+  
     
     public boolean isServer()
     {

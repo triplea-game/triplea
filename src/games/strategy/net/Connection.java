@@ -20,38 +20,27 @@
  * Each connection handles the threads and communications for 1 socket to 1 remote party.
  * 
  * Connections write objects in the order that they are sent, and read them in the order that
- * they arrive, but since each object is processed in a seperate thread, it
- * is possible for messages to arrive out of sequence.
- * 
- * To fix this, an OrderedMessage marker interface was introduced.  An OrderedMessage will
- * not be processed until the previous OrderedMessage read on this connection
- * has finished processing.
- * 
+ * they arrive.  Messages are sent to our message listener using the same thread used to
+ * read the message over the network.
+ *
+ * @author Sean Bridges 
  * Created on December 11, 2001, 8:23 PM
  */
 
 package games.strategy.net;
 
-import games.strategy.thread.ThreadPool;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
+import java.util.logging.*;
+import java.util.logging.Logger;
 
-/**
- * @author Sean Bridges
- * @version 1.0
- * 
- * Simple class to handle network connections.
- */
 class Connection
 {
-    static final ThreadPool s_threadPool = new ThreadPool(10, "Connection Thread Pool");
-
     private Socket m_socket;
     private ObjectOutputStream m_out;
     private ObjectInputStream m_in;
-    private boolean m_shutdown = false;
+    private volatile boolean m_shutdown = false;
     private IConnectionListener m_listener;
     private INode m_localNode;
     private INode m_remoteNode;
@@ -69,6 +58,34 @@ class Connection
         init(s, ident, listener);
     }
 
+    public void log(MessageHeader header, boolean read)
+    {      
+        
+        Logger logger =Logger.getLogger(this.getClass().getName());
+        if(!logger.isLoggable(Level.FINEST))
+            return;
+
+        ByteArrayOutputStream sink = new ByteArrayOutputStream();
+     
+        try
+        {
+            ObjectOutputStream out = new ObjectOutputStream(sink);
+            out.writeObject(header);
+            sink.close();
+            String message = (read ?  "READ:" : "WRITE:") + header.getMessage() + " size:" + sink.toByteArray().length;
+            logger.log(Level.FINEST, message );
+            
+            
+        } catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        
+    }        
+
+    
     /**
      * Creates new Connection s must be open.
      */
@@ -147,6 +164,11 @@ class Connection
         return m_remoteNode;
     }
 
+    /**
+     * Write the MessageHeader over the network.
+     * Returns immediately.
+     * @param msg
+     */
     public void send(MessageHeader msg)
     {
         m_waitingToBeSent.add(msg);
@@ -175,6 +197,19 @@ class Connection
                 }
             }
         }
+        
+//        //wait for the threads to die
+//        try
+//        {
+//            m_writer.interrupt();
+//            m_writer.join();
+//            m_reader.interrupt();
+//            m_reader.join();
+//        } catch (InterruptedException e)
+//        {
+//            e.printStackTrace();
+//        }
+        
     }
     public boolean isConnected()
     {
@@ -189,6 +224,7 @@ class Connection
 
     class Writer implements Runnable
     {
+        
         public void run()
         {
             while (!m_shutdown)
@@ -197,13 +233,16 @@ class Connection
                 {
                     if (!m_waitingToBeSent.isEmpty())
                     {
-                        Serializable next = (Serializable) m_waitingToBeSent.get(0);
+                        MessageHeader next = (MessageHeader) m_waitingToBeSent.get(0);
                         write(next);
+                        log(next, false);
+                        
+                        
 
                         m_waitingToBeSent.remove(0);
 
                         /**
-                         * flush() may need to be wokren up
+                         * flush() may need to be woken up
                          */
                         if (m_waitingToBeSent.isEmpty())
                             m_lock.notifyAll();
@@ -237,7 +276,6 @@ class Connection
             {
                 try
                 {
-
                     m_out.writeObject(next);
                     m_out.flush();
                 } catch (IOException ioe)
@@ -258,7 +296,7 @@ class Connection
     class Reader implements Runnable
     {
         
-        
+
         public void run()
         {
             while (!m_shutdown)
@@ -266,20 +304,8 @@ class Connection
                 try
                 {
                     final MessageHeader msg = (MessageHeader) m_in.readObject();
-
-                    Runnable r = new Runnable()
-                    {
-                        public void run()
-                        {
-                            messageReceived(msg);
-                        }
-                    };
-                    
-                    
-                    s_threadPool.runTask(r);
-              
-                    //allow the message to be processed
-                    Thread.yield();
+                    log(msg, true);
+                    messageReceived(msg);
 
                 } catch (ClassNotFoundException cnfe)
                 {
@@ -303,53 +329,4 @@ class Connection
 }
 
 
-/**
- * Prevents multiple OrderedMessages from being run at the same time.
- * 
- *  
- */
-class OrderedMessageHandler implements Runnable
-{
-    private boolean m_done = false;
-    private final Object m_lock = new Object();
-    private final Runnable m_runnable;
-    
-    OrderedMessageHandler(Runnable target)
-    {
-        m_runnable = target;
-    }
-    
-    public void run()
-    {
-        try
-        {
-            m_runnable.run();
-        }
-        finally
-        {
-	        synchronized(m_lock)
-	        {
-	            m_done = true;
-	            m_lock.notifyAll();
-	        }
-        }
-    }
-    
-    public void waitTillDone()
-    {
-        
-        synchronized(m_lock)
-        {
-            while(!m_done)
-            {
-                try
-                {
-                    m_lock.wait();
-                } catch (InterruptedException e)
-                {
-                    //ignore
-                }
-            }
-        }
-    }
-}
+

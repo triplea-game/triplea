@@ -22,18 +22,10 @@ import java.util.*;
  * An IMessenger listens for incoming messages, and sends
  * them to all registered listeners.
  * 
- * Messages are recieved and sent in order, but because each 
- * recieved message is processed in a seperate thread, messages may be processed
- * of order.
+ * Messages are recieved and sent in order.  Note that message listeners are multi threaded, in
+ * that they process messages from multiple nodes at the same time, but no more than 1 message 
+ * from any particular node at a time.
  * 
- * If the order of the messages is important, you should use an OrderedMessage.
- * OrderedMessage is a marker interface.  The IMessenger will not start
- * processing an OrderedMessage until the previous OrderedMessage has finished processing.
- * 
- * If you want messages to be routed to a particular destination, or you want to block 
- * the thread sending message and recieve a response, you should consider using
- * IMessageManager instead.  The IMessageManager is built on top of
- * the IMesseneger
  *  
  */
 public interface IMessenger
@@ -47,7 +39,7 @@ public interface IMessenger
      */
     public void broadcast(Serializable msg);
     /**
-     * Listen for messages of a certain type.
+     * Listen for messages.  
      */
     public void addMessageListener(IMessageListener listener);
     /**
@@ -55,11 +47,11 @@ public interface IMessenger
      */
     public void removeMessageListener(IMessageListener listener);
     /**
-     * Listen for messages of a certain type.
+     * Listen for errors
      */
     public void addErrorListener(IMessengerErrorListener listener);
     /**
-     * Stop listening to messages.
+     * Stop listening for errors.
      */
     public void removeErrorListener(IMessengerErrorListener listener);
 
@@ -95,12 +87,10 @@ public interface IMessenger
      * Returns when all messages have been written over the network. shutdown causes this method to return. Does not gaurantee that the messages have reached their destination.
      */
     public void flush();
-
     
     /**
-     * Pause the current thread until there are no messages are being processed.
+     * Am I the server node?
+     * There should only be one server node, and it should exist before other nodes.
      */
-    public void waitForAllMessagsToBeProcessed();
-    
     public boolean isServer();
 }

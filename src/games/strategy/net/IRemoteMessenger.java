@@ -91,4 +91,22 @@ public interface IRemoteMessenger
      * Is there a remote registered with the given name 
      */
     public boolean hasRemote(String name);
+    
+    /**
+     * wait for the underlying transport layer to finish transmitting all data queued
+     */
+    public void flush();
+    
+    public boolean isServer();
+
+    /**
+     * Wait for a remote to be visible to this IRemoteMessenger.
+     * IRemote registered in one vm will not be instantly visible to 
+     * all vms
+     * 
+     * @param name the remote name
+     * @param timeout if -1, means wait forever
+     */
+    public void waitForRemote(String name, long timeoutMS);
+    
 }

@@ -145,7 +145,27 @@ public abstract class Match
 		return count;
 	}
 
+	/**
+	 * return the keys where the value keyed by the key matches valueMatch 
+	 */
+	public static Set getKeysWhereValueMatch(Map aMap, Match valueMatch)
+	{
+	    Set rVal = new HashSet();
+	    Iterator keys = aMap.keySet().iterator();
+	    while(keys.hasNext())
+	    {
+	        Object key = keys.next();
+	        Object value = aMap.get(key);
+	        if(valueMatch.match(value))
+	        {
+	            rVal.add(key);
+	        }
+	    }
 
+	    return rVal;	    
+	}
+	
+	
 	/**
 	 * Subclasses must override this method.
 	 * Returns true if the object matches some condition.

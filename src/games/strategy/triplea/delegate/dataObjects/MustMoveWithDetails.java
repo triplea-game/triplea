@@ -20,7 +20,6 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
-import games.strategy.engine.message.Message;
 import games.strategy.util.IntegerMap;
 
 import java.util.Map;
@@ -35,7 +34,7 @@ import java.util.Map;
  * Units that must move are land units in transports, 
  * and friendly aircracft that must move with carriers.
  */
-public class MustMoveWithDetails implements Message
+public class MustMoveWithDetails implements java.io.Serializable
 {
 	/**
 	 * Maps Unit -> Collection of units.

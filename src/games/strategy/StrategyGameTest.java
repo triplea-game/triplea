@@ -39,7 +39,6 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(games.strategy.engine.data.MapTest.class);
 		suite.addTestSuite(games.strategy.engine.data.ChangeTest.class);
 		suite.addTestSuite(games.strategy.engine.data.SerializationTest.class);
-		suite.addTestSuite(games.strategy.engine.message.ManagerTest.class);
 		suite.addTestSuite(games.strategy.net.MessengerTest.class);
 		suite.addTestSuite(games.strategy.thread.ThreadPoolTest.class);
 		suite.addTestSuite(games.strategy.engine.framework.GameDataManagerTest.class);

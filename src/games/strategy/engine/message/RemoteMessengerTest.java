@@ -32,8 +32,7 @@ public class RemoteMessengerTest extends TestCase
     {
         //simple set up for non networked testing
         DummyMessenger messenger = new DummyMessenger();
-        MessageManager manager = new MessageManager(messenger);
-        m_messenger = new RemoteMessenger(manager, messenger);
+        m_messenger = new RemoteMessenger(new UnifiedMessenger(messenger));
     }
 
     /*
@@ -89,22 +88,21 @@ public class RemoteMessengerTest extends TestCase
     }        
     
     
+    
     public void testRemoteCall() throws Exception
     {
         ServerMessenger server = null;
         ClientMessenger client = null;
         try
         {
-            server = new ServerMessenger("server", 12012);
+            server = new ServerMessenger("server", 12024);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", 12012, "client");
+            client = new ClientMessenger("localhost", 12024, "client");
             
-            MessageManager serverMM = new MessageManager(server);
-            MessageManager clientMM = new MessageManager(client);
             
-            RemoteMessenger serverRM = new RemoteMessenger(serverMM, server);
-            RemoteMessenger clientRM = new RemoteMessenger(clientMM, client);
+            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
+            RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
             
             //register it on the server
             serverRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
@@ -134,6 +132,43 @@ public class RemoteMessengerTest extends TestCase
         
         
     }
+    
+    public void testRemoteCall2() throws Exception
+    {
+        ServerMessenger server = null;
+        ClientMessenger client = null;
+        try
+        {
+            server = new ServerMessenger("server", 12025);
+            server.setAcceptNewConnections(true);
+            
+            client = new ClientMessenger("localhost", 12025, "client");
+           
+            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
+            serverRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
+            
+            RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
+            
+            //call it on the client
+            //should be no need to wait since the constructor should not
+            //reutrn until the initial state of the messenger is good
+            int rVal = ( (ITestRemote) clientRM.getRemote("test")).increment(1);
+            assertEquals(2, rVal); 
+
+        }
+        finally
+        {
+            if(server!= null)
+                server.shutDown();   
+            if(client != null)
+                client.shutDown();
+        }
+        
+        
+    }
+    
+    
+    
 }
 
 

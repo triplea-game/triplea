@@ -21,7 +21,6 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.message.Message;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.*;
@@ -123,7 +122,7 @@ public class BattlePanel extends ActionPanel
         }
     }
     
-    public Message listBattle(final GUID battleID, final String currentStep,final  List steps)
+    public void listBattle(final GUID battleID, final String currentStep,final  List steps)
     {
         if (!SwingUtilities.isEventDispatchThread())
         {
@@ -141,7 +140,7 @@ public class BattlePanel extends ActionPanel
             {
                 e.printStackTrace();
             }
-            return null;
+            
         }
 
         removeAll();
@@ -149,7 +148,7 @@ public class BattlePanel extends ActionPanel
         getMap().centerOn(m_battleDisplay.getBattleLocation());
         m_battleDisplay.listBattle(currentStep, steps);
 
-        return null;
+        
     }
 
     public void showBattle(GUID battleID, Territory location, String battleTitle, Collection attackingUnits, Collection defendingUnits, Map unit_dependents, PlayerID attacker, PlayerID defender)

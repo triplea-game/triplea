@@ -39,19 +39,6 @@ public class Unit extends GameDataComponent implements Serializable
   private UnitType m_type;
 
   /**
-   * Creates new Unit. Should use a call to UnitType.create() instead.
-   * owner can be null
-   * id is the id of the unit, should be unique
-   */
-  protected Unit(UnitType type, PlayerID owner, GameData data, short id)
-  {
-    super(data);
-    init(type, owner, data);
-    m_uid = new GUID(id);
-    getData().getUnits().put(this);
-  }
-
-  /**
    * Creates new Unit.  Should use a call to UnitType.create() instead.
    * owner can be null
    */

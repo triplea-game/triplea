@@ -20,20 +20,20 @@
 
 package games.strategy.engine.data;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  *
  * @author  Sean Bridges
  */
-public class GameObjectStreamData implements Serializable
+public class GameObjectStreamData implements Externalizable
 {
 
-	private final static int PLAYERID = 1;
-	private final static int UNITTYPE = 2;
-	private final static int TERRITORY = 3;
-	private final static int PRODUCTIONRULE = 4;
-	private final static int PRODUCTIONFRONTIER = 5;
+	private final static byte PLAYERID = 1;
+	private final static byte UNITTYPE = 2;
+	private final static byte TERRITORY = 3;
+	private final static byte PRODUCTIONRULE = 4;
+	private final static byte PRODUCTIONFRONTIER = 5;
 
 	public static boolean canSerialize(Named obj)
 	{
@@ -47,8 +47,13 @@ public class GameObjectStreamData implements Serializable
 	}
 
 	private String m_name;
-	private int m_type;
+	private byte m_type;
 
+	public GameObjectStreamData()
+	{
+	    
+	}
+	
 	/** Creates a new instance of GameObjectStreamData */
     public GameObjectStreamData(Named named)
 	{
@@ -104,4 +109,18 @@ public class GameObjectStreamData implements Serializable
 		}
 		else throw new IllegalArgumentException("Type not known:" + m_type);
 	}
+
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+        m_name = (String) in.readObject();
+        m_type = in.readByte();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        out.writeObject(m_name);
+        out.writeByte(m_type);
+        
+    }
 }

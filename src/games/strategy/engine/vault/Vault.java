@@ -13,16 +13,12 @@
  */
 package games.strategy.engine.vault;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import games.strategy.net.*;
+
+import java.security.*;
+import java.util.*;
 
 import javax.crypto.*;
-
-import games.strategy.net.IChannelMessenger;
-import games.strategy.net.IChannelSubscribor;
 
 /**
  * A vault is a secure way for the client and server to share information without 
@@ -40,7 +36,7 @@ import games.strategy.net.IChannelSubscribor;
  * 
  * @author Sean Bridges
  */
-public class Vault
+public class Vault implements IServerVault
 {
     private static final String VAULT_CHANNEL = "games.strategy.engine.vault.VAULT_CHANNEL";
     
@@ -70,10 +66,12 @@ public class Vault
     
     private final Object m_waitForLock = new Object();
     
+    private static final String VAULT_SERVER_REMOTE = "games.strategy.engine.vault.Vault.SERVER_REMOTE";
+    
     /**
      * @param channelMessenger
      */
-    public Vault(final IChannelMessenger channelMessenger)
+    public Vault(final IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
     {
         m_channelMessenger = channelMessenger;
         
@@ -82,6 +80,8 @@ public class Vault
             m_channelMessenger.createChannel(IRemoteVault.class, VAULT_CHANNEL);
         }
         m_channelMessenger.registerChannelSubscriber(m_remoteVault, VAULT_CHANNEL);
+        
+        handleInit(remoteMessenger);
         
         try
         {
@@ -93,6 +93,27 @@ public class Vault
         }
     }
     
+    /**
+     * @param remoteMessenger
+     */
+    private void handleInit(IRemoteMessenger remoteMessenger)
+    {
+        if(m_channelMessenger.isServer())
+        {
+            //we init others
+            remoteMessenger.registerRemote(IServerVault.class, this, VAULT_SERVER_REMOTE);
+        }
+        else
+        {
+            remoteMessenger.waitForRemote(VAULT_SERVER_REMOTE, 5000);
+            //we need to be initialized
+            IServerVault server = (IServerVault) remoteMessenger.getRemote(VAULT_SERVER_REMOTE);
+            Map[] initValues = server.getInitData();
+            m_verifiedValues.putAll(initValues[0]);
+            m_unverifiedValues.putAll(initValues[1]);
+        }
+    }
+
     private IRemoteVault getRemoteBroadcaster()
     {
         return (IRemoteVault) m_channelMessenger.getChannelBroadcastor(VAULT_CHANNEL);
@@ -336,15 +357,14 @@ public class Vault
      * Waits until we know about a given vault id.
      * waits for at most timeout milliseconds 
      */
-    public void waitForID(VaultID id, long timeout)
+    public void waitForID(VaultID id, long timeoutMS)
     {
-        if(timeout <= 0)
+        if(timeoutMS <= 0)
             throw new IllegalArgumentException("Must suppply positive timeout argument");
         
-        long startTime = System.currentTimeMillis();
-        long leftToWait = timeout;
+        long endTime = timeoutMS + System.currentTimeMillis();
         
-        while(leftToWait > 0 && !knowsAbout(id))
+        while(System.currentTimeMillis() < endTime && !knowsAbout(id))
         {
             synchronized(m_waitForLock)
             {
@@ -352,12 +372,11 @@ public class Vault
                     return;
                 try
                 {
-                    m_waitForLock.wait(leftToWait);
+                    m_waitForLock.wait(endTime - System.currentTimeMillis());
                 } catch (InterruptedException e)
                 {
                     //not a big deal
                 }                
-                leftToWait =  startTime + timeout - System.currentTimeMillis(); 
         }
       } 
                
@@ -391,6 +410,16 @@ public class Vault
         }
       }        
     }
+
+    /* (non-Javadoc)
+     * @see games.strategy.engine.vault.IServerVault#getInitData()
+     */
+    public Map[] getInitData()
+    {
+        Map[] rVal = new Map[] {m_verifiedValues, m_unverifiedValues};
+        return rVal;
+         
+    }
     
 }
 
@@ -400,4 +429,14 @@ interface IRemoteVault extends IChannelSubscribor
    public void addLockedValue(VaultID id, byte[] data);
    public void unlock(VaultID id, SecretKey key);
    public void release(VaultID id);
+}
+
+interface IServerVault extends IRemote
+{
+    /**
+     * 
+     * @return [0] - verified
+     * @return [1] - unverified
+     */
+    public Map[] getInitData();
 }
