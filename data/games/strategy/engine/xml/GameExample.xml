@@ -22,7 +22,9 @@
 		<player name="chretian" optional="true"/>
 		<player name="bush" optional="false"/>
 		<player name="castro" optional="false"/>
-		<alliance player1="chretian" player2="castro"/>
+		<alliance player="chretian" alliance="natp"/>
+		<alliance player="castro" alliance="natp"/>
+
 	</playerList>
 	<unitList>
 		<unit name="inf"/>
