@@ -1,3 +1,5 @@
+* fix bug [ 1144356 ] alter email header on PBEM (this is really a feature request) (sgb)
+
 * added new chinese units and cruiser, halftrack, marine units (iron_cross)
 
 * fixed [ 1158469 ] Missing units in Purchase Menu when odd number of choices (sgb)
