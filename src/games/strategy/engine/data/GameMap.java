@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 
 /*
  * Map.java
@@ -92,7 +106,7 @@ public class GameMap extends GameDataComponent
 	/**
 	 * Returns a territories neighbors.
 	 */
-	public Set getNeighbors(Territory t, TerritoryTest cond)
+	public Set getNeighbors(Territory t, TerritoryCondition cond)
 	{
 		if(cond == null)
 			return getNeighbors(t);
@@ -186,7 +200,7 @@ public class GameMap extends GameDataComponent
 	 */
 	public Route getRoute(Territory t1, Territory t2, final Match aMatch)
 	{
-		TerritoryTest cond = new TerritoryTest()
+		TerritoryCondition cond = new TerritoryCondition()
 		{	
 			public boolean test(Territory t)
 			{
@@ -201,7 +215,7 @@ public class GameMap extends GameDataComponent
 	 *That satisfies the given test.
 	 *Returns null if no route exists.
 	 */
-	public Route getRoute(Territory t1, Territory t2, TerritoryTest cond)
+	public Route getRoute(Territory t1, Territory t2, TerritoryCondition cond)
 	{
 		Route route = new Route();
 		route.setStart(t1);
@@ -222,7 +236,7 @@ public class GameMap extends GameDataComponent
 		return route;
 	}
 	
-	private boolean getRoute(Route route, int distance, Territory start, Territory stop, TerritoryTest cond)
+	private boolean getRoute(Route route, int distance, Territory start, Territory stop, TerritoryCondition cond)
 	{
 		distance--;
 		Set connections = new HashSet( getNeighbors(start, cond)); 
@@ -274,7 +288,7 @@ public class GameMap extends GameDataComponent
 	 * Returns -1 if no connection can be found.
 	 * TerritoryTest is an arbitrary condition that must be satisfied by all territories in the path.
 	 */
-	public int getDistance(Territory t1, Territory t2, TerritoryTest cond)
+	public int getDistance(Territory t1, Territory t2, TerritoryCondition cond)
 	{
 		if(t1.equals(t2) )
 			return 0;
@@ -289,7 +303,7 @@ public class GameMap extends GameDataComponent
 	 * Territories on the frontier are not target.  They represent the extent of paths already searched.
 	 * Territores in searched have already been on the frontier.
 	 */
-	private int getDistance(int distance, Set searched, Set frontier, Territory target, TerritoryTest cond)
+	private int getDistance(int distance, Set searched, Set frontier, Territory target, TerritoryCondition cond)
 	{
 		
 		//add the frontier to the searched
@@ -333,7 +347,7 @@ public class GameMap extends GameDataComponent
 		return m_territories.iterator();
 	}
 	
-	public interface TerritoryTest
+	public interface TerritoryCondition
 	{
 		public boolean test(Territory t);
 	}
@@ -354,7 +368,7 @@ public class GameMap extends GameDataComponent
 		return owner;
 	}
 	
-	public static final TerritoryTest IS_WATER = new TerritoryTest()
+	public static final TerritoryCondition IS_WATER = new TerritoryCondition()
 	{
 		public boolean test(Territory t)
 		{
@@ -368,7 +382,7 @@ public class GameMap extends GameDataComponent
 
 	};
 	
-	public static final TerritoryTest IS_LAND = new TerritoryTest()
+	public static final TerritoryCondition IS_LAND = new TerritoryCondition()
 	{
 		public boolean test(Territory t)
 		{
@@ -381,7 +395,7 @@ public class GameMap extends GameDataComponent
 		}
 	};
 	
-	public static final TerritoryTest IS_LAND_OR_WATER = new TerritoryTest()
+	public static final TerritoryCondition IS_LAND_OR_WATER = new TerritoryCondition()
 	{
 		public boolean test(Territory t)
 		{
