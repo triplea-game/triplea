@@ -52,7 +52,7 @@ public class LauncherFrame extends JFrame
     private JButton m_cancelButton = new JButton();
     private GameTypePanel m_gameTypePanel = new GameTypePanel();
     private GameData m_gameData;
-    private PropertiesUI m_propertuesUI;
+    private JScrollPane m_propertiesUI;
     private IMessenger m_messenger;
     private IChannelMessenger m_channelMessenger;
     private UnifiedMessenger m_unifiedMessenger;
@@ -139,7 +139,7 @@ public class LauncherFrame extends JFrame
 
         if (m_gameData.getGameLoader().getServerPlayerTypes().length != 1)
         {
-            int tabIndex = m_propertuesUI == null ? 1 : 2;
+            int tabIndex = m_propertiesUI == null ? 1 : 2;
             m_mainTabPanel.add(m_localPlayerTypes, "Player Types", tabIndex);
 
         }
@@ -148,8 +148,8 @@ public class LauncherFrame extends JFrame
     private void updatePropertiesPanel()
     {
         //clear the old properties
-        m_mainTabPanel.remove(m_propertuesUI);
-        m_propertuesUI = null;
+        m_mainTabPanel.remove(m_propertiesUI);
+        m_propertiesUI = null;
 
         if (m_gameData == null)
             return;
@@ -157,8 +157,8 @@ public class LauncherFrame extends JFrame
         if (m_gameData.getProperties().getEditableProperties().isEmpty())
             return;
 
-        m_propertuesUI = new PropertiesUI(m_gameData.getProperties(), true);
-        m_mainTabPanel.add(m_propertuesUI, "Properties", 1);
+        m_propertiesUI = new JScrollPane(new PropertiesUI(m_gameData.getProperties(), true));
+        m_mainTabPanel.add(m_propertiesUI, "Properties", 1);
 
         m_mainTabPanel.setTabPlacement(1);
     }
