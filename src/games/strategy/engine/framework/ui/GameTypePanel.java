@@ -295,7 +295,7 @@ public class GameTypePanel extends JPanel
     m_gameName.setText(data.getGameName());
     m_gameVersion.setText(data.getGameVersion().toString());
 
-    m_fileNameTextField.setText(file.getAbsolutePath());
+    m_fileNameTextField.setText(file.getCanonicalPath());
   }
 
   public void setLocal()
