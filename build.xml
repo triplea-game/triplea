@@ -51,7 +51,7 @@
 			<zipfileset dir="bin/" prefix="bin/">
 				<include name="triplea.bat"/>
 			</zipfileset>
-			<zipfileset dir="games/" prefix="ga,es/">
+			<zipfileset dir="games/" prefix="games/">
 				<include name="*.xml"/>
 			</zipfileset>
 		</zip>
