@@ -38,7 +38,7 @@ public class PlayerList extends GameDataComponent
     public PlayerList(GameData data) 
 	{
 		super(data);
-		m_players.put(PlayerID.NULL_PLAYERID.getName(), PlayerID.NULL_PLAYERID);
+		
     }
 	
 	protected void addPlayerID(PlayerID player)
@@ -53,6 +53,8 @@ public class PlayerList extends GameDataComponent
 	
 	public PlayerID getPlayerID(String name)
 	{
+	    if(PlayerID.NULL_PLAYERID.getName().equals(name))
+	        return PlayerID.NULL_PLAYERID;
 		return (PlayerID) m_players.get(name);
 	}
 	
