@@ -68,7 +68,7 @@ public class ThreadPoolTest extends TestCase
     ThreadPool pool = new ThreadPool(5, "test");
     Collection tasks = new ArrayList();
 
-    for(int i = 0; i < 30; i++)
+    for(int i = 0; i < 3000; i++)
     {
       Runnable task = new Task();
       tasks.add(task);
