@@ -77,13 +77,18 @@ public class TripleAFrame extends JFrame
   private JPanel m_historyPanel = new JPanel();
   private JPanel m_gameSouthPanel;
   private HistoryPanel m_historyTree ;
-
+  private boolean m_inHistory = false;
 
   /** Creates new TripleAFrame */
   public TripleAFrame(IGame game, Set players) throws IOException
   {
     super("TripleA");
     TaskTimer total = new TaskTimer("Loading game");
+
+    TaskTimer loadFlags = new TaskTimer("Loading flag images");
+    FlagIconImageFactory.instance().load(this);
+    loadFlags.done();
+
 
     setIconImage(GameRunner.getGameIcon(this));
 
@@ -94,15 +99,11 @@ public class TripleAFrame extends JFrame
     m_data = game.getData();
     m_localPlayers = players;
 
-    game.addGameStepListener(m_stepListener);
-
     this.addWindowListener(WINDOW_LISTENER);
 
     createMenuBar();
 
     TerritoryData.getInstance().verify(m_data);
-
-
 
     TaskTimer loadMaps = new TaskTimer("Loading maps");
     MapImage.getInstance().loadMaps(m_data);
@@ -115,11 +116,6 @@ public class TripleAFrame extends JFrame
     m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
 
     loadMaps.done();
-
-    TaskTimer loadFlags = new TaskTimer("Loading flag images");
-    FlagIconImageFactory.instance().load(this);
-    loadFlags.done();
-
 
     //link the small and large images
     new ImageScrollControl(m_mapPanel, m_smallView);
@@ -183,8 +179,13 @@ public class TripleAFrame extends JFrame
     m_gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
     total.done();
 
+    game.addGameStepListener(m_stepListener);
+    updateStep();
+
     //there are a lot of images that can be gcd right now
     System.gc();
+
+
   }
 
   private void shutdown()
@@ -226,7 +227,7 @@ public class TripleAFrame extends JFrame
               if(f.exists())
               {
                 int choice = JOptionPane.showConfirmDialog(TripleAFrame.this, "A file by that name already exists. Do you wish to over write it?" ,"Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                if(choice == JOptionPane.NO_OPTION)
+                if(choice != JOptionPane.OK_OPTION)
                 {
                   return;
                 }
@@ -607,16 +608,55 @@ public class TripleAFrame extends JFrame
     public void gameStepChanged(String stepName, String delegateName,
                                 PlayerID player, int round, String stepDisplayName)
     {
-       m_round.setText("Round:" + round + " ");
-        m_step.setText(stepDisplayName);
-        if(player != null)
-            m_round.setIcon(new ImageIcon(FlagIconImageFactory.instance().getFlag(player)));
+      updateStep();
     }
   };
 
+  private void updateStep()
+  {
+    if(m_data.getSequence().getStep() == null)
+      return;
+
+    if(!SwingUtilities.isEventDispatchThread())
+    {
+      SwingUtilities.invokeLater(new Runnable() {public void run() {updateStep();}});
+      return;
+    }
+
+    int round = m_data.getSequence().getRound();
+    String stepDisplayName = m_data.getSequence().getStep().getDisplayName();
+    PlayerID player = m_data.getSequence().getStep().getPlayerID();
+
+    m_round.setText("Round:" + round + " ");
+    m_step.setText(stepDisplayName);
+    if (player != null && !player.isNull())
+      m_round.setIcon(new ImageIcon(FlagIconImageFactory.instance().getFlag(player)));
+
+  //if the game control has passed to someone else
+  //show the history
+   if(player != null && !player.isNull() && !playing(player) && !m_inHistory )
+   {
+     if(SwingUtilities.isEventDispatchThread())
+       showHistory();
+     else
+     {
+       SwingUtilities.invokeLater(new Runnable() {public void run() {showHistory();}});
+     }
+   }
+   //if the game control is with us
+   //show the current game
+   else if(player != null && !player.isNull() && playing(player) && m_inHistory)
+   {
+     showGame();
+   }
+
+  }
+
   public void showHistory()
   {
-       m_actionButtons.getCurrent().setActive(false);
+    m_inHistory = true;
+    setWidgetActivation();
+
       //we want to use a clone of the data, so we can make changes to it
       GameData clonedGameData = cloneGameData();
       if(clonedGameData == null)
@@ -628,14 +668,12 @@ public class TripleAFrame extends JFrame
       m_details.setGameData(clonedGameData);
       m_mapPanel.setGameData(clonedGameData);
 
-       HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, m_mapPanel);
+      HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, m_mapPanel);
 
       m_tabsPanel.removeAll();
       m_tabsPanel.add("History", historyDetailPanel);
       m_tabsPanel.add("Stats", m_statsPanel);
       m_tabsPanel.add("Territory", m_details);
-
-
 
       m_historyPanel.removeAll();
       m_historyPanel.setLayout(new BorderLayout());
@@ -680,7 +718,9 @@ public class TripleAFrame extends JFrame
 
   public void showGame()
   {
-      m_actionButtons.getCurrent().setActive(true);
+     m_inHistory = false;
+     setWidgetActivation();
+
       m_historyTree.goToEnd();
       m_historyTree = null;
 
@@ -707,13 +747,17 @@ public class TripleAFrame extends JFrame
       validate();
   }
 
+  private void setWidgetActivation()
+  {
+    m_showHistoryAction.setEnabled(!m_inHistory);
+    m_showGameAction.setEnabled(m_inHistory);
+  }
+
   private AbstractAction m_showHistoryAction = new AbstractAction("Show history")
   {
       public void actionPerformed(ActionEvent e)
       {
           showHistory();
-          setEnabled(false);
-          m_showGameAction.setEnabled(true);
       };
   };
 
@@ -726,9 +770,6 @@ public class TripleAFrame extends JFrame
       public void actionPerformed(ActionEvent e)
       {
           showGame();
-          setEnabled(false);
-          m_showHistoryAction.setEnabled(true);
-
       };
   };
 

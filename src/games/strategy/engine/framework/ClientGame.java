@@ -105,9 +105,20 @@ public class ClientGame implements IGame
     m_gameStepListeners.remove(listener);
   }
 
+  private boolean m_firstRun = true;
   private void notifyGameStepChanged(StepChangedMessage msg)
   {
-
+    //we want to skip the first iteration, since that simply advances us to step 0
+    if(m_firstRun)
+      m_firstRun = false;
+    else
+    {
+      m_data.getSequence().next();
+      while (!m_data.getSequence().getStep().getName().equals(msg.getStepName()))
+      {
+        m_data.getSequence().next();
+      }
+    }
     Iterator iter = m_gameStepListeners.iterator();
     while(iter.hasNext())
     {
