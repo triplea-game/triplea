@@ -1,5 +1,7 @@
 Changes for 0.5.1
 
+* Large improvement and re-organizing of user documentation. (Nekro)
+
 * Fully implemented Pact Of Steel mod (by Black Elk/Beagle). (Nekro)
 
 * Improved map directory structures and code for triplea concerning TerritoryData class. (NeKro)
