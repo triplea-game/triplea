@@ -988,13 +988,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return count;
     }
 
-    private void fire(String stepName, Collection firingUnits,
+    private void fire(final String stepName, Collection firingUnits,
             Collection attackableUnits, boolean defender,
-            boolean canReturnFire, IDelegateBridge bridge, String text)
+            boolean canReturnFire, final IDelegateBridge bridge, String text)
     {
 
-        PlayerID firingPlayer = defender ? m_defender : m_attacker;
-        PlayerID hitPlayer = defender ? m_attacker : m_defender;
+        final PlayerID firingPlayer = defender ? m_defender : m_attacker;
+        final PlayerID hitPlayer = defender ? m_attacker : m_defender;
 
         DiceRoll dice = DiceRoll.rollDice(new ArrayList(firingUnits), defender,
                 firingPlayer, bridge, m_data);
@@ -1003,31 +1003,49 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection killed;
         Collection damaged = Collections.EMPTY_LIST;
         
-        getDisplay(bridge).notifyDice(m_battleID, dice, stepName, hitPlayer);
+        getDisplay(bridge).notifyDice(m_battleID, dice, stepName);
 
         //they all die
         if (hitCount >= getMaxHits(attackableUnits))
         {
             killed = attackableUnits;
+            getDisplay(bridge).casualtyNotification(m_battleID, stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
             getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue", stepName);
         } else
         {            
             CasualtyDetails message = selectCasualties(stepName, bridge,
                     attackableUnits, !defender, text, dice);
+
+            killed = message.getKilled();
+            damaged = message.getDamaged();
+
+            getDisplay(bridge).casualtyNotification(m_battleID, stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
             
             //the user hasnt had a chance to see these yet
             if(message.getAutoCalculated())
                 getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue", stepName);
-            
-            killed = message.getKilled();
-            damaged = message.getDamaged();
-            
         }
 
-         
-        getDisplay(bridge).casualtyNotification(m_battleID, stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
         
-        getRemote(firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", stepName, hitPlayer);
+	    Runnable r = new Runnable()
+        {
+            public void run()
+            {
+                getRemote(firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", stepName, hitPlayer);
+            }
+        };
+	    
+        //execute in a seperate thread to allow either player to click continue first.
+        Thread t = new Thread(r);
+        t.start();
+        try
+        {
+            t.join();
+        } catch (InterruptedException e)
+        {
+           //ignore
+        }
+        
         
         if (damaged != null)
             markDamaged(damaged, bridge);
@@ -1191,10 +1209,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_bombardingUnits;
     }
 
-    private void fireAAGuns(IDelegateBridge bridge)
+    private void fireAAGuns(final IDelegateBridge bridge)
     {
 
-        String step = SELECT_AA_CASUALTIES;
+        final String step = SELECT_AA_CASUALTIES;
         if (!canFireAA())
             return;
 
@@ -1208,7 +1226,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //send attacker the dice roll so he can see what the dice are while he
         // waits for
         //attacker to select casualties
-        getDisplay(bridge).notifyDice(m_battleID,  dice, step, m_attacker);
+        getDisplay(bridge).notifyDice(m_battleID,  dice, step);
 
         Collection casualties = null;
         Collection attackable = Match.getMatches(m_attackingUnits,
@@ -1229,6 +1247,26 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         getDisplay(bridge).casualtyNotification(m_battleID, step,dice, m_attacker, casualties, Collections.EMPTY_LIST, m_dependentUnits);
+        
+        getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Click to continue", step);
+        Runnable r = new Runnable()
+        {
+            public void run()
+            {
+                getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", step, m_attacker);        
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+        try
+        {
+            t.join();
+        } catch (InterruptedException e)
+        {
+          //ignore
+        }
+        
+        
         removeCasualties(casualties, false, false, bridge);
 
     }

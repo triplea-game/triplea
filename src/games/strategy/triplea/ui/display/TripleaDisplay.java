@@ -103,7 +103,7 @@ public class TripleaDisplay implements ITripleaDisplay
      * @param dice
      * @param the player who must act on the roll, ignore
      */
-    public void notifyDice(GUID battleId, DiceRoll dice, String stepName, PlayerID ignore)
+    public void notifyDice(GUID battleId, DiceRoll dice, String stepName)
     {
         m_ui.getBattlePanel().showDice(null, dice, stepName);
     }

@@ -92,7 +92,7 @@ public interface ITripleaDisplay extends IDisplay
      * @param battleId
      * @param dice
      */
-    public void notifyDice(GUID battleId, DiceRoll dice, String stepName, PlayerID ignore);
+    public void notifyDice(GUID battleId, DiceRoll dice, String stepName);
 
     
     public void gotoBattleStep(GUID battleId, String step);
