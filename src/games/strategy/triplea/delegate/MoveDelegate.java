@@ -489,10 +489,6 @@ public class MoveDelegate implements SaveableDelegate
         
         if(route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, m_data)))
         {
-            //are we moving some destroyers
-            boolean someDestroyers = Match.someMatch(units, Matches.UnitIsDestroyer);
-            if(someDestroyers)
-               return "Cant advance to battle in non combat";
             CompositeMatch friendlyOrSubmerged = new CompositeMatchOr();
             friendlyOrSubmerged.add(Matches.alliedUnit(m_player, m_data));
             friendlyOrSubmerged.add(Matches.unitIsSubmerged(m_data));
@@ -525,17 +521,15 @@ public class MoveDelegate implements SaveableDelegate
 
     private String validateNonEnemyUnitsOnPath(Collection units, Route route, PlayerID player)
     {
-        boolean hasDestroyer= Match.someMatch(units, Matches.UnitIsDestroyer);
-        
         //check to see no enemy units on path
-        if (MoveValidator.onlyAlliedUnitsOnPath(route, player, m_data, hasDestroyer))
+        if (MoveValidator.onlyAlliedUnitsOnPath(route, player, m_data))
             return null;
-        
+
         //if we are all air, then its ok
         if(MoveValidator.isAir(units))
             return null;
         
-        boolean submersibleSubsAllowed =m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
+        boolean submersibleSubsAllowed = m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
         
         if(submersibleSubsAllowed && Match.allMatch(units, Matches.UnitIsSub))
         {

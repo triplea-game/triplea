@@ -108,22 +108,22 @@ public class MoveValidatorTest extends DelegateTest
 		//japanese unit in congo
 		Route bad = new Route();
 		//the empty case
-		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data, false));
+		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data));
 		
 		bad.add(egypt);
 		bad.add(congo);
 		bad.add(kenya);
 		
-		assertTrue(!MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data,  false));
+		assertTrue(!MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data));
 		
 		Route good = new Route();
 		good.add(egypt);
 		good.add(kenya);
-		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data, false));
+		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));
 
 		//at end so should still be good
 		good.add(congo);
-		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data, false));	
+		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));	
 	}
 	
 

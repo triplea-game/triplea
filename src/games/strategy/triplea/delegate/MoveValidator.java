@@ -61,13 +61,17 @@ public class MoveValidator
 
 	/**
 	 * Checks that there are no enemy units on the route except possibly at the end.
+	 * Submerged enemy units are not considered as they don't affect
+	 * movement.
 	 * AA and factory dont count as enemy.
 	 */
-	public static boolean onlyAlliedUnitsOnPath(Route route, PlayerID player, GameData data, boolean destroyerMovingOnPath)
+	public static boolean onlyAlliedUnitsOnPath(Route route, PlayerID player, GameData data)
 	{
 		CompositeMatch alliedOrNonCombat = new CompositeMatchOr(Matches.UnitIsAAOrFactory, Matches.alliedUnit(player, data));
-		if(!destroyerMovingOnPath)
-		    alliedOrNonCombat.add(Matches.unitIsSubmerged(data));
+
+		// Submerged units do not interfere with movement
+		// only relevant for 4th edition
+		alliedOrNonCombat.add(Matches.unitIsSubmerged(data));
 		
 		for(int i = 0; i < route.getLength() - 1; i++)
 		{
