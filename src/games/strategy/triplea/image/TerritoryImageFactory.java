@@ -15,21 +15,22 @@ package games.strategy.triplea.image;
  */
 
 
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.image.*;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
-import games.strategy.util.*;
-import games.strategy.ui.Util;
-//import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.*;
-import games.strategy.ui.*;
-import java.lang.ref.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.ui.ImageIoCompletionWatcher;
 
 public final class TerritoryImageFactory
 {
+
+  private Territory m_lastTerritory = null;
+  private Image m_lastImage;
 
   // one instance in the application
   private static TerritoryImageFactory s_singletonInstance = new
@@ -219,6 +220,9 @@ public final class TerritoryImageFactory
   private Image getBaseImage(Territory place)
   {
 
+    if(place == m_lastTerritory)
+        return m_lastImage;
+
     String key = place.getName();
 
 
@@ -229,6 +233,8 @@ public final class TerritoryImageFactory
                                            + ".gif");
     Image baseImage = loadImageCompletely(file);
 
+    m_lastImage = baseImage;
+    m_lastTerritory = place;
 
     // done!
     return baseImage;
