@@ -90,7 +90,7 @@
 			<zipfileset dir="liscence/" prefix="liscence/">
 				<include name="gpl.txt"/>
 			</zipfileset>
-			<zipfileset dir="games/" prefix="ga,es/">
+			<zipfileset dir="games/" prefix="games/">
 				<include name="*.xml"/>
 			</zipfileset>
 		</zip>
