@@ -897,7 +897,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     private ITripleaPlayer getRemotePlayer()
     {
-        return (ITripleaPlayer) m_bridge.getRemote(); 
+        return getRemotePlayer(m_player);
     }
     
     private ITripleaPlayer getRemotePlayer(PlayerID id)

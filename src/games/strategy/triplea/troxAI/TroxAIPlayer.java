@@ -421,4 +421,13 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
        return (Territory) candidates.iterator().next();
     }
 
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#retreatNotificationMessage(java.util.Collection)
+     */
+    public void retreatNotificationMessage(Collection units)
+    {
+        // yeah, whatever
+        
+    }
+
 }

@@ -889,10 +889,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 defenderWins(bridge);
         } else
         {
-            RetreatNotificationMessage msg = new RetreatNotificationMessage(
-                    retreating);
-            bridge.sendMessage(msg, m_attacker);
-            bridge.sendMessage(msg, m_defender);
+            getRemote(m_attacker, bridge).retreatNotificationMessage(retreating);
+            getRemote(m_defender, bridge).retreatNotificationMessage(retreating);
         }
 
         bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
@@ -919,11 +917,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 defenderWins(bridge);
         } else
         {
-            RetreatNotificationMessage msg = new RetreatNotificationMessage(
-                    submerging);
-            bridge.sendMessage(msg, m_attacker);
-            bridge.sendMessage(msg, m_defender);
-        }
+            getRemote(m_attacker, bridge).retreatNotificationMessage(submerging);
+            getRemote(m_defender, bridge).retreatNotificationMessage(submerging);
+         }
 
         bridge.getHistoryWriter().addChildToEvent(transcriptText, submerging);
 
@@ -966,10 +962,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 defenderWins(bridge);
         } else
         {
-            RetreatNotificationMessage msg = new RetreatNotificationMessage(
-                    retreating);
-            bridge.sendMessage(msg, m_attacker);
-            bridge.sendMessage(msg, m_defender);
+            getRemote(m_attacker, bridge).retreatNotificationMessage(retreating);
+            getRemote(m_defender, bridge).retreatNotificationMessage(retreating);
+
 
         }
     }
@@ -1377,6 +1372,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         checkDefendingPlanesCanLand(bridge, m_defender);
 
     }
+    
+    private ITripleaPlayer getRemote(PlayerID player, IDelegateBridge bridge)
+    {
+        return (ITripleaPlayer) bridge.getRemote(player);
+    }
 
     /**
      * The defender has won, but there may be defending fighters that cant stay
@@ -1434,7 +1434,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Territory territory = null;
             if (canLandHere.size() > 1)
             {
-                ITripleaPlayer defenderRemote =  (ITripleaPlayer) bridge.getRemote(m_defender);
+                ITripleaPlayer defenderRemote =  getRemote(m_defender, bridge);
                 territory = defenderRemote.selectTerritoryForAirToLand(canLandHere);
             } else
             {

@@ -104,4 +104,9 @@ public interface ITripleaPlayer extends IRemote
      */
     public Territory selectTerritoryForAirToLand(Collection candidates);
     
+    /**
+     * Notifies that the units have retreated or submerged, and no longer take part in the battle. 
+     */
+    public void retreatNotificationMessage(Collection units);
+    
 }

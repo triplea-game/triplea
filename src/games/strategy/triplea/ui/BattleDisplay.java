@@ -192,10 +192,10 @@ public class BattleDisplay extends JPanel
         
     }
     
-    public void notifyRetreat(RetreatNotificationMessage msg)
+    public void notifyRetreat(Collection retreating )
     {
-        m_defenderModel.notifyRetreat(msg);
-        m_attackerModel.notifyRetreat(msg);        
+        m_defenderModel.notifyRetreat(retreating);
+        m_attackerModel.notifyRetreat(retreating);        
     }
     
     public RetreatMessage getRetreat(RetreatQueryMessage rqm)
@@ -547,9 +547,9 @@ class BattleModel extends DefaultTableModel
         m_units = new ArrayList(units);
     }
     
-    public void notifyRetreat(RetreatNotificationMessage msg)
+    public void notifyRetreat(Collection retreating)
     {
-        m_units.removeAll(msg.getUnits());
+        m_units.removeAll(retreating);
         refresh();
     }
     

@@ -41,6 +41,7 @@ public class ChannelMessenger implements IChannelMessenger
     {
         m_messenger = messenger;
         m_messenger.addMessageListener(m_messageListener);
+        m_messenger.broadcast(new ChannelRequestInit());
     }
     
     private void assertChannelExists(String channelName)
@@ -149,6 +150,41 @@ public class ChannelMessenger implements IChannelMessenger
                 Channel channel = (Channel) m_channels.get(methodCall.getRemoteName());
                 Class[] argTypes = methodCall.getArgTypes();
                 channel.invokeLocal(methodCall.getMethodName(), argTypes, methodCall.getArgs() );
+            }
+            else if (msg instanceof ChannelInit)
+            {
+                //no need for everyone to respond
+                if(!m_messenger.isServer())
+                    return;
+                Map channels = new HashMap();
+                Iterator iter = m_channels.keySet().iterator();
+                while(iter.hasNext())
+                {
+                    String name = (String) iter.next();
+                    channels.put(name, ((Class) m_channels.get(name)).getName());
+                    m_messenger.send(new ChannelInit(channels), from);
+                }
+            }
+            else if(msg instanceof ChannelInit)
+            {
+                ChannelInit init = (ChannelInit) msg;
+                Iterator iter = init.m_channels.keySet().iterator();
+                while(iter.hasNext())
+                {
+                    String name = (String) iter.next();
+                    Class channelInterface;
+                    try
+                    {
+                        channelInterface = Class.forName( (String) init.m_channels.get(name) );
+                    } catch (ClassNotFoundException e)
+                    {
+                        // should never happen
+                        e.printStackTrace();
+                        throw new IllegalStateException(e.getMessage());
+                    }
+                    createChannelInternal(channelInterface, name);
+                }
+                
             }
         }
         
@@ -282,6 +318,31 @@ class ChannelCreated implements Serializable
         this.m_channelName = channelName;
         this.m_className = className;
     }
+}
+
+/**
+ * A response to a channels request to be initialized
+ */
+class ChannelInit implements Serializable
+{
+
+    //maps String -> Class Name
+    Map m_channels;
+    
+    public ChannelInit(Map channels)
+    {
+        m_channels = channels;
+    }
+
+}
+
+/**
+ * A channelMessenger has just joined the network and request
+ * to be initialized
+ */
+class ChannelRequestInit implements Serializable
+{
+    
 }
 
 /**

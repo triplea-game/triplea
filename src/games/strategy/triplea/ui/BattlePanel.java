@@ -281,9 +281,9 @@ public class BattlePanel extends ActionPanel
         return m_battleDisplay.getRetreat(rqm);
     }
 
-    public void notifyRetreat(RetreatNotificationMessage msg)
+    public void notifyRetreat(Collection retreating)
     {
-        m_battleDisplay.notifyRetreat(msg);
+        m_battleDisplay.notifyRetreat(retreating);
     }
 
     public void bombingResults(BombingResults message)

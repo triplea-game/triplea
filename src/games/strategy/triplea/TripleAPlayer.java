@@ -109,10 +109,6 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         } else if (message instanceof RetreatQueryMessage)
         {
             return m_ui.getRetreat((RetreatQueryMessage) message);
-        } else if (message instanceof RetreatNotificationMessage)
-        {
-            m_ui.notifyRetreat((RetreatNotificationMessage) message);
-            return null;
         } else if (message instanceof BattleEndMessage)
         {
             m_ui.battleEndMessage((BattleEndMessage) message);
@@ -376,6 +372,14 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     public Territory selectTerritoryForAirToLand(Collection candidates)
     {
         return m_ui.selectTerritoryForAirToLand(candidates);
+    }
+
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#retreatNotificationMessage(java.util.Collection)
+     */
+    public void retreatNotificationMessage(Collection units)
+    {
+        m_ui.notifyRetreat(units);   
     }
     
     
