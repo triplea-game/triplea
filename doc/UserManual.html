@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-	<TITLE>TripleA Documentation v1.1</TITLE>
+	<TITLE>TripleA Documentation v1.2</TITLE>
 </HEAD>
 
 <BODY>
@@ -557,29 +557,36 @@ them in the chat room. Right click on their name and <B>&quot;Slap&quot;</B>
 
 <P><H3><B>E:  Play By Email (PBEM)</B></H3></P>
 <P>
-This play by e-mail mode is a rather new feature to TripleA and may still
-have some &quot;hiccups&quot; or rather &quot;burps.&quot; How PBEM
-works is that you play a normal multi-player game but the dice rolls
-are not done by TripleA. They are done by a separate computer that
-specializes in random number generation. TripleA will contact the
-server and tell it that it needs to roll.. lets say.. 5 dies for some
-battle. The server will roll the dice and send TripleA the results
-and e-mail the players the results of the dice which is also PGP signed.
+TripleA's PBEM mode allows multiple players to play a turn each and send each
+other the saved game file. This allows them to play the game with each other
+with out being connected to the internet for long periods of time. The dice rolls
+done in a PBEM game are rolled by a 3rd party who emails each player the dice rolls
+and each email is PGP signed and can be verified from their website. The server being
+ used to roll the dice is located at <A HREF="http://www.irony.com/mailroll.html">http://www.irony.com/mailroll.html</A>
 </P>
 
 <P>
-First things first, get PBEM to work. After clicking on <B>&quot;PBEM&quot;</B>
-from the drop-down list box at the TripleA start-up window, click the
-<B>&quot;PBEM&quot;</B> tab that is next to the  <B>&quot;Properties&quot;</B>tab.
-You will see some information displayed telling you what PBEM is
-about and that the server being used to roll the dice is located at
-<A HREF="http://www.irony.com/mailroll.html">http://www.irony.com/mailroll.html</A>
+<B>IMPORTANT NOTE</B> Although PBEM does work in TripleA there is one problem
+you will have to face. When engaing in a battle, your opponent <U>cannot</U> select
+their own casualties! You have to select their casualty for them! This may not be a
+big deal for some but it is for most.
 </P>
 
 <P>
-There is two e-mail address fields. Fill them out with two valid e-mail
-addresses. Hit the <B>&quot;Test Mail&quot;</B>button to test if
-everything is OK with PBEM mode, see Fig 1.0.
+To start playing a PBEM game you have to load up TripleA. At the startup window you
+select the <B>&quot;PBEM&quot;</B> option from the <B>&quot;Game Type&quot;</B> list.
+After that is done you will notice a <B>&quot;PBEM&quot;</B> tab show up next to the
+<B>&quot;Properties&quot;</B> tab, you will click on that.
+</P>
+
+<P>
+There are multiple email address fields. You fill them out approprietly with your email
+address and your opponent's email address. This means that when you play the game all
+dice rolls will be emailed to those addresses you specified. To verify that those email
+addresses work and to verify that the dice rolling server is also working, you click on
+the <B>&quot;Test Mail&quot;</B> button. You should see a small window appear showing the
+results of the tests. It is also wise to check your email to see if the mail arrived and
+what it says in there.
 </P>
 
 <TABLE ALIGN="CENTER" BORDER="0">
@@ -598,6 +605,30 @@ everything is OK with PBEM mode, see Fig 1.0.
 
 <P>
 Once the test succeeds then you can begin the game by hitting the <B>&quot;Play&quot;</B>button.
+You play your turn and (as mentioned in the first paragraph above) during battle you have to select
+your opponent's casualties because you cannot save the game in the middle of a battle. Once you finished
+your turn, you save your game and send the saved game file to your opponent.
+</P>
+
+<P>
+The steps your opponent have to take to load the PBEM game are as follows. They load up TripleA as normal.
+Select <B>&quot;PBEM&quot;</B> from the <B>&quot;Game Type&quot;</B> options list. Then, in the same place
+they choose to load a <B>&quot;Saved&quot;</B> game. They browse their computer and select the PBEM saved game
+file that their opponent sent them. Once they have selected the PBEM saved game file, they are now ready to
+click on the <B>&quot;PBEM&quot;</B> tab located at the top of the window. Once they are in that section, they
+have to fill out the email addresses approprietly as done above (can also opt to hit <B>&quot;Test Mail&quot;</B>).
+When that is done they can hit the <B>&quot;Play&quot;</B> button. They will see that they are now at the last place
+their opponent left off at (obviously). They do their turn and save it when they are done and send it to their
+opponent. And the cycle continues.
+</P>
+
+<P>
+<B>Possible PBEM Workarounds</B><BR>
+<BR>
+Since opponents cannot select their own casualties, you can have a general consensus with your opponents
+on what casualties should be selected at what kinds of battle scenarios. These actions can be double checked
+by checking the emails that the dice server sends. So if someone cheats and kills off 5 tanks instead of 5
+infantry, it will be painfully obvious of the foul play.
 </P>
 <BR>
 
