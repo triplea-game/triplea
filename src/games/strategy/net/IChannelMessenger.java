@@ -68,7 +68,13 @@ public interface IChannelMessenger
     /**
      * register a subscribor to a channel 
      */
-    public void registerChannelSubscriber(Object implemntor, String channelName);
+    public void registerChannelSubscriber(Object implementor, String channelName);
+    
+    /**
+     * unregister a subscribor to a channel 
+     */
+    public void unregisterChannelSubscriber(Object implementor, String channelName);
+    
     
     /**
      * Create a channel.

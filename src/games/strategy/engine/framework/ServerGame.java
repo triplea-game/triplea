@@ -72,7 +72,7 @@ public class ServerGame implements IGame
      * @param messenger IServerMessenger
      * @param remotePlayerMapping Map
      */
-    public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping)
+    public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping, IChannelMessenger channelMessenger)
     {
         m_data = data;
 
@@ -80,7 +80,7 @@ public class ServerGame implements IGame
         m_messenger.addMessageListener(m_messageListener);
         m_messageManager = new MessageManager(m_messenger);
         m_remoteMessenger = new RemoteMessenger(m_messageManager, m_messenger);
-        m_channelMessenger = new ChannelMessenger(m_messenger);
+        m_channelMessenger = channelMessenger;
 
         m_remotePlayers = new HashMap(remotePlayerMapping);
 

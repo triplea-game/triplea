@@ -18,13 +18,19 @@
 
 package games.strategy.engine.chat;
 
-import java.util.*;
-import java.io.Serializable;
+import games.strategy.net.IChannelMessenger;
+import games.strategy.net.IChannelSubscribor;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.IMessageListener;
+import games.strategy.net.IMessenger;
+import games.strategy.net.INode;
 
-import games.strategy.engine.message.Message;
-import games.strategy.engine.sound.ClipPlayer;
-import games.strategy.net.*;
-import games.strategy.triplea.sound.SoundPath;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -32,21 +38,34 @@ import games.strategy.triplea.sound.SoundPath;
  * 
  * @author Sean Bridges
  */
-public class Chat
+public class Chat implements IChatter
 {
-
-    private ChatFrame m_frame;
-    private IMessenger m_messenger;
+    private final String CHAT_CHANNEL = "games.strategy.engine.chat.CHAT_CHANNEL";
+    private final ChatFrame m_frame;
+    private final IMessenger m_messenger;
+    private final IChannelMessenger m_channelMessenger;
     
 	public static final String ME = "/me ";
 
+    public static boolean isThirdPerson(String msg)
+    {
+		return msg.toLowerCase().startsWith(ME);
+	}
+
     /** Creates a new instance of Chat */
-    public Chat(IMessenger messenger, ChatFrame frame)
+    public Chat(IMessenger messenger, ChatFrame frame, IChannelMessenger channelMessenger)
     {
 
         m_frame = frame;
         m_messenger = messenger;
-        m_messenger.addMessageListener(m_messageListener);
+        m_channelMessenger = channelMessenger;
+        
+        if(m_messenger.isServer())
+        {
+            m_channelMessenger.createChannel(IChatter.class, CHAT_CHANNEL);
+        }
+        m_channelMessenger.registerChannelSubscriber(this, CHAT_CHANNEL);
+        
         m_messenger.addConnectionChangeListener(m_connectionChangeListener);
         updateConnections();
     }
@@ -56,8 +75,7 @@ public class Chat
      */
     public void shutdown()
     {
-
-        m_messenger.removeMessageListener(m_messageListener);
+        m_channelMessenger.unregisterChannelSubscriber(this, CHAT_CHANNEL);
         m_messenger.removeConnectionChangeListener(m_connectionChangeListener);
     }
 
@@ -77,29 +95,35 @@ public class Chat
             }
         }
         if (destination != null)
-        {
-            //m_frame.addMessage("You just slapped " + playerName, "*" /*m_messenger.getLocalNode().getName()*/ );
-        	MeMessage message=new MeMessage("just slapped " + playerName);
-            m_frame.addMessage(message,m_messenger.getLocalNode().getName());
-            m_messenger.broadcast(message);
-            //m_messenger.send(new SlapMessage(), destination);
+        {          
+            IChatter remote = (IChatter) m_channelMessenger.getChannelBroadcastor(CHAT_CHANNEL);
+            remote.slap(m_messenger.getLocalNode(), destination);
         }
-
     }
-    void sendMessage(ChatMessage msg)
+    
+    public void slap(INode from, INode to)
     {
-        m_messenger.broadcast(msg);
-        m_frame.addMessage(msg, m_messenger.getLocalNode().getName());
+        if(to.equals(m_messenger.getLocalNode()))
+        {
+            m_frame.addMessage("You were slapped by " + from.getName(), from.getName(), false);
+        }
+        else if(from.equals(m_messenger.getLocalNode()))
+        {
+            m_frame.addMessage("You just slapped " + to.getName(), from.getName(), false);
+        }
     }
-    void sendMessage(MeMessage msg)
+    
+    void sendMessage(String message, boolean meMessage)
     {
-        m_messenger.broadcast(msg);
-        m_frame.addMessage(msg, m_messenger.getLocalNode().getName());
+        
+        IChatter remote = (IChatter) m_channelMessenger.getChannelBroadcastor(CHAT_CHANNEL);
+        if(meMessage)
+            remote.meMessage(message, m_messenger.getLocalNode());
+        else
+            remote.chat(message, m_messenger.getLocalNode());
     }
 
-    public static boolean isThirdPerson(String msg){
-		return msg.toLowerCase().startsWith(ME);
-	}
+
     private synchronized void updateConnections()
     {
 
@@ -128,33 +152,25 @@ public class Chat
         }
     };
 
-    private IMessageListener m_messageListener = new IMessageListener()
+    
+    public void chat(String message, INode from)
     {
-
-        public void messageReceived(Serializable msg, INode from)
-        {
-
-            if (msg instanceof ChatMessage)
-            {
-                m_frame.addMessage((ChatMessage) msg, from.getName());
-            }
-            if(msg instanceof MeMessage)
-            {
-                ClipPlayer.getInstance().playClip(SoundPath.LAND_BATTLE , SoundPath.class);
-                //m_frame.addMessage(from.getName() + " just slapped you ", from.getName());
-                m_frame.addMessage((MeMessage) msg,from.getName());
-                
-            }
-        }
-    };
+        m_frame.addMessage(message, from.getName(), false);
+    }
+    
+    public void meMessage(String message, INode from)
+    {
+        m_frame.addMessage(message, from.getName(), true);
+    }
+    
 }
 
 
-class MeMessage extends ChatMessage
+
+
+interface IChatter extends IChannelSubscribor
 {
-	MeMessage(String message)
-	{
-		super(message);
-	}
+    public void chat(String message, INode from);
+    public void meMessage(String message, INode from);
+    public void slap(INode from, INode to);
 }
-

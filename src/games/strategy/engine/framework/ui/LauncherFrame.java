@@ -32,6 +32,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.engine.chat.*;
 import java.awt.event.*;
 import games.strategy.engine.data.*;
+import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.random.*;
 import games.strategy.engine.gamePlayer.*;
 
@@ -55,6 +56,7 @@ public class LauncherFrame extends JFrame
   private GameData m_gameData;
   private PropertiesUI m_propertuesUI;
   private IMessenger m_messenger;
+  private IChannelMessenger m_channelMessenger;
   private ChatFrame m_chat;
   private ServerStartup m_serverStartup;
   private ClientStartup m_clientStartup;
@@ -193,7 +195,7 @@ public class LauncherFrame extends JFrame
     Set localPlayerSet = m_gameData.getGameLoader().createPlayers(localPlayerMapping);
     Map remotePlayers = m_serverStartup.getRemotePlayerMapping();
 
-    final ServerGame serverGame = new ServerGame(m_gameData, localPlayerSet,(IServerMessenger) m_messenger, remotePlayers);
+    final ServerGame serverGame = new ServerGame(m_gameData, localPlayerSet,(IServerMessenger) m_messenger, remotePlayers, m_channelMessenger);
     boolean useSecureRandomSource = !remotePlayers.isEmpty() && !localPlayerMapping.isEmpty();
     if(useSecureRandomSource)
     {
@@ -253,7 +255,7 @@ public class LauncherFrame extends JFrame
     Map playerMapping = m_clientStartup.getLocalPlayerMapping();
     Set playerSet =  m_gameData.getGameLoader().createPlayers(playerMapping);
 
-    ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger, ((ClientMessenger) m_messenger).getServerNode());
+    ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger, ((ClientMessenger) m_messenger).getServerNode(), m_channelMessenger);
 
 
     m_gameData.getGameLoader().startGame(clientGame, playerSet);
@@ -291,7 +293,7 @@ public class LauncherFrame extends JFrame
         }
 
         Set gamePlayers = m_gameData.getGameLoader().createPlayers(localPlayerMap);
-        ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap());
+        ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap(), new ChannelMessenger(messenger));
         if(m_gameTypePanel.isPBEM())
         {
           IronyGamesDiceRollerRandomSource randomSource = new IronyGamesDiceRollerRandomSource(m_pbemStartup.getEmail1(), m_pbemStartup.getEmail2());
@@ -406,7 +408,9 @@ public class LauncherFrame extends JFrame
     }
 
     m_messenger = messenger;
-    m_chat = new ChatFrame(messenger);
+    m_channelMessenger = new ChannelMessenger(m_messenger);
+    
+    m_chat = new ChatFrame(messenger, m_channelMessenger);
     m_chat.show();
 
     m_serverStartup = new ServerStartup( messenger);
@@ -464,7 +468,9 @@ public class LauncherFrame extends JFrame
       return;
     }
 
-    m_chat= new ChatFrame(m_messenger);
+    m_channelMessenger = new ChannelMessenger(m_messenger);
+    	
+    m_chat= new ChatFrame(m_messenger, m_channelMessenger);
     m_chat.show();
 
     m_clientStartup = new ClientStartup(m_messenger);

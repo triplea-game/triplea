@@ -25,9 +25,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
-import com.sun.corba.se.internal.core.SendingContextServiceContext;
-
 import games.strategy.engine.sound.ClipPlayer;
+import games.strategy.net.IChannelMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.triplea.sound.SoundPath;
 
@@ -47,21 +46,23 @@ public class ChatFrame extends JFrame
     
     private ChatHistory m_ChatHistory;
 
-    SimpleAttributeSet bold = new SimpleAttributeSet();
-    SimpleAttributeSet normal = new SimpleAttributeSet();
+    private final SimpleAttributeSet bold = new SimpleAttributeSet();
+    private final SimpleAttributeSet normal = new SimpleAttributeSet();
+    private final IMessenger m_messenger;
 
     /** Creates a new instance of ChatFrame */
-    public ChatFrame(IMessenger messenger)
+    public ChatFrame(IMessenger messenger, IChannelMessenger channelMessenger)
     {
 
         super("Chat");
 
+        m_messenger = messenger;
         setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(this));
 
         createComponents();
         layoutComponents();
 
-        m_chat = new Chat(messenger, this);
+        m_chat = new Chat(messenger, this, channelMessenger);
 		m_ChatHistory = new ChatHistory();
 
         StyleConstants.setBold(bold, true);
@@ -155,6 +156,9 @@ public class ChatFrame extends JFrame
         if(index == -1)
             return;
         final String playerName = m_listModel.get(index).toString();
+        //you cant slap yourself
+        if(playerName.equals(m_messenger.getLocalNode().getName()))
+                return;
         
         Action slap = new AbstractAction("Slap " + playerName)
         {
@@ -171,28 +175,8 @@ public class ChatFrame extends JFrame
         
     }
     
-    /**
-     * 
-     * 
-     * /** thread safe.
-     */
-    void addMessage(ChatMessage msg, String from)
-    {
-
-        addMessage(msg.getMessage(), from, false);
-   
-
-    }
-    void addMessage(MeMessage msg, String from)
-    {
-
-        addMessage(msg.getMessage(), from, true);
-   
-
-    }
-
     /** thread safe */
-    void addMessage(final String message, final String from,final boolean thirdperson)
+    void addMessage(final String message, final String from, final boolean thirdperson)
     {
 
         Runnable runner = new Runnable()
@@ -270,12 +254,11 @@ public class ChatFrame extends JFrame
             if (m_nextMessage.getText().trim().length() == 0)
                 return;
             if(Chat.isThirdPerson(m_nextMessage.getText())){
-                MeMessage msg = new MeMessage(m_nextMessage.getText().substring(Chat.ME.length()));
-                m_chat.sendMessage(msg);
+                m_chat.sendMessage(m_nextMessage.getText().substring(Chat.ME.length()), true);
             	
             } else {
-            	ChatMessage msg = new ChatMessage(m_nextMessage.getText());
-            	m_chat.sendMessage(msg);
+            	
+            	m_chat.sendMessage(m_nextMessage.getText(), false);
             }
 			m_ChatHistory.append(m_nextMessage.getText());
             m_nextMessage.setText("");

@@ -78,6 +78,18 @@ public class ChannelMessenger implements IChannelMessenger
         channel.addSubscribor(implementor);
     }
 
+
+    /* (non-Javadoc)
+     * @see games.strategy.net.IChannelMessenger#unregisterChannelSubscriber(java.lang.Object, java.lang.String)
+     */
+    public void unregisterChannelSubscriber(Object implementor, String channelName)
+    {
+        Channel channel = (Channel) m_channels.get(channelName);
+        if(channel == null)
+            return;
+        channel.removeSubscribor(implementor);
+    }    
+    
     /* 
      * @see games.strategy.net.IChannelMessenger#createChannel(java.lang.Class, java.lang.String)
      */
@@ -151,7 +163,7 @@ public class ChannelMessenger implements IChannelMessenger
                 Class[] argTypes = methodCall.getArgTypes();
                 channel.invokeLocal(methodCall.getMethodName(), argTypes, methodCall.getArgs() );
             }
-            else if (msg instanceof ChannelInit)
+            else if (msg instanceof ChannelRequestInit)
             {
                 //no need for everyone to respond
                 if(!m_messenger.isServer())
@@ -161,7 +173,7 @@ public class ChannelMessenger implements IChannelMessenger
                 while(iter.hasNext())
                 {
                     String name = (String) iter.next();
-                    channels.put(name, ((Class) m_channels.get(name)).getName());
+                    channels.put(name, ((Channel) m_channels.get(name)).getChannelInterface().getName());
                     m_messenger.send(new ChannelInit(channels), from);
                 }
             }
@@ -208,7 +220,8 @@ public class ChannelMessenger implements IChannelMessenger
     public boolean hasChannel(String channelName)
     {
        return m_channels.containsKey(channelName);
-    }   
+    }
+
       
 }
 
@@ -258,7 +271,7 @@ class Channel
         m_subscribors.add(subscribor);
     }
     
-    public void removeSubscribor(IChannelSubscribor subscribor)
+    public void removeSubscribor(Object subscribor)
     {
         m_subscribors.remove(subscribor);
     }
