@@ -82,39 +82,39 @@ public class TechTracker implements java.io.Serializable
 
   }
 
-  public synchronized void addAdvance(PlayerID player, GameData data, DelegateBridge bridge, TechAdvance advance)
+  public static synchronized void addAdvance(PlayerID player, GameData data, DelegateBridge bridge, TechAdvance advance)
   {
     Change attatchmentChange = ChangeFactory.attatchmentPropertyChange(TechAttatchment.get(player), "true", advance.getProperty());
     bridge.addChange(attatchmentChange);
     advance.perform(player, bridge, data);
   }
 
-  public boolean hasLongRangeAir(PlayerID player)
+  public static boolean hasLongRangeAir(PlayerID player)
   {
     return TechAttatchment.get(player).hasLongRangeAir();
   }
 
-  public boolean hasHeavyBomber(PlayerID player)
+  public static boolean hasHeavyBomber(PlayerID player)
   {
     return TechAttatchment.get(player).hasHeavyBomber();
   }
 
-  public boolean hasSuperSubs(PlayerID player)
+  public static boolean hasSuperSubs(PlayerID player)
   {
     return TechAttatchment.get(player).hasSuperSub();
   }
 
-  public boolean hasJetFighter(PlayerID player)
+  public static boolean hasJetFighter(PlayerID player)
   {
     return TechAttatchment.get(player).hasJetPower();
   }
 
-  public boolean hasRocket(PlayerID player)
+  public static boolean hasRocket(PlayerID player)
   {
     return TechAttatchment.get(player).hasRocket();
   }
 
-  public boolean hasIndustrialTechnology(PlayerID player)
+  public static boolean hasIndustrialTechnology(PlayerID player)
   {
     return TechAttatchment.get(player).hasIndustrialTechnology();
   }

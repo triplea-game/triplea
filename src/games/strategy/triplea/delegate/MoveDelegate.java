@@ -1119,7 +1119,7 @@ public class MoveDelegate implements SaveableDelegate
             m_alreadyMoved.clear();
             m_transportTracker.endOfRoundClearState();
 
-            if (DelegateFinder.techDelegate(m_data).getTechTracker().hasRocket(m_bridge.getPlayerID()))
+            if (TechTracker.hasRocket(m_bridge.getPlayerID()))
             {
                 RocketsFireHelper helper = new RocketsFireHelper();
                 helper.fireRockets(m_bridge, m_data, m_bridge.getPlayerID());

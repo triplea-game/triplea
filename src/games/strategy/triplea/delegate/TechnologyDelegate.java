@@ -46,7 +46,6 @@ public class TechnologyDelegate implements SaveableDelegate
   private String m_displayName;
   private GameData m_data;
   private DelegateBridge m_bridge;
-  private TechTracker m_techTracker = new TechTracker();
   private PlayerID m_player;
 
   /** Creates new TechnolgoyDelegate */
@@ -125,7 +124,7 @@ public class TechnologyDelegate implements SaveableDelegate
         text.append(", ");
       if(count == 1)
         text.append(" and ");
-      m_techTracker.addAdvance(m_bridge.getPlayerID(), m_data, m_bridge, advance);
+      TechTracker.addAdvance(m_bridge.getPlayerID(), m_data, m_bridge, advance);
     }
 
     String transcriptText =  m_bridge.getPlayerID().getName() + " discover " + text.toString();
@@ -225,10 +224,6 @@ private List getAvailableAdvances()
 
   }
 
-  public TechTracker getTechTracker()
-  {
-    return m_techTracker;
-  }
 
   /**
    * Called before the delegate will stop running.
@@ -251,7 +246,7 @@ private List getAvailableAdvances()
    */
   public Serializable saveState()
   {
-    return m_techTracker;
+    return null;
   }
 
   /**
@@ -259,7 +254,7 @@ private List getAvailableAdvances()
    */
   public void loadState(Serializable state)
   {
-    m_techTracker = (TechTracker) state;
+    
   }
 
 

@@ -50,11 +50,7 @@ public class UnitIconImageFactory
     return s_instance;
   }
 
-  TechTracker m_techTracker = new TechTracker();
-  private TechTracker getTechTracker(GameData data)
-  {
-    return m_techTracker;
-  }
+
 
   /**
    * Width of all icons.
@@ -138,11 +134,11 @@ public class UnitIconImageFactory
 
       if (type.getName().equals(Constants.FIGHTER_TYPE))
       {
-          if (getTechTracker(data).hasLongRangeAir(id))
+          if (TechTracker.hasLongRangeAir(id))
           {
               name.append("_lr");
           }
-          if (getTechTracker(data).hasJetFighter(id))
+          if (TechTracker.hasJetFighter(id))
           {
               name.append("_jp");
           }
@@ -150,12 +146,12 @@ public class UnitIconImageFactory
 
       if (type.getName().equals(Constants.BOMBER_TYPE))
       {
-          if (getTechTracker(data).hasLongRangeAir(id))
+          if (TechTracker.hasLongRangeAir(id))
           {
               name.append("_lr");
           }
 
-          if (getTechTracker(data).hasHeavyBomber(id))
+          if (TechTracker.hasHeavyBomber(id))
           {
               name.append("_hb");
           }
@@ -163,18 +159,18 @@ public class UnitIconImageFactory
 
       if (type.getName().equals(Constants.SUBMARINE_TYPE))
       {
-          if (getTechTracker(data).hasSuperSubs(id))
+          if (TechTracker.hasSuperSubs(id))
           {
               name.append("_ss");
           }
-          if (getTechTracker(data).hasRocket(id))
+          if (TechTracker.hasRocket(id))
           {}
       }
 
       if (type.getName().equals(Constants.FACTORY_TYPE))
       {
 
-          if (getTechTracker(data).hasIndustrialTechnology(id))
+          if (TechTracker.hasIndustrialTechnology(id))
           {
               name.append("_it");
           }

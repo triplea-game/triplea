@@ -80,10 +80,7 @@ public class UnitAttatchment extends DefaultAttatchment
   {
   }
 
-  private TechTracker getTechTracker()
-  {
-    return DelegateFinder.techDelegate(getData()).getTechTracker();
-  }
+
 
 
   public void setCanBlitz(String s)
@@ -270,8 +267,8 @@ public class UnitAttatchment extends DefaultAttatchment
   {
     if(m_isAir)
     {
-      TechTracker tracker = getTechTracker();
-      if(tracker.hasLongRangeAir(player))
+      
+      if(TechTracker.hasLongRangeAir(player))
         return m_movement + 2;
     }
     return m_movement;
@@ -286,8 +283,8 @@ public class UnitAttatchment extends DefaultAttatchment
   {
     if(m_isSub)
     {
-      TechTracker tracker = getTechTracker();
-      if(tracker.hasSuperSubs(player))
+      
+      if(TechTracker.hasSuperSubs(player))
         return m_attack + 1;
     }
 
@@ -308,8 +305,8 @@ public class UnitAttatchment extends DefaultAttatchment
   {
     if(m_isAir && !m_isStrategicBomber)
     {
-      TechTracker tracker = getTechTracker();
-      if(tracker.hasJetFighter(player))
+      
+      if(TechTracker.hasJetFighter(player))
         return m_defense + 1;
     }
     return m_defense;
@@ -323,8 +320,8 @@ public class UnitAttatchment extends DefaultAttatchment
 
     if(m_isStrategicBomber)
     {
-      TechTracker tracker = getTechTracker();
-      if(tracker.hasHeavyBomber(player))
+     
+      if(TechTracker.hasHeavyBomber(player))
       {
         if(getData().getProperties().get(Constants.HEAVY_BOMBER_DICE_ROLLS) != null)
             return new Integer( (String) getData().getProperties().get(Constants.HEAVY_BOMBER_DICE_ROLLS)).intValue();
