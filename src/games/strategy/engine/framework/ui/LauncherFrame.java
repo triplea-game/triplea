@@ -231,6 +231,7 @@ public class LauncherFrame extends JFrame
             serverGame.setRandomSource(randomSource);
             
         }
+            
 
         m_gameData.getGameLoader().startGame(serverGame, localPlayerSet);
 
@@ -278,10 +279,8 @@ public class LauncherFrame extends JFrame
                 m_channelMessenger, m_remoteMessenger);
 
         m_gameData.getGameLoader().startGame(clientGame, playerSet);
-
         
         ((IServerReady) m_remoteMessenger.getRemote(LauncherFrame.CLIENT_READY_CHANNEL)).clientReady();
-        
         
         SwingUtilities.invokeLater( new Runnable()
         {
@@ -333,6 +332,12 @@ public class LauncherFrame extends JFrame
                             .getEmail2());
                     game.setRandomSource(randomSource);
                     m_pbemStartup.storeEmails(m_gameData);
+                }
+                
+                //for debugging, we can use a scripted random source
+                if(ScriptedRandomSource.useScriptedRandom())
+                {
+                    game.setRandomSource(new ScriptedRandomSource());
                 }
 
                 m_gameData.getGameLoader().startGame(game, gamePlayers);
