@@ -299,14 +299,6 @@ public class BattlePanel extends ActionPanel
 
     public void actionPerformed(ActionEvent actionEvent)
     {
-
-      if(!m_bomb)
-      {
-        Iterator iter = m_territory.getUnits().getPlayersWithUnits().iterator();
-        PlayerID first = (PlayerID) iter.next();
-        PlayerID second = (PlayerID) iter.next();
-      }
-
       m_fightBattleMessage = new FightBattleMessage(m_territory, m_bomb);
       synchronized(getLock())
       {
