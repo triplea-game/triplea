@@ -42,6 +42,7 @@ public class ServerMessenger implements IServerMessenger
 	private ListenerList m_errorListeners = new ListenerList();
 	private ListenerList m_connectionListeners = new ListenerList();
 	private boolean m_acceptNewConnection = false;
+	private IConnectionAccepter m_connectionAccepter = null;
 	
 	private IObjectStreamFactory m_inStreamFactory;
 	
@@ -222,6 +223,19 @@ public class ServerMessenger implements IServerMessenger
 		if(c == null)
 			return;
 		
+	
+		if(m_connectionAccepter != null)
+		{
+			String error = m_connectionAccepter.acceptConnection(this,  c.getRemoteNode());
+			if(error != null)
+			{
+				ConnectionRefusedMessage msg = new ConnectionRefusedMessage(error);
+				MessageHeader header = new MessageHeader(m_node, c.getRemoteNode(), msg);
+				c.send(header);
+				return;
+			}
+		}
+			
 		m_allNodes.add(c.getRemoteNode());
 		
 		ClientInitServerMessage init = new ClientInitServerMessage( new HashSet(m_allNodes));	
@@ -281,6 +295,7 @@ public class ServerMessenger implements IServerMessenger
 			((IConnectionChangeListener) iter.next()).connectionsChanged();
 		}
 	}
+
 	
 	public void setAcceptNewConnections(boolean accept)
 	{	
@@ -294,7 +309,17 @@ public class ServerMessenger implements IServerMessenger
 	{
 		return m_node;
 	}
-
+	
+	/**
+	 * Can be set to null.
+	 * If not null the server will only accept connections that
+	 * the accepter accepts.
+	 */
+	public synchronized void setConnectionAccepter(IConnectionAccepter accepter)
+	{
+		m_connectionAccepter = accepter;
+	}
+	
 	private class ConnectionHandler implements Runnable
 	{
 		public void run()

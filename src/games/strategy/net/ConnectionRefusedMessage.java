@@ -13,28 +13,34 @@
  */
 
 /*
- * IServerMessenger.java
+ * ConnectionRefusedMessage.java
  *
- * Created on December 14, 2001, 1:02 PM
+ * Created on February 5, 2002, 1:30 PM
  */
 
 package games.strategy.net;
 
 /**
  *
- * A server messenger.  Additional methods for accepting new connections.
  *
  * @author  Sean Bridges
  */
-public interface IServerMessenger extends IMessenger
+public class ConnectionRefusedMessage extends ServerMessage
 {
-	public void setAcceptNewConnections(boolean accept);
+	private String m_error;
 	
 	/**
-	 * Can be set to null.
-	 * If not null the server will only accept connections that
-	 * the accepter accepts.
+	 * Creates a new instance of ConnectionRefusedMessage
 	 */
-	public void setConnectionAccepter(IConnectionAccepter accepter);
+	public ConnectionRefusedMessage(String reason)
+	{
+		if(reason == null)
+			throw new IllegalArgumentException("reason cannot be null");
+		m_error = reason;
+	}
+	
+	public String getError()
+	{
+		return m_error;
+	}
 }
-

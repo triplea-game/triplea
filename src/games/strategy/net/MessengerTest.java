@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * MangerTest.java
  *
  * Created on December 27, 2001, 12:24 PM
@@ -45,7 +59,6 @@ public class MessengerTest extends TestCase
 	
 	public void setUp() throws IOException
 	{
-	
 		m_server = new ServerMessenger("Server", SERVER_PORT);
 		m_server.setAcceptNewConnections(true);
 		m_server.addMessageListener(m_serverListener);
@@ -54,10 +67,53 @@ public class MessengerTest extends TestCase
 		m_client1.addMessageListener(m_client1Listener);
 		
 		m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
-		m_client2.addMessageListener(m_client2Listener);
-		
-		
+		m_client2.addMessageListener(m_client2Listener);		
 	}
+	
+	public void testRefused()
+	{
+		m_server.setConnectionAccepter( new IConnectionAccepter()
+		{
+			public String acceptConnection(IServerMessenger messenger, INode node)
+			{
+				return "No can do";
+			}
+		});
+		
+		Exception e = null;
+		try
+		{
+			ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "client3");
+		}
+		catch(IOException ioe)
+		{
+			e = ioe;
+		}
+		assertNotNull(e);	
+	}
+	
+	public void testAccept()
+	{
+		m_server.setConnectionAccepter( new IConnectionAccepter()
+		{
+			public String acceptConnection(IServerMessenger messenger, INode node)
+			{
+				return null;
+			}
+		});
+		
+		Exception e = null;
+		try
+		{
+			ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "client3");
+		}
+		catch(IOException ioe)
+		{
+			e = ioe;
+		}
+		assertNull(e);	
+	}
+	
 	
 	public void tearDown()
 	{

@@ -13,28 +13,24 @@
  */
 
 /*
- * IServerMessenger.java
+ * IConnectionAccepter.java
  *
- * Created on December 14, 2001, 1:02 PM
+ * Created on February 5, 2002, 1:11 PM
  */
 
 package games.strategy.net;
 
 /**
- *
- * A server messenger.  Additional methods for accepting new connections.
+ * Used to determine if a connection can be added to the server.
  *
  * @author  Sean Bridges
  */
-public interface IServerMessenger extends IMessenger
+public interface IConnectionAccepter
 {
-	public void setAcceptNewConnections(boolean accept);
-	
 	/**
-	 * Can be set to null.
-	 * If not null the server will only accept connections that
-	 * the accepter accepts.
+	 * Called before a connection is added.  
+	 *
+	 * @return null if the connection is to be accepted, otherwise an error message.
 	 */
-	public void setConnectionAccepter(IConnectionAccepter accepter);
+	public String acceptConnection(IServerMessenger messenger, INode node);
 }
-

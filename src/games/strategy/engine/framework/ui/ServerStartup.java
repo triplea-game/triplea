@@ -58,7 +58,10 @@ public class ServerStartup extends JFrame
 	{
 		super("Server");
 
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		
 		
 		m_loader = loader;
 		m_data = data;
@@ -111,7 +114,9 @@ public class ServerStartup extends JFrame
 	public void waitForPlayers()
 	{
 		m_messenger.addMessageListener(m_messageListener);
+		m_messenger.addErrorListener(m_messengerErrorListener);
 		
+		m_messenger.setConnectionAccepter(m_connectionAccepter);
 		m_messenger.setAcceptNewConnections(true);
 		
 		try
@@ -127,7 +132,11 @@ public class ServerStartup extends JFrame
 		}
 		
 		m_messenger.setAcceptNewConnections(false);
+		m_messenger.setConnectionAccepter(null);
+		
 		m_messenger.removeMessageListener(m_messageListener);
+		m_messenger.removeErrorListener(m_messengerErrorListener);
+		
 	}
 	
 	private void initComponents()
@@ -431,4 +440,52 @@ public class ServerStartup extends JFrame
 			}
 		};
 	}
+	
+	IConnectionAccepter m_connectionAccepter = new IConnectionAccepter()
+	{
+		public String acceptConnection(IServerMessenger messenger, INode node)
+		{		
+			
+			// Make sure the name is valid.  Game is used to display 
+			// game messages, want at least two chars, 
+			// the first of which is a letter to avoid confusion.
+			String name = node.getName();
+			if(name.length() < 2  || !Character.isLetter(name.charAt(0)) || name.equalsIgnoreCase("Game"))
+				return name + "is an invalid name";
+			
+			//  Make sure that only one name exists.
+			Iterator iter = messenger.getNodes().iterator();
+			while(iter.hasNext())
+			{
+				INode current = (INode) iter.next();
+				if(current.getName().equalsIgnoreCase(name))
+					return name + " is already in use";
+			}
+			return null;
+		}
+	};
+	
+	private  IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
+	{
+		public void connectionLost(INode node, Exception reason, java.util.List unsent)
+		{
+			Iterator iter = m_playerRows.iterator();
+			while(iter.hasNext())
+			{
+				PlayerRow row = (PlayerRow) iter.next();
+				if(!row.isLocal() && row.getNode() != null && row.getNode().equals(node))
+				{
+					row.setNode(null);
+				}
+			}
+			setWidgetActivation();
+		}
+		
+		public void messengerInvalid(IMessenger messenger, Exception reason, java.util.List unsent)
+		{
+			JOptionPane.showMessageDialog(ServerStartup.this, "Unrecoverable error" + reason.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	};
+
+	
 }

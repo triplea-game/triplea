@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.net;
 
 import java.io.*;
@@ -14,6 +28,7 @@ public class ClientMessenger implements IMessenger
 	private Connection m_connection;
 	private ListenerList m_errorListeners = new ListenerList();
 	private ListenerList m_connectionListeners = new ListenerList();
+	private String m_connectionRefusedError;
 
 	public ClientMessenger(String host, int port, String name) throws IOException, UnknownHostException
 	{
@@ -40,7 +55,15 @@ public class ClientMessenger implements IMessenger
 			{}
 		}
 		if(!m_connection.isConnected())
-			throw new IOException("Connection lost");
+		{
+			if(m_connectionRefusedError != null)
+			{
+				throw new IOException("Connection refused:" + m_connectionRefusedError);
+			} else
+			{
+				throw new IOException("Connection lost");
+			}
+		}
 	}
 		
 	private void serverMessageReceived(ServerMessage msg)
@@ -52,6 +75,11 @@ public class ClientMessenger implements IMessenger
 		else if(msg instanceof ClientInitServerMessage)
 		{
 			initMessageReceived( (ClientInitServerMessage) msg);
+		}
+		else if (msg instanceof ConnectionRefusedMessage)
+		{
+			m_connectionRefusedError = ((ConnectionRefusedMessage) msg).getError();
+			shutDown();
 		}
 		else 
 			throw new IllegalArgumentException("Unknown server messgae:" + msg);
@@ -141,7 +169,6 @@ public class ClientMessenger implements IMessenger
 	{
 		m_connection.shutDown();
 		m_allNodes = Collections.EMPTY_SET;
-		
 	}
 	
 	private IConnectionListener m_connectionListener = new IConnectionListener()
