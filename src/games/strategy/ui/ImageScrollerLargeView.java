@@ -221,10 +221,10 @@ public class ImageScrollerLargeView extends JComponent
       dx = SCROLL_DISTANCE;
 
     int newX = (m_x + dx);
-    if(newX > m_offscreenImage.getWidth(this))
-      newX = 0;
+    if(newX > m_offscreenImage.getWidth(this)-getWidth())
+      newX -= m_offscreenImage.getWidth(this);
     if(newX < -getWidth())
-      newX = m_offscreenImage.getWidth(this) - getWidth();
+      newX += m_offscreenImage.getWidth(this);
    // newX = checkBounds(newX, m_originalImage.getWidth(this), this.getWidth(), true);
 
     int newY = m_y + dy;
@@ -361,10 +361,12 @@ public class ImageScrollerLargeView extends JComponent
 
 			//move left and right and test for wrap
 			int newX = (m_x + dx);
-			if(newX > width)
-			  newX = 0;
+			if(newX > m_offscreenImage.getWidth(ImageScrollerLargeView.this)-getWidth())
+			  newX -= m_offscreenImage.getWidth(ImageScrollerLargeView.this);
 			if(newX < -getWidth())
-			  newX = m_offscreenImage.getWidth( ImageScrollerLargeView.this) - width;
+			  newX += m_offscreenImage.getWidth(ImageScrollerLargeView.this);
+
+			  
 		   // newX = checkBounds(newX, m_originalImage.getWidth(this), this.getWidth(), true);
 
 			//move up and down and test for edges
