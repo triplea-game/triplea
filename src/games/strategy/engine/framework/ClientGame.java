@@ -31,6 +31,7 @@ import games.strategy.net.*;
 import games.strategy.util.ListenerList;
 
 import games.strategy.engine.history.*;
+import games.strategy.engine.random.*;
 
 /**
  *
@@ -179,5 +180,10 @@ public class ClientGame implements IGame
   {
     m_messenger.shutDown();
   }
+  public IRandomSource getRandomSource()
+  {
+    return null;
+  }
+
 
 }

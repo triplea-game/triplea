@@ -60,30 +60,27 @@ public class ServerGame implements IGame
     private final Map m_remotePlayers;
     private final Object m_remotePlayerStepLock = new Object();
 
+    private IRandomSource m_randomSource = new PlainRandomSource();
 
     /** Creates new Game */
-    public ServerGame(GameData data, Set gamePlayers, IServerMessenger messenger, Map remotePlayerMapping)
+    public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping)
     {
         m_data = data;
 
         m_messenger = messenger;
         m_messenger.addMessageListener(m_messageListener);
-
-
+        m_messageManager = new MessageManager(m_messenger);
 
         m_remotePlayers = new HashMap(remotePlayerMapping);
 
-        m_messageManager = new MessageManager(m_messenger);
-        Iterator iter = gamePlayers.iterator();
-
         //add a random destination for the null player
         RandomDestination rnd_dest = new RandomDestination(PlayerID.NULL_PLAYERID.getName());
-
         m_messageManager.addDestination(rnd_dest);
 
-        while (iter.hasNext())
+        Iterator localPlayersIter = localPlayers.iterator();
+        while (localPlayersIter.hasNext())
         {
-            GamePlayer gp = (GamePlayer) iter.next();
+            GamePlayer gp = (GamePlayer) localPlayersIter.next();
             PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
             m_gamePlayers.put(player, gp);
             PlayerBridge bridge = new DefaultPlayerBridge(this);
@@ -112,16 +109,14 @@ public class ServerGame implements IGame
 
         m_messageManager.addDestination(nullDest);
 
-        iter = data.getDelegateList().iterator();
-        while (iter.hasNext())
+        localPlayersIter = data.getDelegateList().iterator();
+        while (localPlayersIter.hasNext())
         {
-            Delegate delegate = (Delegate) iter.next();
+            Delegate delegate = (Delegate) localPlayersIter.next();
             m_messageManager.addDestination(delegate);
         }
 
         m_changePerformer = new ChangePerformer(m_data);
-
-
     }
 
     public GameData getData()
@@ -202,12 +197,8 @@ public class ServerGame implements IGame
 
         PlayerID[] dicePlayers = getDicePlayers();
         DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, getCurrentStep(), this, new DelegateHistoryWriter(m_data.getHistory().getHistoryWriter(), m_messenger));
+        bridge.setRandomSource(m_randomSource);
 
-        if(!m_remotePlayers.isEmpty())
-        {
-          CryptoRandomSource randomSource = new CryptoRandomSource(dicePlayers[0], dicePlayers[1], bridge);
-          bridge.setRandomSource(randomSource);
-        }
 
         notifyGameStepChanged();
         getCurrentStep().getDelegate().start(bridge, m_data);
@@ -346,6 +337,15 @@ public class ServerGame implements IGame
     public void shutdown()
     {
         m_messenger.shutDown();
+    }
 
+    public IRandomSource getRandomSource()
+    {
+      return m_randomSource;
+    }
+
+    public void setRandomSource(IRandomSource randomSource)
+    {
+      m_randomSource = randomSource;
     }
 }

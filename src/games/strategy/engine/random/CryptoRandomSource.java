@@ -31,14 +31,14 @@ public class CryptoRandomSource implements IRandomSource
   //dice are rolled securly between these two
   final private PlayerID m_diceRollerPlayer1;
   final private PlayerID m_diceRollerPlayer2;
-  final private DefaultDelegateBridge m_bridge;
+  final private IMessageManager  m_messageManager;
 
 
-  public CryptoRandomSource(PlayerID dicePlayer1, PlayerID dicePlayer2, DefaultDelegateBridge delegateBridge)
+  public CryptoRandomSource(PlayerID dicePlayer1, PlayerID dicePlayer2, IMessageManager MessageManager)
   {
     m_diceRollerPlayer1 = dicePlayer1;
     m_diceRollerPlayer2 = dicePlayer2;
-    m_bridge =  delegateBridge;
+    m_messageManager = MessageManager;
   }
 
   /**
@@ -52,7 +52,7 @@ public class CryptoRandomSource implements IRandomSource
 
      Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_RANDOM, null);
 
-     msg = m_bridge.sendMessage(msg, m_diceRollerPlayer2.getName() + "RandomDest");
+     msg = m_messageManager.send(msg, m_diceRollerPlayer2.getName() + "RandomDest");
 
      return ((Integer)((RandomNumberMessage)msg).m_obj).intValue();
    }
@@ -68,7 +68,7 @@ public class CryptoRandomSource implements IRandomSource
      Message msg = new RandomNumberMessage(RandomNumberMessage.SEND_RANDOM,
                                            new Integer(count));
 
-     msg = m_bridge.sendMessage(msg, RandomDestination.getRandomDestination(m_diceRollerPlayer2.getName()));
+     msg =  m_messageManager.send(msg, RandomDestination.getRandomDestination(m_diceRollerPlayer2.getName()));
 
      return (int[])((RandomNumberMessage)msg).m_obj;
    }
@@ -83,23 +83,23 @@ public class CryptoRandomSource implements IRandomSource
                                            new Integer(max));
 
      // Send maximum value, request triplet
-     msg = m_bridge.sendMessage(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
+     msg =  m_messageManager.send(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
 
      // send triplet, request triplet
      ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_TRIPLET;
-     msg = m_bridge.sendMessage(msg, (m_diceRollerPlayer2.getName() + "RandomDest"));
+     msg =  m_messageManager.send(msg, (m_diceRollerPlayer2.getName() + "RandomDest"));
 
      // send triplet, request key
      ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_KEY;
-     msg = m_bridge.sendMessage(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
+     msg =  m_messageManager.send(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
 
      // send key, request key
      ((RandomNumberMessage)msg).m_request = RandomNumberMessage.SEND_KEY;
-     msg = m_bridge.sendMessage(msg, (m_diceRollerPlayer2.getName() + "RandomDest"));
+     msg =  m_messageManager.send(msg, (m_diceRollerPlayer2.getName() + "RandomDest"));
 
      // send key, request nothing
      ((RandomNumberMessage)msg).m_request = RandomNumberMessage.NO_REQUEST;
-     m_bridge.sendMessage(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
+      m_messageManager.send(msg, (m_diceRollerPlayer1.getName() + "RandomDest"));
    }
 
 

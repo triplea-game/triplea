@@ -21,21 +21,13 @@
 
 package games.strategy.triplea;
 
+import java.io.IOException;
 import java.util.*;
-import java.net.URL;
-import java.io.*;
-import javax.swing.*;
-import org.xml.sax.SAXException;
 
-import games.strategy.engine.data.GameParser;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.gamePlayer.GamePlayer;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.*;
-import games.strategy.net.*;
-
-
-import games.strategy.triplea.ui.*;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
+import games.strategy.triplea.ui.TripleAFrame;
 
 
 /**
@@ -57,39 +49,45 @@ public class TripleA implements IGameLoader
 		}
 		return players;
 	}
-	
+
 	public void startGame(IGame game, Set players)
 	{
 		try
 		{
 			TripleAFrame frame = new TripleAFrame(game, players);
-						
+
 			frame.setSize(800,600);
-			
+
+      //the pbem roller needs to know about the ui.
+      if(game.getRandomSource() != null && game.getRandomSource() instanceof IronyGamesDiceRollerRandomSource)
+      {
+        ((IronyGamesDiceRollerRandomSource) game.getRandomSource()).setUI(frame);
+      }
+
 			frame.setVisible(true);
 			while(!frame.isVisible())
 			{
 				Thread.currentThread().yield();
 			}
 
-			connectPlayers(players, frame);		
+			connectPlayers(players, frame);
 		} catch(IOException ioe)
 		{
 			ioe.printStackTrace();
 			System.exit(0);
 		}
 	}
-		
+
 	private void connectPlayers(Set players, TripleAFrame frame)
 	{
 		Iterator iter = players.iterator();
 		while(iter.hasNext())
-		{	
+		{
 			TripleAPlayer player = (TripleAPlayer) iter.next();
 			player.setFrame(frame);
 		}
 	}
-		
+
 	/**
 	 * Return an array of player types that can play on the server.
 	 * This array must not contain any entries that could play on the client.
@@ -99,7 +97,7 @@ public class TripleA implements IGameLoader
 		String[] players = {"Server"};
 		return players;
 	}
-	
+
 	/**
 	 * Return an array of player types that can play on the client.
 	 * This array must not contain any entries that could play on the server.

@@ -25,6 +25,7 @@ import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.message.IMessageManager;
 import games.strategy.net.IMessenger;
 import games.strategy.engine.data.Change;
+import games.strategy.engine.random.*;
 
 
 /**
@@ -54,4 +55,6 @@ public interface IGame
   public boolean canSave();
 
   public void shutdown();
+
+  public IRandomSource getRandomSource();
 }

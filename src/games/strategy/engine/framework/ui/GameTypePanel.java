@@ -40,6 +40,7 @@ public class GameTypePanel extends JPanel
   private static final String SERVER = "Server";
   private static final String CLIENT = "Client";
   private static final String LOCAL = "Local Game";
+  private static final String PBEM = "PBEM";
 
   private LauncherFrame m_launcherFrame;
 
@@ -58,7 +59,7 @@ public class GameTypePanel extends JPanel
   private Border border3;
   private TitledBorder titledBorder2;
   private Border border4;
-  private JComboBox m_gameTypeComboBox = new JComboBox(new String[] {LOCAL, SERVER, CLIENT});
+  private JComboBox m_gameTypeComboBox = new JComboBox(new String[] {LOCAL, SERVER, CLIENT, PBEM});
 
   private FlowLayout flowLayout3 = new FlowLayout();
   private JPanel m_gameVersionPanel = new JPanel();
@@ -214,8 +215,9 @@ public class GameTypePanel extends JPanel
 
     m_launcherFrame.clearGameType();
 
-    if(isServer() || isClient())
+    if(isServer() || isClient() || isPBEM())
       m_launcherFrame.chooseClientServerOptions();
+
 
     m_launcherFrame.setWidgetActivation();
 
@@ -305,6 +307,11 @@ public class GameTypePanel extends JPanel
   public void setLocal()
   {
     m_gameTypeComboBox.setSelectedItem(LOCAL);
+  }
+
+  public boolean isPBEM()
+  {
+    return m_gameTypeComboBox.getSelectedItem().equals(PBEM);
   }
 
   public boolean isServer()

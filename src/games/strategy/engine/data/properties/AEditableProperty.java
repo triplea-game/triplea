@@ -16,9 +16,9 @@ package games.strategy.engine.data.properties;
 
 import javax.swing.JComponent;
 
-public abstract class AEditableProperty implements IEditableProperty, java.io.Serializable
+public abstract class AEditableProperty implements IEditableProperty, java.io.Serializable, Comparable
 {
-  private String m_name;
+  private final String m_name;
 
   public AEditableProperty(String name)
   {
@@ -35,6 +35,30 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
     JComponent rVal = getEditorComponent();
     rVal.setEnabled(false);
     return rVal;
+  }
+  
+  public int hashCode()
+  {
+    return m_name.hashCode();
+  }
+  
+  public boolean equals(Object other)
+  {
+    if(other instanceof AEditableProperty)
+    {
+      return ((AEditableProperty) other).m_name.equals(this.m_name);
+    }
+    else
+      return false;
+  }
+
+  public int compareTo(Object other)
+  {
+    if(other instanceof AEditableProperty)
+    {
+      return this.m_name.compareTo( ((AEditableProperty) other).getName());
+    }
+    return -1;
   }
 
 }

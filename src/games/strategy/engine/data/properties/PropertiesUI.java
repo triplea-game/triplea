@@ -59,7 +59,8 @@ public class PropertiesUI extends JPanel
     init();
 
     m_properties = properties;
-    Iterator iter = m_properties.getEditableProperties().iterator();
+    //use a tree set to sort them
+    Iterator iter = new TreeSet( m_properties.getEditableProperties()).iterator();
 
     while(iter.hasNext())
     {

@@ -29,6 +29,9 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.net.*;
 import games.strategy.engine.chat.*;
 import java.awt.event.*;
+import games.strategy.engine.data.*;
+import games.strategy.engine.random.*;
+import games.strategy.engine.gamePlayer.*;
 
 
 /**
@@ -54,6 +57,7 @@ public class LauncherFrame extends JFrame
   private ServerStartup m_serverStartup;
   private ClientStartup m_clientStartup;
   private GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
+  private PBEMStartup m_pbemStartup;
 
 
   public LauncherFrame()
@@ -135,7 +139,7 @@ public class LauncherFrame extends JFrame
 
   void m_PlayButton_actionPerformed(ActionEvent e)
   {
-    if(m_gameTypePanel.isLocal())
+    if(m_gameTypePanel.isLocal() || m_gameTypePanel.isPBEM())
     {
       startLocal();
     }
@@ -143,6 +147,7 @@ public class LauncherFrame extends JFrame
     {
       startServer();
     }
+
   }
 
   private void startServer()
@@ -154,16 +159,25 @@ public class LauncherFrame extends JFrame
     ServerWaitForClientMessageListener listener = new ServerWaitForClientMessageListener();
     m_messenger.addMessageListener(listener);
 
-    Map playerMapping = m_serverStartup.getLocalPlayerMapping();
-    Set playerSet = m_gameData.getGameLoader().createPlayers(playerMapping);
+    Map localPlayerMapping = m_serverStartup.getLocalPlayerMapping();
+    Set localPlayerSet = m_gameData.getGameLoader().createPlayers(localPlayerMapping);
     Map remotePlayers = m_serverStartup.getRemotePlayerMapping();
 
-    final ServerGame serverGame = new ServerGame(m_gameData, playerSet,(IServerMessenger) m_messenger, remotePlayers);
+    final ServerGame serverGame = new ServerGame(m_gameData, localPlayerSet,(IServerMessenger) m_messenger, remotePlayers);
+    if(!remotePlayers.isEmpty() && !localPlayerMapping.isEmpty())
+    {
+      //server game.
+      //if we have two players, use a crypto random source.
+       PlayerID player1 = m_gameData.getPlayerList().getPlayerID(( String) remotePlayers.keySet().iterator().next());
+       PlayerID player2  = (( GamePlayer) localPlayerSet.iterator().next()).getID();
+       CryptoRandomSource randomSource = new CryptoRandomSource(player1, player2, serverGame.getMessageManager());
+       serverGame.setRandomSource(randomSource);
+       System.out.println("Using secure random, player1:" + player1.getName() + " player2:" + player2.getName());
+    }
 
 
 
-
-    m_gameData.getGameLoader().startGame(serverGame, playerSet);
+    m_gameData.getGameLoader().startGame(serverGame, localPlayerSet);
 
     listener.waitFor( new HashSet(remotePlayers.values()).size());
     m_messenger.removeMessageListener(listener);
@@ -224,8 +238,16 @@ public class LauncherFrame extends JFrame
 
         Set gamePlayers = m_gameData.getGameLoader().createPlayers(localPlayerMap);
         ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap());
+        if(m_gameTypePanel.isPBEM())
+        {
+          IronyGamesDiceRollerRandomSource randomSource = new IronyGamesDiceRollerRandomSource(m_pbemStartup.getEmail1(), m_pbemStartup.getEmail2());
+          game.setRandomSource(randomSource);
+        }
+
         m_gameData.getGameLoader().startGame(game, gamePlayers);
+
         game.startGame();
+
       }
     };
     Thread thread = new Thread(runner);
@@ -254,6 +276,13 @@ public class LauncherFrame extends JFrame
       m_clientStartup = null;
     }
 
+    if(m_pbemStartup != null)
+    {
+      m_mainTabPanel.remove(m_pbemStartup);
+      m_pbemStartup = null;
+
+    }
+
     if(m_chat != null)
     {
       m_chat.setVisible(false);
@@ -270,10 +299,15 @@ public class LauncherFrame extends JFrame
     {
       chooseServerOptions();
     }
-    else
+    else if(m_gameTypePanel.isClient())
     {
       chooseClientOptions();
     }
+    else if(m_gameTypePanel.isPBEM())
+    {
+      choosePBEMOptions();
+    }
+
     setWidgetActivation();
   }
 
@@ -317,6 +351,12 @@ public class LauncherFrame extends JFrame
     m_mainTabPanel.add(m_serverStartup, "Server");
     m_serverStartup.setLauncerFrame(this);
     m_serverStartup.waitForPlayers();
+  }
+
+  private void choosePBEMOptions()
+  {
+    m_pbemStartup = new PBEMStartup();
+    m_mainTabPanel.add(m_pbemStartup, "PBEM");
   }
 
   private void chooseClientOptions()
