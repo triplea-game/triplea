@@ -419,6 +419,11 @@ public abstract class AbstractPlaceDelegate implements SaveableDelegate
 
   private boolean isOriginalOwner(Territory t, PlayerID id)
   {
+      //in 4th edition rules, original factories dont
+      //get special treatment
+      if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+          return false;
+      
       OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker();
       return tracker.getOriginalOwner(t).equals(id);
   }
