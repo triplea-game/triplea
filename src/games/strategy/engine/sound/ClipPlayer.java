@@ -33,7 +33,7 @@ public class ClipPlayer
 {
   private static final String SOUND_PREFERENCE = "beSilent";
   private static ClipPlayer s_clipPlayer;
-  private boolean m_beSilent = false;          //changed to false quick sound fix
+  private boolean m_beSilent = false;
   private HashMap m_sounds = new HashMap();
   private static final boolean m_tempDisable = false; //changed to false quick sound fix
 

@@ -283,7 +283,7 @@ public class TripleAFrame extends JFrame
 
     soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
     //temporarily disable sound
-    //menuGame.add(soundCheckBox);
+    menuGame.add(soundCheckBox);
     soundCheckBox.addActionListener(new ActionListener()
                                     {
                                       public void actionPerformed(ActionEvent e)
@@ -667,7 +667,7 @@ public class TripleAFrame extends JFrame
    else if(player != null && !player.isNull() && playing(player) && m_inHistory)
    {
      showGame();
-  //   ClipPlayer.getInstance().playClip(SoundPath.START, SoundPath.class); //play sound
+     ClipPlayer.getInstance().playClip(SoundPath.START_TURN, SoundPath.class); //play sound
    }
 
   }
