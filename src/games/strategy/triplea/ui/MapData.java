@@ -33,6 +33,7 @@ public class MapData
 {
     private final String DEFAULT_UNIT_SCALE_PROPERTY = "units.scale";
     private final String HAS_RELIEF_IMAGES = "map.hasRelief";
+    private final String SHOW_CAPITOL_MARKERS = "map.showCapitolMarkers";
     
     private static final String CENTERS_FILE = "centers.txt";
     private static final String POLYGON_FILE = "polygons.txt";
@@ -158,6 +159,12 @@ public class MapData
     {
         return Boolean.valueOf(m_mapProperties.getProperty(HAS_RELIEF_IMAGES, "true")).booleanValue();
     }
+
+    public boolean drawCapitolMarkers()
+    {
+        return Boolean.valueOf(m_mapProperties.getProperty(SHOW_CAPITOL_MARKERS, "true")).booleanValue();
+    }
+    
     
     private void initializeContains()
     {

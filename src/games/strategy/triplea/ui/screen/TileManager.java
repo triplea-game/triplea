@@ -183,7 +183,7 @@ public class TileManager
 	        drawing.add(new TerritoryNameDrawable(territory.getName()));
 	        
 	        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
-	        if(ta != null &&  ta.isCapital())
+	        if(ta != null &&  ta.isCapital() && mapData.drawCapitolMarkers())
 	        {
 	            PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
 	            drawing.add(new CapitolMarkerDrawable(capitalOf, territory));
