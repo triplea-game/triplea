@@ -45,6 +45,9 @@ public class PointFileReaderWriter
 	 */
 	public static Map readOneToOne(InputStream stream) throws IOException
 	{
+	    if(stream == null)
+	        return Collections.EMPTY_MAP;
+	    
 		HashMap mapping = new HashMap();
 		LineNumberReader reader = null;
 		try

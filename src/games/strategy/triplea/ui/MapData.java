@@ -38,6 +38,8 @@ public class MapData
     private static final String POLYGON_FILE = "polygons.txt";
     private static final String PLACEMENT_FILE = "place.txt";
     private static final String MAP_PROPERTIES = "map.properties";
+    private static final String CAPITAL_MARKERS = "capitols.txt";
+    private static final String VC_MARKERS = "vc.txt";
     private static final String IMPASSIBLE = "Impassible";
 
 
@@ -57,6 +59,12 @@ public class MapData
 
     //maps String -> Point
     private Map m_centers;
+
+    //maps String -> Point    
+    private Map m_vcPlace;
+    
+    //maps String -> Point
+    private Map m_capitolPlace;
 
     //maps String -> List of String
     private Map m_contains;
@@ -107,6 +115,8 @@ public class MapData
             m_place = PointFileReaderWriter.readOneToMany(this.getClass().getResourceAsStream(prefix + PLACEMENT_FILE));
             m_polys = PointFileReaderWriter.readOneToManyPolygons(this.getClass().getResourceAsStream(prefix + POLYGON_FILE));
             m_centers = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CENTERS_FILE));
+            m_vcPlace = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + VC_MARKERS));
+            m_capitolPlace = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CAPITAL_MARKERS));
             m_mapProperties = new Properties();
             
             try
@@ -320,7 +330,21 @@ public class MapData
     {
         return getCenter(terr.getName());
     }
+    
+    public Point getCapitolMarkerLocation(Territory terr)
+    {
+        if(m_capitolPlace.containsKey(terr.getName()))
+            return (Point) m_capitolPlace.get(terr.getName());
+        return getCenter(terr);
+    }
 
+    public Point getVCPlacementPoint(Territory terr)
+    {
+        if(m_vcPlace.containsKey(terr.getName()))
+            return (Point) m_vcPlace.get(terr.getName());
+        return getCenter(terr);
+    }
+    
     /**
      * Get the territory at the x,y co-ordinates could be null.
      */

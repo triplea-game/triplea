@@ -31,15 +31,18 @@ import java.util.logging.Logger;
 /**
  * @author Sean Bridges
  */
-public interface Drawable
+public interface IDrawable
 {
-    public Logger s_logger = Logger.getLogger(Drawable.class.getName());
+    public Logger s_logger = Logger.getLogger(IDrawable.class.getName());
     
     public static final int BASE_MAP_LEVEL = 1;
     public static final int POLYGONS_LEVEL = 2;
     public static final int RELIEF_LEVEL = 3;
-    public static final int TERRITORY_TEXT_LEVEL = 4;
-    public static final int UNITS_LEVEL = 5;
+    
+    public static final int CAPITOL_MARKER_LEVEL = 7;
+    
+    public static final int TERRITORY_TEXT_LEVEL = 10;
+    public static final int UNITS_LEVEL = 11;
 
     /**
      * Start any asynchronous preparation that can be done in the backgrounds.
@@ -60,12 +63,12 @@ class DrawableComparator implements Comparator
 
     public int compare(Object o1, Object o2)
     {
-        return ((Drawable) o1).getLevel() - ((Drawable) o2).getLevel();
+        return ((IDrawable) o1).getLevel() - ((IDrawable) o2).getLevel();
     }
 
 }
 
-class TerritoryNameDrawable implements Drawable
+class TerritoryNameDrawable implements IDrawable
 {
     private final String m_territoryName;
 
@@ -116,7 +119,40 @@ class TerritoryNameDrawable implements Drawable
     }
 }
 
-class ReliefMapDrawable implements Drawable
+class CapitolMarkerDrawable implements IDrawable
+{
+
+    private final PlayerID m_player;
+    private final Territory m_location;
+    
+    
+    public CapitolMarkerDrawable(final PlayerID player, final Territory location)
+    {
+        super();
+        m_player = player;
+        m_location = location;
+    }
+    public void prepare()
+    {
+    }
+
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    {
+        Image img = FlagIconImageFactory.instance().getLargeFlag(m_player);
+        Point point = mapData.getCapitolMarkerLocation(m_location);
+        
+        graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
+        
+    }
+
+    public int getLevel()
+    {
+       return CAPITOL_MARKER_LEVEL;
+    }
+    
+}
+
+class ReliefMapDrawable implements IDrawable
 {
 
     private boolean m_noImage = false;
@@ -178,7 +214,7 @@ class ReliefMapDrawable implements Drawable
     
 }
 
-class BaseMapDrawable implements Drawable
+class BaseMapDrawable implements IDrawable
 {
 
     private final int m_x;
@@ -228,7 +264,7 @@ class BaseMapDrawable implements Drawable
     
 }
 
-class LandTerritoryDrawable implements Drawable
+class LandTerritoryDrawable implements IDrawable
 {
     private final String m_territoryName;
 
@@ -284,7 +320,7 @@ class LandTerritoryDrawable implements Drawable
 
 }
 
-class UnitsDrawer implements Drawable
+class UnitsDrawer implements IDrawable
 {
     private final int m_count;
     private final String m_unitType;
@@ -320,15 +356,15 @@ class UnitsDrawer implements Drawable
             throw new IllegalStateException("Type not found:" + m_unitType);
         PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
 
-        Image img = UnitIconImageFactory.instance().getImage(type, owner, data, m_damaged);
+        Image img = UnitImageFactory.instance().getImage(type, owner, data, m_damaged);
         graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
 
         if (m_count != 1)
         {
             graphics.setColor(Color.white);
             graphics.setFont(MapImage.MAP_FONT);
-            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (UnitIconImageFactory.instance().getUnitImageWidth() / 4),
-                    m_placementPoint.y - bounds.y + UnitIconImageFactory.instance().getUnitImageHeight());
+            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (UnitImageFactory.instance().getUnitImageWidth() / 4),
+                    m_placementPoint.y - bounds.y + UnitImageFactory.instance().getUnitImageHeight());
         }
     }
     

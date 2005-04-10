@@ -19,7 +19,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
@@ -540,7 +540,7 @@ class BattleTable extends JTable
 
         super(model);
         setDefaultRenderer(Object.class, new Renderer());
-        setRowHeight(UnitIconImageFactory.UNIT_ICON_HEIGHT + 5);
+        setRowHeight(UnitImageFactory.UNIT_ICON_HEIGHT + 5);
         setBackground(new JButton().getBackground());
         setShowHorizontalLines(false);
 
@@ -691,7 +691,7 @@ class TableData
     {
 
         m_count = count;
-        m_icon = UnitIconImageFactory.instance().getIcon(type, player, data, damaged);
+        m_icon = UnitImageFactory.instance().getIcon(type, player, data, damaged);
     }
 
     public void updateStamp(JLabel stamp)
@@ -763,7 +763,7 @@ class CasualtyNotificationPanel extends JPanel
         {
             UnitCategory category = (UnitCategory) categoryIter.next();
             JPanel panel = new JPanel();
-            JLabel unit = new JLabel(UnitIconImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged()));
+            JLabel unit = new JLabel(UnitImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged()));
             panel.add(unit);
             Iterator iter = category.getDependents().iterator();
             while (iter.hasNext())
@@ -772,7 +772,7 @@ class CasualtyNotificationPanel extends JPanel
                 //we dont want to use the damaged icon for unuts that have just
                 // been damaged
                 boolean useDamagedIcon = category.getDamaged() && !damaged;
-                unit.add(new JLabel(UnitIconImageFactory.instance().getIcon(owner.getType(), owner.getOwner(), m_data, useDamagedIcon)));
+                unit.add(new JLabel(UnitImageFactory.instance().getIcon(owner.getType(), owner.getOwner(), m_data, useDamagedIcon)));
             }
             panel.add(new JLabel("x " + category.getUnits().size()));
             if (damaged)

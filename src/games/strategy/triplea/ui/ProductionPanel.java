@@ -227,7 +227,7 @@ public class ProductionPanel extends JPanel
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
             m_type = (UnitType) rule.getResults().keySet().iterator().next();
-            Icon icon = UnitIconImageFactory.instance().getIcon(m_type, id, m_data, false);
+            Icon icon = UnitImageFactory.instance().getIcon(m_type, id, m_data, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 

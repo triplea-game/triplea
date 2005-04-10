@@ -14,7 +14,8 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
@@ -170,16 +171,24 @@ public class TileManager
     {
         Set drawnOn = new HashSet();
         Set drawing = new HashSet();
-     
+        
         data.acquireChangeLock();
         try
         {
-	        Drawable territoryDrawer = null;
+            drawUnits(territory, data, mapData, drawnOn, drawing);
+            
 	        if(!territory.isWater())
-	            territoryDrawer = new LandTerritoryDrawable(territory.getName());
+	            drawing.add(new LandTerritoryDrawable(territory.getName()));
 	        
-	        drawUnits(territory, data, mapData, drawnOn, drawing);
-	        TerritoryNameDrawable nameDrawer = new TerritoryNameDrawable(territory.getName());
+	        drawing.add(new TerritoryNameDrawable(territory.getName()));
+	        
+	        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+	        if(ta != null &&  ta.isCapital())
+	        {
+	            PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
+	            drawing.add(new CapitolMarkerDrawable(capitalOf, territory));
+	        }
+	        
 	        
 	        //add to the relevant tiles
 	        Iterator tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
@@ -187,13 +196,7 @@ public class TileManager
 	        {
 	            Tile tile = (Tile) tiles.next();
 	            drawnOn.add(tile);
-	            if(territoryDrawer != null)
-	            {
-	                tile.addDrawable(territoryDrawer);
-	                drawing.add(territoryDrawer);
-	            }
-	            tile.addDrawable(nameDrawer);
-	            drawing.add(nameDrawer);
+	            tile.addDrawbles(drawing);
 	        }
 	        
 	        m_territoryDrawables.put(territory.getName(), drawing);
@@ -230,7 +233,7 @@ public class TileManager
             } else
             {
                 place = lastPlace;
-                lastPlace.x += UnitIconImageFactory.instance().getUnitImageWidth();
+                lastPlace.x += UnitImageFactory.instance().getUnitImageWidth();
             }
 
             UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), place,
@@ -239,7 +242,7 @@ public class TileManager
             m_allUnitDrawables.add(drawable);
             
             Iterator tiles = getTiles(
-                    new Rectangle(place.x, place.y, UnitIconImageFactory.instance().getUnitImageWidth(), UnitIconImageFactory.instance()
+                    new Rectangle(place.x, place.y, UnitImageFactory.instance().getUnitImageWidth(), UnitImageFactory.instance()
                             .getUnitImageHeight())).iterator();
             while (tiles.hasNext())
             {
@@ -276,10 +279,10 @@ public class TileManager
 	        Iterator drawers =  orderedDrawables.iterator();
 	        while (drawers.hasNext())
 	        {
-	             Drawable drawer = (Drawable) drawers.next();
-	             if(drawer.getLevel() >= Drawable.UNITS_LEVEL)
+	             IDrawable drawer = (IDrawable) drawers.next();
+	             if(drawer.getLevel() >= IDrawable.UNITS_LEVEL)
 	                 break;
-	             if(drawer.getLevel() == Drawable.TERRITORY_TEXT_LEVEL)
+	             if(drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)
 	                 continue;
 	             drawer.draw(bounds, data, graphics, mapData);
 	        }

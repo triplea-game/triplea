@@ -62,35 +62,23 @@ public class FlagIconImageFactory
 
     public Image getFlag(PlayerID id)
     {
-        if (!m_images.containsKey(id.getName()))
-        {
-            URL url = this.getClass().getResource("images/flags/" + id.getName() + ".gif");
-            if (url == null)
-                throw new IllegalStateException("No flag for player:" + id.getName());
-
-            Image image;
-            try
-            {
-                image = ImageIO.read(url);
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-                throw new IllegalStateException(e.getMessage());
-            }
-            m_images.put(id.getName(), image);
-        }
-
-        return (Image) m_images.get(id.getName());
+        String key = id.getName() + ".gif";
+        
+        return getImage(key);
     }
-
-    public Image getSmallFlag(PlayerID id)
+    
+    /**
+     * @param key
+     * @return
+     */
+    private Image getImage(String key)
     {
-        String key = id.getName() + "SMALL";
+
         if (!m_images.containsKey(key))
         {
-            URL url = this.getClass().getResource("images/flags/" + id.getName() + "_small.gif");
+            URL url = this.getClass().getResource("images/flags/" + key);
             if (url == null)
-                throw new IllegalStateException("No small flag for player:" + id.getName());
+                throw new IllegalStateException("No flag for player:" + key);
 
             Image image;
             try
@@ -107,4 +95,17 @@ public class FlagIconImageFactory
         return (Image) m_images.get(key);
     }
 
+    public Image getSmallFlag(PlayerID id)
+    {
+        String key = id.getName() + "_small.gif";
+        return getImage(key);
+    }
+
+    public Image getLargeFlag(PlayerID id)
+    {
+        String key = id.getName() +  "_large.png";
+        return getImage(key);
+    }
+
+    
 }

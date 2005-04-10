@@ -37,12 +37,12 @@ import javax.swing.ImageIcon;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class UnitIconImageFactory
+public class UnitImageFactory
 {
 
-  private static UnitIconImageFactory s_instance = new UnitIconImageFactory();
+  private static UnitImageFactory s_instance = new UnitImageFactory();
 
-  public static UnitIconImageFactory instance()
+  public static UnitImageFactory instance()
   {
     return s_instance;
   }
@@ -68,7 +68,7 @@ public class UnitIconImageFactory
   private double m_scaleFactor = MapData.getInstance().getDefaultUnitScale();
 
   /** Creates new IconImageFactory */
-  private UnitIconImageFactory()
+  private UnitImageFactory()
   {
 
   }

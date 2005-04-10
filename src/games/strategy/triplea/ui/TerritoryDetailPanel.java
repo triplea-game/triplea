@@ -15,7 +15,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.*;
 
 import java.util.*;
@@ -77,7 +77,7 @@ public class TerritoryDetailPanel extends JPanel
                 add(Box.createVerticalStrut(15));
             }
 
-            ImageIcon icon = UnitIconImageFactory.instance().getIcon(
+            ImageIcon icon = UnitImageFactory.instance().getIcon(
                 item.getType(), item.getOwner(), m_data, item.getDamaged());
             JLabel label = new JLabel("x" + item.getUnits().size(),
                                       icon,

@@ -61,7 +61,7 @@ public class Tile
             Iterator iter = m_contents.iterator();
             while (iter.hasNext())
             {
-                Drawable drawable = (Drawable) iter.next();
+                IDrawable drawable = (IDrawable) iter.next();
                 drawable.prepare();
                 
             }
@@ -113,7 +113,7 @@ public class Tile
         {
 	        while (iter.hasNext())
 	        {
-	            Drawable drawable = (Drawable) iter.next();
+	            IDrawable drawable = (IDrawable) iter.next();
 	            drawable.draw(m_bounds, data, g, mapData);
 	        }
 	        m_isDirty = false;
@@ -128,7 +128,16 @@ public class Tile
         
     }
     
-    public void addDrawable(Drawable d)
+    public void addDrawbles(Collection drawables)
+    {
+        synchronized(m_mutex)
+        {
+            m_contents.addAll(drawables);
+            m_isDirty = true;
+        }        
+    }
+    
+    public void addDrawable(IDrawable d)
     {
         synchronized(m_mutex)
         {
@@ -137,7 +146,7 @@ public class Tile
         }
     }
     
-    public void removeDrawable(Drawable d)
+    public void removeDrawable(IDrawable d)
     {
         synchronized(m_mutex)
         {

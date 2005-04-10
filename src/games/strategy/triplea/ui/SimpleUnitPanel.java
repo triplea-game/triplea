@@ -18,7 +18,7 @@ package games.strategy.triplea.ui;
 import javax.swing.*;
 import java.util.*;
 import games.strategy.util.IntegerMap;
-import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.util.*;
@@ -84,7 +84,7 @@ public class SimpleUnitPanel extends JPanel
   {
     JLabel label = new JLabel();
     label.setText(" x " + quantity);
-    label.setIcon(UnitIconImageFactory.instance().getIcon(unit, player,
+    label.setIcon(UnitImageFactory.instance().getIcon(unit, player,
         data, damaged));
     add(label);
   }

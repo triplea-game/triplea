@@ -21,7 +21,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.image.UnitIconImageFactory;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.*;
 import games.strategy.util.IntegerMap;
@@ -460,14 +460,14 @@ class ChooserEntry
     public void paint(Graphics g)
     {
       super.paint(g);
-      g.drawImage( UnitIconImageFactory.instance().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged()), 0,0,this);
+      g.drawImage( UnitImageFactory.instance().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged()), 0,0,this);
       Iterator iter = m_category.getDependents().iterator();
       int index = 1;
       while(iter.hasNext())
       {
         UnitOwner holder = (UnitOwner) iter.next();
-        int x = UnitIconImageFactory.instance().getUnitImageWidth() * index;
-        Image unitImg = UnitIconImageFactory.instance().getImage(holder.getType(), holder.getOwner(), m_data, false);
+        int x = UnitImageFactory.instance().getUnitImageWidth() * index;
+        Image unitImg = UnitImageFactory.instance().getImage(holder.getType(), holder.getOwner(), m_data, false);
         g.drawImage(unitImg, x, 0, this);
 
 
@@ -478,12 +478,12 @@ class ChooserEntry
     public int getWidth()
     {
       //we draw a unit symbol for each dependent
-      return UnitIconImageFactory.instance().getUnitImageWidth() * (1 + m_category.getDependents().size());
+      return UnitImageFactory.instance().getUnitImageWidth() * (1 + m_category.getDependents().size());
     }
 
     public int getHeight()
     {
-      return UnitIconImageFactory.instance().getUnitImageHeight();
+      return UnitImageFactory.instance().getUnitImageHeight();
     }
 
     public Dimension getMaximumSize()

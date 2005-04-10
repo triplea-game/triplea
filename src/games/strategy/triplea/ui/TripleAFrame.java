@@ -1175,7 +1175,7 @@ public class TripleAFrame extends JFrame
 
             public void actionPerformed(ActionEvent e)
             {
-                UnitIconImageFactory.instance().setScaleFactor(m_scaleFactor);
+                UnitImageFactory.instance().setScaleFactor(m_scaleFactor);
                 m_mapPanel.resetMap();
             }
         }
