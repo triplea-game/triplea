@@ -318,6 +318,14 @@ class HttpDiceRollerDialog extends JDialog
             try
             {
                 text = DiceStatic.postRequest(m_email1, m_email2, m_max, m_count, m_annotation);
+                
+                if(text.length() == 0)
+                {
+                    appendText("Nothing could be read from dice server\n");
+                    appendText("Please check your firewall settings");
+                    notifyError();
+                }
+                
                 if (!m_test)
                     appendText("Contacted :" + text + "\n");
                 m_diceRoll = DiceStatic.getDice(text, m_count);
