@@ -1,3 +1,5 @@
+* added white factory images (zero_pilot)
+
 * added drawing capitol markers (capitol markers contributed by black elk) (sgb)
 
 * added junit.jar file to lib and removed it from .ant.properties (sgb)
