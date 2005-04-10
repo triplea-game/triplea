@@ -1,3 +1,5 @@
+* better email address ui and validation, allow up to 5 emails in to and from (sgb)
+
 * added white factory images (zero_pilot)
 
 * added drawing capitol markers (capitol markers contributed by black elk) (sgb)
