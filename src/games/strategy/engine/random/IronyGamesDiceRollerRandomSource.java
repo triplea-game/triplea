@@ -211,7 +211,6 @@ class HttpDiceRollerDialog extends JDialog
     public void roll()
     {
 
-
         //if we are not the event thread, then start again in the event thread
         //pausing this thread until we are done
         if (!SwingUtilities.isEventDispatchThread())
@@ -252,7 +251,7 @@ class HttpDiceRollerDialog extends JDialog
 
         m_reRollButton.setEnabled(false);
         m_exitButton.setEnabled(false);
-        
+
         Thread t = new Thread()
         {
             public void run()
@@ -293,20 +292,14 @@ class HttpDiceRollerDialog extends JDialog
 
         boolean validMail = false;
 
-        int x = m_email1.indexOf('@');
-        int y = m_email2.indexOf('@');
-        if (x != -1 && y != -1)
-        {
-            x = m_email1.indexOf('.');
-            y = m_email2.indexOf('.');
-            if (x != -1 && y != -1)
-            {
-                validMail = true;
-            }
-        }
+        //check the email formats are valid
+        validMail = isMailValid(m_email1) && isMailValid(m_email2);
+        //make sure the to isnt empty
+        validMail &= m_email1.trim().length() > 0;
+        
 
         if (validMail)
-        { //execute below ONLY when we have 2 valid email addresses
+        {
 
             while (!isVisible())
                 Thread.yield();
@@ -318,38 +311,37 @@ class HttpDiceRollerDialog extends JDialog
             try
             {
                 text = DiceStatic.postRequest(m_email1, m_email2, m_max, m_count, m_annotation);
-                
-                if(text.length() == 0)
+
+                if (text.length() == 0)
                 {
                     appendText("Nothing could be read from dice server\n");
                     appendText("Please check your firewall settings");
                     notifyError();
                 }
-                
+
                 if (!m_test)
                     appendText("Contacted :" + text + "\n");
                 m_diceRoll = DiceStatic.getDice(text, m_count);
                 appendText("Success!");
                 if (!m_test)
                     closeAndReturn();
-            } 
+            }
             //an error in networking
-            catch(SocketException ex)
+            catch (SocketException ex)
             {
                 appendText("Connection failter:" + ex.getMessage() + "\n" + "Please ensure your internet connection is working, and try again.");
                 notifyError();
-            }
-            catch (IOException ex)
+            } catch (IOException ex)
             {
                 try
                 {
                     appendText("An eror has occured!\n");
-		    appendText("Possible reasons the error could have happened:\n");
-		    appendText("  1: An invalid e-mail address\n");
-		    appendText("  2: Firewall could be blocking TripleA from connecting to Irony Dice Server\n");
-		    appendText("  3: The e-mail address does not exist\n");
-		    appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
-		    appendText("     Visit http://maddlinks.com/triplea  for extra help\n");
+                    appendText("Possible reasons the error could have happened:\n");
+                    appendText("  1: An invalid e-mail address\n");
+                    appendText("  2: Firewall could be blocking TripleA from connecting to Irony Dice Server\n");
+                    appendText("  3: The e-mail address does not exist\n");
+                    appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
+                    appendText("     Visit http://maddlinks.com/triplea  for extra help\n");
 
                     if (text != null)
                     {
@@ -371,13 +363,23 @@ class HttpDiceRollerDialog extends JDialog
         { //enter here for invalid e-mail
 
             appendText("There is an error in the e-mails you have entered\n");
-	    appendText("Please check the following:\n");
-	    appendText("  1: Do you have a valid e-mail syntax ? (ie. rommel@germany.com) ?\n");
-	    appendText("  2: Are both e-mail boxes filled out ?\n\n");
+            appendText("Please check the following:\n");
+            appendText("  1: Do you have a valid e-mail syntax ? (ie. someone@someplace.com) ?\n");
+            appendText("  2: Are both e-mail boxes filled out ?\n\n");
             m_exitButton.setEnabled(true);
         }
 
     }//end of method
+
+
+    /**
+     * allow multiple fully qualified email adresses seperated by spaces, or a blank string 
+     */
+    public static boolean isMailValid(String emailAddress)
+    {
+        String regex = "(\\s*[\\w\\.]+@\\w+\\.\\w+\\s*)*";
+        return emailAddress.matches(regex);
+    }
 }
 
 class DiceStatic

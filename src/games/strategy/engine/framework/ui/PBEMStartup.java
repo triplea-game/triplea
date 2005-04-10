@@ -48,7 +48,9 @@ public class PBEMStartup extends JPanel
     private void userInit()
     {
         m_instructionsText.setText("\nPBEM differs from single player in that dice rolls are done by a dice server, and the results "
-                + "are mailed to the email addresses below.\n\n" + "Dice are rolled using the dice server at http://www.irony.com/mailroll.html");
+                + "are mailed to the email addresses below.\n\n" + "Dice are rolled using the dice server at http://www.irony.com/mailroll.html"
+                + "\n\nYou can enter up to 5 addresses to or copy field, seperating each address by a space."
+        );
 
         m_instructionsText.setBackground(this.getBackground());
     }
@@ -56,8 +58,8 @@ public class PBEMStartup extends JPanel
     private void jbInit() throws Exception
     {
         this.setLayout(m_gridBagLayout1);
-        m_email1Label.setText("Email Address 1:");
-        m_email2Label.setText("Email Address 2:");
+        m_email1Label.setText("To:");
+        m_email2Label.setText("Copy:");
         m_testButton.setText("Test Email");
         m_testButton.addActionListener(new PBEMStartup_m_testButton_actionAdapter(this));
         m_email2TextField.setText("");
