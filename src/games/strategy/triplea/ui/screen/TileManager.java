@@ -189,6 +189,10 @@ public class TileManager
 	            drawing.add(new CapitolMarkerDrawable(capitalOf, territory));
 	        }
 	        
+	        if(ta != null && ta.isVictoryCity())
+	        {
+	            drawing.add(new VCDrawable(territory));
+	        }
 	        
 	        //add to the relevant tiles
 	        Iterator tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();

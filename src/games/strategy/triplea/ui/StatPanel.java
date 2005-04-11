@@ -27,6 +27,7 @@ import games.strategy.engine.stats.AbstractStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.delegate.*;
+import games.strategy.util.*;
 import games.strategy.util.IntegerMap;
 
 import java.awt.GridLayout;
@@ -41,9 +42,11 @@ import javax.swing.table.*;
  */
 public class StatPanel extends JPanel
 {
-    StatTableModel m_dataModel;
-    TechTableModel m_techModel;
-
+    private StatTableModel m_dataModel;
+    private TechTableModel m_techModel;
+    private IStat[] m_stats = new IStat[] {new IPCStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
+    
+    
     public void setGameData(GameData data)
     {
         m_dataModel.setGameData(data);
@@ -56,6 +59,14 @@ public class StatPanel extends JPanel
     /** Creates a new instance of InfoPanel */
     public StatPanel(GameData data)
     {
+        if(Match.someMatch(data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity))
+        {
+            List stats = new ArrayList(Arrays.asList(m_stats));
+            stats.add(new VictoryCityStat());
+            m_stats = (IStat[]) stats.toArray(new IStat[stats.size()]);
+            
+        }
+        
         setLayout(new GridLayout(2, 1));
 
         m_dataModel = new StatTableModel(data);
@@ -101,7 +112,7 @@ public class StatPanel extends JPanel
         private boolean m_isDirty = true;
         private GameData m_data;
         /* Column Header Names */
-        private final IStat[] m_stats = new IStat[] {new IPCStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
+
         
         /* Underlying data for the table */
         private String[][] m_collectedData;
@@ -505,6 +516,34 @@ class TUVStat extends AbstractStat
             Territory place = (Territory) iter.next();
             Collection owned = place.getUnits().getMatches(Matches.unitIsOwnedBy(player));
             rVal += BattleCalculator.getTUV(owned, costs);
+        }
+        return rVal;
+    }
+}
+
+class VictoryCityStat extends AbstractStat
+{
+    public String getName()
+    {
+        return "VC";
+    }
+
+    public double getValue(PlayerID player, GameData data)
+    {
+        int rVal = 0; 
+        Iterator iter = data.getMap().getTerritories().iterator();
+        while (iter.hasNext())
+        {
+            Territory place = (Territory) iter.next();
+            if(!place.getOwner().equals(player))
+                continue;
+            
+            TerritoryAttatchment ta =  TerritoryAttatchment.get(place);
+            if(ta == null)
+                continue;
+            
+            if(ta.isVictoryCity())
+                rVal ++;
         }
         return rVal;
     }

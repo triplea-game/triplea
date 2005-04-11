@@ -346,7 +346,7 @@ public class MapData
     }
 
     public Point getVCPlacementPoint(Territory terr)
-    {
+    {        
         if(m_vcPlace.containsKey(terr.getName()))
             return (Point) m_vcPlace.get(terr.getName());
         return getCenter(terr);

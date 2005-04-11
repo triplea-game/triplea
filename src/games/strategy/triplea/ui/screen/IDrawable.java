@@ -15,6 +15,7 @@ package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.image.MapImage;
@@ -22,11 +23,15 @@ import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.*;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 /**
  * @author Sean Bridges
@@ -40,6 +45,7 @@ public interface IDrawable
     public static final int RELIEF_LEVEL = 3;
     
     public static final int CAPITOL_MARKER_LEVEL = 7;
+    public static final int VC_MARKER_LEVEL = 8;
     
     public static final int TERRITORY_TEXT_LEVEL = 10;
     public static final int UNITS_LEVEL = 11;
@@ -118,6 +124,54 @@ class TerritoryNameDrawable implements IDrawable
         return TERRITORY_TEXT_LEVEL;
     }
 }
+
+class VCDrawable implements IDrawable
+{
+
+    static Image s_vcImage;
+    
+    static
+    {
+        URL url = ClassLoader.getSystemClassLoader().getResource("games/strategy/triplea/image/images/vc.png");
+        if(url == null)
+            throw new IllegalStateException("Could not load vc image");
+        
+        try
+        {
+            s_vcImage = ImageIO.read(url);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+    
+    private final Territory m_location;
+    
+    
+    public VCDrawable(final Territory location)
+    {
+        m_location = location;
+    }
+    
+    public void prepare()
+    {
+    }
+
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    {
+        Point point = mapData.getVCPlacementPoint(m_location);
+        graphics.drawImage(s_vcImage, point.x - bounds.x, point.y - bounds.y, null);
+        
+    }
+
+    public int getLevel()
+    {
+       return VC_MARKER_LEVEL;
+    }
+    
+}
+
 
 class CapitolMarkerDrawable implements IDrawable
 {

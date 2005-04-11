@@ -232,7 +232,7 @@ public class MapPanel extends ImageScrollerLargeView
 
         public void mouseReleased(MouseEvent e)
         {
-
+            
             Territory terr = getTerritory(e.getX() + getXOffset(), e.getY() + getYOffset());
             if (terr != null)
                 notifyTerritorySelected(terr, e);

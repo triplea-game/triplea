@@ -393,6 +393,20 @@ public class Matches
 			return t.isWater();
 		}
 	};
+	
+	public static final Match TerritoryIsVictoryCity = new Match()
+	{
+		public boolean match(Object o)
+		{
+		    
+			Territory t = (Territory) o;
+			TerritoryAttatchment ta = TerritoryAttatchment.get(t);
+			if(ta == null)
+			    return false;
+			return ta.isVictoryCity();
+		}
+	};
+	
 
     public static final Match TerritoryIsLand = new InverseMatch(TerritoryIsWater);
 
