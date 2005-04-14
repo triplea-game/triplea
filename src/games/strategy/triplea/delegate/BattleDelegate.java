@@ -49,6 +49,8 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
 
     //dont allow saving while handling a message
     private boolean m_inBattle;
+    
+    private boolean m_needToInitialize;
 
     public void initialize(String name, String displayName)
     {
@@ -63,8 +65,14 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     {
         m_bridge = aBridge;
         m_data = gameData;
-        addBombardmentSources();
-        setupSeaUnitsInSameSeaZoneBattles();
+        //we may start multiple times due to loading after saving
+        //only initialize once
+        if(m_needToInitialize)
+        {
+            addBombardmentSources();
+            setupSeaUnitsInSameSeaZoneBattles();
+            m_needToInitialize = false;
+        }
     }
 
     public String getName()
@@ -119,7 +127,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
      */
     public void end()
     {
-
+        m_needToInitialize = true;
     }
 
     public BattleTracker getBattleTracker()
@@ -297,6 +305,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         BattleState state = new BattleState();
         state.m_battleTracker = m_battleTracker;
         state.m_originalOwnerTracker = m_originalOwnerTracker;
+        state.m_needToInitialize = m_needToInitialize;
         return state;
     }
 
@@ -308,6 +317,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         BattleState state = (BattleState) aState;
         m_battleTracker = state.m_battleTracker;
         m_originalOwnerTracker = state.m_originalOwnerTracker;
+        m_needToInitialize = state.m_needToInitialize;
     }
 
     /*
@@ -326,4 +336,6 @@ class BattleState implements Serializable
     public BattleTracker m_battleTracker = new BattleTracker();
 
     public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
+    
+    public boolean m_needToInitialize;
 }
