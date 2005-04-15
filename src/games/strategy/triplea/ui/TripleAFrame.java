@@ -27,8 +27,10 @@ import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.*;
+import games.strategy.engine.history.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.sound.ClipPlayer;
+import games.strategy.engine.stats.IStat;
 import games.strategy.net.*;
 import games.strategy.triplea.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
@@ -44,11 +46,11 @@ import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.*;
-import java.text.DecimalFormat;
 import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * 
@@ -234,7 +236,7 @@ public class TripleAFrame extends JFrame
 
     private void addConsoleMenu(JMenu parentMenu)
     {
-        parentMenu.add(new AbstractAction("Show Console")
+        parentMenu.add(new AbstractAction("Show Console...")
                 {
             		public void actionPerformed(ActionEvent e)
             		{
@@ -352,6 +354,7 @@ public class TripleAFrame extends JFrame
         addGameOptionsMenu(menuGame);
         addShowEnemyCasualties(menuGame);
         addShowDiceStats(menuGame);
+        addExportStats(menuGame);
     }
 
     /**
@@ -466,6 +469,149 @@ public class TripleAFrame extends JFrame
         parentMenu.add(showDiceStats);
     }
 
+    /**
+     * @param parentMenu
+     */
+    private void addExportStats(JMenu parentMenu)
+    {
+        Action showDiceStats = new AbstractAction("Export Game Stats...")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                createAndSaveStats();
+                
+            }
+
+            /**
+             * 
+             */
+            private void createAndSaveStats()
+            {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                File rootDir = new File(System.getProperties().getProperty("user.dir"));
+                chooser.setSelectedFile(new File(rootDir, "stats.csv"));
+                
+                if(chooser.showSaveDialog(TripleAFrame.this) != JOptionPane.OK_OPTION)
+                    return;
+                                
+                GameData clone = cloneGameData(m_data);
+                IStat[] stats = m_statsPanel.getStats();
+
+                String[] alliances = (String[]) m_statsPanel.getAlliances().toArray(new String[m_statsPanel.getAlliances().size()]);
+                PlayerID[] players = (PlayerID[]) m_statsPanel.getPlayers().toArray(new PlayerID[m_statsPanel.getPlayers().size()]);
+                
+                //its important here to translate the player objects into our game data
+                //the players for the stat panel are only relevant with respect to
+                //the game data they belong to
+                for(int i = 0; i < players.length; i++)
+                {
+                    players[i] = clone.getPlayerList().getPlayerID(players[i].getName());
+                }
+                
+                
+                StringBuffer text = new StringBuffer(1000);
+                                
+                text.append("Round,Player Turn,");
+                
+                for(int i = 0; i < stats.length; i++)
+                {
+                    for (int j = 0; j < players.length; j++)
+                    {
+                        text.append(stats[i].getName()).append(" ");
+                        text.append(players[j].getName());
+                        text.append(",");
+                        
+                    }
+                    
+                    for (int j = 0; j < alliances.length; j++)
+                    {
+                        text.append(stats[i].getName()).append(" ");
+                        text.append(alliances[j]);
+                        text.append(",");
+                    }
+                }
+                text.append("\n");
+                clone.getHistory().gotoNode(clone.getHistory().getLastNode());
+                
+                Enumeration nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
+                
+                PlayerID currentPlayer = null;
+                
+                int round = 0;
+                while (nodes.hasMoreElements())
+                {
+                    //we want to export on change of turn
+                    
+                    HistoryNode element = (HistoryNode) nodes.nextElement();
+                    
+                    if(element instanceof Round)
+                        round++;
+                    
+                    if(!( element instanceof Step))
+                        continue;
+                    
+                    Step step = (Step) element;
+                    
+                    if(step.getPlayerID() == null || step.getPlayerID().isNull())
+                        continue;
+                    
+                    if(step.getPlayerID() == currentPlayer)
+                        continue;
+                    
+                    currentPlayer = step.getPlayerID();
+                    
+                    clone.getHistory().gotoNode(element);
+                    
+                    
+                    String playerName = step.getPlayerID() == null ? "" : step.getPlayerID().getName() + ": ";
+                    text.append(round).append(",").append(playerName).append(",");
+                    
+                    for(int i = 0; i < stats.length; i++)
+                    {
+                        
+                        
+                        for (int j = 0; j < players.length; j++)
+                        {
+                            text.append(stats[i].getFormatter().format(stats[i].getValue(players[j], clone)));
+                            text.append(",");
+                            
+                        }
+                        
+                        for (int j = 0; j < alliances.length; j++)
+                        {
+                            text.append(stats[i].getFormatter().format(stats[i].getValue(alliances[j], clone)));
+                            text.append(",");
+                        }
+                        
+                        
+                    }
+                    text.append("\n");
+                }
+                
+                
+                
+                try
+                {
+                    FileWriter writer = new FileWriter(chooser.getSelectedFile());
+                    try
+                    {
+                        writer.write(text.toString());
+                    }
+                    finally
+                    {
+                        writer.close();
+                    }
+                } catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        };
+        parentMenu.add(showDiceStats);
+    }
+    
+    
     /**
      * @param menuGame
      */

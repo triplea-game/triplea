@@ -15,7 +15,6 @@ package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.image.MapImage;

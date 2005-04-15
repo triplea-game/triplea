@@ -29,7 +29,7 @@ import java.util.Iterator;
 public abstract class AbstractStat implements IStat
 {
 
-    protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###.##");
+    protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");
 
     public double getValue(String alliance, GameData data)
     {

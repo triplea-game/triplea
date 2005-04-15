@@ -45,20 +45,40 @@ public class StatPanel extends JPanel
     private StatTableModel m_dataModel;
     private TechTableModel m_techModel;
     private IStat[] m_stats = new IStat[] {new IPCStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
+    private GameData m_data;
     
-    
-    public void setGameData(GameData data)
+    //sort based on first step
+    private final Comparator m_playerOrderComparator = new Comparator()
     {
-        m_dataModel.setGameData(data);
-        m_techModel.setGameData(data);
-        m_dataModel.gameDataChanged(null);
-        m_techModel.gameDataChanged(null);
-
-    }
+        public int compare(Object o1, Object o2)
+        {
+            PlayerID p1 = (PlayerID) o1;
+            PlayerID p2 = (PlayerID) o2;
+            
+            Iterator iter = m_data.getSequence().iterator();
+            
+            while(iter.hasNext())
+            {
+                GameStep s = (GameStep) iter.next();
+                
+                if(s.getPlayerID() == null)
+                    continue;
+                
+                if(s.getPlayerID().equals(p1))
+                    return -1;
+                else if(s.getPlayerID().equals(p2))
+                    return 1;
+            }
+            return 0;
+        }
+        
+    };
 
     /** Creates a new instance of InfoPanel */
     public StatPanel(GameData data)
     {
+        m_data = data;
+        //only add the vc stat if we have some victory cities
         if(Match.someMatch(data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity))
         {
             List stats = new ArrayList(Arrays.asList(m_stats));
@@ -101,6 +121,54 @@ public class StatPanel extends JPanel
 
     }    
     
+    
+    public void setGameData(GameData data)
+    {
+        m_data = data;
+        m_dataModel.setGameData(data);
+        m_techModel.setGameData(data);
+        m_dataModel.gameDataChanged(null);
+        m_techModel.gameDataChanged(null);
+
+    }
+    
+    /**
+     * 
+     * @return all the alliances with more than one player.
+     */
+    public Collection getAlliances()
+    {
+        Iterator allAlliances = m_data.getAllianceTracker().getAliances().iterator();
+        //order the alliances use a Tree Set
+        Collection rVal = new TreeSet();
+
+        while (allAlliances.hasNext())
+        {
+            String alliance = (String) allAlliances.next();
+            if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1)
+            {
+                rVal.add(alliance);
+            }
+        }
+        return rVal;
+    }
+
+    
+    public List getPlayers()
+    {
+        List players = new ArrayList( m_data.getPlayerList().getPlayers());
+        Collections.sort(players,m_playerOrderComparator);
+        return players;
+        
+    }
+
+    public IStat[] getStats()
+    {
+        return m_stats;
+    }
+    
+ 
+    
     /*
      * Custom table model.
      * 
@@ -117,32 +185,6 @@ public class StatPanel extends JPanel
         /* Underlying data for the table */
         private String[][] m_collectedData;
         
-        //sort based on first step
-        private final Comparator m_playerOrderComparator = new Comparator()
-        {
-            public int compare(Object o1, Object o2)
-            {
-                PlayerID p1 = (PlayerID) o1;
-                PlayerID p2 = (PlayerID) o2;
-                
-                Iterator iter = m_data.getSequence().iterator();
-                
-                while(iter.hasNext())
-                {
-                    GameStep s = (GameStep) iter.next();
-                    
-                    if(s.getPlayerID() == null)
-                        continue;
-                    
-                    if(s.getPlayerID().equals(p1))
-                        return -1;
-                    else if(s.getPlayerID().equals(p2))
-                        return 1;
-                }
-                return 0;
-            }
-            
-        };
         
         public StatTableModel(GameData data)
         {
@@ -157,9 +199,8 @@ public class StatPanel extends JPanel
             m_data.acquireChangeLock();
             try
             {
-	            List players = new ArrayList( m_data.getPlayerList().getPlayers());
-	            Collections.sort(players,m_playerOrderComparator);
-	            Collection alliances = getAlliances();
+                List players = getPlayers();
+                Collection alliances = getAlliances();
 	            
 	            m_collectedData = new String[players.size() + alliances.size()][m_stats.length + 1];
 	            
@@ -196,26 +237,7 @@ public class StatPanel extends JPanel
             
         }
 
-        /**
-         * 
-         * @return all the alliances with more than one player.
-         */
-        private Collection getAlliances()
-        {
-            Iterator allAlliances = m_data.getAllianceTracker().getAliances().iterator();
-            //order the alliances use a Tree Set
-            Collection rVal = new TreeSet();
 
-            while (allAlliances.hasNext())
-            {
-                String alliance = (String) allAlliances.next();
-                if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1)
-                {
-                    rVal.add(alliance);
-                }
-            }
-            return rVal;
-        }
 
         public void gameDataChanged(Change aChange)
         {

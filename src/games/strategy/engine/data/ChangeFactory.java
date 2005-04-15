@@ -190,7 +190,7 @@ class AddUnits extends Change
     public String toString()
     {
 
-        return "Add unit message.  Add to:" + m_name + " units:" + m_units;
+        return "Add unit change.  Add to:" + m_name + " units:" + m_units;
     }
 }
 
@@ -239,7 +239,7 @@ class RemoveUnits extends Change
     public String toString()
     {
 
-        return "Remove unit message. Remove from:" + m_name + " units:" + m_units;
+        return "Remove unit change. Remove from:" + m_name + " units:" + m_units;
     }
 }
 
