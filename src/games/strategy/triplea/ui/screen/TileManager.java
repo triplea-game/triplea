@@ -34,7 +34,7 @@ import java.util.logging.*;
 public class TileManager
 {
     private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
-    public final static int TILE_SIZE = 250;
+    public final static int TILE_SIZE = 256;
     private List m_tiles = new ArrayList();
     private final Object m_mutex = new Object();
     
