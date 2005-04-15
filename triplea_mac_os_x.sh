@@ -10,4 +10,4 @@ fi
 relativePathToGame=`dirname $0`
 cd $relativePathToGame
 
-java -cp lib/patch.jar:classes:lib/plastic-1.2.0.jar:lib/backport-util-concurrent.jar games.strategy.engine.framework.GameRunner
+java -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:lib/backport-util-concurrent.jar games.strategy.engine.framework.GameRunner
