@@ -180,6 +180,7 @@
                 <connection t1="15B Sea Zone" t2="15 Sea Zone"/>
                 <connection t1="15B Sea Zone" t2="16 Sea Zone"/>
                 <connection t1="15B Sea Zone" t2="East Balkans"/>
+		<connection t1="16 Sea Zone" t2="East Balkans"/>
                 <connection t1="Sweden" t2="Norway"/>
                 <connection t1="Sweden" t2="5 Sea Zone"/>
                 <connection t1="Switzerland" t2="Germany"/>
