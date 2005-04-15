@@ -148,7 +148,7 @@ public class TileImageBreaker
 	                
                 
                 
-                ImageIO.write(relief, "jpg", new File(outFileName));
+                ImageIO.write(relief, "png", new File(outFileName));
                 System.out.println("wrote " + outFileName);
             }
         }
