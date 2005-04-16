@@ -100,6 +100,21 @@ public class Tile
         return image;        
     }
     
+    
+    /**
+     * This image may be null, and it may not reflect our current drawables.  Use getImage() to get
+     * a correct image
+     * 
+     * @return the image we currently have.
+     * 
+     */
+    public Image getDirtyImage()
+    {
+        if(m_imageRef == null)
+            return null;
+        return (Image) m_imageRef.get();
+    }
+    
     private synchronized void draw(Graphics2D g, GameData data, MapData mapData)
     {
         Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + m_bounds);
