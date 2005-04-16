@@ -205,17 +205,52 @@ class CapitolMarkerDrawable implements IDrawable
     
 }
 
-class ReliefMapDrawable implements IDrawable
+abstract class MapDrawable implements IDrawable
 {
-
-    private boolean m_noImage = false;
-    private final int m_x;
-    private final int m_y;
     
-    public ReliefMapDrawable(final int x, final int y)
+    protected boolean m_noImage = false;
+    protected final int m_x;
+    protected final int m_y;
+  
+    public MapDrawable(final int x, final int y)
     {
         m_x = x;
         m_y = y;
+    }
+
+    protected abstract Image getImage();
+    
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    {
+
+        Image img = getImage();
+        
+        if(img == null)
+            return;
+    
+        Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
+        graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        
+        Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing images");
+        graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y,null);
+        drawStopWatch.done();
+        
+        if(oldValue == null)
+            graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
+        else
+            graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
+
+    }
+
+    
+}
+
+class ReliefMapDrawable extends MapDrawable
+{
+
+    public ReliefMapDrawable(int x, int y)
+    {
+        super(x, y);
     }
     
     public void prepare() 
@@ -228,37 +263,23 @@ class ReliefMapDrawable implements IDrawable
         TileImageFactory.getInstance().prepareReliefTile(m_x, m_y);
     }
     
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    protected Image getImage()
     {
         if(m_noImage)
-            return;
+            return null;
         
         if(!TileImageFactory.getShowReliefImages())
-            return;
+            return null;
         
-        Stopwatch loadImageStopWatch = new Stopwatch(s_logger, Level.FINEST, "Loading Relief Images");
-        Image img = TileImageFactory.getInstance().getReliefTile(m_x, m_y);
-        loadImageStopWatch.done();
-        
-        if(img == null)
-        {
+        Image rVal = TileImageFactory.getInstance().getReliefTile(m_x, m_y);
+        if(rVal == null)
             m_noImage = true;
-            return;            
-        }
-    
-        Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
-        graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
         
-        Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing relief images");
-        graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y,null);
-        drawStopWatch.done();
-        
-        if(oldValue == null)
-            graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
-        else
-            graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
-
+        return rVal;
     }
+
+ 
+    
 
     public int getLevel()
     {
@@ -267,54 +288,40 @@ class ReliefMapDrawable implements IDrawable
     
 }
 
-class BaseMapDrawable implements IDrawable
+class BaseMapDrawable extends MapDrawable
 {
-
-    private final int m_x;
-    private final int m_y;
-    private boolean m_noImage = false;
    
     public BaseMapDrawable(final int x, final int y)
     {
-        m_x = x;
-        m_y = y;
+        super(x,y);
     }
    
     public void prepare() 
     {
         if(m_noImage)
             return;
+        
         TileImageFactory.getInstance().prepareBaseTile(m_x, m_y);
     }
-    
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+
+   
+    protected Image getImage()
     {
         if(m_noImage)
-            return;
-        Stopwatch loadStopWatch = new Stopwatch(s_logger, Level.FINEST, "Loading base map tile");
-        Image img = TileImageFactory.getInstance().getBaseTile(m_x, m_y);
-        loadStopWatch.done();
-        
-        if(img == null)
-        {
+            return null;
+
+        Image rVal = TileImageFactory.getInstance().getBaseTile(m_x, m_y); 
+        if(rVal == null)
             m_noImage = true;
-            return;
-        }
         
-        if(img != null)
-        {
-            Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing base map tile");
-            graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y,null);
-            drawStopWatch.done();
-        }
-        
+        return rVal;
     }
+
 
     public int getLevel()
     {
         return BASE_MAP_LEVEL;
     }
-    
 }
 
 class LandTerritoryDrawable implements IDrawable

@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.logging.*;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 /**
  * Responsible for drawing the large map and keeping it updated.
  * 
@@ -62,10 +64,16 @@ public class MapPanel extends ImageScrollerLargeView
 
     private TileManager m_tileManager = new TileManager();
     
+    private final BackgroundDrawer m_backgroundDrawer = new BackgroundDrawer(this);
+    
     /** Creates new MapPanel */
     public MapPanel(Dimension imageDimensions, GameData data, MapPanelSmallView smallView) throws IOException
     {
         super(imageDimensions);
+        
+        Thread t = new Thread(m_backgroundDrawer, "Map panel background drawer");
+        t.setDaemon(true);
+        t.start();
         
         setDoubleBuffered(false);
        
@@ -91,7 +99,10 @@ public class MapPanel extends ImageScrollerLargeView
         m_tileManager.resetTiles(data, MapData.getInstance());
     } 
      
-    
+    GameData getData()
+    {
+        return m_data;
+    }
 
     // Beagle Code used to chnage map skin
     public void changeImage(Dimension newDimensions)
@@ -280,6 +291,8 @@ public class MapPanel extends ImageScrollerLargeView
     public void setGameData(GameData data)
     {
 
+        
+        
         //clean up any old listeners
         if (m_data != null)
         {
@@ -292,6 +305,9 @@ public class MapPanel extends ImageScrollerLargeView
         
         m_data.addDataChangeListener(TECH_UPDATE_LISTENER);
         m_data.addDataChangeListener(UNITS_HIT_LISTENER);
+        
+        //stop painting in the background
+        m_backgroundDrawer.setTiles(Collections.EMPTY_SET);
         
         m_tileManager.resetTiles(m_data, MapData.getInstance());
 
@@ -382,7 +398,8 @@ public class MapPanel extends ImageScrollerLargeView
     {
         super.paint(g);
         List images = new ArrayList();
-
+        List undrawnTiles = new ArrayList();
+        
         Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINER, "Paint");
 
         //make sure we use the same data for the entire paint
@@ -394,50 +411,14 @@ public class MapPanel extends ImageScrollerLargeView
 	        if(m_x < 0)
 	        {
 	            Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
-	            List tileList = m_tileManager.getTiles(leftBounds);
-	            Iterator tiles = tileList.iterator();
-	            
-	            
-	            //prep the tiles for drawing
-	            while(tiles.hasNext())
-	            {
-	                Tile tile = (Tile) tiles.next();
-	                tile.prepareToDraw();
-	            }
-	            
-	            tiles = tileList.iterator();
-	            while (tiles.hasNext())
-	            {
-	                Tile tile = (Tile) tiles.next();
-	                Image img = tile.getImage(data, MapData.getInstance());
-	                g.drawImage(img, tile.getBounds().x -leftBounds.x, tile.getBounds().y - m_y, this);
-	                images.add(tile);
-	            }
+	            drawTiles(g, images, data, leftBounds,0, undrawnTiles);
 	        }
 	        
 	        //handle the non overlap
 	        {
 	        
 		        Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
-		        List tileList = m_tileManager.getTiles(mainBounds);
-		        Iterator tiles = tileList.iterator();
-		
-		        //prep the tiles for drawing
-		        while(tiles.hasNext())
-		        {
-		            Tile tile = (Tile) tiles.next();
-		            tile.prepareToDraw();
-		        }
-		        
-		        tiles = tileList.iterator();
-		        
-		        while (tiles.hasNext())
-		        {
-		            Tile tile = (Tile) tiles.next();
-		            Image img = tile.getImage(data, MapData.getInstance());
-		            g.drawImage(img, tile.getBounds().x - m_x, tile.getBounds().y - m_y, this);
-		            images.add(tile);
-		        }
+		        drawTiles(g, images, data, mainBounds,0, undrawnTiles);
 	        }
 	
 	        
@@ -446,25 +427,7 @@ public class MapPanel extends ImageScrollerLargeView
 	        if(leftOverlap > 0)
 	        {
 	            Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
-	            List tileList =  m_tileManager.getTiles(rightBounds);
-	            Iterator tiles = tileList.iterator();
-	            rightBounds.translate((int) (leftOverlap - getWidth()), 0);
-	
-	            //prep the tiles for drawing
-	            while(tiles.hasNext())
-	            {
-	                Tile tile = (Tile) tiles.next();
-	                tile.prepareToDraw();
-	            }
-	            tiles = tileList.iterator();
-	            
-	            while (tiles.hasNext())
-	            {
-	                Tile tile = (Tile) tiles.next();
-	                Image img = tile.getImage(data, MapData.getInstance());
-	                g.drawImage(img, tile.getBounds().x -rightBounds.x, tile.getBounds().y - m_y, this);
-	                images.add(tile);
-	            }
+	            drawTiles(g, images, data, rightBounds, leftOverlap, undrawnTiles);
 	        }
 	
 	        
@@ -478,11 +441,41 @@ public class MapPanel extends ImageScrollerLargeView
             data.releaseChangeLock();
         }
         
+        m_backgroundDrawer.setTiles(undrawnTiles);
+        
         stopWatch.done();
         
     }
 
-    
+   
+
+    private void drawTiles(Graphics g, List images, final GameData data, Rectangle bounds, double overlap, List undrawn)
+    {
+        List tileList = m_tileManager.getTiles(bounds);
+        Iterator tiles = tileList.iterator();
+
+        if(overlap != 0)
+        {
+            bounds.translate((int) (overlap - getWidth()), 0);    
+        }
+        
+        while (tiles.hasNext())
+        {
+            Tile tile = (Tile) tiles.next();
+            if(tile.isDirty())
+            {
+                undrawn.add(tile);
+                
+            }
+            else
+            {
+	            Image img = tile.getImage(data, MapData.getInstance());
+	            g.drawImage(img, tile.getBounds().x -bounds.x, tile.getBounds().y - m_y, this);
+	            images.add(tile);
+            }
+        }
+    }
+
     public Image getTerritoryImage(Territory territory)
     {
         return m_tileManager.createTerritoryImage(territory, m_data,MapData.getInstance());
@@ -574,7 +567,72 @@ class RouteDescription
         return m_end;
     }
 
-    
-    
+  
+}
 
+class BackgroundDrawer implements Runnable
+{
+    private final List m_tiles = new ArrayList();
+    private final Object m_mutex = new Object();
+    private boolean m_active = true;
+    private final MapPanel m_mapPanel;
+    
+    BackgroundDrawer(MapPanel panel)
+    {
+        m_mapPanel = panel;
+    }
+    
+    public void setTiles(Collection aCollection) 
+    {
+	      synchronized(m_mutex)
+	      {
+	          m_tiles.clear();
+	          m_tiles.addAll(aCollection);
+	          if(!m_tiles.isEmpty())
+	              m_mutex.notifyAll();
+	      }
+    }
+    
+    public void run()
+    {
+        while(m_active)
+        {
+            Tile tile ;
+            synchronized(m_mutex)
+            {
+                if(m_tiles.isEmpty())
+                {
+                    //wait for more tiles
+                    try
+                    {
+                        m_mutex.wait();
+                    } catch (InterruptedException e)
+                    {
+
+                    }
+                    
+                    continue;
+                }
+                else
+                {
+                    tile = (Tile) m_tiles.remove(0);
+                }
+                    
+                tile.getImage(m_mapPanel.getData(), MapData.getInstance());
+                //update the main map
+                SwingUtilities.invokeLater(new Runnable()
+                {
+                   public void run()
+                   { 
+                       m_mapPanel.repaint();
+                   }
+                });
+            }
+            
+        }
+    }
+    
+    
+    
+    
 }

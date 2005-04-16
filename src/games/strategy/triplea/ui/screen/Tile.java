@@ -53,6 +53,7 @@ public class Tile
         m_y = y;
         
     }
+     
     
     public void prepareToDraw()
     {
@@ -67,6 +68,14 @@ public class Tile
             }
         }
         
+    }
+    
+    public boolean isDirty()
+    {
+        synchronized(m_mutex)
+        {
+            return m_isDirty;
+        }
     }
     
     public Image getImage(GameData data, MapData mapData) 

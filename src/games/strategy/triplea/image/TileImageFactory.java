@@ -14,18 +14,19 @@ package games.strategy.triplea.image;
 
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 import games.strategy.triplea.Constants;
-import games.strategy.ui.ImageIoCompletionWatcher;
+import games.strategy.triplea.util.Stopwatch;
+import games.strategy.ui.Util;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.File;
+import java.io.*;
 import java.lang.ref.*;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.*;
 import java.util.logging.Logger;
 import java.util.prefs.*;
 
-import javax.swing.*;
+import javax.imageio.ImageIO;
 
 public final class TileImageFactory
 {
@@ -39,9 +40,10 @@ public final class TileImageFactory
     private final static String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief";
     private static boolean s_showReliefImages = true;
 
+    private static final Logger s_logger = Logger.getLogger(TileImageFactory.class.getName());
+    
     //maps image name to ImageRef
     private HashMap m_imageCache = new HashMap();
-    private final Toolkit m_toolkit = Toolkit.getDefaultToolkit();
 
     static
     {
@@ -113,10 +115,10 @@ public final class TileImageFactory
     {
         String fileName = getReliefTileImageName(x, y);
         //image is already loaded
-        prepareImage(fileName);
+        prepareImage(fileName, true);
     }
 
-    private void prepareImage(String fileName)
+    private void prepareImage(String fileName, boolean transparent)
     {
         if(s_dontLoadImages)
             return;
@@ -128,7 +130,7 @@ public final class TileImageFactory
             URL url = this.getClass().getResource(fileName);
             if (url == null)
                 return;
-            startLoadingImage(url, fileName);
+            startLoadingImage(url, fileName, transparent);
         }
     }
 
@@ -152,13 +154,13 @@ public final class TileImageFactory
     {
         String fileName = getBaseTileImageName(x, y);
         //image is already loaded
-        prepareImage(fileName);
+        prepareImage(fileName, false);
     }
 
     public Image getBaseTile(int x, int y)
     {
         String fileName = getBaseTileImageName(x, y);
-        return getImage(fileName);
+        return getImage(fileName, false);
     }
 
     /**
@@ -176,7 +178,7 @@ public final class TileImageFactory
      * @param fileName
      * @return
      */
-    private Image getImage(String fileName)
+    private Image getImage(String fileName, boolean transparent)
     {
         if(s_dontLoadImages)
             return null;
@@ -191,15 +193,15 @@ public final class TileImageFactory
             if (url == null)
                 return null;
 
-            startLoadingImage(url, fileName);
+            startLoadingImage(url, fileName, transparent);
         }
-        return getImage(fileName);
+        return getImage(fileName, transparent);
     }
 
     public Image getReliefTile(int x, int y)
     {
         String fileName = getReliefTileImageName(x, y);
-        return getImage(fileName);
+        return getImage(fileName, true);
     }
 
     /**
@@ -217,27 +219,27 @@ public final class TileImageFactory
      * @param imageLocation
      * @return
      */
-    private void startLoadingImage(URL imageLocation, String fileName)
+    private void startLoadingImage(URL imageLocation, String fileName, boolean transparent)
     {
         synchronized (m_mutex)
         {
-//            try
-//            {
-//                Image img = ImageIO.read(imageLocation);
-//                ImageRef ref = new ImageRef(img);
-//                m_imageCache.put(fileName, ref);
-//                
-//                
-//            } catch (IOException e)
-//            {
-//                
-//                e.printStackTrace();
-//            }
-            
-            
-            // use the local toolkit to load the image
-            Image img = m_toolkit.createImage(imageLocation);
-            ImageRef ref = new ImageRef(img);
+		    Image image;
+		    try
+		    {
+		        Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINEST, "Loading image:" + imageLocation);
+		        Image fromFile = ImageIO.read(imageLocation);
+		    
+		        //using a copy reduces memory, a simpler memory format?
+		        image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
+		        image.getGraphics().drawImage(fromFile, 0,0, null);
+		        loadingImages.done();
+		        
+		    } catch (IOException e)
+		    {
+		        throw new IllegalStateException(e.getMessage());
+		    }
+		    
+            ImageRef ref = new ImageRef(image);
             m_imageCache.put(fileName, ref);
         }
     }
@@ -280,7 +282,7 @@ class ImageRef
                 }
             }
         };
-        Thread t = new Thread(r);
+        Thread t = new Thread(r, "Tile Image Factory Soft Reference Reclaimer");
         t.setDaemon(true);
         t.start();
         
@@ -288,47 +290,17 @@ class ImageRef
     
     
     private final Reference m_image;
-    private ImageIoCompletionWatcher m_watcher;
-    //private Object m_hardRef;
-    private final Object m_mutex = new Object();
+    //private final Object m_hardRef;
 
     public ImageRef(final Image image)
     {
         m_image = new SoftReference(image, s_referenceQueue);
         //m_hardRef = image;
         s_logger.finer("Added soft reference image. Image count:" + s_imageCount.incrementAndGet() );
-        
-        
-        Action action = new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent s)
-            {
-                synchronized (m_mutex)
-                {
-                    m_watcher = null;
-                }
-            }
-        };
-        
-        // start it loading
-        m_watcher = new ImageIoCompletionWatcher(action);
-        boolean done = Toolkit.getDefaultToolkit().prepareImage(image, -1, -1, m_watcher);
-        if(done)
-        {
-            m_watcher = null;
-        }
     }
 
     public Image getImage()
     {
-        synchronized(m_mutex)
-        {
-	        if (m_watcher == null)
-	            return (Image) m_image.get();
-	        m_watcher.waitForCompletion();
-	        m_watcher = null;
-        }
-
         return (Image) m_image.get();
     }
 
@@ -337,8 +309,6 @@ class ImageRef
         m_image.enqueue();
         m_image.clear();
     }
-    
-
 }
 
 

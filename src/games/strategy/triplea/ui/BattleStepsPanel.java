@@ -64,7 +64,7 @@ class BattleStepsPanel extends JPanel
                     }
                 }
 
-                while (!doneWalkingSteps())
+                while (!doneWalkingSteps() && !m_deactivated)
                     walkStep();
 
             }
