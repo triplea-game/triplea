@@ -122,7 +122,7 @@ public class TripleA implements IGameLoader
                     SoundPath.preLoadSounds();
                 }
             };
-            new Thread(loadSounds).start();
+            new Thread(loadSounds, "Triplea sound loader").start();
 
         } catch (IOException ioe)
         {

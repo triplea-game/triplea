@@ -252,7 +252,7 @@ class HttpDiceRollerDialog extends JDialog
         m_reRollButton.setEnabled(false);
         m_exitButton.setEnabled(false);
 
-        Thread t = new Thread()
+        Thread t = new Thread("Triplea, roll in seperate thread")
         {
             public void run()
             {

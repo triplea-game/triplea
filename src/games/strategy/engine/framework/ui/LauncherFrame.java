@@ -246,7 +246,7 @@ public class LauncherFrame extends JFrame
         {
             //the first roll takes a while, initialize
             //here in the background so that the user doesnt notice
-            Thread t = new Thread()
+            Thread t = new Thread("Warming up crypto random source")
             {
                 public void run()
                 {
@@ -257,7 +257,7 @@ public class LauncherFrame extends JFrame
 
         }
 
-        Thread t = new Thread()
+        Thread t = new Thread("Triplea, start server game")
         {
             public void run()
             {
@@ -346,7 +346,7 @@ public class LauncherFrame extends JFrame
 
             }
         };
-        Thread thread = new Thread(runner);
+        Thread thread = new Thread(runner, "Triplea start local thread");
         thread.start();
         setVisible(false);
     }
