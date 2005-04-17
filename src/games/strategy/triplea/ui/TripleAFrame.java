@@ -438,7 +438,7 @@ public class TripleAFrame extends JFrame
      */
     private void addShowDiceStats(JMenu parentMenu)
     {
-        Action showDiceStats = new AbstractAction("Show Dice Stats")
+        Action showDiceStats = new AbstractAction("Show Dice Stats...")
         {
             public void actionPerformed(ActionEvent e)
             {
