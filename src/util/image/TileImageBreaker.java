@@ -14,13 +14,11 @@
 
 package util.image;
 
-import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.ui.screen.TileManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -84,26 +82,26 @@ public class TileImageBreaker
             System.exit(0);
         }
 
-        m_baseMap = doBaseMap(); //ask user wether it is sea zone only or
+        //m_baseMap = doBaseMap(); //ask user wether it is sea zone only or
                                      // not
-        String mapDir = getMapDirectory(); //ask user where the map is
-
-        if (mapDir == null || mapDir.equals(""))
-        {
-            System.out.println("You need to specify a map name for this to work");
-            System.out.println("Shutting down");
-            System.exit(0);
-        }
-
-        try
-        {
-            MapData.setMapDir(mapDir); //makes TripleA read all the text data
-                                       // files for the map.
-        } catch (NullPointerException npe)
-        {
-            System.out.println("Bad data given or missing text files, shutting down");
-            System.exit(0);
-        }
+//        String mapDir = getMapDirectory(); //ask user where the map is
+//
+//        if (mapDir == null || mapDir.equals(""))
+//        {
+//            System.out.println("You need to specify a map name for this to work");
+//            System.out.println("Shutting down");
+//            System.exit(0);
+//        }
+//
+//        try
+//        {
+//            MapData.setMapDir(mapDir); //makes TripleA read all the text data
+//                                       // files for the map.
+//        } catch (NullPointerException npe)
+//        {
+//            System.out.println("Bad data given or missing text files, shutting down");
+//            System.exit(0);
+//        }
 
         for (int x = 0; (x) * TileManager.TILE_SIZE < map.getWidth(null); x++)
         {
@@ -121,24 +119,24 @@ public class TileImageBreaker
 
                 
                 //boolean match = false;
-                Iterator territories = MapData.getInstance().getTerritories().iterator();
-                while(territories.hasNext())
-                {
-                    String territoryName = territories.next().toString();
-                    Rectangle territoryBounds = MapData.getInstance().getBoundingRect(territoryName); 
-                    boolean seaZone = (territoryName.toUpperCase().indexOf("SEA")  != -1) ||
-                    (territoryName.toUpperCase().indexOf("SZ") != -1 );
-                    if( (seaZone == m_baseMap) &&
-                            (territoryBounds.contains(bounds) || bounds.contains(territoryBounds) || bounds.intersects(territoryBounds))
-                            )
-                    {
-                      
-                        //match = true;
-                        break;
-                    }
-                }
+//                Iterator territories = MapData.getInstance().getTerritories().iterator();
+//                while(territories.hasNext())
+//                {
+//                    String territoryName = territories.next().toString();
+//                    Rectangle territoryBounds = MapData.getInstance().getBoundingRect(territoryName); 
+//                    boolean seaZone = (territoryName.toUpperCase().indexOf("SEA")  != -1) ||
+//                    (territoryName.toUpperCase().indexOf("SZ") != -1 );
+//                    if( (seaZone == m_baseMap) &&
+//                            (territoryBounds.contains(bounds) || bounds.contains(territoryBounds) || bounds.intersects(territoryBounds))
+//                            )
+//                    {
+//                      
+//                        //match = true;
+//                        break;
+//                    }
+//                }
                 
-                String outFileName = SMALL_MAPS_LOCATION + "/" + x  + "_"  + y + ".png";
+                String outFileName = SMALL_MAPS_LOCATION + File.separator + x  + "_"  + y + ".png";
                 
 //                if(!match)
 //                {
