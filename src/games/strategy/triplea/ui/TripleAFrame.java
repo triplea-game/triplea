@@ -627,7 +627,7 @@ public class TripleAFrame extends JFrame
             {
 
                 TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-                Thread t = new Thread()
+                Thread t = new Thread("Triplea : Show map details thread")
                 {
                     public void run()
                     {

@@ -47,7 +47,7 @@ class BattleStepsPanel extends JPanel
     private boolean m_deactivated = false;
 
     //do all walking in a single thread
-    private final Thread m_walkThread = new Thread("Battle steps panel step walking thread")
+    private final Thread m_walkThread = new Thread("Triplea Battle steps panel step walking thread")
     {
         public void run()
         {

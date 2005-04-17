@@ -88,48 +88,68 @@ public class TileManager
 
     public void resetTiles(GameData data, MapData mapData)
     {
-        synchronized(m_mutex)
+        data.acquireChangeLock();
+        
+        try
         {
-	        Iterator allTiles = m_tiles.iterator();
-	        while (allTiles.hasNext())
+        
+        
+	        synchronized(m_mutex)
 	        {
-	            Tile tile = (Tile) allTiles.next();
-	            tile.clear();
-	            
-	            int x = tile.getBounds().x / TILE_SIZE;
-	            int y = tile.getBounds().y / TILE_SIZE;
-	            
-	            tile.addDrawable(new BaseMapDrawable(x,y));
-	            tile.addDrawable(new ReliefMapDrawable(x,y));
+		        Iterator allTiles = m_tiles.iterator();
+		        while (allTiles.hasNext())
+		        {
+		            Tile tile = (Tile) allTiles.next();
+		            tile.clear();
+		            
+		            int x = tile.getBounds().x / TILE_SIZE;
+		            int y = tile.getBounds().y / TILE_SIZE;
+		            
+		            tile.addDrawable(new BaseMapDrawable(x,y));
+		            tile.addDrawable(new ReliefMapDrawable(x,y));
+		
+		        }
 	
+		        Iterator territories = data.getMap().getTerritories().iterator();
+		        while (territories.hasNext())
+		        {
+		            Territory territory = (Territory) territories.next();
+		            drawTerritory(territory, data, mapData);
+		
+		        }
 	        }
-
-	        Iterator territories = data.getMap().getTerritories().iterator();
-	        while (territories.hasNext())
-	        {
-	            Territory territory = (Territory) territories.next();
-	            drawTerritory(territory, data, mapData);
-	
-	        }
+        }
+        finally
+        {
+            data.releaseChangeLock();
         }
 
     }
     
     public void updateTerritories(Collection territories, GameData data, MapData mapData)
     {
-        synchronized(m_mutex)
+        data.acquireChangeLock();
+        try
         {
-	        if(territories == null)
-	            return;
-	        
-	        Iterator iter = territories.iterator();
-	        
-	        while (iter.hasNext())
+        
+	        synchronized(m_mutex)
 	        {
-	            Territory territory = (Territory) iter.next();
-	            updateTerritory(territory, data, mapData);
-	            
+		        if(territories == null)
+		            return;
+		        
+		        Iterator iter = territories.iterator();
+		        
+		        while (iter.hasNext())
+		        {
+		            Territory territory = (Territory) iter.next();
+		            updateTerritory(territory, data, mapData);
+		            
+		        }
 	        }
+        }
+        finally
+        {
+            data.releaseChangeLock();
         }
     }
 
@@ -172,44 +192,38 @@ public class TileManager
         Set drawnOn = new HashSet();
         Set drawing = new HashSet();
         
-        data.acquireChangeLock();
-        try
+
+        drawUnits(territory, data, mapData, drawnOn, drawing);
+        
+        if(!territory.isWater())
+            drawing.add(new LandTerritoryDrawable(territory.getName()));
+        
+        drawing.add(new TerritoryNameDrawable(territory.getName()));
+        
+        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+        if(ta != null &&  ta.isCapital() && mapData.drawCapitolMarkers())
         {
-            drawUnits(territory, data, mapData, drawnOn, drawing);
-            
-	        if(!territory.isWater())
-	            drawing.add(new LandTerritoryDrawable(territory.getName()));
-	        
-	        drawing.add(new TerritoryNameDrawable(territory.getName()));
-	        
-	        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
-	        if(ta != null &&  ta.isCapital() && mapData.drawCapitolMarkers())
-	        {
-	            PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
-	            drawing.add(new CapitolMarkerDrawable(capitalOf, territory));
-	        }
-	        
-	        if(ta != null && ta.isVictoryCity())
-	        {
-	            drawing.add(new VCDrawable(territory));
-	        }
-	        
-	        //add to the relevant tiles
-	        Iterator tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
-	        while (tiles.hasNext())
-	        {
-	            Tile tile = (Tile) tiles.next();
-	            drawnOn.add(tile);
-	            tile.addDrawbles(drawing);
-	        }
-	        
-	        m_territoryDrawables.put(territory.getName(), drawing);
-	        m_territoryTiles.put(territory.getName(), drawnOn);
+            PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
+            drawing.add(new CapitolMarkerDrawable(capitalOf, territory));
         }
-        finally
+        
+        if(ta != null && ta.isVictoryCity())
         {
-            data.releaseChangeLock();
+            drawing.add(new VCDrawable(territory));
         }
+        
+        //add to the relevant tiles
+        Iterator tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
+        while (tiles.hasNext())
+        {
+            Tile tile = (Tile) tiles.next();
+            drawnOn.add(tile);
+            tile.addDrawbles(drawing);
+        }
+        
+        m_territoryDrawables.put(territory.getName(), drawing);
+        m_territoryTiles.put(territory.getName(), drawnOn);
+   
     }
     
     private void drawUnits(Territory territory, GameData data, MapData mapData, Set drawnOn, Set drawing)

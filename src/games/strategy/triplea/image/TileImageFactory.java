@@ -30,9 +30,6 @@ import javax.imageio.ImageIO;
 
 public final class TileImageFactory
 {
-    //if this system property is set to true, we dont load any graphics
-    //this allows for faster start times
-    private static final boolean s_dontLoadImages = Boolean.valueOf(System.getProperties().getProperty("triplea.fastGraphics", "false")).booleanValue();
     private final Object m_mutex = new Object();
 
     // one instance in the application
@@ -120,9 +117,6 @@ public final class TileImageFactory
 
     private void prepareImage(String fileName, boolean transparent)
     {
-        if(s_dontLoadImages)
-            return;
-        
         synchronized (m_mutex)
         {
             if (isImageLoaded(fileName) != null)
@@ -180,9 +174,6 @@ public final class TileImageFactory
      */
     private Image getImage(String fileName, boolean transparent)
     {
-        if(s_dontLoadImages)
-            return null;
-        
         synchronized (m_mutex)
         {
             Image rVal = isImageLoaded(fileName);

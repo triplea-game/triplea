@@ -1040,7 +1040,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         };
 	    
         //execute in a seperate thread to allow either player to click continue first.
-        Thread t = new Thread(r);
+        Thread t = new Thread(r, "Click to continue waiter");
         t.start();
         try
         {
@@ -1260,7 +1260,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", step, m_attacker);        
             }
         };
-        Thread t = new Thread(r);
+        Thread t = new Thread(r, "click to continue waiter");
         t.start();
         try
         {

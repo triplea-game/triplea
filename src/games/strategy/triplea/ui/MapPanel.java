@@ -231,8 +231,17 @@ public class MapPanel extends ImageScrollerLargeView
 
     public void resetMap()
     {
+        
        m_tileManager.resetTiles(m_data, MapData.getInstance());
-       repaint();
+       
+       SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                repaint();
+            }
+        });
+       
     }
     
     
@@ -404,6 +413,7 @@ public class MapPanel extends ImageScrollerLargeView
 
         //make sure we use the same data for the entire paint
         final GameData data = m_data;
+        
         data.acquireChangeLock();
         try
         {
@@ -415,12 +425,8 @@ public class MapPanel extends ImageScrollerLargeView
 	        }
 	        
 	        //handle the non overlap
-	        {
-	        
-		        Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
-		        drawTiles(g, images, data, mainBounds,0, undrawnTiles);
-	        }
-	
+		    Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
+		    drawTiles(g, images, data, mainBounds,0, undrawnTiles);
 	        
 	        double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
 	        //handle wrapping off the screen to the left
@@ -440,14 +446,54 @@ public class MapPanel extends ImageScrollerLargeView
         {
             data.releaseChangeLock();
         }
+                
+        //draw the tiles nearest us first
+        //then draw farther away
+        drawNearbyTiles(undrawnTiles, 30, true);
+        drawNearbyTiles(undrawnTiles, 257, true);
+        //when we are this far away, dont force the tiles to stay in memroy
+        drawNearbyTiles(undrawnTiles, 513, false);
+        
         
         m_backgroundDrawer.setTiles(undrawnTiles);
+        
+        
         
         stopWatch.done();
         
     }
 
    
+    /**
+     * If we have nothing left undrawn, draw the tiles within preDrawMargin of us, optionally
+     * forcing the tiles to remain in memory. 
+     */
+    private void drawNearbyTiles(List undrawnTiles, int preDrawMargin, boolean forceInMemory)
+    {
+        //draw tiles near us if we have nothing left to draw
+        //that way when we scroll slowly we wont notice a glitch
+        if(undrawnTiles.isEmpty())
+        {
+            
+            Rectangle extendedBounds = new Rectangle( Math.max(m_x -preDrawMargin, 0),Math.max(m_y -preDrawMargin, 0), getWidth() + (2 * preDrawMargin),  getHeight() + (2 * preDrawMargin));
+            Iterator tiles = m_tileManager.getTiles(extendedBounds).iterator();
+
+            while (tiles.hasNext())
+            {
+                Tile tile = (Tile) tiles.next();
+                if(tile.isDirty())
+                {
+                    undrawnTiles.add(tile);
+                }
+                else if(forceInMemory)
+                {
+                    m_images.add(tile.getRawImage());
+                }
+            }
+            
+            
+        }
+    }
 
     private void drawTiles(Graphics g, List images, final GameData data, Rectangle bounds, double overlap, List undrawn)
     {
@@ -467,7 +513,7 @@ public class MapPanel extends ImageScrollerLargeView
             {
                 //take what we can get to avoid screen flicker
                 undrawn.add(tile);
-                img = tile.getDirtyImage();
+                img = tile.getRawImage();
                 
             }
             else
@@ -504,6 +550,12 @@ public class MapPanel extends ImageScrollerLargeView
         m_smallMapImageManager.update(m_data, MapData.getInstance());
         
     }  
+    
+    public void finalize()
+    {
+        m_backgroundDrawer.stop();
+    }
+
 }
 
 class RouteDescription
@@ -570,6 +622,7 @@ class RouteDescription
     {
         return m_end;
     }
+    
 
   
 }
@@ -584,6 +637,16 @@ class BackgroundDrawer implements Runnable
     BackgroundDrawer(MapPanel panel)
     {
         m_mapPanel = panel;
+    }
+    
+    public void stop()
+    {
+        m_active = false;
+        synchronized(m_mutex)
+        {
+            m_tiles.clear();
+            m_mutex.notifyAll();
+        }
     }
     
     public void setTiles(Collection aCollection) 
@@ -622,8 +685,18 @@ class BackgroundDrawer implements Runnable
                     tile = (Tile) m_tiles.remove(0);
                 }
                     
-                tile.getImage(m_mapPanel.getData(), MapData.getInstance());
-                //update the main map
+                GameData data = m_mapPanel.getData(); 
+                data.acquireChangeLock();
+                try
+                {
+	                tile.getImage(data, MapData.getInstance());
+	                //update the main map after we update each tile
+	                //this allows the tiles to be shown as soon as they are updated
+                }
+                finally
+                {
+                    data.releaseChangeLock();
+                }
                 SwingUtilities.invokeLater(new Runnable()
                 {
                    public void run()

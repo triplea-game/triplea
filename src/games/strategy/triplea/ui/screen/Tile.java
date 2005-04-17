@@ -32,6 +32,7 @@ import java.util.logging.*;
  */
 public class Tile
 {
+    private static final boolean DRAW_DEBUG = false;
     private static final Logger s_logger = Logger.getLogger(Tile.class.getName());
     
     //allow the gc to implement memory management
@@ -74,7 +75,7 @@ public class Tile
     {
         synchronized(m_mutex)
         {
-            return m_isDirty;
+            return m_isDirty || m_imageRef == null || m_imageRef.get() == null;
         }
     }
     
@@ -108,7 +109,7 @@ public class Tile
      * @return the image we currently have.
      * 
      */
-    public Image getDirtyImage()
+    public Image getRawImage()
     {
         if(m_imageRef == null)
             return null;
@@ -123,6 +124,7 @@ public class Tile
         g.setColor(Color.WHITE);
         g.fill(m_bounds);
      
+        
         Iterator iter;
         
         synchronized(m_mutex)
@@ -131,22 +133,26 @@ public class Tile
 		    Collections.sort(m_contents, new DrawableComparator());
 		    iter = new ArrayList(m_contents).iterator();
         }
-	
-        data.acquireChangeLock();
-        try
+
+        while (iter.hasNext())
         {
-	        while (iter.hasNext())
-	        {
-	            IDrawable drawable = (IDrawable) iter.next();
-	            drawable.draw(m_bounds, data, g, mapData);
-	        }
-	        m_isDirty = false;
+            IDrawable drawable = (IDrawable) iter.next();
+            drawable.draw(m_bounds, data, g, mapData);
         }
-        finally
-        {
-            data.releaseChangeLock();
-        }
+        m_isDirty = false;
+  
         
+        
+        //draw debug graphics
+        if(DRAW_DEBUG)
+        {
+            g.setColor(Color.PINK);
+            Rectangle r = new Rectangle(1,1,TileManager.TILE_SIZE - 2, TileManager.TILE_SIZE -2);
+            g.setStroke(new BasicStroke(1));
+            g.draw(r);
+            g.setFont(new Font("Ariel", Font.BOLD, 25));
+            g.drawString(m_x + " " + m_y, 40,40);
+        }
         
         stopWatch.done();
         
