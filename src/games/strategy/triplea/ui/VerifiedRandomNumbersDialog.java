@@ -31,7 +31,7 @@ public class VerifiedRandomNumbersDialog extends JDialog
 {
     public VerifiedRandomNumbersDialog(Component parent)
     {
-        super(JOptionPane.getFrameForComponent(parent), "Verified Random Numbers", true);
+        super(JOptionPane.getFrameForComponent(parent), "Verified Random Numbers", false);
         init();
         pack();
     }
