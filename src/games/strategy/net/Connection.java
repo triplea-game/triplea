@@ -33,6 +33,8 @@ import java.util.*;
 import java.util.logging.*;
 import java.util.logging.Logger;
 
+import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
+
 class Connection
 {
     private static Logger s_logger = Logger.getLogger(Connection.class.getName());
@@ -45,14 +47,10 @@ class Connection
     private INode m_remoteNode;
     private Thread m_reader;
     private Thread m_writer;
-    //all adding and removing from this list must be synchronized
-    //on the list object
-    private final List m_waitingToBeSent = Collections.synchronizedList(new LinkedList());
-    private IObjectStreamFactory m_objectStreamFactory;
-    private final Object m_flushLock = new Object();
 
-    //used to notify writer thread that an object is ready to be written
-    private final Object m_writeWaitLock = new Object();
+    private final LinkedBlockingQueue m_waitingToBeSent = new LinkedBlockingQueue();
+    private IObjectStreamFactory m_objectStreamFactory;
+
 
     public Connection(Socket s, INode ident, IConnectionListener listener, IObjectStreamFactory fact) throws IOException
     {
@@ -139,13 +137,14 @@ class Connection
         if (m_shutdown)
             return;
 
-        synchronized (m_flushLock)
+        Object lock = new Object();
+        synchronized (lock)
         {
             while (!m_shutdown && !m_waitingToBeSent.isEmpty())
             {
                 try
                 {
-                    m_flushLock.wait();
+                    lock.wait(50);
                 } catch (InterruptedException ie)
                 {
                 }
@@ -170,32 +169,23 @@ class Connection
      */
     public void send(MessageHeader msg)
     {
-        m_waitingToBeSent.add(msg);
-        synchronized (m_writeWaitLock)
-        {
-            m_writeWaitLock.notifyAll();
-        }
+        m_waitingToBeSent.offer(msg);
     }
 
     public void shutDown()
     {
-        synchronized (m_flushLock)
-        {
             if (!m_shutdown)
             {
                 m_shutdown = true;
                 try
                 {
                     m_socket.close();
-                    m_flushLock.notifyAll();
-
                 } catch (Exception e)
                 {
                     System.err.println("Exception shutting down");
                     e.printStackTrace();
                 }
             }
-        }
 
     }
 
@@ -217,52 +207,24 @@ class Connection
         {
             while (!m_shutdown)
             {
-                if (!m_waitingToBeSent.isEmpty())
+                MessageHeader next;
+                try
                 {
-                    MessageHeader next = (MessageHeader) m_waitingToBeSent.get(0);
-                    write(next);
-                    log(next, false);
-
-                    m_waitingToBeSent.remove(0);
-
-                    /**
-                     * flush() may need to be woken up
-                     */
-                    synchronized (m_flushLock)
-                    {
-                        if (m_waitingToBeSent.isEmpty())
-                        {
-                            m_flushLock.notifyAll();
-                        }
-                    }
-                } else
+                    next = (MessageHeader) m_waitingToBeSent.take();
+                } catch (InterruptedException e)
                 {
-                    try
-                    {
-                        //the stream keeps a memory of objects that have been
-                        // written to the
-                        //stream, preventing them from being gc'd. reset stream
-                        // when we
-                        //are out of things to send
-                        try
-                        {
-                            m_out.reset();
-                        } catch (IOException ioe)
-                        {
-                            ioe.printStackTrace();
-                        }
-                        synchronized (m_writeWaitLock)
-                        {
-                            m_writeWaitLock.wait();
-                        }
-                    } catch (InterruptedException ie)
-                    {
-                    }
+                    continue;
                 }
-
+                
+                write(next);
+                log(next, false);
+                
+                
             }
         }
+                
 
+            
         private void write(Serializable next)
         {
             if (!m_shutdown)
@@ -271,6 +233,7 @@ class Connection
                 {
                     m_out.writeObject(next);
                     m_out.flush();
+                    m_out.reset();
                 } catch (IOException ioe)
                 {
                     if(ioe instanceof ObjectStreamException)
@@ -313,7 +276,7 @@ class Connection
                         if (!(ioe instanceof EOFException))
                             ioe.printStackTrace();
                         shutDown();
-                        List unsent = new ArrayList(m_waitingToBeSent);
+                        List unsent = new ArrayList(Arrays.asList(m_waitingToBeSent.toArray()));
                         m_listener.fatalError(ioe, Connection.this, unsent);
                     }
                 }
