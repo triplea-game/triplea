@@ -674,63 +674,171 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private String validateAirCanLand(Collection units, Route route, PlayerID player)
     {
 
-        //TODO,
-        //if they cant all land in one territory then
-        //they an error will be returned, even
-        //if they could land in multiple territories
-
-        //make sure air units have enough movement to land
-
+        //nothing to check
         if (!MoveValidator.hasAir(units))
             return null;
 
-        //could be a war zone, make sure we only look at
-        //friendly units that will be in the territory after
-        //the move
-        Collection friendly = MoveValidator.getFriendly(route.getEnd(), player, m_data);
-        friendly.addAll(units);
-        Collection friendlyAir = Match.getMatches(friendly, Matches.UnitIsAir);
+        //these is a place where we can land
+        //must be friendly and non conqueuerd land
+        CompositeMatch friendlyGround = new CompositeMatchAnd();
+        friendlyGround.add(Matches.isTerritoryAllied(m_player, m_data));
+        friendlyGround.add(new Match() 
+                {
+            		public boolean match(Object o)
+            		{
+            		    return !DelegateFinder.battleDelegate(m_data).getBattleTracker().wasConquered((Territory) o);
+            		}
+                }
+        );
+        friendlyGround.add(new Match() 
+                {
+            		public boolean match(Object o)
+            		{
+            		    return !DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle((Territory) o, false);
+            		}
+                }
+        );
+        friendlyGround.add(Matches.TerritoryIsLand);
+        
+        
+        //we can land at the end, nothing left to check
+        if(friendlyGround.match(route.getEnd()))
+            return null;
+        
 
-        if (!MoveValidator.canLand(friendlyAir, route.getEnd(), player, m_data))
+        //this is the farthese we need to look for places to land
+        //the fighters cant move farther than this
+        //note that this doesnt take into account the movement used to move the
+        //units along the route
+        int maxMovement = MoveValidator.getMaxMovement(units, m_alreadyMoved);
+        
+        Match canMoveThrough = new InverseMatch(Matches.TerritoryIsImpassible);
+        Match notNeutral = new InverseMatch(Matches.TerritoryIsNuetral);
+        
+        Match notNeutralAndNotImpassible = new CompositeMatchAnd(canMoveThrough, notNeutral);
+        
+        //find the closest land territory where everyone can land
+        int closesetLandTerritory = Integer.MAX_VALUE;
+        
+        Iterator iter = m_data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();
+    
+        while (iter.hasNext())
         {
-            //get movement left of units that are moving
-            //not enough carrier capacity at end
-            Collection air = Match.getMatches(units, Matches.UnitIsAir);
-            int distance = MoveValidator.getLeastMovement(air, m_alreadyMoved);
-            distance = distance - route.getLength();
 
-            boolean canLand = canFindAPlaceToLand(route, player, air, distance);
-
-            //this is a hack
-            //if the air that we are moving and cant find another place to
-            // land,
-            //see if the air we are moving can land in the given territory
-            //and the air already there can land somewhere else
-            if (!canLand && MoveValidator.canLand(Match.getMatches(units, Matches.UnitIsAir), route.getEnd(), m_player, m_data))
+            Territory territory = (Territory) iter.next();
+        
+            //can we land there?
+            if(!friendlyGround.match(territory))
+                continue;
+            
+            //do we have an easy path to get there
+            //can we do it without violating neutrals
+            Route noNeutralRoute =m_data.getMap().getRoute(route.getEnd(), territory, notNeutralAndNotImpassible); 
+            if(noNeutralRoute != null)
             {
-                Collection airAlreadyThere = Match.getMatches(MoveValidator.getFriendly(route.getEnd(), player, m_data), Matches.UnitIsAir);
-                distance = MoveValidator.getLeastMovement(airAlreadyThere, m_alreadyMoved);
-                canLand = canFindAPlaceToLand(route, player, airAlreadyThere, distance);
-
+                closesetLandTerritory = Math.min(closesetLandTerritory, noNeutralRoute.getLength());
             }
-
-            //TODO - may be able to split air units up and land in different
-            // groups
-            //eg a bomber and a fighter move to a carrier. Bomber can land on
-            //carrier but has enough movment to make it to land,
-            //fighter can land, but does not have enough movement to
-            //make it to land.
-            //Both can land somewhere, but there is no place where all can land
-            if (!canLand)
+            //can we find a path with neutrals?
+            //can we afford this path?
+            Route neutralViolatingRoute = m_data.getMap().getRoute(route.getEnd(), territory, notNeutral);
+            if((neutralViolatingRoute != null) && getNeutralCharge(neutralViolatingRoute) <= m_player.getResources().getQuantity(Constants.IPCS))
             {
-                if (air.size() == 1)
-                    return "No place for the air unit to land.";
-                else
-                    return "There is no place where all the air units can land. You may be able to move these units in smaller groups.";
+                closesetLandTerritory = Math.min(closesetLandTerritory, neutralViolatingRoute.getLength());                    
             }
         }
+        
+        //these rae the units we have to be sure that can land somewhere
+        Match ownedAirMatch = new CompositeMatchAnd(Matches.UnitIsAir, Matches.unitOwnedBy(m_player) );
+        Collection ownedAir = new ArrayList();
+        ownedAir.addAll( Match.getMatches(units, ownedAirMatch ));
+        ownedAir.addAll(Match.getMatches( route.getEnd().getUnits().getUnits(), ownedAirMatch ));
 
+        
+        //find out how much movement we have left  
+        IntegerMap movementLeft = new IntegerMap();
+        Iterator ownedAirIter = ownedAir.iterator();
+        while (ownedAirIter.hasNext())
+        {
+            Unit unit = (Unit) ownedAirIter.next();
+            int movement = MoveValidator.movementLeft(unit, m_alreadyMoved);
+            
+            if(units.contains(unit))
+                movement -= route.getLength();
+            
+            movementLeft.put(unit, movement);
+        }
+        
+        //find the air units that cant make it to land
+        Collection airThatMustLandOnCarriers = new ArrayList();
+        Iterator ownedAirIter2 = ownedAir.iterator();
+        while (ownedAirIter2.hasNext())
+        {
+            Unit unit = (Unit) ownedAirIter2.next();
+            if(movementLeft.getInt(unit) < closesetLandTerritory)
+                airThatMustLandOnCarriers.add(unit);
+        }
+        
+        //we are done, everything can find a place to land
+        if(airThatMustLandOnCarriers.isEmpty())
+            return null;
+        
+        //not everything can land on a carrier, fail
+        if(!Match.allMatch(airThatMustLandOnCarriers, Matches.UnitCanLandOnCarrier))
+            return "No where for the air unit to land";
+        
+        //now, find out where we can land on carriers
+        IntegerMap carrierCapacity = new IntegerMap();
+        
+        Iterator candidates = m_data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();
+        while (candidates.hasNext())
+        {
+            Territory territory = (Territory) candidates.next();
+            Route candidateRoute = m_data.getMap().getRoute(route.getEnd(), territory, canMoveThrough);
+            if(candidateRoute == null)
+                continue;
+            Integer distance = new Integer(candidateRoute.getLength());
+            
+            //we dont want to count untis that moved with us
+            Collection unitsAtLocation = territory.getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
+            unitsAtLocation.removeAll(units);
+            
+            //how much spare capacity do they have?
+            int extraCapacity = MoveValidator.carrierCapacity(unitsAtLocation) - MoveValidator.carrierCost(unitsAtLocation);
+            extraCapacity = Math.max(0, extraCapacity);
+            
+            carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity);
+            
+        }
+        
+        Collection unitsAtEnd = route.getEnd().getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
+        unitsAtEnd.addAll(units);
+        carrierCapacity.put(new Integer(0), MoveValidator.carrierCapacity(unitsAtEnd));
+
+        
+        Iterator airThatMustLandOnCarriersIterator = airThatMustLandOnCarriers.iterator();
+        while (airThatMustLandOnCarriersIterator.hasNext())
+        {
+            Unit unit = (Unit) airThatMustLandOnCarriersIterator.next();
+            int carrierCost = UnitAttatchment.get(unit.getType()).getCarrierCost();
+            int movement = movementLeft.getInt(unit);
+            for(int i = movement; i >=-1; i--)
+            {
+                if(i == -1)
+                    return "No place for unit to land";
+                
+                Integer current = new Integer(i);
+                if(carrierCapacity.getInt(current) >= carrierCost )
+                {
+                    carrierCapacity.put(current,carrierCapacity.getInt(current) - carrierCost);
+                    break;
+                }
+            }
+            
+        }
+        
         return null;
+        
+
     }
 
     // Determines whether we can pay the neutral territory charge for a
@@ -749,34 +857,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return null;
     }
 
-    private boolean canFindAPlaceToLand(Route route, PlayerID player, Collection air, int distance)
-    {
-        Set neighbors = m_data.getMap().getNeighbors(route.getEnd(), distance);
-
-        boolean canLand = false;
-        Iterator iter = neighbors.iterator();
-
-        //neutrals we will overfly in the first place
-        Collection neutrals = getEmptyNeutral(route);
-        int ipcs = player.getResources().getQuantity(Constants.IPCS);
-        while (iter.hasNext())
-        {
-            Territory possible = (Territory) iter.next();
-            if (MoveValidator.canLand(air, possible, player, m_data))
-            {
-                //make sure we can pay for the neutrals we will
-                //overfly when we go to land
-                Set overflownNeutrals = new HashSet();
-                overflownNeutrals.addAll(neutrals);
-                overflownNeutrals.addAll(getBestNeutralEmptyCollection(route.getEnd(), possible, distance));
-                if (ipcs >= getNeutralCharge(overflownNeutrals.size()))
-                {
-                    canLand = true;
-                }
-            }
-        }
-        return canLand;
-    }
 
     private String validateTransport(Collection units, Route route, PlayerID player, Collection transportsToLoad)
     {
@@ -970,37 +1050,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     }
 
-    private Collection getBestNeutralEmptyCollection(Territory start, Territory end, int maxDistance)
-    {
 
-        //TODO fix this. If there are two neutral territories
-        //on the route, we may be able to find
-        //a route with only one, currently its either
-        //take the obvious unless a perfect route
-        //with no neutrals can be found
-
-        //get the obvious route
-        Route route = m_data.getMap().getRoute(start, end);
-        if (route.getLength() > maxDistance)
-            throw new IllegalStateException("No route short enough." + "route:" + route + " maxDistance:" + maxDistance);
-
-        Collection neutral = getEmptyNeutral(route);
-        if (neutral.size() == 0)
-        {
-            return neutral;
-        }
-
-        //see if we can do better
-        Match emptyNeutral = new CompositeMatchAnd(Matches.TerritoryIsNuetral, Matches.TerritoryIsEmpty);
-
-        Route alternate = m_data.getMap().getRoute(start, end, new InverseMatch(emptyNeutral));
-        if (alternate == null)
-            return neutral;
-        if (alternate.getLength() > maxDistance)
-            return neutral;
-        //route has no empty neutral states in path, no charge
-        return new ArrayList();
-    }
 
     private int getNeutralCharge(Route route)
     {

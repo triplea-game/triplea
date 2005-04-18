@@ -345,6 +345,22 @@ public class MoveValidator
 	}
 
 
+	public static int getMaxMovement(Collection units, IntegerMap alreadyMoved)
+	{
+		if(units.size() == 0)
+			throw new IllegalArgumentException("no units");
+		int max = 0;
+		Iterator iter = units.iterator();
+		while(iter.hasNext())
+		{
+			Unit unit = (Unit) iter.next();
+			int left = movementLeft(unit, alreadyMoved);
+			max = Math.max(left, max);
+		}
+		return max;
+	}
+
+	
 	public static int getLeastMovement(Collection units, IntegerMap alreadyMoved)
 	{
 		if(units.size() == 0)
@@ -355,8 +371,7 @@ public class MoveValidator
 		{
 			Unit unit = (Unit) iter.next();
 			int left = movementLeft(unit, alreadyMoved);
-			if(left < least)
-				least = left;
+			least = Math.min(left, least);
 		}
 		return least;
 	}
