@@ -1,3 +1,7 @@
+* fix bug [ 1023326 ] Fig Landing Problem, J1 (sgb)
+
+* more flexible validation for planes landing on carriers (sgb)
+
 * add stat export menu item Game->Export Game Stats (sgb)
 
 * upgraded plastic look and feel to version 1.3.1 (sgb)
@@ -24,7 +28,7 @@
 
 * fixed bug [ 1171596 ] Rocket Tech bug v0.5.2.2, we now always ask what territory to attack with rockets, even if there is only one choice, this allows the user to decline a rocket attack (sgb)
 
-* during battles the dice are sorted according to unit type so that when you review the dice rolls, you can tell what unit rolled for which dice
+* during battles the dice are sorted according to unit type so that when you review the dice rolls, you can tell what unit rolled for which dice (sgb)
 
 * fix bug [ 1144356 ] alter email header on PBEM (this is really a feature request) (sgb)
 
