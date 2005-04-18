@@ -205,14 +205,14 @@ class CapitolMarkerDrawable implements IDrawable
     
 }
 
-abstract class MapDrawable implements IDrawable
+abstract class MapTileDrawable implements IDrawable
 {
     
     protected boolean m_noImage = false;
     protected final int m_x;
     protected final int m_y;
   
-    public MapDrawable(final int x, final int y)
+    public MapTileDrawable(final int x, final int y)
     {
         m_x = x;
         m_y = y;
@@ -245,7 +245,7 @@ abstract class MapDrawable implements IDrawable
     
 }
 
-class ReliefMapDrawable extends MapDrawable
+class ReliefMapDrawable extends MapTileDrawable
 {
 
     public ReliefMapDrawable(int x, int y)
@@ -288,7 +288,7 @@ class ReliefMapDrawable extends MapDrawable
     
 }
 
-class BaseMapDrawable extends MapDrawable
+class BaseMapDrawable extends MapTileDrawable
 {
    
     public BaseMapDrawable(final int x, final int y)
