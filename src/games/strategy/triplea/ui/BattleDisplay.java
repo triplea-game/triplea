@@ -145,15 +145,27 @@ public class BattleDisplay extends JPanel
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("This cant be in dispatch thread");
 
+        
+        
+        int waitCount = 0;
         //wait for the step to display.
-        while (!m_steps.getStep().equals(step))
+        while (m_steps.getStep() == null || !m_steps.getStep().equals(step))
         {
+            waitCount++;
             try
             {
                 Thread.sleep(50);
             } catch (InterruptedException e)
             {
             }
+            
+            if(waitCount == 1500)
+            {
+                System.err.println("Finished waiting for step:" + step);
+                Thread.dumpStack();
+                break;
+            }
+            
         }
 
         if (!getShowEnemyCasualtyNotification())

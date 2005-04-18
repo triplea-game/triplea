@@ -261,6 +261,8 @@ public class BattlePanel extends ActionPanel
 
     public void confirmCasualties(final GUID battleId, final String message, String step)
     {
+        ensureBattleIsDisplayed(battleId);
+        m_battleDisplay.setStep(step);
         m_battleDisplay.waitForConfirmation(message, step);
     }
 

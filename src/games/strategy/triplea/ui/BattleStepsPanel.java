@@ -172,7 +172,7 @@ class BattleStepsPanel extends JPanel
 
             try
             {
-                m_mutex.wait();
+                m_mutex.wait(2000);
             } catch (InterruptedException e)
             {
                 return;
