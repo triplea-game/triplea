@@ -378,7 +378,7 @@ public class UnifiedMessenger
                 synchronized (m_nodesWithImplementorsMutex)
                 {
                     Map nodeWithImplementors = new HashMap();
-                    Iterator iter = m_remoteNodesWithImplementors.values().iterator();
+                    Iterator iter = m_remoteNodesWithImplementors.keySet().iterator();
                     while (iter.hasNext())
                     {
                         //we need to copy each collection here
