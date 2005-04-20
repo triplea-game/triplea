@@ -163,35 +163,35 @@ public class TileImageBreaker
      * 
      * @return java.lang.boolean TRUE to do base map
      */
-    private static boolean doBaseMap()
-    {
-        String ans = "";
-
-        while (true)
-        {
-            ans = JOptionPane.showInputDialog(null, "Do Base map (ie not relief map)? Enter [Y/N]");
-
-            if (ans == null)
-            {
-                System.out.println("Cannot leave this blank!");
-                System.out.println("Retry");
-            } else
-            {
-
-                if (ans.equalsIgnoreCase("Y"))
-                {
-                    return true;
-                } else if (ans.equalsIgnoreCase("N"))
-                {
-                    return false;
-                } else
-                {
-                    System.out.println("You must enter Y or N");
-                }
-            }
-
-        }//while
-    }
+//    private static boolean doBaseMap()
+//    {
+//        String ans = "";
+//
+//        while (true)
+//        {
+//            ans = JOptionPane.showInputDialog(null, "Do Base map (ie not relief map)? Enter [Y/N]");
+//
+//            if (ans == null)
+//            {
+//                System.out.println("Cannot leave this blank!");
+//                System.out.println("Retry");
+//            } else
+//            {
+//
+//                if (ans.equalsIgnoreCase("Y"))
+//                {
+//                    return true;
+//                } else if (ans.equalsIgnoreCase("N"))
+//                {
+//                    return false;
+//                } else
+//                {
+//                    System.out.println("You must enter Y or N");
+//                }
+//            }
+//
+//        }//while
+//    }
 
     /**
      * java.lang.String getMapDirectory()
@@ -204,18 +204,18 @@ public class TileImageBreaker
      * 
      * @return java.lang.String mapDir the map name
      */
-    private static String getMapDirectory()
-    {
-        String mapDir = JOptionPane.showInputDialog(null, "Enter the name of the map (ie. revised)");
-
-        if (mapDir != null)
-        {
-            return mapDir;
-        } else
-        {
-            return null;
-        }
-    }
+//    private static String getMapDirectory()
+//    {
+//        String mapDir = JOptionPane.showInputDialog(null, "Enter the name of the map (ie. revised)");
+//
+//        if (mapDir != null)
+//        {
+//            return mapDir;
+//        } else
+//        {
+//            return null;
+//        }
+//    }
 
     /**
      * java.awt.Image loadImage()
