@@ -42,9 +42,9 @@ import java.util.*;
  */
 public class MustFightBattle implements Battle, BattleStepStrings
 {
-    public static int DEFAULT_RETREAT_TYPE = 0;
-    public static int SUBS_RETREAT_TYPE = 1;
-    public static int PLANES_RETREAT_TYPE = 2;
+    public static final int DEFAULT_RETREAT_TYPE = 0;
+    public static final int SUBS_RETREAT_TYPE = 1;
+    public static final int PLANES_RETREAT_TYPE = 2;
 
     private final Territory m_battleSite;
 

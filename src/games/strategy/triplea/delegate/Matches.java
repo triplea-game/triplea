@@ -717,8 +717,8 @@ public class Matches
 
 	}
 
-	public static Match UnitIsLand = new CompositeMatchAnd( UnitIsNotSea, UnitIsNotAir);
-	public static Match UnitIsNotLand = new InverseMatch(UnitIsLand);
+	public final static Match UnitIsLand = new CompositeMatchAnd( UnitIsNotSea, UnitIsNotAir);
+	public final static Match UnitIsNotLand = new InverseMatch(UnitIsLand);
 
 	public static Match unitIsOfType(final UnitType type)
 	{
