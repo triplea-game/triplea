@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="4th Ed. Pact of Steel" version="2.1"/>
+        <info name="4th Ed. Pact of Steel" version="2.1.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1023,7 +1023,8 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Germany" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment"  type="territory">
                         <option name="production" value="14"/>
-                        <option name="capital" value="Germans"/>        
+                        <option name="capital" value="Germans"/>  
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Midway" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1040,6 +1041,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Australia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment"  type="territory">
                         <option name="production" value="3"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Kenya" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1073,6 +1075,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="India" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="3"/>
+						<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Soviet Far East" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1083,6 +1086,7 @@
                 <attatchment name="territoryAttatchment" attatchTo="Italy" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Italians"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Mexico" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1101,6 +1105,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Philipine Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="3"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Archangel" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1131,14 +1136,17 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Western United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="10"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Karelia S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="2"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Kwangtung" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="3"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Brazil" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1159,6 +1167,7 @@
                 
                 <attatchment name="territoryAttatchment" attatchTo="Hawaiian Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="2"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="East Indies" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1204,10 +1213,12 @@
                 <attatchment name="territoryAttatchment" attatchTo="United Kingdom" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="British"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Western Europe" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="6"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Rio De Oro" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1243,6 +1254,7 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Caucus" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="4"/>
+						<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Sinkiang" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1301,6 +1313,7 @@
                 <attatchment name="territoryAttatchment" attatchTo="Eastern United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="12"/>
                         <option name="capital" value="Americans"/>
+						<option name="victoryCity" value="true"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Belorussia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1315,6 +1328,7 @@
                 <attatchment name="territoryAttatchment" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Russians"/>
+						<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Anglo Egypt" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1358,6 +1372,7 @@
                 <attatchment name="territoryAttatchment" attatchTo="Japan" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Japanese"/>
+			<option name="victoryCity" value="true"/>
                 </attatchment>
                 
                 <attatchment name="territoryAttatchment" attatchTo="Caroline Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1713,5 +1728,26 @@
 
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="pact_of_steel" editable="false"/>
+				
+				<!-- notes appear in the notes menu in the main screen, format as html -->
+		
+				<property name="notes" value="&lt;h1&gt;PACT OF STEEL &lt;/h1&gt; &lt;br&gt; &lt;br&gt;
+				&lt;b&gt; Created by: Black Elk, Madmat, Beagle and Cousin Joe &lt;/b&gt; &lt;br&gt; 
+				Pact of Steel is an original TripleA module developed as a variant of the 4th edition Axis and Allies rule-set. &lt;br&gt; 
+				Our initial goal was to incorporate Italy as the 6th major power in the game, and along the way to correct some &lt;br&gt;
+				of the imbalances we saw in standard 4th edition. The module represents a hypothetical WW2 scenario, which tries &lt;br&gt;
+				to reproduce what the war might have been like in 1942 had Mussolini been more successful in his early Mediterranean &lt;br&gt;
+				campaigns. The game functions under a 15 VC set up with Major Victory at 11 VCs captured (the new VCs are Stalingrad, &lt;br&gt;
+				Sydney and Honolulu.) I think the module is an excellent example of what users can accomplish with tripleA's custom &lt;br&gt;
+				editing tools. A few months ago Pact of Steel was just an interesting 'what-if' scenario, but thanks to the efforts &lt;br&gt;
+				of the tripleA community we now have an actual game to play. I hope everyone enjoys it. &lt;br&gt; &lt;br&gt; &lt;i&gt;
+				Thanks again thanks to all the Devs and playtesters who helped get this project together: &lt;br&gt;
+				 DMA02 (Nekro), Iron Cross, Aibrahim, SGB, KC1189, Zero Pilot, Tactics, Underdog and the whole crew. &lt;br&gt; 
+				 You guys all rock! &lt;br&gt; &lt;br&gt;
+				 -Triplelk
+				 "/>
+
+
+
         </propertyList>
 </game>
