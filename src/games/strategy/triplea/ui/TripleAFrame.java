@@ -103,7 +103,7 @@ public class TripleAFrame extends JFrame
     /** Creates new TripleAFrame */
     public TripleAFrame(IGame game, Set players) throws IOException
     {
-        super("TripleA");
+        super("TripleA :: SS Distro");
 
         setIconImage(GameRunner.getGameIcon(this));
 
@@ -310,12 +310,16 @@ public class TripleAFrame extends JFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                String text = "<h2>TripleA</h2>  " +
+                String text = "<h2>TripleA</h2>"+
 
-                "<b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString() + "<br>" + "<b>Game:</b> " + m_data.getGameName()
-                        + "<br>" + "<b>Game Version:</b>" + m_data.getGameVersion() + "<br>" + "<br>" + "For more information please visit, <p>" +
-
-                        "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><p>";
+                "<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()+
+		"<br><b>Game:</b> "+m_data.getGameName()+
+                "<br><b>Game Version:</b>" + m_data.getGameVersion()+"</p>"+
+		"<p><b>Distro Version:</b> SS Group v1.0<br>"+
+		"<b>Distro By:</b> DanzigDagger, PanzerVenom, Fucke Wulf, Land-MineZ, & Stukka_Smurf</p>"+
+		"<p>For more information please visit,<br>"+
+                "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b>";
+		
 
                 JEditorPane editorPane = new JEditorPane();
                 editorPane.setBorder(null);
@@ -460,8 +464,12 @@ public class TripleAFrame extends JFrame
                 }
                 panel.add(new JLabel("  "));
                 DecimalFormat format = new DecimalFormat("#0.000");
-                panel.add(new JLabel("Average roll is :" + format.format(stats.getAverage())));
-
+                panel.add(new JLabel("Average roll : " + format.format(stats.getAverage())));
+		panel.add(new JLabel("Medain : " + format.format(stats.getMedian())));
+		panel.add(new JLabel("Variance : " + format.format(stats.getVariance())));
+		panel.add(new JLabel("Standard Deviation : " + format.format(stats.getStdDeviation())));
+		panel.add(new JLabel("Total rolls : " + stats.getTotal()));
+		
                 JOptionPane.showMessageDialog(TripleAFrame.this, panel, "Random Stats", JOptionPane.INFORMATION_MESSAGE);
 
             }
