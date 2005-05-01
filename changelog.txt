@@ -1,3 +1,5 @@
+* added extra dice statistics such as, median, variance, and standard deviation (George_H)
+
 * fix bug [ 1023326 ] Fig Landing Problem, J1 (sgb)
 
 * more flexible validation for planes landing on carriers (sgb)
