@@ -462,7 +462,7 @@ public class TripleAFrame extends JFrame
                 panel.add(new JLabel("  "));
                 DecimalFormat format = new DecimalFormat("#0.000");
                 panel.add(new JLabel("Average roll : " + format.format(stats.getAverage())));
-		panel.add(new JLabel("Medain : " + format.format(stats.getMedian())));
+		panel.add(new JLabel("Median : " + format.format(stats.getMedian())));
 		panel.add(new JLabel("Variance : " + format.format(stats.getVariance())));
 		panel.add(new JLabel("Standard Deviation : " + format.format(stats.getStdDeviation())));
 		panel.add(new JLabel("Total rolls : " + stats.getTotal()));
