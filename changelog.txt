@@ -1,3 +1,7 @@
+Changes for 0.5.3
+
+* added europe and pacific maps (incomplete versions) by iron cross (George_H)
+
 * added extra dice statistics such as, median, variance, and standard deviation (George_H)
 
 * fix bug [ 1023326 ] Fig Landing Problem, J1 (sgb)
@@ -48,7 +52,7 @@
 
 * put neutral player color in map.properties (sgb)
 
-Change for 0.5.2.2
+Changes for 0.5.2.2
 
 * fixed Dont play button on client screen. (sgb)
 
