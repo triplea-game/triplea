@@ -453,6 +453,7 @@ public class MapPanel extends ImageScrollerLargeView
         drawNearbyTiles(undrawnTiles, 257, true);
         //when we are this far away, dont force the tiles to stay in memroy
         drawNearbyTiles(undrawnTiles, 513, false);
+        drawNearbyTiles(undrawnTiles, 767, false);
         
         
         m_backgroundDrawer.setTiles(undrawnTiles);
