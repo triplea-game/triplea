@@ -103,7 +103,7 @@ public class TripleAFrame extends JFrame
     /** Creates new TripleAFrame */
     public TripleAFrame(IGame game, Set players) throws IOException
     {
-        super("TripleA :: SS Distro");
+        super("TripleA");
 
         setIconImage(GameRunner.getGameIcon(this));
 
@@ -315,11 +315,8 @@ public class TripleAFrame extends JFrame
                 "<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()+
 		"<br><b>Game:</b> "+m_data.getGameName()+
                 "<br><b>Game Version:</b>" + m_data.getGameVersion()+"</p>"+
-		"<p><b>Distro Version:</b> SS Group v1.0<br>"+
-		"<b>Distro By:</b> DanzigDagger, PanzerVenom, Fucke Wulf, Land-MineZ, & Stukka_Smurf</p>"+
 		"<p>For more information please visit,<br>"+
                 "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b>";
-		
 
                 JEditorPane editorPane = new JEditorPane();
                 editorPane.setBorder(null);
