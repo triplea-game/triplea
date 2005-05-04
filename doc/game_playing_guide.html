@@ -1,0 +1,1656 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta name="generator" content="Bluefish">
+		<meta name="author" content="George El-Haddad">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="description" content="">
+		<title>TripleA :: Game Playing Guide</title>
+	</head>
+
+	<body background="images/water_mark.gif">
+		<p align="center">
+			<a name="top">
+				<img src="images/big_banner.png" width="800" height="64" border="0" alt="TripleA Banner"/>
+			</a>
+		</p>
+		
+		<p align="center">
+			<span style="font-style: italic;">
+				This Guide Is Accurate For TripleA v0.5.3
+			</span>
+			<br/>
+			<span style="font-size: smaller; font-style: italic;">
+				Written by George H. (DMA02)<br/>
+			</span>
+		</p>
+		
+		<hr/>
+		<h2>Playing Guide :: Quick Nav</h2>
+		<ul>
+			<li><b>1.0</b> <a href="#sec_1">Installing TripleA</a></li>
+				<ul>
+					<li><b>1.1</b> <a href="#sec_1.1">Microsoft Windows</a></li>
+					<li><b>1.2</b> <a href="#sec_1.2">GNU/Linux, SGI/IRIX, Mac OS X</a></li>
+				</ul>
+			<li><b>2.0</b> <a href="#sec_2">The Main User Interface</a></li>
+				<ul>
+					<li><b>2.1</b> <a href="#sec_2.1">Local Game</a></li>
+					<li><b>2.2</b> <a href="#sec_2.2">Server Game</a></li>
+					<li><b>2.3</b> <a href="#sec_2.3">Client Game</a></li>
+					<li><b>2.4</b> <a href="#sec_2.4">Play By EMail Game (PBEM)</a></li>
+				</ul>
+			<li><b>3.0</b> <a href="#sec_3">In Game Interface</a></li>
+			<li><b>4.0</b> <a href="#sec_4">Purchasing Units</a></li>
+			<li><b>5.0</b> <a href="#sec_5">Unit Movement</a></li>
+			<li><b>6.0</b> <a href="#sec_6">Combat Engagements</a></li>
+			<li><b>7.0</b> <a href="#sec_7">History Mode</a></li>
+			<li><b>8.0</b> <a href="#sec_8">Game Properties</a></li>
+				<ul>
+					<li><b>8.1</b> <a href="#sec_8.1">Low Luck</a></li>
+				</ul>
+			<li><b>9.0</b> <a href="#sec_9">F.A.Q</a></li>
+			<li><b>10.0</b> <a href="#sec_10">Credits & Acknowledgements</a></li>
+		</ul>
+		<hr/>
+		<br/>
+		
+		<h2><a name="sec_1">1.0</a> Installing TripleA</h2>
+		<blockquote>
+			<p>
+				Installing TripleA consists of three basic steps that can be carried
+				out under all platforms easily. They consist of:
+				<ol>
+					<li><a href="http://triplea.sourceforge.net">Downloading TripleA</a></li>
+					<li>Unzipping TripleA</li>
+					<li>Running TripleA</li>
+				</ol>
+				There are, however, only one prerequisite that one needs to fulfill
+				before being able to install TripleA properly. All persons intending
+				play TripleA must have a Java Virtual Machine (known as well as the JRE
+				(Java Runtime Engine)) installed.
+			</p>
+			
+			<p>
+				TripleA is made to run with any Java Virtual Machine that is compliant
+				to the Sun Microsystem's Java Technology. TripleA is also pre-built using
+				Sun's Java 1.4.2 technology. So running TripleA on Java technology that
+				does not comply to Sun's standards may not work. TripleA has been tested on
+				several Java VMs such as BlackDown and the SGI and Mac OS X's ports of Sun's
+				Hot Spot VM.
+			</p>
+			
+			<p>
+				As of TripleA version 0.5.2 and upwards, you can use either Java 1.5 or Java
+				1.4 to run TripleA. So downloading and installing either Java VM from Sun is
+				entirely up to you to decide. Below a links provided to download Java; please
+				note that you only need the <b>J2SE JRE</b> package. Only developers and others
+				who wish to compile TripleA from source need only get the <b>JDK</b> or <b>SDK</b>
+				packages.
+				<ul>
+					<li><a href="http://java.sun.com/j2se/1.5.0/download.jsp" target="_blank">Sun Java 1.5</a></li>
+					<li><a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">Sun Java 1.4</a></li>
+					<li><a href="http://www.apple.com/macosx/features/java/" target="_blank">Java 1.4 for Mac OS X</a></li>
+					<li><a href="http://www.sgi.com/products/evaluation/6.5_java_plugin_1.4.1_06/" target="_blank">Java 1.4 for SGI/IRIX 6.5</a></li>
+				</ul>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_1.1">1.1</a> Microsoft Windows</h2>
+		<blockquote>
+			<p>
+				Assuming that you:
+				<ul>
+					<li>Have installed Java</li>
+					<li>Downloaded TripleA</li>
+				</ul>
+				We can proceed to installing TripleA under the Windows platform. TripleA comes
+				packaged in a compressed Zip file. You will need to extract the contents of the
+				TripleA zip file somewhere on your computer (it really doesn't matter where). You
+				will need a program to unzip the TripleA zip file. Most windows systems come with
+				built-in zip file support which makes a zip file look like a folder with a zipper
+				icon on it. For those persons who can see this, they may simply double click on the
+				TripleA zip file and Windows will take over from there asking you where to unzip the
+				contents of the file.
+			</p>
+			
+			<p>
+				For those persons who do not have built-in zip file support of do not wish to use
+				Windows's zip file support, can use several other programs. There are several freeware
+				programs such as <a href="http://www.winzip.com" target="_blank">WinZip</a> and 
+				<a href="http://www.rarlabs.com" target="_blank">WinRAR</a> that allow you to zip and
+				unzip files (and more!). So installing either one of those packages will allow you
+				to unzip the TripleA zip file.
+			</p>
+			
+			<p>
+				Once TripleA has been successfully unzipped/extracted to a specified area on the computer.
+				It doesn't really matter where TripleA is extracted to, so long as you know where it has
+				been extracted to, it's all that matters. Find the folder where TripleA is located. By
+				default the folder name should mirror the name of the TripleA zip file:
+				<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2" width="650" height="100">
+					<tr>
+						<td align="center" height="10">
+							<b>File Name</b>
+						</td>
+						
+						<td align="center" height="10">
+							->
+						</td>
+						
+						<td align="center" height="10">
+							<b>Folder Name</b>
+						</td>
+					</tr>
+					
+					<tr>
+						<td align="center" valign="middle" bgcolor="#ffb6c0">
+							<b>triplea_x_x_x.zip</b>
+						</td>
+					
+						<td align="center" valign="middle">
+							Would extract a folder named
+						</td>
+						
+						<td align="center" valign="middle" bgcolor="#8fee8f">
+							<b>triplea_x_x_x</b>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				Go inside the TripleA folder using Explorer and you should see a file named
+				<b>triplea_windows.bat</b> or if you have Windows configured to not display
+				file extensions then you will see <b>triplea_windows</b>. This is a MS-Batch
+				file which will run the TripleA start-up command in the Microsoft Console.
+				Double Click on that file and TripleA will run.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_1.2">1.2</a> GNU/Linux, SGI/IRIX, Mac OS X</h2>
+		<blockquote>
+			<p>
+				Assuming that you:
+				<ul>
+					<li>Have installed Java</li>
+					<li>Downloaded TripleA</li>
+				</ul>
+				We can proceed with installing TripleA on the Linux, Irix, or Mac OS X platform.
+				TripleA is packaged in a compressed zip file, to which most Unix based systems
+				provide useful unzipping utilities such as the <b>unzip</b>. This is a command
+				line program which is run from the console/terminal. There are others that have
+				a graphical user interface but they vary from different platforms. Since <b>unzip</b>
+				is common to all three Operating Systems mentioned above for this section, we shall
+				focus on it.
+			</p>
+			
+			<p>
+				Open the console/terminal for your platform. Go into the directory you have saved
+				the TripleA zip file in. From there, run the following command:
+				<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2" width="650">
+					<tr>
+						<td align="left" height="48" width="48">
+							<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+						</td>
+						
+						<td valign="middle" bgcolor="#8fee8f">
+							<code>
+							&nbsp;&nbsp;unzip -L triplea_x_x_x.zip
+							</code>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				
+				Once TripleA has been successfully unzipped/extracted to a specified directory on the computer,
+				you are now ready to run it. The unzip command above would have extracted TripleA to the current
+				directory you are in. So you would see a folder of TripleA by the same name as the zip file.
+				<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2" width="650" height="100">
+					<tr>
+						<td align="center" height="10">
+							<b>File Name</b>
+						</td>
+						
+						<td align="center" height="10">
+							->
+						</td>
+						
+						<td align="center" height="10">
+							<b>Folder Name</b>
+						</td>
+					</tr>
+					
+					<tr>
+						<td align="center" valign="middle" bgcolor="#ffb6c0">
+							<b>triplea_x_x_x.zip</b>
+						</td>
+					
+						<td align="center" valign="middle">
+							Would extract a folder named
+						</td>
+						
+						<td align="center" valign="middle" bgcolor="#8fee8f">
+							<b>triplea_x_x_x</b>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				
+				Go inside the TripleA directory and list all the contents inside:
+				<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2" width="650">
+					<tr>
+						<td align="left" height="48" width="48">
+							<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+						</td>
+						
+						<td valign="middle" bgcolor="#8fee8f">
+							<code>
+							&nbsp;&nbsp;cd triplea_x_x_x<br/>
+							&nbsp;&nbsp;ls
+							</code>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				
+				You should be able to see a listing of the directory contents inside the
+				TripleA directory, an example is shown below:
+				<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2" width="650">
+					<tr>
+						<td align="left" height="48" width="48">
+							<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+						</td>
+						
+						<td valign="middle" bgcolor="#8fee8f">
+							<code>
+							&nbsp;&nbsp;bin/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; doc/&nbsp;&nbsp; lib/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; triplea_mac_os_x.sh<br/>
+							&nbsp;&nbsp;changelog.txt games/ license/&nbsp;&nbsp;&nbsp; triplea_unix.sh<br/>
+							&nbsp;&nbsp;classes/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; icons/ readme.html triplea_windows.bat<br/>
+							</code>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				From here you will need to execute the shell script file that suits your operating
+				system. If you are running Mac OS X then you will need to run the <b>triplea_mac_os_x.sh</b>
+				script, and if your running GNU/Linux, SGI/Irix or any other UNIX variant then you must
+				run the <b>triplea_unix.sh</b> file. Before attempting to run them, you will need to change
+				the file permissions first (this applies to both Macs and Unix). Below are both the commands
+				to change the file permission and the command to run it:
+				<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2" width="650">
+					<tr>
+						<td align="left" height="48" width="48">
+							<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+						</td>
+						
+						<td valign="middle" bgcolor="#8fee8f">
+							<code>
+							&nbsp;&nbsp;chmod +x triplea_unix.sh<br/>
+							&nbsp;&nbsp;./triplea_unix.sh
+							</code>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				Thats all there is to running TripleA!
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_2">2.0</a> The Main User Interface</h2>
+		<blockquote>
+			<p>
+				TripleA's user interface consists of a collection of 1 or more tabs. By default there
+				are 2 tabs present: <b>Game</b> and <b>Properties</b>. The game tab gives a brief
+				description of what game your running and what engine version your using. This being
+				said, the game tab is divided into 3 sections: <b>Game Type</b>, <b>File</b>, and
+				<b>Version</b>.
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td height="380" valign="top">
+							<img src="images/main_window.png" width="261" height="380" border="0" alt="main window" />
+						</td>
+						
+						<td height="380" valign="top">
+							<table border="1">
+								<tr height="10">
+									<td align="center" bgcolor="#ffb6c0"><b>Game Type</b></td>
+									<td align="center" bgcolor="#ffb6c0"><b>File</b></td>
+									<td align="center" bgcolor="#ffb6c0"><b>Version</b></td>
+								</tr>
+								
+								<tr>
+									<td valign="top" bgcolor="#8fee8f">
+										Allows one to specify the type of game to be played.
+										There are 3 possible types of games that one can play
+										using TripleA. Those are: Local Game, Sever, Client,
+										and PBEM. A Help button is provided to
+										give more information on that specific section.
+									</td>
+									
+									<td valign="top" bgcolor="#8fee8f">
+										Allows the user to select what game file they wish to
+										load. One can either load a previously saved file, or
+										start a new game.
+									</td>
+									
+									<td valign="top" bgcolor="#8fee8f">
+										Displays the engine version, name of the game loaded, and
+										the version of that game. 
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" align="left">Fig 2.0.0</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				Below are some screen shots of how to interact with the user interface in-order to
+				select a game type (Fig 2.0.1) and to load a saved or new game (Fig 2.0.2)<br/>
+				<br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td>
+							<img src="images/main_window_game_type.png" width="261" height="380" border="0" alt="main window game type"/>
+						</td>
+						
+						<td>
+							<img src="images/main_window_file_type.png" width="261" height="380" border="0" alt="main window file type"/>
+						</td>
+					</tr>
+					
+					<tr>
+						<td align="left">Fig 2.0.1</td>
+						
+						<td align="left">Fig 2.0.2</td>
+					</tr>
+				</table>
+			</p>
+			
+			
+			<p>
+				Every game will have a properties tab where an arbitrary number of property
+				options are available. Usually these options will somehow affect how the game
+				will be played. Once a game file is loaded, the properties tab will appear. In
+				TripleA's case, it will remember the last game file you loaded so there will
+				always be a pre-loaded game file, thus the properties tab will show under any
+				circumstance.
+			</p>
+			
+			<p>
+				Below are provided 2 screen shots of the how the properties tabs would look like
+				in TripleA if the A&A Classic Edition (Fig 2.0.3) and A&A Revised Edition (Fig 2.0.4)
+				were selected. These are just examples, some games might have more or less options.
+				<br/>
+				<br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/main_window_properties_classic.png" width="275" height="470" border="0" alt="classic properties" />
+						</td>
+						
+						<td valign="top">
+							<img src="images/main_window_properties_revised.png" width="273" height="400" border="0" alt="revised properties" />
+							<br/>
+							Fig 2.0.4
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">Fig 2.0.3</td>
+
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_2.1">2.1</a> Local Game</h2>
+		<blockquote>
+			<p>
+				A local game is one where you play a game alone and by your self. There are not
+				any computer opponents to go against. All sides are played by 1 person (you).
+			</p>
+			
+			<p>
+				To start a local game you need to:
+				<ol>
+					<li>Start up TripleA</li>
+					<li>Select "Local Game" from the <b>Game Type</b> menu</li>
+					<li>Select the game to be played from the <b>File</b> menu</li>
+					<li>Clicking on the <b>Play</b> button at the bottom of the main window</li>
+				</ol>
+				As usual, to quit TripleA from this stage, press the <b>Exit</b> button.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_2.2">2.2</a> Server Game</h2>
+		<blockquote>
+			<p>
+				A server game is one where you are playing a multiplayer game where the person
+				initiating the game is acting as the server. The server is responsible for hosting
+				the game where multiple clients (other players running "Client Game") can connect
+				to the server. The server also has the ability to select property options from the
+				properties tab and is the only one able to save the game. Below are the steps needed
+				to get a server game running:
+				<ol>
+					<li>Start up TripleA</li>
+					<li>Select "Server Game" from the <b>Game Type</b> menu</li>
+					<li>Enter the server name in the "Server Options" dialog box</li>
+					<li>(optional) Enter the server port number</li>
+					<li>Click on the "Server" tab to allocate players</li>
+					<li>Click on the <b>Play</b> button to start the game</li>
+				</ol>
+			</p>
+			
+			<p>
+				<b>Step 3 & 4.</b><br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/server_start_up.png" width="137" height="123" border="0" alt="server options"/>
+							<br/>
+							Fig 2.2.0
+						</td>
+						
+						<td>
+							<table border="1" >
+								<tr>
+									<td align="center" bgcolor="#ffb6c0"><b>Name</b></td>
+									<td align="center" bgcolor="#ffb6c0"><b>Port</b></td>
+								</tr>
+								
+								<tr>
+									<td valign="top"  bgcolor="#8fee8f">
+										This will be the name of your server. It is the name
+										that will identify your computer as the server as well
+										as you, the player. The name can be anything you want.
+									</td>
+									
+									<td valign="top"  bgcolor="#8fee8f">
+										The port number can also be anything you want, but beware.
+										The default port number is 3300 which seems to work fine
+										on most systems and is the expected port number most players
+										will use unless instructed otherwise. Also note that on UNIX
+										machines, ports under 1024 are privileged ports and if used
+										with TripleA will result in an error.
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			
+			<p>
+				<b>Step 5.</b><br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/server_tab.png" width="261" height="380" border="0" alt="server tab" />
+						</td>
+						
+						<td valign="top">
+							Clicking on the <b>Server</b> tab should yield a result like this. The server information
+							that needs to be given to other players is listed at the very top of the tab. Once clients
+							begin to join (connect) to the server, they will appear in the server tab. The server will
+							have the ability to select and de-select players. Clients can only select and de-select
+							themselves from playing national sides that are available.
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" align="left">Fig 2.2.1</td>
+					</tr>
+				</table>
+				<br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/chat_box.png" width="300" height="200" border="0" alt="server chat box" />
+						</td>
+						
+						<td valign="top">
+							When a server game is started, there will be a chat box available for use.
+							This is where players who join can chat to each other. The chat box is
+							available throughout the whole game. A sound is made when a new message
+							is typed and the window is automatically brought to the front of the screen.
+							Of course, sounds can be disabled at any time if needed.
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" align="left">Fig 2.2.2</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<b>Step 6.</b><br/>
+				<br/>
+				Click the <b>Play</b> button and get ready to play!
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_2.3">2.3</a> Client Game</h2>
+		<blockquote>
+			<p>
+				A client game is one where you wish to join (connect) to a person who is creating a server
+				game. To put it in more simpler terms, you want to join a game that someone is hosting. This
+				requires one to start TripleA as a "client" or rather start a "Client Game." The steps needed
+				to start TripleA as a client and connect to a dedicated server can be described in 4 steps:
+				<ol>
+					<li>Start up TripleA</li>
+					<li>Select "Client Game" from the <b>game type</b> menu</li>
+					<li>Enter your name and server address in the client options</li>
+					<li>Click on the "Client" tab to pick your national side</li>
+					<li>Wait for the server to start the game</li>
+				</ol>
+			</p>
+			
+			<p>
+				<b>Step 3.</b><br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/client_start_up.png" width="184" height="146" border="0" alt="client startup" />
+							<br/>Fig 2.3.0
+						</td>
+						
+						<td valign="top">
+							<table border="1" >
+								<tr>
+									<td align="center" bgcolor="#ffb6c0"><b>Name</b></td>
+									<td align="center" bgcolor="#ffb6c0"><b>Server Port</b></td>
+									<td align="center" bgcolor="#ffb6c0"><b>Server Address</b></td>
+								</tr>
+								
+								<tr>
+									<td valign="top"  bgcolor="#8fee8f">
+										This is the name that will identify you as a player in the
+										game. It can be whatever you want.
+									</td>
+									
+									<td valign="top"  bgcolor="#8fee8f">
+										The port number that the server is using should be entered here.
+										By default the port number will be 3300 and should be ok most of
+										the times, unless the person hosting as the server instructs you
+										to use a different port number.
+									</td>
+									
+									<td valign="top"  bgcolor="#8fee8f">
+										The IP address of the server is needed for the client to connect
+										to the server. This is essential to most things in everyday life
+										as well. To get to a destination, one must need to know where it
+										is located. On the Internet we have the IP address as our location.
+										The server should provide you with their IP address in order for
+										you to connect as a client.
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<b>Step 4.</b><br/>
+				<br/>
+				Once connected to the server you will be faced with a chat window (Fig 2.3.1) and the main
+				TripleA start-up window. Two things will be changed from the main TripleA window
+				at this moment:
+				<ul>
+					<li>The properties tab will be removed</li>
+					<li>A client tab will appear (Fig 2.3.2)</li>
+				</ul>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/client_chat_box.png" width="300" height="200" border="0" alt="client chat" />
+						</td>
+						
+						<td valign="top">
+							All players (clients and server) will be able to see each other in the
+							chat window. The chat window will (by default) produce a sound whenever
+							a new message is received. On the arrival of a new message the window
+							will automatically be brought to the front of the screen to grab the user's
+							attention.
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">Fig 2.3.1</td>
+					</tr>
+				</table>
+				<br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/client_tab.png" width="261" height="380" border="0" alt="client tab" />
+						</td>
+						
+						<td valign="top">
+							The client tab allows one to decide what national side they wish to
+							play. This will also show what other players have chosen as well. A
+							<b>Play</b> button will be displayed next to any available position
+							that can be taken. In accordance, a <b>Don't Play</b> button will
+							be displayed next to the side that you currently selected, should you
+							wish to cancel your action and pick another side. Only the server is
+							allowed to forcefully reset a client's selection.
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">Fig 2.3.2</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<b>Step 5.</b><br/>
+				<br/>
+				Wait for the server to start the game.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_2.4">2.4</a> Play By EMail Game (PBEM)</h2>
+		<blockquote>
+			<p>
+				TripleA's Play By EMail mode allows persons to play a game via EMail without having
+				to be connected to each other online. PBEM also allows players more time to think over
+				various moves they have to do and ideal for those persons who live under strict time
+				constraints, and cannot spend hours and hours online playing games.
+			</p>
+			
+			<p>
+				TripleA's PBEM mode has advantages and disadvantages, to which the advantages out weigh
+				the latter. They are as follows:
+				<ul>
+					<li>Advantages of PBEM</li>
+					<ol>
+						<li>More time to think out moves</li>
+						<li>Only need to come online to send your turn to the next player</li>
+						<li>Dice rolls are done by a dedicated dice server that is independent of TripleA</li>
+						<li>All dice rolls are PGP Verified and email to every player</li>
+						<li>Every move and every dice roll is logged and saved in TripleA's History Window</li>
+						<li>An online game can be later continued under PBEM mode</li>
+						<li>Hard for others to cheat</li>
+					</ol>
+					<br/>
+					<li>Disadvantages of PBEM</li>
+					<ol>
+						<li>Cannot save and mail your turn while in the middle of a battle sequence</li>
+						<li>Casualties for both sides during a battle must be selected by the person currently playing</li>
+					</ol>
+				</ul> 
+			</p>
+			
+			<p>
+				A PBEM game can be initiated in 10 steps shown below:
+				<ol>
+					<li>Start up TripleA</li>
+					<li>Select "PBEM" from the <b>game type</b> menu</li>
+					<li>Select the PBEM saved file that an opponent sent you
+					    or begin a new PBEM game, from the <b>file</b> menu</li>
+					<li>Click on the "PBEM" tab</li>
+					<li>Enter the email addresses of the persons involved in the PBEM game (including your own)</li>
+					<li>Click the "Test EMail" button to make sure the Dice Server is up and running and
+					    that the emails you entered are valid.</li>
+					<li>Start the game by pressing the <b>Play</b> button</li>
+					<li>Play your turn</li>
+					<li>Save your game at the end of your turn</li>
+					<li>EMail your saved game to your opponent</li>
+				</ol>
+			</p>
+			
+			<p>
+				<b>Step 2.</b><br/>
+				<table border="0" cellspacing="2" cellpadding="2">
+					<tr>
+						<td valign="top"><img src="images/main_window_game_type.png" width="261" height="380" border="0" alt="main window game type" /></td>
+						<td valign="top">Select a PBEM Game</td>
+					</tr>
+					
+					<tr><table border="0" cellspacing="2" cellpadding="2">
+					<tr>
+						<td colspan="2">Fig 2.4.0</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<b>Step 3.</b><br/>
+				<br/>
+				If you are starting a brand new game, then select "New" from the <b>file</b> menu and continue to
+				step 4. Otherwise select "Saved" from the <b>file</b> menu and pick the saved game that you were
+				sent by another player and then proceed to step 4.
+			</p>
+			
+			<p>
+				<b>Step 4 & 5.</b><br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td>
+							<img src="images/pbem_tab.png" width="281" height="378" alt="pbem tab" />
+						</td>
+						
+						<td valign="top">
+							<table border="1" >
+								<tr>
+									<td align="center" bgcolor="#ffb6c0"><b>EMail Address 1</b></td>
+									<td align="center" bgcolor="#ffb6c0"><b>EMail Address 2</b></td>
+								</tr>
+								
+								<tr>
+									<td valign="top"  bgcolor="#8fee8f">
+										Enter your email address so that you get emailed the dice rolls
+										you will be using during your turn.
+									</td>
+									
+									<td valign="top"  bgcolor="#8fee8f">
+										Enter your opponent's email address so that they will also be
+										emailed the dice rolls you used during your turn. Also note that
+										only in this address box you can put <b>more than 1</b> address.
+										Each email address has to be separated by a single space. See
+										Fig 2.4.2 for an example of multiple emails.
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">Fig 2.4.1</td>
+					</tr>
+				</table>
+				<br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td>
+							<img src="images/pbem_tab2.png" width="261" height="380" alt="pbem tab 2" />
+						</td>
+						
+						<td valign="top">
+							<table border="1" >
+								<tr>
+									<td align="center" bgcolor="#ffb6c0"><b>EMail Address 2</b></td>
+								</tr>
+								
+								<tr>
+									<td valign="top"  bgcolor="#8fee8f">
+										More than 1 address can be placed in this email box. Each email
+										must be separated by a single space. As always make sure your
+										email addresses you enter are valid.
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">Fig 2.4.2</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<b>Step 6.</b><br/>
+				<br/>
+				Once all email addresses are filled in, it is now ready for testing. The email tests
+				are very useful for the casual PBEM player. It will determine if the syntax of your
+				email addresses are correct and if the actual Dice Server is operational or not. It
+				will also display an error if TripleA is unable to connect to the Dice Server. Sometimes
+				when a firewall is blocking TripleA from contacting the Dice Server, it will fail the
+				test and a friendly message will instruct you on possible ways to trouble-shoot the
+				problem.<br/>
+				<br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/pbem_email_test_success.png" width="331" height="210" border="0" alt="pbem test 1" />
+						</td>
+						
+						<td valign="top">
+							A successful test yielding desirable results. This will also
+							result in an email being mailed to the addresses. The email
+							will show the test dice rolls and a PGP signature that can be
+							verified from the Dice Server's home page.
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">Fig 2.4.3</td>
+					</tr>
+				</table>
+				<br/>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/pbem_email_test_syntax_error.png" width="370" height="198" border="0" alt="pbem test 2" />
+						</td>
+						
+						<td valign="top">
+							A test that has failed due to an improperly typed email address or
+							if one of the address boxes was left empty.
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">Fig 2.4.4</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<b>Steps 7, 8, 9 & 10.</b><br/>
+				<br/>
+				These steps are very self evident. Pressing the play button and playing your turn.
+				Once the turn is over, save the game, and then email it to the player whose turn
+				is next.
+			</p>
+			
+			<p>
+				Here are some "Practical Guidelines" for playing PBEM with TripleA
+				that has been contributed by the <a href="http://maddlinks.com/triplea/index.php?s=39487372bc64dd5f8bbd2c17e17d6221&showforum=12" target="_blank">TripleA PBEM community</a>.
+				They address certain issues such as what to do during battles and file naming conventions.
+				<blockquote>
+					<h3>Practical Guidelines for PBEM</h3>
+					<p>
+						Playing TripleA over the net allows for continuous Axis and Ally game play. With it, you don’t
+						need five or six hours dedicated to one game. You can participate in a game whenever you can.
+						You can even start a game via the Client / Server model and continue it via PBE.  You can exchange
+						the save game file via instant messenger, FTP server, or email and pick it back up in a Client /
+						Server game whenever you can.  Here are some general guidelines to help you keep your game play going.
+					</p>
+
+					<p>
+						<h4>Selecting Casualties</h4>
+						When selecting casualties you should follow an agreed guideline. 
+						A common guideline is to select casualties according to the cost of the piece.  
+						For land units it would follow this order:  Infantry, Artillery, Armor, Fighters, Bombers.  
+						When losing a bomber in a land battle it would do well to consider the interest of your opponent.  
+						If you would lose the bomber before a fighter to hold onto the territory then do that with your opponent’s
+						best interest in mind
+					</p>
+
+					<p>
+						Continuing the example for sea battles, casualties would be selected in this order:  Transports, Submarines,
+						Fighters, Destroyers, Loaded Transports, Carriers, Battleships.  Submersible submarines give exception; if a
+						submarine is by itself or with empty transports then it submerges on the first round.
+					</p>
+			
+					<h4>Types of PBEM play</h4>
+			
+					<p>
+						<b>Standard PBEM</b>: this kind of game is described in the TripleA documentation.  You select the PBEM option
+						and enter your email address and your opponents email address.  If there is more than two involved in the
+						game you enter your email address and the email address of the person whose turn follows yours.
+					</p>
+	
+					<p>
+						<b>Confirmable PBEM</b>: we use this kind of game to keep the game easy on our inbox.  You select the PBEM
+						option but you use the groups email address.  Create one email address for your group and send all dice
+						rolls to that address (use it for both email fields).  The group moderator should have the password to
+						this email account.  This way dice rolls can still be confirmed if they are called into question and no
+						inboxes get flooded with dice results.
+					</p>
+	
+					<p>
+						<b>Trust Game</b>:  In this game we do not use the PBE option.
+					</p>
+			
+					<p>
+						<h4>Naming Schemes</h4>
+						Once your turn is complete you send the save game file to the other players. It is helpful to use a
+						descriptive naming scheme. An example is using the first initial of every player round – turn and
+						version info. For instance if nabiy, underdog, and drec were playing version 0.4.6 and it was Russia’s
+						turn in the second round of play the name of the file should be: <b>nud2-1RS046.svg</b>
+					</p>
+				</blockquote>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_3">3.0</a> In Game Interface</h2>
+		<blockquote>
+			<p>
+				<b>* NOTE *</b> Due to TripleA being a turn based strategy engine, we
+				cannot describe how the in game interface will be like since it is left
+				up-to the developer's implementation. We will concentrate on one of the
+				existing games that comes included with TripleA, Axis and Allies Revised
+				Edition.
+			</p>
+		
+			<p>
+				After starting a game, you will be faced with the main game window. A
+				screen shot is provided below where various aspects of it will be discussed
+				and explained.<br/>
+				<br/>
+				<img src="images/game_main_window.png" width="813" height="555" border="0" alt="main game window" />
+				<br/>
+				Fig 3.0.1
+				<br/>
+				<ol>
+					<li>The <b>Actions</b> tab. This is where the bulk of your decision making will
+					    be. Buttons displaying unit purchases, combat engagements, and tech rolling
+					    will generally show up here.</li>
+					<br/>
+					<li>These are the 3 main tabs <b>Actions</b>, <b>Stats</b>, and <b>Territory</b></li>
+					<br/>
+					<li>This box displays what phase of your turn you are currently at</li>
+					<br/>
+					<li>This box displays the round number as well as an image indicating what national
+					    side is currently playing their turn</li>
+					<br/>
+					<li>These are the in game menus that can be accessed at any time</li>
+					<br/>
+					<li>This is a general information area where information is displayed whenever
+					    the mouse cursor is hovering above the map. In the current case it is informing
+					    us of the production capacity of the Balkans</li>
+					<br/>
+					<li>The mini-map is a representation of the main map but scaled down. One can move
+					    move around the map using the mini-map by clicking on it with the mouse, or by
+					    left-clicking and dragging the mouse</li>
+				</ol>
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/game_main_window_stats.png" width="237" height="476" alt="stats menu" />
+							<br/>
+							Fig 3.0.2
+						</td>
+						
+						<td valign="top">
+							<img src="images/game_main_window_territory.png" width="238" height="475" alt="territory menu" />
+							<br/>
+							Fig 3.0.3
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							The <b>Stats</b> tab will show various statistics about the current game being played.
+							The number of IPCs, total IPC production, number of units and the Total Unit Value (TUV)
+							of each side is tracked in the first table. The second table below keeps track of the
+							technological advancements of each nation.
+						</td>
+						
+						
+						<td>
+							The <b>Territory</b> tab shows the types and quantities of units that are currently located
+							in a given territory at the location of the mouse cursor.
+						</td>
+					</tr>
+					
+							
+				</table> 
+			</p>
+			
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/game_main_window_game_menu.png" width="225" height="235" border="0" alt="game menu" />
+							<br/>
+							Fig 3.0.4
+						</td>
+						
+						<td valign="top">
+							<table border="1">
+								<tr>
+									<td valign="top" bgcolor="#ffb6c0"><b>Show Current Game</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										Switches to the current game being played (used when your in History mode)
+									</td>
+								</tr>
+					
+								<tr>
+								<td valign="top" bgcolor="#ffb6c0"><b>Show History</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										Switches to History mode
+									</td>
+								</tr>
+					
+								<tr>
+									<td valign="top" bgcolor="#ffb6c0"><b>Unit Size</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										Allows the selection of various unit sizes
+									</td>
+								</tr>
+					
+								<tr>
+									<td valign="top" bgcolor="#ffb6c0"><b>Map Skins</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										Allows the selection of various custom map skins
+									</td>
+								</tr>
+					
+								<tr>
+									<td valign="top" bgcolor="#ffb6c0"><b>Enable Sound</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										Toggles sounds on or off
+									</td>
+								</tr>
+					
+								<tr>
+									<td valign="top" bgcolor="#ffb6c0"><b>Show Map Details</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										Toggles relief images on or off. Normally this is toggled automatically
+										by each map's personal <i>map.properties</i> file.
+									</td>
+								</tr>
+					
+								<tr>
+									<td valign="top" bgcolor="#ffb6c0"><b>View Game Options</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										View the options currently active for the game. This is the same as viewing
+										the "Properties" tab when in the main TripleA window.
+									</td>
+								</tr>
+					
+								<tr>
+									<td valign="top" bgcolor="#ffb6c0"><b>Confirm Enemy Casualties</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										Will prompt the user to press "OK" after each battle step. Toggling it
+										off will increase speed of battle casualty selection.
+									</td>
+								</tr>
+					
+								<tr>
+									<td valign="top" bgcolor="#ffb6c0"><b>Show Dice Stats</b></td>
+									<td valign="top" bgcolor="#8fee8f">
+										Will show you a window displaying the frequency of dice rolls.
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<br/>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/game_main_window_size_menu.png" width="319" height="247" border="0" alt="" />
+							<br/>
+							Fig 3.0.5
+						</td>
+						
+						<td valign="top">
+							<img src="images/game_dice_stats.png" width="262" height="239" alt="game dice stats" />
+							<br/>
+							Fig 3.0.6
+						</td>
+					</tr>
+					
+					<tr>
+						<td valign="top">
+							An extended view of the various unit sizes that are
+							allowed to be selected.
+						</td>
+						
+						<td valign="top">
+							An example of the dice stats window. This will show the distribution
+							of all the dice rolled in the current game. They should come up uniformly
+							distributed. A useful feature to check every now and then if one feels
+							that the dice are being skewed or maybe just for educational purposes.
+						</td>
+					</tr>
+				</table>		
+			</p>
+			
+			<p>
+				There are probably more aspects to the main interface where most of the gaming takes place
+				but it would be too long and tedious to cover in great detail. The rest of the main interface
+				will be easily discovered and understood at the user's own time. The main and most important
+				aspects of the main in game interface has been covered and should be enough to get anyone
+				started and familiar with TripleA on first use.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_4">4.0</a> Purchasing Units</h2>
+		<blockquote>
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td>
+							Purchasing units is relatively simple. At the start of each turn a button
+							will appear in the status area (right side of TripleA). This button, when
+							pressed, will popup the purchase window. All purchasable units are listed
+							along with their price (in our case the price is listed as IPCs). Once the
+							purchases are made, you are brought back to the main game window. You are to
+							proceed further, or undo your current purchases. Note that if you accidentally
+							forgot to purchase units, you will be notified with a warning before it is
+							too late. Please see Fig 4.0.0 for an example of the purchase window.
+							<br/><br/>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<img src="images/game_purchase_window.png" width="594" height="353" alt="Purchase menu"/>
+							<br/>
+							Fig 4.0.0
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_5">5.0</a> Unit Movement</h2>
+		<blockquote>
+			<p>
+				There are certain aspects to <u>movement</u> within the game, specifically two aspects.
+				First, is the movement of the user with in the game. That is moving (or panning) around
+				the map. Secondly, is the movement of the user's units after completing the first step.
+			</p>
+		
+			<p>
+				<ul>
+					<li>Navigating the Map</li>
+					<ol>
+						<li>Movement is allowed using the horizontal and vertical scroll bars</li>
+						<li>Placing the mouse cursor at the edge of the map will also allow movement</li>
+						<li>Right-Click and hold the right mouse button down, then drag the mouse around
+						    the map. This is known as the &quot;drag scrolling&quot; feature of TripleA
+						    implemented by lnxduk</li>
+					</ol>
+					
+					<br/>
+					
+					<li>Moving Units</li>
+					<ol>
+						<li>Left-Click on the source territory once</li>
+						<li>Move the mouse and left-click on the destination territory</li>
+						<li>From the movement box that appears, select what units need to be moved</li>
+						<li>When a movement path is undesirable somehow. One can forcefully specify
+						    a custom route. It is done by conducting step 1, then right after instead
+						    of proceeding to step 2; you right click once in each territory you want
+						    your units to pass through. When that is done, we proceed to step 2 and
+						    continue to step 3.</li>
+					</ol>
+				</ul>
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/game_move_example.png" width="578" height="440" alt="movement example" />
+							<br/>
+							Fig 5.0.0
+						</td>
+						
+						<td valign="top">
+							The example to the left depicts the movement of units from Germany to Karelia S.S.R. A red movement arrow
+							is drawn to indicate what territories the units will be passing through. Once the mouse has
+							left-clicked on Karelia S.S.R, the movement box appears. We can make a choice on what units
+							we would like to move.
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/game_move_tab.png" width="601" height="751" alt="move tab" />
+							<br/>
+							Fig 5.0.1
+						</td>
+			
+						<td valign="top">
+							The example to the left shows a pre-combat engagement where units were moved from Lybia,
+							and Southern-Europe to conduct an amphibious assault on Anglo-Egypt. The status
+							tab of TripleA shows a list of consecutive movements that have been carried out.
+							The source and destination of each move is tracked along with the number and image
+							of each unit that moved. Each move can be undone. Clicking on the <b>show</b> button
+							will force TripleA to draw the movement arrows for that particular movement and
+							focus the map onto that specific area in which the movement has occured.
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_6">6.0</a> Combat Engagements</h2>
+		<blockquote>
+			<p>
+				After the combat moves are laid out and ready. The next logical step is to engage in combat.
+				The battles will all be laid out in the <b>Actions</b> tab on the right hand side of TripleA.
+				They're laid out as a series of consecutive buttons, each button labeled with the name of the
+				territory where a battle will be fought. Some battles are required that they be fought before
+				others. Such is true with a combination of amphibious assaults and naval battles that occur
+				in the same region. See figure 6.0.0 for an example of such a combination.
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/game_combat_info.png" width="236" height="308" alt="combat menu"/>
+							<br/>
+							Fig 6.0.0
+						</td>
+						
+						<td valign="top">
+							This is an example of a battle to be held in Anglo-Egypt by the Germans vs. the British.
+							As can be seen, there are 3 battles that are to take place.
+							<ol>
+								<li>Land combat from Lybia to Egypt</li>
+								<li>Amphibious combat from Sea Zone 15 to Egypt</li>
+								<li>An extra battle in Karelia S.S.R</li>
+							</ol>
+							<br/>
+							The battle on land for Egypt is listed first before the naval battle
+							in Sea Zone 15 (this is because there is a British destroyer defending
+							the Suez canal). It appears like this because we have moved the land troops
+							in first before moving in the naval units. Either way, TripleA will pop-up
+							a warning message notifying us that the battle in Sea Zone 15 must occur
+							first before the land battle Egypt. If the naval battle goes well for the Germans
+							then the amphibious assault will continue, if not, then the Germans are stuck
+							without an amphibious assault.
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				Now for an actual example of how the battles are actually fought. After clicking on one of the
+				buttons from the <b>Actions</b> tab. A battle window will appear. In this window 
+				is where the dice are rolled to show the outcome of the battle. See figure 6.0.1 for
+				a full description of the battle window.
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td>
+							<img src="images/game_combat_window.png" width="724" height="469" alt="combat window" />
+							<br/>
+							Fig 6.0.1
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<ul>
+								<li>Attackers are listed on the left</li>
+								<li>Defenders are listed on the right</li>
+								<li>Battle Steps for all warring factions are in the left column</li>
+								<li>Dice rolls are listed in the empty area in the middle of the window</li>
+								<li>Red colored dice are hits</li>
+								<li>Black colored dice are misses</li>
+							</ul>
+							Each unit image is shown in their respective column, at the top, based on their
+							attack and defense values. The above image shows 4 Russian infantry units in a
+							column labeled <b>1</b>; this means they can only attack when the dice rolls a 1.
+							The same goes for all the other attack units. Similarly, for the defending German
+							units; the 3 infantry are in the <b>2</b> column indicating that they can only
+							defend if a 1 or a 2 is rolled.<br/>
+							<br/>
+							There is a long horizontal button at the bottom of the battle window. This button
+							is used when you need to select casualties or just need to press it to continue.
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_7">7.0</a> History Mode</h2>
+		<blockquote>
+			<p>
+				TripleA's History Mode feature records the entire history of the current game being played.
+				All rounds, turns, movements, tech research, battle rolls ...etc every ting is tracked, logged,
+				and recorded. The information in the History Mode is also saved when you save the game. It
+				also allows one to browse through the History Mode and TripleA will focus on parts of the map
+				and draw movement arrows accordingly to recreate what happened during that instance of time.
+				Furthermore, during battles, dice and unit images are displayed in the <b>Actions</b> tab as
+				well.
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="500">
+					<tr>
+						<td valign="top">
+							<img src="images/game_main_window_game_menu.png" width="225" height="235" alt="game menu" />
+							<br/>
+							Fig 7.0.0
+						</td>
+						
+						<td valign="top">
+							History Mode can be activated at any time during the game.
+							By going through the <b>Game</b> menu and selecting the
+							<b>Show history</b> menu item, one will activate the History Mode.
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="500">
+					<tr>
+						<td valign="top">
+							<img src="images/game_history_window.png" width="230" height="311" alt="history menu 1" />
+							<br/>
+							Fig 7.0.1
+						</td>
+						
+						<td valign="top">
+							A section of the History Mode that shows the initial levels of the current
+							game. The example to the left shows the game phases of Russia, Germany, and
+							(currently) the Research phase of the British.
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<table border="0" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<td valign="top">
+							<img src="images/game_history_window2.png" width="877" height="721" alt="history menu 2" />
+							<br/>
+							Fig 7.0.2
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							A fully exapanded example of the History Mode.
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_8">8.0</a> Game Properties</h2>
+		<blockquote>
+			<p>
+				Each game that runs with the TripleA engine is allowed to have various properties
+				applied to the game. These properties are hard-coded into the game and can be turned
+				activated / deactivated or completely omitted from games. Below is a table of game 
+				property specifications written by Ali Ibrahim:
+			</p>
+		
+			<p>
+				<table border="1" cellspacing="2" cellpadding="2" width="800">
+					<tr>
+						<th align="left"><b>Property name</b></th>
+						<th align="left"><b>Description</b></th>
+					</tr>
+					
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Always on AA</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true, AA guns fire in non-combat phase.</td>
+					</tr>
+					
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Use Destroyers and Artillery</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true, adds destroyers and artillery to classic game, do not use with 4th edition.</td>
+					</tr>
+
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Territory Turn Limit</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true, each country cannot lose more ipcs than a territory is worth in a single round due to SBRs or rocket attacks.</td>
+					</tr>
+
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Low Luck</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true enables low luck dice rolling. Please see user documentation for more information. Note that this option does not function correctly with the heavy bombers pick best of X dice option.</td>
+					</tr>
+
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Submersible Subs</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true, subs use 4th edition rules for submerging in battles and for passing underneath other units.</td>
+					</tr>
+
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Heavy Bomber Dice Rolls</b></td>
+						<td bgcolor="#8fee8f">Integer property. Specifies the number of dice rolls for heavy bombers. If property not specified then the number of dice rolls is 3.</td>
+					</tr>
+      
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Heavy Bombers Pick best of X Dice</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true, heavy bombers have only 1 roll which is the best of the number of dice normally rolled. This option when true will not work with the low luck option.</td>
+					</tr>
+
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Two hit battleship</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true, battleships take 2 hits to be destroyed.</td>
+					</tr>
+      
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Battleships repair at end of round</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true, battleships are repaired at the end of the turn. Should only be true when Two hit battleship is true.</td>
+					</tr>
+
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Neutral Territory Charge</b></td>
+						<td bgcolor="#8fee8f">Integer property. Specifies number of ipcs needed to violate neutrality in classic game. Has no effect in 4th edition</td>
+					</tr>
+      
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Max Factories Per Territory</b></td>
+						<td bgcolor="#8fee8f">Integer property. Maximum number of factories per territory.</td>
+					</tr>
+      
+					<tr>
+						<td bgcolor="#ffb6c0"><b>Produce fighters on carriers</b></td>
+						<td bgcolor="#8fee8f">Boolean property. When true fighters can be produced on carriers directly when both are produced at the same time. Note that this does not allow existing fighters to be moved to carriers.</td>
+					</tr>
+
+					<tr>
+						<td bgcolor="#ffb6c0"><b><i>Country</i> bid</b></td>
+						<td bgcolor="#8fee8f">Integer property. Specifies the number of bid ipcs a country receives.</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_8.1">8.1</a> Low Luck</h2>
+		<blockquote>
+			<p>
+				 Low luck is a methodology for rolling dice which reduces the variance inherent in
+				 dice rolling. It guarantees that the number of hits in a certain set of rolls will
+				 not differ from the average number of hits by more than one. The details of the
+				 implementation as well as a general discussion of low luck can be found in the
+				 DAAK club at <a href="http://www.daak.de/aarll/aarllregel.php?sprache=e">http://www.daak.de/aarll/aarllregel.php?sprache=e</a>.
+			</p>
+			
+			<p>
+				 The low luck option can be enabled by putting a check mark in the box next to
+				 &quot;Low Luck&quot; in the properties tab before the game is started. This
+				 option must be specified by the server in a multi player game. Low luck has
+				 not been tested for PBEM games. The current implementation does not support
+				 low luck rolling for SBR's or techs, instead normal rules are used in these
+				 two cases. The number of dice rolled in a phase of a battle should never be
+				 more than one. The number of hits will be indicated at the bottom of the
+				 combat window and will be equal to the number of guaranteed hits plus one
+				 if the only dice rolled is a hit. No dice may be rolled if the outcome is
+				 guaranteed because no fractional dice are needed.<br/>
+				 <br/>
+				 -Ali Ibrahim
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_9">9.0</a> F.A.Q</h2>
+		<blockquote>
+			<p>
+				<b>Q: </b>I am using windows and I keep getting &quot;Bad command or file name&quot; what do I do?<br/>
+
+				<b>A: </B>You haven’t installed or set up the java virtual machine correctly. Go to <a href="#sec_1">Installing TripleA</a>
+			</p>
+			
+			<p>
+				<b>Q: </b>I am a Linux or Mac OS X user and I keep getting &quot;Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: games/strategy/engine/framework/GameRunner&quot;<br/>
+				<b>A: </b>This error occurs when there are no compiled classes for java to run. In other words, you might
+				         have accidently downloaded the source package instead of the pre-compiled package.
+			</p>
+
+			
+			<p>
+				<b>Q: </b>I get &quot;Unable to create server socket: Connection timed out: connect&quot;!<br/>
+				<b>A: </b>This basically means TripleA could not find the server to connect to. Are you behind
+				a Firewall that is blocking you? Is the server behind a Firewall blocking your connections? Is
+				your router set up properly for Port Forwarding? Or maybe the server went offline.
+			</p>
+			
+			<p>
+				<b>Q: </b>No matter how many times I re-download TripleA, it keeps saying it is corrupted!<br/>
+
+				<b>A: </b>Try using a different UnZipping utility. If that doesn't work try re-downloading TripleA
+				using a different program. There was a case where Mozilla browser kept saving the Zip file in a 
+				corrupted state.
+			</p>
+			
+			<p>
+				<b>Q: </b>Don't ask me how.. but I can't seem to turn on the AI, how can I do it manually?<br/>
+				<b>A: </b>Visit this <a target="_blank" href="http://maddlinks.com/triplea/index.php?showtopic=184">link</a>
+			</p>
+
+			
+			<p>
+				<b>Q: </b>What can I do if I spot a SeaZone connection problem and want to fix it fast?<br/>
+				<b>A: </b>You can edit the XML game file manually as shown <a target="_blank" href="http://maddlinks.com/triplea/index.php?showtopic=301">here</a>.
+			</p>
+			
+			<p>
+				<b>Q: </b>How do I report a bug?<br/>
+
+				<b>A: </b>Report bugs either on the <a target="_blank" href="http://maddlinks.com/triplea">TripleA message board</a> or at the <a target="_blank" href="http://sourceforge.net/projects/triplea">Project home page.</a>
+				when doing so please follow this <a target="_blank" href="http://maddlinks.com/triplea/index.php?showtopic=162">Bug Reporting guide</a>.
+			</p>
+			
+			<p>
+				<b>Q: </b>Any way of getting an observer in the game?<br/>
+
+				<b>A: </b>Yes, by having the observer connect to your game and not selecting any countries.
+				You can have many observers. One warning. They cannot leave during the middle of the game!
+				If they do, it will halt the game and crash (not really crash but you guys would have to
+				start over from a saved game).
+			</p>
+
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_10">10.0</a> Credits & Acknowledgements</h2>
+		<blockquote>
+			<p>
+				<ul>
+					<li><b>Iron Cross</b> : TripleA Banner and background watermark</li>
+					<li><b>Ali Ibrahim</b> : <a href="#sec_8">Game Properties</a> and <a href="#sec_8.1">Low Luck sections</a></li>
+					<li><b>Naiby</b> : <a href="#sec_2.4">Practical Guidelines for PBEM section</a></li>
+					<li><b>Sean Bridges</b> : <a href="../readme.html#sec_2">About TripleA section</a> (and of course for TripleA itself)</li>
+				</ul>
+			</p>
+		
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<hr/>
+		<a href="http://sourceforge.net"><img src="images/sflogo.png" width="125" height="37" border="0" alt="sf logo"/></a>
+		<br/>
+		<a href="http://sourceforge.net/donate/index.php?group_id=44492"><img src="images/project-support.jpg" width="88" height="32" border="0" alt="support"/></a>
+	</body>
+</html>
