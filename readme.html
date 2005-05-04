@@ -2,64 +2,254 @@
 <html>
 	<head>
 		<meta name="generator" content="Bluefish">
-		<meta name="author" content="Unknown">
+		<meta name="author" content="George El-Haddad">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="description" content="">
 		<title>TripleA :: Read Me</title>
 	</head>
 
-	<body>
-		<center><h1>TripleA Read Me</h1></center>
-		<hr>
-		<h3>Quick Nav</h3>
-		<ul>
-			<li><a href="#sec_a">What is TripleA ?</a></li>
-			<li><a href="doc/TripleA_User_Documentation.html#sec_a">Installing TripleA</a></li>
-			<li><a href="doc/TripleA_User_Documentation.html#sec_c">Playing TripleA</a></li>
-			<li><a href="#sec_b">Contributing</a></li>
-			<li><a href="#sec_c">Further Reading</a></li>
-			<li><a href="doc/TripleA_User_Documentation.html#sec_f">F.A.Q.</a></li>
-		</ul>
-		<hr>
-		<br>
-		
-		<h2><a name="sec_a">What is TripleA ?</a></h2>
-		<blockquote>
-			<p>
-				Triplea is a networked open source gaming engine
-				and clone of a popular board game.Triplea is released
-				under the Gnu Public License <a target="_blank" href="http://www.opensource.org/licenses/gpl-license.php">(GPL)</a>.
-			</p>
-		</blockquote>
-		
-		<h2><a name="sec_b">Contributing</a></h2>
-		<blockquote>
-			<p>
-				TripleA is a volunteer project, and you can help make it
-				better. We need people to test and contribute better graphics,
-				but above all we need people to contribute code.
-				If you are interested please see the
-				<a target="_blank" href="http://triplea.sourceforge.net/index.php?option=content&task=view&id=5&Itemid=27">contributing page</a>.
-			</p>
-		</blockquote>
-		
-		<h2><a name="sec_c">Further Reading</a></h2>
-		<p>
-			<ul>
-				<li><a href="http://triplea.sourceforge.net">TripleA Website</a></li>
-				<li><a href="http://sourceforge.net/projects/triplea">TripleA Project Site</a></li>
-				<li><a href="http://maddlinks.com/triplea">TripleA Message Board</a></li>
-				<li><a href="doc/TripleA_User_Documentation.html">TripleA User Documentation</a></li>
-				<li><a href="doc/TripleA_Developer_Documentation.html">TripleA Developer Documentation</a></li>
-				<li><a href="http://triplea.sourceforge.net/TRIPLEA_1.doc">A Visual Guide To TripleA By Black Elk (MS Word)</a></li>
-				<li><a href="http://triplea.sourceforge.net/TRIPLEA_1.pdf">A Visual Guide To TripleA By Black Elk (PDF)</a></li>
-			</ul>
+	<body background="doc/images/water_mark.gif">
+		<p align="center">
+			<a name="top">
+			<img src="doc/images/big_banner.png" width="800" height="64" border="0" alt="TripleA Banner"/>
+			</a>
 		</p>
 		
-		<!-- footer -->
-		<br>
-		<hr>
-		<a href="http://sourceforge.net"><img src="doc/images/sflogo.png" width="125" height="37" border="0" alt=""></a>&nbsp;
-		<a href="http://sourceforge.net/donate/index.php?group_id=44492"><img src="doc/images/project-support.jpg" width="88" height="32" border="0" alt=""></a>
+		<p align="center">
+			<span style="font-size: smaller; font-style: italic;">
+				Written by George H. (DMA02)<br/>
+			</span>
+		</p>
+		
+		<hr/>
+		<h2>Read Me :: Quick Nav</h2>
+		<ul>
+			<li><b>1.0</b> <a href="#sec_1">What is TripleA ?</a></li>
+			<li><b>2.0</b> <a href="#sec_2">About TripleA</a></li>
+			<li><b>3.0</b> <a href="#sec_3">Getting Started</a></li>
+			<li><b>4.0</b> <a href="#sec_4">Playing A Game</a></li>
+			<li><b>5.0</b> <a href="#sec_5">The TripleA Community</a></li>
+			<li><b>6.0</b> <a href="#sec_6">Developer Documentation</a></li>
+			<li><b>7.0</b> <a href="#sec_7">Contributing to TripleA</a></li>
+			<li><b>8.0</b> <a href="#sec_8">Credits & Acknowledgements</a></li>
+		</ul>
+		<hr/>
+		<br/>
+		
+		<h2><a name="sec_1">1.0</a> What is TripleA ?</h2>
+		<blockquote>
+			<p>
+				Triplea is a networked open source strategy gaming engine. It allows people to
+				implement and play various strategy board games (ie. <a href="http://www.wizards.com/default.asp?x=ah/prod/axis" target="_blank">Axis & Allies </a>&reg;).
+				The TripleA engine has full networking support for online play, support for sounds, XML support
+				for game files, and has its own imaging subsystem that allows for customized user
+				editable maps to be used. TripleA is versatile, scalable and robust.
+			</p>
+			<p>
+				Triplea is released under the GNU Public License <a target="_blank" href="http://www.opensource.org/licenses/gpl-license.php">(GPL)</a>.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_2">2.0</a> About TripleA</h2>
+		<blockquote>
+			<p>
+				TripleA was started in Oct 2001 by an unemployed sgb who was looking for a way
+				to build up his resume after the end of the tech bubble. Unfortunately sgb was
+				too successful, and soon after the 0.1 release (which he managed to demo in a
+				job interview) he secured gainful employment.
+			</p>
+				sgb working full time dramatically slowed the progress of TripleA for a long time.
+				Numerous people made contributions to the project, including both DMA02 and IronCross
+				from a very early stage, but with sgb doing most of the development, and with the limited
+				early graphics, the project did not improve dramatically.
+			<p>
+				TripleA would have continued on this slow trajectory, but two events occurring
+				relatively closely revitalized the project. The first was the contribution by Logan
+				of new graphics. Now the game actually looked alright. The second event was the release
+				of the revised map and rules. With no competing real time game, interest in TripleA increased.
+			</p>
+			
+			<p>
+				TripleA 0.3.1 was probably the first version that was really playable in networked mode.
+				And since then, increasing community interest, and with great contributions from a number of
+				people, TripleA continues to grow and prosper.
+			</p>
+			
+			<p>- Sean Bridges</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_3">3.0</a> Getting Started</h2>
+		<blockquote>
+			<p>
+				TripleA can come in two different packages, a binary package and a source package.
+				A binary package is one where the entire game is ready to be played right out of the box.
+				A source package is one in which the source code of the game is provided. The individual
+				who uses the source package is expected to compile (build) the game before being able to
+				play it. The source package is mainly directed towards developers and others who are
+				interested in modifying the game for one reason or another.
+			</p>
+			
+			<p>
+				TripleA is programmed exclusively in the JAVA programming language which allows it to be
+				platform independent. That means that TripleA can run on many operating systems so long as
+				it has a Sun Compliant Java Virtual Machine. Such operating systems where TripleA has been
+				successfully tested on are: GNU/Linux, Microsoft Windows 95/98/2000/XP, Mac OS X, SGI IRIX,
+				and IBM OS/2.
+			</p>
+			
+			<p>
+				Even though TripleA is exclusively a strategy gaming engine with a robust framework, it comes
+				with some games included. It would be rather boring if you just got the engine without any
+				interesting games included. TripleA comes with the following supported games that uses its
+				game engine (just to name a few):
+				<ul>
+					<li>Axis & Allies : Classic edition (2nd, 3rd with options enabled)</li>
+					<li>Axis & Allies : Revised Edition</li>
+					<li>Pact of Steel A&A Variant</li>
+					<li>Big World 1942 A&A Variant</li>
+					<li>Two if by Sea</li>
+					<li>Battle Ship Row</li>
+				</ul>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_4">4.0</a> Playing A Game</h2>
+		<blockquote>
+			<p>
+				It's finally time to test out TripleA's capabilities by actually playing
+				a game on it! Please refer to our complete game playing guide to get you
+				started on this subject.
+				
+				Go to the <a href="doc/game_playing_guide.html">Game Playing Guide</a>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_5">5.0</a> The TripleA Community</h2>
+		<blockquote>
+			<p>
+				With the success of the engine and growing popularity of the games it
+				supports among strategy gamers, it was inevitable that a community would
+				assemble and evolve. The TripleA community is a group of individuals from
+				all over the globe who share the passion of strategy war gaming and/or
+				developing custom variants using the engine.
+			</p>
+			
+			<p>
+				The community has established it self to be one where everyone is courteous
+				to one another and where ideas are expressed and respected by all. The main
+				objective of the community is to interact with one another and have fun by
+				engaging in a good game or discussion concerning the TripleA engine.
+			</p>
+			
+			<p>
+				Anyone can participate in the community. Below are links to community pages:
+				<ul>
+					<li><a target="_blank" href="http://maddlinks.com/triplea">TripleA User/Development Forum</a></li>
+					<li><a target="_blank" href="http://tripleawarclub.org">TripleA War Club</a></li>
+				</ul>
+			</p>
+			
+			<p>
+				Both the sites above have a link to a Java applet where one can join our dedicated
+				IRC chatroom. Access to the chatroom is not exclusive to the forums themselves.
+				For more information about getting into the IRC chatroom and a guide on getting
+				help with IRC programs on various operating systems, please refer to our
+				<a target="_blank" href="http://triplea.sourceforge.net/index.php?option=content&task=view&id=7&Itemid=29">IRC Community Guide</a>.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_6">6.0</a> Developer Documentation</h2>
+		<blockquote>
+			<p>
+				For those who are interested in the internal workings of TripleA and are interested
+				in modifying the engine, the developer documentation page will be your ideal source
+				of information. Everything (as much as we can possibly include) is covered. From
+				editing the xml game files to engine code to using the map utilities to compiling
+				the source on various platforms.<br/>
+				<br/>
+				Visit our <a href="doc/developer_documentation.html">Developer Documentation</a> page for more details.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+
+		<h2><a name="sec_7">7.0</a> Contributing to TripleA</h2>
+		<blockquote>
+			<p>
+				 TripleA is a volunteer project. That means that all work done on TripleA is done out
+				 everyone's free time. No one is forced to do anything they don't want to do. We also
+				 do not oblige persons to contribute, but we welcome anyone who wishes to give a little
+				 back and help make TripleA better. 
+			</p>
+			
+			<p>
+				TripleA is currently in need of the following:
+				<ul>
+					<li>Java Developers: We need more programmers to help maintain the engine and develop new features</li>
+					<li>Optional game rules, such as paratroopers and marines</li>
+					<li>More Development on our current AI subsystem</li>
+					<li>A battle calculator</li>
+					<li>Other games for TripleA such as: Axis & Allies Europe and Pacific</li>
+					<li>A Game Server to act as a central place where clients can join, chat, and start games.</li>
+					<li>Better sounds</li>
+					<li>Better graphics and images</li>
+					<li>Documentation writers for game variants and other related game playing documents</li>
+					<li>MySQL and PHP skilled users to build a gaming Database for the TripleA War Club</li>
+				</ul>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_8">8.0</a> Credits & Acknowledgements</h2>
+		<blockquote>
+			<p>
+				<ul>
+					<li><b>Iron Cross</b> : TripleA Banner and background watermark</li>
+					<li><b>Ali Ibrahim</b> : <a href="doc/game_playing_guide.html#sec_8">Game Properties</a> and <a href="doc/game_playing_guide.html#sec_8.1">Low Luck sections</a></li>
+					<li><b>Naiby</b> : <a href="doc/game_playing_guide.html#sec_2.4">Practical Guidelines for PBEM section</a></li>
+					<li><b>Sean Bridges</b> : <a href="#sec_2">About TripleA section</a> (and of course for TripleA itself)</li>
+				</ul>
+			</p>
+		
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<hr/>
+		<a href="http://sourceforge.net"><img src="doc/images/sflogo.png" width="125" height="37" border="0" alt="sf logo" /></a>
+		<br/>
+		<a href="http://sourceforge.net/donate/index.php?group_id=44492"><img src="doc/images/project-support.jpg" width="88" height="32" border="0" alt="support" /></a>
 	</body>
 </html>
