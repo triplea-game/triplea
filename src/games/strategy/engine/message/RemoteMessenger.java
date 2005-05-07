@@ -25,7 +25,7 @@ import java.lang.reflect.*;
 public class RemoteMessenger implements IRemoteMessenger
 {
   
-    UnifiedMessenger m_unifiedMessenger;
+    private final UnifiedMessenger m_unifiedMessenger;
     
     public RemoteMessenger(UnifiedMessenger messenger)
     {

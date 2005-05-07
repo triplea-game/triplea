@@ -25,7 +25,7 @@ import java.lang.reflect.*;
  */
 public class ChannelMessenger implements IChannelMessenger
 {
-    UnifiedMessenger m_unifiedMessenger;
+    private final UnifiedMessenger m_unifiedMessenger;
     
     public ChannelMessenger(UnifiedMessenger messenger)
     {
