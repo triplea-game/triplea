@@ -48,7 +48,9 @@ public class Util
     public static Image copyImage(Image img, JComponent comp)
     {
         Image copy = createImage(img.getWidth(comp), img.getHeight(comp), false);
-        copy.getGraphics().drawImage(img, 0, 0, comp);
+        Graphics g = copy.getGraphics();
+        g.drawImage(img, 0, 0, comp);
+        g.dispose();
         return copy;
     }
 

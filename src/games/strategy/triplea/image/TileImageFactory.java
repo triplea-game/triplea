@@ -222,7 +222,9 @@ public final class TileImageFactory
 		    
 		        //using a copy reduces memory, a simpler memory format?
 		        image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
-		        image.getGraphics().drawImage(fromFile, 0,0, null);
+		        Graphics g = image.getGraphics();
+		        g.drawImage(fromFile, 0,0, null);
+		        g.dispose();
 		        loadingImages.done();
 		        
 		    } catch (IOException e)

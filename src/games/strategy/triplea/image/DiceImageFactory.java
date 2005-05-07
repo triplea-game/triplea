@@ -100,6 +100,7 @@ public class DiceImageFactory
       images.put(new Integer(i), canvas);
 
       icons.put(new Integer(i), new ImageIcon(canvas));
+      graphics.dispose();
     }
   }
 

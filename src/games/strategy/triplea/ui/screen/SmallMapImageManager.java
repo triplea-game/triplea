@@ -68,6 +68,7 @@ public class SmallMapImageManager
             g.fillRect(x,y, UNIT_BOX_SIZE, UNIT_BOX_SIZE);
         }
         
+        g.dispose();
         s_logger.finest("Small map updating took" + (System.currentTimeMillis() - startTime) + " ms");
         
     }

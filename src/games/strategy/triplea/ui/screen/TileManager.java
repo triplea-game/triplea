@@ -318,7 +318,7 @@ public class TileManager
                 graphics.drawPolygon(poly);
             }
 	        
-	        
+	        graphics.dispose();
 	        return rVal;
         }
 

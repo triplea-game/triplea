@@ -96,7 +96,11 @@ public class Tile
         }
         
         if(m_isDirty)
-            draw((Graphics2D) image.getGraphics(), data, mapData);
+        {
+            Graphics g = image.getGraphics();
+            draw((Graphics2D) g, data, mapData);
+            g.dispose();
+        }
         
         return image;        
     }
