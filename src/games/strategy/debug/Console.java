@@ -94,6 +94,7 @@ public class Console extends JFrame
 		SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);
 		ThreadReader reader = new ThreadReader(out, m_text, true);
 		Thread thread = new Thread(reader, "Console std err reader");
+		thread.setDaemon(true);
 		thread.start();
 		
 		PrintStream print = new PrintStream(out);
@@ -105,6 +106,7 @@ public class Console extends JFrame
 		SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.out);
 		ThreadReader reader = new ThreadReader(out, m_text, false);
 		Thread thread = new Thread(reader, "Console std out reader");
+		thread.setDaemon(true);
 		thread.start();
 		
 		PrintStream print = new PrintStream(out);
@@ -125,7 +127,7 @@ public class Console extends JFrame
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-		    //call the jdk1.5 getAllStackTraces method
+		    //call the jdk1.5 getAllStackTraces method if available
 		    //call using reflection so we are 1.4 compatable
 		    try
             {
