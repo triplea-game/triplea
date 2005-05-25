@@ -156,7 +156,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public boolean isEmpty()
     {
 
-        return m_attackingUnits.isEmpty();
+        return m_attackingUnits.isEmpty() && m_attackingWaitingToDie.isEmpty();
     }
 
     public void addAttack(Route route, Collection units)
