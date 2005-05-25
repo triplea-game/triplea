@@ -1,3 +1,7 @@
+* fixed bug 1205504	Units can land in amphibious assaults when transport is sunk (sgb)
+
+* fixed bug 1198828	Heavy Bomber Tech Broken 0.5.3 (sgb)
+
 Changes for 0.5.3
 
 * added europe and pacific maps (incomplete versions) by iron cross (George_H)
