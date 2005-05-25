@@ -377,7 +377,7 @@ class HttpDiceRollerDialog extends JDialog
      */
     public static boolean isMailValid(String emailAddress)
     {
-        String regex = "(\\s*[\\w\\.]+@\\w+\\.\\w+\\s*)*";
+        String regex = "(\\s*[\\w\\.-]+@\\w+\\.\\w+\\s*)*";
         return emailAddress.matches(regex);
     }
 }
