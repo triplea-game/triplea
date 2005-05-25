@@ -483,8 +483,9 @@ public class GameParser
     {
       int max = Integer.valueOf(child.getAttribute("max")).intValue();
       int min = Integer.valueOf(child.getAttribute("min")).intValue();
+      int def = Integer.valueOf(defaultValue).intValue();
 
-      editableProperty = new NumberProperty(name, max, min);
+      editableProperty = new NumberProperty(name, max, min, def);
 
     }
     else if(childName.equals("string"))

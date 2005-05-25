@@ -26,16 +26,18 @@ public class NumberProperty extends AEditableProperty
   private int m_min;
   private int m_value;
 
-  public NumberProperty(String name, int max, int min)
+  public NumberProperty(String name, int max, int min, int def)
   {
     super(name);
 
     if(max < min)
       throw new IllegalThreadStateException("Max must be greater than min");
+    if(def > max || def < min)
+        throw new IllegalThreadStateException("Default value out of range");
 
     m_max = max;
     m_min = min;
-    m_value = 0;
+    m_value = def;
   }
 
   public Object getValue()

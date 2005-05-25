@@ -33,7 +33,7 @@ public class PropertiesUI extends JPanel
     properties.addEditableProperty(new BooleanProperty("bool1 default false", false));
     properties.addEditableProperty(new BooleanProperty("bool2 default true", true));
     properties.addEditableProperty(new StringProperty("String", "default") );
-    properties.addEditableProperty(new NumberProperty("Number [10,20]", 20, 12) );
+    properties.addEditableProperty(new NumberProperty("Number [10,20]", 20, 12, 15) );
 
     Collection listValues = new ArrayList();
     listValues.add("apples");
