@@ -825,7 +825,11 @@ public class TripleAFrame extends JFrame
                         JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
                     }
 
-                } catch (Exception se)
+                }
+                catch(DelegateNotCurrentlySaveableException dncse)
+                {
+                    JOptionPane.showMessageDialog(TripleAFrame.this, dncse.getMessage(), "Can't Save Game", JOptionPane.OK_OPTION);                    
+                }catch (IOException se)
                 {
                     se.printStackTrace();
                     JOptionPane.showMessageDialog(TripleAFrame.this, se.getMessage(), "Error Saving Game", JOptionPane.OK_OPTION);

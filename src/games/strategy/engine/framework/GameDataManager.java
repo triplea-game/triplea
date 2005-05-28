@@ -108,7 +108,7 @@ public class GameDataManager
         }
     }
 
-    public void saveGame(File destination, GameData data) throws IOException
+    public void saveGame(File destination, GameData data) throws IOException, DelegateNotCurrentlySaveableException
     {
         OutputStream fileStream = null;
         try
@@ -126,12 +126,12 @@ public class GameDataManager
         }
     }
 
-    public void saveGame(OutputStream sink, GameData data) throws IOException
+    public void saveGame(OutputStream sink, GameData data) throws IOException, DelegateNotCurrentlySaveableException
     {
         saveGame(sink, data, true);
     }
 
-    public void saveGame(OutputStream sink, GameData data, boolean saveDelegateInfo) throws IOException
+    public void saveGame(OutputStream sink, GameData data, boolean saveDelegateInfo) throws IOException, DelegateNotCurrentlySaveableException
     {        
         //write internally first in case of error
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
@@ -160,7 +160,7 @@ public class GameDataManager
         zippedOut.close();
     }
 
-    private void writeDelegates(GameData data, ObjectOutputStream out) throws IOException
+    private void writeDelegates(GameData data, ObjectOutputStream out) throws IOException, DelegateNotCurrentlySaveableException
     {
 
         Iterator iter = data.getDelegateList().iterator();
@@ -181,7 +181,7 @@ public class GameDataManager
                 String[] message = new String[1];
                 if (!saveable.canSave(message))
                 {
-                    throw new IOException(message[0]);
+                    throw new DelegateNotCurrentlySaveableException(message[0]);
                 } else
                 {
                     out.writeObject(DELEGATE_DATA_NEXT);

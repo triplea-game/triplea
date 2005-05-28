@@ -1,4 +1,6 @@
-* fixed bug [ 1205775 ] 0.5.3 eMail Bug - hyphens not allowed in emails
+* fixed bu [ 1205387 ] Saving game during combat 0.5.3 (sgb)
+
+* fixed bug [ 1205775 ] 0.5.3 eMail Bug - hyphens not allowed in emails (sgb)
 
 * fixed bug 1205504	Units can land in amphibious assaults when transport is sunk (sgb)
 
