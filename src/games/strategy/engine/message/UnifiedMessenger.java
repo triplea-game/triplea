@@ -518,11 +518,11 @@ public class UnifiedMessenger
                 {
                     INode node = (INode) nodes.next();
                     Collection initEndPoints = (Collection) initMessage.nodesWithEndPoints.get(node);
-                    Collection currentEndPoints = (Collection) m_remoteNodesWithImplementors.get(from);
+                    Collection currentEndPoints = (Collection) m_remoteNodesWithImplementors.get(node);
                     if (currentEndPoints == null)
                     {
                         currentEndPoints = new HashSet();
-                        m_remoteNodesWithImplementors.put(from, currentEndPoints);
+                        m_remoteNodesWithImplementors.put(node, currentEndPoints);
                     }
 
                     currentEndPoints.addAll(initEndPoints);

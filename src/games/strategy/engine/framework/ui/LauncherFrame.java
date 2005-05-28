@@ -422,6 +422,7 @@ public class LauncherFrame extends JFrame
         }
 
         String name = options.getName();
+        s_logger.log(Level.FINE, "Server playing as:" + name);
         //save the name! -- lnxduk
         prefs.put(PLAYERNAME, name);
 
@@ -485,6 +486,7 @@ public class LauncherFrame extends JFrame
         }
 
         String name = options.getName();
+        s_logger.log(Level.FINE, "Client playing as:" + name);
         //save the name! -- lnxduk
         prefs.put(PLAYERNAME, name);
 

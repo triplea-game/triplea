@@ -1,4 +1,6 @@
-* fixed bu [ 1205387 ] Saving game during combat 0.5.3 (sgb)
+* fixed bug [ 1188411 ] Missing client text (Chat window) 5.2.2
+
+* fixed bug [ 1205387 ] Saving game during combat 0.5.3 (sgb)
 
 * fixed bug [ 1205775 ] 0.5.3 eMail Bug - hyphens not allowed in emails (sgb)
 

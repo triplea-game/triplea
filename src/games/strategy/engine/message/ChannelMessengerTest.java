@@ -14,6 +14,7 @@
 
 package games.strategy.engine.message;
 
+import games.strategy.engine.framework.ui.IClientChannel;
 import games.strategy.net.*;
 
 import java.io.IOException;
@@ -46,7 +47,6 @@ public class ChannelMessengerTest extends TestCase
 		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
 		m_serverMessenger = new ChannelMessenger( new UnifiedMessenger(m_server));
 		m_clientMessenger = new ChannelMessenger(new UnifiedMessenger(m_client1));
-		
 	}
 	
 	public void tearDown()
@@ -158,6 +158,34 @@ public class ChannelMessengerTest extends TestCase
 	    }
 	    assertTrue(channel.hasChannel(channelName));
 	    
+    }
+    
+    public void testMultipleClients() throws Exception
+    {
+        
+        //set up the client and server
+        //so that the client has 1 subscribor, and the server knows about it
+        m_serverMessenger.createChannel(IChannelTest.class, "test");
+        
+        ChannelSubscribor client1Subscriboror = new ChannelSubscribor();
+       
+        assertHasChannel("test", m_clientMessenger);
+        m_clientMessenger.registerChannelSubscriber(client1Subscriboror, "test");
+        
+        assertHasSubscribor("test", m_serverMessenger);
+        
+        //add a new client
+        ClientMessenger clientMessenger2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
+        
+        ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
+        assertHasChannel("test", client2);
+        
+        assertHasSubscribor("test", client2);
+        
+        
+        ((IChannelTest) client2.getChannelBroadcastor("test")).testString("a");
+         
+         assertCallCountIs(client1Subscriboror, 1);
     }
 
     public void testMultipleChannels()
