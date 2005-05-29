@@ -112,7 +112,8 @@ class BattleStepsPanel extends JPanel
                 m_listModel.addElement(iter.next());
             }
             m_listSelectionModel.hiddenSetSelectionInterval(0);
-            m_targetStep = (String) steps.get(steps.size() - 1);
+            if(!steps.contains(m_targetStep) && m_targetStep != LAST_STEP)
+                m_targetStep = null;
         }
 
         validate();

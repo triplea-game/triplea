@@ -259,28 +259,26 @@ public class BattlePanel extends ActionPanel
         });
     }
 
-    public void confirmCasualties(final GUID battleId, final String message, String step)
+    public void confirmCasualties(final GUID battleId, final String message)
     {
         ensureBattleIsDisplayed(battleId);
-        m_battleDisplay.setStep(step);
-        m_battleDisplay.waitForConfirmation(message, step);
+        m_battleDisplay.waitForConfirmation(message);
     }
 
-    public CasualtyDetails getCasualties(final String step, final Collection selectFrom, final Map dependents, final int count, final String message,
+    public CasualtyDetails getCasualties(final Collection selectFrom, final Map dependents, final int count, final String message,
             final DiceRoll dice, final PlayerID hit, final List defaultCasualties)
     {
         //if the battle display is null, then this is a bombing raid
         if (m_battleDisplay == null)
-            return getCasualtiesAA(step, selectFrom, dependents, count, message, dice, hit, defaultCasualties);
+            return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
         else
         {
-            m_battleDisplay.setStep(step);
-            return m_battleDisplay.getCasualties(step, selectFrom, dependents, count, message, dice, hit, defaultCasualties);
+            return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
         }
 
     }
 
-    private CasualtyDetails getCasualtiesAA(String step, Collection selectFrom, Map dependents, int count, String message, DiceRoll dice,
+    private CasualtyDetails getCasualtiesAA( Collection selectFrom, Map dependents, int count, String message, DiceRoll dice,
             PlayerID hit, List defaultCasualties)
     {
         UnitChooser chooser = new UnitChooser(selectFrom, dependents, getData(), false);
@@ -308,10 +306,10 @@ public class BattlePanel extends ActionPanel
         return response;
     }
 
-    public Territory getRetreat(GUID battleID, String step, String message, Collection possible, boolean submerge)
+    public Territory getRetreat(GUID battleID, String message, Collection possible, boolean submerge)
     {
         ensureBattleIsDisplayed(battleID);
-        return m_battleDisplay.getRetreat(step, message, possible, submerge);
+        return m_battleDisplay.getRetreat(message, possible, submerge);
     }
 
     public void gotoStep(GUID battleID, final String step)

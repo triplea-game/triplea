@@ -125,6 +125,8 @@ public class StrategicBombingRaidBattle implements Battle
 
         int cost = conductRaid(bridge, m_attacker, m_defender, m_battleSite);
 
+        getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
+        
         m_tracker.removeBattle(this);
 
         bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + cost + MyFormatter.pluralize("ipc", cost));

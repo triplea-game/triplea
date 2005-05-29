@@ -41,11 +41,10 @@ public interface ITripleaPlayer extends IRemote
      * @param hit - the player hit
      * @param dice - the dice rolled for the casualties 
      * @param defaultCasualties - default casualties as selected by the game
-     * @param the battle step the selection is for
      * @return the selected casualties
      */
     public CasualtyDetails selectCasualties(
-            String step, Collection selectFrom, Map dependents,  int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties     
+            Collection selectFrom, Map dependents,  int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties     
     );
     
     /**
@@ -127,10 +126,9 @@ public interface ITripleaPlayer extends IRemote
      * @param submerge - is submerging possible
      * @param possibleTerritories - where the player can retreat to
      * @param message - user displayable message
-     * @param step - the battle step
      * @return the territory to retreat to, or null if the player doesnt wish to retreat
      */
-    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message, String step);
+    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message);
 
     
     /**
@@ -138,10 +136,9 @@ public interface ITripleaPlayer extends IRemote
      * 
      * @param battleId
      * @param message
-     * @param step
      */
-    public void confirmEnemyCasualties(GUID battleId, String message, String step, PlayerID hitPlayer);
+    public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer);
     
-    public void confirmOwnCasualties(GUID battleId, String message, String step);
+    public void confirmOwnCasualties(GUID battleId, String message);
     
 }

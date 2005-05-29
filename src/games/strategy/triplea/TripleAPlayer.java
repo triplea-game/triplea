@@ -286,9 +286,9 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
      */
-    public CasualtyDetails selectCasualties(String step, Collection selectFrom, Map dependents, int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
+    public CasualtyDetails selectCasualties(Collection selectFrom, Map dependents, int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
     {
-        return m_ui.getBattlePanel().getCasualties(step, selectFrom, dependents, count, message, dice,hit, defaultCasualties);
+        return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice,hit, defaultCasualties);
     }
 
     /* 
@@ -343,12 +343,12 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
      */
-    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message, String step)
+    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message)
     {
-        return m_ui.getBattlePanel().getRetreat(battleID, step, message, possibleTerritories,submerge);
+        return m_ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories,submerge);
     }
     
-    public void confirmEnemyCasualties(GUID battleId, String message, String step, PlayerID hitPlayer)
+    public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
     {
         //no need, we have already confirmed since we are firing player
         if(m_ui.playing(hitPlayer))
@@ -357,12 +357,12 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         if(!BattleDisplay.getShowEnemyCasualtyNotification())
             return;
         
-        m_ui.getBattlePanel().confirmCasualties(battleId, message, step);
+        m_ui.getBattlePanel().confirmCasualties(battleId, message);
     }
 
-    public void confirmOwnCasualties(GUID battleId, String message, String step)
+    public void confirmOwnCasualties(GUID battleId, String message)
     {
-        m_ui.getBattlePanel().confirmCasualties(battleId, message, step);
+        m_ui.getBattlePanel().confirmCasualties(battleId, message);
     }
     
     

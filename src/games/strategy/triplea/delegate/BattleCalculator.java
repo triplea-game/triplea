@@ -149,7 +149,7 @@ public class BattleCalculator
 
         ITripleaPlayer tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
         
-        CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(step, targets, dependents, dice.getHits(), text, dice, player,
+        CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, dice.getHits(), text, dice, player,
                 defaultCasualties);
 
         List killed = casualtySelection.getKilled();

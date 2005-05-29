@@ -780,7 +780,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         boolean submerge = subs && canSubsSubmerge();
         getDisplay(bridge).gotoBattleStep(m_battleID, step);
-        Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, submerge, availableTerritories, text, step);
+        Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, submerge, availableTerritories, text);
         
         if(retreatTo != null && !availableTerritories.contains(retreatTo) && !subs)
         {
@@ -1014,7 +1014,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             killed = attackableUnits;
             getDisplay(bridge).casualtyNotification(m_battleID, stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
-            getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue", stepName);
+            getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
         } else
         {            
             CasualtyDetails message = selectCasualties(stepName, bridge,
@@ -1027,7 +1027,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             
             //the user hasnt had a chance to see these yet
             if(message.getAutoCalculated())
-                getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue", stepName);
+                getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
         }
 
         
@@ -1035,7 +1035,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             public void run()
             {
-                getRemote(firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", stepName, hitPlayer);
+                getRemote(firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue",  hitPlayer);
             }
         };
 	    
@@ -1252,12 +1252,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         getDisplay(bridge).casualtyNotification(m_battleID, step,dice, m_attacker, casualties, Collections.EMPTY_LIST, m_dependentUnits);
         
-        getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Click to continue", step);
+        getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
         Runnable r = new Runnable()
         {
             public void run()
             {
-                getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", step, m_attacker);        
+                getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", m_attacker);        
             }
         };
         Thread t = new Thread(r, "click to continue waiter");

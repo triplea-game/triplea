@@ -296,7 +296,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
      *      games.strategy.triplea.delegate.DiceRoll,
      *      games.strategy.engine.data.PlayerID, java.util.List)
      */
-    public CasualtyDetails selectCasualties(String step, Collection selectFrom,
+    public CasualtyDetails selectCasualties(Collection selectFrom,
             Map dependents, int count, String message, DiceRoll dice,
             PlayerID hit, List defaultCasualties)
     {
@@ -382,7 +382,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
      */
-    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message, String step)
+    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message)
     {
         return null;
     }
@@ -399,7 +399,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     /*
      * @see games.strategy.triplea.player.ITripleaPlayer#battleInfoMessage(java.lang.String, games.strategy.triplea.delegate.DiceRoll, java.lang.String)
      */
-    public void battleInfoMessage(String shortMessage, DiceRoll dice, String step)
+    public void battleInfoMessage(String shortMessage, DiceRoll dice)
     {
       
         
@@ -408,14 +408,14 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#confirmCasualties(games.strategy.net.GUID, java.lang.String, java.lang.String)
      */
-    public void confirmOwnCasualties(GUID battleId, String message, String step)
+    public void confirmOwnCasualties(GUID battleId, String message)
     {
     }
 
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#confirmEnemyCasualties(games.strategy.net.GUID, java.lang.String, java.lang.String, games.strategy.engine.data.PlayerID)
      */
-    public void confirmEnemyCasualties(GUID battleId, String message, String step, PlayerID hitPlayer)
+    public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
     {
     }
 

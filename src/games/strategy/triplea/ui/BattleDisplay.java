@@ -140,33 +140,10 @@ public class BattleDisplay extends JPanel
         }
     }
 
-    public void waitForConfirmation(final String message, String step)
+    public void waitForConfirmation(final String message)
     {
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("This cant be in dispatch thread");
-
-        
-        
-        int waitCount = 0;
-        //wait for the step to display.
-        while (m_steps.getStep() == null || !m_steps.getStep().equals(step))
-        {
-            waitCount++;
-            try
-            {
-                Thread.sleep(50);
-            } catch (InterruptedException e)
-            {
-            }
-            
-            if(waitCount == 1500)
-            {
-                System.err.println("Finished waiting for step:" + step);
-                Thread.dumpStack();
-                break;
-            }
-            
-        }
 
         if (!getShowEnemyCasualtyNotification())
             return;
@@ -243,18 +220,18 @@ public class BattleDisplay extends JPanel
         m_attackerModel.notifyRetreat(retreating);
     }
 
-    public Territory getRetreat(String step, String message, Collection possible, boolean submerge)
+    public Territory getRetreat(String message, Collection possible, boolean submerge)
     {
         if (!submerge)
         {
-            return getRetreatInternal(step, message, possible);
+            return getRetreatInternal(message, possible);
         } else
         {
-            return getSubmerge(message, step);
+            return getSubmerge(message);
         }
     }
 
-    private Territory getSubmerge(String message, String step)
+    private Territory getSubmerge(String message)
     {
         String ok = "Submerge";
         String cancel = "Remain";
@@ -270,7 +247,7 @@ public class BattleDisplay extends JPanel
 
     }
 
-    private Territory getRetreatInternal(String step, String message, Collection possible)
+    private Territory getRetreatInternal(String message, Collection possible)
     {
         String ok = "Retreat";
         String cancel = "Remain";
@@ -290,7 +267,7 @@ public class BattleDisplay extends JPanel
                 return comp.getSelection();
         } else
         {
-            return getRetreatInternal(step, message, possible);
+            return getRetreatInternal( message, possible);
         }
 
         return null;
@@ -325,13 +302,9 @@ public class BattleDisplay extends JPanel
         }
     }
 
-    public CasualtyDetails getCasualties(final String step, final Collection selectFrom, final Map dependents, final int count, final String message,
+    public CasualtyDetails getCasualties(final Collection selectFrom, final Map dependents, final int count, final String message,
             final DiceRoll dice, final PlayerID hit, final List defaultCasualties)
     {
-        //this method is thread safe
-        //can be called outside of event dispatch thread
-        setStep(step);
-
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("This method should not be run in teh event dispatch thread");
 
