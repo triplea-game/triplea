@@ -1,12 +1,14 @@
+* fixed but where units could blitz through territories with an aa gun if they blitzed in 2 steps (4th edition only)
+
 * fixed bug [ 1188411 ] Missing client text (Chat window) 5.2.2
 
 * fixed bug [ 1205387 ] Saving game during combat 0.5.3 (sgb)
 
 * fixed bug [ 1205775 ] 0.5.3 eMail Bug - hyphens not allowed in emails (sgb)
 
-* fixed bug 1205504	Units can land in amphibious assaults when transport is sunk (sgb)
+* fixed bug [ 1205504 ] Units can land in amphibious assaults when transport is sunk (sgb)
 
-* fixed bug 1198828	Heavy Bomber Tech Broken 0.5.3 (sgb)
+* fixed bug [ 1198828 ]Heavy Bomber Tech Broken 0.5.3 (sgb)
 
 Changes for 0.5.3
 

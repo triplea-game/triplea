@@ -974,8 +974,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private void moveUnits(Collection units, Route route, PlayerID id, Collection transportsToLoad)
     {
 
-        //mark movement
-        markMovement(units, route);
 
         //if we are moving out of a battle zone, mark it
         //this can happen for air units moving out of a battle zone
@@ -1033,10 +1031,14 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                     m_bridge, m_currentMove);
         }
 
+        //mark movement
+        markMovement(units, route);
+        
         //TODO, put units in owned transports first
         Map transporting = mapTransports(route, units, transportsToLoad);
         markTransportsMovement(transporting, route);
-
+        
+        
         //actually move the units
         Change remove = ChangeFactory.removeUnits(route.getStart(), units);
         Change add = ChangeFactory.addUnits(route.getEnd(), arrivingUnits);
