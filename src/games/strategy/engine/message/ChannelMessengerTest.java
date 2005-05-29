@@ -14,7 +14,6 @@
 
 package games.strategy.engine.message;
 
-import games.strategy.engine.framework.ui.IClientChannel;
 import games.strategy.net.*;
 
 import java.io.IOException;
