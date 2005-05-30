@@ -12,6 +12,7 @@
 
 package games.strategy.triplea.ui;
 
+import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
 import games.strategy.engine.data.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
@@ -148,7 +149,7 @@ public class BattleDisplay extends JPanel
         if (!getShowEnemyCasualtyNotification())
             return;
 
-        final Object continueLock = new Object();
+        final CountDownLatch continueLatch = new CountDownLatch(1);
 
         //set the action in the swing thread.
 
@@ -160,10 +161,7 @@ public class BattleDisplay extends JPanel
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        synchronized (continueLock)
-                        {
-                            continueLock.notifyAll();
-                        }
+                        continueLatch.countDown();
                     }
                 });
             }
@@ -173,10 +171,7 @@ public class BattleDisplay extends JPanel
         //wait for the button to be pressed.
         try
         {
-            synchronized (continueLock)
-            {
-                continueLock.wait();
-            }
+            continueLatch.await();
         } catch (InterruptedException ie)
         {
 
@@ -308,10 +303,11 @@ public class BattleDisplay extends JPanel
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("This method should not be run in teh event dispatch thread");
 
-        final Object continueLock = new Object();
+        final CountDownLatch continueLatch = new CountDownLatch(1);
         SwingUtilities.invokeLater(new Runnable()
         {
 
+            
             public void run()
             {
 
@@ -348,10 +344,7 @@ public class BattleDisplay extends JPanel
                         {
                             CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
                             m_selectCasualtyResponse = response;
-                            synchronized (continueLock)
-                            {
-                                continueLock.notifyAll();
-                            }
+                            continueLatch.countDown();
                         }
                     }
                 });
@@ -360,10 +353,7 @@ public class BattleDisplay extends JPanel
 
         try
         {
-            synchronized (continueLock)
-            {
-                continueLock.wait();
-            }
+            continueLatch.await();
         } catch (InterruptedException ex)
         {
         }
