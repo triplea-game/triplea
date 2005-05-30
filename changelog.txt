@@ -1,6 +1,8 @@
-* fixed but where units could blitz through territories with an aa gun if they blitzed in 2 steps (4th edition only)
+Changes for 0.5.4
 
-* fixed bug [ 1188411 ] Missing client text (Chat window) 5.2.2
+* fixed but where units could blitz through territories with an aa gun if they blitzed in 2 steps (4th edition only) (sgb)
+
+* fixed bug [ 1188411 ] Missing client text (Chat window) 5.2.2 (sgb)
 
 * fixed bug [ 1205387 ] Saving game during combat 0.5.3 (sgb)
 
