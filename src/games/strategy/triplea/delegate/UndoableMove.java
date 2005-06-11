@@ -246,13 +246,15 @@ public class UndoableMove implements Serializable
 
             if( //if the other move has moves that depend on this
                 !Util.intersection(other.getUnits(), this.getUnits() ).isEmpty() ||
-                //if the other move has unloaded transports that we are trying to move
-                !Util.intersection(other.m_unloaded.entrySet(), this.getUnits()).isEmpty() ||
+                //if the other move has transports that we are loading
+                !Util.intersection(other.m_units, this.m_loaded.values()).isEmpty() ||
                 //or we are moving through a previously conqueured territory
                 //we should be able to take this out later
                 //we need to add logic for this move to take over the same territories
                 //when the other move is undone
-                !Util.intersection(other.m_conquered, m_route.getTerritories()).isEmpty()
+                !Util.intersection(other.m_conquered, m_route.getTerritories()).isEmpty() ||
+                //or we are unloading transports that have moved in another turn 
+                !Util.intersection(other.m_units, this.m_unloaded.values()).isEmpty()
                )
             {
                 m_iDependOn.add(other);

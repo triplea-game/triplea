@@ -1,3 +1,5 @@
+* Fixed bug where transport moves could be undone before moves where the transport had been loaded/unloaded
+
 Changes for 0.5.4
 
 * fixed bug where units could blitz through territories with an aa gun if they blitzed in 2 steps (4th edition only) (sgb)
