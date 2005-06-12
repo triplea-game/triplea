@@ -1,3 +1,5 @@
+* removed "Heavy Bombers Pick best of X Dice" option from classic and wandering head big world, it didnt work
+
 * Fixed bug where transport moves could be undone before moves where the transport had been loaded/unloaded
 
 Changes for 0.5.4

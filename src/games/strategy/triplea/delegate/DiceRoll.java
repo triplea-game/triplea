@@ -133,13 +133,7 @@ public class DiceRoll implements java.io.Serializable
                     }
                 }
 
-                if (!defending && ua.isStrategicBomber() && TechTracker.hasHeavyBomber(player)
-                        && data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE, false))
-                {
-                    // We don't support heavy rolls with Low Luck yet.
-                    throw new IllegalStateException("Cannot use heavy bomber downgrade option with low luck");
-                }
-
+               
                 power += strength;
             }
         }
@@ -205,8 +199,7 @@ public class DiceRoll implements java.io.Serializable
             UnitAttatchment ua = UnitAttatchment.get(current.getType());
 
             int rolls = defending ? 1 : ua.getAttackRolls(player);
-            int lowerRollForBomber = Constants.MAX_DICE;
-            String bomberRollFeedback = "Bomber rolled:";
+
             for (int i = 0; i < rolls; i++)
             {
                 int strength;
@@ -223,17 +216,7 @@ public class DiceRoll implements java.io.Serializable
                 }
 
                 sortedDice[strength - 1].add(new Integer(dice[diceIndex]));
-                if (!defending && ua.isStrategicBomber() && TechTracker.hasHeavyBomber(player)
-                        && data.getProperties().get(Constants.HEAVY_BOMBER_DOWNGRADE, false))
-                {
-                    bomberRollFeedback += " " + dice[diceIndex];
-                    if (lowerRollForBomber > dice[diceIndex])
-                        lowerRollForBomber = dice[diceIndex];
-                    if (i + 1 < rolls)
-                        continue;
-                    bridge.getHistoryWriter().addChildToEvent(bomberRollFeedback + ", picked " + lowerRollForBomber);
-                    strength = lowerRollForBomber;
-                }
+                
 
                 //dice is [0-MAX_DICE)
                 if (strength > dice[diceIndex])
