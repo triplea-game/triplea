@@ -729,6 +729,7 @@ class CasualtyNotificationPanel extends JPanel
         categorizeUnits(damagedIter, true);
 
         invalidate();
+        validate();
     }
 
     private void categorizeUnits(Iterator categoryIter, boolean damaged)

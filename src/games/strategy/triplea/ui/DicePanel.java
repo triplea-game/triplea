@@ -93,6 +93,7 @@ public class DicePanel extends JPanel
     add(new JLabel("Total hits:" + diceRoll.getHits()));
 
     validate();
+    invalidate();
     repaint();
   }
 
