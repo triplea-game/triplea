@@ -242,6 +242,8 @@ public class MapPanel extends ImageScrollerLargeView
             }
         });
        
+       m_smallMapImageManager.update(m_data, MapData.getInstance());
+       
     }
     
     

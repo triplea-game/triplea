@@ -17,11 +17,13 @@ import java.awt.*;
 import java.awt.Image;
 import java.util.*;
 import java.util.Iterator;
+import java.util.logging.*;
 import java.util.logging.Logger;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
 
@@ -50,7 +52,7 @@ public class SmallMapImageManager
     
     public void update(GameData data, MapData mapData)
     {
-        float startTime = System.currentTimeMillis();
+        Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
         
         Image onScreen = m_view.getOffScreenImage();
         Graphics g = onScreen.getGraphics();
@@ -69,7 +71,7 @@ public class SmallMapImageManager
         }
         
         g.dispose();
-        s_logger.finest("Small map updating took" + (System.currentTimeMillis() - startTime) + " ms");
+        stopwatch.done();
         
     }
     
