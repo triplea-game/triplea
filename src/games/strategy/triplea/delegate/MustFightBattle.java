@@ -641,7 +641,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
             return false;
-
+        
+        if (Match.someMatch(m_defendingWaitingToDie, Matches.UnitIsDestroyer))
+            return false;
+        
         return canAttackerRetreat() || canSubsSubmerge();
     }
 
@@ -685,6 +688,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean canDefenderRetreatSubs()
     {
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
+            return false;
+
+        if (Match.someMatch(m_attackingWaitingToDie, Matches.UnitIsDestroyer))
             return false;
 
         return getEmptyOrFriendlySeaNeighbors(m_defender).size() != 0
