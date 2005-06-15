@@ -310,7 +310,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public void fight(IDelegateBridge bridge)
     {
 
-        bridge.getHistoryWriter().startEvent("Battle in" + m_battleSite);
+        bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite);
         removeAirNoLongerInTerritory();
 
         //it is possible that no attacking units are present, if so
