@@ -315,7 +315,6 @@ public class MapPanel extends ImageScrollerLargeView
         m_data.addTerritoryListener(TERRITORY_LISTENER);
         
         m_data.addDataChangeListener(TECH_UPDATE_LISTENER);
-        m_data.addDataChangeListener(UNITS_HIT_LISTENER);
         
         //stop painting in the background
         m_backgroundDrawer.setTiles(Collections.EMPTY_SET);
@@ -338,21 +337,6 @@ public class MapPanel extends ImageScrollerLargeView
             m_smallMapImageManager.updateTerritoryOwner(territory, m_data, MapData.getInstance());
             updateCounties(Collections.singleton(territory));
             repaint();
-        }
-    };
-
-    /**
-     * We want to redraw the map where units were hit
-     */
-    private final GameDataChangeListener UNITS_HIT_LISTENER = new GameDataChangeListener()
-    {
-
-        public void gameDataChanged(Change aChange)
-        {
-            if (!(aChange instanceof UnitHitsChange))
-                return;
-
-            m_tileManager.resetTiles(m_data, MapData.getInstance());
         }
     };
 

@@ -14,6 +14,8 @@
 package games.strategy.engine.data;
 
 
+import games.strategy.triplea.ui.MapData;
+import games.strategy.util.*;
 import games.strategy.util.IntegerMap;
 
 import java.util.*;
@@ -55,6 +57,19 @@ public class UnitHitsChange extends Change
             Unit item = (Unit) iter.next();
             item.setHits(m_hits.getInt(item));
         }
+        
+        Set units = m_hits.keySet();
+        Iterator terrIter = data.getMap().getTerritories().iterator();
+        while (terrIter.hasNext())
+        {
+            Territory element = (Territory) terrIter.next();
+            if(Util.someIntersect(element.getUnits().getUnits(), units))
+            {
+                element.notifyChanged();
+            }            
+        }
+        
+        
     }
 
     public Change invert()
