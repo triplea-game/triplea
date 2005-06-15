@@ -1,3 +1,5 @@
+Changes for 0.6.0
+
 * fixed small map refresh (whole map goes white) when switching skins
 
 * fixed bug where sometimes dice would not show up on the select casualties panel
