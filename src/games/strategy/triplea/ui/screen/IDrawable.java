@@ -387,14 +387,16 @@ class UnitsDrawer implements IDrawable
     private final String m_playerName;
     private final Point m_placementPoint;
     private final boolean m_damaged;
+    private final boolean m_overflow;
 
-    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged)
+    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, boolean overflow)
     {
         m_count = count;
         m_unitType = unitType;
         m_playerName = playerName;
         m_placementPoint = placementPoint;
         m_damaged = damaged;
+        m_overflow = overflow;
     }
 
     public void prepare() {}
@@ -411,6 +413,12 @@ class UnitsDrawer implements IDrawable
     
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
+        if(m_overflow)
+        {
+            graphics.setColor(Color.BLACK);
+            graphics.fillRect(m_placementPoint.x - bounds.x -2, m_placementPoint.y - bounds.y + UnitImageFactory.UNIT_ICON_HEIGHT , UnitImageFactory.UNIT_ICON_WIDTH + 2,  3 );
+        }
+        
         UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
         if (type == null)
             throw new IllegalStateException("Type not found:" + m_unitType);

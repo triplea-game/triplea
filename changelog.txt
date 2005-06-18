@@ -1,5 +1,7 @@
 Changes for 0.6.0
 
+* draw a line under overflow units so you can tell what belongs in a territory
+
 * fixed bug where you could retreat subs if all your opponents destroyers were destroyed in one round of combat
 
 * fixed bug where damaged battleships would not repair while viewing history

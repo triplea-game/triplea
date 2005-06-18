@@ -241,26 +241,29 @@ public class TileManager
 
         while (unitCategoryIter.hasNext())
         {
+            
             UnitCategory category = (UnitCategory) unitCategoryIter.next();
 
-            Point place;
+            
+            boolean overflow;
             if (placementPoints.hasNext())
             {
-                place = (Point) placementPoints.next();
-                lastPlace = new Point(place.x, place.y);
+                lastPlace = new Point( (Point) placementPoints.next());
+                overflow = false;
             } else
             {
-                place = lastPlace;
+                lastPlace = new Point(lastPlace);
                 lastPlace.x += UnitImageFactory.instance().getUnitImageWidth();
+                overflow = true;
             }
 
-            UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), place,
-                    category.getDamaged());
+            UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), lastPlace,
+                    category.getDamaged(), overflow);
             drawing.add(drawable);
             m_allUnitDrawables.add(drawable);
             
             Iterator tiles = getTiles(
-                    new Rectangle(place.x, place.y, UnitImageFactory.instance().getUnitImageWidth(), UnitImageFactory.instance()
+                    new Rectangle(lastPlace.x, lastPlace.y, UnitImageFactory.instance().getUnitImageWidth(), UnitImageFactory.instance()
                             .getUnitImageHeight())).iterator();
             while (tiles.hasNext())
             {
