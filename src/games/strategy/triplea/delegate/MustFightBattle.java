@@ -532,7 +532,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         //we must grab these here, when we clear waiting to die, we might remove
         //all the opposing destroyers, and this would change the canRetreatSubs rVal
-        boolean canAttackerRetreatSubs = canAttackerRetreat();
+        boolean canAttackerRetreatSubs = canAttackerRetreatSubs();
         boolean canDefenderRetreatSubs = canDefenderRetreatSubs();
         clearWaitingToDie(bridge);
 
