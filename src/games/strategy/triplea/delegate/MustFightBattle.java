@@ -530,6 +530,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         defendNonSubs(bridge);
 
+        //we must grab these here, when we clear waiting to die, we might remove
+        //all the opposing destroyers, and this would change the canRetreatSubs rVal
+        boolean canAttackerRetreatSubs = canAttackerRetreat();
+        boolean canDefenderRetreatSubs = canDefenderRetreatSubs();
         clearWaitingToDie(bridge);
 
         if (m_attackingUnits.size() == 0)
@@ -544,8 +548,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
         }
 
-        attackerRetreatSubs(bridge);
-        defenderRetreatSubs(bridge);
+        if(canAttackerRetreatSubs)
+            attackerRetreatSubs(bridge);
+        if(canDefenderRetreatSubs)
+            defenderRetreatSubs(bridge);
+        
         if (canAttackerRetreatPlanes())
             attackerRetreatPlanes(bridge);
         attackerRetreat(bridge);
