@@ -202,7 +202,7 @@ public class ChatFrame extends JFrame
    
                 toFront();
                 BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
-                scrollModel.setValue(scrollModel.getValue());
+                scrollModel.setValue(scrollModel.getMaximum());
                 
                 ClipPlayer.getInstance().playClip(SoundPath.MESSAGE, SoundPath.class);                
             }
