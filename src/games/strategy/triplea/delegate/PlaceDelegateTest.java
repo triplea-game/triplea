@@ -58,6 +58,8 @@ public class PlaceDelegateTest extends DelegateTest
 	    return m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE).create(count, player);
 	}
 
+
+	
 	public void setUp() throws Exception
 	{
 		super.setUp();
@@ -138,7 +140,7 @@ public class PlaceDelegateTest extends DelegateTest
 	{
 		IntegerMap map = new IntegerMap();
 		map.add(transport, 2);
-		String response = m_delegate.canUnitsBePlaced(northSea, getUnits(map, british), british);		
+		String response = m_delegate.canUnitsBePlaced(northSea, getUnits(map, japanese), japanese);		
 		assertError(response);
 		
 	}
@@ -218,7 +220,7 @@ public class PlaceDelegateTest extends DelegateTest
 		
 		map.add(infantry, 3);
 		PlaceableUnits response = m_delegate.getPlaceableUnits(getUnits(map, british), westCanada);
-		assertTrue(response.isError() );
+		assertTrue(response.getMaxUnits() == 2 );
 	}
 	
 	public void testAlreadyProducedUnits()
@@ -229,18 +231,22 @@ public class PlaceDelegateTest extends DelegateTest
 		m_delegate.setProduced(alreadyProduced);
 		map.add(infantry, 1);
 		PlaceableUnits response = m_delegate.getPlaceableUnits(getUnits(map, british), westCanada);
-		assertTrue(response.isError() );
+		assertTrue(response.getMaxUnits() == 0);
 	}
 	
 	public void testMultipleFactories()
 	{
 		IntegerMap map = new IntegerMap();
-		Map alreadyProduced = new HashMap();
-		alreadyProduced.put(westCanada, getInfantry(2, british));
-		m_delegate.setProduced(alreadyProduced);
-		map.add(infantry, 1);
-		PlaceableUnits response = m_delegate.getPlaceableUnits(getUnits(map, british), westCanada);
+		map.add(factory, 1);
+		String response = m_delegate.canUnitsBePlaced(egypt, getUnits(map, british), british);
 		
-		assertTrue(response.isError() );
+		//we can place 1 factory
+		assertValid(response);
+		
+		//we cant place 2
+		map = new IntegerMap();
+		map.add(factory, 2);
+		response = m_delegate.canUnitsBePlaced(egypt, getUnits(map, british), british);
+		assertError(response);
 	}
 }
