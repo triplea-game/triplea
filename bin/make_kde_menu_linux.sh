@@ -32,7 +32,7 @@ absolutePathToGame=`pwd`
 echo "[Desktop Entry]" > $pathToDesktopFile
 echo "Name=TripleA" >> $pathToDesktopFile
 echo "Comment=Strategy Engine Framework" >> $pathToDesktopFile
-echo "Exec=$absolutePathToGame/triplea_ai.sh" >> $pathToDesktopFile
+echo "Exec=$absolutePathToGame/triplea_unix.sh" >> $pathToDesktopFile
 echo "Icon=$absolutePathToGame/../icons/triplea_icon.ico" >> $pathToDesktopFile
 echo "Terminal=0" >> $pathToDesktopFile
 echo "Type=Application" >> $pathToDesktopFile
