@@ -1,0 +1,5573 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta name="generator" content="Bluefish">
+		<meta name="author" content="George El-Haddad">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="description" content="">
+		<title>TripleA :: Developer Documentation</title>
+	</head>
+
+	<body background="images/water_mark.gif">
+		<p align="center">
+			<a name="top">
+				<img src="images/big_banner.png" width="800" height="64" border="0" alt="TripleA Banner"/>
+			</a>
+		</p>
+		
+		<p align="center">
+			<span style="font-style: italic;">
+				This Document Is Accurate For TripleA v0.6.0
+			</span>
+			<br/>
+			<span style="font-size: smaller; font-style: italic;">
+				Written by George H.<br/>
+			</span>
+		</p>
+		
+		<hr/>
+		<h2>Developer Documentation :: Quick Nav</h2>
+		<ul>
+			<li><b>1.0</b> <a href="#sec_1">Project Management With CVS</a></li>
+				<ul>
+					<li><b>1.1</b> <a href="#sec_1.1">CVS For Developers</a></li>
+						<ul>
+							<li><b>1.1.1</b> <a href="#sec_1.1.1">Module Check Out</a></li>
+							<li><b>1.1.2</b> <a href="#sec_1.1.2">Commiting Items</a></li>
+							<li><b>1.1.3</b> <a href="#sec_1.1.3">Adding Items</a></li>
+							<li><b>1.1.4</b> <a href="#sec_1.1.4">Removing Items</a></li>
+							<li><b>1.1.5</b> <a href="#sec_1.1.5">Tagging Items</a></li>
+							<li><b>1.1.6</b> <a href="#sec_1.1.6">Updating Your CVS Copy</a></li>
+							<li><b>1.1.7</b> <a href="#sec_1.1.7">Viewing Changes</a></li>
+						</ul>
+
+					<li><b>1.2</b> <a href="#sec_1.2">CVS For Non-Developers</a></li>
+						<ul>
+							<li><b>1.2.1</b> <a href="#sec_1.2.1">Module Check Out</a></li>
+							<li><b>1.2.2</b> <a href="#sec_1.2.2">Updating Your CVS Copy</a></li>
+							<li><b>1.2.3</b> <a href="#sec_1.2.3">Viewing Changes</a></li>
+						</ul>
+				</ul>
+			
+			<li><b>2.0</b> <a href="#sec_2">Compiling The TripleA Source Code</a></li>
+				<ul>
+					<li><b>2.1</b> <a href="#sec_2.1">Prerequisites</a></li>
+					<li><b>2.2</b> <a href="#sec_2.2">ANT Commands</a></li>
+					<li><b>2.3</b> <a href="#sec_2.3">Compiling on Microsoft Windows Systems</a></li>
+					<li><b>2.4</b> <a href="#sec_2.4">Compiling on GNU/Linux, Mac OS X, and UNIX Style Systems</a></li>
+				</ul>
+			
+			<li><b>3.0</b> <a href="#sec_3">Running TripleA</a></li>
+				<ul>
+					<li><b>3.1</b> <a href="#sec_3.1">Microsoft Windows Systems</a></li>
+					<li><b>3.2</b> <a href="#sec_3.2">GNU/Linux, Mac OS X, and UNIX Style Systems</a></li>
+					<li><b>3.3</b> <a href="#sec_3.3">How TripleA Locates its Root Directory</a></li>
+				</ul>
+			
+			<li><b>4.0</b> <a href="#sec_4">Network Configuration</a></li>
+				<ul>
+					<li><b>4.1</b> <a href="#sec_4.1">Acquiring the IP Address</a></li>
+					<li><b>4.2</b> <a href="#sec_4.2">Firewall Configuration</a></li>
+					<li><b>4.3</b> <a href="#sec_4.3">Routers and Port-Forwarding</a></li>
+				</ul>
+			
+			<li><b>5.0</b> <a href="#sec_5">Creating Custom Games</a></li>
+				<ul>
+					<li><b>5.1</b> <a href="#sec_5.1">Map Utilities</a></li>
+						<ul>
+							<li><b>5.1.1</b> <a href="#sec_5.1.1">Center Picker</a></li>
+							<li><b>5.1.2</b> <a href="#sec_5.1.2">Polygon Grabber</a></li>
+							<li><b>5.1.3</b> <a href="#sec_5.1.3">Placement Picker</a></li>
+							<li><b>5.1.4</b> <a href="#sec_5.1.4">Auto-Placement Finder</a></li>
+							<li><b>5.1.5</b> <a href="#sec_5.1.5">Tile Image Breaker</a></li>
+							<li><b>5.1.6</b> <a href="#sec_5.1.6">Relief Image Breaker</a></li>
+							<li><b>5.1.7</b> <a href="#sec_5.1.7">Image Shrinker</a></li>
+							<li><b>5.1.8</b> <a href="#sec_5.1.8">Making a Map</a>
+						</ul>
+					<li><b>5.2</b> <a href="#sec_5.2">Map Configuration</a></li></li>
+						<ul>
+							<li><b>5.2.1</b> <a href="#sec_5.2.1">Map Properties</a></li>
+							<li><b>5.2.2</b> <a href="#sec_5.2.2">Capital Cities</a></li>
+							<li><b>5.2.3</b> <a href="#sec_5.2.3">Victory Cities</a></li>
+						</ul>
+					
+					<li><b>5.3</b> <a href="#sec_5.3">Customizing The XML Game File</a></li>
+						<ul>
+							<li><b>5.3.1</b> <a href="#sec_5.3.1">Game Information Header</a></li>
+							<li><b>5.3.2</b> <a href="#sec_5.3.2">Territories</a></li>
+							<li><b>5.3.3</b> <a href="#sec_5.3.3">Territory Connections</a></li>
+							<li><b>5.3.4</b> <a href="#sec_5.3.4">Resources</a></li>
+							<li><b>5.3.5</b> <a href="#sec_5.3.5">Players & Alliances</a></li>
+							<li><b>5.3.6</b> <a href="#sec_5.3.6">Units</a></li>
+							<li><b>5.3.7</b> <a href="#sec_5.3.7">Game-play Delegates</a></li>
+							<li><b>5.3.8</b> <a href="#sec_5.3.8">Game-play Sequence & Steps</a></li>
+							<li><b>5.3.9</b> <a href="#sec_5.3.9">Production Rules</a></li>
+							<li><b>5.3.10</b> <a href="#sec_5.3.10">Unit Attachment</a></li>
+							<li><b>5.3.11</b> <a href="#sec_5.3.11">Tech Attachment</a></li>
+							<li><b>5.3.12</b> <a href="#sec_5.3.12">Territory Attachment</a></li>
+							<li><b>5.3.13</b> <a href="#sec_5.3.13">Initializations</a></li>
+							<li><b>5.3.14</b> <a href="#sec_5.3.14">Game Properties</a></li>
+						</ul>
+				</ul>
+			
+			<li><b>6.0</b> <a href="#sec_6">Engine Code Overview</a></li>
+				<ul>
+					<li><b>6.1</b> <a href="#sec_6.1">Design Goals</a></li>
+					<li><b>6.2</b> <a href="#sec_6.2">The Big Picture</a></li>
+					<li><b>6.3</b> <a href="#sec_6.3">Game Data</a></li>
+					<li><b>6.4</b> <a href="#sec_6.4">Attachments</a></li>
+					<li><b>6.5</b> <a href="#sec_6.5">Game Play Sequence</a></li>
+					<li><b>6.6</b> <a href="#sec_6.6">Delegates</a></li>
+					<li><b>6.7</b> <a href="#sec_6.7">Step Life Cycle</a></li>
+					<li><b>6.8</b> <a href="#sec_6.8">Changing Game Data</a></li>
+					<li><b>6.9</b> <a href="#sec_6.9">Game Players</a></li>
+					<li><b>6.10</b> <a href="#sec_6.10">Communication</a></li>
+				</ul>
+			
+			<li><b>7.0</b> <a href="#sec_7">TripleA Security</a></li>
+				<ul>
+					<li><b>7.1</b> <a href="#sec_7.1">Common Misconceptions</a></li>
+					<li><b>7.2</b> <a href="#sec_7.2">Random Numbers and Encryption</a></li>
+					<li><b>7.3</b> <a href="#sec_7.3">Online Security</a></li>
+					<li><b>7.4</b> <a href="#sec_7.4">PBEM Security</a></li>
+					<li><b>7.5</b> <a href="#sec_7.5">Statistics</a></li>
+				</ul>
+			
+			<li><b>8.0</b> <a href="#sec_8">TroxAI (Artificial Intelligence)</a></li>
+				<ul>
+					<li><b>8.1</b> <a href="#sec_8.1">Turning AI On</a></li>
+					<li><b>8.2</b> <a href="#sec_8.2">Adding AI Players</a></li>
+				</ul>
+				
+			<li><b>9.0</b> <a href="#sec_9">TripleA Release Model</a></li>
+			<li><b>10.0</b> <a href="#sec_10">Developer Programming Conventions</a></li>
+			<li><b>11.0</b> <a href="#sec_11">Credits & Acknowledgements</a></li>
+		</ul>
+		<hr/>
+		<br/>
+		
+		<h2><a name="sec_1">1.0</a> Project Management With CVS</h2>
+		<blockquote>
+			<p>
+				TripleA's source code is managed through the use of
+				<a href="http://sourceforge.net" target="_blank">Source-Forge's</a>
+				<b>Concurrent Versions System</b> (CVS) server. Developers use
+				CVS to read, write, remove, and revert files for the TripleA project.
+			</p>
+			
+			<p>
+				Not all developers use the same Operating System and not all use the same
+				development environment. For this reason, we cannot show a proper guide that
+				would suite everyone. This section will focus on how to use the CVS from a
+				UNIX based console. This would work on most systems such as <b>Mac OS X</b>,
+				<b>GNU/Linux</b>, and <b>SGI/IRIX</b>. IDEs such as <b>Eclipse</b> that
+				provides a CVS front end will not be covered. It is recommended that developers
+				find out the capabilities of their development environment and see if there
+				is support for CVS or not.
+			</p>
+			
+			<p>
+				Sections <a href="#sec_1.1">1.1</a> and <a href="#sec_1.2">1.2</a> will briefly
+				explain some basic commands that will get a developer started. It is highly
+				recommended to read the official CVS manual on how to use the CVS, as it is very
+				explicit and detailed.
+				<ul>
+					<li><a href="http://www.gnu.org/software/cvs">Official CVS Homepage</a></li>
+					<li><a href="http://www.gnu.org/software/cvs/manual">Official CVS Manual</a></li>
+					<li><a href="http://sourceforge.net/docman/display_doc.php?docid=14033&group_id=1">Source-Forge CVS Help Page</a></li>
+					<li><a href="http://www.gentoo.org/doc/en/cvs-tutorial.xml">Gentoo Linux CVS Guide</a></li>
+				</ul>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_1.1">1.1</a> CVS For Developers</h2>
+		<blockquote>
+			<p>
+				This section provides some basic CVS commands that would interest developers.
+				We assume you have CVS already installed and have access to some sort of UNIX 
+				console like bash or tcsh.
+			</p>
+			
+			
+			<h4><a name="sec_1.1.1">1.1.1</a> Module Check Out</h4>
+			<blockquote>
+				<p>
+					A <i>check out</i> will allow you to have a complete copy of the source
+					code on your computer. It also sets up all the necesary CVS related files
+					to keep track of various versions and revisions of each individual source
+					file.
+				</p>
+				
+				<p>
+					<ol>
+						<li>Set the CVS_RSH environment variable to <i>ssh</i></li>
+						<li>Go to a suitable directory where you wish to have TripleA checked out</li>
+						<li>Run the command to check out the TripleA module</li>
+					</ol>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/info.png" width="48" height="48" alt="info image" />
+							</td>
+							
+							<td valign="middle" bgcolor="#ffcc99">
+								<span style="font-style: italic; font-size: small;">
+									In the example below; <b>USERNAME</b> would be the developer's source-forge account.
+									That means if you are a developer, you will put your source-forge user name
+									in place of <b>USERNAME</b>.
+								</span>
+							</td>
+						
+						</tr>
+					</table>
+
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="550">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Checking out a module.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;export CVS_RSH=ssh<br/>
+								&nbsp;&nbsp;cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea checkout triplea
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					When prompted to input a password; enter the appropriate password corresponding
+					with the user name chosen for the check out command. CVS will download the current
+					CVS source tree for TripleA to your computer in the current working directory.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_1.1.2">1.1.2</a> Commiting Items</h4>
+			<blockquote>
+				<p>
+					The <i>commit</i> command will physically upload any changes made to
+					the CVS copy on your computer to the CVS tree on Source-Forge. This command
+					can be used in a few different ways:
+					<ol>
+						<li>To commit a single file or directory</li>
+						<li>To commit multiple files or directories</li>
+						<li>1 & 2 with a single message</li>
+					</ol>
+				</p>
+				
+				<p>
+					<table border="0" cellspacing="2" cellpadding="2">
+						<tr>
+							<td colspan="2">				
+								<table border="1" cellspacing="2" cellpadding="2" width="100%">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>Commit a single file</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+										</td>
+						
+										<td valign="middle" bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea commit SourceFile.java
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>Commit a single file</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+										</td>
+						
+										<td valign="middle" bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;cvs commit SourceFile.java
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td rowspan="2" valign="top">
+								<table border="1" cellspacing="2" cellpadding="2" height="175">
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/info.png" width="48" height="48" alt="info image" />
+										</td>
+							
+										<td valign="top" bgcolor="#ffcc99">
+											<span style="font-style: italic; font-size: small;">
+												You can commit a change by issuing the the <b>commit</b> command
+												alone or with all the user options and module names. Either will
+												work. Wild cards such as <b>*</b> can also be used to specify
+												multiple files and/or directories. If you just run the <b>commit</b>
+												command alone without specifying a file. It will recursively scan
+												all files and directories and commit those that have changed from the
+												on-line CVS Tree. 
+											</span>
+										</td>
+						
+									</tr>
+								</table>
+							</td>
+						</tr>
+					
+						<tr>
+							<td>
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>Commit a single directory</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+										</td>
+						
+										<td valign="middle" bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;cvs commit new_dir
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					When commiting a change in the way shown above, you will be prompted
+					to enter a message using the system default console text editor (ie. nano or pico).
+					Sometimes this is useful when you want type a long and detailed description. There
+					is a way to commit changes without having an editor open after ever commit;
+					that is to commit a change with the message in the command line.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="560">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Commit with a message.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs commit SourceFile.java -m "fix was aplied to lines 345"
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_1.1.3">1.1.3</a> Adding Items</h4>
+			<blockquote>
+				<p>
+					Adding items to the CVS tree is relatively simple. There are three most commonly
+					faced situations when adding items to the CVS tree.
+					<ol>
+						<li>Adding a source file (ie. source code)</li>
+						<li>Adding a binary file (ie. images, pdfs ..etc)</li>
+						<li>Adding a directory</li>
+					</ol>
+					
+					Adding items to the CVS tree is different from <b>commiting</b> items. When
+					you <i>add</i> a file; it is queued for addition on the CVS server. If and only if
+					the file has been <i>add</i>ed, then you can finally <i>commit</i> it to the CVS tree. 
+				</p>
+				
+				<p>
+					<table border="0" cellspacing="2" cellpadding="2">
+						<tr>
+							<td>
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>Adding a source file.</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+										</td>
+						
+										<td valign="middle" bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;cvs add MySourceFile.java<br/>
+											&nbsp;&nbsp;cvs commit
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td rowspan="2" valign="middle">
+								<table border="1" cellspacing="2" cellpadding="2" width="400" height="180">
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/info.png" width="48" height="48" alt="info image" />
+										</td>
+							
+										<td valign="top" bgcolor="#ffcc99">
+											<span style="font-style: italic; font-size: small;">
+												When a binary file is committed without the <b>-kb</b> option
+												it will make the file be saved in a textual format.
+												Although this does not pose any problems to UNIX based
+												systems, it does for developers who use Microsoft Windows.
+											</span>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>Adding a binary file.</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+										</td>
+						
+										<td valign="middle" bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;cvs add -kb Some_Image.png<br/>
+											&nbsp;&nbsp;cvs commit
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<br/>
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>Adding a directory.</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+										</td>
+						
+										<td valign="middle" bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;mkdir new_directory<br/>
+											&nbsp;&nbsp;cvs add new_directory<br/>
+											&nbsp;&nbsp;cvs commit<br/>
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_1.1.4">1.1.4</a> Removing Items</h4>
+			<blockquote>
+				<p>
+					Removing items from the CVS tree works in a similar way to adding items.
+					The item to be removed will be removed from your local CVS copy but will
+					remain in the on line CVS tree. Removing it will basically make it "hidden."
+					So in other words, nothing is ever deleted from the on line tree, only hidden.
+				</p>
+				
+				<p>
+					To remove a file from the CVS, one must follow three simple steps:
+					<ol>
+						<li>Physically remove the file from the local CVS tree</li>
+						<li>Issue the cvs command to remove the file from the on line CVS tree</li>
+						<li>Commit the changes</li>
+					</ol>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Removing a file.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;rm SourceFile.java<br/>
+								&nbsp;&nbsp;cvs remove<br/>
+								&nbsp;&nbsp;cvs commit
+								</code>
+							</td>
+						</tr>
+					</table>
+					
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Removing a file with a message.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;rm SourceFile.java<br/>
+								&nbsp;&nbsp;cvs remove<br/>
+								&nbsp;&nbsp;cvs commit -m "no longer needed"
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Removing directories works in a similar way, except for one thing. The directory to be
+					removed needs to have all of its contents removed first. Below is an example of how to
+					remove a directory that is filled with source files.
+        				<br/>
+					<br/>
+					<table border="0" cellspacing="4" cellpadding="2">
+						<tr>
+							<td valign="top">
+								<table border="1" cellspacing="2" cellpadding="2" width="400" height="160">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>Removing a full directory.</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+										</td>
+						
+										<td valign="middle" bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;cd myDir<br/>
+											&nbsp;&nbsp;rm *.java<br/>
+											&nbsp;&nbsp;cvs remove<br/>
+											&nbsp;&nbsp;cvs commit<br/>
+											&nbsp;&nbsp;cd ..<br/>
+											&nbsp;&nbsp;cvs remove myDir<br/>
+											&nbsp;&nbsp;rm -rf myDir<br/>
+											&nbsp;&nbsp;cvs commit
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td valign="top">
+								<table border="1" cellspacing="2" cellpadding="2" width="400" height="160">
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/info.png" width="48" height="48" alt="info image" />
+										</td>
+							
+										<td valign="top" bgcolor="#ffcc99">
+											<span style="font-style: italic; font-size: small;">
+												When issuing the <b>remove</b> command by it self, it will
+												recurse through all the files and directories and queue
+												for removal all files that have been manually deleted.
+												You can specify what file you want it to queue for removal
+												by appending the file name after the word <b>remove</b>.
+											</span>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockqote>
+			
+			
+			<h4><a name="sec_1.1.5">1.1.5</a> Tagging Items</h4>
+			<blockquote>
+				<p>
+					Normally, before pushing out a release, we <i>tag</i> all the files in the CVS with
+					a name. This tag allows us to identify what branch we're working on and for which
+					version of TripleA it was included into. There are at least two tag names we use
+					(please not that the upper-case Xs represent the version number of TripleA):
+					<ol>
+						<li><b>sX-X-X-release</b> : Stable release</li>
+						<li><b>uX-X-X-release</b> : Unstable release</li>
+					</ol>
+					
+					To tag the CVS tree before a release; we run the command from the root directory
+					of TripleA. That way every file and directory gets tagged.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Tagging the CVS Tree.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs tag s0-6-0-release
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_1.1.6">1.1.6</a> Updating Your CVS Copy</h4>
+			<blockquote>
+				<p>
+					It is very important for a developer to keep their local copy of the CVS as
+					up-to-date as possible. One can achieve this goal by running the <b>update</b>
+					command from the cvs. It will synchronize your local copy to the remote copy on
+					the CVS server. Has the ability to download all new files and even remove files
+					(on your local copy) that have been removed (hidden) from the CVS Tree.
+				</p>
+				
+				<p>
+					In the root folder of TripleA run the command below. This will update all
+					files and directories recursively. This will not remove un-wanted files.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="350">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Updating the local CVS copy.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						 	
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs update
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The example below will perform the update and will remove any empty
+					folders or files that have been removed from the on-line CVS Tree. The
+					<i>-q</i> switch will make the CVS only echo a status message when a file
+					has been updated.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="350">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Updating the local CVS copy with options.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs -q update -dAP
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_1.1.7">1.1.7</a> Viewing Changes</h4>
+			<blockquote>
+				<p>
+					To keep track of the who has been changing what files, for what reason, and
+					when is easily done with the <i>annotate</i> command provided by CVS. Given
+					the file name; it will annotate every single line of the source file telling
+					you when each line was modified and by whom. Normally this output is echoed
+					right into the console, but with simple Shell commands you can pipe it to a
+					text file.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="500">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Basic annotation.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs annotate SourceFile.java
+								</code>
+							</td>
+						</tr>
+					</table>
+					
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="500">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Annotate to a file.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs annotate SourceFile.java  > AnnotatedFile.txt
+								</code>
+							</td>
+						</tr>
+					</table>
+					
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="500">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Example of an annotated file.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+						
+							<td valign="top" bgcolor="#8fee8f">
+								<code>
+								1.34&nbsp;&nbsp;&nbsp;&nbsp;(userOne 19-Feb-05):&nbsp;&nbsp;&nbsp;&nbsp;if (sentinel != null)<br/>
+								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
+								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):<br/>
+								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;if (t_sec > (x+y))<br/>
+								1.27&nbsp;&nbsp;&nbsp;&nbsp;(userOne 10-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+		</blockquote>
+		
+		
+		<h2><a name="sec_1.2">1.2</a> CVS For Non-Developers</h2>
+		<blockquote>
+			<p>
+				Accessing the TripleA CVS tree is not only for developers. Non-developers have access
+				to it. They can check out the TripleA module and keep it up-to-date with the very
+				latest changes. They, however, cannot make changes to the CVS tree; only read access
+				is granted to non-developers.
+			</p>
+			
+			<p>
+				In this section we assume you have CVS already installed and have access to some sort
+				of UNIX console like bash or tcsh.
+			</p>
+			
+			<h4><a name="sec_1.2.1">1.2.1</a> Module Check Out</h4>
+			<blockquote>
+				<p>
+					A <i>check out</i> will allow you to have a complete copy of the source
+					code on your computer. It also sets up all the necesary CVS related files
+					to keep track of various versions and revisions of each individual source
+					file.
+				</p>
+				
+				<p>
+					<ol>
+						<li>Set the CVS_RSH environment variable to <i>ssh</i></li>
+						<li>Go to a suitable directory where you wish to have TripleA checked out</li>
+						<li>Run the command to check out the TripleA module</li>
+					</ol>
+					
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Checking out a module.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;export CVS_RSH=ssh<br/>
+								&nbsp;&nbsp;cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/triplea checkout triplea
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The above command will allow anonymous access to check out a copy of the CVS tree.
+					Once the triplea module has been checked out and saved on your system, you can do
+					whatever you want with it. The only restriction is that you are not allowed to add
+					or commit changes to the CVS tree that is on line. Those actions are reserved for
+					developers who log in to the CVS with their SourceForge accounts.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			<h4><a name="sec_1.2.2">1.2.2</a> Updating Your CVS Copy</h4>
+			<blockquote>
+				<p>
+					Once a copy of the triplea CVS module has been checked out, it can be kept up-to-date
+					by running the <b>update</b> command. It will synchronize your local copy to the remote copy on
+					the CVS server. It Has the ability to download all new files and even remove files
+					(on your local copy) that have been removed (hidden) from the CVS Tree.
+				</p>
+				
+				<p>
+					In the root folder of TripleA run the command below. This will update all
+					files and directories recursively. This will not remove un-wanted files.
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Updating the local CVS copy.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						 	
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs update
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The example below will perform the update and will remove any empty
+					folders or files that have been removed from the on-line CVS Tree. The
+					<i>-q</i> switch will make the CVS only echo a status message when a file
+					has been updated.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Updating the local CVS copy with options.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs -q update -dAP
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_1.2.3">1.2.3</a> Viewing Changes</h4>
+			<blockquote>
+				<p>
+					To keep track of the who has been changing what files, for what reason, and
+					when is easily done with the <i>annotate</i> command provided by CVS. Given
+					the file name; it will annotate every single line of the source file telling
+					you when each line was modified and by whom. Normally this output is echoed
+					right into the console, but with simple Shell commands you can pipe it to a
+					text file.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="500">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Basic annotation.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs annotate SourceFile.java
+								</code>
+							</td>
+						</tr>
+					</table>
+					
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="500">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Annotate to a file.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cvs annotate SourceFile.java  > AnnotatedFile.txt
+								</code>
+							</td>
+						</tr>
+					</table>
+					
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="500">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Example of an annotated file.</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+						
+							<td valign="top" bgcolor="#8fee8f">
+								<code>
+								1.34&nbsp;&nbsp;&nbsp;&nbsp;(userOne 19-Feb-05):&nbsp;&nbsp;&nbsp;&nbsp;if (sentinel != null)<br/>
+								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
+								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):<br/>
+								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;if (t_sec > (x+y))<br/>
+								1.27&nbsp;&nbsp;&nbsp;&nbsp;(userOne 10-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+		</blockquote>
+		
+		
+		<h2><a name="sec_2">2.0</a> Compiling The TripleA Source Code</h2>
+		<blockquote>
+			<p>
+				This section will go through the various details on how to successfully compile
+				the TripleA source code in order to get a runnable copy. TripleA can be compiled
+				in many different ways and with many different IDEs. For consistency and all around
+				compatibility; TripleA must be able to be compiled using the Java compiler by
+				Sun Micro systems and the compilation process be controlled by Apache's ANT. All these
+				tools are to be run from the command line.
+			</p>
+			
+			
+			<h4><a name="sec_2.1">2.1</a> Prerequisites</h4>
+			<blockquote>
+				<p>
+					There are a few prerequisites that need to be fulfilled before attempting to
+					start compilation process. We assume that the following packages (listed below)
+					are fully and properly installed.
+					
+					<ul>
+						<li>Apache ANT (<a target="_blank" href="http://ant.apache.org">http://ant.apache.org</a>)</li>
+						<li>Sun Micro Systems Compliant Java JDK (<a target="_blank" href="http://java.sun.com">http://java.sun.com</a>)</li>
+						<li>Junit (<a target="_blank" href="http://www.junit.org">http://www.junit.org</a>)</li>
+					</ul>
+				</p>
+				
+				<p>
+					These packages can be installed on various operating systems which include GNU/Linux, SGI/IRIX,
+					MS/Windows, Mac OS X, and others that allow for it.
+				</p>
+				
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_2.2">2.2</a> ANT Commands</h4>
+			<blockquote>
+				<p>
+					These are a list of command line parameters that can be used with ANT on
+					TripleA. Each command tells ANT to do something different with the TripleA
+					source code.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="4">
+						<tr>
+							<td width="150">
+								<b>Command</b>
+							</td>
+							
+							<td>
+								<b>Description</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" bgcolor="#ffb6c0">
+								<b>ant compile</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Compiles all TripleA source code files. Compiled classes are
+								placed in the <i>classes</i> folder.
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" bgcolor="#ffb6c0">
+								<b>ant compileClean</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Removes previously compiled folders such as the
+								<i>classes, release, and savedGames</i> folders.
+								Once the removal is successful, it will compile
+								the TripleA source files.
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" bgcolor="#ffb6c0">
+								<b>ant clean</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Removes the previously compiled copy of TripleA.
+								This will also remove the <i>savedGames, and release</i>
+								folders that may have been created with other ANT commands.
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" bgcolor="#ffb6c0">
+								<b>ant zip</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Cleans, compiles, and packages a compiled copy of TripleA
+								in a Zip file. The zip file is placed in a folder named <i>release</i>.
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" bgcolor="#ffb6c0">
+								<b>ant zipSource</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Runs the clean command and then packages all TripleA source files
+								in a Zip file. The Zip file is placed in a folder named <i>release</i>.
+							</td>
+						</tr>
+						
+						
+						<tr>
+							<td valign="top" bgcolor="#ffb6c0">
+								<b>ant patch</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Constructs a <i>patch.jar</i> file with specified java class files
+								that were indicated in the <i>build.xml</i> document. This patch.jar
+								file can be used for a quick fix.
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" bgcolor="#ffb6c0">
+								<b>ant javadoc</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Generates Java Documentation HTML using source code comments.
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" bgcolor="#ffb6c0">
+								<b>ant test</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Initiates the JUnit tests.
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+
+
+			<h4><a name="sec_2.3">2.3</a> Compiling on Microsoft Windows Systems</h4>
+			<blockquote>
+				<p>
+					A complete guide to compiling TripleA on MS/Windows has been
+					generously written by a member of the TripleA community, ZeroPilot.
+				</p>
+				
+				<p>
+					 The first step is to extract the contents of the zip file into a location
+					 of your choice. Once you have extracted all the files, you will see a folder
+					 named <i>triplea_x_x_x</i> (where x_x_x represent the version number). Note,
+					 it has the same name as the pre-compiled package. If you are going to install
+					 both the source and the pre-compiled version, it is highly recommended that you
+					 create separate directories for them first; if not one will overwrite the other.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/info.png" width="48" height="48" alt="info image"/>
+							</td>
+							
+							<td valign="middle" bgcolor="#ffcc99">
+								<span style="font-style: italic; font-size: small;">
+									Be sure to download the Java SDK SE (Standard Edition) and not
+									the EE (Enterprise Edition.) Most users find it difficult to
+									get the Enterprise Edition working. On top of that you don't
+									need it to compile TripleA.
+								</span>
+							</td>
+						
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					 We assume you have <i>ANT</i> installed, as well as a suitable <i>Java JDK</i> whose version is 1.4.x
+					 or higher, and <i>Junit</i> installed (you only need to download the Junit package and unzip
+					 it somewhere on your system. The <b>.ant.properties</b> file, (if not included in the source
+					 package, you will have to make your own) from which it will reference the Junit installation
+					 directory.
+				</p>
+				
+				<p>
+					 Go into the directory where you extracted the TripleA source code. There should be a file named
+					 <b>.ant.properties</b>. Open it using MS Wordpad <i>not</i> notepad. If the source package you
+					 downloaded somehow did not come with that file, then create one. You can do this by creating an
+					 ordinary text file and then renaming it to <b>.ant.properties</b> exactly. This property file
+					 includes two peices of information:
+					 
+					 <ol>
+					 	<li>The absolute path of Junit</li>
+					 	<li>The version number of TripleA</li>
+					 </ol>
+
+					 Open the <b>.ant.properties</b> file and edit it to include the information below:
+					 <br/>
+					 <br/>
+					 <table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Info For The .ant.properties File</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;junit.jar=<i>PATH TO THE JUNIT JAR FILE</i><br/>
+								&nbsp;&nbsp;triplea.version=<i>X_X_X</i>
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					For completness sake; this is how my <b>.ant.properties</b> file would look like:
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Example Of The .ant.properties File</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;junit.jar=C:junit3.8.1\junit.jar<br/>
+								&nbsp;&nbsp;triplea.version=0_6_0
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>	
+				</p>
+				
+				<p>
+					 You should consider installing both the Java SDK and ANT at the root level of the C: drive.
+					 It is known that ANT in particular sometimes does not like spaces in the path name (nor for
+					 the path to be extremely long). You will notice that the typical Windows installation location
+					 of <b>Program Files</b> will have a space in its path (the space between Program and Files.
+					 It is not known how often this truly causes a problem (if ever), but the "pros" say they install
+					 their compiling tools in their root C: directory to avoid pitfalls. Thus it is recommended that
+					 we do the same. The last thing we need is &quot;extra&quot; problems.
+				</p>
+				
+				<p>
+					 For simplicity's sake, we shall install both the Java SDK SE and Ant at the root or C: Drive
+					 as well as TripleA and JUnit. JUnit is easily installed, you just need to extract the contents
+					 of it into its own folder. TripleA just needs to use a single JAR file that comes with JUnit.
+				</p>
+				
+				<p>
+					 Once we have installed the <b>Java SDK SE, JUnit</b> and <b>ANT</b> on your PC, start the Command
+					 Prompt (terminal) program. In Windows XP it can be found by navigating through the Start menu:
+					 <br/>
+					 <br/>
+					 <table border="1" cellspacing="2" cellpadding="2" width="550">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Location Of The Command Prompt</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;Start <b>-></b> All Programs <b>-></b> Accessories <b>-></b> Command Prompt
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					 In Command Prompt, enter this command and hit the <b>Enter</b> key:
+					 <br/>
+					 <br/>
+					 <table border="1" cellspacing="2" cellpadding="2"width="250">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Java Command</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;java -version
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The results of that command should show an informational message about the new Java SDK SE
+					that we have just installed. If you see a message about the default Windows Java version
+					then that means that Windows is not recognizing the newly installed Java. If you get an
+					error message saying that the command cannot be found; that means Windows cannot see the
+					Java executable.
+				</p>
+				
+				<p>
+					 Now in Command Prompt enter this ANT command and hit the <b>Enter</b> key:
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="250">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Ant Command</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;ant -version
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					You will probably see a message as such:
+					<blockquote>
+						 &quot;Ant is not recognized as a internal or external command, operable program or batch file.&quot;
+					</blockquote>
+					
+					Even though the Java SDK SE and ANT have been installed properly, there are instances
+					where they are inaccessible through the command prompt. This can be fixed by modifying
+					the Windows Environment Variables. Find the Environment Variables options in Windows by
+					following the menus below:
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="790">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Location Of Windows Environment Variables</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;Start <b>-></b> Control Panel <b>-></b> System <b>-></b> Advanced (tab) <b>-></b> Environmental Variables (button)
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					 Here we will add information for Windows to recognize both programs so it will pass your
+					 Command Prompt calls to the right place. You will want to make the following additions to
+					 the &quot;User Variables&quot; section at the top and <b>NOT</b> the System Variables.
+				</p>
+				
+				<p>
+					 There is no good reason to make these additions as System Variables unless you absolutely
+					 need all user accounts on your PC to be able to run these command line programs.
+					 Messing around with System Variables is risky because (unlike the User Variables) it
+					 has the potential to really mess up the system if you enter something wrong. So let's take
+					 the safe road and simply enter the following as User Variables.
+				</p>
+				
+				<p>
+					The Variable Name should be entered exactly as indicated. The Variable Value will be your exact
+					path to the Java SDK SE folder. This may vary depending on where Java was installed. In this
+					document we will go by the example that Java and ANT are installed in the Root level of C: Drive.
+					Under &quot;User Variables&quot;, <i>(not system variables)</i> click on the &quot;New&quot;
+					button and enter the following information:
+					<br/>
+					<br/>
+					<table border="0" cellspacing="2" cellpadding="2">
+						<tr>
+							<td>
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>Java User Variable</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/txt.png" width="48" height="48" alt="text image"/>
+										</td>
+							
+										<td bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;Variable name: JAVA_HOME<br/>
+											&nbsp;&nbsp;Variable value: C:\j2sdk1.4.2_04
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td rowspan="2" valign="top">
+								<table border="1" cellspacing="2" cellpadding="2" width="400" height="178">
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/info.png" width="48" height="48" alt="info image"/>
+										</td>
+							
+										<td valign="top" bgcolor="#ffcc99">
+											<span style="font-style: italic; font-size: small;">
+												 The easiest way to get this path exactly correct is to open the
+												 Java SDK SE folder and select a subfolder inside (bin folder, for
+												 example) then view the properties on it. The &quot;Location&quot; shown in
+												 the properties window will be the path you need to enter here, and
+												 you can simply select it and copy/paste it in to avoid any typos.
+											</span>
+										</td>
+						
+									</tr>
+								</table>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+											<b>ANT User Variable</b>
+										</td>
+									</tr>
+						
+									<tr>
+										<td align="left" valign="top" height="48" width="48">
+											<img src="images/txt.png" width="48" height="48" alt="text image"/>
+										</td>
+							
+										<td bgcolor="#8fee8f">
+											<code>
+											&nbsp;&nbsp;Variable name: ANT_HOME<br/>
+											&nbsp;&nbsp;Variable value: C:\apache-ant-1.6.2
+											</code>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The next step is to add both Java SDK SE and ANT's paths into the User Variables.
+					The <i>Variable Name</i> field should be entered exactly as shown. The <i>Variable Value</i> field will
+					display the exact paths to the BIN folders located inside both the Java SDK and Ant folders.
+					The two entries separated by a semi-colon &quot;;&quot; and no spaces between them.
+					Be sure to include the trailing slash &quot;\&quot; after <i>bin</i> in the path names.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="720">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Path Variable</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;Variable name: PATH<br/>
+								&nbsp;&nbsp;Variable value: C:\j2sdk1.4.2_04\bin\;C:\apache-ant-1.6.2\bin\
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					 Click <b>OK</b> on all the Windows to save the new settings. In order for these changes to take
+					 effect you must either log out then back in, or restart your computer.
+				</p>
+				
+				<p>
+					Once you have done that, then fire up the Command Prompt program once again.
+					Enter &quot;java -version&quot; again and hit the <b>Enter</b> key. This time
+					we should see something similar below. Likewise, enter &quot;ant -version&quot;
+					afterwards:
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="720">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Output of &quot;java -version&quot; Command</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;Java version "1.4.2_04"<br/>
+								&nbsp;&nbsp;Java (TM) 2 Runtime Environment, Standard Edition (build 1.4.2_04-b05)<br/>
+								&nbsp;&nbsp;Java HotSpot(TM) Client VM (build 1.4.2_04-b05, mixed mode)
+								</code>
+							</td>
+						</tr>
+					</table>
+					
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2" width="720">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Output of &quot;ant -version&quot; Command</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;Apache Ant version 1.6.2 compiled on July 16 2004
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					If you get an error, please recheck your Environmental Variables entries and proofread your paths very carefully.
+					Did you copy/paste the paths to avoid typos? Check if you restarted the computer or logged out/in. Review the
+					instructions again and double check everything. If all goes well you should get the proper returns from your
+					Command Prompt version check.
+				</p>
+				
+				<p>
+					Now that everything is set up, we can finally compile TripleA! Open the command prompt
+					and go inside the directory where TripleA was installed. For simplicity sake we will pretend
+					that we have installed TripleA at the root level of C: Drive. So going into the TripleA
+					directory would be as shown below:
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Entering The TripleA Directory</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;<b>[Step 1]</b>&nbsp;&nbsp;C:><br/>
+								&nbsp;&nbsp;<b>[Step 2]</b>&nbsp;&nbsp;C:>cd triplea_0_6_0<br/>
+								&nbsp;&nbsp;<b>[Step 3]</b>&nbsp;&nbsp;C:\triplea_0_6_0>
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Once we are inside the TripleA directory (when the command prompt looks like <i>C:\triplea_0_6_0></i>)
+					we are ready to issue our ANT commands. Type &quot;ant compile&quot; and the results
+					should yield something similar to what's below:
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="700">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Results of &quot;ant compile&quot; Command</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;Buildfile: build.xml<br/>
+								<br/>
+								&nbsp;&nbsp;init:<br/>
+								<br/>
+								&nbsp;&nbsp;compile:<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[echo] looking for junit.jar, edit .ant.properties to set junit location<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mkdir] Created dir: C:\triplea_0_6_0\classes<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[copy] Copying 1083 files to C:\triplea_0_6_0\classes<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[javac] Compiling 325 source files to C:\triplea_0_6_0\classes<br/>
+								<br/>
+								&nbsp;&nbsp;BUILD SUCCESSFUL<br/>
+								&nbsp;&nbsp;Total time: 34 seconds
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					TripleA is now ready to be run!
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_2.4">2.4</a> Compiling on GNU/Linux, Mac OS X, and UNIX Style Systems</h4>
+			<blockquote>
+				<p>
+					Compiling TripleA on UNIX or GNU styled operating systems such as GNU/Linux,
+					SGI/IRIX, and Apple/MAC OS X (just to name a few), is straight forward. As
+					always we assume that you have ANT, JUnit, and a suitable Java SDK
+					installed as mentioned in <a href="#sec_2.1">section 2.1</a>.
+				</p>
+				
+				<p>
+					There are four main steps that need to be take to successfully compile TripleA.
+					<ol>
+						<li>Download TripleA</li>
+						<li>Unzip TripleA in a suitable directory</li>
+						<li>Edit the <b>.ant.properties</b> file</li>
+						<li>Execute the <i>ant compile</i> command</li>
+					</ol>
+				</p>
+				
+				<p>
+					<b>Step 1</b>
+					<br/>
+					<br/>
+					We can safely assume that you have downloaded the TripleA zip file that contains
+					the source code. The file name should have the word &quot;source&quot; in it;
+					like so <i>triplea_source_0_6_0.zip</i>.
+				</p>
+				
+				<p>
+					<b>Step 2</b>
+					<br/>
+					<br/>
+					
+					Unzip the TripleA source zip file into a suitable directory of your choice. You
+					can use your favorite extraction utility to do this. We have found that most UNIX
+					styled systems tend to have the <b>unzip</b> command available.
+					
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="350">
+						<tr>
+							<td align="left" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
+							</td>
+						
+							<td valign="middle" bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;unzip -L triplea_source_x_x_x.zip
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<b>Step 3</b>
+					<br/>
+					<br/>
+					
+					Using your favorite text editor open and modify the <b>.ant.properties</b> file
+					that is located in the TripleA root directory (ie. /home/george/triplea_0_6_0).
+					If this file is missing then please create one with the same name. Make sure that it
+					begins with a dot as it is supposed to be a hidden file.
+				</p>
+				
+				<p>
+					It is not necessary to have a <b>.ant.properties</b> file to compile TripleA, but
+					it is needed when making zip releases and using JUnit.
+				</p>
+				
+				<p>
+					These are the values that <b>.ant.properties</b> keeps track of:
+					<ul>
+						<li>The absolute path of JUnit</li>
+						<li>Version number of TripleA</li>
+					</ul>
+					
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Info For The .ant.properties File</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;junit.jar=<i>PATH TO THE JUNIT JAR FILE</i><br/>
+								&nbsp;&nbsp;triplea.version=<i>X_X_X</i>
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					As always, for completness sake; this is an example of how a <b>.ant.properties</b> file would look like:
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Example Of The .ant.properties File</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;/usr/junit3.8.1/junit.jar<br/>
+								&nbsp;&nbsp;triplea.version=0_6_0
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<b>Step 4</b>
+					<br/>
+					<br/>
+					Open up your favorite terminal and go inside the root of the TripleA directory.
+					Once there, execute the ANT command below to compile TripleA:
+					
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="200">
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;ant compile
+								</code>
+							</td>
+						</tr>
+					</table>
+					
+					<br/>
+					<br/>
+					
+					This should yeild some successful ANT compile messages as shown below:
+					
+					<br/>
+					<br/> 
+					<table border="1" cellspacing="2" cellpadding="2" width="700">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Results of &quot;ant compile&quot; Command</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;Buildfile: build.xml<br/>
+								<br/>
+								&nbsp;&nbsp;init:<br/>
+								<br/>
+								&nbsp;&nbsp;compile:<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[echo] looking for junit.jar, edit .ant.properties to set junit location<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mkdir] Created dir: /home/george/triplea_0_6_0/classes<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[copy] Copying 1083 files to /home/george/triplea_0_6_0/classes<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[javac] Compiling 325 source files to /home/george/triplea_0_6_0/classes<br/>
+								<br/>
+								&nbsp;&nbsp;BUILD SUCCESSFUL<br/>
+								&nbsp;&nbsp;Total time: 34 seconds
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					TripleA is now ready to be run!
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+		</blockquote>
+		
+		<h2><a name="sec_3">3.0</a> Running TripleA</h2>
+		<blockquote>
+			<p>
+				Getting TripleA to run is a little bit different depending which operating
+				system it is running from. Further more, different variants of a similar
+				operating system have their own little way of doing things. For example,
+				various GNU/Linux distributions like to organize their programs in different
+				directories. Such as having games in /usr/share/games and their respective binaries
+				or start-up scripts in /usr/bin/games, or perhaps in /usr/bin, or maybe have the
+				game in /opt and the binaries in /usr/bin.
+			</p>
+			
+			<p>
+				As we can see, there are many different ways of installing and running programs on
+				different variants of an operating system (let alone different operating systems.)
+				This section will attempt to go over the basics of how to get TripleA running on
+				on various operating systems and provide some useful details on how to customize
+				TripleA's start-up routine.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_3.1">3.1</a> Microsoft Windows Systems</h2>
+		<blockquote>
+			<p>
+				For TripleA to run on a Windows Operating System it would need to execute the
+				<b>triplea_windows.bat</b> file. This file will run the appropriate java command
+				that will start-up TripleA.
+			</p>
+			
+			<p>
+				A word of caution: The actual java command is rather lengthy and won't fit in a standard
+				1024x768 screen size web-browser. Thus the command is really one large line and not two
+				separate lines. It may appear as so if the browser window is not large enough.
+				<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2">
+					<tr>
+						<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<b>Contents of triplea_windows.bat</b>
+						</td>
+					</tr>
+						
+					<tr>
+						<td align="left" valign="top" height="48" width="48">
+							<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+						</td>
+							
+						<td bgcolor="#8fee8f">
+							<code>
+							&nbsp;&nbsp;@echo off<br/>
+							&nbsp;&nbsp;java -classpath lib/patch.jar;classes;lib/looks-1.3.1.jar;lib/backport-util-concurrent.jar  games.strategy.engine.framework.GameRunner<br/>
+							&nbsp;&nbsp;pause
+							</code>
+						</td>
+					</tr>
+				</table>
+				<br/>
+			</p>
+			
+			<p>
+				Steps can be taken to create a Windows short-cut file and have it point to the
+				<b>triplea_windows.bat</b> file. It can also use a TripleA icon image that can
+				be found in the <b>icons</b> folder inside the TripleA folder.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_3.2">3.2</a> GNU/Linux, Mac OS X, and UNIX Style Systems</h2>
+		<blockquote>
+			<p>
+				TripleA provides two start-up shell scripts for these operating systems:
+				<ul>
+					<li>triplea_unix.sh</li>
+					<li>triplea_mac_os_x.sh</li>
+				</ul>
+			</p>
+			
+			<p>
+				Both of the shell scripts above contain identical start up commands. The
+				reason why the decision was made to provide two was mainly for Mac OS X
+				users. Since Mac OS X is UNIX based they use the same start-up script as
+				you would use for GNU/Linux or SGI/IRIX. It would seem weird for the average
+				Mac user to be using a script labeled as &quot;Unix&quot;.
+			</p>
+			
+			<p>
+				A member of the TripleA community (DMan) has generously provided an improved
+				shell script for TripleA. The flow of execution of the script is as follows:
+				<ol>
+					<li>Check if Java is installed</li>
+					<li>Get the relative directory of TripleA</li>
+					<li>Enter the relative directory of TripleA</li>
+					<li>Execute the Java command</li>
+				</ol>
+			</p>
+			
+			<p>
+				<table border="1" cellspacing="2" cellpadding="2">
+					<tr>
+						<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<b>Contents of triplea_unix.sh & triplea_mac_os_x.sh</b>
+						</td>
+					</tr>
+						
+					<tr>
+						<td align="left" valign="top" height="48" width="48">
+							<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+						</td>
+							
+						<td bgcolor="#8fee8f">
+							<code>
+							&nbsp;&nbsp;#!/bin/sh<br/>
+							<br/>
+							&nbsp;&nbsp;if ! java -version >& /dev/null<br/>
+							&nbsp;&nbsp;then<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "Could not find Java."<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "You must have Java installed and in your path."<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit<br/>
+							&nbsp;&nbsp;fi<br/>
+							<br/>
+							&nbsp;&nbsp;relativePathToGame=`dirname $0`<br/>
+							&nbsp;&nbsp;cd $relativePathToGame<br/>
+							<br/>
+							&nbsp;&nbsp;java -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:lib/backport-util-concurrent.jar games.strategy.engine.framework.GameRunner
+							</code>
+						</td>
+					</tr>
+				</table>
+			</p>	
+		
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_3.3">3.3</a> How TripleA Locates its Root Directory</h2>
+		<blockquote>
+			<p>
+				It may be of some interest to some developers to know exactly how TripleA
+				locates where its own root directory is. This will help those who like to 
+				put the start-up scripts in different directories.
+			</p>
+			
+			<p>
+				The search algorithm works from the inside out and is located in the
+				<b>GameRunner.java</b> source file. It will start from the package location
+				of GameRunner.class and move up one level until it has reached the root
+				package. Once there, that will be TripleA's root directory. It then checks
+				to make sure that the root directory it found actually exists, if not then
+				return the current user's home directory and display an error message.<br/>
+				<br/>
+				This way the root directory doesn't have to be hard coded.
+			</p>
+			
+			<p>
+				<table border="1" cellspacing="2" cellpadding="1">
+					<tr>
+						<td align="left" valign="top" rowspan="4" height="48" width="48">
+							<img src="images/info.png" width="48" height="48" alt="info image"/>
+						</td>
+					</tr>
+					
+					<tr>
+						
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-weight: bold; font-size: small;">
+								File Name
+							</span>
+						</td>
+						
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-size: small;">
+								GameRunner.java
+							</span>
+						</td>
+					</tr>
+					
+					<tr>
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-weight: bold; font-size: small;">
+								Package
+							</span>
+						</td>
+						
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-size: small;">
+								games.strategy.engine.framework
+							</span>
+						</td>
+					</tr>
+					
+					<tr>
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-weight: bold; font-size: small;">
+								Method Header
+							</span>
+						</td>
+						
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-size: small;">
+								public static File getRootFolder()
+							</span>
+						</td>
+					</tr>
+				</table>
+			
+				<table border="1" cellspacing="2" cellpadding="2">	
+					<tr>
+						<td align="left" valign="top" height="48" width="48">
+							<img src="images/source_java.png" width="48" height="48" alt="java image"/>
+						</td>
+							
+						<td bgcolor="#8fee8f">
+<pre>
+public static File getRootFolder()
+{
+	// This will fail if we are in a jar file.
+	// What we are doing is looking up the URL of GameRunner.class
+	// We are guaranteed to find it because we are in it.
+	// We know that the class file is in a directory one above the
+	// games root folder, so navigate up from the class file, and we have root.
+
+	// Find the url of our class
+	URL url = GameRunner.class.getResource("GameRunner.class");
+        
+	// We want to move up 1 directory for each package
+	int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
+        
+	String fileName = url.getFile();
+	try
+	{
+		fileName  = URLDecoder.decode(fileName, "UTF-8");
+							
+	} catch (UnsupportedEncodingException e)
+	{
+		e.printStackTrace();
+	}
+									
+	File f = new File(fileName);
+
+	for(int i = 0; i < moveUpCount; i++)
+	{
+		f = f.getParentFile();
+	}
+
+	if(!f.exists())
+	{
+		System.err.println("Could not find root folder, does  not exist:" + f);
+		return new File(System.getProperties().getProperty("user.dir"));
+	}
+        
+	return f;
+}
+</pre>
+						</td>
+					</tr>
+				</table>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_4">4.0</a> Network Configuration</h2>
+		<blockquote>
+			<p>
+				TripleA is capable of working through a network and thus some users may need
+				to do some extra configuration. This is intended for users who have firewalls
+				, routers, and other similar items that filter or re-route network traffic.
+			</p>
+			
+			<p>
+				Sometimes some users may experience difficulties getting TripleA to act as a
+				game server in order to host games. This is usually due to one of these three
+				circumstances:
+				
+				<ul>
+					<li>Local firewall blocking incoming connections to TripleA</li>
+					<li>Remote firewall blocking incoming connections to the computer hosting TripleA</li>
+					<li>Port-Forwarding not properly configured on a local router</li>
+				</ul>
+			</p>
+			
+			<p>
+				Most users have difficulties with the above and will usually not find
+				a problem getting TripleA to act as a client. Normally firewalls will allow
+				applications to make outbound connections, and disallow un-authorized inbound
+				connections to ports not specified in their rules list (or allow list.)
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_4.1">4.1</a> Acquiring the IP Address</h2>
+		<blockquote>
+			<p>
+				In the past TripleA had some problems trying to acquire the IP address on machines
+				that had aDSL and Cable modems as well as a regular dial-up modem. Sometimes it would
+				only get the loop-back address (127.0.0.1). However this has been fixed in later
+				versions of TripleA.
+			</p>
+			
+			<p>
+				However, there still remains a slight problem with the detection of IP addresses.
+				TripleA is currently (as of version 0.6.0 and below) fitted to acquire its IP address
+				from a network interface located on the local machine it is running off from. It has
+				been known that when a machine is behind a router, TripleA would always select the
+				local LAN IP address of the machine instead of the actual internet address that has been
+				assigned to the router.
+			</p>
+			
+			<p>
+				A router will have the &quot;real&quot; IP address that others will see on-line. The
+				router communicates with the local machines it is connected to, those machines have
+				locally assigned IP address such as 192.168.0.2 for example. TripleA will, more often
+				than not, acquire that IP address and display it when the user starts a server game.
+				Though, this does not mean that all is lost. If the router is properly configured to
+				forward packets to the local machine running TripleA then all is fine. TripleA uses
+				port 3300 when acting as a server. If the router is forwarding packets going to port
+				3300 to 192.168.0.2 then the user has a successful server. Leaving aside that TripleA
+				is displaying the wrong IP address, TripleA is attaching itself to the correct network
+				interface.
+			</p>
+			
+			<p>
+				In essence, one can say that this is just a matter of TripleA finding out what IP address
+				the router is using, in order to display it in the game so the user can advertize it.
+			</p>
+			
+			<table border="0" align="center">
+				<tr>
+					<td>
+						<img src="images/router_example.png" width="528" height="444" alt="router diagram" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td align="left">Fig 4.1.0</td>
+				</tr>
+			</table>
+			
+			<p>
+				TripleA uses an IP Finding algorithm that collects all network interfaces on the computer
+				it is running from and itterates through them to find a suitable IP address. The source
+				code below will demonstrate this.
+			</p>
+			
+			<p>
+				<table border="1" cellspacing="2" cellpadding="1">
+					<tr>
+						<td align="left" valign="top" rowspan="4" height="48" width="48">
+							<img src="images/info.png" width="48" height="48" alt="info image"/>
+						</td>
+					</tr>
+					
+					<tr>
+						
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-weight: bold; font-size: small;">
+								File Name
+							</span>
+						</td>
+						
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-size: small;">
+								IPFinder.java
+							</span>
+						</td>
+					</tr>
+					
+					<tr>
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-weight: bold; font-size: small;">
+								Package
+							</span>
+						</td>
+						
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-size: small;">
+								games.strategy.net
+							</span>
+						</td>
+					</tr>
+					
+					<tr>
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-weight: bold; font-size: small;">
+								Method Header
+							</span>
+						</td>
+						
+						<td align="left" valign="top" bgcolor="#ffcc99">
+							<span style="font-size: small;">
+								public static InetAddress findInetAddress()
+							</span>
+						</td>
+					</tr>
+				</table>
+			
+				<table border="1" cellspacing="2" cellpadding="2">	
+					<tr>
+						<td align="left" valign="top" height="48" width="48">
+							<img src="images/source_java.png" width="48" height="48" alt="java image"/>
+						</td>
+							
+						<td bgcolor="#8fee8f">
+<pre>
+/**
+   We iterate through an enumeration of network interfaces on the machine
+   and pick the first IP that is not a loopback and not a link local.
+   In the case of IRIX computers connected on a LAN through a central
+   gateway running java off a telnet session will result in a null
+   network interface (patched below).
+
+   @exception java.net.SocketException       required by InetAddress
+   @exception java.net.UnknownHostException  required for getLocalHost()
+
+   @return    java.net.InetAddress           the ip address to use
+*/
+public static InetAddress findInetAddress() throws SocketException, UnknownHostException
+{
+	Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
+
+	if(enum1 == null)  //irix patch
+	{
+		InetAddress ip1 = InetAddress.getLocalHost();
+		return ip1;
+	}
+	else
+	{
+		while (enum1.hasMoreElements()) 
+		{
+			NetworkInterface netface = (NetworkInterface)enum1.nextElement();
+			Enumeration enum2 = netface.getInetAddresses();
+				
+			while (enum2.hasMoreElements())
+			{
+				InetAddress ip2 = (InetAddress) enum2.nextElement();
+				if(! ip2.isLoopbackAddress())
+				{
+					if(! ip2.isLinkLocalAddress())
+					{
+						return ip2;
+					}
+				}
+			}
+		}
+
+		//If all else fails we return the localhost
+			
+		InetAddress ip3 = InetAddress.getLocalHost();
+		return ip3;
+	}
+}
+</pre>
+						</td>
+					</tr>
+				</table>
+				<br/>
+			</p>
+			
+			<p>
+				TripleA could detect the router's IP if it establishes a socket connection
+				to some computer on the Internet. It has been decided not to use this method
+				as it yields suspicious activity. A user wondering why TripleA is making a
+				connection to www.sourceforge.net (for example) every time they start a server.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_4.2">4.2</a> Firewall Configuration</h2>
+		<blockquote>
+			<p>
+				A firewall could be the reason why TripleA is not being able to successfully
+				connect to another computer. Many systems now have firewalls acting as a security
+				barrier that filters network traffic to and from the computer. It is sometimes
+				needed that the user running TripleA needs to configure their firewall to allow
+				TripleA to communicate to the Internet.
+			</p>
+			
+			<p>
+				TripleA can be set to use any port, but the default port it uses is 3300. The
+				user will need to configure their firewall to allow outbound and inbound
+				connections originating on port 3300 only. If asked to describe what protocol
+				to allow, choose TCP/IP & UDP.
+			</p>
+			
+			<p>
+				Some operating systems such as Microsoft Windows might be running two firewalls
+				at the same time. This is mainly due to Service Pack 2 enabling the internal Windows
+				firewall by default. Users must be aware of this and either disable the internal
+				firewall (only if they have another firewall also running) or configure it so that
+				it allows TripleA to connect to the Internet via port 3300.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_4.3">4.3</a> Routers and Port-Forwarding</h2>
+		<blockquote>
+			<p>
+				A router needs its port-forwarding configured to forwards all TCP/IP & UDP
+				packets coming on port 3300 to whatever computer the user is using to run
+				TripleA on. Please see <a href="#sec_4.1">Section 4.1</a> for more information and a diagram.
+			</p>
+			
+			<p>
+				It may not be needed to make these configuration changes for TripleA to connect
+				as a Client, but is definitely needed when TripleA is acting as a server.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h2><a name="sec_5">5.0</a> Creating Custom Games</h2>
+		<blockquote>
+			<p>
+				There are three different ways of creating custom games in TripleA.
+				<ol>
+					<li>Customizing in game values only</li>
+					<li>Customizing values, map, but use an existing rules base</li>
+					<li>Customize the values, map, and the rules base</li>
+				</ol>
+			</p>
+			
+			<p>
+				<b>1: Customizing in game values only</b><br/>
+				<br/>
+				This refers to making changes to the game only through the XML game file.
+				It is a quick and easy way to modify an existing game without the hassle
+				of modifying code or re-compiling. However, the game logic, images, and
+				maps cannot be modified through XML changes alone. The user will be bound
+				to using the same game logic, images, and maps of the XML game file they
+				are editing.
+			</p>
+			
+			<p>
+				<b>2: Customizing values, map, but use an existing rules base</b><br/>
+				<br/>
+				In addition to making changes through the XML file, this also requires
+				one to make changes to the images and maps that the game will use. This
+				is where a user can add their own customized map, and perhaps some customized
+				units. However, even though this allows one more customization it still
+				leaves the user bound to some existing game logic. (ie, A&A Pact of Steel and
+				BigWorld 1942 uses customized images, maps, and XML files but are still bound
+				to the game logic of Axis And Allies 4th Edition rules.)
+			</p>
+			
+			<p>
+				<b>3: Customize the values, map, and the rules base</b><br/>
+				<br/>
+				This method encompasses changing XML values, images, maps, and game logic.
+				It requires the user to modify images and create new (or modify existing)
+				Java classes to handle different, more, or new types of game logic for
+				the engine to interpret.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_5.1">5.1</a> Map Utilities</h2>
+		<blockquote>
+			<p>
+				TripleA comes with several utilities for editing maps. In brief, these
+				utilities will allow the user to create center points and names for each
+				territory, and break the map up into 256x256 sized tiles.
+			</p>
+			
+			<p>
+				There are seven utilities that can be used:
+				<ol>
+					<li><b>Center Picker</b> : Picks center points for each territory</li>
+					<li><b>Polygon Grabber</b> : Grabs the (x,y) polygonal values of each territory</li>
+					<li><b>Placement Picker</b> : Picks placement for units (manually)</li>
+					<li><b>Auto-Placement Finder</b> : Picks placement for units (automatic)</li>
+					<li><b>Tile Image Breaker</b> : Breaks the map into 256x256 tiles</li>
+					<li><b>Relief Image Breaker</b> : Creates relief 256x256 tiles</li>
+					<li><b>Image Shrinker</b> : Creates a mini-sized map image</li>
+				</ol>
+			</p>
+			
+			<p>
+				All images are in PNG format except for the mini-map image produced by the
+				Image Shrinker utility, it is in JPEG format.
+			</p>
+			
+			<p>
+				<b>Pre-requisite !</b><br/>
+				<br/>
+				A pre-made map needs to be created for the utilities to work. The map needs
+				to have black borders separating each territory. This needs to be completely
+				black as in #000000 or R=0 G=0 B=0. The insides of the territories should be
+				white and the oceans or water values need to be colored.<br/>
+				<br/>
+				<u>The entire TripleA package needs to be compiled for the utilities to work.</u>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+			
+			<h4><a name="sec_5.1.1">5.1.1</a> Center Picker</h4>
+			<blockquote>
+				<p>
+					Run the center picker from the <b>classes</b> directory.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>How to run Center Picker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cd classes<br/>
+								&nbsp;&nbsp;java util/images/CenterPicker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/center_picker.png" width="696" height="491" alt="center picker" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="left">Fig 5.1.1.0</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Execution flow of the Center Picker is listed below.
+					<br/>
+					<br/>
+					
+					<table border="1" cellspacing="0" cellpadding="2" width="850">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(1) </b>Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(2) </b>Select a map image file
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(3) </b>Show a &quot;Select Polygons File&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(4) </b>Select a polygons.txt file or cancel and run without.
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(5) </b>Show map image
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(6) </b>Left or Right click on any territory to create a center point
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(7) </b>Show a dialog box with a default territory name
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(8) </b>Put a new territory name and press &quot;OK&quot;
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(9) </b>Show confirmation dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(10) </b>Confirm with &quot;Yes&quot;, or cancel with &quot;No&quot; or &quot;Cancel&quot;
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(11) </b>Show red dot on territory
+							</td>
+							
+							<td>
+								
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					After creating center points for all the territories, proceed to save
+					them. The center picker will ask for a directory to save the center points.
+					These center points will be needed for other map utilities later on, and for
+					TripleA it self to run the game.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.2">5.1.2</a> Polygon Grabber</h4>
+			<blockquote>
+				<p>
+					Run the polygon grabber from the <b>classes</b> directory.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>How to run Polygon Grabber</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cd classes<br/>
+								&nbsp;&nbsp;java util/images/PolygonGrabber
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/polygon_grabber_1.png" width="598" height="524" alt="polygon grabber" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="left">Fig 5.1.2.0</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Execution flow of the Polygon Grabber is listed below.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="0" cellpadding="2" width="850">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(1) </b>Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(2) </b>Select a map image file
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(3) </b>Show a &quot;Select Centers File&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(4) </b>Select a centers.txt file
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(5) </b>Show map image
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(6) </b>Left click on any territory to select it
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(7) </b>Selected territory is highlighted in red
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(8) </b>Right click on highlighted territory (hold shift for more)
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(9) </b>Show name option dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(10) </b>Confirm if territory name is correct
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(11) </b>Highlight selected territory in yellow
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(12) </b>Go to next territory
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The polygon grabber utility comes with a special &quot;Island Mode&quot; feature.
+					It has been known that when dealing with many islands in one sea zone causes a visual
+					problem. Doing the sea zone first will cover up any islands inside. This will leave
+					the user unaware if the islands have been selected or not. The &quot;Island Mode&quot;
+					feature helps over come this by out-lining selected territories in red and not filling
+					them in with yellow, as is the default. Look at figures 5.1.2.1 and 5.1.2.2 for examples
+					of &quot;Island Mode&quot; at work.
+					
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/polygon_grabber_2.png" width="598" height="524" alt="island mode 1" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="left">Fig 5.1.2.1</td>
+						</tr>
+					</table>
+					<br/>
+					
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/polygon_grabber_3.png" width="598" height="524" alt="island mode 2" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="left">Fig 5.1.2.2</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Notice how in figure 5.1.2.1 one of Sardinia's islands was covered up when
+					the sea zone was done first. Island mode helped show the covered up island
+					and allowed us to select it.
+				</p>
+				
+				<p>
+					When done, save the polygon points to disk.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.3">5.1.3</a> Placement Picker</h4>
+			<blockquote>
+				<p>
+					Run the placement picker from the <b>classes</b> directory.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>How to run Placement Picker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cd classes<br/>
+								&nbsp;&nbsp;java util/images/PlacementPicker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Placement Picker commands are as follows:
+					
+					<table border="1" cellspacing="0" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Command</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Result</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								Left Mouse Button
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Start in this territory
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								CTRL +  Left Mouse Button
+							</td bgcolor="#8fee8f">
+							
+							<td bgcolor="#8fee8f">
+								Add a placement point to the list
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								Right Mouse Button
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Remove last placement point
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								CTRL + Right Mouse Button
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Save placement points for that territory
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Figure 5.1.3.0 shows an example of U.K. with its placements done.
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/placement_picker.png" width="594" height="520" alt="placement picker" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								Fig 5.1.3.0
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					When done save the placement points to disk.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.4">5.1.4</a> Auto-Placement Finder</h4>
+			<blockquote>
+				<p>
+					The auto-placement finder can be used instead of the placement picker.
+					It automates the placement picking procedure and picks what it chooses
+					to be the optimal placement points.
+				</p>
+				
+				<p>
+					There are some pre-requisites that need to be fulfilled before running
+					the auto-placement finder:
+					<ol>
+						<li>The centers.txt and polygons.txt files exist</li>
+						<li>The place.txt file exists, even if it is empty. It will crash without one</li>
+						<li>The above text files need to be in their finalized map directory</li>
+					</ol>
+					
+					Step No.3 is a bit confusing to explain explicitly in this section. This will
+					be covered in <a href="#sec_5.1.8">Section 5.1.8 (Making a Map)</a>.
+				</p>
+				
+				<p>
+					Run the placement picker from the <b>classes</b> directory. When run
+					it will ask for the map name, this relates to the name of the folder
+					it is in. For example, <i>revised</i> would be entered if we wanted it
+					to find placements for the A&A Revised map, which in turn would have all
+					the text files inside <i>triplea_0_6_0/classes/games/strategy/triplea/image/images/maps/revised</i>
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>How to run Auto-Placement Finder</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cd classes<br/>
+								&nbsp;&nbsp;java util/images/AutoPlacementFinder
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/autoplacement_finder.png" width="560" height="333" alt="auto-placement finder" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								Fig 5.1.4.0
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					When the auto-placement finder is done creating the placement points, it will
+					prompt a dialog in order to save the placement points to disk.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.5">5.1.5</a> Tile Image Breaker</h4>
+			<blockquote>
+				<p>
+					This utility will break up the original large map into tiles of size 256x256 so that
+					it can be used by TripleA. There are not any special prerequisites to use this
+					utility other than running it and choosing the correct map for it to break up.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>How to run Tile Image Breaker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cd classes<br/>
+								&nbsp;&nbsp;java util/images/TileImageBreaker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/tile_image_breaker.png" width="553" height="263" alt="tile image breaker" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								Fig 5.1.5.0
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="0" cellpadding="2" width="700">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(1) </b>Show a &quot;Folder Save Location&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(2) </b>Select a directory to save the tiles
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(3) </b>Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(4) </b>Select a map image
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(5) </b>Process map and break into tiles
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(6) </b>Wait until finished
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Once the Tile Image Breaker is done, all the tiles will be saved
+					in the directory that has been selected at the start.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.6">5.1.6</a> Relief Image Breaker</h4>
+			<blockquote>
+				<p>
+					The relief image breaker is an optional utility that can be used when
+					creating custom maps. Normally, the tile image breaker is enough to make
+					a working map. It will be a very plain map with solid colors. To make a map
+					with relief images allows for more eye-candy features. Relief images can be
+					toggled ON and OFF from inside TripleA, this means that if there needs to
+					be two identical maps: one plain, the other with some eye-candy feature
+					(ie. textured terrain.)
+				</p>
+				
+				<p>
+					Some prerequisites before using the relief image breaker:
+					<ol>
+						<li>A plain map</li>
+						<li>Another map with eye-candy features</li>
+						<li>The centers.txt, polygons.txt, and place.txt in their finalized map directory</li>
+					</ol>
+					
+					More about the &quot;finalized map directory&quot; will be covered in
+					<a href="#sec_1.5.8">Section 5.1.8 (Making a Map)</a>.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>How to run Relief Image Breaker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cd classes<br/>
+								&nbsp;&nbsp;java util/images/ReliefImageBreaker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="0" cellpadding="2" width="700">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(1) </b>Show a &quot;Folder Save Location&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(2) </b>Select a directory to save the relief tiles
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(3) </b>Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(4) </b>Select a relief map image
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(5) </b>Ask if it should process Sea Zones only
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(6) </b>Choose Y for Sea Zones only, or N for all
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(5) </b>Process map and break into tiles
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(6) </b>Wait until finished
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Once the Tile Image Breaker is done, all the tiles will be saved
+					in the directory that has been selected at the start.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.7">5.1.7</a> Image Shrinker</h4>
+			<blockquote>
+				<p>
+					This utility will create a copy of the original map, but shrunk down
+					to a custom scale. TripleA uses this small scale map as a &quot;mini-map&quot;.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>How to run Image Shrinker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;cd classes<br/>
+								&nbsp;&nbsp;java util/images/ImageShrinker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="0" cellpadding="2" width="760">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(1) </b>Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(2) </b>Select a map
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(3) </b>Show a &quot;Scale Input&quot; dialog
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<b>(4) </b>Enter a floating point scale value (ie. 0.1)
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								<b>(5) </b>Image saved as <b>smallMap.jpeg</b> in current directory
+							</td>
+							
+							<td>
+							
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.8">5.1.8</a> Making a Map</h4>
+			<blockquote>
+				<p>
+					This section will go through all the steps needed to be taken in order
+					to create a custom map. Before we go any further, lets take the time to explain
+					how the &quot;finalized map directory&quot; works and what this document
+					means by it.
+				</p>
+				
+				<p>
+					TripleA has a special directory where it stores its maps and their respective
+					configuration files. It is that directory that we refer to as the &quot;finalized
+					map directory&quot;. The directory itself has some special conditions that needs
+					to be met:
+					<ol>
+						<li>Located in triplea_0_6_0/classes/games/strategy/triplea/image/images/maps</li>
+						<br/>
+						<li>Name of the map directory must be same as the &quot;mapName&quot; field in the
+						XML game file for that game. For example; AA4th_edition.xml has the mapName
+						field showing a value of <b>revised</b> thus the folder where TripleA will find
+						the map is also <b>revised</b></li>
+						<br/>
+						<li>All map configuration files must be located inside:
+							<ul>
+								<li>centers.txt</li>
+								<li>polygons.txt</li>
+								<li>place.txt</li>
+								<li>map.properties</li>
+								<li>capitols.txt (optional for victory capitols)</li>
+								<li>vc.txt (optional for victory markers)</li>
+							</ul>
+						</li>
+						<br/>
+						<li>A folder named <b>baseTiles</b> with the broken up 256x256 tile images</li>
+						<br/>
+						<li>A folder name <b>reliefTiles</b> (optional if there is a relief map)</li>
+						<br/>
+						<li>The <b>smallMap.jpeg</b> image of the larger original map used</li>
+					</ol>
+				</p>
+				
+				<p>
+					Let us assume that a custom map we want to make will be called <b>viper</b>. Let us
+					also assume that we have a nice large image of our map with black borders separating
+					the territories. Our image can either be a GIF or PNG image.<br/>
+					<br/>
+					These are the steps we would take to integrate it into TripleA.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="0" cellpadding="4" width="800">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0" width="80">
+								<b>Step No.</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>User Action</b>
+							</td>
+						</tr>
+					
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(1)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Go into directory: triplea_0_6_0/classes/games/strategy/triplea/image/images/maps
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(2)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Create new directory called <b>viper</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(3)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Go back to the base of <b>classes</b>
+								Save the center points in our <b>viper</b> directory we made in Step No. 1
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center"  bgcolor="#ffcc99">
+								<b>(4)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Run the PolygonGrabber and save the polygons file in our <b>viper</b>
+								directory we made in Step No. 1
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(5)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Run the PlacementPicker and save the place.txt file in our <b>viper</b> directory.<br/>
+								<br/>
+								OR<br/>
+								<br/>
+								Create an empty place.txt file in the <b>viper</b> directory and then run AutoPlacementFinder
+								Enter &quot;viper&quot; when asked for a map name.
+								
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(6)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Run the TileImageBreaker and save all the tiles in <b>baseTiles</b> inside <b>viper</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(7)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								If we have a relief map, then run the ReliefImageBreaker and save all the tiles in
+								<b>reliefTiles</b> inside <b>viper</b>; say &quot;N&quot; to do Only Sea Zones
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(8)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Run the ImageShrinker and copy the <b>smallMap.jpeg</b> to the <b>viper</b> directory
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(9)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Create a <b>map.properties</b> file with map properties
+								See <a href="#sec_5.2">Section 5.2</a> for more information
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(10)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Make sure our XML game file shows <b>viper</b> as the value
+								for the &quot;mapName&quot; property option
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ffcc99">
+								<b>(11)</b>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								All Done !
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+		</blockquote>
+		
+		
+		<h2><a name="sec_5.2">5.2</a> Map Configuration</h2>
+		<blockquote>
+			<p>
+				Each map has its own configuration options. These are found in the map's directory
+				where there tile images and centers, polygons, and place text files are. These map
+				options can be configured at any time and does not require that TripleA be re-compiled
+				for the settings to take effect.
+			</p>
+			
+			<p>
+				This section and the following sub-sections will cover the following:
+				<ul>
+					<li>Changing territory colors</li>
+					<li>Pre-set releif map settings</li>
+					<li>Pre-set unit scales</li>
+					<li>Scroll Locking</li>
+					<li>Capital marker toggles</li>
+					<li>Victory Cities</li>
+					<li>Capital Cities</li>
+					<li>Victory Markers</li>
+				</ul>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+			
+
+			<h4><a name="sec_5.2.1">5.2.1</a> Map Properties</h4>
+			<blockquote>
+				<p>
+					Specific map properties are found in a file named <b>map.properties</b>. This
+					file can be editted at will by the user. It allows for the following changes:
+				</p>
+			
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								color.Americans=
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								HEX Number Color
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Color of all American Territories
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" bgcolor="#ffcc99">
+								units.scale=
+							</td>
+							
+							<td valign="top" bgcolor="#8fee8f">
+								Floating Point; One of :<br/>
+								<ul>
+									<li>1.25</li>
+									<li>1.00</li>
+									<li>0.875</li>
+									<li>0.8333</li>
+									<li>0.75</li>
+									<li>0.6666</li>
+									<li>0.5625</li>
+									<li>0.50</li>
+								</ul>
+							</td>
+							
+							<td valign="top" bgcolor="#afdfe6">
+								Starting scale size of image units 
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								map.hasRelief=
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Boolean (true/false)
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Sets relief images on or off by default
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								map.showCapitolMarkers
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Boolean (true/false)
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Display capital markers images
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								map.scrollWrapX=
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Boolean (true/false)
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Lock X-Axis scrolling
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								map.scrollWrapY=
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Boolean (true/false)
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Lock Y-Axis scrolling
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								map.width=
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Non-Zero Integer
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Width of map image
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								map.height=
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Non-Zero Integer
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Height of map image
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								#
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Any Printable Character
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								In file comments, these get ignored by TripleA
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					For completeness, below is an example of a <b>map.properties</b> file. This way
+					we can see how the above options and values are used in a practical setting.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Example Of A map.properties File</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;#Color settings for the map<br/>
+								&nbsp;&nbsp;#values must be a 6 digit hex number<br/>
+								&nbsp;&nbsp;color.British=996600<br/>
+								&nbsp;&nbsp;color.Americans=666600<br/>
+								&nbsp;&nbsp;color.Russians=993300<br/>
+								&nbsp;&nbsp;color.Germans=777777<br/>
+								&nbsp;&nbsp;color.Japanese=FF9900<br/>
+								&nbsp;&nbsp;color.Italians=5A5A5A<br/>
+								&nbsp;&nbsp;color.Neutral=dd5500<br/>
+								&nbsp;&nbsp;color.Impassible=cc9933<br/>
+								&nbsp;&nbsp;color.Chinese=442244<br/>
+								<br/>
+								&nbsp;&nbsp;#default unit scale<br/>
+								&nbsp;&nbsp;#value must be one of the menu options<br/>
+								&nbsp;&nbsp;units.scale=0.5625<br/>
+								<br/>
+								&nbsp;&nbsp;#does the map have relief images<br/>
+								&nbsp;&nbsp;map.hasRelief=false<br/>
+								<br/>
+								&nbsp;&nbsp;#show capitol markers<br/>
+								&nbsp;&nbsp;map.showCapitolMarkers=false<br/>
+								<br/>
+								&nbsp;&nbsp;map.width=4000<br/>
+								&nbsp;&nbsp;map.height=2000<br/>
+								<br/>
+								&nbsp;&nbsp;#lock horizontal scrolling<br/>
+								&nbsp;&nbsp;map.scrollWrapX=false<br/>
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+		
+			
+			<h4><a name="sec_5.2.2">5.2.2</a> Capital Cities</h4>
+			<blockquote>
+				<p>
+					TripleA is also able to mark certain territories as capitals. Along with
+					that, TripleA can draw an image on the territory to mark it as a capital.
+					These images are called &quot;Captial Markers&quot;.
+				</p>
+				
+				<p>
+					The default TripleA capital markers can be found in the directory listed
+					below; note that capital markers end with the word &quot;large&quot;:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="600">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Location Of Capital Markers</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;triplea_0_6_0/classes/games/strategy/triplea/image/images/flags<br/>
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Below is a list of TripleA's captial markers that are used for Axis & Allies
+					games and other variants:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" colspan="6" bgcolor="#ffb6c0">
+								<b>TripleA Capital Markers</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<img src="images/Americans_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/Australians_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/British_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/Chinese_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/European-Union_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/Germans_large.png" width="100" height="100" alt="" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center">
+								U.S.A
+							</td>
+							
+							<td align="center">
+								Australia
+							</td>
+							
+							<td align="center">
+								U.K
+							</td>
+							
+							<td align="center">
+								China
+							</td>
+							
+							<td align="center">
+								E.U
+							</td>
+							
+							<td align="center">
+								Germany
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<img src="images/Italians_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/Japanese_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/Mid-East_large.png" width="98" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/Red-China_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/Russians_large.png" width="100" height="100" alt="" />
+							</td>
+							
+							<td>
+								<img src="images/UK_Union-Jack_large.png" width="100" height="100" alt="" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="center">
+								Italy
+							</td>
+							
+							<td align="center">
+								Japan
+							</td>
+							
+							<td align="center">
+								Mid-East
+							</td>
+							
+							<td align="center">
+								China
+							</td>
+							
+							<td align="center">
+								U.S.S.R
+							</td>
+							
+							<td align="center">
+								U.K Union Jack
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Capital cities can be added in a game's XML file. An extra option has to be
+					added to a territory attachment tag.<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Capital XML Option</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<option name="capital" value="Germans"/> 
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					A full example of a territory attachment with the capital option:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Capital XML Option</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<attatchment name="territoryAttatchment"
+             attatchTo="Germany"
+             javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment"
+             type="territory">
+
+             <option name="production" value="10"/>
+             <option name="capital" value="Germans"/>       
+</attatchment>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					For TripleA to draw capital markers more appropriately, it uses a <b>capitols.txt</b>
+					file located in the maps directory. This file lists all the capitals and
+					the starting (X,Y) coordinates from where to draw the capital markers. If this file
+					is missing, then TripleA will use a default location on where to draw the images.
+				</p>
+				
+				<p>
+					An example of a <b>capitols.txt</b> file is listed below. Note that the names
+					of the territories need to match the names in the other text files (centers, place, polygons).<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Capitols.txt File Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;United Kingdom (709,292)<br/>
+								&nbsp;&nbsp;Germany (981, 532)<br/>
+								&nbsp;&nbsp;Russia (1723,337)<br/>
+								&nbsp;&nbsp;Japan (2711,686)<br/>
+								&nbsp;&nbsp;Eastern United States (33,616)
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.2.3">5.2.3</a> Victory Cities</h4>
+			<blockquote>
+				<p>
+					TripleA has the ability to keep track of territories that are considered
+					to be an objective to capture and hold; otherwise known as &quot;victory cities&quot;.
+					The owner of these territories are tracked and displayed in TripleA's stats 
+					window.
+				</p>
+				
+				<p>
+					Victory Cities, just like capitals, have their own image markers as well.
+					TripleA comes with a very simple victory marker which can be replaced by
+					the user at any time. The victory marker can be found below:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Capital XML Option</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;triplea_0_6_0/classes/games/strategy/triplea/image/images/vc.png
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					<table border="1">
+						<tr>
+							<td align="left" valign="top" bgcolor="#ffb6c0">
+								<b>TripleA's Default VC Image</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<img src="images/vc.png" width="22" height="18" alt="vc image" />
+							</td>
+						</tr>
+					
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Victory cities can be added in a game's XML file. An extra option has to be
+					added to a territory attachment tag.<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Victory City XML Option</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<option name="victoryCity" value="true"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					A full example of a territory attachment with the capital option:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Victory City XML Option</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<attatchment name="territoryAttatchment"
+             attatchTo="Karelia"
+             javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment"
+             type="territory">
+
+             <option name="production" value="10"/>
+             <option name="victoryCity" value="true"/>
+</attatchment>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Capitals can also be victory cities.
+				</p>
+				
+				<p>
+					For TripleA to draw victory city markers more appropriately, it uses a <b>vc.txt</b>
+					file located in the maps directory. This file lists all the victory cities and
+					the starting (X,Y) coordinates from where to draw the victory markers. If this file
+					is missing, then TripleA will use a default location on where to draw the images.
+				</p>
+				
+				<p>
+					An example of a <b>vc.txt</b> file is listed below. Note that the names
+					of the territories need to match the names in the other text files (centers, place, polygons).<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>vc.txt File Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								<code>
+								&nbsp;&nbsp;Karelia S.S.R. (1243,276)<br/>
+								&nbsp;&nbsp;Russia (1863,214)<br/>
+								&nbsp;&nbsp;Western Europe (807,527)<br/>
+								&nbsp;&nbsp;Germany (1090,518)<br/>
+								&nbsp;&nbsp;Southern Europe (980,880)<br/>
+								&nbsp;&nbsp;United Kingdom (760,390)<br/>
+								&nbsp;&nbsp;Eastern United States (205,630)<br/>
+								&nbsp;&nbsp;Western United States (3343,735)<br/>
+								&nbsp;&nbsp;Philipine Islands (2435,1250)<br/>
+								&nbsp;&nbsp;India (1939,997)<br/>
+								&nbsp;&nbsp;Japan (2680,750)<br/>
+								&nbsp;&nbsp;Kwangtung (2427, 790)
+								</code>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+		</blockquote>
+		
+		
+		<h2><a name="sec_5.3">5.3</a> Customizing The XML Game File</h2>
+		<blockquote>
+			<p>
+				XML files are used to set-up and initialize games in TripleA. These XML files are
+				found in the <b>games</b> directory in the root of TripleA. They can edited and
+				used to create new kinds of games or variants of existing games. XML files can
+				usually be edited by using any simple text editor, though it may be wise to use
+				some sort of special editor that can color code the XML. It makes it easier to
+				edit.
+			</p>
+			
+			<p>
+				The sections below will mainly go over how to edit and change values in some
+				of the XML game files that come with TripleA. TripleA currently has game logic
+				code for use with Axis and Allies games, so the following sections shall use
+				those as examples.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+			
+			
+			<h4><a name="sec_5.3.1">5.3.1</a> Game Information Header</h4>
+			<blockquote>
+				<p>
+					Every game that comes with TripleA normally has four XML tags that gives
+					us some information about it.
+					<ul>
+						<li>XML Version</li>
+						<li>XML Game Sheet Definition</li>
+						<li>Name and Version of Game</li>
+						<li>Java Class Loader</li>
+					</ul>
+				</p>
+				
+				<p>
+					At the top of every XML file it must include a tag specifying what
+					version of XML is being used.<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>XML Version</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<?xml version="1.0" ?>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The game definition sheet must always be specified. In the example below
+					we use the &quot;game.dtd&quot; definition. It can be located in the
+					<i>triplea_0_6_0/data/games/strategy/engine/xml</i> directory.<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Definition Sheet</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<!DOCTYPE game SYSTEM "game.dtd">
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The &quot;info&quot; tag contains the game name and version number. This normally
+					can be edited by any one and will not affect the game much. It is just for display
+					on the main TripleA window when the game is loaded.<br/>
+					<br/>
+					The &quot;loader&quot; tag defines what class file is used to load this game. As we
+					can see below; the class used to load this Axis And Allies 4th Edition game is a class
+					called <b>TripleA.class</b> but we do not include the &quot;.class&quot; but we do
+					include the full package path.<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Info & Loader Tags</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<info name="4th Edition" version="1.2"/>
+<loader javaClass="games.strategy.triplea.TripleA"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.3.2">5.3.2</a> Territories</h4>
+			<blockquote>
+				<p>
+					Territory definitions occur in the <b>map</b> tags along with their 
+					respective connections. Territories can be added or removed by editing
+					these territory tags. These tags come with two values &quot;Name&quot;
+					and &quot;water&quot;
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the territory
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								water="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								boolean (true/false)
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								True if this territory is a sea zone
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Two qualified examples:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Territory Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<territory name="Argentina"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Territory Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<territory name="Atlantic Ocean" water="true"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.3.3">5.3.3</a> Territory Connections</h4>
+			<blockquote>
+				<p>
+					Each territory must have some kind of relation to the territory
+					next to it. When two territories are connected together, that means
+					that a movement action can occur between those two territories. These
+					connections are defined using <b>connection</b> tags located inside
+					the <b>map</b> tag where you also find <b>territory</b> tags.
+				</p>
+				
+				<p>
+					A connection tag consists of only two options; source and destination.
+					When a connection tag is made, there is no need to do the same connection
+					in reverse. When territory A is connected to territory B, this also implies
+					that territory B is connected to territory A.<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								t1="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the source territory
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								t2="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the destination territory
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Connection Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<connection t1="Venezuala" t2="Brazil"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.3.4">5.3.4</a> Resources</h4>
+			<blockquote>
+				<p>
+					The resources for the game needs to have some sort of name. Maybe it is Dollars,
+					or maybe it is gold bars. Either way modifying this is very simple. We change the
+					the name option of the <b>resource</b> tag which is enclosed between a
+					<b>resourceList</b> tag.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the resource
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Resource Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<resourceList>
+         <resource name="IPCs"/>
+</resourceList>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.3.5">5.3.5</a> Players & Alliances</h4>
+			<blockquote>
+				<p>
+					Players and alliances can be defined using the <b>player</b> and
+					<b>alliance</b> tags which are to be enclosed inside the <b>playerList</b>
+					tag. Defining player names and alliance are pretty straight forward.
+				</p>
+				
+				<p>
+					Player tag options and values<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the player
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								optional="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								boolean (true/false)
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Is this player mandatory
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					Alliance tag options and values<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								player="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the player
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								alliance="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the alliance
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Player & Alliance Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<playerList>
+      <player name="Japanese" optional="false"/>
+      <player name="Germans" optional="false"/>
+      <player name="British" optional="false"/>
+      <player name="Americans" optional="false"/>
+      <player name="Russians" optional="false"/>
+
+      <alliance player="Germans" alliance="Axis"/>
+      <alliance player="Japanese" alliance="Axis"/>
+      <alliance player="British" alliance="Allies"/>
+      <alliance player="Russians" alliance="Allies"/>
+      <alliance player="Americans" alliance="Allies"/>
+</playerList>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.3.6">5.3.6</a> Units</h4>
+			<blockquote>
+				<p>
+					Units are defined in <b>unit</b> tags enclosed inside <b>unitList</b> tags.
+					These too are simple tags that define the names of units only. The
+					properties of units can be modified later on using the <b>attachment</b>
+					tags (which will be discussed later in <a href="#sec_5.3.10">Section 5.3.10</a>.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the unit
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Unit Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<unitList>
+       <unit name="infantry"/>
+       <unit name="armour"/>
+       <unit name="fighter"/>
+       <unit name="bomber"/>
+       <unit name="transport"/>
+       <unit name="battleship"/>
+       <unit name="carrier"/>
+       <unit name="submarine"/>
+       <unit name="factory"/>
+       <unit name="aaGun"/>
+       <unit name="artillery"/>
+       <unit name="destroyer"/>   
+</unitList>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.3.7">5.3.7</a> Game-play Delegates</h4>
+			<blockquote>
+				<p>
+					<b>Delegate</b> tags are found inside the <b>gamePlay</b> tags (along with other tags).
+					What these tags basically do is identify a certain Java class with a delegate name so
+					that it can be used later on in other tags. These Java classes are delegates themselves
+					that handel game logic. These delegate tags serve as a kind of &quot;macro&quot; that
+					binds the Java class with a specified name.
+				</p>
+				
+				<p>
+					For example; all the game logic for conducting battles in an Axis And Allies 4th Edtion
+					game are in the <b>BattleDelegate.java</b> class located in <i>games.strategy.triplea.delegate</i>
+					class path. When we want to reference that delegate in the XML we have to make a <b>delegate</b>
+					tag and bind it to a name. A name as &quot;battle&quot; would be fine.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the delegate
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								javaClass="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name and Package location of the delegate class
+							</td>
+						</tr>
+						
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								display="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								What TripleA will display when the delegate is in use
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Delegate Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Of course there will be many delegates that TripleA can use for handeling game logic.
+					And thus would need numerous delegate tags defined in the XML to set-up a game properly.
+					For the sake of completenes and practicallity, below is an example of all the delegate
+					tags used in the Axis And Allies 4th Edition XML file:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Delegate Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+<delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+<delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+<delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+<delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+<delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+<delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+<delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+<delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+<delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+<delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			<h4><a name="sec_5.3.8">5.3.8</a> Game-play Sequence & Steps</h4>
+			<blockquote>
+				<p>
+					Every game has a certain repeatable sequence that needs to be followed
+					for the game to run properly. Such a sequence needs to be defined in the
+					XML file as well. The sequence is broken down in to individual steps, and
+					it is these steps that need to be defined. We have several <b>step</b>
+					tags encapsulated by one <b>sequence</b> tag. The <b>step</b> tags define
+					the sequence of the game.
+				</p>
+				
+				<p>
+					<b>Step</b> tags are quite versitile and simple to implement. All <b>step</b>
+					tags must have a name and must be bound to a delegate. The delegate it is bound
+					to is a delegate name that has been predefined in a <b>delegate</b> tag. Then
+					after that there are several different options that can be added depending what
+					kind of a step is being made. The specifications are listed below as well as a
+					few examples.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the step
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								delegate="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Delegate name
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								player="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Player name
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								maxRunCount="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Integer
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Number of maximum occurances
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								display="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								 What TripleA will display when the delegate is in use
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					Bid placements can only occur once in this game, so we make bidding happen first
+					and limit it to one occurance.<br/>
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Step Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
+<step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					We define a the full turn sequence of a player through multiple steps:<br/>
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Step Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<step name="japaneseTech" delegate="tech" player="Japanese"/>
+<step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
+<step name="japanesePurchase" delegate="purchase" player="Japanese"/>
+<step name="japaneseCombatMove" delegate="move" player="Japanese"/>
+<step name="japaneseBattle" delegate="battle" player="Japanese"/>
+<step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
+<step name="japanesePlace" delegate="place" player="Japanese"/>
+<step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.3.9">5.3.9</a> Production Rules</h4>
+			<blockquote>
+				<p>
+					Production rules define how the game handels the production of units
+					and resources. Production rules consist of three main tags which get 
+					encapsulated inside <b>production</b> tags:
+					<ul>
+						<li><b>productionRule</b> : Defines the name of the item, its cost, quantity, and result</li>
+						<li><b>productionFrontier</b> : Defines a group of production</li>
+						<li><b>playerProduction</b> : What players are eligable for production</li>
+					</ul>
+				</p>
+				
+				<p>
+					A <b>productionRule</b> tag consists of several options and sub-tags that
+					will define the production method and cost of an item or unit. Normally a
+					production rule has a name that defines what it is producing, such as &quot;buyTanks&quto;.
+					Then a <b>cost</b> tag specifies the quantity of resources that is needed to make a
+					purchase. Lastly, a <b>result</b> tag is used to explain what the result of the purchase
+					will yeild and the quantity.
+				</p>
+				
+				<p>
+					Options and Values for <b>productionRule</b> tag:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the productionRule
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					Options and Values for <b>cost</b> tag:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								resource="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the resource
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								quantity="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Integer
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Amount needed for purchase
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					Options and Values for <b>result</b> tag:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								resourceOrUnit="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of the resource or unit that is being produced
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								quantity="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								Integer
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Quantity of that product to give out
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					A practical example:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Production Rule Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<productionRule name="buyTanks">
+         <cost resource="IPCs" quantity="4" />
+         <result resourceOrUnit="armour" quantity="1"/>
+</productionRule>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					A <b>productionFrontier</b> tag groups different types of production rules.
+					There can be more than one production frontier. For example in Axis And Allies 4th Edition,
+					there is regular production of units and production of technologically advanced
+					units. Both are in different frontiers beacuse they deal with the same kind of
+					units, but with different values. Such as a standard airplane vs a jet powered airplane.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of production frontier
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				
+				<p>
+					<b>frontierRules</b> tags are sub-tags of <b>productionFrontier</b>. These sub-tags define
+					what productionRule is grouped with that frontier.<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Name of frontier rule
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					A practical example:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Production Frontier Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<productionFrontier name="production">
+         <frontierRules name="buyInfantry"/>
+         <frontierRules name="buyArtillery"/>
+         <frontierRules name="buyArmour"/>
+</productionFrontier>
+
+<productionFrontier name="productionIndustrialTechnology">
+         <frontierRules name="buyInfantryIndustrialTechnology"/>
+         <frontierRules name="buyArtilleryIndustrialTechnology"/>
+         <frontierRules name="buyArmourIndustrialTechnology"/>
+</productionFrontier>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Last but not least, <b>playerProduction</b> tags specify which players
+					are eligable to which production forntier.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ffb6c0">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffcc99">
+								player="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Player name
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffcc99">
+								frontier="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#8fee8f">
+								String
+							</td>
+							
+							<td bgcolor="#afdfe6">
+								Production frontier name
+							</td>
+						</tr>
+					</table>
+					<br/>
+					
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+								<b>Player Production Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#8fee8f">
+<xmp>
+<playerProduction player="British" frontier="production"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+		</blockquote>
+		
+		
+		<hr/>
+		<a href="http://sourceforge.net"><img src="images/sflogo.png" width="125" height="37" border="0" alt="sf logo"/></a>
+		<br/>
+		<a href="http://sourceforge.net/donate/index.php?group_id=44492"><img src="images/project-support.jpg" width="88" height="32" border="0" alt="support"/></a>
+	</body>
+</html>
