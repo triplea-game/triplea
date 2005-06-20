@@ -1,18 +1,20 @@
 Changes for 0.6.0
 
-* draw a line under overflow units so you can tell what belongs in a territory
+* updated developer docs, incomplete for now (George_H)
 
-* fixed bug where you could retreat subs if all your opponents destroyers were destroyed in one round of combat
+* draw a line under overflow units so you can tell what belongs in a territory (sgb)
 
-* fixed bug where damaged battleships would not repair while viewing history
+* fixed bug where you could retreat subs if all your opponents destroyers were destroyed in one round of combat (sgb)
 
-* fixed small map refresh (whole map goes white) when switching skins
+* fixed bug where damaged battleships would not repair while viewing history (sgb)
 
-* fixed bug where sometimes dice would not show up on the select casualties panel
+* fixed small map refresh (whole map goes white) when switching skins (sgb)
 
-* removed "Heavy Bombers Pick best of X Dice" option from classic and wandering head big world, it didnt work
+* fixed bug where sometimes dice would not show up on the select casualties panel (sgb)
 
-* Fixed bug where transport moves could be undone before moves where the transport had been loaded/unloaded
+* removed "Heavy Bombers Pick best of X Dice" option from classic and wandering head big world, it didnt work (sgb)
+
+* Fixed bug where transport moves could be undone before moves where the transport had been loaded/unloaded (sgb)
 
 Changes for 0.5.4
 
