@@ -88,6 +88,8 @@
         <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
             <include name="**/*.html"/>
             <include name="**/*.png"/>
+	    <include name="**/*.gif"/>
+	    <include name="**/*.jpg"/>
         </zipfileset>
       
         <zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
@@ -173,6 +175,8 @@
         <zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
             <include name="**/*.html"/>
             <include name="**/*.png"/>
+	    <include name="**/*.gif"/>
+	    <include name="**/*.jpg"/>
         </zipfileset>
       
         <zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
