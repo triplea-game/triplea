@@ -199,8 +199,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Matches.UnitIsNotAir);
         
         //we dont want to change the movement of transported land units if this is a sea battle
+        //so restrict non air to remove land units
         if(m_battleSite.isWater())
-            nonAir = Match.getMatches(attackingUnits, Matches.UnitIsNotLand);
+            nonAir = Match.getMatches(nonAir, Matches.UnitIsNotLand);
         DelegateFinder.moveDelegate(m_data).markNoMovement(nonAir);
 
         //dependencies
