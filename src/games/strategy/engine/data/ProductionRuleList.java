@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * ProductionRuleList.java
  *
  * Created on October 22, 2001, 10:23 AM
@@ -15,7 +29,7 @@ import java.util.*;
  */
 public class ProductionRuleList extends GameDataComponent
 {
-	private final Map m_productionRules = new HashMap();
+	private final Map<String, ProductionRule> m_productionRules = new HashMap<String, ProductionRule>();
 	
     public ProductionRuleList(GameData data) 
 	{
@@ -34,6 +48,6 @@ public class ProductionRuleList extends GameDataComponent
 	
 	public ProductionRule getProductionRule(String name)
 	{
-		return (ProductionRule) m_productionRules.get(name);
+		return m_productionRules.get(name);
 	}
 }

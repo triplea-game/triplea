@@ -28,13 +28,12 @@ import java.io.*;
 /**
  *
  * @author  Sean Bridges
- * @version 1.0
  *
- * A collection of unit types
+ *
  */
 public class DelegateList extends GameDataComponent
 {
-	private Map m_delegates = new HashMap();
+	private Map<String, IDelegate> m_delegates = new HashMap<String, IDelegate>();
 
     public DelegateList(GameData data)
 	{
@@ -51,23 +50,23 @@ public class DelegateList extends GameDataComponent
 		return m_delegates.size();
 	}
 
-	public Iterator iterator()
+	public Iterator<IDelegate> iterator()
 	{
 		return m_delegates.values().iterator();
 	}
 
 	public IDelegate getDelegate(String name)
 	{
-		return (IDelegate) m_delegates.get(name);
+		return m_delegates.get(name);
 	}
 
 	private void writeObject(ObjectOutputStream out)
 	{
-    System.out.println();
+	    //dont write since delegates should be handled seperatly.
 	}
 
 	private void readObject(ObjectInputStream in)
 	{
-		m_delegates = new HashMap();
+		m_delegates = new HashMap<String, IDelegate>();
 	}
 }

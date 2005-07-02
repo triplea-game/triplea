@@ -83,10 +83,8 @@ public class ChannelMessenger implements IChannelMessenger
     /* 
      * @see games.strategy.net.IChannelMessenger#createChannel(java.lang.Class, java.lang.String)
      */
-    public void createChannel(Class channelInterface, String channelName)
+    public void createChannel(Class<? extends IChannelSubscribor> channelInterface, String channelName)
     {
-        if(!IChannelSubscribor.class.isAssignableFrom(channelInterface))
-            throw new IllegalArgumentException(channelInterface.getName() +  "does not implement IRemote");
         if(!channelInterface.isInterface())
             throw new IllegalArgumentException(channelInterface.getName() +  " must be an interface");
         

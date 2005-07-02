@@ -35,7 +35,7 @@ public class MapRouteDrawer
     //only static methods
     private MapRouteDrawer()
     {
-    };
+    }
 
     /**
      * Draw m_route to the screen, do nothing if null.
@@ -94,7 +94,7 @@ public class MapRouteDrawer
         int yOffset = view.getYOffset();
         int xOffset = view.getXOffset();
 
-        List shapes = new ArrayList();
+        List<Shape> shapes = new ArrayList<Shape>();
 
         for (int i = 0; i < points.length; i++)
         {
@@ -117,7 +117,7 @@ public class MapRouteDrawer
 
         for (int i = 0; i < shapes.size(); i++)
         {
-            Shape shape = (Shape) shapes.get(i);
+            Shape shape = shapes.get(i);
 
             drawWithTranslate(graphics, shape, 0);
 
@@ -192,7 +192,7 @@ public class MapRouteDrawer
      * (x,y) - the first point to draw from (xx, yy) - the point to draw too
      * (xxx, yyy) - the next point that the line segment will be drawn to
      */
-    private static void drawCurvedLineWithNextPoint(Graphics2D graphics, int x, int y, int xx, int yy, int xxx, int yyy, List shapes)
+    private static void drawCurvedLineWithNextPoint(Graphics2D graphics, int x, int y, int xx, int yy, int xxx, int yyy, List<Shape> shapes)
     {
         final int maxControlLength = 150;
         int controlDiffx = xx - xxx;
@@ -230,7 +230,7 @@ public class MapRouteDrawer
     }
 
     //http://www.experts-exchange.com/Programming/Programming_Languages/Java/Q_20627343.html
-    private static void drawLineSegment(Graphics2D graphics, int x, int y, int xx, int yy, List shapes)
+    private static void drawLineSegment(Graphics2D graphics, int x, int y, int xx, int yy, List<Shape> shapes)
     {
         float arrowWidth = 12.0f;
         float theta = 0.7f;

@@ -78,7 +78,7 @@ public class TripleAFrame extends JFrame
     private ActionButtons m_actionButtons;
 
     //a set of TripleAPlayers
-    private Set m_localPlayers;
+    private Set<IGamePlayer> m_localPlayers;
 
     private JPanel m_gameMainPanel = new JPanel();
 
@@ -101,7 +101,7 @@ public class TripleAFrame extends JFrame
     private HistorySynchronizer m_historySyncher;
 
     /** Creates new TripleAFrame */
-    public TripleAFrame(IGame game, Set players) throws IOException
+    public TripleAFrame(IGame game, Set<IGamePlayer> players) throws IOException
     {
         super("TripleA");
 
@@ -451,10 +451,10 @@ public class TripleAFrame extends JFrame
                 BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
                 panel.setLayout(layout);
 
-                Iterator iter = new TreeSet(stats.getData().keySet()).iterator();
+                Iterator<Integer> iter = new TreeSet<Integer>(stats.getData().keySet()).iterator();
                 while (iter.hasNext())
                 {
-                    Object key = iter.next();
+                    Integer key = iter.next();
                     int value = stats.getData().getInt(key);
                     JLabel label = new JLabel(key + " was rolled " + value + " times");
                     panel.add(label);
@@ -515,7 +515,7 @@ public class TripleAFrame extends JFrame
                 }
                 
                 
-                StringBuffer text = new StringBuffer(1000);
+                StringBuilder text = new StringBuilder(1000);
                                 
                 text.append("Round,Player Turn,");
                 
@@ -881,7 +881,7 @@ public class TripleAFrame extends JFrame
 
         void refresh()
         {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append(in == null ? "none" : in.getName());
             if (in != null)
             {
@@ -897,7 +897,7 @@ public class TripleAFrame extends JFrame
         }
     };
 
-    public IntegerMap getProduction(PlayerID player, boolean bid)
+    public IntegerMap<ProductionRule> getProduction(PlayerID player, boolean bid)
     {
         m_actionButtons.changeToProduce(player);
         return m_actionButtons.waitForPurchase(bid);
@@ -968,10 +968,10 @@ public class TripleAFrame extends JFrame
         return choice == 0;
     }
 
-    public Territory selectTerritoryForAirToLand(Collection candidates)
+    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
     {
 
-        JList list = new JList(new Vector(candidates));
+        JList list = new JList(new Vector<Territory>(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         JPanel panel = new JPanel();
@@ -996,10 +996,10 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForTech();
     }
 
-    public Territory getRocketAttack(Collection candidates, Territory from)
+    public Territory getRocketAttack(Collection<Territory> candidates, Territory from)
     {
 
-        JList list = new JList(new Vector(candidates));
+        JList list = new JList(new Vector<Territory>(candidates));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         JPanel panel = new JPanel();
@@ -1031,10 +1031,10 @@ public class TripleAFrame extends JFrame
         if (id == null)
             return false;
 
-        Iterator iter = m_localPlayers.iterator();
+        Iterator<IGamePlayer> iter = m_localPlayers.iterator();
         while (iter.hasNext())
         {
-            IGamePlayer gamePlayer = (IGamePlayer) iter.next();
+            IGamePlayer gamePlayer = iter.next();
             if (gamePlayer.getID().equals(id) && gamePlayer instanceof TripleAPlayer)
             {
                 return true;
@@ -1276,7 +1276,7 @@ public class TripleAFrame extends JFrame
         public void actionPerformed(ActionEvent e)
         {
             showHistory();
-        };
+        }
     };
 
     private AbstractAction m_showGameAction = new AbstractAction("Show current game")
@@ -1288,10 +1288,10 @@ public class TripleAFrame extends JFrame
         public void actionPerformed(ActionEvent e)
         {
             showGame();
-        };
+        }
     };
 
-    public Collection moveFightersToCarrier(Collection fighters, Territory where)
+    public Collection<Unit> moveFightersToCarrier(Collection<Unit> fighters, Territory where)
     {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -1307,9 +1307,9 @@ public class TripleAFrame extends JFrame
         if (choice == 0)
         {
             //arrayList.subList() is not serializable
-            return new ArrayList(new ArrayList(fighters).subList(0, text.getValue()));
+            return new ArrayList<Unit>(new ArrayList<Unit>(fighters).subList(0, text.getValue()));
         } else
-            return new ArrayList(0);
+            return new ArrayList<Unit>(0);
     }
 
     private void addUnitSizeMenu(JMenu parentMenu)

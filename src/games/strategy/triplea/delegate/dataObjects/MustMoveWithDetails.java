@@ -20,9 +20,10 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
+import games.strategy.engine.data.Unit;
 import games.strategy.util.IntegerMap;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -39,23 +40,23 @@ public class MustMoveWithDetails implements java.io.Serializable
 	/**
 	 * Maps Unit -> Collection of units.
 	 */
-	private Map m_mapping;
-	private IntegerMap m_movement;
+	private Map<Unit,Collection<Unit>> m_mapping;
+	private IntegerMap<Unit> m_movement;
 	
 	
 	/** Creates new MustMoveWithReplay */
-    public MustMoveWithDetails(Map mapping, IntegerMap movement) 
+    public MustMoveWithDetails(Map<Unit,Collection<Unit>> mapping, IntegerMap<Unit> movement) 
 	{
 		m_mapping = mapping;
 		m_movement = movement;
     }
 
-	public Map getMustMoveWith()
+	public Map<Unit,Collection<Unit>> getMustMoveWith()
 	{
 		return m_mapping;
 	}
 
-	public IntegerMap getMovement()
+	public IntegerMap<Unit> getMovement()
 	{
 		return m_movement;
 	}

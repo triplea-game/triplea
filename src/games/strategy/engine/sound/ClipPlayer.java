@@ -16,7 +16,10 @@
 package games.strategy.engine.sound;
 
 
+import games.strategy.triplea.sound.SoundPath;
+
 import javax.sound.sampled.*;
+
 import java.io.*;
 import java.util.prefs.*;
 import java.util.*;
@@ -34,7 +37,7 @@ public class ClipPlayer
   private static final String SOUND_PREFERENCE = "beSilent";
   private static ClipPlayer s_clipPlayer;
   private boolean m_beSilent = false;
-  private HashMap m_sounds = new HashMap();
+  private HashMap<String, Clip> m_sounds = new HashMap<String, Clip>();
 
   public static synchronized ClipPlayer getInstance()
   {
@@ -90,7 +93,7 @@ public class ClipPlayer
    * @param clipName String - the file name of the clip
    * @param resourceLocation Class - the location of the clip.
    */
-  public void playClip(String clipName, Class resourceLocation)
+  public void playClip(String clipName, Class<SoundPath> resourceLocation)
   {
     
     if(m_beSilent)
@@ -107,18 +110,18 @@ public class ClipPlayer
   /**
    * To reduce the delay when the clip is first played, we can preload clips here.
    */
-  public void preLoadClip(String clipName, Class resourceLocation)
+  public void preLoadClip(String clipName, Class<SoundPath> resourceLocation)
   {
     
     loadClip(clipName, resourceLocation);
   }
 
-  private Clip loadClip(String clipName, Class resourceLocation)
+  private Clip loadClip(String clipName, Class<SoundPath> resourceLocation)
   {
     Clip clip;
     if(m_sounds.containsKey(clipName))
     {
-      clip = (Clip) m_sounds.get(clipName);
+      clip = m_sounds.get(clipName);
     }
     else
     {

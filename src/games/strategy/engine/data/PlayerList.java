@@ -32,7 +32,7 @@ public class PlayerList extends GameDataComponent
 {
 
 	//maps String playerName -> PlayerID
-	private final Map m_players = new HashMap();
+	private final Map<String,PlayerID> m_players = new HashMap<String,PlayerID>();
 	
 	/** Creates new PlayerCollection */
     public PlayerList(GameData data) 
@@ -55,7 +55,7 @@ public class PlayerList extends GameDataComponent
 	{
 	    if(PlayerID.NULL_PLAYERID.getName().equals(name))
 	        return PlayerID.NULL_PLAYERID;
-		return (PlayerID) m_players.get(name);
+		return m_players.get(name);
 	}
 	
 	public String[] getNames()
@@ -65,7 +65,7 @@ public class PlayerList extends GameDataComponent
 		return values;
 	}
 	
-	public Collection getPlayers()
+	public Collection<PlayerID> getPlayers()
 	{
 		return m_players.values();
 	}

@@ -16,7 +16,6 @@ package games.strategy.triplea.ui.display;
 import java.util.*;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -52,7 +51,7 @@ public class TripleaDisplay implements ITripleaDisplay
     /* (non-Javadoc)
      * @see games.strategy.triplea.ui.display.ITripleaDisplay#showBattle(games.strategy.net.GUID, java.util.List, games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection)
      */
-    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection attackingUnits, Collection defendingUnits, Map unit_dependents,PlayerID attacker, PlayerID defender)
+    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Map<Unit, Collection<Unit>> unit_dependents,PlayerID attacker, PlayerID defender)
     {
         m_ui.getBattlePanel().showBattle(battleID,  location, battleTitle,  attackingUnits, defendingUnits, unit_dependents, attacker, defender);
         
@@ -68,7 +67,13 @@ public class TripleaDisplay implements ITripleaDisplay
     /* 
      * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
      */
-    public void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents)
+    public void casualtyNotification(GUID battleID,
+            String step,
+            DiceRoll dice,
+            PlayerID player,
+            Collection<Unit> killed,
+            Collection<Unit> damaged,
+            Map<Unit,Collection<Unit>> dependents)
     {
         m_ui.getBattlePanel().casualtyNotification(step,dice, player, killed, damaged, dependents);
         

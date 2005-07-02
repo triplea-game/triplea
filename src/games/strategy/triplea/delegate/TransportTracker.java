@@ -42,23 +42,23 @@ public class TransportTracker implements java.io.Serializable
 		return MoveValidator.getTransportCost(units);
 	}
 
-	private Map m_transporting = new HashMap(); //maps unit -> transporter
-	private Map m_transportedBy = new HashMap(); //maps transporter -> unit collection, inverse of m_transports
-	private Map m_unloaded = new HashMap();
- private Map m_alliedLoadedThisTurn = new HashMap(); //maps unit->Collection of units
+	private Map<Unit, Collection<Unit>> m_transporting = new HashMap<Unit, Collection<Unit>>(); //maps unit -> transporter
+	private Map<Unit, Unit> m_transportedBy = new HashMap<Unit, Unit>(); //maps transporter -> unit collection, inverse of m_transports
+	private Map<Unit, Collection<Unit>> m_unloaded = new HashMap<Unit, Collection<Unit>>();
+	private Map<Unit, ArrayList<Unit>> m_alliedLoadedThisTurn = new HashMap<Unit, ArrayList<Unit>>(); //maps unit->Collection of units
                                                      //allied transports canot
 
 	/**
 	 * Returns the collection of units that the given transport is transporting.
 	 * Could be null.
 	 */
-	public Collection transporting(Unit transport)
+	public Collection<Unit> transporting(Unit transport)
 	{
-		Collection transporting = (Collection) m_transporting.get(transport);
+		Collection<Unit> transporting = m_transporting.get(transport);
 		if(transporting == null)
 			return null;
 
-		return new ArrayList(transporting);
+		return new ArrayList<Unit>(transporting);
 	}
 
   
@@ -66,21 +66,22 @@ public class TransportTracker implements java.io.Serializable
    * Returns the collection of units that the given transport has unloaded this turn.
    * Could be empty.
    */
-	public Collection unloaded(Unit transport)
+	@SuppressWarnings("unchecked")
+    public Collection<Unit> unloaded(Unit transport)
 	{
-		Collection unloaded = (Collection) m_unloaded.get(transport);
+		Collection<Unit> unloaded = m_unloaded.get(transport);
 		if(unloaded == null)
 			return Collections.EMPTY_LIST;
 	  // Copy data structure so that someone doesn't nuke it by mistake
-		return new ArrayList(unloaded);
+		return new ArrayList<Unit>(unloaded);
 	}
 
-	public Collection transportingAndUnloaded(Unit transport)
+	public Collection<Unit> transportingAndUnloaded(Unit transport)
 	{
 
-		Collection rVal = transporting(transport);
+		Collection<Unit> rVal = transporting(transport);
 		if(rVal == null)
-			rVal = new ArrayList();
+			rVal = new ArrayList<Unit>();
 
 		rVal.addAll(unloaded(transport));
 		return rVal;
@@ -90,15 +91,15 @@ public class TransportTracker implements java.io.Serializable
 	 * Returns a map of transport -> collection of transported units.
 	 */
 
-	public Map transporting(Collection units)
+	public Map<Unit, Collection<Unit>> transporting(Collection<Unit> units)
 	{
-		Map returnVal = new HashMap();
-		Iterator iter = units.iterator();
+		Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
+		Iterator<Unit> iter = units.iterator();
 		while(iter.hasNext())
 		{
-			Unit transported = (Unit) iter.next();
+			Unit transported = iter.next();
 			Unit transport = transportedBy(transported);
-			Collection transporting = transporting(transport);
+			Collection<Unit> transporting = transporting(transport);
 			if(transporting != null)
 			{
 				returnVal.put(transport, transporting);
@@ -112,27 +113,27 @@ public class TransportTracker implements java.io.Serializable
     public void undoUnload(Unit unit, Unit transport, PlayerID id)
     {
         loadTransport(transport, unit, id);
-        Collection unload = (Collection) m_unloaded.get(transport);
+        Collection unload = m_unloaded.get(transport);
         unload.remove(unit);
     }
 
 	public void unload(Unit unit, UndoableMove undoableMove)
 	{
-		Unit transport = (Unit) m_transportedBy.get(unit);
+		Unit transport = m_transportedBy.get(unit);
 		m_transportedBy.remove(unit);
 		unload(unit, transport);
 
-		Collection carrying = (Collection) m_transporting.get(transport);
+		Collection carrying = m_transporting.get(transport);
 		carrying.remove(unit);
         undoableMove.unload(unit, transport);
 	}
 
 	private void unload(Unit unit, Unit transport)
 	{
-		Collection unload = (Collection) m_unloaded.get(transport);
+		Collection<Unit> unload = m_unloaded.get(transport);
 		if(unload == null)
 		{
-			unload = new ArrayList();
+			unload = new ArrayList<Unit>();
 			m_unloaded.put(transport, unload);
 		}
 		unload.add(unit);
@@ -151,12 +152,12 @@ public class TransportTracker implements java.io.Serializable
        //an allied transport
         if(!transport.getOwner().equals(id))
         {
-          Collection alliedLoaded = (Collection) m_alliedLoadedThisTurn.get(transport);
+          Collection alliedLoaded = m_alliedLoadedThisTurn.get(transport);
           alliedLoaded.remove(unit);
         }
 
         m_transportedBy.remove(transport);
-        Collection carrying = (Collection) m_transporting.get(transport);
+        Collection carrying = m_transporting.get(transport);
         carrying.remove(unit);
     }
 
@@ -170,10 +171,10 @@ public class TransportTracker implements java.io.Serializable
 	private void loadTransport(Unit transport, Unit unit, PlayerID id)
 	{
     m_transportedBy.put(unit, transport);
-		Collection carrying = (Collection) m_transporting.get(transport);
+		Collection<Unit> carrying = m_transporting.get(transport);
 		if(carrying == null)
 		{
-			carrying = new ArrayList();
+			carrying = new ArrayList<Unit>();
 			m_transporting.put(transport, carrying);
 		}
 
@@ -185,9 +186,9 @@ public class TransportTracker implements java.io.Serializable
     {
       if(!m_alliedLoadedThisTurn.containsKey(transport))
       {
-        m_alliedLoadedThisTurn.put(transport, new ArrayList());
+        m_alliedLoadedThisTurn.put(transport, new ArrayList<Unit>());
       }
-      Collection units = (Collection) m_alliedLoadedThisTurn.get(transport);
+      Collection<Unit> units = m_alliedLoadedThisTurn.get(transport);
       units.add(unit);
     }
 	}
@@ -198,12 +199,12 @@ public class TransportTracker implements java.io.Serializable
 	 */
 	public Unit transportedBy(Unit unit)
 	{
-		return (Unit) m_transportedBy.get(unit);
+		return m_transportedBy.get(unit);
 	}
 
 	public String toString()
 	{
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("transporting:").append(m_transporting).append("\n");
 		buf.append("transportedBy:").append( m_transportedBy).append("\n");
     buf.append("unloaded:").append(m_unloaded).append("\n");
@@ -217,7 +218,7 @@ public class TransportTracker implements java.io.Serializable
 		if(ua.getTransportCapacity() == -1)
 			return 0;
 		int capacity = ua.getTransportCapacity();
-		int used = getCost( (Collection) m_transporting.get(unit));
+		int used = getCost( m_transporting.get(unit));
 		int unloaded = getCost( unloaded(unit) );
 		return capacity - used - unloaded;
 	}
@@ -228,12 +229,12 @@ public class TransportTracker implements java.io.Serializable
     m_alliedLoadedThisTurn.clear();
 	}
 
-  public boolean wereAnyOfTheseLoadedOnAlliedTransportsThisTurn(Collection units)
+  public boolean wereAnyOfTheseLoadedOnAlliedTransportsThisTurn(Collection<Unit> units)
   {
-    Iterator iter = m_alliedLoadedThisTurn.entrySet().iterator();
+    Iterator<Map.Entry<Unit,ArrayList<Unit>>> iter = m_alliedLoadedThisTurn.entrySet().iterator();
     while (iter.hasNext())
     {
-      Collection loadedInAlliedTransports = (Collection) ((Map.Entry) iter.next()).getValue();
+      ArrayList<Unit> loadedInAlliedTransports = iter.next().getValue();
       if(!games.strategy.util.Util.intersection(units, loadedInAlliedTransports).isEmpty())
         return true;
     }

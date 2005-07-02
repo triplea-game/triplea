@@ -30,10 +30,10 @@ import java.util.*;
  */
 public class GameSequence extends GameDataComponent
 {
-	private final List m_steps = new ArrayList();
+	private final List<GameStep> m_steps = new ArrayList<GameStep>();
 	private int m_currentIndex;
     private int m_round = 1;
-    private Serializable m_currentStepMutex = new Serializable() {};
+    private final Serializable m_currentStepMutex = new Serializable() {};
 
 	public GameSequence(GameData data)
 	{
@@ -98,10 +98,10 @@ public class GameSequence extends GameDataComponent
 		if ((index < 0) || (index >= m_steps.size()))
 			throw new IllegalArgumentException("Attempt to access invalid state: " + index);
 
-		return (GameStep) m_steps.get(index);
+		return m_steps.get(index);
 	}
 
-	public Iterator iterator()
+	public Iterator<GameStep> iterator()
 	{
 		return m_steps.iterator();
 	}

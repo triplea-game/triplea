@@ -40,7 +40,7 @@ public interface ITripleaDisplay extends IDisplay
      * @param defendingUnits - defending units
      * @param dependentUnits - unit dependencies, maps Unit->Collection of units
      */
-    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection attackingUnits, Collection defendingUnits, Map dependentUnits, PlayerID attacker, PlayerID defender);
+    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Map<Unit, Collection<Unit>> dependentUnits, PlayerID attacker, PlayerID defender);
     
     /**
      * 
@@ -63,9 +63,9 @@ public interface ITripleaDisplay extends IDisplay
             String step,
             DiceRoll dice,
             PlayerID player,
-            Collection killed,
-            Collection damaged,
-            Map dependents);
+            Collection<Unit> killed,
+            Collection<Unit> damaged,
+            Map<Unit,Collection<Unit>> dependents);
     
     /**
      * Notification of the results of a bombing raid 
@@ -84,7 +84,7 @@ public interface ITripleaDisplay extends IDisplay
     
     
     
-    public void notifyRetreat(GUID battleId, Collection retreating);
+    public void notifyRetreat(GUID battleId, Collection<Unit> retreating);
 
     /**
      * Show dice for the given battle and step

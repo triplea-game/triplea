@@ -93,7 +93,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         else if (name.endsWith("Tech"))
             tech();
         else if (name.endsWith("TechActivation"))
-            ; // the delegate handles everything
+            {} // the delegate handles everything
         else if (name.endsWith("Purchase"))
             purchase(false);
         else if (name.endsWith("Move"))
@@ -103,7 +103,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         else if (name.endsWith("Place"))
             place(name.indexOf("Bid") != -1);
         else if (name.endsWith("EndTurn"))
-            ;//intentionally blank
+            {}//intentionally blank
         else
             throw new IllegalArgumentException("Unrecognized step name:" + name);
 
@@ -160,7 +160,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
             return;
         else
         {
-            StringBuffer buf = new StringBuffer(
+            StringBuilder buf = new StringBuilder(
                     "Air in following territories cant land:");
             Iterator iter = airCantLand.iterator();
             while (iter.hasNext())
@@ -175,13 +175,13 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
 
     private boolean hasUnitsThatCanMove(boolean nonCom)
     {
-        CompositeMatchAnd moveableUnitOwnedByMe = new CompositeMatchAnd();
+        CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
         moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_id));
         //non com, can move aa units
         if(nonCom)
-            moveableUnitOwnedByMe.add(new InverseMatch(Matches.UnitIsFactory));
+            moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsFactory));
         else //combat move, cant move aa units
-            moveableUnitOwnedByMe.add(new InverseMatch(Matches.UnitIsAAOrFactory));
+            moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
         
         Iterator territoryIter = m_bridge.getGameData().getMap()
                 .getTerritories().iterator();
@@ -226,7 +226,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
                 return;
         }
 
-        IntegerMap prod = m_ui.getProduction(m_id, bid);
+        IntegerMap<ProductionRule> prod = m_ui.getProduction(m_id, bid);
         if (prod == null)
             return;
         IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
@@ -286,7 +286,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
      */
-    public CasualtyDetails selectCasualties(Collection selectFrom, Map dependents, int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
+    public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties)
     {
         return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice,hit, defaultCasualties);
     }
@@ -294,7 +294,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit, games.strategy.engine.data.Territory, java.util.Collection, boolean)
      */
-    public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection territories, boolean noneAvailable)
+    public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory>  territories, boolean noneAvailable)
     {
         return m_ui.getBattlePanel().getBombardment(unit, unitTerritory,  territories, noneAvailable);
     }
@@ -308,7 +308,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
        
     } 
     
-    public Territory whereShouldRocketsAttach(Collection candidates, Territory from)
+    public Territory whereShouldRocketsAttach(Collection<Territory> candidates, Territory from)
     {
         return m_ui.getRocketAttack(candidates, from);
      }
@@ -316,7 +316,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
      */
-    public Collection getNumberOfFightersToMoveToNewCarrier(Collection fightersThatCanBeMoved, Territory from)
+    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
     {
         return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
     }
@@ -324,7 +324,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     /*
      * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
      */
-    public Territory selectTerritoryForAirToLand(Collection candidates)
+    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
     {
         return m_ui.selectTerritoryForAirToLand(candidates);
     }
@@ -343,7 +343,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
      */
-    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message)
+    public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
     {
         return m_ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories,submerge);
     }

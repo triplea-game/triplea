@@ -63,12 +63,12 @@ public interface IDrawable
     public int getLevel();
 }
 
-class DrawableComparator implements Comparator
+class DrawableComparator implements Comparator<IDrawable>
 {
 
-    public int compare(Object o1, Object o2)
+    public int compare(IDrawable o1, IDrawable o2)
     {
-        return ((IDrawable) o1).getLevel() - ((IDrawable) o2).getLevel();
+        return o1.getLevel() - o2.getLevel();
     }
 
 }

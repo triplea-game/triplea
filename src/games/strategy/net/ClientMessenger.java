@@ -23,7 +23,7 @@ import games.strategy.util.ListenerList;
 public class ClientMessenger implements IMessenger
 {
     private final INode m_node;
-    private Set m_allNodes;
+    private Set<INode> m_allNodes;
     private final ListenerList m_listeners = new ListenerList();
     private final Connection m_connection;
     private final ListenerList m_errorListeners = new ListenerList();
@@ -155,7 +155,7 @@ public class ClientMessenger implements IMessenger
     /*
      * @see IMessenger#getNodes()
      */
-    public synchronized Set getNodes()
+    public synchronized Set<INode> getNodes()
     {
         //if the init message hasnt reached us yet, stall
         return Collections.unmodifiableSet(m_allNodes);
@@ -169,6 +169,7 @@ public class ClientMessenger implements IMessenger
         return m_connection.isConnected();
     }
 
+    @SuppressWarnings("unchecked")
     public void shutDown()
     {
         //it may be that we recieve this message before the connection has been set up

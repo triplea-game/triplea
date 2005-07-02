@@ -74,8 +74,8 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Get a list of nodes.
 	 */
-	public Set getNodes()
-	{return Collections.EMPTY_SET;}
+    public Set<INode> getNodes()
+	{return new HashSet<INode>();}
 
 	/**
 	 * test the connection.

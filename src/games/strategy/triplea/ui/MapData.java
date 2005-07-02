@@ -45,30 +45,30 @@ public class MapData
 
 
     //default colour if none is defined.
-    private final List m_defaultColours = new ArrayList(Arrays.asList(new Color[]
+    private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[]
     { Color.RED, Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY }));
 
     //maps PlayerName as String to Color
-    private Map m_playerColors = new HashMap();
+    private Map<String, Color> m_playerColors = new HashMap<String, Color>();
 
     
     //maps String -> List of points
-    private Map m_place;
+    private Map<String, List<Point>> m_place;
 
     //maps String -> Collection of Polygons
-    private Map m_polys;
+    private Map<String, List<Polygon>> m_polys;
 
     //maps String -> Point
-    private Map m_centers;
+    private Map<String,Point> m_centers;
 
     //maps String -> Point    
-    private Map m_vcPlace;
+    private Map<String,Point> m_vcPlace;
     
     //maps String -> Point
-    private Map m_capitolPlace;
+    private Map<String,Point> m_capitolPlace;
 
     //maps String -> List of String
-    private Map m_contains;
+    private Map<String, List<String>> m_contains;
 
     private static MapData s_instance;
 
@@ -169,20 +169,20 @@ public class MapData
     private void initializeContains()
     {
 
-        m_contains = new HashMap();
+        m_contains = new HashMap<String, List<String>>();
 
-        Iterator seaIter = getTerritories().iterator();
+        Iterator<String> seaIter = getTerritories().iterator();
         while (seaIter.hasNext())
         {
-            List contained = new ArrayList();
-            String seaTerritory = (String) seaIter.next();
+            List<String> contained = new ArrayList<String>();
+            String seaTerritory = seaIter.next();
             if (!seaTerritory.endsWith("Sea Zone"))
                 continue;
 
-            Iterator landIter = getTerritories().iterator();
+            Iterator<String> landIter = getTerritories().iterator();
             while (landIter.hasNext())
             {
-                String landTerritory = (String) landIter.next();
+                String landTerritory = landIter.next();
                 if (landTerritory.endsWith("Sea Zone"))
                     continue;
 
@@ -204,7 +204,7 @@ public class MapData
     {
         //already loaded, just return
         if(m_playerColors.containsKey(playerName))
-            return (Color) m_playerColors.get(playerName);
+            return m_playerColors.get(playerName);
         
         //look in map.properties
         String propertiesKey = "color." + playerName;
@@ -231,7 +231,7 @@ public class MapData
         //dont crash, use one of our default colors
         //its ugly, but usable
         System.out.println("No color defined for " + playerName + ".  Edit map.properties in the map folder to set it");
-        Color color = (Color) m_defaultColours.remove(0);
+        Color color = m_defaultColours.remove(0);
         m_playerColors.put(playerName, color);
         return color;
 
@@ -252,7 +252,7 @@ public class MapData
      * @return a Set of territory names as Strings. generally this shouldnt be
      *         used, instead you should use aGameData.getMap().getTerritories()
      */
-    public Set getTerritories()
+    public Set<String> getTerritories()
     {
         return m_polys.keySet();
     }
@@ -273,7 +273,7 @@ public class MapData
      */
     public List getContainedTerritory(String territoryName)
     {
-        return (List) m_contains.get(territoryName);
+        return m_contains.get(territoryName);
     }
 
     public void verify(GameData data)
@@ -283,13 +283,13 @@ public class MapData
         verifyKeys(data, m_place, "place");
     }
 
-    private void verifyKeys(GameData data, Map aMap, String dataTypeForErrorMessage) throws IllegalStateException
+    private void verifyKeys(GameData data, Map<String,?> aMap, String dataTypeForErrorMessage) throws IllegalStateException
     {
-        StringBuffer errors = new StringBuffer();
-        Iterator iter = aMap.keySet().iterator();
+        StringBuilder errors = new StringBuilder();
+        Iterator<String> iter = aMap.keySet().iterator();
         while (iter.hasNext())
         {
-            String name = (String) iter.next();
+            String name = iter.next();
             Territory terr = data.getMap().getTerritory(name);
             if (terr == null)
                 errors.append("Territory in file could not be found in game data for "
@@ -298,7 +298,7 @@ public class MapData
 
         Iterator territories = data.getMap().getTerritories().iterator();
 
-        Set keySet = aMap.keySet();
+        Set<String> keySet = aMap.keySet();
         while (territories.hasNext())
         {
             Territory terr = (Territory) territories.next();
@@ -313,17 +313,17 @@ public class MapData
 
     }
 
-    public List getPlacementPoints(Territory terr)
+    public List<Point> getPlacementPoints(Territory terr)
     {
-        return (List) m_place.get(terr.getName());
+        return m_place.get(terr.getName());
     }
 
-    public List getPolygons(String terr)
+    public List<Polygon> getPolygons(String terr)
     {
-        return (List) m_polys.get(terr);
+        return m_polys.get(terr);
     }
 
-    public List getPolygons(Territory terr)
+    public List<Polygon> getPolygons(Territory terr)
     {
         return getPolygons(terr.getName());
     }
@@ -361,11 +361,11 @@ public class MapData
 
         //try to find a land territory.
         //sea zones often surround a land territory
-        Iterator keyIter = m_polys.keySet().iterator();
+        Iterator<String> keyIter = m_polys.keySet().iterator();
         while (keyIter.hasNext())
         {
-            String name = (String) keyIter.next();
-            Collection polygons = (Collection) m_polys.get(name);
+            String name = keyIter.next();
+            Collection polygons = m_polys.get(name);
             Iterator polyIter = polygons.iterator();
             while (polyIter.hasNext())
             {
@@ -425,14 +425,15 @@ public class MapData
      * 
      * @return List of territory names as Strings
      */
-    public List territoriesThatOverlap(Rectangle2D bounds)
+    @SuppressWarnings("unchecked")
+    public List<String> territoriesThatOverlap(Rectangle2D bounds)
     {
-        List rVal = null;
+        List<String> rVal = null;
 
-        Iterator terrIter = getTerritories().iterator();
+        Iterator<String> terrIter = getTerritories().iterator();
         while (terrIter.hasNext())
         {
-            String terr = (String) terrIter.next();
+            String terr = terrIter.next();
 
             List polygons = getPolygons(terr);
             for (int i = 0; i < polygons.size(); i++)
@@ -441,7 +442,7 @@ public class MapData
                 if (item.intersects(bounds) || item.contains(bounds) || bounds.contains(item.getBounds2D()))
                 {
                     if (rVal == null)
-                        rVal = new ArrayList(4);
+                        rVal = new ArrayList<String>(4);
 
                     rVal.add(terr);
                     //only add it once

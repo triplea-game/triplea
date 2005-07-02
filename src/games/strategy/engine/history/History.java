@@ -37,7 +37,6 @@ package games.strategy.engine.history;
 import games.strategy.engine.data.*;
 
 import java.io.*;
-import java.io.Serializable;
 import java.util.*;
 
 import javax.swing.tree.*;
@@ -45,7 +44,7 @@ import javax.swing.tree.*;
 public class History  extends DefaultTreeModel implements java.io.Serializable
 {
     private final HistoryWriter m_writer = new HistoryWriter(this);
-    private final List m_changes = new ArrayList();
+    private final List<Change> m_changes = new ArrayList<Change>();
     private final GameData m_data;
 
     private HistoryNode m_currentNode;
@@ -99,7 +98,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
       if(firstChange == lastChange)
           return null;
 
-       List changes = m_changes.subList( Math.min(firstChange, lastChange), Math.max(firstChange, lastChange  ) );
+       List<Change> changes = m_changes.subList( Math.min(firstChange, lastChange), Math.max(firstChange, lastChange  ) );
 
        Change compositeChange = new CompositeChange(changes);
        if(lastChange >= firstChange )
@@ -139,7 +138,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
         return new SerializedHistory(this, m_data, m_changes);
     }
     
-    List getChanges()
+    List<Change> getChanges()
     {
         return m_changes;
     }
@@ -152,10 +151,10 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
  */
 class SerializedHistory implements Serializable
 {
-    private final List m_Writers = new ArrayList();
+    private final List<SerializationWriter> m_Writers = new ArrayList<SerializationWriter>();
     private GameData m_data;
     
-    public SerializedHistory(History history, GameData data, List changes)
+    public SerializedHistory(History history, GameData data, List<Change> changes)
     {
         m_data = data;
         int changeIndex = 0;
@@ -170,7 +169,7 @@ class SerializedHistory implements Serializable
             {
                 while(changeIndex < ((IndexedHistoryNode) node).getChangeStartIndex())
                 {
-                 m_Writers.add(new ChangeSerializationWriter((Change) changes.get(changeIndex)));
+                 m_Writers.add(new ChangeSerializationWriter(changes.get(changeIndex)));
                  changeIndex++;
                 }
             }
@@ -182,7 +181,7 @@ class SerializedHistory implements Serializable
         //write out remaining changes
         while(changeIndex < changes.size())
         {
-         m_Writers.add(new ChangeSerializationWriter((Change) changes.get(changeIndex)));
+         m_Writers.add(new ChangeSerializationWriter(changes.get(changeIndex)));
          changeIndex++;
         }
         
@@ -192,11 +191,11 @@ class SerializedHistory implements Serializable
     {
         History rVal = new History(m_data);
         HistoryWriter historyWriter = rVal.getHistoryWriter();
-        Iterator iter = m_Writers.iterator();
+        Iterator<SerializationWriter> iter = m_Writers.iterator();
         
         while (iter.hasNext())
         {
-            SerializationWriter element = (SerializationWriter) iter.next();
+            SerializationWriter element = iter.next();
             element.write(historyWriter);
         }
         

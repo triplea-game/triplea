@@ -34,8 +34,8 @@ public class PlacementPicker extends JFrame
     private JLabel m_location = new JLabel();
     private Map    m_polygons = new HashMap();
 
-    private Map    m_placements;
-    private List   m_currentPlacements;
+    private Map<String, List<Point>>    m_placements;
+    private List<Point>   m_currentPlacements;
     private String m_currentCountry;
 
     private static final int PLACE_SIZE = 48;
@@ -265,11 +265,11 @@ public class PlacementPicker extends JFrame
                     return;
                 }
 		
-                Iterator pointIter = m_currentPlacements.iterator();
+                Iterator<Point> pointIter = m_currentPlacements.iterator();
                 
 		while (pointIter.hasNext())
                 {
-                    Point item = (Point)pointIter.next();
+                    Point item = pointIter.next();
                     g.fillRect(item.x, item.y, PLACE_SIZE ,PLACE_SIZE);
                 }
             
@@ -422,7 +422,7 @@ public class PlacementPicker extends JFrame
         if(!rightMouse && !ctrlDown)
         {
             m_currentCountry    = findTerritoryName(point);
-            m_currentPlacements = new ArrayList( (List) m_placements.get(m_currentCountry));
+            m_currentPlacements = new ArrayList<Point>( m_placements.get(m_currentCountry));
 
             JOptionPane.showMessageDialog(this, m_currentCountry);
         }
@@ -433,7 +433,7 @@ public class PlacementPicker extends JFrame
         else if (rightMouse && ctrlDown)
         {
             m_placements.put(m_currentCountry, m_currentPlacements);
-            m_currentPlacements = new ArrayList();
+            m_currentPlacements = new ArrayList<Point>();
             System.out.println("done:" + m_currentCountry);
         }
         else if (rightMouse)

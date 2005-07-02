@@ -19,7 +19,7 @@ import java.awt.*;
 
 import javax.swing.Action;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Code originally contributed by "Thomas Carvin"

@@ -20,6 +20,7 @@
 
 package games.strategy.engine.data;
 
+import games.strategy.util.Match;
 import junit.framework.*;
 import java.util.*;
 
@@ -173,9 +174,9 @@ public class MapTest extends TestCase
 	
 	public void testImpossibleConditionRoute()
 	{
-		GameMap.TerritoryCondition test = new GameMap.TerritoryCondition()
+        Match<Territory> test = new Match<Territory>()
 		{
-			public boolean test(Territory t)
+			public boolean match(Territory t)
 			{
 				return false;
 			}		

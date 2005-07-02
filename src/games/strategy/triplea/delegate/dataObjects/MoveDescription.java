@@ -20,7 +20,7 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
-import games.strategy.engine.data.Route;
+import games.strategy.engine.data.*;
 
 import java.util.*;
 
@@ -31,10 +31,10 @@ import java.util.*;
 public class MoveDescription implements java.io.Serializable
 {
     private final Route m_route;
-    private final Collection m_units;
-    private Collection m_transportsThatCanBeLoaded;
+    private final Collection<Unit> m_units;
+    private Collection<Unit> m_transportsThatCanBeLoaded;
 
-    public MoveDescription(Collection units, Route route, Collection transportsThatCanBeLoaded)
+    public MoveDescription(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
     {
         m_route = route;
         m_units = units;
@@ -42,13 +42,13 @@ public class MoveDescription implements java.io.Serializable
     }
        
     
-    public MoveDescription(Collection units, Route route)
+    public MoveDescription(Collection<Unit> units, Route route)
     {
         m_route = route;
         m_units = units;
     }
 
-    public Collection getUnits()
+    public Collection<Unit> getUnits()
     {
         return m_units;
     }
@@ -63,7 +63,8 @@ public class MoveDescription implements java.io.Serializable
         return "Move message route:" + m_route + " units:" + m_units;
     }
     
-    public Collection getTransportsThatCanBeLoaded()
+    @SuppressWarnings("unchecked")
+    public Collection<Unit> getTransportsThatCanBeLoaded()
     {
         if(m_transportsThatCanBeLoaded == null)
             return Collections.EMPTY_LIST;

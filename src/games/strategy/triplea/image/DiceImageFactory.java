@@ -31,12 +31,12 @@ public class DiceImageFactory
   private static DiceImageFactory s_instance = new DiceImageFactory();
 
   //maps Integer -> Image
-  private Map m_images = new HashMap();
-  private Map m_imagesHit = new HashMap();
+  private Map<Integer, Image> m_images = new HashMap<Integer, Image>();
+  private Map<Integer, Image> m_imagesHit = new HashMap<Integer, Image>();
 
   //maps Integer -> ImageIcon
-  private Map m_icons = new HashMap();
-  private Map m_iconsHit = new HashMap();
+  private Map<Integer, ImageIcon> m_icons = new HashMap<Integer, ImageIcon>();
+  private Map<Integer, ImageIcon> m_iconsHit = new HashMap<Integer, ImageIcon>();
 
   public static DiceImageFactory getInstance()
   {
@@ -51,7 +51,7 @@ public class DiceImageFactory
     generateDice(PIP_SIZE, Color.red, m_imagesHit, m_iconsHit);
   }
 
-  private void generateDice(int PIP_SIZE, Color color, Map images, Map icons)
+  private void generateDice(int PIP_SIZE, Color color, Map<Integer, Image> images, Map<Integer, ImageIcon> icons)
   {
     for(int i = 1; i <= 6; i++)
     {
@@ -111,9 +111,9 @@ public class DiceImageFactory
     if(i > 6)
       throw new IllegalArgumentException("die must be less than 6, not:" + i);
     if(hit)
-      return (Image) m_imagesHit.get(new Integer(i));
+      return m_imagesHit.get(new Integer(i));
     else
-      return (Image) m_images.get(new Integer(i));
+      return m_images.get(new Integer(i));
 
   }
 
@@ -125,9 +125,9 @@ public class DiceImageFactory
       throw new IllegalArgumentException("die must be less than 6, not:" + i);
 
     if (hit)
-      return (ImageIcon) m_iconsHit.get(new Integer(i));
+      return m_iconsHit.get(new Integer(i));
     else
-      return (ImageIcon) m_icons.get(new Integer(i));
+      return m_icons.get(new Integer(i));
   }
 
 

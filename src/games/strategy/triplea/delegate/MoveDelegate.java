@@ -45,6 +45,9 @@ import java.util.*;
 public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 {
 
+    private static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
+    private static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
+    
     private String m_name;
     private String m_displayName;
     private IDelegateBridge m_bridge;
@@ -53,18 +56,15 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private boolean m_firstRun = true;
     private boolean m_nonCombat;
     private TransportTracker m_transportTracker = new TransportTracker();
-    private IntegerMap m_alreadyMoved = new IntegerMap();
-    private IntegerMap m_ipcsLost = new IntegerMap();
+    private IntegerMap<Unit> m_alreadyMoved = new IntegerMap<Unit>();
+    private IntegerMap<Territory> m_ipcsLost = new IntegerMap<Territory>();
     private SubmergedTracker m_submergedTracker = new SubmergedTracker();
 
     // A collection of UndoableMoves
-    private List m_movesToUndo = new ArrayList();
+    private List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();
 
     //The current move
     private UndoableMove m_currentMove;
-
-    private static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
-    private static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
 
     /** Creates new MoveDelegate */
     public MoveDelegate()
@@ -98,7 +98,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             if (!current.isWater())
                 continue;
 
-            Collection units = current.getUnits().getUnits();
+            Collection<Unit> units = current.getUnits().getUnits();
             if (units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand))
                 continue;
 
@@ -168,9 +168,9 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return m_displayName;
     }
 
-    public List getMovesMade()
+    public List<UndoableMove> getMovesMade()
     {
-        return new ArrayList(m_movesToUndo);
+        return new ArrayList<UndoableMove>(m_movesToUndo);
     }
 
     public String undoMove(final int moveIndex)
@@ -181,7 +181,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         if (moveIndex >= m_movesToUndo.size())
             return "Undo move index out of range";
 
-        UndoableMove moveToUndo = (UndoableMove) m_movesToUndo.get(moveIndex);
+        UndoableMove moveToUndo = m_movesToUndo.get(moveIndex);
 
         if (!moveToUndo.getcanUndo())
             return moveToUndo.getReasonCantUndo();
@@ -198,107 +198,108 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         for (int i = 0; i < m_movesToUndo.size(); i++)
         {
-            ((UndoableMove) m_movesToUndo.get(i)).setIndex(i);
+            m_movesToUndo.get(i).setIndex(i);
         }
     }
 
-    public MustMoveWithDetails getMustMoveWith(Territory start, Collection units)
+    public MustMoveWithDetails getMustMoveWith(Territory start, Collection<Unit> units)
     {
         return new MustMoveWithDetails(mustMoveWith(units, start), movementLeft(units));
     }
 
-    private IntegerMap movementLeft(Collection units)
+    private IntegerMap<Unit> movementLeft(Collection<Unit> units)
     {
 
-        IntegerMap movement = new IntegerMap();
+        IntegerMap<Unit> movement = new IntegerMap<Unit>();
 
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
         while (iter.hasNext())
         {
-            Unit current = (Unit) iter.next();
+            Unit current = iter.next();
             movement.put(current, MoveValidator.movementLeft(current, m_alreadyMoved));
         }
 
         return movement;
     }
 
-    private Map mustMoveWith(Collection units, Territory start)
+    private Map<Unit, Collection<Unit>> mustMoveWith(Collection<Unit> units, Territory start)
     {
 
-        List sortedUnits = new ArrayList(units);
+        List<Unit> sortedUnits = new ArrayList<Unit>(units);
 
         Collections.sort(sortedUnits, increasingMovement);
 
-        Map mapping = new HashMap();
+        Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
         mapping.putAll(transportsMustMoveWith(sortedUnits));
         mapping.putAll(carrierMustMoveWith(sortedUnits, start));
         return mapping;
     }
 
-    private Map transportsMustMoveWith(Collection units)
+    private Map<Unit, Collection<Unit>> transportsMustMoveWith(Collection<Unit> units)
     {
 
-        Map mustMoveWith = new HashMap();
+        Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
         //map transports
-        Collection transports = Match.getMatches(units, Matches.UnitIsTransport);
-        Iterator iter = transports.iterator();
+        Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
+        Iterator<Unit> iter = transports.iterator();
         while (iter.hasNext())
         {
-            Unit transport = (Unit) iter.next();
-            Collection transporting = m_transportTracker.transporting(transport);
+            Unit transport = iter.next();
+            Collection<Unit> transporting = m_transportTracker.transporting(transport);
             mustMoveWith.put(transport, transporting);
         }
         return mustMoveWith;
     }
 
-    private Map carrierMustMoveWith(Collection units, Territory start)
+    private Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Territory start)
     {
         return carrierMustMoveWith(units, start.getUnits().getUnits());
     }
 
-    public Map carrierMustMoveWith(Collection units, Collection startUnits)
+    @SuppressWarnings("unchecked")
+    public Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Collection<Unit> startUnits)
     {
 
         //we want to get all air units that are owned by our allies
         //but not us that can land on a carrier
-        CompositeMatch friendlyNotOwnedAir = new CompositeMatchAnd();
+        CompositeMatch<Unit> friendlyNotOwnedAir = new CompositeMatchAnd<Unit>();
         friendlyNotOwnedAir.add(Matches.alliedUnit(m_player, m_data));
         friendlyNotOwnedAir.addInverse(Matches.unitIsOwnedBy(m_player));
         friendlyNotOwnedAir.add(Matches.UnitCanLandOnCarrier);
 
-        Collection alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
+        Collection<Unit> alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
 
         if (alliedAir.isEmpty())
             return Collections.EMPTY_MAP;
 
         //remove air that can be carried by allied
-        CompositeMatch friendlyNotOwnedCarrier = new CompositeMatchAnd();
+        CompositeMatch<Unit> friendlyNotOwnedCarrier = new CompositeMatchAnd<Unit>();
         friendlyNotOwnedCarrier.add(Matches.UnitIsCarrier);
         friendlyNotOwnedCarrier.add(Matches.alliedUnit(m_player, m_data));
         friendlyNotOwnedCarrier.addInverse(Matches.unitIsOwnedBy(m_player));
 
-        Collection alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
+        Collection<Unit> alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
 
-        Iterator alliedCarrierIter = alliedCarrier.iterator();
+        Iterator<Unit> alliedCarrierIter = alliedCarrier.iterator();
         while (alliedCarrierIter.hasNext())
         {
-            Unit carrier = (Unit) alliedCarrierIter.next();
-            Collection carrying = getCanCarry(carrier, alliedAir);
+            Unit carrier = alliedCarrierIter.next();
+            Collection<Unit> carrying = getCanCarry(carrier, alliedAir);
             alliedAir.removeAll(carrying);
         }
 
         if (alliedAir.isEmpty())
             return Collections.EMPTY_MAP;
 
-        Map mapping = new HashMap();
+        Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
         //get air that must be carried by our carriers
-        Collection ownedCarrier = Match.getMatches(units, Matches.UnitIsCarrier);
+        Collection<Unit> ownedCarrier = Match.getMatches(units, Matches.UnitIsCarrier);
 
-        Iterator ownedCarrierIter = ownedCarrier.iterator();
+        Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
         while (ownedCarrierIter.hasNext())
         {
             Unit carrier = (Unit) ownedCarrierIter.next();
-            Collection carrying = getCanCarry(carrier, alliedAir);
+            Collection<Unit> carrying = getCanCarry(carrier, alliedAir);
             alliedAir.removeAll(carrying);
 
             mapping.put(carrier, carrying);
@@ -307,11 +308,11 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return mapping;
     }
 
-    private Collection getCanCarry(Unit carrier, Collection selectFrom)
+    private Collection<Unit> getCanCarry(Unit carrier, Collection<Unit> selectFrom)
     {
 
         UnitAttatchment ua = UnitAttatchment.get(carrier.getUnitType());
-        Collection canCarry = new ArrayList();
+        Collection<Unit> canCarry = new ArrayList<Unit>();
 
         int available = ua.getCarrierCapacity();
         Iterator iter = selectFrom.iterator();
@@ -331,12 +332,13 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return canCarry;
     }
 
-    public String move(Collection units, Route route)
+    @SuppressWarnings("unchecked")
+    public String move(Collection<Unit> units, Route route)
     {
         return move(units, route, Collections.EMPTY_LIST);
     }
 
-    public String move(Collection units, Route route, Collection transportsThatCanBeLoaded)
+    public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
     {
         String error = validateMove(units, route, m_player, transportsThatCanBeLoaded);
         if (error != null)
@@ -368,7 +370,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return null;
     }
 
-    private String validateMove(Collection units, Route route, PlayerID player, Collection transportsToLoad)
+    private String validateMove(Collection<Unit> units, Route route, PlayerID player, Collection<Unit> transportsToLoad)
     {
 
         String error;
@@ -431,7 +433,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return null;
     }
 
-    private String validateCanal(Collection units, Route route, PlayerID player)
+    private String validateCanal(Collection<Unit> units, Route route, PlayerID player)
     {
 
         //if no sea units then we can move
@@ -441,7 +443,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return MoveValidator.validateCanal(route, player, m_data);
     }
 
-    private String validateCombat(Collection units, Route route, PlayerID player)
+    private String validateCombat(Collection<Unit> units, Route route, PlayerID player)
     {
 
         // Don't allow aa guns to move in non-combat unless they are in a
@@ -451,7 +453,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return null;
     }
 
-    private String validateNonCombat(Collection units, Route route, PlayerID player)
+    private String validateNonCombat(Collection<Unit> units, Route route, PlayerID player)
     {
 
         if (route.someMatch(Matches.TerritoryIsImpassible))
@@ -459,7 +461,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
           return CANT_MOVE_THROUGH_IMPASSIBLE;
         }
 
-        CompositeMatch battle = new CompositeMatchOr();
+        CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
         battle.add(Matches.TerritoryIsNuetral);
         battle.add(Matches.isTerritoryEnemy(player, m_data));
 
@@ -470,7 +472,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         if (route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, m_data)))
         {
-            CompositeMatch friendlyOrSubmerged = new CompositeMatchOr();
+            CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<Unit>();
             friendlyOrSubmerged.add(Matches.alliedUnit(m_player, m_data));
             friendlyOrSubmerged.add(Matches.unitIsSubmerged(m_data));
             if (!route.getEnd().getUnits().allMatch(friendlyOrSubmerged))
@@ -487,21 +489,21 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             }
         } else
         {
-            CompositeMatch neutralOrEnemy = new CompositeMatchOr(Matches.TerritoryIsNuetral, Matches.isTerritoryEnemy(player, m_data));
+            CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNuetral, Matches.isTerritoryEnemy(player, m_data));
             if (route.someMatch(neutralOrEnemy))
                 return "Cant move units to neutral or enemy territories in non combat";
         }
         return null;
     }
 
-    private String validateNonEnemyUnitsOnPath(Collection units, Route route, PlayerID player)
+    private String validateNonEnemyUnitsOnPath(Collection<Unit> units, Route route, PlayerID player)
     {
         //check to see no enemy units on path
         if (MoveValidator.onlyAlliedUnitsOnPath(route, player, m_data))
             return null;
 
         //if we are all air, then its ok
-        if (MoveValidator.isAir(units))
+        if (Match.allMatch(units, Matches.UnitIsAir))
             return null;
 
         boolean submersibleSubsAllowed = m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
@@ -519,7 +521,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return "Enemy units on path";
     }
 
-    private String validateBasic(Collection units, Route route, PlayerID player, Collection transportsToLoad)
+    private String validateBasic(Collection<Unit> units, Route route, PlayerID player, Collection<Unit> transportsToLoad)
     {
 
         if (m_submergedTracker.areAnySubmerged(units))
@@ -545,7 +547,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         //check we have enough movement
         //exclude transported units
-        Collection moveTest;
+        Collection<Unit> moveTest;
         if (route.getStart().isWater())
         {
             moveTest = MoveValidator.getNonLand(units);
@@ -559,7 +561,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //if there is a nuetral in the middle must stop unless all are air
         if (MoveValidator.hasNuetralBeforeEnd(route))
         {
-            if (!MoveValidator.isAir(units))
+            if (!Match.allMatch(units, Matches.UnitIsAir))
                 return "Must stop land units when passing through nuetral territories";
         }
 
@@ -592,7 +594,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                 return "Cant blitz on that route";
             } else if (enemyCount > 0 && allEnemyBlitzable)
             {
-                Match blitzingUnit = new CompositeMatchOr(Matches.UnitCanBlitz, Matches.UnitIsAir);
+                Match<Unit> blitzingUnit = new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsAir);
                 if (!Match.allMatch(units, blitzingUnit))
                     return "Not all units can blitz";
             }
@@ -616,7 +618,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
 
         //if we are water make sure no land
-        if (MoveValidator.hasSea(units))
+        if (Match.someMatch(units, Matches.UnitIsSea))
         {
             if (MoveValidator.hasLand(route))
                 return "Sea units cant go on land";
@@ -671,28 +673,28 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
-    private String validateAirCanLand(Collection units, Route route, PlayerID player)
+    private String validateAirCanLand(Collection<Unit> units, Route route, PlayerID player)
     {
 
         //nothing to check
-        if (!MoveValidator.hasAir(units))
+        if (!Match.someMatch(units, Matches.UnitIsAir))
             return null;
 
         //these is a place where we can land
         //must be friendly and non conqueuerd land
-        CompositeMatch friendlyGround = new CompositeMatchAnd();
+        CompositeMatch<Territory> friendlyGround = new CompositeMatchAnd<Territory>();
         friendlyGround.add(Matches.isTerritoryAllied(m_player, m_data));
-        friendlyGround.add(new Match() 
+        friendlyGround.add(new Match<Territory>() 
                 {
-            		public boolean match(Object o)
+            		public boolean match(Territory o)
             		{
             		    return !DelegateFinder.battleDelegate(m_data).getBattleTracker().wasConquered((Territory) o);
             		}
                 }
         );
-        friendlyGround.add(new Match() 
+        friendlyGround.add(new Match<Territory>() 
                 {
-            		public boolean match(Object o)
+            		public boolean match(Territory o)
             		{
             		    return !DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle((Territory) o, false);
             		}
@@ -712,10 +714,10 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //units along the route
         int maxMovement = MoveValidator.getMaxMovement(units, m_alreadyMoved);
         
-        Match canMoveThrough = new InverseMatch(Matches.TerritoryIsImpassible);
-        Match notNeutral = new InverseMatch(Matches.TerritoryIsNuetral);
+        Match<Territory> canMoveThrough = new InverseMatch<Territory>(Matches.TerritoryIsImpassible);
+        Match<Territory> notNeutral = new InverseMatch<Territory>(Matches.TerritoryIsNuetral);
         
-        Match notNeutralAndNotImpassible = new CompositeMatchAnd(canMoveThrough, notNeutral);
+        Match<Territory> notNeutralAndNotImpassible = new CompositeMatchAnd<Territory>(canMoveThrough, notNeutral);
         
         //find the closest land territory where everyone can land
         int closesetLandTerritory = Integer.MAX_VALUE;
@@ -748,14 +750,14 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
         
         //these rae the units we have to be sure that can land somewhere
-        Match ownedAirMatch = new CompositeMatchAnd(Matches.UnitIsAir, Matches.unitOwnedBy(m_player) );
-        Collection ownedAir = new ArrayList();
+        Match<Unit> ownedAirMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitOwnedBy(m_player) );
+        Collection<Unit> ownedAir = new ArrayList<Unit>();
         ownedAir.addAll( Match.getMatches(units, ownedAirMatch ));
         ownedAir.addAll(Match.getMatches( route.getEnd().getUnits().getUnits(), ownedAirMatch ));
 
         
         //find out how much movement we have left  
-        IntegerMap movementLeft = new IntegerMap();
+        IntegerMap<Unit> movementLeft = new IntegerMap<Unit>();
         Iterator ownedAirIter = ownedAir.iterator();
         while (ownedAirIter.hasNext())
         {
@@ -769,7 +771,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
         
         //find the air units that cant make it to land
-        Collection airThatMustLandOnCarriers = new ArrayList();
+        Collection<Unit> airThatMustLandOnCarriers = new ArrayList<Unit>();
         Iterator ownedAirIter2 = ownedAir.iterator();
         while (ownedAirIter2.hasNext())
         {
@@ -787,7 +789,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             return "No where for the air unit to land";
         
         //now, find out where we can land on carriers
-        IntegerMap carrierCapacity = new IntegerMap();
+        IntegerMap<Integer> carrierCapacity = new IntegerMap<Integer>();
         
         Iterator candidates = m_data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();
         while (candidates.hasNext())
@@ -799,7 +801,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             Integer distance = new Integer(candidateRoute.getLength());
             
             //we dont want to count untis that moved with us
-            Collection unitsAtLocation = territory.getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
+            Collection<Unit> unitsAtLocation = territory.getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
             unitsAtLocation.removeAll(units);
             
             //how much spare capacity do they have?
@@ -810,7 +812,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             
         }
         
-        Collection unitsAtEnd = route.getEnd().getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
+        Collection<Unit> unitsAtEnd = route.getEnd().getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
         unitsAtEnd.addAll(units);
         carrierCapacity.put(new Integer(0), MoveValidator.carrierCapacity(unitsAtEnd));
 
@@ -858,7 +860,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     }
 
 
-    private String validateTransport(Collection units, Route route, PlayerID player, Collection transportsToLoad)
+    private String validateTransport(Collection<Unit> units, Route route, PlayerID player, Collection<Unit> transportsToLoad)
     {
 
         if (Match.allMatch(units, Matches.UnitIsAir))
@@ -879,7 +881,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         //if we are land make sure no water in route except for transport
         // situations
-        Collection land = Match.getMatches(units, Matches.UnitIsLand);
+        Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
 
         //make sure we can be transported
         if (!Match.allMatch(land, Matches.UnitCanBeTransported))
@@ -942,7 +944,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                     return "Units cannot move before loading onto transports";
             }
 
-            CompositeMatch enemyNonSubmerged = new CompositeMatchAnd(Matches.enemyUnit(m_player, m_data), new InverseMatch(Matches
+            CompositeMatch<Unit> enemyNonSubmerged = new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_player, m_data), new InverseMatch<Unit>(Matches
                     .unitIsSubmerged(m_data)));
             if (route.getEnd().getUnits().someMatch(enemyNonSubmerged))
             {
@@ -971,7 +973,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     /**
      * We assume that the move is valid
      */
-    private void moveUnits(Collection units, Route route, PlayerID id, Collection transportsToLoad)
+    private void moveUnits(Collection<Unit> units, Route route, PlayerID id, Collection<Unit> transportsToLoad)
     {
 
 
@@ -998,18 +1000,18 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
 
          
-        Collection aaCasualties = fireAA(route, units);
-        Collection arrivingUnits = Util.difference(units, aaCasualties);
+        Collection<Unit> aaCasualties = fireAA(route, units);
+        Collection<Unit> arrivingUnits = Util.difference(units, aaCasualties);
 
         //if any non enemy territories on route
         //or if any enemy units on route the
         //battles on (note water could have enemy but its
         //not owned)
-        CompositeMatch mustFightThrough = new CompositeMatchOr();
+        CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<Territory>();
         mustFightThrough.add(Matches.isTerritoryEnemy(id, m_data));
         mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, m_data));
 
-        Collection moved = Util.intersection(units, arrivingUnits);
+        Collection<Unit> moved = Util.intersection(units, arrivingUnits);
 
         if (route.someMatch(mustFightThrough) && arrivingUnits.size() != 0)
         {
@@ -1017,7 +1019,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             //could it be a bombuing raid
             boolean allCanBomb = Match.allMatch(units, Matches.UnitIsStrategicBomber);
 
-            CompositeMatch enemyFactory = new CompositeMatchAnd();
+            CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>();
             enemyFactory.add(Matches.UnitIsFactory);
             enemyFactory.add(Matches.enemyUnit(id, m_data));
             boolean targetToBomb = route.getEnd().getUnits().someMatch(enemyFactory);
@@ -1035,7 +1037,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         markMovement(units, route);
         
         //TODO, put units in owned transports first
-        Map transporting = mapTransports(route, units, transportsToLoad);
+        Map<Unit, Unit> transporting = mapTransports(route, units, transportsToLoad);
         markTransportsMovement(transporting, route);
         
         
@@ -1083,12 +1085,12 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private Collection getEmptyNeutral(Route route)
     {
 
-        Match emptyNeutral = new CompositeMatchAnd(Matches.TerritoryIsEmpty, Matches.TerritoryIsNuetral);
+        Match<Territory> emptyNeutral = new CompositeMatchAnd<Territory>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNuetral);
         Collection neutral = route.getMatches(emptyNeutral);
         return neutral;
     }
 
-    private void markMovement(Collection units, Route route)
+    private void markMovement(Collection<Unit> units, Route route)
     {
 
         int moved = route.getLength();
@@ -1117,7 +1119,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     /**
      * Marks transports and units involved in unloading with no movement left.
      */
-    private void markTransportsMovement(Map transporting, Route route)
+    private void markTransportsMovement(Map<Unit, Unit> transporting, Route route)
     {
 
         if (transporting == null)
@@ -1126,21 +1128,21 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         if (MoveValidator.isUnload(route))
         {
 
-            Collection units = new ArrayList();
+            Collection<Unit> units = new ArrayList<Unit>();
             units.addAll(transporting.values());
             units.addAll(transporting.keySet());
-            Iterator iter = units.iterator();
+            Iterator<Unit> iter = units.iterator();
             while (iter.hasNext())
             {
-                Unit unit = (Unit) iter.next();
+                Unit unit = iter.next();
                 markNoMovement(unit);
             }
 
             //unload the transports
-            Iterator unitIter = transporting.keySet().iterator();
+            Iterator<Unit> unitIter = transporting.keySet().iterator();
             while (unitIter.hasNext())
             {
-                Unit load = (Unit) unitIter.next();
+                Unit load = unitIter.next();
                 m_transportTracker.unload(load, m_currentMove);
             }
         }
@@ -1149,12 +1151,12 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         if (MoveValidator.isLoad(route))
         {
             //mark transports as having transported
-            Iterator units = transporting.keySet().iterator();
+            Iterator<Unit> units = transporting.keySet().iterator();
             while (units.hasNext())
             {
 
-                Unit load = (Unit) units.next();
-                Unit transport = (Unit) transporting.get(load);
+                Unit load = units.next();
+                Unit transport = transporting.get(load);
                 m_transportTracker.load(load, transport, m_currentMove, m_player);
             }
         }
@@ -1228,7 +1230,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
      * done either because there is not sufficient transport capacity or because
      * a unit is not with its transport
      */
-    private Map mapTransports(Route route, Collection units, Collection transportsToLoad)
+    private Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad)
     {
 
         if (MoveValidator.isLoad(route))
@@ -1243,13 +1245,13 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
      * transport, if the unit is in a transport not in transports then null will
      * be returned.
      */
-    private Map mapTransportsAlreadyLoaded(Collection units, Collection transports)
+    private Map<Unit, Unit> mapTransportsAlreadyLoaded(Collection<Unit> units, Collection<Unit> transports)
     {
 
-        Collection canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+        Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
         Collection canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
 
-        Map mapping = new HashMap();
+        Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
         Iterator land = canBeTransported.iterator();
         while (land.hasNext())
         {
@@ -1271,13 +1273,13 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
      * units. If it cant suceed returns null.
      *  
      */
-    private Map mapTransportsToLoad(Collection units, Collection transports)
+    private Map<Unit, Unit> mapTransportsToLoad(Collection<Unit> units, Collection<Unit> transports)
     {
 
-        List canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-        Comparator c = new Comparator()
+        List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+        Comparator<Unit> c = new Comparator<Unit>()
         {
-            public int compare(Object o1, Object o2)
+            public int compare(Unit o1, Unit o2)
             {
                 int cost1 = UnitAttatchment.get(((Unit) o1).getUnitType()).getTransportCost();
                 int cost2 = UnitAttatchment.get(((Unit) o2).getUnitType()).getTransportCost();
@@ -1289,12 +1291,12 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //in 4th edition rules.
         Collections.sort(canBeTransported, c);
 
-        Collection canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-        Collection ownedTransport = Match.getMatches(transports, Matches.unitIsOwnedBy(m_player));
+        Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+        Collection<Unit> ownedTransport = Match.getMatches(transports, Matches.unitIsOwnedBy(m_player));
         canTransport = Util.difference(canTransport, ownedTransport);
 
-        Map mapping = new HashMap();
-        IntegerMap addedLoad = new IntegerMap();
+        Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+        IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
 
         Iterator landIter = canBeTransported.iterator();
         while (landIter.hasNext())
@@ -1341,16 +1343,14 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     public int compareAccordingToMovementLeft(Unit u1, Unit u2)
     {
         return decreasingMovement.compare(u1,u2);
-    };
+    }
     
-    private Comparator decreasingMovement = new Comparator()
+    private Comparator<Unit> decreasingMovement = new Comparator<Unit>()
     {
 
-        public int compare(Object o1, Object o2)
+        public int compare(Unit u1, Unit u2)
         {
 
-            Unit u1 = (Unit) o1;
-            Unit u2 = (Unit) o2;
 
             int left1 = MoveValidator.movementLeft(u1, m_alreadyMoved);
             int left2 = MoveValidator.movementLeft(u2, m_alreadyMoved);
@@ -1363,10 +1363,10 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
     };
 
-    private Comparator increasingMovement = new Comparator()
+    private Comparator<Unit> increasingMovement = new Comparator<Unit>()
     {
 
-        public int compare(Object o1, Object o2)
+        public int compare(Unit o1, Unit o2)
         {
 
             //reverse the order, clever huh
@@ -1376,18 +1376,18 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     
 
-    public Collection getTerritoriesWhereAirCantLand()
+    public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
 
-        Collection cantLand = new ArrayList();
+        Collection<Territory> cantLand = new ArrayList<Territory>();
         Iterator territories = m_data.getMap().getTerritories().iterator();
         while (territories.hasNext())
         {
             Territory current = (Territory) territories.next();
-            CompositeMatch ownedAir = new CompositeMatchAnd();
+            CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
             ownedAir.add(Matches.UnitIsAir);
             ownedAir.add(Matches.alliedUnit(m_player, m_data));
-            Collection air = current.getUnits().getMatches(ownedAir);
+            Collection<Unit> air = current.getUnits().getMatches(ownedAir);
             if (air.size() != 0 && !MoveValidator.canLand(air, current, m_player, m_data))
             {
                 cantLand.add(current);
@@ -1399,23 +1399,23 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private void removeAirThatCantLand()
     {
 
-        Iterator territories = getTerritoriesWhereAirCantLand().iterator();
+        Iterator<Territory> territories = getTerritoriesWhereAirCantLand().iterator();
         while (territories.hasNext())
         {
-            Territory current = (Territory) territories.next();
-            CompositeMatch ownedAir = new CompositeMatchAnd();
+            Territory current = territories.next();
+            CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
             ownedAir.add(Matches.UnitIsAir);
             ownedAir.add(Matches.alliedUnit(m_player, m_data));
-            Collection air = current.getUnits().getMatches(ownedAir);
+            Collection<Unit> air = current.getUnits().getMatches(ownedAir);
 
             removeAirThatCantLand(current, air);
         }
     }
 
-    private void removeAirThatCantLand(Territory territory, Collection airUnits)
+    private void removeAirThatCantLand(Territory territory, Collection<Unit> airUnits)
     {
 
-        Collection toRemove = new ArrayList(airUnits.size());
+        Collection<Unit> toRemove = new ArrayList<Unit>(airUnits.size());
         //if we cant land on land then none can
         if (!territory.isWater())
         {
@@ -1453,13 +1453,13 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     /**
      * Fire aa guns. Returns units to remove.
      */
-    private Collection fireAA(Route route, Collection units)
+    private Collection<Unit> fireAA(Route route, Collection<Unit> units)
     {
-        List targets = Match.getMatches(units, Matches.UnitIsAir);
+        List<Unit> targets = Match.getMatches(units, Matches.UnitIsAir);
 
         //select units with lowest movement first
         Collections.sort(targets, decreasingMovement);
-        Collection originalTargets = new ArrayList(targets);
+        Collection<Unit> originalTargets = new ArrayList<Unit>(targets);
         
         Iterator iter = getTerritoriesWhereAAWillFire(route, units).iterator();
         while (iter.hasNext())
@@ -1472,7 +1472,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     }
 
-    private Collection getTerritoriesWhereAAWillFire(Route route, Collection units)
+    private Collection getTerritoriesWhereAAWillFire(Route route, Collection<Unit> units)
     {
         if (m_nonCombat && !isAlwaysONAAEnabled())
             return Collections.EMPTY_LIST;
@@ -1483,11 +1483,11 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //dont iteratate over the end
         //that will be a battle
         //and handled else where in this tangled mess
-        CompositeMatch hasAA = new CompositeMatchAnd();
+        CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
         hasAA.add(Matches.UnitIsAA);
         hasAA.add(Matches.enemyUnit(m_player, m_data));
 
-        List territoriesWhereAAWillFire = new ArrayList();
+        List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 
         for (int i = 0; i < route.getLength() - 1; i++)
         {
@@ -1518,7 +1518,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     /**
      * Fire the aa units in the given territory, hits are removed from units
      */
-    private void fireAA(Territory territory, Collection units)
+    private void fireAA(Territory territory, Collection<Unit> units)
     {
         
         if(units.isEmpty())
@@ -1542,12 +1542,12 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
      * hits are removed from units. Note that units are removed in the order
      * that the iterator will move through them.
      */
-    private void selectCasualties(DiceRoll dice, Collection units, Territory territory)
+    private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory)
     {
 
         String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
         // If fourth edition, select casualties randomnly
-        Collection casualties = null;
+        Collection<Unit> casualties = null;
         if (isFourEdition())
         {
             casualties = BattleCalculator.fourthEditionAACasualties(units, dice, m_bridge);
@@ -1570,7 +1570,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     {
         for (int i = m_movesToUndo.size() - 1; i >= 0; i--)
         {
-            UndoableMove move = (UndoableMove) m_movesToUndo.get(i);
+            UndoableMove move = m_movesToUndo.get(i);
             if (!move.getUnits().contains(unit))
                 continue;
             if (move.getRoute().getEnd().equals(end))
@@ -1621,7 +1621,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class getRemoteType()
+    public Class<IMoveDelegate> getRemoteType()
     {
         return IMoveDelegate.class;
     }
@@ -1677,9 +1677,9 @@ class MoveState implements Serializable
     public boolean m_firstRun = true;
     public boolean m_nonCombat;
     public TransportTracker m_transportTracker;
-    public IntegerMap m_alreadyMoved;
-    public IntegerMap m_ipcsLost;
-    public List m_movesToUndo;
+    public IntegerMap<Unit> m_alreadyMoved;
+    public IntegerMap<Territory> m_ipcsLost;
+    public List<UndoableMove> m_movesToUndo;
     public SubmergedTracker m_submergedTracker;
 
 }

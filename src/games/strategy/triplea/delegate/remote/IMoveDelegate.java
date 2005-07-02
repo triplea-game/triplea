@@ -15,11 +15,10 @@
 package games.strategy.triplea.delegate.remote;
 
 import java.util.*;
-import java.util.Collection;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 
 /**
@@ -36,7 +35,7 @@ public interface IMoveDelegate extends IRemote
      * @param m_transportsThatCanBeLoaded - transports that can be loaded while moving, must be non null
      * @return an error message if the move cant be made, null otherwise
      */
-    public String move(Collection units, Route route, Collection m_transportsThatCanBeLoaded );
+    public String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded );
 
     /**
      * equivalent to move(units, route, Collections.EMPTY_LIST)
@@ -45,13 +44,13 @@ public interface IMoveDelegate extends IRemote
      * @param route - the route to move along
      * @return an error message if the move cant be made, null otherwise
      */
-    public String move(Collection units, Route route);
+    public String move(Collection<Unit> units, Route route);
 
     /**
      * Get the moves already made 
      * @return a list of UndoableMoves
      */
-    public List getMovesMade();
+    public List<UndoableMove> getMovesMade();
     
     /**
      * 
@@ -66,12 +65,12 @@ public interface IMoveDelegate extends IRemote
      * All units in units are either carriers or transports.
      * All units are owned by the player whose current turn it is.
      */
-    public MustMoveWithDetails getMustMoveWith(Territory start, Collection units);
+    public MustMoveWithDetails getMustMoveWith(Territory start, Collection<Unit> units);
     
     /**
      * Get what air units must move before the end of the players turn
      * @return a list of Territories with air units that must move
      */
-    public Collection getTerritoriesWhereAirCantLand();
+    public Collection<Territory> getTerritoriesWhereAirCantLand();
     
 }

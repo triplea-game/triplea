@@ -14,14 +14,10 @@
 package games.strategy.triplea.ui.screen;
 
 import java.awt.*;
-import java.awt.Image;
 import java.util.*;
-import java.util.Iterator;
 import java.util.logging.*;
-import java.util.logging.Logger;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.ImageScrollerSmallView;
@@ -59,10 +55,10 @@ public class SmallMapImageManager
         
         g.drawImage(m_offscreen, 0,0,null);
         
-        Iterator iter = new ArrayList(m_tileManager.getUnitDrawables()).iterator();
+        Iterator<UnitsDrawer> iter = new ArrayList<UnitsDrawer>(m_tileManager.getUnitDrawables()).iterator();
         while (iter.hasNext())
         {
-            UnitsDrawer drawer = (UnitsDrawer) iter.next();
+            UnitsDrawer drawer = iter.next();
             int x = (int) (drawer.getPlacementPoint().x / m_view.getRatioX());
             int y = (int) (drawer.getPlacementPoint().y / m_view.getRatioY());
             

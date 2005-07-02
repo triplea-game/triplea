@@ -19,6 +19,7 @@ import java.util.*;
 import java.awt.*;
 import java.util.List;
 import java.awt.geom.*;
+
 import javax.swing.*;
 import games.strategy.triplea.ui.*;
 import games.strategy.util.*;
@@ -45,7 +46,7 @@ public class AutoPlacementFinder
     */
     static void calculate()
     {
-        Map m_placements = new HashMap();      //create hash map of placements
+        Map<String, Collection> m_placements = new HashMap<String, Collection>();      //create hash map of placements
 	String mapDir    = getMapDirectory();  //ask user where the map is
 	
 	if(mapDir == null)
@@ -75,11 +76,11 @@ public class AutoPlacementFinder
         while (terrIter.hasNext())
         {
             String name = (String)terrIter.next();
-            Collection points;
+            List<Point> points;
 	    
             if(MapData.getInstance().hasContainedTerritory(name))
             {
-                Set containedPolygons = new HashSet();
+                Set<Polygon> containedPolygons = new HashSet<Polygon>();
                 Iterator containedIter = MapData.getInstance().getContainedTerritory(name).iterator();
 		
                 while (containedIter.hasNext())
@@ -159,10 +160,11 @@ public class AutoPlacementFinder
        
        @return java.util.List
     */
-    static List getPlacementsStartingAtMiddle(Collection countryPolygons, Rectangle bounding, Point center)
+    @SuppressWarnings("unchecked")
+    static List<Point> getPlacementsStartingAtMiddle(Collection<Polygon> countryPolygons, Rectangle bounding, Point center)
     {
-        List placementRects  = new ArrayList();
-        List placementPoints = new ArrayList();
+        List<Rectangle2D> placementRects  = new ArrayList<Rectangle2D>();
+        List<Point> placementPoints = new ArrayList<Point>();
 
         Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
         int x = center.x - (PLACEHEIGHT / 2);
@@ -234,10 +236,10 @@ public class AutoPlacementFinder
    
        @return java.util.List
     */
-    static List getPlacementsStartingAtTopLeft(Collection countryPolygons,  Rectangle bounding, Point center,  Collection containedCountryPolygons)
+    static List<Point> getPlacementsStartingAtTopLeft(Collection<Polygon> countryPolygons,  Rectangle bounding, Point center,  Collection<Polygon> containedCountryPolygons)
     {
-        List placementRects = new ArrayList();
-        List placementPoints = new ArrayList();
+        List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
+        List<Point> placementPoints = new ArrayList<Point>();
 
         Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
 	
@@ -272,7 +274,7 @@ public class AutoPlacementFinder
       @param java.lang.int x 
       @param java.lang.int y
     */
-    private static void isPlacement(Collection countryPolygons, Collection containedCountryPolygons,  List placementRects, List placementPoints, Rectangle2D place, int x, int y)
+    private static void isPlacement(Collection<Polygon> countryPolygons, Collection<Polygon> containedCountryPolygons,  List<Rectangle2D> placementRects, List<Point> placementPoints, Rectangle2D place, int x, int y)
     {
         place.setFrame(x,y,PLACEWIDTH, PLACEHEIGHT);
         if(containedIn(place, countryPolygons) &&
@@ -304,13 +306,13 @@ public class AutoPlacementFinder
        @param java.util.Collection      shapes
     
     */
-    public static boolean containedIn(Rectangle2D r, Collection shapes)
+    public static boolean containedIn(Rectangle2D r, Collection<Polygon> shapes)
     {
-        Iterator iter = shapes.iterator();
+        Iterator<Polygon> iter = shapes.iterator();
 	
         while (iter.hasNext())
         {
-            Shape item = (Shape)iter.next();
+            Shape item = iter.next();
 	    
             if(item.contains(r))
 	    {
@@ -334,25 +336,25 @@ public class AutoPlacementFinder
        @param java.util.Collection      shapes
     
     */
-    public static boolean intersectsOneOf(Rectangle2D r, Collection shapes)
+    public static boolean intersectsOneOf(Rectangle2D r, Collection<? extends Shape> shapes)
     {
-        if(shapes.isEmpty())
-	{
+        if (shapes.isEmpty())
+        {
             return false;
         }
-	
-        Iterator iter = shapes.iterator();
-        
-	while (iter.hasNext())
+
+        Iterator<? extends Shape> iter = shapes.iterator();
+
+        while (iter.hasNext())
         {
-            Shape item = (Shape) iter.next();
-	    
-            if(item.intersects(r))
-	    {
+            Shape item = iter.next();
+
+            if (item.intersects(r))
+            {
                 return true;
-	    }
+            }
         }
-	
+
         return false;
     }
 

@@ -37,7 +37,7 @@ public class RocketsFireHelper
 
         boolean is4thEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
 
-        Set rocketTerritories = getTerritoriesWithRockets(data, player);
+        Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
         if (rocketTerritories.isEmpty())
         {
             getRemote(bridge).reportMessage("No aa guns to fire rockets with");
@@ -51,14 +51,14 @@ public class RocketsFireHelper
 
     }
 
-    private void fire4thEdition(GameData data, PlayerID player, Set rocketTerritories, IDelegateBridge bridge)
+    private void fire4thEdition(GameData data, PlayerID player, Set<Territory> rocketTerritories, IDelegateBridge bridge)
     {
-        Set attackedTerritories = new HashSet();
-        Iterator iter = rocketTerritories.iterator();
+        Set<Territory> attackedTerritories = new HashSet<Territory>();
+        Iterator<Territory> iter = rocketTerritories.iterator();
         while (iter.hasNext())
         {
-            Territory territory = (Territory) iter.next();
-            Set targets = getTargetsWithinRange(territory, data, player);
+            Territory territory = iter.next();
+            Set<Territory> targets = getTargetsWithinRange(territory, data, player);
             targets.removeAll(attackedTerritories);
             if (targets.isEmpty())
                 continue;
@@ -71,13 +71,13 @@ public class RocketsFireHelper
         }
     }
 
-    private void fire3rdEdition(GameData data, PlayerID player, Set rocketTerritories, IDelegateBridge bridge)
+    private void fire3rdEdition(GameData data, PlayerID player, Set<Territory> rocketTerritories, IDelegateBridge bridge)
     {
-        Set targets = new HashSet();
-        Iterator iter = rocketTerritories.iterator();
+        Set<Territory> targets = new HashSet<Territory>();
+        Iterator<Territory> iter = rocketTerritories.iterator();
         while (iter.hasNext())
         {
-            Territory territory = (Territory) iter.next();
+            Territory territory = iter.next();
             targets.addAll(getTargetsWithinRange(territory, data, player));
         }
 
@@ -92,12 +92,12 @@ public class RocketsFireHelper
             fireRocket(player, attacked, bridge, data);
     }
 
-    private Set getTerritoriesWithRockets(GameData data, PlayerID player)
+    private Set<Territory> getTerritoriesWithRockets(GameData data, PlayerID player)
     {
 
-        Set territories = new HashSet();
+        Set<Territory> territories = new HashSet<Territory>();
 
-        CompositeMatch ownedAA = new CompositeMatchAnd();
+        CompositeMatch<Unit> ownedAA = new CompositeMatchAnd<Unit>();
         ownedAA.add(Matches.UnitIsAA);
         ownedAA.add(Matches.unitIsOwnedBy(player));
 
@@ -114,16 +114,16 @@ public class RocketsFireHelper
         return territories;
     }
 
-    private Set getTargetsWithinRange(Territory territory, GameData data, PlayerID player)
+    private Set<Territory> getTargetsWithinRange(Territory territory, GameData data, PlayerID player)
     {
 
         Collection possible = data.getMap().getNeighbors(territory, 3);
 
-        CompositeMatch enemyFactory = new CompositeMatchAnd();
+        CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>();
         enemyFactory.add(Matches.UnitIsFactory);
         enemyFactory.add(Matches.enemyUnit(player, data));
 
-        Set hasFactory = new HashSet();
+        Set<Territory> hasFactory = new HashSet<Territory>();
 
         Iterator iter = possible.iterator();
         while (iter.hasNext())
@@ -135,7 +135,7 @@ public class RocketsFireHelper
         return hasFactory;
     }
 
-    private Territory getTarget(Collection targets, PlayerID player, IDelegateBridge bridge, Territory from)
+    private Territory getTarget(Collection<Territory> targets, PlayerID player, IDelegateBridge bridge, Territory from)
     {
         //ask even if there is only once choice
         //that will allow the user to not attack if he doesnt want to

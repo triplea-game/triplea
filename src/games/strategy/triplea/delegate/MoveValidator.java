@@ -42,7 +42,7 @@ public class MoveValidator
 	 * to move.
 	 * @arg alreadyMoved maps Unit -> movement
 	 */
-	public static boolean hasEnoughMovement(Collection units, IntegerMap alreadyMoved, int length)
+	public static boolean hasEnoughMovement(Collection<Unit> units, IntegerMap<Unit> alreadyMoved, int length)
 	{
 
 		Iterator iter = units.iterator();
@@ -67,7 +67,7 @@ public class MoveValidator
 	 */
 	public static boolean onlyAlliedUnitsOnPath(Route route, PlayerID player, GameData data)
 	{
-		CompositeMatch alliedOrNonCombat = new CompositeMatchOr(Matches.UnitIsAAOrFactory, Matches.alliedUnit(player, data));
+		CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.alliedUnit(player, data));
 
 		// Submerged units do not interfere with movement
 		// only relevant for 4th edition
@@ -84,7 +84,7 @@ public class MoveValidator
 
 	public static boolean enemyDestroyerOnPath(Route route, PlayerID player, GameData data)
 	{
-		Match enemyDestroyer = new CompositeMatchAnd(Matches.UnitIsDestroyer, Matches.enemyUnit(player, data));
+		Match<Unit> enemyDestroyer = new CompositeMatchAnd<Unit>(Matches.UnitIsDestroyer, Matches.enemyUnit(player, data));
 		for(int i = 0; i < route.getLength() - 1; i++)
 		{
 			Territory current = route.at(i);
@@ -124,7 +124,7 @@ public class MoveValidator
 		   !DelegateFinder.battleDelegate(data).getBattleTracker().wasBlitzed(current))
 			return false;
 	    
-	    CompositeMatch blitzableUnits = new CompositeMatchOr();
+	    CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
 	    blitzableUnits.add(Matches.alliedUnit(player, data));
 	    boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
 	    //4th edition, cant blitz through factories and aa guns
@@ -170,17 +170,7 @@ public class MoveValidator
 		return false;
 	}
 
-	public static boolean hasSea(Collection units)
-	{
-        return Match.someMatch(units, Matches.UnitIsSea);
-	}
-
-	public static boolean hasAir(Collection units)
-	{
-		return Match.someMatch(units, Matches.UnitIsAir);
-	}
-
-  public static int getTransportCost(Collection units)
+	public static int getTransportCost(Collection units)
   {
     if(units == null)
       return 0;
@@ -216,12 +206,6 @@ public class MoveValidator
 			}
 		}
 		return false;
-	}
-
-
-	public static boolean isAir(Collection units)
-	{
-        return Match.allMatch(units, Matches.UnitIsAir);
 	}
 
 
@@ -286,7 +270,7 @@ public class MoveValidator
 	 *
 	 * Note units must only be air units
 	 */
-	public static boolean canLand(Collection airUnits, Territory territory, PlayerID player, GameData data)
+	public static boolean canLand(Collection<Unit> airUnits, Territory territory, PlayerID player, GameData data)
 	{
 		if( !Match.allMatch(airUnits, Matches.UnitIsAir))
 			throw new IllegalArgumentException("can only test if air will land");
@@ -303,7 +287,7 @@ public class MoveValidator
 
 			//when doing the calculation, make sure to include the units
 			//in the territory
-			Set friendly = new HashSet();
+			Set<Unit> friendly = new HashSet<Unit>();
 			friendly.addAll(getFriendly(territory, player, data));
 			friendly.addAll(airUnits);
 
@@ -318,15 +302,15 @@ public class MoveValidator
 		}
 	}
 
-	public static Collection getNonLand(Collection units)
+	public static Collection<Unit> getNonLand(Collection<Unit> units)
 	{
-        CompositeMatch match = new CompositeMatchOr();
+        CompositeMatch<Unit> match = new CompositeMatchOr<Unit>();
         match.add(Matches.UnitIsAir);
         match.add(Matches.UnitIsSea);
         return Match.getMatches(units, match);
 	}
 
-	public static Collection getFriendly(Territory territory, PlayerID player, GameData data)
+	public static Collection<Unit> getFriendly(Territory territory, PlayerID player, GameData data)
 	{
 		return territory.getUnits().getMatches(Matches.alliedUnit(player,data));
 	}
@@ -345,7 +329,7 @@ public class MoveValidator
 	}
 
 
-	public static int getMaxMovement(Collection units, IntegerMap alreadyMoved)
+	public static int getMaxMovement(Collection<Unit> units, IntegerMap<Unit> alreadyMoved)
 	{
 		if(units.size() == 0)
 			throw new IllegalArgumentException("no units");
@@ -361,7 +345,7 @@ public class MoveValidator
 	}
 
 	
-	public static int getLeastMovement(Collection units, IntegerMap alreadyMoved)
+	public static int getLeastMovement(Collection<Unit> units, IntegerMap<Unit> alreadyMoved)
 	{
 		if(units.size() == 0)
 			throw new IllegalArgumentException("no units");
@@ -376,7 +360,7 @@ public class MoveValidator
 		return least;
 	}
 
-	public static int movementLeft(Unit unit, IntegerMap alreadyMoved)
+	public static int movementLeft(Unit unit, IntegerMap<Unit> alreadyMoved)
 	{
 
 		int already = alreadyMoved.getInt(unit);
@@ -387,7 +371,7 @@ public class MoveValidator
 
 	public static int getTransportCapacityFree(Territory territory, PlayerID id, GameData data, TransportTracker tracker)
 	{
-		Match friendlyTransports = new CompositeMatchAnd(Matches.UnitIsTransport,
+		Match<Unit> friendlyTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport,
 		                                                 Matches.alliedUnit(id, data));
 		Collection transports = territory.getUnits().getMatches(friendlyTransports);
 		int sum = 0;
@@ -400,9 +384,9 @@ public class MoveValidator
 		return sum;
 	}
 
-	public static boolean hasSomeLand(Collection units)
+	public static boolean hasSomeLand(Collection<Unit> units)
 	{
-		Match notAirOrSea = new CompositeMatchAnd(Matches.UnitIsNotAir, Matches.UnitIsNotSea);
+		Match<Unit> notAirOrSea = new CompositeMatchAnd<Unit>(Matches.UnitIsNotAir, Matches.UnitIsNotSea);
 		return Match.someMatch(units, notAirOrSea);
 	}
 

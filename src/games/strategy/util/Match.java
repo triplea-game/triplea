@@ -36,7 +36,7 @@ import java.util.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public abstract class Match
+public abstract class Match<T>
 {
 
 	/**
@@ -52,16 +52,15 @@ public abstract class Match
 	/**
 	 * Returns the elements of the collection that match.
 	 */
-	public static final List getMatches(Collection collection, Match aMatch)
+	public final static <T> List<T> getMatches(Collection<T> collection, Match<T> aMatch)
 	{
-		List matches = new ArrayList();
-		Iterator iter = collection.iterator();
-		while(iter.hasNext())
-		{
-			Object current = iter.next();
-			if( aMatch.match(current))
-				matches.add(current);
-		}
+		List<T> matches = new ArrayList<T>();
+		
+        for (T current : collection)
+        {
+            if( aMatch.match(current))
+                matches.add(current);            
+        }        
 		return matches;
 	}
 
@@ -70,18 +69,19 @@ public abstract class Match
 	 * If n matches cannot be found will return all matches that
 	 * can be found.
 	 */
-	public static final List getNMatches(Collection collection, int max, Match aMatch)
+	@SuppressWarnings("unchecked")
+    public static final <T> List<T> getNMatches(Collection<T> collection, int max, Match<T> aMatch)
 	{
 		if(max == 0)
 			return Collections.EMPTY_LIST;
 		if(max < 0)
 			throw new IllegalArgumentException("max must be positive, instead its:" + max);
 
-		List matches = new ArrayList(max);
-		Iterator iter = collection.iterator();
+		List<T> matches = new ArrayList<T>(max);
+		Iterator<T> iter = collection.iterator();
 		while(iter.hasNext())
 		{
-			Object current = iter.next();
+			T current = iter.next();
 			if( aMatch.match(current))
 				matches.add(current);
 			if(matches.size() == max)
@@ -93,12 +93,12 @@ public abstract class Match
 	/**
 	 * returns true if all elements in the collection match.
 	 */
-	public static final boolean allMatch(Collection collection, Match aMatch)
+	public final static <T> boolean allMatch(Collection<T> collection, Match<T> aMatch)
 	{
-		Iterator iter = collection.iterator();
+		Iterator<T> iter = collection.iterator();
 		while(iter.hasNext())
 		{
-			Object current = iter.next();
+			T current = iter.next();
 			if( !aMatch.match(current))
 				return false;
 		}
@@ -108,13 +108,13 @@ public abstract class Match
 	/**
 	 * Returns true if any matches could be found.
 	 */
-	public static final boolean someMatch(Collection collection, Match aMatch)
+	public static final <T> boolean someMatch(Collection<T> collection, Match<T> aMatch)
 	{
 		
-		Iterator iter = collection.iterator();
+		Iterator<T> iter = collection.iterator();
 		while(iter.hasNext())
 		{
-			Object current = iter.next();
+			T current = iter.next();
 			if( aMatch.match(current))
 				return true;
 		}
@@ -124,7 +124,7 @@ public abstract class Match
 	/**
 	 * Returns true if no matches could be found.
 	 */
-	public static final boolean noneMatch(Collection collection, Match aMatch)
+	public static final <T> boolean noneMatch(Collection<T> collection, Match<T> aMatch)
 	{
 		return !someMatch(collection, aMatch);
 	}
@@ -132,13 +132,13 @@ public abstract class Match
 	/**
 	 * Returns the number of matches found.
 	 */
-	public static final int countMatches(Collection collection, Match aMatch)
+	public static final <T> int countMatches(Collection<T> collection, Match<T> aMatch)
 	{
 		int count = 0;
-		Iterator iter = collection.iterator();
+		Iterator<T> iter = collection.iterator();
 		while(iter.hasNext())
 		{
-			Object current = iter.next();
+			T current = iter.next();
 			if( aMatch.match(current))
 				count++;
 		}
@@ -148,14 +148,14 @@ public abstract class Match
 	/**
 	 * return the keys where the value keyed by the key matches valueMatch 
 	 */
-	public static Set getKeysWhereValueMatch(Map aMap, Match valueMatch)
+	public static <K,V> Set<K> getKeysWhereValueMatch(Map<K,V> aMap, Match<V> valueMatch)
 	{
-	    Set rVal = new HashSet();
-	    Iterator keys = aMap.keySet().iterator();
+	    Set<K> rVal = new HashSet<K>();
+	    Iterator<K> keys = aMap.keySet().iterator();
 	    while(keys.hasNext())
 	    {
-	        Object key = keys.next();
-	        Object value = aMap.get(key);
+	        K key = keys.next();
+	        V value = aMap.get(key);
 	        if(valueMatch.match(value))
 	        {
 	            rVal.add(key);
@@ -170,7 +170,7 @@ public abstract class Match
 	 * Subclasses must override this method.
 	 * Returns true if the object matches some condition.
 	 */
-	public abstract boolean match(Object o);
+	public abstract boolean match(T o);
 }
 
 class NeverMatch extends Match

@@ -22,7 +22,6 @@ package games.strategy.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.ArrayList;
 
 import javax.swing.*;
 import java.util.List;
@@ -99,7 +98,7 @@ public class ImageScrollerLargeView extends JComponent
     private boolean m_inside = false;
     private int m_insideCount = 0;
     private int m_edge = NONE;
-    private List m_scrollListeners = new ArrayList();
+    private List<ScrollListener> m_scrollListeners = new ArrayList<ScrollListener>();
 
     /** Creates new ImageScroller */
     public ImageScrollerLargeView(Dimension dimensions)
@@ -208,10 +207,10 @@ public class ImageScrollerLargeView extends JComponent
     
     private void notifyScollListeners()
     {
-        Iterator iter = new ArrayList(m_scrollListeners).iterator();
+        Iterator<ScrollListener> iter = new ArrayList<ScrollListener>(m_scrollListeners).iterator();
         while (iter.hasNext())
         {
-            ScrollListener element = (ScrollListener) iter.next();
+            ScrollListener element = iter.next();
             element.scrolled(m_x, m_y);
             
         }

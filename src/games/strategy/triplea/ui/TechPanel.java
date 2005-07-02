@@ -94,10 +94,10 @@ public class TechPanel extends ActionPanel
         return m_techRoll;
     }
 
-    private List getAvailableTechs()
+    private List<TechAdvance> getAvailableTechs()
     {
-        Collection currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
-        Collection allAdvances = TechAdvance.getTechAdvances(getData());
+        Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
+        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData());
 
         return Util.difference(allAdvances, currentAdvances);
     }
@@ -114,14 +114,14 @@ public class TechPanel extends ActionPanel
             TechAdvance advance = null;
             if (isFourthEdition())
             {
-                List available = getAvailableTechs();
+                List<TechAdvance> available = getAvailableTechs();
                 if (available.isEmpty())
                 {
                     JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
                     return;
                 }
 
-                JList list = new JList(new Vector(available));
+                JList list = new JList(new Vector<TechAdvance>(available));
                 JPanel panel = new JPanel();
                 panel.setLayout(new BorderLayout());
                 panel.add(list, BorderLayout.CENTER);

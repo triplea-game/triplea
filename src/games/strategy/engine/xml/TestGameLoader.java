@@ -7,6 +7,7 @@
 package games.strategy.engine.xml;
 
 import games.strategy.engine.framework.*;
+import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 
 import java.util.*;
@@ -38,14 +39,14 @@ public class TestGameLoader implements IGameLoader
 	/**
 	 * The game is about to start.
 	 */
-	public void startGame(IGame game, Set players)
+	public void startGame(IGame game, Set<IGamePlayer> players)
 	{}
 	
 	/**
 	 * Create the players.  Given a map of playerName -> type,
 	 * where type is one of the Strings returned by a get*PlayerType() method.
 	 */
-	public Set createPlayers(Map players)
+	public Set<IGamePlayer> createPlayers(Map players)
 	{
 		return null;
 	}
@@ -53,7 +54,7 @@ public class TestGameLoader implements IGameLoader
     /* 
      * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
      */
-    public Class getDisplayType()
+    public Class<? extends IChannelSubscribor> getDisplayType()
     {
         return IChannelSubscribor.class;
     }
@@ -61,7 +62,7 @@ public class TestGameLoader implements IGameLoader
     /* (non-Javadoc)
      * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
      */
-    public Class getRemotePlayerType()
+    public Class<? extends IRemote> getRemotePlayerType()
     {
        return IRemote.class;
     }	

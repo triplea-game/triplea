@@ -34,7 +34,7 @@ public class AllianceTracker extends GameDataComponent
 {
 
 	//maps PlayerID to Collection of alliances names
-	private Map m_alliances = new HashMap();
+	private Map<PlayerID, Collection<String>> m_alliances = new HashMap<PlayerID, Collection<String>>();
 
 	/** Creates new Alliance Tracker. */
     public AllianceTracker(GameData data)
@@ -51,13 +51,13 @@ public class AllianceTracker extends GameDataComponent
 	{
 		if(!m_alliances.containsKey(player))
 		{
-			Collection alliances = new HashSet();
+			Collection<String> alliances = new HashSet<String>();
 			alliances.add(allianceName);
 			m_alliances.put(player, alliances);
 		}
 		else
 		{
-			Collection alliances = (Collection) m_alliances.get(player);
+			Collection<String> alliances = m_alliances.get(player);
 			alliances.add(allianceName);
 		}
 	}
@@ -79,8 +79,8 @@ public class AllianceTracker extends GameDataComponent
 		if(!m_alliances.containsKey(p2))
 			return false;
 
-		Collection a1 = (Collection) m_alliances.get(p1);
-		Collection a2 = (Collection) m_alliances.get(p2);
+		Collection<String> a1 = m_alliances.get(p1);
+		Collection<String> a2 = m_alliances.get(p2);
 
 		return !games.strategy.util.Util.intersection(a1,a2).isEmpty();
 	}
@@ -89,14 +89,14 @@ public class AllianceTracker extends GameDataComponent
 	 *
 	 * @return a set of all the games alliances
 	 */
-	public Set getAliances()
+	public Set<String> getAliances()
 	{
-		Iterator keys = m_alliances.keySet().iterator();
-		Set rVal = new HashSet();
+		Iterator<PlayerID> keys = m_alliances.keySet().iterator();
+		Set<String> rVal = new HashSet<String>();
 
 		while(keys.hasNext())
 		{
-			rVal.addAll((Collection) m_alliances.get(keys.next()));
+			rVal.addAll(m_alliances.get(keys.next()));
 		}
 		return rVal;
 
@@ -107,16 +107,16 @@ public class AllianceTracker extends GameDataComponent
 	 * @param alliance Alliance name
 	 * @return all the players in the given alliance
 	 */
-	public Set getPlayersInAlliance(String alliance)
+	public Set<PlayerID> getPlayersInAlliance(String alliance)
 	{
 
-		Iterator keys = m_alliances.keySet().iterator();
-		Set rVal = new HashSet();
+		Iterator<PlayerID> keys = m_alliances.keySet().iterator();
+		Set<PlayerID> rVal = new HashSet<PlayerID>();
 
 		while(keys.hasNext())
 		{
-			Object player = keys.next();
-			Collection alliances = (Collection) m_alliances.get(player);
+			PlayerID player = keys.next();
+			Collection alliances = m_alliances.get(player);
 			if(alliances.contains(alliance))
 				rVal.add(player);
 		}

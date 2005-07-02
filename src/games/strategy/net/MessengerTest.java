@@ -293,8 +293,8 @@ public class MessengerTest extends TestCase
 
 class MessageListener implements IMessageListener
 {
-	private ArrayList messages = new ArrayList();
-	private ArrayList senders = new ArrayList();
+	private ArrayList<Serializable> messages = new ArrayList<Serializable>();
+	private ArrayList<INode> senders = new ArrayList<INode>();
 	private Object lock = new Object();
 
 	public MessageListener(String name)
@@ -342,7 +342,7 @@ class MessageListener implements IMessageListener
 			if(messages.isEmpty())
 				waitForMessage();
 
-			return (INode) senders.get(0);
+			return senders.get(0);
 		}
 	}
 

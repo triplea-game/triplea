@@ -20,7 +20,7 @@
 
 package games.strategy.twoIfBySea.delegate;
 
-import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.*;
 import games.strategy.triplea.delegate.*;
 import games.strategy.util.Match;
 
@@ -42,7 +42,7 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 	 */
 	protected int getProduction(Territory territory)
 	{
-		Collection allUnits = territory.getUnits().getUnits();
+		Collection<Unit> allUnits = territory.getUnits().getUnits();
 		int factoryCount = Match.countMatches(allUnits, Matches.UnitIsFactory);
 		return 5 * factoryCount;
 	}

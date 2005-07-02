@@ -33,7 +33,7 @@ import games.strategy.util.*;
  */
 public class UnitCollection extends GameDataComponent
 {
-	private final List m_units = new ArrayList(8);
+	private final List<Unit> m_units = new ArrayList<Unit>(8);
 	private final NamedUnitHolder m_holder;
 
 	/** Creates new UnitCollection */
@@ -55,13 +55,13 @@ public class UnitCollection extends GameDataComponent
 		m_holder.notifyChanged();
 	}
 
-	public void addAllUnits(Collection units)
+	public void addAllUnits(Collection<Unit> units)
 	{
 		m_units.addAll(units);
 		m_holder.notifyChanged();
 	}
 
-	public void removeAllUnits(Collection units)
+	public void removeAllUnits(Collection<Unit> units)
 	{
 		m_units.removeAll(units);
 		m_holder.notifyChanged();
@@ -77,7 +77,7 @@ public class UnitCollection extends GameDataComponent
 		int count = 0;
 		for(int i = 0; i < m_units.size(); i++)
 		{
-			Unit current = (Unit) m_units.get(i);
+			Unit current = m_units.get(i);
 
 			if(current.getType().equals(type))
 				count++;
@@ -90,7 +90,7 @@ public class UnitCollection extends GameDataComponent
 		int count = 0;
 		for(int i = 0; i < m_units.size(); i++)
 		{
-			Unit current = (Unit) m_units.get(i);
+			Unit current = m_units.get(i);
 
 			if(current.getType().equals(type) && current.getOwner().equals(owner))
 				count++;
@@ -103,7 +103,7 @@ public class UnitCollection extends GameDataComponent
 		int count = 0;
 		for(int i = 0; i < m_units.size(); i++)
 		{
-			Unit current = (Unit) m_units.get(i);
+			Unit current = m_units.get(i);
 
 			if(current.getOwner().equals(owner))
 				count++;
@@ -111,7 +111,7 @@ public class UnitCollection extends GameDataComponent
 		return count;
 	}
 
-	public boolean containsAll(Collection units)
+	public boolean containsAll(Collection<Unit> units)
 	{
 		return m_units.containsAll(units);
 	}
@@ -120,17 +120,17 @@ public class UnitCollection extends GameDataComponent
 	 * returns up to int units of a given type currently in
 	 * the collection.
 	 */
-	public Collection getUnits(UnitType type, int count)
+	public Collection<Unit> getUnits(UnitType type, int count)
 	{
 		if(count == 0)
-			return new ArrayList();
+			return new ArrayList<Unit>();
 		if(count < 0)
 			throw new IllegalArgumentException("value must be positiive.  Instead its:" + count);
 
-		Collection rVal = new ArrayList();
+		Collection<Unit> rVal = new ArrayList<Unit>();
 		for(int i = 0; i < m_units.size(); i++)
 		{
-			Unit current = (Unit) m_units.get(i);
+			Unit current = m_units.get(i);
 			if(current.getType().equals(type))
 				rVal.add(current);
 			if(rVal.size() == count)
@@ -142,13 +142,13 @@ public class UnitCollection extends GameDataComponent
 	/**
 	 * Returns a map of UnitType -> int.
 	 */
-	public IntegerMap getUnitsByType()
+	public IntegerMap<UnitType> getUnitsByType()
 	{
-		IntegerMap units = new IntegerMap();
-		Iterator iter = getData().getUnitTypeList().iterator();
+		IntegerMap<UnitType> units = new IntegerMap<UnitType>();
+		Iterator<UnitType> iter = getData().getUnitTypeList().iterator();
 		while(iter.hasNext() )
 		{
-			UnitType type = (UnitType) iter.next();
+			UnitType type = iter.next();
 			int count = getUnitCount(type);
 			if(count > 0)
 				units.put(type,count );
@@ -161,14 +161,14 @@ public class UnitCollection extends GameDataComponent
 	 * Returns a map of UnitType -> int.
 	 * Only returns units for the specified player
 	 */
-	public IntegerMap getUnitsByType(PlayerID id)
+	public IntegerMap<UnitType> getUnitsByType(PlayerID id)
 	{
-		IntegerMap count = new IntegerMap();
+		IntegerMap<UnitType> count = new IntegerMap<UnitType>();
 
-		Iterator iter = m_units.iterator();
+		Iterator<Unit> iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			if(unit.getOwner().equals(id))
 				count.add(unit.getType(), 1);
 		}
@@ -181,13 +181,13 @@ public class UnitCollection extends GameDataComponent
 	 * Passed a map of UnitType -> int
 	 * return a collection of units of each type up to max
 	 */
-	public Collection getUnits(IntegerMap types)
+	public Collection<Unit> getUnits(IntegerMap<UnitType> types)
 	{
-		Collection units = new ArrayList();
-		Iterator iter = types.keySet().iterator();
+		Collection<Unit> units = new ArrayList<Unit>();
+		Iterator<UnitType> iter = types.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			UnitType type = (UnitType) iter.next();
+			UnitType type = iter.next();
 			units.addAll(getUnits(type, types.getInt(type)));
 		}
 		return units;
@@ -203,21 +203,21 @@ public class UnitCollection extends GameDataComponent
 		return m_units.isEmpty();
 	}
 
-	public Collection getUnits()
+	public Collection<Unit> getUnits()
 	{
-		return new ArrayList(m_units);
+		return new ArrayList<Unit>(m_units);
 	}
 
 
-	public Set getPlayersWithUnits()
+	public Set<PlayerID> getPlayersWithUnits()
 	{
 		//note nulls are handled by PlayerID.NULL_PLAYERID
-		Set ids = new HashSet();
+		Set<PlayerID> ids = new HashSet<PlayerID>();
 
-		Iterator iter = m_units.iterator();
+		Iterator<Unit> iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			ids.add(unit.getOwner());
 		}
 		return ids;
@@ -226,14 +226,14 @@ public class UnitCollection extends GameDataComponent
 
 
 
-	public IntegerMap getPlayerUnitCounts()
+	public IntegerMap<PlayerID> getPlayerUnitCounts()
 	{
-		IntegerMap count = new IntegerMap();
+		IntegerMap<PlayerID> count = new IntegerMap<PlayerID>();
 
-		Iterator iter = m_units.iterator();
+		Iterator<Unit> iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			count.add(unit.getOwner(), 1);
 		}
 		return count;
@@ -249,42 +249,42 @@ public class UnitCollection extends GameDataComponent
 		return m_holder;
 	}
 
-	public boolean allMatch(Match matcher)
+	public boolean allMatch(Match<Unit> matcher)
 	{
-		Iterator iter = m_units.iterator();
+		Iterator<Unit> iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			if(!matcher.match(unit))
 				return false;
 		}
 		return true;
 	}
 
-	public boolean someMatch(Match matcher)
+	public boolean someMatch(Match<Unit> matcher)
 	{
-		Iterator iter = m_units.iterator();
+		Iterator<Unit> iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit =iter.next();
 			if(matcher.match(unit))
 				return true;
 		}
 		return false;
 	}
 
-	public int countMatches(Match predicate)
+	public int countMatches(Match<Unit> predicate)
 	{
 	    return Match.countMatches(m_units, predicate);
 	}
 	
-	public List getMatches(Match predicate)
+	public List<Unit> getMatches(Match<Unit> predicate)
 	{
-		List values = new ArrayList();
-		Iterator iter = m_units.iterator();
+		List<Unit> values = new ArrayList<Unit>();
+		Iterator<Unit> iter = m_units.iterator();
 		while(iter.hasNext() )
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			if(predicate.match(unit))
 				values.add(unit);
 		}
@@ -293,14 +293,14 @@ public class UnitCollection extends GameDataComponent
 
 	public String toString()
 	{
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("Unit collecion held by ").append(m_holder.getName());
 		buf.append(" units:");
-		IntegerMap units = getUnitsByType();
-		Iterator iter = units.keySet().iterator();
+		IntegerMap<UnitType> units = getUnitsByType();
+		Iterator<UnitType> iter = units.keySet().iterator();
 		while(iter.hasNext())
 		{
-			UnitType unit = (UnitType) iter.next();
+			UnitType unit = iter.next();
 			buf.append(" <").append(unit.getName()).append(",").append(units.getInt(unit)).append("> ");
 		}
 		return buf.toString();

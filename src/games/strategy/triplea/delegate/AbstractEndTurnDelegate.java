@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
+import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -94,9 +95,9 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 	
 	private void repairBattleShips(IDelegateBridge aBridge)
 	{
-	   Match damagedBattleship = new CompositeMatchAnd(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+	   Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
 	    
-	   Collection damaged = new ArrayList();
+	   Collection<Unit> damaged = new ArrayList<Unit>();
 	   Iterator iter = m_data.getMap().getTerritories().iterator();
 	   while(iter.hasNext())
 	   {
@@ -107,7 +108,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 	   if(damaged.size() == 0)
 	       return;
 	   
-	   IntegerMap hits = new IntegerMap();
+	   IntegerMap<Unit> hits = new IntegerMap<Unit>();
 	   iter = damaged.iterator();
 	   while(iter.hasNext())
 	   {
@@ -160,7 +161,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 	/* 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class getRemoteType()
+    public Class<? extends IRemote> getRemoteType()
     {
         return null;
     }

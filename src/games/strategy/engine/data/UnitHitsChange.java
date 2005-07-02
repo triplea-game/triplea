@@ -14,36 +14,34 @@
 package games.strategy.engine.data;
 
 
-import games.strategy.triplea.ui.MapData;
 import games.strategy.util.*;
-import games.strategy.util.IntegerMap;
 
 import java.util.*;
 
 public class UnitHitsChange extends Change
 {
-    private final IntegerMap m_hits;
-    private final IntegerMap m_undoHits;
+    private final IntegerMap<Unit> m_hits;
+    private final IntegerMap<Unit> m_undoHits;
 
-    private UnitHitsChange(IntegerMap hits, IntegerMap undoHits)
+    private UnitHitsChange(IntegerMap<Unit> hits, IntegerMap<Unit> undoHits)
     {
         m_hits = hits;
         m_undoHits = undoHits;
     }
     
-    public Collection getUnits()
+    public Collection<Unit> getUnits()
     {
         return m_hits.keySet();
     }
 
-    UnitHitsChange(IntegerMap hits)
+    UnitHitsChange(IntegerMap<Unit> hits)
     {
         m_hits = hits.copy();
-        m_undoHits = new IntegerMap();
-        Iterator iter = m_hits.keySet().iterator();
+        m_undoHits = new IntegerMap<Unit>();
+        Iterator<Unit> iter = m_hits.keySet().iterator();
         while (iter.hasNext())
         {
-            Unit item = (Unit) iter.next();
+            Unit item = iter.next();
             m_undoHits.put(item, item.getHits());
         }
 
@@ -51,14 +49,14 @@ public class UnitHitsChange extends Change
 
     protected void perform(GameData data)
     {
-        Iterator iter = m_hits.keySet().iterator();
+        Iterator<Unit> iter = m_hits.keySet().iterator();
         while (iter.hasNext())
         {
-            Unit item = (Unit) iter.next();
+            Unit item = iter.next();
             item.setHits(m_hits.getInt(item));
         }
         
-        Set units = m_hits.keySet();
+        Set<Unit> units = m_hits.keySet();
         Iterator terrIter = data.getMap().getTerritories().iterator();
         while (terrIter.hasNext())
         {

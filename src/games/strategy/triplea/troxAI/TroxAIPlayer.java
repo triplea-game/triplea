@@ -39,6 +39,7 @@ import java.util.*;
  * @author Troy Graber
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
 public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
 {
     private final String m_name;
@@ -120,7 +121,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
         else if (name.endsWith("Place"))
             place(name.indexOf("Bid") != -1);
         else if (name.endsWith("EndTurn"))
-            ;//intentionally blank
+            {}//intentionally blank
         
 
     }
@@ -134,7 +135,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     {
 
 
-        Collection moves;
+        Collection<MoveDescription> moves;
 
 
         m_ai.setData(TripleAFrame.cloneGameData(m_bridge.getGameData()));
@@ -146,10 +147,10 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
             moves = m_ai.selectCombatMoves();
         }
 
-        Iterator iter2 = moves.iterator();
+        Iterator<MoveDescription> iter2 = moves.iterator();
         while (iter2.hasNext())
         {
-            MoveDescription m = (MoveDescription) iter2.next();
+            MoveDescription m = iter2.next();
             if (m.getRoute() != null && m.getRoute().getLength() >= 1)
             {
                 //System.out.println(""+m.toString());
@@ -221,7 +222,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
             System.exit(0);
             return;
         }
-        IntegerMap prod = m_ai.selectPurchases();
+        IntegerMap<ProductionRule> prod = m_ai.selectPurchases();
 
         if (prod == null)
             return;
@@ -283,7 +284,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     /*
      * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
      */
-    public Class getRemotePlayerType()
+    public Class<ITripleaPlayer> getRemotePlayerType()
     {
         return ITripleaPlayer.class;
     }
@@ -296,14 +297,13 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
      *      games.strategy.triplea.delegate.DiceRoll,
      *      games.strategy.engine.data.PlayerID, java.util.List)
      */
-    public CasualtyDetails selectCasualties(Collection selectFrom,
-            Map dependents, int count, String message, DiceRoll dice,
-            PlayerID hit, List defaultCasualties)
+    public CasualtyDetails selectCasualties(
+            Collection selectFrom, Map dependents,  int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
     {
 
-        List killed = new ArrayList();
+        List<Unit> killed = new ArrayList<Unit>();
         killed.addAll(m_ai.selectCasualities(selectFrom, count));
-        List damaged = new ArrayList();
+        List<Unit> damaged = new ArrayList<Unit>();
         CasualtyDetails m2 = new CasualtyDetails(killed, damaged, false);
         return m2;
 

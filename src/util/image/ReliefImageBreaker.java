@@ -244,7 +244,7 @@ public class ReliefImageBreaker
         int height = bounds.height;
 
         BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
-        Iterator iter = MapData.getInstance().getPolygons(territory).iterator();
+        Iterator<Polygon> iter = MapData.getInstance().getPolygons(territory).iterator();
 
         while (iter.hasNext())
         {

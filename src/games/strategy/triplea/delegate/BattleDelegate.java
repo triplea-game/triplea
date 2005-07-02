@@ -20,6 +20,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
+import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -117,8 +118,8 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
 
     public BattleListing getBattles()
     {
-        Collection battles = m_battleTracker.getPendingBattleSites(false);
-        Collection bombing = m_battleTracker.getPendingBattleSites(true);
+        Collection<Territory> battles = m_battleTracker.getPendingBattleSites(false);
+        Collection<Territory> bombing = m_battleTracker.getPendingBattleSites(true);
         return new BattleListing(battles, bombing);
     }
 
@@ -146,16 +147,17 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     private void addBombardmentSources()
     {
         PlayerID attacker = m_bridge.getPlayerID();
-        Match ownedAndCanBombard = new CompositeMatchAnd(Matches
+        Match<Unit> ownedAndCanBombard = new CompositeMatchAnd<Unit>(Matches
                 .unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
-        Map adjBombardment = getPossibleBombardingTerritories();
-        Iterator territories = adjBombardment.keySet().iterator();
+        
+        Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
+        Iterator<Territory> territories = adjBombardment.keySet().iterator();
         while (territories.hasNext())
         {
-            Territory t = (Territory) territories.next();
+            Territory t = territories.next();
             if (!m_battleTracker.hasPendingBattle(t, false))
             {
-                Collection battles = (Collection) adjBombardment.get(t);
+                Collection<Battle> battles = adjBombardment.get(t);
                 battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
                 if (!battles.isEmpty())
                 {
@@ -178,25 +180,25 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     /**
      * Return map of adjacent territories to battles.
      */
-    private Map getPossibleBombardingTerritories()
+    private Map<Territory, Collection<Battle>> getPossibleBombardingTerritories()
     {
-        Map possibleBombardingTerritories = new HashMap();
-        Iterator battleTerritories = m_battleTracker.getPendingBattleSites(
+        Map<Territory, Collection<Battle>> possibleBombardingTerritories = new HashMap<Territory, Collection<Battle>>();
+        Iterator<Territory> battleTerritories = m_battleTracker.getPendingBattleSites(
                 false).iterator();
         while (battleTerritories.hasNext())
         {
-            Territory t = (Territory) battleTerritories.next();
+            Territory t = battleTerritories.next();
             Battle battle = (Battle) m_battleTracker.getPendingBattle(t, false);
             Iterator bombardingTerritories = ((Collection) m_data.getMap()
                     .getNeighbors(t)).iterator();
             while (bombardingTerritories.hasNext())
             {
                 Territory neighbor = (Territory) bombardingTerritories.next();
-                Collection battles = (Collection) possibleBombardingTerritories
+                Collection<Battle> battles = possibleBombardingTerritories
                         .get(neighbor);
                 if (battles == null)
                 {
-                    battles = new ArrayList();
+                    battles = new ArrayList<Battle>();
                     possibleBombardingTerritories.put(neighbor, battles);
                 }
                 battles.add(battle);
@@ -220,8 +222,8 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
             return (Battle) battles.iterator().next();
         }
 
-        List territories = new ArrayList();
-        Map battleTerritories = new HashMap();
+        List<Territory> territories = new ArrayList<Territory>();
+        Map<Territory, Battle> battleTerritories = new HashMap<Territory, Battle>();
         Iterator battlesIter = battles.iterator();
         while (battlesIter.hasNext())
         {
@@ -235,7 +237,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         
         if (bombardingTerritory != null)
         {
-            return (Battle) battleTerritories.get(bombardingTerritory);
+            return battleTerritories.get(bombardingTerritory);
         }
 
         return null; // User elected not to bombard with this unit
@@ -249,7 +251,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     private void setupSeaUnitsInSameSeaZoneBattles()
     {
         //we want to match all sea zones with our units and enemy units
-        CompositeMatch seaWithOwnAndEnemy = new CompositeMatchAnd();
+        CompositeMatch<Territory> seaWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
         seaWithOwnAndEnemy.add(Matches.TerritoryIsWater);
         seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(m_bridge
                 .getPlayerID()));
@@ -260,12 +262,12 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
                 m_data.getMap().getTerritories(), seaWithOwnAndEnemy)
                 .iterator();
 
-        Match ownedUnit = Matches.unitIsOwnedBy(m_bridge.getPlayerID());
+        Match<Unit> ownedUnit = Matches.unitIsOwnedBy(m_bridge.getPlayerID());
         while (territories.hasNext())
         {
             Territory territory = (Territory) territories.next();
 
-            List attackingUnits = territory.getUnits().getMatches(ownedUnit);
+            List<Unit> attackingUnits = territory.getUnits().getMatches(ownedUnit);
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
             Route route = new Route();
 
@@ -325,7 +327,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
      * 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class getRemoteType()
+    public Class<? extends IRemote> getRemoteType()
     {
         return IBattleDelegate.class;
     }

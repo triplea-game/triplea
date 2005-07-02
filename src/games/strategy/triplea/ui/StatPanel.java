@@ -23,12 +23,10 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.stats.*;
-import games.strategy.engine.stats.AbstractStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.delegate.*;
 import games.strategy.util.*;
-import games.strategy.util.IntegerMap;
 
 import java.awt.GridLayout;
 import java.util.*;
@@ -48,12 +46,10 @@ public class StatPanel extends JPanel
     private GameData m_data;
     
     //sort based on first step
-    private final Comparator m_playerOrderComparator = new Comparator()
+    private final Comparator<PlayerID> m_playerOrderComparator = new Comparator<PlayerID>()
     {
-        public int compare(Object o1, Object o2)
+        public int compare(PlayerID p1, PlayerID p2)
         {
-            PlayerID p1 = (PlayerID) o1;
-            PlayerID p2 = (PlayerID) o2;
             
             Iterator iter = m_data.getSequence().iterator();
             
@@ -81,7 +77,7 @@ public class StatPanel extends JPanel
         //only add the vc stat if we have some victory cities
         if(Match.someMatch(data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity))
         {
-            List stats = new ArrayList(Arrays.asList(m_stats));
+            List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
             stats.add(new VictoryCityStat());
             m_stats = (IStat[]) stats.toArray(new IStat[stats.size()]);
             
@@ -136,11 +132,11 @@ public class StatPanel extends JPanel
      * 
      * @return all the alliances with more than one player.
      */
-    public Collection getAlliances()
+    public Collection<String> getAlliances()
     {
         Iterator allAlliances = m_data.getAllianceTracker().getAliances().iterator();
         //order the alliances use a Tree Set
-        Collection rVal = new TreeSet();
+        Collection<String> rVal = new TreeSet<String>();
 
         while (allAlliances.hasNext())
         {
@@ -154,9 +150,9 @@ public class StatPanel extends JPanel
     }
 
     
-    public List getPlayers()
+    public List<PlayerID> getPlayers()
     {
-        List players = new ArrayList( m_data.getPlayerList().getPlayers());
+        List<PlayerID> players = new ArrayList<PlayerID>( m_data.getPlayerList().getPlayers());
         Collections.sort(players,m_playerOrderComparator);
         return players;
         
@@ -200,7 +196,7 @@ public class StatPanel extends JPanel
             try
             {
                 List players = getPlayers();
-                Collection alliances = getAlliances();
+                Collection<String> alliances = getAlliances();
 	            
 	            m_collectedData = new String[players.size() + alliances.size()][m_stats.length + 1];
 	            
@@ -217,10 +213,10 @@ public class StatPanel extends JPanel
 	                }
 	                row++;
 	            }
-	            Iterator allianceIterator = alliances.iterator();
+	            Iterator<String> allianceIterator = alliances.iterator();
 	            while (allianceIterator.hasNext())
 	            {
-	                String alliance = (String) allianceIterator.next();
+	                String alliance = allianceIterator.next();
 	                
 	                m_collectedData[row][0] = alliance;
 	                for(int i = 0; i < m_stats.length; i++)
@@ -310,9 +306,9 @@ public class StatPanel extends JPanel
         /* Underlying data for the table */
         private String[][] data;
         /* Convenience mapping of country names -> col */
-        private Map colMap = null;
+        private Map<String, Integer> colMap = null;
         /* Convenience mapping of technology names -> row */
-        private Map rowMap = null;
+        private Map<String, Integer> rowMap = null;
 
         public TechTableModel(GameData gdata)
         {
@@ -322,7 +318,7 @@ public class StatPanel extends JPanel
             initColList();
 
             /* Load the country -> col mapping */
-            colMap = new HashMap();
+            colMap = new HashMap<String, Integer>();
             for (int i = 0; i < colList.length; i++)
             {
                 colMap.put(colList[i], new Integer(i + 1));
@@ -336,7 +332,7 @@ public class StatPanel extends JPanel
             data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];
 
             /* Load the technology -> row mapping */
-            rowMap = new HashMap();
+            rowMap = new HashMap<String, Integer>();
             Iterator iter = TechAdvance.getTechAdvances(m_data).iterator();
             int row = 0;
 
@@ -367,13 +363,13 @@ public class StatPanel extends JPanel
 
         private void initColList()
         {
-            java.util.List players = new ArrayList(m_data.getPlayerList().getPlayers());
+            java.util.List<PlayerID> players = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
 
             colList = new String[players.size()];
 
             for (int i = 0; i < players.size(); i++)
             {
-                colList[i] = ((PlayerID) players.get(i)).getName();
+                colList[i] = players.get(i).getName();
             }
 
             Arrays.sort(colList, 0, players.size());
@@ -390,13 +386,13 @@ public class StatPanel extends JPanel
                 if (colMap.get(pid.getName()) == null)
                     throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
 
-                int col = ((Integer) colMap.get(pid.getName())).intValue();
+                int col = colMap.get(pid.getName()).intValue();
 
                 Iterator advances = TechTracker.getTechAdvances(pid).iterator();
 
                 while (advances.hasNext())
                 {
-                    int row = ((Integer) rowMap.get(((TechAdvance) advances.next()).getName())).intValue();
+                    int row = rowMap.get(((TechAdvance) advances.next()).getName()).intValue();
                     // System.err.println("(" + row + ", " + col + ")");
                     data[row][col] = "X";
                     // data[row][col] = colList[col].substring(0, 1);
@@ -529,7 +525,7 @@ class TUVStat extends AbstractStat
 
     public double getValue(PlayerID player, GameData data)
     {
-        IntegerMap costs = BattleCalculator.getCosts(player, data);
+        IntegerMap<UnitType> costs = BattleCalculator.getCosts(player, data);
         
         int rVal = 0; 
         Iterator iter = data.getMap().getTerritories().iterator();

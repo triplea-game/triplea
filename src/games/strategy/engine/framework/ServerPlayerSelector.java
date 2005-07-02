@@ -34,9 +34,9 @@ import javax.swing.*;
  */
 public class ServerPlayerSelector extends JFrame
 {
-	private Collection m_playerChoices;
+	private Collection<PlayerChoice> m_playerChoices;
 	private Object m_lock = new Object();
-	private Collection m_remote;
+	private Collection<String> m_remote;
 	private JTextField m_nameField;
 	
 	/** Creates a new instance of PlayerSelecter */
@@ -56,7 +56,7 @@ public class ServerPlayerSelector extends JFrame
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		getContentPane().add(new JLabel("Choose player location."));
 		
-		m_playerChoices = new ArrayList();
+		m_playerChoices = new ArrayList<PlayerChoice>();
 		for(int i = 0; i < players.length; i++)
 		{
 			PlayerChoice current = new PlayerChoice(players[i]);
@@ -75,7 +75,7 @@ public class ServerPlayerSelector extends JFrame
 	 * This method blocks the current thread, and should
 	 * not be called from the swing event thread.
 	 */
-	public Collection getRemotePlayers()
+	public Collection<String> getRemotePlayers()
 	{
 		try
 		{
@@ -108,11 +108,11 @@ public class ServerPlayerSelector extends JFrame
 			if(!isVisible())
 				return;
 			
-			m_remote = new ArrayList();
-			Iterator iter = m_playerChoices.iterator();
+			m_remote = new ArrayList<String>();
+			Iterator<PlayerChoice> iter = m_playerChoices.iterator();
 			while(iter.hasNext())
 			{
-				PlayerChoice choice = (PlayerChoice) iter.next();
+				PlayerChoice choice = iter.next();
 				if(choice.isRemote())
 				{
 					m_remote.add(choice.getPlayerName());

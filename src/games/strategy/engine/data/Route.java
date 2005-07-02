@@ -34,7 +34,7 @@ import games.strategy.util.*;
  */
 public class Route implements java.io.Serializable
 {
-	private List m_route = new ArrayList();
+	private List<Territory> m_route = new ArrayList<Territory>();
 	private Territory m_start;
 
 	/**
@@ -60,10 +60,10 @@ public class Route implements java.io.Serializable
 		}
 
 
-		Collection c1 = new ArrayList(r1.m_route);
+		Collection<Territory> c1 = new ArrayList<Territory>(r1.m_route);
 		c1.add(r1.getStart());
 
-		Collection c2 = new ArrayList(r2.m_route);
+		Collection<Territory> c2 = new ArrayList<Territory>(r2.m_route);
 
 		if(!Util.intersection(c1,c2).isEmpty())
 			return null;
@@ -123,10 +123,10 @@ public class Route implements java.io.Serializable
         {
             boolean startLand = !m_start.isWater();
             boolean overWater = false;
-            Iterator routeIter = m_route.iterator();
+            Iterator<Territory> routeIter = m_route.iterator();
             Territory terr = null;
             while (routeIter.hasNext()) {
-                terr = (Territory) routeIter.next();
+                terr = routeIter.next();
                 if (terr.isWater()) {
                     overWater = true;
                 }
@@ -158,10 +158,10 @@ public class Route implements java.io.Serializable
 
 	public Territory at(int i)
 	{
-		return (Territory) m_route.get(i);
+		return m_route.get(i);
 	}
 
-	public boolean allMatch(Match aMatch)
+	public boolean allMatch(Match<Territory> aMatch)
 	{
 		for(int i = 0; i < getLength(); i++)
 		{
@@ -171,7 +171,7 @@ public class Route implements java.io.Serializable
 		return true;
 	}
 
-	public boolean someMatch(Match aMatch)
+	public boolean someMatch(Match<Territory> aMatch)
 	{
 		for(int i = 0; i < getLength(); i++)
 		{
@@ -181,14 +181,14 @@ public class Route implements java.io.Serializable
 		return false;
 	}
 
-	public Collection getMatches(Match aMatch)
+	public Collection<Territory> getMatches(Match<Territory> aMatch)
 	{
 		return Match.getMatches(m_route, aMatch);
 	}
 
 	public String toString()
 	{
-		StringBuffer buf = new StringBuffer("Route:");
+		StringBuilder buf = new StringBuilder("Route:");
 		for(int i = 0; i < getLength(); i++)
 		{
 			buf.append(at(i).getName() );
@@ -201,9 +201,9 @@ public class Route implements java.io.Serializable
 	 *Returns a collection of all territories,
 	 *including the start.
 	 */
-	public List getTerritories()
+	public List<Territory> getTerritories()
 	{
-		ArrayList list = new ArrayList(m_route);
+		ArrayList<Territory> list = new ArrayList<Territory>(m_route);
 		list.add(0, m_start);
 		return list;
 	}
@@ -212,7 +212,7 @@ public class Route implements java.io.Serializable
 	{
 		if(m_route.size() == 0)
 			return null;
-		return (Territory) m_route.get(m_route.size() -1);
+		return m_route.get(m_route.size() -1);
 	}
 
     /**

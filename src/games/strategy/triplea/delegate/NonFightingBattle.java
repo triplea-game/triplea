@@ -50,7 +50,7 @@ public class NonFightingBattle implements Battle
 	//maps unit -> Collection of units
 	//if unit is lost in a battle we are dependent on
 	//then we lose the corresponding collection of units
-	private Map m_dependentUnits = new HashMap();
+	private Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
 
 	public NonFightingBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, boolean neutral, GameData data, TransportTracker transportTracker)
 	{
@@ -84,7 +84,7 @@ public class NonFightingBattle implements Battle
 
     private boolean hasAttackingUnits()
     {
-        CompositeMatch attackingLand = new CompositeMatchAnd();
+        CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<Unit>();
               attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
               attackingLand.add(Matches.UnitIsLand);
               boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
@@ -96,13 +96,13 @@ public class NonFightingBattle implements Battle
 		return false;
 	}
 
-    public void removeAttack(Route route, Collection units)
+    public void removeAttack(Route route, Collection<Unit> units)
     {
-        Iterator dependents = m_dependentUnits.keySet().iterator();
+        Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
         while(dependents.hasNext())
         {
-            Unit dependence = (Unit) dependents.next();
-            Collection dependent = (Collection) m_dependentUnits.get(dependence);
+            Unit dependence = dependents.next();
+            Collection<Unit> dependent = m_dependentUnits.get(dependence);
             dependent.removeAll(units);
         }
     }
@@ -112,15 +112,15 @@ public class NonFightingBattle implements Battle
         return !hasAttackingUnits();
     }
 
-	public void addAttack(Route route, Collection units)
+	public void addAttack(Route route, Collection<Unit> units)
 	{
-		Map addedTransporting = m_transportTracker.transporting(units);
-		Iterator iter = addedTransporting.keySet().iterator();
+		Map<Unit, Collection<Unit>> addedTransporting = m_transportTracker.transporting(units);
+		Iterator<Unit> iter = addedTransporting.keySet().iterator();
 		while(iter.hasNext())
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			if(m_dependentUnits.get(unit) != null)
-				((Collection) m_dependentUnits.get(unit)).addAll( (Collection) addedTransporting.get(unit));
+				m_dependentUnits.get(unit).addAll( addedTransporting.get(unit));
 			else
 				m_dependentUnits.put(unit, addedTransporting.get(unit));
 		}
@@ -134,7 +134,7 @@ public class NonFightingBattle implements Battle
 	public void unitsLost(Battle battle, Collection units, IDelegateBridge bridge)
 	{
 		
-		Collection lost = getDependentUnits(units);
+		Collection<Unit> lost = getDependentUnits(units);
 		if(lost.size() != 0)
 		{
 			Change change = ChangeFactory.removeUnits(m_battleSite, lost);
@@ -145,15 +145,15 @@ public class NonFightingBattle implements Battle
 		}
 	}
 
-    public Collection getDependentUnits(Collection units)
+    public Collection<Unit> getDependentUnits(Collection units)
     {
-        Collection rVal = new ArrayList();
+        Collection<Unit> rVal = new ArrayList<Unit>();
         
         Iterator iter = units.iterator();
 		while(iter.hasNext())
 		{
 			Unit unit = (Unit) iter.next();
-			Collection dependent = (Collection) m_dependentUnits.get(unit);
+			Collection<Unit> dependent = m_dependentUnits.get(unit);
 			if(dependent != null)
 				rVal.addAll(dependent);
 		}

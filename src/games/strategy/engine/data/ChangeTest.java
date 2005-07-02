@@ -97,7 +97,7 @@ public class ChangeTest extends TestCase
 		assertEquals(can.getUnits().getUnitCount(), 5);
 
 		//remove some units
-		Collection units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+		Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.removeUnits(can, units);
 		change.perform(m_data);
 		assertEquals(can.getUnits().getUnitCount(), 2);
@@ -115,7 +115,7 @@ public class ChangeTest extends TestCase
 		assertEquals(can.getUnits().getUnitCount(), 5);
 
 		//remove some units
-		Collection units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+		Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.removeUnits(can, units);
 		change = serialize(change);
 		change.perform(m_data);
@@ -151,7 +151,7 @@ public class ChangeTest extends TestCase
 		assertEquals(chretian.getUnits().getUnitCount(), 10);
 
 		//remove some units
-		Collection units = chretian.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+		Collection<Unit> units = chretian.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.removeUnits(chretian, units);
 		change.perform(m_data);
 		assertEquals(chretian.getUnits().getUnitCount(), 7);
@@ -171,7 +171,7 @@ public class ChangeTest extends TestCase
 		assertEquals(canada.getUnits().getUnitCount(), 5);
 		assertEquals(greenland.getUnits().getUnitCount(), 0);
 
-		Collection units = canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+		Collection<Unit> units = canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.moveUnits(canada, greenland, units);
 		change.perform(m_data);
 		assertEquals(canada.getUnits().getUnitCount(), 2);
@@ -193,7 +193,7 @@ public class ChangeTest extends TestCase
 		assertEquals(canada.getUnits().getUnitCount(), 5);
 		assertEquals(greenland.getUnits().getUnitCount(), 0);
 
-		Collection units = canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
+		Collection<Unit> units = canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.moveUnits(canada, greenland, units);
 		change = serialize(change);
 		change.perform(m_data);
@@ -297,7 +297,7 @@ public class ChangeTest extends TestCase
 		Unit inf1 = (Unit) infantry.create(1, can).iterator().next();
 		Unit inf2 = (Unit) infantry.create(1, us).iterator().next();
 
-		Collection units = new ArrayList();
+		Collection<Unit> units = new ArrayList<Unit>();
 		units.add(inf1);
 		units.add(inf2);
 
@@ -326,7 +326,7 @@ public class ChangeTest extends TestCase
 		Unit inf1 = (Unit) infantry.create(1, can).iterator().next();
 		Unit inf2 = (Unit) infantry.create(1, us).iterator().next();
 
-		Collection units = new ArrayList();
+		Collection<Unit> units = new ArrayList<Unit>();
 		units.add(inf1);
 		units.add(inf2);
 

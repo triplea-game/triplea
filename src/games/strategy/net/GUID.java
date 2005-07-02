@@ -23,7 +23,7 @@ package games.strategy.net;
 import java.io.*;
 import java.rmi.dgc.VMID;
 
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *

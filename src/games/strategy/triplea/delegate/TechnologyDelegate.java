@@ -52,7 +52,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
 
     private PlayerID m_player;
 
-    private HashMap m_techs;
+    private HashMap<PlayerID, Collection> m_techs;
 
     /** Creates new TechnolgoyDelegate */
     public TechnologyDelegate()
@@ -63,7 +63,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
     {
         m_name = name;
         m_displayName = displayName;
-        m_techs = new HashMap();
+        m_techs = new HashMap<PlayerID, Collection>();
     }
 
     /**
@@ -76,7 +76,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         m_player = aBridge.getPlayerID();
     }
 
-    public Map getAdvances()
+    public Map<PlayerID, Collection> getAdvances()
     {
         return m_techs;
     }
@@ -86,6 +86,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
+    @SuppressWarnings("unchecked")
     public TechResults rollTech(int techRolls, TechAdvance techToRollFor)
     {
         boolean canPay = checkEnoughMoney(techRolls);
@@ -108,7 +109,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         m_bridge.getHistoryWriter().setRenderingData(
                 new DiceRoll(random, techHits, 5, true));
 
-        Collection advances;
+        Collection<TechAdvance> advances;
         if (isFourthEdition())
         {
             if (techHits > 0)
@@ -123,15 +124,15 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         // Put in techs so they can be activated later.
         m_techs.put(m_player, advances);
 
-        List advancesAsString = new ArrayList();
+        List<String> advancesAsString = new ArrayList<String>();
 
-        Iterator iter = advances.iterator();
+        Iterator<TechAdvance> iter = advances.iterator();
         int count = advances.size();
 
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         while (iter.hasNext())
         {
-            TechAdvance advance = (TechAdvance) iter.next();
+            TechAdvance advance = iter.next();
             text.append(advance.getName());
             count--;
 
@@ -186,9 +187,10 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         return count;
     }
 
-    private Collection getTechAdvances(int hits)
+    @SuppressWarnings("unchecked")
+    private Collection<TechAdvance> getTechAdvances(int hits)
     {
-        List available = getAvailableAdvances();
+        List<TechAdvance> available = getAvailableAdvances();
         if (available.isEmpty())
             return Collections.EMPTY_LIST;
         if (hits >= available.size())
@@ -196,7 +198,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         if (hits == 0)
             return Collections.EMPTY_LIST;
 
-        Collection newAdvances = new ArrayList(hits);
+        Collection<TechAdvance> newAdvances = new ArrayList<TechAdvance>(hits);
 
         int random[] = m_bridge.getRandom(Constants.MAX_DICE, hits, m_player
                 .getName()
@@ -212,14 +214,14 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         return newAdvances;
     }
 
-    private List getAvailableAdvances()
+    private List<TechAdvance> getAvailableAdvances()
     {
         //too many
-        Collection allAdvances = TechAdvance.getTechAdvances(m_data);
-        Collection playersAdvances = TechTracker.getTechAdvances(m_bridge
+        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(m_data);
+        Collection<TechAdvance> playersAdvances = TechTracker.getTechAdvances(m_bridge
                 .getPlayerID());
 
-        List available = Util.difference(allAdvances, playersAdvances);
+        List<TechAdvance> available = Util.difference(allAdvances, playersAdvances);
         return available;
     }
 
@@ -263,13 +265,13 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
      */
     public void loadState(Serializable state)
     {
-        m_techs = (HashMap) state;
+        m_techs = (HashMap<PlayerID, Collection>) state;
     }
 
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class getRemoteType()
+    public Class<ITechDelegate> getRemoteType()
     {
         return ITechDelegate.class;
     }

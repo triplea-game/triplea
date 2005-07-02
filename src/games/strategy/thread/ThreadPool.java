@@ -22,6 +22,7 @@
 package games.strategy.thread;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A simple thread pool.
@@ -35,12 +36,12 @@ public class ThreadPool
     //the max number of threads we can have
     private final int m_maxThreadCount;
     //how many threads we have
-    private int m_threadCount = 0;
+    private AtomicInteger m_threadCount = new AtomicInteger();
     //how many threads arent busy
     private int m_availableThreads = 0;
     
-    private final List m_pendingTasks = new LinkedList();
-    private final List m_runningTasks = new LinkedList();
+    private final List<Runnable> m_pendingTasks = new LinkedList<Runnable>();
+    private final AtomicInteger m_runningTaskCount = new AtomicInteger();
 
     private final Object m_taskLock = new Object();
     private final Object m_doneLock = new Object();
@@ -66,9 +67,7 @@ public class ThreadPool
     private void grow()
     {
         ThreadTracker tracker = new ThreadTracker();
-        Thread thread = new Thread(tracker, getClass().getName() + ":" + m_name + ":" + m_threadCount);
-
-        m_threadCount++;
+        Thread thread = new Thread(tracker, getClass().getName() + ":" + m_name + ":" + m_threadCount.incrementAndGet());
 
         thread.start();
     }
@@ -86,7 +85,7 @@ public class ThreadPool
         {
             if (m_availableThreads == 0)
             {
-                if (m_threadCount < m_maxThreadCount)
+                if (m_threadCount.get() < m_maxThreadCount)
                 {
                     grow();
                 }
@@ -107,7 +106,7 @@ public class ThreadPool
             {
                 synchronized (m_taskLock)
                 {
-                    if (m_pendingTasks.isEmpty() && m_runningTasks.isEmpty())
+                    if (m_pendingTasks.isEmpty() && m_runningTaskCount.get() == 0)
                         return;
                 }
 
@@ -153,7 +152,7 @@ public class ThreadPool
                 
                 synchronized (m_taskLock)
                 {
-                    m_runningTasks.remove(task);
+                    m_runningTaskCount.decrementAndGet();
                 }
                 
                 synchronized (m_doneLock)
@@ -162,10 +161,8 @@ public class ThreadPool
                 }
             }//end while run
 
-            synchronized (m_taskLock)
-            {
-                m_threadCount--;
-            }
+            m_threadCount.decrementAndGet();
+
         }
 
         private Runnable getTask()
@@ -191,9 +188,9 @@ public class ThreadPool
                     return null;
                 } else
                 {
-                    Runnable task = (Runnable) m_pendingTasks.get(0);
+                    Runnable task = m_pendingTasks.get(0);
                     m_pendingTasks.remove(0);
-                    m_runningTasks.add(task);
+                    m_runningTaskCount.incrementAndGet();
                     return task;
                 }
 

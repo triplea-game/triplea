@@ -216,7 +216,7 @@ public class GameParser
 
     try
     {
-      Class instanceClass = Class.forName(className);
+      Class<?> instanceClass = Class.forName(className);
       instance = instanceClass.newInstance();
     }
     //a lot can go wrong, the following list is just a subset of potential pitfalls
@@ -266,9 +266,9 @@ public class GameParser
     return (Node) children.get(0);
   }
 
-  private List getChildren(String name, Node node)
+  private List<Node> getChildren(String name, Node node)
   {
-    ArrayList found = new ArrayList();
+    ArrayList<Node> found = new ArrayList<Node>();
     NodeList children = node.getChildNodes();
     for(int i= 0; i < children.getLength(); i++)
     {
@@ -279,9 +279,9 @@ public class GameParser
     return found;
   }
 
-  private List getNonTextNodes(Node node)
+  private List<Node> getNonTextNodes(Node node)
   {
-    ArrayList found = new ArrayList();
+    ArrayList<Node> found = new ArrayList<Node>();
     NodeList children = node.getChildNodes();
     for(int i= 0; i < children.getLength(); i++)
     {
@@ -474,9 +474,9 @@ public class GameParser
     else if(childName.equals("list"))
     {
       StringTokenizer tokenizer = new StringTokenizer(child.getAttribute("values"), ",");
-      Collection values = new ArrayList();
+      Collection<String> values = new ArrayList<String>();
       while(tokenizer.hasMoreElements())
-        values.add(tokenizer.nextElement());
+        values.add(tokenizer.nextToken());
       editableProperty = new ListProperty(name, defaultValue, values);
     }
     else if(childName.equals("number"))
@@ -625,7 +625,7 @@ public class GameParser
       Element current = (Element) elements.get(i);
 
       //must find either a resource or a unit with the given name
-      Object result = null;
+      NamedAttatchable result = null;
       result = getResource(current, "resourceOrUnit", false);
       if(result == null)
         result = getUnitType(current, "resourceOrUnit", false);
@@ -682,10 +682,10 @@ public class GameParser
       //create the attatchment
       String className = current.getAttribute("javaClass");
       Object obj = getInstance(className);
-      if(!(obj instanceof Attatchment))
+      if(!(obj instanceof IAttatchment))
         throw new IllegalStateException(className + " does not implement Attatchable");
 
-      Attatchment attatchment = (Attatchment) obj;
+      IAttatchment attatchment = (IAttatchment) obj;
       attatchment.setData(data);
       //set the values
       List values = getChildren("option", current);

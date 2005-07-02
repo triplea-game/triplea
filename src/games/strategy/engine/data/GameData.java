@@ -22,7 +22,7 @@ package games.strategy.engine.data;
 
 import java.util.*;
 
-import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import games.strategy.engine.data.events.*;
 import games.strategy.engine.data.properties.GameProperties;

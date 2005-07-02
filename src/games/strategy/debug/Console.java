@@ -24,7 +24,6 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.*;
-import java.lang.reflect.Method;
 import java.util.*;
 
 import javax.swing.*;
@@ -131,8 +130,8 @@ public class Console extends JFrame
 		    //call using reflection so we are 1.4 compatable
 		    try
             {
-                Method m = Thread.class.getMethod("getAllStackTraces", new Class[0]);
-                Map stackTraces = (Map) m.invoke(Thread.class, new Object[0]);
+
+                Map stackTraces = Thread.getAllStackTraces();
                 Iterator iter = stackTraces.keySet().iterator();
                 while (iter.hasNext())
                 {
@@ -158,7 +157,7 @@ public class Console extends JFrame
 			Thread[] threads = new Thread[ Thread.activeCount()];
 			int count = Thread.enumerate(threads);
 			
-			StringBuffer buf = new StringBuffer();
+			StringBuilder buf = new StringBuilder();
 			buf.append("**\n");
 			for(int i = 0; i < count; i++)
 			{
@@ -168,7 +167,7 @@ public class Console extends JFrame
 		
 		}
 		
-		private void appendThreadInfo(StringBuffer buf, Thread thread)
+		private void appendThreadInfo(StringBuilder buf, Thread thread)
 		{
 			buf.append("Name:").append(thread.getName()).append("\n");
 			buf.append("Priority:").append(thread.getPriority()).append("\n");
@@ -182,7 +181,7 @@ public class Console extends JFrame
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			StringBuffer buf = new StringBuffer();
+			StringBuilder buf = new StringBuilder();
 			buf.append("****\n");
 			buf.append("Total memory:" + Runtime.getRuntime().totalMemory());
 			buf.append("\n");
@@ -192,11 +191,13 @@ public class Console extends JFrame
 		}
 	};
 	
+   
 	private AbstractAction m_propertiesAction = new AbstractAction("Properties")
 	{
-		public void actionPerformed(ActionEvent e)
+		@SuppressWarnings("unchecked")
+        public void actionPerformed(ActionEvent e)
 		{
-			StringBuffer buf = new StringBuffer();
+			StringBuilder buf = new StringBuilder();
 			Properties props = System.getProperties();
 			java.util.List keys = new ArrayList(props.keySet());
 			

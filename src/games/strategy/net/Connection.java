@@ -33,7 +33,7 @@ import java.util.*;
 import java.util.logging.*;
 import java.util.logging.Logger;
 
-import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 class Connection
 {
@@ -48,7 +48,7 @@ class Connection
     private Thread m_reader;
     private Thread m_writer;
 
-    private final LinkedBlockingQueue m_waitingToBeSent = new LinkedBlockingQueue();
+    private final LinkedBlockingQueue<MessageHeader> m_waitingToBeSent = new LinkedBlockingQueue<MessageHeader>();
     private IObjectStreamFactory m_objectStreamFactory;
 
 
@@ -225,7 +225,7 @@ class Connection
                 
 
             
-        private void write(Serializable next)
+        private void write(MessageHeader next)
         {
             if (!m_shutdown)
             {
@@ -242,7 +242,7 @@ class Connection
                     {
                         ioe.printStackTrace();
                         shutDown();
-                        List unsent = new ArrayList(m_waitingToBeSent);
+                        List<MessageHeader> unsent = new ArrayList<MessageHeader>(m_waitingToBeSent);
                         unsent.add(next);
                         m_listener.fatalError(ioe, Connection.this, unsent);
                     }
@@ -254,6 +254,7 @@ class Connection
     class Reader implements Runnable
     {
 
+        @SuppressWarnings("unchecked")
         public void run()
         {
             while (!m_shutdown)
@@ -276,7 +277,7 @@ class Connection
                         if (!(ioe instanceof EOFException))
                             ioe.printStackTrace();
                         shutDown();
-                        List unsent = new ArrayList(Arrays.asList(m_waitingToBeSent.toArray()));
+                        List<MessageHeader> unsent = new ArrayList(Arrays.asList(m_waitingToBeSent.toArray()));
                         m_listener.fatalError(ioe, Connection.this, unsent);
                     }
                 }

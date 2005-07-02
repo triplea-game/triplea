@@ -34,18 +34,18 @@ public class Util
 	 * return a such that a exists in c1 and a exists in c2.
 	 * always returns a new collection.
 	 */
-	public static List intersection(Collection c1, Collection c2)
+	public static <T> List<T> intersection(Collection<T> c1, Collection<T> c2)
 	{
 		if(c1 == null || c2 == null)
-			return Collections.EMPTY_LIST;
+			return new ArrayList<T>();
 		if(c1.size() == 0 || c2.size() == 0)
-			return Collections.EMPTY_LIST;
+			return new ArrayList<T>();
 
-		List intersection = new ArrayList();
-		Iterator iter = c1.iterator();
+		List<T> intersection = new ArrayList<T>();
+		Iterator<T> iter = c1.iterator();
 		while(iter.hasNext())
 		{
-			Object current = iter.next();
+			T current = iter.next();
 			if(c2.contains(current))
 				intersection.add(current);
 		}
@@ -57,14 +57,14 @@ public class Util
 	 * 
 	 * @return true if some element in c1 is in c2
 	 */
-	public static boolean someIntersect(Collection c1, Collection c2)
+	public static <T> boolean someIntersect(Collection<T> c1, Collection<T> c2)
 	{
 	    if(c1.isEmpty())
 	        return false;
 	    if(c2.isEmpty())
 	        return false;
 	    
-	    Iterator iter = c1.iterator();
+	    Iterator<T> iter = c1.iterator();
 	    while(iter.hasNext())
 	    {
 	        if(c2.contains(iter.next()))
@@ -78,18 +78,18 @@ public class Util
 	 * Returns a such that a exists in c1 but not in c2.
 	 * Always returns a new collection.
 	 */
-	public static List difference(Collection c1, Collection c2)
+	public static <T> List<T> difference(Collection<T> c1, Collection<T> c2)
 	{
 		if(c1 == null || c1.size() == 0)
-			return Collections.EMPTY_LIST;
+			return new ArrayList<T>(0);
 		if(c2 == null || c2.size() == 0)
-			return new ArrayList(c1);
+			return new ArrayList<T>(c1);
 
-		List difference = new ArrayList();
-		Iterator iter = c1.iterator();
+		List<T> difference = new ArrayList<T>();
+		Iterator<T> iter = c1.iterator();
 		while(iter.hasNext())
 		{
-			Object current = iter.next();
+			T current = iter.next();
 			if(!c2.contains(current))
 				difference.add(current);
 		}
@@ -102,7 +102,7 @@ public class Util
 	 * and c1 and c2 are the same size.
 	 * Note that (a,a,b) (a,b,b) are equal.
 	 */
-	public static boolean equals(Collection c1, Collection c2)
+	public static <T> boolean equals(Collection<T> c1, Collection<T> c2)
 	{
 		if(c1 == null || c2 == null)
 			return c1 == c2;
@@ -122,9 +122,9 @@ public class Util
 		return true;
 	}
 
-	public static List toList(Object[] objects)
+	public static <T> List<T> toList(T[] objects)
 	{
-		ArrayList list = new ArrayList(objects.length);
+		ArrayList<T> list = new ArrayList<T>(objects.length);
 		for(int i = 0; i < objects.length; i++)
 		{
 			list.add(objects[i]);

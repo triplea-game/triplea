@@ -218,7 +218,7 @@ public class ChatFrame extends JFrame
     /**
      * @arg players - a collection of Strings representing player names.
      */
-    synchronized void updatePlayerList(final Collection players)
+    synchronized void updatePlayerList(final Collection<String> players)
     {
 
         Runnable runner = new Runnable()
@@ -229,10 +229,10 @@ public class ChatFrame extends JFrame
 
                 m_listModel.clear();
 
-                Iterator iter = players.iterator();
+                Iterator<String> iter = players.iterator();
                 while (iter.hasNext())
                 {
-                    String name = (String) iter.next();
+                    String name = iter.next();
                     m_listModel.addElement(name);
                 }
             }

@@ -1,4 +1,18 @@
 /*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
  * CompositeMatchAnd.java
  *
  * Created on November 10, 2001, 11:13 AM
@@ -13,10 +27,9 @@ import java.util.List;
  * True if all matches return true.
  *
  * @author  Sean Bridges
- * @version 1.0
  *
  */
-public class CompositeMatchAnd extends CompositeMatch
+public class CompositeMatchAnd<T> extends CompositeMatch<T>
 {
 
 	public CompositeMatchAnd()
@@ -24,19 +37,19 @@ public class CompositeMatchAnd extends CompositeMatch
 	}
 	
 	/** Creates new CompositeMatchOr */
-    public CompositeMatchAnd(Match first, Match second) 
+    public CompositeMatchAnd(Match<T> first, Match<T> second) 
 	{
 		super();
 		add(first);
 		add(second);
     }
 
-	public boolean match(Object o) 
+	public boolean match(T o) 
 	{
-		List matches = super.getMatches();
+		List<Match<T>> matches = super.getMatches();
 		for(int i = 0; i < matches.size(); i++)
 		{
-			if (!((Match) matches.get(i)).match(o))
+			if (!matches.get(i).match(o))
 			{
 				return false;
 			}

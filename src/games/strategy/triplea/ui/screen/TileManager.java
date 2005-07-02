@@ -35,25 +35,25 @@ public class TileManager
 {
     private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
     public final static int TILE_SIZE = 256;
-    private List m_tiles = new ArrayList();
+    private List<Tile> m_tiles = new ArrayList<Tile>();
     private final Object m_mutex = new Object();
     
     //maps territoryname - collection of drawables
-    private final Map m_territoryDrawables = new HashMap();
+    private final Map<String, Set<IDrawable>> m_territoryDrawables = new HashMap<String, Set<IDrawable>>();
     //maps territoryname - collection of tiles where the territory is drawn
-    private final Map m_territoryTiles = new HashMap();
+    private final Map<String, Set<Tile>> m_territoryTiles = new HashMap<String, Set<Tile>>();
     
-    private Collection m_allUnitDrawables = new ArrayList();
+    private Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<UnitsDrawer>();
     
-    public List getTiles(Rectangle bounds)
+    public List<Tile> getTiles(Rectangle bounds)
     {
         synchronized(m_mutex)
         {
-	        List rVal = new ArrayList();
-	        Iterator iter = m_tiles.iterator();
+	        List<Tile> rVal = new ArrayList<Tile>();
+	        Iterator<Tile> iter = m_tiles.iterator();
 	        while (iter.hasNext())
 	        {
-	            Tile tile = (Tile) iter.next();
+	            Tile tile = iter.next();
 	            if (bounds.contains(tile.getBounds()) || tile.getBounds().intersects(bounds))
 	                rVal.add(tile);
 	        }
@@ -62,7 +62,7 @@ public class TileManager
         }
     }
 
-    public Collection getUnitDrawables()
+    public Collection<UnitsDrawer> getUnitDrawables()
     {
         synchronized(m_mutex)
         {
@@ -75,7 +75,7 @@ public class TileManager
         synchronized(m_mutex)
         {
 	        //create our tiles
-	        m_tiles = new ArrayList();
+	        m_tiles = new ArrayList<Tile>();
 	        for (int x = 0; (x) * TILE_SIZE < bounds.width; x++)
 	        {
 	            for (int y = 0; (y) * TILE_SIZE < bounds.height; y++)
@@ -96,10 +96,10 @@ public class TileManager
         
 	        synchronized(m_mutex)
 	        {
-		        Iterator allTiles = m_tiles.iterator();
+		        Iterator<Tile> allTiles = m_tiles.iterator();
 		        while (allTiles.hasNext())
 		        {
-		            Tile tile = (Tile) allTiles.next();
+		            Tile tile = allTiles.next();
 		            tile.clear();
 		            
 		            int x = tile.getBounds().x / TILE_SIZE;
@@ -167,11 +167,11 @@ public class TileManager
     {
         if(m_territoryTiles.get(territory.getName()) == null )
             return;
-        Collection drawables = (Collection) m_territoryDrawables.get(territory.getName());
+        Collection drawables = m_territoryDrawables.get(territory.getName());
         if(drawables == null || drawables.isEmpty())
             return;
         
-        Iterator tiles = ((Collection) m_territoryTiles.get(territory.getName())).iterator();
+        Iterator tiles = m_territoryTiles.get(territory.getName()).iterator();
         while (tiles.hasNext())
         {
             Tile tile = (Tile) tiles.next();
@@ -189,8 +189,8 @@ public class TileManager
      */
     private void drawTerritory(Territory territory, GameData data, MapData mapData)
     {
-        Set drawnOn = new HashSet();
-        Set drawing = new HashSet();
+        Set<Tile> drawnOn = new HashSet<Tile>();
+        Set<IDrawable> drawing = new HashSet<IDrawable>();
         
 
         drawUnits(territory, data, mapData, drawnOn, drawing);
@@ -213,10 +213,10 @@ public class TileManager
         }
         
         //add to the relevant tiles
-        Iterator tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
+        Iterator<Tile> tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
         while (tiles.hasNext())
         {
-            Tile tile = (Tile) tiles.next();
+            Tile tile = tiles.next();
             drawnOn.add(tile);
             tile.addDrawbles(drawing);
         }
@@ -226,7 +226,7 @@ public class TileManager
    
     }
     
-    private void drawUnits(Territory territory, GameData data, MapData mapData, Set drawnOn, Set drawing)
+    private void drawUnits(Territory territory, GameData data, MapData mapData, Set<Tile> drawnOn, Set<IDrawable> drawing)
     {
 
         Iterator placementPoints = mapData.getPlacementPoints(territory).iterator();
@@ -262,12 +262,12 @@ public class TileManager
             drawing.add(drawable);
             m_allUnitDrawables.add(drawable);
             
-            Iterator tiles = getTiles(
+            Iterator<Tile> tiles = getTiles(
                     new Rectangle(lastPlace.x, lastPlace.y, UnitImageFactory.instance().getUnitImageWidth(), UnitImageFactory.instance()
                             .getUnitImageHeight())).iterator();
             while (tiles.hasNext())
             {
-                Tile tile = (Tile) tiles.next();
+                Tile tile = tiles.next();
                 tile.addDrawable(drawable);
                 drawnOn.add(tile);
 
@@ -286,21 +286,21 @@ public class TileManager
 	        Graphics2D graphics = (Graphics2D) rVal.getGraphics();
 	        
 	        //start as a set to prevent duplicates
-	        Set drawablesSet = new HashSet();
-	        Iterator tiles = getTiles(bounds).iterator();
+	        Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
+	        Iterator<Tile> tiles = getTiles(bounds).iterator();
 	        
 	        while(tiles.hasNext())
 	        {
-	            Tile tile = (Tile) tiles.next();
+	            Tile tile = tiles.next();
 	            drawablesSet.addAll(tile.getDrawables());
 	        }
 	        
-	        List orderedDrawables = new ArrayList(drawablesSet);
+	        List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
 	        Collections.sort(orderedDrawables, new DrawableComparator());
-	        Iterator drawers =  orderedDrawables.iterator();
+	        Iterator<IDrawable> drawers =  orderedDrawables.iterator();
 	        while (drawers.hasNext())
 	        {
-	             IDrawable drawer = (IDrawable) drawers.next();
+	             IDrawable drawer = drawers.next();
 	             if(drawer.getLevel() >= IDrawable.UNITS_LEVEL)
 	                 break;
 	             if(drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)

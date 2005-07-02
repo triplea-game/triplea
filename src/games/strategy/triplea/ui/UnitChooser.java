@@ -41,8 +41,8 @@ import javax.swing.*;
 public class UnitChooser extends JPanel
 {
 
-  private List m_entries = new ArrayList();
-  private Map m_dependents = new HashMap();
+  private List<ChooserEntry> m_entries = new ArrayList<ChooserEntry>();
+  private final Map<Unit, Collection<Unit>> m_dependents;
   private JTextArea m_title;
   private int m_total = -1;
   private JLabel m_leftToSelect = new JLabel();
@@ -52,7 +52,8 @@ public class UnitChooser extends JPanel
   private JButton m_selectNoneButton;
   /** Creates new UnitChooser */
 
-  public UnitChooser(Collection units, Map dependent, IntegerMap movement, GameData data)
+  @SuppressWarnings("unchecked")
+public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data)
   {
     m_dependents = dependent;
     m_data = data;
@@ -60,12 +61,13 @@ public class UnitChooser extends JPanel
     layoutEntries();
   }
 
- public UnitChooser(Collection units, Map dependent, GameData data, boolean allowTwoHit)
+ @SuppressWarnings("unchecked")
+public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)
   {
     this(units, Collections.EMPTY_LIST, dependent, data, allowTwoHit);
   }
 
-  public UnitChooser(Collection units, List defaultSelections, Map dependent, GameData data, boolean allowTwoHit)
+  public UnitChooser(Collection<Unit> units, List<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)
   {
     m_dependents = dependent;
     m_data = data;
@@ -96,10 +98,10 @@ public class UnitChooser extends JPanel
       return;
 
     int selected = 0;
-    Iterator iter = m_entries.iterator();
+    Iterator<ChooserEntry> iter = m_entries.iterator();
     while(iter.hasNext())
     {
-      ChooserEntry entry = (ChooserEntry) iter.next();
+      ChooserEntry entry = iter.next();
       selected += entry.getTotalHits();
     }
 
@@ -108,7 +110,7 @@ public class UnitChooser extends JPanel
     iter = m_entries.iterator();
     while(iter.hasNext())
     {
-      ChooserEntry entry = (ChooserEntry) iter.next();
+      ChooserEntry entry = iter.next();
       entry.setLeftToSelect(m_total - selected);
     }
 
@@ -118,11 +120,11 @@ public class UnitChooser extends JPanel
 
 
 
-  private void createEntries(Collection units, Map dependent, IntegerMap movement, List defaultSelections)
+  private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, List<Unit> defaultSelections)
   {
     Collection categories = UnitSeperator.categorize(units, dependent, movement);
     Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, movement);
-    IntegerMap defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
+    IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
     Iterator iter = categories.iterator();
     while(iter.hasNext())
     {
@@ -131,9 +133,9 @@ public class UnitChooser extends JPanel
     }
   }
 
-  private IntegerMap createDefaultSelectionsMap(Collection categories)
+  private IntegerMap<UnitCategory> createDefaultSelectionsMap(Collection categories)
   {
-    IntegerMap defaultValues = new IntegerMap();
+    IntegerMap<UnitCategory> defaultValues = new IntegerMap<UnitCategory>();
     Iterator iter = categories.iterator();
     while (iter.hasNext()) {
       UnitCategory category = (UnitCategory) iter.next();
@@ -196,10 +198,10 @@ public class UnitChooser extends JPanel
     );
 
     int yIndex = 1;
-    Iterator iter = m_entries.iterator();
+    Iterator<ChooserEntry> iter = m_entries.iterator();
     while(iter.hasNext())
     {
-      ChooserEntry entry = (ChooserEntry) iter.next();
+      ChooserEntry entry = iter.next();
       entry.createComponents(this, yIndex);
       yIndex++;
     }
@@ -213,7 +215,7 @@ public class UnitChooser extends JPanel
   }
 
 
-  public Collection getSelected()
+  public Collection<Unit> getSelected()
   {
     return getSelected(true);
   }
@@ -222,14 +224,14 @@ public class UnitChooser extends JPanel
    * get the units selected.
    * If units are two hit enabled, returns those with two hits.
    */
-  public List getSelected(boolean selectDependents)
+  public List<Unit> getSelected(boolean selectDependents)
   {
-    List selectedUnits = new ArrayList();
+    List<Unit> selectedUnits = new ArrayList<Unit>();
 
-    Iterator entries = m_entries.iterator();
+    Iterator<ChooserEntry> entries = m_entries.iterator();
     while(entries.hasNext())
     {
-      ChooserEntry chooserEntry = (ChooserEntry) entries.next();
+      ChooserEntry chooserEntry = entries.next();
       if(chooserEntry.isTwoHit())
           addToCollection(selectedUnits, chooserEntry,  chooserEntry.getSecondHits(), selectDependents);
       else
@@ -242,14 +244,14 @@ public class UnitChooser extends JPanel
   /**
    * Only applicable if this dialog was constructed using twoHits
    */
-  public List getSelectedFirstHit()
+  public List<Unit> getSelectedFirstHit()
   {
-      List selectedUnits = new ArrayList();
+      List<Unit> selectedUnits = new ArrayList<Unit>();
 
-      Iterator entries = m_entries.iterator();
+      Iterator<ChooserEntry> entries = m_entries.iterator();
       while(entries.hasNext())
       {
-        ChooserEntry chooserEntry = (ChooserEntry) entries.next();
+        ChooserEntry chooserEntry = entries.next();
         if(chooserEntry.isTwoHit())
             addToCollection(selectedUnits, chooserEntry, chooserEntry.getFirstHits(), false);
       }
@@ -258,39 +260,39 @@ public class UnitChooser extends JPanel
 
   private void selectNone()
   {
-    Iterator iter = m_entries.iterator();
+    Iterator<ChooserEntry> iter = m_entries.iterator();
     while (iter.hasNext())
     {
-      ChooserEntry entry = (ChooserEntry)iter.next();
+      ChooserEntry entry = iter.next();
       entry.selectNone();
     }
   }
 
   private void autoSelect()
   {
-    Iterator iter = m_entries.iterator();
+    Iterator<ChooserEntry> iter = m_entries.iterator();
     while (iter.hasNext())
     {
-      ChooserEntry entry = (ChooserEntry)iter.next();
+      ChooserEntry entry = iter.next();
       entry.selectAll();
     }
   }
 
-  private void addToCollection(Collection addTo, ChooserEntry entry, int quantity, boolean addDependents)
+  private void addToCollection(Collection<Unit> addTo, ChooserEntry entry, int quantity, boolean addDependents)
   {
 
-    Collection possible = entry.getCategory().getUnits();
+    Collection<Unit> possible = entry.getCategory().getUnits();
     if(possible.size() < quantity)
       throw new IllegalStateException("Not enough units");
 
-    Iterator iter = possible.iterator();
+    Iterator<Unit> iter = possible.iterator();
     for(int i = 0; i < quantity; i++)
     {
       Unit current = (Unit) iter.next();
       addTo.add(current);
       if(addDependents)
       {
-        Collection dependents = (Collection) m_dependents.get(current);
+        Collection<Unit> dependents =  m_dependents.get(current);
         if(dependents != null)
           addTo.addAll(dependents);
       }

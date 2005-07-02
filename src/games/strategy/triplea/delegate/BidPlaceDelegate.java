@@ -43,7 +43,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
     }
 
     // Return whether we can place bid in a certain territory
-    protected String canProduce(Territory to, Collection units, PlayerID player)
+    protected String canProduce(Territory to, Collection<Unit> units, PlayerID player)
     {
         //we can place if no enemy units and its water
         if (to.isWater())
@@ -70,10 +70,10 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
     }
 
     // Return collection of bid units which can placed in a land territory
-    protected Collection getUnitsToBePlacedLand(Territory to, Collection units,
+    protected Collection<Unit> getUnitsToBePlacedLand(Territory to, Collection<Unit> units,
             PlayerID player)
     {
-        Collection placeableUnits = new ArrayList();
+        Collection<Unit> placeableUnits = new ArrayList<Unit>();
 
         //make sure only 1 AA in territory for classic
         if (isFourthEdition())
@@ -87,9 +87,9 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
                         Matches.UnitIsAA));
         }
 
-        CompositeMatch groundUnits = new CompositeMatchAnd();
+        CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
         groundUnits.add(Matches.UnitIsLand);
-        groundUnits.add(new InverseMatch(Matches.UnitIsAAOrFactory));
+        groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
         placeableUnits.addAll(Match.getMatches(units, groundUnits));
         placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));
 

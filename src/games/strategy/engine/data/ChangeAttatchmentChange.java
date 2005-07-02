@@ -36,7 +36,7 @@ public class ChangeAttatchmentChange extends Change
     return m_attatchmentName;
   }
 
-  ChangeAttatchmentChange(Attatchment attatchment, String newValue, String property)
+  ChangeAttatchmentChange(IAttatchment attatchment, String newValue, String property)
   {
     m_attatchedTo = attatchment.getAttatchedTo();
     m_attatchmentName = attatchment.getName();
@@ -77,7 +77,7 @@ public class ChangeAttatchmentChange extends Change
   {
     try
     {
-      Attatchment attatchment = m_attatchedTo.getAttatchment(m_attatchmentName);
+      IAttatchment attatchment = m_attatchedTo.getAttatchment(m_attatchmentName);
       Method setter = attatchment.getClass().getMethod("set" + capitalizeFirstLetter(m_property), new Class[]
         {String.class});
       setter.invoke(attatchment, new Object[] {m_newValue});

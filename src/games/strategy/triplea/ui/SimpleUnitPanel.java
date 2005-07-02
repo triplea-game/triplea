@@ -41,17 +41,17 @@ public class SimpleUnitPanel extends JPanel
    * @param units a HashMap in the form ProductionRule -> number of units
    * assumes that each production rule has 1 result, which is simple the number of units
    */
-  public void setUnitsFromProductionRuleMap(IntegerMap units, PlayerID player, GameData data)
+  public void setUnitsFromProductionRuleMap(IntegerMap<ProductionRule> units, PlayerID player, GameData data)
   {
     removeAll();
 
 
-    TreeSet productionRules = new TreeSet(productionRuleComparator);
+    TreeSet<ProductionRule> productionRules = new TreeSet<ProductionRule>(productionRuleComparator);
     productionRules.addAll(units.keySet());
-    Iterator iter = productionRules.iterator();
+    Iterator<ProductionRule> iter = productionRules.iterator();
     while (iter.hasNext())
     {
-      ProductionRule productionRule = (ProductionRule) iter.next();
+      ProductionRule productionRule = iter.next();
 
       int quantity = units.getInt(productionRule);
 
@@ -89,14 +89,14 @@ public class SimpleUnitPanel extends JPanel
     add(label);
   }
 
-  Comparator productionRuleComparator = new Comparator()
+  Comparator<ProductionRule> productionRuleComparator = new Comparator<ProductionRule>()
   {
       UnitTypeComparator utc = new UnitTypeComparator();
 
-      public int compare(Object o1, Object o2)
+      public int compare(ProductionRule o1, ProductionRule o2)
       {
-          UnitType u1 = (UnitType)  ((ProductionRule) o1).getResults().keySet().iterator().next();
-          UnitType u2 = (UnitType)  ((ProductionRule) o2).getResults().keySet().iterator().next();
+          UnitType u1 = (UnitType)  o1.getResults().keySet().iterator().next();
+          UnitType u2 = (UnitType)  o2.getResults().keySet().iterator().next();
           return utc.compare(u1, u2);
       }
   };

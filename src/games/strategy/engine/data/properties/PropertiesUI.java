@@ -35,7 +35,7 @@ public class PropertiesUI extends JPanel
     properties.addEditableProperty(new StringProperty("String", "default") );
     properties.addEditableProperty(new NumberProperty("Number [10,20]", 20, 12, 15) );
 
-    Collection listValues = new ArrayList();
+    Collection<String> listValues = new ArrayList<String>();
     listValues.add("apples");
     listValues.add("oranges");
     listValues.add("bananas");

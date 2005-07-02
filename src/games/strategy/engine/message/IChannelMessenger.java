@@ -92,7 +92,7 @@ public interface IChannelMessenger
      * Calling this method will create the channel for all IChannelMessengers
      * that this IChannelMessenger is connected to.
      */
-    public void createChannel(Class channelInterface, String channelName);
+    public void createChannel(Class<? extends IChannelSubscribor> channelInterface, String channelName);
 
     /**
      * Destroy a channel.

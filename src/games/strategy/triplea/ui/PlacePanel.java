@@ -144,6 +144,7 @@ public class PlacePanel extends ActionPanel
   
   private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
   {
+    @SuppressWarnings("unchecked")
     public void territorySelected(Territory territory, MouseEvent e)
     {
       if(!getActive() || (e.getButton() != MouseEvent.BUTTON1))
@@ -162,7 +163,7 @@ public class PlacePanel extends ActionPanel
       int option = JOptionPane.showOptionDialog( (JFrame) getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
       if(option == JOptionPane.OK_OPTION)
       {
-        Collection choosen = chooser.getSelected();
+        Collection<Unit> choosen = chooser.getSelected();
         
         m_placeData = new PlaceData(choosen, territory);
         updateUnits();
@@ -181,14 +182,14 @@ public class PlacePanel extends ActionPanel
           return Collections.EMPTY_LIST;
 
       //get the units that can be placed on this territory.
-      Collection units = getCurrentPlayer().getUnits().getUnits();
+      Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
       if(territory.isWater())
       {
           if(!canProduceFightersOnCarriers())
               units = Match.getMatches(units, Matches.UnitIsSea);
           else
           {
-              CompositeMatch unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+              CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
               units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
           }
       }

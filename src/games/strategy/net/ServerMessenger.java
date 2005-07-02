@@ -36,7 +36,7 @@ public class ServerMessenger implements IServerMessenger
 {
   private final ServerSocket m_socket;
   private final Node m_node;
-  private final Set m_allNodes = Collections.synchronizedSet(new HashSet());
+  private final Set<INode> m_allNodes = Collections.synchronizedSet(new HashSet<INode>());
   private boolean m_shutdown = false;
   private final ListenerList m_connections = new ListenerList();
   private final ListenerList m_listeners = new ListenerList();
@@ -91,7 +91,7 @@ public class ServerMessenger implements IServerMessenger
   /**
    * Get a list of nodes.
    */
-  public Set getNodes()
+  public Set<INode> getNodes()
   {
     return Collections.unmodifiableSet(m_allNodes);
   }
@@ -241,7 +241,7 @@ public class ServerMessenger implements IServerMessenger
 
     m_allNodes.add(c.getRemoteNode());
 
-    ClientInitServerMessage init = new ClientInitServerMessage(new HashSet(m_allNodes));
+    ClientInitServerMessage init = new ClientInitServerMessage(new HashSet<INode>(m_allNodes));
     MessageHeader header = new MessageHeader(m_node, c.getRemoteNode(), init);
     c.send(header);
 

@@ -12,7 +12,7 @@
 
 package games.strategy.triplea.ui;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CountDownLatch;
 import games.strategy.engine.data.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
@@ -70,8 +70,8 @@ public class BattleDisplay extends JPanel
 
     private JLabel m_messageLabel = new JLabel();
 
-    public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection attackingUnits,
-            Collection defendingUnits, GUID battleID, MapPanel mapPanel)
+    public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection<Unit> attackingUnits,
+            Collection<Unit> defendingUnits, GUID battleID, MapPanel mapPanel)
     {
         m_battleID = battleID;
         m_defender = defender;
@@ -126,7 +126,7 @@ public class BattleDisplay extends JPanel
 
     }
 
-    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents)
+    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map dependents)
     {
         setStep(step);
         m_casualties.setNotication(dice, player, killed, damaged, dependents);
@@ -215,7 +215,7 @@ public class BattleDisplay extends JPanel
         m_attackerModel.notifyRetreat(retreating);
     }
 
-    public Territory getRetreat(String message, Collection possible, boolean submerge)
+    public Territory getRetreat(String message, Collection<Territory> possible, boolean submerge)
     {
         if (!submerge)
         {
@@ -242,7 +242,7 @@ public class BattleDisplay extends JPanel
 
     }
 
-    private Territory getRetreatInternal(String message, Collection possible)
+    private Territory getRetreatInternal(String message, Collection<Territory> possible)
     {
         String ok = "Retreat";
         String cancel = "Remain";
@@ -272,7 +272,7 @@ public class BattleDisplay extends JPanel
     {
         private JList m_list;
 
-        RetreatComponent(Collection possible)
+        RetreatComponent(Collection<Territory> possible)
         {
 
             this.setLayout(new BorderLayout());
@@ -280,7 +280,7 @@ public class BattleDisplay extends JPanel
             JLabel label = new JLabel("Retreat to...");
             this.add(label, BorderLayout.NORTH);
 
-            Vector listElements = new Vector(possible);
+            Vector<Territory> listElements = new Vector<Territory>(possible);
 
             m_list = new JList(listElements);
             m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -297,8 +297,8 @@ public class BattleDisplay extends JPanel
         }
     }
 
-    public CasualtyDetails getCasualties(final Collection selectFrom, final Map dependents, final int count, final String message,
-            final DiceRoll dice, final PlayerID hit, final List defaultCasualties)
+    public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
+            final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties)
     {
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("This method should not be run in teh event dispatch thread");
@@ -333,8 +333,8 @@ public class BattleDisplay extends JPanel
                                 JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
                         if (option != 0)
                             return;
-                        List killed = chooser.getSelected(false);
-                        List damaged = chooser.getSelectedFirstHit();
+                        List<Unit> killed = chooser.getSelected(false);
+                        List<Unit> damaged = chooser.getSelectedFirstHit();
 
                         if (killed.size() + damaged.size() != count)
                         {
@@ -530,9 +530,9 @@ class BattleModel extends DefaultTableModel
     private GameData m_data;
     //is the player the agressor?
     private boolean m_attack;
-    private Collection m_units;
+    private Collection<Unit> m_units;
 
-    BattleModel(GameData data, Collection units, boolean attack)
+    BattleModel(GameData data, Collection<Unit> units, boolean attack)
     {
 
         super(new Object[0][0], new String[]
@@ -540,7 +540,7 @@ class BattleModel extends DefaultTableModel
         m_data = data;
         m_attack = attack;
         //were going to modify the units
-        m_units = new ArrayList(units);
+        m_units = new ArrayList<Unit>(units);
     }
 
     public void notifyRetreat(Collection retreating)
@@ -549,7 +549,7 @@ class BattleModel extends DefaultTableModel
         refresh();
     }
 
-    public void removeCasualties(Collection killed)
+    public void removeCasualties(Collection<Unit> killed)
     {
         m_units.removeAll(killed);
         refresh();
@@ -558,6 +558,7 @@ class BattleModel extends DefaultTableModel
     /**
      * refresh the model from m_units
      */
+    @SuppressWarnings("unchecked")
     public void refresh()
     {
 
@@ -704,7 +705,7 @@ class CasualtyNotificationPanel extends JPanel
         add(m_damaged);
     }
 
-    public void setNotication(DiceRoll dice, PlayerID player, Collection killed, Collection damaged, Map dependents)
+    public void setNotication(DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map dependents)
     {
 
         m_dice.setDiceRoll(dice);

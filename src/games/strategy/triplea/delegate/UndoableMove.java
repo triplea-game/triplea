@@ -19,7 +19,6 @@ import java.util.*;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.*;
 import games.strategy.triplea.delegate.dataObjects.*;
 
@@ -41,29 +40,29 @@ public class UndoableMove implements Serializable
     private CompositeChange m_undoChange = new CompositeChange();
     private String m_reasonCantUndo;
     private String m_description;
-    private IntegerMap m_changedMovement;
-    private IntegerMap m_startingMovement; //needed so we can calculate the change when done
+    private IntegerMap<Unit> m_changedMovement;
+    private IntegerMap<Unit> m_startingMovement; //needed so we can calculate the change when done
 
     //this move is dependent on these moves
     //these moves cant be undone until this one has been
-    private Set m_iDependOn = new HashSet();
+    private Set<UndoableMove> m_iDependOn = new HashSet<UndoableMove>();
     //these moves depend on me
     //we cant be undone until this is empty
-    private Set m_dependOnMe = new HashSet();
+    private Set<UndoableMove> m_dependOnMe = new HashSet<UndoableMove>();
 
     //list of countries we took over
-    private Set m_conquered = new HashSet();
+    private Set<Territory> m_conquered = new HashSet<Territory>();
 
     //maps unit -> transport, both of type Unit
-    private Map m_loaded = new HashMap();
+    private Map<Unit, Unit> m_loaded = new HashMap<Unit, Unit>();
 
     //maps unit -> transport, both of type Unit
-    private Map m_unloaded = new HashMap();
+    private Map<Unit, Unit> m_unloaded = new HashMap<Unit, Unit>();
 
     private final Route m_route;
-    private final Collection m_units;
+    private final Collection<Unit> m_units;
 
-    public Collection getUnits()
+    public Collection<Unit> getUnits()
     {
         return m_units;
     }
@@ -99,7 +98,7 @@ public class UndoableMove implements Serializable
             return m_reasonCantUndo;
         else if(!m_dependOnMe.isEmpty())
             return "Move " +
-                   (((UndoableMove) m_dependOnMe.iterator().next() ).getIndex() + 1) +
+                   (m_dependOnMe.iterator().next().getIndex() + 1) +
                    " must be undone first";
         else
             throw new IllegalStateException("no reason");
@@ -126,8 +125,8 @@ public class UndoableMove implements Serializable
         m_description = description;
     }
 
-    public UndoableMove(GameData data, IntegerMap startMovement,
-                        Collection units, Route route)
+    public UndoableMove(GameData data, IntegerMap<Unit> startMovement,
+                        Collection<Unit> units, Route route)
     {
         m_startingMovement = startMovement.copy();
         m_route = route;
@@ -144,7 +143,7 @@ public class UndoableMove implements Serializable
         m_unloaded.put(unit, transport);
     }
 
-    public void markEndMovement(IntegerMap endMovement)
+    public void markEndMovement(IntegerMap<Unit> endMovement)
     {
         //start - change
         m_changedMovement = m_startingMovement.copy();
@@ -154,7 +153,7 @@ public class UndoableMove implements Serializable
 
     }
 
-    public void undo(IDelegateBridge bridge, IntegerMap movement,
+    public void undo(IDelegateBridge bridge, IntegerMap<Unit> movement,
                      GameData data)
     {
         TransportTracker transportTracker = DelegateFinder.moveDelegate(data).getTransportTracker();
@@ -172,10 +171,10 @@ public class UndoableMove implements Serializable
         movement.add(m_changedMovement);
         if (m_loaded != null)
         {
-            Iterator loaded = m_loaded.keySet().iterator();
+            Iterator<Unit> loaded = m_loaded.keySet().iterator();
             while (loaded.hasNext())
             {
-                Unit unit = (Unit) loaded.next();
+                Unit unit = loaded.next();
                 Unit transport = (Unit) m_loaded.get(unit);
                 transportTracker.undoLoad(unit, transport, bridge.getPlayerID());
 
@@ -184,10 +183,10 @@ public class UndoableMove implements Serializable
 
         if (m_unloaded != null)
         {
-            Iterator unloaded = m_unloaded.keySet().iterator();
+            Iterator<Unit> unloaded = m_unloaded.keySet().iterator();
             while (unloaded.hasNext())
             {
-                Unit unit = (Unit) unloaded.next();
+                Unit unit = unloaded.next();
                 Unit transport = (Unit) m_unloaded.get(unit);
                 transportTracker.undoUnload(unit, transport, bridge.getPlayerID());
             }
@@ -231,12 +230,12 @@ public class UndoableMove implements Serializable
     /**
      * Update the dependencies.
      */
-    public void initializeDependencies(List undoableMoves)
+    public void initializeDependencies(List<UndoableMove> undoableMoves)
     {
-        Iterator iter = undoableMoves.iterator();
+        Iterator<UndoableMove> iter = undoableMoves.iterator();
         while (iter.hasNext())
         {
-            UndoableMove other = (UndoableMove)iter.next();
+            UndoableMove other = iter.next();
 
             if(other == null)
             {

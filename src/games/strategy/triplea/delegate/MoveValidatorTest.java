@@ -31,6 +31,7 @@ import junit.framework.*;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
 public class MoveValidatorTest extends DelegateTest
 {
 		
@@ -53,7 +54,8 @@ public class MoveValidatorTest extends DelegateTest
 		super.setUp();
 	}
 	
-	public void testHasEnoughMovement()
+	
+    public void testHasEnoughMovement()
 	{
 		IntegerMap alreadyMoved = new IntegerMap();
 		Collection units = bomber.create(3, british);

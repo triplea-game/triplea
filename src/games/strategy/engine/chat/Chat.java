@@ -73,11 +73,11 @@ public class Chat implements IChatter
     public void slap(String playerName)
     {
         
-        Iterator iter = m_messenger.getNodes().iterator();
+        Iterator<INode> iter = m_messenger.getNodes().iterator();
         INode destination = null;
         while (iter.hasNext())
         {
-            INode node = (INode) iter.next();
+            INode node = iter.next();
             String name = node.getName();
             if (name.equals(playerName))
             {
@@ -118,13 +118,13 @@ public class Chat implements IChatter
     private synchronized void updateConnections()
     {
 
-        Set players = m_messenger.getNodes();
-        List playerNames = new ArrayList(players.size());
+        Set<INode> players = m_messenger.getNodes();
+        List<String> playerNames = new ArrayList<String>(players.size());
 
-        Iterator iter = players.iterator();
+        Iterator<INode> iter = players.iterator();
         while (iter.hasNext())
         {
-            INode node = (INode) iter.next();
+            INode node = iter.next();
             String name = node.getName();
             playerNames.add(name);
         }

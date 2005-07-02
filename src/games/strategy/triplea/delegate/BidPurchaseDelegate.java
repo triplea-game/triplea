@@ -25,13 +25,10 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   /**
    * subclasses can over ride this method to use different restrictions as to what a player can buy
    */
-  protected boolean canAfford(IntegerMap costs, PlayerID player)
+  protected boolean canAfford(IntegerMap<Resource> costs, PlayerID player)
   {
-    int ipcCost = costs.getInt(Constants.IPCS);
-
-
-
-    return m_bid >= ipcCost;
+      Resource ipcs = getData().getResourceList().getResource(Constants.IPCS);
+      return costs.getInt(ipcs) < m_bid;
   }
 
   public void start(IDelegateBridge bridge, GameData data)
@@ -43,7 +40,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
       m_spent = 0;
   }
 
-  protected void removeFromPlayer(PlayerID player, IntegerMap resources)
+  protected void removeFromPlayer(PlayerID player, IntegerMap<Resource> resources)
   {
       m_spent = resources.getInt(super.getData().getResourceList().getResource(Constants.IPCS));
   }

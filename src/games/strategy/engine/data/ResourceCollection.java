@@ -30,7 +30,7 @@ import games.strategy.util.IntegerMap;
 public class ResourceCollection extends GameDataComponent
 {
 
-	private final IntegerMap m_resources = new IntegerMap();
+	private final IntegerMap<Resource> m_resources = new IntegerMap<Resource>();
 	
 	/** Creates new ResourceCollection */
     public ResourceCollection(GameData data) 
@@ -78,7 +78,7 @@ public class ResourceCollection extends GameDataComponent
 		return getQuantity(resource);
 	}
 	
-	public boolean has(IntegerMap map)
+	public boolean has(IntegerMap<Resource> map)
 	{
 		return m_resources.greaterThanOrEqualTo(map);
 	}

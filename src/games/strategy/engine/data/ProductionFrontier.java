@@ -30,8 +30,8 @@ import java.util.*;
 public class ProductionFrontier extends DefaultNamed
 {
 
-	private final List m_rules = new ArrayList();
-	private List m_cachedRules;
+	private final List<ProductionRule> m_rules = new ArrayList<ProductionRule>();
+	private List<ProductionRule> m_cachedRules;
 
 	/** Creates new ProductionFrontier */
     public ProductionFrontier(String name, GameData data)
@@ -57,7 +57,7 @@ public class ProductionFrontier extends DefaultNamed
   		m_cachedRules = null;	    
 	}
 
-	public List getRules()
+	public List<ProductionRule> getRules()
 	{
 		if(m_cachedRules == null)
 			m_cachedRules = Collections.unmodifiableList(m_rules);

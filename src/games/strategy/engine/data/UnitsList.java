@@ -23,11 +23,11 @@ public class UnitsList implements java.io.Serializable
     //maps GUID -> Unit
     //TODO - fix this, all units are never gcd
     //note, weak hash maps are not serializable
-    private Map m_allUnits;
+    private Map<GUID, Unit> m_allUnits;
 
     Unit get(GUID id)
     {
-      return (Unit) m_allUnits.get(id);
+      return m_allUnits.get(id);
     }
 
     public void put(Unit unit)
@@ -38,14 +38,14 @@ public class UnitsList implements java.io.Serializable
     /*
       * Gets all units currently in the game
       */
-     public Collection getUnits()
+     public Collection<Unit> getUnits()
      {
        return m_allUnits.values();
      }
 
      public void refresh()
      {
-         m_allUnits = new HashMap();
+         m_allUnits = new HashMap<GUID, Unit>();
      }
 
     UnitsList()

@@ -37,7 +37,7 @@ interface Battle extends java.io.Serializable
     /**
      *  Add a bunch of attacking units to the battle.
      */
-    public void addAttack(Route route, Collection units);
+    public void addAttack(Route route, Collection<Unit> units);
     
 
     /**
@@ -65,7 +65,7 @@ interface Battle extends java.io.Serializable
      * This is needed to remove dependent units who have been
      * lost in another battle.
      */
-    public void unitsLost(Battle battle, Collection units, IDelegateBridge bridge);
+    public void unitsLost(Battle battle, Collection<Unit> units, IDelegateBridge bridge);
 
     /**
      * Add a bombardment unit.
@@ -80,7 +80,7 @@ interface Battle extends java.io.Serializable
     /**
      *  This occurs when a move has been undone
      */
-    public void removeAttack(Route route, Collection units);
+    public void removeAttack(Route route, Collection<Unit> units);
 
     /**
      * After an attack has been removed, you can use this to test if
@@ -91,7 +91,7 @@ interface Battle extends java.io.Serializable
     /**
      * Return units which are dependent on the given units.
      */
-    public Collection getDependentUnits(Collection units);
+    public Collection<Unit> getDependentUnits(Collection<Unit> units);
     
     public int getBattleRound();
 }

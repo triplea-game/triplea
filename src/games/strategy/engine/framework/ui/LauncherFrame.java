@@ -18,8 +18,8 @@ import games.strategy.engine.chat.ChatFrame;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
+import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
-import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.random.*;
 import games.strategy.net.*;
 import games.strategy.triplea.Constants;
@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import javax.swing.*;
@@ -214,9 +213,9 @@ public class LauncherFrame extends JFrame
         //signal that they are ready.
         ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes);
 
-        Map localPlayerMapping = m_serverStartup.getLocalPlayerMapping();
-        Set localPlayerSet = m_gameData.getGameLoader().createPlayers(localPlayerMapping);
-        Map remotePlayers = m_serverStartup.getRemotePlayerMapping();
+        Map<String, String> localPlayerMapping = m_serverStartup.getLocalPlayerMapping();
+        Set<IGamePlayer> localPlayerSet = m_gameData.getGameLoader().createPlayers(localPlayerMapping);
+        Map<String,INode> remotePlayers = m_serverStartup.getRemotePlayerMapping();
 
         final ServerGame serverGame = new ServerGame(m_gameData, localPlayerSet, (IServerMessenger) m_messenger, remotePlayers, m_channelMessenger,
                 m_remoteMessenger);
@@ -272,8 +271,8 @@ public class LauncherFrame extends JFrame
 
     void startClient()
     {
-        Map playerMapping = m_clientStartup.getLocalPlayerMapping();
-        Set playerSet = m_gameData.getGameLoader().createPlayers(playerMapping);
+        Map<String, String> playerMapping = m_clientStartup.getLocalPlayerMapping();
+        Set<IGamePlayer> playerSet = m_gameData.getGameLoader().createPlayers(playerMapping);
 
         ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger,
                 m_channelMessenger, m_remoteMessenger);
@@ -314,18 +313,18 @@ public class LauncherFrame extends JFrame
                 m_channelMessenger = new ChannelMessenger(m_unifiedMessenger);
                 m_remoteMessenger = new RemoteMessenger(m_unifiedMessenger);
 
-                java.util.List players = games.strategy.util.Util.toList(m_gameData.getPlayerList().getNames());
+                java.util.List<String> players = games.strategy.util.Util.toList(m_gameData.getPlayerList().getNames());
 
-                Map localPlayerMap = new HashMap();
-                Iterator playerIter = players.iterator();
+                Map<String, String> localPlayerMap = new HashMap<String, String>();
+                Iterator<String> playerIter = players.iterator();
                 while (playerIter.hasNext())
                 {
-                    String playerName = (String) playerIter.next();
+                    String playerName = playerIter.next();
                     localPlayerMap.put(playerName, m_localPlayerTypes.getPlayerType(playerName));
                 }
 
-                Set gamePlayers = m_gameData.getGameLoader().createPlayers(localPlayerMap);
-                ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap(), m_channelMessenger, m_remoteMessenger);
+                Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(localPlayerMap);
+                ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap<String,INode>(), m_channelMessenger, m_remoteMessenger);
                 if (m_gameTypePanel.isPBEM())
                 {
                     IronyGamesDiceRollerRandomSource randomSource = new IronyGamesDiceRollerRandomSource(m_pbemStartup.getEmail1(), m_pbemStartup

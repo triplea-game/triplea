@@ -44,7 +44,7 @@ public interface ITripleaPlayer extends IRemote
      * @return the selected casualties
      */
     public CasualtyDetails selectCasualties(
-            Collection selectFrom, Map dependents,  int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties     
+            Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties     
     );
     
     /**
@@ -59,7 +59,7 @@ public interface ITripleaPlayer extends IRemote
     public Territory selectBombardingTerritory(
             Unit unit,
             Territory unitTerritory,
-            Collection territories,
+            Collection<Territory> territories,
             boolean noneAvailable       
     );
     
@@ -90,7 +90,7 @@ public interface ITripleaPlayer extends IRemote
      * @param from - where the rockets are launched from, null for 3rd edition rules
      * @return the territory to attack, null if no territory should be attacked
      */
-    public Territory whereShouldRocketsAttach(Collection candidates, Territory from);
+    public Territory whereShouldRocketsAttach(Collection<Territory> candidates, Territory from);
     
     /**
      * get the fighters to move to a newly produced carrier
@@ -99,7 +99,7 @@ public interface ITripleaPlayer extends IRemote
      * @param from - the territory containing the factory
      * @return - the fighters to move
      */
-    public Collection getNumberOfFightersToMoveToNewCarrier(Collection fightersThatCanBeMoved, Territory from);
+    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from);
  
     /**
      * Some carriers were lost while defending.  We must select where to land
@@ -108,7 +108,7 @@ public interface ITripleaPlayer extends IRemote
      * @param candidates -  a list of territories - these are the places where air units can land
      * @return - the territory to land the fighters in, must be non null
      */
-    public Territory selectTerritoryForAirToLand(Collection candidates);
+    public Territory selectTerritoryForAirToLand(Collection<Territory> candidates);
 
     
     /**
@@ -128,7 +128,7 @@ public interface ITripleaPlayer extends IRemote
      * @param message - user displayable message
      * @return the territory to retreat to, or null if the player doesnt wish to retreat
      */
-    public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message);
+    public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message);
 
     
     /**

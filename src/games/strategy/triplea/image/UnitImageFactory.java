@@ -61,9 +61,9 @@ public class UnitImageFactory
   private static final String FILE_NAME_BASE = "images/units/";
 
   //maps Point -> image
-  private final Map m_images = new HashMap();
+  private final Map<String, Image> m_images = new HashMap<String, Image>();
   //maps Point -> Icon
-  private final Map m_icons = new HashMap();
+  private final Map<String, ImageIcon> m_icons = new HashMap<String, ImageIcon>();
   // Scaling factor for unit images
   private double m_scaleFactor = MapData.getInstance().getDefaultUnitScale();
 
@@ -120,7 +120,7 @@ public class UnitImageFactory
     String fullName = baseName + player.getName();
     if(m_images.containsKey(fullName))
     {
-      return (Image) m_images.get(fullName);
+      return m_images.get(fullName);
     }
 
     Image baseImage = getBaseImage(baseName, player, damaged);
@@ -177,7 +177,7 @@ public class UnitImageFactory
     String fullName = baseName + player.getName();
     if(m_icons.containsKey(fullName))
     {
-      return (ImageIcon) m_icons.get(fullName);
+      return m_icons.get(fullName);
     }
 
     Image img = getBaseImage(baseName, player, damaged);
@@ -189,7 +189,7 @@ public class UnitImageFactory
 
   public String getBaseImageName(UnitType type, PlayerID id, GameData data, boolean damaged)
   {
-    StringBuffer name = new StringBuffer(32);
+    StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
 
     if (type.getName().equals(Constants.FIGHTER_TYPE))

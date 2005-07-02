@@ -34,14 +34,14 @@ import games.strategy.engine.data.*;
 public class GameProperties extends GameDataComponent
 {
 
-    private final HashMap m_constantProperties = new HashMap();
+    private final HashMap<String,Object> m_constantProperties = new HashMap<String,Object>();
 
     //a set of IEditableProperties
-    private final HashMap m_editableProperties = new HashMap();
+    private final HashMap<String,IEditableProperty> m_editableProperties = new HashMap<String,IEditableProperty>();
 
     // This list is used to keep track of order properties were
     // added.
-    private final List m_ordering = new ArrayList();
+    private final List<String> m_ordering = new ArrayList<String>();
 
     /** Creates a new instance of Properties */
     public GameProperties(GameData data)
@@ -74,7 +74,7 @@ public class GameProperties extends GameDataComponent
     public Object get(String key)
     {
         if (m_editableProperties.containsKey(key))
-                return ((IEditableProperty) m_editableProperties.get(key)).getValue();
+                return m_editableProperties.get(key).getValue();
 	
 	return m_constantProperties.get(key);
     }
@@ -107,14 +107,14 @@ public class GameProperties extends GameDataComponent
      * 
      * @return a list of IEditableProperty
      */
-    public List getEditableProperties()
+    public List<IEditableProperty> getEditableProperties()
     {
-        List properties = new ArrayList();
-        Iterator orderIter = m_ordering.iterator();
+        List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
+        Iterator<String> orderIter = m_ordering.iterator();
 
         while (orderIter.hasNext())
         {
-            Object propertyName = orderIter.next();
+            String propertyName = orderIter.next();
             if (m_editableProperties.containsKey(propertyName))
             {
                 properties.add(m_editableProperties.get(propertyName));

@@ -32,58 +32,30 @@ import java.io.Serializable;
  * @version 1.0
  *
  */
-public class IntegerMap implements Cloneable, Serializable
+public  class IntegerMap<T> implements Cloneable, Serializable
 {
-    private static final Integer INT_NEG_3 = new Integer( -3);
-    private static final Integer INT_NEG_2 = new Integer( -2);
-    private static final Integer INT_NEG_1 = new Integer( -1);
-    private static final Integer INT_0 = new Integer(0);
-    private static final Integer INT_1 = new Integer(1);
-    private static final Integer INT_2 = new Integer(2);
-    private static final Integer INT_3 = new Integer(3);
-
-	private static final long serialVersionUID = -1791355374359884955L;
-
-	private Map m_values = new HashMap();
-
-	/**
-	 * To avoid creating objects, recycle some common values.
-	 */
-	private static final Integer getInteger(int i)
-	{
-		switch( i)
-		{
-			case -3 : return INT_NEG_3;
-			case -2 : return INT_NEG_2;
-			case -1 : return INT_NEG_1;
-			case 0 : return INT_0;
-			case 1 : return INT_1;
-			case 2 : return INT_2;
-			case 3 : return INT_3;
-			default : return new Integer(i);
-		}
-	}
+	private Map<T,Integer> m_values = new HashMap<T,Integer>();
 
 	/** Creates new IntegerMap */
     public IntegerMap()
 	{
     }
 
-	public void put(Object key, Integer value)
+	public void put(T key, Integer value)
 	{
 		m_values.put(key, value);
 	}
 
-	public void put(Object key, int value)
+	public void put(T key, int value)
 	{
-		Integer obj = getInteger(value);
+		Integer obj = Integer.valueOf(value);
 		m_values.put(key, obj);
 	}
 
-    public void putAll(Collection keys, int value)
+    public void putAll(Collection<T> keys, int value)
     {
-        Integer obj = getInteger(value);
-        Iterator iter = keys.iterator();
+        Integer obj = Integer.valueOf(value);
+        Iterator<T> iter = keys.iterator();
         while (iter.hasNext())
         {
             put(iter.next(), obj);
@@ -93,7 +65,7 @@ public class IntegerMap implements Cloneable, Serializable
 	/**
 	 * returns 0 if no key found.
 	 */
-	public int getInt(Object key)
+	public int getInt(T key)
 	{
 		Integer val = (Integer) m_values.get(key);
 		if(val == null)
@@ -102,12 +74,12 @@ public class IntegerMap implements Cloneable, Serializable
 	}
 
 
-	public void add(Object key, Integer value)
+	public void add(T key, Integer value)
 	{
 		add(key, value.intValue());
 	}
 
-	public void add(Object key, int value)
+	public void add(T key, int value)
 	{
 		if(m_values.get(key) == null)
 			put(key, value);
@@ -124,7 +96,7 @@ public class IntegerMap implements Cloneable, Serializable
 		m_values.clear();
 	}
 
-	public Set keySet()
+	public Set<T> keySet()
 	{
 		return m_values.keySet();
 	}
@@ -135,32 +107,32 @@ public class IntegerMap implements Cloneable, Serializable
 	public int totalValues()
 	{
 		int sum = 0;
-		Iterator values = m_values.values().iterator();
+		Iterator<Integer> values = m_values.values().iterator();
 		while(values.hasNext())
 		{
-			Object obj = values.next();
+			Integer obj = values.next();
 			Integer value = (Integer) obj;
 			sum += value.intValue();
 		}
 		return sum;
 	}
 
-	public void add(IntegerMap map)
+	public void add(IntegerMap<T> map)
 	{
-		Iterator iter = map.keySet().iterator();
+		Iterator<T> iter = map.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object key = iter.next();
+			T key = iter.next();
 			add(key, map.getInt(key) );
 		}
 	}
 
-	public void subtract(IntegerMap map)
+	public void subtract(IntegerMap<T> map)
 	{
-		Iterator iter = map.keySet().iterator();
+		Iterator<T> iter = map.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object key = iter.next();
+			T key = iter.next();
 			add(key, -map.getInt(key) );
 		}
 	}
@@ -173,12 +145,12 @@ public class IntegerMap implements Cloneable, Serializable
 	 * a.greaterThanOrEqualTo(b) is false, and b.greaterThanOrEqualTo(a) is false, and
 	 * that a and b are not equal.
 	 */
-	public boolean greaterThanOrEqualTo(IntegerMap map)
+	public boolean greaterThanOrEqualTo(IntegerMap<T> map)
 	{
-		Iterator iter = map.keySet().iterator();
+		Iterator<T> iter = map.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object key = iter.next();
+			T key = iter.next();
 			if( ! ( this.getInt(key) >= map.getInt(key)))
 				return false;
 		}
@@ -190,19 +162,19 @@ public class IntegerMap implements Cloneable, Serializable
 	 */
 	public boolean isPositive()
 	{
-		Iterator iter = m_values.keySet().iterator();
+		Iterator<T> iter = m_values.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object key = iter.next();
+			T key = iter.next();
 			if(getInt(key) < 0)
 				return false;
 		}
 		return true;
 	}
 
-	public IntegerMap copy()
+	public IntegerMap<T> copy()
 	{
-		IntegerMap copy = new IntegerMap();
+		IntegerMap<T> copy = new IntegerMap<T>();
 		copy.add(this);
 		return copy;
 	}
@@ -215,103 +187,103 @@ public class IntegerMap implements Cloneable, Serializable
 	/**
 	 * Add map * multiple
 	 */
-	public void addMultiple(IntegerMap map, int multiple)
+	public void addMultiple(IntegerMap<T> map, int multiple)
 	{
-		Iterator iter = map.keySet().iterator();
+		Iterator<T> iter = map.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object key = iter.next();
+			T key = iter.next();
 			add(key, map.getInt(key) * multiple);
 		}
 	}
 
-	public boolean someKeysMatch(Match matcher)
+	public boolean someKeysMatch(Match<T> matcher)
 	{
-		Iterator iter = m_values.keySet().iterator();
+		Iterator<T> iter = m_values.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object obj = iter.next();
+			T obj = iter.next();
 			if(matcher.match(obj))
 				return true;
 		}
 		return false;
 	}
 
-	public boolean allKeysMatch(Match matcher)
+	public boolean allKeysMatch(Match<T> matcher)
 	{
-		Iterator iter = m_values.keySet().iterator();
+		Iterator<T> iter = m_values.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object obj = iter.next();
+			T obj = iter.next();
 			if(!matcher.match(obj))
 				return false;
 		}
 		return true;
 	}
 
-	public Collection getKeyMatches(Match matcher)
+	public Collection<T> getKeyMatches(Match<T> matcher)
 	{
-		Collection values = new ArrayList();
-		Iterator iter = m_values.keySet().iterator();
+		Collection<T> values = new ArrayList<T>();
+		Iterator<T> iter = m_values.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object obj = iter.next();
+			T obj = iter.next();
 			if(matcher.match(obj))
 				values.add(obj);
 		}
 		return values;
 	}
 
-	public int sumMatches(Match matcher)
+	public int sumMatches(Match<T> matcher)
 	{
 		int sum = 0;
-		Iterator iter = m_values.keySet().iterator();
+		Iterator<T> iter = m_values.keySet().iterator();
 		while(iter.hasNext() )
 		{
-			Object obj = iter.next();
+			T obj = iter.next();
 			if(matcher.match(obj))
 				sum += getInt(obj);
 		}
 		return sum;
 	}
 
-	public void removeNonMatchingKeys(Match aMatch)
+	public void removeNonMatchingKeys(Match<T> aMatch)
 	{
-		Match match = new InverseMatch(aMatch);
+		Match<T> match = new InverseMatch<T>(aMatch);
 		removeMatchingKeys(match);
 	}
 
-	public void removeMatchingKeys(Match aMatch)
+	public void removeMatchingKeys(Match<T> aMatch)
 	{
-		Collection badKeys = getKeyMatches(aMatch);
+		Collection<T> badKeys = getKeyMatches(aMatch);
 		removeKeys(badKeys);
 	}
 
-	public void removeKey(Object key)
+	public void removeKey(T key)
 	{
 		m_values.remove(key);
 	}
 
-	private void removeKeys(Collection keys)
+	private void removeKeys(Collection<T> keys)
 	{
-		Iterator iter = keys.iterator();
+		Iterator<T> iter = keys.iterator();
 		while(iter.hasNext())
 		{
-			Object key = iter.next();
+			T key = iter.next();
 			removeKey(key);
 		}
 	}
 
 	public String toString()
 	{
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("IntegerMap:\n");
-		Iterator iter = m_values.keySet().iterator();
+		Iterator<T> iter = m_values.keySet().iterator();
 		if(!iter.hasNext())
 			buf.append("empty\n");
 		while(iter.hasNext())
 		{
-			Object current = iter.next();
+			T current = iter.next();
 			buf.append(current).append(" -> " ).append(getInt(current)).append("\n");
 		}
 		return buf.toString();

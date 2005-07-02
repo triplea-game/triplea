@@ -32,7 +32,7 @@ public class CompositeChange extends Change
 
 	static final long serialVersionUID = 8152962976769419486L;
 
-	private final List m_changes;
+	private final List<Change> m_changes;
 
     public CompositeChange(Change c1, Change c2)
     {
@@ -43,12 +43,12 @@ public class CompositeChange extends Change
 
 	public CompositeChange()
 	{
-		m_changes = new ArrayList();
+		m_changes = new ArrayList<Change>();
 	}
 
-	public CompositeChange(List changes)
+	public CompositeChange(List<Change> changes)
 	{
-		m_changes = new ArrayList(changes);
+		m_changes = new ArrayList<Change>(changes);
 	}
 
 	public void add(Change aChange)
@@ -58,12 +58,12 @@ public class CompositeChange extends Change
 
 	public Change invert()
 	{
-		List newChanges = new ArrayList();
+		List<Change> newChanges = new ArrayList<Change>();
 		//to invert a list of changes, process the opposite of
 		//each change in the reverse order of the original list
 		for(int i = m_changes.size() - 1; i >= 0; i--)
 		{
-			Change current = (Change) m_changes.get(i);
+			Change current = m_changes.get(i);
 			newChanges.add(current.invert());
 		}
 		return new CompositeChange(newChanges);
@@ -73,13 +73,13 @@ public class CompositeChange extends Change
 	{
 		for(int i = 0; i < m_changes.size(); i++)
 		{
-			Change current = (Change) m_changes.get(i);
+			Change current = m_changes.get(i);
 			current.perform(data);
 		}
 	}
 
-  public List getChanges()
+  public List<Change> getChanges()
   {
-    return new ArrayList(m_changes);
+    return new ArrayList<Change>(m_changes);
   }
 }

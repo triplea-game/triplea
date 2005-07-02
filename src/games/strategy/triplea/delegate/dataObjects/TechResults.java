@@ -29,7 +29,7 @@ public class TechResults implements java.io.Serializable
     private int m_hits;
 
     //a list of Strings
-    private List m_advances;
+    private List<String> m_advances;
 
     private PlayerID m_playerID;
 
@@ -63,7 +63,7 @@ public class TechResults implements java.io.Serializable
      * @param advances -
      *            a List of Strings
      */
-    public TechResults(int[] rolls, int hits, List advances, PlayerID id)
+    public TechResults(int[] rolls, int hits, List<String> advances, PlayerID id)
     {
         m_rolls = rolls;
         m_hits = hits;
@@ -90,7 +90,7 @@ public class TechResults implements java.io.Serializable
      * 
      * @return a List of Strings
      */
-    public List getAdvances()
+    public List<String> getAdvances()
     {
         return m_advances;
     }

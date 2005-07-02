@@ -81,20 +81,20 @@ public class GameRunner
     private static void checkJavaVersion()
     {
         String strV = System.getProperties().getProperty("java.version");
+        boolean v13 = strV.indexOf("1.3") != -1;
         boolean v14 = strV.indexOf("1.4") != -1;
-        boolean v15 = strV.indexOf("1.5") != -1;
 
-        if (v14 && v15)
+        if (v14 || v13)
         {
             if (!isMac())
             {
-                JOptionPane.showMessageDialog(null, "You need java version 1.4.x\nPlease download a newer version of java from http://java.sun.com/",
+                JOptionPane.showMessageDialog(null, "You need java version 1.5.x\nPlease download a newer version of java from http://java.sun.com/",
                         "ERROR", JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             } else if (isMac())
             {
                 JOptionPane.showMessageDialog(null,
-                        "You need java version 1.4.x\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR",
+                        "You need java version 1.5.x\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }

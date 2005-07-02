@@ -61,15 +61,7 @@ import games.strategy.util.*;
 public class Matches
 {
 
-    public static final Match IsUnit = new Match()
-    {
-      public boolean match(Object o)
-      {
-          return o != null && o instanceof Unit;
-      }
-    };
-
-    public static final Match IsTerritory = new Match()
+    public static final Match<Object> IsTerritory = new Match<Object> ()
     {
         public boolean match(Object o)
         {
@@ -77,30 +69,27 @@ public class Matches
         }
     };
 
-	public static final Match UnitIsTwoHit = new Match()
+	public static final Match<Unit> UnitIsTwoHit = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit unit)
 		{
-			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 			return ua.isTwoHit();
 		}
 	};
 
-	public static final Match UnitIsDamaged = new Match()
+	public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit unit)
 		{
-			Unit unit = (Unit) obj;
 			return unit.getHits() == 1;
 		}
 	};
 
-	public static final Match UnitIsSea = new Match()
+	public static final Match<Unit> UnitIsSea = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit unit)
 		{
-			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 			return ua.isSea();
 		}
@@ -109,41 +98,38 @@ public class Matches
 	
 	
 	
-	public static final Match UnitIsSub = new Match()
+	public static final Match<Unit> UnitIsSub = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit unit)
 		{
-			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 			return ua.isSub();
 		}
 	};
 
-	public static final Match UnitIsNotSub = new InverseMatch(UnitIsSub);
+	public static final Match<Unit> UnitIsNotSub = new InverseMatch<Unit>(UnitIsSub);
 
-	public static final Match UnitIsDestroyer = new Match()
+	public static final Match<Unit> UnitIsDestroyer = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit unit)
 		{
-			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 			return ua.getIsDestroyer();
 		}
 	};
 	
-	public static final Match UnitIsTransport = new Match()
+	public static final Match<Unit> UnitIsTransport = new Match<Unit>()
 	{
-		public boolean match(Object obj)
-		{
-			Unit unit = (Unit) obj;
+        public boolean match(Unit unit)
+        {
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 			return ua.getTransportCapacity() != -1;
 		}
 	};
 
-	public static final Match UnitIsStrategicBomber = new Match()
+	public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
@@ -152,9 +138,9 @@ public class Matches
 	};
 
 
-	public static final Match UnitIsNotSea = new Match()
+	public static final Match<Unit> UnitIsNotSea = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
@@ -184,43 +170,40 @@ public class Matches
 
 
 
-	public static final Match UnitIsAir = new Match()
-	{
-		public boolean match(Object obj)
-		{
-			Unit unit = (Unit) obj;
+	public static final Match<Unit> UnitIsAir = new Match<Unit>()
+    {
+        public boolean match(Unit unit)
+        {
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 			return ua.isAir();
 		}
 	};
 
-	public static final Match UnitIsNotAir = new Match()
+	public static final Match<Unit> UnitIsNotAir = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit unit)
 		{
-			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 			return !ua.isAir();
 		}
 	};
 
-	public static Match unitCanBombard(final PlayerID id)
+	public static Match<Unit> unitCanBombard(final PlayerID id)
 	{
-	    return new Match()
+	    return new Match<Unit>()
 	    {
 	    
-			public boolean match(Object obj)
+			public boolean match(Unit unit)
 			{
-				Unit unit = (Unit) obj;
 				UnitAttatchment ua = UnitAttatchment.get(unit.getType());
 				return ua.getCanBombard(id);
 			}
 	    };
-	};
+	}
 
-	public static final Match UnitCanBlitz = new Match()
+	public static final Match<Unit> UnitCanBlitz = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
@@ -228,9 +211,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitIsDestructible = new Match()
+	public static final Match<Unit> UnitIsDestructible = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
@@ -239,9 +222,9 @@ public class Matches
 	};
 
 
-	public static final Match UnitTypeIsAir = new Match()
+	public static final Match<UnitType> UnitTypeIsAir = new Match<UnitType>()
 	{
-		public boolean match(Object obj)
+		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -249,9 +232,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitTypeIsNotAir = new Match()
+	public static final Match<UnitType> UnitTypeIsNotAir = new Match<UnitType>()
 	{
-		public boolean match(Object obj)
+		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -259,9 +242,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitCanLandOnCarrier = new Match()
+	public static final Match<Unit> UnitCanLandOnCarrier = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
@@ -269,9 +252,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitIsCarrier = new Match()
+	public static final Match<Unit> UnitIsCarrier = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
@@ -279,9 +262,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitCanBeTransported  = new Match()
+	public static final Match<Unit> UnitCanBeTransported  = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
@@ -289,9 +272,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitCanTransport  = new Match()
+	public static final Match<Unit> UnitCanTransport  = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
 			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
@@ -299,9 +282,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitTypeCanTransport  = new Match()
+	public static final Match<UnitType> UnitTypeCanTransport  = new Match<UnitType>()
 	{
-		public boolean match(Object obj)
+		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -310,9 +293,9 @@ public class Matches
 	};
 
 
-	public static final Match UnitTypeCanBeTransported  = new Match()
+	public static final Match<UnitType> UnitTypeCanBeTransported  = new Match<UnitType>()
 	{
-		public boolean match(Object obj)
+		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -321,9 +304,9 @@ public class Matches
 	};
 
 
-	public static final Match UnitTypeIsFactory = new Match()
+	public static final Match<UnitType> UnitTypeIsFactory = new Match<UnitType>()
 	{
-		public boolean match(Object obj)
+		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -331,9 +314,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitIsFactory = new Match()
+	public static final Match<Unit> UnitIsFactory = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			UnitType type = ((Unit) obj).getUnitType();
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -341,12 +324,12 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitIsNotFactory = new InverseMatch(UnitIsFactory);
+	public static final Match<Unit> UnitIsNotFactory = new InverseMatch<Unit>(UnitIsFactory);
 
 
-	public static final Match UnitTypeIsAA = new Match()
+	public static final Match<UnitType> UnitTypeIsAA = new Match<UnitType>()
 	{
-		public boolean match(Object obj)
+		public boolean match(UnitType obj)
 		{
 			UnitAttatchment ua = UnitAttatchment.get((UnitType) obj);
 			return ua.isAA();
@@ -354,9 +337,9 @@ public class Matches
 	};
 
 
-	public static final Match UnitIsAA = new Match()
+	public static final Match<Unit> UnitIsAA = new Match<Unit>()
 	{
-		public boolean match(Object obj)
+		public boolean match(Unit obj)
 		{
 			UnitType type = ((Unit) obj).getUnitType();
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -364,9 +347,9 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitIsArtillery = new Match()
+	public static final Match<Unit> UnitIsArtillery = new Match<Unit>()
 	{
-	    public boolean match(Object obj)
+	    public boolean match(Unit obj)
 	    {
 			UnitType type = ((Unit) obj).getUnitType();
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -374,9 +357,9 @@ public class Matches
 	    }
 	};
 	
-	public static final Match UnitIsArtillerySupportable = new Match()
+	public static final Match<Unit> UnitIsArtillerySupportable = new Match<Unit>()
 	{
-	    public boolean match(Object obj)
+	    public boolean match(Unit obj)
 	    {
 			UnitType type = ((Unit) obj).getUnitType();
 			UnitAttatchment ua = UnitAttatchment.get(type);
@@ -385,50 +368,47 @@ public class Matches
 	};
 
 	
-	public static final Match TerritoryIsWater = new Match()
-	{
-		public boolean match(Object o)
-		{
-			Territory t = (Territory) o;
-			return t.isWater();
-		}
-	};
-	
-	public static final Match TerritoryIsVictoryCity = new Match()
-	{
-		public boolean match(Object o)
-		{
-		    
-			Territory t = (Territory) o;
-			TerritoryAttatchment ta = TerritoryAttatchment.get(t);
-			if(ta == null)
-			    return false;
-			return ta.isVictoryCity();
-		}
-	};
-	
 
-    public static final Match TerritoryIsLand = new InverseMatch(TerritoryIsWater);
-
-	public static final Match TerritoryIsEmpty = new Match()
-	{
-		public boolean match(Object o)
-		{
-			Territory t = (Territory) o;
-			return t.getUnits().size() == 0;
-		}
-	};
-
-
-
-	public static Match territoryIsEmptyOfCombatUnits(final GameData data, final PlayerID player)
+    public static final Match<Territory> TerritoryIsWater = new Match<Territory>()
     {
-        return new Match()
+        public boolean match(Territory t)
         {
-            public boolean match(Object o)
+            return t.isWater();
+        }
+    };
+    
+    public static final Match<Territory> TerritoryIsVictoryCity = new Match<Territory>()
+    {
+        public boolean match(Territory t)
+        {
+            
+            TerritoryAttatchment ta = TerritoryAttatchment.get(t);
+            if(ta == null)
+                return false;
+            return ta.isVictoryCity();
+        }
+    };
+    
+
+    public static final Match<Territory> TerritoryIsLand = new InverseMatch<Territory>(TerritoryIsWater);
+
+    public static final Match<Territory> TerritoryIsEmpty = new Match<Territory>()
+    {
+        public boolean match(Territory t)
+        {
+            return t.getUnits().size() == 0;
+        }
+    };
+
+
+
+    public static Match<Territory> territoryIsEmptyOfCombatUnits(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
             {
-                Territory t = (Territory) o;
-                CompositeMatch nonCom = new CompositeMatchOr();
+                CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
                 nonCom.add(UnitIsAAOrFactory);
                 nonCom.add(alliedUnit(player, data));
                 return t.getUnits().allMatch(nonCom);
@@ -436,112 +416,104 @@ public class Matches
         };
     }
 
-	public static final Match TerritoryIsNuetral = new Match()
-	{
-		public boolean match(Object o)
-		{
-			Territory t = (Territory) o;
-			if(t.isWater() )
-				return false;
-			return t.getOwner().equals(PlayerID.NULL_PLAYERID);
-		}
-	};
+    public static final Match<Territory> TerritoryIsNuetral = new Match<Territory>()
+    {
+        public boolean match(Territory t)
+        {
+            if(t.isWater() )
+                return false;
+            return t.getOwner().equals(PlayerID.NULL_PLAYERID);
+        }
+    };
 
-	public static final Match TerritoryIsImpassible = new Match()
-	{
-		public boolean match(Object o)
-		{
-			Territory t = (Territory) o;
-			if (t.isWater())
+    public static final Match<Territory> TerritoryIsImpassible = new Match<Territory>()
+    {
+        public boolean match(Territory t)
+        {
+            if (t.isWater())
             {
               return false;
             }
             else
             {
-			  return TerritoryAttatchment.get(t).isImpassible();
+              return TerritoryAttatchment.get(t).isImpassible();
             }
-		}
-	};
+        }
+    };
+  
 
-    public static final Match BattleIsEmpty = new Match()
+    public static final Match<Battle> BattleIsEmpty = new Match<Battle>()
 	{
-		public boolean match(Object o)
+		public boolean match(Battle battle)
 		{
-			Battle battle = (Battle) o;
 			return battle.isEmpty();
 		}
 	};
 	
-    public static final Match BattleIsAmphibious = new Match()
+    public static final Match<Battle> BattleIsAmphibious = new Match<Battle>()
 	{
-		public boolean match(Object o)
-		{
-			Battle battle = (Battle) o;
-			return battle.isAmphibious();
-		}
+        public boolean match(Battle battle)
+        {
+            return battle.isAmphibious();
+        }
 	};
 
 
     /**
      *  Match units that have at least lower limit movement
      */
-    public static Match unitHasEnoughMovement(final int lowerLimit, final IntegerMap movement)
+    public static Match<Unit> unitHasEnoughMovement(final int lowerLimit, final IntegerMap<Unit> movement)
     {
-        return new Match()
+        return new Match<Unit>()
         {
-            public boolean match(Object o)
+            public boolean match(Unit o)
             {
                 return movement.getInt(o) >= lowerLimit;
             }
         };
     }
 
-	public static Match unitIsOwnedBy(final PlayerID player)
+	public static Match<Unit> unitIsOwnedBy(final PlayerID player)
 	{
-		return new Match()
+		return new Match<Unit>()
 		{
-			public boolean match(Object o)
+			public boolean match(Unit unit)
 			{
-				Unit unit = (Unit) o;
 				return unit.getOwner().equals(player);
 			}
 		};
 	}
 
-    public static Match isTerritoryAllied(final PlayerID player, final GameData data)
+    public static Match<Territory> isTerritoryAllied(final PlayerID player, final GameData data)
     {
-        return new Match()
+        return new Match<Territory>()
         {
-            public boolean match(Object o)
+            public boolean match(Territory t)
             {
-                Territory t = (Territory) o;
                 return data.getAllianceTracker().isAllied(player, t.getOwner());
             }
         };
     }
 
 
-    public static Match isUnitAllied(final PlayerID player, final GameData data)
+    public static Match<Unit> isUnitAllied(final PlayerID player, final GameData data)
     {
-        return new Match()
+        return new Match<Unit>()
         {
-            public boolean match(Object o)
+            public boolean match(Unit t)
             {
-                Unit t = (Unit) o;
                 return data.getAllianceTracker().isAllied(player, t.getOwner());
             }
         };
     }
 
 
-	public static Match isTerritoryFriendly(final PlayerID player, final GameData data)
+	public static Match<Territory> isTerritoryFriendly(final PlayerID player, final GameData data)
 	{
-		return new Match()
+		return new Match<Territory>()
 		{
-			public boolean match(Object o)
+			public boolean match(Territory t)
 			{
-				Territory t = (Territory) o;
-
 				if(t.isWater())
 					return true;
 				if(t.getOwner().equals(player))
@@ -551,19 +523,19 @@ public class Matches
 		};
 	}
 
-  public static Match unitIsEnemyAA(final PlayerID player, final GameData data)
+  public static Match<Unit> unitIsEnemyAA(final PlayerID player, final GameData data)
   {
-    CompositeMatch comp = new CompositeMatchAnd();
+    CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
     comp.add(UnitIsAA);
     comp.add(enemyUnit(player, data));
     return comp;
   }
 
-  public static Match unitIsInTerritory(final Territory territory)
+  public static Match<Unit> unitIsInTerritory(final Territory territory)
   {
-      return new Match()
+      return new Match<Unit>()
       {
-          public boolean match(Object o)
+          public boolean match(Unit o)
           {
               return territory.getUnits().getUnits().contains(o);
           }
@@ -571,13 +543,12 @@ public class Matches
   }
 
 
-	public static Match isTerritoryEnemy(final PlayerID player, final GameData data)
+	public static Match<Territory> isTerritoryEnemy(final PlayerID player, final GameData data)
 	{
-		return new Match()
+		return new Match<Territory>()
 		{
-			public boolean match(Object o)
+			public boolean match(Territory t)
 			{
-				Territory t = (Territory) o;
 				if(t.isWater())
 					return false;
 
@@ -588,16 +559,16 @@ public class Matches
 		};
 	}
 
-	public static Match enemyUnit(PlayerID player, GameData data)
+	public static Match<Unit> enemyUnit(PlayerID player, GameData data)
 	{
-		return new InverseMatch(alliedUnit(player, data));
+		return new InverseMatch<Unit>(alliedUnit(player, data));
 	}
 
-    public static Match unitOwnedBy(final PlayerID player)
+    public static Match<Unit> unitOwnedBy(final PlayerID player)
     {
-        return new Match()
+        return new Match<Unit>()
         {
-            public boolean match(Object o)
+            public boolean match(Unit o)
             {
                 Unit unit = (Unit) o;
                 return unit.getOwner().equals(player);
@@ -608,13 +579,12 @@ public class Matches
 
 
 
-	public static Match alliedUnit(final PlayerID player, final GameData data)
+	public static Match<Unit> alliedUnit(final PlayerID player, final GameData data)
 	{
-		return new Match()
+		return new Match<Unit>()
 		{
-			public boolean match(Object o)
+			public boolean match(Unit unit)
 			{
-				Unit unit = (Unit) o;
 				if(unit.getOwner().equals(player))
 					return true;
 				return data.getAllianceTracker().isAllied(player, unit.getOwner());
@@ -622,48 +592,45 @@ public class Matches
 		};
 	}
 
-  public static Match territoryIs(final Territory test)
+  public static Match<Territory> territoryIs(final Territory test)
   {
 
-    return new Match()
+    return new Match<Territory>()
      {
 
-       public boolean match(Object o)
+       public boolean match(Territory t)
        {
-         Territory t = (Territory) o;
          return t.equals(test);
        }
      };
 
   }
 
-  public static Match territoryHasUnitsOwnedBy(final PlayerID player)
+  public static Match<Territory> territoryHasUnitsOwnedBy(final PlayerID player)
   {
-      final Match unitOwnedBy = unitIsOwnedBy(player);
+      final Match<Unit> unitOwnedBy = unitIsOwnedBy(player);
 
-      return new Match()
+      return new Match<Territory>()
   {
 
-    public boolean match(Object o)
+    public boolean match(Territory t)
     {
-      Territory t = (Territory) o;
       return t.getUnits().someMatch(unitOwnedBy);
     }
   };
 
   }
 
-  public static Match territoryHasEnemyAA(final PlayerID player, final GameData data)
+  public static Match<Territory> territoryHasEnemyAA(final PlayerID player, final GameData data)
   {
 
 
-    return new Match()
+    return new Match<Territory>()
     {
-      Match unitIsEnemyAA = unitIsEnemyAA(player, data);
+      Match<Unit> unitIsEnemyAA = unitIsEnemyAA(player, data);
 
-      public boolean match(Object o)
+      public boolean match(Territory t)
       {
-        Territory t = (Territory) o;
         return t.getUnits().someMatch( unitIsEnemyAA );
       }
     };
@@ -671,32 +638,30 @@ public class Matches
   }
 
 
-	public static Match territoryHasNoEnemyUnits(final PlayerID player, final GameData data)
+	public static Match<Territory> territoryHasNoEnemyUnits(final PlayerID player, final GameData data)
 	{
-		return new Match()
+		return new Match<Territory>()
 		{
-			public boolean match(Object o)
+			public boolean match(Territory t)
 			{
-				Territory t = (Territory) o;
 				return t.getUnits().allMatch( alliedUnit(player,data));
 			}
 		};
 
 	}
 
-	public static Match territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data)
+	public static Match<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data)
 	{
 
-	    final CompositeMatch match = new CompositeMatchAnd();
+	    final CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
 	    match.add(enemyUnit(player,data));
-	    match.add(new InverseMatch( unitIsSubmerged(data)));
+	    match.add(new InverseMatch<Unit>( unitIsSubmerged(data)));
 	    
-	    return new Match()
+	    return new Match<Territory>()
 		{
 		    
-			public boolean match(Object o)
+			public boolean match(Territory t)
 			{
-				Territory t = (Territory) o;
 				return t.getUnits().someMatch( match );
 			}
 		};
@@ -704,60 +669,57 @@ public class Matches
 	}
 
 	
-	public static Match territoryHasEnemyUnits(final PlayerID player, final GameData data)
+	public static Match<Territory> territoryHasEnemyUnits(final PlayerID player, final GameData data)
 	{
-		return new Match()
+		return new Match<Territory>()
 		{
-			public boolean match(Object o)
+			public boolean match(Territory t)
 			{
-				Territory t = (Territory) o;
 				return t.getUnits().someMatch( enemyUnit(player,data));
 			}
 		};
 
 	}
 
-	public final static Match UnitIsLand = new CompositeMatchAnd( UnitIsNotSea, UnitIsNotAir);
-	public final static Match UnitIsNotLand = new InverseMatch(UnitIsLand);
+	public final static Match<Unit> UnitIsLand = new CompositeMatchAnd<Unit>( UnitIsNotSea, UnitIsNotAir);
+	public final static Match<Unit> UnitIsNotLand = new InverseMatch<Unit>(UnitIsLand);
 
-	public static Match unitIsOfType(final UnitType type)
+	public static Match<Unit> unitIsOfType(final UnitType type)
 	{
-		return new Match()
+		return new Match<Unit>()
 		{
-			public boolean match(Object o)
+			public boolean match(Unit unit)
 			{
-				Unit unit =  (Unit) o;
 				return unit.getType().equals(type);
 			}
 		};
 	}
 
-	public static Match territoryWasFoughOver(final BattleTracker tracker)
+	public static Match<Territory> territoryWasFoughOver(final BattleTracker tracker)
 	{
-		return new Match()
+		return new Match<Territory>()
 		{
-			public boolean match(Object o)
+			public boolean match(Territory t)
 			{
-				Territory t = (Territory) o;
 				return tracker.wasBattleFought(t) || tracker.wasBlitzed(t);
 			}
 		};
 	}
 
-	public static Match unitIsSubmerged(final GameData data)
+	public static Match<Unit> unitIsSubmerged(final GameData data)
 	{
-	    return new Match()
+	    return new Match<Unit>()
 	    {
-	        public boolean match(Object o)
+	        public boolean match(Unit u)
 	        {
 	            SubmergedTracker tracker = DelegateFinder.moveDelegate(data).getSubmergedTracker();
-	            return tracker.isSuberged((Unit) o);
+	            return tracker.isSuberged(u);
 	        }
 	    };
 	    
 	}
 	
-	public static final Match UnitIsAAOrFactory = new CompositeMatchOr(UnitIsAA, UnitIsFactory);
+	public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
 
 	/** Creates new Matches */
 	private Matches()

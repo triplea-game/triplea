@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
+import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
@@ -84,7 +85,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   /**
    * subclasses can over ride this method to use different restrictions as to what a player can buy
    */
-  protected boolean canAfford(IntegerMap costs, PlayerID player)
+  protected boolean canAfford(IntegerMap<Resource> costs, PlayerID player)
   {
     return player.getResources().has(costs);
   }
@@ -92,10 +93,10 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   /**
    * Returns an error code, or null if all is good.
    */
-  public String purchase(IntegerMap productionRules)
+  public String purchase(IntegerMap<ProductionRule> productionRules)
   {
-    IntegerMap costs = getCosts(productionRules);
-    IntegerMap results = getResults(productionRules);
+    IntegerMap<Resource> costs = getCosts(productionRules);
+    IntegerMap<NamedAttatchable> results = getResults(productionRules);
 
     if(!(canAfford(costs, m_player)))
       return "Not enough resources";
@@ -106,37 +107,37 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     return null;
   }
 
-  private IntegerMap getCosts(IntegerMap productionRules)
+  private IntegerMap<Resource> getCosts(IntegerMap<ProductionRule> productionRules)
   {
-    IntegerMap costs = new IntegerMap();
+    IntegerMap<Resource> costs = new IntegerMap<Resource>();
 
-    Iterator rules = productionRules.keySet().iterator();
+    Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while(rules.hasNext() )
     {
-      ProductionRule rule = (ProductionRule) rules.next();
+      ProductionRule rule = rules.next();
       costs.addMultiple(rule.getCosts(), productionRules.getInt(rule));
     }
     return costs;
   }
 
-  private IntegerMap getResults(IntegerMap productionRules)
+  private IntegerMap<NamedAttatchable> getResults(IntegerMap<ProductionRule> productionRules)
   {
-    IntegerMap costs = new IntegerMap();
+    IntegerMap<NamedAttatchable> costs = new IntegerMap<NamedAttatchable>();
 
-    Iterator rules = productionRules.keySet().iterator();
+    Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while(rules.hasNext() )
     {
-      ProductionRule rule = (ProductionRule) rules.next();
+      ProductionRule rule = rules.next();
       costs.addMultiple(rule.getResults(), productionRules.getInt(rule));
     }
     return costs;
   }
 
 
-  protected void addToPlayer(PlayerID player, IntegerMap resourcesAndUnits)
+  protected void addToPlayer(PlayerID player, IntegerMap<NamedAttatchable> resourcesAndUnits)
   {
-    Iterator iter = resourcesAndUnits.keySet().iterator();
-    Collection totalUnits = new ArrayList();
+    Iterator<NamedAttatchable> iter = resourcesAndUnits.keySet().iterator();
+    Collection<Unit> totalUnits = new ArrayList<Unit>();
     while(iter.hasNext() )
     {
       Object next = iter.next();
@@ -150,7 +151,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
       {
         UnitType type = (UnitType) next;
         int quantity = resourcesAndUnits.getInt(type);
-        Collection units = type.create(quantity, player);
+        Collection<Unit> units = type.create(quantity, player);
         totalUnits.addAll(units);
 
       }
@@ -166,12 +167,12 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     }
   }
 
-  protected void removeFromPlayer(PlayerID player, IntegerMap resources)
+  protected void removeFromPlayer(PlayerID player, IntegerMap<Resource> resources)
   {
-    Iterator iter = resources.keySet().iterator();
+    Iterator<Resource> iter = resources.keySet().iterator();
     while(iter.hasNext() )
     {
-      Resource resource = (Resource) iter.next();
+      Resource resource = iter.next();
       int quantity = resources.getInt(resource);
       Change change = ChangeFactory.changeResourcesChange(player, resource, -quantity);
       m_bridge.addChange(change);
@@ -193,7 +194,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
 	/* 
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-	public Class getRemoteType()
+	public Class<? extends IRemote> getRemoteType()
 	{
 	    return IPurchaseDelegate.class;
 	}

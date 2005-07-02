@@ -152,7 +152,7 @@ public class Version implements Serializable, Comparable
 	
 	public String toString()
 	{
-		return m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "") + (m_micro != 0 ? "." + m_micro : "");
+		return m_major + "." + m_minor + ((m_point != 0 || m_micro != 0) ? "." + m_point : "") + (m_micro != 0 ? "." + m_micro : "");
 	}
 
 }

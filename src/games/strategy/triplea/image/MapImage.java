@@ -34,7 +34,7 @@ import java.net.URL;
 public class MapImage
 {
 
-  private static MapImage s_instance = new MapImage();;
+  private static MapImage s_instance = new MapImage();
   
   public static synchronized MapImage getInstance()
   {

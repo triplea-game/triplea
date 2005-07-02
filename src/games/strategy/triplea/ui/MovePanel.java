@@ -46,7 +46,7 @@ public class MovePanel extends ActionPanel
     private Territory m_firstSelectedTerritory;
     private IPlayerBridge m_bridge;
 
-    private List m_forced;
+    private List<Territory> m_forced;
     private boolean m_nonCombat;
     private UndoableMovesPanel m_undableMovesPanel;
     
@@ -184,27 +184,28 @@ public class MovePanel extends ActionPanel
      * If needed will ask the user what transports to unload.
      * This is needed because the user needs to be able to select what transports to unload
      */
-    private Collection getUnitsThatCanBeUnload(Route route)
+    @SuppressWarnings("unchecked")
+    private Collection<Unit> getUnitsThatCanBeUnload(Route route)
     {
       //get the allied transports
-      Match alliedTransports = new CompositeMatchAnd(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
-      Collection transports = Match.getMatches(route.getStart().getUnits().getUnits(), alliedTransports);
+      Match<Unit> alliedTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
+      Collection<Unit> transports = Match.getMatches(route.getStart().getUnits().getUnits(), alliedTransports);
       if(transports.isEmpty())
         return Collections.EMPTY_LIST;
 
       //find out what they are transporting
       MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getStart(), transports);
       
-      List candidateTransports = new ArrayList();
+      List<Unit> candidateTransports = new ArrayList<Unit>();
 
       //get the transports with units that we own
       //these transports can be unloaded
-      Match owned = Matches.unitIsOwnedBy(getCurrentPlayer());
-      Iterator mustMoveWithIter = mustMoveWith.getMustMoveWith().keySet().iterator();
+      Match<Unit> owned = Matches.unitIsOwnedBy(getCurrentPlayer());
+      Iterator<Unit> mustMoveWithIter = mustMoveWith.getMustMoveWith().keySet().iterator();
       while (mustMoveWithIter.hasNext())
       {
-        Unit transport = (Unit) mustMoveWithIter.next();
-        Collection transporting = (Collection) mustMoveWith.getMustMoveWith().get(transport);
+        Unit transport = mustMoveWithIter.next();
+        Collection<Unit> transporting = mustMoveWith.getMustMoveWith().get(transport);
         if(transporting == null)
           continue;
         if(Match.someMatch(transporting, owned))
@@ -216,7 +217,7 @@ public class MovePanel extends ActionPanel
       //only one, no choice
       if(candidateTransports.size() == 1)
       {
-        return (Collection) mustMoveWith.getMustMoveWith().get(candidateTransports.get(0));
+        return mustMoveWith.getMustMoveWith().get(candidateTransports.get(0));
       }
 
       // choosing what units to UNLOAD
@@ -229,14 +230,14 @@ public class MovePanel extends ActionPanel
       if(option != JOptionPane.OK_OPTION)
         return Collections.EMPTY_LIST;
 
-      Collection choosenTransports = chooser.getSelected();
+      Collection<Unit> choosenTransports = chooser.getSelected();
 
-      Collection toMove = new ArrayList();
+      Collection<Unit> toMove = new ArrayList<Unit>();
       Iterator choosenIter = choosenTransports.iterator();
       while (choosenIter.hasNext())
       {
         Unit transport = (Unit)choosenIter.next();
-        Collection transporting = (Collection) mustMoveWith.getMustMoveWith().get(transport);
+        Collection<Unit> transporting =  mustMoveWith.getMustMoveWith().get(transport);
         if(transporting != null)
           toMove.addAll(transporting);
       }
@@ -244,15 +245,15 @@ public class MovePanel extends ActionPanel
       return toMove;
     }
 
-    private Collection getUnitsToMove(Route route)
+    private Collection<Unit> getUnitsToMove(Route route)
     {
-        CompositeMatch ownedNotFactory = new CompositeMatchAnd();
+        CompositeMatch<Unit> ownedNotFactory = new CompositeMatchAnd<Unit>();
         ownedNotFactory.add(Matches.UnitIsNotFactory);
         ownedNotFactory.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
         if(!m_nonCombat)
-            ownedNotFactory.add(new InverseMatch( Matches.UnitIsAA));
+            ownedNotFactory.add(new InverseMatch<Unit>( Matches.UnitIsAA));
 
-        Collection owned = route.getStart().getUnits().getMatches(ownedNotFactory);
+        Collection<Unit> owned = route.getStart().getUnits().getMatches(ownedNotFactory);
 
 	boolean transportsAtEnd = route.getEnd().getUnits().getMatches(Matches.UnitCanTransport).size() > 0;
 
@@ -278,14 +279,15 @@ public class MovePanel extends ActionPanel
 	return getUnitsChosen(owned, route);
     }
 
-    private Collection getUnitsChosen(Collection units, Route route)
+    @SuppressWarnings("unchecked")
+    private Collection<Unit> getUnitsChosen(Collection<Unit> units, Route route)
     {
         
         MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getStart(), units);
 
         //unit movement counts when the unit is loaded
         //this fixes the case where a unit is loaded and then unloaded in the same turn
-        Collection canMove;
+        Collection<Unit> canMove;
         if (MoveValidator.isUnload(route))
             canMove = units;
         else
@@ -293,16 +295,16 @@ public class MovePanel extends ActionPanel
                                        Matches.unitHasEnoughMovement(route.
                                        getLength(), mustMoveWith.getMovement()));
 
-	Collection movedUnits = new ArrayList();
-	Map mustMoveWithMap = mustMoveWith.getMustMoveWith();
+	Collection<Unit> movedUnits = new ArrayList<Unit>();
+	Map<Unit, Collection<Unit>> mustMoveWithMap = mustMoveWith.getMustMoveWith();
         if (canMove.isEmpty()) {
             JOptionPane.showMessageDialog(getTopLevelAncestor(), "No units can move that far", "No units", JOptionPane.INFORMATION_MESSAGE);
             return Collections.EMPTY_LIST;
 	} else if (canMove.size() == 1) {
-          Object singleUnit = canMove.iterator().next();
+          Unit singleUnit = canMove.iterator().next();
 	  movedUnits.add(singleUnit);
 	  // Add dependents if necessary
-	  Collection dependents = (Collection) mustMoveWithMap.get(singleUnit);
+	  Collection<Unit> dependents = mustMoveWithMap.get(singleUnit);
 	  if (dependents != null) {
 	    movedUnits.addAll(dependents);
 	  }
@@ -343,7 +345,7 @@ public class MovePanel extends ActionPanel
             throw new IllegalStateException("No forced territories:" + m_forced +
                                             " end:" + end + " start:" + start);
 
-        Iterator iter = m_forced.iterator();
+        Iterator<Territory> iter = m_forced.iterator();
 
         Territory last = m_firstSelectedTerritory;
         Territory current = null;
@@ -353,7 +355,7 @@ public class MovePanel extends ActionPanel
 
         while (iter.hasNext())
         {
-            current = (Territory) iter.next();
+            current = iter.next();
             Route add = getData().getMap().getRoute(last, current);
 
             Route newTotal = Route.join(total, add);
@@ -399,17 +401,17 @@ public class MovePanel extends ActionPanel
 
 
 	// No aa guns on route predicate
-        CompositeMatch noAA = new CompositeMatchOr();
-        noAA.add(new InverseMatch(Matches.territoryHasEnemyAA(
+        CompositeMatch<Territory> noAA = new CompositeMatchOr<Territory>();
+        noAA.add(new InverseMatch<Territory>(Matches.territoryHasEnemyAA(
             getCurrentPlayer(), getData())));
         //ignore the destination
         noAA.add(Matches.territoryIs(end));
 
 	// No neutral countries on route predicate
-        Match noEmptyNeutral = new InverseMatch(new CompositeMatchAnd(Matches.TerritoryIsNuetral, Matches.TerritoryIsEmpty));
+        Match<Territory> noEmptyNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNuetral, Matches.TerritoryIsEmpty));
 
 	// No neutral countries nor AA guns on route predicate
-	Match noNeutralOrAA = new CompositeMatchAnd(noAA, noEmptyNeutral);
+	Match<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(noAA, noEmptyNeutral);
 
 	// Try to avoid both AA guns and neutral territories
 	Route noAAOrNeutralRoute = getData().getMap().getRoute(start, end, noNeutralOrAA);
@@ -443,10 +445,11 @@ public class MovePanel extends ActionPanel
     /**
      * Allow the user to select what transports to load.
      */
-    private Collection getTransportsToLoad(Route route)
+    @SuppressWarnings("unchecked")
+    private Collection<Unit> getTransportsToLoad(Route route)
     {
-      Match alliedTransports = new CompositeMatchAnd(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
-      Collection transports = Match.getMatches(route.getEnd().getUnits().getUnits(), alliedTransports);
+      Match<Unit> alliedTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
+      Collection<Unit> transports = Match.getMatches(route.getEnd().getUnits().getUnits(), alliedTransports);
       //nothing to choose
       if(transports.isEmpty())
         return Collections.EMPTY_LIST;
@@ -457,7 +460,7 @@ public class MovePanel extends ActionPanel
       //find out what they are transporting
       MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getEnd(), transports);
 
-      List candidateTransports = new ArrayList();
+      List<Unit> candidateTransports = new ArrayList<Unit>();
 
       //find the transports with space left
       Iterator transportIter = transports.iterator();
@@ -517,7 +520,7 @@ public class MovePanel extends ActionPanel
                 return;
 
             if (m_forced == null)
-                m_forced = new ArrayList();
+                m_forced = new ArrayList<Territory>();
 
             if (!m_forced.contains(territory))
                 m_forced.add(territory);
@@ -548,7 +551,7 @@ public class MovePanel extends ActionPanel
             else if (m_firstSelectedTerritory != territory)
             {
                 Route route = getRoute(m_firstSelectedTerritory, territory);
-                Collection units = getUnitsToMove(route);
+                Collection<Unit> units = getUnitsToMove(route);
                 if (units.size() == 0)
                 {
                     m_firstSelectedTerritory = null;
@@ -560,7 +563,7 @@ public class MovePanel extends ActionPanel
                 else
                 {
 
-                   Collection transports = null;
+                    Collection<Unit> transports = null;
                     if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
                     {
                       transports = getTransportsToLoad(route);

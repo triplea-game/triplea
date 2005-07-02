@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class SubmergedTracker implements Serializable
 {
-    private Set m_submerged = new HashSet();
+    private Set<Unit> m_submerged = new HashSet<Unit>();
     
     public boolean isSuberged(Unit unit)
     {

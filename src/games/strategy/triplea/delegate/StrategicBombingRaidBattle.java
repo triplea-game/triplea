@@ -41,7 +41,7 @@ public class StrategicBombingRaidBattle implements Battle
     private final static String FIRE_AA = "Fire AA";
 
     private Territory m_battleSite;
-    private List m_units = new ArrayList();
+    private List<Unit> m_units = new ArrayList<Unit>();
     private PlayerID m_defender;
     private PlayerID m_attacker;
     private GameData m_data;
@@ -86,7 +86,7 @@ public class StrategicBombingRaidBattle implements Battle
         m_units.removeAll(units);
     }
 
-    public void addAttack(Route route, Collection units)
+    public void addAttack(Route route, Collection<Unit> units)
     {
 
         if (!Match.allMatch(units, Matches.UnitIsStrategicBomber))
@@ -96,6 +96,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     }
 
+    @SuppressWarnings("unchecked")
     public void fight(IDelegateBridge bridge)
     {
 
@@ -107,13 +108,13 @@ public class StrategicBombingRaidBattle implements Battle
         String title = "Bombing raid in " + m_battleSite.getName();
         getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_units, defendingUnits, Collections.EMPTY_MAP, m_attacker, m_defender);
 
-        CompositeMatch hasAAMatch = new CompositeMatchAnd();
+        CompositeMatch<Unit> hasAAMatch = new CompositeMatchAnd<Unit>();
         hasAAMatch.add(Matches.UnitIsAA);
         hasAAMatch.add(Matches.enemyUnit(m_attacker, m_data));
 
         boolean hasAA = m_battleSite.getUnits().someMatch(hasAAMatch);
 
-        List steps = new ArrayList();
+        List<String> steps = new ArrayList<String>();
         if (hasAA)
             steps.add(FIRE_AA);
         steps.add(RAID);
@@ -152,15 +153,16 @@ public class StrategicBombingRaidBattle implements Battle
         return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
+    @SuppressWarnings("unchecked")
     private void removeAAHits(IDelegateBridge bridge, DiceRoll dice)
     {
-        Collection casualties = null;
+        Collection<Unit> casualties = null;
         if (isFourthEdition())
         {
             casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice, bridge);
         } else
         {
-            casualties = new ArrayList(dice.getHits());
+            casualties = new ArrayList<Unit>(dice.getHits());
             for (int i = 0; i < dice.getHits() && i < m_units.size(); i++)
             {
                 casualties.add(m_units.get(i));
@@ -197,14 +199,14 @@ public class StrategicBombingRaidBattle implements Battle
         boolean fourthEdition = m_data.getProperties().get(Constants.FOURTH_EDITION, false);
         int production = TerritoryAttatchment.get(location).getProduction();
 
-        Iterator iter = m_units.iterator();
+        Iterator<Unit> iter = m_units.iterator();
         int index = 0;
 
         while (iter.hasNext())
         {
             int rolls;
             
-            rolls = BattleCalculator.getRolls((Unit) iter.next(), attacker, false);
+            rolls = BattleCalculator.getRolls(iter.next(), attacker, false);
             
             int costThisUnit = 0;
             for (int i = 0; i < rolls; i++)
@@ -282,7 +284,8 @@ public class StrategicBombingRaidBattle implements Battle
         return m_battleSite;
     }
 
-    public Collection getDependentUnits(Collection units)
+    @SuppressWarnings("unchecked")
+    public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
         return Collections.EMPTY_LIST;
     }

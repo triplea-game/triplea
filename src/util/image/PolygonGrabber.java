@@ -20,9 +20,6 @@ import java.util.*;
 import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
@@ -46,10 +43,10 @@ public class PolygonGrabber extends JFrame
     private static boolean s_islandMode;
     private JCheckBoxMenuItem modeItem;
 
-    private List m_current;                   // the current set of polyongs
+    private List<Polygon> m_current;                   // the current set of polyongs
     private Image m_image;                    // holds the map image
     private BufferedImage m_bufferedImage;
-    private Map m_polygons  = new HashMap();  // maps String -> List of polygons
+    private Map<String, List<Polygon>> m_polygons  = new HashMap<String, List<Polygon>>();  // maps String -> List of polygons
     private Map m_centers;                    // holds the centers for the polygons
     private JLabel location = new JLabel();
     
@@ -326,10 +323,10 @@ public class PolygonGrabber extends JFrame
 		g.setColor(Color.red);
                 if(m_current != null)
                 {
-                    Iterator currentIter = m_current.iterator();
+                    Iterator<Polygon> currentIter = m_current.iterator();
                     while (currentIter.hasNext())
                     {
-                        Polygon item = (Polygon) currentIter.next();
+                        Polygon item = currentIter.next();
 			g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
                     
 		    }//while
@@ -451,13 +448,13 @@ public class PolygonGrabber extends JFrame
         {
             if(m_current == null)
 	    {
-                m_current = new ArrayList();
+                m_current = new ArrayList<Polygon>();
             }
 	    m_current.add(p);
         }
         else
         {
-            m_current = new ArrayList();
+            m_current = new ArrayList<Polygon>();
             m_current.add(p);
         }
 	
@@ -482,10 +479,10 @@ public class PolygonGrabber extends JFrame
             return false;
         }
 	
-	Iterator iter = m_current.iterator();
+	Iterator<Polygon> iter = m_current.iterator();
         
 	while (iter.hasNext()) {
-            Polygon item = (Polygon)iter.next();
+            Polygon item = iter.next();
             
 	    if(item.contains(p))
 	    {
@@ -559,11 +556,11 @@ public class PolygonGrabber extends JFrame
             Map.Entry item = (Map.Entry)centersiter.next();
             Point p = new Point((Point) item.getValue());
 
-            Iterator currentIter = m_current.iterator();
+            Iterator<Polygon> currentIter = m_current.iterator();
             
 	    while (currentIter.hasNext())
 	    {
-                Polygon polygon = (Polygon)currentIter.next();
+                Polygon polygon = currentIter.next();
                 
 		if(polygon.contains(p))
                 {
@@ -731,7 +728,7 @@ public class PolygonGrabber extends JFrame
             startPoint.y--;
         }
 
-        List points = new ArrayList(100);
+        List<Point> points = new ArrayList<Point>(100);
         points.add( new Point(startPoint));
 
         int currentDirection = 2;
@@ -786,11 +783,11 @@ public class PolygonGrabber extends JFrame
         int[] ypoints = new int[points.size()];
         int i = 0;
 	
-        Iterator iter = points.iterator();
+        Iterator<Point> iter = points.iterator();
 	
         while (iter.hasNext())
         {
-            Point item = (Point)iter.next();
+            Point item = iter.next();
             xpoints[i] = item.x;
             ypoints[i] = item.y;
             i++;

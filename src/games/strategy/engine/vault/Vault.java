@@ -14,6 +14,7 @@
 package games.strategy.engine.vault;
 
 import games.strategy.engine.message.*;
+import games.strategy.net.INode;
 
 import java.security.*;
 import java.util.*;
@@ -55,16 +56,16 @@ public class Vault implements IServerVault
     private final IChannelMessenger m_channelMessenger;
     
     //Maps VaultID -> SecretKey
-    private final Map m_secretKeys = Collections.synchronizedMap(new HashMap());
+    private final Map<VaultID, SecretKey> m_secretKeys = Collections.synchronizedMap(new HashMap<VaultID, SecretKey>());
 
     //maps ValutID -> encrypted byte[]
-    private final Map m_unverifiedValues = Collections.synchronizedMap(new HashMap());
+    private final Map<VaultID, byte[]> m_unverifiedValues = Collections.synchronizedMap(new HashMap<VaultID, byte[]>());
     //maps VaultID -> byte[]
-    private final Map m_verifiedValues = Collections.synchronizedMap(new HashMap());
+    private final Map<VaultID, byte[]> m_verifiedValues = Collections.synchronizedMap(new HashMap<VaultID, byte[]>());
     //maps INode->Long
     //these are the ids of the remote keys that we have seen
     //dont allow values to be reused
-    private final Map m_maxRemoteIDIndexes = Collections.synchronizedMap(new HashMap());
+    private final Map<INode, Long> m_maxRemoteIDIndexes = Collections.synchronizedMap(new HashMap<INode, Long>());
     
     private final Object m_waitForLock = new Object();
     
@@ -141,7 +142,7 @@ public class Vault implements IServerVault
             remoteMessenger.waitForRemote(VAULT_SERVER_REMOTE, 5000);
             //we need to be initialized
             IServerVault server = (IServerVault) remoteMessenger.getRemote(VAULT_SERVER_REMOTE);
-            Map[] initValues = server.getInitData();
+            Map<VaultID, byte[]> [] initValues = server.getInitData();
             m_verifiedValues.putAll(initValues[0]);
             m_unverifiedValues.putAll(initValues[1]);
         }
@@ -234,7 +235,7 @@ public class Vault implements IServerVault
         {
             throw new IllegalArgumentException("Cant unlock data that wasnt locked on this node");
         }
-        SecretKey key = (SecretKey) m_secretKeys.get(id);
+        SecretKey key = m_secretKeys.get(id);
         //allow the secret key to be gc'd
         m_secretKeys.remove(key);
     
@@ -261,7 +262,7 @@ public class Vault implements IServerVault
     public byte[] get(VaultID id) throws NotUnlockedException
     {
         if(m_verifiedValues.containsKey(id))
-            return (byte[]) m_verifiedValues.get(id);
+            return m_verifiedValues.get(id);
         else if(m_unverifiedValues.containsKey(id))
         	throw new NotUnlockedException();
         else 
@@ -299,7 +300,7 @@ public class Vault implements IServerVault
             //if a remote node can lock the same vaultid more than once
             //then we have no security.
             //we rely on the monotone increasing value of ids
-            Long lastID = (Long) m_maxRemoteIDIndexes.get(id.getGeneratedOn());
+            Long lastID = m_maxRemoteIDIndexes.get(id.getGeneratedOn());
             if(lastID == null)
                 lastID = new Long(-1);
             
@@ -343,7 +344,7 @@ public class Vault implements IServerVault
                 throw new IllegalStateException(e.getMessage());
             }     
             
-            byte[] encrypted = (byte[]) m_unverifiedValues.get(id);
+            byte[] encrypted = m_unverifiedValues.get(id);
             //allow it to be gcd
             m_unverifiedValues.remove(id);
             byte[] decrypted;
@@ -449,9 +450,10 @@ public class Vault implements IServerVault
     /* (non-Javadoc)
      * @see games.strategy.engine.vault.IServerVault#getInitData()
      */
-    public Map[] getInitData()
+    @SuppressWarnings("unchecked")
+    public Map<VaultID, byte[]> [] getInitData()
     {
-        Map[] rVal = new Map[] {m_verifiedValues, m_unverifiedValues};
+        Map<VaultID, byte[]> [] rVal =  new Map[]{m_verifiedValues, m_unverifiedValues};
         return rVal;
          
     }
@@ -473,5 +475,5 @@ interface IServerVault extends IRemote
      * @return [0] - verified
      * @return [1] - unverified
      */
-    public Map[] getInitData();
+    public Map<VaultID, byte[]> [] getInitData();
 }

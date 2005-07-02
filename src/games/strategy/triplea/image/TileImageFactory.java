@@ -12,7 +12,7 @@ package games.strategy.triplea.image;
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicInteger;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
@@ -23,7 +23,6 @@ import java.lang.ref.*;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.*;
-import java.util.logging.Logger;
 import java.util.prefs.*;
 
 import javax.imageio.ImageIO;
@@ -40,7 +39,7 @@ public final class TileImageFactory
     private static final Logger s_logger = Logger.getLogger(TileImageFactory.class.getName());
     
     //maps image name to ImageRef
-    private HashMap m_imageCache = new HashMap();
+    private HashMap<String, ImageRef> m_imageCache = new HashMap<String, ImageRef>();
 
     static
     {
@@ -82,10 +81,10 @@ public final class TileImageFactory
         {
             //we manually want to clear each ref to allow the soft reference to
             // be removed
-            Iterator values = getInstance().m_imageCache.values().iterator();
+            Iterator<ImageRef> values = getInstance().m_imageCache.values().iterator();
             while (values.hasNext())
             {
-                ImageRef imageRef = (ImageRef) values.next();
+                ImageRef imageRef = values.next();
                 imageRef.clear();
             }
             getInstance().m_imageCache.clear();
@@ -136,7 +135,7 @@ public final class TileImageFactory
     {
         if (m_imageCache.get(fileName) == null)
             return null;
-        return ((ImageRef) m_imageCache.get(fileName)).getImage();
+        return m_imageCache.get(fileName).getImage();
     }
 
     /**
@@ -250,7 +249,7 @@ public final class TileImageFactory
 
 class ImageRef
 {
-    public static final ReferenceQueue s_referenceQueue = new ReferenceQueue();
+    public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<Image>();
     public static final Logger s_logger = Logger.getLogger(ImageRef.class.getName());
     
     private static final AtomicInteger s_imageCount = new AtomicInteger();
@@ -282,19 +281,19 @@ class ImageRef
     }
     
     
-    private final Reference m_image;
+    private final Reference<Image> m_image;
     //private final Object m_hardRef;
 
     public ImageRef(final Image image)
     {
-        m_image = new SoftReference(image, s_referenceQueue);
+        m_image = new SoftReference<Image>(image, s_referenceQueue);
         //m_hardRef = image;
         s_logger.finer("Added soft reference image. Image count:" + s_imageCount.incrementAndGet() );
     }
 
     public Image getImage()
     {
-        return (Image) m_image.get();
+        return m_image.get();
     }
 
     public void clear()

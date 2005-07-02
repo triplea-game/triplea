@@ -27,7 +27,7 @@ package games.strategy.engine.data;
  *
  * @author  Sean Bridges
  */
-public class DefaultAttatchment implements Attatchment
+public class DefaultAttatchment implements IAttatchment
 {
     
     private GameData m_data;

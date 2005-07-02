@@ -54,7 +54,8 @@ public class ServerStartup extends JPanel
   private JTextField m_nameField;
 
   //list of PlayerRows
-  private List m_playerRows = Collections.EMPTY_LIST;
+  @SuppressWarnings("unchecked")
+private List<PlayerRow> m_playerRows = Collections.EMPTY_LIST;
 
   private JPanel m_info = new JPanel();
   
@@ -84,10 +85,10 @@ public class ServerStartup extends JPanel
   
   public boolean allPlayersFilled()
   {
-    Iterator iter = m_playerRows.iterator();
+    Iterator<PlayerRow> iter = m_playerRows.iterator();
     while(iter.hasNext())
     {
-      PlayerRow row =  (PlayerRow) iter.next();
+      PlayerRow row =  iter.next();
       if(!row.isPlayed())
         return false;
     }
@@ -114,14 +115,14 @@ public class ServerStartup extends JPanel
   /**
    * @return a mapping of playerName -> local player type.
    */
-  public Map getLocalPlayerMapping()
+  public Map<String, String> getLocalPlayerMapping()
   {
-    Map map = new HashMap();
+    Map<String, String> map = new HashMap<String, String>();
 
-    Iterator iter = m_playerRows.iterator();
+    Iterator<PlayerRow> iter = m_playerRows.iterator();
     while(iter.hasNext())
     {
-      PlayerRow row = (PlayerRow) iter.next();
+      PlayerRow row = iter.next();
       if(row.isLocal())
       {
         map.put(row.getPlayerName(), row.getLocalType());
@@ -133,14 +134,14 @@ public class ServerStartup extends JPanel
   /**
    * @return a mapping of playerName -> remoteNode.
    */
-  public Map getRemotePlayerMapping()
+  public Map<String, INode> getRemotePlayerMapping()
   {
-    Map map = new HashMap();
+    Map<String, INode> map = new HashMap<String, INode>();
 
-    Iterator iter = m_playerRows.iterator();
+    Iterator<PlayerRow> iter = m_playerRows.iterator();
     while(iter.hasNext())
     {
-      PlayerRow row = (PlayerRow) iter.next();
+      PlayerRow row = iter.next();
       if(!row.isLocal())
       {
         map.put(row.getPlayerName(), row.getNode());
@@ -187,7 +188,7 @@ public class ServerStartup extends JPanel
   {
     String[] localOptions = m_loader.getServerPlayerTypes();
 
-    m_playerRows = new ArrayList();
+    m_playerRows = new ArrayList<PlayerRow>();
     Iterator iter = m_data.getPlayerList().getPlayers().iterator();
 
     while(iter.hasNext())
@@ -259,7 +260,7 @@ public class ServerStartup extends JPanel
     layout.setConstraints(localLabel, localConstraints);
     players.add(localLabel);
 
-    Iterator iter = m_playerRows.iterator();
+    Iterator<PlayerRow> iter = m_playerRows.iterator();
 
     if(!iter.hasNext())
     {
@@ -270,7 +271,7 @@ public class ServerStartup extends JPanel
 
     while(iter.hasNext())
     {
-      PlayerRow row = (PlayerRow) iter.next();
+      PlayerRow row = iter.next();
 
       layout.setConstraints(row.getName(), nameConstraints);
       players.add(row.getName());
@@ -296,15 +297,15 @@ public class ServerStartup extends JPanel
 
   private PlayerListing getPlayerListingInternal()
   {
-    HashMap mapping = new HashMap();
+    HashMap<String, String> mapping = new HashMap<String, String>();
 
     if(m_data == null)
       return new PlayerListing(mapping, EngineVersion.VERSION, new Version(0,0), "");
 
-    Iterator iter = m_playerRows.iterator();
+    Iterator<PlayerRow> iter = m_playerRows.iterator();
     while(iter.hasNext())
     {
-      PlayerRow row = (PlayerRow) iter.next();
+      PlayerRow row = iter.next();
       String name = row.getPlayerName();
       if(row.isLocal())
       {
@@ -330,10 +331,10 @@ public class ServerStartup extends JPanel
     {
       
 
-      Iterator iter = m_playerRows.iterator();
+      Iterator<PlayerRow> iter = m_playerRows.iterator();
       while(iter.hasNext())
       {
-        PlayerRow row = (PlayerRow) iter.next();
+        PlayerRow row = iter.next();
         if(!row.isLocal())
         {
           if(take)
@@ -506,10 +507,10 @@ public class ServerStartup extends JPanel
   {
     public void connectionLost(INode node, Exception reason, java.util.List unsent)
     {
-      Iterator iter = m_playerRows.iterator();
+      Iterator<PlayerRow> iter = m_playerRows.iterator();
       while(iter.hasNext())
       {
-        PlayerRow row = (PlayerRow) iter.next();
+        PlayerRow row = iter.next();
         if(!row.isLocal() && row.getNode() != null && row.getNode().equals(node))
         {
           row.setNode(null);

@@ -46,7 +46,7 @@ public class ChangeFactory
         return new OwnerChange(territory, owner);
     }
 
-    public static Change changeOwner(Collection units, PlayerID owner)
+    public static Change changeOwner(Collection<Unit> units, PlayerID owner)
     {
 
         return new PlayerOwnerChange(units, owner);
@@ -55,40 +55,40 @@ public class ChangeFactory
     public static Change changeOwner(Unit unit, PlayerID owner)
     {
 
-        ArrayList list = new ArrayList(1);
+        ArrayList<Unit> list = new ArrayList<Unit>(1);
         list.add(unit);
         return new PlayerOwnerChange(list, owner);
     }
 
-    public static Change addUnits(Territory territory, Collection units)
+    public static Change addUnits(Territory territory, Collection<Unit> units)
     {
 
         return new AddUnits(territory.getUnits(), units);
     }
 
-    public static Change removeUnits(Territory territory, Collection units)
+    public static Change removeUnits(Territory territory, Collection<Unit> units)
     {
 
         return new RemoveUnits(territory.getUnits(), units);
     }
 
-    public static Change addUnits(PlayerID player, Collection units)
+    public static Change addUnits(PlayerID player, Collection<Unit> units)
     {
 
         return new AddUnits(player.getUnits(), units);
     }
 
-    public static Change removeUnits(PlayerID player, Collection units)
+    public static Change removeUnits(PlayerID player, Collection<Unit> units)
     {
 
         return new RemoveUnits(player.getUnits(), units);
     }
 
-    public static Change moveUnits(Territory start, Territory end, Collection units)
+    public static Change moveUnits(Territory start, Territory end, Collection<Unit> units)
     {
 
-        units = new ArrayList(units);
-        List changes = new ArrayList(2);
+        units = new ArrayList<Unit>(units);
+        List<Change> changes = new ArrayList<Change>(2);
         changes.add(removeUnits(start, units));
         changes.add(addUnits(end, units));
         return new CompositeChange(changes);
@@ -118,7 +118,7 @@ public class ChangeFactory
         return new SetPropertyChange(property, value, data.getProperties());
     }
 
-    public static Change unitsHit(IntegerMap newHits)
+    public static Change unitsHit(IntegerMap<Unit> newHits)
     {
 
         return new UnitHitsChange(newHits);
@@ -134,7 +134,7 @@ public class ChangeFactory
         return new RemoveProductionRule(rule, frontier);
     }    
     
-    public static Change attatchmentPropertyChange(Attatchment attatchment, String newValue, String property)
+    public static Change attatchmentPropertyChange(IAttatchment attatchment, String newValue, String property)
     {
         return new ChangeAttatchmentChange(attatchment, newValue, property);
     }
@@ -158,16 +158,16 @@ class AddUnits extends Change
     static final long serialVersionUID = 2694342784633196289L;
 
     private final String m_name;
-    private final Collection m_units;
+    private final Collection<Unit> m_units;
 
-    AddUnits(UnitCollection collection, Collection units)
+    AddUnits(UnitCollection collection, Collection<Unit> units)
     {
-
         m_units = Collections.unmodifiableCollection(units);
         m_name = collection.getHolder().getName();
     }
 
-    AddUnits(String name, Collection units)
+    @SuppressWarnings("unchecked") 
+    AddUnits(String name, Collection<Unit> units)
     {
 
         m_units = Collections.unmodifiableCollection(units);
@@ -201,22 +201,24 @@ class RemoveUnits extends Change
     static final long serialVersionUID = -6410444472951010568L;
 
     private final String m_name;
-    private final Collection m_units;
+    private final Collection<Unit> m_units;
 
-    RemoveUnits(UnitCollection collection, Collection units)
+    RemoveUnits(UnitCollection collection, Collection<Unit> units)
     {
 
         this(collection.getHolder().getName(), units);
     }
 
-    RemoveUnits(String name, Collection units)
+    @SuppressWarnings("unchecked") 
+    RemoveUnits(String name, Collection<Unit> units)
     {
 
         m_units = Collections.unmodifiableCollection(units);
         m_name = name;
     }
 
-    RemoveUnits(String name, Collection units, boolean isCasualty)
+    @SuppressWarnings("unchecked") 
+    RemoveUnits(String name, Collection<Unit> units, boolean isCasualty)
     {
 
         m_units = Collections.unmodifiableCollection(units);
@@ -327,28 +329,28 @@ class PlayerOwnerChange extends Change
     /**
      * Maps unit id -> owner as String
      */
-    private final Map m_old;
-    private final Map m_new;
+    private final Map<GUID, String> m_old;
+    private final Map<GUID, String> m_new;
 
     private static final long serialVersionUID = -9154938431233632882L;
 
-    PlayerOwnerChange(Collection units, PlayerID newOwner)
+    PlayerOwnerChange(Collection<Unit> units, PlayerID newOwner)
     {
 
-        m_old = new HashMap();
-        m_new = new HashMap();
-        Iterator iter = units.iterator();
+        m_old = new HashMap<GUID, String>();
+        m_new = new HashMap<GUID, String>();
+        
+        Iterator<Unit> iter = units.iterator();
         while (iter.hasNext())
         {
-            Unit unit = (Unit) iter.next();
+            Unit unit = iter.next();
             m_old.put(unit.getID(), unit.getOwner().getName());
             m_new.put(unit.getID(), newOwner.getName());
         }
     }
 
-    PlayerOwnerChange(Map newOwner, Map oldOwner)
+    PlayerOwnerChange(Map<GUID, String> newOwner, Map<GUID, String> oldOwner)
     {
-
         m_old = oldOwner;
         m_new = newOwner;
     }
@@ -362,12 +364,12 @@ class PlayerOwnerChange extends Change
     protected void perform(GameData data)
     {
 
-        Iterator iter = m_new.keySet().iterator();
+        Iterator<GUID> iter = m_new.keySet().iterator();
         while (iter.hasNext())
         {
-            GUID id = (GUID) iter.next();
+            GUID id = iter.next();
             Unit unit = data.getUnits().get(id);
-            String owner = (String) m_new.get(id);
+            String owner = m_new.get(id);
             PlayerID player = data.getPlayerList().getPlayerID(owner);
             unit.setOwner(player);
         }

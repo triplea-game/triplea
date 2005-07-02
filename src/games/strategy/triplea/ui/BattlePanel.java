@@ -177,8 +177,8 @@ public class BattlePanel extends ActionPanel
         m_battleDisplay.listBattle(steps);
     }
 
-    public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection attackingUnits,
-            final Collection defendingUnits, final Map unit_dependents, final PlayerID attacker, final PlayerID defender)
+    public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
+            final Collection<Unit> defendingUnits, final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender)
     {
         SwingUtilities.invokeLater(new Runnable()
         {
@@ -235,7 +235,7 @@ public class BattlePanel extends ActionPanel
     /**
      * Ask user which territory to bombard with a given unit.
      */
-    public Territory getBombardment(Unit unit, Territory unitTerritory, Collection territories, boolean noneAvailable)
+    public Territory getBombardment(Unit unit, Territory unitTerritory, Collection<Territory>  territories, boolean noneAvailable)
     {
         BombardComponent comp = new BombardComponent(unit, unitTerritory, territories, noneAvailable);
 
@@ -247,8 +247,8 @@ public class BattlePanel extends ActionPanel
         return comp.getSelection();
     }
 
-    public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection killed,
-            final Collection damaged, final Map dependents)
+    public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
+            final Collection<Unit> damaged, final Map dependents)
     {
         SwingUtilities.invokeLater(new Runnable()
         {
@@ -265,8 +265,8 @@ public class BattlePanel extends ActionPanel
         m_battleDisplay.waitForConfirmation(message);
     }
 
-    public CasualtyDetails getCasualties(final Collection selectFrom, final Map dependents, final int count, final String message,
-            final DiceRoll dice, final PlayerID hit, final List defaultCasualties)
+    public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
+            final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties)
     {
         //if the battle display is null, then this is a bombing raid
         if (m_battleDisplay == null)
@@ -278,7 +278,7 @@ public class BattlePanel extends ActionPanel
 
     }
 
-    private CasualtyDetails getCasualtiesAA( Collection selectFrom, Map dependents, int count, String message, DiceRoll dice,
+    private CasualtyDetails getCasualtiesAA( Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
             PlayerID hit, List defaultCasualties)
     {
         UnitChooser chooser = new UnitChooser(selectFrom, dependents, getData(), false);
@@ -301,12 +301,12 @@ public class BattlePanel extends ActionPanel
         { "OK" };
         JOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
                 null, options, null);
-        List killed = chooser.getSelected(false);
+        List<Unit> killed = chooser.getSelected(false);
         CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
         return response;
     }
 
-    public Territory getRetreat(GUID battleID, String message, Collection possible, boolean submerge)
+    public Territory getRetreat(GUID battleID, String message, Collection<Territory> possible, boolean submerge)
     {
         ensureBattleIsDisplayed(battleID);
         return m_battleDisplay.getRetreat(message, possible, submerge);
@@ -374,7 +374,7 @@ public class BattlePanel extends ActionPanel
 
         private JList m_list;
 
-        BombardComponent(Unit unit, Territory unitTerritory, Collection territories, boolean noneAvailable)
+        BombardComponent(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
         {
 
             this.setLayout(new BorderLayout());
@@ -383,7 +383,7 @@ public class BattlePanel extends ActionPanel
             JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
             this.add(label, BorderLayout.NORTH);
 
-            Vector listElements = new Vector(territories);
+            Vector<Object>  listElements = new Vector<Object> (territories);
             if (noneAvailable)
             {
                 listElements.add(0, "None");

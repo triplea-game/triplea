@@ -31,9 +31,22 @@
         <delete dir="savedGames"/>
     </target>
 
-
     <!-- Compile -->
     <target name="compile" depends="init" description="Compile the source files and copy over the resource files">
+
+	    <!-- we require jdk 1.5 or greater -->
+    	<fail message="jdk 1.5 or greater required, you are currently using: ${ant.java.version}">
+        	<condition>
+        		<or>
+        			<equals arg1="1.1" arg2="${ant.java.version}"/>
+        			<equals arg1="1.2" arg2="${ant.java.version}"/>
+        			<equals arg1="1.3" arg2="${ant.java.version}"/>
+        			<equals arg1="1.4" arg2="${ant.java.version}"/>
+        		</or>
+        	</condition>    	
+    	</fail>
+    	
+    	
         <mkdir dir="classes"/>
         <copy todir="classes">
             <fileset dir="data">
@@ -47,12 +60,14 @@
 		<include name="**/*.properties"/>
             </fileset>
         </copy>
-    
+    		
         <javac srcdir="src/"
             destdir="classes/"
             debug="true"
             deprecation="true"
-            classpathref="full.path"/>
+            classpathref="full.path"
+        	target="1.5"
+        />
     </target>
 
   
@@ -195,12 +210,11 @@
     <!--
     	PBEM patch
     -->
-    <target name="patch">
+    <target name="patch" depends="compile">
         <jar destfile="patch.jar" basedir="classes">
-		<include name="games/strategy/engine/random/IronyGamesDiceRollerRandomSource.class"/>
-		<include name="games/strategy/engine/random/IRandomSource.class"/>
-		<include name="games/strategy/engine/random/HttpDiceRoller*.class"/>
-		<include name="games/strategy/engine/random/DiceStatic.class"/>
+		<include name="games/strategy/**/*.class"/>
+		<exclude name="**/GameRunner*.class"/>
+		<exclude name="**/xml/**/*.class"/>
 	</jar>
     </target>
 

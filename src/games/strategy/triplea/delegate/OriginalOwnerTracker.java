@@ -39,7 +39,7 @@ public class OriginalOwnerTracker implements java.io.Serializable
 	//maps object -> PlayerID
 	//weak since we dont want to prevent dead units
 	//from being gc'd
-	private Map m_originalOwner = new WeakHashMap();
+	private Map<Object, PlayerID> m_originalOwner = new WeakHashMap<Object, PlayerID>();
 
 	/** Creates new OriginalOwnerTracker */
     public OriginalOwnerTracker()
@@ -62,26 +62,27 @@ public class OriginalOwnerTracker implements java.io.Serializable
 
 	public PlayerID getOriginalOwner(Object obj)
 	{
-		return (PlayerID) m_originalOwner.get(obj);
+		return m_originalOwner.get(obj);
 	}
 
 	private void writeObject(ObjectOutputStream os) throws IOException
 	{
-		os.writeObject(new HashMap(m_originalOwner));
+		os.writeObject(new HashMap<Object, PlayerID>(m_originalOwner));
 	}
 
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+	@SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
-		m_originalOwner = new WeakHashMap((HashMap) in.readObject()  );
+		m_originalOwner = new WeakHashMap<Object, PlayerID>((HashMap) in.readObject()  );
 	}
 
-    public Collection getOriginallyOwned(PlayerID player)
+    public Collection<Object> getOriginallyOwned(PlayerID player)
     {
-        Collection rVal = new ArrayList();
-        Iterator iter = m_originalOwner.keySet().iterator();
+        Collection<Object> rVal = new ArrayList<Object>();
+        Iterator<Object> iter = m_originalOwner.keySet().iterator();
         while (iter.hasNext())
         {
-            Object item = (Object)iter.next();
+            Object item = iter.next();
             if(m_originalOwner.get(item).equals(player))
             {
                 rVal.add(item);

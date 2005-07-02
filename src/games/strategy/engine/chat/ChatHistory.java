@@ -26,7 +26,7 @@ import java.util.*;
 public class ChatHistory
 {
 	
-	private final List m_history =new ArrayList();
+	private final List<String> m_history =new ArrayList<String>();
 	private int m_HistoryPosition;
 	
 	ChatHistory()

@@ -28,7 +28,7 @@ import games.strategy.engine.data.*;
  * @author  Sean Bridges
  * @version
  */
-public class TestAttatchment implements games.strategy.engine.data.Attatchment {
+public class TestAttatchment implements games.strategy.engine.data.IAttatchment {
 
 	private String m_value;
 

@@ -122,7 +122,7 @@ public class ActionButtons extends JPanel
      * 
      * @return null if no move was made.
      */
-    public IntegerMap waitForPurchase(boolean bid)
+    public IntegerMap<ProductionRule> waitForPurchase(boolean bid)
     {
         return m_purchasePanel.waitForPurchase(bid);
     }

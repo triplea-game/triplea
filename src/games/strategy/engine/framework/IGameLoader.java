@@ -15,6 +15,9 @@
 
 package games.strategy.engine.framework;
 
+import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.message.*;
+
 import java.util.*;
 
 /**
@@ -45,18 +48,18 @@ public interface IGameLoader extends java.io.Serializable
    *
    * @return a Set of GamePlayers
    */
-  public Set createPlayers(Map players);
+  public Set<IGamePlayer> createPlayers(Map players);
 
   /**
    * The game is about to start.
    */
-  public void startGame(IGame game, Set players);
+  public void startGame(IGame game, Set<IGamePlayer> players);
   
   /**
    * Get the type of the display
    * @return an interface that extends IChannelSubscrobor
    */
-  public Class getDisplayType();
+  public Class<? extends IChannelSubscribor> getDisplayType();
   
   /**
    * Get the type of the GamePlayer.
@@ -66,7 +69,7 @@ public interface IGameLoader extends java.io.Serializable
    * 
    * @see games.strategy.engine.message.IRemoteMessenger
    */
-  public Class getRemotePlayerType();
+  public Class<? extends IRemote> getRemotePlayerType();
   
   
 }

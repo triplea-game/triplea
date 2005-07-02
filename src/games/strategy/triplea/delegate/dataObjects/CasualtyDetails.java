@@ -20,6 +20,8 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
+import games.strategy.engine.data.Unit;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -30,12 +32,12 @@ import java.util.List;
  */
 public class CasualtyDetails implements Serializable
 {
-  private final List m_killed;
-  private final  List m_damaged;
+  private final List<Unit> m_killed;
+  private final  List<Unit> m_damaged;
   private final boolean m_autoCalculated;
 
   /** Creates new SelectCasualtyMessage */
-  public CasualtyDetails(List killed, List damaged, boolean autoCalculated)
+  public CasualtyDetails(List<Unit> killed, List<Unit> damaged, boolean autoCalculated)
   {
     if(killed == null)
       throw new IllegalArgumentException("null killed");
@@ -50,12 +52,12 @@ public class CasualtyDetails implements Serializable
   /**
    * A mapping of UnitType -> count,
    */
-  public List getKilled()
+  public List<Unit> getKilled()
   {
     return m_killed;
   }
 
-  public List getDamaged()
+  public List<Unit> getDamaged()
   {
     return m_damaged;
   }

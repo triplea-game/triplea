@@ -51,6 +51,6 @@ public final class TestDelegate implements IDelegate
 	
 	public void end() {	}
 	public String getDisplayName() {return "displayName";}
-	public Class getRemoteType() {return IRemote.class;}
+	public Class<IRemote> getRemoteType() {return IRemote.class;}
 
 }

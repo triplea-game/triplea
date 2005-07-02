@@ -42,7 +42,7 @@ public class ThreadPoolTest extends TestCase
   public void testSingleThread()
   {
     ThreadPool pool = new ThreadPool(1, "test");
-    Collection tasks = new ArrayList();
+    Collection<Runnable> tasks = new ArrayList<Runnable>();
 
     for(int i = 0; i < 30; i++)
     {
@@ -54,7 +54,7 @@ public class ThreadPoolTest extends TestCase
 
     pool.waitForAll();
 
-    Iterator iter = tasks.iterator();
+    Iterator<Runnable> iter = tasks.iterator();
     while(iter.hasNext())
     {
       assertTrue( ((Task) iter.next()).isDone());
@@ -66,7 +66,7 @@ public class ThreadPoolTest extends TestCase
   public void testSimple()
   {
     ThreadPool pool = new ThreadPool(5, "test");
-    Collection tasks = new ArrayList();
+    Collection<Runnable> tasks = new ArrayList<Runnable>();
 
     for(int i = 0; i < 3000; i++)
     {
@@ -77,7 +77,7 @@ public class ThreadPoolTest extends TestCase
 
     pool.waitForAll();
 
-    Iterator iter = tasks.iterator();
+    Iterator<Runnable> iter = tasks.iterator();
     while(iter.hasNext())
     {
       assertTrue( ((Task) iter.next()).isDone());
@@ -89,7 +89,7 @@ public class ThreadPoolTest extends TestCase
 
   public void testBlocked()
   {
-    Collection threads = new ArrayList();
+    Collection<Thread> threads = new ArrayList<Thread>();
 
     for(int j = 0; j < 20; j++)
     {
@@ -106,11 +106,11 @@ public class ThreadPoolTest extends TestCase
     }
 
 
-    Iterator iter = threads.iterator();
+    Iterator<Thread> iter = threads.iterator();
     while(iter.hasNext())
     {
       try {
-        ((Thread) iter.next()).join();
+        iter.next().join();
       }
       catch (InterruptedException ex) {
         ex.printStackTrace();
@@ -122,7 +122,7 @@ public class ThreadPoolTest extends TestCase
   {
     ThreadPool pool = new ThreadPool(10, "test");
 
-    ArrayList blockedTasks = new ArrayList();
+    ArrayList<BlockedTask> blockedTasks = new ArrayList<BlockedTask>();
     for(int i = 0; i < 50; i++)
     {
       BlockedTask task = new BlockedTask();
@@ -132,10 +132,10 @@ public class ThreadPoolTest extends TestCase
 
     pool.waitForAll();
 
-    Iterator iter = blockedTasks.iterator();
+    Iterator<BlockedTask> iter = blockedTasks.iterator();
     while(iter.hasNext())
     {
-      BlockedTask task = (BlockedTask) iter.next();
+      BlockedTask task = iter.next();
       assertTrue(task.isDone());
     }
 

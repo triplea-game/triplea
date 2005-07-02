@@ -77,7 +77,7 @@ public class DiceRoll implements java.io.Serializable
      * Roll dice for units.
      *  
      */
-    public static DiceRoll rollDice(List units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
+    public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
     {
         // Decide whether to use low luck rules or normal rules.
         if (data.getProperties().get(Constants.LOW_LUCK, false))
@@ -93,7 +93,7 @@ public class DiceRoll implements java.io.Serializable
      * Roll dice for units using low luck rules. Low luck rules based on rules
      * in DAAK.
      */
-    private static DiceRoll rollDiceLowLuck(List units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
+    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
     {
         String annotation = getAnnotation(units, player, battle);
 
@@ -167,7 +167,8 @@ public class DiceRoll implements java.io.Serializable
     /**
      * Roll dice for units per normal rules.
      */
-    private static DiceRoll rollDiceNormal(List units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
+    @SuppressWarnings("unchecked")
+    private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
     {
         String annotation = getAnnotation(units, player, battle);
 
@@ -247,7 +248,7 @@ public class DiceRoll implements java.io.Serializable
      * @param battle
      * @return
      */
-    private static String getAnnotation(List units, PlayerID player, Battle battle)
+    private static String getAnnotation(List<Unit> units, PlayerID player, Battle battle)
     {
         String annotation = player.getName() + " roll dice for " + MyFormatter.unitsToTextNoOwner(units);
         if (battle != null)

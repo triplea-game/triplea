@@ -29,7 +29,7 @@ import java.util.*;
 public class LocalPlayerSelectionPanel extends JPanel
 {
   private GameData m_data;
-  private List m_playerTypes = new ArrayList();
+  private List<LocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<LocalPlayerComboBoxSelector>();
 
 
 
@@ -41,10 +41,10 @@ public class LocalPlayerSelectionPanel extends JPanel
 
   public String getPlayerType(String playerName)
   {
-    Iterator iter = m_playerTypes.iterator();
+    Iterator<LocalPlayerComboBoxSelector> iter = m_playerTypes.iterator();
     while (iter.hasNext())
     {
-      LocalPlayerComboBoxSelector item = (LocalPlayerComboBoxSelector) iter.next();
+      LocalPlayerComboBoxSelector item = iter.next();
       if(item.getPlayerName().equals(playerName))
         return item.getPlayerType();
     }

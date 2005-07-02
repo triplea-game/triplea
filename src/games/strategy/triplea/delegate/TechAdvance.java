@@ -35,8 +35,8 @@ import java.util.logging.Logger;
  */
 public abstract class TechAdvance implements java.io.Serializable
 {
-    private static List s_3rdEditionAdvances;
-    private static List s_4thEditionAdvances;
+    private static List<TechAdvance> s_3rdEditionAdvances;
+    private static List<TechAdvance> s_4thEditionAdvances;
 
     public static final TechAdvance JET_POWER = new JetPowerAdvance();
     public static final TechAdvance SUPER_SUBS = new SuperSubsAdvance();
@@ -46,7 +46,7 @@ public abstract class TechAdvance implements java.io.Serializable
     public static final TechAdvance HEAVY_BOMBER = new HeavyBomberAdvance();
     public static final TechAdvance DESTROYER_BOMBARD = new DestroyerBombardTechAdvance();
 
-    public static List getTechAdvances(GameData data)
+    public static List<TechAdvance> getTechAdvances(GameData data)
     {
         boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
         
@@ -59,7 +59,7 @@ public abstract class TechAdvance implements java.io.Serializable
     //initialize the advances, note s_advances is made unmodifiable
     static
     {
-        s_3rdEditionAdvances = new ArrayList();
+        s_3rdEditionAdvances = new ArrayList<TechAdvance>();
 
         s_3rdEditionAdvances.add(JET_POWER);
         s_3rdEditionAdvances.add(SUPER_SUBS);
@@ -71,7 +71,7 @@ public abstract class TechAdvance implements java.io.Serializable
         s_3rdEditionAdvances = Collections.unmodifiableList(s_3rdEditionAdvances);
         
 
-        s_4thEditionAdvances = new ArrayList();
+        s_4thEditionAdvances = new ArrayList<TechAdvance>();
 
         s_4thEditionAdvances.add(JET_POWER);
         s_4thEditionAdvances.add(SUPER_SUBS);

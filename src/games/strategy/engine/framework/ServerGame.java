@@ -51,7 +51,7 @@ public class ServerGame implements IGame
     private final GameData m_data;
 
     //maps PlayerID->GamePlayer
-    private final Map m_gamePlayers = new HashMap();
+    private final Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
 
     private final IServerMessenger m_messenger;
     private final ChangePerformer m_changePerformer;
@@ -62,7 +62,7 @@ public class ServerGame implements IGame
 
     //maps playerName -> INode
     //only for remote nodes
-    private final Map m_remotePlayers;
+    private final Map<String,INode> m_remotePlayers;
     
     private final RandomStats m_randomStats;
 
@@ -74,7 +74,7 @@ public class ServerGame implements IGame
      * @param messenger IServerMessenger
      * @param remotePlayerMapping Map
      */
-    public ServerGame(GameData data, Set localPlayers, IServerMessenger messenger, Map remotePlayerMapping, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
+    public ServerGame(GameData data, Set<IGamePlayer> localPlayers, IServerMessenger messenger, Map<String,INode> remotePlayerMapping, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
     {
         m_data = data;
 
@@ -85,7 +85,7 @@ public class ServerGame implements IGame
         m_channelMessenger = channelMessenger;
         m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
         
-        m_remotePlayers = new HashMap(remotePlayerMapping);
+        m_remotePlayers = new HashMap<String,INode>(remotePlayerMapping);
 
         m_channelMessenger.createChannel(IGameModifiedChannel.class, IGame.GAME_MODIFICATION_CHANNEL);
         m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
@@ -104,13 +104,13 @@ public class ServerGame implements IGame
     /**
      * @param localPlayers
      */
-    private void setupLocalPlayers(Set localPlayers)
+    private void setupLocalPlayers(Set<IGamePlayer> localPlayers)
     {
   
-        Iterator localPlayersIter = localPlayers.iterator();
+        Iterator<IGamePlayer> localPlayersIter = localPlayers.iterator();
         while (localPlayersIter.hasNext())
         {
-            IGamePlayer gp = (IGamePlayer) localPlayersIter.next();
+            IGamePlayer gp = localPlayersIter.next();
             PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
             m_gamePlayers.put(player, gp);
             IPlayerBridge bridge = new DefaultPlayerBridge(this);
@@ -242,7 +242,7 @@ public class ServerGame implements IGame
         if (playerID == null)
             return;
 
-        IGamePlayer player = (IGamePlayer) m_gamePlayers.get(playerID);
+        IGamePlayer player = m_gamePlayers.get(playerID);
 
         if (player != null)
         {

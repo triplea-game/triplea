@@ -29,11 +29,11 @@ import java.io.*;
 public class GameObjectStreamData implements Externalizable
 {
 
-	private final static byte PLAYERID = 1;
-	private final static byte UNITTYPE = 2;
-	private final static byte TERRITORY = 3;
-	private final static byte PRODUCTIONRULE = 4;
-	private final static byte PRODUCTIONFRONTIER = 5;
+    enum GameType
+    {
+      PLAYERID, UNITTYPE, TERRITORY, PRODUCTIONRULE, PRODUCTIONFRONTIER 
+    }
+    
 
 	public static boolean canSerialize(Named obj)
 	{
@@ -42,12 +42,12 @@ public class GameObjectStreamData implements Externalizable
 		   obj instanceof UnitType ||
 		   obj instanceof Territory ||
 		   obj instanceof ProductionRule ||
-		   obj instanceof Attatchment ||
+		   obj instanceof IAttatchment ||
 		   obj instanceof ProductionFrontier;
 	}
 
 	private String m_name;
-	private byte m_type;
+	private GameType m_type;
 
 	public GameObjectStreamData()
 	{
@@ -61,23 +61,23 @@ public class GameObjectStreamData implements Externalizable
 
 		if(named instanceof PlayerID)
 		{
-			m_type = PLAYERID;
+			m_type = GameType.PLAYERID;
 		}
 		else if(named instanceof Territory)
 		{
-			m_type = TERRITORY;
+			m_type = GameType.TERRITORY;
 		}
 		else if(named instanceof UnitType)
 		{
-			m_type = UNITTYPE;
+			m_type = GameType.UNITTYPE;
 		}
 		else if(named instanceof ProductionRule)
 		{
-			m_type = PRODUCTIONRULE;
+			m_type = GameType.PRODUCTIONRULE;
 		}
 		else if(named instanceof ProductionFrontier)
 		{
-		    m_type = PRODUCTIONFRONTIER;
+		    m_type = GameType.PRODUCTIONFRONTIER;
 		}
 		else throw new IllegalArgumentException("Wrong type:" + named);
     }
@@ -87,40 +87,33 @@ public class GameObjectStreamData implements Externalizable
 	    if(data == null)
 			throw new IllegalArgumentException("Data cant be null");
 
-		if(m_type == PLAYERID)
-		{
-			return data.getPlayerList().getPlayerID(m_name);
-		}
-		else if(m_type == TERRITORY)
-		{
-			return data.getMap().getTerritory(m_name);
-		}
-		else if(m_type == UNITTYPE)
-		{
-			return data.getUnitTypeList().getUnitType(m_name);
-		}
-		else if(m_type == PRODUCTIONRULE)
-		{
-			return data.getProductionRuleList().getProductionRule(m_name);
-		}
-		else if(m_type == PRODUCTIONFRONTIER)
-		{
-		    return data.getProductionFrontierList().getProductionFrontier(m_name);
-		}
-		else throw new IllegalArgumentException("Type not known:" + m_type);
+        switch(m_type)
+        {
+            case PLAYERID : 
+                return data.getPlayerList().getPlayerID(m_name);
+            case TERRITORY :
+                return data.getMap().getTerritory(m_name);
+            case UNITTYPE :
+                return data.getUnitTypeList().getUnitType(m_name);
+            case PRODUCTIONRULE :
+                return data.getProductionRuleList().getProductionRule(m_name);
+            case PRODUCTIONFRONTIER:
+                return data.getProductionFrontierList().getProductionFrontier(m_name);
+        }
+        throw new IllegalStateException("Unknown type" + this);
 	}
 
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         m_name = (String) in.readObject();
-        m_type = in.readByte();
+        m_type = (GameType) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(m_name);
-        out.writeByte(m_type);
+        out.writeObject(m_type);
         
     }
 }

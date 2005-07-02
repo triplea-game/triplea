@@ -36,19 +36,19 @@ public class MyFormatter
 	/**
 	 * Some exceptions to the rules.
 	 */
-	private static Map s_plural;
+	private static Map<String, String> s_plural;
 	static
 	{
-		s_plural = new HashMap();
+		s_plural = new HashMap<String, String>();
 		s_plural.put("armour", "armour");
 		s_plural.put("infantry", "infantry");
 		s_plural.put("factory", "factories");
 	}
 
-	public static String unitsToTextNoOwner(Collection units)
+	public static String unitsToTextNoOwner(Collection<Unit> units)
 	{
-		Iterator iter = units.iterator();
-		IntegerMap map = new IntegerMap();
+		Iterator<Unit> iter = units.iterator();
+		IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 
 		while(iter.hasNext())
 		{
@@ -56,27 +56,26 @@ public class MyFormatter
 			map.add(unit.getUnitType(), 1);
 		}
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		//sort on unit name
-		List sortedList = new ArrayList(map.keySet());
-		Comparator comp = new Comparator()
+		List<UnitType> sortedList = new ArrayList<UnitType>(map.keySet());
+		Comparator<UnitType> comp = new Comparator<UnitType>()
 		{
-		  public int compare(Object o1, Object o2)
+		  public int compare(UnitType u1, UnitType u2)
 		  {
-		      UnitType u1 = (UnitType) o1;
-		      UnitType u2 = (UnitType) o2;
+
 		      return u1.getName().compareTo(u2.getName());
 		  }
 		};
 		Collections.sort(sortedList, comp);
 		
-		iter = sortedList.iterator();
+		Iterator<UnitType> typeIter = sortedList.iterator();
 		int count = map.keySet().size();
 
-		while(iter.hasNext())
+		while(typeIter.hasNext())
 		{
-			UnitType type = (UnitType) iter.next();
+			UnitType type = typeIter.next();
 			int quantity = map.getInt(type);
 			buf.append(quantity);
 			buf.append(" ");
@@ -90,26 +89,26 @@ public class MyFormatter
 		return buf.toString();
 	}
 
-	public static String unitsToText(Collection units)
+	public static String unitsToText(Collection<Unit> units)
 	{
-		Iterator iter = units.iterator();
-		IntegerMap map = new IntegerMap();
+		Iterator<Unit> iter = units.iterator();
+		IntegerMap<UnitOwner> map = new IntegerMap<UnitOwner>();
 
 		while(iter.hasNext())
 		{
-			Unit unit = (Unit) iter.next();
+			Unit unit = iter.next();
 			UnitOwner owner = new UnitOwner(unit.getType(), unit.getOwner());
 			map.add(owner, 1);
 		}
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
-		iter = map.keySet().iterator();
+		Iterator<UnitOwner>iter2 = map.keySet().iterator();
 		int count = map.keySet().size();
 
-		while(iter.hasNext())
+		while(iter2.hasNext())
 		{
-			UnitOwner owner = (UnitOwner) iter.next();
+			UnitOwner owner = iter2.next();
 			int quantity = map.getInt(owner);
 			buf.append(quantity);
 			buf.append(" ");
@@ -136,7 +135,7 @@ public class MyFormatter
 	public static String territoriesToText(Collection teritories, String seperator)
 	{
 	    Iterator iter = teritories.iterator();
-	    StringBuffer buffer = new StringBuffer();
+	    StringBuilder buffer = new StringBuilder();
 	    while(iter.hasNext())
 	    {
 	        buffer.append(((Territory) iter.next() ).getName());
@@ -157,14 +156,14 @@ public class MyFormatter
 	public static String pluralize(String in)
 	{
 		if(s_plural.containsKey(in))
-			return (String) s_plural.get(in);
+			return s_plural.get(in);
 
 		return in + "s";
 	}
 
   public static String asDice(int[] rolls)
   {
-    StringBuffer buf = new StringBuffer(rolls.length * 2);
+    StringBuilder buf = new StringBuilder(rolls.length * 2);
     for(int i = 0; i < rolls.length; i++)
     {
       buf.append(rolls[i] + 1);

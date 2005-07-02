@@ -73,7 +73,7 @@ public class PlainRandomSource implements IRandomSource
   
   public static void main(String[] args)
   {
-     IntegerMap results = new IntegerMap();
+     IntegerMap<Integer> results = new IntegerMap<Integer>();
      
      int[] random =  new PlainRandomSource().getRandom(6, 100000, "Test");
      for(int i = 0; i < random.length; i++)

@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.logging.*;
-import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
@@ -58,7 +57,7 @@ public class MapPanel extends ImageScrollerLargeView
     
     //keep a reference to the images from the last paint to
     //prevent them from being gcd
-    private List m_images = new ArrayList();
+    private List<Object> m_images = new ArrayList<Object>();
     
     private RouteDescription m_routeDescription;
 
@@ -260,15 +259,15 @@ public class MapPanel extends ImageScrollerLargeView
                 notifyTerritorySelected(terr, e);
         }
 
-        public void mouseExit(MouseEvent e)
-        {
-
-            if (m_currentTerritory != null)
-            {
-                m_currentTerritory = null;
-                notifyMouseEntered(null);
-            }
-        }
+//        public void mouseExit(MouseEvent e)
+//        {
+//
+//            if (m_currentTerritory != null)
+//            {
+//                m_currentTerritory = null;
+//                notifyMouseEntered(null);
+//            }
+//        }
 
     };
 
@@ -291,7 +290,7 @@ public class MapPanel extends ImageScrollerLargeView
         }
     };
 
-    public void updateCounties(Collection countries)
+    public void updateCounties(Collection<Territory> countries)
     {
         m_tileManager.updateTerritories(countries, m_data, MapData.getInstance());
         m_smallMapImageManager.update(m_data, MapData.getInstance());
@@ -299,6 +298,7 @@ public class MapPanel extends ImageScrollerLargeView
         repaint();
     }
 
+    @SuppressWarnings("unchecked")
     public void setGameData(GameData data)
     {
 
@@ -348,7 +348,7 @@ public class MapPanel extends ImageScrollerLargeView
         {
 
             //find the players with tech changes
-            Set playersWithTechChange = new HashSet();
+            Set<PlayerID> playersWithTechChange = new HashSet<PlayerID>();
             getPlayersWithTechChanges(aChange, playersWithTechChange);
 
             if (playersWithTechChange.isEmpty())
@@ -359,7 +359,7 @@ public class MapPanel extends ImageScrollerLargeView
         }
 
        
-        private void getPlayersWithTechChanges(Change aChange, Set players)
+        private void getPlayersWithTechChanges(Change aChange, Set<PlayerID> players)
         {
 
             if (aChange instanceof CompositeChange)
@@ -392,8 +392,8 @@ public class MapPanel extends ImageScrollerLargeView
     public void paint(Graphics g)
     {
         super.paint(g);
-        List images = new ArrayList();
-        List undrawnTiles = new ArrayList();
+        List<Tile> images = new ArrayList<Tile>();
+        List<Tile> undrawnTiles = new ArrayList<Tile>();
         
         Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINER, "Paint");
 
@@ -455,7 +455,7 @@ public class MapPanel extends ImageScrollerLargeView
      * If we have nothing left undrawn, draw the tiles within preDrawMargin of us, optionally
      * forcing the tiles to remain in memory. 
      */
-    private void drawNearbyTiles(List undrawnTiles, int preDrawMargin, boolean forceInMemory)
+    private void drawNearbyTiles(List<Tile> undrawnTiles, int preDrawMargin, boolean forceInMemory)
     {
         //draw tiles near us if we have nothing left to draw
         //that way when we scroll slowly we wont notice a glitch
@@ -482,7 +482,7 @@ public class MapPanel extends ImageScrollerLargeView
         }
     }
 
-    private void drawTiles(Graphics g, List images, final GameData data, Rectangle bounds, double overlap, List undrawn)
+    private void drawTiles(Graphics g, List<Tile> images, final GameData data, Rectangle bounds, double overlap, List<Tile> undrawn)
     {
         List tileList = m_tileManager.getTiles(bounds);
         Iterator tiles = tileList.iterator();
@@ -616,7 +616,7 @@ class RouteDescription
 
 class BackgroundDrawer implements Runnable
 {
-    private final List m_tiles = new ArrayList();
+    private final List<Tile> m_tiles = new ArrayList<Tile>();
     private final Object m_mutex = new Object();
     private boolean m_active = true;
     private final MapPanel m_mapPanel;
@@ -636,7 +636,7 @@ class BackgroundDrawer implements Runnable
         }
     }
     
-    public void setTiles(Collection aCollection) 
+    public void setTiles(Collection<Tile> aCollection) 
     {
 	      synchronized(m_mutex)
 	      {
@@ -669,7 +669,7 @@ class BackgroundDrawer implements Runnable
                 }
                 else
                 {
-                    tile = (Tile) m_tiles.remove(0);
+                    tile = m_tiles.remove(0);
                 }
                     
                 GameData data = m_mapPanel.getData(); 

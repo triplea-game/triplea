@@ -36,7 +36,7 @@ public class Tile
     private static final Logger s_logger = Logger.getLogger(Tile.class.getName());
     
     //allow the gc to implement memory management
-    private SoftReference m_imageRef;
+    private SoftReference<Image> m_imageRef;
     private boolean m_isDirty = true;
     private final Rectangle m_bounds;
     private final int m_x;
@@ -44,7 +44,7 @@ public class Tile
     
     private final Object m_mutex = new Object();
     
-    private final List m_contents = new ArrayList();
+    private final List<IDrawable> m_contents = new ArrayList<IDrawable>();
 
     public Tile(final Rectangle bounds, int x, int y)
     {
@@ -60,10 +60,10 @@ public class Tile
     {
         synchronized(m_mutex)
         {
-            Iterator iter = m_contents.iterator();
+            Iterator<IDrawable> iter = m_contents.iterator();
             while (iter.hasNext())
             {
-                IDrawable drawable = (IDrawable) iter.next();
+                IDrawable drawable = iter.next();
                 drawable.prepare();
                 
             }
@@ -83,15 +83,15 @@ public class Tile
     {
         if(m_imageRef == null)
         {
-            m_imageRef = new SoftReference(Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false));
+            m_imageRef = new SoftReference<Image>(Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false));
             m_isDirty = true;
         }
         
-        Image image = (Image) m_imageRef.get();
+        Image image = m_imageRef.get();
         if(image == null)
         {
             image = Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false);
-            m_imageRef = new SoftReference(image);
+            m_imageRef = new SoftReference<Image>(image);
             m_isDirty = true;
         }
         
@@ -117,7 +117,7 @@ public class Tile
     {
         if(m_imageRef == null)
             return null;
-        return (Image) m_imageRef.get();
+        return m_imageRef.get();
     }
     
     private synchronized void draw(Graphics2D g, GameData data, MapData mapData)
@@ -129,18 +129,18 @@ public class Tile
         g.fill(m_bounds);
      
         
-        Iterator iter;
+        Iterator<IDrawable> iter;
         
         synchronized(m_mutex)
         {
 		    //draw
 		    Collections.sort(m_contents, new DrawableComparator());
-		    iter = new ArrayList(m_contents).iterator();
+		    iter = new ArrayList<IDrawable>(m_contents).iterator();
         }
 
         while (iter.hasNext())
         {
-            IDrawable drawable = (IDrawable) iter.next();
+            IDrawable drawable = iter.next();
             drawable.draw(m_bounds, data, g, mapData);
         }
         m_isDirty = false;
@@ -162,7 +162,7 @@ public class Tile
         
     }
     
-    public void addDrawbles(Collection drawables)
+    public void addDrawbles(Collection<IDrawable> drawables)
     {
         synchronized(m_mutex)
         {
@@ -206,7 +206,7 @@ public class Tile
         }
     }
     
-    public List getDrawables()
+    public List<IDrawable> getDrawables()
     {
         return m_contents;
     }

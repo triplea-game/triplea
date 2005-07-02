@@ -32,7 +32,7 @@ import java.util.*;
 
 public class UndoableMovesPanel extends JPanel
 {
-    private List m_moves;
+    private List<UndoableMove> m_moves;
     private final GameData m_data;
     private final MovePanel m_movePanel;
 
@@ -42,7 +42,7 @@ public class UndoableMovesPanel extends JPanel
         m_movePanel = movePanel;
     }
 
-    public void setMoves(List moves)
+    public void setMoves(List<UndoableMove> moves)
     {
         m_moves = moves;
         initLayout();
@@ -59,7 +59,7 @@ public class UndoableMovesPanel extends JPanel
         items.setLayout(new BoxLayout(items, BoxLayout.Y_AXIS));
 
         //we want the newest move at the top
-        m_moves = new ArrayList(m_moves);
+        m_moves = new ArrayList<UndoableMove>(m_moves);
         Collections.reverse(m_moves);
         Iterator iter = m_moves.iterator();
 

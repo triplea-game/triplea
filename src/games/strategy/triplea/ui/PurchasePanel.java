@@ -37,7 +37,7 @@ public class PurchasePanel extends ActionPanel
 {
 
   private JLabel actionLabel = new JLabel();
-  private IntegerMap m_purchase;
+  private IntegerMap<ProductionRule> m_purchase;
   private boolean m_bid;
   private SimpleUnitPanel m_unitsPanel = new SimpleUnitPanel();
   private JLabel m_purchasedSoFar = new JLabel();
@@ -57,7 +57,7 @@ public class PurchasePanel extends ActionPanel
   public void display(PlayerID id)
   {
     super.display(id);
-    m_purchase = new IntegerMap();
+    m_purchase = new IntegerMap<ProductionRule>();
     removeAll();
     actionLabel.setText(id.getName() + " production");
     m_buyButton.setText(BUY);
@@ -70,7 +70,7 @@ public class PurchasePanel extends ActionPanel
     add(m_purchasedSoFar);
     add(Box.createVerticalStrut(4));
 
-    m_unitsPanel.setUnitsFromProductionRuleMap(new IntegerMap(), id, getData());
+    m_unitsPanel.setUnitsFromProductionRuleMap(new IntegerMap<ProductionRule>(), id, getData());
     add(m_unitsPanel);
     add(Box.createVerticalGlue());
     SwingUtilities.invokeLater(REFRESH);
@@ -82,7 +82,7 @@ public class PurchasePanel extends ActionPanel
     actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
   }
 
-  public IntegerMap waitForPurchase(boolean bid)
+  public IntegerMap<ProductionRule> waitForPurchase(boolean bid)
   {
     m_bid = bid;
     refreshActionLabelText();

@@ -53,12 +53,12 @@ public class FlagIconImageFactory
     public static final int SMALL_FLAG_ICON_HEIGHT = 7;
 
     //maps name -> image
-    private final Map m_images = new HashMap();
+    private final Map<String, Image> m_images = new HashMap<String, Image>();
 
     /** Creates new IconImageFactory */
     private FlagIconImageFactory()
     {
-    };
+    }
 
     public Image getFlag(PlayerID id)
     {
@@ -92,7 +92,7 @@ public class FlagIconImageFactory
             m_images.put(key, image);
         }
 
-        return (Image) m_images.get(key);
+        return m_images.get(key);
     }
 
     public Image getSmallFlag(PlayerID id)

@@ -40,17 +40,17 @@ public class PlayerListing implements Serializable
    * Maps String player name -> node Name
    * if node name is null then the player is available to play.
    */
-  private Map m_playerListing = new HashMap();
-  private Version m_engineVersion;
-  private Version m_gameVersion;
-  private String m_gameName;
+  private final Map<String, String> m_playerListing;
+  private final Version m_engineVersion;
+  private final Version m_gameVersion;
+  private final String m_gameName;
 
   /**
    * Creates a new instance of PlayerListingMessage
    */
-  public PlayerListing(Map map, Version engineVersion, Version gameVersion, String gameName)
+  public PlayerListing(Map<String, String> map, Version engineVersion, Version gameVersion, String gameName)
   {
-    m_playerListing = new HashMap(map);
+    m_playerListing = new HashMap<String, String>(map);
     m_engineVersion = engineVersion;
     m_gameVersion = gameVersion;
     m_gameName = gameName;

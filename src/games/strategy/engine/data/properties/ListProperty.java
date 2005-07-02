@@ -22,21 +22,21 @@ import java.awt.event.*;
 public class ListProperty extends AEditableProperty
 {
 
-  private List m_possibleValues;
+  private List<String> m_possibleValues;
   private String m_value;
 
   /**
    *
    * @param values A collection of Strings
    */
-  public ListProperty(String name, String defaultValue, Collection possibleValues)
+  public ListProperty(String name, String defaultValue, Collection<String> possibleValues)
   {
     super(name);
 
     if(!possibleValues.contains(defaultValue))
       throw new IllegalStateException("possible values does not contain default");
 
-    m_possibleValues = new ArrayList(possibleValues);
+    m_possibleValues = new ArrayList<String>(possibleValues);
     m_value = defaultValue;
   }
 
@@ -47,7 +47,7 @@ public class ListProperty extends AEditableProperty
 
   public JComponent getEditorComponent()
   {
-    final JComboBox box =  new JComboBox(new Vector(m_possibleValues));
+    final JComboBox box =  new JComboBox(new Vector<String>(m_possibleValues));
     box.setSelectedItem(m_value);
     box.addActionListener( new ActionListener()
     {

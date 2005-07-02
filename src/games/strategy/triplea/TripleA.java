@@ -23,13 +23,13 @@ package games.strategy.triplea;
 
 import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.message.*;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.troxAI.TroxAIPlayer;
 import games.strategy.triplea.ui.*;
 import games.strategy.triplea.ui.display.*;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 import java.awt.Frame;
 import java.io.IOException;
@@ -50,9 +50,9 @@ public class TripleA implements IGameLoader
     /**
      * @see IGameLoader.createPlayers(playerNames)
      */
-    public Set createPlayers(Map playerNames)
+    public Set<IGamePlayer> createPlayers(Map playerNames)
     {
-        Set players = new HashSet();
+        Set<IGamePlayer> players = new HashSet<IGamePlayer>();
         Iterator iter = playerNames.keySet().iterator();
         while (iter.hasNext())
         {
@@ -73,7 +73,7 @@ public class TripleA implements IGameLoader
         return players;
     }
 
-    public void startGame(final IGame game, Set players)
+    public void startGame(final IGame game, Set<IGamePlayer> players)
     {
         try
         {
@@ -131,12 +131,12 @@ public class TripleA implements IGameLoader
         }
     }
 
-    private void connectPlayers(Set players, TripleAFrame frame)
+    private void connectPlayers(Set<IGamePlayer> players, TripleAFrame frame)
     {
-        Iterator iter = players.iterator();
+        Iterator<IGamePlayer> iter = players.iterator();
         while (iter.hasNext())
         {
-            IGamePlayer player = (IGamePlayer) iter.next();
+            IGamePlayer player = iter.next();
             if (player instanceof TripleAPlayer)
                 ((TripleAPlayer) player).setFrame(frame);
         }
@@ -158,13 +158,13 @@ public class TripleA implements IGameLoader
     /* 
      * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
      */
-    public Class getDisplayType()
+    public Class<? extends IChannelSubscribor> getDisplayType()
     {
         return ITripleaDisplay.class;
     }
 
     
-    public Class getRemotePlayerType()
+    public Class<? extends IRemote> getRemotePlayerType()
     {
         return ITripleaPlayer.class;
     }

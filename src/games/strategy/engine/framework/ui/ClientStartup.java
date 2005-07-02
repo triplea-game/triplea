@@ -52,7 +52,7 @@ public class ClientStartup extends JPanel
   private Set m_players = Collections.EMPTY_SET;
 
   //list of PlayerRows
-  private List m_playerRows;
+  private List<PlayerRow> m_playerRows;
 
   /**
    * Creates a new instance of ServerStartup
@@ -85,10 +85,10 @@ public class ClientStartup extends JPanel
       String playerName = (String) listings.next();
       String node = (String) listing.get(playerName);
 
-      Iterator rows = m_playerRows.iterator();
+      Iterator<PlayerRow> rows = m_playerRows.iterator();
       while(rows.hasNext())
       {
-        PlayerRow row =  (PlayerRow) rows.next();
+        PlayerRow row =  rows.next();
         if(row.getPlayerName().equals(playerName))
         {
           row.setPlayerName(node);
@@ -105,14 +105,14 @@ public class ClientStartup extends JPanel
   /**
    * @return a mapping of playerName -> local player type.
    */
-  public Map getLocalPlayerMapping()
+  public Map<String, String> getLocalPlayerMapping()
   {
-    Map map = new HashMap();
+    Map<String, String> map = new HashMap<String, String>();
 
-    Iterator iter = m_playerRows.iterator();
+    Iterator<PlayerRow> iter = m_playerRows.iterator();
     while(iter.hasNext())
     {
-      PlayerRow row = (PlayerRow) iter.next();
+      PlayerRow row = iter.next();
       if(row.isPlaying())
       {
         map.put(row.getPlayerName(), row.getLocalType());
@@ -142,7 +142,7 @@ private void initComponents()
   {
     m_nameLabel = new JLabel("Name:" + m_channelMessenger.getLocalNode().getName());
 
-    m_playerRows = new ArrayList();
+    m_playerRows = new ArrayList<PlayerRow>();
     Iterator iter = m_players.iterator();
 
     while(iter.hasNext())
@@ -199,10 +199,10 @@ private void initComponents()
     layout.setConstraints(playedByLabel, playConstraints);
     players.add(playedByLabel);
 
-    Iterator iter = m_playerRows.iterator();
+    Iterator<PlayerRow> iter = m_playerRows.iterator();
     while(iter.hasNext())
     {
-      PlayerRow row = (PlayerRow) iter.next();
+      PlayerRow row = iter.next();
 
       layout.setConstraints(row.getName(), nameConstraints);
       players.add(row.getName());
@@ -225,7 +225,7 @@ private void initComponents()
     {
       try
       {
-        StringBuffer version = new StringBuffer();
+        StringBuilder version = new StringBuilder();
 
         version.append("Error, server running different engine version.  Cannot join game. \n");
 

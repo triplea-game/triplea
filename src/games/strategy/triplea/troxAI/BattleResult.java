@@ -14,6 +14,8 @@
 
 package games.strategy.triplea.troxAI;
 
+import games.strategy.engine.data.Unit;
+
 import java.util.Collection;
 
 
@@ -25,9 +27,9 @@ import java.util.Collection;
 public class BattleResult
 {
 	private int number;
-	private Collection attack;
-	private Collection defend;
-	public BattleResult(int n, Collection a, Collection d)
+	private Collection<Unit> attack;
+	private Collection<Unit> defend;
+	public BattleResult(int n, Collection<Unit> a, Collection<Unit> d)
 	{
 		number = n;
 		attack = a;
@@ -37,11 +39,11 @@ public class BattleResult
 	{
 		return number;
 	}
-	public Collection getAttack()
+	public Collection<Unit> getAttack()
 	{
 		return attack;
 	}
-	public Collection getDefend()
+	public Collection<Unit> getDefend()
 	{
 		return defend;
 	}

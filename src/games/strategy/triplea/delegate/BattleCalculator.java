@@ -46,17 +46,14 @@ public class BattleCalculator
     //can tell what dice is for who
     //we also want to sort by movement, so casualties will be choosen as the 
     //units with least movement
-    public static void sortPreBattle(List units, GameData data)
+    public static void sortPreBattle(List<Unit> units, GameData data)
     {
         final MoveDelegate moveDelegate = DelegateFinder.moveDelegate(data);
         
-        Comparator comparator = new Comparator()
+        Comparator<Unit> comparator = new Comparator<Unit>()
         {
-          public int compare(Object o1, Object o2)
-          {
-              Unit u1 = (Unit) o1;
-              Unit u2 = (Unit) o2;
-              
+          public int compare(Unit u1, Unit u2)
+          {            
               if(u1.getUnitType().equals(u2.getUnitType()))
                   return  moveDelegate.compareAccordingToMovementLeft(u1,u2);
               
@@ -68,7 +65,7 @@ public class BattleCalculator
         
     }
     
-    public static int getAAHits(Collection units, IDelegateBridge bridge, int[] dice)
+    public static int getAAHits(Collection<Unit> units, IDelegateBridge bridge, int[] dice)
     {
         int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);
 
@@ -85,11 +82,11 @@ public class BattleCalculator
      * Choose plane casualties according to 4th edition rules which specifies
      * that they are randomnly chosen.
      */
-    public static Collection fourthEditionAACasualties(Collection planes, DiceRoll dice, IDelegateBridge bridge)
+    public static Collection<Unit> fourthEditionAACasualties(Collection<Unit> planes, DiceRoll dice, IDelegateBridge bridge)
     {
-        Collection casualties = new ArrayList();
+        Collection<Unit> casualties = new ArrayList<Unit>();
         int hits = dice.getHits();
-        List planesList = new ArrayList(planes);
+        List<Unit> planesList = new ArrayList<Unit>(planes);
 
         // We need to choose which planes die randomnly
         if (hits < planesList.size())
@@ -97,7 +94,7 @@ public class BattleCalculator
             for (int i = 0; i < hits; i++)
             {
                 int pos = bridge.getRandom(planesList.size(), "Deciding which planes should die due to AA fire");
-                Object unit = planesList.get(pos);
+                Unit unit = planesList.get(pos);
                 planesList.remove(pos);
                 casualties.add(unit);
             }
@@ -109,20 +106,21 @@ public class BattleCalculator
         return casualties;
     }
 
-    public static CasualtyDetails selectCasualties(PlayerID player, Collection targets, IDelegateBridge bridge, String text, GameData data,
+    public static CasualtyDetails selectCasualties(PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text, GameData data,
             DiceRoll dice, boolean defending)
     {
         return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
     }
 
-    public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection targets, IDelegateBridge bridge, String text,
+    @SuppressWarnings("unchecked")
+    public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
             GameData data, DiceRoll dice, boolean defending)
     {
         int hits = dice.getHits();
         if (hits == 0)
             return new CasualtyDetails(Collections.EMPTY_LIST, Collections.EMPTY_LIST, true);
 
-        Map dependents = getDependents(targets, data);
+        Map<Unit, Collection<Unit>> dependents = getDependents(targets, data);
 
         // If all targets are one type and not two hit then
         // just remove the appropriate amount of units of that type.
@@ -131,8 +129,8 @@ public class BattleCalculator
         // select the units themselves.
         if (allTargetsOneTypeNotTwoHit(targets, dependents))
         {
-            List killed = new ArrayList();
-            Iterator iter = targets.iterator();
+            List<Unit> killed = new ArrayList<Unit>();
+            Iterator<Unit> iter = targets.iterator();
             for (int i = 0; i < hits; i++)
             {
                 killed.add(iter.next());
@@ -143,9 +141,9 @@ public class BattleCalculator
         // Create production cost map, Maybe should do this elsewhere, but in
         // case prices
         // change, we do it here.
-        IntegerMap costs = getCosts(player, data);
+        IntegerMap<UnitType> costs = getCosts(player, data);
 
-        List defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
+        List<Unit> defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
 
         ITripleaPlayer tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
         
@@ -170,10 +168,10 @@ public class BattleCalculator
         return casualtySelection;
     }
 
-    private static List getDefaultCasualties(Collection targets, int hits, boolean defending, PlayerID player, IntegerMap costs)
+    private static List<Unit> getDefaultCasualties(Collection<Unit> targets, int hits, boolean defending, PlayerID player, IntegerMap<UnitType> costs)
     {
         // Remove two hit bb's selecting them first for default casualties
-        ArrayList defaultCasualties = new ArrayList();
+        ArrayList<Unit> defaultCasualties = new ArrayList<Unit>();
         int numSelectedCasualties = 0;
         Iterator targetsIter = targets.iterator();
         while (targetsIter.hasNext())
@@ -194,7 +192,7 @@ public class BattleCalculator
         }
 
         // Sort units by power and cost in ascending order
-        List sorted = new ArrayList(targets);
+        List<Unit> sorted = new ArrayList<Unit>(targets);
         Collections.sort(sorted, new UnitBattleComparator(defending, player, costs));
         // Select units
         Iterator sortedIter = sorted.iterator();
@@ -214,12 +212,12 @@ public class BattleCalculator
         return defaultCasualties;
     }
 
-    private static Map getDependents(Collection targets, GameData data)
+    private static Map<Unit, Collection<Unit>> getDependents(Collection targets, GameData data)
     {
         //jsut worry about transports
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 
-        Map dependents = new HashMap();
+        Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
         Iterator iter = targets.iterator();
         while (iter.hasNext())
         {
@@ -239,9 +237,9 @@ public class BattleCalculator
      *            The game data.
      * @return a map of unit types to ipc cost
      */
-    public static IntegerMap getCosts(PlayerID player, GameData data)
+    public static IntegerMap<UnitType> getCosts(PlayerID player, GameData data)
     {
-        IntegerMap costs = new IntegerMap();
+        IntegerMap<UnitType> costs = new IntegerMap<UnitType>();
         ProductionFrontier frontier =player.getProductionFrontier();
         //any one will do then
         if(frontier == null)
@@ -266,7 +264,7 @@ public class BattleCalculator
      *            An integer map of unit types to costs.
      * @return the total unit value.
      */
-    public static int getTUV(Collection units, IntegerMap costs)
+    public static int getTUV(Collection units, IntegerMap<UnitType> costs)
     {
         int tuv = 0;
         Iterator unitsIter = units.iterator();
@@ -290,7 +288,7 @@ public class BattleCalculator
      *            An integer map of unit types to costs
      * @return the total unit value.
      */
-    public static int getTUV(Collection units, PlayerID player, IntegerMap costs, GameData data)
+    public static int getTUV(Collection<Unit> units, PlayerID player, IntegerMap<UnitType> costs, GameData data)
     {
         Collection playerUnits = Match.getMatches(units, Matches.alliedUnit(player, data));
         return getTUV(playerUnits, costs);
@@ -305,7 +303,7 @@ public class BattleCalculator
      * @param dependents
      *            map of depend units for target units
      */
-    private static boolean allTargetsOneTypeNotTwoHit(Collection targets, Map dependents)
+    private static boolean allTargetsOneTypeNotTwoHit(Collection<Unit> targets, Map<Unit, Collection<Unit>> dependents)
     {
         Set categorized = UnitSeperator.categorize(targets, dependents, null);
         if (categorized.size() == 1)
@@ -346,23 +344,22 @@ public class BattleCalculator
     }
 }
 
-class UnitBattleComparator implements Comparator
+class UnitBattleComparator implements Comparator<Unit>
 {
     private boolean m_defending;
     private PlayerID m_player;
-    private IntegerMap m_costs;
+    private IntegerMap<UnitType> m_costs;
 
-    public UnitBattleComparator(boolean defending, PlayerID player, IntegerMap costs)
+    public UnitBattleComparator(boolean defending, PlayerID player, IntegerMap<UnitType> costs)
     {
         m_defending = defending;
         m_player = player;
         m_costs = costs;
     }
 
-    public int compare(Object o1, Object o2)
+    public int compare(Unit u1, Unit u2)
     {
-        Unit u1 = (Unit) o1;
-        Unit u2 = (Unit) o2;
+
         UnitAttatchment ua1 = UnitAttatchment.get(u1.getType());
         UnitAttatchment ua2 = UnitAttatchment.get(u2.getType());
         int rolls1 = BattleCalculator.getRolls(u1, m_player, m_defending);

@@ -24,6 +24,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
+import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 
@@ -186,7 +187,7 @@ public class InitializationDelegate implements IDelegate
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class getRemoteType()
+    public Class<? extends IRemote> getRemoteType()
     {
         return null;
     }

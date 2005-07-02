@@ -28,32 +28,33 @@ import junit.framework.*;
  * @author  Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
 public class MatchTest extends TestCase
 {
 	
-	Collection m_ints = new ArrayList();
+	Collection<Integer> m_ints = new ArrayList<Integer>();
 	
-	Match m_pos = new Match()
+	Match<Integer> m_pos = new Match<Integer>()
 	{
-		public boolean match(Object o)
+		public boolean match(Integer o)
 		{
-			return ((Integer) o).intValue() > 0;
+			return o.intValue() > 0;
 		}
 	};
 
-	Match m_neg = new Match()
+	Match<Integer> m_neg = new Match<Integer>()
 	{
-		public boolean match(Object o)
+		public boolean match(Integer o)
 		{
-			return ((Integer) o).intValue() < 0;
+			return o.intValue() < 0;
 		}
 	};
 
-	Match m_zero = new Match()
+	Match<Integer> m_zero = new Match<Integer>()
 	{
-		public boolean match(Object o)
+		public boolean match(Integer o)
 		{
-			return ((Integer) o).intValue() == 0;
+			return o.intValue() == 0;
 		}
 	};
 	
@@ -81,7 +82,8 @@ public class MatchTest extends TestCase
 		super(name);
     }
 
-	public void testNever()
+	
+    public void testNever()
 	{
 		assertTrue( !Match.someMatch(m_ints, Match.NEVER_MATCH));
 		assertTrue( !Match.allMatch(m_ints, Match.NEVER_MATCH));

@@ -63,7 +63,7 @@ public interface IMessenger
     /**
      * Get a list of nodes.
      */
-    public Set getNodes();
+    public Set<INode> getNodes();
     /**
      * test the connection.
      */

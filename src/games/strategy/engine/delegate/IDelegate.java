@@ -21,6 +21,7 @@
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.message.IRemote;
 
 
 /**
@@ -72,5 +73,5 @@ public interface IDelegate
 	 * If the return value is null, then it indicates that this 
 	 * delegate should not be used as in IRemote.
 	 */
-	public Class getRemoteType();
+	public Class<? extends IRemote> getRemoteType();
 }

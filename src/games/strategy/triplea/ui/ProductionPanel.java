@@ -48,7 +48,7 @@ public class ProductionPanel extends JPanel
     private static JDialog s_dialog;
     private static ProductionPanel s_panel;
 
-    private List m_rules = new ArrayList();
+    private List<Rule> m_rules = new ArrayList<Rule>();
     private JLabel m_left = new JLabel();
     private PlayerID m_id;
     private boolean m_bid;
@@ -57,7 +57,7 @@ public class ProductionPanel extends JPanel
     /**
      * Shows the production panel, and returns a map of selected rules.
      */
-    public static IntegerMap show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap initialPurchase)
+    public static IntegerMap<ProductionRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<ProductionRule> initialPurchase)
     {
 
         if (!(parent == s_owner))
@@ -108,7 +108,7 @@ public class ProductionPanel extends JPanel
       
     }
 
-    private void initRules(PlayerID player, GameData data, IntegerMap initialPurchase)
+    private void initRules(PlayerID player, GameData data, IntegerMap<ProductionRule> initialPurchase)
     {
         m_id = player;
         Iterator iter = player.getProductionFrontier().getRules().iterator();
@@ -136,7 +136,7 @@ public class ProductionPanel extends JPanel
         for (int x = 0; x < m_rules.size(); x++)
         {
             boolean even = (x / 2) * 2 == x;
-            add((Rule) m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+            add(m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
                     nullInsets, 0, 0));
 
         }
@@ -162,13 +162,13 @@ public class ProductionPanel extends JPanel
         }
     };
 
-    public IntegerMap getProduction()
+    public IntegerMap<ProductionRule> getProduction()
     {
-        IntegerMap prod = new IntegerMap();
-        Iterator iter = m_rules.iterator();
+        IntegerMap<ProductionRule> prod = new IntegerMap<ProductionRule>();
+        Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
         {
-            Rule rule = (Rule) iter.next();
+            Rule rule = iter.next();
             int quantity = rule.getQuantity();
             if (quantity != 0)
             {
@@ -182,10 +182,10 @@ public class ProductionPanel extends JPanel
     {
         int ipcs = getIPCs();
         int spent = 0;
-        Iterator iter = m_rules.iterator();
+        Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
         {
-            Rule current = (Rule) iter.next();
+            Rule current = iter.next();
             spent += current.getQuantity() * current.getCost();
         }
         int leftToSpend = ipcs - spent;
@@ -194,7 +194,7 @@ public class ProductionPanel extends JPanel
         iter = m_rules.iterator();
         while (iter.hasNext())
         {
-            Rule current = (Rule) iter.next();
+            Rule current = iter.next();
             int max = leftToSpend / current.getCost();
             max += current.getQuantity();
             current.setMax(max);

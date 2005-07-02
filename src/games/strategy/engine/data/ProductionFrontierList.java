@@ -29,7 +29,7 @@ import java.util.*;
  */
 public class ProductionFrontierList extends GameDataComponent
 {
-	private final Map m_productionFrontiers = new HashMap();
+	private final Map<String, ProductionFrontier> m_productionFrontiers = new HashMap<String, ProductionFrontier>();
 	
     public ProductionFrontierList(GameData data) 
 	{
@@ -48,10 +48,10 @@ public class ProductionFrontierList extends GameDataComponent
 	
 	public ProductionFrontier getProductionFrontier(String name)
 	{
-		return (ProductionFrontier) m_productionFrontiers.get(name);
+		return m_productionFrontiers.get(name);
 	}
 	
-	public Set getProductionFrontierNames()
+	public Set<String> getProductionFrontierNames()
 	{
 	    return m_productionFrontiers.keySet();
 	}

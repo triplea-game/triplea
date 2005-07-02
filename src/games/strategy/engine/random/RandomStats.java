@@ -21,7 +21,7 @@ import games.strategy.util.IntegerMap;
 public class RandomStats implements IRandomStats
 {
        
-    private IntegerMap m_randomStats = new IntegerMap();
+    private IntegerMap<Integer> m_randomStats = new IntegerMap<Integer>();
     
     public RandomStats(IRemoteMessenger remoteMessenger)
     {

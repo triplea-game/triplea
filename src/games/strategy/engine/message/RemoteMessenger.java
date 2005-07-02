@@ -63,12 +63,10 @@ public class RemoteMessenger implements IRemoteMessenger
     /* 
      * @see games.strategy.net.IRemoteMessenger#registerRemote(java.lang.Class, java.lang.Object, java.lang.String)
      */
-    public void registerRemote(Class remoteInterface, Object implementor,
+    public void registerRemote(Class<? extends IRemote> remoteInterface, Object implementor,
             String name)
     {
-         if(!IRemote.class.isAssignableFrom(remoteInterface))
-             throw new IllegalArgumentException(remoteInterface.getName() +  "does not implement IRemote");
-         if(!remoteInterface.isAssignableFrom(implementor.getClass()))
+          if(!remoteInterface.isAssignableFrom(implementor.getClass()))
              throw new IllegalArgumentException(implementor + " does not implement " + remoteInterface.getName());
          if(!remoteInterface.isInterface())
              throw new IllegalArgumentException(remoteInterface.getName() +  " must be an interface");

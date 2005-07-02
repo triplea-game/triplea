@@ -14,6 +14,7 @@
 
 package games.strategy.triplea.delegate.remote;
 
+import games.strategy.engine.data.*;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
@@ -36,7 +37,7 @@ public interface IAbstractPlaceDelegate extends IRemote
      * placement was not successful
      * 
      */
-    public String placeUnits(Collection units, Territory at);
+    public String placeUnits(Collection<Unit> units, Territory at);
     
     /**
      * Query what units can be produced in a given territory.
@@ -44,7 +45,7 @@ public interface IAbstractPlaceDelegate extends IRemote
      * can be no units placed in a given territory 
      * @return
      */
-    public PlaceableUnits getPlaceableUnits(Collection units, Territory at);
+    public PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
     
     /**
      * 

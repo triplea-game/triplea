@@ -47,14 +47,14 @@ public class AI
 		return;
 	}
 
-	public Collection selectUnitsWithRange(PlayerID p, Collection u, int move)
+	public Collection<Unit> selectUnitsWithRange(PlayerID p, Collection<Unit> u, int move)
 	{
 		//return u;
-		Collection goodu = new ArrayList();
-		Iterator i = u.iterator();
+		Collection<Unit> goodu = new ArrayList<Unit>();
+		Iterator<Unit> i = u.iterator();
 		while(i.hasNext() )
 		{
-			Unit u1 = (Unit)i.next();
+			Unit u1 = i.next();
 			int m = UnitAttatchment.get(u1.getUnitType()).getMovement(p);
 			if(UnitAttatchment.get(u1.getUnitType()).isAir())
 				m--;
@@ -74,13 +74,13 @@ public class AI
 	}
 	
 	
-	public Collection selectNonCombatMoves()
+	public Collection<MoveDescription> selectNonCombatMoves()
 	{	
 	
 	  	GameMap m = m_data.getMap();
-	  	Collection moves = new ArrayList();
+	  	Collection<MoveDescription> moves = new ArrayList<MoveDescription>();
   		AllianceTracker m_allies = m_data.getAllianceTracker();
-		Collection c = new ArrayList();
+		Collection<Territory> c = new ArrayList<Territory>();
 		Collection t = m.getTerritoriesOwnedBy(m_id);
 		//System.out.println("Non Combat");
 		Iterator i1 = m_data.getPlayerList().getPlayers().iterator();
@@ -101,7 +101,7 @@ public class AI
 			Territory t1 = (Territory) i2.next();
 			Territory t2 = null;
 			int best = 99999999;
-			Collection u = new ArrayList();
+			Collection<Unit> u = new ArrayList<Unit>();
 			u.addAll(t1.getUnits().getUnits());
 			u = selectUnitsWithRange(m_id, u,1);
 			if(u.size() > 0)
@@ -145,16 +145,16 @@ public class AI
 	}
 	
 	
-	public Collection selectCombatMoves()
+	public Collection<MoveDescription> selectCombatMoves()
 	{	//Medium AI
 		GameMap map = m_data.getMap();
 		//PlayerList pls = m_data.getPlayerList();
 		Iterator playerIter = m_data.getPlayerList().getPlayers().iterator();
-		Collection enemyTerritories = new ArrayList();
+		Collection<Territory> enemyTerritories = new ArrayList<Territory>();
 		AllianceTracker allianceTracker = m_data.getAllianceTracker();
-		Collection moves = new ArrayList();
+		Collection<MoveDescription> moves = new ArrayList<MoveDescription>();
 		int best = 0;
-		Collection bestmoves = new ArrayList();
+		Collection<MoveDescription> bestmoves = new ArrayList<MoveDescription>();
 		//System.out.println("Combat");
 		while(playerIter.hasNext() )
 		{
@@ -171,7 +171,7 @@ public class AI
 		{
 			Territory enemyTerritory = (Territory) enemyTerritoryIter.next();
 			//x++;
-			Collection u = new ArrayList();
+			Collection<Unit> u = new ArrayList<Unit>();
 			//Set adjacent = m.getNeighbors(territory, 3);
 			Iterator neighboringTerritoryIter = map.getNeighbors(enemyTerritory, 3).iterator();
 			while(neighboringTerritoryIter.hasNext() )
@@ -179,9 +179,9 @@ public class AI
 				Territory neighborOfMyEnemy = (Territory) neighboringTerritoryIter.next();
 				if(!neighborOfMyEnemy.isWater() && allianceTracker.isAllied(m_id,neighborOfMyEnemy.getOwner()) && neighborOfMyEnemy.getUnits().getUnits().size() >=1)
 				{
-					Collection temp = new ArrayList();
+					Collection<Unit> temp = new ArrayList<Unit>();
 					temp.addAll(neighborOfMyEnemy.getUnits().getUnits());
-					Collection newu = selectUnitsWithRange(m_id, temp, map.getLandDistance(enemyTerritory, neighborOfMyEnemy));
+					Collection<Unit> newu = selectUnitsWithRange(m_id, temp, map.getLandDistance(enemyTerritory, neighborOfMyEnemy));
 					//System.out.println("Current Fitness " + t2.getUnits().getUnits().size());	
 					Route r = map.getLandRoute(neighborOfMyEnemy, enemyTerritory);
 					
@@ -208,7 +208,7 @@ public class AI
 
 			if(u.size() != 0)
 			{
-				Collection temp = new ArrayList();
+				Collection<Unit> temp = new ArrayList<Unit>();
 				temp.addAll(enemyTerritory.getUnits().getUnits());
 				int current = evaluateAttackhelper(u, temp);
 				//System.out.println("Current Fitness " + current);
@@ -221,12 +221,12 @@ public class AI
 				{
 					best = current;
 					bestmoves = moves;
-					moves = new ArrayList();
+					moves = new ArrayList<MoveDescription>();
 				}
 			}
 			
 		}
-		Iterator cow = bestmoves.iterator();
+		Iterator<MoveDescription> cow = bestmoves.iterator();
 		while(cow.hasNext())
 		{
 		    //MoveDescription temp = (MoveDescription)cow.next();
@@ -242,11 +242,11 @@ public class AI
 		return bestmoves;
 	}
 	
-	public int evaluateAttackhelper(Collection attacker, Collection defender)
+	public int evaluateAttackhelper(Collection<Unit> attacker, Collection<Unit> defender)
 	{
 		int like = 0;
-		Collection a2 = null;
-		Collection d2 = null;
+		Collection<Unit> a2 = null;
+		Collection<Unit> d2 = null;
 		int acost;
 		int dcost;
 		double odds = 0;
@@ -290,15 +290,15 @@ public class AI
 		return evaluateAttackhelper(attacker.getUnits(), defender.getUnits());
 	}
 	
-	public int valuehelper(Collection u)
+	public int valuehelper(Collection<Unit> u)
 	{
 		int value = 0;
 		if(u == null || u.isEmpty())
 			return 0;
-		Iterator i = u.iterator();
+		Iterator<Unit> i = u.iterator();
 		while(i.hasNext())
 		{
-			Unit current = (Unit)i.next(); 
+			Unit current = i.next(); 
 			value = value + GetCost(current);
 		}
 		return value;
@@ -310,10 +310,10 @@ public class AI
 		return valuehelper(u.getUnits());
 	}
 	
-	public BattleResult Simbattlehelper(Collection attacker, Collection defender)
+	public BattleResult Simbattlehelper(Collection<Unit> attacker, Collection<Unit> defender)
 	{
-		Collection a2;
-		Collection d2;
+		Collection<Unit> a2;
+		Collection<Unit> d2;
 		int attack = 0;
 		int defend = 0;
 		int acasualities = 0;
@@ -323,31 +323,31 @@ public class AI
 		if((attacker == null || attacker.isEmpty()) && (defender==null || defender.isEmpty()))
 		{
 			//System.out.println("None left ");
-			return new BattleResult(0, new ArrayList(), new ArrayList());
+			return new BattleResult(0, new ArrayList<Unit>(), new ArrayList<Unit>());
 		}
 		else if(attacker == null || attacker.isEmpty())
 		{
 			//System.out.println("defenders left " + defender.size());
-			return new BattleResult(defender.size() * -1, new ArrayList(), defender);
+			return new BattleResult(defender.size() * -1, new ArrayList<Unit>(), defender);
 			//return (defender.size() * -1);
 		}
 		else if(defender == null || defender.isEmpty())
 		{
 			//System.out.println("attackers left " + attacker.size());
-			return new BattleResult(attacker.size(), attacker, new ArrayList());
+			return new BattleResult(attacker.size(), attacker, new ArrayList<Unit>());
 			//return attacker.size();
 		}
-		Iterator iter = attacker.iterator();
+		Iterator<Unit> iter = attacker.iterator();
 		while(iter.hasNext() )
 		{
-			UnitType type = ((Unit)(iter.next())).getUnitType();
+			UnitType type = (iter.next()).getUnitType();
 			attack = attack + UnitAttatchment.get(type).getAttack(m_id);
 		}
-		Iterator i2 = defender.iterator();
+		Iterator<Unit> i2 = defender.iterator();
 		while(i2.hasNext() )
 		{
 			
-			Unit u1 = (Unit)i2.next();
+			Unit u1 = i2.next();
 			//System.out.println("I Broke" + u1.toString());
 			UnitType type = u1.getUnitType();
 			defend = defend + UnitAttatchment.get(type).getDefense(m_id);
@@ -387,7 +387,7 @@ public class AI
 			System.out.println("Bad" + a2.size() + " " + d2.size() + " # of turns " + m_count);
 			//return Simbattlehelper(a2, d2, a2, d2);
 		}
-		return new BattleResult(0, new ArrayList(), new ArrayList());
+		return new BattleResult(0, new ArrayList<Unit>(), new ArrayList<Unit>());
 		
 	}
 	
@@ -396,15 +396,15 @@ public class AI
 		return Simbattlehelper(attacker.getUnits(), defender.getUnits());
 		//allocate casualities then call recursively
 	}
-	private Collection removeAA(Collection defender)
+	private Collection<Unit> removeAA(Collection<Unit> defender)
 	{
 	
-		Collection c2 = new ArrayList();
-		Iterator i2 = defender.iterator();
+		Collection<Unit> c2 = new ArrayList<Unit>();
+		Iterator<Unit> i2 = defender.iterator();
 		while(i2.hasNext() )
 		{
 			
-			Unit u1 = (Unit)i2.next();
+			Unit u1 = i2.next();
 			//System.out.println("I Broke" + u1.toString());
 			UnitType type = u1.getUnitType();
 			//defend = defend + UnitAttatchment.get(type).getDefense(m_id);
@@ -417,11 +417,11 @@ public class AI
 		return c2;
 	}
 	
-	public Collection allocatecasualitieshelper(Collection a, int x)
+	public Collection<Unit> allocatecasualitieshelper(Collection<Unit> a, int x)
 	{
 		//int y = 0;
 		Unit min = null;
-		Collection c = new ArrayList();
+		Collection<Unit> c = new ArrayList<Unit>();
 		if(x <= 0)
 		{
 			return a;
@@ -430,10 +430,10 @@ public class AI
 		{
 			return c;
 		}
-		Iterator i = a.iterator();
+		Iterator<Unit> i = a.iterator();
 		while(i.hasNext())
 		{
-			Unit current = (Unit)i.next(); ////Not Done
+			Unit current = i.next(); ////Not Done
 			if(GetCost(current) < GetCost(min))
 			{
 				if(min != null)
@@ -460,7 +460,7 @@ public class AI
 		
 	}
 	
-	public IntegerMap selectPurchases()
+	public IntegerMap<ProductionRule> selectPurchases()
 	{
 		//int y = 0;
 		UnitType bestattack = null;
@@ -468,7 +468,7 @@ public class AI
 		double likebestattack = 0;
 		double likebestdefense = 0;
 		
-		IntegerMap result = new IntegerMap();
+		IntegerMap<ProductionRule> result = new IntegerMap<ProductionRule>();
 		
 		Iterator i = m_data.getUnitTypeList().iterator();
 		
@@ -539,29 +539,29 @@ public class AI
 		
 	}
 
-	public Collection selectCasualities(Collection a, int x)
+	public Collection<Unit> selectCasualities(Collection<Unit> a, int x)
 	{
 		//int y = 0;
 		Unit min = null;
 		if(x <= 0)
 		{
-			return new ArrayList();
+			return new ArrayList<Unit>();
 		}
 		if(a.size() < x)
 		{
 			return a;
 		}
-		Iterator i = a.iterator();
+		Iterator<Unit> i = a.iterator();
 		while(i.hasNext())
 		{
-			Unit current = (Unit)i.next(); ////Not Done
+			Unit current = i.next(); ////Not Done
 			
 			if(GetCost(current) < GetCost(min))
 			{
 				min = current;
 			}
 		}
-		Collection dead = new ArrayList();
+		Collection<Unit> dead = new ArrayList<Unit>();
 		dead.add(min);
 		a.removeAll(dead);
 		

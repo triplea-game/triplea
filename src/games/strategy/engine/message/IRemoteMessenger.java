@@ -85,7 +85,7 @@ public interface IRemoteMessenger
      * @param implementor - an object that implements remoteInterface
      * @param name - the name that implementor will be registered under
      */
-    public void registerRemote(Class remoteInterface, Object implementor, String name);
+    public void registerRemote(Class<? extends IRemote> remoteInterface, Object implementor, String name);
     
     /**
      * Remove the remote registered under name.

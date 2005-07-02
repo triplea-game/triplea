@@ -46,7 +46,8 @@ public class HistoryDetailsPanel extends JPanel
     m_mapPanel = mapPanel;
   }
 
-  public void render(HistoryNode node)
+  @SuppressWarnings("unchecked")
+public void render(HistoryNode node)
   {
     removeAll();
     m_mapPanel.setRoute(null);
@@ -78,7 +79,7 @@ public class HistoryDetailsPanel extends JPanel
       }
       else if(details instanceof Collection)
       {
-        Collection units = (Collection) details;
+        Collection<Unit> units = (Collection<Unit>) details;
         renderUnits(mainConstraints, units);
       }
 
@@ -91,7 +92,7 @@ public class HistoryDetailsPanel extends JPanel
 
   }
 
-  private void renderUnits(GridBagConstraints mainConstraints, Collection units)
+  private void renderUnits(GridBagConstraints mainConstraints, Collection<Unit> units)
   {
     Collection unitsCategories = UnitSeperator.categorize(units);
     SimpleUnitPanel unitsPanel = new SimpleUnitPanel();

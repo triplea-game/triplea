@@ -33,7 +33,7 @@ public class UnitSeperator
   }
 
 
-  public static Set categorize(Collection units)
+  public static Set<UnitCategory> categorize(Collection<Unit> units)
   {
     return categorize(units, null, null);
   }
@@ -50,13 +50,14 @@ public class UnitSeperator
    * @oaram - forceDamagedCategory - if true then we will ensure a category exists for damaged unit types even if it would be empty
    * @return a Collection of UnitCategories
    */
-  public static Set categorize(Collection units, Map dependent, IntegerMap movement)
+  @SuppressWarnings("unchecked")
+public static Set<UnitCategory> categorize(Collection<Unit> units, Map dependent, IntegerMap<Unit> movement)
   {
     //somewhat odd, but we map UnitCategory->UnitCategory,
     //key and value are the same
     //we do this to take advanatge of .equals() on objects that
     //are equal in a special way
-    HashMap categories = new HashMap();
+    HashMap<UnitCategory, UnitCategory> categories = new HashMap<UnitCategory, UnitCategory>();
 
     Iterator iter = units.iterator();
     while(iter.hasNext())
@@ -65,7 +66,7 @@ public class UnitSeperator
       int unitMovement = -1;
       if(movement != null)
         unitMovement = movement.getInt(current);
-      Collection currentDependents = Collections.EMPTY_LIST;
+      Collection currentDependents = new ArrayList<UnitOwner>();
       if(dependent != null)
           currentDependents = (Collection) dependent.get(current);
       boolean damaged = current.getHits() == 1;
@@ -76,7 +77,7 @@ public class UnitSeperator
       //category
       if(categories.containsKey(entry))
       {
-        UnitCategory stored = (UnitCategory) categories.get(entry);
+        UnitCategory stored = categories.get(entry);
         stored.addUnit(current);
       }
       else
@@ -85,7 +86,7 @@ public class UnitSeperator
       }
 
     }
-    return new TreeSet( categories.keySet());
+    return new TreeSet<UnitCategory>( categories.keySet());
   }
 
 }

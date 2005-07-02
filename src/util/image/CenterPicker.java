@@ -30,7 +30,7 @@ public class CenterPicker extends JFrame
 {
 
     private Image  m_image;                     // The map image will be stored here    
-    private Map    m_centers  = new HashMap();  // hash map for center points
+    private Map<String, Point>    m_centers  = new HashMap<String, Point>();  // hash map for center points
     private Map    m_polygons = new HashMap();  // hash map for polygon points
     private JLabel m_location = new JLabel();
 
@@ -248,9 +248,9 @@ public class CenterPicker extends JFrame
                 g.drawImage(m_image, 0, 0, this);
                 g.setColor(Color.red);
 
-                 Iterator polyIter = m_centers.values().iterator();
+                 Iterator<Point> polyIter = m_centers.values().iterator();
                  while (polyIter.hasNext()) {
-                     Point item = (Point)polyIter.next();
+                     Point item = polyIter.next();
                      g.fillOval(item.x, item.y, 15,15);
                  }
             }

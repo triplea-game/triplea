@@ -416,7 +416,7 @@ class DiceStatic
         BufferedReader input = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
         try
         {
-            StringBuffer results = new StringBuffer();
+            StringBuilder results = new StringBuilder();
 
             while (input.ready())
             {

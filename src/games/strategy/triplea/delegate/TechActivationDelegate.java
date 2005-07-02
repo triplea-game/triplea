@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
+import games.strategy.engine.message.IRemote;
 
 import java.io.Serializable;
 import java.util.*;
@@ -64,8 +65,8 @@ public class TechActivationDelegate implements ISaveableDelegate
         m_player = aBridge.getPlayerID();
 
         // Activate techs
-        Map techMap = DelegateFinder.techDelegate(m_data).getAdvances();
-        Collection advances = (Collection) techMap.get(m_player);
+        Map<PlayerID, Collection> techMap = DelegateFinder.techDelegate(m_data).getAdvances();
+        Collection advances = techMap.get(m_player);
         if ((advances != null) && (advances.size() > 0))
         {
             // Start event
@@ -89,7 +90,7 @@ public class TechActivationDelegate implements ISaveableDelegate
     {
         Iterator iter = advances.iterator();
         int count = advances.size();
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
 
         while (iter.hasNext())
         {
@@ -150,7 +151,7 @@ public class TechActivationDelegate implements ISaveableDelegate
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
-    public Class getRemoteType()
+    public Class<? extends IRemote> getRemoteType()
     {
         return null;
     }

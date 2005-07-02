@@ -26,29 +26,29 @@ public class UnitCategory implements Comparable
 {
    private UnitType m_type;
    //Collection of UnitOwners, the type of our dependents, not the dependents
-   private Collection m_dependents;
+   private Collection<UnitOwner> m_dependents;
    private int m_movement; //movement of the units
    private PlayerID m_owner;
    //the units in the category, may be duplicates.
-   private List m_units = new ArrayList();
+   private List<Unit> m_units = new ArrayList<Unit>();
 
    private boolean m_damaged = false;
 
-   public UnitCategory(Unit unit, Collection dependents, int movement)
+   public UnitCategory(Unit unit, Collection<UnitOwner> dependents, int movement)
    {
        this(unit, dependents, movement, false);
    }
 
-   public UnitCategory(Unit unit, Collection dependents, int movement, boolean damaged)
+   public UnitCategory(Unit unit, Collection<UnitOwner> dependents, int movement, boolean damaged)
    {
      m_type = unit.getType();
      m_movement = movement;
      m_owner = unit.getOwner();
      m_damaged = damaged;
      if(dependents == null)
-       m_dependents = new ArrayList();
+       m_dependents = new ArrayList<UnitOwner>();
      else
-       m_dependents = new ArrayList(dependents);
+       m_dependents = new ArrayList<UnitOwner>(dependents);
      m_units.add(unit);
      createDependents(dependents);
    }
@@ -65,7 +65,7 @@ public class UnitCategory implements Comparable
 
    private void createDependents(Collection dependents)
    {
-     m_dependents = new ArrayList();
+     m_dependents = new ArrayList<UnitOwner>();
 
      if(dependents == null)
        return;
@@ -121,12 +121,12 @@ public class UnitCategory implements Comparable
    /**
     * Collection of UnitOwners, the type of our dependents, not the dependents
     */
-   public Collection getDependents()
+   public Collection<UnitOwner> getDependents()
    {
      return m_dependents;
    }
 
-   public List getUnits()
+   public List<Unit> getUnits()
    {
      return m_units;
    }

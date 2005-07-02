@@ -47,7 +47,7 @@ public class ClientGame implements IGame
   private final ChangePerformer m_changePerformer;
   
   //maps PlayerID->GamePlayer
-  private Map m_gamePlayers = new HashMap();
+  private Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
   private final Vault m_vault;
   
   public static final String getRemoteStepAdvancerName(INode node)
@@ -55,7 +55,7 @@ public class ClientGame implements IGame
       return "games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName();  
   }
 
-  public ClientGame(GameData data, Set gamePlayers, IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
+  public ClientGame(GameData data, Set<IGamePlayer> gamePlayers, IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
   {
     m_data = data;
     
@@ -69,10 +69,10 @@ public class ClientGame implements IGame
     m_remoteMessenger.registerRemote(IGameStepAdvancer.class, m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
 
 
-    Iterator iter = gamePlayers.iterator();
+    Iterator<IGamePlayer> iter = gamePlayers.iterator();
     while(iter.hasNext())
     {
-      IGamePlayer gp = (IGamePlayer) iter.next();
+      IGamePlayer gp = iter.next();
       PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
       m_gamePlayers.put(player, gp);
 
@@ -209,7 +209,7 @@ public class ClientGame implements IGame
         }
         
         
-        IGamePlayer gp = (IGamePlayer) m_gamePlayers.get(player);
+        IGamePlayer gp = m_gamePlayers.get(player);
 
         if(gp == null)
           throw new IllegalStateException("Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
