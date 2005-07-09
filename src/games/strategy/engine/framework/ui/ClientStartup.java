@@ -306,14 +306,14 @@ private void initComponents()
 
   class PlayerRow
   {
-    private JLabel m_nameLabel;
+    private JLabel m_playerNameLabel;
     private JLabel m_playerLabel;
     private JComponent m_playerComponent;
     private String m_localPlayerType;
 
     PlayerRow(String playerName, String localPlayerType)
     {
-      m_nameLabel = new JLabel(playerName);
+      m_playerNameLabel = new JLabel(playerName);
       m_playerLabel = new JLabel("");
       m_playerComponent = new JLabel("");
       m_localPlayerType = localPlayerType;
@@ -321,7 +321,7 @@ private void initComponents()
 
     public JLabel getName()
     {
-      return m_nameLabel;
+      return m_playerNameLabel;
     }
 
     public JLabel getPlayer()
@@ -331,7 +331,7 @@ private void initComponents()
 
     public String getPlayerName()
     {
-      return m_nameLabel.getText();
+      return m_playerNameLabel.getText();
     }
 
     public void setPlayerName(String playerName)
@@ -380,7 +380,7 @@ private void initComponents()
     {
       public void actionPerformed(ActionEvent e)
       {
-          getRemoteServer().takePlayer(m_channelMessenger.getLocalNode(), m_nameLabel.getText());
+          getRemoteServer().takePlayer(m_channelMessenger.getLocalNode(), m_playerNameLabel.getText());
       }
     };
 
@@ -388,7 +388,7 @@ private void initComponents()
     {
       public void actionPerformed(ActionEvent e)
       {
-          getRemoteServer().releasePlayer(m_channelMessenger.getLocalNode(), m_nameLabel.getText());
+          getRemoteServer().releasePlayer(m_channelMessenger.getLocalNode(), m_playerNameLabel.getText());
       }
     };
   }

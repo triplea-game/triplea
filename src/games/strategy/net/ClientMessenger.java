@@ -24,10 +24,10 @@ public class ClientMessenger implements IMessenger
 {
     private final INode m_node;
     private Set<INode> m_allNodes;
-    private final ListenerList m_listeners = new ListenerList();
+    private final ListenerList<IMessageListener> m_listeners = new ListenerList<IMessageListener>();
     private final Connection m_connection;
-    private final ListenerList m_errorListeners = new ListenerList();
-    private final ListenerList m_connectionListeners = new ListenerList();
+    private final ListenerList<IMessengerErrorListener> m_errorListeners = new ListenerList<IMessengerErrorListener>();
+    private final ListenerList<IConnectionChangeListener> m_connectionListeners = new ListenerList<IConnectionChangeListener>();
     
     private String m_connectionRefusedError;
 
@@ -192,10 +192,10 @@ public class ClientMessenger implements IMessenger
 
         public void fatalError(Exception error, Connection connection, List unsent)
         {
-            Iterator iter = m_errorListeners.iterator();
+            Iterator<IMessengerErrorListener> iter = m_errorListeners.iterator();
             while (iter.hasNext())
             {
-                IMessengerErrorListener errorListener = (IMessengerErrorListener) iter.next();
+                IMessengerErrorListener errorListener = iter.next();
                 errorListener.messengerInvalid(ClientMessenger.this, error, unsent);
             }
         }
@@ -207,10 +207,10 @@ public class ClientMessenger implements IMessenger
             serverMessageReceived((ServerMessage) msg.getMessage());
         else
         {
-            Iterator iter = m_listeners.iterator();
+            Iterator<IMessageListener> iter = m_listeners.iterator();
             while (iter.hasNext())
             {
-                IMessageListener listener = (IMessageListener) iter.next();
+                IMessageListener listener = iter.next();
                 listener.messageReceived(msg.getMessage(), msg.getFrom());
             }
         }
@@ -233,10 +233,10 @@ public class ClientMessenger implements IMessenger
 
     private void notifyConnectionsChanged()
     {
-        Iterator iter = m_connectionListeners.iterator();
+        Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
         while (iter.hasNext())
         {
-            ((IConnectionChangeListener) iter.next()).connectionsChanged();
+            iter.next().connectionsChanged();
         }
     }
 

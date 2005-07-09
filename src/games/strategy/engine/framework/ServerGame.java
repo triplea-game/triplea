@@ -47,7 +47,7 @@ public class ServerGame implements IGame
 {
     public static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.ServerGame.DISPLAY_CHANNEL";
     
-    private ListenerList m_gameStepListeners = new ListenerList();
+    private ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<GameStepListener>();
     private final GameData m_data;
 
     //maps PlayerID->GamePlayer
@@ -128,7 +128,7 @@ public class ServerGame implements IGame
         {
             IDelegate delegate = (IDelegate) delegateIter.next();
             
-            Class remoteType = delegate.getRemoteType();
+            Class<? extends IRemote> remoteType = delegate.getRemoteType();
             //if its null then it shouldnt be added as an IRemote
             if(remoteType == null)
                 continue;
@@ -252,7 +252,7 @@ public class ServerGame implements IGame
         else
         {
             //a remote player
-            INode destination = (INode) m_remotePlayers.get(playerID.getName());
+            INode destination = m_remotePlayers.get(playerID.getName());
             IGameStepAdvancer advancer = (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
             advancer.startPlayerStep(getCurrentStep().getName(), playerID);
         }
@@ -278,10 +278,10 @@ public class ServerGame implements IGame
         
         getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);        
                
-        Iterator iter = m_gameStepListeners.iterator();
+        Iterator<GameStepListener> iter = m_gameStepListeners.iterator();
         while (iter.hasNext())
         {
-            GameStepListener listener = (GameStepListener) iter.next();
+            GameStepListener listener = iter.next();
             listener.gameStepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), getCurrentStep().getDisplayName());
         }        
     }

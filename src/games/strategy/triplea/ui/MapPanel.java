@@ -45,7 +45,7 @@ public class MapPanel extends ImageScrollerLargeView
 {
     private static Logger s_logger = Logger.getLogger(MapPanel.class.getName());
     
-    private ListenerList m_mapSelectionListeners = new ListenerList();
+    private ListenerList<MapSelectionListener> m_mapSelectionListeners = new ListenerList<MapSelectionListener>();
 
     private GameData m_data;
     private Territory m_currentTerritory; //the territory that the mouse is
@@ -180,11 +180,11 @@ public class MapPanel extends ImageScrollerLargeView
     private void notifyTerritorySelected(Territory t, MouseEvent me)
     {
 
-        Iterator iter = m_mapSelectionListeners.iterator();
+        Iterator<MapSelectionListener> iter = m_mapSelectionListeners.iterator();
 
         while (iter.hasNext())
         {
-            MapSelectionListener msl = (MapSelectionListener) iter.next();
+            MapSelectionListener msl = iter.next();
             msl.territorySelected(t, me);
         }
     }
@@ -192,11 +192,11 @@ public class MapPanel extends ImageScrollerLargeView
     private void notifyMouseMoved(Territory t, MouseEvent me)
     {
 
-        Iterator iter = m_mapSelectionListeners.iterator();
+        Iterator<MapSelectionListener> iter = m_mapSelectionListeners.iterator();
 
         while (iter.hasNext())
         {
-            MapSelectionListener msl = (MapSelectionListener) iter.next();
+            MapSelectionListener msl = iter.next();
             msl.mouseMoved(t, me);
         }
     }
@@ -204,11 +204,11 @@ public class MapPanel extends ImageScrollerLargeView
     private void notifyMouseEntered(Territory t)
     {
 
-        Iterator iter = m_mapSelectionListeners.iterator();
+        Iterator<MapSelectionListener> iter = m_mapSelectionListeners.iterator();
 
         while (iter.hasNext())
         {
-            MapSelectionListener msl = (MapSelectionListener) iter.next();
+            MapSelectionListener msl = iter.next();
             msl.mouseEntered(t);
         }
     }

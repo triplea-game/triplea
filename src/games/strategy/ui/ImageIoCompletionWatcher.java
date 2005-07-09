@@ -16,9 +16,6 @@ package games.strategy.ui;
 
 import java.awt.image.*;
 import java.awt.*;
-
-import javax.swing.Action;
-
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -29,8 +26,11 @@ public class ImageIoCompletionWatcher implements ImageObserver
 {
     //we countdown when we are done
     private final CountDownLatch m_countDownLatch = new CountDownLatch(1);
-    private final Action m_doneAction;
 
+    public ImageIoCompletionWatcher()
+    {
+    }
+    
     public void waitForCompletion()
     {
         try
@@ -42,25 +42,12 @@ public class ImageIoCompletionWatcher implements ImageObserver
         }
     }
 
-    public ImageIoCompletionWatcher(Action onDoneAction)
-    {
-        m_doneAction = onDoneAction;
-    }
-
-    public ImageIoCompletionWatcher()
-    {
-        m_doneAction = null;
-    }
-
     public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height)
     {
         // wait for complete or error/abort
         if (((flags & ALLBITS) != 0) || ((flags & ABORT) != 0))
         {
             m_countDownLatch.countDown();
-            if(m_doneAction != null)
-                m_doneAction.actionPerformed(null);
-            
             return false;
         }
 

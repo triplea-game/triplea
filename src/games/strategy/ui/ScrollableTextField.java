@@ -88,7 +88,7 @@ public class ScrollableTextField extends JPanel
   private JButton m_down;
   private JButton m_max;
   private JButton m_min;
-  private ListenerList m_listeners = new ListenerList();
+  private ListenerList<ScrollableTextFieldListener> m_listeners = new ListenerList<ScrollableTextFieldListener>();
 
   /** Creates new ScrollableTextField */
     public ScrollableTextField(int minVal, int maxVal)
@@ -229,10 +229,10 @@ public class ScrollableTextField extends JPanel
 
   private void notifyListeners()
   {
-    Iterator iter = m_listeners.iterator();
+    Iterator<ScrollableTextFieldListener> iter = m_listeners.iterator();
     while(iter.hasNext())
     {
-      ScrollableTextFieldListener listener = (ScrollableTextFieldListener) iter.next();
+      ScrollableTextFieldListener listener = iter.next();
       listener.changedValue(this);
     }
   }

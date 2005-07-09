@@ -85,8 +85,8 @@ public class StatPanel extends JPanel
         
         setLayout(new GridLayout(2, 1));
 
-        m_dataModel = new StatTableModel(data);
-        m_techModel = new TechTableModel(data);
+        m_dataModel = new StatTableModel();
+        m_techModel = new TechTableModel();
 
         JTable table = new JTable(m_dataModel);
         // Strangely, this is enabled by default
@@ -174,7 +174,6 @@ public class StatPanel extends JPanel
     {
         /* Flag to indicate whether data needs to be recalculated */
         private boolean m_isDirty = true;
-        private GameData m_data;
         /* Column Header Names */
 
         
@@ -182,9 +181,8 @@ public class StatPanel extends JPanel
         private String[][] m_collectedData;
         
         
-        public StatTableModel(GameData data)
+        public StatTableModel()
         {
-            m_data = data;
             m_data.addDataChangeListener(this);
             m_isDirty = true;
             
@@ -298,7 +296,6 @@ public class StatPanel extends JPanel
     {
         /* Flag to indicate whether data needs to be recalculated */
         private boolean isDirty = true;
-        private GameData m_data;
         /* Column Header Names */
 
         /* Row Header Names */
@@ -310,9 +307,8 @@ public class StatPanel extends JPanel
         /* Convenience mapping of technology names -> row */
         private Map<String, Integer> rowMap = null;
 
-        public TechTableModel(GameData gdata)
+        public TechTableModel()
         {
-            m_data = gdata;
             m_data.addDataChangeListener(this);
 
             initColList();

@@ -115,7 +115,7 @@ public class ProductionPanel extends JPanel
         while (iter.hasNext())
         {
             ProductionRule productionRule = (ProductionRule) iter.next();
-            Rule rule = new Rule(productionRule, data, player);
+            Rule rule = new Rule(productionRule, player);
             int initialQuantity = initialPurchase.getInt(productionRule);
             rule.setQuantity(initialQuantity);
             m_rules.add(rule);
@@ -215,15 +215,13 @@ public class ProductionPanel extends JPanel
     class Rule extends JPanel
     {
         private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-        private int m_cost;
-        private GameData m_data;
+        private int m_cost; 
         private UnitType m_type;
         private ProductionRule m_rule;
 
-        Rule(ProductionRule rule, GameData data, PlayerID id)
+        Rule(ProductionRule rule, PlayerID id)
         {
             setLayout(new GridBagLayout());
-            m_data = data;
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
             m_type = (UnitType) rule.getResults().keySet().iterator().next();

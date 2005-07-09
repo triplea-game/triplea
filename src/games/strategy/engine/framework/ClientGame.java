@@ -39,7 +39,7 @@ import java.util.*;
  */
 public class ClientGame implements IGame
 {
-  private ListenerList m_gameStepListeners = new ListenerList();
+  private ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<GameStepListener>();
   private final GameData m_data;
   private final IMessenger m_messenger;
   private final IRemoteMessenger m_remoteMessenger;
@@ -131,10 +131,10 @@ public class ClientGame implements IGame
           }
         }
         
-        Iterator iter = m_gameStepListeners.iterator();
+        Iterator<GameStepListener> iter = m_gameStepListeners.iterator();
         while(iter.hasNext())
         {
-          GameStepListener listener = (GameStepListener) iter.next();
+          GameStepListener listener = iter.next();
           listener.gameStepChanged(stepName, delegateName, player, round, displayName);
         }
         

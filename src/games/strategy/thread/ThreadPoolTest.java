@@ -66,21 +66,23 @@ public class ThreadPoolTest extends TestCase
   public void testSimple()
   {
     ThreadPool pool = new ThreadPool(5, "test");
-    Collection<Runnable> tasks = new ArrayList<Runnable>();
+    Collection<Task> tasks = new ArrayList<Task>();
 
     for(int i = 0; i < 3000; i++)
     {
-      Runnable task = new Task();
+      Task task = new Task();
       tasks.add(task);
       pool.runTask(task);
     }
 
+    assertEquals(5, pool.getThreadCount());
+    
     pool.waitForAll();
 
-    Iterator<Runnable> iter = tasks.iterator();
+    Iterator<Task> iter = tasks.iterator();
     while(iter.hasNext())
     {
-      assertTrue( ((Task) iter.next()).isDone());
+      assertTrue(iter.next().isDone());
     }
     pool.shutDown();
   }
@@ -158,6 +160,13 @@ class Task implements Runnable
 
   public void run()
   {
+	try 
+	{
+		Thread.sleep(0,1);
+	} catch (InterruptedException e) 
+	{
+		e.printStackTrace();
+	}
     done = true;
   }
 }

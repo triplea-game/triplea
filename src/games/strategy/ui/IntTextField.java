@@ -42,7 +42,7 @@ public class IntTextField extends JTextField
 
 	private int m_max = Integer.MAX_VALUE;
 	private int m_min = Integer.MIN_VALUE;
-	private ListenerList m_listeners = new ListenerList();
+	private ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<IntTextFieldChangeListener>();
 	
 	public static void main(String[] args)
 	{
@@ -231,10 +231,10 @@ public class IntTextField extends JTextField
 	
 	private void notifyListeners()
 	{
-		Iterator iter = m_listeners.iterator();
+		Iterator<IntTextFieldChangeListener> iter = m_listeners.iterator();
 		while(iter.hasNext())
 		{
-			IntTextFieldChangeListener listener = (IntTextFieldChangeListener) iter.next();
+			IntTextFieldChangeListener listener = iter.next();
 			listener.changedValue(this);
 		}
 	}

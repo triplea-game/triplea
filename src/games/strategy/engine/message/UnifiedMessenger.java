@@ -16,6 +16,7 @@ package games.strategy.engine.message;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import games.strategy.net.*;
+import games.strategy.thread.ThreadPool;
 import games.strategy.util.Match;
 
 import java.io.*;
@@ -35,7 +36,7 @@ public class UnifiedMessenger
     private final static Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
 
     //a thread pool to run the invoke on
-    private static games.strategy.thread.ThreadPool m_threadPool = new games.strategy.thread.ThreadPool(15, "UnifiedMessengerPool");
+    private static ThreadPool m_threadPool = new ThreadPool(15, "UnifiedMessengerPool");
 
     //the messenger we are based on
     private final IMessenger m_messenger;

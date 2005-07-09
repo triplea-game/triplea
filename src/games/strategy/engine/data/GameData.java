@@ -49,8 +49,8 @@ public class GameData implements java.io.Serializable
     private String m_gameName;
 	private Version m_gameVersion;
 
-	private transient ListenerList m_territoryListeners = new ListenerList();
-	private transient ListenerList m_dataChangeListeners = new ListenerList();
+	private transient ListenerList<TerritoryListener> m_territoryListeners = new ListenerList<TerritoryListener>();
+	private transient ListenerList<GameDataChangeListener> m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
 
 	private final AllianceTracker m_alliances = new AllianceTracker(this);
 	private final DelegateList m_delegateList;
@@ -226,8 +226,8 @@ public class GameData implements java.io.Serializable
 	{
 	    m_relentrantLock = new ReentrantLock();
 
-		m_territoryListeners = new ListenerList();
-		m_dataChangeListeners = new ListenerList();
+		m_territoryListeners = new ListenerList<TerritoryListener>();
+		m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
 		
 	}
 	

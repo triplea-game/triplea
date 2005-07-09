@@ -38,10 +38,10 @@ public class ServerMessenger implements IServerMessenger
   private final Node m_node;
   private final Set<INode> m_allNodes = Collections.synchronizedSet(new HashSet<INode>());
   private boolean m_shutdown = false;
-  private final ListenerList m_connections = new ListenerList();
-  private final ListenerList m_listeners = new ListenerList();
-  private final ListenerList m_errorListeners = new ListenerList();
-  private final ListenerList m_connectionListeners = new ListenerList();
+  private final ListenerList<Connection> m_connections = new ListenerList<Connection>();
+  private final ListenerList<IMessageListener> m_listeners = new ListenerList<IMessageListener>();
+  private final ListenerList<IMessengerErrorListener> m_errorListeners = new ListenerList<IMessengerErrorListener>();
+  private final ListenerList<IConnectionChangeListener> m_connectionListeners = new ListenerList<IConnectionChangeListener>();
   private boolean m_acceptNewConnection = false;
   private IConnectionAccepter m_connectionAccepter = null;
   
@@ -109,10 +109,10 @@ public class ServerMessenger implements IServerMessenger
       catch (Exception e)
       {}
 
-      Iterator iter = m_connections.iterator();
+      Iterator<Connection> iter = m_connections.iterator();
       while (iter.hasNext())
       {
-        Connection current = (Connection) iter.next();
+        Connection current = iter.next();
         current.shutDown();
       }
       m_allNodes.clear();
@@ -135,10 +135,10 @@ public class ServerMessenger implements IServerMessenger
 
   public void flush()
   {
-    Iterator iter = m_connections.iterator();
+    Iterator<Connection> iter = m_connections.iterator();
     while (iter.hasNext())
     {
-      Connection c = (Connection) iter.next();
+      Connection c = iter.next();
       c.flush();
     }
   }
@@ -181,10 +181,10 @@ public class ServerMessenger implements IServerMessenger
     if (m_shutdown)
       return;
     INode destination = msg.getFor();
-    Iterator iter = m_connections.iterator();
+    Iterator<Connection> iter = m_connections.iterator();
     while (iter.hasNext())
     {
-      Connection connection = (Connection) iter.next();
+      Connection connection = iter.next();
       if (connection.getRemoteNode().equals(destination))
       {
 
@@ -200,10 +200,10 @@ public class ServerMessenger implements IServerMessenger
       return;
 
     INode source = msg.getFrom();
-    Iterator iter = m_connections.iterator();
+    Iterator<Connection> iter = m_connections.iterator();
     while (iter.hasNext())
     {
-      Connection connection = (Connection) iter.next();
+      Connection connection = iter.next();
       if (!connection.getRemoteNode().equals(source))
       {
 
@@ -262,10 +262,10 @@ public class ServerMessenger implements IServerMessenger
 
   private void notifyListeners(MessageHeader msg)
   {
-    Iterator iter = m_listeners.iterator();
+    Iterator<IMessageListener> iter = m_listeners.iterator();
     while (iter.hasNext())
     {
-      IMessageListener listener = (IMessageListener) iter.next();
+      IMessageListener listener = iter.next();
       listener.messageReceived(msg.getMessage(), msg.getFrom());
     }
   }
@@ -292,10 +292,10 @@ public class ServerMessenger implements IServerMessenger
 
   private void notifyConnectionsChanged()
   {
-    Iterator iter = m_connectionListeners.iterator();
+    Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
     while (iter.hasNext())
     {
-      ( (IConnectionChangeListener) iter.next()).connectionsChanged();
+      iter.next().connectionsChanged();
     }
   }
 
@@ -362,10 +362,10 @@ public class ServerMessenger implements IServerMessenger
       removeConnection(connection);
 
       //nofity this node
-      Iterator iter = m_errorListeners.iterator();
+      Iterator<IMessengerErrorListener> iter = m_errorListeners.iterator();
       while (iter.hasNext())
       {
-        IMessengerErrorListener errorListener = (IMessengerErrorListener) iter.next();
+        IMessengerErrorListener errorListener = iter.next();
         errorListener.connectionLost(connection.getRemoteNode(), error, unsent);
       }
     }

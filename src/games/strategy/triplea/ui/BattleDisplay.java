@@ -490,17 +490,17 @@ public class BattleDisplay extends JPanel
         return player;
     }
 
-    private static final int WIDTH = 100;
-    private static final int HEIGHT = 100;
+    private static final int MY_WIDTH = 100;
+    private static final int MY_HEIGHT = 100;
 
     private JComponent getTerritoryComponent()
     {
 
-        Image finalImage = Util.createImage(WIDTH, HEIGHT, true);
+        Image finalImage = Util.createImage(MY_WIDTH, MY_HEIGHT, true);
 
         Image territory = m_mapPanel.getTerritoryImage(m_location);
 
-        finalImage.getGraphics().drawImage(territory, 0, 0, WIDTH, HEIGHT, this);
+        finalImage.getGraphics().drawImage(territory, 0, 0, MY_WIDTH, MY_HEIGHT, this);
 
         return new JLabel(new ImageIcon(finalImage));
 

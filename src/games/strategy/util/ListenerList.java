@@ -34,28 +34,28 @@ import java.util.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class ListenerList
+public class ListenerList <T>
 {
-	private Collection<Object> m_listeners = new LinkedList<Object>();
-	private Collection<Object> m_listenersCached;
+	private Collection<T> m_listeners = new LinkedList<T>();
+	private Collection<T> m_listenersCached;
 	
-	public synchronized void add(Object o)
+	public synchronized void add(T o)
 	{
 		m_listeners.add(o);
 		m_listenersCached = null;		
 	}
 	
-	public synchronized void remove(Object o)
+	public synchronized void remove(T o)
 	{
 		m_listeners.remove(o);
 		m_listenersCached = null;
 	}
 	
-	public synchronized Iterator<Object> iterator()
+	public synchronized Iterator<T> iterator()
 	{
 		if(m_listenersCached == null)
 		{
-			m_listenersCached = new ArrayList<Object>(m_listeners);
+			m_listenersCached = new ArrayList<T>(m_listeners);
 		}
 		return m_listenersCached.iterator();
 	}
@@ -63,9 +63,9 @@ public class ListenerList
 	/**
 	 * @return a new list with the same elemnts as the current list.
 	 */
-	public synchronized List<Object> toList()
+	public synchronized List<T> toList()
 	{
-		return new ArrayList<Object>(m_listeners);
+		return new ArrayList<T>(m_listeners);
 	}
 	
 	public synchronized String toString()
