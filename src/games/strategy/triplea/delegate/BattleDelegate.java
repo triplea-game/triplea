@@ -33,6 +33,7 @@ import java.util.*;
  * @author Sean Bridges
  * @version 1.0
  */
+@AutoSave(beforeStepStart=true,afterStepEnd=true)
 public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
 {
 

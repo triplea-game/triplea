@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
@@ -32,6 +33,7 @@ import games.strategy.triplea.attatchments.TerritoryAttatchment;
  *
  * At the end of the turn collect income.
  */
+@AutoSave(afterStepEnd=true)
 public class EndTurnDelegate extends AbstractEndTurnDelegate
 {
 

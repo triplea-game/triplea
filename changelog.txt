@@ -1,3 +1,7 @@
+* autosave now happens at the end of a turn, after combat move and before non combat 
+
+* use annotations to determine when to autosave
+
 * fix bug where versions like 0.6.0.1 would be displayed as 0.6.1
 
 Changes for 0.6.0.1

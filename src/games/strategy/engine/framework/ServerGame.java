@@ -169,7 +169,7 @@ public class ServerGame implements IGame
     public void startGame()
     {
         while (true)
-            startNextStep();
+            runStep();
     }
 
     public void stopGame()
@@ -177,23 +177,66 @@ public class ServerGame implements IGame
         getCurrentStep().getDelegate().end();
     }
 
-    public void endStep()
-    {
-        getCurrentStep().getDelegate().end();
-        startNextStep();
-    }
+	private void autoSave() {
+		try
+        {
+            SaveGameFileChooser.ensureDefaultDirExists();
+            File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME);
+            System.out.print("Autosaving...");
+            new GameDataManager().saveGame(autosaveFile, m_data);
+            System.out.println("done");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+	}
 
   
 
-    private void startNextStep()
+    private void runStep()
     {
         if (getCurrentStep().hasReachedMaxRunCount())
         {
             m_data.getSequence().next();
-            startNextStep();
             return;
         }
 
+    	startStep();
+    	
+        waitForPlayerToFinishStep();
+        
+        endStep();
+        
+        
+        
+        
+        if(m_data.getSequence().next())
+        {
+            m_data.getHistory().getHistoryWriter().startNextRound(m_data.getSequence().getRound());
+        }
+
+    }
+
+	private void endStep() 
+	{
+		getCurrentStep().getDelegate().end();
+		getCurrentStep().incrementRunCount();    
+        
+    	if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
+    	{
+    		if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).afterStepEnd())
+    			autoSave();
+    	}
+	}
+
+	private void startStep() 
+	{
+		if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
+    	{
+    		if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).beforeStepStart())
+    			autoSave();
+    	}
         
         DefaultDelegateBridge bridge = new DefaultDelegateBridge(
                 m_data, 
@@ -203,37 +246,10 @@ public class ServerGame implements IGame
                 );
         bridge.setRandomSource(m_randomSource);
 
-
+        
         notifyGameStepChanged();
         getCurrentStep().getDelegate().start(bridge, m_data);
-
-        waitForPlayerToFinishStep();
-        getCurrentStep().getDelegate().end();
-        getCurrentStep().incrementRunCount();
-        if(m_data.getSequence().next())
-        {
-            m_data.getHistory().getHistoryWriter().startNextRound(m_data.getSequence().getRound());
-        }
-
-        try
-        {
-            if (m_data.getSequence().getStep().getName().indexOf("EndTurn") != -1)
-            {
-                SaveGameFileChooser.ensureDefaultDirExists();
-                File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME);
-                System.out.print("Autosaving...");
-                new GameDataManager().saveGame(autosaveFile, m_data);
-                System.out.println("done");
-            }
-            
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-    }
+	}
 
     private void waitForPlayerToFinishStep()
     {
