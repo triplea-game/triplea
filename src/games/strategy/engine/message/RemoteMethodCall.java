@@ -12,22 +12,30 @@
 
 package games.strategy.engine.message;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * All the info neccassary to describe a method call in one handy
  * serializable package.
  * 
  */
-public class RemoteMethodCall implements Serializable
+public class RemoteMethodCall implements Externalizable
 {
-    private final String m_remoteName;
-    private final String m_methodName;
-    private final Object[] m_args;
+    private String m_remoteName;
+    private String m_methodName;
+    private Object[] m_args;
 
     //stored as a String[] so we can be serialzed
-    private final String[] m_argTypes;
+    private String[] m_argTypes;
 
+    public RemoteMethodCall()
+    {
+    	
+    }
+    
     public RemoteMethodCall(final String remoteName, final String methodName,
             final Object[] args, final Class[] argTypes)
     {
@@ -125,4 +133,21 @@ public class RemoteMethodCall implements Serializable
     {
         return "Remote method call:" + m_methodName + " on:" + m_remoteName;
     }
+
+	public void writeExternal(ObjectOutput out) throws IOException 
+	{
+		out.writeObject(m_remoteName);
+		out.writeObject(m_methodName);
+		out.writeObject(m_args);
+		out.writeObject(m_argTypes);
+		
+	}
+
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
+	{
+		m_remoteName = (String) in.readObject();
+		m_methodName = (String) in.readObject();
+		m_args = (Object[]) in.readObject();
+		m_argTypes = (String[]) in.readObject();
+	}
 }

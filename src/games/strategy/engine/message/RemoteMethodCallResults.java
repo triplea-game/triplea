@@ -13,7 +13,10 @@
  */
 package games.strategy.engine.message;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * 
@@ -28,11 +31,16 @@ import java.io.Serializable;
  * since the method can either throw or return
  * 
  */
-class RemoteMethodCallResults implements Serializable
+class RemoteMethodCallResults implements Externalizable
 {
-    private final Object m_rVal;
+    private Object m_rVal;
     //throwable implements Serializable
-    private final Throwable m_exception;
+    private Throwable m_exception;
+    
+    public RemoteMethodCallResults()
+    {
+    	
+    }
     
     public RemoteMethodCallResults(final Object rVal)
     {
@@ -54,4 +62,17 @@ class RemoteMethodCallResults implements Serializable
     {
         return m_rVal;
     }
+
+	public void writeExternal(ObjectOutput out) throws IOException 
+	{
+		out.writeObject(m_rVal);
+		out.writeObject(m_exception);
+	}
+
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
+	{
+		m_rVal = in.readObject();
+		m_exception = (Throwable) in.readObject();
+		
+	}
 }

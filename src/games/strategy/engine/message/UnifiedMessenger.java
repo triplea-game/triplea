@@ -964,12 +964,16 @@ class Invoke implements Externalizable
 
 //the results of a remote invocation
 
-class InvocationResults implements Serializable
+class InvocationResults implements Externalizable
 {
-    //a collection of RemoteMethodCallResults
-    public final Collection<RemoteMethodCallResults> results;
-    public final GUID methodCallID;
+    public Collection<RemoteMethodCallResults> results;
+    public GUID methodCallID;
 
+    public InvocationResults()
+    {
+    	
+    }
+    
     public InvocationResults(Collection<RemoteMethodCallResults> results, GUID methodCallID)
     {
         this.results = results;
@@ -980,6 +984,21 @@ class InvocationResults implements Serializable
     {
         return "Invocation results for method id:" + methodCallID + " number of results:" + results.size();
     }
+
+	public void writeExternal(ObjectOutput out) throws IOException 
+	{
+		 out.writeObject(results);
+		 out.writeObject(methodCallID);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
+	{
+		results = (Collection) in.readObject();
+		methodCallID = (GUID) in.readObject();
+		
+	}
 
 }
 
