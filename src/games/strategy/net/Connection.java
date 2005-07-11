@@ -51,6 +51,9 @@ class Connection
     private final LinkedBlockingQueue<MessageHeader> m_waitingToBeSent = new LinkedBlockingQueue<MessageHeader>();
     private IObjectStreamFactory m_objectStreamFactory;
 
+    
+    private long m_totalRead = 0;
+    private long m_totatlWriten = 0;
 
     public Connection(Socket s, INode ident, IConnectionListener listener, IObjectStreamFactory fact) throws IOException
     {
@@ -71,7 +74,14 @@ class Connection
             ObjectOutputStream out = m_objectStreamFactory.create(sink);
             out.writeObject(header);
             sink.close();
-            String message = (read ? "READ:" : "WRITE:") + header.getMessage() + " size:" + sink.toByteArray().length;
+            int size = sink.toByteArray().length;
+            
+            if(read)
+              m_totalRead += size;
+            else
+              m_totatlWriten += size;
+            
+            String message = (read ? "READ:" : "WRITE:") + header.getMessage() + " size:" + size + " total:" + (read ? m_totalRead : m_totatlWriten);
             s_logger.log(Level.FINEST, message);
 
         } catch (IOException e)

@@ -20,10 +20,10 @@
 
 package games.strategy.net;
 
-import games.strategy.net.GUID;
-
-import java.io.*;
 import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.net.InetAddress;
 
 /**
@@ -34,82 +34,77 @@ import java.net.InetAddress;
 
 //written very often over the network, so make externalizable to make faster and reduce traffic
 public class Node implements INode, Externalizable
-{	
-	private String m_name;
-	private int m_port;
-	private InetAddress m_address;
-	private GUID m_id = new GUID();
+{
+  private String m_name;
+  private int m_port;
+  private InetAddress m_address;
 
-	//needed to support Externalizable
-	public Node()
-	{
-	    
-	}
-	
-	/** Creates new Node */
-    public Node(String name, InetAddress address, int port) 
-	{
-		m_name = name;
-		m_address = address;
-		m_port = port;
-    }
+  //needed to support Externalizable
+  public Node()
+  {
 
-	public String getName() 
-	{
-		return m_name;
-	}	
-	
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-			return false;
-		if(! (obj instanceof Node))
-			return false;
-		
-		Node other = (Node) obj;
-		
-		boolean sameID = this.m_id.equals(other.m_id);
-		if(sameID && !this.m_name.equals(other.m_name))
-			throw new IllegalStateException("Same ids but different names.  This:" + this + " other:" + other);
-		
-		return sameID;
-	}
-	
-	public int hashCode()
-	{
-		return m_id.hashCode();
-	}
-	
-	public String toString()
-	{
-		return m_name + " port:" + m_port + " ip:" + m_address.getHostAddress();
-	}
-	
-	public int getPort()
-	{
-		return m_port;
-	}
-	
-	public InetAddress getAddress()
-	{
-		return m_address;
-	}
-	
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-    {
-        m_name = (String) in.readObject();
-        m_port = in.readInt();
-        m_address = (InetAddress) in.readObject();
-        m_id = (GUID) in.readObject();
-    }
+  }
 
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
-        out.writeObject(m_name);
-        out.writeInt(m_port);
-        out.writeObject(m_address);
-        out.writeObject(m_id);
-    }
-	
-	
+  /** Creates new Node */
+  public Node(String name, InetAddress address, int port)
+  {
+    m_name = name;
+    m_address = address;
+    m_port = port;
+  }
+
+  public String getName()
+  {
+    return m_name;
+  }
+
+  public boolean equals(Object obj)
+  {
+    if (obj == null)
+      return false;
+    if (!(obj instanceof Node))
+      return false;
+
+    Node other = (Node) obj;
+
+    return other.m_name.equals(this.m_name) && other.m_port == this.m_port
+        && other.m_address.equals(this.m_address);
+
+  }
+
+  public int hashCode()
+  {
+    return m_name.hashCode();
+  }
+
+  public String toString()
+  {
+    return m_name + " port:" + m_port + " ip:" + m_address.getHostAddress();
+  }
+
+  public int getPort()
+  {
+    return m_port;
+  }
+
+  public InetAddress getAddress()
+  {
+    return m_address;
+  }
+
+  public void readExternal(ObjectInput in) throws IOException,
+      ClassNotFoundException
+  {
+    m_name = (String) in.readObject();
+    m_port = in.readInt();
+    m_address = (InetAddress) in.readObject();
+  }
+
+  public void writeExternal(ObjectOutput out) throws IOException
+  {
+    out.writeObject(m_name);
+    out.writeInt(m_port);
+    out.writeObject(m_address);
+  }
+
 }
