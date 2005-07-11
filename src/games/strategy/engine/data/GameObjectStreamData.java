@@ -107,13 +107,13 @@ public class GameObjectStreamData implements Externalizable
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         m_name = (String) in.readObject();
-        m_type = (GameType) in.readObject();
+        m_type = GameType.values()[in.readByte()];
+        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(m_name);
-        out.writeObject(m_type);
-        
+        out.writeByte((byte) m_type.ordinal());
     }
 }
