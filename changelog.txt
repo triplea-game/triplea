@@ -1,3 +1,5 @@
+* fix bug where versions like 0.6.0.1 would be displayed as 0.6.1
+
 Changes for 0.6.0.1
 
 * fix bug [ 1225276 ] Aircraft unable to attack or land (sgb)
