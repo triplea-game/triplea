@@ -40,7 +40,8 @@ public class EmailValidatorTest extends TestCase
                 			"some@some.com",
                 			"some.someMore@some.com",
                 			"some@some.com some2@some2.com",
-                			""
+                			"",
+                      "some@some.some.some.com"
                                     };
         String[] bad = new String[]
                                    {

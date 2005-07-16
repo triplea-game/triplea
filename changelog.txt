@@ -1,3 +1,5 @@
+* fixed bug [ 1238910 ] PBEM mode cannot accept subdomains
+
 * add "click" to select casualties button, many users are confused and dont know to click to select casualties
 
 * reduce network traffic somewhat by more efficient serialization

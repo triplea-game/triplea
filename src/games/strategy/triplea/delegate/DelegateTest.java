@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.random.EmailValidatorTest;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttatchment;
 
@@ -183,6 +184,7 @@ public class DelegateTest extends TestCase
 		suite.addTestSuite(PlaceDelegateTest.class);
 		suite.addTestSuite(MoveDelegateTest.class);
 		suite.addTestSuite(MoveValidatorTest.class);
+    suite.addTestSuite(EmailValidatorTest.class);
 		return suite;
 	}
 	
