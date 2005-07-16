@@ -315,7 +315,7 @@ public class BattleDisplay extends JPanel
                 m_dicePanel.setDiceRoll(dice);
 
                 boolean plural = count > 1;
-                final String btnText = hit.getName() + " select " + count + (plural ? " casualties" : " casualty");
+                final String btnText = hit.getName() + ", click to select " + count + (plural ? " casualties" : " casualty");
                 m_actionButton.setAction(new AbstractAction(btnText)
                 {
 

@@ -1,3 +1,5 @@
+* add "click" to select casualties button, many users are confused and dont know to click to select casualties
+
 * reduce network traffic somewhat by more efficient serialization
 
 * autosave now happens at the end of a turn, after combat move and before non combat 
