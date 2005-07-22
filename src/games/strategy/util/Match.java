@@ -69,11 +69,10 @@ public abstract class Match<T>
 	 * If n matches cannot be found will return all matches that
 	 * can be found.
 	 */
-	@SuppressWarnings("unchecked")
     public static final <T> List<T> getNMatches(Collection<T> collection, int max, Match<T> aMatch)
 	{
 		if(max == 0)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		if(max < 0)
 			throw new IllegalArgumentException("max must be positive, instead its:" + max);
 

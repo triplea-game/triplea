@@ -184,14 +184,13 @@ public class MovePanel extends ActionPanel
      * If needed will ask the user what transports to unload.
      * This is needed because the user needs to be able to select what transports to unload
      */
-    @SuppressWarnings("unchecked")
     private Collection<Unit> getUnitsThatCanBeUnload(Route route)
     {
       //get the allied transports
       Match<Unit> alliedTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
       Collection<Unit> transports = Match.getMatches(route.getStart().getUnits().getUnits(), alliedTransports);
       if(transports.isEmpty())
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
 
       //find out what they are transporting
       MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getStart(), transports);
@@ -213,7 +212,7 @@ public class MovePanel extends ActionPanel
       }
 
       if(candidateTransports.isEmpty())
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
       //only one, no choice
       if(candidateTransports.size() == 1)
       {
@@ -228,7 +227,7 @@ public class MovePanel extends ActionPanel
                                                 JOptionPane.OK_CANCEL_OPTION,
                                                 JOptionPane.PLAIN_MESSAGE, null, null, null);
       if(option != JOptionPane.OK_OPTION)
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
 
       Collection<Unit> choosenTransports = chooser.getSelected();
 
@@ -279,7 +278,6 @@ public class MovePanel extends ActionPanel
 	return getUnitsChosen(owned, route);
     }
 
-    @SuppressWarnings("unchecked")
     private Collection<Unit> getUnitsChosen(Collection<Unit> units, Route route)
     {
         
@@ -299,7 +297,7 @@ public class MovePanel extends ActionPanel
 	Map<Unit, Collection<Unit>> mustMoveWithMap = mustMoveWith.getMustMoveWith();
         if (canMove.isEmpty()) {
             JOptionPane.showMessageDialog(getTopLevelAncestor(), "No units can move that far", "No units", JOptionPane.INFORMATION_MESSAGE);
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
 	} else if (canMove.size() == 1) {
           Unit singleUnit = canMove.iterator().next();
 	  movedUnits.add(singleUnit);
@@ -323,7 +321,7 @@ public class MovePanel extends ActionPanel
                                                   JOptionPane.PLAIN_MESSAGE, null, null, null);
 
         if (option != JOptionPane.OK_OPTION)
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
 
         return chooser.getSelected();
     }
@@ -445,14 +443,13 @@ public class MovePanel extends ActionPanel
     /**
      * Allow the user to select what transports to load.
      */
-    @SuppressWarnings("unchecked")
     private Collection<Unit> getTransportsToLoad(Route route)
     {
       Match<Unit> alliedTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
       Collection<Unit> transports = Match.getMatches(route.getEnd().getUnits().getUnits(), alliedTransports);
       //nothing to choose
       if(transports.isEmpty())
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
       //only one, no need to choose
       if(transports.size() == 1)
         return transports;
@@ -486,7 +483,7 @@ public class MovePanel extends ActionPanel
                                                 JOptionPane.OK_CANCEL_OPTION,
                                                 JOptionPane.PLAIN_MESSAGE, null, null, null);
       if (option != JOptionPane.OK_OPTION)
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
 
 
       return chooser.getSelected(false);

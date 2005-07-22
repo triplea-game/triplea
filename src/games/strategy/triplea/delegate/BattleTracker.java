@@ -508,13 +508,12 @@ public class BattleTracker implements java.io.Serializable
     /**
      * Returns the battle that must occur before dependent can occur
      */
-    @SuppressWarnings("unchecked")
     public Collection<Battle> getDependentOn(Battle blocked)
     {
         Collection<Battle> dependent = m_dependencies.get(blocked);
 
         if (dependent == null)
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
 
         return Match.getMatches(dependent, new InverseMatch<Battle>(Matches.BattleIsEmpty));
     }

@@ -425,7 +425,6 @@ public class MapData
      * 
      * @return List of territory names as Strings
      */
-    @SuppressWarnings("unchecked")
     public List<String> territoriesThatOverlap(Rectangle2D bounds)
     {
         List<String> rVal = null;
@@ -451,7 +450,7 @@ public class MapData
             }
         }
         if (rVal == null)
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
 
         return rVal;
 

@@ -169,7 +169,6 @@ public class ClientMessenger implements IMessenger
         return m_connection.isConnected();
     }
 
-    @SuppressWarnings("unchecked")
     public void shutDown()
     {
         //it may be that we recieve this message before the connection has been set up
@@ -180,7 +179,7 @@ public class ClientMessenger implements IMessenger
             System.out.println("Client Messenger waiting for connection to be set");
         }
         m_connection.shutDown();
-        m_allNodes = Collections.EMPTY_SET;
+        m_allNodes = Collections.emptySet();
     }
 
     private IConnectionListener m_connectionListener = new IConnectionListener()

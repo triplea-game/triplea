@@ -54,8 +54,8 @@ public class ServerStartup extends JPanel
   private JTextField m_nameField;
 
   //list of PlayerRows
-  @SuppressWarnings("unchecked")
-private List<PlayerRow> m_playerRows = Collections.EMPTY_LIST;
+
+  private List<PlayerRow> m_playerRows = Collections.emptyList();
 
   private JPanel m_info = new JPanel();
   

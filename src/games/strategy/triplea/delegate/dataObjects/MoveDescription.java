@@ -63,11 +63,10 @@ public class MoveDescription implements java.io.Serializable
         return "Move message route:" + m_route + " units:" + m_units;
     }
     
-    @SuppressWarnings("unchecked")
     public Collection<Unit> getTransportsThatCanBeLoaded()
     {
         if(m_transportsThatCanBeLoaded == null)
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         return m_transportsThatCanBeLoaded;
     }
 }

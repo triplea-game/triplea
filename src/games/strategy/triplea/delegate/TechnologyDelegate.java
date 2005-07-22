@@ -86,7 +86,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
-    @SuppressWarnings("unchecked")
+    
     public TechResults rollTech(int techRolls, TechAdvance techToRollFor)
     {
         boolean canPay = checkEnoughMoney(techRolls);
@@ -115,7 +115,7 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
             if (techHits > 0)
                 advances = Collections.singletonList(techToRollFor);
             else
-                advances = Collections.EMPTY_LIST;
+                advances = Collections.emptyList();
         } else
         {
             advances = getTechAdvances(techHits);
@@ -187,16 +187,15 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
         return count;
     }
 
-    @SuppressWarnings("unchecked")
     private Collection<TechAdvance> getTechAdvances(int hits)
     {
         List<TechAdvance> available = getAvailableAdvances();
         if (available.isEmpty())
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         if (hits >= available.size())
             return available;
         if (hits == 0)
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
 
         Collection<TechAdvance> newAdvances = new ArrayList<TechAdvance>(hits);
 

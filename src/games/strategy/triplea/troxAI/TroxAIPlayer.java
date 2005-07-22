@@ -351,7 +351,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
      */
     public Collection getNumberOfFightersToMoveToNewCarrier(Collection fightersThatCanBeMoved, Territory from)
     {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     /* 

@@ -66,12 +66,11 @@ public class TransportTracker implements java.io.Serializable
    * Returns the collection of units that the given transport has unloaded this turn.
    * Could be empty.
    */
-	@SuppressWarnings("unchecked")
     public Collection<Unit> unloaded(Unit transport)
 	{
 		Collection<Unit> unloaded = m_unloaded.get(transport);
 		if(unloaded == null)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 	  // Copy data structure so that someone doesn't nuke it by mistake
 		return new ArrayList<Unit>(unloaded);
 	}

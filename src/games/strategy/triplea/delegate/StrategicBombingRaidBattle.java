@@ -284,10 +284,10 @@ public class StrategicBombingRaidBattle implements Battle
         return m_battleSite;
     }
 
-    @SuppressWarnings("unchecked")
+    
     public Collection<Unit> getDependentUnits(Collection<Unit> units)
     {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     /**

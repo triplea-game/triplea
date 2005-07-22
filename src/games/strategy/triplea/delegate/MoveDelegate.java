@@ -1472,13 +1472,13 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     }
 
-    private Collection getTerritoriesWhereAAWillFire(Route route, Collection<Unit> units)
+    private Collection<Territory> getTerritoriesWhereAAWillFire(Route route, Collection<Unit> units)
     {
         if (m_nonCombat && !isAlwaysONAAEnabled())
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
 
         if (Match.noneMatch(units, Matches.UnitIsAir))
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
 
         //dont iteratate over the end
         //that will be a battle

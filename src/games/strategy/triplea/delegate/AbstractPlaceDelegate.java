@@ -164,7 +164,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
         if (error != null)
             return new PlaceableUnits(error);
 
-        Collection placeableUnits = getUnitsToBePlaced(to, units, m_player);
+        Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, m_player);
         int maxUnits = getMaxUnitsToBePlaced(to, m_player);
         return new PlaceableUnits(placeableUnits, maxUnits);
     }

@@ -175,11 +175,11 @@ public class PlacePanel extends ActionPanel
     }
   };
 
-  private Collection getUnitsToPlace(Territory territory, int maxUnits[])
+  private Collection<Unit> getUnitsToPlace(Territory territory, int maxUnits[])
   {
       //not our territory
       if(!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer()))
-          return Collections.EMPTY_LIST;
+          return Collections.emptyList();
 
       //get the units that can be placed on this territory.
       Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
@@ -197,7 +197,7 @@ public class PlacePanel extends ActionPanel
            units = Match.getMatches(units, Matches.UnitIsNotSea);
 
        if(units.isEmpty())
-           return Collections.EMPTY_LIST;
+           return Collections.emptyList();
       
        IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
        
@@ -207,7 +207,7 @@ public class PlacePanel extends ActionPanel
        if (production.isError())
        {
            JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getErrorMessage(), "No units", JOptionPane.INFORMATION_MESSAGE);
-           return Collections.EMPTY_LIST;
+           return Collections.emptyList();
        }
        
        maxUnits[0] = production.getMaxUnits();

@@ -21,6 +21,8 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
+import games.strategy.engine.data.Unit;
+
 import java.util.Collection;
 
 
@@ -28,7 +30,7 @@ public class PlaceableUnits implements java.io.Serializable
 {
 	
 	private String m_errorMessage;
-	private Collection m_units;
+	private Collection<Unit> m_units;
 	private int m_maxUnits;
 	
 	/** Creates new ProductionResponseMessage */
@@ -37,13 +39,13 @@ public class PlaceableUnits implements java.io.Serializable
 		m_errorMessage = errorMessage;
     }
 
-    public PlaceableUnits(Collection units, int maxUnits) 
+    public PlaceableUnits(Collection<Unit> units, int maxUnits) 
 	{
 		m_units = units;
 	    m_maxUnits = maxUnits;
    }
 
-	public Collection getUnits()
+	public Collection<Unit> getUnits()
 	{
 		return m_units;
 	}
