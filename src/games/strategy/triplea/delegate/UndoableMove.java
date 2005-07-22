@@ -261,5 +261,10 @@ public class UndoableMove implements Serializable
             }
         }
     }
+    
+    public boolean wasTransportUnloaded(Unit transport)
+    {
+        return m_unloaded.values().contains(transport);
+    }
 
 }

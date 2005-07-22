@@ -409,6 +409,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         if (error != null)
             return error;
 
+
         //dont let the user move out of a battle zone
         //the exception is air units
         if (DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle(route.getStart(), false)
@@ -877,6 +878,15 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
             if (m_transportTracker.wereAnyOfTheseLoadedOnAlliedTransportsThisTurn(units))
                 return "Cannot load and unload an allied transport in the same round";
+            
+            Collection<Unit> transports = mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits()).values();
+            for(Unit transport : transports)
+            {
+                Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(transport);
+                if(alreadyUnloadedTo != null && ! alreadyUnloadedTo.equals(route.getEnd()))
+                    return "Transport has already unloaded units to " + alreadyUnloadedTo.getName();
+            }
+            
         }
 
         //if we are land make sure no water in route except for transport
@@ -1624,6 +1634,19 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     public Class<IMoveDelegate> getRemoteType()
     {
         return IMoveDelegate.class;
+    }
+    
+    private Territory getTerritoryTransportHasUnloadedTo(Unit transport)
+    {
+        
+        for(UndoableMove undoableMove : m_movesToUndo)
+        {
+            if(undoableMove.wasTransportUnloaded(transport))
+            {
+                return undoableMove.getRoute().getEnd();
+            }
+        }
+        return null;
     }
 
     /**
