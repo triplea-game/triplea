@@ -18,21 +18,47 @@
 
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.data.events.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeAttatchmentChange;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.ui.screen.*;
+import games.strategy.triplea.ui.screen.SmallMapImageManager;
+import games.strategy.triplea.ui.screen.Tile;
+import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.util.Stopwatch;
-import games.strategy.ui.*;
+import games.strategy.ui.ImageScrollerLargeView;
+import games.strategy.ui.ScrollListener;
 import games.strategy.util.ListenerList;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.logging.*;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
@@ -46,6 +72,7 @@ public class MapPanel extends ImageScrollerLargeView
     private static Logger s_logger = Logger.getLogger(MapPanel.class.getName());
     
     private ListenerList<MapSelectionListener> m_mapSelectionListeners = new ListenerList<MapSelectionListener>();
+    private ListenerList<UnitSelectionListener> m_unitSelectionListeners = new ListenerList<UnitSelectionListener>();
 
     private GameData m_data;
     private Territory m_currentTerritory; //the territory that the mouse is
@@ -173,7 +200,6 @@ public class MapPanel extends ImageScrollerLargeView
 
     public void removeMapSelectionListener(MapSelectionListener listener)
     {
-
         m_mapSelectionListeners.remove(listener);
     }
 
@@ -213,19 +239,51 @@ public class MapPanel extends ImageScrollerLargeView
         }
     }
 
+    
+    public void addUnitSelectionListener(UnitSelectionListener listener)
+    {
+        m_unitSelectionListeners.add(listener);
+    }
+    
+    public void removeUnitSelectionListener(UnitSelectionListener listener)
+    {
+        m_unitSelectionListeners.remove(listener);
+    }
+
+    public void notifyUnitSelected(List<Unit> units, MouseEvent me)
+    {
+        if(units.isEmpty())
+            return;
+        
+        for(UnitSelectionListener listener : m_unitSelectionListeners)
+        {
+            listener.unitsSelected(units, me);
+        }
+            
+    }
+
+    
+    private List<Unit> getUnits(int x, int y)
+    {
+        return m_tileManager.getUnitsAtPoint(normalizeX(x), y, m_data);
+    }
+    
     private Territory getTerritory(int x, int y)
     {
+        String name = MapData.getInstance().getTerritoryAt(normalizeX(x), y);
+        if (name == null)
+            return null;
+        return m_data.getMap().getTerritory(name);
+    }
 
+    private int normalizeX(int x)
+    {
         int imageWidth = (int) getImageDimensions().getWidth();
         if (x < 0)
             x += imageWidth;
         else if (x > imageWidth)
             x -= imageWidth;
-
-        String name = MapData.getInstance().getTerritoryAt(x, y);
-        if (name == null)
-            return null;
-        return m_data.getMap().getTerritory(name);
+        return x;
     }
 
     public void resetMap()
@@ -253,21 +311,16 @@ public class MapPanel extends ImageScrollerLargeView
 
         public void mouseReleased(MouseEvent e)
         {
-            
             Territory terr = getTerritory(e.getX() + getXOffset(), e.getY() + getYOffset());
             if (terr != null)
                 notifyTerritorySelected(terr, e);
+            
+            if(!m_unitSelectionListeners.isEmpty())
+            {
+                notifyUnitSelected(getUnits(e.getX() + getXOffset(), e.getY() + getYOffset()), e );
+            }
+            
         }
-
-//        public void mouseExit(MouseEvent e)
-//        {
-//
-//            if (m_currentTerritory != null)
-//            {
-//                m_currentTerritory = null;
-//                notifyMouseEntered(null);
-//            }
-//        }
 
     };
 

@@ -258,7 +258,7 @@ public class TileManager
             }
 
             UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), lastPlace,
-                    category.getDamaged(), overflow);
+                    category.getDamaged(), overflow, territory.getName());
             drawing.add(drawable);
             m_allUnitDrawables.add(drawable);
             
@@ -326,5 +326,23 @@ public class TileManager
         }
 
     }
+    
+    
+    public List<Unit> getUnitsAtPoint(int x, int y, GameData gameData)
+    {
+        for(UnitsDrawer drawer : m_allUnitDrawables)
+        {
+            Point placementPoint = drawer.getPlacementPoint();
+            if(x > placementPoint.x && x < placementPoint.x + UnitImageFactory.UNIT_ICON_WIDTH)
+            {
+                if(y > placementPoint.y && y < placementPoint.y + UnitImageFactory.UNIT_ICON_HEIGHT)
+                {
+                    return drawer.getUnits(gameData);
+                }
+            }
+        }
+        return Collections.emptyList();
+    }
+
     
 }

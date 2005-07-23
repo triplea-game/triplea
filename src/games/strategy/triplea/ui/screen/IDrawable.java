@@ -14,10 +14,9 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.*;
-import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
 
@@ -25,10 +24,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.*;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -388,8 +385,9 @@ class UnitsDrawer implements IDrawable
     private final Point m_placementPoint;
     private final boolean m_damaged;
     private final boolean m_overflow;
-
-    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, boolean overflow)
+    private final String m_territoryName;
+    
+    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, boolean overflow, String territoryName)
     {
         m_count = count;
         m_unitType = unitType;
@@ -397,6 +395,7 @@ class UnitsDrawer implements IDrawable
         m_placementPoint = placementPoint;
         m_damaged = damaged;
         m_overflow = overflow;
+        m_territoryName = territoryName;
     }
 
     public void prepare() {}
@@ -437,6 +436,17 @@ class UnitsDrawer implements IDrawable
     }
     
 
+    public List<Unit> getUnits(GameData data)
+    {
+        Territory t = data.getMap().getTerritory(m_territoryName);
+        UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
+        
+        List<Unit> rVal = t.getUnits().getMatches(Matches.unitIsOfType(type));
+        if(rVal.size() != m_count)
+            throw new IllegalStateException("Wrong unit count, count:" + m_count + " not:" + rVal.size());
+        return rVal;
+    }
+    
     public int getLevel()
     {
         return UNITS_LEVEL;
