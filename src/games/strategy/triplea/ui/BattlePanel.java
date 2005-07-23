@@ -248,7 +248,7 @@ public class BattlePanel extends ActionPanel
     }
 
     public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
-            final Collection<Unit> damaged, final Map dependents)
+            final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents)
     {
         SwingUtilities.invokeLater(new Runnable()
         {

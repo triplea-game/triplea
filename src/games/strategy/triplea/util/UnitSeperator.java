@@ -50,8 +50,7 @@ public class UnitSeperator
    * @oaram - forceDamagedCategory - if true then we will ensure a category exists for damaged unit types even if it would be empty
    * @return a Collection of UnitCategories
    */
-  @SuppressWarnings("unchecked")
-public static Set<UnitCategory> categorize(Collection<Unit> units, Map dependent, IntegerMap<Unit> movement)
+  public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement)
   {
     //somewhat odd, but we map UnitCategory->UnitCategory,
     //key and value are the same
@@ -66,9 +65,11 @@ public static Set<UnitCategory> categorize(Collection<Unit> units, Map dependent
       int unitMovement = -1;
       if(movement != null)
         unitMovement = movement.getInt(current);
-      Collection currentDependents = new ArrayList<UnitOwner>();
+      Collection<Unit> currentDependents = null;
       if(dependent != null)
-          currentDependents = (Collection) dependent.get(current);
+      {
+          currentDependents = dependent.get(current);
+      }
       boolean damaged = current.getHits() == 1;
       UnitCategory entry = new UnitCategory(current, currentDependents,unitMovement, damaged);
 

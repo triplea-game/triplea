@@ -166,10 +166,8 @@ class AddUnits extends Change
         m_name = collection.getHolder().getName();
     }
 
-    @SuppressWarnings("unchecked") 
     AddUnits(String name, Collection<Unit> units)
     {
-
         m_units = Collections.unmodifiableCollection(units);
         m_name = name;
     }

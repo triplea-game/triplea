@@ -44,14 +44,13 @@ public class GameMap extends GameDataComponent
 		super(data);
 	}
 
-	@SuppressWarnings("unchecked")
     protected void addTerritory(Territory t1)
 	{
 		if(m_territories.contains(t1) )
 			throw new IllegalArgumentException("Map already contains " + t1.getName());
 
 		m_territories.add(t1);
-		m_connections.put(t1, Collections.EMPTY_SET);
+		m_connections.put(t1, Collections.<Territory>emptySet());
 	}
 
 	protected void addConnection(Territory t1, Territory t2)

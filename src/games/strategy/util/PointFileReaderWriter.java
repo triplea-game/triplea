@@ -43,11 +43,10 @@ public class PointFileReaderWriter
 	/**
 	 * Returns a map of the form String -> Point.
 	 */
-	@SuppressWarnings("unchecked")
     public static Map<String, Point> readOneToOne(InputStream stream) throws IOException
 	{
 	    if(stream == null)
-	        return Collections.EMPTY_MAP;
+	        return Collections.emptyMap();
 	    
 		HashMap<String, Point> mapping = new HashMap<String, Point>();
 		LineNumberReader reader = null;

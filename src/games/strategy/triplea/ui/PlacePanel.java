@@ -144,18 +144,17 @@ public class PlacePanel extends ActionPanel
   
   private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
   {
-    @SuppressWarnings("unchecked")
     public void territorySelected(Territory territory, MouseEvent e)
     {
       if(!getActive() || (e.getButton() != MouseEvent.BUTTON1))
         return;
 
       int maxUnits[] = new int[1];
-      Collection units = getUnitsToPlace(territory, maxUnits);
+      Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
       if (units.isEmpty())
           return;
 
-      UnitChooser chooser = new UnitChooser(units, Collections.EMPTY_MAP, getData(), false);
+      UnitChooser chooser = new UnitChooser(units, Collections.<Unit, Collection<Unit>>emptyMap(), getData(), false);
       String messageText = "Place units in " + territory.getName();
       if (maxUnits[0] > 0)
           chooser.setMax(maxUnits[0]);

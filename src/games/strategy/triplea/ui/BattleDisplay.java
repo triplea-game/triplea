@@ -126,7 +126,7 @@ public class BattleDisplay extends JPanel
 
     }
 
-    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map dependents)
+    public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents)
     {
         setStep(step);
         m_casualties.setNotication(dice, player, killed, damaged, dependents);
@@ -705,7 +705,7 @@ class CasualtyNotificationPanel extends JPanel
         add(m_damaged);
     }
 
-    public void setNotication(DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map dependents)
+    public void setNotication(DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents)
     {
 
         m_dice.setDiceRoll(dice);

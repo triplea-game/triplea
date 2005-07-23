@@ -96,7 +96,7 @@ public class StrategicBombingRaidBattle implements Battle
 
     }
 
-    @SuppressWarnings("unchecked")
+    
     public void fight(IDelegateBridge bridge)
     {
 
@@ -104,9 +104,9 @@ public class StrategicBombingRaidBattle implements Battle
 
         BattleCalculator.sortPreBattle(m_units, m_data);
 
-        Collection defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
+        Collection<Unit> defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAOrFactory);
         String title = "Bombing raid in " + m_battleSite.getName();
-        getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_units, defendingUnits, Collections.EMPTY_MAP, m_attacker, m_defender);
+        getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_units, defendingUnits, Collections.<Unit, Collection<Unit>>emptyMap(), m_attacker, m_defender);
 
         CompositeMatch<Unit> hasAAMatch = new CompositeMatchAnd<Unit>();
         hasAAMatch.add(Matches.UnitIsAA);
@@ -153,7 +153,6 @@ public class StrategicBombingRaidBattle implements Battle
         return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
-    @SuppressWarnings("unchecked")
     private void removeAAHits(IDelegateBridge bridge, DiceRoll dice)
     {
         Collection<Unit> casualties = null;
@@ -172,7 +171,7 @@ public class StrategicBombingRaidBattle implements Battle
         if (casualties.size() != dice.getHits())
             throw new IllegalStateException("Wrong number of casualties");
 
-        getDisplay(bridge).casualtyNotification(m_battleID, FIRE_AA, dice, m_attacker, casualties, Collections.EMPTY_LIST, Collections.EMPTY_MAP);
+        getDisplay(bridge).casualtyNotification(m_battleID, FIRE_AA, dice, m_attacker, casualties, Collections.<Unit>emptyList(), Collections.<Unit, Collection<Unit>>emptyMap());
 
         bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
 

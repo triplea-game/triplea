@@ -298,12 +298,8 @@ public class MapPanel extends ImageScrollerLargeView
         repaint();
     }
 
-    @SuppressWarnings("unchecked")
     public void setGameData(GameData data)
     {
-
-        
-        
         //clean up any old listeners
         if (m_data != null)
         {
@@ -317,7 +313,7 @@ public class MapPanel extends ImageScrollerLargeView
         m_data.addDataChangeListener(TECH_UPDATE_LISTENER);
         
         //stop painting in the background
-        m_backgroundDrawer.setTiles(Collections.EMPTY_SET);
+        m_backgroundDrawer.setTiles(Collections.<Tile>emptySet());
         
         m_tileManager.resetTiles(m_data, MapData.getInstance());
 

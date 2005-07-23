@@ -52,19 +52,19 @@ public class UnitChooser extends JPanel
   private JButton m_selectNoneButton;
   /** Creates new UnitChooser */
 
-  @SuppressWarnings("unchecked")
-public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data)
+  
+  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data)
   {
     m_dependents = dependent;
     m_data = data;
-    createEntries(units, dependent, movement, Collections.EMPTY_LIST);
+    createEntries(units, dependent, movement, Collections.<Unit>emptyList());
     layoutEntries();
   }
 
- @SuppressWarnings("unchecked")
-public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)
+ 
+  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)
   {
-    this(units, Collections.EMPTY_LIST, dependent, data, allowTwoHit);
+    this(units, Collections.<Unit>emptyList(), dependent, data, allowTwoHit);
   }
 
   public UnitChooser(Collection<Unit> units, List<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)

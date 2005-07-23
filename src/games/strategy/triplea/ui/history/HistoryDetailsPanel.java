@@ -47,7 +47,7 @@ public class HistoryDetailsPanel extends JPanel
   }
 
   @SuppressWarnings("unchecked")
-public void render(HistoryNode node)
+  public void render(HistoryNode node)
   {
     removeAll();
     m_mapPanel.setRoute(null);

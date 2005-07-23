@@ -112,13 +112,12 @@ public class BattleCalculator
         return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
     }
 
-    @SuppressWarnings("unchecked")
     public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
             GameData data, DiceRoll dice, boolean defending)
     {
         int hits = dice.getHits();
         if (hits == 0)
-            return new CasualtyDetails(Collections.EMPTY_LIST, Collections.EMPTY_LIST, true);
+            return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
 
         Map<Unit, Collection<Unit>> dependents = getDependents(targets, data);
 
@@ -135,7 +134,7 @@ public class BattleCalculator
             {
                 killed.add(iter.next());
             }
-            return new CasualtyDetails(killed, Collections.EMPTY_LIST, true);
+            return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
         }
 
         // Create production cost map, Maybe should do this elsewhere, but in

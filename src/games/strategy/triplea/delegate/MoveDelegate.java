@@ -256,7 +256,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return carrierMustMoveWith(units, start.getUnits().getUnits());
     }
 
-    @SuppressWarnings("unchecked")
     public Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Collection<Unit> startUnits)
     {
 
@@ -270,7 +269,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         Collection<Unit> alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
 
         if (alliedAir.isEmpty())
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
 
         //remove air that can be carried by allied
         CompositeMatch<Unit> friendlyNotOwnedCarrier = new CompositeMatchAnd<Unit>();
@@ -289,7 +288,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
 
         if (alliedAir.isEmpty())
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
 
         Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
         //get air that must be carried by our carriers

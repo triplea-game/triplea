@@ -34,21 +34,17 @@ public class UnitCategory implements Comparable
 
    private boolean m_damaged = false;
 
-   public UnitCategory(Unit unit, Collection<UnitOwner> dependents, int movement)
+   public UnitCategory(Unit unit, Collection<Unit> dependents, int movement)
    {
        this(unit, dependents, movement, false);
    }
 
-   public UnitCategory(Unit unit, Collection<UnitOwner> dependents, int movement, boolean damaged)
+   public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, boolean damaged)
    {
      m_type = unit.getType();
      m_movement = movement;
      m_owner = unit.getOwner();
      m_damaged = damaged;
-     if(dependents == null)
-       m_dependents = new ArrayList<UnitOwner>();
-     else
-       m_dependents = new ArrayList<UnitOwner>(dependents);
      m_units.add(unit);
      createDependents(dependents);
    }
@@ -63,18 +59,18 @@ public class UnitCategory implements Comparable
        return UnitAttatchment.get(m_type).isTwoHit();
    }
 
-   private void createDependents(Collection dependents)
+   private void createDependents(Collection<Unit> dependents)
    {
      m_dependents = new ArrayList<UnitOwner>();
 
      if(dependents == null)
        return;
 
-     Iterator iter = dependents.iterator();
+     Iterator<Unit> iter = dependents.iterator();
 
      while(iter.hasNext())
      {
-       Unit current = (Unit) iter.next();
+       Unit current = iter.next();
        m_dependents.add(new UnitOwner(current));
      }
    }

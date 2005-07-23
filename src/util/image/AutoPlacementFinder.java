@@ -160,7 +160,6 @@ public class AutoPlacementFinder
        
        @return java.util.List
     */
-    @SuppressWarnings("unchecked")
     static List<Point> getPlacementsStartingAtMiddle(Collection<Polygon> countryPolygons, Rectangle bounding, Point center)
     {
         List<Rectangle2D> placementRects  = new ArrayList<Rectangle2D>();
@@ -183,7 +182,7 @@ public class AutoPlacementFinder
 		{
                     x--;
                 }
-		isPlacement(countryPolygons, Collections.EMPTY_SET, placementRects, placementPoints, place, x, y);
+		isPlacement(countryPolygons, Collections.<Polygon>emptySet(), placementRects, placementPoints, place, x, y);
             }
 	    
             for(int j = 0; j < Math.abs(step); j++)
@@ -196,7 +195,7 @@ public class AutoPlacementFinder
 		{
                     y--;
                 }
-		isPlacement(countryPolygons, Collections.EMPTY_SET, placementRects, placementPoints, place, x, y);
+		isPlacement(countryPolygons, Collections.<Polygon>emptySet(), placementRects, placementPoints, place, x, y);
             }
 
             step = -step;
