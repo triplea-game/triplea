@@ -20,58 +20,9 @@
 
 package games.strategy.util;
 
-import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- *
- *
- * Thread safe list of listeners. <p>
- * Calls to iterator return an iterator that will iterate over the list <br>
- * at the time that iterator was called.  Elements can be added or removed <br>
- * to the list while iterating without a concurentModificationException being <br>
- * thrown or the elements being iterator over changing.
- * 
- * @author  Sean Bridges
- * @version 1.0
- */
-public class ListenerList <T>
-{
-	private Collection<T> m_listeners = new LinkedList<T>();
-	private Collection<T> m_listenersCached;
-	
-	public synchronized void add(T o)
-	{
-		m_listeners.add(o);
-		m_listenersCached = null;		
-	}
-	
-	public synchronized void remove(T o)
-	{
-		m_listeners.remove(o);
-		m_listenersCached = null;
-	}
-	
-	public synchronized Iterator<T> iterator()
-	{
-		if(m_listenersCached == null)
-		{
-			m_listenersCached = new ArrayList<T>(m_listeners);
-		}
-		return m_listenersCached.iterator();
-	}
 
-	/**
-	 * @return a new list with the same elemnts as the current list.
-	 */
-	public synchronized List<T> toList()
-	{
-		return new ArrayList<T>(m_listeners);
-	}
-	
-	public synchronized String toString()
-	{
-		return m_listeners.toString();
-	}
-	
-
+public class ListenerList <T> extends CopyOnWriteArrayList<T>
+{	
 }	

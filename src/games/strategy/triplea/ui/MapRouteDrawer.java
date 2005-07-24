@@ -74,7 +74,7 @@ public class MapRouteDrawer
         }
         if(routeDescription.getEnd() != null && numTerritories > 1)
         {
-            points[numTerritories -1] = routeDescription.getEnd();
+            points[numTerritories -1] =  new Point(routeDescription.getEnd());
         }
 
         

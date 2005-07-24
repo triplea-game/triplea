@@ -30,14 +30,22 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.Stopwatch;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.ScrollListener;
+import games.strategy.ui.Util;
 import games.strategy.util.ListenerList;
+import games.strategy.util.Tuple;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -49,6 +57,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,9 +97,11 @@ public class MapPanel extends ImageScrollerLargeView
     
     private RouteDescription m_routeDescription;
 
-    private TileManager m_tileManager = new TileManager();
+    private final TileManager m_tileManager = new TileManager();
     
     private final BackgroundDrawer m_backgroundDrawer = new BackgroundDrawer(this);
+    
+    private BufferedImage m_mouseShadowImage = null;
     
     /** Creates new MapPanel */
     public MapPanel(Dimension imageDimensions, GameData data, MapPanelSmallView smallView) throws IOException
@@ -250,22 +261,13 @@ public class MapPanel extends ImageScrollerLargeView
         m_unitSelectionListeners.remove(listener);
     }
 
-    public void notifyUnitSelected(List<Unit> units, MouseEvent me)
+    public void notifyUnitSelected(List<Unit> units, Territory t, MouseEvent me)
     {
-        if(units.isEmpty())
-            return;
-        
         for(UnitSelectionListener listener : m_unitSelectionListeners)
         {
-            listener.unitsSelected(units, me);
+            listener.unitsSelected(units,t, me);
         }
             
-    }
-
-    
-    private List<Unit> getUnits(int x, int y)
-    {
-        return m_tileManager.getUnitsAtPoint(normalizeX(x), y, m_data);
     }
     
     private Territory getTerritory(int x, int y)
@@ -317,7 +319,11 @@ public class MapPanel extends ImageScrollerLargeView
             
             if(!m_unitSelectionListeners.isEmpty())
             {
-                notifyUnitSelected(getUnits(e.getX() + getXOffset(), e.getY() + getYOffset()), e );
+                int x = normalizeX(e.getX() + getXOffset());
+                int y =  e.getY() + getYOffset();
+                Tuple<Territory, List<Unit>> tuple = m_tileManager.getUnitsAtPoint(x,y, m_data);
+                
+                notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), e );
             }
             
         }
@@ -474,6 +480,13 @@ public class MapPanel extends ImageScrollerLargeView
 	        
 	        MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
 	        
+            if(m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
+            {
+                ((Graphics2D) g).drawImage(m_mouseShadowImage, (int)  m_routeDescription.getEnd().getX() - getXOffset(), (int) m_routeDescription.getEnd().getY() - getYOffset(), this);
+            }
+            
+            //used to keep strong references to what is on the screen so it wont be garbage collected
+            //other references to the images are week references
 	        m_images.clear();
 	        m_images.addAll(images);
         }
@@ -592,6 +605,66 @@ public class MapPanel extends ImageScrollerLargeView
         m_backgroundDrawer.stop();
     }
 
+    
+    public void setMouseShadowUnits(Collection<Unit> units)
+    {
+        if(units == null || units.isEmpty())
+        {
+            m_mouseShadowImage = null;
+            SwingUtilities.invokeLater(new Runnable()
+                    {
+                        public void run()
+                        {
+                            repaint();
+                        }
+                    
+                    });
+            return;
+        }
+        
+        Set<UnitCategory> categories =  UnitSeperator.categorize(units);
+        
+        final int xSpace = 5;
+        
+        BufferedImage img = Util.createImage( (categories.size() + xSpace) * UnitImageFactory.UNIT_ICON_WIDTH, UnitImageFactory.UNIT_ICON_HEIGHT, true); 
+        Graphics2D g = (Graphics2D) img.getGraphics();
+        
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f) );
+        
+        Rectangle bounds = new Rectangle(0,0,0,0);
+        
+        
+        int i = 0;
+        for(UnitCategory category : categories)
+        {
+            Point place = new Point( i * (UnitImageFactory.UNIT_ICON_WIDTH + xSpace), 0);
+            UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
+                    category.getOwner().getName(), place,category.getDamaged(), false, "" );
+            drawer.draw(bounds, m_data, g, MapData.getInstance());
+            i++;
+        }
+        m_mouseShadowImage = img;
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                repaint();
+            }
+        
+        });
+    }
+    
+    public void setTerritoryOverlay(Territory territory, Color color, float opaqueness)
+    {
+        m_tileManager.setTerritoryOverlay(territory, color, opaqueness, m_data, MapData.getInstance() );
+    }
+
+    public void clearTerritoryOverlay(Territory territory)
+    {
+        m_tileManager.clearTerritoryOverlay(territory, m_data, MapData.getInstance());
+    }
+
+    
 }
 
 class RouteDescription
@@ -659,7 +732,6 @@ class RouteDescription
         return m_end;
     }
     
-
   
 }
 
@@ -744,7 +816,6 @@ class BackgroundDrawer implements Runnable
             
         }
     }
-    
     
     
     

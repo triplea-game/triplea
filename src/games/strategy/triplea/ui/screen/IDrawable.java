@@ -13,19 +13,35 @@
  */
 package games.strategy.triplea.ui.screen;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.image.*;
+import games.strategy.triplea.image.FlagIconImageFactory;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
+import games.strategy.ui.Util;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.net.URL;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -45,6 +61,8 @@ public interface IDrawable
     
     public static final int TERRITORY_TEXT_LEVEL = 10;
     public static final int UNITS_LEVEL = 11;
+    
+    public static final int TERRITORY_OVERLAY_LEVEL = 12;
 
     /**
      * Start any asynchronous preparation that can be done in the backgrounds.
@@ -69,6 +87,69 @@ class DrawableComparator implements Comparator<IDrawable>
     }
 
 }
+
+class TerritoryOverLayDrawable implements IDrawable
+{
+    
+    private final String m_territoryName;
+    private final Color m_color;
+    private final float m_opaqueness;
+    private SoftReference<BufferedImage> m_overLayImage = new SoftReference<BufferedImage>(null);
+    
+    
+    public TerritoryOverLayDrawable(Color color, String name, float opaqueness)
+    {
+        m_color = color;
+        m_territoryName = name;
+        m_opaqueness = opaqueness;
+    }
+    
+    private synchronized BufferedImage getImage(MapData mapData)
+    {
+        BufferedImage img = m_overLayImage.get();
+        if(img != null)
+            return img;
+     
+        Rectangle bounds = mapData.getBoundingRect(m_territoryName);
+        
+        img = Util.createImage(bounds.width, bounds.height, true);
+        m_overLayImage = new SoftReference<BufferedImage>(img);
+        Graphics2D g = (Graphics2D) img.getGraphics();
+        
+        g.setColor(m_color);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, m_opaqueness));
+
+        for(Polygon polygon : mapData.getPolygons(m_territoryName))
+        {
+            polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+
+            polygon.translate(-bounds.x, -bounds.y);
+            g.fill(polygon);
+        }
+        
+        return img;
+    }
+
+    public void prepare()
+    {
+        
+    }
+
+    
+    
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    {
+        Rectangle territoryBounds = mapData.getBoundingRect(m_territoryName);        
+        graphics.drawImage(getImage(mapData), (int) territoryBounds.x - bounds.x, (int) territoryBounds.y - bounds.y, null);
+    }
+
+    public int getLevel()
+    {
+        return TERRITORY_OVERLAY_LEVEL;
+    }
+    
+}
+
 
 class TerritoryNameDrawable implements IDrawable
 {
@@ -377,79 +458,3 @@ class LandTerritoryDrawable implements IDrawable
 
 }
 
-class UnitsDrawer implements IDrawable
-{
-    private final int m_count;
-    private final String m_unitType;
-    private final String m_playerName;
-    private final Point m_placementPoint;
-    private final boolean m_damaged;
-    private final boolean m_overflow;
-    private final String m_territoryName;
-    
-    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, boolean overflow, String territoryName)
-    {
-        m_count = count;
-        m_unitType = unitType;
-        m_playerName = playerName;
-        m_placementPoint = placementPoint;
-        m_damaged = damaged;
-        m_overflow = overflow;
-        m_territoryName = territoryName;
-    }
-
-    public void prepare() {}
-    
-    public Point getPlacementPoint()
-    {
-        return m_placementPoint;
-    }
-    
-    public String getPlayer()
-    {
-        return m_playerName;
-    }
-    
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
-    {
-        if(m_overflow)
-        {
-            graphics.setColor(Color.BLACK);
-            graphics.fillRect(m_placementPoint.x - bounds.x -2, m_placementPoint.y - bounds.y + UnitImageFactory.UNIT_ICON_HEIGHT , UnitImageFactory.UNIT_ICON_WIDTH + 2,  3 );
-        }
-        
-        UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
-        if (type == null)
-            throw new IllegalStateException("Type not found:" + m_unitType);
-        PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
-
-        Image img = UnitImageFactory.instance().getImage(type, owner, data, m_damaged);
-        graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
-
-        if (m_count != 1)
-        {
-            graphics.setColor(Color.white);
-            graphics.setFont(MapImage.MAP_FONT);
-            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (UnitImageFactory.instance().getUnitImageWidth() / 4),
-                    m_placementPoint.y - bounds.y + UnitImageFactory.instance().getUnitImageHeight());
-        }
-    }
-    
-
-    public List<Unit> getUnits(GameData data)
-    {
-        Territory t = data.getMap().getTerritory(m_territoryName);
-        UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
-        
-        List<Unit> rVal = t.getUnits().getMatches(Matches.unitIsOfType(type));
-        if(rVal.size() != m_count)
-            throw new IllegalStateException("Wrong unit count, count:" + m_count + " not:" + rVal.size());
-        return rVal;
-    }
-    
-    public int getLevel()
-    {
-        return UNITS_LEVEL;
-    }
-
-}

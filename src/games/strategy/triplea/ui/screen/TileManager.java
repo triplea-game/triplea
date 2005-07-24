@@ -19,6 +19,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
+import games.strategy.util.Tuple;
 
 import java.awt.*;
 import java.util.*;
@@ -38,12 +39,14 @@ public class TileManager
     private List<Tile> m_tiles = new ArrayList<Tile>();
     private final Object m_mutex = new Object();
     
+    private Map<String, TerritoryOverLayDrawable> m_territoryOverlays = new HashMap<String, TerritoryOverLayDrawable>();
+    
     //maps territoryname - collection of drawables
     private final Map<String, Set<IDrawable>> m_territoryDrawables = new HashMap<String, Set<IDrawable>>();
     //maps territoryname - collection of tiles where the territory is drawn
     private final Map<String, Set<Tile>> m_territoryTiles = new HashMap<String, Set<Tile>>();
     
-    private Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<UnitsDrawer>();
+    private final Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<UnitsDrawer>();
     
     public List<Tile> getTiles(Rectangle bounds)
     {
@@ -66,7 +69,7 @@ public class TileManager
     {
         synchronized(m_mutex)
         {
-            return m_allUnitDrawables;
+            return new ArrayList<UnitsDrawer>(m_allUnitDrawables);
         }
     }
     
@@ -92,8 +95,6 @@ public class TileManager
         
         try
         {
-        
-        
 	        synchronized(m_mutex)
 	        {
 		        Iterator<Tile> allTiles = m_tiles.iterator();
@@ -114,6 +115,7 @@ public class TileManager
 		        while (territories.hasNext())
 		        {
 		            Territory territory = (Territory) territories.next();
+                    clearTerritory(territory);
 		            drawTerritory(territory, data, mapData);
 		
 		        }
@@ -192,7 +194,9 @@ public class TileManager
         Set<Tile> drawnOn = new HashSet<Tile>();
         Set<IDrawable> drawing = new HashSet<IDrawable>();
         
-
+        if(m_territoryOverlays.get(territory.getName()) != null)
+            drawing.add(m_territoryOverlays.get(territory.getName()));
+            
         drawUnits(territory, data, mapData, drawnOn, drawing);
         
         if(!territory.isWater())
@@ -328,21 +332,38 @@ public class TileManager
     }
     
     
-    public List<Unit> getUnitsAtPoint(int x, int y, GameData gameData)
+    public Tuple<Territory,List<Unit>> getUnitsAtPoint(int x, int y, GameData gameData)
     {
-        for(UnitsDrawer drawer : m_allUnitDrawables)
+        synchronized(m_mutex)
         {
-            Point placementPoint = drawer.getPlacementPoint();
-            if(x > placementPoint.x && x < placementPoint.x + UnitImageFactory.UNIT_ICON_WIDTH)
+            for(UnitsDrawer drawer : m_allUnitDrawables)
             {
-                if(y > placementPoint.y && y < placementPoint.y + UnitImageFactory.UNIT_ICON_HEIGHT)
+                Point placementPoint = drawer.getPlacementPoint();
+                if(x > placementPoint.x && x < placementPoint.x + UnitImageFactory.UNIT_ICON_WIDTH)
                 {
-                    return drawer.getUnits(gameData);
+                    if(y > placementPoint.y && y < placementPoint.y + UnitImageFactory.UNIT_ICON_HEIGHT)
+                    {
+                        return drawer.getUnits(gameData);
+                    }
                 }
             }
+            return new Tuple<Territory,List<Unit>>(null,Collections.<Unit>emptyList());
         }
-        return Collections.emptyList();
     }
 
+    
+    public void setTerritoryOverlay(Territory territory, Color color, float opaqueness,  GameData data, MapData mapData)
+    {
+        TerritoryOverLayDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), opaqueness);
+        m_territoryOverlays.put(territory.getName(), drawable);
+        updateTerritory(territory, data, mapData);
+        
+    }
+    
+    public void clearTerritoryOverlay(Territory territory, GameData data, MapData mapData)
+    {
+        m_territoryOverlays.remove(territory.getName());
+        updateTerritory(territory, data, mapData);
+    }
     
 }
