@@ -39,6 +39,7 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
+import games.strategy.util.Util;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -319,88 +320,111 @@ public class MovePanel extends ActionPanel
       return rVal;
       
     }
+    
+    /**
+     * Allow the user to select specific units, if for example some units
+     * have different movement
+     */
+    private void allowSpecificUnitSelection(Collection<Unit> units, Route route)
+    {
+        CompositeMatch<Unit> selectableUnits = new CompositeMatchAnd<Unit>();
+        selectableUnits.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
+        selectableUnits.add(Matches.UnitIsNotFactory);
+        if(!m_nonCombat)
+            selectableUnits.add(new InverseMatch<Unit>( Matches.UnitIsAA));
+        if(route.getEnd().isWater())
+            selectableUnits.add(Matches.UnitIsNotLand);
+        else
+            selectableUnits.add(Matches.UnitIsNotSea);
+        
+        Collection<Unit> ownedUnits = m_firstSelectedTerritory.getUnits().getMatches(selectableUnits);
+        
+        MustMoveWithDetails mustMoveWIth = getDelegate().getMustMoveWith(m_firstSelectedTerritory, ownedUnits);
+        
+        boolean mustQueryUser = false;
+        
+        Set<UnitCategory> categories = UnitSeperator.categorize(ownedUnits, mustMoveWIth.getMustMoveWith(), mustMoveWIth.getMovement());
+        
+        for(UnitCategory category1 : categories)
+        {
+            //we cant move these, dont bother to check
+            if(category1.getMovement() == 0)
+                continue;
+            
+            for(UnitCategory category2 : categories)
+            {
+                //we cant move these, dont bother to check
+                if(category2.getMovement() == 0)
+                    continue;
+                
+                //if we find that two categories are compatable, and some units
+                //are selected from one category, but not the other
+                //then the user has to refine his selection
+                if(category1 != category2 &&
+                   category1.getType() == category2.getType() &&
+                   (
+                           category1.getMovement() != category2.getMovement() ||
+                           !Util.equals(category2.getDependents(), category1.getDependents())
+                   ) 
+                   )
+                {
+                    //if we are moving all the units from both categories, then nothing to choose
+                    if(units.containsAll(category1.getUnits()) &&
+                       units.containsAll(category2.getUnits()))
+                        continue;
+                    //if we are moving some of the units from either category, then we need to stop
+                    if(!Util.intersection(category1.getUnits(), units).isEmpty() ||
+                       !Util.intersection(category2.getUnits(), units).isEmpty() )
+                    {
+                        mustQueryUser = true;
+                    }
+                }
+            }
+            
+        }
+        
+        if(mustQueryUser)
+        {
+            CompositeMatch<Unit> rightUnitTypeMatch = new CompositeMatchOr<Unit>();
+            for(Unit unit : units)
+            {
+                rightUnitTypeMatch.add(Matches.unitIsOfType(unit.getType()));
+            }
+            List<Unit> candidateUnits = Match.getMatches(ownedUnits, rightUnitTypeMatch);
+            
+            
+            UnitChooser chooser = new UnitChooser(candidateUnits, units, mustMoveWIth.getMustMoveWith(),
+                    mustMoveWIth.getMovement(), m_bridge.getGameData(), false);
 
-//    private Collection<Unit> getUnitsToMove(Route route)
-//    {
-//        CompositeMatch<Unit> ownedNotFactory = new CompositeMatchAnd<Unit>();
-//        ownedNotFactory.add(Matches.UnitIsNotFactory);
-//        ownedNotFactory.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
-//        if(!m_nonCombat)
-//            ownedNotFactory.add(new InverseMatch<Unit>( Matches.UnitIsAA));
-//
-//        Collection<Unit> owned = route.getStart().getUnits().getMatches(ownedNotFactory);
-//
-//	boolean transportsAtEnd = route.getEnd().getUnits().getMatches(Matches.UnitCanTransport).size() > 0;
-//
-//        if (route.getStart().isWater())
-//        {
-//            if (route.getEnd().isWater())
-//            {
-//                owned = Match.getMatches(owned, Matches.UnitIsNotLand);
-//            }
-//            //unloading
-//            if (!route.getEnd().isWater())
-//            {
-//                owned = Match.getMatches(owned, Matches.UnitIsAir);
-//                owned.addAll(getUnitsThatCanBeUnload(route));
-//            }
-//        } else if (route.crossesWater() ||
-//	            (route.getEnd().isWater() && !transportsAtEnd)) {
-//	  // Eliminate land units if starting from land, crossing water, and
-//	  // back to land or if going into water and no transports there
-//	  owned = Match.getMatches(owned, Matches.UnitIsAir);
-//	}
-//
-//	return getUnitsChosen(owned, route);
-//    }
-
-//    private Collection<Unit> getUnitsChosen(Collection<Unit> units, Route route)
-//    {
-//        
-//        MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getStart(), units);
-//
-//        //unit movement counts when the unit is loaded
-//        //this fixes the case where a unit is loaded and then unloaded in the same turn
-//        Collection<Unit> canMove;
-//        if (MoveValidator.isUnload(route))
-//            canMove = units;
-//        else
-//            canMove = Match.getMatches(units,
-//                                       Matches.unitHasEnoughMovement(route.
-//                                       getLength(), mustMoveWith.getMovement()));
-//
-//	Collection<Unit> movedUnits = new ArrayList<Unit>();
-//	Map<Unit, Collection<Unit>> mustMoveWithMap = mustMoveWith.getMustMoveWith();
-//        if (canMove.isEmpty()) {
-//            JOptionPane.showMessageDialog(getTopLevelAncestor(), "No units can move that far", "No units", JOptionPane.INFORMATION_MESSAGE);
-//            return Collections.emptyList();
-//	} else if (canMove.size() == 1) {
-//          Unit singleUnit = canMove.iterator().next();
-//	  movedUnits.add(singleUnit);
-//	  // Add dependents if necessary
-//	  Collection<Unit> dependents = mustMoveWithMap.get(singleUnit);
-//	  if (dependents != null) {
-//	    movedUnits.addAll(dependents);
-//	  }
-//	  return movedUnits;
-//	}
-//
-//	// choosing what units to MOVE
-//        UnitChooser chooser = new UnitChooser(canMove, mustMoveWithMap,
-//					      mustMoveWith.getMovement(), m_bridge.getGameData());
-//
-//
-//        String text = "Select units to move from " + route.getStart().getName() + ".";
-//        int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-//                                                  chooser, text,
-//                                                  JOptionPane.OK_CANCEL_OPTION,
-//                                                  JOptionPane.PLAIN_MESSAGE, null, null, null);
-//
-//        if (option != JOptionPane.OK_OPTION)
-//            return Collections.emptyList();
-//
-//        return chooser.getSelected();
-//    }
+            
+            
+            String text = "Select units to move from " + m_firstSelectedTerritory + ".";
+            int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                                            chooser, text,
+                                            JOptionPane.OK_CANCEL_OPTION,
+                                            JOptionPane.PLAIN_MESSAGE, null, null, null);
+            
+            if(option != JOptionPane.OK_OPTION)
+            {
+                units.clear();
+                return;
+            }
+            
+            
+            units.clear();
+            units.addAll(chooser.getSelected());
+        }
+            
+        //add the dependent units
+        for(Unit unit : new ArrayList<Unit>(units))
+        {
+            Collection<Unit> forced = mustMoveWIth.getMustMoveWith().get(unit);
+            if(forced != null)
+            {
+                units.addAll(forced);
+            }
+        }
+    }
 
     private Route getRoute(Territory start, Territory end)
     {
@@ -519,7 +543,7 @@ public class MovePanel extends ActionPanel
     /**
      * Allow the user to select what transports to load.
      */
-    private Collection<Unit> getTransportsToLoad(Route route)
+    private Collection<Unit> getTransportsToLoad(Route route, Collection<Unit> unitsToLoad)
     {
       Match<Unit> alliedTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
       Collection<Unit> transports = Match.getMatches(route.getEnd().getUnits().getUnits(), alliedTransports);
@@ -537,6 +561,12 @@ public class MovePanel extends ActionPanel
       if(UnitSeperator.categorize(transports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement()).size() == 1)
           return transports;
           
+      int minTransportCost = 5;
+      for(Unit unit : unitsToLoad)
+      {
+          minTransportCost = Math.min(minTransportCost, UnitAttatchment.get(unit.getType()).getTransportCost());
+      }
+      
       
       List<Unit> candidateTransports = new ArrayList<Unit>();
 
@@ -548,7 +578,7 @@ public class MovePanel extends ActionPanel
         Collection transporting = (Collection) mustMoveWith.getMustMoveWith().get(transport);
         int cost = MoveValidator.getTransportCost(transporting);
         int capacity = UnitAttatchment.get(transport.getType()).getTransportCapacity();
-        if(capacity > cost)
+        if(capacity > cost + minTransportCost)
           candidateTransports.add(transport);
       }
 
@@ -592,6 +622,14 @@ public class MovePanel extends ActionPanel
 
         private void leftButtonSelection(List<Unit> units, Territory t, MouseEvent me)
         {
+            for(Unit unit : units)
+            {
+                if(!unit.getOwner().equals(getCurrentPlayer()))
+                {
+                    return;
+                }
+            }
+            
             if(t == null)
                 return;
             
@@ -756,7 +794,7 @@ public class MovePanel extends ActionPanel
                     Collection<Unit> transports = null;
                     if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
                     {
-                      transports = getTransportsToLoad(route);
+                      transports = getTransportsToLoad(route, m_selectedUnits);
                     }
                     else if(MoveValidator.isUnload(route))
                     {
@@ -774,14 +812,13 @@ public class MovePanel extends ActionPanel
                     }
                     else
                     {
-                        MustMoveWithDetails mustMoveWIth = getDelegate().getMustMoveWith(m_firstSelectedTerritory, units);
-                        Collection<Collection<Unit>> allForcedMoves = mustMoveWIth.getMustMoveWith().values();
-                        for(Collection<Unit> forcedMove : allForcedMoves)
-                        {
-                            if(forcedMove != null)
-                                units.addAll(forcedMove);
-                        }
+                        allowSpecificUnitSelection(units, route);
                         
+                        if(units.isEmpty())
+                        {
+                            CANCEL_MOVE_ACTION.actionPerformed(null);
+                            return;
+                        }
                         
                     }
 
@@ -798,8 +835,8 @@ public class MovePanel extends ActionPanel
             }
         }
 
-
-
+        
+        
         public void mouseMoved(Territory territory, MouseEvent me)
         {
             if (m_firstSelectedTerritory != null && territory != null)

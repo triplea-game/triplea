@@ -67,12 +67,17 @@ public class UnitChooser extends JPanel
     this(units, Collections.<Unit>emptyList(), dependent, data, allowTwoHit);
   }
 
-  public UnitChooser(Collection<Unit> units, List<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)
+  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)
+  {
+      this(units, defaultSelections, dependent, null, data, allowTwoHit);
+  }
+  
+  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data, boolean allowTwoHit)
   {
     m_dependents = dependent;
     m_data = data;
     m_allowTwoHit = allowTwoHit;
-    createEntries(units, dependent, null, defaultSelections);
+    createEntries(units, dependent, movement, defaultSelections);
     layoutEntries();
   }
 
@@ -120,7 +125,7 @@ public class UnitChooser extends JPanel
 
 
 
-  private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, List<Unit> defaultSelections)
+  private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, Collection<Unit> defaultSelections)
   {
     Collection categories = UnitSeperator.categorize(units, dependent, movement);
     Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, movement);
@@ -306,6 +311,8 @@ public class UnitChooser extends JPanel
       updateLeft();
     }
   };
+ 
+  
 }
 
 class ChooserEntry
