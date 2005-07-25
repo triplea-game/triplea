@@ -73,6 +73,7 @@ public class MovePanel extends ActionPanel
 {
     private JLabel m_actionLabel = new JLabel();
     private MoveDescription m_moveMessage;
+    //access only through getter and setter!
     private Territory m_firstSelectedTerritory;
     private IPlayerBridge m_bridge;
 
@@ -85,6 +86,11 @@ public class MovePanel extends ActionPanel
     
     //use a LinkedHashSet because we want to know the order
     private final Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
+    
+    //the must move with details for the currently selected territory
+    //note this is kep in sync because we do not modify m_selectedTerritory directly
+    //instead we only do so through the private setter
+    private MustMoveWithDetails m_mustMoveWithDetails = null;
 
     /** Creates new MovePanel */
     public MovePanel(GameData data, MapPanel map)
@@ -161,7 +167,7 @@ public class MovePanel extends ActionPanel
 
     private void setUp(IPlayerBridge bridge)
     {
-        m_firstSelectedTerritory = null;
+        setFirstSelectedTerritory(null);
         m_forced = null;
         m_bridge = bridge;
         getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
@@ -173,10 +179,11 @@ public class MovePanel extends ActionPanel
         getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
         getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
         m_bridge = null;
-        updateRoute(null);
+        m_selectedUnits.clear();
+        updateRouteAndMouseShadowUnits(null);
         CANCEL_MOVE_ACTION.setEnabled(false);
         m_forced = null;
-        m_selectedUnits.clear();
+        
     }
 
 
@@ -208,10 +215,11 @@ public class MovePanel extends ActionPanel
     {
         public void actionPerformed(ActionEvent e)
         {
-            m_firstSelectedTerritory = null;
+            setFirstSelectedTerritory(null);
             m_forced = null;
-            updateRoute(null);
             m_selectedUnits.clear();
+            updateRouteAndMouseShadowUnits(null);
+            
             this.setEnabled(false);
             getMap().setMouseShadowUnits(null);
             
@@ -229,16 +237,14 @@ public class MovePanel extends ActionPanel
     {
       List<Unit> candidateTransports = new ArrayList<Unit>();
       
-      MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getStart(), route.getStart().getUnits().getUnits());
-      
       //get the transports with units that we own
       //these transports can be unloaded
       Match<Unit> owned = Matches.unitIsOwnedBy(getCurrentPlayer());
-      Iterator<Unit> mustMoveWithIter = mustMoveWith.getMustMoveWith().keySet().iterator();
+      Iterator<Unit> mustMoveWithIter = m_mustMoveWithDetails.getMustMoveWith().keySet().iterator();
       while (mustMoveWithIter.hasNext())
       {
         Unit transport = mustMoveWithIter.next();
-        Collection<Unit> transporting = mustMoveWith.getMustMoveWith().get(transport);
+        Collection<Unit> transporting = m_mustMoveWithDetails.getMustMoveWith().get(transport);
         if(transporting == null)
           continue;
         if(Match.someMatch(transporting, owned))
@@ -264,12 +270,12 @@ public class MovePanel extends ActionPanel
 
       //are the transports all of the same type
       //if they are, then don't ask
-      Collection<UnitCategory> categories = UnitSeperator.categorize(candidateTransports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement() );
+      Collection<UnitCategory> categories = UnitSeperator.categorize(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement() );
       if(categories.size() == 1)
           return m_selectedUnits;
      
       // choosing what transports to unload
-      UnitChooser chooser = new UnitChooser(candidateTransports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement(), m_bridge.getGameData());
+      UnitChooser chooser = new UnitChooser(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement(), m_bridge.getGameData());
       chooser.setTitle("What transports do you want to unload");
             
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
@@ -288,7 +294,7 @@ public class MovePanel extends ActionPanel
       while (choosenIter.hasNext())
       {
         Unit transport = (Unit)choosenIter.next();
-        Collection<Unit> transporting =  mustMoveWith.getMustMoveWith().get(transport);
+        Collection<Unit> transporting =  m_mustMoveWithDetails.getMustMoveWith().get(transport);
         if(transporting != null)
           allUnitsInSelectedTransports.addAll(transporting);
       }
@@ -337,13 +343,11 @@ public class MovePanel extends ActionPanel
         else
             selectableUnits.add(Matches.UnitIsNotSea);
         
-        Collection<Unit> ownedUnits = m_firstSelectedTerritory.getUnits().getMatches(selectableUnits);
-        
-        MustMoveWithDetails mustMoveWIth = getDelegate().getMustMoveWith(m_firstSelectedTerritory, ownedUnits);
+        Collection<Unit> ownedUnits = getFirstSelectedTerritory().getUnits().getMatches(selectableUnits);
         
         boolean mustQueryUser = false;
         
-        Set<UnitCategory> categories = UnitSeperator.categorize(ownedUnits, mustMoveWIth.getMustMoveWith(), mustMoveWIth.getMovement());
+        Set<UnitCategory> categories = UnitSeperator.categorize(ownedUnits, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement());
         
         for(UnitCategory category1 : categories)
         {
@@ -393,12 +397,12 @@ public class MovePanel extends ActionPanel
             List<Unit> candidateUnits = Match.getMatches(ownedUnits, rightUnitTypeMatch);
             
             
-            UnitChooser chooser = new UnitChooser(candidateUnits, units, mustMoveWIth.getMustMoveWith(),
-                    mustMoveWIth.getMovement(), m_bridge.getGameData(), false);
+            UnitChooser chooser = new UnitChooser(candidateUnits, units, m_mustMoveWithDetails.getMustMoveWith(),
+                    m_mustMoveWithDetails.getMovement(), m_bridge.getGameData(), false);
 
             
             
-            String text = "Select units to move from " + m_firstSelectedTerritory + ".";
+            String text = "Select units to move from " + getFirstSelectedTerritory() + ".";
             int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                                             chooser, text,
                                             JOptionPane.OK_CANCEL_OPTION,
@@ -418,7 +422,7 @@ public class MovePanel extends ActionPanel
         //add the dependent units
         for(Unit unit : new ArrayList<Unit>(units))
         {
-            Collection<Unit> forced = mustMoveWIth.getMustMoveWith().get(unit);
+            Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
             if(forced != null)
             {
                 units.addAll(forced);
@@ -445,7 +449,7 @@ public class MovePanel extends ActionPanel
 
         Iterator<Territory> iter = m_forced.iterator();
 
-        Territory last = m_firstSelectedTerritory;
+        Territory last = getFirstSelectedTerritory();
         Territory current = null;
 
         Route total = new Route();
@@ -531,13 +535,47 @@ public class MovePanel extends ActionPanel
 
         return defaultRoute;
     }
+    
+    
+    private Collection<Unit> getUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)
+    {
+        Match<Unit> enoughMovement = new Match<Unit>()
+        {
+            public boolean match(Unit u)
+            {
+                return m_mustMoveWithDetails.getMovement().getInt(u) >= route.getLength();
+            }
+        }; 
+        
+        CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
+        match.add(enoughMovement);
+        if(!m_nonCombat)
+            match.add(new InverseMatch<Unit>(Matches.UnitIsAA));
+        
+        if(route.getEnd() != null)
+        {
+            if(route.getEnd().isWater())
+                match.add(Matches.UnitIsNotLand);
+            else
+                match.add(Matches.UnitIsNotSea);
+        }
+        
+        
+        return Match.getMatches(units, match);
+    }
 
     /**
      * Route can be null.
      */
-    private void updateRoute(Route route)
+    private void updateRouteAndMouseShadowUnits(final Route route)
     {
         getMap().setRoute(route, m_mouseSelectedPoint, m_mouseCurrentPoint);
+        if(route == null)
+            getMap().setMouseShadowUnits(null);
+        else
+        {
+            getMap().setMouseShadowUnits( getUnitsThatCanMoveOnRoute(m_selectedUnits, route));
+        }
     }
 
     /**
@@ -554,11 +592,8 @@ public class MovePanel extends ActionPanel
       if(transports.size() == 1)
         return transports;
 
-      //find out what they are transporting
-      MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(route.getEnd(), transports);
-
       //all the same type, dont ask
-      if(UnitSeperator.categorize(transports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement()).size() == 1)
+      if(UnitSeperator.categorize(transports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement()).size() == 1)
           return transports;
           
       int minTransportCost = 5;
@@ -575,7 +610,7 @@ public class MovePanel extends ActionPanel
       while (transportIter.hasNext())
       {
         Unit transport = (Unit) transportIter.next();
-        Collection transporting = (Collection) mustMoveWith.getMustMoveWith().get(transport);
+        Collection transporting = (Collection) m_mustMoveWithDetails.getMustMoveWith().get(transport);
         int cost = MoveValidator.getTransportCost(transporting);
         int capacity = UnitAttatchment.get(transport.getType()).getTransportCapacity();
         if(capacity > cost + minTransportCost)
@@ -587,7 +622,7 @@ public class MovePanel extends ActionPanel
 
 
       // choosing what units to LOAD.
-      UnitChooser chooser = new UnitChooser(candidateTransports, mustMoveWith.getMustMoveWith(), mustMoveWith.getMovement(), m_bridge.getGameData());
+      UnitChooser chooser = new UnitChooser(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement(), m_bridge.getGameData());
       chooser.setTitle("What transports do you want to load");
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                                                 chooser, "What transports do you want to load",
@@ -633,22 +668,19 @@ public class MovePanel extends ActionPanel
             if(t == null)
                 return;
             
-            if(m_firstSelectedTerritory != null && !t.equals(m_firstSelectedTerritory))
+            if(getFirstSelectedTerritory() != null && !t.equals(getFirstSelectedTerritory()))
                 return;
             
-            if(m_firstSelectedTerritory == null)
+            if(getFirstSelectedTerritory() == null)
             {
-                m_firstSelectedTerritory = t;
+                setFirstSelectedTerritory(t);
+                
                 m_mouseSelectedPoint = me.getPoint();
                 m_mouseCurrentPoint = me.getPoint();
                 adjustPointForMapOffset(m_mouseSelectedPoint);
                 adjustPointForMapOffset(m_mouseCurrentPoint);
                 
-                
-                CANCEL_MOVE_ACTION.setEnabled(true);
-                updateRoute(getRoute(m_firstSelectedTerritory,
-                                     m_firstSelectedTerritory));
-                
+                CANCEL_MOVE_ACTION.setEnabled(true);                
             }
             
             //add all
@@ -669,7 +701,10 @@ public class MovePanel extends ActionPanel
                         
                 }
             }
-            getMap().setMouseShadowUnits(m_selectedUnits);
+            
+            updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(),
+                    getFirstSelectedTerritory()));
+
             
             
             
@@ -680,7 +715,7 @@ public class MovePanel extends ActionPanel
             if(m_selectedUnits.isEmpty())
                 return;
             
-            if(m_firstSelectedTerritory == null)
+            if(getFirstSelectedTerritory() == null)
                 return;
             
             //no unit selected, remove the most recent
@@ -763,10 +798,10 @@ public class MovePanel extends ActionPanel
 
             if (e.isControlDown())
             {
-                if (m_firstSelectedTerritory == null)
+                if (getFirstSelectedTerritory() == null)
                     return;
 
-                if (m_firstSelectedTerritory.equals(territory))
+                if (getFirstSelectedTerritory().equals(territory))
                     return;
 
                 if (m_forced == null)
@@ -775,14 +810,14 @@ public class MovePanel extends ActionPanel
                 if (!m_forced.contains(territory))
                     m_forced.add(territory);
 
-                updateRoute(getRoute(m_firstSelectedTerritory,
-                                     m_firstSelectedTerritory));
+                updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(),
+                                     getFirstSelectedTerritory()));
             }
             //we are selecting the territory to move to
-            else if (m_firstSelectedTerritory != null &&  m_firstSelectedTerritory != territory)
+            else if (getFirstSelectedTerritory() != null &&  getFirstSelectedTerritory() != territory)
             {
-                Route route = getRoute(m_firstSelectedTerritory, territory);
-                Collection<Unit> units = new ArrayList<Unit>(m_selectedUnits);
+                Route route = getRoute(getFirstSelectedTerritory(), territory);
+                Collection<Unit> units = getUnitsThatCanMoveOnRoute(m_selectedUnits, route);
                 if (units.size() == 0)
                 {
                     CANCEL_MOVE_ACTION.actionPerformed(null);
@@ -794,7 +829,7 @@ public class MovePanel extends ActionPanel
                     Collection<Unit> transports = null;
                     if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
                     {
-                      transports = getTransportsToLoad(route, m_selectedUnits);
+                      transports = getTransportsToLoad(route, units);
                     }
                     else if(MoveValidator.isUnload(route))
                     {
@@ -824,9 +859,9 @@ public class MovePanel extends ActionPanel
 
                     MoveDescription message = new MoveDescription(units, route, transports);
                     m_moveMessage = message;
-                    m_firstSelectedTerritory = null;
+                    setFirstSelectedTerritory(null);
                     m_forced = null;
-                    updateRoute(null);
+                    updateRouteAndMouseShadowUnits(null);
                     synchronized (getLock())
                     {
                         getLock().notifyAll();
@@ -839,12 +874,12 @@ public class MovePanel extends ActionPanel
         
         public void mouseMoved(Territory territory, MouseEvent me)
         {
-            if (m_firstSelectedTerritory != null && territory != null)
+            if (getFirstSelectedTerritory() != null && territory != null)
             {
                 m_mouseCurrentPoint= me.getPoint();
                 adjustPointForMapOffset(m_mouseCurrentPoint);
                 
-                updateRoute(getRoute(m_firstSelectedTerritory, territory));
+                updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), territory));
             }
         }
     };
@@ -874,6 +909,24 @@ public class MovePanel extends ActionPanel
             updateMoves();
         }
 
+    }
+
+    private void setFirstSelectedTerritory(Territory firstSelectedTerritory)
+    {
+        m_firstSelectedTerritory = firstSelectedTerritory;
+        if(m_firstSelectedTerritory == null)
+        {
+            m_mustMoveWithDetails = null;
+        }
+        else
+        {
+            m_mustMoveWithDetails = getDelegate().getMustMoveWith(firstSelectedTerritory, firstSelectedTerritory.getUnits().getUnits());
+        }
+    }
+
+    private Territory getFirstSelectedTerritory()
+    {
+        return m_firstSelectedTerritory;
     }
 
 }
