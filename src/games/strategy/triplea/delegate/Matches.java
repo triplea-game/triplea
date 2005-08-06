@@ -78,7 +78,7 @@ public class Matches
 		}
 	};
 
-	public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
+    public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
 	{
 		public boolean match(Unit unit)
 		{
@@ -86,6 +86,8 @@ public class Matches
 		}
 	};
 
+    public static final Match<Unit> UnitIsNotDamaged = new InverseMatch<Unit>(UnitIsDamaged);
+    
 	public static final Match<Unit> UnitIsSea = new Match<Unit>()
 	{
 		public boolean match(Unit unit)
