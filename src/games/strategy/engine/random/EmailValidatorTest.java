@@ -40,6 +40,8 @@ public class EmailValidatorTest extends TestCase
                 			"some@some.com",
                 			"some.someMore@some.com",
                 			"some@some.com some2@some2.com",
+                            "some@some.com some2@some2.co.uk",
+                            "some@some.com some2@some2.co.br",
                 			"",
                       "some@some.some.some.com"
                                     };
