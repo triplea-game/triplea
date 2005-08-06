@@ -1,24 +1,24 @@
-* add movement help to help menu
+* add movement help to help menu (sgb)
 
-* remove hints menu
+* remove hints menu (sgb)
 
-* movement now done without pop up dialogs
+* movement now done without pop up dialogs  (sgb, lnxduk)
 
-* only allow transports to unload units to 1 territory
+* only allow transports to unload units to 1 territory  (sgb)
 
-* fixed bug [ 1238910 ] PBEM mode cannot accept subdomains
+* fixed bug [ 1238910 ] PBEM mode cannot accept subdomains  (sgb)
 
-* add "click" to select casualties button, many users are confused and dont know to click to select casualties
+* add "click" to select casualties button, many users are confused and dont know to click to select casualties  (sgb)
 
-* reduce network traffic somewhat by more efficient serialization
+* reduce network traffic somewhat by more efficient serialization  (sgb)
 
-* autosave now happens at the end of a turn, after combat move and before non combat 
+* autosave now happens at the end of a turn, after combat move and before non combat  (sgb)
 
-* use annotations to determine when to autosave
+* use annotations to determine when to autosave  (sgb)
 
-* change to jdk 1.5, 1.5 is now required to build and to run
+* change to jdk 1.5, 1.5 is now required to build and to run  (sgb)
 
-* fix bug where versions like 0.6.0.1 would be displayed as 0.6.1
+* fix bug where versions like 0.6.0.1 would be displayed as 0.6.1  (sgb)
 
 Changes for 0.6.0.1
 
