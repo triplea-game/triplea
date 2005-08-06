@@ -20,16 +20,15 @@
 
 package games.strategy.engine.framework;
 
-import games.strategy.debug.Console;
-import games.strategy.engine.framework.ui.LauncherFrame;
-
-import java.awt.*;
-import java.io.*;
-import java.net.*;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.logging.LogManager;
+import java.net.URLDecoder;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * 
@@ -63,7 +62,7 @@ public class GameRunner
         return img;
     }
 
-    private static boolean isMac()
+    static boolean isMac()
     {
         return System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
     }
@@ -80,21 +79,25 @@ public class GameRunner
      */
     private static void checkJavaVersion()
     {
-        String strV = System.getProperties().getProperty("java.version");
-        boolean v13 = strV.indexOf("1.3") != -1;
-        boolean v14 = strV.indexOf("1.4") != -1;
+        //note - this method should not use any new language features (this includes string concatention using +
+        //since this method must run on older vms.
+        
+        String version = System.getProperties().getProperty("java.version");
+        boolean v12 = version.indexOf("1.2") != -1;
+        boolean v13 = version.indexOf("1.3") != -1;
+        boolean v14 = version.indexOf("1.4") != -1;
 
-        if (v14 || v13)
+        if (v14 || v13 || v12)
         {
             if (!isMac())
             {
-                JOptionPane.showMessageDialog(null, "You need java version 1.5.x\nPlease download a newer version of java from http://java.sun.com/",
+                JOptionPane.showMessageDialog(null, "TripleA requires a java runtime greater than 5.0.\nPlease download a newer version of java from http://java.sun.com/",
                         "ERROR", JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             } else if (isMac())
             {
                 JOptionPane.showMessageDialog(null,
-                        "You need java version 1.5.x\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR",
+                        "TripleA requires a java runtime greater than 5.0 (Note, this requires Mac OS X >= 10.4)\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }
@@ -104,49 +107,16 @@ public class GameRunner
 
     public static void main(String[] args)
     {
+        //we want this class to be executable in older jvm's
+        //since we require jdk 1.5, this class delegates to GameRunner2
+        //and all we do is check the java version
         checkJavaVersion();
 
-        setupLogging();
-        
-        Console.getConsole().displayStandardError();
-        Console.getConsole().displayStandardOutput();
-
-        try
-        {
-            //macs are already beautiful
-            if (!isMac())
-            {
-                com.jgoodies.looks.plastic.PlasticLookAndFeel.setTabStyle(com.jgoodies.looks.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
-                //com.jgoodies.plaf.plastic.PlasticXPLookAndFeel.setTabStyle(com.jgoodies.plaf.plastic.PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
-                UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.PlasticXPLookAndFeel());
-                com.jgoodies.looks.Options.setPopupDropShadowEnabled(true);
-
-            }
-        } catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        LauncherFrame frame = new LauncherFrame();
-        frame.setIconImage(getGameIcon(frame));
-        frame.pack();
-
-        games.strategy.ui.Util.center(frame);
-        frame.setVisible(true);
-
+        //do the other interesting stuff here
+        GameRunner2.main(args);
     }
 
-    private static void setupLogging()
-    {
-        //setup logging to read our logging.properties
-        try
-        {
-            LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+ 
 
     /**
      * Get the root folder for the application
@@ -191,10 +161,4 @@ public class GameRunner
         
         return f;
     }
-
-}
-
-class ClientReady implements Serializable
-{
-
 }

@@ -68,6 +68,21 @@
             classpathref="full.path"
         	target="1.5"
         />
+
+    	<!-- to check the correct java version, we need to compile the startup class so that it will run on older vms -->
+    	<!-- delete the startup class, and recompile it -->
+
+    	<delete> <fileset dir="classes" includes="**/GameRunner.class"> </fileset></delete>
+    	
+        <javac srcdir="src/"
+            destdir="classes/"
+            debug="true"
+            deprecation="true"
+            classpathref="full.path"
+          	target="1.2"
+        	source="1.2"
+       />
+    	
     </target>
 
   

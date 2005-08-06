@@ -21,8 +21,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
-import javax.naming.CompositeName;
-
 public class UnitsDrawer implements IDrawable
 {
     private final int m_count;
