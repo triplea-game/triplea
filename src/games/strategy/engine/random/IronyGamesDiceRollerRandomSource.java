@@ -457,7 +457,7 @@ class DiceStatic
         int startIndex = string.indexOf(rollStartString);
         if (startIndex == -1)
         {
-            throw new IOException("Cound not find start index");
+            throw new IOException("Cound not find start index, text returned is:" + string);
 
         }
         startIndex += rollStartString.length();
