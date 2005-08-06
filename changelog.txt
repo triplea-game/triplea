@@ -1,3 +1,7 @@
+* add movement help to help menu
+
+* remove hints menu
+
 * movement now done without pop up dialogs
 
 * only allow transports to unload units to 1 territory

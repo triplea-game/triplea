@@ -227,11 +227,13 @@ public class TripleAFrame extends JFrame
     {
         JMenu helpMenu = new JMenu("Help");
         menuBar.add(helpMenu);
-        addHelpMenu(helpMenu);
+        
 
-        addHintsMenu(helpMenu);
+        addMoveHelpMenu(helpMenu);
         addGameNotesMenu(helpMenu);
         addConsoleMenu(helpMenu);
+        helpMenu.addSeparator();
+        addAboutMenu(helpMenu);
     }
 
     private void addConsoleMenu(JMenu parentMenu)
@@ -278,15 +280,25 @@ public class TripleAFrame extends JFrame
     /**
      * @param parentMenu
      */
-    private void addHintsMenu(JMenu parentMenu)
+    private void addMoveHelpMenu(JMenu parentMenu)
     {
-        parentMenu.add(new AbstractAction("Hints...")
+        parentMenu.add(new AbstractAction("Movement help...")
         {
             public void actionPerformed(ActionEvent e)
             {
                 //html formatted string
-                String hints = "To force a path while moving, right click on each territory in turn.<br><br>"
-                        + "You may be able to set game properties such as a bid in the Properties tab at game start up.";
+                String hints = 
+                    "<b> Selecting Units</b><br><br>" +
+                    "Left click on a unit stack to select 1 unit.<br>" +
+                "CTRL-Left click on a unit stack to select all units in the stack.<br>" +
+                "Right click on a unit stack to un select one unit in the stack.<br>" +
+                "CTRL-Right click on a unit stack to un select all units in the stack.<br>" +
+                "Right click somewhere not on a unit stack to un select the last selected unit.<br>" +
+                "CTRL-Right click somewhere not on a unit stack to un select all units.<br>" +
+                "<br>" +
+                "<b> Selecting Territories</b><br><br>" +
+                "After selecting units Left click on a territory to move units to that territory.<br>" +
+                "CTRL-Left click on a territory to select the territory as a way point.<br><br>";
                 JEditorPane editorPane = new JEditorPane();
                 editorPane.setEditable(false);
                 editorPane.setContentType("text/html");
@@ -294,7 +306,7 @@ public class TripleAFrame extends JFrame
 
                 JScrollPane scroll = new JScrollPane(editorPane);
 
-                JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Hints", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(TripleAFrame.this, scroll, "Movement Help", JOptionPane.PLAIN_MESSAGE);
             }
         });
     }
@@ -303,7 +315,7 @@ public class TripleAFrame extends JFrame
      * @param parentMenu
      * @return
      */
-    private void addHelpMenu(JMenu parentMenu)
+    private void addAboutMenu(JMenu parentMenu)
     {
         
         parentMenu.add(new AbstractAction("About...")
