@@ -10,6 +10,8 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Tuple;
 
 import java.awt.Color;
@@ -18,6 +20,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
+
+import javax.naming.CompositeName;
 
 public class UnitsDrawer implements IDrawable
 {
@@ -87,7 +91,19 @@ public class UnitsDrawer implements IDrawable
         Territory t = data.getMap().getTerritory(m_territoryName);
         UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
         
-        List<Unit> rVal = t.getUnits().getMatches(Matches.unitIsOfType(type));
+        CompositeMatch<Unit> selectedUnits = new CompositeMatchAnd<Unit>();
+        selectedUnits.add(Matches.unitIsOfType(type));
+        selectedUnits.add(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(m_playerName) ));
+        if(m_damaged)
+            selectedUnits.add(Matches.UnitIsDamaged);
+        else
+            selectedUnits.add(Matches.UnitIsNotDamaged);
+        
+        List<Unit> rVal = t.getUnits().getMatches(selectedUnits);
+        
+        if(rVal.size() != m_count)
+            throw new IllegalStateException("Wrong units expected, expecting :" + m_count + " but got " + rVal);
+        
         return new Tuple<Territory,List<Unit>>(t,rVal);
     }
     

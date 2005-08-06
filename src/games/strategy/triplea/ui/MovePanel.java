@@ -233,13 +233,14 @@ public class MovePanel extends ActionPanel
      * in the case where some transports have different movement, different
      * units etc
      */
-    private Collection<Unit> getUnitsToUnload(Route route)
+    private Collection<Unit> getUnitsToUnload(Route route, Collection<Unit> unitsToMove)
     {
       List<Unit> candidateTransports = new ArrayList<Unit>();
       
+      Collection<UnitCategory> unitsToMoveCategories = UnitSeperator.categorize(unitsToMove);
+      
       //get the transports with units that we own
       //these transports can be unloaded
-      Match<Unit> owned = Matches.unitIsOwnedBy(getCurrentPlayer());
       Iterator<Unit> mustMoveWithIter = m_mustMoveWithDetails.getMustMoveWith().keySet().iterator();
       while (mustMoveWithIter.hasNext())
       {
@@ -247,32 +248,31 @@ public class MovePanel extends ActionPanel
         Collection<Unit> transporting = m_mustMoveWithDetails.getMustMoveWith().get(transport);
         if(transporting == null)
           continue;
-        if(Match.someMatch(transporting, owned))
-          candidateTransports.add(transport);
+
+        //are some of the transported units of the same type we want to unload?
+        if(!Util.someIntersect(UnitSeperator.categorize(transporting), unitsToMoveCategories))
+            continue;
+        
+        candidateTransports.add(transport);
       }
 
       if(candidateTransports.size() == 0)
-          throw new IllegalStateException("No transports to unload");      
+          return Collections.emptyList();
       
       //just one transport, dont bother to ask
       if(candidateTransports.size() == 1)
-          return m_selectedUnits;
+          return unitsToMove;
       
-      //are we unloading everything? if we are then we dont need to select the transports
-      CompositeMatch<Unit> unloadable = new CompositeMatchAnd<Unit>();
-      unloadable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
-      unloadable.add(Matches.UnitIsLand);
-      if(m_nonCombat)
-          unloadable.add(new InverseMatch<Unit>(Matches.UnitIsAA));
+      CompositeMatch<Unit> unloadable = getUnloadableMatch();
       
-      if(m_selectedUnits.size() == route.getStart().getUnits().countMatches(unloadable))
-          return m_selectedUnits;
+      if(unitsToMove.size() == route.getStart().getUnits().countMatches(unloadable))
+          return unitsToMove;
 
       //are the transports all of the same type
       //if they are, then don't ask
       Collection<UnitCategory> categories = UnitSeperator.categorize(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement() );
       if(categories.size() == 1)
-          return m_selectedUnits;
+          return unitsToMove;
      
       // choosing what transports to unload
       UnitChooser chooser = new UnitChooser(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement(), m_bridge.getGameData());
@@ -308,7 +308,7 @@ public class MovePanel extends ActionPanel
       //original movement quota
       List<Unit> rVal = new ArrayList<Unit>();
       
-      for(Unit selected : m_selectedUnits)
+      for(Unit selected : unitsToMove)
       {
           for(Unit candidate : allUnitsInSelectedTransports)
           {
@@ -325,6 +325,17 @@ public class MovePanel extends ActionPanel
       }
       return rVal;
       
+    }
+
+    private CompositeMatch<Unit> getUnloadableMatch()
+    {
+        //are we unloading everything? if we are then we dont need to select the transports
+          CompositeMatch<Unit> unloadable = new CompositeMatchAnd<Unit>();
+          unloadable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
+          unloadable.add(Matches.UnitIsLand);
+          if(m_nonCombat)
+              unloadable.add(new InverseMatch<Unit>(Matches.UnitIsAA));
+        return unloadable;
     }
     
     /**
@@ -548,15 +559,28 @@ public class MovePanel extends ActionPanel
         }; 
         
         CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
-        match.add(enoughMovement);
+        
+        if(MoveValidator.isUnload(route))
+        {
+            CompositeMatch<Unit> landOrCanMove = new CompositeMatchOr<Unit>();
+            landOrCanMove.add(enoughMovement);
+            landOrCanMove.add(Matches.UnitIsLand);
+        }
+        else 
+            match.add(enoughMovement);
+        
+        
+        
         if(!m_nonCombat)
             match.add(new InverseMatch<Unit>(Matches.UnitIsAA));
         
         if(route.getEnd() != null)
         {
-            if(route.getEnd().isWater())
+            boolean water = route.getEnd().isWater();
+            boolean load = MoveValidator.isLoad(route);
+            if(water && ! load)
                 match.add(Matches.UnitIsNotLand);
-            else
+            if(!water)
                 match.add(Matches.UnitIsNotSea);
         }
         
@@ -580,6 +604,8 @@ public class MovePanel extends ActionPanel
 
     /**
      * Allow the user to select what transports to load.
+     * 
+     * If null is returned, the move should be cancelled.
      */
     private Collection<Unit> getTransportsToLoad(Route route, Collection<Unit> unitsToLoad)
     {
@@ -592,8 +618,10 @@ public class MovePanel extends ActionPanel
       if(transports.size() == 1)
         return transports;
 
+      MustMoveWithDetails endMustMoveWith = getDelegate().getMustMoveWith(route.getEnd(), route.getEnd().getUnits().getUnits());
+      
       //all the same type, dont ask
-      if(UnitSeperator.categorize(transports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement()).size() == 1)
+      if(UnitSeperator.categorize(transports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement()).size() == 1)
           return transports;
           
       int minTransportCost = 5;
@@ -610,10 +638,10 @@ public class MovePanel extends ActionPanel
       while (transportIter.hasNext())
       {
         Unit transport = (Unit) transportIter.next();
-        Collection transporting = (Collection) m_mustMoveWithDetails.getMustMoveWith().get(transport);
+        Collection transporting = (Collection) endMustMoveWith.getMustMoveWith().get(transport);
         int cost = MoveValidator.getTransportCost(transporting);
         int capacity = UnitAttatchment.get(transport.getType()).getTransportCapacity();
-        if(capacity > cost + minTransportCost)
+        if(capacity >= cost + minTransportCost)
           candidateTransports.add(transport);
       }
 
@@ -622,14 +650,14 @@ public class MovePanel extends ActionPanel
 
 
       // choosing what units to LOAD.
-      UnitChooser chooser = new UnitChooser(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement(), m_bridge.getGameData());
+      UnitChooser chooser = new UnitChooser(candidateTransports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement(), m_bridge.getGameData());
       chooser.setTitle("What transports do you want to load");
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                                                 chooser, "What transports do you want to load",
                                                 JOptionPane.OK_CANCEL_OPTION,
                                                 JOptionPane.PLAIN_MESSAGE, null, null, null);
       if (option != JOptionPane.OK_OPTION)
-        return Collections.emptyList();
+        return null;
 
 
       return chooser.getSelected(false);
@@ -830,11 +858,16 @@ public class MovePanel extends ActionPanel
                     if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
                     {
                       transports = getTransportsToLoad(route, units);
+                      if(transports == null)
+                          return;
                     }
                     else if(MoveValidator.isUnload(route))
                     {
-                        Collection<Unit> canBeUnloaded = getUnitsToUnload(route);
-                        if(canBeUnloaded.isEmpty())
+                        List<Unit> unloadAble = Match.getMatches(m_selectedUnits,getUnloadableMatch());
+                        
+                        Collection<Unit> canMove = new ArrayList<Unit>(getUnitsToUnload(route, unloadAble));
+                        canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(getUnloadableMatch())));
+                        if(canMove.isEmpty())
                         {
                             CANCEL_MOVE_ACTION.actionPerformed(null);
                             return; 
@@ -842,7 +875,7 @@ public class MovePanel extends ActionPanel
                         else
                         {
                             m_selectedUnits.clear();
-                            m_selectedUnits.addAll(canBeUnloaded);
+                            m_selectedUnits.addAll(canMove);
                         }
                     }
                     else
