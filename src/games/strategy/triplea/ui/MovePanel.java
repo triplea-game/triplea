@@ -49,6 +49,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -427,7 +428,7 @@ public class MovePanel extends ActionPanel
             
             
             units.clear();
-            units.addAll(chooser.getSelected());
+            units.addAll(chooser.getSelected(false));
         }
             
         //add the dependent units
@@ -663,6 +664,28 @@ public class MovePanel extends ActionPanel
       return chooser.getSelected(false);
     }
 
+    private void sortByDecreasingMovement(List<Unit> units, Territory territory)
+    {
+        if(units.isEmpty())
+            return;
+        
+         if(!getFirstSelectedTerritory().equals(territory))
+             throw new IllegalStateException("Wrong selected territory");
+         
+         Comparator<Unit> increasingMovement = new Comparator<Unit>()
+         {
+             public int compare(Unit u1, Unit u2)
+             {
+                 int left1 = m_mustMoveWithDetails.getMovement().getInt(u1);
+                 int left2 = m_mustMoveWithDetails.getMovement().getInt(u2);
+
+                 return left2 - left1;                 
+             }
+         };
+         
+         Collections.sort(units,increasingMovement);
+    }
+    
     private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener()
     {
     
@@ -711,7 +734,7 @@ public class MovePanel extends ActionPanel
                 CANCEL_MOVE_ACTION.setEnabled(true);                
             }
             
-            //add all
+           //add all
             if(me.isControlDown())
             {
                 m_selectedUnits.addAll(units);
@@ -719,6 +742,9 @@ public class MovePanel extends ActionPanel
             //add one
             else
             {
+                //we want to select units with the most movement
+                sortByDecreasingMovement(units,t);
+                
                 for(Unit unit : units)
                 {
                     if(!m_selectedUnits.contains(unit))
@@ -726,16 +752,11 @@ public class MovePanel extends ActionPanel
                         m_selectedUnits.add(unit);
                         break;
                     }
-                        
                 }
             }
             
             updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(),
                     getFirstSelectedTerritory()));
-
-            
-            
-            
         }
 
         private void rightButtonSelection(List<Unit> units, Territory t, MouseEvent me)
@@ -766,6 +787,10 @@ public class MovePanel extends ActionPanel
                 //remove one
                 else
                 {
+                    //remove those with the least movement first
+                    sortByDecreasingMovement(units, t);
+                    Collections.reverse(units);
+                    
                     for(Unit unit : units)
                     {
                         if(m_selectedUnits.contains(unit))
@@ -946,6 +971,9 @@ public class MovePanel extends ActionPanel
 
     private void setFirstSelectedTerritory(Territory firstSelectedTerritory)
     {
+        if(firstSelectedTerritory == m_firstSelectedTerritory)
+            return;
+        
         m_firstSelectedTerritory = firstSelectedTerritory;
         if(m_firstSelectedTerritory == null)
         {
