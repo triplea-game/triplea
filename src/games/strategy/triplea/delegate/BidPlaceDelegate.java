@@ -118,10 +118,4 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 
         return placeableUnits;
     }
-
-    protected int getProduction(Territory t)
-    {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
 }

@@ -391,8 +391,12 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
      */
     protected int getProduction(Territory territory)
     {
+        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+        if(ta != null)
+            return ta.getProduction();
+        return 0; 
 
-        throw new UnsupportedOperationException("Not implemented");
+//        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -482,7 +486,6 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
     private Territory getBetterProducer(Territory t1, Territory t2,
             PlayerID player)
     {
-
         //anything is better than nothing
         if (t1 == null)
             return t2;
@@ -505,7 +508,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
 
         //which can produce the most
         if (getProduction(t1) - getAlreadyProduced(t1).size() > getProduction(t2)
-                - getAlreadyProduced(t1).size())
+                - getAlreadyProduced(t2).size())
             return t1;
         return t2;
     }
