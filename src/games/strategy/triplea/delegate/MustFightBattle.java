@@ -1529,15 +1529,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         getDisplay(bridge).battleEnd(m_battleID, m_attacker.getName() + " win");
 
         //do we need to change ownership
-        if (!m_battleSite.isWater())
+        if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotAir))
         {
-
-            if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotAir))
-            {
-                m_tracker.addToConquered(m_battleSite);
-                m_tracker.takeOver(m_battleSite, m_attacker, bridge, m_data,
-                        null);
-            }
+            m_tracker.addToConquered(m_battleSite);
+            m_tracker.takeOver(m_battleSite, m_attacker, bridge, m_data,
+                    null, m_attackingUnits);
         }
 
         bridge.getHistoryWriter()

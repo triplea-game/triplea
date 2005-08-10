@@ -201,6 +201,12 @@ public class TileManager
         
         if(!territory.isWater())
             drawing.add(new LandTerritoryDrawable(territory.getName()));
+        else 
+        {
+            // draw a convoy overlay
+            if(TerritoryAttatchment.get(territory) != null)
+                drawing.add(new LandTerritoryDrawable(territory.getName(), true));
+        } 
         
         drawing.add(new TerritoryNameDrawable(territory.getName()));
         

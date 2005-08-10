@@ -460,8 +460,23 @@ class ProductionStat extends AbstractStat
         Iterator iter = data.getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
+            boolean isConvoyOrLand = false; 
             Territory place = (Territory) iter.next();
-            if(place.getOwner().equals(player))
+            OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+
+            if(!place.isWater())
+            {
+                isConvoyOrLand = true;
+            } 
+            else if(place.isWater() &&
+                        origOwnerTracker.getOriginalOwner(place) != null &&
+                        origOwnerTracker.getOriginalOwner(place).equals(player) &&
+                        place.getOwner().equals(player))
+            {
+                isConvoyOrLand = true; 
+            }
+            
+            if(place.getOwner().equals(player) && isConvoyOrLand)
             {
                 TerritoryAttatchment ta = TerritoryAttatchment.get(place);
                 if(ta != null)

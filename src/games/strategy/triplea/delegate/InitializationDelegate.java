@@ -148,7 +148,7 @@ public class InitializationDelegate implements IDelegate
         while (territories.hasNext())
         {
             Territory current = (Territory) territories.next();
-            if (!current.isWater() && !current.getOwner().isNull())
+            if (!current.getOwner().isNull())
             {
                 origOwnerTracker.addOriginalOwner(current, current.getOwner());
                 Collection aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrFactory);

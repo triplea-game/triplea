@@ -188,9 +188,6 @@ public class BattleTracker implements java.io.Serializable
     private void addEmptyBattle(Route route, Collection<Unit> units, TransportTracker tracker, final PlayerID id, final GameData data,
             IDelegateBridge bridge, UndoableMove changeTracker)
     {
-        if (!Match.someMatch(units, Matches.UnitIsLand))
-            return;
-
         //find the territories that are considered blitz
         Match<Territory> canBlitz = new Match<Territory>()
         {
@@ -202,8 +199,11 @@ public class BattleTracker implements java.io.Serializable
 
         CompositeMatch<Territory> conquerable = new CompositeMatchAnd<Territory>();
         conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
-        conquerable.add(Matches.isTerritoryEnemy(id, data));
-        conquerable.addInverse(Matches.TerritoryIsNuetral);
+
+        // instead of matching with inverse neutral
+        conquerable.add(Matches.isTerritoryEnemyAndNotNeutral(id, data));
+
+//       conquerable.addInverse(Matches.TerritoryIsNuetral);
 
         //check the last territory specially to see if its a naval invasion
 
@@ -220,13 +220,12 @@ public class BattleTracker implements java.io.Serializable
         {
             Territory current = (Territory) iter.next();
 
-            takeOver(current, id, bridge, data, changeTracker);
+            takeOver(current, id, bridge, data, changeTracker, units);
         }
 
         //check the last territory
         if (conquerable.match(route.getEnd()))
         {
-
             Battle precede = getDependentAmphibiousAssault(route);
             if (precede == null)
             {
@@ -234,7 +233,7 @@ public class BattleTracker implements java.io.Serializable
                 {
                     m_blitzed.add(route.getEnd());
                 }
-                takeOver(route.getEnd(), id, bridge, data, changeTracker);
+                takeOver(route.getEnd(), id, bridge, data, changeTracker, units);
                 m_conquered.add(route.getEnd());
             } else
             {
@@ -269,7 +268,7 @@ public class BattleTracker implements java.io.Serializable
         while (iter.hasNext())
         {
             Territory current = (Territory) iter.next();
-            takeOver(current, id, bridge, data, changeTracker);
+            takeOver(current, id, bridge, data, changeTracker, units);
         }
 
         //deal with end territory, may be the case that
@@ -281,7 +280,7 @@ public class BattleTracker implements java.io.Serializable
             {
 
                 m_conquered.add(route.getEnd());
-                takeOver(route.getEnd(), id, bridge, data, changeTracker);
+                takeOver(route.getEnd(), id, bridge, data, changeTracker, units);
             } else
             {
                 Battle nonFight = getPendingBattle(route.getEnd(), false);
@@ -298,9 +297,27 @@ public class BattleTracker implements java.io.Serializable
     }
 
     @SuppressWarnings("unchecked")
-    protected void takeOver(Territory territory, final PlayerID id, IDelegateBridge bridge, GameData data, UndoableMove changeTracker)
+    protected void takeOver(Territory territory, final PlayerID id, IDelegateBridge bridge, GameData data, UndoableMove changeTracker, Collection<Unit> arrivingUnits)
     {
         OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+
+        // If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers
+        // have more than just xports
+        if(territory.isWater() && arrivingUnits != null)
+        {
+            int totalMatches = 0;
+
+            // 0 production waters aren't to be taken over
+            TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+            if(ta == null)
+                return;
+
+            // Check if only transports and submerged subs
+            totalMatches = arrivingUnits.size() - Match.countMatches(arrivingUnits, Matches.unitCanAttack(id));
+            totalMatches += Match.countMatches(arrivingUnits, Matches.unitIsSubmerged(data));
+            if(totalMatches >= arrivingUnits.size())
+                return;
+        }
 
         //if neutral
         if (territory.getOwner().isNull())

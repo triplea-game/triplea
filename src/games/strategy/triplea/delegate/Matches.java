@@ -119,7 +119,7 @@ public class Matches
 			return ua.getIsDestroyer();
 		}
 	};
-	
+
 	public static final Match<Unit> UnitIsTransport = new Match<Unit>()
 	{
         public boolean match(Unit unit)
@@ -128,6 +128,8 @@ public class Matches
 			return ua.getTransportCapacity() != -1;
 		}
 	};
+
+	public static final Match<Unit> UnitIsNotTransport = new InverseMatch<Unit>(UnitIsTransport);
 
 	public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
 	{
@@ -139,6 +141,17 @@ public class Matches
 		}
 	};
 
+	public static Match<Unit> unitCanAttack(final PlayerID id)
+	{
+	    return new Match<Unit>()
+	    {
+			public boolean match(Unit unit)
+			{
+				UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+				return ua.getAttack(id) != 0;
+			}
+	    };
+	}
 
 	public static final Match<Unit> UnitIsNotSea = new Match<Unit>()
 	{
@@ -428,6 +441,7 @@ public class Matches
         }
     };
 
+
     public static final Match<Territory> TerritoryIsImpassible = new Match<Territory>()
     {
         public boolean match(Territory t)
@@ -544,15 +558,16 @@ public class Matches
       };
   }
 
-
 	public static Match<Territory> isTerritoryEnemy(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
 			public boolean match(Territory t)
 			{
+/* -- remove for convoys
 				if(t.isWater())
 					return false;
+*/
 
 				if(t.getOwner().equals(player))
 					return false;
@@ -560,6 +575,43 @@ public class Matches
 			}
 		};
 	}
+
+	public static Match<Territory> isTerritoryEnemyAndNotNeutral(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			public boolean match(Territory t)
+			{
+/* -- remove for convoys
+				if(t.isWater())
+					return false;
+*/
+
+				if(t.getOwner().equals(player))
+					return false;
+				if(t.getOwner().equals(PlayerID.NULL_PLAYERID))
+				    return false;
+				return !data.getAllianceTracker().isAllied(player, t.getOwner());
+			}
+		};
+	}
+
+/*
+	public static Match<Territory> isTerritoryEnemyAndWater(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			public boolean match(Territory t)
+			{
+				if(t.getOwner().equals(player))
+					return false;
+				if(t.getOwner().equals(PlayerID.NULL_PLAYERID))
+				    return false;
+				return !data.getAllianceTracker().isAllied(player, t.getOwner());
+			}
+		};
+	}
+*/
 
 	public static Match<Unit> enemyUnit(PlayerID player, GameData data)
 	{

@@ -276,8 +276,9 @@ public class MoveValidator
 			throw new IllegalArgumentException("can only test if air will land");
 
 
-		if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(territory))
-			return false;
+		if(!territory.isWater())
+			if(DelegateFinder.battleDelegate(data).getBattleTracker().wasConquered(territory))
+				return false;
 
 		if(territory.isWater())
 		{

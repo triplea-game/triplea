@@ -405,10 +405,18 @@ class BaseMapDrawable extends MapTileDrawable
 class LandTerritoryDrawable implements IDrawable
 {
     private final String m_territoryName;
+    private final boolean m_isWater;
 
     public LandTerritoryDrawable(final String territoryName)
     {
         m_territoryName = territoryName;
+        m_isWater = false;
+    }
+
+    public LandTerritoryDrawable(final String territoryName, boolean isWater)
+    {
+        m_territoryName = territoryName;
+        m_isWater = isWater;
     }
 
     public void prepare() {}
@@ -426,6 +434,8 @@ class LandTerritoryDrawable implements IDrawable
         else
         {
           territoryColor = mapData.getPlayerColor(territory.getOwner().getName()); 
+          if(m_isWater)
+              territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 220);
         }
 
         List polys = MapData.getInstance().getPolygons(territory);

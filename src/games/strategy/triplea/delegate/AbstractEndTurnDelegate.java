@@ -135,7 +135,9 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 
 			if(attatchment == null)
 				throw new IllegalStateException("Nn attatchment for owned territory:" + current.getName());
-			value += attatchment.getProduction();
+			// Check if territory is convoy	
+			if(current.isWater() && DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(current).equals(current.getOwner()) || !current.isWater())
+				value += attatchment.getProduction();
 		}
 		return value;
 	}

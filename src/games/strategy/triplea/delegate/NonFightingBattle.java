@@ -70,7 +70,7 @@ public class NonFightingBattle implements Battle
 		boolean someAttacking = hasAttackingUnits();
 		if( someAttacking)
 		{
-			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, m_data, null);
+			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, m_data, null, null);
 			m_battleTracker.addToConquered(m_battleSite);
 		}
 		m_battleTracker.removeBattle(this);
