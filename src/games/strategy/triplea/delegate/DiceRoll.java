@@ -131,6 +131,8 @@ public class DiceRoll implements java.io.Serializable
                         strength++;
                         artillerySupportAvailable--;
                     }
+                    if (ua.getIsMarine() && battle.isAmphibious())
+                        ++strength;
                 }
 
                
@@ -214,6 +216,8 @@ public class DiceRoll implements java.io.Serializable
                         strength++;
                         artillerySupportAvailable--;
                     }
+                    if (ua.getIsMarine() && battle.isAmphibious())
+                        ++strength;
                 }
 
                 sortedDice[strength - 1].add(new Integer(dice[diceIndex]));

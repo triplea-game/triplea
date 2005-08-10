@@ -53,6 +53,7 @@ public class UnitAttatchment extends DefaultAttatchment
   private boolean m_isDestroyer = false;
   private boolean m_isArtillery = false;
   private boolean m_isArtillerySupportable = false;
+  private boolean m_isMarine = false;
 
   //-1 if cant transport
   private int m_transportCapacity = -1;
@@ -173,6 +174,16 @@ public class UnitAttatchment extends DefaultAttatchment
   public boolean isFactory()
   {
     return m_isFactory;
+  }
+
+  public void setIsMarine(String s)
+  {
+    m_isMarine = getBool(s);
+  }
+
+  public boolean getIsMarine()
+  {
+    return m_isMarine;
   }
 
   public void setTransportCapacity(String s)
@@ -339,7 +350,8 @@ public class UnitAttatchment extends DefaultAttatchment
         m_transportCapacity != -1 ||
         m_carrierCapacity != -1 ||
         m_canBlitz ||
-        m_canBombard
+        m_canBombard || 
+        m_isMarine
         )
         throw new GameParseException("Invalid Unit attatchment");
 
@@ -352,7 +364,8 @@ public class UnitAttatchment extends DefaultAttatchment
         m_isFactory ||
         m_isStrategicBomber ||
         m_carrierCost != -1 ||
-        m_transportCost != -1
+        m_transportCost != -1 ||
+        m_isMarine
         )
         throw new GameParseException("Invalid Unit Attatchemnnt" + this);
     }

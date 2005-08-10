@@ -1,3 +1,5 @@
+* Add code for marines (Adam_J)
+
 * Add code in for kamikaze (Adam_J)
 
 * fix bug located http://maddlinks.com/triplea/index.php?showtopic=707 (Adam Jette)

@@ -539,7 +539,7 @@
         <production>
                 <!-- Unit Production Cost -->
                 <productionRule name="buyMarine">
-                        <cost resource="IPCs" quantity="5" />
+                        <cost resource="IPCs" quantity="4" />
                         <result resourceOrUnit="marine" quantity="1"/>
                 </productionRule>
 
@@ -737,6 +737,7 @@
                          <option name="transportCost" value="2"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
+                         <option name="isMarine" value="true"/>   
                          <option name="artillerySupportable" value="true"/>
                     </attatchment>
 
@@ -1062,7 +1063,22 @@
                         <option name="production" value="0"/>
                   </attatchment>
 				
-
+				<!-- Water Attachements -->	
+                  <attatchment name="territoryAttatchment" attatchTo="52 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
+                        <option name="production" value="4"/>
+                  </attatchment>
+                  <attatchment name="territoryAttatchment" attatchTo="49 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
+                        <option name="production" value="3"/>
+                  </attatchment>
+                  <attatchment name="territoryAttatchment" attatchTo="15 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
+                        <option name="production" value="5"/>
+                  </attatchment>
+                  <attatchment name="territoryAttatchment" attatchTo="6 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
+                        <option name="production" value="5"/>
+                  </attatchment>
+                  <attatchment name="territoryAttatchment" attatchTo="3 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
+                        <option name="production" value="10"/>
+                  </attatchment>
         </attatchmentList>
         
         <initialize>
@@ -1110,6 +1126,11 @@
 			<territoryOwner territory="New Hebrides" owner="British"/>
 			<territoryOwner territory="Solomon" owner="British"/>
 			<territoryOwner territory="Gilbert" owner="British"/>
+
+			<!-- British owned convoy routes -->
+			<territoryOwner territory="52 Sea Zone" owner="British"/>
+			<territoryOwner territory="49 Sea Zone" owner="British"/>
+			<territoryOwner territory="15 Sea Zone" owner="British"/>
 						
 			<!-- Purple territories -->
 			<territoryOwner territory="Dutch New Guinea" owner="British"/>
@@ -1144,6 +1165,10 @@
 			<territoryOwner territory="Aleutian" owner="Americans"/>
 			<territoryOwner territory="Johnston" owner="Americans"/>
 			<territoryOwner territory="Guam" owner="Americans"/>
+
+			<!-- Blue owned convoy routes -->
+			<territoryOwner territory="3 Sea Zone" owner="Americans"/>
+			<territoryOwner territory="6 Sea Zone" owner="Americans"/>
 
                         
                 </ownerInitialize>
@@ -1418,9 +1443,10 @@
 
 				- CAP &lt;br&gt;
 				- Airports/Seaports &lt;br&gt;
-				- Convoy Centers/Zones &lt;br&gt;
+				- Convoy Centers &lt;br&gt;
+				- (implemented except for submerged sub at begin of round) Convoy Zones &lt;br&gt;
 				- Chinese purchase mechanics (regular inf purchase used instead) &lt;br&gt;
-				- Marines (act same as regular inf for now) &lt;br&gt;
+				- (implemented) Marines (act same as regular inf for now) &lt;br&gt;
 				- Chinese and USA same turn order (done on seperate turns for now) &lt;br&gt;
 				- Seperate income for India and Australia (UK under one power for now) &lt;br&gt;
 				- Special stratbombing rules (regular strat bombing rules applied) &lt;br&gt;
