@@ -340,6 +340,12 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         
     }
 
+    public boolean confirmMoveKamikaze()
+    {
+        String question = "Not all air units in destination territory can land, do you still want to move?";
+        return m_ui.getOK(question);
+    }
+
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
      */

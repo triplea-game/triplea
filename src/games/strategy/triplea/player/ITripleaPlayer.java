@@ -117,7 +117,13 @@ public interface ITripleaPlayer extends IRemote
      * @param  aaFiringTerritories - the territories where aa will fire
      */
     public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories);
-    
+
+    /**
+     * The attempted move will kill some air units
+     * 
+     */
+    public boolean confirmMoveKamikaze();
+
     /**
      * 
      * Ask the player if he wishes to retreat.

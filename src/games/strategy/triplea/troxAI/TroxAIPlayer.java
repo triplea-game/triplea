@@ -380,6 +380,14 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     }
 
     /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#confirm(java.util.Collection)
+     */
+    public boolean confirmMoveKamikaze()
+    {
+        return true;
+    }
+
+    /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
      */
     public Territory retreatQuery(GUID battleID, boolean submerge, Collection possibleTerritories, String message)

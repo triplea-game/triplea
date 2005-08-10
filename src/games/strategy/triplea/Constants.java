@@ -56,6 +56,7 @@ public interface Constants
   public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
   public static final String LOW_LUCK = "Low Luck";
   public static final String IPC_CAP = "Territory Turn Limit";
+  public static final String KAMIKAZE = "Kamikaze Airplanes";
   
   public static final int TECH_ROLL_COST = 5;
 

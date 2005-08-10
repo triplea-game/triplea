@@ -675,7 +675,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     private String validateAirCanLand(Collection<Unit> units, Route route, PlayerID player)
     {
-
         //nothing to check
         if (!Match.someMatch(units, Matches.UnitIsAir))
             return null;
@@ -784,9 +783,10 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         if(airThatMustLandOnCarriers.isEmpty())
             return null;
         
-        //not everything can land on a carrier, fail
-        if(!Match.allMatch(airThatMustLandOnCarriers, Matches.UnitCanLandOnCarrier))
-            return "No where for the air unit to land";
+        //not everything can land on a carrier and not kamikaze, fail    
+        if(!m_data.getProperties().get(Constants.KAMIKAZE, false))
+            if(!Match.allMatch(airThatMustLandOnCarriers, Matches.UnitCanLandOnCarrier))
+                return "No where for the air unit to land";
         
         //now, find out where we can land on carriers
         IntegerMap<Integer> carrierCapacity = new IntegerMap<Integer>();
@@ -820,16 +820,25 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         Iterator airThatMustLandOnCarriersIterator = airThatMustLandOnCarriers.iterator();
         while (airThatMustLandOnCarriersIterator.hasNext())
         {
+         
             Unit unit = (Unit) airThatMustLandOnCarriersIterator.next();
             int carrierCost = UnitAttatchment.get(unit.getType()).getCarrierCost();
             int movement = movementLeft.getInt(unit);
             for(int i = movement; i >=-1; i--)
             {
                 if(i == -1)
-                    return "No place for unit to land";
-                
+                {
+                    if(m_data.getProperties().get(Constants.KAMIKAZE, false))
+                    {
+                        if(!getRemotePlayer().confirmMoveKamikaze())
+                            return "Move Aborted";
+                    }
+                    else                        
+                        return "No place for unit to land";
+                }
+
                 Integer current = new Integer(i);
-                if(carrierCapacity.getInt(current) >= carrierCost )
+                if(carrierCapacity.getInt(current) >= carrierCost && carrierCost != -1 )
                 {
                     carrierCapacity.put(current,carrierCapacity.getInt(current) - carrierCost);
                     break;
@@ -838,9 +847,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             
         }
         
-        return null;
-        
-
+        return null;        
     }
 
     // Determines whether we can pay the neutral territory charge for a
@@ -1387,7 +1394,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-
         Collection<Territory> cantLand = new ArrayList<Territory>();
         Iterator territories = m_data.getMap().getTerritories().iterator();
         while (territories.hasNext())
@@ -1407,7 +1413,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     private void removeAirThatCantLand()
     {
-
         Iterator<Territory> territories = getTerritoriesWhereAirCantLand().iterator();
         while (territories.hasNext())
         {

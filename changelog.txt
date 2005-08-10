@@ -1,3 +1,7 @@
+* Add code in for kamikaze (Adam_J)
+
+* fix bug located http://maddlinks.com/triplea/index.php?showtopic=707 (Adam Jette)
+
 Changes for 0.7.0
 
 * add movement help to help menu (sgb)

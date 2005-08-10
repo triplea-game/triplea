@@ -1398,6 +1398,10 @@
 			<boolean/>
 		</property>
 
+		<property name="Kamikaze Airplanes" value="false" editable="true">
+			<boolean/>
+		</property>
+
 		<property name="Low Luck" value="false" editable="true">
 			<boolean/>
 		</property>
