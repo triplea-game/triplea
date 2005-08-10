@@ -463,7 +463,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
         battle.add(Matches.TerritoryIsNuetral);
-        battle.add(Matches.isTerritoryEnemy(player, m_data));
+        battle.add(Matches.isTerritoryEnemyAndNotNeutral(player, m_data));
 
         if (battle.match(route.getEnd()))
         {
@@ -489,7 +489,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             }
         } else
         {
-            CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNuetral, Matches.isTerritoryEnemy(player, m_data));
+            CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNuetral, Matches.isTerritoryEnemyAndNotNeutral(player, m_data));
             if (route.someMatch(neutralOrEnemy))
                 return "Cant move units to neutral or enemy territories in non combat";
         }
