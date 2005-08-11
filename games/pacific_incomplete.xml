@@ -469,7 +469,9 @@
                 <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
                 <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
                 <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+                <delegate name="purchaseNoIPC" javaClass="games.strategy.triplea.delegate.NoIPCPurchaseDelegate" display="Purchase Units"/>
                 <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+                <delegate name="endTurnNoIPC" javaClass="games.strategy.triplea.delegate.NoIPCEndTurnDelegate" display="Turn Complete"/>
                 <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
                 <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
@@ -515,12 +517,12 @@
                         <!-- Chines Game Sequence -->
 
 <!--                        <step name="chineseTech" delegate="tech" player="Chinese"/>-->
-                        <step name="chinesePurchase" delegate="purchase" player="Chinese"/>
+                        <step name="chinesePurchase" delegate="purchaseNoIPC" player="Chinese"/>
                         <step name="chineseCombatMove" delegate="move" player="Chinese"/>
                         <step name="chineseBattle" delegate="battle" player="Chinese"/>
                         <step name="chineseNonCombatMove" delegate="move" player="Chinese" display="Non Combat Move"/>
                         <step name="chinesePlace" delegate="place" player="Chinese"/>
-                        <step name="chineseEndTurn" delegate="endTurn" player="Chinese"/>
+                        <step name="chineseEndTurn" delegate="endTurnNoIPC" player="Chinese"/>
 
                         <!-- Americans Game Sequence -->
 
@@ -951,6 +953,7 @@
                 
                   <attatchment name="territoryAttatchment" attatchTo="Szechwan" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="1"/>
+                        <option name="originalFactory" value="true" />
                         <option name="capital" value="Chinese"/>
                   </attatchment>
                   <attatchment name="territoryAttatchment" attatchTo="New Britain" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
@@ -1377,6 +1380,10 @@
 		<property name="4th Edition" value="true" editable="false">
                         <boolean/>
                 </property>
+
+		<property name="Pacific Edition" value="true" editable="false">
+                        <boolean/>
+                </property>
                 
                 <property name="Submersible Subs" value="true" editable="false">
                         <boolean/>
@@ -1445,8 +1452,8 @@
 				- Airports/Seaports &lt;br&gt;
 				- Convoy Centers &lt;br&gt;
 				- (implemented except for submerged sub at begin of round) Convoy Zones &lt;br&gt;
-				- Chinese purchase mechanics (regular inf purchase used instead) &lt;br&gt;
-				- (implemented) Marines (act same as regular inf for now) &lt;br&gt;
+				- (implemented) Chinese purchase mechanics 
+				- (implemented) Marines 
 				- Chinese and USA same turn order (done on seperate turns for now) &lt;br&gt;
 				- Seperate income for India and Australia (UK under one power for now) &lt;br&gt;
 				- Special stratbombing rules (regular strat bombing rules applied) &lt;br&gt;
