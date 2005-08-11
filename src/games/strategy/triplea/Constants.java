@@ -62,6 +62,7 @@ public interface Constants
   public static final int TECH_ROLL_COST = 5;
 
   public static final String INFANTRY_TYPE = "infantry";
+  public static final String CHINESE_INFANTRY_TYPE = "chineseInfantry";
   public static final String ARMOUR_TYPE = "armour";
   public static final String TRANSPORT_TYPE = "transport";
   public static final String SUBMARINE_TYPE = "submarine";

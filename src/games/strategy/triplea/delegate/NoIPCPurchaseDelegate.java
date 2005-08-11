@@ -54,7 +54,9 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
 
         PlayerID player = aBridge.getPlayerID();
         Collection territories = gameData.getMap().getTerritoriesOwnedBy(player);
-        Territory capital = TerritoryAttatchment.getCapital(player, gameData);
+
+        if(isPacificEdition())
+            unitTypeToProduce = Constants.CHINESE_INFANTRY_TYPE;
 
         int nUnitsToProduce = getProductionUnits(territories, player);
         Collection<Unit> units = gameData.getUnitTypeList().getUnitType(unitTypeToProduce).create(nUnitsToProduce, player);

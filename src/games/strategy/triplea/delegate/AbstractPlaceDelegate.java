@@ -242,6 +242,11 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
             return "Cannot place these units in " + to;
         }
 
+        // can only place chinese units in pacific edition on capitol
+        if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
+            if(TerritoryAttatchment.getCapital(player, m_data) != to && player.getName().equals("Chinese"))
+                return "Cannot place these units outside of the capital";
+
         if (to.isWater())
         {
             Territory producer = getProducer(to, player);
