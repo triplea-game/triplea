@@ -402,6 +402,7 @@ class BaseMapDrawable extends MapTileDrawable
     }
 }
 
+// for water or land
 class LandTerritoryDrawable implements IDrawable
 {
     private final String m_territoryName;
@@ -413,7 +414,7 @@ class LandTerritoryDrawable implements IDrawable
         m_isWater = false;
     }
 
-    public LandTerritoryDrawable(final String territoryName, boolean isWater)
+    public LandTerritoryDrawable(final String territoryName, final boolean isWater)
     {
         m_territoryName = territoryName;
         m_isWater = isWater;
@@ -433,9 +434,9 @@ class LandTerritoryDrawable implements IDrawable
         }
         else
         {
-          territoryColor = mapData.getPlayerColor(territory.getOwner().getName()); 
-          if(m_isWater)
-              territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 220);
+            territoryColor = mapData.getPlayerColor(territory.getOwner().getName()); 
+            if(m_isWater)
+                territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 220);
         }
 
         List polys = MapData.getInstance().getPolygons(territory);
@@ -463,6 +464,8 @@ class LandTerritoryDrawable implements IDrawable
 
     public int getLevel()
     {
+        if(m_isWater)
+            return BASE_MAP_LEVEL;
         return POLYGONS_LEVEL;
     }
 
