@@ -26,6 +26,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.attatchments.UnitAttatchment;
 
 import java.util.*;
@@ -64,7 +65,7 @@ public class InitializationDelegate implements IDelegate
 
         initTwoHitBattleship(data, aBridge);
 
-        initOriginalOwner(data);
+        initOriginalOwner(data, aBridge);
         
         initTech(data, aBridge);
     }
@@ -141,10 +142,13 @@ public class InitializationDelegate implements IDelegate
     /**
      * @param data
      */
-    private void initOriginalOwner(GameData data)
+    private void initOriginalOwner(GameData data, IDelegateBridge aBridge)
     {
         OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
         Iterator territories = data.getMap().iterator();
+
+        CompositeChange changes = new CompositeChange();
+
         while (territories.hasNext())
         {
             Territory current = (Territory) territories.next();
@@ -153,8 +157,11 @@ public class InitializationDelegate implements IDelegate
                 origOwnerTracker.addOriginalOwner(current, current.getOwner());
                 Collection aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrFactory);
                 origOwnerTracker.addOriginalOwner(aaAndFactory, current.getOwner());
+                changes.add(ChangeFactory.attatchmentPropertyChange(TerritoryAttatchment.get(current), current.getOwner().getName(), Constants.ORIGINAL_OWNER));
             }
         }
+        aBridge.getHistoryWriter().startEvent("Adding original owners");
+        aBridge.addChange(changes);
     }
 
     public String getName()

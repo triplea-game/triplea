@@ -71,6 +71,7 @@ public class TerritoryAttatchment extends DefaultAttatchment
 	private int m_production = 2;
 	private boolean m_isVictoryCity = false;
 	private boolean m_isImpassible = false;
+	private String m_originalOwner = null;
 	
 
   /** Creates new TerritoryAttatchment */
@@ -131,5 +132,15 @@ public class TerritoryAttatchment extends DefaultAttatchment
 	public int getProduction()
 	{
 		return m_production;
+	}
+
+	public void setOriginalOwner(String value)
+	{
+		m_originalOwner = value;
+	}
+
+	public String getOriginalOwner()
+	{
+		return m_originalOwner;
 	}
 }

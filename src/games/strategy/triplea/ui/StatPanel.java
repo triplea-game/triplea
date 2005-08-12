@@ -462,15 +462,16 @@ class ProductionStat extends AbstractStat
         {
             boolean isConvoyOrLand = false; 
             Territory place = (Territory) iter.next();
-            OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+            TerritoryAttatchment ta = TerritoryAttatchment.get(place);
 
             if(!place.isWater())
             {
                 isConvoyOrLand = true;
             } 
             else if(place.isWater() &&
-                        origOwnerTracker.getOriginalOwner(place) != null &&
-                        origOwnerTracker.getOriginalOwner(place).equals(player) &&
+                        ta != null &&
+                        data.getPlayerList().getPlayerID(ta.getOriginalOwner()) != PlayerID.NULL_PLAYERID &&
+                        data.getPlayerList().getPlayerID(ta.getOriginalOwner()) == player &&
                         place.getOwner().equals(player))
             {
                 isConvoyOrLand = true; 
@@ -478,7 +479,6 @@ class ProductionStat extends AbstractStat
             
             if(place.getOwner().equals(player) && isConvoyOrLand)
             {
-                TerritoryAttatchment ta = TerritoryAttatchment.get(place);
                 if(ta != null)
                     rVal += ta.getProduction(); 
             }

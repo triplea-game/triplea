@@ -41,6 +41,7 @@ public interface Constants
   public static final String TECH_ATTATCHMENT_NAME = "techAttatchment";
   public static final String TERRITORY_ATTATCHMENT_NAME = "territoryAttatchment";
   public static final String IPCS = "IPCs";
+  public static final String VPS = "VPs";
   public static final int    MAX_DICE = 6;
   public static final String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
   public static final String FACTORIES_PER_COUNTRY_PROPERTY ="maxFactoriesPerTerritory";
@@ -54,6 +55,7 @@ public interface Constants
   public static final String PACIFIC_EDITION = "Pacific Edition";
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
   public static final String TWO_HIT = "isTwoHit";
+  public static final String ORIGINAL_OWNER = "originalOwner";
   public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
   public static final String LOW_LUCK = "Low Luck";
   public static final String IPC_CAP = "Territory Turn Limit";
