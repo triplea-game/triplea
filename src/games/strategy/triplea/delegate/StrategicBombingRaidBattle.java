@@ -132,6 +132,24 @@ public class StrategicBombingRaidBattle implements Battle
 
         bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + cost + MyFormatter.pluralize("ipc", cost));
 
+/*
+        if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
+        {
+            if(m_defender.getName().equals(Constants.JAPANESE)) 
+            {
+                Resource vps = gameData.getResourceList().getResource(Constants.VPS);
+                int vpsToSub = toAdd / 10;
+                transcriptText = player.getName() + " co " + vps + " victory point(s)";
+    //            aBridge.getHistoryWriter().startEvent(transcriptText);
+//        Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
+ //       bridge.addChange(change);
+
+  //              change = ChangeFactory.changeResourcesChange(player, vps, vpsToAdd);
+   //             aBridge.addChange(change);
+            } 
+        } 
+*/
+
         getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + cost);
 
         m_isOver = true;
@@ -303,6 +321,11 @@ public class StrategicBombingRaidBattle implements Battle
     public boolean isAmphibious()
     {
         return false;
+    }
+
+    public Collection<Unit> getAmphibiousLandAttackers()
+    {
+        return new ArrayList<Unit>();
     }
     
     public int getBattleRound()
