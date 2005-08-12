@@ -347,7 +347,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         display.listBattleSteps(m_battleID, steps);
 
         //take the casualties with least movement first
-        BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
+        if(isAmphibious())
+            sortAmphib(m_attackingUnits, m_data);
+        else 
+            BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
         //System.out.print(m_attackingUnits);
         BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
         //System.out.print(m_defendingUnits);
@@ -1575,9 +1578,55 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 + m_defender.getName() + " bombing:" + isBombingRun();
     }
 
+    // In an amphibious assault, sort on who is unloading from xports first
+    // This will allow the marines with higher scores to get killed last
+    public void sortAmphib(List<Unit> units, GameData data)
+    {
+        final MoveDelegate moveDelegate = DelegateFinder.moveDelegate(data);
+
+        Comparator<Unit> comparator = new Comparator<Unit>()
+        {
+          public int compare(Unit u1, Unit u2)
+          {            
+              int amphibComp = 0;
+
+              if(u1.getUnitType().equals(u2.getUnitType()))
+              {
+                  UnitAttatchment ua = UnitAttatchment.get(u1.getType());
+                  UnitAttatchment ua2 = UnitAttatchment.get(u2.getType());
+                  if(ua.getIsMarine() && ua2.getIsMarine())
+                      amphibComp = compareAccordingToAmphibious(u1, u2);
+                  if(amphibComp == 0)
+                      return  moveDelegate.compareAccordingToMovementLeft(u1,u2);
+                  else
+                      return amphibComp;
+                  
+              } 
+              return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
+          }
+        };
+        
+        Collections.sort(units, comparator);
+        
+    }
+
+    private int compareAccordingToAmphibious(Unit u1, Unit u2)
+    {
+        if(m_amphibiousLandAttackers.contains(u1) && !m_amphibiousLandAttackers.contains(u2))
+            return -1;
+        else if(m_amphibiousLandAttackers.contains(u2) && !m_amphibiousLandAttackers.contains(u1)) 
+            return 1;
+        return 0; 
+    }
+
     public Collection<Unit> getAttackingUnits()
     {
         return m_attackingUnits;
+    }
+
+    public Collection<Unit> getAmphibiousLandAttackers()
+    {
+        return m_amphibiousLandAttackers;
     }
 
     public void unitsLost(Battle battle, Collection<Unit> units,

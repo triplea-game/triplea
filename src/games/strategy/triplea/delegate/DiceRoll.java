@@ -132,9 +132,12 @@ public class DiceRoll implements java.io.Serializable
                         artillerySupportAvailable--;
                     }
                     if (ua.getIsMarine() && battle.isAmphibious())
-                        ++strength;
+                    {
+                        Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
+                        if(!landUnits.contains(current))
+                            ++strength;
+                    } 
                 }
-
                
                 power += strength;
             }
@@ -217,7 +220,11 @@ public class DiceRoll implements java.io.Serializable
                         artillerySupportAvailable--;
                     }
                     if (ua.getIsMarine() && battle.isAmphibious())
-                        ++strength;
+                    {
+                        Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
+                        if(!landUnits.contains(current))
+                            ++strength;
+                    } 
                 }
 
                 sortedDice[strength - 1].add(new Integer(dice[diceIndex]));
