@@ -377,7 +377,16 @@ class HttpDiceRollerDialog extends JDialog
      */
     public static boolean isMailValid(String emailAddress)
     {
-        String regex = "(\\s*[\\w\\.-]+@\\w+\\.[\\w\\.]+\\s*)*";
+        final String QUOTEDSTRING = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
+        final String ATOM = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
+        final String WORD = "(?:" + ATOM + "|" + QUOTEDSTRING + ")";
+        final String SUBDOMAIN = "(?:" + ATOM + "|\\[(?:[^\\[\\]\\\\]|\\\\\\p{ASCII})*\\])";
+        final String DOMAIN = SUBDOMAIN + "(?:\\." + SUBDOMAIN + ")*";
+        final String LOCALPART = WORD + "(?:\\." + WORD + ")*";
+        final String EMAIL = LOCALPART + "@" + DOMAIN;
+
+//        String regex = "(\\s*[\\w\\.-]+@\\w+\\.[\\w\\.]+\\s*)*";
+        String regex = "(\\s*" + EMAIL + "\\s*)*";
         return emailAddress.matches(regex);
     }
 }

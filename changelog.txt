@@ -1,3 +1,5 @@
+* More email validation (Adam_J)
+
 * Chinese infantry mechanism added for a&a pacific (Adam_J)
 
 * Convoy Zones implemented (Adam_J)
