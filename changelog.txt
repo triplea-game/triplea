@@ -1,3 +1,11 @@
+* fixed bug [ 1259381 ] Bid purchasing (sgb)
+
+* fixed no pop up movement for scaled units (sgb)
+
+* removed territory attatchments for sea zones in big world map (sgb)
+
+* Fixed missing connection in big world map (kc1189)
+
 * More email validation (Adam_J)
 
 * Chinese infantry mechanism added for a&a pacific (Adam_J)
