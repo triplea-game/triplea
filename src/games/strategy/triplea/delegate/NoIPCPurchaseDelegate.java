@@ -24,14 +24,12 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -76,11 +74,9 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
     private int getProductionUnits(Collection territories, PlayerID player)
     {
         int unitCount = 0;
-        PlayerID currentPlayer = null;
-        Territory capitol = null;
-        boolean isPacific = isPacificEdition();
+        
 
-        Collection<Unit> units = null;
+        boolean isPacific = isPacificEdition();
         
         // All territories should be owned by the same player, our PlayerID
         Iterator territoryIter = territories.iterator();
@@ -92,8 +88,7 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
             if(ta.getProduction() > 0)
                 ++unitCount;
 
-            if(i == 0)
-                currentPlayer = current.getOwner();
+           
         } 
 
         if(isPacific)
