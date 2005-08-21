@@ -50,11 +50,13 @@ public class UnitImageFactory
 
   /**
    * Width of all icons.
+   * You probably want getUnitImageWidth(), which takes scale factor into account.
    */
   public static final int UNIT_ICON_WIDTH = 48;
 
   /**
    * Height of all icons.
+   * You probably want getUnitImageHeight(), which takes scale factor into account. 
    **/
   public static final int UNIT_ICON_HEIGHT = 48;
 
