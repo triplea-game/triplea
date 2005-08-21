@@ -28,7 +28,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   protected boolean canAfford(IntegerMap<Resource> costs, PlayerID player)
   {
       Resource ipcs = getData().getResourceList().getResource(Constants.IPCS);
-      return costs.getInt(ipcs) < m_bid;
+      return costs.getInt(ipcs) <= m_bid;
   }
 
   public void start(IDelegateBridge bridge, GameData data)
