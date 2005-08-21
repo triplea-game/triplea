@@ -127,6 +127,7 @@ class TerritoryOverLayDrawable implements IDrawable
             g.fill(polygon);
         }
         
+        g.dispose();
         return img;
     }
 
@@ -253,15 +254,15 @@ class VCDrawable implements IDrawable
 class CapitolMarkerDrawable implements IDrawable
 {
 
-    private final PlayerID m_player;
-    private final Territory m_location;
+    private final String m_player;
+    private final String m_location;
     
     
     public CapitolMarkerDrawable(final PlayerID player, final Territory location)
     {
         super();
-        m_player = player;
-        m_location = location;
+        m_player = player.getName();
+        m_location = location.getName();
     }
     public void prepare()
     {
@@ -269,8 +270,8 @@ class CapitolMarkerDrawable implements IDrawable
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
-        Image img = FlagIconImageFactory.instance().getLargeFlag(m_player);
-        Point point = mapData.getCapitolMarkerLocation(m_location);
+        Image img = FlagIconImageFactory.instance().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
+        Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
         
         graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
         

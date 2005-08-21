@@ -59,7 +59,7 @@ public class UnitsDrawer implements IDrawable
         if(m_overflow)
         {
             graphics.setColor(Color.BLACK);
-            graphics.fillRect(m_placementPoint.x - bounds.x -2, m_placementPoint.y - bounds.y + UnitImageFactory.UNIT_ICON_HEIGHT , UnitImageFactory.UNIT_ICON_WIDTH + 2,  3 );
+            graphics.fillRect(m_placementPoint.x - bounds.x -2, m_placementPoint.y - bounds.y + UnitImageFactory.instance().getUnitImageHeight() , UnitImageFactory.instance().getUnitImageWidth() + 2,  3 );
         }
         
         UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
@@ -98,10 +98,7 @@ public class UnitsDrawer implements IDrawable
             selectedUnits.add(Matches.UnitIsNotDamaged);
         
         List<Unit> rVal = t.getUnits().getMatches(selectedUnits);
-        
-        if(rVal.size() != m_count)
-            throw new IllegalStateException("Wrong units expected, expecting :" + m_count + " but got " + rVal);
-        
+
         return new Tuple<Territory,List<Unit>>(t,rVal);
     }
     

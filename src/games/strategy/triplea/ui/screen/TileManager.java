@@ -345,9 +345,9 @@ public class TileManager
             for(UnitsDrawer drawer : m_allUnitDrawables)
             {
                 Point placementPoint = drawer.getPlacementPoint();
-                if(x > placementPoint.x && x < placementPoint.x + UnitImageFactory.UNIT_ICON_WIDTH)
+                if(x > placementPoint.x && x < placementPoint.x + UnitImageFactory.instance().getUnitImageWidth())
                 {
-                    if(y > placementPoint.y && y < placementPoint.y + UnitImageFactory.UNIT_ICON_HEIGHT)
+                    if(y > placementPoint.y && y < placementPoint.y + UnitImageFactory.instance().getUnitImageHeight())
                     {
                         return drawer.getUnits(gameData);
                     }

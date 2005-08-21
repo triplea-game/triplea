@@ -624,9 +624,11 @@ public class MapPanel extends ImageScrollerLargeView
         
         Set<UnitCategory> categories =  UnitSeperator.categorize(units);
         
-        final int xSpace = 5;
+        final int icon_width = UnitImageFactory.instance().getUnitImageWidth();
         
-        BufferedImage img = Util.createImage( (categories.size() + xSpace) * UnitImageFactory.UNIT_ICON_WIDTH, UnitImageFactory.UNIT_ICON_HEIGHT, true); 
+        final int xSpace = 5;
+         
+        BufferedImage img = Util.createImage( categories.size() * (xSpace + icon_width), UnitImageFactory.UNIT_ICON_HEIGHT, true); 
         Graphics2D g = (Graphics2D) img.getGraphics();
         
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f) );
@@ -637,7 +639,7 @@ public class MapPanel extends ImageScrollerLargeView
         int i = 0;
         for(UnitCategory category : categories)
         {
-            Point place = new Point( i * (UnitImageFactory.UNIT_ICON_WIDTH + xSpace), 0);
+            Point place = new Point( i * (icon_width + xSpace), 0);
             UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
                     category.getOwner().getName(), place,category.getDamaged(), false, "" );
             drawer.draw(bounds, m_data, g, MapData.getInstance());
@@ -652,6 +654,7 @@ public class MapPanel extends ImageScrollerLargeView
             }
         
         });
+        g.dispose();
     }
     
     public void setTerritoryOverlay(Territory territory, Color color, float opaqueness)
