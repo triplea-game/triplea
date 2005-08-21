@@ -41,7 +41,7 @@ public class TerritoryAttatchment extends DefaultAttatchment
         {
             Territory current = (Territory) iter.next();
             TerritoryAttatchment ta = TerritoryAttatchment.get(current);
-            if(ta.getCapital() != null)
+            if(ta != null && ta.getCapital() != null)
             {
                 PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
                 if(whoseCapital == null)
