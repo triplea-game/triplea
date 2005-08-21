@@ -1,3 +1,5 @@
+* fixed missing connection from solomon in pacific map (sgb)
+
 * fixed bug [ 1259381 ] Bid purchasing (sgb)
 
 * fixed no pop up movement for scaled units (sgb)

@@ -14,7 +14,7 @@
 
 
 <game>
-        <info name="Pacific - Alpha" version="1.0"/>
+        <info name="Pacific - Alpha" version="1.0.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -201,6 +201,7 @@
 		<connection t1="Szechwan" t2="Sikang"/>
 		<connection t1="Szechwan" t2="Shansi"/>
 		<connection t1="Szechwan" t2="Kweichow"/>
+		<connection t1="Solomon" t2="15 Sea Zone"/>
 
 		<connection t1="Canada" t2="United States"/>
 				
