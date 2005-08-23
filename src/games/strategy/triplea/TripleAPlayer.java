@@ -201,9 +201,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     {
         if (bid)
         {
-            String propertyName = m_id.getName() + " bid";
-            if (Integer.parseInt(m_bridge.getGameData().getProperties().get(
-                    propertyName).toString()) == 0)
+            if(BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
                 return;
         }
         //we have no production frontier

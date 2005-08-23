@@ -21,6 +21,18 @@ public class BidPurchaseDelegate extends PurchaseDelegate
     private int m_spent;
     private IDelegateBridge m_bridge;
 
+    
+    private static int getBidAmount(GameData data, PlayerID currentPlayer)
+    {
+      String propertyName = currentPlayer.getName() + " bid";
+        int bid = Integer.parseInt(data.getProperties().get(propertyName).toString());
+      return bid;
+    }
+    
+    public static boolean doesPlayerHaveBid(GameData data, PlayerID player)
+    {
+        return getBidAmount(data, player) != 0;
+    }
 
   /**
    * subclasses can over ride this method to use different restrictions as to what a player can buy
@@ -34,9 +46,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   public void start(IDelegateBridge bridge, GameData data)
   {
       super.start(bridge, data);
-      m_bridge = bridge;
-      String propertyName = bridge.getPlayerID().getName() + " bid";
-      m_bid = Integer.parseInt(getData().getProperties().get(propertyName).toString());
+      m_bridge = bridge;  
+      m_bid = getBidAmount(data, bridge.getPlayerID());
       m_spent = 0;
   }
 

@@ -28,7 +28,7 @@ import java.util.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class GameSequence extends GameDataComponent
+public class GameSequence extends GameDataComponent implements Iterable<GameStep>
 {
 	private final List<GameStep> m_steps = new ArrayList<GameStep>();
 	private int m_currentIndex;
@@ -104,11 +104,6 @@ public class GameSequence extends GameDataComponent
 	public Iterator<GameStep> iterator()
 	{
 		return m_steps.iterator();
-	}
-
-	public boolean isFirstStep()
-	{
-		return m_currentIndex == 0;
 	}
 
 

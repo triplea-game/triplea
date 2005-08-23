@@ -31,6 +31,7 @@ import games.strategy.triplea.attatchments.UnitAttatchment;
 
 import java.util.*;
 
+
 /**
  * 
  * @author Sean Bridges
@@ -68,6 +69,28 @@ public class InitializationDelegate implements IDelegate
         initOriginalOwner(data, aBridge);
         
         initTech(data, aBridge);
+        
+        initSkipUnusedBids(data);
+    }
+
+    private void initSkipUnusedBids(GameData data)
+    {
+        //we have a lot of bid steps, 12 for pact of steel
+        //in multi player this can be time consuming, since each vm
+        //must be notified (and have its ui) updated for each step,
+        //so remove the bid steps that arent used
+        
+         for(GameStep step : data.getSequence())
+         {
+             if(step.getDelegate() instanceof BidPlaceDelegate || step.getDelegate() instanceof BidPurchaseDelegate)
+             {
+                 if(!BidPurchaseDelegate.doesPlayerHaveBid(data, step.getPlayerID()))
+                 {
+                     step.setMaxRunCount(0);
+                 }
+             }
+         }
+        
     }
 
     private void initTech(GameData data, IDelegateBridge bridge)
