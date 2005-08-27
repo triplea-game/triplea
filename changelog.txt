@@ -1,3 +1,5 @@
+* fixed chinese tech in big world 1942 map (sgb)
+
 * fixed missing connection from solomon in pacific map (sgb)
 
 * fixed bug [ 1259381 ] Bid purchasing (sgb)
@@ -6,7 +8,7 @@
 
 * removed territory attatchments for sea zones in big world map (sgb)
 
-* Fixed missing connection in big world map (kc1189)
+* Fixed missing connections in big world map, north to south brazil, and sea of Okhotsk to West Bering Sea (kc1189)
 
 * More email validation (Adam_J)
 
