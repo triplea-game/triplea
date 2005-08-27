@@ -1556,6 +1556,16 @@
                            <option name="longRangeAir" value="false"/>
                     </attatchment>
 
+                    <attatchment name="techAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TechAttatchment" type="player">
+                           <option name="heavyBomber" value="false"/>
+                           <option name="jetPower" value="false"/>
+                           <option name="industrialTechnology" value="false"/>
+                           <option name="superSub" value="false"/>
+                           <option name="rocket" value="false"/>
+                           <option name="longRangeAir" value="false"/>
+                    </attatchment>
+
+
                     <attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttatchment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="transportCost" value="2"/>
