@@ -993,6 +993,7 @@
 
                 <connection t1="Northern Brazil" t2="Western South America"/>
                 <connection t1="Northern Brazil" t2="Northern South America"/>
+                <connection t1="Northern Brazil" t2="Southern Brazil"/>
 
                 <connection t1="Southern Brazil" t2="Southern South America"/>
                 <connection t1="Southern Brazil" t2="Western South America"/>
