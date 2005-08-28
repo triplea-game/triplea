@@ -5,7 +5,8 @@
 		<meta name="author" content="George El-Haddad">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="description" content="">
-		<title>TripleA :: Game Playing Guide</title>
+		<link rel="stylesheet" type="text/css" href="tripleaStyle.css">
+		<title>TripleA :: Game Playing Guide (rev 1.0)</title>
 	</head>
 
 	<body background="images/water_mark.gif">
@@ -17,11 +18,12 @@
 		
 		<p align="center">
 			<span style="font-style: italic;">
-				This Guide Is Accurate For TripleA v0.5.3
+				This Guide Is Accurate For TripleA v0.6.0.1
 			</span>
 			<br/>
 			<span style="font-size: smaller; font-style: italic;">
-				Written by George H. (DMA02)<br/>
+				Written by George El-Haddad<br/>
+				Revision 1.0<br/>
 			</span>
 		</p>
 		
@@ -142,7 +144,7 @@
 						</td>
 						
 						<td align="center" height="10">
-							->
+							-> <!-- &#8674; -->
 						</td>
 						
 						<td align="center" height="10">
@@ -200,15 +202,15 @@
 				the TripleA zip file in. From there, run the following command:
 				<br/>
 				<br/>
-				<table border="1" cellspacing="2" cellpadding="2" width="650">
+				<table border="1" cellspacing="2" cellpadding="2">
 					<tr>
 						<td align="left" height="48" width="48">
 							<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 						</td>
 						
-						<td valign="middle" bgcolor="#8fee8f">
+						<td valign="middle" bgcolor="#ffffcc">
 							<code>
-							&nbsp;&nbsp;unzip -L triplea_x_x_x.zip
+							unzip -L triplea_x_x_x.zip
 							</code>
 						</td>
 					</tr>
@@ -254,16 +256,16 @@
 				Go inside the TripleA directory and list all the contents inside:
 				<br/>
 				<br/>
-				<table border="1" cellspacing="2" cellpadding="2" width="650">
+				<table border="1" cellspacing="2" cellpadding="2">
 					<tr>
 						<td align="left" height="48" width="48">
 							<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 						</td>
 						
-						<td valign="middle" bgcolor="#8fee8f">
+						<td valign="middle" bgcolor="#ffffcc">
 							<code>
-							&nbsp;&nbsp;cd triplea_x_x_x<br/>
-							&nbsp;&nbsp;ls
+							cd triplea_x_x_x<br/>
+							ls
 							</code>
 						</td>
 					</tr>
@@ -274,17 +276,17 @@
 				TripleA directory, an example is shown below:
 				<br/>
 				<br/>
-				<table border="1" cellspacing="2" cellpadding="2" width="650">
+				<table border="1" cellspacing="2" cellpadding="2">
 					<tr>
 						<td align="left" height="48" width="48">
 							<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 						</td>
 						
-						<td valign="middle" bgcolor="#8fee8f">
+						<td valign="middle" bgcolor="#ffffcc">
 							<code>
-							&nbsp;&nbsp;bin/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; doc/&nbsp;&nbsp; lib/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; triplea_mac_os_x.sh<br/>
-							&nbsp;&nbsp;changelog.txt games/ license/&nbsp;&nbsp;&nbsp; triplea_unix.sh<br/>
-							&nbsp;&nbsp;classes/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; icons/ readme.html triplea_windows.bat<br/>
+							bin/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; doc/&nbsp;&nbsp; lib/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; triplea_mac_os_x.sh<br/>
+							changelog.txt games/ license/&nbsp;&nbsp;&nbsp; triplea_unix.sh<br/>
+							classes/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; icons/ readme.html triplea_windows.bat<br/>
 							</code>
 						</td>
 					</tr>
@@ -298,16 +300,16 @@
 				to change the file permission and the command to run it:
 				<br/>
 				<br/>
-				<table border="1" cellspacing="2" cellpadding="2" width="650">
+				<table border="1" cellspacing="2" cellpadding="2">
 					<tr>
 						<td align="left" height="48" width="48">
 							<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 						</td>
 						
-						<td valign="middle" bgcolor="#8fee8f">
+						<td valign="middle" bgcolor="#ffffcc">
 							<code>
-							&nbsp;&nbsp;chmod +x triplea_unix.sh<br/>
-							&nbsp;&nbsp;./triplea_unix.sh
+							chmod +x triplea_unix.sh<br/>
+							./triplea_unix.sh
 							</code>
 						</td>
 					</tr>
@@ -333,36 +335,52 @@
 			</p>
 			
 			<p>
-				<table border="0" cellspacing="2" cellpadding="2" width="800">
+				<table border="0" cellspacing="2" cellpadding="2" width="600">
 					<tr>
 						<td height="380" valign="top">
 							<img src="images/main_window.png" width="261" height="380" border="0" alt="main window" />
 						</td>
 						
-						<td height="380" valign="top">
+						<td valign="top">
 							<table border="1">
-								<tr height="10">
-									<td align="center" bgcolor="#ffb6c0"><b>Game Type</b></td>
-									<td align="center" bgcolor="#ffb6c0"><b>File</b></td>
-									<td align="center" bgcolor="#ffb6c0"><b>Version</b></td>
+								<tr>
+									<td bgcolor="#ffcc99">
+										<b>Game Type</b>
+									</td>
 								</tr>
 								
 								<tr>
-									<td valign="top" bgcolor="#8fee8f">
+									<td>
 										Allows one to specify the type of game to be played.
 										There are 3 possible types of games that one can play
 										using TripleA. Those are: Local Game, Sever, Client,
 										and PBEM. A Help button is provided to
 										give more information on that specific section.
 									</td>
-									
-									<td valign="top" bgcolor="#8fee8f">
+								</tr>
+								
+								<tr>
+									<td bgcolor="#ffcc99">
+										<b>File</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Allows the user to select what game file they wish to
 										load. One can either load a previously saved file, or
 										start a new game.
 									</td>
-									
-									<td valign="top" bgcolor="#8fee8f">
+								</tr>
+								
+								<tr>
+									<td bgcolor="#ffcc99">
+										<b>Version</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Displays the engine version, name of the game loaded, and
 										the version of that game. 
 									</td>
@@ -487,7 +505,7 @@
 			
 			<p>
 				<b>Step 3 & 4.</b><br/>
-				<table border="0" cellspacing="2" cellpadding="2" width="800">
+				<table border="0" cellspacing="2" cellpadding="2" width="600">
 					<tr>
 						<td valign="top">
 							<img src="images/server_start_up.png" width="137" height="123" border="0" alt="server options"/>
@@ -498,22 +516,34 @@
 						<td>
 							<table border="1" >
 								<tr>
-									<td align="center" bgcolor="#ffb6c0"><b>Name</b></td>
-									<td align="center" bgcolor="#ffb6c0"><b>Port</b></td>
+									<td bgcolor="#ffcc99">
+										<b>Name</b>
+									</td>
+									
 								</tr>
 								
 								<tr>
-									<td valign="top"  bgcolor="#8fee8f">
+									<td>
 										This will be the name of your server. It is the name
 										that will identify your computer as the server as well
 										as you, the player. The name can be anything you want.
 									</td>
-									
-									<td valign="top"  bgcolor="#8fee8f">
+								</tr>
+								
+								<tr>
+									<td bgcolor="#fdcc99">
+										<b>Port</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										The port number can also be anything you want, but beware.
 										The default port number is 3300 which seems to work fine
 										on most systems and is the expected port number most players
-										will use unless instructed otherwise. Also note that on UNIX
+										will use unless instructed otherwise.
+										<br/><br/>
+										Also note that on UNIX
 										machines, ports under 1024 are privileged ports and if used
 										with TripleA will result in an error.
 									</td>
@@ -598,7 +628,7 @@
 			
 			<p>
 				<b>Step 3.</b><br/>
-				<table border="0" cellspacing="2" cellpadding="2" width="800">
+				<table border="0" cellspacing="2" cellpadding="2" width="700">
 					<tr>
 						<td valign="top">
 							<img src="images/client_start_up.png" width="184" height="146" border="0" alt="client startup" />
@@ -608,31 +638,48 @@
 						<td valign="top">
 							<table border="1" >
 								<tr>
-									<td align="center" bgcolor="#ffb6c0"><b>Name</b></td>
-									<td align="center" bgcolor="#ffb6c0"><b>Server Port</b></td>
-									<td align="center" bgcolor="#ffb6c0"><b>Server Address</b></td>
+									<td bgcolor="#ffcc99">
+										<b>Name</b>
+									</td>
 								</tr>
 								
 								<tr>
-									<td valign="top"  bgcolor="#8fee8f">
+									<td >
 										This is the name that will identify you as a player in the
 										game. It can be whatever you want.
 									</td>
-									
-									<td valign="top"  bgcolor="#8fee8f">
-										The port number that the server is using should be entered here.
-										By default the port number will be 3300 and should be ok most of
-										the times, unless the person hosting as the server instructs you
-										to use a different port number.
+								</tr>
+								
+								<tr>
+									<td bgcolor="#ffcc99">
+										<b>Server Port</b>
 									</td>
-									
-									<td valign="top"  bgcolor="#8fee8f">
+								</tr>
+								
+								<tr>
+									<td>
 										The IP address of the server is needed for the client to connect
 										to the server. This is essential to most things in everyday life
 										as well. To get to a destination, one must need to know where it
 										is located. On the Internet we have the IP address as our location.
 										The server should provide you with their IP address in order for
 										you to connect as a client.
+									</td>
+								</tr>
+								
+								<tr>
+									<td bgcolor="#ffcc99">
+										<b>Server Address</b>
+									</td>
+								</tr>
+								
+								
+								<tr>
+									<td>
+										The port number that the server is using should be entered here.
+										By default the port number will be 3300 and should be ok most of
+										the times, unless the person hosting as the server instructs you
+										to use a different port number.
 									</td>
 								</tr>
 							</table>
@@ -781,7 +828,7 @@
 			
 			<p>
 				<b>Step 4 & 5.</b><br/>
-				<table border="0" cellspacing="2" cellpadding="2" width="800">
+				<table border="0" cellspacing="2" cellpadding="2" width="600">
 					<tr>
 						<td>
 							<img src="images/pbem_tab.png" width="281" height="378" alt="pbem tab" />
@@ -790,17 +837,26 @@
 						<td valign="top">
 							<table border="1" >
 								<tr>
-									<td align="center" bgcolor="#ffb6c0"><b>EMail Address 1</b></td>
-									<td align="center" bgcolor="#ffb6c0"><b>EMail Address 2</b></td>
+									<td bgcolor="#ffcc99">
+										<b>To:</b>
+									</td>
 								</tr>
 								
 								<tr>
-									<td valign="top"  bgcolor="#8fee8f">
+									<td>
 										Enter your email address so that you get emailed the dice rolls
 										you will be using during your turn.
 									</td>
-									
-									<td valign="top"  bgcolor="#8fee8f">
+								</tr>
+								
+								<tr>
+									<td bgcolor="#ffcc99">
+										<b>Cc:</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Enter your opponent's email address so that they will also be
 										emailed the dice rolls you used during your turn. Also note that
 										only in this address box you can put <b>more than 1</b> address.
@@ -817,7 +873,7 @@
 					</tr>
 				</table>
 				<br/>
-				<table border="0" cellspacing="2" cellpadding="2" width="800">
+				<table border="0" cellspacing="2" cellpadding="2" width="600">
 					<tr>
 						<td>
 							<img src="images/pbem_tab2.png" width="261" height="380" alt="pbem tab 2" />
@@ -826,11 +882,13 @@
 						<td valign="top">
 							<table border="1" >
 								<tr>
-									<td align="center" bgcolor="#ffb6c0"><b>EMail Address 2</b></td>
+									<td bgcolor="#ffcc99">
+										<b>Cc:</b>
+									</td>
 								</tr>
 								
 								<tr>
-									<td valign="top"  bgcolor="#8fee8f">
+									<td>
 										More than 1 address can be placed in this email box. Each email
 										must be separated by a single space. As always make sure your
 										email addresses you enter are valid.
@@ -857,7 +915,7 @@
 				test and a friendly message will instruct you on possible ways to trouble-shoot the
 				problem.<br/>
 				<br/>
-				<table border="0" cellspacing="2" cellpadding="2" width="800">
+				<table border="0" cellspacing="2" cellpadding="2" width="600">
 					<tr>
 						<td valign="top">
 							<img src="images/pbem_email_test_success.png" width="331" height="210" border="0" alt="pbem test 1" />
@@ -876,7 +934,7 @@
 					</tr>
 				</table>
 				<br/>
-				<table border="0" cellspacing="2" cellpadding="2" width="800">
+				<table border="0" cellspacing="2" cellpadding="2" width="600">
 					<tr>
 						<td valign="top">
 							<img src="images/pbem_email_test_syntax_error.png" width="370" height="198" border="0" alt="pbem test 2" />
@@ -949,7 +1007,7 @@
 					</p>
 	
 					<p>
-						<b>Trust Game</b>:  In this game we do not use the PBE option.
+						<b>Trust Game</b>:  In this game we do not use the PBEM option.
 					</p>
 			
 					<p>
@@ -1059,67 +1117,113 @@
 						<td valign="top">
 							<table border="1">
 								<tr>
-									<td valign="top" bgcolor="#ffb6c0"><b>Show Current Game</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td bgcolor="#ffcc99">
+										<b>Show Current Game</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Switches to the current game being played (used when your in History mode)
 									</td>
 								</tr>
 					
 								<tr>
-								<td valign="top" bgcolor="#ffb6c0"><b>Show History</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td bgcolor="#ffcc99">
+										<b>Show History</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Switches to History mode
 									</td>
 								</tr>
 					
 								<tr>
-									<td valign="top" bgcolor="#ffb6c0"><b>Unit Size</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td bgcolor="#ffcc99">
+										<b>Unit Size</b>
+									</td>
+									
+								</tr>
+								
+								<tr>									
+									
+									<td>
 										Allows the selection of various unit sizes
 									</td>
 								</tr>
 					
 								<tr>
-									<td valign="top" bgcolor="#ffb6c0"><b>Map Skins</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td bgcolor="#ffcc99">
+										<b>Map Skins</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Allows the selection of various custom map skins
 									</td>
 								</tr>
 					
 								<tr>
-									<td valign="top" bgcolor="#ffb6c0"><b>Enable Sound</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td bgcolor="#ffcc99">
+										<b>Enable Sound</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Toggles sounds on or off
 									</td>
 								</tr>
 					
 								<tr>
-									<td valign="top" bgcolor="#ffb6c0"><b>Show Map Details</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td bgcolor="#ffcc99">
+										<b>Show Map Details</b>
+									</td>
+								</tr>
+									
+									<td>
 										Toggles relief images on or off. Normally this is toggled automatically
 										by each map's personal <i>map.properties</i> file.
 									</td>
 								</tr>
 					
 								<tr>
-									<td valign="top" bgcolor="#ffb6c0"><b>View Game Options</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td bgcolor="#ffcc99">
+										<b>View Game Options</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										View the options currently active for the game. This is the same as viewing
 										the "Properties" tab when in the main TripleA window.
 									</td>
 								</tr>
 					
 								<tr>
-									<td valign="top" bgcolor="#ffb6c0"><b>Confirm Enemy Casualties</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td bgcolor="#ffcc99">
+										<b>Confirm Enemy Casualties</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Will prompt the user to press "OK" after each battle step. Toggling it
 										off will increase speed of battle casualty selection.
 									</td>
 								</tr>
 					
 								<tr>
-									<td valign="top" bgcolor="#ffb6c0"><b>Show Dice Stats</b></td>
-									<td valign="top" bgcolor="#8fee8f">
+									<td valign="top" bgcolor="#ffcc99">
+										<b>Show Dice Stats</b>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
 										Will show you a window displaying the frequency of dice rolls.
 									</td>
 								</tr>
@@ -1460,75 +1564,97 @@
 			</p>
 		
 			<p>
-				<table border="1" cellspacing="2" cellpadding="2" width="800">
+				<table border="1" cellspacing="2" cellpadding="2">
 					<tr>
-						<th align="left"><b>Property name</b></th>
-						<th align="left"><b>Description</b></th>
+						<th align="center" bgcolor="#ffcc99">
+							<b>Property name</b>
+						</th>
+						
+						<th aligh="center" bgcolor="#ffcc99">
+							<b>Property</b>
+						</th>
+						
+						<th align="center" bgcolor="#ffcc99">
+							<b>Description</b>
+						</th>
 					</tr>
 					
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Always on AA</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true, AA guns fire in non-combat phase.</td>
+						<td><b>Always on AA</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true, AA guns fire in non-combat phase.</td>
 					</tr>
 					
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Use Destroyers and Artillery</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true, adds destroyers and artillery to classic game, do not use with 4th edition.</td>
+						<td><b>Use Destroyers and Artillery</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true, adds destroyers and artillery to classic game, do not use with 4th edition.</td>
 					</tr>
 
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Territory Turn Limit</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true, each country cannot lose more ipcs than a territory is worth in a single round due to SBRs or rocket attacks.</td>
+						<td><b>Territory Turn Limit</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true, each country cannot lose more ipcs than a territory is worth in a single round due to SBRs or rocket attacks.</td>
 					</tr>
 
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Low Luck</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true enables low luck dice rolling. Please see user documentation for more information. Note that this option does not function correctly with the heavy bombers pick best of X dice option.</td>
+						<td><b>Low Luck</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true enables low luck dice rolling. Please see user documentation for more information. Note that this option does not function correctly with the heavy bombers pick best of X dice option.</td>
 					</tr>
 
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Submersible Subs</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true, subs use 4th edition rules for submerging in battles and for passing underneath other units.</td>
+						<td><b>Submersible Subs</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true, subs use 4th edition rules for submerging in battles and for passing underneath other units.</td>
 					</tr>
 
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Heavy Bomber Dice Rolls</b></td>
-						<td bgcolor="#8fee8f">Integer property. Specifies the number of dice rolls for heavy bombers. If property not specified then the number of dice rolls is 3.</td>
+						<td><b>Heavy Bomber Dice Rolls</b></td>
+						<td bgcolor="#ffffcc">Integer</td>
+						<td>Specifies the number of dice rolls for heavy bombers. If property not specified then the number of dice rolls is 3.</td>
 					</tr>
       
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Heavy Bombers Pick best of X Dice</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true, heavy bombers have only 1 roll which is the best of the number of dice normally rolled. This option when true will not work with the low luck option.</td>
+						<td><b>Heavy Bombers Pick best of X Dice</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true, heavy bombers have only 1 roll which is the best of the number of dice normally rolled. This option when true will not work with the low luck option.</td>
 					</tr>
 
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Two hit battleship</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true, battleships take 2 hits to be destroyed.</td>
+						<td><b>Two hit battleship</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true, battleships take 2 hits to be destroyed.</td>
 					</tr>
       
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Battleships repair at end of round</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true, battleships are repaired at the end of the turn. Should only be true when Two hit battleship is true.</td>
+						<td><b>Battleships repair at end of round</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true, battleships are repaired at the end of the turn. Should only be true when Two hit battleship is true.</td>
 					</tr>
 
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Neutral Territory Charge</b></td>
-						<td bgcolor="#8fee8f">Integer property. Specifies number of ipcs needed to violate neutrality in classic game. Has no effect in 4th edition</td>
+						<td><b>Neutral Territory Charge</b></td>
+						<td bgcolor="#ffffcc">Integer</td>
+						<td>Specifies number of ipcs needed to violate neutrality in classic game. Has no effect in 4th edition</td>
 					</tr>
       
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Max Factories Per Territory</b></td>
-						<td bgcolor="#8fee8f">Integer property. Maximum number of factories per territory.</td>
+						<td><b>Max Factories Per Territory</b></td>
+						<td bgcolor="#ccccff">Boolean</td>						
+						<td>Maximum number of factories per territory.</td>
 					</tr>
       
 					<tr>
-						<td bgcolor="#ffb6c0"><b>Produce fighters on carriers</b></td>
-						<td bgcolor="#8fee8f">Boolean property. When true fighters can be produced on carriers directly when both are produced at the same time. Note that this does not allow existing fighters to be moved to carriers.</td>
+						<td><b>Produce fighters on carriers</b></td>
+						<td bgcolor="#ccccff">Boolean</td>
+						<td>When true fighters can be produced on carriers directly when both are produced at the same time. Note that this does not allow existing fighters to be moved to carriers.</td>
 					</tr>
 
 					<tr>
-						<td bgcolor="#ffb6c0"><b><i>Country</i> bid</b></td>
-						<td bgcolor="#8fee8f">Integer property. Specifies the number of bid ipcs a country receives.</td>
+						<td><b><i>Country</i> bid</b></td>
+						<td bgcolor="#ffffcc">Integer</td>
+						<td>Specifies the number of bid ipcs a country receives.</td>
 					</tr>
 				</table>
 			</p>
@@ -1640,6 +1766,7 @@
 					<li><b>Ali Ibrahim</b> : <a href="#sec_8">Game Properties</a> and <a href="#sec_8.1">Low Luck sections</a></li>
 					<li><b>Naiby</b> : <a href="#sec_2.4">Practical Guidelines for PBEM section</a></li>
 					<li><b>Sean Bridges</b> : <a href="../readme.html#sec_2">About TripleA section</a> (and of course for TripleA itself)</li>
+					<li>Icon images from <a href="http://www.kde.org">KDE</a>'s Crystal icons package</li>
 				</ul>
 			</p>
 		

@@ -5,6 +5,7 @@
 		<meta name="author" content="George El-Haddad">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="description" content="">
+		<link rel="stylesheet" type="text/css" href="tripleaStyle.css">
 		<title>TripleA :: Developer Documentation</title>
 	</head>
 
@@ -17,11 +18,12 @@
 		
 		<p align="center">
 			<span style="font-style: italic;">
-				This Document Is Accurate For TripleA v0.6.0
+				This Document Is Accurate For TripleA v0.6.0.1
 			</span>
 			<br/>
 			<span style="font-size: smaller; font-style: italic;">
-				Written by George H.<br/>
+				Written by George El-Haddad<br/>
+				Revision 1.0
 			</span>
 		</p>
 		
@@ -29,10 +31,12 @@
 		
 		<p align="center">
 			<b>! NOTE !</b><br/>
-			This document is still incomplete and will be update soon.
+			This document is still incomplete and will be update soon.<br/>
+			Sections 5.3.12 to 8.2 and 10.0 are still being worked on.
 		</p>
 		
 		<hr/>
+		
 		<h2>Developer Documentation :: Quick Nav</h2>
 		<ul>
 			<li><b>1.0</b> <a href="#sec_1">Project Management With CVS</a></li>
@@ -77,45 +81,45 @@
 					<li><b>4.2</b> <a href="#sec_4.2">Firewall Configuration</a></li>
 					<li><b>4.3</b> <a href="#sec_4.3">Routers and Port-Forwarding</a></li>
 				</ul>
-			
+				
 			<li><b>5.0</b> <a href="#sec_5">Creating Custom Games</a></li>
+			
+			<li><b>5.1</b> <a href="#sec_5.1">Map Utilities</a></li>					
 				<ul>
-					<li><b>5.1</b> <a href="#sec_5.1">Map Utilities</a></li>
-						<ul>
-							<li><b>5.1.1</b> <a href="#sec_5.1.1">Center Picker</a></li>
-							<li><b>5.1.2</b> <a href="#sec_5.1.2">Polygon Grabber</a></li>
-							<li><b>5.1.3</b> <a href="#sec_5.1.3">Placement Picker</a></li>
-							<li><b>5.1.4</b> <a href="#sec_5.1.4">Auto-Placement Finder</a></li>
-							<li><b>5.1.5</b> <a href="#sec_5.1.5">Tile Image Breaker</a></li>
-							<li><b>5.1.6</b> <a href="#sec_5.1.6">Relief Image Breaker</a></li>
-							<li><b>5.1.7</b> <a href="#sec_5.1.7">Image Shrinker</a></li>
-							<li><b>5.1.8</b> <a href="#sec_5.1.8">Making a Map</a>
-						</ul>
-					<li><b>5.2</b> <a href="#sec_5.2">Map Configuration</a></li></li>
-						<ul>
-							<li><b>5.2.1</b> <a href="#sec_5.2.1">Map Properties</a></li>
-							<li><b>5.2.2</b> <a href="#sec_5.2.2">Capital Cities</a></li>
-							<li><b>5.2.3</b> <a href="#sec_5.2.3">Victory Cities</a></li>
-						</ul>
-					
-					<li><b>5.3</b> <a href="#sec_5.3">Customizing The XML Game File</a></li>
-						<ul>
-							<li><b>5.3.1</b> <a href="#sec_5.3.1">Game Information Header</a></li>
-							<li><b>5.3.2</b> <a href="#sec_5.3.2">Territories</a></li>
-							<li><b>5.3.3</b> <a href="#sec_5.3.3">Territory Connections</a></li>
-							<li><b>5.3.4</b> <a href="#sec_5.3.4">Resources</a></li>
-							<li><b>5.3.5</b> <a href="#sec_5.3.5">Players & Alliances</a></li>
-							<li><b>5.3.6</b> <a href="#sec_5.3.6">Units</a></li>
-							<li><b>5.3.7</b> <a href="#sec_5.3.7">Game-play Delegates</a></li>
-							<li><b>5.3.8</b> <a href="#sec_5.3.8">Game-play Sequence & Steps</a></li>
-							<li><b>5.3.9</b> <a href="#sec_5.3.9">Production Rules</a></li>
-							<li><b>5.3.10</b> <a href="#sec_5.3.10">Unit Attachment</a></li>
-							<li><b>5.3.11</b> <a href="#sec_5.3.11">Tech Attachment</a></li>
-							<li><b>5.3.12</b> <a href="#sec_5.3.12">Territory Attachment</a></li>
-							<li><b>5.3.13</b> <a href="#sec_5.3.13">Initializations</a></li>
-							<li><b>5.3.14</b> <a href="#sec_5.3.14">Game Properties</a></li>
-						</ul>
+					<li><b>5.1.1</b> <a href="#sec_5.1.1">Center Picker</a></li>
+					<li><b>5.1.2</b> <a href="#sec_5.1.2">Polygon Grabber</a></li>
+					<li><b>5.1.3</b> <a href="#sec_5.1.3">Placement Picker</a></li>
+					<li><b>5.1.4</b> <a href="#sec_5.1.4">Auto-Placement Finder</a></li>
+					<li><b>5.1.5</b> <a href="#sec_5.1.5">Tile Image Breaker</a></li>
+					<li><b>5.1.6</b> <a href="#sec_5.1.6">Relief Image Breaker</a></li>
+					<li><b>5.1.7</b> <a href="#sec_5.1.7">Image Shrinker</a></li>
+					<li><b>5.1.8</b> <a href="#sec_5.1.8">Making a Map</a>
 				</ul>
+					
+				<li><b>5.2</b> <a href="#sec_5.2">Map Configuration</a></li></li>
+					<ul>
+						<li><b>5.2.1</b> <a href="#sec_5.2.1">Map Properties</a></li>
+						<li><b>5.2.2</b> <a href="#sec_5.2.2">Capital Cities</a></li>
+						<li><b>5.2.3</b> <a href="#sec_5.2.3">Victory Cities</a></li>
+					</ul>
+					
+				<li><b>5.3</b> <a href="#sec_5.3">Customizing The XML Game File</a></li>
+					<ul>
+						<li><b>5.3.1</b> <a href="#sec_5.3.1">Game Information Header</a></li>
+						<li><b>5.3.2</b> <a href="#sec_5.3.2">Territories</a></li>
+						<li><b>5.3.3</b> <a href="#sec_5.3.3">Territory Connections</a></li>
+						<li><b>5.3.4</b> <a href="#sec_5.3.4">Resources</a></li>
+						<li><b>5.3.5</b> <a href="#sec_5.3.5">Players & Alliances</a></li>
+						<li><b>5.3.6</b> <a href="#sec_5.3.6">Units</a></li>
+						<li><b>5.3.7</b> <a href="#sec_5.3.7">Game-play Delegates</a></li>
+						<li><b>5.3.8</b> <a href="#sec_5.3.8">Game-play Sequence & Steps</a></li>
+						<li><b>5.3.9</b> <a href="#sec_5.3.9">Production Rules</a></li>
+						<li><b>5.3.10</b> <a href="#sec_5.3.10">Unit Attachment</a></li>
+						<li><b>5.3.11</b> <a href="#sec_5.3.11">Tech Attachment</a></li>
+						<li><b>5.3.12</b> <a href="#sec_5.3.12">Territory Attachment</a></li>
+						<li><b>5.3.13</b> <a href="#sec_5.3.13">Initializations</a></li>
+						<li><b>5.3.14</b> <a href="#sec_5.3.14">Game Properties</a></li>
+					</ul>
 			
 			<li><b>6.0</b> <a href="#sec_6">Engine Code Overview</a></li>
 				<ul>
@@ -219,26 +223,31 @@
 					
 					<table border="1" cellspacing="2" cellpadding="2" width="400">
 						<tr>
+							<td bgcolor="#ffcc99" colspan="2">
+								<b>Helpful Information</b>
+							</td>
+						</tr>
+						
+						<tr>
 							<td align="left" valign="top" height="48" width="48">
 								<img src="images/info.png" width="48" height="48" alt="info image" />
 							</td>
 							
-							<td valign="middle" bgcolor="#ffcc99">
+							<td valign="middle">
 								<span style="font-style: italic; font-size: small;">
 									In the example below; <b>USERNAME</b> would be the developer's source-forge account.
 									That means if you are a developer, you will put your source-forge user name
 									in place of <b>USERNAME</b>.
 								</span>
 							</td>
-						
 						</tr>
 					</table>
 
 					<br/>
 					
-					<table border="1" cellspacing="2" cellpadding="2" width="550">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Checking out a module.</b>
 							</td>
 						</tr>
@@ -248,10 +257,10 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;export CVS_RSH=ssh<br/>
-								&nbsp;&nbsp;cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea checkout triplea
+								export CVS_RSH=ssh<br/>
+								cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea checkout triplea
 								</code>
 							</td>
 						</tr>
@@ -290,7 +299,7 @@
 							<td colspan="2">				
 								<table border="1" cellspacing="2" cellpadding="2" width="100%">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>Commit a single file</b>
 										</td>
 									</tr>
@@ -300,9 +309,9 @@
 											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 										</td>
 						
-										<td valign="middle" bgcolor="#8fee8f">
+										<td valign="middle" bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea commit SourceFile.java
+											cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea commit SourceFile.java
 											</code>
 										</td>
 									</tr>
@@ -314,7 +323,7 @@
 							<td>
 								<table border="1" cellspacing="2" cellpadding="2" width="400">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>Commit a single file</b>
 										</td>
 									</tr>
@@ -324,9 +333,9 @@
 											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 										</td>
 						
-										<td valign="middle" bgcolor="#8fee8f">
+										<td valign="middle" bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;cvs commit SourceFile.java
+											cvs commit SourceFile.java
 											</code>
 										</td>
 									</tr>
@@ -334,13 +343,19 @@
 							</td>
 							
 							<td rowspan="2" valign="top">
-								<table border="1" cellspacing="2" cellpadding="2" height="175">
+								<table border="1" cellspacing="2" cellpadding="2" height="180">
+									<tr>
+										<td bgcolor="#ffcc99" colspan="2">
+											<b>Helpful Information</b>
+										</td>
+									</tr>
+									
 									<tr>
 										<td align="left" valign="top" height="48" width="48">
 											<img src="images/info.png" width="48" height="48" alt="info image" />
 										</td>
 							
-										<td valign="top" bgcolor="#ffcc99">
+										<td valign="top">
 											<span style="font-style: italic; font-size: small;">
 												You can commit a change by issuing the the <b>commit</b> command
 												alone or with all the user options and module names. Either will
@@ -361,7 +376,7 @@
 							<td>
 								<table border="1" cellspacing="2" cellpadding="2" width="400">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>Commit a single directory</b>
 										</td>
 									</tr>
@@ -371,9 +386,9 @@
 											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 										</td>
 						
-										<td valign="middle" bgcolor="#8fee8f">
+										<td valign="middle" bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;cvs commit new_dir
+											cvs commit new_dir
 											</code>
 										</td>
 									</tr>
@@ -391,9 +406,9 @@
 					that is to commit a change with the message in the command line.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="560">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Commit with a message.</b>
 							</td>
 						</tr>
@@ -403,9 +418,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs commit SourceFile.java -m "fix was aplied to lines 345"
+								cvs commit SourceFile.java -m "fix was aplied to lines 345"
 								</code>
 							</td>
 						</tr>
@@ -440,7 +455,7 @@
 							<td>
 								<table border="1" cellspacing="2" cellpadding="2" width="400">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>Adding a source file.</b>
 										</td>
 									</tr>
@@ -450,27 +465,34 @@
 											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 										</td>
 						
-										<td valign="middle" bgcolor="#8fee8f">
+										<td valign="middle" bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;cvs add MySourceFile.java<br/>
-											&nbsp;&nbsp;cvs commit
+											cvs add MySourceFile.java<br/>
+											cvs commit
 											</code>
 										</td>
 									</tr>
 								</table>
 							</td>
 							
-							<td rowspan="2" valign="middle">
-								<table border="1" cellspacing="2" cellpadding="2" width="400" height="180">
+							<td rowspan="2" valign="top">
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td bgcolor="#ffcc99" colspan="2">
+											<b>Helpful Information</b>
+										</td>
+									</tr>
+									
 									<tr>
 										<td align="left" valign="top" height="48" width="48">
 											<img src="images/info.png" width="48" height="48" alt="info image" />
 										</td>
 							
-										<td valign="top" bgcolor="#ffcc99">
+										<td valign="top">
 											<span style="font-style: italic; font-size: small;">
 												When a binary file is committed without the <b>-kb</b> option
-												it will make the file be saved in a textual format.
+												it will make the file be saved in a textual format.<br/>
+												<br/>
 												Although this does not pose any problems to UNIX based
 												systems, it does for developers who use Microsoft Windows.
 											</span>
@@ -484,7 +506,7 @@
 							<td>
 								<table border="1" cellspacing="2" cellpadding="2" width="400">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>Adding a binary file.</b>
 										</td>
 									</tr>
@@ -494,10 +516,10 @@
 											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 										</td>
 						
-										<td valign="middle" bgcolor="#8fee8f">
+										<td valign="middle" bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;cvs add -kb Some_Image.png<br/>
-											&nbsp;&nbsp;cvs commit
+											cvs add -kb Some_Image.png<br/>
+											cvs commit
 											</code>
 										</td>
 									</tr>
@@ -510,7 +532,7 @@
 								<br/>
 								<table border="1" cellspacing="2" cellpadding="2" width="400">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>Adding a directory.</b>
 										</td>
 									</tr>
@@ -520,11 +542,11 @@
 											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 										</td>
 						
-										<td valign="middle" bgcolor="#8fee8f">
+										<td valign="middle" bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;mkdir new_directory<br/>
-											&nbsp;&nbsp;cvs add new_directory<br/>
-											&nbsp;&nbsp;cvs commit<br/>
+											mkdir new_directory<br/>
+											cvs add new_directory<br/>
+											cvs commit<br/>
 											</code>
 										</td>
 									</tr>
@@ -561,9 +583,9 @@
 						<li>Commit the changes</li>
 					</ol>
 					
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Removing a file.</b>
 							</td>
 						</tr>
@@ -573,11 +595,11 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;rm SourceFile.java<br/>
-								&nbsp;&nbsp;cvs remove<br/>
-								&nbsp;&nbsp;cvs commit
+								rm SourceFile.java<br/>
+								cvs remove<br/>
+								cvs commit
 								</code>
 							</td>
 						</tr>
@@ -585,9 +607,9 @@
 					
 					<br/>
 					
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Removing a file with a message.</b>
 							</td>
 						</tr>
@@ -597,11 +619,11 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;rm SourceFile.java<br/>
-								&nbsp;&nbsp;cvs remove<br/>
-								&nbsp;&nbsp;cvs commit -m "no longer needed"
+								rm SourceFile.java<br/>
+								cvs remove<br/>
+								cvs commit -m "no longer needed"
 								</code>
 							</td>
 						</tr>
@@ -620,7 +642,7 @@
 							<td valign="top">
 								<table border="1" cellspacing="2" cellpadding="2" width="400" height="160">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>Removing a full directory.</b>
 										</td>
 									</tr>
@@ -630,16 +652,16 @@
 											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 										</td>
 						
-										<td valign="middle" bgcolor="#8fee8f">
+										<td valign="middle" bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;cd myDir<br/>
-											&nbsp;&nbsp;rm *.java<br/>
-											&nbsp;&nbsp;cvs remove<br/>
-											&nbsp;&nbsp;cvs commit<br/>
-											&nbsp;&nbsp;cd ..<br/>
-											&nbsp;&nbsp;cvs remove myDir<br/>
-											&nbsp;&nbsp;rm -rf myDir<br/>
-											&nbsp;&nbsp;cvs commit
+											cd myDir<br/>
+											rm *.java<br/>
+											cvs remove<br/>
+											cvs commit<br/>
+											cd ..<br/>
+											cvs remove myDir<br/>
+											rm -rf myDir<br/>
+											cvs commit
 											</code>
 										</td>
 									</tr>
@@ -647,17 +669,24 @@
 							</td>
 							
 							<td valign="top">
-								<table border="1" cellspacing="2" cellpadding="2" width="400" height="160">
+								<table border="1" cellspacing="2" cellpadding="2" width="400">
+									<tr>
+										<td bgcolor="#ffcc99" colspan="2">
+											<b>Helpful Information</b>
+										</td>
+									</tr>
+									
 									<tr>
 										<td align="left" valign="top" height="48" width="48">
 											<img src="images/info.png" width="48" height="48" alt="info image" />
 										</td>
 							
-										<td valign="top" bgcolor="#ffcc99">
+										<td valign="top">
 											<span style="font-style: italic; font-size: small;">
 												When issuing the <b>remove</b> command by it self, it will
 												recurse through all the files and directories and queue
-												for removal all files that have been manually deleted.
+												for removal all files that have been manually deleted.<br/>
+												<br/>
 												You can specify what file you want it to queue for removal
 												by appending the file name after the word <b>remove</b>.
 											</span>
@@ -692,9 +721,9 @@
 				</p>
 				
 				<p>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Tagging the CVS Tree.</b>
 							</td>
 						</tr>
@@ -704,9 +733,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs tag s0-6-0-release
+								cvs tag s0-6-0-release
 								</code>
 							</td>
 						</tr>
@@ -734,9 +763,9 @@
 					files and directories recursively. This will not remove un-wanted files.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="350">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Updating the local CVS copy.</b>
 							</td>
 						</tr>
@@ -746,9 +775,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						 	
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs update
+								cvs update
 								</code>
 							</td>
 						</tr>
@@ -763,9 +792,9 @@
 					has been updated.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="350">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Updating the local CVS copy with options.</b>
 							</td>
 						</tr>
@@ -775,9 +804,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs -q update -dAP
+								cvs -q update -dAP
 								</code>
 							</td>
 						</tr>
@@ -802,9 +831,9 @@
 				</p>
 				
 				<p>
-					<table border="1" cellspacing="2" cellpadding="2" width="500">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Basic annotation.</b>
 							</td>
 						</tr>
@@ -814,9 +843,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs annotate SourceFile.java
+								cvs annotate SourceFile.java
 								</code>
 							</td>
 						</tr>
@@ -824,9 +853,9 @@
 					
 					<br/>
 					
-					<table border="1" cellspacing="2" cellpadding="2" width="500">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Annotate to a file.</b>
 							</td>
 						</tr>
@@ -836,9 +865,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs annotate SourceFile.java  > AnnotatedFile.txt
+								cvs annotate SourceFile.java  > AnnotatedFile.txt
 								</code>
 							</td>
 						</tr>
@@ -846,9 +875,9 @@
 					
 					<br/>
 					
-					<table border="1" cellspacing="2" cellpadding="2" width="500">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Example of an annotated file.</b>
 							</td>
 						</tr>
@@ -858,7 +887,7 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 						
-							<td valign="top" bgcolor="#8fee8f">
+							<td valign="top" bgcolor="#ffffcc">
 								<code>
 								1.34&nbsp;&nbsp;&nbsp;&nbsp;(userOne 19-Feb-05):&nbsp;&nbsp;&nbsp;&nbsp;if (sentinel != null)<br/>
 								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
@@ -911,7 +940,7 @@
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Checking out a module.</b>
 							</td>
 						</tr>
@@ -921,10 +950,10 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;export CVS_RSH=ssh<br/>
-								&nbsp;&nbsp;cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/triplea checkout triplea
+								export CVS_RSH=ssh<br/>
+								cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/triplea checkout triplea
 								</code>
 							</td>
 						</tr>
@@ -958,9 +987,9 @@
 					In the root folder of TripleA run the command below. This will update all
 					files and directories recursively. This will not remove un-wanted files.
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Updating the local CVS copy.</b>
 							</td>
 						</tr>
@@ -970,9 +999,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						 	
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs update
+								cvs update
 								</code>
 							</td>
 						</tr>
@@ -987,9 +1016,9 @@
 					has been updated.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Updating the local CVS copy with options.</b>
 							</td>
 						</tr>
@@ -999,9 +1028,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs -q update -dAP
+								cvs -q update -dAP
 								</code>
 							</td>
 						</tr>
@@ -1026,9 +1055,9 @@
 				</p>
 				
 				<p>
-					<table border="1" cellspacing="2" cellpadding="2" width="500">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Basic annotation.</b>
 							</td>
 						</tr>
@@ -1038,9 +1067,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs annotate SourceFile.java
+								cvs annotate SourceFile.java
 								</code>
 							</td>
 						</tr>
@@ -1048,9 +1077,9 @@
 					
 					<br/>
 					
-					<table border="1" cellspacing="2" cellpadding="2" width="500">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Annotate to a file.</b>
 							</td>
 						</tr>
@@ -1060,9 +1089,9 @@
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cvs annotate SourceFile.java  > AnnotatedFile.txt
+								cvs annotate SourceFile.java  > AnnotatedFile.txt
 								</code>
 							</td>
 						</tr>
@@ -1070,9 +1099,9 @@
 					
 					<br/>
 					
-					<table border="1" cellspacing="2" cellpadding="2" width="500">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Example of an annotated file.</b>
 							</td>
 						</tr>
@@ -1082,7 +1111,7 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 						
-							<td valign="top" bgcolor="#8fee8f">
+							<td valign="top" bgcolor="#ffffcc">
 								<code>
 								1.34&nbsp;&nbsp;&nbsp;&nbsp;(userOne 19-Feb-05):&nbsp;&nbsp;&nbsp;&nbsp;if (sentinel != null)<br/>
 								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
@@ -1151,32 +1180,32 @@
 				<p>
 					<table border="1" cellspacing="2" cellpadding="4">
 						<tr>
-							<td width="150">
+							<td aligh="center" width="170" bgcolor="#ffcc99">
 								<b>Command</b>
 							</td>
 							
-							<td>
+							<td align="center" bgcolor="#ffcc99">
 								<b>Description</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td valign="top" bgcolor="#ffb6c0">
+							<td valign="top">
 								<b>ant compile</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td>
 								Compiles all TripleA source code files. Compiled classes are
 								placed in the <i>classes</i> folder.
 							</td>
 						</tr>
 						
 						<tr>
-							<td valign="top" bgcolor="#ffb6c0">
+							<td valign="top">
 								<b>ant compileClean</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td>
 								Removes previously compiled folders such as the
 								<i>classes, release, and savedGames</i> folders.
 								Once the removal is successful, it will compile
@@ -1185,11 +1214,11 @@
 						</tr>
 						
 						<tr>
-							<td valign="top" bgcolor="#ffb6c0">
+							<td valign="top">
 								<b>ant clean</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td>
 								Removes the previously compiled copy of TripleA.
 								This will also remove the <i>savedGames, and release</i>
 								folders that may have been created with other ANT commands.
@@ -1197,22 +1226,22 @@
 						</tr>
 						
 						<tr>
-							<td valign="top" bgcolor="#ffb6c0">
+							<td valign="top">
 								<b>ant zip</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td>
 								Cleans, compiles, and packages a compiled copy of TripleA
 								in a Zip file. The zip file is placed in a folder named <i>release</i>.
 							</td>
 						</tr>
 						
 						<tr>
-							<td valign="top" bgcolor="#ffb6c0">
+							<td valign="top">
 								<b>ant zipSource</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td>
 								Runs the clean command and then packages all TripleA source files
 								in a Zip file. The Zip file is placed in a folder named <i>release</i>.
 							</td>
@@ -1220,11 +1249,11 @@
 						
 						
 						<tr>
-							<td valign="top" bgcolor="#ffb6c0">
+							<td valign="top">
 								<b>ant patch</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td>
 								Constructs a <i>patch.jar</i> file with specified java class files
 								that were indicated in the <i>build.xml</i> document. This patch.jar
 								file can be used for a quick fix.
@@ -1232,21 +1261,21 @@
 						</tr>
 						
 						<tr>
-							<td valign="top" bgcolor="#ffb6c0">
+							<td valign="top">
 								<b>ant javadoc</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td>
 								Generates Java Documentation HTML using source code comments.
 							</td>
 						</tr>
 						
 						<tr>
-							<td valign="top" bgcolor="#ffb6c0">
+							<td valign="top">
 								<b>ant test</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td>
 								Initiates the JUnit tests.
 							</td>
 						</tr>
@@ -1278,11 +1307,17 @@
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2" width="400">
 						<tr>
+							<td bgcolor="#ffcc99" colspan="2">
+								<b>Helpful Information</b>
+							</td>
+						</tr>
+						
+						<tr>
 							<td align="left" valign="top" height="48" width="48">
 								<img src="images/info.png" width="48" height="48" alt="info image"/>
 							</td>
 							
-							<td valign="middle" bgcolor="#ffcc99">
+							<td>
 								<span style="font-style: italic; font-size: small;">
 									Be sure to download the Java SDK SE (Standard Edition) and not
 									the EE (Enterprise Edition.) Most users find it difficult to
@@ -1319,9 +1354,9 @@
 					 Open the <b>.ant.properties</b> file and edit it to include the information below:
 					 <br/>
 					 <br/>
-					 <table border="1" cellspacing="2" cellpadding="2" width="400">
+					 <table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Info For The .ant.properties File</b>
 							</td>
 						</tr>
@@ -1331,10 +1366,10 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;junit.jar=<i>PATH TO THE JUNIT JAR FILE</i><br/>
-								&nbsp;&nbsp;triplea.version=<i>X_X_X</i>
+								junit.jar=<i>PATH TO THE JUNIT JAR FILE</i><br/>
+								triplea.version=<i>X_X_X</i>
 								</code>
 							</td>
 						</tr>
@@ -1346,9 +1381,9 @@
 					For completness sake; this is how my <b>.ant.properties</b> file would look like:
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Example Of The .ant.properties File</b>
 							</td>
 						</tr>
@@ -1358,10 +1393,10 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;junit.jar=C:junit3.8.1\junit.jar<br/>
-								&nbsp;&nbsp;triplea.version=0_6_0
+								junit.jar=C:junit3.8.1\junit.jar<br/>
+								triplea.version=0_6_0_1
 								</code>
 							</td>
 						</tr>
@@ -1390,9 +1425,9 @@
 					 Prompt (terminal) program. In Windows XP it can be found by navigating through the Start menu:
 					 <br/>
 					 <br/>
-					 <table border="1" cellspacing="2" cellpadding="2" width="550">
+					 <table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Location Of The Command Prompt</b>
 							</td>
 						</tr>
@@ -1402,9 +1437,9 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;Start <b>-></b> All Programs <b>-></b> Accessories <b>-></b> Command Prompt
+								Start <b>-></b> All Programs <b>-></b> Accessories <b>-></b> Command Prompt
 								</code>
 							</td>
 						</tr>
@@ -1416,9 +1451,9 @@
 					 In Command Prompt, enter this command and hit the <b>Enter</b> key:
 					 <br/>
 					 <br/>
-					 <table border="1" cellspacing="2" cellpadding="2"width="250">
+					 <table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Java Command</b>
 							</td>
 						</tr>
@@ -1428,9 +1463,9 @@
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;java -version
+								java -version
 								</code>
 							</td>
 						</tr>
@@ -1450,9 +1485,9 @@
 					 Now in Command Prompt enter this ANT command and hit the <b>Enter</b> key:
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="250">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Ant Command</b>
 							</td>
 						</tr>
@@ -1462,9 +1497,9 @@
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;ant -version
+								ant -version
 								</code>
 							</td>
 						</tr>
@@ -1486,7 +1521,7 @@
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2" width="790">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Location Of Windows Environment Variables</b>
 							</td>
 						</tr>
@@ -1496,9 +1531,9 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;Start <b>-></b> Control Panel <b>-></b> System <b>-></b> Advanced (tab) <b>-></b> Environmental Variables (button)
+								Start <b>-></b> Control Panel <b>-></b> System <b>-></b> Advanced (tab) <b>-></b> Environmental Variables (button)
 								</code>
 							</td>
 						</tr>
@@ -1533,7 +1568,7 @@
 							<td>
 								<table border="1" cellspacing="2" cellpadding="2" width="400">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>Java User Variable</b>
 										</td>
 									</tr>
@@ -1543,33 +1578,12 @@
 											<img src="images/txt.png" width="48" height="48" alt="text image"/>
 										</td>
 							
-										<td bgcolor="#8fee8f">
+										<td bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;Variable name: JAVA_HOME<br/>
-											&nbsp;&nbsp;Variable value: C:\j2sdk1.4.2_04
+											Variable name: JAVA_HOME<br/>
+											Variable value: C:\j2sdk1.4.2_04
 											</code>
 										</td>
-									</tr>
-								</table>
-							</td>
-							
-							<td rowspan="2" valign="top">
-								<table border="1" cellspacing="2" cellpadding="2" width="400" height="178">
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/info.png" width="48" height="48" alt="info image"/>
-										</td>
-							
-										<td valign="top" bgcolor="#ffcc99">
-											<span style="font-style: italic; font-size: small;">
-												 The easiest way to get this path exactly correct is to open the
-												 Java SDK SE folder and select a subfolder inside (bin folder, for
-												 example) then view the properties on it. The &quot;Location&quot; shown in
-												 the properties window will be the path you need to enter here, and
-												 you can simply select it and copy/paste it in to avoid any typos.
-											</span>
-										</td>
-						
 									</tr>
 								</table>
 							</td>
@@ -1579,7 +1593,7 @@
 							<td>
 								<table border="1" cellspacing="2" cellpadding="2" width="400">
 									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 											<b>ANT User Variable</b>
 										</td>
 									</tr>
@@ -1589,14 +1603,38 @@
 											<img src="images/txt.png" width="48" height="48" alt="text image"/>
 										</td>
 							
-										<td bgcolor="#8fee8f">
+										<td bgcolor="#ffffcc">
 											<code>
-											&nbsp;&nbsp;Variable name: ANT_HOME<br/>
-											&nbsp;&nbsp;Variable value: C:\apache-ant-1.6.2
+											Variable name: ANT_HOME<br/>
+											Variable value: C:\apache-ant-1.6.2
 											</code>
 										</td>
 									</tr>
 								</table>
+							</td>
+						</tr>
+					</table>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td bgcolor="#ffcc99" colspan="2">
+								<b>Helpful Information</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/info.png" width="48" height="48" alt="info image"/>
+							</td>
+							
+							<td valign="top">
+								<span style="font-style: italic; font-size: small;">
+									 The easiest way to get this path exactly correct is to open the
+									 Java SDK SE folder and select a subfolder inside (bin folder, for
+									 example) then view the properties on it. The &quot;Location&quot; shown in
+									 the properties window will be the path you need to enter here, and
+									 you can simply select it and copy/paste it in to avoid any typos.
+								</span>
 							</td>
 						</tr>
 					</table>
@@ -1611,9 +1649,9 @@
 					Be sure to include the trailing slash &quot;\&quot; after <i>bin</i> in the path names.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="720">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Path Variable</b>
 							</td>
 						</tr>
@@ -1623,10 +1661,10 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;Variable name: PATH<br/>
-								&nbsp;&nbsp;Variable value: C:\j2sdk1.4.2_04\bin\;C:\apache-ant-1.6.2\bin\
+								Variable name: PATH<br/>
+								Variable value: C:\j2sdk1.4.2_04\bin\;C:\apache-ant-1.6.2\bin\
 								</code>
 							</td>
 						</tr>
@@ -1646,9 +1684,9 @@
 					afterwards:
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="720">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Output of &quot;java -version&quot; Command</b>
 							</td>
 						</tr>
@@ -1658,11 +1696,11 @@
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;Java version "1.4.2_04"<br/>
-								&nbsp;&nbsp;Java (TM) 2 Runtime Environment, Standard Edition (build 1.4.2_04-b05)<br/>
-								&nbsp;&nbsp;Java HotSpot(TM) Client VM (build 1.4.2_04-b05, mixed mode)
+								Java version "1.4.2_04"<br/>
+								Java (TM) 2 Runtime Environment, Standard Edition (build 1.4.2_04-b05)<br/>
+								Java HotSpot(TM) Client VM (build 1.4.2_04-b05, mixed mode)
 								</code>
 							</td>
 						</tr>
@@ -1670,9 +1708,9 @@
 					
 					<br/>
 					
-					<table border="1" cellspacing="2" cellpadding="2" width="720">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Output of &quot;ant -version&quot; Command</b>
 							</td>
 						</tr>
@@ -1682,9 +1720,9 @@
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;Apache Ant version 1.6.2 compiled on July 16 2004
+								Apache Ant version 1.6.2 compiled on July 16 2004
 								</code>
 							</td>
 						</tr>
@@ -1706,9 +1744,9 @@
 					directory would be as shown below:
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Entering The TripleA Directory</b>
 							</td>
 						</tr>
@@ -1718,11 +1756,11 @@
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;<b>[Step 1]</b>&nbsp;&nbsp;C:><br/>
-								&nbsp;&nbsp;<b>[Step 2]</b>&nbsp;&nbsp;C:>cd triplea_0_6_0<br/>
-								&nbsp;&nbsp;<b>[Step 3]</b>&nbsp;&nbsp;C:\triplea_0_6_0>
+								<b>[Step 1]</b>&nbsp;&nbsp;C:><br/>
+								<b>[Step 2]</b>&nbsp;&nbsp;C:>cd triplea_0_6_0_1<br/>
+								<b>[Step 3]</b>&nbsp;&nbsp;C:\triplea_0_6_0_1>
 								</code>
 							</td>
 						</tr>
@@ -1731,14 +1769,14 @@
 				</p>
 				
 				<p>
-					Once we are inside the TripleA directory (when the command prompt looks like <i>C:\triplea_0_6_0></i>)
+					Once we are inside the TripleA directory (when the command prompt looks like <i>C:\triplea_0_6_0_1></i>)
 					we are ready to issue our ANT commands. Type &quot;ant compile&quot; and the results
 					should yield something similar to what's below:
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="700">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Results of &quot;ant compile&quot; Command</b>
 							</td>
 						</tr>
@@ -1748,20 +1786,20 @@
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;Buildfile: build.xml<br/>
+								Buildfile: build.xml<br/>
 								<br/>
-								&nbsp;&nbsp;init:<br/>
+								init:<br/>
 								<br/>
-								&nbsp;&nbsp;compile:<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[echo] looking for junit.jar, edit .ant.properties to set junit location<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mkdir] Created dir: C:\triplea_0_6_0\classes<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[copy] Copying 1083 files to C:\triplea_0_6_0\classes<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[javac] Compiling 325 source files to C:\triplea_0_6_0\classes<br/>
+								compile:<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[echo] looking for junit.jar, edit .ant.properties to set junit location<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mkdir] Created dir: C:\triplea_0_6_0_1\classes<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[copy] Copying 1083 files to C:\triplea_0_6_0_1\classes<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[javac] Compiling 325 source files to C:\triplea_0_6_0_1\classes<br/>
 								<br/>
-								&nbsp;&nbsp;BUILD SUCCESSFUL<br/>
-								&nbsp;&nbsp;Total time: 34 seconds
+								BUILD SUCCESSFUL<br/>
+								Total time: 34 seconds
 								</code>
 							</td>
 						</tr>
@@ -1803,7 +1841,7 @@
 					<br/>
 					We can safely assume that you have downloaded the TripleA zip file that contains
 					the source code. The file name should have the word &quot;source&quot; in it;
-					like so <i>triplea_source_0_6_0.zip</i>.
+					like so <i>triplea_source_0_6_0_1.zip</i>.
 				</p>
 				
 				<p>
@@ -1817,15 +1855,15 @@
 					
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="350">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
 							<td align="left" height="48" width="48">
 								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
 							</td>
 						
-							<td valign="middle" bgcolor="#8fee8f">
+							<td valign="middle" bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;unzip -L triplea_source_x_x_x.zip
+								unzip -L triplea_source_x_x_x.zip
 								</code>
 							</td>
 						</tr>
@@ -1839,7 +1877,7 @@
 					<br/>
 					
 					Using your favorite text editor open and modify the <b>.ant.properties</b> file
-					that is located in the TripleA root directory (ie. /home/george/triplea_0_6_0).
+					that is located in the TripleA root directory (ie. /home/george/triplea_0_6_0_1).
 					If this file is missing then please create one with the same name. Make sure that it
 					begins with a dot as it is supposed to be a hidden file.
 				</p>
@@ -1857,9 +1895,9 @@
 					</ul>
 					
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Info For The .ant.properties File</b>
 							</td>
 						</tr>
@@ -1869,10 +1907,10 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;junit.jar=<i>PATH TO THE JUNIT JAR FILE</i><br/>
-								&nbsp;&nbsp;triplea.version=<i>X_X_X</i>
+								junit.jar=<i>PATH TO THE JUNIT JAR FILE</i><br/>
+								triplea.version=<i>X_X_X</i>
 								</code>
 							</td>
 						</tr>
@@ -1884,9 +1922,9 @@
 					As always, for completness sake; this is an example of how a <b>.ant.properties</b> file would look like:
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Example Of The .ant.properties File</b>
 							</td>
 						</tr>
@@ -1896,10 +1934,10 @@
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;/usr/junit3.8.1/junit.jar<br/>
-								&nbsp;&nbsp;triplea.version=0_6_0
+								/usr/junit3.8.1/junit.jar<br/>
+								triplea.version=0_6_0_1
 								</code>
 							</td>
 						</tr>
@@ -1916,15 +1954,15 @@
 					
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="200">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
 							<td align="left" valign="top" height="48" width="48">
 								<img src="images/shellscript.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;ant compile
+								ant compile
 								</code>
 							</td>
 						</tr>
@@ -1937,9 +1975,9 @@
 					
 					<br/>
 					<br/> 
-					<table border="1" cellspacing="2" cellpadding="2" width="700">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Results of &quot;ant compile&quot; Command</b>
 							</td>
 						</tr>
@@ -1949,20 +1987,20 @@
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;Buildfile: build.xml<br/>
+								Buildfile: build.xml<br/>
 								<br/>
-								&nbsp;&nbsp;init:<br/>
+								init:<br/>
 								<br/>
-								&nbsp;&nbsp;compile:<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[echo] looking for junit.jar, edit .ant.properties to set junit location<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mkdir] Created dir: /home/george/triplea_0_6_0/classes<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[copy] Copying 1083 files to /home/george/triplea_0_6_0/classes<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[javac] Compiling 325 source files to /home/george/triplea_0_6_0/classes<br/>
+								compile:<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[echo] looking for junit.jar, edit .ant.properties to set junit location<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mkdir] Created dir: /home/george/triplea_0_6_0_1/classes<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[copy] Copying 1083 files to /home/george/triplea_0_6_0_1/classes<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[javac] Compiling 325 source files to /home/george/triplea_0_6_0_1/classes<br/>
 								<br/>
-								&nbsp;&nbsp;BUILD SUCCESSFUL<br/>
-								&nbsp;&nbsp;Total time: 34 seconds
+								BUILD SUCCESSFUL<br/>
+								Total time: 34 seconds
 								</code>
 							</td>
 						</tr>
@@ -2022,7 +2060,7 @@
 				<br/>
 				<table border="1" cellspacing="2" cellpadding="2">
 					<tr>
-						<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+						<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 							<b>Contents of triplea_windows.bat</b>
 						</td>
 					</tr>
@@ -2032,11 +2070,11 @@
 							<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 						</td>
 							
-						<td bgcolor="#8fee8f">
+						<td bgcolor="#ffffcc">
 							<code>
-							&nbsp;&nbsp;@echo off<br/>
-							&nbsp;&nbsp;java -classpath lib/patch.jar;classes;lib/looks-1.3.1.jar;lib/backport-util-concurrent.jar  games.strategy.engine.framework.GameRunner<br/>
-							&nbsp;&nbsp;pause
+							@echo off<br/>
+							java -classpath lib/patch.jar;classes;lib/looks-1.3.1.jar;lib/backport-util-concurrent.jar  games.strategy.engine.framework.GameRunner<br/>
+							pause
 							</code>
 						</td>
 					</tr>
@@ -2088,7 +2126,7 @@
 			<p>
 				<table border="1" cellspacing="2" cellpadding="2">
 					<tr>
-						<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+						<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 							<b>Contents of triplea_unix.sh & triplea_mac_os_x.sh</b>
 						</td>
 					</tr>
@@ -2098,21 +2136,21 @@
 							<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 						</td>
 							
-						<td bgcolor="#8fee8f">
+						<td bgcolor="#ffffcc">
 							<code>
-							&nbsp;&nbsp;#!/bin/sh<br/>
+							#!/bin/sh<br/>
 							<br/>
-							&nbsp;&nbsp;if ! java -version >& /dev/null<br/>
-							&nbsp;&nbsp;then<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "Could not find Java."<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "You must have Java installed and in your path."<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit<br/>
-							&nbsp;&nbsp;fi<br/>
+							if ! java -version >& /dev/null<br/>
+							then<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "Could not find Java."<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "You must have Java installed and in your path."<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit<br/>
+							fi<br/>
 							<br/>
-							&nbsp;&nbsp;relativePathToGame=`dirname $0`<br/>
-							&nbsp;&nbsp;cd $relativePathToGame<br/>
+							relativePathToGame=`dirname $0`<br/>
+							cd $relativePathToGame<br/>
 							<br/>
-							&nbsp;&nbsp;java -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:lib/backport-util-concurrent.jar games.strategy.engine.framework.GameRunner
+							java -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:lib/backport-util-concurrent.jar games.strategy.engine.framework.GameRunner
 							</code>
 						</td>
 					</tr>
@@ -2154,13 +2192,13 @@
 					
 					<tr>
 						
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top" bgcolor="#ccccff">
 							<span style="font-weight: bold; font-size: small;">
 								File Name
 							</span>
 						</td>
 						
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top">
 							<span style="font-size: small;">
 								GameRunner.java
 							</span>
@@ -2168,13 +2206,13 @@
 					</tr>
 					
 					<tr>
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top" bgcolor="#ccccff">
 							<span style="font-weight: bold; font-size: small;">
 								Package
 							</span>
 						</td>
 						
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top">
 							<span style="font-size: small;">
 								games.strategy.engine.framework
 							</span>
@@ -2182,13 +2220,13 @@
 					</tr>
 					
 					<tr>
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top" bgcolor="#ccccff">
 							<span style="font-weight: bold; font-size: small;">
 								Method Header
 							</span>
 						</td>
 						
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top">
 							<span style="font-size: small;">
 								public static File getRootFolder()
 							</span>
@@ -2202,7 +2240,7 @@
 							<img src="images/source_java.png" width="48" height="48" alt="java image"/>
 						</td>
 							
-						<td bgcolor="#8fee8f">
+						<td bgcolor="#ffffcc">
 <pre>
 public static File getRootFolder()
 {
@@ -2352,13 +2390,13 @@ public static File getRootFolder()
 					
 					<tr>
 						
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top" bgcolor="#ccccff">
 							<span style="font-weight: bold; font-size: small;">
 								File Name
 							</span>
 						</td>
 						
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top">
 							<span style="font-size: small;">
 								IPFinder.java
 							</span>
@@ -2366,13 +2404,13 @@ public static File getRootFolder()
 					</tr>
 					
 					<tr>
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top" bgcolor="#ccccff">
 							<span style="font-weight: bold; font-size: small;">
 								Package
 							</span>
 						</td>
 						
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top">
 							<span style="font-size: small;">
 								games.strategy.net
 							</span>
@@ -2380,13 +2418,13 @@ public static File getRootFolder()
 					</tr>
 					
 					<tr>
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top" bgcolor="#ccccff">
 							<span style="font-weight: bold; font-size: small;">
 								Method Header
 							</span>
 						</td>
 						
-						<td align="left" valign="top" bgcolor="#ffcc99">
+						<td align="left" valign="top">
 							<span style="font-size: small;">
 								public static InetAddress findInetAddress()
 							</span>
@@ -2400,7 +2438,7 @@ public static File getRootFolder()
 							<img src="images/source_java.png" width="48" height="48" alt="java image"/>
 						</td>
 							
-						<td bgcolor="#8fee8f">
+						<td bgcolor="#ffffcc">
 <pre>
 /**
    We iterate through an enumeration of network interfaces on the machine
@@ -2614,9 +2652,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					Run the center picker from the <b>classes</b> directory.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>How to run Center Picker</b>
 							</td>
 						</tr>
@@ -2626,10 +2664,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 								
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cd classes<br/>
-								&nbsp;&nbsp;java util/images/CenterPicker
+								cd classes<br/>
+								java util/images/CenterPicker
 								</code>
 							</td>
 						</tr>
@@ -2656,75 +2694,122 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					Execution flow of the Center Picker is listed below.
 					<br/>
 					<br/>
-					
 					<table border="1" cellspacing="0" cellpadding="2" width="850">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccffff" colspan="2">
 								<b>Program Action</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff" colspan="2">
 								<b>User Action</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(1) </b>Show a &quot;Select Map File&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(2) </b>Select a map image file
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a map image file
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(3) </b>Show a &quot;Select Polygons File&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(4) </b>Select a polygons.txt file or cancel and run without.
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Polygons File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a polygons.txt file or cancel and run without.
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(5) </b>Show map image
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(6) </b>Left or Right click on any territory to create a center point
+							<td bgcolor="#ffffcc">
+								Show map image
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Left or Right click on any territory to create a center point
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(7) </b>Show a dialog box with a default territory name
+							<td align="center" bgcolor="#ccffff">
+								<b>7</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(8) </b>Put a new territory name and press &quot;OK&quot;
+							<td bgcolor="#ffffcc">
+								Show a dialog box with a default territory name
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>8</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Put a new territory name and press &quot;OK&quot;
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(9) </b>Show confirmation dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>9</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(10) </b>Confirm with &quot;Yes&quot;, or cancel with &quot;No&quot; or &quot;Cancel&quot;
+							<td bgcolor="#ffffcc">
+								Show confirmation dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>10</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Confirm with &quot;Yes&quot;, or cancel with &quot;No&quot; or &quot;Cancel&quot;
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(11) </b>Show red dot on territory
+							<td align="center" bgcolor="#ccffff">
+								<b>11</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show red dot on territory
 							</td>
 							
 							<td>
-								
+								&nbsp;
+							</td>
+							
+							<td>
+								&nbsp;
 							</td>
 						</tr>
 					</table>
@@ -2750,9 +2835,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					Run the polygon grabber from the <b>classes</b> directory.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>How to run Polygon Grabber</b>
 							</td>
 						</tr>
@@ -2762,10 +2847,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 								
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cd classes<br/>
-								&nbsp;&nbsp;java util/images/PolygonGrabber
+								cd classes<br/>
+								java util/images/PolygonGrabber
 								</code>
 							</td>
 						</tr>
@@ -2792,74 +2877,122 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					Execution flow of the Polygon Grabber is listed below.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="0" cellpadding="2" width="850">
+					<table border="1" cellspacing="0" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccffff" colspan="2">
 								<b>Program Action</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff" colspan="2">
 								<b>User Action</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(1) </b>Show a &quot;Select Map File&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(2) </b>Select a map image file
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a map image file
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(3) </b>Show a &quot;Select Centers File&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(4) </b>Select a centers.txt file
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Centers File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a centers.txt file
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(5) </b>Show map image
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(6) </b>Left click on any territory to select it
+							<td bgcolor="#ffffcc">
+								Show map image
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Left click on any territory to select it
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(7) </b>Selected territory is highlighted in red
+							<td align="center" bgcolor="#ccffff">
+								<b>7</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(8) </b>Right click on highlighted territory (hold shift for more)
+							<td bgcolor="#ffffcc">
+								Selected territory is highlighted in red
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>8</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Right click on highlighted territory (hold shift for more)
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(9) </b>Show name option dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>9</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(10) </b>Confirm if territory name is correct
+							<td bgcolor="#ffffcc">
+								Show name option dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>10</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Confirm if territory name is correct
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(11) </b>Highlight selected territory in yellow
+							<td align="center" bgcolor="#ccffff">
+								<b>11</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(12) </b>Go to next territory
+							<td bgcolor="#ffffcc">
+								Highlight selected territory in yellow
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>12</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Go to next territory
 							</td>
 						</tr>
 					</table>
@@ -2924,9 +3057,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					Run the placement picker from the <b>classes</b> directory.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>How to run Placement Picker</b>
 							</td>
 						</tr>
@@ -2936,10 +3069,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 								
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cd classes<br/>
-								&nbsp;&nbsp;java util/images/PlacementPicker
+								cd classes<br/>
+								java util/images/PlacementPicker
 								</code>
 							</td>
 						</tr>
@@ -2952,51 +3085,51 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1" cellspacing="0" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccffff">
 								<b>Command</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Result</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								Left Mouse Button
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Start in this territory
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								CTRL +  Left Mouse Button
 							</td bgcolor="#8fee8f">
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Add a placement point to the list
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								Right Mouse Button
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Remove last placement point
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								CTRL + Right Mouse Button
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Save placement points for that territory
 							</td>
 						</tr>
@@ -3061,12 +3194,12 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					it will ask for the map name, this relates to the name of the folder
 					it is in. For example, <i>revised</i> would be entered if we wanted it
 					to find placements for the A&A Revised map, which in turn would have all
-					the text files inside <i>triplea_0_6_0/classes/games/strategy/triplea/image/images/maps/revised</i>
+					the text files inside <i>triplea_0_6_0_1/classes/games/strategy/triplea/image/images/maps/revised</i>
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>How to run Auto-Placement Finder</b>
 							</td>
 						</tr>
@@ -3076,10 +3209,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 								
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cd classes<br/>
-								&nbsp;&nbsp;java util/images/AutoPlacementFinder
+								cd classes<br/>
+								java util/images/AutoPlacementFinder
 								</code>
 							</td>
 						</tr>
@@ -3124,9 +3257,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				</p>
 				
 				<p>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>How to run Tile Image Breaker</b>
 							</td>
 						</tr>
@@ -3136,10 +3269,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 								
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cd classes<br/>
-								&nbsp;&nbsp;java util/images/TileImageBreaker
+								cd classes<br/>
+								java util/images/TileImageBreaker
 								</code>
 							</td>
 						</tr>
@@ -3165,44 +3298,68 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				</p>
 				
 				<p>
-					<table border="1" cellspacing="0" cellpadding="2" width="700">
+					<table border="1" cellspacing="0" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccffff" colspan="2">
 								<b>Program Action</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff" colspan="2">
 								<b>User Action</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(1) </b>Show a &quot;Folder Save Location&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(2) </b>Select a directory to save the tiles
+							<td bgcolor="#ffffcc">
+								Show a &quot;Folder Save Location&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a directory to save the tiles
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(3) </b>Show a &quot;Select Map File&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(4) </b>Select a map image
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a map image
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(5) </b>Process map and break into tiles
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(6) </b>Wait until finished
+							<td bgcolor="#ffffcc">
+								Process map and break into tiles
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Wait until finished
 							</td>
 						</tr>
 					</table>
@@ -3247,7 +3404,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2" width="400">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>How to run Relief Image Breaker</b>
 							</td>
 						</tr>
@@ -3257,10 +3414,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 								
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cd classes<br/>
-								&nbsp;&nbsp;java util/images/ReliefImageBreaker
+								cd classes<br/>
+								java util/images/ReliefImageBreaker
 								</code>
 							</td>
 						</tr>
@@ -3269,54 +3426,86 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				</p>
 				
 				<p>
-					<table border="1" cellspacing="0" cellpadding="2" width="700">
+					<table border="1" cellspacing="0" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccffff" colspan="2">
 								<b>Program Action</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff" colspan="2">
 								<b>User Action</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(1) </b>Show a &quot;Folder Save Location&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(2) </b>Select a directory to save the relief tiles
+							<td bgcolor="#ffffcc">
+								Show a &quot;Folder Save Location&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a directory to save the relief tiles
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(3) </b>Show a &quot;Select Map File&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(4) </b>Select a relief map image
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a relief map image
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(5) </b>Ask if it should process Sea Zones only
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(6) </b>Choose Y for Sea Zones only, or N for all
+							<td bgcolor="#ffffcc">
+								Ask if it should process Sea Zones only
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Choose Y for Sea Zones only, or N for all
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(5) </b>Process map and break into tiles
+							<td align="center" bgcolor="#ccffff">
+								<b>7</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(6) </b>Wait until finished
+							<td bgcolor="#ffffcc">
+								Process map and break into tiles
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>8</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Wait until finished
 							</td>
 						</tr>
 					</table>
@@ -3344,7 +3533,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2" width="400">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>How to run Image Shrinker</b>
 							</td>
 						</tr>
@@ -3354,10 +3543,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
 							</td>
 								
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;cd classes<br/>
-								&nbsp;&nbsp;java util/images/ImageShrinker
+								cd classes<br/>
+								java util/images/ImageShrinker
 								</code>
 							</td>
 						</tr>
@@ -3366,44 +3555,68 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				</p>
 				
 				<p>
-					<table border="1" cellspacing="0" cellpadding="2" width="760">
+					<table border="1" cellspacing="0" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccffff" colspan="2">
 								<b>Program Action</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff" colspan="2">
 								<b>User Action</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(1) </b>Show a &quot;Select Map File&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(2) </b>Select a map
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a map
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(3) </b>Show a &quot;Scale Input&quot; dialog
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								<b>(4) </b>Enter a floating point scale value (ie. 0.1)
+							<td bgcolor="#ffffcc">
+								Show a &quot;Scale Input&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Enter a floating point scale value (ie. 0.1)
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
-								<b>(5) </b>Image saved as <b>smallMap.jpeg</b> in current directory
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Image saved as <b>smallMap.jpeg</b> in current directory
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								&nbsp;
 							</td>
 							
 							<td>
-							
+								&nbsp;
 							</td>
 						</tr>
 					</table>
@@ -3430,7 +3643,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					map directory&quot;. The directory itself has some special conditions that needs
 					to be met:
 					<ol>
-						<li>Located in triplea_0_6_0/classes/games/strategy/triplea/image/images/maps</li>
+						<li>Located in triplea_0_6_0_1/classes/games/strategy/triplea/image/images/maps</li>
 						<br/>
 						<li>Name of the map directory must be same as the &quot;mapName&quot; field in the
 						XML game file for that game. For example; AA4th_edition.xml has the mapName
@@ -3465,65 +3678,65 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				</p>
 				
 				<p>
-					<table border="1" cellspacing="0" cellpadding="4" width="800">
+					<table border="1" cellspacing="0" cellpadding="4">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0" width="80">
-								<b>Step No.</b>
+							<td align="center" bgcolor="#ccffff" width="40">
+								<b>Step</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>User Action</b>
 							</td>
 						</tr>
 					
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(1)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								Go into directory: triplea_0_6_0/classes/games/strategy/triplea/image/images/maps
+							<td bgcolor="#ffffcc">
+								Go into directory: triplea_0_6_0_1/classes/games/strategy/triplea/image/images/maps
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(2)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>2</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Create new directory called <b>viper</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(3)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Go back to the base of <b>classes</b>
 								Save the center points in our <b>viper</b> directory we made in Step No. 1
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center"  bgcolor="#ffcc99">
-								<b>(4)</b>
+							<td align="center"  bgcolor="#ccffff">
+								<b>4</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Run the PolygonGrabber and save the polygons file in our <b>viper</b>
 								directory we made in Step No. 1
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(5)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Run the PlacementPicker and save the place.txt file in our <b>viper</b> directory.<br/>
 								<br/>
 								OR<br/>
@@ -3535,64 +3748,64 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(6)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>6</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Run the TileImageBreaker and save all the tiles in <b>baseTiles</b> inside <b>viper</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(7)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>7</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								If we have a relief map, then run the ReliefImageBreaker and save all the tiles in
 								<b>reliefTiles</b> inside <b>viper</b>; say &quot;N&quot; to do Only Sea Zones
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(8)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>8</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Run the ImageShrinker and copy the <b>smallMap.jpeg</b> to the <b>viper</b> directory
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(9)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>9</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Create a <b>map.properties</b> file with map properties
 								See <a href="#sec_5.2">Section 5.2</a> for more information
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(10)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>10</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								Make sure our XML game file shows <b>viper</b> as the value
 								for the &quot;mapName&quot; property option
 							</td>
 						</tr>
 						
 						<tr>
-							<td align="center" bgcolor="#ffcc99">
-								<b>(11)</b>
+							<td align="center" bgcolor="#ccffff">
+								<b>11</b>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								All Done !
 							</td>
 						</tr>
@@ -3644,39 +3857,39 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								color.Americans=
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								HEX Number Color
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Color of all American Territories
 							</td>
 						</tr>
 						
 						<tr>
-							<td valign="top" bgcolor="#ffcc99">
+							<td valign="top" bgcolor="#ffffcc">
 								units.scale=
 							</td>
 							
-							<td valign="top" bgcolor="#8fee8f">
+							<td valign="top" bgcolor="#ccffff">
 								Floating Point; One of :<br/>
 								<ul>
 									<li>1.25</li>
@@ -3690,105 +3903,105 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								</ul>
 							</td>
 							
-							<td valign="top" bgcolor="#afdfe6">
+							<td valign="top">
 								Starting scale size of image units 
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								map.hasRelief=
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								Boolean (true/false)
+							<td bgcolor="#ccffff">
+								Boolean
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Sets relief images on or off by default
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								map.showCapitolMarkers
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								Boolean (true/false)
+							<td bgcolor="#ccffff">
+								Boolean
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Display capital markers images
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								map.scrollWrapX=
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								Boolean (true/false)
+							<td bgcolor="#ccffff">
+								Boolean
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Lock X-Axis scrolling
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								map.scrollWrapY=
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								Boolean (true/false)
+							<td bgcolor="#ccffff">
+								Boolean
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Lock Y-Axis scrolling
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								map.width=
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								Non-Zero Integer
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Width of map image
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								map.height=
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								Non-Zero Integer
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Height of map image
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								#
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								Any Printable Character
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								In file comments, these get ignored by TripleA
 							</td>
 						</tr>
@@ -3801,10 +4014,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					we can see how the above options and values are used in a practical setting.
 					<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
-								<b>Example Of A map.properties File</b>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>Example of A map.properties File</b>
 							</td>
 						</tr>
 						
@@ -3813,35 +4026,35 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;#Color settings for the map<br/>
-								&nbsp;&nbsp;#values must be a 6 digit hex number<br/>
-								&nbsp;&nbsp;color.British=996600<br/>
-								&nbsp;&nbsp;color.Americans=666600<br/>
-								&nbsp;&nbsp;color.Russians=993300<br/>
-								&nbsp;&nbsp;color.Germans=777777<br/>
-								&nbsp;&nbsp;color.Japanese=FF9900<br/>
-								&nbsp;&nbsp;color.Italians=5A5A5A<br/>
-								&nbsp;&nbsp;color.Neutral=dd5500<br/>
-								&nbsp;&nbsp;color.Impassible=cc9933<br/>
-								&nbsp;&nbsp;color.Chinese=442244<br/>
+								#Color settings for the map<br/>
+								#values must be a 6 digit hex number<br/>
+								color.British=996600<br/>
+								color.Americans=666600<br/>
+								color.Russians=993300<br/>
+								color.Germans=777777<br/>
+								color.Japanese=FF9900<br/>
+								color.Italians=5A5A5A<br/>
+								color.Neutral=dd5500<br/>
+								color.Impassible=cc9933<br/>
+								color.Chinese=442244<br/>
 								<br/>
-								&nbsp;&nbsp;#default unit scale<br/>
-								&nbsp;&nbsp;#value must be one of the menu options<br/>
-								&nbsp;&nbsp;units.scale=0.5625<br/>
+								#default unit scale<br/>
+								#value must be one of the menu options<br/>
+								units.scale=0.5625<br/>
 								<br/>
-								&nbsp;&nbsp;#does the map have relief images<br/>
-								&nbsp;&nbsp;map.hasRelief=false<br/>
+								#does the map have relief images<br/>
+								map.hasRelief=false<br/>
 								<br/>
-								&nbsp;&nbsp;#show capitol markers<br/>
-								&nbsp;&nbsp;map.showCapitolMarkers=false<br/>
+								#show capitol markers<br/>
+								map.showCapitolMarkers=false<br/>
 								<br/>
-								&nbsp;&nbsp;map.width=4000<br/>
-								&nbsp;&nbsp;map.height=2000<br/>
+								map.width=4000<br/>
+								map.height=2000<br/>
 								<br/>
-								&nbsp;&nbsp;#lock horizontal scrolling<br/>
-								&nbsp;&nbsp;map.scrollWrapX=false<br/>
+								#lock horizontal scrolling<br/>
+								map.scrollWrapX=false<br/>
 								</code>
 							</td>
 						</tr>
@@ -3866,10 +4079,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					The default TripleA capital markers can be found in the directory listed
 					below; note that capital markers end with the word &quot;large&quot;:<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="600">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
-								<b>Location Of Capital Markers</b>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>Location of Capital Markers</b>
 							</td>
 						</tr>
 						
@@ -3878,9 +4091,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;triplea_0_6_0/classes/games/strategy/triplea/image/images/flags<br/>
+								triplea_0_6_0_1/classes/games/strategy/triplea/image/images/flags<br/>
 								</code>
 							</td>
 						</tr>
@@ -3894,33 +4107,33 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" colspan="6" bgcolor="#ffb6c0">
+							<td align="center" colspan="6" bgcolor="#ccccff">
 								<b>TripleA Capital Markers</b>
 							</td>
 						</tr>
 						
 						<tr>
-							<td>
+							<td align="center">
 								<img src="images/Americans_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/Australians_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/British_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/Chinese_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/European-Union_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/Germans_large.png" width="100" height="100" alt="" />
 							</td>
 						</tr>
@@ -3952,27 +4165,27 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 						</tr>
 						
 						<tr>
-							<td>
+							<td align="center">
 								<img src="images/Italians_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/Japanese_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/Mid-East_large.png" width="98" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/Red-China_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/Russians_large.png" width="100" height="100" alt="" />
 							</td>
 							
-							<td>
+							<td align="center">
 								<img src="images/UK_Union-Jack_large.png" width="100" height="100" alt="" />
 							</td>
 						</tr>
@@ -4010,9 +4223,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					Capital cities can be added in a game's XML file. An extra option has to be
 					added to a territory attachment tag.<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Capital XML Option</b>
 							</td>
 						</tr>
@@ -4022,7 +4235,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <option name="capital" value="Germans"/> 
 </xmp>
@@ -4035,9 +4248,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					A full example of a territory attachment with the capital option:<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Capital XML Option</b>
 							</td>
 						</tr>
@@ -4047,7 +4260,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <attatchment name="territoryAttatchment"
              attatchTo="Germany"
@@ -4075,9 +4288,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					An example of a <b>capitols.txt</b> file is listed below. Note that the names
 					of the territories need to match the names in the other text files (centers, place, polygons).<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Capitols.txt File Example</b>
 							</td>
 						</tr>
@@ -4087,13 +4300,13 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;United Kingdom (709,292)<br/>
-								&nbsp;&nbsp;Germany (981, 532)<br/>
-								&nbsp;&nbsp;Russia (1723,337)<br/>
-								&nbsp;&nbsp;Japan (2711,686)<br/>
-								&nbsp;&nbsp;Eastern United States (33,616)
+								United Kingdom (709,292)<br/>
+								Germany (981, 532)<br/>
+								Russia (1723,337)<br/>
+								Japan (2711,686)<br/>
+								Eastern United States (33,616)
 								</code>
 							</td>
 						</tr>
@@ -4120,9 +4333,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					TripleA comes with a very simple victory marker which can be replaced by
 					the user at any time. The victory marker can be found below:<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Capital XML Option</b>
 							</td>
 						</tr>
@@ -4132,9 +4345,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;triplea_0_6_0/classes/games/strategy/triplea/image/images/vc.png
+								triplea_0_6_0_1/classes/games/strategy/triplea/image/images/vc.png
 								</code>
 							</td>
 						</tr>
@@ -4143,7 +4356,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1">
 						<tr>
-							<td align="left" valign="top" bgcolor="#ffb6c0">
+							<td align="left" valign="top" bgcolor="#ccccff">
 								<b>TripleA's Default VC Image</b>
 							</td>
 						</tr>
@@ -4162,9 +4375,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					Victory cities can be added in a game's XML file. An extra option has to be
 					added to a territory attachment tag.<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Victory City XML Option</b>
 							</td>
 						</tr>
@@ -4174,7 +4387,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <option name="victoryCity" value="true"/>
 </xmp>
@@ -4187,9 +4400,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					A full example of a territory attachment with the capital option:<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Victory City XML Option</b>
 							</td>
 						</tr>
@@ -4199,7 +4412,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <attatchment name="territoryAttatchment"
              attatchTo="Karelia"
@@ -4231,9 +4444,9 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					An example of a <b>vc.txt</b> file is listed below. Note that the names
 					of the territories need to match the names in the other text files (centers, place, polygons).<br/>
 					<br/>
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
+					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>vc.txt File Example</b>
 							</td>
 						</tr>
@@ -4243,20 +4456,20 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 								<code>
-								&nbsp;&nbsp;Karelia S.S.R. (1243,276)<br/>
-								&nbsp;&nbsp;Russia (1863,214)<br/>
-								&nbsp;&nbsp;Western Europe (807,527)<br/>
-								&nbsp;&nbsp;Germany (1090,518)<br/>
-								&nbsp;&nbsp;Southern Europe (980,880)<br/>
-								&nbsp;&nbsp;United Kingdom (760,390)<br/>
-								&nbsp;&nbsp;Eastern United States (205,630)<br/>
-								&nbsp;&nbsp;Western United States (3343,735)<br/>
-								&nbsp;&nbsp;Philipine Islands (2435,1250)<br/>
-								&nbsp;&nbsp;India (1939,997)<br/>
-								&nbsp;&nbsp;Japan (2680,750)<br/>
-								&nbsp;&nbsp;Kwangtung (2427, 790)
+								Karelia S.S.R. (1243,276)<br/>
+								Russia (1863,214)<br/>
+								Western Europe (807,527)<br/>
+								Germany (1090,518)<br/>
+								Southern Europe (980,880)<br/>
+								United Kingdom (760,390)<br/>
+								Eastern United States (205,630)<br/>
+								Western United States (3343,735)<br/>
+								Philipine Islands (2435,1250)<br/>
+								India (1939,997)<br/>
+								Japan (2680,750)<br/>
+								Kwangtung (2427, 790)
 								</code>
 							</td>
 						</tr>
@@ -4312,7 +4525,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>XML Version</b>
 							</td>
 						</tr>
@@ -4322,7 +4535,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <?xml version="1.0" ?>
 </xmp>
@@ -4335,11 +4548,11 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					The game definition sheet must always be specified. In the example below
 					we use the &quot;game.dtd&quot; definition. It can be located in the
-					<i>triplea_0_6_0/data/games/strategy/engine/xml</i> directory.<br/>
+					<i>triplea_0_6_0_1/data/games/strategy/engine/xml</i> directory.<br/>
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Definition Sheet</b>
 							</td>
 						</tr>
@@ -4349,7 +4562,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <!DOCTYPE game SYSTEM "game.dtd">
 </xmp>
@@ -4371,7 +4584,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Info & Loader Tags</b>
 							</td>
 						</tr>
@@ -4381,7 +4594,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <info name="4th Edition" version="1.2"/>
 <loader javaClass="games.strategy.triplea.TripleA"/>
@@ -4409,43 +4622,43 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the territory
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								water="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								boolean (true/false)
+							<td bgcolor="#ccffff">
+								Boolean
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								True if this territory is a sea zone
 							</td>
 						</tr>
@@ -4458,7 +4671,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Territory Example</b>
 							</td>
 						</tr>
@@ -4468,7 +4681,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <territory name="Argentina"/>
 </xmp>
@@ -4480,7 +4693,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Territory Example</b>
 							</td>
 						</tr>
@@ -4490,7 +4703,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <territory name="Atlantic Ocean" water="true"/>
 </xmp>
@@ -4523,62 +4736,60 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								t1="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
-								Name of the source territory
-							</td>
-						</tr>
-						
-						<tr>
-							<td bgcolor="#ffcc99">
-								t2="&nbsp;&nbsp;&nbsp;"
-							</td>
-							
-							<td bgcolor="#8fee8f">
-								String
-							</td>
-							
-							<td bgcolor="#afdfe6">
-								Name of the destination territory
-							</td>
-						</tr>
-					</table>
-					<br/>
-					
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
-								<b>Connection Example</b>
-							</td>
-						</tr>
-						
+							<td>
+								Name of the so					
 						<tr>
 							<td align="left" valign="top" height="48" width="48">
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
+<xmp>
+<connection t1="Venezuala" t2="Brazil"/>
+</xmp>
+							</td>
+						</tr>
+					</table>
+				</p>
+
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.3.4">5.3.4</a> Resources</h4>
+			<blockquote>
+				<p>
+					The resources for the game needs to have some sor					
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#ffffcc">
 <xmp>
 <connection t1="Venezuala" t2="Brazil"/>
 </xmp>
@@ -4605,29 +4816,29 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the resource
 							</td>
 						</tr>
@@ -4636,7 +4847,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Resource Example</b>
 							</td>
 						</tr>
@@ -4646,7 +4857,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <resourceList>
          <resource name="IPCs"/>
@@ -4676,43 +4887,43 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the player
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								optional="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
-								boolean (true/false)
+							<td bgcolor="#ccffff">
+								Boolean
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Is this player mandatory
 							</td>
 						</tr>
@@ -4723,43 +4934,43 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								player="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the player
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								alliance="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the alliance
 							</td>
 						</tr>
@@ -4770,7 +4981,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Player & Alliance Example</b>
 							</td>
 						</tr>
@@ -4780,7 +4991,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <playerList>
       <player name="Japanese" optional="false"/>
@@ -4819,29 +5030,29 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the unit
 							</td>
 						</tr>
@@ -4850,7 +5061,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Unit Example</b>
 							</td>
 						</tr>
@@ -4860,7 +5071,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <unitList>
        <unit name="infantry"/>
@@ -4907,58 +5118,58 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the delegate
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								javaClass="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name and Package location of the delegate class
 							</td>
 						</tr>
 						
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								display="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								What TripleA will display when the delegate is in use
 							</td>
 						</tr>
@@ -4967,7 +5178,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Delegate Example</b>
 							</td>
 						</tr>
@@ -4977,9 +5188,11 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
-<delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+<delegate name="battle"
+          javaClass="games.strategy.triplea.delegate.BattleDelegate"
+          display="Combat"/>
 </xmp>
 							</td>
 						</tr>
@@ -4995,7 +5208,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Delegate Example</b>
 							</td>
 						</tr>
@@ -5005,19 +5218,51 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
-<delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
-<delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
-<delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
-<delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
-<delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
-<delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
-<delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
-<delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
-<delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
-<delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
-<delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+<delegate name="initDelegate"
+          javaClass="games.strategy.triplea.delegate.InitializationDelegate"
+          display="Initializing Delegates"/>
+
+<delegate name="tech"
+          javaClass="games.strategy.triplea.delegate.TechnologyDelegate"
+          display="Research Technology"/>
+
+<delegate name="tech_activation"
+          javaClass="games.strategy.triplea.delegate.TechActivationDelegate"
+          display="Activate Technology"/>
+
+<delegate name="battle"
+          javaClass="games.strategy.triplea.delegate.BattleDelegate"
+          display="Combat"/>
+
+<delegate name="move"
+          javaClass="games.strategy.triplea.delegate.MoveDelegate"
+          display="Combat Move"/>
+
+<delegate name="place"
+          javaClass="games.strategy.triplea.delegate.PlaceDelegate"
+          display="Place Units"/>
+
+<delegate name="purchase"
+          javaClass="games.strategy.triplea.delegate.PurchaseDelegate"
+          display="Purchase Units"/>
+
+<delegate name="endTurn"
+          javaClass="games.strategy.triplea.delegate.EndTurnDelegate"
+          display="Turn Complete"/>
+
+<delegate name="endRound"
+          javaClass="games.strategy.triplea.delegate.EndRoundDelegate"
+          display="Round Complete"/>
+
+<delegate name="placeBid"
+          javaClass="games.strategy.triplea.delegate.BidPlaceDelegate"
+          display="Bid Placement"/>
+
+<delegate name="bid"
+          javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate"
+          display="Bid Purchase"/>
 </xmp>
 							</td>
 						</tr>
@@ -5052,85 +5297,85 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the step
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								delegate="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Delegate name
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								player="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Player name
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								maxRunCount="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								Integer
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Number of maximum occurances
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								display="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								 What TripleA will display when the delegate is in use
 							</td>
 						</tr>
@@ -5143,7 +5388,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Step Example</b>
 							</td>
 						</tr>
@@ -5153,7 +5398,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
 <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
@@ -5168,7 +5413,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Step Example</b>
 							</td>
 						</tr>
@@ -5178,7 +5423,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <step name="japaneseTech" delegate="tech" player="Japanese"/>
 <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
@@ -5227,29 +5472,29 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the productionRule
 							</td>
 						</tr>
@@ -5260,43 +5505,43 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								resource="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the resource
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								quantity="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								Integer
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Amount needed for purchase
 							</td>
 						</tr>
@@ -5307,43 +5552,43 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								resourceOrUnit="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of the resource or unit that is being produced
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								quantity="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								Integer
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Quantity of that product to give out
 							</td>
 						</tr>
@@ -5356,7 +5601,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Production Rule Example</b>
 							</td>
 						</tr>
@@ -5366,11 +5611,11 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <productionRule name="buyTanks">
-         <cost resource="IPCs" quantity="4" />
-         <result resourceOrUnit="armour" quantity="1"/>
+	<cost resource="IPCs" quantity="4" />
+	<result resourceOrUnit="armour" quantity="1"/>
 </productionRule>
 </xmp>
 							</td>
@@ -5389,29 +5634,29 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of production frontier
 							</td>
 						</tr>
@@ -5426,29 +5671,29 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								name="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Name of frontier rule
 							</td>
 						</tr>
@@ -5461,7 +5706,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Production Frontier Example</b>
 							</td>
 						</tr>
@@ -5471,18 +5716,18 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ffffcc">
 <xmp>
 <productionFrontier name="production">
-         <frontierRules name="buyInfantry"/>
-         <frontierRules name="buyArtillery"/>
-         <frontierRules name="buyArmour"/>
+	<frontierRules name="buyInfantry"/>
+        <frontierRules name="buyArtillery"/>
+        <frontierRules name="buyArmour"/>
 </productionFrontier>
 
 <productionFrontier name="productionIndustrialTechnology">
-         <frontierRules name="buyInfantryIndustrialTechnology"/>
-         <frontierRules name="buyArtilleryIndustrialTechnology"/>
-         <frontierRules name="buyArmourIndustrialTechnology"/>
+        <frontierRules name="buyInfantryIndustrialTechnology"/>
+        <frontierRules name="buyArtilleryIndustrialTechnology"/>
+        <frontierRules name="buyArmourIndustrialTechnology"/>
 </productionFrontier>
 </xmp>
 							</td>
@@ -5499,43 +5744,43 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				<p>
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Option</b>
 							</td>
 								
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Value</b>
 							</td>
 							
-							<td align="center" bgcolor="#ffb6c0">
+							<td align="center" bgcolor="#ccccff">
 								<b>Description</b>
 							</td>
 						</tr>
 				
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								player="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Player name
 							</td>
 						</tr>
 						
 						<tr>
-							<td bgcolor="#ffcc99">
+							<td bgcolor="#ffffcc">
 								frontier="&nbsp;&nbsp;&nbsp;"
 							</td>
 							
-							<td bgcolor="#8fee8f">
+							<td bgcolor="#ccffff">
 								String
 							</td>
 							
-							<td bgcolor="#afdfe6">
+							<td>
 								Production frontier name
 							</td>
 						</tr>
@@ -5544,7 +5789,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					
 					<table border="1" cellspacing="2" cellpadding="2">
 						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ffb6c0">
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
 								<b>Player Production Example</b>
 							</td>
 						</tr>
@@ -5553,8 +5798,8 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 							<td align="left" valign="top" height="48" width="48">
 								<img src="images/txt.png" width="48" height="48" alt="text image"/>
 							</td>
-							
-							<td bgcolor="#8fee8f">
+
+							<td bgcolor="#ffffcc">
 <xmp>
 <playerProduction player="British" frontier="production"/>
 </xmp>
@@ -5570,16 +5815,1084 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 
 		</blockquote>
 		
+		
+		<h4><a name="sec_5.3.10">5.3.10</a> Unit Attachment</h4>
+		<blockquote>
+			<p>
+				Unit definition rules are mainly handled in the <b>unitAttachment</b> tag.
+				This is the place where we can define what specific options to be &quot;attached&quot;
+				to which unit. The tag compositions is relatively quite simple. The header tag defines
+				what kind of attachment is to be defined, the name of the item it should be attached to,
+				which java class to use, and of what type is it.
+			</p>
+			
+			<p>
+				Options and Values for <b>attachment</b> tag:<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccccff">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ccccff">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffffcc">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								String
+							</td>
+							
+							<td>
+								The name of the attachment. This must end with the word &quot;Attachment&quot;
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								attachTo="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								String
+							</td>
+							
+							<td>
+								The name of the item to attach it to
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								javaClass="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								String
+							</td>
+							
+							<td>
+								The java class name and its fully qualified package location
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								type="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								String
+							</td>
+							
+							<td>
+								The type
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Within the <b>attachment</b> tag will be an arbitrary amount of <b>option</b>
+					tags which will define the type of properties the attachment will have. It can
+					have very few or many. Below is a list of options that can be used:
+				</p>
+				
+				<p>
+					List of <b>option</b> tags that can be used :<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccccff">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ccccff">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffffcc">
+								movement="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Integer
+							</td>
+							
+							<td>
+								The allowed movement points
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								transportCost="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Integer
+							</td>
+							
+							<td>
+								The cost for being loaded onto a transport ship
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								carrierCost="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Integer
+							</td>
+							
+							<td>
+								The cost for being loaded onto an air-craft carrier
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								transportCapacity="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Integer
+							</td>
+							
+							<td>
+								The maximum number of items a transport ship can load
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								carrierCapacity="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Integer
+							</td>
+							
+							<td>
+								The maximum number of items an air-craft carrier can load
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								canBlitz="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Allows a unit to capture an undefended territory while moving on to the next
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								canBombard="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Allows an air unit to have bombardment capabilities
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								isAir="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies if this unit can fly in the air or not
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								isSea="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies of this unit can go in water or not
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								isFactory="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies if this unit is a factory
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								isDestroyer="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies if this unit is a destroyer
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								isAA="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies if this unit is an anti-aircraft gun
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								isSub="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies if this is a submersible unit
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								isTwoHit="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Allows a unit to absorb one extra attack hits before being destroyed
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								isStrategicBomber="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies if an air-craft can perform strategic bombing
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								artillerySupportable="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies if this unit can be supported by artillery or not
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								artillery="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Specifies if this is an artillery unit or not
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								attack="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Integer
+							</td>
+							
+							<td>
+								The attack value
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								defense="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Integer
+							</td>
+							
+							<td>
+								The defense value
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					A practical example:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>Unit Attachment Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+<xmp>
+<attatchment name="unitAttatchment"
+             attatchTo="battleship"
+             javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
+             type="unitType">
+             
+	<option name="movement" value="2"/>
+	<option name="isSea" value="true"/>
+	<option name="attack" value="4"/>
+	<option name="defense" value="4"/>
+	<option name="canBombard" value="true"/>
+	<option name="isTwoHit" value="false"/>
+</attatchment>
+
+ <attatchment name="unitAttatchment"
+              attatchTo="infantry"
+              javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
+              type="unitType">
+              
+        <option name="movement" value="1"/>
+        <option name="transportCost" value="2"/>
+        <option name="attack" value="1"/>
+        <option name="defense" value="2"/>
+        <option name="artillerySupportable" value="true"/>
+</attatchment>
+
+<attatchment name="unitAttatchment"
+             attatchTo="factory"
+             javaClass="games.strategy.triplea.attatchments.UnitAttatchment"
+             type="unitType">
+             
+        <option name="isFactory" value="true"/>   
+</attatchment>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h4><a name="sec_5.3.11">5.3.11</a> Tech Attachment</h4>
+		<blockquote>
+			<p>
+				Technology definition rules are mainly handled in the <b>techAttachment</b> tag.
+				This is the place where we can define what specific types of technological advancements
+				are allowed for this particular player. The tag compositions is relatively quite simple.
+				The header tag defines what kind of attachment is to be defined, the name of the player
+				it should be attached to, which java class to use, and of what type is it.
+			</p>
+			
+			<p>
+				Options and Values for <b>attachment</b> tag:<br/>
+				<br/>
+				<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccccff">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ccccff">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffffcc">
+								name="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								String
+							</td>
+							
+							<td>
+								The name of the attachment. This must end with the word &quot;Attachment&quot;
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								attachTo="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								String
+							</td>
+							
+							<td>
+								The name of the player to attach it to
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								javaClass="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								String
+							</td>
+							
+							<td>
+								The java class name and its fully qualified package location
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								type="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								String
+							</td>
+							
+							<td>
+								The type
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Within the <b>attachment</b> tag will be an arbitrary amount of <b>option</b>
+					tags which will define the type of properties the attachment will have. It can
+					have very few or many. Below is a list of options that can be used:
+				</p>
+				
+				<p>
+					List of <b>option</b> tags that can be used :<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccccff">
+								<b>Option</b>
+							</td>
+								
+							<td align="center" bgcolor="#ccccff">
+								<b>Value</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>Description</b>
+							</td>
+						</tr>
+				
+						<tr>
+							<td bgcolor="#ffffcc">
+								heavyBomber="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Allows for a player to acquire heavy bombers
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								jetPower="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Allows for a player to acquire jet propulsion technology
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								industrialTechnology="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Allows for a player to acquire industrial technology
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								superSubs="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Allows for a player to acquire advanced submarine units
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								rocket="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								Allows for a player to acquire rocket technology
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								longRangeAir="&nbsp;&nbsp;&nbsp;"
+							</td>
+							
+							<td bgcolor="#ccffff">
+								Boolean
+							</td>
+							
+							<td>
+								 Allows for a player to acquire long range air units
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					These options can all be initialized to &quot;false&quot; unless we want
+					a player to start off with a technology advancement.
+				</p>
+				
+				<p>
+					A practical example:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>Tech Attachment Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+<xmp>
+<attatchment name="techAttatchment"
+             attatchTo="British"
+             javaClass="games.strategy.triplea.attatchments.TechAttatchment"
+             type="player">
+
+	<option name="heavyBomber" value="false"/>
+	<option name="jetPower" value="false"/>
+	<option name="industrialTechnology" value="false"/>
+	<option name="superSub" value="false"/>
+	<option name="rocket" value="false"/>
+	<option name="longRangeAir" value="false"/>
+</attatchment>
+</xmp>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h4><a name="sec_5.3.12">5.3.12</a> Territory Attachment</h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h4><a name="sec_5.3.13">5.3.13</a> Initializations</h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		
+		<h4><a name="sec_5.3.14">5.3.14</a> Game Properties</h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_6">6.0</a> Engine Code Overview</h2>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.1">6.1</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.2">6.2</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.3">6.3</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.4">6.4</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.5">6.5</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.6">6.6</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.7">6.7</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.8">6.8</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.9">6.9</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.10">6.10</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_7">7.0</a> TripleA Security</h2>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_7.1">7.1</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_7.2">7.2</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_7.3">7.3</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_7.4">7.4</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_7.5">7.5</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+
+		<h2><a name="sec_8">8.0</a> TroxAI (Artificial Intelligence)</h2>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_8.1">8.1</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_8.2">8.2</a> </h4>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_9">9.0</a> TripleA Release Model</h2>
+		<blockquote>
+			<p>
+				This section will go over the three types of releases :<br/>
+				<ul>
+					<li>CVS</li>
+					<li>Unstable</li>
+					<li>Stable</li>
+				</ul>
+			</p>
+			
+			<p>
+				It will also
+				discuss the numbering system of the packages and how they play a role
+				in the development process. We also take into account issues that need
+				to be dealt with while developing TripleA using this release model.
+				Certain issues such as whitebox testing by developers and blackbox
+				testing by the end user, adding new features, user requests of new
+				features, and many more which will be addressed later.
+			</p>
+			
+			<table border="1" cellspacing="2" cellpadding="2">
+				<tr>
+					<td align="left" valign="top" height="48" width="48">
+						<img src="images/info.png" width="48" height="48" alt="info image" />
+					</td>
+							
+					<td valign="middle">
+						CVS ---&gt; Unstable ---&gt; Stable ---&gt; Future Requirements ---&gt; CVS ...etc
+					</td>
+				</tr>
+			</table>
+			
+			<p>
+				The release model follows a spiral pattern. This spiral pattern
+				allows TripleA to be worked on in several stages, thus being the CVS,
+				Unstable, and Stable stage. A spiral pattern is imperative to any form
+				of development. This type of model ensures the software will be
+				developed, tested, released, and improved over time.
+			</p>
+			
+			<h3>CVS:</h3>
+
+			<p>
+				The CVS package is meant to be used by developers only. Of course it is not
+				strictly restricted to developers but, anyone can check out a fresh
+				copy of the CVS and run it. Although it should be considered highly
+				unstable. The CVS is where the bulk of the coding will take place. This
+				is basically the experimental developing grounds where new features are
+				developed. Below are a list of issues that we exepect from a CVS build at
+				this stage:
+				<ol>
+					<li>Expected to contain freshly developed features that may not exists in other builds</li>
+					<li>Expect high instability, program crashes, bugs, and run-time errors</li>
+					<li>Expect new builds of the CVS almost nightly</li>
+					<li>Should not be compile broken. The CVS must compile without errors</li>
+					<li>Testing grounds for the design and implementation of new features</li>
+				</ol>
+			</p>
+			
+			<p>
+				CVS packages will not be released and placed on the main
+				download site. Users can obtain a copy of the CVS anonymously through
+				sourceforge. Instructions for anonymous CVS access for non-developers
+				can be found in this document's CVS module check-out sections <a href="#sec_1.1.1">1.1.1</a>
+				and <a href="#sec_1.2.1">1.2.1</a>
+			</p>
+			
+			<h3>Unstable:</h3>
+
+			<p>
+				Once certain requirements are made and implemented into the CVS, it
+				is ready for testing. An Unstable build is released with a numbering
+				system that portrays its version number, feature number, release number,
+				and sometimes a micro-release number.<br/>
+				<br/>
+				The version number indicates if there have been any huge over all changes
+				to the software. This includes very drastic changes.<br/>
+				<br/>
+				The feature number indicates whether there has been any feature changes
+				or additions. Such changes or additions will cause the current software
+				to be incompatible with a software of a previous feature number.<br/>
+				<br/>
+				The release number indicates that no new features were added but various
+				bug fixes were made. With bug fixes made to the software; it will make it
+				incompatible with software of a previous release number.<br/>
+				<br/>
+				The micro-release number does not appear very often. It shows that there
+				was an un-expected bug that was fixed quickly and released as soon as possible.
+				Software with the same version, feature, and release number are compatible with
+				other software of the same kind even if the micro-release number is different.
+				Compatibility mainly refers to saved game files and such.
+			</p>
+
+			<p>
+					A practical example:<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>File Name Example</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/txt.png" width="48" height="48" alt="text image"/>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								TripleA_Unstable_0_5_4.zip<br/>
+								<br/>
+								TripleA_Stable_0_6_0_1_1.zip
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The unstable build is packaged and released in order to test the
+					newly implemented features that have been added during the CVS stage.
+					This build is intended for use by developers and the end user. The
+					purpose of an unstable build is to increase the speed of error detection
+					and possible bug fixes. Due to the nature of Open Source projects,
+					developers cannot devote 100% of their efforts on this project due to
+					lack of funds and other social constraints (ie. other jobs,
+					families...etc).
+				</p>
+
+				<p>
+					This stage allows the community of users to test the new build and
+					perform blackbox testing. They are expected to test the new features of
+					the software and report bugs if any should occur. Users are also
+					encouraged to go a bit further and look into the source code to see if
+					they can offer a bug fix or a suggestion for new implementation.
+				</p>
+
+				<p>
+					Developers (and programming knowledgable users) can perform whitebox
+					testing where they look at the source code of newly implemented
+					features and purposely try to cause the software to crash or behave
+					unexpectidely. This helps to locate bugs and security holes from which
+					blackbox testing may over look. As usefull as whitebox testing may be;
+					blackbox testing helps find bugs in the over all useability of the
+					software. Such things as bad user interface design, complex use of
+					images/colors, confusing actions that hurt playability (ie. too many
+					buttons, inproper implementation of mouse clicks, bad window behaviour
+					..etc).
+				</p>
+
+				<p>
+					Unstable builds can be re-released with bug fixes so that it can be
+					tested again. Once a build has been in the testing stage for a solid
+					duration of time that allows users to fully use all the features (ie. 2
+					weeks or more) then a summary report can be made that outlines the
+					number of bugs found and the percentage of those bugs that have been
+					fixed to those that could not be fixed but work-arounds have been made.
+					After that it will be up to the project manager to discuss with the
+					rest of the development team if a testing build is ready to be released
+					as Stable.
+				</p>
+
+				<h3>Stable:</h3>
+
+				<p>
+					A Stable release should indicate that the software is fully playable
+					and the game can be played from start to finish without any program
+					crashes or bugs that will yield undesirable side-effects. As this
+					should hold true, life is not perfect. Stable builds are allowed to
+					contain a minimal amount of bugs that will not harm game-play (ie.
+					non-combat moves during combat stage, map abnormalities, anything that
+					can be worked around).
+				</p>
+
+				<p>
+					Stable builds should go through a minimum of 2 weeks of testings as an
+					&quot;Unstable&quot; package in order to weed out the obvious bugs.
+				</p>
+				
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_10">10.0</a> Developer Programming Conventions</h2>
+		<blockquote>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
 		<h2><a name="sec_11">11.0</a> Credits & Acknowledgements</h2>
 		<blockquote>
 			<p>
 				<ul>
 					<li><b>Iron Cross</b> : TripleA Banner and background watermark</li>
-					<li><b>Sean Bridges</b> : </li>
+					<li><b>Sean Bridges</b> : Engine Code Overview sections (not done yet)</li>
+					<li><b>Zero Pilot</b> : Compiling on Windows Guide</li>
 					<li>Icon images from <a href="http://www.kde.org">KDE</a>'s Crystal icons package</li>
 				</ul>
 			</p>
-		
+			
 			<p>
 				<a href="#top">- Top -</a>
 			</p>
