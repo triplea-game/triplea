@@ -551,6 +551,10 @@ public class MovePanel extends ActionPanel
     
     private Collection<Unit> getUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)
     {
+        if(route.getLength() == 0)
+            return new ArrayList<Unit>(units);
+                
+        
         Match<Unit> enoughMovement = new Match<Unit>()
         {
             public boolean match(Unit u)
