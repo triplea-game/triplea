@@ -210,7 +210,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         // If fourth edition, allied air on our carriers are also dependents
         if (isFourthEdition())
         {
-            dependencies.putAll(moveDelegate.carrierMustMoveWith(units, units));
+            dependencies.putAll(moveDelegate.carrierMustMoveWith(units, units, m_data, m_attacker));
         }
 
         addDependentUnits(dependencies);
@@ -884,10 +884,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     Unit load = (Unit) unloadedIter.next();
                     m_transportTracker.undoUnload(load, transport, m_attacker);
                 }
-
-                change.add(ChangeFactory.moveUnits(dependent.getTerritory(),
-                        retreatTo, retreatedUnits));
             }
+            change.add(ChangeFactory.moveUnits(dependent.getTerritory(),
+                    retreatTo, retreatedUnits));
         }
         return change;
     }

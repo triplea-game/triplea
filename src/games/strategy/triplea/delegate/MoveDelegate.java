@@ -253,17 +253,17 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
     private Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Territory start)
     {
-        return carrierMustMoveWith(units, start.getUnits().getUnits());
+        return carrierMustMoveWith(units, start.getUnits().getUnits(), m_data, m_player);
     }
 
-    public Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Collection<Unit> startUnits)
+    public static Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Collection<Unit> startUnits, GameData data, PlayerID player)
     {
 
         //we want to get all air units that are owned by our allies
         //but not us that can land on a carrier
         CompositeMatch<Unit> friendlyNotOwnedAir = new CompositeMatchAnd<Unit>();
-        friendlyNotOwnedAir.add(Matches.alliedUnit(m_player, m_data));
-        friendlyNotOwnedAir.addInverse(Matches.unitIsOwnedBy(m_player));
+        friendlyNotOwnedAir.add(Matches.alliedUnit(player, data));
+        friendlyNotOwnedAir.addInverse(Matches.unitIsOwnedBy(player));
         friendlyNotOwnedAir.add(Matches.UnitCanLandOnCarrier);
 
         Collection<Unit> alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
@@ -274,8 +274,8 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //remove air that can be carried by allied
         CompositeMatch<Unit> friendlyNotOwnedCarrier = new CompositeMatchAnd<Unit>();
         friendlyNotOwnedCarrier.add(Matches.UnitIsCarrier);
-        friendlyNotOwnedCarrier.add(Matches.alliedUnit(m_player, m_data));
-        friendlyNotOwnedCarrier.addInverse(Matches.unitIsOwnedBy(m_player));
+        friendlyNotOwnedCarrier.add(Matches.alliedUnit(player, data));
+        friendlyNotOwnedCarrier.addInverse(Matches.unitIsOwnedBy(player));
 
         Collection<Unit> alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
 
@@ -307,7 +307,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return mapping;
     }
 
-    private Collection<Unit> getCanCarry(Unit carrier, Collection<Unit> selectFrom)
+    private static Collection<Unit> getCanCarry(Unit carrier, Collection<Unit> selectFrom)
     {
 
         UnitAttatchment ua = UnitAttatchment.get(carrier.getUnitType());
