@@ -561,11 +561,21 @@ public class MovePanel extends ActionPanel
         
         CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
         
-        if(MoveValidator.isUnload(route))
+        //we have to allow land units that have no movement to unload
+        if(MoveValidator.isUnload(route) && route.getLength() == 1)
         {
+            //the expression here is land || (!land && hasEnoughMovement)
+            
             CompositeMatch<Unit> landOrCanMove = new CompositeMatchOr<Unit>();
-            landOrCanMove.add(enoughMovement);
             landOrCanMove.add(Matches.UnitIsLand);
+            
+            CompositeMatch<Unit> notLandAndCanMove = new CompositeMatchAnd<Unit>();
+            notLandAndCanMove.add(enoughMovement);
+            notLandAndCanMove.add(Matches.UnitIsNotLand);
+            landOrCanMove.add(notLandAndCanMove);
+            
+            
+            match.add(landOrCanMove);
         }
         else 
             match.add(enoughMovement);
