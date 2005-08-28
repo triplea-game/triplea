@@ -1,3 +1,10 @@
+changes for 0.7.1
+
+* if we have multiple transports that unloaded troops to an amphibious assault, then the transports retreat from a 
+  naval battle that precedes the amphibious assault, then too many units will retreat (sgb)
+
+* various no pop up movement bugs
+
 * fixed chinese tech in big world 1942 map (sgb)
 
 * fixed missing connection from solomon in pacific map (sgb)
