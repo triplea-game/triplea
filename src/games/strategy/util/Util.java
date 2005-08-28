@@ -121,6 +121,31 @@ public class Util
 
 		return true;
 	}
+    
+    /**
+     * returns a list of everything in source, with the first count units moved to the end 
+     */
+    public static <T> List<T> shiftElementsToEnd(List<T> source, int count)
+    {
+        ArrayList<T> rVal = new ArrayList<T>(source.size());
+        
+        for(int i = count; i < source.size(); i++)
+        {
+            rVal.add(source.get(i));
+        }
+        
+        
+        for(int i = 0; i < count; i++)
+        {
+            rVal.add(source.get(i));
+        }
+        
+        if(source.size() != rVal.size())
+            throw new IllegalStateException("Didnt work for: "  + count + " " + source + " : "  + rVal);
+        
+        return rVal;
+        
+    }
 
 	public static <T> List<T> toList(T[] objects)
 	{

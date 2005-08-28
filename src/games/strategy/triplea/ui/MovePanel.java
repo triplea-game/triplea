@@ -631,8 +631,9 @@ public class MovePanel extends ActionPanel
 
       MustMoveWithDetails endMustMoveWith = getDelegate().getMustMoveWith(route.getEnd(), route.getEnd().getUnits().getUnits());
       
-      //all the same type, dont ask
-      if(UnitSeperator.categorize(transports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement()).size() == 1)
+      //all the same type, dont ask unless we have more than 1 unit type
+      if(UnitSeperator.categorize(transports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement()).size() == 1 
+         && unitsToLoad.size() == 1     )
           return transports;
           
       int minTransportCost = 5;

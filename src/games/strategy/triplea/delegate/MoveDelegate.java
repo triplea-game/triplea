@@ -1293,6 +1293,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     {
 
         List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+        int transportIndex = 0;
         Comparator<Unit> c = new Comparator<Unit>()
         {
             public int compare(Unit o1, Unit o2)
@@ -1307,9 +1308,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //in 4th edition rules.
         Collections.sort(canBeTransported, c);
 
-        Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-        Collection<Unit> ownedTransport = Match.getMatches(transports, Matches.unitIsOwnedBy(m_player));
-        canTransport = Util.difference(canTransport, ownedTransport);
+        List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
 
         Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
         IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
@@ -1322,10 +1321,18 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             int cost = landUA.getTransportCost();
             boolean loaded = false;
 
-            //check owned first
-            Iterator transportIter = ownedTransport.iterator();
+            //we want to try to distribute units evenly to all the transports
+            //if the user has 2 infantry, and selects two transports to load
+            //we should put 1 infantry in each transport.
+            //the algorithm below does not guarantee even distribution in all cases
+            //but it solves most of the cases
+            Iterator transportIter = Util.shiftElementsToEnd(canTransport, transportIndex).iterator();
             while (transportIter.hasNext() && !loaded)
             {
+                transportIndex++;
+                if(transportIndex >= canTransport.size())
+                    transportIndex = 0;
+                
                 Unit transport = (Unit) transportIter.next();
                 int capacity = m_transportTracker.getAvailableCapacity(transport);
                 capacity -= addedLoad.getInt(transport);
@@ -1336,20 +1343,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                     loaded = true;
                 }
             }
-            //check allied
-            transportIter = canTransport.iterator();
-            while (transportIter.hasNext() && !loaded)
-            {
-                Unit transport = (Unit) transportIter.next();
-                int capacity = m_transportTracker.getAvailableCapacity(transport);
-                capacity -= addedLoad.getInt(transport);
-                if (capacity >= cost)
-                {
-                    addedLoad.add(transport, cost);
-                    mapping.put(land, transport);
-                    loaded = true;
-                }
-            }
+            
             if (!loaded)
                 return null;
         }
