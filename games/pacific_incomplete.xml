@@ -424,6 +424,8 @@
 
         <resourceList>
                 <resource name="IPCs"/>
+                <resource name="VPs"/>
+                <resource name="TemporaryVPs"/>
         </resourceList>
 
         <playerList>
@@ -1079,6 +1081,11 @@
                   <attatchment name="territoryAttatchment" attatchTo="3 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment" type="territory">
                         <option name="production" value="10"/>
                   </attatchment>
+
+                    <attatchment name="playerAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PlayerAttatchment" type="player">
+                        <option name="vps" value="0"/>
+                        <option name="captureVps" value="0"/>
+                    </attatchment>
         </attatchmentList>
         
         <initialize>
@@ -1454,7 +1461,7 @@
 				- Chinese and USA same turn order (done on seperate turns for now) &lt;br&gt;
 				- Seperate income for India and Australia (UK under one power for now) &lt;br&gt;
 				- Special stratbombing rules (regular strat bombing rules applied) &lt;br&gt;
-				- Japanese Victory Points &lt;br&gt;&lt;br&gt; &lt;i&gt; 
+				- (implemented) Japanese Victory Points
 				
 				Credits: Triple_Elk (base-line), iron__cross (integration)"/>
 

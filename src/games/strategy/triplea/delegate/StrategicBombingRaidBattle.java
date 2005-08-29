@@ -23,6 +23,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.PlayerAttatchment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.*;
@@ -132,23 +133,18 @@ public class StrategicBombingRaidBattle implements Battle
 
         bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + cost + MyFormatter.pluralize("ipc", cost));
 
-/*
-        if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
+        if(isPacificEdition())
         {
             if(m_defender.getName().equals(Constants.JAPANESE)) 
             {
-                Resource vps = gameData.getResourceList().getResource(Constants.VPS);
-                int vpsToSub = toAdd / 10;
-                transcriptText = player.getName() + " co " + vps + " victory point(s)";
-    //            aBridge.getHistoryWriter().startEvent(transcriptText);
-//        Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
- //       bridge.addChange(change);
-
-  //              change = ChangeFactory.changeResourcesChange(player, vps, vpsToAdd);
-   //             aBridge.addChange(change);
+                PlayerAttatchment pa = (PlayerAttatchment) PlayerAttatchment.get(m_defender);
+                if(pa != null)
+                {
+                    pa.setVps((new Integer(-(cost / 10) + pa.getVps())).toString());
+                }
+                bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + (cost / 10) + MyFormatter.pluralize("vp", (cost / 10)));
             } 
-        } 
-*/
+        }
 
         getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + cost);
 
@@ -169,6 +165,11 @@ public class StrategicBombingRaidBattle implements Battle
     private boolean isFourthEdition()
     {
         return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+    }
+
+    private boolean isPacificEdition()
+    {
+        return m_data.getProperties().get(Constants.PACIFIC_EDITION, false);
     }
 
     private void removeAAHits(IDelegateBridge bridge, DiceRoll dice)

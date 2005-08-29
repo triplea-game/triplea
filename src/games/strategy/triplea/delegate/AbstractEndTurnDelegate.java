@@ -25,6 +25,7 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.PlayerAttatchment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.*;
 
@@ -83,6 +84,19 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 		Change change = ChangeFactory.changeResourcesChange(player, ipcs, toAdd);
 		aBridge.addChange(change);
 
+
+                if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
+                {
+                    PlayerAttatchment pa = PlayerAttatchment.get(player);
+                    
+                    if(pa != null)
+                    {
+                        pa.setVps((new Integer(pa.getVps() + ((toAdd + pa.getCaptureVps()) / 10))).toString());
+                        System.out.println(pa.getVps());
+                        System.out.println(pa.getCaptureVps());
+                        pa.setCaptureVps("0");
+                    }	
+                } 
 
 		checkForWinner(aBridge);
 		

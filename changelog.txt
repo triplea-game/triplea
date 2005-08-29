@@ -1,3 +1,5 @@
+* Japanese victory points for a&a pacific (Adam_J)
+
 changes for 0.7.1
 
 * updated readme and user docs (George_H)

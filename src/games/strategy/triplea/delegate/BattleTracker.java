@@ -26,6 +26,7 @@ import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.PlayerAttatchment;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.*;
 
@@ -340,10 +341,18 @@ public class BattleTracker implements java.io.Serializable
             //if the capital is owned by the capitols player
             //take the money
             PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+            PlayerAttatchment pa = PlayerAttatchment.get(id);
             if (whoseCapital.equals(territory.getOwner()))
             {
                 Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
                 int capturedIPCCount = whoseCapital.getResources().getQuantity(ipcs);
+                if(pa != null)
+                {
+                    if(isPacificEdition(data))
+                    {
+                        pa.setCaptureVps((new Integer(capturedIPCCount + pa.getCaptureVps())).toString());
+                    } 
+                } 
                 Change remove = ChangeFactory.changeResourcesChange(whoseCapital, ipcs, -capturedIPCCount);
                 bridge.addChange(remove);
                 bridge.getHistoryWriter().addChildToEvent(
@@ -597,6 +606,11 @@ public class BattleTracker implements java.io.Serializable
     public boolean wasNavalBombardmentSource(Territory territory)
     {
         return m_bombardedFromTerritories.contains(territory);
+    }
+
+    private boolean isPacificEdition(GameData data)
+    {
+        return data.getProperties().get(Constants.PACIFIC_EDITION, false);
     }
 
     public void clear()

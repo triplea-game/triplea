@@ -25,6 +25,7 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.stats.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.PlayerAttatchment;
 import games.strategy.triplea.delegate.*;
 import games.strategy.util.*;
 
@@ -80,7 +81,13 @@ public class StatPanel extends JPanel
             List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
             stats.add(new VictoryCityStat());
             m_stats = (IStat[]) stats.toArray(new IStat[stats.size()]);
-            
+        }
+        //only add the vps in pacific
+        if(data.getProperties().get(Constants.PACIFIC_EDITION, false))
+        {
+            List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
+            stats.add(new VPStat());
+            m_stats = (IStat[]) stats.toArray(new IStat[stats.size()]);
         }
         
         setLayout(new GridLayout(2, 1));
@@ -575,5 +582,21 @@ class VictoryCityStat extends AbstractStat
                 rVal ++;
         }
         return rVal;
+    }
+}
+
+class VPStat extends AbstractStat
+{
+    public String getName()
+    {
+        return "VPs";
+    }
+
+    public double getValue(PlayerID player, GameData data)
+    {
+        PlayerAttatchment pa = PlayerAttatchment.get(player);
+        if(pa != null)
+            return pa.getVps();
+        return 0; 
     }
 }

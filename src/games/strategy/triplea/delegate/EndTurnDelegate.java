@@ -25,6 +25,9 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.PlayerAttatchment;
+
+import java.util.Collection;
 
 /**
  *
@@ -42,9 +45,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		//only notify once
 		if(m_gameOver)
 			return;
-		if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
-		    return;
-
 
 		PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
 		PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
@@ -52,12 +52,30 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
 		PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 
+
+                if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
+                {
+                    PlayerAttatchment pa = PlayerAttatchment.get(japanese);
+                    PlayerID current = bridge.getPlayerID();
+                    
+                    if(pa != null && pa.getVps() >= 22)
+                    {
+                        m_gameOver = true;
+                        bridge.getHistoryWriter().startEvent("Axis achieve VP victory");
+                        return;
+                    } 
+                } 
+
+		if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+		    return;
+
 		// Quick check to see who still owns their own capital
 		boolean russia = TerritoryAttatchment.getCapital(russians, m_data).getOwner().equals(russians);
 		boolean germany = TerritoryAttatchment.getCapital(germans, m_data).getOwner().equals(germans);
 		boolean britain = TerritoryAttatchment.getCapital(british, m_data).getOwner().equals(british);
 		boolean japan = TerritoryAttatchment.getCapital(japanese, m_data).getOwner().equals(japanese);
 		boolean america = TerritoryAttatchment.getCapital(americans, m_data).getOwner().equals(americans);
+
 
 		int count = 0;
 		if (!russia) count++;
