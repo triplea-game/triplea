@@ -137,12 +137,14 @@ public class StrategicBombingRaidBattle implements Battle
         {
             if(m_defender.getName().equals(Constants.JAPANESE)) 
             {
+                Change changeVP;
                 PlayerAttatchment pa = (PlayerAttatchment) PlayerAttatchment.get(m_defender);
                 if(pa != null)
                 {
-                    pa.setVps((new Integer(-(cost / 10) + pa.getVps())).toString());
-                }
-                bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + (cost / 10) + MyFormatter.pluralize("vp", (cost / 10)));
+                    changeVP = ChangeFactory.attatchmentPropertyChange(pa, (new Integer(-(cost / 10) + Integer.parseInt(pa.getVps()))).toString(), "vps");
+                    bridge.addChange(changeVP);
+                    bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + (cost / 10) + MyFormatter.pluralize("vp", (cost / 10)));
+                } 
             } 
         }
 

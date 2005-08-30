@@ -58,7 +58,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
                     PlayerAttatchment pa = PlayerAttatchment.get(japanese);
                     PlayerID current = bridge.getPlayerID();
                     
-                    if(pa != null && pa.getVps() >= 22)
+                    if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
                     {
                         m_gameOver = true;
                         bridge.getHistoryWriter().startEvent("Axis achieve VP victory");

@@ -596,7 +596,7 @@ class VPStat extends AbstractStat
     {
         PlayerAttatchment pa = PlayerAttatchment.get(player);
         if(pa != null)
-            return pa.getVps();
+            return Double.parseDouble(pa.getVps());
         return 0; 
     }
 }

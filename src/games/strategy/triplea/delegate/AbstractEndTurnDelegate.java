@@ -91,10 +91,10 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
                     
                     if(pa != null)
                     {
-                        pa.setVps((new Integer(pa.getVps() + ((toAdd + pa.getCaptureVps()) / 10))).toString());
-                        System.out.println(pa.getVps());
-                        System.out.println(pa.getCaptureVps());
-                        pa.setCaptureVps("0");
+                        Change changeVP = (ChangeFactory.attatchmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
+                        Change changeCapVP = ChangeFactory.attatchmentPropertyChange(pa, "0", "captureVps");
+                        CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
+                        aBridge.addChange(ccVP);
                     }	
                 } 
 

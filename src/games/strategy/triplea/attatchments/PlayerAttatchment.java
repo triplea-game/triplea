@@ -53,9 +53,9 @@ public class PlayerAttatchment extends DefaultAttatchment
         m_vps = getInt(value);
     }
 
-    public int getVps()
+    public String getVps()
     {
-        return m_vps;
+        return "" + m_vps;
     }
 
     public void setCaptureVps(String value)
@@ -63,8 +63,8 @@ public class PlayerAttatchment extends DefaultAttatchment
         m_captureVps = getInt(value);
     }
 
-    public int getCaptureVps()
+    public String getCaptureVps()
     {
-        return m_captureVps;
+        return "" + m_captureVps;
     }
 }
