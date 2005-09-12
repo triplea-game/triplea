@@ -354,11 +354,6 @@ public class GameMap extends GameDataComponent
 			return t.isWater();
 		}
 
-		public String toString()
-		{
-			return "LAND";
-		}
-
 	};
 
 	public static final Match<Territory> IS_LAND = new Match<Territory>()
@@ -367,11 +362,6 @@ public class GameMap extends GameDataComponent
 		{
 			return !t.isWater();
 		}
-
-		public String toString()
-		{
-			return "LAND";
-		}
 	};
 
 	public static final Match<Territory> IS_LAND_OR_WATER = new Match<Territory>()
@@ -379,11 +369,6 @@ public class GameMap extends GameDataComponent
 		public boolean match(Territory t)
 		{
 			return true;
-		}
-
-		public String toString()
-		{
-			return "LAND_OR_WATER";
 		}
 	};
 
