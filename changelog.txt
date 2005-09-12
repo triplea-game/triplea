@@ -1,3 +1,5 @@
+* fix bug [ 1277099 ] map refresh problems undoing move with captured aa gun
+
 * Japanese victory points for a&a pacific (Adam_J)
 
 changes for 0.7.1
