@@ -21,9 +21,8 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttatchment;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Constants;
-import java.util.*;
-import games.strategy.engine.data.*;
 
 /**
  *

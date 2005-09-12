@@ -25,8 +25,6 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.attatchments.PlayerAttatchment;
-
 import java.io.Serializable;
 import java.util.Iterator;
 

@@ -24,10 +24,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
 import games.strategy.triplea.attatchments.PlayerAttatchment;
-
-import java.util.Collection;
+import games.strategy.triplea.attatchments.TerritoryAttatchment;
 
 /**
  *
@@ -56,7 +54,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
                 if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
                 {
                     PlayerAttatchment pa = PlayerAttatchment.get(japanese);
-                    PlayerID current = bridge.getPlayerID();
+
                     
                     if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
                     {
