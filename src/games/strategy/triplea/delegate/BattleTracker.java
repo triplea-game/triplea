@@ -385,13 +385,13 @@ public class BattleTracker implements java.io.Serializable
             if (originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id)
                     && TerritoryAttatchment.getCapital(originalOwner, data).getOwner().equals(originalOwner))
             {
-                Change capture = ChangeFactory.changeOwner(currentUnit, originalOwner);
+                Change capture = ChangeFactory.changeOwner(currentUnit, originalOwner, territory);
                 bridge.addChange(capture);
                 if (changeTracker != null)
                     changeTracker.addChange(capture);
             } else
             {
-                Change capture = ChangeFactory.changeOwner(currentUnit, id);
+                Change capture = ChangeFactory.changeOwner(currentUnit, id, territory);
                 bridge.addChange(capture);
                 if (changeTracker != null)
                     changeTracker.addChange(capture);
@@ -445,7 +445,7 @@ public class BattleTracker implements java.io.Serializable
                 Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsFactory);
                 if (!units.isEmpty())
                 {
-                    Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner);
+                    Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
                     bridge.addChange(takeOverNonComUnits);
                     if (changeTracker != null)
                         changeTracker.addChange(takeOverNonComUnits);

@@ -46,18 +46,18 @@ public class ChangeFactory
         return new OwnerChange(territory, owner);
     }
 
-    public static Change changeOwner(Collection<Unit> units, PlayerID owner)
+    public static Change changeOwner(Collection<Unit> units, PlayerID owner, Territory location)
     {
 
-        return new PlayerOwnerChange(units, owner);
+        return new PlayerOwnerChange(units, owner, location);
     }
 
-    public static Change changeOwner(Unit unit, PlayerID owner)
+    public static Change changeOwner(Unit unit, PlayerID owner, Territory location)
     {
 
         ArrayList<Unit> list = new ArrayList<Unit>(1);
         list.add(unit);
-        return new PlayerOwnerChange(list, owner);
+        return new PlayerOwnerChange(list, owner, location);
     }
 
     public static Change addUnits(Territory territory, Collection<Unit> units)
@@ -332,14 +332,16 @@ class PlayerOwnerChange extends Change
      */
     private final Map<GUID, String> m_old;
     private final Map<GUID, String> m_new;
+    private final String m_location;
 
     private static final long serialVersionUID = -9154938431233632882L;
 
-    PlayerOwnerChange(Collection<Unit> units, PlayerID newOwner)
+    PlayerOwnerChange(Collection<Unit> units, PlayerID newOwner, Territory location)
     {
 
         m_old = new HashMap<GUID, String>();
         m_new = new HashMap<GUID, String>();
+        m_location = location.getName();
         
         Iterator<Unit> iter = units.iterator();
         while (iter.hasNext())
@@ -350,16 +352,17 @@ class PlayerOwnerChange extends Change
         }
     }
 
-    PlayerOwnerChange(Map<GUID, String> newOwner, Map<GUID, String> oldOwner)
+    PlayerOwnerChange(Map<GUID, String> newOwner, Map<GUID, String> oldOwner, String location)
     {
         m_old = oldOwner;
         m_new = newOwner;
+        m_location = location;
     }
 
     public Change invert()
     {
 
-        return new PlayerOwnerChange(m_old, m_new);
+        return new PlayerOwnerChange(m_old, m_new, m_location);
     }
 
     protected void perform(GameData data)
@@ -380,6 +383,7 @@ class PlayerOwnerChange extends Change
             PlayerID player = data.getPlayerList().getPlayerID(owner);
             unit.setOwner(player);
         }
+        data.getMap().getTerritory(m_location).notifyChanged();
     }
 }
 

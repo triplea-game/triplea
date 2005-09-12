@@ -304,7 +304,7 @@ public class ChangeTest extends TestCase
 		assertEquals(can, inf1.getOwner());
 		assertEquals(us, inf2.getOwner());
 
-		Change change = ChangeFactory.changeOwner(units, can);
+		Change change = ChangeFactory.changeOwner(units, can, m_data.getMap().getTerritory("greenland"));
 		change.perform(m_data);
 
 		assertEquals(can, inf1.getOwner());
@@ -333,7 +333,7 @@ public class ChangeTest extends TestCase
 		assertEquals(can, inf1.getOwner());
 		assertEquals(us, inf2.getOwner());
 
-		Change change = ChangeFactory.changeOwner(units, can);
+		Change change = ChangeFactory.changeOwner(units, can,m_data.getMap().getTerritory("greenland"));
 		change = serialize(change);
 		change.perform(m_data);
 
