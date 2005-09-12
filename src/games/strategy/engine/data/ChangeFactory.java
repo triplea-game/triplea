@@ -370,6 +370,12 @@ class PlayerOwnerChange extends Change
         {
             GUID id = iter.next();
             Unit unit = data.getUnits().get(id);
+            
+            if(!m_old.get(id).equals(unit.getOwner().getName()))
+            {
+                throw new IllegalStateException("Wrong owner, expecting" + m_old.get(id) +" but got " + unit.getOwner());
+            }
+            
             String owner = m_new.get(id);
             PlayerID player = data.getPlayerList().getPlayerID(owner);
             unit.setOwner(player);
