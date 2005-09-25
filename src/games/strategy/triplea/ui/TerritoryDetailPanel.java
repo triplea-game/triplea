@@ -15,7 +15,6 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.*;
 
 import java.util.*;
@@ -27,16 +26,12 @@ public class TerritoryDetailPanel extends JPanel
 {
 
     private GameData m_data;
+    private final UIContext m_uiContext;
 
-    public void setGameData(GameData data)
+    public TerritoryDetailPanel(MapPanel mapPanel, GameData data, UIContext uiContext)
     {
         m_data = data;
-        territoryChanged(null);
-    }
-
-    public TerritoryDetailPanel(MapPanel mapPanel, GameData data)
-    {
-        m_data = data;
+        m_uiContext = uiContext;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(5, 5, 0, 0));
 
@@ -53,6 +48,14 @@ public class TerritoryDetailPanel extends JPanel
         );
     }
 
+    public void setGameData(GameData data)
+    {
+        m_data = data;
+        territoryChanged(null);
+    }
+
+    
+    
     private void territoryChanged(Territory territory)
     {
         removeAll();
@@ -77,7 +80,7 @@ public class TerritoryDetailPanel extends JPanel
                 add(Box.createVerticalStrut(15));
             }
 
-            ImageIcon icon = UnitImageFactory.instance().getIcon(
+            ImageIcon icon = m_uiContext.getUnitImageFactory().getIcon(
                 item.getType(), item.getOwner(), m_data, item.getDamaged());
             JLabel label = new JLabel("x" + item.getUnits().size(),
                                       icon,

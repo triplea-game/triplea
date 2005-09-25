@@ -23,7 +23,6 @@ package games.strategy.triplea.image;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.Util;
 
 import java.awt.*;
@@ -39,15 +38,6 @@ import javax.swing.ImageIcon;
  */
 public class UnitImageFactory
 {
-
-  private static UnitImageFactory s_instance = new UnitImageFactory();
-
-  public static UnitImageFactory instance()
-  {
-    return s_instance;
-  }
-
-
   /**
    * Width of all icons.
    * You probably want getUnitImageWidth(), which takes scale factor into account.
@@ -67,12 +57,12 @@ public class UnitImageFactory
   //maps Point -> Icon
   private final Map<String, ImageIcon> m_icons = new HashMap<String, ImageIcon>();
   // Scaling factor for unit images
-  private double m_scaleFactor = MapData.getInstance().getDefaultUnitScale();
+  private double m_scaleFactor;
 
   /** Creates new IconImageFactory */
-  private UnitImageFactory()
+  public UnitImageFactory(double scaleFactor)
   {
-
+      m_scaleFactor = scaleFactor;
   }
 
   /**

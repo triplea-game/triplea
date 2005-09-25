@@ -39,7 +39,7 @@ public class PurchasePanel extends ActionPanel
   private JLabel actionLabel = new JLabel();
   private IntegerMap<ProductionRule> m_purchase;
   private boolean m_bid;
-  private SimpleUnitPanel m_unitsPanel = new SimpleUnitPanel();
+  private SimpleUnitPanel m_unitsPanel;
   private JLabel m_purchasedSoFar = new JLabel();
   private JButton m_buyButton;
 
@@ -50,6 +50,7 @@ public class PurchasePanel extends ActionPanel
   public PurchasePanel(GameData data,MapPanel map)
   {
     super(data, map);
+    m_unitsPanel = new SimpleUnitPanel(map.getUIContext());
     m_buyButton = new JButton(BUY);
     m_buyButton.addActionListener(PURCHASE_ACTION);
   }
@@ -116,7 +117,7 @@ public class PurchasePanel extends ActionPanel
   {
     public void actionPerformed(ActionEvent e)
     {
-      m_purchase = ProductionPanel.show(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase);
+      m_purchase = ProductionPanel.show(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase,getMap().getUIContext());
       m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, getCurrentPlayer(), getData());
       if(m_purchase.totalValues() == 0)
       {

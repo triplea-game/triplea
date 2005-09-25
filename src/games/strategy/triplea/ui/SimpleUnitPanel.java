@@ -15,13 +15,14 @@
 
 package games.strategy.triplea.ui;
 
-import javax.swing.*;
-import java.util.*;
-import games.strategy.util.IntegerMap;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.*;
-import games.strategy.triplea.util.*;
+import games.strategy.triplea.attatchments.UnitTypeComparator;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.util.IntegerMap;
+
+import java.util.*;
+
+import javax.swing.*;
 
 /**
  *
@@ -31,8 +32,11 @@ import games.strategy.triplea.util.*;
 
 public class SimpleUnitPanel extends JPanel
 {
-  public SimpleUnitPanel()
+  private final UIContext m_uiContext;  
+    
+  public SimpleUnitPanel(UIContext uiContext)
   {
+    m_uiContext = uiContext;  
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }
 
@@ -84,7 +88,7 @@ public class SimpleUnitPanel extends JPanel
   {
     JLabel label = new JLabel();
     label.setText(" x " + quantity);
-    label.setIcon(UnitImageFactory.instance().getIcon(unit, player,
+    label.setIcon(m_uiContext.getUnitImageFactory().getIcon(unit, player,
         data, damaged));
     add(label);
   }

@@ -18,56 +18,23 @@
 
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeAttatchmentChange;
-import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.data.events.TerritoryListener;
+import games.strategy.engine.data.*;
+import games.strategy.engine.data.events.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.screen.SmallMapImageManager;
-import games.strategy.triplea.ui.screen.Tile;
-import games.strategy.triplea.ui.screen.TileManager;
-import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.triplea.util.Stopwatch;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.ui.ImageScrollerLargeView;
-import games.strategy.ui.ScrollListener;
+import games.strategy.triplea.ui.screen.*;
+import games.strategy.triplea.util.*;
+import games.strategy.ui.*;
 import games.strategy.ui.Util;
-import games.strategy.util.ListenerList;
-import games.strategy.util.Tuple;
+import games.strategy.util.*;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javax.swing.SwingUtilities;
 
@@ -97,16 +64,21 @@ public class MapPanel extends ImageScrollerLargeView
     
     private RouteDescription m_routeDescription;
 
-    private final TileManager m_tileManager = new TileManager();
+    private final TileManager m_tileManager;
     
-    private final BackgroundDrawer m_backgroundDrawer = new BackgroundDrawer(this);
+    private final BackgroundDrawer m_backgroundDrawer;
     
     private BufferedImage m_mouseShadowImage = null;
+    private final UIContext m_uiContext;
     
     /** Creates new MapPanel */
-    public MapPanel(Dimension imageDimensions, GameData data, MapPanelSmallView smallView) throws IOException
+    public MapPanel(GameData data, MapPanelSmallView smallView, UIContext uiContext) throws IOException
     {
-        super(imageDimensions);
+        super(uiContext.getMapData().getMapDimensions());
+
+        m_uiContext = uiContext;
+        m_backgroundDrawer = new BackgroundDrawer(this, m_uiContext);
+        m_tileManager = new TileManager(m_uiContext);
         
         Thread t = new Thread(m_backgroundDrawer, "Map panel background drawer");
         t.setDaemon(true);
@@ -116,7 +88,7 @@ public class MapPanel extends ImageScrollerLargeView
        
 
         m_smallView = smallView;
-        m_smallMapImageManager = new SmallMapImageManager(smallView, MapImage.getInstance().getSmallMapImage(),  m_tileManager);
+        m_smallMapImageManager = new SmallMapImageManager(smallView, m_uiContext.getMapImage().getSmallMapImage(),  m_tileManager);
         
         setGameData(data);
 
@@ -132,8 +104,8 @@ public class MapPanel extends ImageScrollerLargeView
             }
             
         });
-        m_tileManager.createTiles(new Rectangle(imageDimensions), data, MapData.getInstance());
-        m_tileManager.resetTiles(data, MapData.getInstance());
+        m_tileManager.createTiles(new Rectangle(m_uiContext.getMapData().getMapDimensions()), data, m_uiContext.getMapData());
+        m_tileManager.resetTiles(data, uiContext.getMapData());
     } 
      
     GameData getData()
@@ -147,8 +119,8 @@ public class MapPanel extends ImageScrollerLargeView
  
        
         super.setDimensions(newDimensions);
-        m_tileManager.createTiles(new Rectangle(newDimensions), m_data, MapData.getInstance());
-        m_tileManager.resetTiles(m_data, MapData.getInstance());
+        m_tileManager.createTiles(new Rectangle(newDimensions), m_data, m_uiContext.getMapData());
+        m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
 
         
     }
@@ -156,7 +128,7 @@ public class MapPanel extends ImageScrollerLargeView
     public boolean isShowing(Territory territory)
     {
 
-        Point territoryCenter = MapData.getInstance().getCenter(territory);
+        Point territoryCenter = m_uiContext.getMapData().getCenter(territory);
 
         Rectangle screenBounds = new Rectangle(super.getXOffset(), super.getYOffset(), super.getWidth(), super.getHeight());
         return screenBounds.contains(territoryCenter);
@@ -169,7 +141,7 @@ public class MapPanel extends ImageScrollerLargeView
         if (territory == null)
             return;
 
-        Point p = MapData.getInstance().getCenter(territory);
+        Point p = m_uiContext.getMapData().getCenter(territory);
 
         //when centering dont want the map to wrap around,
         //eg if centering on hawaii
@@ -272,7 +244,7 @@ public class MapPanel extends ImageScrollerLargeView
     
     private Territory getTerritory(int x, int y)
     {
-        String name = MapData.getInstance().getTerritoryAt(normalizeX(x), y);
+        String name = m_uiContext.getMapData().getTerritoryAt(normalizeX(x), y);
         if (name == null)
             return null;
         return m_data.getMap().getTerritory(name);
@@ -291,7 +263,7 @@ public class MapPanel extends ImageScrollerLargeView
     public void resetMap()
     {
         
-       m_tileManager.resetTiles(m_data, MapData.getInstance());
+       m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
        
        SwingUtilities.invokeLater(new Runnable()
         {
@@ -301,7 +273,7 @@ public class MapPanel extends ImageScrollerLargeView
             }
         });
        
-       m_smallMapImageManager.update(m_data, MapData.getInstance());
+       m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
        
     }
     
@@ -351,8 +323,8 @@ public class MapPanel extends ImageScrollerLargeView
 
     public void updateCounties(Collection<Territory> countries)
     {
-        m_tileManager.updateTerritories(countries, m_data, MapData.getInstance());
-        m_smallMapImageManager.update(m_data, MapData.getInstance());
+        m_tileManager.updateTerritories(countries, m_data, m_uiContext.getMapData());
+        m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
         m_smallView.repaint();
         repaint();
     }
@@ -374,7 +346,7 @@ public class MapPanel extends ImageScrollerLargeView
         //stop painting in the background
         m_backgroundDrawer.setTiles(Collections.<Tile>emptySet());
         
-        m_tileManager.resetTiles(m_data, MapData.getInstance());
+        m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
 
     }
 
@@ -389,7 +361,7 @@ public class MapPanel extends ImageScrollerLargeView
 
         public void ownerChanged(Territory territory)
         {
-            m_smallMapImageManager.updateTerritoryOwner(territory, m_data, MapData.getInstance());
+            m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
             updateCounties(Collections.singleton(territory));
             repaint();
         }
@@ -409,7 +381,7 @@ public class MapPanel extends ImageScrollerLargeView
             if (playersWithTechChange.isEmpty())
                 return;
 
-            m_tileManager.resetTiles(m_data, MapData.getInstance());
+            m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
             repaint();
         }
 
@@ -478,7 +450,7 @@ public class MapPanel extends ImageScrollerLargeView
 	        }
 	
 	        
-	        MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this);
+	        MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this, m_uiContext.getMapData());
 	        
             if(m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
             {
@@ -567,7 +539,7 @@ public class MapPanel extends ImageScrollerLargeView
             }
             else
             {
-	            img = tile.getImage(data, MapData.getInstance());
+	            img = tile.getImage(data, m_uiContext.getMapData());
 	            images.add(tile);
             }
             if(img != null)
@@ -577,7 +549,7 @@ public class MapPanel extends ImageScrollerLargeView
 
     public Image getTerritoryImage(Territory territory)
     {
-        return m_tileManager.createTerritoryImage(territory, m_data,MapData.getInstance());
+        return m_tileManager.createTerritoryImage(territory, m_data,m_uiContext.getMapData());
     }
 
 
@@ -592,11 +564,11 @@ public class MapPanel extends ImageScrollerLargeView
         while (territories.hasNext())
         {
             Territory territory = (Territory) territories.next();
-            m_smallMapImageManager.updateTerritoryOwner(territory, m_data, MapData.getInstance());
+            m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
             
         }
         
-        m_smallMapImageManager.update(m_data, MapData.getInstance());
+        m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
         
     }  
     
@@ -624,7 +596,7 @@ public class MapPanel extends ImageScrollerLargeView
         
         Set<UnitCategory> categories =  UnitSeperator.categorize(units);
         
-        final int icon_width = UnitImageFactory.instance().getUnitImageWidth();
+        final int icon_width =  m_uiContext.getUnitImageFactory().getUnitImageWidth();
         
         final int xSpace = 5;
          
@@ -641,8 +613,8 @@ public class MapPanel extends ImageScrollerLargeView
         {
             Point place = new Point( i * (icon_width + xSpace), 0);
             UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
-                    category.getOwner().getName(), place,category.getDamaged(), false, "" );
-            drawer.draw(bounds, m_data, g, MapData.getInstance());
+                    category.getOwner().getName(), place,category.getDamaged(), false, "", m_uiContext );
+            drawer.draw(bounds, m_data, g, m_uiContext.getMapData());
             i++;
         }
         m_mouseShadowImage = img;
@@ -659,15 +631,18 @@ public class MapPanel extends ImageScrollerLargeView
     
     public void setTerritoryOverlay(Territory territory, Color color, float opaqueness)
     {
-        m_tileManager.setTerritoryOverlay(territory, color, opaqueness, m_data, MapData.getInstance() );
+        m_tileManager.setTerritoryOverlay(territory, color, opaqueness, m_data, m_uiContext.getMapData() );
     }
 
     public void clearTerritoryOverlay(Territory territory)
     {
-        m_tileManager.clearTerritoryOverlay(territory, m_data, MapData.getInstance());
+        m_tileManager.clearTerritoryOverlay(territory, m_data, m_uiContext.getMapData());
     }
 
-    
+    public UIContext getUIContext()
+    {
+        return m_uiContext;
+    }
 }
 
 class RouteDescription
@@ -744,10 +719,12 @@ class BackgroundDrawer implements Runnable
     private final Object m_mutex = new Object();
     private boolean m_active = true;
     private final MapPanel m_mapPanel;
+    private final UIContext m_uiContext;
     
-    BackgroundDrawer(MapPanel panel)
+    BackgroundDrawer(MapPanel panel, UIContext uiContext)
     {
         m_mapPanel = panel;
+        m_uiContext = uiContext;
     }
     
     public void stop()
@@ -800,7 +777,7 @@ class BackgroundDrawer implements Runnable
                 data.acquireChangeLock();
                 try
                 {
-	                tile.getImage(data, MapData.getInstance());
+	                tile.getImage(data, m_uiContext.getMapData());
 	                //update the main map after we update each tile
 	                //this allows the tiles to be shown as soon as they are updated
                 }

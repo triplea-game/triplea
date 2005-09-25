@@ -16,7 +16,6 @@ package games.strategy.triplea.ui;
 
 
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.image.DiceImageFactory;
 
 import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
@@ -26,8 +25,12 @@ import javax.swing.*;
 
 public class DicePanel extends JPanel
 {
-  public DicePanel()
+    
+  private final UIContext m_uiContext;  
+    
+  public DicePanel(UIContext uiContext)
   {
+    m_uiContext = uiContext;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }
 
@@ -106,7 +109,7 @@ public class DicePanel extends JPanel
     {
       int roll = dice[dieIndex] + 1;
       boolean hit = hitOnlyIfEquals ? roll == rollAt : roll <= rollAt;
-      dicePanel.add(new JLabel(DiceImageFactory.getInstance().getDieIcon(roll, hit)));
+      dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, hit)));
       dicePanel.add(Box.createHorizontalStrut(2));
     }
     JScrollPane scroll = new JScrollPane(dicePanel);
@@ -115,9 +118,9 @@ public class DicePanel extends JPanel
     //we're adding to a box layout, so to prevent the component from
     //grabbing extra space, set the max height.
     //allow room for a dice and a scrollbar
-    scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
-    scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
-    scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, DiceImageFactory.getInstance().DIE_HEIGHT + 17));
+    scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
 
     return scroll;
   }

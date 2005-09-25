@@ -281,12 +281,12 @@ public class BattlePanel extends ActionPanel
     private CasualtyDetails getCasualtiesAA( Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
             PlayerID hit, List defaultCasualties)
     {
-        UnitChooser chooser = new UnitChooser(selectFrom, dependents, getData(), false);
+        UnitChooser chooser = new UnitChooser(selectFrom, dependents, getData(), false, getMap().getUIContext());
 
         chooser.setTitle(message);
         chooser.setMax(count);
 
-        DicePanel dicePanel = new DicePanel();
+        DicePanel dicePanel = new DicePanel(getMap().getUIContext());
         dicePanel.setDiceRoll(dice);
 
         JPanel panel = new JPanel();

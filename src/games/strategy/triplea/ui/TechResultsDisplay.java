@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.triplea.delegate.dataObjects.TechResults;
-import games.strategy.triplea.image.DiceImageFactory;
 
 import java.awt.*;
 import java.util.Vector;
@@ -21,8 +20,11 @@ import javax.swing.*;
 public class TechResultsDisplay extends JPanel
 {
 
-  public TechResultsDisplay(TechResults msg)
+    private final UIContext m_uiContext;
+    
+  public TechResultsDisplay(TechResults msg, UIContext context)
   {
+    m_uiContext = context;  
     setLayout(new GridBagLayout());
 
     add(new JLabel("You got " + msg.getHits() + " hit" + (msg.getHits() != 1 ? "s" : "") + "."),
@@ -46,7 +48,7 @@ public class TechResultsDisplay extends JPanel
     {
       //add 1 since dice are 0 based
       int roll = msg.getRolls()[i] + 1;
-      JLabel die = new JLabel(DiceImageFactory.getInstance().getDieIcon(roll, roll ==6));
+      JLabel die = new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, roll ==6));
       dice.add(die);
       dice.add(Box.createHorizontalStrut(2));
       dice.setMaximumSize(new Dimension(200, (int)dice.getMaximumSize().getHeight()));

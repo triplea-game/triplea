@@ -14,21 +14,16 @@
 
 package games.strategy.triplea.ui;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import javax.swing.*;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.UndoableMove;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.*;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.*;
+import java.util.List;
+
+import javax.swing.*;
 
 public class UndoableMovesPanel extends JPanel
 {
@@ -100,7 +95,7 @@ public class UndoableMovesPanel extends JPanel
         while (iter.hasNext())
         {
             UnitCategory category = (UnitCategory)iter.next();
-            Icon icon = UnitImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged());
+            Icon icon =   m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged());
             JLabel label =  new JLabel("x" + category.getUnits().size() + " ",  icon , SwingConstants.LEFT );
             unitsBox.add(label);
         }

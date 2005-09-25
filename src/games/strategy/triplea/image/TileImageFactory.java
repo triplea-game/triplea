@@ -32,7 +32,6 @@ public final class TileImageFactory
     private final Object m_mutex = new Object();
 
     // one instance in the application
-    private static TileImageFactory s_singletonInstance = new TileImageFactory();
     private final static String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief";
     private static boolean s_showReliefImages = true;
 
@@ -45,7 +44,6 @@ public final class TileImageFactory
     {
         Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
         s_showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, false);
-        s_mapDir = "classic";//default to using the classic map files
     }
 
     public static boolean getShowReliefImages()
@@ -67,38 +65,27 @@ public final class TileImageFactory
         }
     }
 
-    private static String s_mapDir;
+    private String m_mapDir;
 
-    public static String getMapDir()
+    public void setMapDir(String dir)
     {
-        return s_mapDir;
-    }
-
-    public static void setMapDir(String dir)
-    {
-        s_mapDir = dir;
-        synchronized (getInstance().m_mutex)
+        m_mapDir = dir;
+        synchronized (m_mutex)
         {
             //we manually want to clear each ref to allow the soft reference to
             // be removed
-            Iterator<ImageRef> values = getInstance().m_imageCache.values().iterator();
+            Iterator<ImageRef> values = m_imageCache.values().iterator();
             while (values.hasNext())
             {
                 ImageRef imageRef = values.next();
                 imageRef.clear();
             }
-            getInstance().m_imageCache.clear();
+            m_imageCache.clear();
         }
     }
 
-    // return the singleton
-    public static TileImageFactory getInstance()
-    {
-        return s_singletonInstance;
-    }
-
     // constructor
-    private TileImageFactory()
+    public TileImageFactory()
     {
     }
 
@@ -163,7 +150,7 @@ public final class TileImageFactory
      */
     private String getBaseTileImageName(int x, int y)
     {
-        String fileName = Constants.MAP_DIR + s_mapDir + File.separator + "baseTiles" + java.io.File.separator + x + "_" + y + ".png";
+        String fileName = Constants.MAP_DIR + m_mapDir + File.separator + "baseTiles" + java.io.File.separator + x + "_" + y + ".png";
         return fileName;
     }
 
@@ -201,7 +188,7 @@ public final class TileImageFactory
      */
     private String getReliefTileImageName(int x, int y)
     {
-        String fileName = Constants.MAP_DIR + s_mapDir + File.separator + "reliefTiles" + java.io.File.separator + x + "_" + y + ".png";
+        String fileName = Constants.MAP_DIR + m_mapDir + File.separator + "reliefTiles" + java.io.File.separator + x + "_" + y + ".png";
         return fileName;
     }
 

@@ -17,7 +17,7 @@ package games.strategy.triplea.ui.history;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.history.*;
-import games.strategy.triplea.image.FlagIconImageFactory;
+import games.strategy.triplea.ui.UIContext;
 
 import java.awt.*;
 
@@ -35,7 +35,7 @@ public class HistoryPanel extends JPanel
 
   private final HistoryDetailsPanel m_details;
 
-  public HistoryPanel(GameData data, HistoryDetailsPanel details)
+  public HistoryPanel(GameData data, HistoryDetailsPanel details, UIContext uiContext)
   {
     m_data = data;
     m_details = details;
@@ -44,7 +44,7 @@ public class HistoryPanel extends JPanel
 
     m_tree = new JTree(m_data.getHistory());
 
-    HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer();
+    HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer(uiContext);
     renderer.setLeafIcon(null);
     renderer.setClosedIcon(null);
     renderer.setOpenIcon(null);
@@ -137,7 +137,13 @@ public class HistoryPanel extends JPanel
 class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
 {
   private ImageIcon icon = new ImageIcon();
+  private final UIContext m_uiContext;
 
+  public HistoryTreeCellRenderer(UIContext context)
+  {
+      m_uiContext = context;
+  }
+  
   public Component getTreeCellRendererComponent(
     JTree tree,
     Object value,
@@ -157,7 +163,7 @@ class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
       PlayerID player = ( (Step) value).getPlayerID();
       if (player != null)
       {
-        icon.setImage(FlagIconImageFactory.instance().getSmallFlag(player));
+        icon.setImage(m_uiContext.getFlagImageFactory() .getSmallFlag(player));
         setIcon(icon);
       }
     }

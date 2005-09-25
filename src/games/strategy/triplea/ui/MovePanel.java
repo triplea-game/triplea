@@ -276,7 +276,7 @@ public class MovePanel extends ActionPanel
           return unitsToMove;
      
       // choosing what transports to unload
-      UnitChooser chooser = new UnitChooser(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement(), m_bridge.getGameData());
+      UnitChooser chooser = new UnitChooser(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement(), m_bridge.getGameData(), getMap().getUIContext());
       chooser.setTitle("What transports do you want to unload");
             
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
@@ -410,7 +410,7 @@ public class MovePanel extends ActionPanel
             
             
             UnitChooser chooser = new UnitChooser(candidateUnits, units, m_mustMoveWithDetails.getMustMoveWith(),
-                    m_mustMoveWithDetails.getMovement(), m_bridge.getGameData(), false);
+                    m_mustMoveWithDetails.getMovement(), m_bridge.getGameData(), false, getMap().getUIContext());
 
             
             
@@ -666,7 +666,7 @@ public class MovePanel extends ActionPanel
 
 
       // choosing what units to LOAD.
-      UnitChooser chooser = new UnitChooser(candidateTransports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement(), m_bridge.getGameData());
+      UnitChooser chooser = new UnitChooser(candidateTransports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement(), m_bridge.getGameData(),  getMap().getUIContext());
       chooser.setTitle("What transports do you want to load");
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                                                 chooser, "What transports do you want to load",

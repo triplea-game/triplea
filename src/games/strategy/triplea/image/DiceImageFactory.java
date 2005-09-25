@@ -28,7 +28,7 @@ public class DiceImageFactory
 {
   public int DIE_WIDTH = 32;
   public int DIE_HEIGHT = 32;
-  private static DiceImageFactory s_instance = new DiceImageFactory();
+
 
   //maps Integer -> Image
   private Map<Integer, Image> m_images = new HashMap<Integer, Image>();
@@ -37,11 +37,6 @@ public class DiceImageFactory
   //maps Integer -> ImageIcon
   private Map<Integer, ImageIcon> m_icons = new HashMap<Integer, ImageIcon>();
   private Map<Integer, ImageIcon> m_iconsHit = new HashMap<Integer, ImageIcon>();
-
-  public static DiceImageFactory getInstance()
-  {
-    return s_instance;
-  }
 
   public DiceImageFactory()
   {
@@ -133,17 +128,18 @@ public class DiceImageFactory
 
   public static void main(String[] args)
   {
+    DiceImageFactory instance = new DiceImageFactory();
     JFrame frame = new JFrame();
     for(int i = 1; i <= 6; i++)
     {
       frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-      frame.getContentPane().add(new JLabel(DiceImageFactory.getInstance().getDieIcon(i, false)));
+      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, false)));
       frame.getContentPane().add(Box.createVerticalStrut(4));
     }
     for(int i = 1; i <= 6; i++)
     {
       frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-      frame.getContentPane().add(new JLabel(DiceImageFactory.getInstance().getDieIcon(i, true)));
+      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, true)));
       frame.getContentPane().add(Box.createVerticalStrut(4));
     }
 

@@ -37,13 +37,6 @@ import javax.imageio.ImageIO;
 public class FlagIconImageFactory
 {
 
-    private static FlagIconImageFactory s_instance = new FlagIconImageFactory();
-
-    public static FlagIconImageFactory instance()
-    {
-        return s_instance;
-    }
-
     public static final int FLAG_ICON_WIDTH = 30;
 
     public static final int FLAG_ICON_HEIGHT = 15;
@@ -56,7 +49,7 @@ public class FlagIconImageFactory
     private final Map<String, Image> m_images = new HashMap<String, Image>();
 
     /** Creates new IconImageFactory */
-    private FlagIconImageFactory()
+    public FlagIconImageFactory()
     {
     }
 

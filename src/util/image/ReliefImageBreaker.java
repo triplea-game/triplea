@@ -44,6 +44,8 @@ public class ReliefImageBreaker
     private static JFrame observer = new JFrame();
 
     private boolean m_seaZoneOnly;
+    
+    private MapData m_mapData;
 
     /**
      * main(java.lang.String[] args)
@@ -97,7 +99,8 @@ public class ReliefImageBreaker
 
         try
         {
-            MapData.setMapDir(mapDir); //makes TripleA read all the text data
+            m_mapData = new MapData(mapDir);
+
                                        // files for the map.
         } catch (NullPointerException npe)
         {
@@ -105,7 +108,7 @@ public class ReliefImageBreaker
             System.exit(0);
         }
 
-        Iterator unitIter = MapData.getInstance().getTerritories().iterator();
+        Iterator unitIter = m_mapData.getTerritories().iterator();
 
         while (unitIter.hasNext())
         {
@@ -239,12 +242,12 @@ public class ReliefImageBreaker
      */
     private void processImage(String territory, Image map) throws IOException
     {
-        Rectangle bounds = MapData.getInstance().getBoundingRect(territory);
+        Rectangle bounds = m_mapData.getBoundingRect(territory);
         int width = bounds.width;
         int height = bounds.height;
 
         BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
-        Iterator<Polygon> iter = MapData.getInstance().getPolygons(territory).iterator();
+        Iterator<Polygon> iter = m_mapData.getPolygons(territory).iterator();
 
         while (iter.hasNext())
         {

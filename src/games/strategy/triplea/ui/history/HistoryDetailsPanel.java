@@ -65,7 +65,7 @@ public class HistoryDetailsPanel extends JPanel
       Object details = ( (Renderable) node).getRenderingData();
       if(details instanceof DiceRoll)
       {
-        DicePanel dicePanel = new DicePanel();
+        DicePanel dicePanel = new DicePanel(m_mapPanel.getUIContext());
         dicePanel.setDiceRoll((DiceRoll) details);
         add( dicePanel, mainConstraints);
       }
@@ -95,7 +95,7 @@ public class HistoryDetailsPanel extends JPanel
   private void renderUnits(GridBagConstraints mainConstraints, Collection<Unit> units)
   {
     Collection unitsCategories = UnitSeperator.categorize(units);
-    SimpleUnitPanel unitsPanel = new SimpleUnitPanel();
+    SimpleUnitPanel unitsPanel = new SimpleUnitPanel(m_mapPanel.getUIContext());
     unitsPanel.setUnitsFromCategories(unitsCategories, m_data);
     add(unitsPanel, mainConstraints);
   }

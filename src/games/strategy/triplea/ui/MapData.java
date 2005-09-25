@@ -70,27 +70,7 @@ public class MapData
     //maps String -> List of String
     private Map<String, List<String>> m_contains;
 
-    private static MapData s_instance;
-
     private Properties m_mapProperties;
-
-    /**
-     * setMapDir(java.lang.String)
-     * 
-     * sets the map dir from outside
-     * 
-     * @param java.lang.String
-     *            mapDir the given map directory
-     */
-    public static void setMapDir(String mapDir)
-    {
-        s_instance = new MapData(mapDir);
-    }
-
-    public static MapData getInstance()
-    {
-        return s_instance;
-    }
 
     
     public boolean scrollWrapX()
@@ -107,7 +87,7 @@ public class MapData
      *            mapNameDir the given map directory
      *  
      */
-    private MapData(String mapNameDir)
+    public MapData(String mapNameDir)
     {
         try
         {

@@ -31,8 +31,7 @@ import java.util.List;
 
 public class MapRouteDrawer
 {
-
-    //only static methods
+     //only static methods
     private MapRouteDrawer()
     {
     }
@@ -40,7 +39,7 @@ public class MapRouteDrawer
     /**
      * Draw m_route to the screen, do nothing if null.
      */
-    public static void drawRoute(Graphics2D graphics, RouteDescription routeDescription, ImageScrollerLargeView view)
+    public static void drawRoute(Graphics2D graphics, RouteDescription routeDescription, ImageScrollerLargeView view, MapData mapData)
     {
         
         if(routeDescription == null)
@@ -65,7 +64,7 @@ public class MapRouteDrawer
         //find all the points for this route
         for (int i = 0; i < numTerritories; i++)
         {
-            points[i] = (Point) MapData.getInstance().getCenter((Territory) territories.get(i));
+            points[i] = (Point) mapData.getCenter((Territory) territories.get(i));
         }
 
         if(routeDescription.getStart() != null)

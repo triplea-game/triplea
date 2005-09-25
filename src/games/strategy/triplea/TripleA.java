@@ -24,11 +24,10 @@ package games.strategy.triplea;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
-import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.troxAI.TroxAIPlayer;
-import games.strategy.triplea.ui.*;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.*;
 
 import java.awt.Frame;
@@ -84,10 +83,7 @@ public class TripleA implements IGameLoader
 	    */
             String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
-            MapData.setMapDir(mapDir);                //tells TerritoryData where the txt files are
-            TileImageFactory.setMapDir(mapDir);  //tells the image factory where the images are
-
-            final TripleAFrame frame = new TripleAFrame(game, players);
+            final TripleAFrame frame = new TripleAFrame(game, players, mapDir);
            
             TripleaDisplay display = new TripleaDisplay(frame);
             game.addDisplay(display);

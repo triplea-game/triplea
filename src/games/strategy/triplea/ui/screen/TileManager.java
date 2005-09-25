@@ -15,8 +15,7 @@ package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
@@ -48,6 +47,15 @@ public class TileManager
     
     private final Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<UnitsDrawer>();
     
+    private final UIContext m_uiContext;
+    
+    
+    
+    public TileManager(UIContext context)
+    {
+        m_uiContext = context;
+    }
+
     public List<Tile> getTiles(Rectangle bounds)
     {
         synchronized(m_mutex)
@@ -106,8 +114,8 @@ public class TileManager
 		            int x = tile.getBounds().x / TILE_SIZE;
 		            int y = tile.getBounds().y / TILE_SIZE;
 		            
-		            tile.addDrawable(new BaseMapDrawable(x,y));
-		            tile.addDrawable(new ReliefMapDrawable(x,y));
+		            tile.addDrawable(new BaseMapDrawable(x,y,m_uiContext));
+		            tile.addDrawable(new ReliefMapDrawable(x,y,m_uiContext));
 		
 		        }
 	
@@ -214,7 +222,7 @@ public class TileManager
         if(ta != null &&  ta.isCapital() && mapData.drawCapitolMarkers())
         {
             PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
-            drawing.add(new CapitolMarkerDrawable(capitalOf, territory));
+            drawing.add(new CapitolMarkerDrawable(capitalOf, territory, m_uiContext));
         }
         
         if(ta != null && ta.isVictoryCity())
@@ -263,17 +271,17 @@ public class TileManager
             } else
             {
                 lastPlace = new Point(lastPlace);
-                lastPlace.x += UnitImageFactory.instance().getUnitImageWidth();
+                lastPlace.x += m_uiContext.getUnitImageFactory().getUnitImageWidth();
                 overflow = true;
             }
 
             UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), lastPlace,
-                    category.getDamaged(), overflow, territory.getName());
+                    category.getDamaged(), overflow, territory.getName(), m_uiContext);
             drawing.add(drawable);
             m_allUnitDrawables.add(drawable);
             
             Iterator<Tile> tiles = getTiles(
-                    new Rectangle(lastPlace.x, lastPlace.y, UnitImageFactory.instance().getUnitImageWidth(), UnitImageFactory.instance()
+                    new Rectangle(lastPlace.x, lastPlace.y, m_uiContext.getUnitImageFactory().getUnitImageWidth(), m_uiContext.getUnitImageFactory()
                             .getUnitImageHeight())).iterator();
             while (tiles.hasNext())
             {
@@ -345,9 +353,9 @@ public class TileManager
             for(UnitsDrawer drawer : m_allUnitDrawables)
             {
                 Point placementPoint = drawer.getPlacementPoint();
-                if(x > placementPoint.x && x < placementPoint.x + UnitImageFactory.instance().getUnitImageWidth())
+                if(x > placementPoint.x && x < placementPoint.x + m_uiContext.getUnitImageFactory().getUnitImageWidth())
                 {
-                    if(y > placementPoint.y && y < placementPoint.y + UnitImageFactory.instance().getUnitImageHeight())
+                    if(y > placementPoint.y && y < placementPoint.y + m_uiContext.getUnitImageFactory().getUnitImageHeight())
                     {
                         return drawer.getUnits(gameData);
                     }

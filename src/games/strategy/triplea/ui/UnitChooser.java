@@ -21,7 +21,6 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.*;
 import games.strategy.util.IntegerMap;
@@ -50,33 +49,36 @@ public class UnitChooser extends JPanel
   private boolean m_allowTwoHit = false;
   private JButton m_autoSelectButton;
   private JButton m_selectNoneButton;
-  /** Creates new UnitChooser */
-
+  private final UIContext m_uiContext;
   
-  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data)
+  /** Creates new UnitChooser */ 
+  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data, UIContext context)
   {
     m_dependents = dependent;
     m_data = data;
+    m_uiContext = context;
     createEntries(units, dependent, movement, Collections.<Unit>emptyList());
     layoutEntries();
+    
   }
 
  
-  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)
+  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
   {
-    this(units, Collections.<Unit>emptyList(), dependent, data, allowTwoHit);
+    this(units, Collections.<Unit>emptyList(), dependent, data, allowTwoHit, uiContext);
   }
 
-  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit)
+  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
   {
-      this(units, defaultSelections, dependent, null, data, allowTwoHit);
+      this(units, defaultSelections, dependent, null, data, allowTwoHit, uiContext);
   }
   
-  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data, boolean allowTwoHit)
+  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data, boolean allowTwoHit, UIContext uiContext)
   {
     m_dependents = dependent;
     m_data = data;
     m_allowTwoHit = allowTwoHit;
+    m_uiContext = uiContext;
     createEntries(units, dependent, movement, defaultSelections);
     layoutEntries();
   }
@@ -152,7 +154,7 @@ public class UnitChooser extends JPanel
 
   private void addCategory(UnitCategory category, int defaultValue)
   {
-    ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowTwoHit, defaultValue);
+    ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowTwoHit, defaultValue, m_uiContext);
     m_entries.add(entry);
 
   }
@@ -331,9 +333,10 @@ class ChooserEntry
   private JLabel m_secondHitLabel;
   private int m_leftToSelect = 0;
   private static Insets nullInsets = new Insets(0,0,0,0);
+  private final UIContext m_uiContext;
 
 
-  ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data, boolean allowTwoHit, int defaultValue)
+  ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data, boolean allowTwoHit, int defaultValue, UIContext uiContext)
   {
     m_hitTextFieldListener = listener;
     m_data = data;
@@ -342,13 +345,14 @@ class ChooserEntry
     int numUnits = category.getUnits().size();
     m_defaultValueFirstHits = numUnits < defaultValue ? numUnits : defaultValue;
     m_defaultValueSecondHits = numUnits < defaultValue ? defaultValue - numUnits : 0;
+    m_uiContext = uiContext;
     //    System.out.println("Default hits: " + m_defaultValueFirstHits + " " + m_defaultValueSecondHits);
   }
 
   public void createComponents(JPanel panel, int yIndex)
   {
 
-      panel.add(new UnitChooserEntryIcon(false) ,
+      panel.add(new UnitChooserEntryIcon(false, m_uiContext) ,
                 new GridBagConstraints(0,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ) );
 
       if (m_category.getMovement() != -1)
@@ -367,7 +371,7 @@ class ChooserEntry
 
       if (m_hasSecondHit)
       {
-          panel.add(new UnitChooserEntryIcon(true),
+          panel.add(new UnitChooserEntryIcon(true, m_uiContext),
               new GridBagConstraints(4,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,8,0,0), 0,0 ) );
 
           m_secondHitLabel = new JLabel("x0");
@@ -458,10 +462,12 @@ class ChooserEntry
   class UnitChooserEntryIcon extends JComponent
   {
       private boolean m_forceDamaged;
+      private final UIContext m_uiContext;
 
-    UnitChooserEntryIcon(boolean forceDamaged)
+    UnitChooserEntryIcon(boolean forceDamaged, UIContext uiContext)
     {
         m_forceDamaged = forceDamaged;
+        m_uiContext = uiContext;
     }
 
 
@@ -469,14 +475,14 @@ class ChooserEntry
     public void paint(Graphics g)
     {
       super.paint(g);
-      g.drawImage( UnitImageFactory.instance().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged()), 0,0,this);
+      g.drawImage( m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged()), 0,0,this);
       Iterator iter = m_category.getDependents().iterator();
       int index = 1;
       while(iter.hasNext())
       {
         UnitOwner holder = (UnitOwner) iter.next();
-        int x = UnitImageFactory.instance().getUnitImageWidth() * index;
-        Image unitImg = UnitImageFactory.instance().getImage(holder.getType(), holder.getOwner(), m_data, false);
+        int x = m_uiContext.getUnitImageFactory().getUnitImageWidth() * index;
+        Image unitImg = m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false);
         g.drawImage(unitImg, x, 0, this);
 
 
@@ -487,12 +493,12 @@ class ChooserEntry
     public int getWidth()
     {
       //we draw a unit symbol for each dependent
-      return UnitImageFactory.instance().getUnitImageWidth() * (1 + m_category.getDependents().size());
+      return m_uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + m_category.getDependents().size());
     }
 
     public int getHeight()
     {
-      return UnitImageFactory.instance().getUnitImageHeight();
+      return m_uiContext.getUnitImageFactory().getUnitImageHeight();
     }
 
     public Dimension getMaximumSize()

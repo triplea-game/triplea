@@ -1,24 +1,13 @@
 package games.strategy.triplea.ui.screen;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.*;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.MapData;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.Tuple;
+import games.strategy.triplea.ui.*;
+import games.strategy.util.*;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.List;
 
 public class UnitsDrawer implements IDrawable
@@ -30,8 +19,9 @@ public class UnitsDrawer implements IDrawable
     private final boolean m_damaged;
     private final boolean m_overflow;
     private final String m_territoryName;
+    private final UIContext m_uiContext;
     
-    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, boolean overflow, String territoryName)
+    public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, boolean overflow, String territoryName, UIContext uiContext)
     {
         m_count = count;
         m_unitType = unitType;
@@ -40,6 +30,7 @@ public class UnitsDrawer implements IDrawable
         m_damaged = damaged;
         m_overflow = overflow;
         m_territoryName = territoryName;
+        m_uiContext = uiContext;
     }
 
     public void prepare() {}
@@ -59,7 +50,7 @@ public class UnitsDrawer implements IDrawable
         if(m_overflow)
         {
             graphics.setColor(Color.BLACK);
-            graphics.fillRect(m_placementPoint.x - bounds.x -2, m_placementPoint.y - bounds.y + UnitImageFactory.instance().getUnitImageHeight() , UnitImageFactory.instance().getUnitImageWidth() + 2,  3 );
+            graphics.fillRect(m_placementPoint.x - bounds.x -2, m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() , m_uiContext.getUnitImageFactory().getUnitImageWidth() + 2,  3 );
         }
         
         UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
@@ -67,15 +58,15 @@ public class UnitsDrawer implements IDrawable
             throw new IllegalStateException("Type not found:" + m_unitType);
         PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
 
-        Image img = UnitImageFactory.instance().getImage(type, owner, data, m_damaged);
+        Image img =  m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged);
         graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
 
         if (m_count != 1)
         {
             graphics.setColor(Color.white);
             graphics.setFont(MapImage.MAP_FONT);
-            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (UnitImageFactory.instance().getUnitImageWidth() / 4),
-                    m_placementPoint.y - bounds.y + UnitImageFactory.instance().getUnitImageHeight());
+            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
+                    m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight());
         }
     }
     

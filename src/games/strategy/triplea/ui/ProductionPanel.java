@@ -20,20 +20,18 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
+import games.strategy.ui.*;
+import games.strategy.util.IntegerMap;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import javax.swing.*;
-
-import games.strategy.triplea.image.*;
-import games.strategy.engine.data.*;
-import games.strategy.ui.*;
-import games.strategy.util.*;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.triplea.Constants;
 import java.util.List;
-import javax.swing.border.*;
+
+import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 
 /**
  * 
@@ -44,22 +42,26 @@ import javax.swing.border.*;
  */
 public class ProductionPanel extends JPanel
 {
+    //TODO - this should really not be static
     private static JFrame s_owner;
     private static JDialog s_dialog;
     private static ProductionPanel s_panel;
-
+    private static UIContext s_uiContext;
+    
     private List<Rule> m_rules = new ArrayList<Rule>();
     private JLabel m_left = new JLabel();
     private PlayerID m_id;
     private boolean m_bid;
     private GameData m_data;
+    
 
     /**
      * Shows the production panel, and returns a map of selected rules.
      */
-    public static IntegerMap<ProductionRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<ProductionRule> initialPurchase)
+    public static IntegerMap<ProductionRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<ProductionRule> initialPurchase, UIContext uiContext)
     {
-
+        s_uiContext = uiContext;
+        
         if (!(parent == s_owner))
             s_dialog = null;
 
@@ -115,7 +117,7 @@ public class ProductionPanel extends JPanel
         while (iter.hasNext())
         {
             ProductionRule productionRule = (ProductionRule) iter.next();
-            Rule rule = new Rule(productionRule, player);
+            Rule rule = new Rule(productionRule, player, s_uiContext);
             int initialQuantity = initialPurchase.getInt(productionRule);
             rule.setQuantity(initialQuantity);
             m_rules.add(rule);
@@ -218,14 +220,16 @@ public class ProductionPanel extends JPanel
         private int m_cost; 
         private UnitType m_type;
         private ProductionRule m_rule;
+        private final UIContext m_uiContext;
 
-        Rule(ProductionRule rule, PlayerID id)
+        Rule(ProductionRule rule, PlayerID id, UIContext uiContext)
         {
+            m_uiContext = uiContext;
             setLayout(new GridBagLayout());
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
             m_type = (UnitType) rule.getResults().keySet().iterator().next();
-            Icon icon = UnitImageFactory.instance().getIcon(m_type, id, m_data, false);
+            Icon icon = m_uiContext.getUnitImageFactory().getIcon(m_type, id, m_data, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 

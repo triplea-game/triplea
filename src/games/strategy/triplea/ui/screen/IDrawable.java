@@ -13,35 +13,21 @@
  */
 package games.strategy.triplea.ui.screen;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.image.FlagIconImageFactory;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.image.*;
+import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javax.imageio.ImageIO;
 
@@ -256,13 +242,15 @@ class CapitolMarkerDrawable implements IDrawable
 
     private final String m_player;
     private final String m_location;
+    private final UIContext m_uiContext;
     
     
-    public CapitolMarkerDrawable(final PlayerID player, final Territory location)
+    public CapitolMarkerDrawable(final PlayerID player, final Territory location, UIContext uiContext)
     {
         super();
         m_player = player.getName();
         m_location = location.getName();
+        m_uiContext = uiContext;
     }
     public void prepare()
     {
@@ -270,7 +258,7 @@ class CapitolMarkerDrawable implements IDrawable
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
-        Image img = FlagIconImageFactory.instance().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
+        Image img = m_uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
         Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
         
         graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
@@ -326,10 +314,12 @@ abstract class MapTileDrawable implements IDrawable
 
 class ReliefMapDrawable extends MapTileDrawable
 {
+    private final UIContext m_context;
 
-    public ReliefMapDrawable(int x, int y)
+    public ReliefMapDrawable(int x, int y, UIContext context)
     {
         super(x, y);
+        m_context = context;
     }
     
     public void prepare() 
@@ -339,7 +329,7 @@ class ReliefMapDrawable extends MapTileDrawable
         if(m_noImage)
             return;
         
-        TileImageFactory.getInstance().prepareReliefTile(m_x, m_y);
+        m_context.getTileImageFactory().prepareReliefTile(m_x, m_y);
     }
     
     protected Image getImage()
@@ -350,7 +340,7 @@ class ReliefMapDrawable extends MapTileDrawable
         if(!TileImageFactory.getShowReliefImages())
             return null;
         
-        Image rVal = TileImageFactory.getInstance().getReliefTile(m_x, m_y);
+        Image rVal = m_context.getTileImageFactory().getReliefTile(m_x, m_y);
         if(rVal == null)
             m_noImage = true;
         
@@ -369,10 +359,13 @@ class ReliefMapDrawable extends MapTileDrawable
 
 class BaseMapDrawable extends MapTileDrawable
 {
+    
+    private final UIContext m_uiContext;
    
-    public BaseMapDrawable(final int x, final int y)
+    public BaseMapDrawable(final int x, final int y, UIContext context)
     {
         super(x,y);
+        m_uiContext = context;
     }
    
     public void prepare() 
@@ -380,7 +373,7 @@ class BaseMapDrawable extends MapTileDrawable
         if(m_noImage)
             return;
         
-        TileImageFactory.getInstance().prepareBaseTile(m_x, m_y);
+        m_uiContext.getTileImageFactory().prepareBaseTile(m_x, m_y);
     }
 
    
@@ -389,7 +382,7 @@ class BaseMapDrawable extends MapTileDrawable
         if(m_noImage)
             return null;
 
-        Image rVal = TileImageFactory.getInstance().getBaseTile(m_x, m_y); 
+        Image rVal = m_uiContext.getTileImageFactory().getBaseTile(m_x, m_y); 
         if(rVal == null)
             m_noImage = true;
         
@@ -440,7 +433,7 @@ class LandTerritoryDrawable implements IDrawable
                 territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 220);
         }
 
-        List polys = MapData.getInstance().getPolygons(territory);
+        List polys = mapData.getPolygons(territory);
         
         Iterator iter2 = polys.iterator();
         while (iter2.hasNext())

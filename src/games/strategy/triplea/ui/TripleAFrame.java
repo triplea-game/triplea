@@ -77,7 +77,6 @@ public class TripleAFrame extends JFrame
 
     private ActionButtons m_actionButtons;
 
-    //a set of TripleAPlayers
     private Set<IGamePlayer> m_localPlayers;
 
     private JPanel m_gameMainPanel = new JPanel();
@@ -99,17 +98,17 @@ public class TripleAFrame extends JFrame
     private boolean m_inHistory = false;
 
     private HistorySynchronizer m_historySyncher;
+    
+    private final UIContext m_uiContext;
 
     /** Creates new TripleAFrame */
-    public TripleAFrame(IGame game, Set<IGamePlayer> players) throws IOException
+    public TripleAFrame(IGame game, Set<IGamePlayer> players, String mapDir) throws IOException
     {
         super("TripleA");
-
         setIconImage(GameRunner.getGameIcon(this));
 
         m_game = game;
-
-        game.getMessenger().addErrorListener(m_messengerErrorListener);
+        m_game.getMessenger().addErrorListener(m_messengerErrorListener);
 
         m_data = game.getData();
         m_localPlayers = players;
@@ -117,20 +116,21 @@ public class TripleAFrame extends JFrame
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(WINDOW_LISTENER);
 
+        m_uiContext = new UIContext();
+        m_uiContext.setMapDir(mapDir);
+        m_uiContext.getMapData().verify(m_data);
+
         createMenuBar();
-
-        MapData.getInstance().verify(m_data);
-        MapImage.getInstance().loadMaps(m_data);
-
-        Image small = MapImage.getInstance().getSmallMapImage();
+        
+        Image small = m_uiContext.getMapImage().getSmallMapImage();
         m_smallView = new MapPanelSmallView(small);
         
-        m_mapPanel = new MapPanel(MapData.getInstance().getMapDimensions(), m_data, m_smallView);
+        m_mapPanel = new MapPanel(m_data, m_smallView, m_uiContext);
         m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
 
         //link the small and large images
         ImageScrollControl control = new ImageScrollControl(m_mapPanel, m_smallView);
-        control.setScrollWrapX(MapData.getInstance().scrollWrapX());
+        control.setScrollWrapX(m_uiContext.getMapData().scrollWrapX());
 
         m_mapPanel.initSmallMap();
 
@@ -183,7 +183,7 @@ public class TripleAFrame extends JFrame
         m_statsPanel = new StatPanel(m_data);
         m_tabsPanel.addTab("Stats", m_statsPanel);
 
-        m_details = new TerritoryDetailPanel(m_mapPanel, m_data);
+        m_details = new TerritoryDetailPanel(m_mapPanel, m_data, m_uiContext);
         m_tabsPanel.addTab("Territory", m_details);
 
         m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize()
@@ -658,7 +658,7 @@ public class TripleAFrame extends JFrame
             }
         });
         menuGame.add(showMapDetails);
-        showMapDetails.setEnabled(MapData.getInstance().getHasRelief());
+        showMapDetails.setEnabled(m_uiContext.getMapData().getHasRelief());
     }
 
     /**
@@ -675,7 +675,7 @@ public class TripleAFrame extends JFrame
 
         // Create A String array of compatible MapDirs
 
-        final String currentMapSubDir = TileImageFactory.getMapDir();
+        final String currentMapSubDir = m_uiContext.getMapDir();
         final File mapsDir = new File(GameRunner.getRootFolder() + java.io.File.separator + "classes" + Constants.MAP_SKINS_DIR);
 
         if (currentMapSubDir != null)
@@ -856,18 +856,16 @@ public class TripleAFrame extends JFrame
     // Beagle Code Called to Change Mapskin
     private void updateMap(String mapdir) throws IOException
     {
+        m_uiContext.setMapDir(mapdir);
 
-        MapData.setMapDir(mapdir); // set mapdir
-        TileImageFactory.setMapDir(mapdir);
-
-        MapImage.getInstance().loadMaps(m_data); // load map data
+        
         m_mapPanel.setGameData(m_data);
 
         // update mappanels to use new image
         
-        m_mapPanel.changeImage(MapData.getInstance().getMapDimensions());
+        m_mapPanel.changeImage(m_uiContext.getMapData().getMapDimensions());
 
-        Image small = MapImage.getInstance().getSmallMapImage();
+        Image small = m_uiContext.getMapImage().getSmallMapImage();
         m_smallView.changeImage(small);
 
         m_mapPanel.resetMap(); // redraw territories
@@ -962,7 +960,7 @@ public class TripleAFrame extends JFrame
 
     public void notifyTechResults(TechResults msg)
     {
-        TechResultsDisplay display = new TechResultsDisplay(msg);
+        TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext);
         JOptionPane.showOptionDialog(this, display, "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[]
         { "OK" }, "OK");
 
@@ -1152,7 +1150,7 @@ public class TripleAFrame extends JFrame
         m_round.setText("Round:" + round + " ");
         m_step.setText(stepDisplayName);
         if (player != null && !player.isNull())
-            m_round.setIcon(new ImageIcon(FlagIconImageFactory.instance().getFlag(player)));
+            m_round.setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag(player)));
 
         //if the game control has passed to someone else
         //show the history
@@ -1205,7 +1203,7 @@ public class TripleAFrame extends JFrame
         m_historyPanel.setLayout(new BorderLayout());
 
         JSplitPane split = new JSplitPane();
-        m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel);
+        m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel, m_uiContext);
         split.setLeftComponent(m_historyTree);
         split.setRightComponent(m_mapPanel);
         split.setDividerLocation(150);
@@ -1342,7 +1340,7 @@ public class TripleAFrame extends JFrame
 
             public void actionPerformed(ActionEvent e)
             {
-                UnitImageFactory.instance().setScaleFactor(m_scaleFactor);
+                m_uiContext.getUnitImageFactory().setScaleFactor(m_scaleFactor);
                 m_mapPanel.resetMap();
             }
         }
@@ -1378,7 +1376,7 @@ public class TripleAFrame extends JFrame
         {
             JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();
             UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
-            if (Math.abs(action.m_scaleFactor - MapData.getInstance().getDefaultUnitScale()) < 0.01)
+            if (Math.abs(action.m_scaleFactor - m_uiContext.getMapData().getDefaultUnitScale()) < 0.01)
             {
                 menuItem.setSelected(true);
                 matchFound = true;

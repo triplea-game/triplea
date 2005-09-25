@@ -79,11 +79,11 @@ public class BattleDisplay extends JPanel
         m_location = territory;
         m_mapPanel = mapPanel;
         m_data = data;
-        m_casualties = new CasualtyNotificationPanel(data);
+        m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
 
-        m_defenderModel = new BattleModel(m_data, defendingUnits, false);
+        m_defenderModel = new BattleModel(m_data, defendingUnits, false, m_mapPanel.getUIContext());
         m_defenderModel.refresh();
-        m_attackerModel = new BattleModel(m_data, attackingUnits, true);
+        m_attackerModel = new BattleModel(m_data, attackingUnits, true, m_mapPanel.getUIContext());
         m_attackerModel.refresh();
 
         initLayout();
@@ -323,7 +323,7 @@ public class BattleDisplay extends JPanel
                     {
 
                         String messageText = message + " " + btnText + ".";
-                        UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true);
+                        UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
 
                         chooser.setTitle(messageText);
                         chooser.setMax(count);
@@ -405,7 +405,7 @@ public class BattleDisplay extends JPanel
 
         m_steps = new BattleStepsPanel();
         m_steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        m_dicePanel = new DicePanel();
+        m_dicePanel = new DicePanel(m_mapPanel.getUIContext());
 
         m_actionPanel = new JPanel();
         m_actionPanel.setLayout(m_actionLayout);
@@ -526,17 +526,18 @@ class BattleTable extends JTable
 
 class BattleModel extends DefaultTableModel
 {
-
+    private UIContext m_uiContext;
     private GameData m_data;
     //is the player the agressor?
     private boolean m_attack;
     private Collection<Unit> m_units;
 
-    BattleModel(GameData data, Collection<Unit> units, boolean attack)
+    BattleModel(GameData data, Collection<Unit> units, boolean attack, UIContext uiContext)
     {
 
         super(new Object[0][0], new String[]
         { " ", "1", "2", "3", "4", "5" });
+        m_uiContext = uiContext;
         m_data = data;
         m_attack = attack;
         //were going to modify the units
@@ -598,9 +599,9 @@ class BattleModel extends DefaultTableModel
                 unitsToAdd -= supportedUnitsToAdd;
             }
             if (unitsToAdd > 0)
-                columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged()));
+                columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
             if (supportedUnitsToAdd > 0)
-                columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged()));
+                columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
         }
 
         //find the number of rows
@@ -660,14 +661,13 @@ class TableData
 
     private TableData()
     {
-
+        
     }
 
-    TableData(PlayerID player, int count, UnitType type, GameData data, boolean damaged)
+    TableData(PlayerID player, int count, UnitType type, GameData data, boolean damaged, UIContext uiContext)
     {
-
         m_count = count;
-        m_icon = UnitImageFactory.instance().getIcon(type, player, data, damaged);
+        m_icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged);
     }
 
     public void updateStamp(JLabel stamp)
@@ -690,15 +690,18 @@ class TableData
 class CasualtyNotificationPanel extends JPanel
 {
 
-    private DicePanel m_dice = new DicePanel();
+    private DicePanel m_dice;
     private JPanel m_killed = new JPanel();
     private JPanel m_damaged = new JPanel();
     private GameData m_data;
+    private UIContext m_uiContext;
 
-    public CasualtyNotificationPanel(GameData data)
+    public CasualtyNotificationPanel(GameData data, UIContext uiContext)
     {
 
         m_data = data;
+        m_uiContext = uiContext;
+        m_dice = new DicePanel(uiContext);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(m_dice);
         add(m_killed);
@@ -740,7 +743,7 @@ class CasualtyNotificationPanel extends JPanel
         {
             UnitCategory category = (UnitCategory) categoryIter.next();
             JPanel panel = new JPanel();
-            JLabel unit = new JLabel(UnitImageFactory.instance().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged()));
+            JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged()));
             panel.add(unit);
             Iterator iter = category.getDependents().iterator();
             while (iter.hasNext())
@@ -749,7 +752,7 @@ class CasualtyNotificationPanel extends JPanel
                 //we dont want to use the damaged icon for unuts that have just
                 // been damaged
                 boolean useDamagedIcon = category.getDamaged() && !damaged;
-                unit.add(new JLabel(UnitImageFactory.instance().getIcon(owner.getType(), owner.getOwner(), m_data, useDamagedIcon)));
+                unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, useDamagedIcon)));
             }
             panel.add(new JLabel("x " + category.getUnits().size()));
             if (damaged)

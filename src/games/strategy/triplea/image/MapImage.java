@@ -20,7 +20,6 @@
 
 package games.strategy.triplea.image;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.triplea.Constants;
 import games.strategy.ui.Util;
 
@@ -33,13 +32,6 @@ import java.net.URL;
  */
 public class MapImage
 {
-
-  private static MapImage s_instance = new MapImage();
-  
-  public static synchronized MapImage getInstance()
-  {
-    return s_instance;
-  }
 
   private static Image loadImage(String name)
   {
@@ -79,17 +71,9 @@ public class MapImage
     return m_smallMapImage;
   }
 
-  public void loadMaps(GameData data)
+  public void loadMaps(String mapDir)
   {
-    loadMaps();
-    
-  }
-
-  
-
-  private void loadMaps()
-  {
-     Image smallFromFile =  loadImage(Constants.MAP_DIR+TileImageFactory.getMapDir()+java.io.File.separator+Constants.SMALL_MAP_FILENAME);
+     Image smallFromFile =  loadImage(Constants.MAP_DIR+mapDir+java.io.File.separator+Constants.SMALL_MAP_FILENAME);
       
      m_smallMapImage = Util.createImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
      m_smallMapImage.getGraphics().drawImage(smallFromFile, 0,0, null);
