@@ -1,3 +1,7 @@
+* when retreating from a sea zone, if a fighter has no movement, the fighter gets a 1 movement bonus
+
+* battleships can only bombard if they are in a sea zone where transports unloaded
+
 * fix bug [ 1277099 ] map refresh problems undoing move with captured aa gun
 
 * Japanese victory points for a&a pacific (Adam_J)

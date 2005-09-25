@@ -811,7 +811,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             //if attacker retreating non subs then its all over
             if (!defender && !subs && !planes)
+            {
+                ensureAttackingAirCanRetreat();
                 m_over = true;
+            }
 
             if (submerge)
             {
@@ -1426,6 +1429,32 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
 
     /**
+     * If the attacker retreats, and this is a sea zone, then any attacking fighters with 
+     * 0 movement get a 1 movement bonus to allow them to retreat.
+     * 
+     * This handles the case where fighters will die if they have 0 movement when they arrive
+     * in the attacking zone, but they arrived with a carrier which retreated
+     */
+    private void ensureAttackingAirCanRetreat()
+    {
+        final MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
+        
+        CompositeMatch<Unit> canLandOnCarrier = new CompositeMatchAnd<Unit>();
+        canLandOnCarrier.add(Matches.UnitIsAir);
+        //this only applies to air units that can land on a carrier
+        canLandOnCarrier.add(Matches.UnitCanLandOnCarrier);
+        
+        Collection<Unit> air = Match.getMatches(m_attackingUnits, canLandOnCarrier);
+        
+        for(Unit unit : air)
+        {
+            moveDelegate.ensureCanMoveOneSpace(unit);
+        }
+        
+    }
+    
+    
+    /**
      * The defender has won, but there may be defending fighters that cant stay
      * in the sea zone due to insufficient carriers.
      */
@@ -1619,6 +1648,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public Collection<Unit> getAttackingUnits()
     {
         return m_attackingUnits;
+    }
+    
+    public Collection<Territory> getAttackingFrom()
+    {
+        return m_attackingFrom;
     }
 
     public Collection<Unit> getAmphibiousLandAttackers()

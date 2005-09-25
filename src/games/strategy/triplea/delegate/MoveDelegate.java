@@ -1199,6 +1199,13 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     {
         return m_alreadyMoved.getInt(unit) == 0;
     }
+    
+    public void ensureCanMoveOneSpace(Unit unit)
+    {
+        int alreadyMoved = m_alreadyMoved.getInt(unit);
+        int maxMovement = UnitAttatchment.get(unit.getType()).getMovement(unit.getOwner());
+        m_alreadyMoved.put(unit, Math.min(alreadyMoved, maxMovement - 1)  );
+    }
 
     private void markNoMovement(Unit unit)
     {
