@@ -179,7 +179,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     }
 
     /**
-     * Return map of adjacent territories to battles.
+     * Return map of adjacent territories along attack routes in battles where fighting will occur.
      */
     private Map<Territory, Collection<Battle>> getPossibleBombardingTerritories()
     {
@@ -190,8 +190,14 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         {
             Territory t = battleTerritories.next();
             Battle battle = (Battle) m_battleTracker.getPendingBattle(t, false);
-            Iterator bombardingTerritories = ((Collection) m_data.getMap()
-                    .getNeighbors(t)).iterator();
+            
+            //we only care about battles where we must fight
+            //this check is really to avoid implementing getAttackingFrom() in other battle 
+            //subclasses
+            if(!(battle instanceof MustFightBattle))
+                continue;
+            //bombarding can only occur in territories where 
+            Iterator bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
             while (bombardingTerritories.hasNext())
             {
                 Territory neighbor = (Territory) bombardingTerritories.next();
