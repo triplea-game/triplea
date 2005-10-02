@@ -56,7 +56,7 @@ public class UnitCategory implements Comparable
 
    public boolean isTwoHit()
    {
-       return UnitAttatchment.get(m_type).isTwoHit();
+       return UnitAttachment.get(m_type).isTwoHit();
    }
 
    private void createDependents(Collection<Unit> dependents)

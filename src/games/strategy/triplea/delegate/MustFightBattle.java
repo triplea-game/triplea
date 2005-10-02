@@ -22,7 +22,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -1000,7 +1000,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         while (unitIter.hasNext())
         {
             Unit unit = unitIter.next();
-            if (UnitAttatchment.get(unit.getUnitType()).isTwoHit())
+            if (UnitAttachment.get(unit.getUnitType()).isTwoHit())
             {
                 count += 2;
                 count -= unit.getHits();
@@ -1487,7 +1487,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         while (defendingAirIter.hasNext() && carrierCapacity >= carrierCost)
         {
             Unit currentUnit = defendingAirIter.next();
-            carrierCost += UnitAttatchment.get(currentUnit.getType())
+            carrierCost += UnitAttachment.get(currentUnit.getType())
                     .getCarrierCost();
             if (carrierCapacity >= carrierCost)
             {
@@ -1618,8 +1618,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
               if(u1.getUnitType().equals(u2.getUnitType()))
               {
-                  UnitAttatchment ua = UnitAttatchment.get(u1.getType());
-                  UnitAttatchment ua2 = UnitAttatchment.get(u2.getType());
+                  UnitAttachment ua = UnitAttachment.get(u1.getType());
+                  UnitAttachment ua2 = UnitAttachment.get(u2.getType());
                   if(ua.getIsMarine() && ua2.getIsMarine())
                       amphibComp = compareAccordingToAmphibious(u1, u2);
                   if(amphibComp == 0)

@@ -15,7 +15,7 @@
 package games.strategy.triplea.troxAI;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.util.IntegerMap;
 
@@ -55,15 +55,15 @@ public class AI
 		while(i.hasNext() )
 		{
 			Unit u1 = i.next();
-			int m = UnitAttatchment.get(u1.getUnitType()).getMovement(p);
-			if(UnitAttatchment.get(u1.getUnitType()).isAir())
+			int m = UnitAttachment.get(u1.getUnitType()).getMovement(p);
+			if(UnitAttachment.get(u1.getUnitType()).isAir())
 				m--;
 			if(u1.getOwner() == p)
 			{
 				//System.out.println("Current Fitness ");	
 				if(m >= move)
 				{
-					if(!UnitAttatchment.get(u1.getUnitType()).isAA())
+					if(!UnitAttachment.get(u1.getUnitType()).isAA())
 					{
 						goodu.add(u1);
 					}
@@ -341,7 +341,7 @@ public class AI
 		while(iter.hasNext() )
 		{
 			UnitType type = (iter.next()).getUnitType();
-			attack = attack + UnitAttatchment.get(type).getAttack(m_id);
+			attack = attack + UnitAttachment.get(type).getAttack(m_id);
 		}
 		Iterator<Unit> i2 = defender.iterator();
 		while(i2.hasNext() )
@@ -350,8 +350,8 @@ public class AI
 			Unit u1 = i2.next();
 			//System.out.println("I Broke" + u1.toString());
 			UnitType type = u1.getUnitType();
-			defend = defend + UnitAttatchment.get(type).getDefense(m_id);
-			if(UnitAttatchment.get(type).isAA())
+			defend = defend + UnitAttachment.get(type).getDefense(m_id);
+			if(UnitAttachment.get(type).isAA())
 			{
 				defender.remove(u1);
 			}
@@ -408,7 +408,7 @@ public class AI
 			//System.out.println("I Broke" + u1.toString());
 			UnitType type = u1.getUnitType();
 			//defend = defend + UnitAttatchment.get(type).getDefense(m_id);
-			if(!UnitAttatchment.get(type).isAA())
+			if(!UnitAttachment.get(type).isAA())
 			{
 				c2.add(u1);
 			}
@@ -475,8 +475,8 @@ public class AI
 		while(i.hasNext())
 		{
 			UnitType current = (UnitType)i.next(); 
-			int attack = UnitAttatchment.get(current).getAttack(m_id);
-			int defense = UnitAttatchment.get(current).getDefense(m_id);
+			int attack = UnitAttachment.get(current).getAttack(m_id);
+			int defense = UnitAttachment.get(current).getDefense(m_id);
 
 			Iterator i2 = m_id.getProductionFrontier().getRules().iterator();
 			while(i2.hasNext())

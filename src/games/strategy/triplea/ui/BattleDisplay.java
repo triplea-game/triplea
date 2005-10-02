@@ -17,7 +17,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -582,7 +582,7 @@ class BattleModel extends DefaultTableModel
 
             int strength;
 
-            UnitAttatchment attatchment = UnitAttatchment.get(category.getType());
+            UnitAttachment attatchment = UnitAttachment.get(category.getType());
 
             if (m_attack)
                 strength = attatchment.getAttack(category.getOwner());

@@ -28,14 +28,14 @@ import games.strategy.engine.data.*;
  * @author  Sean Bridges
  * @version
  */
-public class TestAttatchment implements games.strategy.engine.data.IAttatchment {
+public class TestAttachment implements games.strategy.engine.data.IAttachment {
 
 	private String m_value;
 
 
 
   /** Creates new TestAttatchment */
-  public TestAttatchment()
+  public TestAttachment()
   {
   }
 

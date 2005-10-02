@@ -134,9 +134,9 @@ public class ChangeFactory
         return new RemoveProductionRule(rule, frontier);
     }    
     
-    public static Change attatchmentPropertyChange(IAttatchment attatchment, String newValue, String property)
+    public static Change attachmentPropertyChange(IAttachment attatchment, String newValue, String property)
     {
-        return new ChangeAttatchmentChange(attatchment, newValue, property);
+        return new ChangeAttachmentChange(attatchment, newValue, property);
     }
 
     /** Creates new ChangeFactory. No need */
@@ -546,6 +546,61 @@ class RemoveProductionRule extends Change
  * Change a players production frontier.
  */
 
+
+class AddAttachmentChange extends Change
+{
+    private final IAttachment m_attachment;
+    private String m_namedAttachable;
+   
+    public AddAttachmentChange(IAttachment attachment, String attachable)
+    {
+        m_attachment = attachment;
+        m_namedAttachable = attachable;
+    }
+   
+    @Override
+    protected void perform(GameData data)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Change invert()
+    {
+        return new RemoveAttachmentChange(m_attachment, m_namedAttachable);
+    }
+    
+}
+
+class RemoveAttachmentChange extends Change
+{
+    private final IAttachment m_attachment;
+    private String m_namedAttachable;
+    
+    public RemoveAttachmentChange(IAttachment attachment, String attachable)
+    {
+        m_attachment = attachment;
+        m_namedAttachable = attachable;
+    }
+
+    @Override
+    protected void perform(GameData data)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Change invert()
+    {
+        return new AddAttachmentChange(m_attachment, m_namedAttachable);
+    }
+
+    
+    
+    
+}
 
 class ProductionFrontierChange extends Change
 {

@@ -24,7 +24,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import java.io.Serializable;
 import java.util.Iterator;
 
@@ -122,7 +122,7 @@ public class EndRoundDelegate implements ISaveableDelegate
 			Territory current = (Territory) territories.next();
 			if(current.getOwner().equals(id))
 			{
-				TerritoryAttatchment ta = TerritoryAttatchment.get(current);
+				TerritoryAttachment ta = TerritoryAttachment.get(current);
 				sum += ta.getProduction();
 			}
 		}

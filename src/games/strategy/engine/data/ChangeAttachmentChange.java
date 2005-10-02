@@ -18,7 +18,7 @@ package games.strategy.engine.data;
 import java.lang.reflect.Method;
 
 
-public class ChangeAttatchmentChange extends Change
+public class ChangeAttachmentChange extends Change
 {
   private final Attatchable m_attatchedTo;
   private final String m_attatchmentName;
@@ -36,7 +36,7 @@ public class ChangeAttatchmentChange extends Change
     return m_attatchmentName;
   }
 
-  ChangeAttatchmentChange(IAttatchment attatchment, String newValue, String property)
+  ChangeAttachmentChange(IAttachment attatchment, String newValue, String property)
   {
     m_attatchedTo = attatchment.getAttatchedTo();
     m_attatchmentName = attatchment.getName();
@@ -54,7 +54,7 @@ public class ChangeAttatchmentChange extends Change
      }
   }
 
-  public ChangeAttatchmentChange(Attatchable attatchTo, String attatchmentName, String newValue, String oldValue, String property)
+  public ChangeAttachmentChange(Attatchable attatchTo, String attatchmentName, String newValue, String oldValue, String property)
   {
     m_attatchmentName = attatchmentName;
     m_attatchedTo = attatchTo;
@@ -77,10 +77,10 @@ public class ChangeAttatchmentChange extends Change
   {
     try
     {
-      IAttatchment attatchment = m_attatchedTo.getAttatchment(m_attatchmentName);
-      Method setter = attatchment.getClass().getMethod("set" + capitalizeFirstLetter(m_property), new Class[]
+      IAttachment attachment = m_attatchedTo.getAttatchment(m_attatchmentName);
+      Method setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(m_property), new Class[]
         {String.class});
-      setter.invoke(attatchment, new Object[] {m_newValue});
+      setter.invoke(attachment, new Object[] {m_newValue});
     }
     catch(Exception e)
     {
@@ -91,7 +91,7 @@ public class ChangeAttatchmentChange extends Change
 
   public Change invert()
   {
-    return new ChangeAttatchmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
+    return new ChangeAttachmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
   }
 
   public String toString()

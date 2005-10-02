@@ -14,16 +14,13 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.Stopwatch;
-import games.strategy.ui.Util;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -74,68 +71,7 @@ class DrawableComparator implements Comparator<IDrawable>
 
 }
 
-class TerritoryOverLayDrawable implements IDrawable
-{
-    
-    private final String m_territoryName;
-    private final Color m_color;
-    private final float m_opaqueness;
-    private SoftReference<BufferedImage> m_overLayImage = new SoftReference<BufferedImage>(null);
-    
-    
-    public TerritoryOverLayDrawable(Color color, String name, float opaqueness)
-    {
-        m_color = color;
-        m_territoryName = name;
-        m_opaqueness = opaqueness;
-    }
-    
-    private synchronized BufferedImage getImage(MapData mapData)
-    {
-        BufferedImage img = m_overLayImage.get();
-        if(img != null)
-            return img;
-     
-        Rectangle bounds = mapData.getBoundingRect(m_territoryName);
-        
-        img = Util.createImage(bounds.width, bounds.height, true);
-        m_overLayImage = new SoftReference<BufferedImage>(img);
-        Graphics2D g = (Graphics2D) img.getGraphics();
-        
-        g.setColor(m_color);
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, m_opaqueness));
 
-        for(Polygon polygon : mapData.getPolygons(m_territoryName))
-        {
-            polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-
-            polygon.translate(-bounds.x, -bounds.y);
-            g.fill(polygon);
-        }
-        
-        g.dispose();
-        return img;
-    }
-
-    public void prepare()
-    {
-        
-    }
-
-    
-    
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
-    {
-        Rectangle territoryBounds = mapData.getBoundingRect(m_territoryName);        
-        graphics.drawImage(getImage(mapData), (int) territoryBounds.x - bounds.x, (int) territoryBounds.y - bounds.y, null);
-    }
-
-    public int getLevel()
-    {
-        return TERRITORY_OVERLAY_LEVEL;
-    }
-    
-}
 
 
 class TerritoryNameDrawable implements IDrawable
@@ -159,7 +95,7 @@ class TerritoryNameDrawable implements IDrawable
         Rectangle territoryBounds = mapData.getBoundingRect(territory);
         graphics.setFont(MapImage.MAP_FONT);
 
-        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+        TerritoryAttachment ta = TerritoryAttachment.get(territory);
         graphics.setColor(Color.black);
         FontMetrics fm = graphics.getFontMetrics();
         int x = territoryBounds.x;
@@ -422,7 +358,7 @@ class LandTerritoryDrawable implements IDrawable
         Territory territory = data.getMap().getTerritory(m_territoryName);
         Color territoryColor;
 
-        if (TerritoryAttatchment.get(territory).isImpassible())
+        if (TerritoryAttachment.get(territory).isImpassible())
         {
           territoryColor = mapData.impassibleColor();
         }

@@ -23,7 +23,7 @@ package games.strategy.triplea.troxAI;
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.net.GUID;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
@@ -191,7 +191,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
         }
 
         //Need to make an integer Map of production
-        Territory temp = TerritoryAttatchment.getCapital(m_id, m_bridge
+        Territory temp = TerritoryAttachment.getCapital(m_id, m_bridge
                 .getGameData());
         if (temp.getOwner() != m_id)
         { //EXIT HERE
@@ -269,14 +269,14 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
             //added by Troy Graber
             GameData g = m_bridge.getGameData();
 
-            TerritoryAttatchment.getCapital(m_id, g);
+            TerritoryAttachment.getCapital(m_id, g);
 
             //we need to check for 4th edition to see if there is a limit on
             // the
             //number of units that can be produced in the capital
             IAbstractPlaceDelegate del = (IAbstractPlaceDelegate) m_bridge
                     .getRemote();
-            del.placeUnits(m_id.getUnits().getUnits(), TerritoryAttatchment
+            del.placeUnits(m_id.getUnits().getUnits(), TerritoryAttachment
                     .getCapital(m_id, g));
         }
     }

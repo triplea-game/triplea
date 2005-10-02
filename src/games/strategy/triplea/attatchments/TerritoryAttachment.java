@@ -20,7 +20,7 @@
 
 package games.strategy.triplea.attatchments;
 
-import games.strategy.engine.data.DefaultAttatchment;
+import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
 import java.util.*;
@@ -31,7 +31,7 @@ import games.strategy.engine.data.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class TerritoryAttatchment extends DefaultAttatchment
+public class TerritoryAttachment extends DefaultAttachment
 {
 
     public static Territory getCapital(PlayerID player, GameData data)
@@ -40,7 +40,7 @@ public class TerritoryAttatchment extends DefaultAttatchment
         while(iter.hasNext())
         {
             Territory current = (Territory) iter.next();
-            TerritoryAttatchment ta = TerritoryAttatchment.get(current);
+            TerritoryAttachment ta = TerritoryAttachment.get(current);
             if(ta != null && ta.getCapital() != null)
             {
                 PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
@@ -58,9 +58,9 @@ public class TerritoryAttatchment extends DefaultAttatchment
 	/**
 	 * Convenience method.
 	 */
-	public static TerritoryAttatchment get(Territory t)
+	public static TerritoryAttachment get(Territory t)
 	{
-		TerritoryAttatchment rVal =  (TerritoryAttatchment) t.getAttatchment(Constants.TERRITORY_ATTATCHMENT_NAME);
+		TerritoryAttachment rVal =  (TerritoryAttachment) t.getAttatchment(Constants.TERRITORY_ATTATCHMENT_NAME);
 		if(rVal == null && !t.isWater())
 		    throw new IllegalStateException("No territory attatchment for:" + t.getName());
 		return rVal;
@@ -75,7 +75,7 @@ public class TerritoryAttatchment extends DefaultAttatchment
 	
 
   /** Creates new TerritoryAttatchment */
-  public TerritoryAttatchment()
+  public TerritoryAttachment()
   {
   }
 

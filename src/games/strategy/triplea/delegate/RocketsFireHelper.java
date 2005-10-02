@@ -15,7 +15,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;
 
@@ -159,7 +159,7 @@ public class RocketsFireHelper
         //production value of factory.
         if (data.getProperties().get(Constants.FOURTH_EDITION, false))
         {
-            int territoryProduction = TerritoryAttatchment.get(attackedTerritory).getProduction();
+            int territoryProduction = TerritoryAttachment.get(attackedTerritory).getProduction();
             // If we are limiting total ipcs lost then take that into
             // account
             if (data.getProperties().get(Constants.IPC_CAP, false))

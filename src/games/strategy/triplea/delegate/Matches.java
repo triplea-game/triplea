@@ -21,8 +21,8 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.UnitAttatchment;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.*;
 
 /**
@@ -73,7 +73,7 @@ public class Matches
 	{
 		public boolean match(Unit unit)
 		{
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isTwoHit();
 		}
 	};
@@ -92,7 +92,7 @@ public class Matches
 	{
 		public boolean match(Unit unit)
 		{
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isSea();
 		}
 	};
@@ -104,7 +104,7 @@ public class Matches
 	{
 		public boolean match(Unit unit)
 		{
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isSub();
 		}
 	};
@@ -115,7 +115,7 @@ public class Matches
 	{
 		public boolean match(Unit unit)
 		{
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getIsDestroyer();
 		}
 	};
@@ -124,7 +124,7 @@ public class Matches
 	{
         public boolean match(Unit unit)
         {
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getTransportCapacity() != -1;
 		}
 	};
@@ -136,7 +136,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isStrategicBomber();
 		}
 	};
@@ -147,7 +147,7 @@ public class Matches
 	    {
 			public boolean match(Unit unit)
 			{
-				UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+				UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return ua.getAttack(id) != 0;
 			}
 	    };
@@ -158,7 +158,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return !ua.isSea();
 		}
 	};
@@ -168,7 +168,7 @@ public class Matches
 		public boolean match(Object obj)
 		{
 			UnitType type = (UnitType) obj;
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isSea();
 		}
 	};
@@ -178,7 +178,7 @@ public class Matches
 		public boolean match(Object obj)
 		{
 			UnitType type = (UnitType) obj;
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return !ua.isSea();
 		}
 	};
@@ -189,7 +189,7 @@ public class Matches
     {
         public boolean match(Unit unit)
         {
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isAir();
 		}
 	};
@@ -198,7 +198,7 @@ public class Matches
 	{
 		public boolean match(Unit unit)
 		{
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return !ua.isAir();
 		}
 	};
@@ -210,7 +210,7 @@ public class Matches
 	    
 			public boolean match(Unit unit)
 			{
-				UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+				UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return ua.getCanBombard(id);
 			}
 	    };
@@ -221,7 +221,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getCanBlitz();
 		}
 	};
@@ -231,7 +231,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return !ua.isFactory() && !ua.isAA();
 		}
 	};
@@ -242,7 +242,7 @@ public class Matches
 		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isAir();
 		}
 	};
@@ -252,7 +252,7 @@ public class Matches
 		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return !ua.isAir();
 		}
 	};
@@ -262,7 +262,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getCarrierCost() != -1;
 		}
 	};
@@ -272,7 +272,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getCarrierCapacity() != -1;
 		}
 	};
@@ -282,7 +282,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getTransportCost() != -1;
 		}
 	};
@@ -292,7 +292,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			Unit unit = (Unit) obj;
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getTransportCapacity() != -1;
 		}
 	};
@@ -302,7 +302,7 @@ public class Matches
 		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getTransportCapacity() != -1;
 		}
 	};
@@ -313,7 +313,7 @@ public class Matches
 		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getTransportCost() != -1;
 		}
 	};
@@ -324,7 +324,7 @@ public class Matches
 		public boolean match(UnitType obj)
 		{
 			UnitType type = (UnitType) obj;
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isFactory();
 		}
 	};
@@ -334,7 +334,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			UnitType type = ((Unit) obj).getUnitType();
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isFactory();
 		}
 	};
@@ -346,7 +346,7 @@ public class Matches
 	{
 		public boolean match(UnitType obj)
 		{
-			UnitAttatchment ua = UnitAttatchment.get((UnitType) obj);
+			UnitAttachment ua = UnitAttachment.get((UnitType) obj);
 			return ua.isAA();
 		}
 	};
@@ -357,7 +357,7 @@ public class Matches
 		public boolean match(Unit obj)
 		{
 			UnitType type = ((Unit) obj).getUnitType();
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isAA();
 		}
 	};
@@ -367,7 +367,7 @@ public class Matches
 	    public boolean match(Unit obj)
 	    {
 			UnitType type = ((Unit) obj).getUnitType();
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isArtillery();
 	    }
 	};
@@ -377,7 +377,7 @@ public class Matches
 	    public boolean match(Unit obj)
 	    {
 			UnitType type = ((Unit) obj).getUnitType();
-			UnitAttatchment ua = UnitAttatchment.get(type);
+			UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isArtillerySupportable();
 	    }
 	};
@@ -397,7 +397,7 @@ public class Matches
         public boolean match(Territory t)
         {
             
-            TerritoryAttatchment ta = TerritoryAttatchment.get(t);
+            TerritoryAttachment ta = TerritoryAttachment.get(t);
             if(ta == null)
                 return false;
             return ta.isVictoryCity();
@@ -452,7 +452,7 @@ public class Matches
             }
             else
             {
-              return TerritoryAttatchment.get(t).isImpassible();
+              return TerritoryAttachment.get(t).isImpassible();
             }
         }
     };

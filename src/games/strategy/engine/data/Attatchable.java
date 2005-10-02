@@ -27,6 +27,6 @@ package games.strategy.engine.data;
  */
 public interface Attatchable 
 {
-	public void addAttatchment(String key, IAttatchment value);
-	public IAttatchment getAttatchment(String key);
+	public void addAttatchment(String key, IAttachment value);
+	public IAttachment getAttatchment(String key);
 }

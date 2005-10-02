@@ -29,8 +29,8 @@ public class UnitTypeComparator implements Comparator
         UnitType u1 = (UnitType) o1;
         UnitType u2 = (UnitType) o2;
 
-        UnitAttatchment ua1 = UnitAttatchment.get(u1);
-        UnitAttatchment ua2 = UnitAttatchment.get(u2);
+        UnitAttachment ua1 = UnitAttachment.get(u1);
+        UnitAttachment ua2 = UnitAttachment.get(u2);
 
         if (ua1.isFactory() && !ua2.isFactory())
             return 1;

@@ -25,8 +25,8 @@ import java.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.attatchments.PlayerAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.*;
 
@@ -309,7 +309,7 @@ public class BattleTracker implements java.io.Serializable
             int totalMatches = 0;
 
             // 0 production waters aren't to be taken over
-            TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+            TerritoryAttachment ta = TerritoryAttachment.get(territory);
             if(ta == null)
                 return;
 
@@ -335,13 +335,13 @@ public class BattleTracker implements java.io.Serializable
         }
 
         //if its a capital we take the money
-        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+        TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if (ta.getCapital() != null)
         {
             //if the capital is owned by the capitols player
             //take the money
             PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
-            PlayerAttatchment pa = PlayerAttatchment.get(id);
+            PlayerAttachment pa = PlayerAttachment.get(id);
             if (whoseCapital.equals(territory.getOwner()))
             {
                 Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
@@ -350,7 +350,7 @@ public class BattleTracker implements java.io.Serializable
                 {
                     if(isPacificEdition(data))
                     {
-                        Change changeVP = ChangeFactory.attatchmentPropertyChange(pa, (new Integer(capturedIPCCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
+                        Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (new Integer(capturedIPCCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
                         bridge.addChange(changeVP);
                     } 
                 } 
@@ -383,7 +383,7 @@ public class BattleTracker implements java.io.Serializable
             Unit currentUnit = (Unit) iter.next();
             PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
             if (originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id)
-                    && TerritoryAttatchment.getCapital(originalOwner, data).getOwner().equals(originalOwner))
+                    && TerritoryAttachment.getCapital(originalOwner, data).getOwner().equals(originalOwner))
             {
                 Change capture = ChangeFactory.changeOwner(currentUnit, originalOwner, territory);
                 bridge.addChange(capture);
@@ -404,7 +404,7 @@ public class BattleTracker implements java.io.Serializable
         PlayerID terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
         PlayerID newOwner;
         if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id)
-                && TerritoryAttatchment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner))
+                && TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner))
             newOwner = terrOrigOwner;
         else
             newOwner = id;
@@ -419,7 +419,7 @@ public class BattleTracker implements java.io.Serializable
         }
 
         //is this territory our capitol or a capitol of our ally
-        if (terrOrigOwner != null && TerritoryAttatchment.getCapital(terrOrigOwner, data).equals(territory)
+        if (terrOrigOwner != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
                 && data.getAllianceTracker().isAllied(terrOrigOwner, id))
         {
             //if it is give it back to the original owner

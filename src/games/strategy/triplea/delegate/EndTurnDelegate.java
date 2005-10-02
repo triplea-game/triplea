@@ -24,8 +24,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.PlayerAttatchment;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 /**
  *
@@ -53,7 +53,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 
                 if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
                 {
-                    PlayerAttatchment pa = PlayerAttatchment.get(japanese);
+                    PlayerAttachment pa = PlayerAttachment.get(japanese);
 
                     
                     if(pa != null && Integer.parseInt(pa.getVps()) >= 22)
@@ -68,11 +68,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		    return;
 
 		// Quick check to see who still owns their own capital
-		boolean russia = TerritoryAttatchment.getCapital(russians, m_data).getOwner().equals(russians);
-		boolean germany = TerritoryAttatchment.getCapital(germans, m_data).getOwner().equals(germans);
-		boolean britain = TerritoryAttatchment.getCapital(british, m_data).getOwner().equals(british);
-		boolean japan = TerritoryAttatchment.getCapital(japanese, m_data).getOwner().equals(japanese);
-		boolean america = TerritoryAttatchment.getCapital(americans, m_data).getOwner().equals(americans);
+		boolean russia = TerritoryAttachment.getCapital(russians, m_data).getOwner().equals(russians);
+		boolean germany = TerritoryAttachment.getCapital(germans, m_data).getOwner().equals(germans);
+		boolean britain = TerritoryAttachment.getCapital(british, m_data).getOwner().equals(british);
+		boolean japan = TerritoryAttachment.getCapital(japanese, m_data).getOwner().equals(japanese);
+		boolean america = TerritoryAttachment.getCapital(americans, m_data).getOwner().equals(americans);
 
 
 		int count = 0;

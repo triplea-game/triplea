@@ -33,7 +33,7 @@ import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
 import games.strategy.net.*;
 import games.strategy.triplea.*;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.sound.SoundPath;
@@ -291,6 +291,7 @@ public class TripleAFrame extends JFrame
                     "<b> Selecting Units</b><br><br>" +
                     "Left click on a unit stack to select 1 unit.<br>" +
                 "CTRL-Left click on a unit stack to select all units in the stack.<br>" +
+                "Shift-Left click on a unit to select all units in the territory.<br>" +
                 "Right click on a unit stack to un select one unit in the stack.<br>" +
                 "CTRL-Right click on a unit stack to un select all units in the stack.<br>" +
                 "Right click somewhere not on a unit stack to un select the last selected unit.<br>" +
@@ -895,7 +896,7 @@ public class TripleAFrame extends JFrame
             buf.append(in == null ? "none" : in.getName());
             if (in != null)
             {
-                TerritoryAttatchment ta = TerritoryAttatchment.get(in);
+                TerritoryAttachment ta = TerritoryAttachment.get(in);
                 if (ta != null)
                 {
                     int production = ta.getProduction();
@@ -925,7 +926,7 @@ public class TripleAFrame extends JFrame
         return m_actionButtons.waitForPlace(bid, bridge);
     }
 
-    public FightBattleDetails getBattle(PlayerID player, Collection battles, Collection bombingRaids)
+    public FightBattleDetails getBattle(PlayerID player, Collection<Territory> battles, Collection<Territory> bombingRaids)
     {
         m_actionButtons.changeToBattle(player, battles, bombingRaids);
         return m_actionButtons.waitForBattleSelection();

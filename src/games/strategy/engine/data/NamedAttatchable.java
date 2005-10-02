@@ -30,7 +30,7 @@ import java.util.*;
 public class NamedAttatchable extends DefaultNamed implements Attatchable 
 {
 
-	private Map<String, IAttatchment> m_attatchments = new HashMap<String, IAttatchment>();
+	private Map<String, IAttachment> m_attatchments = new HashMap<String, IAttachment>();
 	
 	/** Creates new NamedAttatchable */
     public NamedAttatchable(String name, GameData data) 
@@ -38,12 +38,12 @@ public class NamedAttatchable extends DefaultNamed implements Attatchable
 		super(name, data);
     }
 
-	public IAttatchment getAttatchment(String key) 
+	public IAttachment getAttatchment(String key) 
 	{
 		return m_attatchments.get(key);
 	}
 	
-	public void addAttatchment(String key, IAttatchment value) 
+	public void addAttatchment(String key, IAttachment value) 
 	{
 		m_attatchments.put(key, value);
 	}

@@ -21,7 +21,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -109,7 +109,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             while (landIter.hasNext())
             {
                 Unit toLoad = (Unit) landIter.next();
-                UnitAttatchment ua = UnitAttatchment.get(toLoad.getType());
+                UnitAttachment ua = UnitAttachment.get(toLoad.getType());
                 int cost = ua.getTransportCost();
                 if (cost == -1)
                     throw new IllegalStateException("Non transportable unit in sea");
@@ -310,7 +310,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private static Collection<Unit> getCanCarry(Unit carrier, Collection<Unit> selectFrom)
     {
 
-        UnitAttatchment ua = UnitAttatchment.get(carrier.getUnitType());
+        UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
         Collection<Unit> canCarry = new ArrayList<Unit>();
 
         int available = ua.getCarrierCapacity();
@@ -318,7 +318,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         while (iter.hasNext())
         {
             Unit plane = (Unit) iter.next();
-            UnitAttatchment planeAttatchment = UnitAttatchment.get(plane.getUnitType());
+            UnitAttachment planeAttatchment = UnitAttachment.get(plane.getUnitType());
             int cost = planeAttatchment.getCarrierCost();
             if (available >= cost)
             {
@@ -822,7 +822,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         {
          
             Unit unit = (Unit) airThatMustLandOnCarriersIterator.next();
-            int carrierCost = UnitAttatchment.get(unit.getType()).getCarrierCost();
+            int carrierCost = UnitAttachment.get(unit.getType()).getCarrierCost();
             int movement = movementLeft.getInt(unit);
             for(int i = movement; i >=-1; i--)
             {
@@ -922,7 +922,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             while (iter.hasNext())
             {
                 Unit unit = (Unit) iter.next();
-                UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
                 //make sure transports dont leave their units behind
                 if (ua.getTransportCapacity() != -1)
                 {
@@ -1203,14 +1203,14 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     public void ensureCanMoveOneSpace(Unit unit)
     {
         int alreadyMoved = m_alreadyMoved.getInt(unit);
-        int maxMovement = UnitAttatchment.get(unit.getType()).getMovement(unit.getOwner());
+        int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
         m_alreadyMoved.put(unit, Math.min(alreadyMoved, maxMovement - 1)  );
     }
 
     private void markNoMovement(Unit unit)
     {
 
-        UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+        UnitAttachment ua = UnitAttachment.get(unit.getType());
         m_alreadyMoved.put(unit, ua.getMovement(unit.getOwner()));
     }
 
@@ -1305,8 +1305,8 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         {
             public int compare(Unit o1, Unit o2)
             {
-                int cost1 = UnitAttatchment.get(((Unit) o1).getUnitType()).getTransportCost();
-                int cost2 = UnitAttatchment.get(((Unit) o2).getUnitType()).getTransportCost();
+                int cost1 = UnitAttachment.get(((Unit) o1).getUnitType()).getTransportCost();
+                int cost2 = UnitAttachment.get(((Unit) o2).getUnitType()).getTransportCost();
                 return cost2 - cost1;
             }
         };
@@ -1324,7 +1324,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         while (landIter.hasNext())
         {
             Unit land = (Unit) landIter.next();
-            UnitAttatchment landUA = UnitAttatchment.get(land.getType());
+            UnitAttachment landUA = UnitAttachment.get(land.getType());
             int cost = landUA.getTransportCost();
             boolean loaded = false;
 
@@ -1446,7 +1446,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             while (iter.hasNext())
             {
                 Unit unit = (Unit) iter.next();
-                UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
                 int cost = ua.getCarrierCost();
                 if (cost == -1 || cost > capacity)
                     toRemove.add(unit);

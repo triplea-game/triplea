@@ -24,8 +24,8 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.stats.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.attatchments.PlayerAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.delegate.*;
 import games.strategy.util.*;
 
@@ -469,7 +469,7 @@ class ProductionStat extends AbstractStat
         {
             boolean isConvoyOrLand = false; 
             Territory place = (Territory) iter.next();
-            TerritoryAttatchment ta = TerritoryAttatchment.get(place);
+            TerritoryAttachment ta = TerritoryAttachment.get(place);
 
             if(!place.isWater())
             {
@@ -574,7 +574,7 @@ class VictoryCityStat extends AbstractStat
             if(!place.getOwner().equals(player))
                 continue;
             
-            TerritoryAttatchment ta =  TerritoryAttatchment.get(place);
+            TerritoryAttachment ta =  TerritoryAttachment.get(place);
             if(ta == null)
                 continue;
             
@@ -594,7 +594,7 @@ class VPStat extends AbstractStat
 
     public double getValue(PlayerID player, GameData data)
     {
-        PlayerAttatchment pa = PlayerAttatchment.get(player);
+        PlayerAttachment pa = PlayerAttachment.get(player);
         if(pa != null)
             return Double.parseDouble(pa.getVps());
         return 0; 

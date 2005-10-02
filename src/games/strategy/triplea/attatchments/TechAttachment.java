@@ -21,17 +21,17 @@ import games.strategy.triplea.*;
  * @author Sean Bridges
  */
 
-public class TechAttatchment extends DefaultAttatchment
+public class TechAttachment extends DefaultAttachment
 {
 
   //attatches to a PlayerID
 
-  public static TechAttatchment get(PlayerID id)
+  public static TechAttachment get(PlayerID id)
   {
-    TechAttatchment attatchment = (TechAttatchment) id.getAttatchment(Constants.TECH_ATTATCHMENT_NAME);
+    TechAttachment attatchment = (TechAttachment) id.getAttatchment(Constants.TECH_ATTATCHMENT_NAME);
     //dont crash
     if(attatchment == null)
-        return new TechAttatchment();
+        return new TechAttachment();
     return attatchment;
   }
 
@@ -114,7 +114,7 @@ public class TechAttatchment extends DefaultAttatchment
       return "" + m_destroyerBombard;
   }
 
-  public TechAttatchment()
+  public TechAttachment()
   {
   }
 

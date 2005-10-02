@@ -15,7 +15,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.*;
 
 import java.util.*;
@@ -97,7 +97,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
         if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
         {
             //if its an original factory then unlimited production
-            TerritoryAttatchment ta = TerritoryAttatchment.get(to);
+            TerritoryAttachment ta = TerritoryAttachment.get(to);
 
             //4th edition, you cant place factories in territories with no
             // production

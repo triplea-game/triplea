@@ -98,8 +98,8 @@ public class ActionButtons extends JPanel
         m_layout.show(this, m_placePanel.toString());
     }
 
-    public void changeToBattle(PlayerID id, Collection battles,
-            Collection bombing)
+    public void changeToBattle(PlayerID id, Collection<Territory> battles,
+            Collection<Territory> bombing)
     {
         m_current.setActive(false);
         m_current = m_battlePanel;

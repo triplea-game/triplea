@@ -682,10 +682,10 @@ public class GameParser
       //create the attatchment
       String className = current.getAttribute("javaClass");
       Object obj = getInstance(className);
-      if(!(obj instanceof IAttatchment))
+      if(!(obj instanceof IAttachment))
         throw new IllegalStateException(className + " does not implement Attatchable");
 
-      IAttatchment attatchment = (IAttatchment) obj;
+      IAttachment attatchment = (IAttachment) obj;
       attatchment.setData(data);
       //set the values
       List values = getChildren("option", current);

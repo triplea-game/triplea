@@ -14,7 +14,7 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
@@ -212,13 +212,13 @@ public class TileManager
         else 
         {
             // draw a convoy overlay
-            if(TerritoryAttatchment.get(territory) != null)
+            if(TerritoryAttachment.get(territory) != null)
                 drawing.add(new LandTerritoryDrawable(territory.getName(), true));
         } 
         
         drawing.add(new TerritoryNameDrawable(territory.getName()));
         
-        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+        TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if(ta != null &&  ta.isCapital() && mapData.drawCapitolMarkers())
         {
             PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
@@ -361,14 +361,14 @@ public class TileManager
                     }
                 }
             }
-            return new Tuple<Territory,List<Unit>>(null,Collections.<Unit>emptyList());
+            return null;
         }
     }
 
     
-    public void setTerritoryOverlay(Territory territory, Color color, float opaqueness,  GameData data, MapData mapData)
+    public void setTerritoryOverlay(Territory territory, Color color, int alpha,  GameData data, MapData mapData)
     {
-        TerritoryOverLayDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), opaqueness);
+        TerritoryOverLayDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), alpha);
         m_territoryOverlays.put(territory.getName(), drawable);
         updateTerritory(territory, data, mapData);
         

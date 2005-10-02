@@ -42,7 +42,7 @@ public class GameObjectStreamData implements Externalizable
 		   obj instanceof UnitType ||
 		   obj instanceof Territory ||
 		   obj instanceof ProductionRule ||
-		   obj instanceof IAttatchment ||
+		   obj instanceof IAttachment ||
 		   obj instanceof ProductionFrontier;
 	}
 

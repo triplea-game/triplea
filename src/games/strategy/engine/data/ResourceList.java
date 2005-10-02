@@ -50,4 +50,7 @@ public class ResourceList extends GameDataComponent
 	{
 		return m_resourceList.get(name);
 	}
+
+    
+    
 }

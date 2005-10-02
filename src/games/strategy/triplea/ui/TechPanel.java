@@ -22,7 +22,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.ui.*;
@@ -60,7 +60,7 @@ public class TechPanel extends ActionPanel
         add(new JButton(GetTechRollsAction));
         add(new JButton(DontBother));
 
-        getMap().centerOn(TerritoryAttatchment.getCapital(id, getData()));
+        getMap().centerOn(TerritoryAttachment.getCapital(id, getData()));
 
     }
 

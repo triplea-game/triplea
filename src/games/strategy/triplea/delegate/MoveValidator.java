@@ -180,7 +180,7 @@ public class MoveValidator
     while (iter.hasNext())
     {
       Unit item = (Unit) iter.next();
-      cost += UnitAttatchment.get(item.getType()).getTransportCost();
+      cost += UnitAttachment.get(item.getType()).getTransportCost();
     }
     return cost;
   }
@@ -192,7 +192,7 @@ public class MoveValidator
 		while(iter.hasNext())
 		{
 			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if(!ua.isSea())
 			{
 
@@ -216,7 +216,7 @@ public class MoveValidator
 		while(iter.hasNext())
 		{
 			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if(ua.getCarrierCapacity() != -1)
 			{
 				sum+=ua.getCarrierCapacity();
@@ -232,7 +232,7 @@ public class MoveValidator
 		while(iter.hasNext())
 		{
 			Unit unit = (Unit) iter.next();
-			UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if(ua.getCarrierCost() != -1)
 				sum+=ua.getCarrierCost();
 		}
@@ -365,7 +365,7 @@ public class MoveValidator
 	{
 
 		int already = alreadyMoved.getInt(unit);
-		int canMove = UnitAttatchment.get(unit.getType()).getMovement(unit.getOwner());
+		int canMove = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
 		return canMove - already;
 
 	}

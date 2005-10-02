@@ -146,16 +146,16 @@ public class ParserTest extends TestCase
 	
 	public void testAttatchments()
 	{
-		TestAttatchment att = (TestAttatchment) gameData.getResourceList().getResource("gold").getAttatchment("resourceAttatchment");
+		TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold").getAttatchment("resourceAttatchment");
 		assertEquals(att.getValue(), "gold");
 		
-		att = (TestAttatchment) gameData.getUnitTypeList().getUnitType("inf").getAttatchment("infAttatchment");
+		att = (TestAttachment) gameData.getUnitTypeList().getUnitType("inf").getAttatchment("infAttatchment");
 		assertEquals(att.getValue(), "inf");
 		
-		att = (TestAttatchment) gameData.getMap().getTerritory("us").getAttatchment("territoryAttatchment");
+		att = (TestAttachment) gameData.getMap().getTerritory("us").getAttatchment("territoryAttatchment");
 		assertEquals(att.getValue(), "us of a");
 		
-		att = (TestAttatchment) gameData.getPlayerList().getPlayerID("chretian").getAttatchment("playerAttatchment");
+		att = (TestAttachment) gameData.getPlayerList().getPlayerID("chretian").getAttatchment("playerAttatchment");
 		assertEquals(att.getValue(), "liberal");
 
 	}

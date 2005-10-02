@@ -22,7 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attatchments.TechAttatchment;
+import games.strategy.triplea.attatchments.TechAttachment;
 
 import java.util.*;
 
@@ -43,7 +43,7 @@ public class TechTracker implements java.io.Serializable
   public static Collection<TechAdvance> getTechAdvances(PlayerID id)
   {
     Collection<TechAdvance> rVal = new ArrayList<TechAdvance>();
-    TechAttatchment attatchment = TechAttatchment.get(id);
+    TechAttachment attatchment = TechAttachment.get(id);
 
     if(attatchment.hasHeavyBomber())
     {
@@ -84,38 +84,38 @@ public class TechTracker implements java.io.Serializable
 
   public static synchronized void addAdvance(PlayerID player, GameData data, IDelegateBridge bridge, TechAdvance advance)
   {
-    Change attatchmentChange = ChangeFactory.attatchmentPropertyChange(TechAttatchment.get(player), "true", advance.getProperty());
+    Change attatchmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
     bridge.addChange(attatchmentChange);
     advance.perform(player, bridge, data);
   }
 
   public static boolean hasLongRangeAir(PlayerID player)
   {
-    return TechAttatchment.get(player).hasLongRangeAir();
+    return TechAttachment.get(player).hasLongRangeAir();
   }
 
   public static boolean hasHeavyBomber(PlayerID player)
   {
-    return TechAttatchment.get(player).hasHeavyBomber();
+    return TechAttachment.get(player).hasHeavyBomber();
   }
 
   public static boolean hasSuperSubs(PlayerID player)
   {
-    return TechAttatchment.get(player).hasSuperSub();
+    return TechAttachment.get(player).hasSuperSub();
   }
 
   public static boolean hasJetFighter(PlayerID player)
   {
-    return TechAttatchment.get(player).hasJetPower();
+    return TechAttachment.get(player).hasJetPower();
   }
 
   public static boolean hasRocket(PlayerID player)
   {
-    return TechAttatchment.get(player).hasRocket();
+    return TechAttachment.get(player).hasRocket();
   }
 
   public static boolean hasIndustrialTechnology(PlayerID player)
   {
-    return TechAttatchment.get(player).hasIndustrialTechnology();
+    return TechAttachment.get(player).hasIndustrialTechnology();
   }
 }

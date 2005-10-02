@@ -22,8 +22,8 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.attatchments.PlayerAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.*;
@@ -138,10 +138,10 @@ public class StrategicBombingRaidBattle implements Battle
             if(m_defender.getName().equals(Constants.JAPANESE)) 
             {
                 Change changeVP;
-                PlayerAttatchment pa = (PlayerAttatchment) PlayerAttatchment.get(m_defender);
+                PlayerAttachment pa = (PlayerAttachment) PlayerAttachment.get(m_defender);
                 if(pa != null)
                 {
-                    changeVP = ChangeFactory.attatchmentPropertyChange(pa, (new Integer(-(cost / 10) + Integer.parseInt(pa.getVps()))).toString(), "vps");
+                    changeVP = ChangeFactory.attachmentPropertyChange(pa, (new Integer(-(cost / 10) + Integer.parseInt(pa.getVps()))).toString(), "vps");
                     bridge.addChange(changeVP);
                     bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + (cost / 10) + MyFormatter.pluralize("vp", (cost / 10)));
                 } 
@@ -217,7 +217,7 @@ public class StrategicBombingRaidBattle implements Battle
 
         int cost = 0;
         boolean fourthEdition = m_data.getProperties().get(Constants.FOURTH_EDITION, false);
-        int production = TerritoryAttatchment.get(location).getProduction();
+        int production = TerritoryAttachment.get(location).getProduction();
 
         Iterator<Unit> iter = m_units.iterator();
         int index = 0;

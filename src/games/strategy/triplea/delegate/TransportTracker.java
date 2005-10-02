@@ -21,7 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 
 import java.util.*;
 
@@ -213,7 +213,7 @@ public class TransportTracker implements java.io.Serializable
 
 	public int getAvailableCapacity(Unit unit)
 	{
-		UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+		UnitAttachment ua = UnitAttachment.get(unit.getType());
 		if(ua.getTransportCapacity() == -1)
 			return 0;
 		int capacity = ua.getTransportCapacity();

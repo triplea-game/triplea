@@ -27,7 +27,7 @@ package games.strategy.engine.data;
  *
  * @author  Sean Bridges
  */
-public class DefaultAttatchment implements IAttatchment
+public class DefaultAttachment implements IAttachment
 {
     
     private GameData m_data;
@@ -92,7 +92,7 @@ public class DefaultAttatchment implements IAttatchment
     
     
     /** Creates new Attatchment */
-    public DefaultAttatchment()
+    public DefaultAttachment()
     {
         
     }

@@ -26,8 +26,8 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 
 import java.util.*;
 
@@ -152,13 +152,13 @@ public class InitializationDelegate implements IDelegate
     private void initTwoHitBattleship(GameData data, IDelegateBridge aBridge)
     {
         boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
-        UnitAttatchment battleShipAttatchment = UnitAttatchment.get(data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE));
+        UnitAttachment battleShipAttatchment = UnitAttachment.get(data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE));
         boolean defaultEnabled = battleShipAttatchment.isTwoHit();
 
         if (userEnabled != defaultEnabled)
         {
             aBridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
-            aBridge.addChange(ChangeFactory.attatchmentPropertyChange(battleShipAttatchment, "" + userEnabled, Constants.TWO_HIT));
+            aBridge.addChange(ChangeFactory.attachmentPropertyChange(battleShipAttatchment, "" + userEnabled, Constants.TWO_HIT));
         }
     }
 
@@ -180,7 +180,7 @@ public class InitializationDelegate implements IDelegate
                 origOwnerTracker.addOriginalOwner(current, current.getOwner());
                 Collection aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrFactory);
                 origOwnerTracker.addOriginalOwner(aaAndFactory, current.getOwner());
-                changes.add(ChangeFactory.attatchmentPropertyChange(TerritoryAttatchment.get(current), current.getOwner().getName(), Constants.ORIGINAL_OWNER));
+                changes.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(current), current.getOwner().getName(), Constants.ORIGINAL_OWNER));
             }
         }
         aBridge.getHistoryWriter().startEvent("Adding original owners");

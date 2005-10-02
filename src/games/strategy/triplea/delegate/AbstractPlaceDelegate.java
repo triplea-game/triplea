@@ -31,7 +31,7 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -244,7 +244,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
 
         // can only place chinese units in pacific edition on capitol
         if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
-            if(TerritoryAttatchment.getCapital(player, m_data) != to && player.getName().equals("Chinese"))
+            if(TerritoryAttachment.getCapital(player, m_data) != to && player.getName().equals("Chinese"))
                 return "Cannot place these units outside of the capital";
 
         if (to.isWater())
@@ -342,7 +342,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
         if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
         {
             //if its an original factory then unlimited production
-            TerritoryAttatchment ta = TerritoryAttatchment.get(to);
+            TerritoryAttachment ta = TerritoryAttachment.get(to);
 
             //4th edition, you cant place factories in territories with no
             // production
@@ -370,7 +370,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
         Territory producer = getProducer(to, player);
 
         //if its an original factory then unlimited production
-        TerritoryAttatchment ta = TerritoryAttatchment.get(producer);
+        TerritoryAttachment ta = TerritoryAttachment.get(producer);
         Collection factoryUnits = producer.getUnits().getMatches(
                 Matches.UnitIsFactory);
         boolean originalFactory = ta.isOriginalFactory();
@@ -396,7 +396,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
      */
     protected int getProduction(Territory territory)
     {
-        TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+        TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if(ta != null)
             return ta.getProduction();
         return 0; 
@@ -452,7 +452,7 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
         Territory producer = getProducer(to, player);
 
         //if its an original factory then unlimited production
-        TerritoryAttatchment ta = TerritoryAttatchment.get(producer);
+        TerritoryAttachment ta = TerritoryAttachment.get(producer);
 
         //4th edition, you cant place factories in territories with no
         // production
@@ -504,10 +504,10 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
             return t1;
 
         //original factories are good
-        TerritoryAttatchment t1a = TerritoryAttatchment.get(t1);
+        TerritoryAttachment t1a = TerritoryAttachment.get(t1);
         if (t1a.isOriginalFactory() && isOriginalOwner(t1, player))
             return t1;
-        TerritoryAttatchment t2a = TerritoryAttatchment.get(t2);
+        TerritoryAttachment t2a = TerritoryAttachment.get(t2);
         if (t2a.isOriginalFactory() && isOriginalOwner(t2, player))
             return t2;
 

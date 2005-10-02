@@ -28,7 +28,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -84,7 +84,7 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
         {
             Territory current = (Territory) territoryIter.next();
 
-            TerritoryAttatchment ta = TerritoryAttatchment.get(current);
+            TerritoryAttachment ta = TerritoryAttachment.get(current);
             if(ta.getProduction() > 0)
                 ++unitCount;
 

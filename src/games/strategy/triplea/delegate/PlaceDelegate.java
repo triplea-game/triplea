@@ -21,7 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 /**
  *
@@ -52,7 +52,7 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 	 */
 	protected int getProduction(Territory territory)
 	{
-		TerritoryAttatchment ta = TerritoryAttatchment.get(territory);
+		TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		return ta.getProduction();
 	}
 

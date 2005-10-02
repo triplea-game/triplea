@@ -31,14 +31,14 @@ import games.strategy.triplea.delegate.TechTracker;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class UnitAttatchment extends DefaultAttatchment
+public class UnitAttachment extends DefaultAttachment
 {
   /**
    * Conveniente method.
    */
-  public static UnitAttatchment get(UnitType type)
+  public static UnitAttachment get(UnitType type)
   {
-    return (UnitAttatchment) type.getAttatchment(Constants.UNIT_ATTATCHMENT_NAME);
+    return (UnitAttachment) type.getAttatchment(Constants.UNIT_ATTATCHMENT_NAME);
   }
 
   private boolean m_isAir = false;
@@ -72,7 +72,7 @@ public class UnitAttatchment extends DefaultAttatchment
 
 
   /** Creates new UnitAttatchment */
-  public UnitAttatchment()
+  public UnitAttachment()
   {
   }
 
@@ -130,7 +130,7 @@ public class UnitAttatchment extends DefaultAttatchment
   {
     if(m_canBombard)
         return true;
-    if(m_isDestroyer && TechAttatchment.get(player).hasDestroyerBombard())
+    if(m_isDestroyer && TechAttachment.get(player).hasDestroyerBombard())
       return true;
     
     return false;

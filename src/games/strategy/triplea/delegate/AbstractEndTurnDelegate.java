@@ -24,8 +24,8 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttatchment;
-import games.strategy.triplea.attatchments.PlayerAttatchment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.*;
 
@@ -68,7 +68,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 		PlayerID player = aBridge.getPlayerID();
 
 		//cant collect unless you own your own capital
-		Territory capital = TerritoryAttatchment.getCapital(player, m_data);
+		Territory capital = TerritoryAttachment.getCapital(player, m_data);
 		if(!capital.getOwner().equals(player))
 			return;
 
@@ -87,12 +87,12 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 
                 if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
                 {
-                    PlayerAttatchment pa = PlayerAttatchment.get(player);
+                    PlayerAttachment pa = PlayerAttachment.get(player);
                     
                     if(pa != null)
                     {
-                        Change changeVP = (ChangeFactory.attatchmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
-                        Change changeCapVP = ChangeFactory.attatchmentPropertyChange(pa, "0", "captureVps");
+                        Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
+                        Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
                         CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
                         aBridge.addChange(ccVP);
                     }	
@@ -145,7 +145,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 		while(iter.hasNext() )
 		{
 			Territory current = (Territory) iter.next();
-			TerritoryAttatchment attatchment = (TerritoryAttatchment) current.getAttatchment(Constants.TERRITORY_ATTATCHMENT_NAME);
+			TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttatchment(Constants.TERRITORY_ATTATCHMENT_NAME);
 
 			if(attatchment == null)
 				throw new IllegalStateException("Nn attatchment for owned territory:" + current.getName());

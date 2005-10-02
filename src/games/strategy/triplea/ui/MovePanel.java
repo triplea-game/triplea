@@ -26,7 +26,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
@@ -643,7 +643,7 @@ public class MovePanel extends ActionPanel
       int minTransportCost = 5;
       for(Unit unit : unitsToLoad)
       {
-          minTransportCost = Math.min(minTransportCost, UnitAttatchment.get(unit.getType()).getTransportCost());
+          minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
       }
       
       
@@ -656,7 +656,7 @@ public class MovePanel extends ActionPanel
         Unit transport = (Unit) transportIter.next();
         Collection transporting = (Collection) endMustMoveWith.getMustMoveWith().get(transport);
         int cost = MoveValidator.getTransportCost(transporting);
-        int capacity = UnitAttatchment.get(transport.getType()).getTransportCapacity();
+        int capacity = UnitAttachment.get(transport.getType()).getTransportCapacity();
         if(capacity >= cost + minTransportCost)
           candidateTransports.add(transport);
       }
@@ -731,8 +731,9 @@ public class MovePanel extends ActionPanel
                 }
             }
             
-            if(t == null)
+            if(units.isEmpty())
                 return;
+            
             
             if(getFirstSelectedTerritory() != null && !t.equals(getFirstSelectedTerritory()))
                 return;
@@ -750,7 +751,12 @@ public class MovePanel extends ActionPanel
             }
             
            //add all
-            if(me.isControlDown())
+            if(me.isShiftDown())
+            {
+                CompositeMatch<Unit> ownedNotFactory = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.UnitIsNotFactory);
+                m_selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactory));
+            }
+            else if(me.isControlDown())
             {
                 m_selectedUnits.addAll(units);
             }

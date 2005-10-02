@@ -23,7 +23,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.*;
@@ -182,7 +182,7 @@ public class BattleCalculator
                 return defaultCasualties;
             }
             Unit unit = (Unit) targetsIter.next();
-            UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
             if (ua.isTwoHit() && (unit.getHits() == 0))
             {
                 numSelectedCasualties++;
@@ -333,7 +333,7 @@ public class BattleCalculator
     {
         if (defend)
             return 1;
-        return UnitAttatchment.get(unit.getType()).getAttackRolls(id);
+        return UnitAttachment.get(unit.getType()).getAttackRolls(id);
 
     }
 
@@ -359,8 +359,8 @@ class UnitBattleComparator implements Comparator<Unit>
     public int compare(Unit u1, Unit u2)
     {
 
-        UnitAttatchment ua1 = UnitAttatchment.get(u1.getType());
-        UnitAttatchment ua2 = UnitAttatchment.get(u2.getType());
+        UnitAttachment ua1 = UnitAttachment.get(u1.getType());
+        UnitAttachment ua2 = UnitAttachment.get(u2.getType());
         int rolls1 = BattleCalculator.getRolls(u1, m_player, m_defending);
         int rolls2 = BattleCalculator.getRolls(u2, m_player, m_defending);
         int power1 = m_defending ? ua1.getDefense(m_player) : ua1.getAttack(m_player);

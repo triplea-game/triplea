@@ -20,6 +20,8 @@
 
 package games.strategy.triplea.delegate.dataObjects;
 
+import games.strategy.engine.data.Territory;
+
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -33,22 +35,22 @@ import java.util.Collection;
 public class BattleListing implements Serializable
 {
 
-	private Collection m_battles;
-	private Collection m_strategicRaids;
+	private Collection<Territory> m_battles;
+	private Collection<Territory> m_strategicRaids;
 	
 	/** Creates new BattleListingMessage */
-    public BattleListing(Collection battles, Collection strategicRaids) 
+    public BattleListing(Collection<Territory> battles, Collection<Territory> strategicRaids) 
 	{
 		m_battles = battles;
 		m_strategicRaids = strategicRaids;
     }
 	
-	public Collection getBattles()
+	public Collection<Territory> getBattles()
 	{
 		return m_battles;
 	}
 	
-	public Collection getStrategicRaids()
+	public Collection<Territory> getStrategicRaids()
 	{
 		return m_strategicRaids;
 	}

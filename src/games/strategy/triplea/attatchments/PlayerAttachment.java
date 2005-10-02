@@ -20,7 +20,7 @@
 
 package games.strategy.triplea.attatchments;
 
-import games.strategy.engine.data.DefaultAttatchment;
+import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Constants;
 
@@ -29,21 +29,21 @@ import games.strategy.triplea.Constants;
  * @author  Adam Jette
  * @version 1.0
  */
-public class PlayerAttatchment extends DefaultAttatchment
+public class PlayerAttachment extends DefaultAttachment
 {
     /**
      * Convenience method.
      */
-    public static PlayerAttatchment get(PlayerID p)
+    public static PlayerAttachment get(PlayerID p)
     {
-        return (PlayerAttatchment) p.getAttatchment(Constants.PLAYER_ATTATCHMENT_NAME);
+        return (PlayerAttachment) p.getAttatchment(Constants.PLAYER_ATTATCHMENT_NAME);
     }
 
     private int m_vps = 0;
     private int m_captureVps = 0; // need to store some data during a turn
 
     /** Creates new PlayerAttatchment */
-    public PlayerAttatchment()
+    public PlayerAttachment()
     {
     }
 

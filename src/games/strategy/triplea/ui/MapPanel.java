@@ -295,6 +295,9 @@ public class MapPanel extends ImageScrollerLargeView
                 int y =  e.getY() + getYOffset();
                 Tuple<Territory, List<Unit>> tuple = m_tileManager.getUnitsAtPoint(x,y, m_data);
                 
+                if(tuple == null)
+                    tuple = new Tuple<Territory, List<Unit>>(getTerritory(e.getX(), e.getY()), new ArrayList<Unit>(0) );
+                
                 notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), e );
             }
             
@@ -401,9 +404,9 @@ public class MapPanel extends ImageScrollerLargeView
                 }
             } else
             {
-                if (aChange instanceof ChangeAttatchmentChange)
+                if (aChange instanceof ChangeAttachmentChange)
                 {
-                    ChangeAttatchmentChange changeAttatchment = (ChangeAttatchmentChange) aChange;
+                    ChangeAttachmentChange changeAttatchment = (ChangeAttachmentChange) aChange;
                     if (changeAttatchment.getAttatchmentName().equals(Constants.TECH_ATTATCHMENT_NAME))
                     {
                         players.add((PlayerID) changeAttatchment.getAttatchedTo());
@@ -629,9 +632,9 @@ public class MapPanel extends ImageScrollerLargeView
         g.dispose();
     }
     
-    public void setTerritoryOverlay(Territory territory, Color color, float opaqueness)
+    public void setTerritoryOverlay(Territory territory, Color color, int alpha)
     {
-        m_tileManager.setTerritoryOverlay(territory, color, opaqueness, m_data, m_uiContext.getMapData() );
+        m_tileManager.setTerritoryOverlay(territory, color, alpha, m_data, m_uiContext.getMapData() );
     }
 
     public void clearTerritoryOverlay(Territory territory)

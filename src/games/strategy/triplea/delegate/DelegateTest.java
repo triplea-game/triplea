@@ -23,7 +23,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.random.EmailValidatorTest;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TechAttatchment;
+import games.strategy.triplea.attatchments.TechAttachment;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -112,9 +112,9 @@ public class DelegateTest extends TestCase
 		m_data = (new GameParser()).parse(input);
 		
 		british = m_data.getPlayerList().getPlayerID("British");
-		british.addAttatchment(Constants.TECH_ATTATCHMENT_NAME, new TechAttatchment());
+		british.addAttatchment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());
 		japanese = m_data.getPlayerList().getPlayerID("Japanese");
-		japanese.addAttatchment(Constants.TECH_ATTATCHMENT_NAME, new TechAttatchment());		
+		japanese.addAttatchment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());		
 		
 		northSea = m_data.getMap().getTerritory("North Sea Zone");
 		blackSea = m_data.getMap().getTerritory("Black Sea Zone");

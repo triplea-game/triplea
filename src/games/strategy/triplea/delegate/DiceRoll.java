@@ -16,7 +16,7 @@ package games.strategy.triplea.delegate;
 
 import java.util.*;
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.UnitAttatchment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.*;
@@ -116,7 +116,7 @@ public class DiceRoll implements java.io.Serializable
         while (iter.hasNext())
         {
             Unit current = (Unit) iter.next();
-            UnitAttatchment ua = UnitAttatchment.get(current.getType());
+            UnitAttachment ua = UnitAttachment.get(current.getType());
             int rolls = defending ? 1 : ua.getAttackRolls(player);
             for (int i = 0; i < rolls; i++)
             {
@@ -202,7 +202,7 @@ public class DiceRoll implements java.io.Serializable
         while (iter.hasNext())
         {
             Unit current = (Unit) iter.next();
-            UnitAttatchment ua = UnitAttatchment.get(current.getType());
+            UnitAttachment ua = UnitAttachment.get(current.getType());
 
             int rolls = defending ? 1 : ua.getAttackRolls(player);
 

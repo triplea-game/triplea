@@ -55,23 +55,25 @@ public class BattlePanel extends ActionPanel
 
     }
 
-    public void display(PlayerID id, Collection battles, Collection bombing)
+    public void display(PlayerID id, Collection<Territory> battles, Collection<Territory> bombing)
     {
         super.display(id);
         removeAll();
         m_actionLabel.setText(id.getName() + " battle");
         add(m_actionLabel);
-        Iterator iter = battles.iterator();
+        Iterator<Territory> iter = battles.iterator();
         while (iter.hasNext())
         {
-            Action action = new FightBattleAction((Territory) iter.next(), false);
+            Territory next = iter.next();
+            Action action = new FightBattleAction(next, false);
             add(new JButton(action));
         }
 
         iter = bombing.iterator();
         while (iter.hasNext())
         {
-            Action action = new FightBattleAction((Territory) iter.next(), true);
+            Territory next = iter.next();
+            Action action = new FightBattleAction(next, true);
             add(new JButton(action));
         }
         SwingUtilities.invokeLater(REFRESH);

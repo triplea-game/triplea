@@ -27,7 +27,7 @@ import java.io.Serializable;
  * @author  Sean Bridges
  * @version 1.0
  */
-public interface IAttatchment extends Serializable
+public interface IAttachment extends Serializable
 {
 	public void setData(GameData m_data);
 
