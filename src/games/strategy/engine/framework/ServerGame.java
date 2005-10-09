@@ -162,14 +162,24 @@ public class ServerGame implements IGame
         // m_data.getSequence().getStep(m_currentStepIndex);
     }
 
+    
+    private final static String GAME_HAS_BEEN_SAVED_PROPERTY = "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
     /**
      * And here we go.
      * Starts the game in a new thread
      */
     public void startGame()
     {
+        //we dont want to notify that the step has been saved when reloading a saved game, since
+        //in fact the step hasnt changed, we are just resuming where we left off
+        boolean gameHasBeenSaved =  m_data.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
+        m_data.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
+        
+        if(gameHasBeenSaved)
+            runStep(false);
+        
         while (true)
-            runStep();
+            runStep(true);
     }
 
     public void stopGame()
@@ -194,7 +204,7 @@ public class ServerGame implements IGame
 
   
 
-    private void runStep()
+    private void runStep(boolean notifyBroadcastersStepChanged)
     {
         if (getCurrentStep().hasReachedMaxRunCount())
         {
@@ -202,7 +212,7 @@ public class ServerGame implements IGame
             return;
         }
 
-    	startStep();
+    	startStep(notifyBroadcastersStepChanged);
     	
         waitForPlayerToFinishStep();
         
@@ -230,7 +240,7 @@ public class ServerGame implements IGame
     	}
 	}
 
-	private void startStep() 
+	private void startStep(boolean notifyBroadcastersStepChanged) 
 	{
 		if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
     	{
@@ -246,8 +256,8 @@ public class ServerGame implements IGame
                 );
         bridge.setRandomSource(m_randomSource);
 
+        notifyGameStepChanged(notifyBroadcastersStepChanged);
         
-        notifyGameStepChanged();
         getCurrentStep().getDelegate().start(bridge, m_data);
 	}
 
@@ -285,14 +295,15 @@ public class ServerGame implements IGame
         m_gameStepListeners.remove(listener);
     }
 
-    private void notifyGameStepChanged()
+    private void notifyGameStepChanged(boolean notifyBroadcastersStepChanged)
     {
         String stepName = getCurrentStep().getName();
         String delegateName = getCurrentStep().getDelegate().getName();
         String displayName = getCurrentStep().getDisplayName();
         PlayerID id = getCurrentStep().getPlayerID();
         
-        getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);        
+        if(notifyBroadcastersStepChanged)
+            getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);        
                
         Iterator<GameStepListener> iter = m_gameStepListeners.iterator();
         while (iter.hasNext())
