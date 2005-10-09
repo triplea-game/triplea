@@ -1,10 +1,16 @@
-* remove singleton image factories, move to UIContext
+* allow saving games during battles
 
-* when retreating from a sea zone, if a fighter has no movement, the fighter gets a 1 movement bonus
+* shift click on a unit to select all units in the territory (sgb)
 
-* battleships can only bombard if they are in a sea zone where transports unloaded
+* rename attatchment to attachment (sgb)
 
-* fix bug [ 1277099 ] map refresh problems undoing move with captured aa gun
+* remove singleton image factories, move to UIContext (sgb)
+
+* when retreating from a sea zone, if a fighter has no movement, the fighter gets a 1 movement bonus (sgb)
+
+* battleships can only bombard if they are in a sea zone where transports unloaded (sgb)
+
+* fix bug [ 1277099 ] map refresh problems undoing move with captured aa gun (sgb)
 
 * Japanese victory points for a&a pacific (Adam_J)
 
