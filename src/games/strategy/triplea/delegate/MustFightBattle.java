@@ -29,6 +29,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.*;
 
+import java.io.Serializable;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -83,6 +84,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private Collection<Unit> m_killed = new ArrayList<Unit>();
     
     private int m_round = 0;
+    
+    //our current execution state
+    //we keep a stack of executables
+    //this allows us to save our state 
+    //and resume while in the middle of a battle 
+    private Stack<IExecutable> m_stack = new Stack<IExecutable>();
+    private IExecutable m_current;
+    private List<String> m_stepStrings;
 
     public MustFightBattle(Territory battleSite, PlayerID attacker,
             GameData data, BattleTracker tracker,
@@ -311,7 +320,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     public void fight(IDelegateBridge bridge)
     {
+        //we have already started
+        if(m_current != null)
+        {
+            ITripleaDisplay display = getDisplay(bridge);
+            display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
 
+            display.listBattleSteps(m_battleID, m_stepStrings);
+            
+            
+            m_stack.push(m_current);
+            drainStack(bridge);
+            return;
+        }
+        
+        
         bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite);
         removeAirNoLongerInTerritory();
 
@@ -337,12 +360,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         addDependentUnits(dependencies);
 
         //list the steps
-        List<String> steps = determineStepStrings(true);
+        m_stepStrings = determineStepStrings(true);
 
         ITripleaDisplay display = getDisplay(bridge);
         display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
 
-        display.listBattleSteps(m_battleID, steps);
+        display.listBattleSteps(m_battleID, m_stepStrings);
 
         //take the casualties with least movement first
         if(isAmphibious())
@@ -353,9 +376,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
         //System.out.print(m_defendingUnits);
 
-        fightStart(bridge);
-        fightLoop(bridge);
+        //push on stack in opposite order of execution
+        pushFightLoopOnStack(bridge);
+        pushFightStartOnStack();
+        drainStack(bridge);
     }
+
 
     private void removeAirNoLongerInTerritory()
     {
@@ -494,83 +520,262 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     }
 
-    private void fightStart(IDelegateBridge bridge)
+    private void pushFightStartOnStack()
     {
+        IExecutable fireAAGuns = new IExecutable()
+        {
 
-        fireAAGuns(bridge);
-        fireNavalBombardment(bridge);
-        removeNonCombatants();
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                fireAAGuns(bridge);
+            }
+            
+        };
+
+        IExecutable fireNavalBombardment = new IExecutable()
+        {
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                fireNavalBombardment(bridge);
+            }
+            
+        };
+        
+        IExecutable removeNonCombatatants = new IExecutable()
+        {
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                removeNonCombatants();
+            }
+            
+        };
+        //push in opposite order of execution
+        m_stack.push(removeNonCombatatants);
+        m_stack.push(fireNavalBombardment);
+        m_stack.push(fireAAGuns);
     }
 
-    private void fightLoop(IDelegateBridge bridge)
+    private void pushFightLoopOnStack(IDelegateBridge bridge)
     {
-
         if (m_over)
             return;
 
+        //the code here is a bit odd to read
+        //basically, we need to break the code into seperate atomic pieces.
+        //If there is a network error, or some other unfortunate event,
+        //then we need to keep track of what pieces we have executed, and what is left 
+        //to do
+        //each atomic step is in its own IExecutable
+        //the definition of atomic is that either
+        //1) the code does not call to an IDisplay,IPlayer, or IRandomSource
+        //2) if the code calls to an IDisplay, IPlayer, IRandomSource, and an exception is
+        //called from one of those methods, the exception will be propogated out of execute(),
+        //and the execute method can be called again
+        //it is allowed for an iexecutable to add other iexecutables to the stack
+        //
+        //if you read the code in linear order, ignore wrapping stuff in annonymous iexecutables, then the code
+        //can be read as it will execute
+        
+        
+
+        
+        //store the steps in a list
+        //we need to push them in reverse order that we
+        //create them, and its easier to track if we just add them 
+        //to a list while creating. then reverse the list and add
+        //to the stack at the end
+        List<IExecutable> steps = new ArrayList<IExecutable>();
+        
+        
         //for 4th edition we need to fire the defending subs before the
         //attacking subs fire
         //this allows the dead subs to return fire, even if they are selected
         // as casualties
-        List<Unit> defendingSubs = Match.getMatches(m_defendingUnits,
+        final List<Unit> defendingSubs = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsSub);
 
-        attackSubs(bridge);
+        steps.add(new IExecutable(){
 
-        if (isFourthEdition())
-            defendSubs(bridge, defendingSubs);
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                attackSubs(bridge);
+            }
+            
+        });
+        
+        steps.add(new IExecutable(){
 
-        attackNonSubs(bridge);
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                if (isFourthEdition())
+                    defendSubs(bridge, defendingSubs);
+            }
+            
+        });
+        
 
-        if (!isFourthEdition())
-        {
-            Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
-                    + m_defendingWaitingToDie.size());
-            units.addAll(m_defendingUnits);
-            units.addAll(m_defendingWaitingToDie);
-            units = Match.getMatches(units, Matches.UnitIsSub);
+        steps.add(new IExecutable(){
 
-            defendSubs(bridge, units);
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                attackNonSubs(bridge);
+            }
+            
+        });
 
-        }
-        defendNonSubs(bridge);
 
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                if (!isFourthEdition())
+                {
+                    Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
+                            + m_defendingWaitingToDie.size());
+                    units.addAll(m_defendingUnits);
+                    units.addAll(m_defendingWaitingToDie);
+                    units = Match.getMatches(units, Matches.UnitIsSub);
+
+                    defendSubs(bridge, units);
+                }
+
+            }
+            
+        });        
+
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+
+                defendNonSubs(bridge);
+
+            }
+            
+        });        
+        
         //we must grab these here, when we clear waiting to die, we might remove
         //all the opposing destroyers, and this would change the canRetreatSubs rVal
-        boolean canAttackerRetreatSubs = canAttackerRetreatSubs();
-        boolean canDefenderRetreatSubs = canDefenderRetreatSubs();
-        clearWaitingToDie(bridge);
-
-        if (m_attackingUnits.size() == 0)
-        {
-            endBattle(bridge);
-            defenderWins(bridge);
-            return;
-        } else if (m_defendingUnits.size() == 0)
-        {
-            endBattle(bridge);
-            attackerWins(bridge);
-            return;
-        }
-
-        if(canAttackerRetreatSubs)
-            attackerRetreatSubs(bridge);
-        if(canDefenderRetreatSubs)
-            defenderRetreatSubs(bridge);
+        final boolean canAttackerRetreatSubs = canAttackerRetreatSubs();
+        final boolean canDefenderRetreatSubs = canDefenderRetreatSubs();
         
-        if (canAttackerRetreatPlanes())
-            attackerRetreatPlanes(bridge);
-        attackerRetreat(bridge);
 
-        if (!m_over)
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                if (!isFourthEdition())
+                {
+                    clearWaitingToDie(bridge);
+                }
+
+            }
+            
+        });        
+
+        
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                
+                if (m_attackingUnits.size() == 0)
+                {
+                    endBattle(bridge);
+                    defenderWins(bridge);
+                    
+                } else if (m_defendingUnits.size() == 0)
+                {
+                    endBattle(bridge);
+                    attackerWins(bridge);
+                }
+
+            }
+            
+        });  
+        
+        
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                
+                if(!m_over && canAttackerRetreatSubs)
+                    attackerRetreatSubs(bridge);
+            }
+        });  
+
+        
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                if(!m_over &&  canDefenderRetreatSubs)
+                    defenderRetreatSubs(bridge);
+            }
+        });         
+
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                if (canAttackerRetreatPlanes())
+                    attackerRetreatPlanes(bridge);
+                
+            }
+        });    
+       
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                attackerRetreat(bridge);
+                
+            }
+        });    
+        
+        
+        final IExecutable loop = new IExecutable()
         {
-            List<String> steps = determineStepStrings(false);
-            ITripleaDisplay display = getDisplay(bridge);
-            display.listBattleSteps(m_battleID, steps);
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                pushFightLoopOnStack(bridge);
+            }
+        };
+        
+        steps.add(new IExecutable(){
+
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            {
+                if (!m_over)
+                {
+                    m_stepStrings = determineStepStrings(false);
+                    ITripleaDisplay display = getDisplay(bridge);
+                    display.listBattleSteps(m_battleID, m_stepStrings);
+                    m_round++;
+
+                    //continue fighting
+                    //the recursive step
+                    //this should always be the base of the stack
+                    //when we execute the loop, it will populate the stack with the battle steps
+                    if(!m_stack.isEmpty())
+                        throw new IllegalStateException("Stack not empty:" + m_stack);
+                    m_stack.push(loop);                   
+                }
+                
+            }
+        });   
+        
+        //add in the reverse order we create them
+        Collections.reverse(steps);
+        for (IExecutable step : steps)
+        {
+            m_stack.push(step);
         }
 
-        m_round++;
-        fightLoop(bridge);
+
         return;
     }
 
@@ -578,7 +783,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      * @param bridge
      * @return
      */
-    private ITripleaDisplay getDisplay(IDelegateBridge bridge)
+    static ITripleaDisplay getDisplay(IDelegateBridge bridge)
     {
         return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
     }
@@ -992,7 +1197,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     //the maximum number of hits that this collection of units can sustain
     //takes into account units with two hits
-    public int getMaxHits(Collection<Unit> units)
+    public static int getMaxHits(Collection<Unit> units)
     {
 
         int count = 0;
@@ -1016,65 +1221,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
             Collection<Unit> attackableUnits, boolean defender,
             boolean canReturnFire, final IDelegateBridge bridge, String text)
     {
-
-        final PlayerID firingPlayer = defender ? m_defender : m_attacker;
-        final PlayerID hitPlayer = defender ? m_attacker : m_defender;
-
-        DiceRoll dice = DiceRoll.rollDice(new ArrayList<Unit>(firingUnits), defender,
-                firingPlayer, bridge, m_data, this);
-
-        int hitCount = dice.getHits();
-        Collection<Unit> killed;
-        Collection<Unit> damaged = new ArrayList<Unit>();
+        PlayerID firing = defender ? m_defender : m_attacker;
+        PlayerID defending = !defender ? m_defender : m_attacker;        
         
-        getDisplay(bridge).notifyDice(m_battleID, dice, stepName);
-
-        //they all die
-        if (hitCount >= getMaxHits(attackableUnits))
+        
+        m_stack.push(new Fire(attackableUnits, canReturnFire, firing, defending, firingUnits, stepName, text, this, defender, 
+                m_dependentUnits, m_stack));
+        
+        
+    }
+    
+    private void drainStack(IDelegateBridge bridge)
+    {
+        while(!m_stack.isEmpty())
         {
-            killed = attackableUnits;
-            getDisplay(bridge).casualtyNotification(m_battleID, stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
-            getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
-        } else
-        {            
-            CasualtyDetails message = selectCasualties(stepName, bridge,
-                    attackableUnits, !defender, text, dice);
-
-            killed = message.getKilled();
-            damaged = message.getDamaged();
-
-            getDisplay(bridge).casualtyNotification(m_battleID, stepName, dice, hitPlayer, killed, damaged, m_dependentUnits);
-            
-            //the user hasnt had a chance to see these yet
-            if(message.getAutoCalculated())
-                getRemote(hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
+            m_current = m_stack.pop();
+            m_current.execute(m_stack, bridge, m_data);
         }
-
-        
-	    Runnable r = new Runnable()
-        {
-            public void run()
-            {
-                getRemote(firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue",  hitPlayer);
-            }
-        };
-	    
-        //execute in a seperate thread to allow either player to click continue first.
-        Thread t = new Thread(r, "Click to continue waiter");
-        t.start();
-        try
-        {
-            t.join();
-        } catch (InterruptedException e)
-        {
-           //ignore
-        }
-        
-        
-        if (damaged != null)
-            markDamaged(damaged, bridge);
-
-        removeCasualties(killed, canReturnFire, !defender, bridge);
     }
 
     private void defendNonSubs(IDelegateBridge bridge)
@@ -1157,7 +1320,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 bridge, text, m_data, dice, defender);
     }
 
-    private void removeCasualties(Collection<Unit> killed, boolean canReturnFire,
+    void removeCasualties(Collection<Unit> killed, boolean canReturnFire,
             boolean defender, IDelegateBridge bridge)
     {
 
@@ -1233,68 +1396,131 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_bombardingUnits;
     }
 
-    @SuppressWarnings({"unchecked","unchecked"})
+    
     private void fireAAGuns(final IDelegateBridge bridge)
     {
-
-        final String step = SELECT_AA_CASUALTIES;
-        if (!canFireAA())
-            return;
-
-        int attackingAirCount = Match.countMatches(m_attackingUnits,
-                Matches.UnitIsAir);
-        //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
-        // NEW VERSION
-        DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge,
-                m_battleSite, m_data);
-
-        //send attacker the dice roll so he can see what the dice are while he
-        // waits for
-        //attacker to select casualties
-        getDisplay(bridge).notifyDice(m_battleID,  dice, step);
-
-        Collection<Unit> casualties = null;
-        Collection<Unit> attackable = Match.getMatches(m_attackingUnits,
-                Matches.UnitIsAir);
-        
-        // if 4th edition choose casualties randomnly
-        // we can do that by removing planes at positions in the list where
-        // there was a corresponding hit in the dice roll.
-        if (isFourthEdition())
-        {
-            casualties = BattleCalculator.fourthEditionAACasualties(attackable,
-                    dice, bridge);
-           
-        } else
-        {
-            casualties = selectCasualties(step, bridge, attackable, false,
-                    "AA guns fire,", dice).getKilled();
-        }
-
-        getDisplay(bridge).casualtyNotification(m_battleID, step,dice, m_attacker, casualties, Collections.EMPTY_LIST, m_dependentUnits);
-        
-        getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
-        Runnable r = new Runnable()
-        {
-            public void run()
-            {
-                getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", m_attacker);        
-            }
-        };
-        Thread t = new Thread(r, "click to continue waiter");
-        t.start();
-        try
-        {
-            t.join();
-        } catch (InterruptedException e)
-        {
-          //ignore
-        }
-        
-        
-        removeCasualties(casualties, false, false, bridge);
-
+        m_stack.push(new FireAA());
     }
+    
+    class FireAA implements IExecutable
+    {
+        private DiceRoll m_dice;
+        private Collection<Unit> m_casualties;
+     
+        public void execute(Stack<IExecutable> stack, final IDelegateBridge bridge, GameData data)
+        {
+            if (!canFireAA())
+                return;
+            
+            IExecutable rollDice = new IExecutable()
+            {
+            
+                public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+                        GameData data)
+                {
+                    rollDice(bridge);
+                }
+            
+            };
+            
+            
+            IExecutable selectCasualties = new IExecutable()
+            {
+            
+                public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+                        GameData data)
+                {
+                    selectCasualties(bridge);
+                }
+            };
+            
+            IExecutable notifyCasualties = new IExecutable()
+            {
+
+                public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+                {
+                    notifyCasualties(bridge);
+                    
+                }
+                
+            };
+            //push in reverse order of execution
+            stack.push(notifyCasualties);
+            stack.push(selectCasualties);
+            stack.push(rollDice);
+        }
+        
+        
+        private void rollDice(IDelegateBridge bridge)
+        {
+            
+            int attackingAirCount = Match.countMatches(m_attackingUnits,
+                    Matches.UnitIsAir);
+            
+            m_dice = DiceRoll.rollAA(attackingAirCount, bridge,
+                    m_battleSite, m_data);
+        }
+
+        private void selectCasualties(final IDelegateBridge bridge)
+        {
+            //DiceRoll dice = DiceRoll.rollAA(attackingAirCount, bridge);
+            // NEW VERSION
+            
+
+            //send attacker the dice roll so he can see what the dice are while he
+            // waits for
+            //attacker to select casualties
+            getDisplay(bridge).notifyDice(m_battleID,  m_dice, SELECT_AA_CASUALTIES);
+           
+            Collection<Unit> attackable = Match.getMatches(m_attackingUnits,
+                    Matches.UnitIsAir);
+            
+            // if 4th edition choose casualties randomnly
+            // we can do that by removing planes at positions in the list where
+            // there was a corresponding hit in the dice roll.
+            if (isFourthEdition())
+            {
+                m_casualties = BattleCalculator.fourthEditionAACasualties(attackable,
+                        m_dice, bridge);
+               
+            } else
+            {
+                m_casualties = MustFightBattle.this.selectCasualties(SELECT_AA_CASUALTIES, bridge, attackable, false,
+                        "AA guns fire,", m_dice).getKilled();
+            }
+
+            
+        }
+
+
+        private void notifyCasualties(final IDelegateBridge bridge)
+        {
+            getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, m_casualties, Collections.<Unit>emptyList(), m_dependentUnits);
+            
+            getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
+            Runnable r = new Runnable()
+            {
+                public void run()
+                {
+                    getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", m_attacker);        
+                }
+            };
+            Thread t = new Thread(r, "click to continue waiter");
+            t.start();
+            try
+            {
+                t.join();
+            } catch (InterruptedException e)
+            {
+              //ignore
+            }
+            
+            
+            removeCasualties(m_casualties, false, false, bridge);
+        }
+        
+    }
+    
 
     private boolean canFireAA()
     {
@@ -1346,7 +1572,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return dependents;
     }
 
-    private void markDamaged(Collection<Unit> damaged, IDelegateBridge bridge)
+    void markDamaged(Collection<Unit> damaged, IDelegateBridge bridge)
     {
 
         if (damaged.size() == 0)
@@ -1420,7 +1646,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     }
     
-    private ITripleaPlayer getRemote(PlayerID player, IDelegateBridge bridge)
+    static ITripleaPlayer getRemote(PlayerID player, IDelegateBridge bridge)
     {
         //if its the null player, return a do nothing proxy
         if(player.isNull())
@@ -1551,6 +1777,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         + " could not land and were killed", defendingAir);
         Change change = ChangeFactory.removeUnits(m_battleSite, defendingAir);
         bridge.addChange(change);
+    }
+    
+    GUID getBattleID()
+    {
+        return m_battleID;
     }
 
     private void attackerWins(IDelegateBridge bridge)
@@ -1714,3 +1945,186 @@ class NullInvocationHandler implements InvocationHandler
         return null;
     }
 }
+
+ 
+interface IExecutable extends Serializable
+{
+    public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data);
+}
+
+
+
+
+
+class Fire implements IExecutable
+{
+    private final String m_stepName;
+    private final Collection<Unit> m_firingUnits;
+    private final  Collection<Unit> m_attackableUnits;
+    private final boolean m_canReturnFire;
+
+    private final String m_text;
+    private final MustFightBattle m_battle;
+    private final PlayerID m_firingPlayer;
+    private final PlayerID m_hitPlayer;
+    private final boolean m_defending;
+    private final Map<Unit, Collection<Unit>> m_dependentUnits;
+    private final GUID m_battleID;
+
+    private DiceRoll m_dice;
+    private Collection<Unit> m_killed;
+    private Collection<Unit> m_damaged;
+    private boolean m_confirmOwnCasualties = true;
+    
+    public Fire(Collection<Unit> attackableUnits, boolean canReturnFire, PlayerID firingPlayer, PlayerID hitPlayer, 
+            Collection<Unit> firingUnits, String stepName, String text, MustFightBattle battle, 
+            boolean defending, Map<Unit, Collection<Unit>> dependentUnits, Stack<IExecutable> stack)
+    {
+        m_attackableUnits = attackableUnits;
+        
+        m_canReturnFire = canReturnFire;
+        
+        m_firingUnits = firingUnits;
+        m_stepName = stepName;
+        m_text = text;
+        m_battle = battle;
+        m_hitPlayer = hitPlayer;
+        m_firingPlayer = firingPlayer;
+        m_defending = defending;
+        m_dependentUnits = dependentUnits;
+        
+        
+        m_battleID = battle.getBattleID();
+    
+        
+  
+    }
+    
+    
+    private void rollDice(IDelegateBridge bridge, GameData data)
+    {
+        if(m_dice != null)
+            throw new IllegalStateException("Already rolled");
+        
+        m_dice = DiceRoll.rollDice(new ArrayList<Unit>(m_firingUnits), m_defending,
+                m_firingPlayer, bridge, data, m_battle);
+
+    }
+    
+    private void selectCasualties(IDelegateBridge bridge, GameData data)
+    {
+        int hitCount = m_dice.getHits();
+        MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
+        
+        //they all die
+        if (hitCount >= MustFightBattle.getMaxHits(m_attackableUnits))
+        {
+            m_killed = m_attackableUnits;
+            m_damaged = Collections.emptyList();
+            //everything died, so we need to confirm
+            m_confirmOwnCasualties = true;
+        } else
+        {     
+            CasualtyDetails message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
+                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending);
+
+            m_killed = message.getKilled();
+            m_damaged = message.getDamaged();
+            m_confirmOwnCasualties = message.getAutoCalculated();
+        }
+    }
+    
+    private void notifyAndRemoveCasualties(final IDelegateBridge bridge)
+    {
+        
+        MustFightBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer, m_killed, m_damaged, m_dependentUnits);
+
+
+        Runnable r = new Runnable()
+        {
+            public void run()
+            {
+                MustFightBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue",  m_hitPlayer);
+            }
+        };
+
+        // execute in a seperate thread to allow either player to click continue first.
+        Thread t = new Thread(r, "Click to continue waiter");
+        t.start();
+
+        if(m_confirmOwnCasualties)
+            MustFightBattle.getRemote(m_hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
+
+        
+        try
+        {
+            t.join();
+        } catch (InterruptedException e)
+        {
+           //ignore
+        }
+
+
+        if (m_damaged != null)
+            m_battle.markDamaged(m_damaged, bridge);
+
+        m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
+
+        
+    }
+
+
+    /**
+     * We must execute in atomic steps, push these steps onto the stack, and let them execute
+     */
+    public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+    {
+        //add to the stack so we will execute,
+        //we want to roll dice, select casualties, then notify in that order, so 
+        //push onto the stack in reverse order
+        
+        IExecutable rollDice = new IExecutable()
+        {
+        
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+                    GameData data)
+            {
+                rollDice(bridge, data);
+            }
+        };
+        
+        IExecutable selectCasualties = new IExecutable()
+        {
+        
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+                    GameData data)
+            {
+                selectCasualties(bridge, data);
+            }
+        };
+        
+        IExecutable notifyCasualties = new IExecutable()
+        {
+        
+            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+                    GameData data)
+            {
+                notifyAndRemoveCasualties(bridge);
+        
+            }
+        };
+        
+        stack.push(notifyCasualties);
+        stack.push(selectCasualties);
+        stack.push(rollDice);
+        
+        return;
+        
+    }
+    
+}
+
+
+
+
+

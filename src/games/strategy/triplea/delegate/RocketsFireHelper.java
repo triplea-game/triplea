@@ -140,7 +140,7 @@ public class RocketsFireHelper
         //ask even if there is only once choice
         //that will allow the user to not attack if he doesnt want to
         
-        return ((ITripleaPlayer) bridge.getRemote()).whereShouldRocketsAttach(targets, from);
+        return ((ITripleaPlayer) bridge.getRemote()).whereShouldRocketsAttack(targets, from);
     }
 
     private void fireRocket(PlayerID player, Territory attackedTerritory, IDelegateBridge bridge, GameData data)

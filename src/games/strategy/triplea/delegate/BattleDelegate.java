@@ -49,10 +49,10 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
 
     private GameData m_data;
 
-    //dont allow saving while handling a message
-    private boolean m_inBattle;
     
     private boolean m_needToInitialize;
+    
+    private Battle m_currentBattle = null;
 
     public void initialize(String name, String displayName)
     {
@@ -86,15 +86,23 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
     {
         return m_displayName;
     }
+    
+    
 
     public String fightBattle(Territory territory, boolean bombing)
     {
-        m_inBattle = true;
+        
         Battle battle = m_battleTracker.getPendingBattle(territory, bombing);
-
+        if(m_currentBattle != null && m_currentBattle != battle)
+        {
+            return "Must finish " + getFightingWord(m_currentBattle) + " in " + m_currentBattle.getTerritory() + " first";
+        }
+        
+        m_currentBattle = battle;
+        
         //does the battle exist
         if (battle == null)
-            return "No battle in given territory";
+            return "No pending battle in" + territory.getName();
 
         //are there battles that must occur first
         Collection allMustPrecede = m_battleTracker.getDependentOn(battle);
@@ -102,19 +110,22 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         {
             Battle firstPrecede = (Battle) allMustPrecede.iterator().next();
             String name = firstPrecede.getTerritory().getName();
-            String fightingWord = firstPrecede.isBombingRun() ? "Bombing Run"
-                    : "Battle";
-            return "Must complete " + fightingWord + " in " + name + " first";
+            return "Must complete " + getFightingWord(battle) + " in " + name + " first";
         }
 
         //fight the battle
         battle.fight(m_bridge);
 
-        m_inBattle = false;
+        m_currentBattle = null;
 
         //and were done
         return null;
 
+    }
+
+    private String getFightingWord(Battle battle)
+    {
+       return battle.isBombingRun() ? "Bombing Run" : "Battle";
     }
 
     public BattleListing getBattles()
@@ -301,9 +312,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
      */
     public boolean canSave(String[] message)
     {
-        if (m_inBattle)
-            message[0] = "Cant save while fighting a battle";
-        return !m_inBattle;
+        return true;
     }
 
     /**
@@ -315,6 +324,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         state.m_battleTracker = m_battleTracker;
         state.m_originalOwnerTracker = m_originalOwnerTracker;
         state.m_needToInitialize = m_needToInitialize;
+        state.m_currentBattle = m_currentBattle;
         return state;
     }
 
@@ -327,6 +337,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
         m_battleTracker = state.m_battleTracker;
         m_originalOwnerTracker = state.m_originalOwnerTracker;
         m_needToInitialize = state.m_needToInitialize;
+        m_currentBattle = state.m_currentBattle;
     }
 
     /*
@@ -347,4 +358,6 @@ class BattleState implements Serializable
     public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
     
     public boolean m_needToInitialize;
+    
+    public Battle m_currentBattle;
 }
