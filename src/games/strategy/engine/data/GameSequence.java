@@ -65,6 +65,11 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     {
       return m_round;
     }
+    
+    public int getStepIndex()
+    {
+        return m_currentIndex;
+    }
 
     /**
      *
