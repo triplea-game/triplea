@@ -90,7 +90,7 @@ public interface ITripleaPlayer extends IRemote
      * @param from - where the rockets are launched from, null for 3rd edition rules
      * @return the territory to attack, null if no territory should be attacked
      */
-    public Territory whereShouldRocketsAttach(Collection<Territory> candidates, Territory from);
+    public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from);
     
     /**
      * get the fighters to move to a newly produced carrier

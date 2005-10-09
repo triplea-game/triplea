@@ -340,7 +340,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#whereShouldRocketsAttach(java.util.Collection, games.strategy.engine.data.Territory)
      */
-    public Territory whereShouldRocketsAttach(Collection candidates, Territory from)
+    public Territory whereShouldRocketsAttack(Collection candidates, Territory from)
     {   
         //just use the first one
         return (Territory) candidates.iterator().next();

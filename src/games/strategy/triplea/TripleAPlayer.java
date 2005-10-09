@@ -306,7 +306,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
        
     } 
     
-    public Territory whereShouldRocketsAttach(Collection<Territory> candidates, Territory from)
+    public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
     {
         return m_ui.getRocketAttack(candidates, from);
      }
