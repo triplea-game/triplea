@@ -1,3 +1,5 @@
+* allow unloading units from a battle zone into newly conquered territories (sgb)
+
 * allow saving games during battles (sgb)
 
 * shift click on a unit to select all units in the territory (sgb)

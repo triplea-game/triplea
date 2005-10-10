@@ -410,13 +410,13 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
 
         //dont let the user move out of a battle zone
-        //the exception is air units
-        if (DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle(route.getStart(), false)
+        //the exception is air units and unloading units into a battle zone
+        if (getBattleTracker().hasPendingBattle(route.getStart(), false)
                 && Match.someMatch(units, Matches.UnitIsNotAir))
         {
             boolean unload = MoveValidator.isUnload(route);
             PlayerID endOwner = route.getEnd().getOwner();
-            boolean attack = !m_data.getAllianceTracker().isAllied(endOwner, m_player);
+            boolean attack = !m_data.getAllianceTracker().isAllied(endOwner, m_player) || getBattleTracker().wasConquered(route.getEnd());
             //unless they are unloading into another battle
             if (!(unload && attack))
                 return "Cant move units out of battle zone";
@@ -427,7 +427,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         int resources = player.getResources().getQuantity(Constants.IPCS);
         if (resources - cost < 0)
         {
-                return TOO_POOR_TO_VIOLATE_NEUTRALITY;
+            return TOO_POOR_TO_VIOLATE_NEUTRALITY;
         }
 
         return null;
@@ -582,7 +582,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                     continue;
 
                 if (!m_data.getAllianceTracker().isAllied(current.getOwner(), m_player)
-                        || DelegateFinder.battleDelegate(m_data).getBattleTracker().wasConquered(current))
+                        || getBattleTracker().wasConquered(current))
                 {
                     enemyCount++;
                     allEnemyBlitzable &= MoveValidator.isBlitzable(current, m_data, m_player);
@@ -668,6 +668,11 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return null;
     }
 
+    private BattleTracker getBattleTracker()
+    {
+        return DelegateFinder.battleDelegate(m_data).getBattleTracker();
+    }
+
     private boolean isFourEdition()
     {
         return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
@@ -687,7 +692,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                 {
             		public boolean match(Territory o)
             		{
-            		    return !DelegateFinder.battleDelegate(m_data).getBattleTracker().wasConquered((Territory) o);
+            		    return !getBattleTracker().wasConquered((Territory) o);
             		}
                 }
         );
@@ -695,7 +700,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                 {
             		public boolean match(Territory o)
             		{
-            		    return !DelegateFinder.battleDelegate(m_data).getBattleTracker().hasPendingBattle((Territory) o, false);
+            		    return !getBattleTracker().hasPendingBattle((Territory) o, false);
             		}
                 }
         );
@@ -995,8 +1000,8 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         //if we are moving out of a battle zone, mark it
         //this can happen for air units moving out of a battle zone
-        Battle nonBombingBattle = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(route.getStart(), false);
-        Battle bombingBattle = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(route.getStart(), true);
+        Battle nonBombingBattle = getBattleTracker().getPendingBattle(route.getStart(), false);
+        Battle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
         if (nonBombingBattle != null || bombingBattle != null)
         {
             Iterator iter = units.iterator();
@@ -1045,7 +1050,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                 bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
             }
 
-            DelegateFinder.battleDelegate(m_data).getBattleTracker().addBattle(route, arrivingUnits, m_transportTracker, bombing, id, m_data,
+            getBattleTracker().addBattle(route, arrivingUnits, m_transportTracker, bombing, id, m_data,
                     m_bridge, m_currentMove);
         }
 
@@ -1087,7 +1092,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
     private boolean hasConqueredNonBlitzed(Route route)
     {
 
-        BattleTracker tracker = DelegateFinder.battleDelegate(m_data).getBattleTracker();
+        BattleTracker tracker = getBattleTracker();
 
         for (int i = 0; i < route.getLength(); i++)
         {
@@ -1524,7 +1529,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         //there is a bug in which if you move an air unit to a battle site
         //in the middle of non combat, it wont fire
         if (route.getStart().getUnits().someMatch(hasAA)
-                && !DelegateFinder.battleDelegate(m_data).getBattleTracker().wasBattleFought(route.getStart()))
+                && !getBattleTracker().wasBattleFought(route.getStart()))
             territoriesWhereAAWillFire.add(route.getStart());
  
         return territoriesWhereAAWillFire;
