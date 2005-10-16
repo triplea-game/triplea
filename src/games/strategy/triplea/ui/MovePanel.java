@@ -99,11 +99,17 @@ public class MovePanel extends ActionPanel
         super(data, map);
         CANCEL_MOVE_ACTION.setEnabled(false);
 
-
-        registerKeyboardAction(CANCEL_MOVE_ACTION,
-                        KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
-                        WHEN_IN_FOCUSED_WINDOW
-                        );
+        AbstractAction c = new AbstractAction("")
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                CANCEL_MOVE_ACTION.actionPerformed(e);
+        
+            }
+        
+        };
+            
          m_undableMovesPanel = new UndoableMovesPanel(data, this);
     }
 
@@ -173,6 +179,13 @@ public class MovePanel extends ActionPanel
         m_bridge = bridge;
         getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
         getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
+         
+        getRootPane().registerKeyboardAction(CANCEL_MOVE_ACTION,
+                KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
+                WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+                );
+
+        
     }
 
     private void cleanUp()
@@ -184,6 +197,13 @@ public class MovePanel extends ActionPanel
         updateRouteAndMouseShadowUnits(null);
         CANCEL_MOVE_ACTION.setEnabled(false);
         m_forced = null;
+
+        getRootPane().registerKeyboardAction(null,
+                KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
+                WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+                );
+
+        
         
     }
 
