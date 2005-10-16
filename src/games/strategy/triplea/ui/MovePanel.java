@@ -99,17 +99,6 @@ public class MovePanel extends ActionPanel
         super(data, map);
         CANCEL_MOVE_ACTION.setEnabled(false);
 
-        AbstractAction c = new AbstractAction("")
-        {
-        
-            public void actionPerformed(ActionEvent e)
-            {
-                CANCEL_MOVE_ACTION.actionPerformed(e);
-        
-            }
-        
-        };
-            
          m_undableMovesPanel = new UndoableMovesPanel(data, this);
     }
 
@@ -202,9 +191,6 @@ public class MovePanel extends ActionPanel
                 KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
                 WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
                 );
-
-        
-        
     }
 
 
