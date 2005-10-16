@@ -24,6 +24,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.ui.Util;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 
 /**
@@ -57,7 +58,7 @@ public class MapImage
   }
 
   
-  private Image m_smallMapImage;
+  private BufferedImage m_smallMapImage;
   public static final Font MAP_FONT = new Font("Ariel", Font.BOLD, 12);
 
   /** Creates a new instance of CountryImage */
@@ -66,7 +67,7 @@ public class MapImage
 
   }
 
-  public Image getSmallMapImage()
+  public BufferedImage getSmallMapImage()
   {
     return m_smallMapImage;
   }

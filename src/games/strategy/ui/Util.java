@@ -24,7 +24,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 
-import javax.swing.JComponent;
+
 
 /**
  * 
@@ -45,11 +45,11 @@ public class Util
         tracker.waitForAll();
     }
 
-    public static Image copyImage(Image img, JComponent comp)
+    public static Image copyImage(BufferedImage img, boolean needAlpha)
     {
-        Image copy = createImage(img.getWidth(comp), img.getHeight(comp), false);
-        Graphics g = copy.getGraphics();
-        g.drawImage(img, 0, 0, comp);
+        BufferedImage copy = createImage(img.getWidth(), img.getHeight(), needAlpha);
+        Graphics2D g = (Graphics2D) copy.getGraphics();
+        g.drawImage(img, 0, 0 ,null);
         g.dispose();
         return copy;
     }

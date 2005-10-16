@@ -14,6 +14,7 @@
 package games.strategy.triplea.ui.screen;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.logging.*;
 
@@ -39,10 +40,10 @@ public class SmallMapImageManager
     private final TileManager m_tileManager;
     
     
-    public SmallMapImageManager(final ImageScrollerSmallView view, Image offscreen, TileManager tileManager)
+    public SmallMapImageManager(final ImageScrollerSmallView view, BufferedImage offscreen, TileManager tileManager)
     {
         m_view = view;
-        m_offscreen = offscreen;
+        m_offscreen =  Util.copyImage(offscreen, false);
         m_tileManager = tileManager;
     }
     
@@ -50,10 +51,10 @@ public class SmallMapImageManager
     {
         Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
         
-        Image onScreen = m_view.getOffScreenImage();
-        Graphics g = onScreen.getGraphics();
+        Graphics onScreenGraphics = m_view.getOffScreenImage().getGraphics();
         
-        g.drawImage(m_offscreen, 0,0,null);
+        onScreenGraphics.drawImage(m_offscreen, 0,0,null);
+    
         
         Iterator<UnitsDrawer> iter = new ArrayList<UnitsDrawer>(m_tileManager.getUnitDrawables()).iterator();
         while (iter.hasNext())
@@ -62,11 +63,11 @@ public class SmallMapImageManager
             int x = (int) (drawer.getPlacementPoint().x / m_view.getRatioX());
             int y = (int) (drawer.getPlacementPoint().y / m_view.getRatioY());
             
-            g.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker() );
-            g.fillRect(x,y, UNIT_BOX_SIZE, UNIT_BOX_SIZE);
+            onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker() );
+            onScreenGraphics.fillRect(x,y, UNIT_BOX_SIZE, UNIT_BOX_SIZE);
         }
         
-        g.dispose();
+        onScreenGraphics.dispose();
         stopwatch.done();
         
     }
