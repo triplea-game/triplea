@@ -285,18 +285,19 @@ public class MapPanel extends ImageScrollerLargeView
 
         public void mouseReleased(MouseEvent e)
         {
-            Territory terr = getTerritory(e.getX() + getXOffset(), e.getY() + getYOffset());
+            int x = normalizeX(e.getX() + getXOffset());
+            int y =  e.getY() + getYOffset();            
+            
+            Territory terr = getTerritory(x,y);
             if (terr != null)
                 notifyTerritorySelected(terr, e);
             
             if(!m_unitSelectionListeners.isEmpty())
             {
-                int x = normalizeX(e.getX() + getXOffset());
-                int y =  e.getY() + getYOffset();
                 Tuple<Territory, List<Unit>> tuple = m_tileManager.getUnitsAtPoint(x,y, m_data);
                 
                 if(tuple == null)
-                    tuple = new Tuple<Territory, List<Unit>>(getTerritory(e.getX(), e.getY()), new ArrayList<Unit>(0) );
+                    tuple = new Tuple<Territory, List<Unit>>(getTerritory(x,y), new ArrayList<Unit>(0) );
                 
                 notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), e );
             }
