@@ -712,23 +712,11 @@ public class MovePanel extends ActionPanel
     
         public void unitsSelected(List<Unit> units, Territory t, MouseEvent me)
         {
+            //check if we can handle this event, are we active?
             if(!getActive())
                 return;
            
-            if ( (me.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
-            {
-                rightButtonSelection(units, t,me);
-            }
-            else
-            {
-                leftButtonSelection(units, t,me);
-            }
-            
-    
-        }
-
-        private void leftButtonSelection(List<Unit> units, Territory t, MouseEvent me)
-        {
+            //are any of the units ours, note - if no units selected thats still ok
             for(Unit unit : units)
             {
                 if(!unit.getOwner().equals(getCurrentPlayer()))
@@ -736,13 +724,31 @@ public class MovePanel extends ActionPanel
                     return;
                 }
             }
+
             
-            if(units.isEmpty())
-                return;
+            boolean rightMouse = ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0);
+            boolean noSelectedTerritory = (m_firstSelectedTerritory == null);
+            boolean isFirstSelectedTerritory = (m_firstSelectedTerritory == t);
+
+            //de select units            
+            if(rightMouse && !noSelectedTerritory)
+                deselectUnits(units, t, me);
+            //select units            
+            else if(!rightMouse && ( noSelectedTerritory || isFirstSelectedTerritory))
+                selectUnitsToMove(units, t, me);
+            else if(!rightMouse && me.isControlDown() && !isFirstSelectedTerritory)
+               selectWayPoint(t);
+            else if(!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory)
+                selectEndPoint(t);
             
             
-            if(getFirstSelectedTerritory() != null && !t.equals(getFirstSelectedTerritory()))
-                return;
+       
+            
+    
+        }
+
+        private void selectUnitsToMove(List<Unit> units, Territory t, MouseEvent me)
+        {
             
             if(getFirstSelectedTerritory() == null)
             {
@@ -756,7 +762,7 @@ public class MovePanel extends ActionPanel
                 CANCEL_MOVE_ACTION.setEnabled(true);                
             }
             
-           //add all
+            //add all
             if(me.isShiftDown())
             {
                 CompositeMatch<Unit> ownedNotFactory = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.UnitIsNotFactory);
@@ -786,13 +792,13 @@ public class MovePanel extends ActionPanel
                     getFirstSelectedTerritory()));
         }
 
-        private void rightButtonSelection(List<Unit> units, Territory t, MouseEvent me)
+        private void deselectUnits(List<Unit> units, Territory t, MouseEvent me)
         {         
-            if(m_selectedUnits.isEmpty())
-                return;
             
-            if(getFirstSelectedTerritory() == null)
-                return;
+            
+            //we have right clicked on a unit stack in a different territory
+            if(t != m_firstSelectedTerritory)
+                units = Collections.emptyList();
             
             //no unit selected, remove the most recent
             if(units.isEmpty())
@@ -837,6 +843,80 @@ public class MovePanel extends ActionPanel
         
                 
         }
+        
+        private void selectWayPoint(Territory territory)
+        {
+            if (m_forced == null)
+                m_forced = new ArrayList<Territory>();
+
+            if (!m_forced.contains(territory))
+                m_forced.add(territory);
+
+            updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(),
+                                 getFirstSelectedTerritory()));
+        }
+        
+        private void selectEndPoint(Territory territory)
+        {
+            Route route = getRoute(getFirstSelectedTerritory(), territory);
+            Collection<Unit> units = getUnitsThatCanMoveOnRoute(m_selectedUnits, route);
+            if (units.size() == 0)
+            {
+                CANCEL_MOVE_ACTION.actionPerformed(null);
+                return;
+            }
+            else
+            {
+    
+                Collection<Unit> transports = null;
+                if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
+                {
+                  transports = getTransportsToLoad(route, units);
+                  if(transports == null)
+                      return;
+                }
+                else if(MoveValidator.isUnload(route))
+                {
+                    List<Unit> unloadAble = Match.getMatches(m_selectedUnits,getUnloadableMatch());
+                    
+                    Collection<Unit> canMove = new ArrayList<Unit>(getUnitsToUnload(route, unloadAble));
+                    canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(getUnloadableMatch())));
+                    if(canMove.isEmpty())
+                    {
+                        CANCEL_MOVE_ACTION.actionPerformed(null);
+                        return; 
+                    }
+                    else
+                    {
+                        m_selectedUnits.clear();
+                        m_selectedUnits.addAll(canMove);
+                    }
+                }
+                else
+                {
+                    allowSpecificUnitSelection(units, route);
+                    
+                    if(units.isEmpty())
+                    {
+                        CANCEL_MOVE_ACTION.actionPerformed(null);
+                        return;
+                    }
+                    
+                }
+    
+                MoveDescription message = new MoveDescription(units, route, transports);
+                m_moveMessage = message;
+                setFirstSelectedTerritory(null);
+                m_forced = null;
+                updateRouteAndMouseShadowUnits(null);
+                synchronized (getLock())
+                {
+                    getLock().notifyAll();
+                }
+            }    
+        }
+        
+        
     
     };
     
@@ -855,107 +935,8 @@ public class MovePanel extends ActionPanel
     {
         public void territorySelected(Territory territory, MouseEvent me)
         {
-            if(!getActive())
-              return;
-
-            if ( (me.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
-            {
-                rightButtonSelection(territory);
-            }
-            else
-            {
-                leftButtonSelection(territory, me);
-            }
+           
         }
-
-        private void rightButtonSelection(Territory territory)
-        {
-
-        }
-
-        private void leftButtonSelection(Territory territory, MouseEvent e)
-        {
-
-            if (e.isControlDown())
-            {
-                if (getFirstSelectedTerritory() == null)
-                    return;
-
-                if (getFirstSelectedTerritory().equals(territory))
-                    return;
-
-                if (m_forced == null)
-                    m_forced = new ArrayList<Territory>();
-
-                if (!m_forced.contains(territory))
-                    m_forced.add(territory);
-
-                updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(),
-                                     getFirstSelectedTerritory()));
-            }
-            //we are selecting the territory to move to
-            else if (getFirstSelectedTerritory() != null &&  getFirstSelectedTerritory() != territory)
-            {
-                Route route = getRoute(getFirstSelectedTerritory(), territory);
-                Collection<Unit> units = getUnitsThatCanMoveOnRoute(m_selectedUnits, route);
-                if (units.size() == 0)
-                {
-                    CANCEL_MOVE_ACTION.actionPerformed(null);
-                    return;
-                }
-                else
-                {
-
-                    Collection<Unit> transports = null;
-                    if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
-                    {
-                      transports = getTransportsToLoad(route, units);
-                      if(transports == null)
-                          return;
-                    }
-                    else if(MoveValidator.isUnload(route))
-                    {
-                        List<Unit> unloadAble = Match.getMatches(m_selectedUnits,getUnloadableMatch());
-                        
-                        Collection<Unit> canMove = new ArrayList<Unit>(getUnitsToUnload(route, unloadAble));
-                        canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(getUnloadableMatch())));
-                        if(canMove.isEmpty())
-                        {
-                            CANCEL_MOVE_ACTION.actionPerformed(null);
-                            return; 
-                        }
-                        else
-                        {
-                            m_selectedUnits.clear();
-                            m_selectedUnits.addAll(canMove);
-                        }
-                    }
-                    else
-                    {
-                        allowSpecificUnitSelection(units, route);
-                        
-                        if(units.isEmpty())
-                        {
-                            CANCEL_MOVE_ACTION.actionPerformed(null);
-                            return;
-                        }
-                        
-                    }
-
-                    MoveDescription message = new MoveDescription(units, route, transports);
-                    m_moveMessage = message;
-                    setFirstSelectedTerritory(null);
-                    m_forced = null;
-                    updateRouteAndMouseShadowUnits(null);
-                    synchronized (getLock())
-                    {
-                        getLock().notifyAll();
-                    }
-                }
-            }
-        }
-
-        
         
         public void mouseMoved(Territory territory, MouseEvent me)
         {
