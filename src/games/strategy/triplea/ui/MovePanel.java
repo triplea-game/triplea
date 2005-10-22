@@ -716,14 +716,7 @@ public class MovePanel extends ActionPanel
             if(!getActive())
                 return;
            
-            //are any of the units ours, note - if no units selected thats still ok
-            for(Unit unit : units)
-            {
-                if(!unit.getOwner().equals(getCurrentPlayer()))
-                {
-                    return;
-                }
-            }
+          
 
             
             boolean rightMouse = ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0);
@@ -749,6 +742,15 @@ public class MovePanel extends ActionPanel
 
         private void selectUnitsToMove(List<Unit> units, Territory t, MouseEvent me)
         {
+            
+            //are any of the units ours, note - if no units selected thats still ok
+            for(Unit unit : units)
+            {
+                if(!unit.getOwner().equals(getCurrentPlayer()))
+                {
+                    return;
+                }
+            }
             
             if(getFirstSelectedTerritory() == null)
             {
