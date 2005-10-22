@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import java.util.*;
 
+
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -158,7 +159,8 @@ public class BattleTracker implements java.io.Serializable
             if (route.getLength() != 0)
             {
                 addNeutralBattle(route, units, tracker, id, data, bridge, changeTracker);
-                addEmptyBattle(route, units, tracker, id, data, bridge, changeTracker);
+                if(games.strategy.util.Match.someMatch(units, Matches.UnitIsLand))
+                    addEmptyBattle(route, units, tracker, id, data, bridge, changeTracker);
             }
         }
     }

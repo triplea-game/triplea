@@ -331,10 +331,9 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return canCarry;
     }
 
-    @SuppressWarnings("unchecked")
     public String move(Collection<Unit> units, Route route)
     {
-        return move(units, route, Collections.EMPTY_LIST);
+        return move(units, route, Collections.<Unit>emptyList());
     }
 
     public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)

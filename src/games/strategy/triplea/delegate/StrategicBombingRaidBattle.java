@@ -150,7 +150,7 @@ public class StrategicBombingRaidBattle implements Battle
                 
                 m_tracker.removeBattle(StrategicBombingRaidBattle.this);
 
-                bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + m_bombingRaidCost + MyFormatter.pluralize("ipc", m_bombingRaidCost));
+                bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + MyFormatter.pluralize("ipc", m_bombingRaidCost));
 
                 if(isPacificEdition())
                 {
@@ -162,7 +162,7 @@ public class StrategicBombingRaidBattle implements Battle
                         {
                             changeVP = ChangeFactory.attachmentPropertyChange(pa, (new Integer(-(m_bombingRaidCost / 10) + Integer.parseInt(pa.getVps()))).toString(), "vps");
                             bridge.addChange(changeVP);
-                            bridge.getHistoryWriter().addChildToEvent("AA raid costs + " + (m_bombingRaidCost / 10) + MyFormatter.pluralize("vp", (m_bombingRaidCost / 10)));
+                            bridge.getHistoryWriter().addChildToEvent("AA raid costs " + (m_bombingRaidCost / 10) + MyFormatter.pluralize("vp", (m_bombingRaidCost / 10)));
                         } 
                     } 
                 }
