@@ -23,15 +23,23 @@ import java.util.StringTokenizer;
  * for example, to roll 1,2,3 use -Dtriplea.scriptedRandom=1,2,3<p>
  * 
  * When scripted random runs out of numbers, the numbers will repeat.<p>
+ * 
+ * Special characters are also allowed in the sequence.
+ * 
+ * e - the random source will throw an error
+ * p - the random source will pause and never return.
  *
  *
  * @author Sean Bridges
  */
 public class ScriptedRandomSource implements IRandomSource
 {
-
-    private static final String SCRIPTED_RANDOM_PROPERTY = "triplea.scriptedRandom";
+    private final int PAUSE = -2;
+    private final int ERROR = -2;
     
+    private static final String SCRIPTED_RANDOM_PROPERTY = "triplea.scriptedRandom";
+ 
+
     private int[] m_numbers;
     private int m_currentIndex = 0;
     
@@ -53,7 +61,19 @@ public class ScriptedRandomSource implements IRandomSource
         
         for(int i = 0; i < m_numbers.length; i++)
         {
-            m_numbers[i] = Integer.parseInt(tokenizer.nextToken()) -1;
+            String token = tokenizer.nextToken();
+            if(token.equals("e"))
+            {
+                m_numbers[i] = ERROR;
+            }
+            else if(token.equals("p"))
+            {
+                m_numbers[i] = PAUSE;
+            }
+            else
+            {
+                m_numbers[i] = Integer.parseInt(token) -1;
+            }
         }
     }
     
@@ -67,6 +87,24 @@ public class ScriptedRandomSource implements IRandomSource
         int[] rVal = new int[count];
         for(int i = 0; i <count; i++)
         {
+            if(m_numbers[m_currentIndex] == PAUSE)
+            {
+                try
+                {
+                    Object o = new Object();
+                    synchronized(o)
+                    {
+                        o.wait();
+                    }
+                } catch (InterruptedException e)
+                {
+                }
+            }
+            if(m_numbers[i] == ERROR)
+            {
+                throw new IllegalStateException("Random number generator generating scripted error");
+            }
+            
             rVal[i] = m_numbers[m_currentIndex];
             m_currentIndex ++;
             if(m_currentIndex >= m_numbers.length)
