@@ -35,10 +35,13 @@ import games.strategy.util.*;
 public class GameMap extends GameDataComponent
 {
 
-	public Collection<Territory> m_territories = new ArrayList<Territory>();
+	private Collection<Territory> m_territories = new ArrayList<Territory>();
 	//note that all entries are unmodifiable
-	public HashMap<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory> >();
-
+	private HashMap<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory> >();
+	//for fast lookup based on the string name of the territory
+    private Map<String, Territory> m_territoryLookup = new HashMap<String,Territory>();
+    
+    
 	GameMap(GameData data)
 	{
 		super(data);
@@ -51,6 +54,7 @@ public class GameMap extends GameDataComponent
 
 		m_territories.add(t1);
 		m_connections.put(t1, Collections.<Territory>emptySet());
+        m_territoryLookup.put(t1.getName(), t1);
 	}
 
 	protected void addConnection(Territory t1, Territory t2)
@@ -82,16 +86,7 @@ public class GameMap extends GameDataComponent
 	 */
 	public Territory getTerritory(String s)
 	{
-		Iterator<Territory> iter = m_territories.iterator();
-		while(iter.hasNext())
-		{
-			Territory current = iter.next();
-			if(current.getName().equals(s) )
-			{
-				return current;
-			}
-		}
-		return null;
+		return m_territoryLookup.get(s);
 	}
 
 	/**
