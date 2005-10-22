@@ -280,9 +280,24 @@ public class StatPanel extends JPanel
 
         public synchronized int getRowCount()
         {
-            if(m_isDirty)
-                loadData();
-            return m_collectedData.length;
+            if(!m_isDirty)
+                return m_collectedData.length;
+            else
+            {
+                //no need to recalculate all the stats just to get the row count
+                //getting the row count is a fairly frequent operation, and will
+                //happen even if we are not displayed!
+                m_data.acquireChangeLock();
+                try
+                {
+                    return m_data.getPlayerList().size() + m_data.getAllianceTracker().getAliances().size();
+
+                }
+                finally
+                {
+                  m_data.releaseChangeLock();  
+                }
+            }
         }
 
         public synchronized void setGameData(GameData data)
@@ -522,11 +537,12 @@ class UnitsStat extends AbstractStat
     public double getValue(PlayerID player, GameData data)
     {
         int rVal = 0; 
+        Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
         Iterator iter = data.getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
             Territory place = (Territory) iter.next();
-            rVal += place.getUnits().countMatches(Matches.unitIsOwnedBy(player));
+            rVal += place.getUnits().countMatches(ownedBy);
             
         }
         return rVal;
@@ -545,12 +561,14 @@ class TUVStat extends AbstractStat
     {
         IntegerMap<UnitType> costs = BattleCalculator.getCosts(player, data);
         
+        Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
+        
         int rVal = 0; 
         Iterator iter = data.getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
             Territory place = (Territory) iter.next();
-            Collection owned = place.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+            Collection owned = place.getUnits().getMatches(unitIsOwnedBy);
             rVal += BattleCalculator.getTUV(owned, costs);
         }
         return rVal;
