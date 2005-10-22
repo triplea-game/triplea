@@ -29,7 +29,6 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.*;
 
-import java.io.Serializable;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -89,8 +88,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     //we keep a stack of executables
     //this allows us to save our state 
     //and resume while in the middle of a battle 
-    private Stack<IExecutable> m_stack = new Stack<IExecutable>();
-    private IExecutable m_current;
+    private final ExecutionStack m_stack = new ExecutionStack();
     private List<String> m_stepStrings;
 
     public MustFightBattle(Territory battleSite, PlayerID attacker,
@@ -321,16 +319,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public void fight(IDelegateBridge bridge)
     {
         //we have already started
-        if(m_current != null)
+        if(m_stack.isExecuting())
         {
             ITripleaDisplay display = getDisplay(bridge);
             display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
 
             display.listBattleSteps(m_battleID, m_stepStrings);
             
-            
-            m_stack.push(m_current);
-            drainStack(bridge);
+            m_stack.execute(bridge, m_data);
             return;
         }
         
@@ -379,7 +375,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //push on stack in opposite order of execution
         pushFightLoopOnStack(bridge);
         pushFightStartOnStack();
-        drainStack(bridge);
+        m_stack.execute(bridge, m_data);
     }
 
 
@@ -525,7 +521,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable fireAAGuns = new IExecutable()
         {
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 fireAAGuns(bridge);
             }
@@ -535,7 +531,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable fireNavalBombardment = new IExecutable()
         {
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 fireNavalBombardment(bridge);
             }
@@ -545,7 +541,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         IExecutable removeNonCombatatants = new IExecutable()
         {
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 removeNonCombatants();
             }
@@ -598,7 +594,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 attackSubs(bridge);
             }
@@ -607,7 +603,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 if (isFourthEdition())
                     defendSubs(bridge, defendingSubs);
@@ -618,7 +614,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 attackNonSubs(bridge);
             }
@@ -628,7 +624,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 if (!isFourthEdition())
                 {
@@ -647,7 +643,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
 
                 defendNonSubs(bridge);
@@ -664,7 +660,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 if (!isFourthEdition())
                 {
@@ -678,7 +674,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 
                 if (m_attackingUnits.size() == 0)
@@ -699,7 +695,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 
                 if(!m_over && canAttackerRetreatSubs)
@@ -710,7 +706,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 if(!m_over &&  canDefenderRetreatSubs)
                     defenderRetreatSubs(bridge);
@@ -719,7 +715,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 if (canAttackerRetreatPlanes())
                     attackerRetreatPlanes(bridge);
@@ -729,7 +725,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
        
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 attackerRetreat(bridge);
                 
@@ -739,7 +735,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         final IExecutable loop = new IExecutable()
         {
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 pushFightLoopOnStack(bridge);
             }
@@ -747,7 +743,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         steps.add(new IExecutable(){
 
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 if (!m_over)
                 {
@@ -1231,15 +1227,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
     }
     
-    private void drainStack(IDelegateBridge bridge)
-    {
-        while(!m_stack.isEmpty())
-        {
-            m_current = m_stack.pop();
-            m_current.execute(m_stack, bridge, m_data);
-        }
-    }
-
     private void defendNonSubs(IDelegateBridge bridge)
     {
 
@@ -1407,7 +1394,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         private DiceRoll m_dice;
         private Collection<Unit> m_casualties;
      
-        public void execute(Stack<IExecutable> stack, final IDelegateBridge bridge, GameData data)
+        public void execute(ExecutionStack stack, final IDelegateBridge bridge, GameData data)
         {
             if (!canFireAA())
                 return;
@@ -1415,7 +1402,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             IExecutable rollDice = new IExecutable()
             {
             
-                public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+                public void execute(ExecutionStack stack, IDelegateBridge bridge,
                         GameData data)
                 {
                     rollDice(bridge);
@@ -1427,7 +1414,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             IExecutable selectCasualties = new IExecutable()
             {
             
-                public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+                public void execute(ExecutionStack stack, IDelegateBridge bridge,
                         GameData data)
                 {
                     selectCasualties(bridge);
@@ -1437,7 +1424,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             IExecutable notifyCasualties = new IExecutable()
             {
 
-                public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
                     notifyCasualties(bridge);
                     
@@ -1946,11 +1933,7 @@ class NullInvocationHandler implements InvocationHandler
     }
 }
 
- 
-interface IExecutable extends Serializable
-{
-    public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data);
-}
+
 
 
 
@@ -1978,7 +1961,7 @@ class Fire implements IExecutable
     
     public Fire(Collection<Unit> attackableUnits, boolean canReturnFire, PlayerID firingPlayer, PlayerID hitPlayer, 
             Collection<Unit> firingUnits, String stepName, String text, MustFightBattle battle, 
-            boolean defending, Map<Unit, Collection<Unit>> dependentUnits, Stack<IExecutable> stack)
+            boolean defending, Map<Unit, Collection<Unit>> dependentUnits, ExecutionStack stack)
     {
         m_attackableUnits = attackableUnits;
         
@@ -2077,7 +2060,7 @@ class Fire implements IExecutable
     /**
      * We must execute in atomic steps, push these steps onto the stack, and let them execute
      */
-    public void execute(Stack<IExecutable> stack, IDelegateBridge bridge, GameData data)
+    public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
     {
         //add to the stack so we will execute,
         //we want to roll dice, select casualties, then notify in that order, so 
@@ -2086,7 +2069,7 @@ class Fire implements IExecutable
         IExecutable rollDice = new IExecutable()
         {
         
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+            public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
                 rollDice(bridge, data);
@@ -2096,7 +2079,7 @@ class Fire implements IExecutable
         IExecutable selectCasualties = new IExecutable()
         {
         
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+            public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
                 selectCasualties(bridge, data);
@@ -2106,7 +2089,7 @@ class Fire implements IExecutable
         IExecutable notifyCasualties = new IExecutable()
         {
         
-            public void execute(Stack<IExecutable> stack, IDelegateBridge bridge,
+            public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
                 notifyAndRemoveCasualties(bridge);
