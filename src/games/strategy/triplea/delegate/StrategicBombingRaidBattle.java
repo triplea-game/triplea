@@ -115,6 +115,7 @@ public class StrategicBombingRaidBattle implements Battle
             
        
         bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite);
+        bridge.getHistoryWriter().setRenderingData(m_battleSite);
         BattleCalculator.sortPreBattle(m_units, m_data);
 
 

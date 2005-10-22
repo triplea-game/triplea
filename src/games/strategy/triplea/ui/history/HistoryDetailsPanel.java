@@ -12,7 +12,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
 package games.strategy.triplea.ui.history;
 
 import javax.swing.*;
@@ -25,79 +24,90 @@ import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.*;
 import games.strategy.triplea.delegate.dataObjects.*;
 
-
 public class HistoryDetailsPanel extends JPanel
 {
-  private final GameData m_data;
-  private JTextArea m_title = new JTextArea();
-  private JScrollPane m_scroll = new JScrollPane(m_title);
-  private final MapPanel m_mapPanel;
+    private final GameData m_data;
 
-  public HistoryDetailsPanel(GameData data, MapPanel mapPanel)
-  {
-    m_data = data;
-    setLayout(new  GridBagLayout());
-    m_title.setWrapStyleWord(true);
-    m_title.setBackground(this.getBackground());
-    m_title.setLineWrap(true);
-    m_title.setBorder(null);
-    m_title.setEditable(false);
-    m_scroll.setBorder(null);
-    m_mapPanel = mapPanel;
-  }
+    private JTextArea m_title = new JTextArea();
 
-  @SuppressWarnings("unchecked")
-  public void render(HistoryNode node)
-  {
-    removeAll();
-    m_mapPanel.setRoute(null);
+    private JScrollPane m_scroll = new JScrollPane(m_title);
 
+    private final MapPanel m_mapPanel;
 
-    Insets insets = new Insets(5,0,0,0);
-
-    m_title.setText(node.getTitle());
-    add(m_scroll, new GridBagConstraints(0,0,1,1,1,0.1,GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0,0));
-
-    GridBagConstraints mainConstraints = new GridBagConstraints(0,1,1,1,1,0.9,GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0,0);
-
-    if(node instanceof Renderable)
+    public HistoryDetailsPanel(GameData data, MapPanel mapPanel)
     {
-      Object details = ( (Renderable) node).getRenderingData();
-      if(details instanceof DiceRoll)
-      {
-        DicePanel dicePanel = new DicePanel(m_mapPanel.getUIContext());
-        dicePanel.setDiceRoll((DiceRoll) details);
-        add( dicePanel, mainConstraints);
-      }
-      else if(details instanceof MoveDescription)
-      {
-        MoveDescription moveMessage = (MoveDescription) details;
-        renderUnits(mainConstraints, moveMessage.getUnits());
-        m_mapPanel.setRoute(moveMessage.getRoute());
-        if(!m_mapPanel.isShowing(moveMessage.getRoute().getEnd()))
-           m_mapPanel.centerOn(moveMessage.getRoute().getEnd());
-      }
-      else if(details instanceof Collection)
-      {
-        Collection<Unit> units = (Collection<Unit>) details;
-        renderUnits(mainConstraints, units);
-      }
+        m_data = data;
+        setLayout(new GridBagLayout());
+        m_title.setWrapStyleWord(true);
+        m_title.setBackground(this.getBackground());
+        m_title.setLineWrap(true);
+        m_title.setBorder(null);
+        m_title.setEditable(false);
+        m_scroll.setBorder(null);
+        m_mapPanel = mapPanel;
+    }
 
+    @SuppressWarnings("unchecked")
+    public void render(HistoryNode node)
+    {
+        removeAll();
+        m_mapPanel.setRoute(null);
+
+        Insets insets = new Insets(5, 0, 0, 0);
+
+        m_title.setText(node.getTitle());
+        add(m_scroll,
+                new GridBagConstraints(0, 0, 1, 1, 1, 0.1,
+                        GridBagConstraints.NORTH, GridBagConstraints.BOTH,
+                        insets, 0, 0));
+
+        GridBagConstraints mainConstraints = new GridBagConstraints(0, 1, 1, 1,
+                1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH,
+                insets, 0, 0);
+
+        if (node instanceof Renderable)
+        {
+            Object details = ((Renderable) node).getRenderingData();
+            if (details instanceof DiceRoll)
+            {
+                DicePanel dicePanel = new DicePanel(m_mapPanel.getUIContext());
+                dicePanel.setDiceRoll((DiceRoll) details);
+                add(dicePanel, mainConstraints);
+            } else if (details instanceof MoveDescription)
+            {
+                MoveDescription moveMessage = (MoveDescription) details;
+                renderUnits(mainConstraints, moveMessage.getUnits());
+                m_mapPanel.setRoute(moveMessage.getRoute());
+                if (!m_mapPanel.isShowing(moveMessage.getRoute().getEnd()))
+                    m_mapPanel.centerOn(moveMessage.getRoute().getEnd());
+            } else if (details instanceof Collection)
+            {
+                Collection<Unit> units = (Collection<Unit>) details;
+                renderUnits(mainConstraints, units);
+            } else if (details instanceof Territory)
+            {
+                Territory t = (Territory) details;
+                if (!m_mapPanel.isShowing(t))
+                    m_mapPanel.centerOn(t);
+
+            }
+
+        }
+        add(Box.createGlue());
+
+        validate();
+        repaint();
 
     }
-    add(Box.createGlue());
 
-    validate();
-    repaint();
-
-  }
-
-  private void renderUnits(GridBagConstraints mainConstraints, Collection<Unit> units)
-  {
-    Collection unitsCategories = UnitSeperator.categorize(units);
-    SimpleUnitPanel unitsPanel = new SimpleUnitPanel(m_mapPanel.getUIContext());
-    unitsPanel.setUnitsFromCategories(unitsCategories, m_data);
-    add(unitsPanel, mainConstraints);
-  }
+    private void renderUnits(GridBagConstraints mainConstraints,
+            Collection<Unit> units)
+    {
+        Collection unitsCategories = UnitSeperator.categorize(units);
+        SimpleUnitPanel unitsPanel = new SimpleUnitPanel(m_mapPanel
+                .getUIContext());
+        unitsPanel.setUnitsFromCategories(unitsCategories, m_data);
+        add(unitsPanel, mainConstraints);
+    }
 
 }
