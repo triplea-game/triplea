@@ -32,7 +32,7 @@ import games.strategy.util.*;
  * Utility methods for finding routes and distances between different territories.
  *
  */
-public class GameMap extends GameDataComponent
+public class GameMap extends GameDataComponent implements Iterable<Territory>
 {
 
 	private Collection<Territory> m_territories = new ArrayList<Territory>();
