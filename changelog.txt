@@ -1,8 +1,12 @@
+* on PBEM screen, add id field (for challenge id) (sgb)
+
+* when clicking on a battle in history, center map on that territory (sgb)
+
 * allow unloading units from a battle zone into newly conquered territories (sgb)
 
 * allow saving games during battles (sgb)
 
-* shift click on a unit to select all units in the territory (sgb)
+* shift click on a unit (or territory) to select all units in the territory (sgb)
 
 * rename attatchment to attachment (sgb)
 

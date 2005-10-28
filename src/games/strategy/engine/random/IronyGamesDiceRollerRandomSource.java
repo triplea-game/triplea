@@ -32,13 +32,14 @@ import java.awt.*;
 public class IronyGamesDiceRollerRandomSource implements IRandomSource
 {
     private final String m_player1Email;
-
     private final String m_player2Email;
+    private final String m_gameID;
 
-    public IronyGamesDiceRollerRandomSource(String player1Email, String player2Email)
+    public IronyGamesDiceRollerRandomSource(String player1Email, String player2Email, String gameID)
     {
         m_player1Email = player1Email;
         m_player2Email = player2Email;
+        m_gameID = gameID;
     }
 
     /**
@@ -46,7 +47,7 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
      */
     public void test()
     {
-        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email);
+        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID);
         dialog.setTest();
 
         dialog.roll();
@@ -59,7 +60,7 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
     public int[] getRandom(final int max, final int count, final String annotation)
     {
 
-        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email);
+        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID);
         dialog.roll();
         return dialog.getDiceRoll();
     }
@@ -120,6 +121,7 @@ class HttpDiceRollerDialog extends JDialog
     private final String m_email1;
 
     private final String m_email2;
+    private final String m_gameID;
 
     private Object m_lock;
 
@@ -127,7 +129,7 @@ class HttpDiceRollerDialog extends JDialog
 
     private JPanel m_buttons = new JPanel();
 
-    public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2)
+    public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2, String gameID)
     {
         super(owner, "Dice roller", true);
         m_max = max;
@@ -135,6 +137,7 @@ class HttpDiceRollerDialog extends JDialog
         m_annotation = annotation;
         m_email1 = email1;
         m_email2 = email2;
+        m_gameID = gameID;
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         m_exitButton.addActionListener(new ActionListener()
@@ -310,7 +313,7 @@ class HttpDiceRollerDialog extends JDialog
             String text = null;
             try
             {
-                text = DiceStatic.postRequest(m_email1, m_email2, m_max, m_count, m_annotation);
+                text = DiceStatic.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID);
 
                 if (text.length() == 0)
                 {
@@ -394,12 +397,17 @@ class HttpDiceRollerDialog extends JDialog
 class DiceStatic
 {
 
-    public static String postRequest(String player1, String player2, int max, int numDice, String text) throws IOException
+    public static String postRequest(String player1, String player2, int max, int numDice, String text, String gameID) throws IOException
     {
+        if(gameID.trim().length() == 0)
+            gameID = "TripleA";
+        String message = gameID + ":" + text;
+        
+        
         //text must be limited to 91 characters, not quite sure why
         //if we dont do this the dice roller will fail
-        if (text.length() > 91)
-            text = text.substring(0, 90);
+        if (message.length() > 99)
+            message = text.substring(0, 98);
 
         URL url = new URL("http://www.irony.com/cgi-bin/mroll-query");
         URLConnection urlConn = url.openConnection();
@@ -415,7 +423,7 @@ class DiceStatic
                 //how many times to repeat
                 "&numroll=" + URLEncoder.encode("1", "UTF-8") +
 
-                "&subject=" + URLEncoder.encode("TripleA:" + text, "UTF-8") + "&roller=" + URLEncoder.encode(player1, "UTF-8") + "&gm="
+                "&subject=" + URLEncoder.encode(message, "UTF-8") + "&roller=" + URLEncoder.encode(player1, "UTF-8") + "&gm="
                 + URLEncoder.encode(player2, "UTF-8");
 
         out.writeBytes(content);

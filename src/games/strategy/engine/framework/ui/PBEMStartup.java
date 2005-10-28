@@ -24,12 +24,15 @@ public class PBEMStartup extends JPanel
 {
     private static final String EMAIL_1_PROP_NAME = "games.strategy.engine.framework.ui.PBEMStartup.EMAIL2";
     private static final String EMAIL_2_PROP_NAME = "games.strategy.engine.framework.ui.PBEMStartup.EMAIL1";
+    private static final String EMAIL_ID_PROP_NAME = "games.strategy.engine.framework.ui.PBEMStartup.ID";    
 
     GridBagLayout m_gridBagLayout1 = new GridBagLayout();
     JTextField m_email1TextField = new JTextField();
     JTextField m_email2TextField = new JTextField();
+    JTextField m_gameIDTextField = new JTextField();
     JLabel m_email1Label = new JLabel();
     JLabel m_email2Label = new JLabel();
+    JLabel m_gameIDLabel = new JLabel();
     JButton m_testButton = new JButton();
     JTextArea m_instructionsText = new JTextArea();
 
@@ -62,6 +65,7 @@ public class PBEMStartup extends JPanel
         this.setLayout(m_gridBagLayout1);
         m_email1Label.setText("To:");
         m_email2Label.setText("Cc:");
+        m_gameIDLabel.setText("ID:");
         m_testButton.setText("Test Email");
         m_testButton.addActionListener(new PBEMStartup_m_testButton_actionAdapter(this));
         m_email2TextField.setText("");
@@ -69,27 +73,46 @@ public class PBEMStartup extends JPanel
 
         m_email1TextField.setText("");
         m_email1TextField.setColumns(50);
+        
+        m_gameIDTextField.setText("");
+        m_gameIDTextField.setColumns(10);
+        
+        
         m_instructionsText.setEditable(false);
         m_instructionsText.setText("PBEM Properties");
         m_instructionsText.setLineWrap(true);
         m_instructionsText.setWrapStyleWord(true);
-        this.add(m_email1TextField, new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
-                0, 0), 0, 0));
-        this.add(m_email2TextField, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
-                0, 0), 0, 0));
-        this.add(m_testButton, new GridBagConstraints(0, 4, 3, 1, 0.2, 0.2, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        this.add(m_email2Label, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0,
-                5), 0, 0));
-        this.add(m_email1Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, new Insets(0, 20,
-                0, 5), 0, 0));
+
         this.add(m_instructionsText, new GridBagConstraints(0, 0, 5, 1, 0.0, 0.2, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5,
                 5, 5), 0, 0));
+        
+        
+        this.add(m_email1TextField, new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
+                0, 0), 0, 0));
+        this.add(m_email1Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, new Insets(0, 20,
+                0, 5), 0, 0));
+        
+        this.add(m_email2TextField, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
+                0, 0), 0, 0));
+        this.add(m_email2Label, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0,
+                5), 0, 0));
+
+        this.add(m_gameIDTextField, new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
+                0, 0), 0, 0));
+        this.add(m_gameIDLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0,
+                5), 0, 0));
+
+        
+        
+        this.add(m_testButton, new GridBagConstraints(0, 5, 3, 1, 0.2, 0.2, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                new Insets(0, 0, 0, 0), 0, 0));
+        
+        
     }
 
     void m_testButton_actionPerformed(ActionEvent e)
     {
-        IronyGamesDiceRollerRandomSource random = new IronyGamesDiceRollerRandomSource(m_email1TextField.getText(), m_email2TextField.getText());
+        IronyGamesDiceRollerRandomSource random = new IronyGamesDiceRollerRandomSource(m_email1TextField.getText(), m_email2TextField.getText(), getGameID());
         random.test();
     }
 
@@ -107,6 +130,12 @@ public class PBEMStartup extends JPanel
     {
         data.getProperties().set(EMAIL_1_PROP_NAME, getEmail1());
         data.getProperties().set(EMAIL_2_PROP_NAME, getEmail2());
+        data.getProperties().set(EMAIL_ID_PROP_NAME, getGameID());        
+    }
+
+    public String getGameID()
+    {
+        return m_gameIDTextField.getText();
     }
     
     public void loadEmails(GameData data)
@@ -121,6 +150,11 @@ public class PBEMStartup extends JPanel
             if(m_email2TextField.getText().trim().length() == 0)
                 m_email2TextField.setText(data.getProperties().get(EMAIL_2_PROP_NAME).toString());            
         }
+        if(data.getProperties().get(EMAIL_ID_PROP_NAME) != null)
+        {
+            if(m_gameIDTextField.getText().trim().length() == 0)
+                m_gameIDTextField.setText(data.getProperties().get(EMAIL_ID_PROP_NAME).toString());            
+        }        
 
         
     }

@@ -328,7 +328,7 @@ public class LauncherFrame extends JFrame
                 if (m_gameTypePanel.isPBEM())
                 {
                     IronyGamesDiceRollerRandomSource randomSource = new IronyGamesDiceRollerRandomSource(m_pbemStartup.getEmail1(), m_pbemStartup
-                            .getEmail2());
+                            .getEmail2(), m_pbemStartup.getGameID());
                     game.setRandomSource(randomSource);
                     m_pbemStartup.storeEmails(m_gameData);
                 }
