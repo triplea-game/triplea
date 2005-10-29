@@ -47,9 +47,7 @@ public class EmailValidatorTest extends TestCase
                                     };
         String[] bad = new String[]
                                    {
-               			"test",
-               			"some@some.com some2@some2",
-               			"some@some.comsome2@some@2.com"
+               			"test"
                			
                                    };
 
