@@ -718,7 +718,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
-                if (canAttackerRetreatPlanes())
+                if (canAttackerRetreatPlanes() && !m_over)
                     attackerRetreatPlanes(bridge);
                 
             }
