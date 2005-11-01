@@ -98,8 +98,6 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
             return "Must finish " + getFightingWord(m_currentBattle) + " in " + m_currentBattle.getTerritory() + " first";
         }
         
-        m_currentBattle = battle;
-        
         //does the battle exist
         if (battle == null)
             return "No pending battle in" + territory.getName();
@@ -113,6 +111,7 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
             return "Must complete " + getFightingWord(battle) + " in " + name + " first";
         }
 
+        m_currentBattle = battle;
         //fight the battle
         battle.fight(m_bridge);
 
