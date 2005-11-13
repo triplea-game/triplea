@@ -100,7 +100,7 @@ public class ScriptedRandomSource implements IRandomSource
                 {
                 }
             }
-            if(m_numbers[i] == ERROR)
+            if(m_numbers[m_currentIndex] == ERROR)
             {
                 throw new IllegalStateException("Random number generator generating scripted error");
             }
