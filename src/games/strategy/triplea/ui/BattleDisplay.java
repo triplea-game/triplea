@@ -226,46 +226,194 @@ public class BattleDisplay extends JPanel
         }
     }
 
-    private Territory getSubmerge(String message)
+    private Territory getSubmerge(final String message)
     {
-        String ok = "Submerge";
-        String cancel = "Remain";
-        String[] options =
-        { ok, cancel };
-        int choice = JOptionPane.showOptionDialog(this, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-                cancel);
-        boolean retreat = (choice == 0);
-        if (retreat)
-            return m_location;
-        else
-            return null;
+ 
+        if(SwingUtilities.isEventDispatchThread())
+        {
+            throw new IllegalStateException("Should not be called from dispatch thread");
+        }
+        
+        final Territory[] retreatTo = new Territory[1];
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        final Action action = new AbstractAction("Submerge Subs?")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                String ok = "Submerge";
+                String cancel = "Remain";
+
+                String wait = "Ask Me Later";
+                
+                String[] options =
+                { ok, cancel, wait };
+                int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Submerge Subs?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+                        cancel);
+                
+                //dialog dismissed
+                if(choice == -1)
+                    return;
+                //wait
+                if(choice == 2)
+                    return;
+                
+                //remain
+                if (choice == 1)
+                {
+                    latch.countDown();
+                    return;
+                }
+                
+                //submerge
+                
+                retreatTo[0] =  m_location;
+                latch.countDown();
+                 
+            }
+            
+        };
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_actionButton.setAction(action);
+            }
+        });
+        
+        SwingUtilities.invokeLater(new Runnable()
+                {
+                
+                    public void run()
+                    {
+                        action.actionPerformed(null);
+                    }
+                });
+
+        
+        try
+        {
+            latch.await();
+        } catch (InterruptedException e1)
+        {
+            e1.printStackTrace();
+        }
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_actionButton.setAction(null);
+        
+            }
+        
+        });
+        
+        
+        return retreatTo[0];        
+        
 
     }
 
-    private Territory getRetreatInternal(String message, Collection<Territory> possible)
+    private Territory getRetreatInternal(final String message, final  Collection<Territory> possible)
     {
-        String ok = "Retreat";
-        String cancel = "Remain";
-        String[] options =
-        { ok, cancel };
-        int choice = JOptionPane.showOptionDialog(this, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-                cancel);
-        boolean retreat = (choice == 0);
-        if (!retreat)
-            return null;
-
-        RetreatComponent comp = new RetreatComponent(possible);
-        int option = JOptionPane.showConfirmDialog(this, comp, message, JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION)
+        if(SwingUtilities.isEventDispatchThread())
         {
-            if (comp.getSelection() != null)
-                return comp.getSelection();
-        } else
-        {
-            return getRetreatInternal( message, possible);
+            throw new IllegalStateException("Should not be called from dispatch thread");
         }
+        
+        final Territory[] retreatTo = new Territory[1];
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        final Action action = new AbstractAction("Retreat?")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                String ok = "Retreat";
+                String cancel = "Remain";
+                String wait = "Ask Me Later";
+                
+                String[] options =
+                { ok, cancel, wait };
+                int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+                        cancel);
+                
+                //dialog dismissed
+                if(choice == -1)
+                    return;
+                //wait
+                if(choice == 2)
+                    return;
+                
+                //remain
+                if (choice == 1)
+                {
+                    latch.countDown();
+                    return;
+                }
+                
+                //if you have eliminated the impossible, whatever remains, no matter
+                //how improbable, must be the truth
+                //retreat
 
-        return null;
+                RetreatComponent comp = new RetreatComponent(possible);
+                int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message, JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION)
+                {
+                    if (comp.getSelection() != null)
+                    {
+                        retreatTo[0] =  comp.getSelection();
+                        latch.countDown();
+                    }
+                        
+                } 
+            }
+            
+        };
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_actionButton.setAction(action);
+            }
+        });
+        
+        SwingUtilities.invokeLater(new Runnable()
+                {
+                
+                    public void run()
+                    {
+                        action.actionPerformed(null);
+                    }
+                });
+
+        
+        try
+        {
+            latch.await();
+        } catch (InterruptedException e1)
+        {
+            e1.printStackTrace();
+        }
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_actionButton.setAction(null);
+        
+            }
+        
+        });
+        
+        
+        return retreatTo[0];
     }
 
     private class RetreatComponent extends JPanel
