@@ -27,7 +27,7 @@ import java.io.Serializable;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class Territory extends NamedAttatchable implements NamedUnitHolder, Serializable
+public class Territory extends NamedAttatchable implements NamedUnitHolder, Serializable, Comparable<Territory>
 {
   private static final long serialVersionUID = -6390555051736721082L;
 
@@ -77,5 +77,10 @@ public class Territory extends NamedAttatchable implements NamedUnitHolder, Seri
   public String toString()
   {
     return getName();
+  }
+
+  public int compareTo(Territory o)
+  {
+    return getName().compareTo(o.getName());
   }
 }
