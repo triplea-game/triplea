@@ -734,10 +734,6 @@ public class MovePanel extends ActionPanel
             else if(!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory)
                 selectEndPoint(t);
             
-            
-       
-            
-    
         }
 
         private void selectUnitsToMove(List<Unit> units, Territory t, MouseEvent me)
@@ -751,6 +747,9 @@ public class MovePanel extends ActionPanel
                     return;
                 }
             }
+            
+            if(units.isEmpty() && !me.isShiftDown())
+                return;
             
             if(getFirstSelectedTerritory() == null)
             {
