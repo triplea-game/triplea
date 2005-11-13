@@ -1575,6 +1575,10 @@
                 <property name="Russians bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
+                
+				<property name="Kamikaze Airplanes" value="false" editable="true">
+					<boolean/>
+				</property>                
 
                 <!-- Use 4th Edition Rules -->
 		<property name="4th Edition" value="true" editable="false">
