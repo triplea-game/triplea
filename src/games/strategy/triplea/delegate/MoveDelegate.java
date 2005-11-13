@@ -397,7 +397,14 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
 
         error = validateAirCanLand(units, route, player);
         if (error != null)
-            return error;
+        {
+          if(m_data.getProperties().get(Constants.KAMIKAZE, false ) &&
+                  getRemotePlayer().confirmMoveKamikaze() )  
+          {
+              error = null;
+          }
+          return error;
+        }
 
         error = validateTransport(units, route, player, transportsToLoad);
         if (error != null)
@@ -752,7 +759,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             }
         }
         
-        //these rae the units we have to be sure that can land somewhere
+        //these are the units we have to be sure that can land somewhere
         Match<Unit> ownedAirMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitOwnedBy(m_player) );
         Collection<Unit> ownedAir = new ArrayList<Unit>();
         ownedAir.addAll( Match.getMatches(units, ownedAirMatch ));
@@ -788,9 +795,8 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             return null;
         
         //not everything can land on a carrier and not kamikaze, fail    
-        if(!m_data.getProperties().get(Constants.KAMIKAZE, false))
-            if(!Match.allMatch(airThatMustLandOnCarriers, Matches.UnitCanLandOnCarrier))
-                return "No where for the air unit to land";
+        if(!Match.allMatch(airThatMustLandOnCarriers, Matches.UnitCanLandOnCarrier))
+           return "No where for the air unit to land";
         
         //now, find out where we can land on carriers
         IntegerMap<Integer> carrierCapacity = new IntegerMap<Integer>();
@@ -832,13 +838,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             {
                 if(i == -1)
                 {
-                    if(m_data.getProperties().get(Constants.KAMIKAZE, false))
-                    {
-                        if(!getRemotePlayer().confirmMoveKamikaze())
-                            return "Move Aborted";
-                    }
-                    else                        
-                        return "No place for unit to land";
+                    return "No place for unit to land";
                 }
 
                 Integer current = new Integer(i);
