@@ -1,3 +1,9 @@
+Changes for 0.7.2.1
+
+* fix bug  1357768  0.7.2 dead defenders firing 
+
+Change for 0.7.2
+
 * on PBEM screen, add id field (for challenge id) (sgb)
 
 * when clicking on a battle in history, center map on that territory (sgb)
