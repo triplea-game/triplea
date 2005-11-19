@@ -663,10 +663,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
-                if (!isFourthEdition())
-                {
-                    clearWaitingToDie(bridge);
-                }
+
+               clearWaitingToDie(bridge);
 
             }
             
