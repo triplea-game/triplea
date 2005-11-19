@@ -290,7 +290,7 @@ public class StatPanel extends JPanel
                 m_data.acquireChangeLock();
                 try
                 {
-                    return m_data.getPlayerList().size() + m_data.getAllianceTracker().getAliances().size();
+                    return m_data.getPlayerList().size() + getAlliances().size();
 
                 }
                 finally
