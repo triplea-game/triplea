@@ -1,6 +1,8 @@
 Changes for 0.7.2.1
 
-* fix bug  1357768  0.7.2 dead defenders firing 
+* fix stat panel in europe (sgb)
+
+* fix bug  1357768  0.7.2 dead defenders firing (sgb)
 
 Change for 0.7.2
 
