@@ -1,0 +1,1 @@
+echo $INSTALL_PATH

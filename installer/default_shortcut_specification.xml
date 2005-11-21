@@ -1,0 +1,22 @@
+
+<shortcuts os="windows">
+    <programGroup defaultName="TripleA" location="startMenu"/>
+    <shortcut 
+        os="windows"
+        name="TripleA"
+        target="$INSTALL_PATH\triplea\triplea_--TRIPLEA_VERSION--\triplea_windows.bat"
+        commandLine=""
+        workingDirectory="$INSTALL_PATH\triplea\triplea_--TRIPLEA_VERSION--\"
+        description="Start TripleA"
+        iconFile="$INSTALL_PATH\triplea\triplea_--TRIPLEA_VERSION--\icons\triplea_icon.ico"
+        iconIndex="0"
+        initialState="normal"
+        programGroup="yes"
+        desktop="yes"
+        applications="no"
+        startMenu="yes"
+        startup="no">
+
+        <createForPack name="Base"/>
+    </shortcut>
+</shortcuts>
