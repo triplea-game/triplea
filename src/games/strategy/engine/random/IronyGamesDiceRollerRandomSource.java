@@ -407,7 +407,7 @@ class DiceStatic
         //text must be limited to 91 characters, not quite sure why
         //if we dont do this the dice roller will fail
         if (message.length() > 99)
-            message = text.substring(0, 98);
+            message = message.substring(0, 98);
 
         URL url = new URL("http://www.irony.com/cgi-bin/mroll-query");
         URLConnection urlConn = url.openConnection();
