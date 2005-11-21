@@ -14,7 +14,7 @@
 <mainClassName>com.izforge.izpack.installer.Installer</mainClassName>
 <maximumMemoryHeap>-1</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
-<minimumVersion></minimumVersion>
+<minimumVersion>1.5</minimumVersion>
 <skeletonName>Windowed Wrapper</skeletonName>
 <skeletonProperties>
 <key>Message</key>
