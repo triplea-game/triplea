@@ -159,7 +159,7 @@ public class BattleTracker implements java.io.Serializable
             if (route.getLength() != 0)
             {
                 addNeutralBattle(route, units, tracker, id, data, bridge, changeTracker);
-                if(games.strategy.util.Match.someMatch(units, Matches.UnitIsLand))
+                if(games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
                     addEmptyBattle(route, units, tracker, id, data, bridge, changeTracker);
             }
         }
