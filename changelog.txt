@@ -1,3 +1,9 @@
+* fix bid purchase (sgb)
+
+* Iron blitz mod (ic)
+
+* fixed string index out of bounds when rolling pbem dice (sgb)
+
 Changes for 0.7.2.1
 
 * fix stat panel in europe (sgb)

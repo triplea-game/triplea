@@ -201,7 +201,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     {
         if (bid)
         {
-            if(BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
+            if(!BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
                 return;
         }
         //we have no production frontier
