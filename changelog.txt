@@ -1,3 +1,5 @@
+* fix convoys (adam_j)
+
 * fix bid purchase (sgb)
 
 * Iron blitz mod (ic)
