@@ -1,3 +1,5 @@
+Change for 0.7.2.2
+
 * fix convoys (adam_j)
 
 * fix bid purchase (sgb)
