@@ -59,7 +59,7 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
      */
     public int[] getRandom(final int max, final int count, final String annotation)
     {
-
+        
         HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID);
         dialog.roll();
         return dialog.getDiceRoll();
@@ -199,8 +199,17 @@ class HttpDiceRollerDialog extends JDialog
 
     public void notifyError()
     {
-        m_exitButton.setEnabled(true);
-        m_reRollButton.setEnabled(true);
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_exitButton.setEnabled(true);
+                m_reRollButton.setEnabled(true);                
+            }
+        
+        });
+        
     }
 
     public int[] getDiceRoll()
@@ -275,7 +284,17 @@ class HttpDiceRollerDialog extends JDialog
                 m_lock.notifyAll();
             }
         }
-        setVisible(false);
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                setVisible(false);
+            }
+        
+        });
+        
     }
 
     /**
