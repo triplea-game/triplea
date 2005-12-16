@@ -1,3 +1,11 @@
+Changes for 0.7.2.3
+
+* fix invalid roll count in multiplayer games when all bombers are hit by aa guns
+
+* fix null pointer when placing units in sea zone with enemy units (classic game)
+
+* fix null pointer when when selecting null territories during movement
+
 Change for 0.7.2.2
 
 * fix convoys (adam_j)
