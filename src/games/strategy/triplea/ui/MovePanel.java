@@ -715,7 +715,8 @@ public class MovePanel extends ActionPanel
             //check if we can handle this event, are we active?
             if(!getActive())
                 return;
-           
+           if(t == null)
+               return;
           
 
             
