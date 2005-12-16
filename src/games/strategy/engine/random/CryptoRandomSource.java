@@ -111,7 +111,7 @@ public class CryptoRandomSource implements IRandomSource
     public int[] getRandom(int max, int count, String annotation)
     {
         if (count <= 0)
-            throw new IllegalArgumentException("Invalid count");
+            throw new IllegalArgumentException("Invalid count:" + count);
 
         Vault vault = m_game.getVault();
 
