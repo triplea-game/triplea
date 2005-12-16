@@ -317,7 +317,10 @@ public class StrategicBombingRaidBattle implements Battle
         {
             int rollCount = BattleCalculator.getRolls(m_units, m_attacker, false);
             if (rollCount == 0)
+            {
                 m_dice = null;
+                return;
+            }
     
             String annotation = m_attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in "
                     + m_battleSite.getName();
