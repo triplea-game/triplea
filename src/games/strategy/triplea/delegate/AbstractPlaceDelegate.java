@@ -247,6 +247,9 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
             if(TerritoryAttachment.getCapital(player, m_data) != to && player.getName().equals("Chinese"))
                 return "Cannot place these units outside of the capital";
 
+        
+
+        
         if (to.isWater())
         {
             Territory producer = getProducer(to, player);
@@ -437,6 +440,10 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
         if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactory))
             return "Factories cant produce until 1 turn after they are created";
                    
+        
+        if (to.isWater() && !isFourthEdition()
+                && to.getUnits().someMatch(Matches.enemyUnit(player, m_data)))
+            return "Cannot place sea units with enemy naval units";
 
         return null;
     }
