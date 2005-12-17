@@ -1,5 +1,7 @@
 Changes for 0.7.2.3
 
+* make battle window a dialog (it will always be in front of the main window!)
+
 * fix invalid roll count in multiplayer games when all bombers are hit by aa guns (sgb)
 
 * fix null pointer when placing units in sea zone with enemy units (classic game only) (sgb)

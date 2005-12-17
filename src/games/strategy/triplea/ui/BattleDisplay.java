@@ -187,7 +187,7 @@ public class BattleDisplay extends JPanel
 
     }
 
-    public void endBattle(String message, final Frame enclosingFrame)
+    public void endBattle(String message, final Window enclosingFrame)
     {
         m_steps.walkToLastStep();
         final Action close = new AbstractAction(message + " : (Click to close)")

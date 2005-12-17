@@ -46,7 +46,7 @@ public class BattlePanel extends ActionPanel
     private FightBattleDetails m_fightBattleMessage;
 
     private BattleDisplay m_battleDisplay;
-    private JFrame m_battleFrame;
+    private JDialog m_battleDialog;
 
     /** Creates new BattlePanel */
     public BattlePanel(GameData data, MapPanel map)
@@ -113,7 +113,7 @@ public class BattlePanel extends ActionPanel
         {
             public void run()
             {
-                m_battleDisplay.endBattle(message, m_battleFrame);
+                m_battleDisplay.endBattle(message, m_battleDialog);
             }
         });
 
@@ -128,12 +128,12 @@ public class BattlePanel extends ActionPanel
         {
             m_battleDisplay.cleanUp();
             m_battleDisplay = null;
-            if (m_battleFrame.isVisible())
+            if (m_battleDialog.isVisible())
             {
-                m_battleFrame.setVisible(false);
-                m_battleFrame.dispose();
+                m_battleDialog.setVisible(false);
+                m_battleDialog.dispose();
             }
-            m_battleFrame = null;
+            m_battleDialog = null;
         }
     }
 
@@ -194,19 +194,19 @@ public class BattlePanel extends ActionPanel
 
                 m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
 
-                m_battleFrame = new JFrame(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-                m_battleFrame.setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(m_battleFrame));
-                m_battleFrame.getContentPane().add(m_battleDisplay);
-                m_battleFrame.setSize(750, 500);
-                games.strategy.ui.Util.center(m_battleFrame);
-                m_battleFrame.setVisible(true);
-                m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                m_battleDialog = new JDialog(JOptionPane.getFrameForComponent(BattlePanel.this), attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+                //m_battleFrame.setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(m_battleFrame));
+                m_battleDialog.getContentPane().add(m_battleDisplay);
+                m_battleDialog.setSize(750, 500);
+                games.strategy.ui.Util.center(m_battleDialog);
+                m_battleDialog.setVisible(true);
+                m_battleDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
                 SwingUtilities.invokeLater(new Runnable()
                 {
                     public void run()
                     {
-                        m_battleFrame.toFront();
+                        m_battleDialog.toFront();
                     }
 
                 });
