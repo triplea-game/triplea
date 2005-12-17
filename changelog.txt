@@ -1,10 +1,10 @@
 Changes for 0.7.2.3
 
-* fix invalid roll count in multiplayer games when all bombers are hit by aa guns
+* fix invalid roll count in multiplayer games when all bombers are hit by aa guns (sgb)
 
-* fix null pointer when placing units in sea zone with enemy units (classic game)
+* fix null pointer when placing units in sea zone with enemy units (classic game only) (sgb)
 
-* fix null pointer when when selecting null territories during movement
+* fix null pointer when when selecting null territories during movement (sgb)
 
 Change for 0.7.2.2
 
