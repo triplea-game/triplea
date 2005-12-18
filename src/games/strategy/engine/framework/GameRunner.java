@@ -91,13 +91,13 @@ public class GameRunner
         {
             if (!isMac())
             {
-                JOptionPane.showMessageDialog(null, "TripleA requires a java runtime greater than 5.0.\nPlease download a newer version of java from http://java.sun.com/",
+                JOptionPane.showMessageDialog(null, "TripleA requires a java runtime greater than or equal to 5.0.\nPlease download a newer version of java from http://java.sun.com/",
                         "ERROR", JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             } else if (isMac())
             {
                 JOptionPane.showMessageDialog(null,
-                        "TripleA requires a java runtime greater than 5.0 (Note, this requires Mac OS X >= 10.4)\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR",
+                        "TripleA requires a java runtime greater than or equal to 5.0 (Note, this requires Mac OS X >= 10.4)\nPlease download a newer version of java from http://www.apple.com/java/", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }
