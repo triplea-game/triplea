@@ -80,7 +80,16 @@ public class PurchasePanel extends ActionPanel
 
   private void refreshActionLabelText()
   {
-    actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
+      SwingUtilities.invokeLater(new Runnable()
+    {
+    
+        public void run()
+        {
+            actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
+        }
+    
+    });
+    
   }
 
   public IntegerMap<ProductionRule> waitForPurchase(boolean bid)
