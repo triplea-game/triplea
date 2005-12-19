@@ -246,7 +246,16 @@ public class StatPanel extends JPanel
             {
                 m_isDirty = true;
             }
-            repaint();
+            
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+                    repaint();
+                }
+            
+            });
+            
         }
 
         /*
@@ -454,6 +463,16 @@ public class StatPanel extends JPanel
         public void gameDataChanged(Change aChange)
         {
             isDirty = true;
+            
+            SwingUtilities.invokeLater(new Runnable()
+            {
+            
+                public void run()
+                {
+                    repaint();
+                }
+            
+            });
         }
 
         public void setGameData(GameData data)

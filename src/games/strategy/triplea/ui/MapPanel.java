@@ -386,7 +386,16 @@ public class MapPanel extends ImageScrollerLargeView
                 return;
 
             m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
-            repaint();
+            SwingUtilities.invokeLater(new Runnable()
+            {
+            
+                public void run()
+                {
+                    repaint();
+                }
+            
+            });
+         
         }
 
        
