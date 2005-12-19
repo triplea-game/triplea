@@ -175,8 +175,21 @@ public class ServerGame implements IGame
         boolean gameHasBeenSaved =  m_data.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
         m_data.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
         
+        
+        
         if(gameHasBeenSaved)
-            runStep(false);
+        {
+            //TODO 
+            //we want to run with this as false, but it leads to an error
+            //since the client game is listening on this 
+            //to notify that the delegates has changed
+            //to see the error (set the below to false), then run a single 
+            //player game, do combat move to start some battles for russians, then save the game
+            //after starting combat phase.
+            //restart the game in client server, with russians playing on the client
+            //you will get a null pointer.
+            runStep(true);
+        }
         
         while (true)
             runStep(true);
