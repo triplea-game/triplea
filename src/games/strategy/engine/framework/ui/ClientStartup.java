@@ -265,6 +265,22 @@ private void initComponents()
 
     public void doneSelectingPlayers(byte[] gameData)
     {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                for(PlayerRow row : m_playerRows)
+                {
+                    JComponent component = row.getPlayerComponent();
+                    if(component instanceof JButton)
+                     ((JButton) component).setEnabled(false);
+                }
+                    
+            }
+        
+        });
+        
         GameData data = null;
         try
         {
