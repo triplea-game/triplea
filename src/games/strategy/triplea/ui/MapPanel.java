@@ -360,14 +360,31 @@ public class MapPanel extends ImageScrollerLargeView
         public void unitsChanged(Territory territory)
         {
             updateCounties(Collections.singleton(territory));
-            repaint();
+            SwingUtilities.invokeLater(new Runnable()
+            {
+            
+                public void run()
+                {
+                    repaint();
+                }
+            
+            });
+            
         }
 
         public void ownerChanged(Territory territory)
         {
             m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
             updateCounties(Collections.singleton(territory));
-            repaint();
+            SwingUtilities.invokeLater(new Runnable()
+            {
+            
+                public void run()
+                {
+                    repaint();
+                }
+            
+            });
         }
     };
 
