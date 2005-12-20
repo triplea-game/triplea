@@ -184,7 +184,15 @@ public class MovePanel extends ActionPanel
         m_bridge = null;
         m_selectedUnits.clear();
         updateRouteAndMouseShadowUnits(null);
-        CANCEL_MOVE_ACTION.setEnabled(false);
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                CANCEL_MOVE_ACTION.setEnabled(false);
+            }
+        
+        });
+        
         m_forced = null;
 
         getRootPane().registerKeyboardAction(null,

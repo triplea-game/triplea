@@ -506,13 +506,14 @@ public class BattleDisplay extends JPanel
         {
         }
 
-        m_dicePanel.clear();
-        m_actionButton.setEnabled(false);
+
 
         SwingUtilities.invokeLater(new Runnable()
         {
             public void run()
             {
+                m_dicePanel.clear();
+                m_actionButton.setEnabled(false);
                 m_actionButton.setAction(null);
             }
         });

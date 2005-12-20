@@ -76,15 +76,33 @@ public class PlacePanel extends ActionPanel
 
     private void refreshUndoButton() throws NumberFormatException
     {
-        IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge
+        final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge
                 .getRemote();
-        UNDO_PLACE_ACTION.setEnabled(placeDel.getPlacementsMade() > 0);
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                UNDO_PLACE_ACTION.setEnabled(placeDel.getPlacementsMade() > 0);
+            }
+        
+        });
+        
     }
 
-    private void refreshActionLabelText(boolean bid)
+    private void refreshActionLabelText(final boolean bid)
     {
-        actionLabel.setText(getCurrentPlayer().getName() + " place"
-                + (bid ? " for bid" : ""));
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                actionLabel.setText(getCurrentPlayer().getName() + " place"
+                        + (bid ? " for bid" : ""));
+            }
+        
+        });
+        
     }
 
     public PlaceData waitForPlace(boolean bid, IPlayerBridge bridge)

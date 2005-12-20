@@ -100,7 +100,16 @@ public class MapPanel extends ImageScrollerLargeView
 
             public void scrolled(int x, int y)
             {
-                repaint();
+                SwingUtilities.invokeLater(new Runnable(){
+                
+                    public void run()
+                    {
+                        repaint();
+                        
+                    }
+                
+                });
+                
             }
             
         });
@@ -161,7 +170,16 @@ public class MapPanel extends ImageScrollerLargeView
         if (route == null)
         {
             m_routeDescription = null;
-            repaint();
+            SwingUtilities.invokeLater(new Runnable()
+            {
+            
+                public void run()
+                {
+                    repaint();
+                }
+            
+            });
+            
             return;
         }
         RouteDescription newVal = new RouteDescription(route, start, end);
@@ -171,7 +189,15 @@ public class MapPanel extends ImageScrollerLargeView
         }
 
         m_routeDescription = newVal;
-        repaint();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                repaint();
+            }
+        
+        });
 
     }
 
@@ -329,8 +355,16 @@ public class MapPanel extends ImageScrollerLargeView
     {
         m_tileManager.updateTerritories(countries, m_data, m_uiContext.getMapData());
         m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
-        m_smallView.repaint();
-        repaint();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_smallView.repaint();
+                repaint();        
+            }
+        
+        });
     }
 
     public void setGameData(GameData data)

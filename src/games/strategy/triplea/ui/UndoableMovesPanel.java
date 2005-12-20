@@ -81,7 +81,16 @@ public class UndoableMovesPanel extends JPanel
         scroll.setBorder(null);
 
         add(scroll, BorderLayout.CENTER);
-        validate();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                validate();
+            }
+        
+        });
+        
 
     }
 

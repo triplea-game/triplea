@@ -22,7 +22,7 @@ package games.strategy.ui;
 import java.awt.*;
 import java.awt.event.*;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
 /**
@@ -115,7 +115,16 @@ public class ImageScrollerSmallView extends JComponent
     {
         m_selectionX = x;
         m_selectionY = y;
-        repaint();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                repaint();
+            }
+        
+        });
+        
     }
 
     public Dimension getImageDimensions()
