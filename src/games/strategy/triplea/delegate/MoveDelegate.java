@@ -134,17 +134,22 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         }
     }
 
+    public static boolean isNonCombat(IDelegateBridge aBridge)
+    {
+        if (aBridge.getStepName().endsWith("NonCombatMove"))
+            return true;
+        else if (aBridge.getStepName().endsWith("CombatMove"))
+            return false;
+        else
+            throw new IllegalStateException("Cannot determine combat or not");
+    }
+    
     /**
      * Called before the delegate will run.
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-        if (aBridge.getStepName().endsWith("NonCombatMove"))
-            m_nonCombat = true;
-        else if (aBridge.getStepName().endsWith("CombatMove"))
-            m_nonCombat = false;
-        else
-            throw new IllegalStateException("Cannot determine combat or not");
+        m_nonCombat = isNonCombat(aBridge);
 
         m_bridge = aBridge;
         PlayerID player = aBridge.getPlayerID();
@@ -343,7 +348,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
             return error;
         
         //allow user to cancel move if aa guns will fire
-        Collection aaFiringTerritores = getTerritoriesWhereAAWillFire(route, units);
+        Collection aaFiringTerritores = new AAInMoveUtil(m_bridge, m_data).getTerritoriesWhereAAWillFire(route, units);
         if(!aaFiringTerritores.isEmpty())
         {
             if(!getRemotePlayer().confirmMoveInFaceOfAA(aaFiringTerritores))
@@ -975,11 +980,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
         return null;
     }
 
-    private boolean isAlwaysONAAEnabled()
-    {
-        return m_data.getProperties().get(Constants.ALWAYS_ON_AA_PROPERTY, false);
-    }
-
     private ITripleaPlayer getRemotePlayer()
     {
         return getRemotePlayer(m_player);
@@ -1474,112 +1474,7 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
      */
     private Collection<Unit> fireAA(Route route, Collection<Unit> units)
     {
-        List<Unit> targets = Match.getMatches(units, Matches.UnitIsAir);
-
-        //select units with lowest movement first
-        Collections.sort(targets, decreasingMovement);
-        Collection<Unit> originalTargets = new ArrayList<Unit>(targets);
-        
-        Iterator iter = getTerritoriesWhereAAWillFire(route, units).iterator();
-        while (iter.hasNext())
-        {
-            Territory location = (Territory) iter.next();
-            fireAA(location, targets);
-        }
-
-        return Util.difference(originalTargets, targets);
-
-    }
-
-    private Collection<Territory> getTerritoriesWhereAAWillFire(Route route, Collection<Unit> units)
-    {
-        if (m_nonCombat && !isAlwaysONAAEnabled())
-            return Collections.emptyList();
-
-        if (Match.noneMatch(units, Matches.UnitIsAir))
-            return Collections.emptyList();
-
-        //dont iteratate over the end
-        //that will be a battle
-        //and handled else where in this tangled mess
-        CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
-        hasAA.add(Matches.UnitIsAA);
-        hasAA.add(Matches.enemyUnit(m_player, m_data));
-
-        List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
-
-        for (int i = 0; i < route.getLength() - 1; i++)
-        {
-            Territory current = route.at(i);
-
-            //aa guns in transports shouldnt be able to fire
-            if (current.getUnits().someMatch(hasAA) && !current.isWater())
-            {
-                territoriesWhereAAWillFire.add(current);
-            }
-        }
-
-        //check start as well, prevent user from moving to and from aa sites
-        // one at a time
-        //if there was a battle fought there then dont fire
-        //this covers the case where we fight, and always on aa wants to fire
-        //after the battle.
-        //TODO
-        //there is a bug in which if you move an air unit to a battle site
-        //in the middle of non combat, it wont fire
-        if (route.getStart().getUnits().someMatch(hasAA)
-                && !getBattleTracker().wasBattleFought(route.getStart()))
-            territoriesWhereAAWillFire.add(route.getStart());
- 
-        return territoriesWhereAAWillFire;
-    }
-    
-    /**
-     * Fire the aa units in the given territory, hits are removed from units
-     */
-    private void fireAA(Territory territory, Collection<Unit> units)
-    {
-        
-        if(units.isEmpty())
-            return;
-
-        //once we fire the aa guns, we cant undo
-        //otherwise you could keep undoing and redoing
-        //until you got the roll you wanted
-        m_currentMove.setCantUndo("Move cannot be undone after AA has fired.");
-        DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge, territory, m_data);
-        int hitCount = dice.getHits();
-
-        if (hitCount == 0)
-        {
-            getRemotePlayer().reportMessage("No aa hits in " + territory.getName());
-        } else
-            selectCasualties(dice, units, territory);
-    }
-
-    /**
-     * hits are removed from units. Note that units are removed in the order
-     * that the iterator will move through them.
-     */
-    private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory)
-    {
-
-        String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
-        // If fourth edition, select casualties randomnly
-        Collection<Unit> casualties = null;
-        if (isFourEdition())
-        {
-            casualties = BattleCalculator.fourthEditionAACasualties(units, dice, m_bridge);
-        } else
-        {
-            CasualtyDetails casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false);
-            casualties = casualtyMsg.getKilled();
-        }
-
-        getRemotePlayer().reportMessage(dice.getHits() + " AA hits in " + territory.getName());
-        
-        m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
-        units.removeAll(casualties);
+        return new AAInMoveUtil(m_bridge, m_data).fireAA(route, units, decreasingMovement, m_currentMove);
     }
 
     /**
@@ -1596,7 +1491,6 @@ public class MoveDelegate implements ISaveableDelegate, IMoveDelegate
                 return move.getRoute();
         }
         return null;
-
     }
 
     /**
