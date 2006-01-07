@@ -16,7 +16,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegateBridge;
 
 import java.io.Serializable;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Utilility for tracking a sequence of executables.  
@@ -25,14 +25,14 @@ import java.util.Stack;
  * 
  * We pop the top of the stack, store it in current, then execute it.
  * While exececuting the current element, the current element can push
- * more execution items onto the stack.
+ * more execution items onto the stack.<p>
  * 
  * After execution has finished, we pop the next item, and execute it, repeating 
- * till nothing is left to exectue.
+ * till nothing is left to exectue.<p>
  * 
  * If an exception occurs during execution, we retain a reference to 
  * the current item.  When we start executing again, we first push current onto the stack.
- * In this way, an item may execute more than once. An IExecutable should be aware of this.
+ * In this way, an item may execute more than once. An IExecutable should be aware of this.<p>
  * 
  */
 public class ExecutionStack implements Serializable
@@ -54,6 +54,14 @@ public class ExecutionStack implements Serializable
         m_current = null;
     }
     
+    public void push(Collection<IExecutable> executables)
+    {
+        for(IExecutable ex : executables)
+        {
+            push(ex);
+        }
+        
+    }
     
     public void push(IExecutable executable)
     {

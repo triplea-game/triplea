@@ -27,6 +27,7 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -180,6 +181,19 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   }
 
 
+  /**
+   * Returns the state of the Delegate.
+   */
+  public Serializable saveState()
+  {
+      return null;
+  }
+  
+  /**
+   * Loads the delegates state
+   */
+  public void loadState(Serializable state)
+  {}
 
 
   /**

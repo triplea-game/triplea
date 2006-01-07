@@ -20,6 +20,8 @@
 
 package games.strategy.engine.xml;
 
+import java.io.Serializable;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
@@ -53,4 +55,19 @@ public final class TestDelegate implements IDelegate
 	public String getDisplayName() {return "displayName";}
 	public Class<IRemote> getRemoteType() {return IRemote.class;}
 
+    /**
+     * Returns the state of the Delegate.
+     */
+    public Serializable saveState()
+    {
+        return null;
+    }
+    
+    /**
+     * Loads the delegates state
+     */
+    public void loadState(Serializable state)
+    {}
+
+    
 }

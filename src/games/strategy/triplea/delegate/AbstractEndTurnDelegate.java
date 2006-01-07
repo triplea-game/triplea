@@ -29,6 +29,7 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.*;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -181,6 +182,21 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
     {
         return null;
     }
+    
+    /**
+     * Returns the state of the Delegate.
+     */
+    public Serializable saveState()
+    {
+        return null;
+    }
+    
+    /**
+     * Loads the delegates state
+     */
+    public void loadState(Serializable state)
+    {}
+
 
 	
 }

@@ -1,3 +1,15 @@
+/*
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version. This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
@@ -8,6 +20,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -16,20 +29,30 @@ import java.util.*;
  * 
  * @author Sean Bridges
  */
-public class AAInMoveUtil
+class AAInMoveUtil implements Serializable
 {
     
-    private final boolean m_nonCombat;
-    private final GameData m_data;
-    private final IDelegateBridge m_bridge;
-    private final PlayerID m_player;
+    private transient boolean m_nonCombat;
+    private transient GameData m_data;
+    private transient IDelegateBridge m_bridge;
+    private transient PlayerID m_player;
     
-    AAInMoveUtil(IDelegateBridge bridge, GameData data)
+    private Collection<Unit> m_aaCasualties;
+    private ExecutionStack m_executionStack = new ExecutionStack();
+    
+    
+    AAInMoveUtil()
     {
+    }
+    
+    public AAInMoveUtil initialize(IDelegateBridge bridge, GameData data)
+    {    
         m_nonCombat = MoveDelegate.isNonCombat(bridge);
         m_data = data;
         m_bridge = bridge;
         m_player = bridge.getPlayerID();
+        return this;
+
     }
     
     private boolean isFourEdition()
@@ -55,23 +78,55 @@ public class AAInMoveUtil
     /**
      * Fire aa guns. Returns units to remove.
      */
-    Collection<Unit> fireAA(Route route, Collection<Unit> units, Comparator<Unit> decreasingMovement, UndoableMove currentMove)
+    Collection<Unit> fireAA(Route route, Collection<Unit> units, Comparator<Unit> decreasingMovement, final UndoableMove currentMove)
     {
-        List<Unit> targets = Match.getMatches(units, Matches.UnitIsAir);
+        if(m_executionStack.isEmpty())
+            populateExecutionStack(route, units, decreasingMovement, currentMove);
+
+        m_executionStack.execute(m_bridge, m_data);
+        
+        return m_aaCasualties;
+    }
+
+    private void populateExecutionStack(Route route, Collection<Unit> units, Comparator<Unit> decreasingMovement, final UndoableMove currentMove)
+    {
+        final List<Unit> targets = Match.getMatches(units, Matches.UnitIsAir);
 
         //select units with lowest movement first
         Collections.sort(targets, decreasingMovement);
-        Collection<Unit> originalTargets = new ArrayList<Unit>(targets);
+        final Collection<Unit> originalTargets = new ArrayList<Unit>(targets);
+        
+        List<IExecutable> executables = new ArrayList<IExecutable>();
         
         Iterator iter = getTerritoriesWhereAAWillFire(route, units).iterator();
         while (iter.hasNext())
         {
-            Territory location = (Territory) iter.next();
-            fireAA(location, targets, currentMove);
+            final Territory location = (Territory) iter.next();
+            
+            executables.add(new IExecutable()
+            {
+                public void execute(ExecutionStack stack, IDelegateBridge bridge,
+                        GameData data)
+                {
+                    fireAA(location, targets, currentMove);
+                }
+            
+            });
         }
 
-        return Util.difference(originalTargets, targets);
-
+        executables.add(new IExecutable()
+        {
+        
+            public void execute(ExecutionStack stack, IDelegateBridge bridge,
+                    GameData data)
+            {
+                m_aaCasualties = Util.difference(originalTargets, targets);
+            }
+        
+        });
+        
+        Collections.reverse(executables);
+        m_executionStack.push(executables);
     }
 
     Collection<Territory> getTerritoriesWhereAAWillFire(Route route, Collection<Unit> units)
@@ -125,24 +180,52 @@ public class AAInMoveUtil
     /**
      * Fire the aa units in the given territory, hits are removed from units
      */
-    private void fireAA(Territory territory, Collection<Unit> units, UndoableMove currentMove)
+    private void fireAA(final Territory territory, final Collection<Unit> units, final UndoableMove currentMove)
     {
         
         if(units.isEmpty())
             return;
-
+        
         //once we fire the aa guns, we cant undo
         //otherwise you could keep undoing and redoing
         //until you got the roll you wanted
         currentMove.setCantUndo("Move cannot be undone after AA has fired.");
-        DiceRoll dice = DiceRoll.rollAA(units.size(), m_bridge, territory, m_data);
-        int hitCount = dice.getHits();
+        
+        final DiceRoll[] dice = new DiceRoll[1];
 
-        if (hitCount == 0)
+        
+        IExecutable rollDice = new IExecutable()
         {
-            getRemotePlayer().reportMessage("No aa hits in " + territory.getName());
-        } else
-            selectCasualties(dice, units, territory);
+        
+            public void execute(ExecutionStack stack, IDelegateBridge bridge,
+                    GameData data)
+            {
+                dice[0] = DiceRoll.rollAA(units.size(), m_bridge, territory, m_data);
+            }
+        };
+        
+        
+        IExecutable selectCasualties = new IExecutable()
+        {
+        
+            public void execute(ExecutionStack stack, IDelegateBridge bridge,
+                    GameData data)
+            {
+                int hitCount = dice[0].getHits();
+                
+                if (hitCount == 0)
+                {
+                    getRemotePlayer().reportMessage("No aa hits in " + territory.getName());
+                } else
+                    selectCasualties(dice[0], units, territory);
+            }
+        
+        };
+        
+        //push in reverse order of execution
+        m_executionStack.push(selectCasualties);
+        m_executionStack.push(rollDice);
+
     }
 
     /**

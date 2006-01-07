@@ -25,7 +25,6 @@ public class GameDataManager
 {
 
     private final static String DELEGATE_START = "<DelegateStart>";
-    private final static String DELEGATE_END = "<DelegateEnd>";
     private final static String DELEGATE_DATA_NEXT = "<DelegateData>";
     private final static String DELEGATE_LIST_END = "<EndDelegateList>";
 
@@ -103,7 +102,7 @@ public class GameDataManager
             String next = (String) input.readObject();
             if (next.equals(DELEGATE_DATA_NEXT))
             {
-                ((ISaveableDelegate) instance).loadState((Serializable) input.readObject());
+                instance.loadState((Serializable) input.readObject());
             }
         }
     }
@@ -175,22 +174,9 @@ public class GameDataManager
             out.writeObject(delegate.getDisplayName());
             out.writeObject(delegate.getClass().getName());
 
-            if (delegate instanceof ISaveableDelegate)
-            {
-                ISaveableDelegate saveable = (ISaveableDelegate) delegate;
-                String[] message = new String[1];
-                if (!saveable.canSave(message))
-                {
-                    throw new DelegateNotCurrentlySaveableException(message[0]);
-                } else
-                {
-                    out.writeObject(DELEGATE_DATA_NEXT);
-                    out.writeObject(saveable.saveState());
-                }
-            } else
-            {
-                out.writeObject(DELEGATE_END);
-            }
+
+            out.writeObject(DELEGATE_DATA_NEXT);
+            out.writeObject(delegate.saveState());
         }
         //mark end of delegate section
         out.writeObject(DELEGATE_LIST_END);

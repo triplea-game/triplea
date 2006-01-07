@@ -1,6 +1,8 @@
 package games.strategy.triplea.delegate;
 
 
+import java.io.Serializable;
+
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -20,6 +22,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate
     private int m_bid;
     private int m_spent;
     private IDelegateBridge m_bridge;
+    
+    private boolean m_hasBid = false;
 
     
     private static int getBidAmount(GameData data, PlayerID currentPlayer)
@@ -46,9 +50,16 @@ public class BidPurchaseDelegate extends PurchaseDelegate
   public void start(IDelegateBridge bridge, GameData data)
   {
       super.start(bridge, data);
+      
+      if(m_hasBid)
+          return;
+      
       m_bridge = bridge;  
       m_bid = getBidAmount(data, bridge.getPlayerID());
       m_spent = 0;
+      
+      
+      
   }
 
   protected void removeFromPlayer(PlayerID player, IntegerMap<Resource> resources)
@@ -68,20 +79,47 @@ public class BidPurchaseDelegate extends PurchaseDelegate
        m_bridge.getHistoryWriter().startEvent(m_bridge.getPlayerID().getName() + " retains " + unspent + " IPCS not spent in bid phase");
        Change unspentChange = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), super.getData().getResourceList().getResource(Constants.IPCS), unspent);
        m_bridge.addChange(unspentChange);
+       
+       m_hasBid = false;
 
    }
+  
+    /**
+     * Returns the state of the Delegate.
+     */
+    public Serializable saveState()
+    {
+        BidPurchaseState s = new BidPurchaseState();
+        s.superState = super.saveState();
+        s.m_bid = m_bid;
+        s.m_hasBid = m_hasBid;
+        s.m_spent = this.m_spent;
+        return s;
+    }
+    
+   
+    /**
+     * Loads the delegates state
+     */
+    public void loadState(Serializable state)
+    { 
+        BidPurchaseState s  = (BidPurchaseState)  state;
+        m_bid = s.m_bid;
+        m_spent = s.m_spent;
+        m_hasBid = s.m_hasBid;
+        super.loadState(s.superState);
+    }
+  
+  
+  
+ 
+}
 
 
-  /**
-   * Can the delegate be saved at the current time.
-   * @arg message, a String[] of size 1, hack to pass an error message back.
-   */
-  public boolean canSave(String[] message)
-  {
-    //if you want to change this, change
-    //the start() method so that it wont reset when loading
-    message[0] = "Cant save during bid purchase";
-    return false;
-  }
-
+class BidPurchaseState implements Serializable
+{
+    Serializable superState;
+    int m_bid;
+    int m_spent;
+    boolean m_hasBid;
 }

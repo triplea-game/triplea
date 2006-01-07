@@ -116,7 +116,7 @@ public class ClientGame implements IGame
         
     }
 
-    public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+    public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
     {
         
         //we want to skip the first iteration, since that simply advances us to step 0
@@ -138,7 +138,8 @@ public class ClientGame implements IGame
           listener.gameStepChanged(stepName, delegateName, player, round, displayName);
         }
         
-        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+        if(!loadedFromSavedGame)
+            m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
       
         
     }

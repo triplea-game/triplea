@@ -20,6 +20,8 @@
 
 package games.strategy.engine.delegate;
 
+import java.io.Serializable;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.IRemote;
 
@@ -64,6 +66,16 @@ public interface IDelegate
 
 	public String getDisplayName();
 	
+    /**
+     * Returns the state of the Delegate.
+     */
+    public Serializable saveState();
+    
+    /**
+     * Loads the delegates state
+     */
+    public void loadState(Serializable state);  
+    
 	/**
 	 * Get the remote type of this delegate for use 
 	 * by a RemoteMessenger.

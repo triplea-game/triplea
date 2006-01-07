@@ -39,7 +39,7 @@ import java.util.*;
  * @author Sean Bridges
  * @version 1.0
  */
-public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
+public class TechnologyDelegate implements IDelegate, ITechDelegate
 {
 
     private String m_name;
@@ -239,16 +239,6 @@ public class TechnologyDelegate implements ISaveableDelegate, ITechDelegate
      */
     public void end()
     {
-    }
-
-    /**
-     * Can the delegate be saved at the current time.
-     * 
-     * @arg message, a String[] of size 1, hack to pass an error message back.
-     */
-    public boolean canSave(String[] message)
-    {
-        return true;
     }
 
     /**

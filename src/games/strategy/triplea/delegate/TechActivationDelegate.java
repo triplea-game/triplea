@@ -34,7 +34,7 @@ import java.util.*;
  * @author Ali Ibrahim
  * @version 1.0
  */
-public class TechActivationDelegate implements ISaveableDelegate
+public class TechActivationDelegate implements IDelegate
 {
 
     private String m_name;
@@ -120,16 +120,6 @@ public class TechActivationDelegate implements ISaveableDelegate
      */
     public void end()
     {
-    }
-
-    /**
-     * Can the delegate be saved at the current time.
-     * 
-     * @arg message, a String[] of size 1, hack to pass an error message back.
-     */
-    public boolean canSave(String[] message)
-    {
-        return true;
     }
 
     /**

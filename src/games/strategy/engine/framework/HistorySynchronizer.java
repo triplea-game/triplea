@@ -108,8 +108,13 @@ public class HistorySynchronizer
 
         }
 
-        public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
+        public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, boolean loadedFromSavedGame)
         {
+            
+            //we dont need to advance the game step in this case
+            if(loadedFromSavedGame)
+                return;
+            
             SwingUtilities.invokeLater(new Runnable()
             {
                 public void run()

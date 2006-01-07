@@ -29,6 +29,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -205,14 +206,19 @@ public class InitializationDelegate implements IDelegate
     }
 
     /**
-     * Can the delegate be saved at the current time.
-     * 
-     * @arg message, a String[] of size 1, hack to pass an error message back.
+     * Returns the state of the Delegate.
      */
-    public boolean canSave(String[] message)
+    public Serializable saveState()
     {
-        return true;
+        return null;
     }
+    
+    /**
+     * Loads the delegates state
+     */
+    public void loadState(Serializable state)
+    {}
+
 
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()

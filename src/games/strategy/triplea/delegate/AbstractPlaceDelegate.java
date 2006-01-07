@@ -60,8 +60,7 @@ import java.util.*;
  * capacity to produce in f. If anyone ever accidently runs into this situation
  * then they can undo the production, produce in f first, and then produce in e.
  */
-public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
-        IAbstractPlaceDelegate
+public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlaceDelegate
 {
 
     private String m_name;
@@ -723,17 +722,6 @@ public abstract class AbstractPlaceDelegate implements ISaveableDelegate,
         //reset ourseleves for next turn
         m_produced = new HashMap<Territory, Collection<Unit>>();
         m_placements.clear();
-    }
-
-    /**
-     * Can the delegate be saved at the current time.
-     * 
-     * @arg message, a String[] of size 1, hack to pass an error message back.
-     */
-    public boolean canSave(String[] message)
-    {
-
-        return true;
     }
 
     /**

@@ -179,20 +179,11 @@ public class ServerGame implements IGame
         
         if(gameHasBeenSaved)
         {
-            //TODO 
-            //we want to run with this as false, but it leads to an error
-            //since the client game is listening on this 
-            //to notify that the delegates has changed
-            //to see the error (set the below to false), then run a single 
-            //player game, do combat move to start some battles for russians, then save the game
-            //after starting combat phase.
-            //restart the game in client server, with russians playing on the client
-            //you will get a null pointer.
-            runStep(true);
+            runStep(gameHasBeenSaved);
         }
         
         while (true)
-            runStep(true);
+            runStep(false);
     }
 
     public void stopGame()
@@ -217,7 +208,7 @@ public class ServerGame implements IGame
 
   
 
-    private void runStep(boolean notifyBroadcastersStepChanged)
+    private void runStep(boolean stepIsRestoredFromSavedGame)
     {
         if (getCurrentStep().hasReachedMaxRunCount())
         {
@@ -225,7 +216,7 @@ public class ServerGame implements IGame
             return;
         }
 
-    	startStep(notifyBroadcastersStepChanged);
+    	startStep(stepIsRestoredFromSavedGame);
     	
         waitForPlayerToFinishStep();
         
@@ -253,13 +244,17 @@ public class ServerGame implements IGame
     	}
 	}
 
-	private void startStep(boolean notifyBroadcastersStepChanged) 
+	private void startStep(boolean stepIsRestoredFromSavedGame) 
 	{
-		if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
-    	{
-    		if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).beforeStepStart())
-    			autoSave();
-    	}
+        //dont save if we just loaded
+        if(!stepIsRestoredFromSavedGame)
+        {
+    		if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
+        	{
+        		if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).beforeStepStart())
+        			autoSave();
+        	}
+        }
         
         DefaultDelegateBridge bridge = new DefaultDelegateBridge(
                 m_data, 
@@ -269,7 +264,7 @@ public class ServerGame implements IGame
                 );
         bridge.setRandomSource(m_randomSource);
 
-        notifyGameStepChanged(notifyBroadcastersStepChanged);
+        notifyGameStepChanged(stepIsRestoredFromSavedGame);
         
         getCurrentStep().getDelegate().start(bridge, m_data);
 	}
@@ -308,15 +303,14 @@ public class ServerGame implements IGame
         m_gameStepListeners.remove(listener);
     }
 
-    private void notifyGameStepChanged(boolean notifyBroadcastersStepChanged)
+    private void notifyGameStepChanged(boolean loadedFromSavedGame)
     {
         String stepName = getCurrentStep().getName();
         String delegateName = getCurrentStep().getDelegate().getName();
         String displayName = getCurrentStep().getDisplayName();
         PlayerID id = getCurrentStep().getPlayerID();
-        
-        if(notifyBroadcastersStepChanged)
-            getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), displayName);        
+                
+        getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), displayName, loadedFromSavedGame);        
                
         Iterator<GameStepListener> iter = m_gameStepListeners.iterator();
         while (iter.hasNext())
@@ -408,8 +402,11 @@ public class ServerGame implements IGame
             
         }
 
-        public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+        public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
         {
+            if(loadedFromSavedGame)
+                return;
+            
             m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
             
         }

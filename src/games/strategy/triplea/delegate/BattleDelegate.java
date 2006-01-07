@@ -34,7 +34,7 @@ import java.util.*;
  * @version 1.0
  */
 @AutoSave(beforeStepStart=true,afterStepEnd=true)
-public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
+public class BattleDelegate implements IDelegate, IBattleDelegate
 {
 
     private String m_name;
@@ -304,15 +304,6 @@ public class BattleDelegate implements ISaveableDelegate, IBattleDelegate
 
     }
 
-    /**
-     * Can the delegate be saved at the current time.
-     * 
-     * @arg message, a String[] of size 1, hack to pass an error message back.
-     */
-    public boolean canSave(String[] message)
-    {
-        return true;
-    }
 
     /**
      * Returns the state of the Delegate.

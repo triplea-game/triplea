@@ -20,6 +20,8 @@
 
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -94,5 +96,18 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 
 	}
 
+    /**
+     * Returns the state of the Delegate.
+     */
+    public Serializable saveState()
+    {
+        return null;
+    }
+    
+    /**
+     * Loads the delegates state
+     */
+    public void loadState(Serializable state)
+    {}
 
 }

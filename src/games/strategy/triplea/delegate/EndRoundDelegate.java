@@ -35,7 +35,7 @@ import java.util.Iterator;
  *
  * @author  Sean Bridges
  */
-public class EndRoundDelegate implements ISaveableDelegate
+public class EndRoundDelegate implements IDelegate
 {
 	private final static int AXIS_ECONOMIC_VICTORY = 84;
 
@@ -130,14 +130,6 @@ public class EndRoundDelegate implements ISaveableDelegate
 		return sum;
 	}
 
-	/**
-	 * Can the delegate be saved at the current time.
-	 * @arg message, a String[] of size 1, hack to pass an error message back.
-	 */
-	public boolean canSave(String[] message)
-	{
-		return true;
-	}
 
 	/**
 	 * Returns the state of the Delegate.
