@@ -31,7 +31,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 import java.util.logging.*;
-import java.util.logging.Logger;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -99,6 +98,12 @@ class Connection
     {
         m_objectStreamFactory = new DefaultObjectStreamFactory();
         init(s, ident, listener);
+    }
+    
+    public void setRemoteName(String name)
+    {
+        send(new MessageHeader(m_remoteNode,  new NodeNameChange(name)));
+        ((Node)  m_remoteNode).setName(name);
     }
 
     private void init(Socket s, INode ident, IConnectionListener listener) throws IOException
@@ -204,8 +209,12 @@ class Connection
         return !m_shutdown;
     }
 
-    private void messageReceived(Serializable obj)
+    private void messageReceived(MessageHeader obj)
     {
+        if(obj.getMessage() instanceof NodeNameChange)
+        {
+            ((Node) m_localNode).setName( ((NodeNameChange) obj.getMessage()).getNewName() );
+        }
         if (obj != null)
             m_listener.messageReceived(obj, this);
     }
@@ -294,4 +303,20 @@ class Connection
             }
         }
     }
+}
+
+class NodeNameChange implements Serializable
+{    
+    private final String m_newName;
+    
+    NodeNameChange(String name)
+    {
+        m_newName = name;
+    }
+    
+    public String getNewName()
+    {
+        return m_newName;
+    }
+
 }

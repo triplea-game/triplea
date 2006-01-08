@@ -57,7 +57,12 @@ public class Node implements INode, Externalizable
   {
     return m_name;
   }
-
+  
+  public void setName(String newName)
+  {
+      m_name = newName;
+  }
+  
   public boolean equals(Object obj)
   {
     if (obj == null)

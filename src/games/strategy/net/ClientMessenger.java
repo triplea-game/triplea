@@ -31,11 +31,17 @@ public class ClientMessenger implements IMessenger
     
     private String m_connectionRefusedError;
 
+    /**
+     * Note, the name paramater passed in here may not match the name of the ClientMessenger after it has been constructed. 
+     */
     public ClientMessenger(String host, int port, String name) throws IOException, UnknownHostException
     {
         this(host, port, name, new DefaultObjectStreamFactory());
     }
 
+    /**
+     * Note, the name paramater passed in here may not match the name of the ClientMessenger after it has been constructed. 
+     */
     public ClientMessenger(String host, int port, String name, IObjectStreamFactory streamFact) throws IOException, UnknownHostException
     {
         Socket socket = new Socket(host, port);

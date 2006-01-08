@@ -212,6 +212,55 @@ public class ServerMessenger implements IServerMessenger
     }
   }
 
+  
+  private boolean isNameTaken(String nodeName)
+  {
+      for(INode node : m_allNodes)
+      {
+          if(node.getName().equalsIgnoreCase(nodeName))
+              return true;
+      }
+      
+      return false;
+  }
+  
+  private void ensureValidName(Connection c)
+  {
+      String currentName = c.getRemoteNode().getName();
+      boolean replace = false;
+      
+      if(currentName.length() > 50)
+      {
+          currentName.substring(0,50);
+          replace = true;
+      }
+      if(currentName.length() < 2)
+      {
+          currentName = "aa" + currentName;
+          replace = true;
+      }
+          
+      
+      if(isNameTaken(currentName))
+      {
+          replace = true;
+          int i = 1;
+          while(true)
+          {
+              String newName = currentName + "_" + i;
+              if(! isNameTaken( newName ))
+              {
+                  currentName = newName;
+                  break;
+              }
+              i++;
+          }
+      }
+      
+      if(replace)
+          c.setRemoteName(currentName);
+  }
+  
   private synchronized void addConnection(Socket s)
   {
     Connection c = null;
@@ -227,6 +276,10 @@ public class ServerMessenger implements IServerMessenger
     if (c == null)
       return;
 
+    
+    ensureValidName(c);
+    
+    
     if (m_connectionAccepter != null)
     {
       String error = m_connectionAccepter.acceptConnection(this, c.getRemoteNode());
