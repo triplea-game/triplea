@@ -491,14 +491,6 @@ public class ServerStartup extends JPanel
       if(name.length() < 2  || !Character.isLetter(name.charAt(0)) || name.equalsIgnoreCase("Game"))
         return name + "is an invalid name";
 
-      //  Make sure that only one name exists.
-      Iterator iter = messenger.getNodes().iterator();
-      while(iter.hasNext())
-      {
-        INode current = (INode) iter.next();
-        if(current.getName().equalsIgnoreCase(name))
-          return name + " is already in use";
-      }
       return null;
     }
   };
