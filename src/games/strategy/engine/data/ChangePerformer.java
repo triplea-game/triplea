@@ -46,12 +46,13 @@ public class ChangePerformer
 	{
 		try
 		{
-		    m_data.acquireChangeLock();
+		    m_data.aquireWriteLock();
 			aChange.perform(m_data);
 		} finally
 		{
-		    m_data.releaseChangeLock();
-  			m_data.notifyGameDataChanged(aChange);
+		    m_data.releaseWriteLock();
 		}
+        m_data.notifyGameDataChanged(aChange);
+        
 	}
 }

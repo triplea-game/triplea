@@ -491,7 +491,7 @@ public class MapPanel extends ImageScrollerLargeView
         //make sure we use the same data for the entire paint
         final GameData data = m_data;
         
-        data.acquireChangeLock();
+        data.aquireReadLock();
         try
         {
 	        //handle wrapping off the screen to the left
@@ -528,7 +528,7 @@ public class MapPanel extends ImageScrollerLargeView
         }
         finally
         {
-            data.releaseChangeLock();
+            data.releaseReadLock();
         }
                 
         //draw the tiles nearest us first
@@ -838,7 +838,7 @@ class BackgroundDrawer implements Runnable
                 }
                     
                 GameData data = m_mapPanel.getData(); 
-                data.acquireChangeLock();
+                data.aquireReadLock();
                 try
                 {
 	                tile.getImage(data, m_uiContext.getMapData());
@@ -847,7 +847,7 @@ class BackgroundDrawer implements Runnable
                 }
                 finally
                 {
-                    data.releaseChangeLock();
+                    data.releaseReadLock();
                 }
                 SwingUtilities.invokeLater(new Runnable()
                 {

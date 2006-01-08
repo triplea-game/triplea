@@ -26,10 +26,11 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
 
 import java.awt.*;
+import java.awt.image.*;
 import java.net.URL;
 import java.util.*;
 
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 /**
  *
@@ -158,6 +159,41 @@ public class UnitImageFactory
     }
 
     return image;
+    
+//    ImageFilter filter = new RGBImageFilter()
+//    {
+//        public int filterRGB(int x, int y, int rgb)
+//        {
+//          
+//            int alpha = ((rgb >> 24)) & 0xff;
+//            
+//            if(alpha > 0)
+//            {
+//                int red = (rgb >> 16) & 0xff;
+//                int green = (rgb >> 8)  & 0xff;
+//                int blue = rgb & 0xff;
+//                
+//                int average = (int) (((red + green + blue) / 3) );
+//                
+//                if(average < 35)
+//                {
+//                    red = 255;
+//                    green = 255;
+//                    blue = 255;
+//                    return (alpha << 24) | (red << 16) | (green << 8) | (blue << 0);
+//                }
+//                else return 0;
+//            }
+//            else
+//                return 0;
+//
+//            
+//            
+//            
+//        }
+//    };
+//    ImageProducer prod = new FilteredImageSource(image.getSource(), filter);
+//    return Toolkit.getDefaultToolkit().createImage(prod);
   }
 
   /**

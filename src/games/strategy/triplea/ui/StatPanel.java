@@ -197,7 +197,7 @@ public class StatPanel extends JPanel
 
         private synchronized void loadData()
         {
-            m_data.acquireChangeLock();
+            m_data.aquireReadLock();
             try
             {
                 List players = getPlayers();
@@ -233,7 +233,7 @@ public class StatPanel extends JPanel
             }
             finally
             {
-                m_data.releaseChangeLock();
+                m_data.releaseReadLock();
             }
             
         }
@@ -296,7 +296,7 @@ public class StatPanel extends JPanel
                 //no need to recalculate all the stats just to get the row count
                 //getting the row count is a fairly frequent operation, and will
                 //happen even if we are not displayed!
-                m_data.acquireChangeLock();
+                m_data.aquireReadLock();
                 try
                 {
                     return m_data.getPlayerList().size() + getAlliances().size();
@@ -304,7 +304,7 @@ public class StatPanel extends JPanel
                 }
                 finally
                 {
-                  m_data.releaseChangeLock();  
+                  m_data.releaseReadLock();  
                 }
             }
         }

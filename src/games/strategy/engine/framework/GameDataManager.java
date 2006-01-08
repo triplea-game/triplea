@@ -137,7 +137,7 @@ public class GameDataManager
         ObjectOutputStream outStream = new ObjectOutputStream(bytes);
 
         outStream.writeObject(games.strategy.engine.EngineVersion.VERSION);
-        data.acquireChangeLock();
+        data.aquireReadLock();
         try
         {
             outStream.writeObject(data);
@@ -149,7 +149,7 @@ public class GameDataManager
         }
         finally
         {
-            data.releaseChangeLock();
+            data.releaseReadLock();
         }
         
         GZIPOutputStream zippedOut = new GZIPOutputStream(sink);

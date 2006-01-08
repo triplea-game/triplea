@@ -22,7 +22,7 @@ package games.strategy.engine.data;
 
 import java.util.*;
 
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.*;
 
 import games.strategy.engine.data.events.*;
 import games.strategy.engine.data.properties.GameProperties;
@@ -43,7 +43,7 @@ import games.strategy.engine.history.*;
  */
 public class GameData implements java.io.Serializable
 {
-    private transient ReentrantLock m_relentrantLock = new ReentrantLock();
+    private transient ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
 
     
     private String m_gameName;
@@ -224,7 +224,7 @@ public class GameData implements java.io.Serializable
 
 	public void postDeSerialize()
 	{
-	    m_relentrantLock = new ReentrantLock();
+	    m_readWriteLock = new ReentrantReadWriteLock();
 
 		m_territoryListeners = new ListenerList<TerritoryListener>();
 		m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
@@ -237,15 +237,35 @@ public class GameData implements java.io.Serializable
 	 * until the release method is called
 	 * 
 	 */
-	public void acquireChangeLock()
+	public void aquireReadLock()
 	{	
-	  m_relentrantLock.lock();
+        m_readWriteLock.readLock().lock();
 	}
 	
 	
-	public void releaseChangeLock()
+	public void releaseReadLock()
 	{
-	   m_relentrantLock.unlock();
+        m_readWriteLock.readLock().unlock();
 	}
+
+
+    /**
+     * No changes to the game data should be made unless this lock is held.
+     * calls to acquire lock will block if the lock is held, and will be held 
+     * until the release method is called
+     * 
+     */
+    public void aquireWriteLock()
+    {   
+        m_readWriteLock.writeLock().lock();
+    }
+    
+    
+    public void releaseWriteLock()
+    {
+        m_readWriteLock.writeLock().unlock();
+    }
+
+    
 	
 }

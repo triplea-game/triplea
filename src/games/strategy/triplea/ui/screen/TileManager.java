@@ -99,7 +99,7 @@ public class TileManager
 
     public void resetTiles(GameData data, MapData mapData)
     {
-        data.acquireChangeLock();
+        data.aquireReadLock();
         
         try
         {
@@ -131,14 +131,14 @@ public class TileManager
         }
         finally
         {
-            data.releaseChangeLock();
+            data.releaseReadLock();
         }
 
     }
     
     public void updateTerritories(Collection territories, GameData data, MapData mapData)
     {
-        data.acquireChangeLock();
+        data.aquireReadLock();
         try
         {
         
@@ -159,7 +159,7 @@ public class TileManager
         }
         finally
         {
-            data.releaseChangeLock();
+            data.releaseReadLock();
         }
     }
 
