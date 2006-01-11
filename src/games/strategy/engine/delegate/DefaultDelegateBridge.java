@@ -32,22 +32,25 @@ public class DefaultDelegateBridge implements IDelegateBridge
 {
 
     private final GameStep m_step;
-    private PlayerID m_player;
+    private final PlayerID m_player;
     private final IGame m_game;
     private final DelegateHistoryWriter m_historyWriter;
     private final RandomStats m_randomStats;
+    private final DelegateExecutionManager m_delegateExecutionManager;
 
-    private IRandomSource m_randomSource = new PlainRandomSource();
+    private IRandomSource m_randomSource;
 
     /** Creates new DefaultDelegateBridge */
     public DefaultDelegateBridge(GameData data, GameStep step, IGame game,
-            DelegateHistoryWriter historyWriter, RandomStats randomStats)
+            DelegateHistoryWriter historyWriter, RandomStats randomStats,
+            DelegateExecutionManager delegateExecutionManager)
     {
         m_step = step;
         m_game = game;
         m_player = m_step.getPlayerID();
         m_historyWriter = historyWriter;
         m_randomStats = randomStats;
+        m_delegateExecutionManager = delegateExecutionManager;
     }
 
     public PlayerID getPlayerID()
@@ -85,13 +88,6 @@ public class DefaultDelegateBridge implements IDelegateBridge
     {
         m_game.addChange(aChange);
     }
-
-
-    public void setPlayerID(PlayerID aPlayer)
-    {
-        m_player = aPlayer;
-    }
-
 
 
     /**
@@ -137,5 +133,15 @@ public class DefaultDelegateBridge implements IDelegateBridge
     public Properties getStepProperties()
     {
         return m_step.getProperties();
+    }
+    
+    public void leaveDelegateExecution()
+    {
+        m_delegateExecutionManager.leaveDelegateExecution();
+    }
+    
+    public void enterDelegateExecution()
+    {
+        m_delegateExecutionManager.enterDelegateExecution();
     }
 }

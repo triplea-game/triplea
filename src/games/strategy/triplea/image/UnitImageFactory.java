@@ -26,7 +26,6 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.net.URL;
 import java.util.*;
 

@@ -40,7 +40,7 @@ import javax.crypto.spec.DESKeySpec;
  */
 public class Vault implements IServerVault
 {
-    private static final String VAULT_CHANNEL = "games.strategy.engine.vault.VAULT_CHANNEL";
+    private static final String VAULT_CHANNEL = "games.strategy.engine.vault.IServerVault.VAULT_CHANNEL";
     
     private static final String ALGORITHM = "DES";
 
@@ -69,7 +69,7 @@ public class Vault implements IServerVault
     
     private final Object m_waitForLock = new Object();
     
-    private static final String VAULT_SERVER_REMOTE = "games.strategy.engine.vault.Vault.SERVER_REMOTE";
+    private static final String VAULT_SERVER_REMOTE = "games.strategy.engine.vault.IServerVault.VAULT_SERVER_REMOTE";
     
     /**
      * @param channelMessenger

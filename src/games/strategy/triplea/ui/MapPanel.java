@@ -34,6 +34,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.logging.*;
 
 import javax.swing.SwingUtilities;
@@ -491,58 +492,49 @@ public class MapPanel extends ImageScrollerLargeView
         //make sure we use the same data for the entire paint
         final GameData data = m_data;
         
-        data.aquireReadLock();
-        try
+        //handle wrapping off the screen to the left
+        if(m_x < 0)
         {
-	        //handle wrapping off the screen to the left
-	        if(m_x < 0)
-	        {
-	            Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
-	            drawTiles(g, images, data, leftBounds,0, undrawnTiles);
-	        }
-	        
-	        //handle the non overlap
-		    Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
-		    drawTiles(g, images, data, mainBounds,0, undrawnTiles);
-	        
-	        double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
-	        //handle wrapping off the screen to the left
-	        if(leftOverlap > 0)
-	        {
-	            Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
-	            drawTiles(g, images, data, rightBounds, leftOverlap, undrawnTiles);
-	        }
-	
-	        
-	        MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this, m_uiContext.getMapData());
-	        
-            if(m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
-            {
-                ((Graphics2D) g).drawImage(m_mouseShadowImage, (int)  m_routeDescription.getEnd().getX() - getXOffset(), (int) m_routeDescription.getEnd().getY() - getYOffset(), this);
-            }
-            
-            //used to keep strong references to what is on the screen so it wont be garbage collected
-            //other references to the images are week references
-	        m_images.clear();
-	        m_images.addAll(images);
+            Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
+            drawTiles(g, images, data, leftBounds,0, undrawnTiles);
         }
-        finally
+        
+        //handle the non overlap
+	    Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
+	    drawTiles(g, images, data, mainBounds,0, undrawnTiles);
+        
+        double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
+        //handle wrapping off the screen to the left
+        if(leftOverlap > 0)
         {
-            data.releaseReadLock();
+            Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
+            drawTiles(g, images, data, rightBounds, leftOverlap, undrawnTiles);
         }
+
+        
+        MapRouteDrawer.drawRoute((Graphics2D) g, m_routeDescription, this, m_uiContext.getMapData());
+        
+        if(m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
+        {
+            ((Graphics2D) g).drawImage(m_mouseShadowImage, (int)  m_routeDescription.getEnd().getX() - getXOffset(), (int) m_routeDescription.getEnd().getY() - getYOffset(), this);
+        }
+        
+        //used to keep strong references to what is on the screen so it wont be garbage collected
+        //other references to the images are week references
+        m_images.clear();
+        m_images.addAll(images);
+
                 
         //draw the tiles nearest us first
         //then draw farther away
-        drawNearbyTiles(undrawnTiles, 30, true);
-        drawNearbyTiles(undrawnTiles, 257, true);
+        updateUndrawnTiles(undrawnTiles, 30, true);
+        updateUndrawnTiles(undrawnTiles, 257, true);
         //when we are this far away, dont force the tiles to stay in memroy
-        drawNearbyTiles(undrawnTiles, 513, false);
-        drawNearbyTiles(undrawnTiles, 767, false);
+        updateUndrawnTiles(undrawnTiles, 513, false);
+        updateUndrawnTiles(undrawnTiles, 767, false);
         
         
         m_backgroundDrawer.setTiles(undrawnTiles);
-        
-        
         
         stopWatch.done();
         
@@ -553,7 +545,7 @@ public class MapPanel extends ImageScrollerLargeView
      * If we have nothing left undrawn, draw the tiles within preDrawMargin of us, optionally
      * forcing the tiles to remain in memory. 
      */
-    private void drawNearbyTiles(List<Tile> undrawnTiles, int preDrawMargin, boolean forceInMemory)
+    private void updateUndrawnTiles(List<Tile> undrawnTiles, int preDrawMargin, boolean forceInMemory)
     {
         //draw tiles near us if we have nothing left to draw
         //that way when we scroll slowly we wont notice a glitch
@@ -779,8 +771,8 @@ class RouteDescription
 
 class BackgroundDrawer implements Runnable
 {
-    private final List<Tile> m_tiles = new ArrayList<Tile>();
-    private final Object m_mutex = new Object();
+    private final LinkedBlockingQueue<Tile> m_tiles = new LinkedBlockingQueue<Tile>();
+    
     private boolean m_active = true;
     private final MapPanel m_mapPanel;
     private final UIContext m_uiContext;
@@ -794,69 +786,44 @@ class BackgroundDrawer implements Runnable
     public void stop()
     {
         m_active = false;
-        synchronized(m_mutex)
-        {
-            m_tiles.clear();
-            m_mutex.notifyAll();
-        }
+        m_tiles.clear();
+        //wake up the background drawer
+        m_tiles.offer(null);
     }
     
     public void setTiles(Collection<Tile> aCollection) 
     {
-	      synchronized(m_mutex)
-	      {
-	          m_tiles.clear();
-	          m_tiles.addAll(aCollection);
-	          if(!m_tiles.isEmpty())
-	              m_mutex.notifyAll();
-	      }
+        m_tiles.clear();
+        m_tiles.addAll(aCollection);
     }
     
     public void run()
     {
         while(m_active)
         {
-            Tile tile ;
-            synchronized(m_mutex)
+            Tile tile;
+            try
             {
-                if(m_tiles.isEmpty())
-                {
-                    //wait for more tiles
-                    try
-                    {
-                        m_mutex.wait();
-                    } catch (InterruptedException e)
-                    {
-
-                    }
-                    
-                    continue;
-                }
-                else
-                {
-                    tile = m_tiles.remove(0);
-                }
-                    
-                GameData data = m_mapPanel.getData(); 
-                data.aquireReadLock();
-                try
-                {
-	                tile.getImage(data, m_uiContext.getMapData());
-	                //update the main map after we update each tile
-	                //this allows the tiles to be shown as soon as they are updated
-                }
-                finally
-                {
-                    data.releaseReadLock();
-                }
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                   public void run()
-                   { 
-                       m_mapPanel.repaint();
-                   }
-                });
+                tile = m_tiles.take();
+            } catch (InterruptedException e)
+            {
+               continue;
             }
+            
+            if(tile == null)
+                continue;
+                    
+            GameData data = m_mapPanel.getData();
+            tile.getImage(data, m_uiContext.getMapData());
+            
+            SwingUtilities.invokeLater(new Runnable()
+            {
+               public void run()
+               { 
+                   m_mapPanel.repaint();
+               }
+            });
+            
             
         }
     }

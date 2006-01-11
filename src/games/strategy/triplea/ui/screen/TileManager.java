@@ -169,7 +169,17 @@ public class TileManager
         {
 	        s_logger.log(Level.FINER, "Updating " + territory.getName());
 	        clearTerritory(territory);
-	        drawTerritory(territory, data, mapData);
+            
+            data.aquireReadLock();
+            try
+            {
+                drawTerritory(territory, data, mapData);
+            }
+            finally
+            {
+                data.releaseReadLock();
+            }
+            
         }
     }
     
@@ -193,6 +203,8 @@ public class TileManager
     }
 
     /**
+     * 
+     * 
      * @param data
      * @param mapData
      * @param territory

@@ -167,5 +167,9 @@ public class TestDelegateBridge implements IDelegateBridge
         return new Properties();
     }
 
+    public void leaveDelegateExecution() {}
+    
+    public void enterDelegateExecution() {}
+    
 
 }

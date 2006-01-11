@@ -42,7 +42,7 @@ import javax.swing.*;
  */
 public class ClientStartup extends JPanel
 {
-  private static final Insets BUTTON_INSETS = new Insets(0,0,0,0);
+  private final Insets BUTTON_INSETS = new Insets(0,0,0,0);
 
   private final IChannelMessenger m_channelMessenger;
   private final IRemoteMessenger m_remoteMessenger;

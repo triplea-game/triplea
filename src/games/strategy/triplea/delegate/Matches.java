@@ -350,8 +350,7 @@ public class Matches
 			return ua.isAA();
 		}
 	};
-
-
+    
 	public static final Match<Unit> UnitIsAA = new Match<Unit>()
 	{
 		public boolean match(Unit obj)
@@ -361,6 +360,8 @@ public class Matches
 			return ua.isAA();
 		}
 	};
+    
+    public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAA);
 
 	public static final Match<Unit> UnitIsArtillery = new Match<Unit>()
 	{

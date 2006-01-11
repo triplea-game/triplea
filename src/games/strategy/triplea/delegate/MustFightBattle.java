@@ -1495,11 +1495,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
             t.start();
             try
             {
+                bridge.leaveDelegateExecution();
                 t.join();
             } catch (InterruptedException e)
             {
               //ignore
             }
+            finally
+            {
+                bridge.enterDelegateExecution();
+            }
+            
             
             
             removeCasualties(m_casualties, false, false, bridge);
@@ -2040,11 +2046,17 @@ class Fire implements IExecutable
         
         try
         {
+            bridge.leaveDelegateExecution();
             t.join();
         } catch (InterruptedException e)
         {
            //ignore
         }
+        finally
+        {
+            bridge.enterDelegateExecution();
+        }
+        
 
 
         if (m_damaged != null)

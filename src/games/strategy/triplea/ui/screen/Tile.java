@@ -81,28 +81,32 @@ public class Tile
     
     public Image getImage(GameData data, MapData mapData) 
     {
-        if(m_imageRef == null)
+        synchronized(m_mutex)
         {
-            m_imageRef = new SoftReference<Image>(Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false));
-            m_isDirty = true;
-        }
         
-        Image image = m_imageRef.get();
-        if(image == null)
-        {
-            image = Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false);
-            m_imageRef = new SoftReference<Image>(image);
-            m_isDirty = true;
+            if(m_imageRef == null)
+            {
+                m_imageRef = new SoftReference<Image>(Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false));
+                m_isDirty = true;
+            }
+            
+            Image image = m_imageRef.get();
+            if(image == null)
+            {
+                image = Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false);
+                m_imageRef = new SoftReference<Image>(image);
+                m_isDirty = true;
+            }
+            
+            if(m_isDirty)
+            {
+                Graphics g = image.getGraphics();
+                draw((Graphics2D) g, data, mapData);
+                g.dispose();
+            }
+            
+            return image;
         }
-        
-        if(m_isDirty)
-        {
-            Graphics g = image.getGraphics();
-            draw((Graphics2D) g, data, mapData);
-            g.dispose();
-        }
-        
-        return image;        
     }
     
     
@@ -120,7 +124,7 @@ public class Tile
         return m_imageRef.get();
     }
     
-    private synchronized void draw(Graphics2D g, GameData data, MapData mapData)
+    private void draw(Graphics2D g, GameData data, MapData mapData)
     {
         Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + m_bounds);
         
@@ -128,23 +132,15 @@ public class Tile
         g.setColor(Color.WHITE);
         g.fill(m_bounds);
      
-        
-        Iterator<IDrawable> iter;
-        
-        synchronized(m_mutex)
-        {
-		    //draw
-		    Collections.sort(m_contents, new DrawableComparator());
-		    iter = new ArrayList<IDrawable>(m_contents).iterator();
-        }
-
+        Collections.sort(m_contents, new DrawableComparator());
+        Iterator<IDrawable> iter = m_contents.iterator();
+    
         while (iter.hasNext())
         {
             IDrawable drawable = iter.next();
             drawable.draw(m_bounds, data, g, mapData);
         }
         m_isDirty = false;
-  
         
         
         //draw debug graphics

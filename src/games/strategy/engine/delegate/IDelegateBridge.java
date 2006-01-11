@@ -58,11 +58,6 @@ public interface IDelegateBridge
      */
     public IRemote getRemote(PlayerID id);
 
-    /**
-     * Player is initialized to the player specified in the xml data.
-     */
-    public void setPlayerID(PlayerID aPlayer);
-
     public PlayerID getPlayerID();
 
     /**
@@ -98,5 +93,11 @@ public interface IDelegateBridge
     public IChannelSubscribor getDisplayChannelBroadcaster();
     
     public Properties getStepProperties();
+    
+    
+    public void leaveDelegateExecution();
+    
+    public void enterDelegateExecution();
+    
 
 }

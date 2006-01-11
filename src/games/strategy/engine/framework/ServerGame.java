@@ -67,6 +67,9 @@ public class ServerGame implements IGame
     private final RandomStats m_randomStats;
 
     private IRandomSource m_randomSource = new PlainRandomSource();
+    private IRandomSource m_delegateRandomSource;
+    
+    private DelegateExecutionManager m_delegateExecutionManager = new DelegateExecutionManager();
 
     /**
      *
@@ -132,7 +135,9 @@ public class ServerGame implements IGame
             //if its null then it shouldnt be added as an IRemote
             if(remoteType == null)
                 continue;
-            m_remoteMessenger.registerRemote(delegate.getRemoteType(), delegate, getRemoteName(delegate));
+            
+            Object wrappedDelegate = m_delegateExecutionManager.createInboundImplementation(delegate, new Class[] {delegate.getRemoteType()});
+            m_remoteMessenger.registerRemote(delegate.getRemoteType(), wrappedDelegate, getRemoteName(delegate));
         }
     }
     
@@ -234,7 +239,16 @@ public class ServerGame implements IGame
 
 	private void endStep() 
 	{
-		getCurrentStep().getDelegate().end();
+        m_delegateExecutionManager.enterDelegateExecution();
+        try
+        {
+		    getCurrentStep().getDelegate().end();
+        }
+        finally
+        {
+            m_delegateExecutionManager.leaveDelegateExecution();
+        }
+        
 		getCurrentStep().incrementRunCount();    
         
     	if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
@@ -260,13 +274,27 @@ public class ServerGame implements IGame
                 m_data, 
                 getCurrentStep(), this, 
                 new DelegateHistoryWriter(m_channelMessenger),
-                m_randomStats
+                m_randomStats, m_delegateExecutionManager
                 );
-        bridge.setRandomSource(m_randomSource);
+        
+        if(m_delegateRandomSource == null)
+        {
+            m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource, new Class[] {IRandomSource.class});
+        }
+        
+        bridge.setRandomSource(m_delegateRandomSource);
 
         notifyGameStepChanged(stepIsRestoredFromSavedGame);
         
-        getCurrentStep().getDelegate().start(bridge, m_data);
+        m_delegateExecutionManager.enterDelegateExecution();
+        try
+        {
+            getCurrentStep().getDelegate().start(bridge, m_data);
+        }
+        finally
+        {
+            m_delegateExecutionManager.leaveDelegateExecution();
+        }
 	}
 
     private void waitForPlayerToFinishStep()
@@ -365,6 +393,7 @@ public class ServerGame implements IGame
     public void setRandomSource(IRandomSource randomSource)
     {
       m_randomSource = randomSource;
+      m_delegateRandomSource = null;
     }
 
     /* 
