@@ -46,12 +46,6 @@ public interface IDrawable
     public static final int UNITS_LEVEL = 11;
     
     public static final int TERRITORY_OVERLAY_LEVEL = 12;
-
-    /**
-     * Start any asynchronous preparation that can be done in the backgrounds.
-     * Note, a drawable should not rely on prepare being called.  It is merly a hint.
-     */
-    public void prepare();
     
     /**
      * Draw the tile
@@ -83,7 +77,7 @@ class TerritoryNameDrawable implements IDrawable
         this.m_territoryName = territoryName;
     }
 
-    public void prepare() {}
+    
     
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
@@ -154,9 +148,7 @@ class VCDrawable implements IDrawable
         m_location = location;
     }
     
-    public void prepare()
-    {
-    }
+
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
@@ -188,9 +180,7 @@ class CapitolMarkerDrawable implements IDrawable
         m_location = location.getName();
         m_uiContext = uiContext;
     }
-    public void prepare()
-    {
-    }
+
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
@@ -258,15 +248,6 @@ class ReliefMapDrawable extends MapTileDrawable
         m_context = context;
     }
     
-    public void prepare() 
-    {
-        if(!TileImageFactory.getShowReliefImages())
-            return;
-        if(m_noImage)
-            return;
-        
-        m_context.getTileImageFactory().prepareReliefTile(m_x, m_y);
-    }
     
     protected Image getImage()
     {
@@ -303,14 +284,7 @@ class BaseMapDrawable extends MapTileDrawable
         super(x,y);
         m_uiContext = context;
     }
-   
-    public void prepare() 
-    {
-        if(m_noImage)
-            return;
-        
-        m_uiContext.getTileImageFactory().prepareBaseTile(m_x, m_y);
-    }
+
 
    
     protected Image getImage()
@@ -350,7 +324,7 @@ class LandTerritoryDrawable implements IDrawable
         m_isWater = isWater;
     }
 
-    public void prepare() {}
+    
     
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {

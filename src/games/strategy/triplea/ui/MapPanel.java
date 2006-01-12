@@ -586,20 +586,26 @@ public class MapPanel extends ImageScrollerLargeView
         {
             Image img = null;
             Tile tile = (Tile) tiles.next();
-            if(tile.isDirty())
+
+            synchronized(tile.getMutex())
             {
-                //take what we can get to avoid screen flicker
-                undrawn.add(tile);
-                img = tile.getRawImage();
-                
+                if(tile.isDirty())
+                {
+                    //take what we can get to avoid screen flicker
+                    undrawn.add(tile);
+                    img = tile.getRawImage();
+                    
+                }
+                else
+                {
+    	            img = tile.getImage(data, m_uiContext.getMapData());
+    	            images.add(tile);
+                }
+                if(img != null)
+                    g.drawImage(img, tile.getBounds().x -bounds.x, tile.getBounds().y - m_y, this);
             }
-            else
-            {
-	            img = tile.getImage(data, m_uiContext.getMapData());
-	            images.add(tile);
-            }
-            if(img != null)
-                g.drawImage(img, tile.getBounds().x -bounds.x, tile.getBounds().y - m_y, this);
+            
+          
         }
     }
 

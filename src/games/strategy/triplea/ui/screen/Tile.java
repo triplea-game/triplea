@@ -22,6 +22,7 @@ import java.awt.*;
 import java.lang.ref.SoftReference;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.locks.*;
 import java.util.logging.*;
 
 /**
@@ -45,7 +46,7 @@ public class Tile
     private final Object m_mutex = new Object();
     
     private final List<IDrawable> m_contents = new ArrayList<IDrawable>();
-
+    
     public Tile(final Rectangle bounds, int x, int y)
     {
         //s_logger.log(Level.FINER, "Tile created for:" + bounds);
@@ -55,22 +56,6 @@ public class Tile
         
     }
      
-    
-    public void prepareToDraw()
-    {
-        synchronized(m_mutex)
-        {
-            Iterator<IDrawable> iter = m_contents.iterator();
-            while (iter.hasNext())
-            {
-                IDrawable drawable = iter.next();
-                drawable.prepare();
-                
-            }
-        }
-        
-    }
-    
     public boolean isDirty()
     {
         synchronized(m_mutex)
@@ -107,6 +92,7 @@ public class Tile
             
             return image;
         }
+        
     }
     
     
@@ -220,6 +206,11 @@ public class Tile
     public int getY()
     {
         return m_y;
+    }
+    
+    public Object getMutex()
+    {
+        return m_mutex;
     }
     
 }
