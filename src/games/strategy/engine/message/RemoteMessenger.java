@@ -34,7 +34,12 @@ public class RemoteMessenger implements IRemoteMessenger
     
     private static String getUnifiedName(String channelName)
     {
-        return "R:" + channelName;
+        //synchronize to ensure the name returned is written to main memory
+        //synchronizing on "R" since it happens to be a convenient object
+        synchronized("R")
+        {
+            return "R:" + channelName;
+        }
     }
     
     private void assertRemoteExists(String channelName)
@@ -71,11 +76,16 @@ public class RemoteMessenger implements IRemoteMessenger
          if(!remoteInterface.isInterface())
              throw new IllegalArgumentException(remoteInterface.getName() +  " must be an interface");
         
-         if(m_unifiedMessenger.isAwareOfEndPoint(getUnifiedName(name)))
-             throw new IllegalStateException("Remote already bound:" + name);
          
-        m_unifiedMessenger.createEndPoint(getUnifiedName(name), new Class[] {remoteInterface, IRemote.class}, false); 
-        m_unifiedMessenger.addImplementor(getUnifiedName(name), implementor);
+        String unifiedName = getUnifiedName(name);
+        if(m_unifiedMessenger.isAwareOfEndPoint(unifiedName))
+        {
+             m_unifiedMessenger.dumpState(System.err);
+             throw new IllegalStateException("Remote already bound:" + name);
+        }
+         
+        m_unifiedMessenger.createEndPoint(unifiedName, new Class[] {remoteInterface, IRemote.class}, false); 
+        m_unifiedMessenger.addImplementor(unifiedName, implementor);
     }
 
     /* 

@@ -32,6 +32,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
@@ -634,12 +635,6 @@ public class MapPanel extends ImageScrollerLargeView
         
     }  
     
-    public void finalize()
-    {
-        m_backgroundDrawer.stop();
-    }
-
-    
     public void setMouseShadowUnits(Collection<Unit> units)
     {
         if(units == null || units.isEmpty())
@@ -779,19 +774,19 @@ class BackgroundDrawer implements Runnable
 {
     private final LinkedBlockingQueue<Tile> m_tiles = new LinkedBlockingQueue<Tile>();
     
-    private boolean m_active = true;
-    private final MapPanel m_mapPanel;
+    //use a weak reference, if we see the panel is gc'd, then we can stop this thread
+    private final WeakReference<MapPanel> m_mapPanelRef;
     private final UIContext m_uiContext;
     
     BackgroundDrawer(MapPanel panel, UIContext uiContext)
     {
-        m_mapPanel = panel;
+        m_mapPanelRef = new WeakReference<MapPanel>(panel);
         m_uiContext = uiContext;
     }
     
     public void stop()
-    {
-        m_active = false;
+    {        
+        m_mapPanelRef.clear();
         m_tiles.clear();
         //wake up the background drawer
         m_tiles.offer(null);
@@ -805,12 +800,12 @@ class BackgroundDrawer implements Runnable
     
     public void run()
     {
-        while(m_active)
+        while(m_mapPanelRef.get() != null)
         {
             Tile tile;
             try
             {
-                tile = m_tiles.take();
+                tile = m_tiles.poll(1000, TimeUnit.MICROSECONDS);
             } catch (InterruptedException e)
             {
                continue;
@@ -818,15 +813,21 @@ class BackgroundDrawer implements Runnable
             
             if(tile == null)
                 continue;
-                    
-            GameData data = m_mapPanel.getData();
+
+            final MapPanel mapPanel = m_mapPanelRef.get();
+            if(mapPanel == null)
+            {
+                continue;
+            }
+            
+            GameData data = mapPanel.getData();
             tile.getImage(data, m_uiContext.getMapData());
             
             SwingUtilities.invokeLater(new Runnable()
             {
                public void run()
                { 
-                   m_mapPanel.repaint();
+                   mapPanel.repaint();
                }
             });
             

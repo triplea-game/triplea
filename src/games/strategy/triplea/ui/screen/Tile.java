@@ -22,7 +22,6 @@ import java.awt.*;
 import java.lang.ref.SoftReference;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.locks.*;
 import java.util.logging.*;
 
 /**

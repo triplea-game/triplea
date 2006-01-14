@@ -584,6 +584,21 @@ public class UnifiedMessenger
             }
         }
     }
+    
+    public void dumpState(PrintStream stream)
+    {
+        synchronized(m_endPointmutex)
+        {
+            stream.println("Local Endpoints:" + m_localEndPoints);
+        }
+        
+        synchronized(m_nodesWithImplementorsMutex)
+        {
+            stream.println("Remote nodes with implementors:" +  m_remoteNodesWithImplementors);
+        }
+        
+    }
+    
 
 }
 
@@ -823,6 +838,11 @@ class EndPoint
                 return false;
         }
         return true;
+    }
+    
+    public String toString()
+    {
+        return "Name:" +  m_name + " singleThreaded:" + m_singleThreaded + " implementors:" + m_implementors;
     }
 
 }

@@ -59,11 +59,23 @@ public class HistoryWriter implements java.io.Serializable
             throw new IllegalStateException("Not in a round");
         }
 
+        
         Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
-        m_current.add(currentStep);
-        m_history.nodesWereInserted(m_current, new int[]
-        { m_current.getChildCount() - 1 });
-        m_current = currentStep;
+        HistoryNode old = m_current;
+        
+        m_history.getGameData().aquireWriteLock();
+        try
+        {
+            m_current.add(currentStep);
+            m_current = currentStep;
+        }
+        finally
+        {
+            m_history.getGameData().releaseWriteLock();
+        }
+        
+        
+        m_history.nodesWereInserted(old, new int[] { old.getChildCount() - 1 });
     }
 
     public void startNextRound(int round)
@@ -79,32 +91,55 @@ public class HistoryWriter implements java.io.Serializable
 
         Round currentRound = new Round(round, m_history.getChanges().size());
 
-        ((HistoryNode) m_history.getRoot()).add(currentRound);
+        m_history.getGameData().aquireWriteLock();
+        try
+        {
+            ((HistoryNode) m_history.getRoot()).add(currentRound);
+        
+            m_current = currentRound;
+        }
+        finally
+        {
+            m_history.getGameData().releaseWriteLock();
+        }            
+        
+        
         m_history.reload();
-        m_current = currentRound;
     }
 
     private void closeCurrent()
     {
-        //remove steps where nothing happened
-        if (isCurrentStep())
-        {
-            HistoryNode parent = (HistoryNode) m_current.getParent();
-            if (m_current.getChildCount() == 0)
+        HistoryNode old = m_current;
+        m_history.getGameData().aquireWriteLock();
+        try
+        {        
+            
+            //remove steps where nothing happened
+            if (isCurrentStep())
             {
-                int index = parent.getChildCount() - 1;
-                parent.remove(m_current);
-                m_history.nodesWereRemoved(parent, new int[]
-                { index }, new Object[]
-                { m_current });
+                HistoryNode parent = (HistoryNode) m_current.getParent();
+                if (m_current.getChildCount() == 0)
+                {
+                    int index = parent.getChildCount() - 1;
+                    parent.remove(m_current);
+                    m_history.nodesWereRemoved(parent, new int[]
+                    { index }, new Object[]
+                    { m_current });
+                }
+    
+                m_current = parent;
+                return;
             }
-
-            m_current = parent;
-            return;
+            m_current = (HistoryNode) m_current.getParent();
         }
-
-        ((IndexedHistoryNode) m_current).setChangeEndIndex(m_history.getChanges().size());
-        m_current = (HistoryNode) m_current.getParent();
+        finally
+        {
+            m_history.getGameData().releaseWriteLock();
+        }
+            
+        
+        ((IndexedHistoryNode) old).setChangeEndIndex(m_history.getChanges().size());
+        
     }
 
     public void startEvent(String eventName)
@@ -120,9 +155,19 @@ public class HistoryWriter implements java.io.Serializable
 
         Event event = new Event(eventName, m_history.getChanges().size());
 
-        m_current.add(event);
+        m_history.getGameData().aquireWriteLock();
+        try
+        {
+            m_current.add(event);
+            m_current = event;
+        }
+        finally
+        {
+            m_history.getGameData().releaseWriteLock();
+        }
+
+            
         m_history.reload(m_current);
-        m_current = event;
 
     }
 
@@ -148,13 +193,25 @@ public class HistoryWriter implements java.io.Serializable
     {
         s_logger.log(Level.FINE, "Adding child:" + node);
 
-        if (!isCurrentEvent())
+        
+        m_history.getGameData().aquireWriteLock();
+        try
         {
-            new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" + m_current).printStackTrace(System.out);
-            startEvent("???");
-        }
+            if (!isCurrentEvent())
+            {
+                new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" + m_current).printStackTrace(System.out);
+                startEvent("???");
+            }
 
-        m_current.add(node);
+            m_current.add(node);
+        }
+        finally
+        {
+            m_history.getGameData().releaseWriteLock();
+        }            
+        
+        
+        
         m_history.nodesWereInserted(m_current, new int[]
         { m_current.getChildCount() - 1 });
     }
@@ -184,7 +241,17 @@ public class HistoryWriter implements java.io.Serializable
                     .printStackTrace(System.out);
             startEvent("???");
         }
-        ((Event) m_current).setRenderingData(details);
+        
+        m_history.getGameData().aquireWriteLock();
+        try
+        {
+            ((Event) m_current).setRenderingData(details);
+        }
+        finally
+        {
+            m_history.getGameData().releaseWriteLock();
+        }
+        
         m_history.reload(m_current);
     }
 

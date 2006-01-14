@@ -34,7 +34,12 @@ public class ChannelMessenger implements IChannelMessenger
     
     private static String getUnifiedName(String channelName)
     {
-        return "C:" + channelName;
+        //synchronized to ensure the unified name is fully created before it is used
+        //synchronize on "C:"
+        synchronized("C:")
+        {
+            return "C:" + channelName;
+        }
     }
     
     private void assertChannelExists(String channelName)

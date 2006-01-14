@@ -33,8 +33,9 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
 import games.strategy.util.ListenerList;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
+
 
 /**
  *
@@ -196,20 +197,57 @@ public class ServerGame implements IGame
         getCurrentStep().getDelegate().end();
     }
 
-	private void autoSave() {
+	private void autoSave() 
+    {
+        FileOutputStream out = null;
 		try
         {
             SaveGameFileChooser.ensureDefaultDirExists();
             File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME);
+            
             System.out.print("Autosaving...");
-            new GameDataManager().saveGame(autosaveFile, m_data);
+            out = new FileOutputStream(autosaveFile);
+            saveGame(out);
             System.out.println("done");
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
+        finally
+        {
+            try
+            {
+                out.close();
+            } catch (IOException e)
+            {
+              
+                e.printStackTrace();
+            }
+        }
 	}
+
+    
+    public void saveGame(OutputStream out) throws IOException
+    {
+        try
+        {
+            //if we cant lock, then still allow saving
+            if(!m_delegateExecutionManager.blockDelegateExecution(500))
+            {
+                new IOException("Could not lock delegate execution").printStackTrace();
+            }
+            new GameDataManager().saveGame(out, m_data);
+        }
+        catch(InterruptedException ie)
+        {
+            throw new IOException(ie.getMessage());
+        }
+        finally
+        {
+            m_delegateExecutionManager.resumeDelegateExecution();
+        }
+    }
 
   
 

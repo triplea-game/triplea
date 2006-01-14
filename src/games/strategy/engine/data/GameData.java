@@ -43,7 +43,7 @@ import games.strategy.engine.history.*;
  */
 public class GameData implements java.io.Serializable
 {
-    private transient ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
 
     
     private String m_gameName;
@@ -224,8 +224,6 @@ public class GameData implements java.io.Serializable
 
 	public void postDeSerialize()
 	{
-	    m_readWriteLock = new ReentrantReadWriteLock();
-
 		m_territoryListeners = new ListenerList<TerritoryListener>();
 		m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
 		
@@ -238,13 +236,21 @@ public class GameData implements java.io.Serializable
 	 * 
 	 */
 	public void aquireReadLock()
-	{	
+	{
+        //this can happen in very odd cirumcstances while deserializing
+        if(m_readWriteLock == null)
+            return;
+        
         m_readWriteLock.readLock().lock();
 	}
 	
 	
 	public void releaseReadLock()
 	{
+        //this can happen in very odd cirumcstances while deserializing
+        if(m_readWriteLock == null)
+            return;
+        
         m_readWriteLock.readLock().unlock();
 	}
 
@@ -257,12 +263,19 @@ public class GameData implements java.io.Serializable
      */
     public void aquireWriteLock()
     {   
+        //this can happen in very odd cirumcstances while deserializing
+        if(m_readWriteLock == null)
+            return;
         m_readWriteLock.writeLock().lock();
     }
     
     
     public void releaseWriteLock()
     {
+        //this can happen in very odd cirumcstances while deserializing
+        if(m_readWriteLock == null)
+            return;
+        
         m_readWriteLock.writeLock().unlock();
     }
 

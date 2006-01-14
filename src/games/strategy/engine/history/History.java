@@ -22,7 +22,7 @@ package games.strategy.engine.history;
 *  -  Round 
 *   -   Step 
 *       -  Event
-* 	      - Child 
+*         - Child 
 *           
 *
 *
@@ -113,24 +113,44 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     public synchronized void gotoNode(HistoryNode node)
     {
-      if(m_currentNode == null)
-        m_currentNode = getLastNode();
-
-      Change dataChange = getDelta(m_currentNode, node);
-      m_currentNode = node;
-
-      if (dataChange != null)
-        new ChangePerformer(m_data).perform(dataChange);
+        getGameData().aquireWriteLock();
+        try
+        {
+        
+          if(m_currentNode == null)
+            m_currentNode = getLastNode();
+    
+          Change dataChange = getDelta(m_currentNode, node);
+          m_currentNode = node;
+    
+          if (dataChange != null)
+            new ChangePerformer(m_data).perform(dataChange);
+        }
+        finally
+        {
+            getGameData().releaseWriteLock();
+        }          
     }
 
     synchronized void changeAdded(Change aChange)
     {
-      m_changes.add(aChange);
-
-      if(m_currentNode == null)
-        return;
-      if(m_currentNode == getLastNode())
-        new ChangePerformer(m_data).perform(aChange);
+        getGameData().aquireWriteLock();
+        try
+        {
+        
+              m_changes.add(aChange);
+        
+              if(m_currentNode == null)
+                return;
+              if(m_currentNode == getLastNode())
+                new ChangePerformer(m_data).perform(aChange);
+              
+        }
+        finally
+        {
+            getGameData().releaseWriteLock();
+        }
+      
     }
 
     private Object writeReplace() throws ObjectStreamException
@@ -141,6 +161,11 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
     List<Change> getChanges()
     {
         return m_changes;
+    }
+    
+    GameData getGameData()
+    {
+        return m_data;
     }
 }
 
