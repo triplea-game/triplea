@@ -93,7 +93,7 @@ public class ServerMessenger implements IServerMessenger
    */
   public Set<INode> getNodes()
   {
-    return Collections.unmodifiableSet(m_allNodes);
+      return new HashSet<INode>(m_allNodes);
   }
 
   public synchronized void shutDown()
@@ -302,7 +302,7 @@ public class ServerMessenger implements IServerMessenger
     broadcast(change);
     m_connections.add(c);
 
-    notifyConnectionsChanged();
+    notifyConnectionsChanged(true, c.getRemoteNode());
   }
 
   private void removeConnection(Connection c)
@@ -310,7 +310,7 @@ public class ServerMessenger implements IServerMessenger
     NodeChangeServerMessage change = new NodeChangeServerMessage(false, c.getRemoteNode());
     m_allNodes.remove(c.getRemoteNode());
     broadcast(change);
-    notifyConnectionsChanged();
+    notifyConnectionsChanged(false, c.getRemoteNode());
   }
 
   private void notifyListeners(MessageHeader msg)
@@ -343,12 +343,20 @@ public class ServerMessenger implements IServerMessenger
     m_connectionListeners.remove(listener);
   }
 
-  private void notifyConnectionsChanged()
+  private void notifyConnectionsChanged(boolean added, INode node)
   {
     Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
     while (iter.hasNext())
     {
-      iter.next().connectionsChanged();
+      if(added)
+      {
+          iter.next().connectionAdded(node);    
+      }
+      else
+      {
+          iter.next().connectionRemoved(node);
+      }
+      
     }
   }
 

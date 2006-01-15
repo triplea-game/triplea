@@ -149,6 +149,9 @@ class Connection
      */
     public void flush()
     {
+        //TODO - this returns when the queue is empty
+        //we should also block if the writer is sending data
+
         if (m_shutdown)
             return;
 
@@ -195,6 +198,7 @@ class Connection
                 try
                 {
                     m_socket.close();
+                    m_writer.interrupt();
                 } catch (Exception e)
                 {
                     System.err.println("Exception shutting down");
@@ -230,6 +234,8 @@ class Connection
                 try
                 {
                     next = (MessageHeader) m_waitingToBeSent.take();
+                    if(next == null)
+                        continue;
                 } catch (InterruptedException e)
                 {
                     continue;

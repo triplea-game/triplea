@@ -104,7 +104,7 @@ public class ClientMessenger implements IMessenger
         {
             m_allNodes.remove(node);
         }
-        notifyConnectionsChanged();
+        notifyConnectionsChanged(msg.getAdd(), node);
     }
 
     private synchronized void initMessageReceived(ClientInitServerMessage msg)
@@ -164,7 +164,7 @@ public class ClientMessenger implements IMessenger
     public synchronized Set<INode> getNodes()
     {
         //if the init message hasnt reached us yet, stall
-        return Collections.unmodifiableSet(m_allNodes);
+        return new HashSet<INode>(m_allNodes);
     }
 
     /*
@@ -236,15 +236,22 @@ public class ClientMessenger implements IMessenger
         m_connectionListeners.remove(listener);
     }
 
-    private void notifyConnectionsChanged()
+    private void notifyConnectionsChanged(boolean added, INode node)
     {
-        Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
-        while (iter.hasNext())
+      Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
+      while (iter.hasNext())
+      {
+        if(added)
         {
-            iter.next().connectionsChanged();
+            iter.next().connectionAdded(node);    
         }
+        else
+        {
+            iter.next().connectionRemoved(node);
+        }
+        
+      }
     }
-
  
 
     /**

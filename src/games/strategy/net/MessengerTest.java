@@ -70,6 +70,38 @@ public class MessengerTest extends TestCase
 		m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
 		m_client2.addMessageListener(m_client2Listener);
 	}
+    
+    public void tearDown()
+    {
+        try
+        {
+            if(m_server != null)
+                m_server.shutDown();
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            if(m_client1 != null)
+                m_client1.shutDown();
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            if(m_client2 != null)
+                m_client2.shutDown();
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+
+    }    
 
 	public void testRefused()
 	{
@@ -116,35 +148,7 @@ public class MessengerTest extends TestCase
 	}
 
 
-	public void tearDown()
-	{
-		try
-		{
-			if(m_server != null)
-				m_server.shutDown();
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
 
-		try
-		{
-			if(m_client1 != null)
-				m_client1.shutDown();
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		try
-		{
-			if(m_client2 != null)
-				m_client2.shutDown();
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	public void testServerSend()
 	{
