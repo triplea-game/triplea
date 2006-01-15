@@ -15,7 +15,6 @@
 package games.strategy.ui;
 
 import java.awt.*;
-
 import javax.swing.*;
 
 
@@ -36,38 +35,15 @@ public class SwingEventThreadGoon
             return;
         s_isInitialized = true;
         
-        
-        final RepaintManager manager = new RepaintManager()
+        RepaintManager manager = new RepaintManager()
         {
-
             /**
-             * Once a component is added to a displayed heirarchy, all changes to the component
-             * should be done in the swing event thread.
-             * 
-             *  Check the component (and its parent recursivly) till you get to the top 
-             *  window (or null).  If the window is displayable, then the component is displayable.
+             * We are updating a portion of the screen, check to see if we are in the right thread.
              */
-            private boolean isComponentDisplayable(Component c)
-            {
-                if(!c.isVisible())
-                    return false;
-                Container parent = c.getParent();
-                if(parent == null)
-                    return false;
-                if(parent instanceof Window)
-                {
-                    Window w = (Window) parent;
-                    return w.isDisplayable();
-                }
-                return isComponentDisplayable((Component) parent); 
-                
-                
-                
-            }
-
-            
             public void addDirtyRegion(JComponent c, int x, int y, int w, int h)
             {
+                //if a component is not displayable, then we can modify
+                //if outside the swing event thread. 
                 if(isComponentDisplayable(c))
                 {
                     if(!SwingUtilities.isEventDispatchThread())
@@ -79,15 +55,45 @@ public class SwingEventThreadGoon
                 super.addDirtyRegion(c, x, y, w, h);
             } 
             
-            
         
         };
         
+        //update the repaint manager
         RepaintManager.setCurrentManager(manager);
-       
-        
         
     }
+    
+    /**
+     * Once a component is added to a displayed heirarchy, all changes to the component
+     * should be done in the swing event thread.
+     * 
+     *  Check the component (and its parent recursivly) till you get to the top 
+     *  window (or null).  If the window is displayable, then the component is displayable.
+     */
+    private static boolean isComponentDisplayable(Component c)
+    {
+        //we are not visible
+        if(!c.isVisible())
+            return false;
+
+        //if we have no parent, we are not part of a display hierarchy, and
+        //we are not displayable
+        Container parent = c.getParent();
+        if(parent == null)
+            return false;
+        
+        //is our window displayable?
+        if(parent instanceof Window)
+        {
+            Window w = (Window) parent;
+            
+            return w.isDisplayable();
+        }
+        
+        //recursivly check our parent
+        return isComponentDisplayable((Component) parent); 
+    }
+    
     
     
 }
