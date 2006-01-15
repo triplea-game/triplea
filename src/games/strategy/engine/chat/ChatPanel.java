@@ -25,15 +25,17 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
-import games.strategy.engine.message.IChannelMessenger;
+import games.strategy.engine.message.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.IMessenger;
 import games.strategy.triplea.sound.SoundPath;
 
 /**
+ * A Chat window.  
+ * 
  * @author Sean Bridges
  */
-public class ChatFrame extends JFrame
+public class ChatPanel extends JPanel implements ChatListener
 {
 
     private JTextPane m_text;
@@ -50,24 +52,27 @@ public class ChatFrame extends JFrame
     private final SimpleAttributeSet normal = new SimpleAttributeSet();
     private final IChannelMessenger m_channelMessenger;
 
-    /** Creates a new instance of ChatFrame */
-    public ChatFrame(IMessenger messenger, IChannelMessenger channelMessenger)
+    public static final String ME = "/me ";
+    public static boolean isThirdPerson(String msg)
     {
-
-        super("Chat");
-
+        return msg.toLowerCase().startsWith(ME);
+    }    
+    
+    /** Creates a new instance of ChatFrame */
+    public ChatPanel(IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, String chatName)
+    {
         m_channelMessenger = channelMessenger;
-        setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(this));
-
+        
         createComponents();
         layoutComponents();
 
-        m_chat = new Chat(messenger, this, channelMessenger);
+        m_chat = new Chat(messenger, this, chatName, channelMessenger, remoteMessenger  );
+        m_chat.init();
 		m_ChatHistory = new ChatHistory();
 
         StyleConstants.setBold(bold, true);
         setSize(300, 200);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        
     }
 
     public Chat getChat()
@@ -78,7 +83,7 @@ public class ChatFrame extends JFrame
     private void layoutComponents()
     {
 
-        Container content = getContentPane();
+        Container content = this;
         content.setLayout(new BorderLayout());
         m_scrollPane = new JScrollPane(m_text);
         
@@ -164,7 +169,7 @@ public class ChatFrame extends JFrame
         {
             public void actionPerformed(ActionEvent event)
             {
-               m_chat.slap(playerName);
+               m_chat.sendSlap(playerName);
             }
         };
         
@@ -176,7 +181,7 @@ public class ChatFrame extends JFrame
     }
     
     /** thread safe */
-    void addMessage(final String message, final String from, final boolean thirdperson)
+    public void addMessage(final String message, final String from, final boolean thirdperson)
     {
 
         Runnable runner = new Runnable()
@@ -197,10 +202,7 @@ public class ChatFrame extends JFrame
                 {
                     ble.printStackTrace();
                 }
-                if (!isVisible())
-                    setVisible(true);
-   
-                toFront();
+             
                 BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
                 scrollModel.setValue(scrollModel.getMaximum());
                 
@@ -218,12 +220,11 @@ public class ChatFrame extends JFrame
     /**
      * @arg players - a collection of Strings representing player names.
      */
-    synchronized void updatePlayerList(final Collection<String> players)
+    public synchronized void updatePlayerList(final Collection<String> players)
     {
 
         Runnable runner = new Runnable()
         {
-
             public void run()
             {
 
@@ -253,8 +254,8 @@ public class ChatFrame extends JFrame
 
             if (m_nextMessage.getText().trim().length() == 0)
                 return;
-            if(Chat.isThirdPerson(m_nextMessage.getText())){
-                m_chat.sendMessage(m_nextMessage.getText().substring(Chat.ME.length()), true);
+            if(isThirdPerson(m_nextMessage.getText())){
+                m_chat.sendMessage(m_nextMessage.getText().substring(ME.length()), true);
             	
             } else {
             	

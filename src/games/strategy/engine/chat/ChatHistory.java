@@ -23,7 +23,7 @@ import java.util.*;
  * @author lnxduk
  *
  */
-public class ChatHistory
+class ChatHistory
 {
 	
 	private final List<String> m_history =new ArrayList<String>();

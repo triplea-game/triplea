@@ -14,7 +14,7 @@
 
 package games.strategy.engine.framework.ui;
 
-import games.strategy.engine.chat.ChatFrame;
+import games.strategy.engine.chat.*;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
@@ -56,7 +56,7 @@ public class LauncherFrame extends JFrame
     private IChannelMessenger m_channelMessenger;
     private UnifiedMessenger m_unifiedMessenger;
     private IRemoteMessenger m_remoteMessenger;
-    private ChatFrame m_chat;
+    private ChatPanel m_chat;
     private ServerStartup m_serverStartup;
     private ClientStartup m_clientStartup;
     private GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
@@ -448,8 +448,9 @@ public class LauncherFrame extends JFrame
         m_channelMessenger = new ChannelMessenger(m_unifiedMessenger);
         m_remoteMessenger = new RemoteMessenger(m_unifiedMessenger);
 
-        m_chat = new ChatFrame(messenger, m_channelMessenger);
-        m_chat.setVisible(true);
+        if(m_chat == null)
+            new ChatController( "default", m_messenger, m_remoteMessenger, m_channelMessenger);
+        showChat();
 
         m_serverStartup = new ServerStartup(messenger, m_remoteMessenger, m_channelMessenger);
         if (m_gameData != null)
@@ -512,8 +513,7 @@ public class LauncherFrame extends JFrame
         m_channelMessenger = new ChannelMessenger(m_unifiedMessenger);
         m_remoteMessenger = new RemoteMessenger(m_unifiedMessenger);
 
-        m_chat = new ChatFrame(m_messenger, m_channelMessenger);
-        m_chat.setVisible(true);
+        showChat();
 
         m_clientStartup = new ClientStartup(m_channelMessenger, m_remoteMessenger);
         m_clientStartup.setLauncherFrame(this);
@@ -523,6 +523,25 @@ public class LauncherFrame extends JFrame
 
         setGameData(null);
 
+    }
+
+    private void showChat()
+    {
+        m_chat = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, "default");
+        
+        JFrame f = new JFrame("Chat");
+        f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        f.getContentPane().add(m_chat);
+
+        f.setSize(300, 200);
+        f.setIconImage(games.strategy.engine.framework.GameRunner.getGameIcon(this));
+        
+        
+        f.setVisible(true);
+        
+        
+        
+        m_chat.setVisible(true);
     }
 
     void setWidgetActivation()

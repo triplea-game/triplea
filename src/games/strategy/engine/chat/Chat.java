@@ -20,57 +20,124 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
+import games.strategy.util.Tuple;
 
 import java.util.*;
 
 /**
  * 
- * chat logic.
+ * chat logic.  each chat is bound to one chatPanel
  * 
  * @author Sean Bridges
  */
-public class Chat implements IChatter
-{
-    private final String CHAT_CHANNEL = "games.strategy.engine.chat.CHAT_CHANNEL";
-    private final ChatFrame m_frame;
+class Chat 
+{    
+    private final ChatListener m_listener;
     private final IMessenger m_messenger;
     private final IChannelMessenger m_channelMessenger;
+    private final IRemoteMessenger m_remoteMesenger;
+    private final String m_chatChannelName;
+    private final String m_chatName;
     
-	public static final String ME = "/me ";
+    private long m_chatInitVersion = -1;
+    
+    private final Object m_mutex = new Object();
+    private List<INode> m_nodes;
+    
+    private List<Runnable> m_queuedInitMessages = new ArrayList<Runnable>();
+    
 
-    public static boolean isThirdPerson(String msg)
-    {
-		return msg.toLowerCase().startsWith(ME);
-	}
 
     /** Creates a new instance of Chat */
-    public Chat(IMessenger messenger, ChatFrame frame, IChannelMessenger channelMessenger)
+    public Chat(IMessenger messenger, ChatListener ui, String chatName, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
     {
 
-        m_frame = frame;
+        m_listener = ui;
         m_messenger = messenger;
         m_channelMessenger = channelMessenger;
+        m_remoteMesenger = remoteMessenger;
+        m_chatChannelName = ChatController.getChatChannelName(chatName);
+        m_chatName = chatName;
+
+    }
+    
+    void init()
+    {
+         String  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
+         if(!m_remoteMesenger.hasRemote(chatControllerName))
+         {
+             m_remoteMesenger.waitForRemote(chatControllerName, 2000);
+         }
+         
+         
+         //the order of events is significant.
+         //
+         // 
+         //1  register our channel listener
+         //    once the channel is registered, we are guarantted that
+         //    when we recieve the response from our init(...) message, our channel
+         //    subscribor has been added, and will see any messages broadcasted by the server
+         //
+         //2  call the init message on the server remote. Any add or join messages sent from the server
+         //   will queue until we recieve the init return value (they queue since they see the init version is -1)
+         //
+         //3  when we receive the init message response, acquire the lock, and initialize our state
+         //   and run any queued messages.  Queued messages may be ignored if the 
+         //   server version is incorrect.
+         //
+         // this all seems a lot more involved than it needs to be.
+         
+        IChatController controller = (IChatController) m_remoteMesenger.getRemote(chatControllerName);
         
-        if(!m_channelMessenger.hasChannel(CHAT_CHANNEL))
+        if(!m_channelMessenger.hasChannel(m_chatChannelName))
         {
-            m_channelMessenger.createChannel(IChatter.class, CHAT_CHANNEL);
+            m_channelMessenger.createChannel(IChatChannel.class, m_chatChannelName);
         }
-        m_channelMessenger.registerChannelSubscriber(this, CHAT_CHANNEL);
+        m_channelMessenger.registerChannelSubscriber(m_chatChannelSubscribor, m_chatChannelName);   
         
-        m_messenger.addConnectionChangeListener(m_connectionChangeListener);
+        Tuple<List<INode>, Long> init = controller.joinChat(m_messenger.getLocalNode());
+        if(init == null)
+            return;
+        
+        
+        synchronized(m_mutex)
+        {
+            m_chatInitVersion = init.getSecond().longValue();
+            m_nodes = init.getFirst();
+            
+            for(Runnable job: m_queuedInitMessages)
+            {
+                job.run();
+            }
+            m_queuedInitMessages = null;
+            
+        }
+        
+        
         updateConnections();
     }
+    
 
     /**
      * Stop receiving events from the messenger.
      */
     public void shutdown()
     {
-        m_channelMessenger.unregisterChannelSubscriber(this, CHAT_CHANNEL);
-        m_messenger.removeConnectionChangeListener(m_connectionChangeListener);
+       
+        m_channelMessenger.unregisterChannelSubscriber(m_chatChannelSubscribor, ChatController.getChatChannelName(m_chatChannelName));
+        
+        
+        if(m_messenger.isConnected())
+        {
+            String  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
+            IChatController controller = (IChatController) m_remoteMesenger.getRemote(chatControllerName);
+            controller.leaveChat(m_messenger.getLocalNode());
+        }
+        
+        
     }
 
-    public void slap(String playerName)
+    public void sendSlap(String playerName)
     {
         
         Iterator<INode> iter = m_messenger.getNodes().iterator();
@@ -87,81 +154,137 @@ public class Chat implements IChatter
         }
         if (destination != null)
         {          
-            IChatter remote = (IChatter) m_channelMessenger.getChannelBroadcastor(CHAT_CHANNEL);
-            remote.slap(m_channelMessenger.getLocalNode(), destination);
-        }
-    }
-    
-    public void slap(INode from, INode to)
-    {
-        if(to.equals(m_channelMessenger.getLocalNode()))
-        {
-            m_frame.addMessage("You were slapped by " + from.getName(), from.getName(), false);
-        }
-        else if(from.equals(m_channelMessenger.getLocalNode()))
-        {
-            m_frame.addMessage("You just slapped " + to.getName(), from.getName(), false);
+            IChatChannel remote = (IChatChannel) m_channelMessenger.getChannelBroadcastor(ChatController.getChatChannelName(m_chatChannelName));
+            remote.slapOccured(m_channelMessenger.getLocalNode(), destination);
         }
     }
     
     void sendMessage(String message, boolean meMessage)
     {
-        
-        IChatter remote = (IChatter) m_channelMessenger.getChannelBroadcastor(CHAT_CHANNEL);
+        IChatChannel remote = (IChatChannel) m_channelMessenger.getChannelBroadcastor(m_chatChannelName);
         if(meMessage)
-            remote.meMessage(message, m_channelMessenger.getLocalNode());
+            remote.meMessageOccured(message, m_channelMessenger.getLocalNode());
         else
-            remote.chat(message, m_channelMessenger.getLocalNode());
+            remote.chatOccured(message, m_channelMessenger.getLocalNode());
     }
 
 
-    private synchronized void updateConnections()
+    private void updateConnections()
     {
 
-        Set<INode> players = m_messenger.getNodes();
-        List<String> playerNames = new ArrayList<String>(players.size());
-
-        Iterator<INode> iter = players.iterator();
-        while (iter.hasNext())
+        synchronized(m_mutex)
         {
-            INode node = iter.next();
-            String name = node.getName();
-            playerNames.add(name);
-        }
+            List<String> playerNames = new ArrayList<String>(m_nodes.size());
+            
+            Iterator<INode> iter = m_nodes.iterator();
+            while (iter.hasNext())
+            {
+                INode node = iter.next();
+                String name = node.getName();
+                playerNames.add(name);
+            }
 
-        Collections.sort(playerNames);
-        m_frame.updatePlayerList(playerNames);
+            Collections.sort(playerNames);
+            m_listener.updatePlayerList(playerNames);
+        }
     }
 
-    private IConnectionChangeListener m_connectionChangeListener = new IConnectionChangeListener()
+   
+
+    
+
+
+    private IChatChannel m_chatChannelSubscribor = new IChatChannel()
     {
-
-        public void connectionsChanged()
+        public void chatOccured(String message, INode from)
         {
-
-            updateConnections();
+            m_listener.addMessage(message, from.getName(), false);
         }
+        
+        public void meMessageOccured(String message, INode from)
+        {
+            m_listener.addMessage(message, from.getName(), true);
+        }
+
+        public void speakerAdded(final INode node, final long version)
+        {
+            synchronized(m_mutex)
+            {
+                if(m_chatInitVersion == -1)
+                {
+                    m_queuedInitMessages.add(new Runnable()
+                    {
+                    
+                        public void run()
+                        {
+                               speakerAdded(node, version);
+                        }
+                    
+                    });
+                    return;
+                    
+                }
+                
+                if(version > m_chatInitVersion)
+                {
+                    m_nodes.add(node);
+                    updateConnections();
+                }
+            }
+            
+        }
+
+        public void speakerRemoved(final INode node, final long version)
+        {
+            synchronized(m_mutex)
+            {
+                
+                if(m_chatInitVersion == -1)
+                {
+                    m_queuedInitMessages.add(new Runnable()
+                    {
+                    
+                        public void run()
+                        {
+                               speakerRemoved(node, version);
+                        }
+                    
+                    });
+                    return;
+                    
+                }
+                
+                
+                if(version > m_chatInitVersion)
+                {
+                    m_nodes.remove(node);
+                    updateConnections();
+                }
+                
+                
+            }
+        }
+        
+        public void slapOccured(INode from, INode to)
+        {
+            if(to.equals(m_channelMessenger.getLocalNode()))
+            {
+                m_listener.addMessage("You were slapped by " + from.getName(), from.getName(), false);
+            }
+            else if(from.equals(m_channelMessenger.getLocalNode()))
+            {
+                m_listener.addMessage("You just slapped " + to.getName(), from.getName(), false);
+            }
+        }
+        
+        
     };
-
     
-    public void chat(String message, INode from)
-    {
-        m_frame.addMessage(message, from.getName(), false);
-    }
-    
-    public void meMessage(String message, INode from)
-    {
-        m_frame.addMessage(message, from.getName(), true);
-    }
     
 }
 
 
 
 
-interface IChatter extends IChannelSubscribor
-{
-    public void chat(String message, INode from);
-    public void meMessage(String message, INode from);
-    public void slap(INode from, INode to);
-}
+
+

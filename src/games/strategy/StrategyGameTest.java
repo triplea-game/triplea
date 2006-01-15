@@ -20,8 +20,8 @@
 
 package games.strategy;
 
+import games.strategy.engine.chat.ChatTest;
 import games.strategy.engine.message.*;
-import games.strategy.engine.message.RemoteMessengerTest;
 import games.strategy.engine.random.CryptoRandomSourceTest;
 import games.strategy.util.*;
 import junit.framework.*;
@@ -51,7 +51,9 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(CryptoRandomSourceTest.class);
 		suite.addTestSuite(VersionTest.class);
 		suite.addTestSuite(EndPointTest.class);
-		
+        suite.addTestSuite(ChatTest.class);
+        
+        
 
 		return suite;
 	}
