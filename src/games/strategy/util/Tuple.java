@@ -1,6 +1,8 @@
 package games.strategy.util;
 
-public class Tuple<T,S>
+import java.io.Serializable;
+
+public class Tuple<T,S> implements Serializable
 {
     private final T m_first;
     private final S m_second;
