@@ -598,6 +598,12 @@ public class UnifiedMessenger
         }
         
     }
+
+    public void waitForAllJobs()
+    {
+        m_threadPool.waitForAll();
+        
+    }
     
 
 }
