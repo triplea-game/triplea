@@ -105,12 +105,19 @@ public class DefaultDelegateBridge implements IDelegateBridge
         return m_historyWriter;
     }
 
+    
+    private Object getOutbound(Object o)
+    {
+        Class[] interfaces = o.getClass().getInterfaces();
+        return m_delegateExecutionManager.createOutboundImplementation(o, interfaces);
+    }
+    
     /*
      * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
      */
     public IRemote getRemote()
     {
-        return getRemote(m_player);
+        return  getRemote(m_player);
     }
 
     /*
@@ -118,8 +125,9 @@ public class DefaultDelegateBridge implements IDelegateBridge
      */
     public IRemote getRemote(PlayerID id)
     {
-        return m_game.getRemoteMessenger().getRemote(
+        Object implementor = m_game.getRemoteMessenger().getRemote(
                 ServerGame.getRemoteName(id));
+        return (IRemote) getOutbound(implementor);
     }
 
     /* (non-Javadoc)
@@ -127,7 +135,8 @@ public class DefaultDelegateBridge implements IDelegateBridge
      */
     public IChannelSubscribor getDisplayChannelBroadcaster()
     {
-        return m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.DISPLAY_CHANNEL);
+        Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.DISPLAY_CHANNEL);
+        return (IChannelSubscribor) getOutbound(implementor);
     }
     
     public Properties getStepProperties()
