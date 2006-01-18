@@ -3,6 +3,7 @@ package games.strategy.engine.delegate;
 import java.lang.reflect.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.*;
 
 
 /**
@@ -20,6 +21,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class DelegateExecutionManager
 {
+    
+    private Logger sm_logger = Logger.getLogger(DelegateExecutionManager.class.getName()); 
+    {
+        sm_logger.fine("test");
+    }
 
     /*
      * Delegate execution can be thought of as a read/write lock.
@@ -27,7 +33,7 @@ public class DelegateExecutionManager
      * only 1 block can be held (the block is equivalent to the read lock).
      * 
      */
-    private final ReentrantReadWriteLock m_readWriteLock = new ReentrantReadWriteLock(true);
+    private final ReentrantReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
     private ThreadLocal<Boolean> m_currentThreadHasReadLock = new ThreadLocal<Boolean>();
     
     
@@ -46,7 +52,18 @@ public class DelegateExecutionManager
      */
     public boolean blockDelegateExecution(int timeToWaitMS ) throws InterruptedException
     {
-        return m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);       
+        boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);
+        if(!rVal)
+        {
+            System.out.println(m_readWriteLock.getReadLockCount());
+        }
+        else
+        {
+            if(sm_logger.isLoggable(Level.FINE))
+                sm_logger.fine(Thread.currentThread().getName() + " block delegate execution.");
+        }
+        
+        return rVal;
     }
     
     
@@ -56,6 +73,9 @@ public class DelegateExecutionManager
      */
     public void resumeDelegateExecution()
     {
+        if(sm_logger.isLoggable(Level.FINE))
+            sm_logger.fine(Thread.currentThread().getName() + " resumes delegate execution.");
+        
         m_readWriteLock.writeLock().unlock();
     }
     
@@ -77,17 +97,18 @@ public class DelegateExecutionManager
         {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
+                final boolean threadLocks = currentThreadHasReadLock();
                 
-                if(currentThreadHasReadLock())
-                    m_readWriteLock.readLock().unlock();
+                if(threadLocks)
+                    leaveDelegateExecution();
                 try
                 {
                     return method.invoke(implementor, args);
                 }
                 finally
                 {
-                    if(currentThreadHasReadLock())
-                        m_readWriteLock.readLock().lock();
+                    if(threadLocks)
+                        enterDelegateExecution();
                 }
             }
         };
@@ -111,8 +132,6 @@ public class DelegateExecutionManager
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
                 enterDelegateExecution();
-                
-                
                 try
                 {
                     return method.invoke(implementor, args);
@@ -130,12 +149,23 @@ public class DelegateExecutionManager
     
     public void leaveDelegateExecution()
     {
+        if(sm_logger.isLoggable(Level.FINE))
+        {
+            sm_logger.fine(Thread.currentThread().getName() + " leaves delegate execution.");            
+        }
+        
         m_readWriteLock.readLock().unlock();
         m_currentThreadHasReadLock.set(null);
     }
 
     public void enterDelegateExecution()
     {
+        
+        if(sm_logger.isLoggable(Level.FINE))
+        {
+            sm_logger.fine(Thread.currentThread().getName() + " enters delegate execution.");
+        }
+        
         if(currentThreadHasReadLock())
             throw new IllegalStateException("Already locked?");
 
@@ -145,3 +175,5 @@ public class DelegateExecutionManager
 
     
 }
+
+
