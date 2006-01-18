@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.dataObjects.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 
@@ -183,36 +184,47 @@ public class BattlePanel extends ActionPanel
     public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
             final Collection<Unit> defendingUnits, final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender)
     {
-        SwingUtilities.invokeLater(new Runnable()
+        try
         {
-            public void run()
+            SwingUtilities.invokeAndWait(new Runnable()
             {
-
-                if (m_battleDisplay != null)
+                public void run()
                 {
-                    cleanUpBattleWindow();
-                }
 
-                m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
-                
-                m_battleFrame = new JFrame(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-                m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame ));
-                m_battleFrame.getContentPane().add(m_battleDisplay);
-                m_battleFrame.setSize(750, 500);
-                games.strategy.ui.Util.center(m_battleFrame);
-                m_battleFrame.setVisible(true);
-                m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    public void run()
+                    if (m_battleDisplay != null)
                     {
-                        m_battleFrame.toFront();
+                        cleanUpBattleWindow();
                     }
 
-                });
-            }
-        });
+                    m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
+                    
+                    m_battleFrame = new JFrame(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+                    m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame ));
+                    m_battleFrame.getContentPane().add(m_battleDisplay);
+                    m_battleFrame.setSize(750, 500);
+                    games.strategy.ui.Util.center(m_battleFrame);
+                    m_battleFrame.setVisible(true);
+                    m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
+                    SwingUtilities.invokeLater(new Runnable()
+                    {
+                        public void run()
+                        {
+                            m_battleFrame.toFront();
+                        }
+
+                    });
+                }
+            });
+        } catch (InterruptedException e)
+        {
+            
+            e.printStackTrace();
+        } catch (InvocationTargetException e)
+        {
+         
+            e.printStackTrace();
+        }
 
     }
 
