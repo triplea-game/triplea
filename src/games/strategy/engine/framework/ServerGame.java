@@ -228,21 +228,55 @@ public class ServerGame implements IGame
 	}
 
     
+    public void saveGame(File f)
+    {
+        FileOutputStream fout = null;
+        try
+        {
+            fout = new FileOutputStream(f);
+            saveGame(fout);
+        } catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        finally
+        {
+            if(fout != null)
+            {
+                try
+                {
+                    fout.close();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+     
+    }
+    
+    
     public void saveGame(OutputStream out) throws IOException
     {
         try
         {
-            //if we cant lock, then still allow saving
-            if(!m_delegateExecutionManager.blockDelegateExecution(500))
+            if(!m_delegateExecutionManager.blockDelegateExecution(3000))
             {
                 new IOException("Could not lock delegate execution").printStackTrace();
             }
-            new GameDataManager().saveGame(out, m_data);
         }
         catch(InterruptedException ie)
         {
             throw new IOException(ie.getMessage());
         }
+        
+        
+        try
+        {
+            new GameDataManager().saveGame(out, m_data);
+        }
+        
         finally
         {
             m_delegateExecutionManager.resumeDelegateExecution();
