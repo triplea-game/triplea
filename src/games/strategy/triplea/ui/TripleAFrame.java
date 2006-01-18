@@ -55,7 +55,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  * Main frame for the triple a game
  */
@@ -805,45 +804,38 @@ public class TripleAFrame extends JFrame
                     return;
                 }
 
-                GameDataManager manager = new GameDataManager();
+               
 
-                try
+                JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+
+                int rVal = fileChooser.showSaveDialog(TripleAFrame.this);
+                if (rVal == JFileChooser.APPROVE_OPTION)
                 {
-                    JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+                    File f = fileChooser.getSelectedFile();
 
-                    int rVal = fileChooser.showSaveDialog(TripleAFrame.this);
-                    if (rVal == JFileChooser.APPROVE_OPTION)
+                    //A small warning so users will not over-write a file,
+                    // added by NeKromancer
+                    if (f.exists())
                     {
-                        File f = fileChooser.getSelectedFile();
-
-                        //A small warning so users will not over-write a file,
-                        // added by NeKromancer
-                        if (f.exists())
+                        int choice = JOptionPane.showConfirmDialog(TripleAFrame.this,
+                                "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+                        if (choice != JOptionPane.OK_OPTION)
                         {
-                            int choice = JOptionPane.showConfirmDialog(TripleAFrame.this,
-                                    "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.WARNING_MESSAGE);
-                            if (choice != JOptionPane.OK_OPTION)
-                            {
-                                return;
-                            }
-                        }//end if exists
-
-                        if (!f.getName().toLowerCase().endsWith(".svg"))
-                        {
-                            f = new File(f.getParent(), f.getName() + ".svg");
+                            return;
                         }
+                    }//end if exists
 
-                        manager.saveGame(f, m_data);
-                        JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+                    if (!f.getName().toLowerCase().endsWith(".svg"))
+                    {
+                        f = new File(f.getParent(), f.getName() + ".svg");
                     }
 
+                    
+                    ((ServerGame) m_game).saveGame(f);                            
+                    JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
                 }
-                catch (IOException se)
-                {
-                    se.printStackTrace();
-                    JOptionPane.showMessageDialog(TripleAFrame.this, se.getMessage(), "Error Saving Game", JOptionPane.OK_OPTION);
-                }
+
             }
         });
         menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
