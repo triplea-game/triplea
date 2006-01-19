@@ -153,7 +153,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (error != null)
             return error;
 
-        performPlace(units, at, m_player);
+        performPlace(new ArrayList<Unit>(units), at, m_player);
         return null;
     }
 
