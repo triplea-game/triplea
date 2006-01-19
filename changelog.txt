@@ -1,3 +1,13 @@
+* add delegate execution manager, block delegates from executing while save in progress
+
+* make game data lock into a read/write lock, extend the game data lock to history
+
+* add random ai
+
+* if two players with the same name join the game, add a _1 to the second player
+
+* remove ISaveableDelegate, all Delegates are saveabel
+
 Changes for 0.7.2.4
 
 * move some code into swing event thread (sgb)
