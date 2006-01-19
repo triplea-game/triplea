@@ -25,8 +25,8 @@ import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.randomAI.RandomAI;
 import games.strategy.triplea.sound.SoundPath;
-import games.strategy.triplea.troxAI.TroxAIPlayer;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.*;
 
@@ -43,7 +43,7 @@ import javax.swing.SwingUtilities;
 public class TripleA implements IGameLoader
 {
     private static final String HUMAN_PLAYER_TYPE = "Human";
-    private static final String COMPUTER_PLAYER_TYPE = "Computer";
+    private static final String COMPUTER_PLAYER_TYPE = "Random AI";
 
 
     /**
@@ -59,7 +59,7 @@ public class TripleA implements IGameLoader
             String type = (String) playerNames.get(name);
             if (type.equals(COMPUTER_PLAYER_TYPE))
             {
-                players.add(new TroxAIPlayer(name));
+                players.add(new RandomAI(name));
             } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
             {
                 TripleAPlayer player = new TripleAPlayer(name);

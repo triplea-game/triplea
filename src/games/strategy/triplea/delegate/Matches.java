@@ -163,12 +163,12 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitTypeIsSea = new Match()
+	public static final Match<UnitType> UnitTypeIsSea = new Match<UnitType>()
 	{
-		public boolean match(Object obj)
+		public boolean match(UnitType obj)
 		{
-			UnitType type = (UnitType) obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			
+			UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.isSea();
 		}
 	};
