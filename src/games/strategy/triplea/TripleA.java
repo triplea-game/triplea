@@ -143,12 +143,10 @@ public class TripleA implements IGameLoader
      */
     public String[] getServerPlayerTypes()
     {
-        if (System.getProperties().getProperty("triplea.ai") != null)
-            return new String[]
-            {HUMAN_PLAYER_TYPE, COMPUTER_PLAYER_TYPE};
-        else
-            return new String[]
-            {HUMAN_PLAYER_TYPE};
+        
+        return new String[]
+        {HUMAN_PLAYER_TYPE, COMPUTER_PLAYER_TYPE};
+            
     }
 
     /* 
