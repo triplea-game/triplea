@@ -14,14 +14,6 @@ package games.strategy.triplea.randomAI;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * TripleAPlayer.java
- *
- * More useful for testing and for an example of how an ai could be written rather than as an actual ai.
- *
- * @author Sean Bridges
- */
-
 import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.net.GUID;
@@ -35,10 +27,12 @@ import games.strategy.util.*;
 
 import java.util.*;
 
-/**
- * 
- * @author Troy Graber
- * @version 1.0
+/*
+ * TripleAPlayer.java
+ *
+ * More useful for testing and for an example of how an ai could be written rather than as an actual ai.
+ *
+ * @author Sean Bridges
  */
 public class RandomAI implements IGamePlayer, ITripleaPlayer
 {
