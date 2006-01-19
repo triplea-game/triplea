@@ -31,6 +31,8 @@ import java.util.*;
  * TripleAPlayer.java
  *
  * More useful for testing and for an example of how an ai could be written rather than as an actual ai.
+ * 
+ * run with -Dtriplea.randomai.pause=false to eliminate the human friendly pauses 
  *
  * @author Sean Bridges
  */
@@ -45,6 +47,22 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
     {
         m_name = name;
     }
+    
+    private boolean m_pause =  Boolean.valueOf(System.getProperties().getProperty("triplea.randomai.pause", "true"));
+    private void pause()
+    {
+        if(m_pause)
+        {
+            try
+            {
+                Thread.sleep(800);
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    
 
     public String getName()
     {
@@ -89,6 +107,8 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
 
     private void move(boolean nonCombat)
     {
+        
+        
 
         GameData data = m_bridge.getGameData();
         Collection<Territory> territories = data.getMap().getTerritories();
@@ -174,6 +194,8 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
         IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
         for(int i =0; i < moveRouets.size(); i++)
         {
+            pause();
+            
             String result = moveDel.move(moveUnits.get(i), moveRouets.get(i));
             if(result != null)
             {
@@ -181,11 +203,8 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
             }
         }
         
+        pause();
         
-        
-        
-       
-
     }
 
     private void purchase(boolean bid)
@@ -194,6 +213,8 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
         {          
                 return;
         }
+        
+        pause();
 
         m_id.getProductionFrontier();
         
@@ -272,6 +293,9 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
             //fight strategic bombing raids
             while(raidBattles.hasNext())
             {
+                
+                pause();
+                
                 Territory current = raidBattles.next();
                 String error = battleDel.fightBattle(current, true);
                 if(error != null)
@@ -284,6 +308,8 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
             //fight normal battles
             while(nonRaidBattles.hasNext())
             {
+                pause();
+                
                 Territory current = nonRaidBattles.next();
                 String error = battleDel.fightBattle(current, false);
                 if(error != null)
@@ -294,6 +320,8 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
 
     private void place(boolean bid)
     {
+        
+        pause();
 
         if (m_id.getUnits().size() == 0)
             return;
@@ -308,7 +336,11 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
         if(m_bridge.getGameData().getProperties().get(Constants.FOURTH_EDITION, false))
         {
                ArrayList<Unit> list = new ArrayList<Unit>(toPlace = m_id.getUnits().getUnits());
-               toPlace = list.subList(0, TerritoryAttachment.get(capital).getProduction() -1);
+               
+               int maxPlacement = Math.min(TerritoryAttachment.get(capital).getProduction() -1, list.size());
+               
+               
+               toPlace = list.subList(0, maxPlacement);
         }
         else
         {
