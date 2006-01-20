@@ -756,9 +756,53 @@ public class MovePanel extends ActionPanel
                     return;
                 }
             }
+
+            CompositeMatchAnd<Unit> unitsToMoveMatch = new CompositeMatchAnd<Unit>();
+            unitsToMoveMatch.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
+            if(m_nonCombat)
+                unitsToMoveMatch.add(Matches.UnitIsNotFactory);
+            else
+            {
+                unitsToMoveMatch.add(Matches.UnitIsNotFactory);
+                unitsToMoveMatch.add(Matches.UnitIsNotAA);
+            }
             
-            if(units.isEmpty() && !me.isShiftDown())
-                return;
+
+            
+            if(units.isEmpty())
+            {
+                if(!me.isShiftDown())
+                {
+                    
+                    
+                    List<Unit> unitsToMove = t.getUnits().getMatches(unitsToMoveMatch
+                            );
+                    
+                    
+                    
+                    if(unitsToMove.isEmpty())
+                        return;
+                    
+                    String text = "Select units to move from " + t.getName();
+                    
+                    MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(t, unitsToMove);
+                    UnitChooser chooser = new UnitChooser(unitsToMove, m_selectedUnits,
+                            mustMoveWith.getMustMoveWith(), 
+                            mustMoveWith.getMovement(),getData(),  false, getMap().getUIContext() );
+                                        
+                    int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                            chooser, text,
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.PLAIN_MESSAGE, null, null, null);
+                    
+                    if (option != JOptionPane.OK_OPTION)
+                        return;
+                    
+                    m_selectedUnits.addAll(chooser.getSelected());
+                }
+
+            }
+            
             
             if(getFirstSelectedTerritory() == null)
             {
@@ -775,7 +819,7 @@ public class MovePanel extends ActionPanel
             //add all
             if(me.isShiftDown())
             {
-                CompositeMatch<Unit> ownedNotFactory = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.UnitIsNotFactory);
+                CompositeMatch<Unit> ownedNotFactory = unitsToMoveMatch;
                 m_selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactory));
             }
             else if(me.isControlDown())
