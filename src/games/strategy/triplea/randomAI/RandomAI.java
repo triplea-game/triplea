@@ -18,7 +18,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
@@ -372,7 +372,21 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
      */
     public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties)
     {
-        CasualtyDetails m2 = new CasualtyDetails(defaultCasualties, new ArrayList<Unit>(), false);
+        List<Unit> rDamaged = new ArrayList<Unit>();
+        List<Unit> rKilled = new ArrayList<Unit>();
+        
+        for(Unit unit : defaultCasualties)
+        {
+            boolean twoHit = UnitAttachment.get(unit.getType()).isTwoHit();
+            //if it appears twice it then it both damaged and killed
+            if(unit.getHits() == 0 && twoHit && !rDamaged.contains(unit))
+                rDamaged.add(unit);
+            else 
+                rKilled.add(unit);
+        }
+        
+        
+        CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
         return m2;
 
     }
