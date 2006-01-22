@@ -1,0 +1,612 @@
+<?xml version="1.0" ?>
+
+<!DOCTYPE game SYSTEM "game.dtd">
+
+<game>
+        <info name="Minimap" version="1.0"/>
+        
+        <loader javaClass="games.strategy.triplea.TripleA"/>
+
+        <map>
+                <!-- Territory Definitions -->
+                <territory name="red capitol"/>
+                <territory name="red north 1"/>
+                <territory name="red north 2"/>
+                <territory name="red middle 1"/>
+                <territory name="red middle 2"/>
+                <territory name="red south 1"/>
+                <territory name="red south 2"/>
+                <territory name="blue capitol"/>
+                <territory name="blue north 1"/>
+                <territory name="blue north 2"/>
+                <territory name="blue middle 1"/>
+                <territory name="blue middle 2"/>
+                <territory name="blue south 1"/>
+                <territory name="blue south 2"/>
+                <territory name="neutral territory 1"/>
+                <territory name="neutral territory 2"/>
+                <territory name="sea zone 1" water="true"/>
+                <territory name="sea zone 2" water="true"/>
+                <territory name="sea zone 3" water="true"/>
+                <territory name="sea zone 4" water="true"/>
+
+                <!-- Territory Connections -->
+                <connection t1="red capitol" t2="red north 1"/>
+                <connection t1="red capitol" t2="red middle 1"/>
+                <connection t1="red capitol" t2="red south 1"/>
+                <connection t1="red north 1" t2="red north 2"/>
+                <connection t1="red north 1" t2="sea zone 1"/>
+                <connection t1="red north 1" t2="red middle 1"/>
+                <connection t1="red north 2" t2="sea zone 1"/>
+                <connection t1="red north 2" t2="blue north 2"/>
+                <connection t1="blue north 2" t2="blue north 1"/>
+                <connection t1="blue north 2" t2="sea zone 2"/>
+                <connection t1="blue north 1" t2="sea zone 2"/>
+                <connection t1="blue north 1" t2="blue capitol"/>
+                <connection t1="red middle 1" t2="red middle 2"/>
+                <connection t1="red middle 1" t2="red south 1"/>
+                <connection t1="red middle 1" t2="sea zone 1"/>
+                <connection t1="red middle 1" t2="sea zone 3"/>
+                <connection t1="red middle 2" t2="sea zone 1"/>
+                <connection t1="red middle 2" t2="sea zone 3"/>
+                <connection t1="red middle 2" t2="blue middle 2"/>
+                <connection t1="blue middle 2" t2="blue middle 1"/>
+                <connection t1="blue middle 2" t2="sea zone 2"/>
+                <connection t1="blue middle 2" t2="sea zone 4"/>
+                <connection t1="blue middle 1" t2="sea zone 2"/>
+                <connection t1="blue middle 1" t2="sea zone 4"/>
+                <connection t1="blue middle 1" t2="blue north 1"/>
+                <connection t1="blue middle 1" t2="blue south 1"/>
+                <connection t1="blue middle 1" t2="blue capitol"/>
+                <connection t1="red south 1" t2="red south 2"/>
+                <connection t1="red south 1" t2="sea zone 3"/>
+                <connection t1="red south 2" t2="blue south 2"/>
+                <connection t1="red south 2" t2="sea zone 3"/>
+                <connection t1="blue south 2" t2="blue south 1"/>
+                <connection t1="blue south 2" t2="sea zone 4"/>
+                <connection t1="blue south 1" t2="blue capitol"/>
+                <connection t1="blue south 1" t2="sea zone 4"/>
+                <connection t1="sea zone 1" t2="sea zone 2"/>
+                <connection t1="sea zone 3" t2="sea zone 4"/>
+
+
+                <connection t1="neutral territory 1" t2="red capitol"/>        
+                <connection t1="neutral territory 1" t2="red north 1"/>        
+                <connection t1="neutral territory 1" t2="red north 2"/>        
+                <connection t1="neutral territory 1" t2="red south 1"/>        
+                <connection t1="neutral territory 1" t2="red south 2"/>        
+
+                <connection t1="neutral territory 2" t2="blue capitol"/>        
+                <connection t1="neutral territory 2" t2="blue north 1"/>        
+                <connection t1="neutral territory 2" t2="blue north 2"/>        
+                <connection t1="neutral territory 2" t2="blue south 1"/>        
+                <connection t1="neutral territory 2" t2="blue south 2"/>        
+		
+		</map>
+
+        <resourceList>
+                <resource name="IPCs"/>
+        </resourceList>
+
+        <playerList>
+                <!-- Axis -->
+                <player name="Italians" optional="false"/>
+
+                <!-- Allies -->
+                <player name="Russians" optional="false"/>
+
+                <!-- Axis Alliances -->
+                <alliance player="Italians" alliance="Axis"/>
+
+                <!-- Allies Alliances -->
+                <alliance player="Russians" alliance="Allies"/>
+        </playerList>
+
+        <unitList>
+                <unit name="infantry"/>
+                <unit name="armour"/>
+                <unit name="fighter"/>
+                <unit name="bomber"/>
+                <unit name="transport"/>
+                <unit name="battleship"/>
+                <unit name="carrier"/>
+                <unit name="submarine"/>
+                <unit name="factory"/>
+                <unit name="aaGun"/>
+                <unit name="artillery"/>
+                <unit name="destroyer"/>
+        </unitList>
+
+        <gamePlay>
+                <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+                <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+                <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+                <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+                <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+                <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+                <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+                <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+                <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+                <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+                <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+
+                <sequence>
+                        <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+                        
+                        <!-- Bidding Phase -->
+			
+                        <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
+                        <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+                        
+                        <step name="italianBid" delegate="bid" player="Italians" maxRunCount="1"/>
+                        <step name="italianBidPlace" delegate="placeBid" player="Italians" maxRunCount="1"/>
+                        
+                        <!-- Russians Game Sequence -->
+                        
+                        <step name="russianPurchase" delegate="purchase" player="Russians"/>
+                        <step name="russianCombatMove" delegate="move" player="Russians"/>
+                        <step name="russianBattle" delegate="battle" player="Russians"/>
+                        <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
+                        <step name="russianPlace" delegate="place" player="Russians"/>
+                        <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
+
+                        <!-- Italians Game Sequence -->
+
+                        <step name="italianPurchase" delegate="purchase" player="Italians"/>
+                        <step name="italianCombatMove" delegate="move" player="Italians"/>
+                        <step name="italianBattle" delegate="battle" player="Italians"/>
+                        <step name="italianNonCombatMove" delegate="move" player="Italians" display="Non Combat Move"/>
+                        <step name="italianPlace" delegate="place" player="Italians"/>
+                        <step name="italianEndTurn" delegate="endTurn" player="Italians"/>
+
+                        
+                        <step name="endRoundStep" delegate="endRound"/>
+                </sequence>
+        </gamePlay>
+
+        <production>
+                <!-- Unit Production Cost -->
+                <productionRule name="buyInfantry">
+                        <cost resource="IPCs" quantity="3" />
+                        <result resourceOrUnit="infantry" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyArtillery">
+                        <cost resource="IPCs" quantity="4" />
+                        <result resourceOrUnit="artillery" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyArmour">
+                        <cost resource="IPCs" quantity="5" />
+                        <result resourceOrUnit="armour" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyFighter">
+                        <cost resource="IPCs" quantity="10" />
+                        <result resourceOrUnit="fighter" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyBomber">
+                        <cost resource="IPCs" quantity="15" />
+                        <result resourceOrUnit="bomber" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyTransport">
+                        <cost resource="IPCs" quantity="8" />
+                        <result resourceOrUnit="transport" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buyCarrier">
+                        <cost resource="IPCs" quantity="16" />
+                        <result resourceOrUnit="carrier" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyDestroyer">
+                        <cost resource="IPCs" quantity="12" />
+                        <result resourceOrUnit="destroyer" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyBattleship">
+                        <cost resource="IPCs" quantity="24" />
+                        <result resourceOrUnit="battleship" quantity="1"/>
+                </productionRule>
+
+                <productionRule name="buySubmarine">
+                        <cost resource="IPCs" quantity="8" />
+                        <result resourceOrUnit="submarine" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyFactory">
+                        <cost resource="IPCs" quantity="15" />
+                        <result resourceOrUnit="factory" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyAAGun">
+                        <cost resource="IPCs" quantity="5" />
+                        <result resourceOrUnit="aaGun" quantity="1"/>
+                </productionRule>
+
+                <!-- Advanced Industrial Production -->
+                <productionRule name="buyInfantryIndustrialTechnology">
+                        <cost resource="IPCs" quantity="2" />
+                        <result resourceOrUnit="infantry" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyArtilleryIndustrialTechnology">
+                        <cost resource="IPCs" quantity="3" />
+                        <result resourceOrUnit="artillery" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyArmourIndustrialTechnology">
+                        <cost resource="IPCs" quantity="4" />
+                        <result resourceOrUnit="armour" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyFighterIndustrialTechnology">
+                        <cost resource="IPCs" quantity="9" />
+                        <result resourceOrUnit="fighter" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyBomberIndustrialTechnology">
+                        <cost resource="IPCs" quantity="14" />
+                        <result resourceOrUnit="bomber" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyTransportIndustrialTechnology">
+                        <cost resource="IPCs" quantity="7" />
+                        <result resourceOrUnit="transport" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyCarrierIndustrialTechnology">
+                        <cost resource="IPCs" quantity="15" />
+                        <result resourceOrUnit="carrier" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyDestroyerIndustrialTechnology">
+                        <cost resource="IPCs" quantity="11" />
+                        <result resourceOrUnit="destroyer" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyBattleshipIndustrialTechnology">
+                        <cost resource="IPCs" quantity="23" />
+                        <result resourceOrUnit="battleship" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buySubmarineIndustrialTechnology">
+                        <cost resource="IPCs" quantity="7" />
+                        <result resourceOrUnit="submarine" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyFactoryIndustrialTechnology">
+                        <cost resource="IPCs" quantity="14" />
+                        <result resourceOrUnit="factory" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyAAGunIndustrialTechnology">
+                        <cost resource="IPCs" quantity="4" />
+                        <result resourceOrUnit="aaGun" quantity="1"/>
+                </productionRule>
+
+                <productionFrontier name="production">
+                        <frontierRules name="buyInfantry"/>
+                        <frontierRules name="buyArtillery"/>
+                        <frontierRules name="buyArmour"/>
+                        <frontierRules name="buyFighter"/>
+                        <frontierRules name="buyBomber"/>
+                        <frontierRules name="buyAAGun"/>
+                </productionFrontier>
+                
+                <productionFrontier name="productionIndustrialTechnology">
+                        <frontierRules name="buyInfantryIndustrialTechnology"/>
+                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
+                        <frontierRules name="buyArmourIndustrialTechnology"/>
+                        <frontierRules name="buyFighterIndustrialTechnology"/>
+                        <frontierRules name="buyBomberIndustrialTechnology"/>
+                        <frontierRules name="buyAAGunIndustrialTechnology"/>
+                </productionFrontier>
+
+                <playerProduction player="Italians" frontier="production"/>
+                <playerProduction player="Russians" frontier="production"/>
+        </production> 
+        
+        <attatchmentList>
+                    <attatchment name="techAttatchment" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                           <option name="heavyBomber" value="false"/>
+                           <option name="jetPower" value="false"/>
+                           <option name="industrialTechnology" value="false"/>
+                           <option name="superSub" value="false"/>
+                           <option name="rocket" value="false"/>
+                           <option name="longRangeAir" value="false"/>
+                    </attatchment>
+
+                    <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                           <option name="heavyBomber" value="false"/>
+                           <option name="jetPower" value="false"/>
+                           <option name="industrialTechnology" value="false"/>
+                           <option name="superSub" value="false"/>
+                           <option name="rocket" value="false"/>
+                           <option name="longRangeAir" value="false"/>
+                    </attatchment>
+
+                  
+
+                    <attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="1"/>
+                         <option name="transportCost" value="2"/>
+                         <option name="attack" value="1"/>
+                         <option name="defense" value="2"/>
+                         <option name="artillerySupportable" value="true"/>
+                    </attatchment>
+            
+                    <attatchment name="unitAttatchment" attatchTo="artillery" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="1"/>
+                         <option name="transportCost" value="3"/>
+                         <option name="attack" value="2"/>
+                         <option name="defense" value="2"/>
+                         <option name="artillery" value="true"/>
+                    </attatchment>
+
+                    <attatchment name="unitAttatchment" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="2"/>
+                         <option name="transportCost" value="3"/>
+                         <option name="canBlitz" value="true"/>
+                         <option name="attack" value="3"/>
+                         <option name="defense" value="3"/>
+                    </attatchment>
+            
+                    <attatchment name="unitAttatchment" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="4"/>
+                         <option name="carrierCost" value="1"/>
+                         <option name="isAir" value="true"/>   
+                         <option name="attack" value="3"/>
+                         <option name="defense" value="4"/>
+                    </attatchment>
+            
+                    <attatchment name="unitAttatchment" attatchTo="bomber" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="6"/>
+                         <option name="isAir" value="true"/>
+                         <option name="attack" value="4"/>
+                         <option name="defense" value="1"/>
+                         <option name="isStrategicBomber" value="true"/>
+                    </attatchment>
+            
+                    <attatchment name="unitAttatchment" attatchTo="transport" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="2"/>
+                         <option name="isSea" value="true"/>   
+                         <option name="transportCapacity" value="5"/>   
+                         <option name="attack" value="0"/>
+                         <option name="defense" value="1"/>
+                    </attatchment>
+            
+                    <attatchment name="unitAttatchment" attatchTo="battleship" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="2"/>
+                         <option name="isSea" value="true"/>
+                         <option name="attack" value="4"/>
+                         <option name="defense" value="4"/>
+                         <option name="canBombard" value="true"/>
+                         <option name="isTwoHit" value="false"/>
+                    </attatchment>
+                 
+                    <attatchment name="unitAttatchment" attatchTo="destroyer" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="2"/>
+                         <option name="isSea" value="true"/>   
+                         <option name="attack" value="3"/>
+                         <option name="defense" value="3"/>
+                         <option name="isDestroyer" value="true"/>
+                    </attatchment>
+            
+                    <attatchment name="unitAttatchment" attatchTo="carrier" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="carrierCapacity" value="2"/>
+                         <option name="movement" value="2"/>
+                         <option name="isSea" value="true"/>   
+                         <option name="attack" value="1"/>
+                         <option name="defense" value="3"/>
+                    </attatchment>
+
+                    <attatchment name="unitAttatchment" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="isSub" value="true"/>
+                         <option name="movement" value="2"/>
+                         <option name="isSea" value="true"/>   
+                         <option name="attack" value="2"/>
+                         <option name="defense" value="2"/>
+                    </attatchment>
+
+                    <attatchment name="unitAttatchment" attatchTo="factory" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="isFactory" value="true"/>   
+                    </attatchment>
+            
+                    <attatchment name="unitAttatchment" attatchTo="aaGun" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="isAA" value="true"/>   
+                         <option name="transportCost" value="3"/>
+                         <option name="movement" value="1"/>
+                    </attatchment>
+
+
+                    <attatchment name="territoryAttatchment" attatchTo="neutral territory 1" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="0"/>
+						<option name="isImpassible" value="true"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="neutral territory 2" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="0"/>
+						<option name="isImpassible" value="true"/>
+                    </attatchment>
+					
+                    <attatchment name="territoryAttatchment" attatchTo="red capitol" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="10"/>
+						<option name="capital" value="Russians"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="blue capitol" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="10"/>  
+						<option name="capital" value="Italians"/> 
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="red north 1" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="5"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="red north 2" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="2"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="red middle 1" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="5"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="red middle 2" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="2"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="red south 1" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="5"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="red south 2" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="2"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="blue north 1" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="5"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="blue north 2" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="2"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="blue middle 1" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="5"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="blue middle 2" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="2"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="blue south 1" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="5"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="blue south 2" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="2"/>
+                    </attatchment>
+
+                
+        </attatchmentList>
+        
+        <initialize>
+                <ownerInitialize>
+                        <!-- italian Owned Territories -->
+                        <territoryOwner territory="blue capitol" owner="Italians"/>
+                        <territoryOwner territory="blue north 1" owner="Italians"/>
+                        <territoryOwner territory="blue north 2" owner="Italians"/>
+                        <territoryOwner territory="blue middle 1" owner="Italians"/>
+                        <territoryOwner territory="blue middle 2" owner="Italians"/>
+                        <territoryOwner territory="blue south 1" owner="Italians"/>
+                        <territoryOwner territory="blue south 2" owner="Italians"/>
+
+                        <!-- Russian Owned Territories -->
+                        <territoryOwner territory="red capitol" owner="Russians"/>
+                        <territoryOwner territory="red north 1" owner="Russians"/>
+                        <territoryOwner territory="red north 2" owner="Russians"/>
+                        <territoryOwner territory="red middle 1" owner="Russians"/>
+                        <territoryOwner territory="red middle 2" owner="Russians"/>
+                        <territoryOwner territory="red south 1" owner="Russians"/>
+                        <territoryOwner territory="red south 2" owner="Russians"/>
+                </ownerInitialize>
+
+                <unitInitialize>
+                        <!-- Russian Unit Placements -->
+                        <unitPlacement unitType="factory" territory="red capitol" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="red capitol" quantity="7" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="red capitol" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="armour" territory="red capitol" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="fighter" territory="red capitol" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="bomber" territory="red capitol" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="aaGun" territory="red capitol" quantity="1" owner="Russians"/>
+                        
+                        <unitPlacement unitType="infantry" territory="red north 2" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="red middle 2" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="red south 2" quantity="2" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="red north 1" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="red north 1" quantity="1" owner="Russians"/>
+
+                        <unitPlacement unitType="infantry" territory="red middle 1" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="red middle 1" quantity="1" owner="Russians"/>
+
+                        <unitPlacement unitType="infantry" territory="red south 1" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="red south 1" quantity="1" owner="Russians"/>						
+						
+                        <!-- italian Unit Placements -->
+                        <unitPlacement unitType="factory" territory="blue capitol" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="infantry" territory="blue capitol" quantity="7" owner="Italians"/>
+                        <unitPlacement unitType="artillery" territory="blue capitol" quantity="3" owner="Italians"/>
+                        <unitPlacement unitType="armour" territory="blue capitol" quantity="3" owner="Italians"/>
+                        <unitPlacement unitType="fighter" territory="blue capitol" quantity="2" owner="Italians"/>
+                        <unitPlacement unitType="bomber" territory="blue capitol" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="aaGun" territory="blue capitol" quantity="1" owner="Italians"/>
+
+                        <unitPlacement unitType="infantry" territory="blue north 2" quantity="2" owner="Italians"/>
+                        <unitPlacement unitType="infantry" territory="blue middle 2" quantity="2" owner="Italians"/>
+                        <unitPlacement unitType="infantry" territory="blue south 2" quantity="2" owner="Italians"/>
+
+                        <unitPlacement unitType="infantry" territory="blue north 1" quantity="2" owner="Italians"/>
+                        <unitPlacement unitType="artillery" territory="blue north 1" quantity="1" owner="Italians"/>
+
+                        <unitPlacement unitType="infantry" territory="blue middle 1" quantity="2" owner="Italians"/>
+                        <unitPlacement unitType="artillery" territory="blue middle 1" quantity="1" owner="Italians"/>
+
+                        <unitPlacement unitType="infantry" territory="blue south 1" quantity="2" owner="Italians"/>
+                        <unitPlacement unitType="artillery" territory="blue south 1" quantity="1" owner="Italians"/>
+
+
+                </unitInitialize>
+        
+                <resourceInitialize>
+                        <resourceGiven player="Russians" resource="IPCs" quantity="31"/>
+                        <resourceGiven player="Italians" resource="IPCs" quantity="31"/>
+                </resourceInitialize>
+        </initialize>
+
+        <propertyList>
+                
+                <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+                        <number min="2" max="10"/>
+                </property>
+                                
+                <property name="Always on AA" value="true" editable="true">
+                        <boolean/>
+                </property>
+                
+                <property name="Territory Turn Limit" value="true" editable="true">
+                        <boolean/>
+                </property>
+
+		<!-- Low Luck -->
+                <property name="Low Luck" value="false" editable="true">
+                        <boolean/>
+                </property>
+
+                <!-- Bids -->
+				<property name="Italians bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+                
+                <property name="Russians bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+                
+                
+				<!-- Use 4th Edition Rules -->
+				<property name="4th Edition" value="true" editable="false">
+                        <boolean/>
+                </property>
+				
+                <property name="neutralCharge" value="9999999"/>
+                
+                <property name="maxFactoriesPerTerritory" value="1"/>
+
+                <!-- Map Name: also used for map utils when asked -->
+                <property name="mapName" value="minimap" editable="false"/>
+        </propertyList>
+</game>
