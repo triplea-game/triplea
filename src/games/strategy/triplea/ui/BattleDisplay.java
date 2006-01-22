@@ -27,7 +27,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.Match;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -579,6 +579,22 @@ public class BattleDisplay extends JPanel
 
         setDefaultWidhts(defenderTable);
         setDefaultWidhts(attackerTable);
+        
+        
+        Action continueAction = new AbstractAction()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                Action a = m_actionButton.getAction();
+                if(a != null)
+                    a.actionPerformed(null);
+            }
+        };
+ 
+        //press space to continue
+        registerKeyboardAction(continueAction, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);        
+
 
     }
 
