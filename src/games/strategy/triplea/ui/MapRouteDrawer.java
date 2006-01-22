@@ -119,9 +119,12 @@ public class MapRouteDrawer
             Shape shape = shapes.get(i);
 
             drawWithTranslate(graphics, shape, 0);
-
-            drawWithTranslate(graphics, shape, translate);
-            drawWithTranslate(graphics, shape, -translate);
+            
+            if(mapData.scrollWrapX())
+            {
+                drawWithTranslate(graphics, shape, translate);
+                drawWithTranslate(graphics, shape, -translate);
+            }
         }
 
         //draw the length of the move

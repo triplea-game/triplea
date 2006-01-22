@@ -494,7 +494,7 @@ public class MapPanel extends ImageScrollerLargeView
         final GameData data = m_data;
         
         //handle wrapping off the screen to the left
-        if(m_x < 0)
+        if(m_x < 0  && m_uiContext.getMapData().scrollWrapX())
         {
             Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
             drawTiles(g, images, data, leftBounds,0, undrawnTiles);
@@ -505,8 +505,8 @@ public class MapPanel extends ImageScrollerLargeView
 	    drawTiles(g, images, data, mainBounds,0, undrawnTiles);
         
         double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
-        //handle wrapping off the screen to the left
-        if(leftOverlap > 0)
+        //handle wrapping off the screen to the right
+        if(leftOverlap > 0 && m_uiContext.getMapData().scrollWrapX())
         {
             Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
             drawTiles(g, images, data, rightBounds, leftOverlap, undrawnTiles);
