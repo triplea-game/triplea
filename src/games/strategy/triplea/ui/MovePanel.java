@@ -785,10 +785,10 @@ public class MovePanel extends ActionPanel
                     
                     String text = "Select units to move from " + t.getName();
                     
-                    MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(t, unitsToMove);
+                    //MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(t, unitsToMove);
                     UnitChooser chooser = new UnitChooser(unitsToMove, m_selectedUnits,
-                            mustMoveWith.getMustMoveWith(), 
-                            mustMoveWith.getMovement(),getData(),  false, getMap().getUIContext() );
+                            null, null 
+                            ,getData(),  false, getMap().getUIContext() );
                                         
                     int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                             chooser, text,
@@ -798,7 +798,7 @@ public class MovePanel extends ActionPanel
                     if (option != JOptionPane.OK_OPTION)
                         return;
                     
-                    m_selectedUnits.addAll(chooser.getSelected());
+                    m_selectedUnits.addAll(chooser.getSelected(false));
                 }
 
             }
