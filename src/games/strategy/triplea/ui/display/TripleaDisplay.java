@@ -123,6 +123,9 @@ public class TripleaDisplay implements ITripleaDisplay
         m_ui.getBattlePanel().gotoStep(battleId, step);
     }
 
-   
+   public void shutDown()
+   {
+       m_ui.stopGame();
+   }
     
 }

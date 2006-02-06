@@ -1,0 +1,169 @@
+package games.strategy.engine.framework.startup.mc;
+
+import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.ui.NewGameFileChooser;
+
+import java.awt.Component;
+import java.io.*;
+import java.util.Observable;
+import java.util.prefs.Preferences;
+
+import javax.swing.JOptionPane;
+
+public class GameSelectorModel extends Observable
+{
+    
+    public static final File DEFAULT_DIRECTORY = new File(GameRunner.getRootFolder(),  "/games");
+    private static final String DEFAULT_FILE_NAME_PREF = "DefaultFileName";
+    
+    private GameData m_data;
+    private String m_gameName;
+    private String m_gameVersion;
+    private String m_gameRound;
+    private String m_fileName;
+    
+    
+    public GameSelectorModel()
+    {
+        setGameData(null);
+    }
+    
+    public void load(File file, Component ui)
+    {
+        GameDataManager manager = new GameDataManager();
+        
+        
+        if(!file.exists())
+        {
+            error("Could not find file:" + file, ui);
+            return;
+        }
+        if(file.isDirectory())
+        {
+            error("Cannot load a directory:" + file, ui);
+            return;
+        }
+        
+        GameData newData;
+        try
+        {
+            //if the file name is xml, load it as a new game
+            if(file.getName().toLowerCase().endsWith("xml"))
+            {
+                newData= (new GameParser()).parse(new FileInputStream(file));
+                
+                
+                Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+                String s=file.getName();
+                prefs.put(DEFAULT_FILE_NAME_PREF, s);
+            
+                
+            }
+            //the extension should be tsvg, but 
+            //try to load it as a saved game whatever the extension
+            else
+            {
+                newData = manager.loadGame(file);
+            }
+            
+            m_fileName = file.getName();
+            setGameData(newData);
+        } catch (Exception e)
+        {
+            error(e.getMessage(), ui);
+        }
+    }
+    
+    private void error(String message, Component ui)
+    {
+        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game", JOptionPane.ERROR_MESSAGE );
+    }
+    
+    public GameData getGameData()
+    {
+        return m_data;
+    }
+    
+    
+    /**
+     * We dont have a gane data (ie we are a remote player and the data has not been sent yet), but
+     * we still want to display game info
+     */    
+    public void clearDataButKeepGameInfo(String gameName, String gameRound, String gameVersion)
+    {
+        m_data = null;
+        m_gameName = gameName;
+        m_gameRound = gameRound;
+        m_gameVersion = gameVersion;
+        
+        super.setChanged();
+        super.notifyObservers(m_data);
+        super.clearChanged();
+    }
+    
+    public String getFileName()
+    {
+        if(m_data == null)
+            return "-";
+        else
+            return m_fileName;
+    }
+    
+    public String getGameName()
+    {
+        return m_gameName;
+    }
+
+    public String getGameRound()
+    {
+        return m_gameRound;
+    }
+
+    public String getGameVersion()
+    {
+        return m_gameVersion;
+    }
+
+    public void setGameData(GameData data)
+    {
+        if(data == null)
+        {
+            m_gameName = m_gameRound = m_gameVersion = "-";
+        }
+        else
+        {
+            m_gameName = data.getGameName();
+            m_gameRound = "" + data.getSequence().getRound();
+            m_gameVersion = data.getGameVersion().toString();
+        }
+        
+        m_data = data;
+        
+        super.setChanged();
+        super.notifyObservers(m_data);
+        super.clearChanged();
+    }
+    
+    public void loadDefaultGame(Component ui)
+    {
+        //load the previously saved value
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        
+        String defaultFileName = "classic_a&a.xml";
+        String s= prefs.get(DEFAULT_FILE_NAME_PREF, defaultFileName);
+        
+        File defaultGame =  new File(NewGameFileChooser.DEFAULT_DIRECTORY, s);
+        if(!defaultGame.exists())
+            defaultGame = new File(NewGameFileChooser.DEFAULT_DIRECTORY, defaultFileName);
+        
+        if(!defaultGame.exists())
+            return;
+        
+        load(defaultGame, ui);
+    }
+    
+
+}

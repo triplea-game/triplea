@@ -143,22 +143,14 @@ public class MovePanel extends ActionPanel
     {
         setUp(bridge);
         updateMoves();
-        synchronized (getLock())
-        {
-            try
-            {
-                getLock().wait();
-            }
-            catch (InterruptedException ie)
-            {
-                cleanUp();
-                return waitForMove(bridge);
-            }
-            cleanUp();
-            removeAll();
-            SwingUtilities.invokeLater(REFRESH);
-            return m_moveMessage;
-        }
+        
+        waitForRelease();
+        
+        cleanUp();
+        removeAll();
+        SwingUtilities.invokeLater(REFRESH);
+        return m_moveMessage;
+        
     }
 
     private void setUp(IPlayerBridge bridge)
@@ -206,11 +198,8 @@ public class MovePanel extends ActionPanel
     {
         public void actionPerformed(ActionEvent e)
         {
-            synchronized (getLock())
-            {
-                m_moveMessage = null;
-                getLock().notify();
-            }
+            release();
+            m_moveMessage = null;
         }
     };
 
@@ -963,10 +952,7 @@ public class MovePanel extends ActionPanel
                 setFirstSelectedTerritory(null);
                 m_forced = null;
                 updateRouteAndMouseShadowUnits(null);
-                synchronized (getLock())
-                {
-                    getLock().notifyAll();
-                }
+                release();
             }    
         }
         

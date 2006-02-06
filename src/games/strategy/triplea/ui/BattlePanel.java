@@ -132,6 +132,7 @@ public class BattlePanel extends ActionPanel
             m_battleDisplay = null;
             if (m_battleFrame.isVisible())
             {
+                getMap().getUIContext().addShutdownWindow(m_battleFrame);
                 m_battleFrame.setVisible(false);
                 m_battleFrame.dispose();
             }
@@ -203,6 +204,9 @@ public class BattlePanel extends ActionPanel
                     m_battleFrame.getContentPane().add(m_battleDisplay);
                     m_battleFrame.setSize(750, 500);
                     games.strategy.ui.Util.center(m_battleFrame);
+                    
+                    getMap().getUIContext().addShutdownWindow(m_battleFrame);
+                    
                     m_battleFrame.setVisible(true);
                     m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -230,16 +234,7 @@ public class BattlePanel extends ActionPanel
 
     public FightBattleDetails waitForBattleSelection()
     {
-        try
-        {
-            synchronized (getLock())
-            {
-                getLock().wait();
-            }
-        } catch (InterruptedException ie)
-        {
-            waitForBattleSelection();
-        }
+        waitForRelease();
 
         if (m_fightBattleMessage != null)
             getMap().centerOn(m_fightBattleMessage.getWhere());
@@ -372,10 +367,7 @@ public class BattlePanel extends ActionPanel
         public void actionPerformed(ActionEvent actionEvent)
         {
             m_fightBattleMessage = new FightBattleDetails(m_bomb, m_territory);
-            synchronized (getLock())
-            {
-                getLock().notify();
-            }
+            release();
         }
     }
 

@@ -45,6 +45,8 @@ public class TripleA implements IGameLoader
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String COMPUTER_PLAYER_TYPE = "Random AI";
 
+    
+    private transient TripleaDisplay m_display;
 
     /**
      * @see IGameLoader.createPlayers(playerNames)
@@ -72,6 +74,11 @@ public class TripleA implements IGameLoader
         return players;
     }
 
+    public void shutDown()
+    {
+        m_display.shutDown();
+    }
+    
     public void startGame(final IGame game, Set<IGamePlayer> players)
     {
         try
@@ -85,8 +92,8 @@ public class TripleA implements IGameLoader
 
             final TripleAFrame frame = new TripleAFrame(game, players, mapDir);
            
-            TripleaDisplay display = new TripleaDisplay(frame);
-            game.addDisplay(display);
+            m_display = new TripleaDisplay(frame);
+            game.addDisplay(m_display);
 
             frame.setVisible(true);
 

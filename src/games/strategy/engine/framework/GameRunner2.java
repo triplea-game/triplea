@@ -1,9 +1,10 @@
 package games.strategy.engine.framework;
 
-import java.util.logging.LogManager;
-
 import games.strategy.debug.Console;
-import games.strategy.engine.framework.ui.LauncherFrame;
+import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.triplea.ui.ErrorHandler;
+
+import java.util.logging.LogManager;
 
 import javax.swing.UIManager;
 
@@ -16,6 +17,21 @@ public class GameRunner2
         Console.getConsole().displayStandardError();
         Console.getConsole().displayStandardOutput();
 
+        System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
+        
+        setupLookAndFeel();
+
+        showMainFrame();
+    }
+
+    private static void showMainFrame()
+    {
+        MainFrame frame = new MainFrame();
+        frame.setVisible(true);
+    }
+
+    private static void setupLookAndFeel()
+    {
         try
         {
             //macs are already beautiful
@@ -31,13 +47,6 @@ public class GameRunner2
         {
             ex.printStackTrace();
         }
-
-        LauncherFrame frame = new LauncherFrame();
-        frame.setIconImage(GameRunner.getGameIcon(frame));
-        frame.pack();
-
-        games.strategy.ui.Util.center(frame);
-        frame.setVisible(true);
     }
     
     private static void setupLogging()

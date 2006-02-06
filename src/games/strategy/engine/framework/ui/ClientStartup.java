@@ -94,9 +94,7 @@ public class ClientStartup extends JPanel
           row.setPlayerName(node);
         }
       }
-
     }
-
 
 
     layoutComponents();
@@ -293,6 +291,12 @@ private void initComponents()
 
         m_launcher.setGameData(data);
         m_launcher.startClient();
+    }
+
+    public void gameReset()
+    {
+        // TODO Auto-generated method stub
+        
     }
       
   };

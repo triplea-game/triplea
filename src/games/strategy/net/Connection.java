@@ -28,7 +28,7 @@
 package games.strategy.net;
 
 import java.io.*;
-import java.net.Socket;
+import java.net.*;
 import java.util.*;
 import java.util.logging.*;
 
@@ -89,15 +89,6 @@ class Connection
             e.printStackTrace();
         }
 
-    }
-
-    /**
-     * Creates new Connection s must be open.
-     */
-    public Connection(Socket s, INode ident, IConnectionListener listener) throws IOException
-    {
-        m_objectStreamFactory = new DefaultObjectStreamFactory();
-        init(s, ident, listener);
     }
     
     public void setRemoteName(String name)
@@ -297,10 +288,29 @@ class Connection
                 {
                     if (!m_shutdown)
                     {
-                        //these normally occur when the socket is closed
-                        //ignore
-                        if (!(ioe instanceof EOFException))
+                        if(ioe instanceof EOFException)
+                        {
+                            //these normally occur when the socket is closed
+                            //ignore
+                        }
+                        else if(ioe instanceof SocketException)
+                        {
+                           if(ioe.getMessage().equals("Connection reset") || ioe.getMessage().equals("Socket closed"))
+                           {
+                               //ignore
+                           }
+                           else
+                           {
+                               ioe.printStackTrace();
+                           }
+                        }
+                        else
+                        {
                             ioe.printStackTrace();
+                        }
+                            
+                        
+                        
                         shutDown();
                         List<MessageHeader> unsent = new ArrayList(Arrays.asList(m_waitingToBeSent.toArray()));
                         m_listener.fatalError(ioe, Connection.this, unsent);

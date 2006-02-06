@@ -42,9 +42,9 @@ public class ServerOptions extends JDialog
   /**
    * Creates a new instance of ServerOptions
    */
-  public ServerOptions(Frame owner, String defaultName, int defaultPort)
+  public ServerOptions(Component owner, String defaultName, int defaultPort)
   {
-    super(owner, "Server options", true);
+    super(JOptionPane.getFrameForComponent(owner), "Server options", true);
 
     initComponents();
     layoutComponents();

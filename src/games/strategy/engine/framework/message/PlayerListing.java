@@ -36,6 +36,10 @@ import games.strategy.util.Version;
  */
 public class PlayerListing implements Serializable
 {
+ 
+   //keep compatability with older versions
+   static final long serialVersionUID = -8913538086737733980L;
+    
   /**
    * Maps String player name -> node Name
    * if node name is null then the player is available to play.
@@ -44,19 +48,21 @@ public class PlayerListing implements Serializable
   private final Version m_engineVersion;
   private final Version m_gameVersion;
   private final String m_gameName;
+  private final String m_gameRound;
 
   /**
    * Creates a new instance of PlayerListingMessage
    */
-  public PlayerListing(Map<String, String> map, Version engineVersion, Version gameVersion, String gameName)
+  public PlayerListing(Map<String, String> map, Version engineVersion, Version gameVersion, String gameName, String gameRound)
   {
     m_playerListing = new HashMap<String, String>(map);
     m_engineVersion = engineVersion;
     m_gameVersion = gameVersion;
     m_gameName = gameName;
+    m_gameRound = gameRound;
   }
 
-  public Map getPlayerListing()
+  public Map<String,String> getPlayerListing()
   {
     return m_playerListing;
   }
@@ -84,6 +90,11 @@ public class PlayerListing implements Serializable
   public Set getPlayers()
   {
     return m_playerListing.keySet();
+  }
+
+  public String getGameRound()
+  {
+    return m_gameRound; 
   }
 
 

@@ -99,7 +99,7 @@ public class ImageScrollControl
 	{
 		return m_ratioY;
 	}
-
+    
 	void setSmallCoords(int x, int y)
 	{
 		m_large.setCoords( (int) (x * m_ratioX) ,(int) (y * m_ratioY));
@@ -114,6 +114,9 @@ public class ImageScrollControl
 	{
 		int x = m_large.getWidth();
 		int y = m_large.getHeight();
+        
+        
+        
 		m_small.setSelectionBound((int) (x / m_ratioX) ,(int) (y / m_ratioY));
 	}
 

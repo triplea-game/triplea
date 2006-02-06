@@ -176,6 +176,9 @@ public class ThreadPool
                 if (task == null)
                     continue;
                 
+                //clear the interupted state of this thread
+                Thread.interrupted();
+                
                 if(m_isRunning)
                 	runTask(task);
                 

@@ -59,12 +59,12 @@ public class NewGameFileChooser extends JFileChooser
 			if (f.isDirectory())
 				return true;
 
-			return f.getName().endsWith(".xml");
+			return f.getName().endsWith(".xml") || f.getName().endsWith(".txml");
 		}
 
 		public String getDescription()
 		{
-		    return "Game Files, *.svg";
+		    return "Game Files, *.txml";
 		}
 	};
 }

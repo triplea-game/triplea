@@ -35,6 +35,8 @@ import java.net.InetAddress;
 //written very often over the network, so make externalizable to make faster and reduce traffic
 public class Node implements INode, Externalizable
 {
+  static final long serialVersionUID = -2908980662926959943L;
+    
   private String m_name;
   private int m_port;
   private InetAddress m_address;

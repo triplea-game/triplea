@@ -130,7 +130,11 @@ public class HistorySynchronizer
 
         }
 
+        public void shutDown()
+        {}
+
     };
+
 
     public void deactivate()
     {

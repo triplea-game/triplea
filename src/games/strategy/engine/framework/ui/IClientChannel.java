@@ -28,4 +28,6 @@ public interface IClientChannel extends IChannelSubscribor
     
     public void playerListingChanged(PlayerListing listing);
     public void doneSelectingPlayers(byte[] gameData);
+    
+    public void gameReset();
 }

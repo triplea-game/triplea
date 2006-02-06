@@ -60,6 +60,40 @@ public class RemoteMessengerTest extends TestCase
         assertEquals(2, remote.increment(1));
     }
     
+    public void testExceptionThrownWhenUnregisteredRemote()
+    {
+        TestRemote testRemote = new TestRemote();
+        m_messenger.registerRemote(ITestRemote.class, testRemote, "testMethodCall");
+        ITestRemote remote = (ITestRemote) m_messenger.getRemote("testMethodCall");
+        
+        m_messenger.unregisterRemote("testMethodCall");
+        
+        try
+        {
+            remote.increment(1);
+            fail("No exception thrown");
+        }
+        catch(RemoteNotFoundException rme)
+        {
+            //this is what we expect
+        }
+        
+    }    
+    
+    public void testNoRemote()
+    {
+        try
+        {
+            m_messenger.getRemote("testMethodCall");
+            fail("No exception thrown");
+        }
+        catch(RemoteNotFoundException rme)
+        {
+            //this is what we expect
+        }
+
+    }
+    
     public void testVoidMethodCall()
     {
         TestRemote testRemote = new TestRemote();

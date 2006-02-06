@@ -1,5 +1,8 @@
 package games.strategy.engine.delegate;
 
+import games.strategy.engine.GameOverException;
+import games.strategy.engine.message.RemoteNotFoundException;
+
 import java.lang.reflect.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -23,9 +26,6 @@ public class DelegateExecutionManager
 {
     
     private Logger sm_logger = Logger.getLogger(DelegateExecutionManager.class.getName()); 
-    {
-        sm_logger.fine("test");
-    }
 
     /*
      * Delegate execution can be thought of as a read/write lock.
@@ -36,6 +36,12 @@ public class DelegateExecutionManager
     private final ReentrantReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
     private ThreadLocal<Boolean> m_currentThreadHasReadLock = new ThreadLocal<Boolean>();
     
+    private volatile boolean m_isGameOver = false;
+    
+    public void setGameOver()
+    {
+        m_isGameOver = true;
+    }
     
     /**
      *
@@ -92,11 +98,15 @@ public class DelegateExecutionManager
      */
     public Object createOutboundImplementation(final Object implementor, Class[] interfaces)
     {
-                
+        
+        assertGameNotOver();    
+        
         InvocationHandler ih = new InvocationHandler()
         {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
+                assertGameNotOver();                
+                
                 final boolean threadLocks = currentThreadHasReadLock();
                 
                 if(threadLocks)
@@ -105,17 +115,36 @@ public class DelegateExecutionManager
                 {
                     return method.invoke(implementor, args);
                 }
+                catch(RemoteNotFoundException rnfe)
+                {
+                   assertGameNotOver();
+                   throw rnfe;
+                }
+                catch(InvocationTargetException ite)
+                {
+                    assertGameNotOver();
+                    throw ite;
+                        
+                }                
                 finally
                 {
                     if(threadLocks)
                         enterDelegateExecution();
                 }
             }
+
         };
         
      
         return Proxy.newProxyInstance( implementor.getClass().getClassLoader(), interfaces,  ih);
         
+    }
+    
+
+    private void assertGameNotOver()
+    {
+        if(m_isGameOver)
+            throw new GameOverException("Game Over");
     }
     
     /**
@@ -126,15 +155,28 @@ public class DelegateExecutionManager
      */
     public Object createInboundImplementation(final Object implementor, Class[] interfaces)
     {
+        assertGameNotOver();
                 
         InvocationHandler ih = new InvocationHandler()
         {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
+                assertGameNotOver(); 
+                
                 enterDelegateExecution();
                 try
                 {
                     return method.invoke(implementor, args);
+                }
+                catch(InvocationTargetException ite)
+                {
+                    assertGameNotOver();
+                    throw ite;
+                }
+                catch(RuntimeException re)
+                {
+                    assertGameNotOver();
+                    throw re;
                 }
                 finally
                 {
@@ -160,7 +202,6 @@ public class DelegateExecutionManager
 
     public void enterDelegateExecution()
     {
-        
         if(sm_logger.isLoggable(Level.FINE))
         {
             sm_logger.fine(Thread.currentThread().getName() + " enters delegate execution.");

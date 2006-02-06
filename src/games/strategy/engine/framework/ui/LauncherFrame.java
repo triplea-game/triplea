@@ -59,7 +59,7 @@ public class LauncherFrame extends JFrame
     private ChatPanel m_chat;
     private ServerStartup m_serverStartup;
     private ClientStartup m_clientStartup;
-    private GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
+    private final GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
     private PBEMStartup m_pbemStartup;
     private LocalPlayerSelectionPanel m_localPlayerTypes = new LocalPlayerSelectionPanel();
 

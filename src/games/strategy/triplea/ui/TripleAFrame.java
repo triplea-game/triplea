@@ -25,6 +25,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.*;
@@ -194,18 +195,43 @@ public class TripleAFrame extends JFrame
         game.addGameStepListener(m_stepListener);
         updateStep();
 
-        //there are a lot of images that can be gcd right now
-        System.gc();
+        m_uiContext.addShutdownWindow(this);
     }
 
+    public void stopGame()
+    {        
+        m_game.getMessenger().removeErrorListener(m_messengerErrorListener);
+        m_uiContext.shutDown();
+    }
+    
     private void shutdown()
     {
         int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
         if(rVal != JOptionPane.OK_OPTION)
             return;
-        
-        m_game.shutdown();
+
         System.exit(0);
+    }
+    
+    private void leaveGame()
+    {
+        int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
+        if(rVal != JOptionPane.OK_OPTION)
+            return;
+        
+        if(m_game instanceof ServerGame)
+        {
+            ((ServerGame) m_game).stopGame();
+        }
+        else
+        {
+            m_game.getMessenger().shutDown();
+            ((ClientGame) m_game).shutDown();
+            
+            //an ugly hack, we need a better
+            //way to get the main frame
+            MainFrame.getInstance().reset();
+        }
     }
 
     private void createMenuBar()
@@ -776,15 +802,26 @@ public class TripleAFrame extends JFrame
      */
     private void addExitMenu(JMenu parentMenu)
     {
-        JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
+        JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game")
         {
             public void actionPerformed(ActionEvent e)
             {
-                shutdown();
+                leaveGame();
             }
         });
-        menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+        leaveGameMenuExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+        
+        parentMenu.add(leaveGameMenuExit);
+        
+        JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
+                {
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        shutdown();
+                    }
+                });  
         parentMenu.add(menuFileExit);
+        
     }
 
     /**
@@ -826,9 +863,9 @@ public class TripleAFrame extends JFrame
                         }
                     }//end if exists
 
-                    if (!f.getName().toLowerCase().endsWith(".svg"))
+                    if (!f.getName().toLowerCase().endsWith(".tsvg"))
                     {
-                        f = new File(f.getParent(), f.getName() + ".svg");
+                        f = new File(f.getParent(), f.getName() + ".tsvg");
                     }
 
                     
@@ -865,7 +902,7 @@ public class TripleAFrame extends JFrame
     {
         public void windowClosing(WindowEvent e)
         {
-            shutdown();
+            leaveGame();
         }
     };
 

@@ -108,17 +108,9 @@ public class PurchasePanel extends ActionPanel
     		});
     
 
-    synchronized(getLock())
-    {
-      try
-      {
-        getLock().wait();
-      } catch(InterruptedException ie)
-      {
-        waitForPurchase(bid);
-      }
-      return m_purchase;
-    }
+    waitForRelease();
+    return m_purchase;
+    
   }
 
 
@@ -148,8 +140,7 @@ public class PurchasePanel extends ActionPanel
   {
     public void actionPerformed(ActionEvent event)
     {
-      synchronized(getLock())
-      {
+     
         boolean hasPurchased = m_purchase.totalValues() != 0;
         if(!hasPurchased)
         {
@@ -161,8 +152,8 @@ public class PurchasePanel extends ActionPanel
         }
         
           
-        getLock().notifyAll();
-      }
+        release();
+     
     }
   };
 

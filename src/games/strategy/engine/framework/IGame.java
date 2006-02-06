@@ -61,8 +61,6 @@ public interface IGame
 
   public boolean canSave();
 
-  public void shutdown();
-
   public IRandomSource getRandomSource();
 
   /**
@@ -75,4 +73,6 @@ public interface IGame
    * remove a display
    */
   public void removeDisplay(IDisplay display);
+  
+  public boolean isGameOver();
 }

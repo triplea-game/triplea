@@ -54,6 +54,7 @@ public class Vault implements IServerVault
     
     private final KeyGenerator m_keyGen;
     private final IChannelMessenger m_channelMessenger;
+    private final IRemoteMessenger m_remoteMessenger;
     
     //Maps VaultID -> SecretKey
     private final Map<VaultID, SecretKey> m_secretKeys = Collections.synchronizedMap(new HashMap<VaultID, SecretKey>());
@@ -77,6 +78,7 @@ public class Vault implements IServerVault
     public Vault(final IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
     {
         m_channelMessenger = channelMessenger;
+        m_remoteMessenger = remoteMessenger;
         
         if(!m_channelMessenger.hasChannel(VAULT_CHANNEL))
         {
@@ -94,6 +96,17 @@ public class Vault implements IServerVault
         {
             e.printStackTrace();
             throw new IllegalStateException("Nothing known about algorithm:" +  ALGORITHM);
+        }
+    }
+    
+    public void shutDown()
+    {
+        m_channelMessenger.unregisterChannelSubscriber(m_channelMessenger, VAULT_CHANNEL);
+        
+        if(m_channelMessenger.isServer())
+        {
+            //we init others
+            m_remoteMessenger.unregisterRemote(VAULT_SERVER_REMOTE);
         }
     }
     

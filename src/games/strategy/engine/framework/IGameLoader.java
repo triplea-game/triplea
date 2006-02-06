@@ -70,6 +70,8 @@ public interface IGameLoader extends java.io.Serializable
    * @see games.strategy.engine.message.IRemoteMessenger
    */
   public Class<? extends IRemote> getRemotePlayerType();
+
+  public void shutDown();
   
   
 }

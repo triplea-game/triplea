@@ -189,7 +189,7 @@ public class UnifiedMessenger
      */
     public RemoteMethodCallResults[] invokeAndWait(String endPointName, RemoteMethodCall remoteCall)
     {
-        EndPoint endPoint = getLocalEndPointOrThrow(endPointName);
+        EndPoint endPoint = m_localEndPoints.get(endPointName);
 
         //prepatory to anything else...
         //generate a unique id
@@ -219,7 +219,11 @@ public class UnifiedMessenger
         // remote calls and
         //the local calls may execute concurrently
 
-        List<RemoteMethodCallResults> results = endPoint.invokeLocal(remoteCall, endPoint.takeANumber());
+        List<RemoteMethodCallResults> results;
+        if(endPoint != null)
+            results = endPoint.invokeLocal(remoteCall, endPoint.takeANumber());
+        else
+            results = Collections.emptyList();
 
         //wait for the remote calls to finish
         if (remote.length > 0)
@@ -819,8 +823,6 @@ class EndPoint
 
         } catch (InvocationTargetException e)
         {
-            //print the stack trace here to make sure its recorded
-            e.printStackTrace();
             return new RemoteMethodCallResults(e.getTargetException());
         } catch (IllegalAccessException e)
         {

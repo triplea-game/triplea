@@ -20,6 +20,8 @@
 
 package games.strategy.triplea.ui;
 
+import java.util.concurrent.CountDownLatch;
+
 import games.strategy.engine.data.*;
 
 import javax.swing.*;
@@ -38,10 +40,12 @@ public abstract class ActionPanel extends JPanel
 {
     private GameData m_data;
     private PlayerID m_currentPlayer;
-    private MapPanel m_map;
-    private final Object m_lock = new Object();
+    private MapPanel m_map;    
     private boolean m_active;
-
+    private CountDownLatch m_latch;
+    private final Object m_latchLock = new Object();
+    
+    
     /** Creates new ActionPanel */
     public ActionPanel(GameData data, MapPanel map)
     {
@@ -51,6 +55,66 @@ public abstract class ActionPanel extends JPanel
         setBorder(new EmptyBorder(5, 5, 0, 0));
     }
 
+    
+    /**
+     * Waitfor another thread to call release.
+     * If the thread is interupted, we will return silently.<p>
+     * 
+     * A memory barrier will be crossed both on entering and before exiting this method.<p>
+     * 
+     * This method will return in the event of the game shutting down.<p>
+     */
+    protected void waitForRelease()
+    {
+        synchronized(m_latchLock)
+        {
+            if(m_latch != null)
+                throw new IllegalStateException("Latch not null");
+            m_latch = new CountDownLatch(1);
+            
+            m_map.getUIContext().addShutdownLatch(m_latch);
+        }
+        
+        try
+        {
+            m_latch.await();
+        } catch (InterruptedException e)
+        {
+        }
+        
+        //cross a memory barrier
+        synchronized(m_latchLock)
+        {}
+        
+    }
+    
+    /**
+     * Release the latch acquired by waitOnNewLatch()<p>
+     * 
+     * This method will crossed on entering this method.<p>
+     */
+    protected void release()
+    {
+        synchronized(m_latchLock)
+        {
+            //not set up yet
+            //this is ok as we set up in one thread
+            //and wait in another
+            //if the release happens too early
+            //the user will be able to press done again
+            if(m_latch == null)
+                return;
+            
+            m_map.getUIContext().removeShutdownLatch(m_latch);
+            
+            m_latch.countDown();
+            m_latch = null;
+        }
+        
+    }
+    
+    
+    
     protected GameData getData()
     {
         return m_data;
@@ -70,15 +134,6 @@ public abstract class ActionPanel extends JPanel
     protected MapPanel getMap()
     {
         return m_map;
-    }
-
-    /**
-     * Returns the object used to synchronize this action panel. <br>
-     * Never changes.
-     */
-    protected Object getLock()
-    {
-        return m_lock;
     }
 
     /**

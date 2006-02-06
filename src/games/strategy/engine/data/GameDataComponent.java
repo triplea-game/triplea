@@ -52,24 +52,35 @@ public class GameDataComponent implements java.io.Serializable
 
 	private void writeObject(ObjectOutputStream stream) throws IOException
 	{
-		//if were writing to a game object stream
+		writeInternal(stream);
+	}
+
+
+    protected final void writeInternal(ObjectOutput stream) throws IOException
+    {
+        //if were writing to a game object stream
 		//then we get the game data from the context
 		//else we write it.
 		if(stream instanceof GameObjectOutputStream)
 			return;
 		else
 		    stream.writeObject(m_data);
-	}
+    }
 
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException
 	{
-		if(stream instanceof GameObjectInputStream)
-		{
-			GameObjectInputStream in = (GameObjectInputStream) stream;
-			m_data = in.getData();
-		}
-		else
-			m_data = (GameData) stream.readObject();
+        readInternal(stream);
 	}
+    
+    protected final void readInternal(ObjectInput stream) throws IOException, ClassNotFoundException
+    {
+        if(stream instanceof GameObjectInputStream)
+        {
+            GameObjectInputStream in = (GameObjectInputStream) stream;
+            m_data = in.getData();
+        }
+        else
+            m_data = (GameData) stream.readObject();
+    }
 
 }

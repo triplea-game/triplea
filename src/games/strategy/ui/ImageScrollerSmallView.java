@@ -48,6 +48,7 @@ public class ImageScrollerSmallView extends JComponent
     private int m_selectionY;
     private Image m_image;
 
+    
     /** Creates new ImageScrollControl */
     public ImageScrollerSmallView(Image image)
     {
@@ -87,6 +88,41 @@ public class ImageScrollerSmallView extends JComponent
         }
         m_image = image;
     }
+    
+    
+    /**
+     * Check for the case where we dont need to scroll because we
+     * can see the entire map image without scrolling. 
+     * 
+     *
+     */
+    private void checkScrollBounds()
+    {
+        boolean update = false;
+        
+        if(m_selectionHeight >= getHeight() - getInsetsHeight() && m_selectionY != 0)
+        {
+            m_selectionY = 0;            
+            update = true;
+        }
+
+        if(m_selectionWidth >= getWidth() - getInsetsWidth() && m_selectionX != 0)
+        {
+            m_selectionX = 0;
+            update = true;
+        }
+        
+        if(update)
+        {
+            m_control.setSmallCoords(m_selectionX, m_selectionY);
+        }
+            
+
+        
+            
+    }
+    
+    
 
     private int getInsetsWidth()
     {
@@ -103,6 +139,9 @@ public class ImageScrollerSmallView extends JComponent
     {
         m_selectionWidth = width;
         m_selectionHeight = height;
+        
+        checkScrollBounds();
+        
         repaint();
     }
 
@@ -115,6 +154,9 @@ public class ImageScrollerSmallView extends JComponent
     {
         m_selectionX = x;
         m_selectionY = y;
+        
+        checkScrollBounds();
+        
         SwingUtilities.invokeLater(new Runnable()
         {
         
@@ -132,6 +174,7 @@ public class ImageScrollerSmallView extends JComponent
         return Util.getDimension(m_image, this);
     }
 
+
     public void paint(Graphics g)
     {
         super.paint(g);
@@ -140,6 +183,9 @@ public class ImageScrollerSmallView extends JComponent
 
         g.drawImage(m_image, xOff, yOff, this);
         g.setColor(Color.white);
+        
+        
+        
         drawViewBox(g);
 
     }
@@ -150,8 +196,12 @@ public class ImageScrollerSmallView extends JComponent
         int yOff = getInsets().top;
 
         g.drawRect(m_selectionX + xOff, m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
-        g.drawRect(m_selectionX + xOff + getWidth(), m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
-        g.drawRect(m_selectionX + xOff - getWidth(), m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
+        
+        if(m_control.getScrollWrapX())
+        {
+            g.drawRect(m_selectionX + xOff + getWidth(), m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
+            g.drawRect(m_selectionX + xOff - getWidth(), m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
+        }
     }
 
     public Image getOffScreenImage()
@@ -176,14 +226,17 @@ public class ImageScrollerSmallView extends JComponent
 
         if (!m_control.getScrollWrapX())
         {
-            if (x < 0)
-                x = 0;
             if (x + m_selectionWidth >= getWidth() - getInsetsWidth() - 1)
                 x = getWidth() - m_selectionWidth - getInsetsWidth() - 1;
+            if (x < 0)
+                x = 0;            
         }
-
+        
         m_selectionX = x;
         m_selectionY = y;
+        
+        checkScrollBounds();
+        
         m_control.setSmallCoords(x, y);
         repaint();
     }

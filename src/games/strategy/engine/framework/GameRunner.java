@@ -34,7 +34,10 @@ import javax.swing.JOptionPane;
  * 
  * @author Sean Bridges
  * 
- * This class starts and runs the game.
+ * This class starts and runs the game.<p>
+ * 
+ * This class is compiled to run under older jdks (1.3 at least), and should not 
+ * do anything more than check the java version number, and then delegate to GameRunner2<p>
  */
 public class GameRunner
 {
@@ -68,12 +71,7 @@ public class GameRunner
     }
 
     /**
-     * Get version number of Java VM. Allow versions of 1.4 to run the game.
-     * Show warning for 1.5 version due to instability with serialized classes
-     * but don't prevent from game play, as it seems to affect cross version
-     * play only.
-     * 
-     * Show error + URL and kill program.
+     * Get version number of Java VM.
      * 
      * @author NeKromancer
      */

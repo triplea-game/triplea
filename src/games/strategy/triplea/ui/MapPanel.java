@@ -788,8 +788,8 @@ class BackgroundDrawer implements Runnable
     {        
         m_mapPanelRef.clear();
         m_tiles.clear();
-        //wake up the background drawer
-        m_tiles.offer(null);
+        //the thread will eventually wake up and notice we are done
+        
     }
     
     public void setTiles(Collection<Tile> aCollection) 
@@ -805,15 +805,15 @@ class BackgroundDrawer implements Runnable
             Tile tile;
             try
             {
-                tile = m_tiles.poll(1000, TimeUnit.MICROSECONDS);
+                tile = m_tiles.poll(2000, TimeUnit.MICROSECONDS);
             } catch (InterruptedException e)
             {
                continue;
             }
-            
+
             if(tile == null)
                 continue;
-
+            
             final MapPanel mapPanel = m_mapPanelRef.get();
             if(mapPanel == null)
             {

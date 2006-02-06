@@ -20,6 +20,7 @@
 
 package games.strategy.engine.framework;
 
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.*;
@@ -31,6 +32,7 @@ import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
+import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ListenerList;
 
 import java.io.*;
@@ -71,7 +73,8 @@ public class ServerGame implements IGame
     private IRandomSource m_delegateRandomSource;
     
     private DelegateExecutionManager m_delegateExecutionManager = new DelegateExecutionManager();
-
+    private volatile boolean m_isGameOver = false;
+    
     /**
      *
      * @param localPlayers Set - A set of GamePlayers
@@ -81,7 +84,6 @@ public class ServerGame implements IGame
     public ServerGame(GameData data, Set<IGamePlayer> localPlayers, IServerMessenger messenger, Map<String,INode> remotePlayerMapping, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
     {
         m_data = data;
-
         m_messenger = messenger;
         
         
@@ -176,25 +178,94 @@ public class ServerGame implements IGame
      */
     public void startGame()
     {
-        //we dont want to notify that the step has been saved when reloading a saved game, since
-        //in fact the step hasnt changed, we are just resuming where we left off
-        boolean gameHasBeenSaved =  m_data.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
-        m_data.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
         
-        
-        
-        if(gameHasBeenSaved)
+        try
         {
-            runStep(gameHasBeenSaved);
+            //we dont want to notify that the step has been saved when reloading a saved game, since
+            //in fact the step hasnt changed, we are just resuming where we left off
+            boolean gameHasBeenSaved =  m_data.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
+            
+            if(!gameHasBeenSaved)
+                m_data.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
+            
+            if(gameHasBeenSaved)
+            {
+                runStep(gameHasBeenSaved);
+            }
+            
+            while (!m_isGameOver)
+                runStep(false);
+        }
+        catch(GameOverException goe)
+        {
+            if(!m_isGameOver)
+                goe.printStackTrace();
+            return;
+                
         }
         
-        while (true)
-            runStep(false);
     }
 
     public void stopGame()
     {
-        getCurrentStep().getDelegate().end();
+        //we have already shut down
+        if(m_isGameOver)
+            return;
+        
+        m_isGameOver = true;
+        ErrorHandler.setGameOver(true);
+        
+        //block delegate execution to prevent outbound messages to the players
+        //while we shut down.
+        try
+        {
+            if(!m_delegateExecutionManager.blockDelegateExecution(4000))
+               System.exit(0);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        
+        //shutdown
+        try
+        {
+        
+            m_delegateExecutionManager.setGameOver();            
+            getGameModifiedBroadcaster().shutDown();
+            m_randomStats.shutDown();
+            m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+            m_vault.shutDown();
+            
+            Iterator<IGamePlayer> localPlayersIter = m_gamePlayers.values().iterator();
+            while (localPlayersIter.hasNext())
+            {
+                IGamePlayer gp = localPlayersIter.next();
+                m_remoteMessenger.unregisterRemote(getRemoteName(gp.getID()));
+            }
+            
+            Iterator delegateIter = m_data.getDelegateList().iterator();
+            while (delegateIter.hasNext())
+            {
+                IDelegate delegate = (IDelegate) delegateIter.next();
+                
+                Class<? extends IRemote> remoteType = delegate.getRemoteType();
+                //if its null then it shouldnt be added as an IRemote
+                if(remoteType == null)
+                    continue;
+                            
+                m_remoteMessenger.unregisterRemote(getRemoteName(delegate));
+            }            
+            
+        }
+        finally
+        {
+            m_delegateExecutionManager.resumeDelegateExecution();
+        }
+        
+        
+        
+        
+        m_data.getGameLoader().shutDown();        
     }
 
 	private void autoSave() 
@@ -293,14 +364,24 @@ public class ServerGame implements IGame
             return;
         }
 
+        if(m_isGameOver)
+            return;
+        
     	startStep(stepIsRestoredFromSavedGame);
-    	
+
+        if(m_isGameOver)
+            return;
+        
         waitForPlayerToFinishStep();
+
+        if(m_isGameOver)
+            return;        
         
         endStep();
         
         
-        
+        if(m_isGameOver)
+            return;
         
         if(m_data.getSequence().next())
         {
@@ -355,7 +436,7 @@ public class ServerGame implements IGame
         }
         
         bridge.setRandomSource(m_delegateRandomSource);
-
+        
         notifyGameStepChanged(stepIsRestoredFromSavedGame);
         
         m_delegateExecutionManager.enterDelegateExecution();
@@ -452,11 +533,7 @@ public class ServerGame implements IGame
         return true;
     }
 
-    public void shutdown()
-    {
-        m_messenger.shutDown();
-    }
-
+   
     public IRandomSource getRandomSource()
     {
       return m_randomSource;
@@ -511,6 +588,10 @@ public class ServerGame implements IGame
             m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
             
         }
+
+        //nothing to do, we call this
+        public void shutDown()
+        {}
         
     };
 
@@ -532,4 +613,12 @@ public class ServerGame implements IGame
     {
         m_channelMessenger.unregisterChannelSubscriber(display, DISPLAY_CHANNEL);
     }
+
+    public boolean isGameOver()
+    {
+        return m_isGameOver;
+    }
+    
+    
+    
 }

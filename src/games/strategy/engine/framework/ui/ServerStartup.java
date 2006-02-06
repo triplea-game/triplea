@@ -300,7 +300,7 @@ public class ServerStartup extends JPanel
     HashMap<String, String> mapping = new HashMap<String, String>();
 
     if(m_data == null)
-      return new PlayerListing(mapping, EngineVersion.VERSION, new Version(0,0), "");
+      return new PlayerListing(mapping, EngineVersion.VERSION, new Version(0,0), "","");
 
     Iterator<PlayerRow> iter = m_playerRows.iterator();
     while(iter.hasNext())
@@ -321,7 +321,7 @@ public class ServerStartup extends JPanel
       }
     }
 
-    return new PlayerListing(mapping, EngineVersion.VERSION, m_data.getGameVersion(), m_data.getGameName());
+    return new PlayerListing(mapping, EngineVersion.VERSION, m_data.getGameVersion(), m_data.getGameName(), "");
   }
 
   private void takePlayerInternal(INode from, boolean take, String playerName)

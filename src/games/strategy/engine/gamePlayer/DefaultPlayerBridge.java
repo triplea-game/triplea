@@ -20,13 +20,15 @@
 
 package games.strategy.engine.gamePlayer;
 
+import java.lang.reflect.*;
 import java.util.Properties;
 
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.*;
 
 /**
  * Default implementation of PlayerBridge.
@@ -85,13 +87,78 @@ public class DefaultPlayerBridge implements IPlayerBridge
      */
     public IRemote getRemote()
     {
-        IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
-        return m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate));
+        if(m_game.isGameOver())
+            throw new GameOverException("Game Over");
+        try
+        {
+            IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
+            return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
+        }
+        catch(RemoteNotFoundException rnfe)
+        {
+            if(m_game.isGameOver())
+            {
+                throw new GameOverException("Game Over");
+            }
+            else
+            {
+                throw rnfe;
+            }
+        }
     }
     
     public Properties getStepProperties()
     {
         return m_game.getData().getSequence().getStep().getProperties();
     }
+    
+    private IRemote getRemoteThatChecksForGameOver(IRemote implementor)
+    {
+        Class[] classes = implementor.getClass().getInterfaces();
+        GameOverInvocationHandler goih = new GameOverInvocationHandler(implementor, m_game);
+        
+        return (IRemote)  Proxy.newProxyInstance(implementor.getClass().getClassLoader(), classes, goih);
+        
+    }
+    
+}
+
+
+class GameOverInvocationHandler implements InvocationHandler
+{
+    private final Object m_delegate;
+    private final IGame m_game;
+    
+    public GameOverInvocationHandler(Object delegate, IGame game)
+    {
+        m_delegate = delegate;
+        m_game = game;
+    }
+
+    
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+    {
+        try
+        {
+            return method.invoke(m_delegate, args);
+        }
+        catch(InvocationTargetException ite)
+        {
+            if(!m_game.isGameOver())
+                throw ite;
+            else
+                throw new GameOverException("Game Over Exception");            
+        }
+        catch(RemoteNotFoundException rnfe)
+        {
+            if(!m_game.isGameOver())
+                throw rnfe;
+            else
+                throw new GameOverException("Game Over Exception");
+                    
+        }
+        
+    }
+    
     
 }

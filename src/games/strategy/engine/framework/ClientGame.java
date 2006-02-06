@@ -29,6 +29,7 @@ import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.*;
+import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ListenerList;
 
 import java.util.*;
@@ -45,6 +46,7 @@ public class ClientGame implements IGame
   private final IRemoteMessenger m_remoteMessenger;
   private final IChannelMessenger m_channelMessenger;
   private final ChangePerformer m_changePerformer;
+  private volatile boolean m_isGameOver = false;
   
   //maps PlayerID->GamePlayer
   private Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
@@ -64,6 +66,7 @@ public class ClientGame implements IGame
     m_remoteMessenger = remoteMessenger;
     m_channelMessenger = channelMessenger;
     m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
+    
     
     m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
     m_remoteMessenger.registerRemote(IGameStepAdvancer.class, m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
@@ -140,11 +143,40 @@ public class ClientGame implements IGame
         
         if(!loadedFromSavedGame)
             m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
-      
-        
+    }
+
+    public void shutDown()
+    {
+        ClientGame.this.shutDown();
     }
      
   };
+  
+  public void shutDown()
+  {
+      m_isGameOver = true;
+      ErrorHandler.setGameOver(true);
+      m_channelMessenger.unregisterChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
+      m_remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
+      m_vault.shutDown();
+  
+      Iterator<IGamePlayer> iter = m_gamePlayers.values().iterator();
+      while(iter.hasNext())
+      {
+        IGamePlayer gp = iter.next();
+        PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
+        m_gamePlayers.put(player, gp);
+        
+        m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getID()));
+        
+        m_remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
+        
+      }
+      
+      m_data.getGameLoader().shutDown();
+      
+      
+  }
  
   public GameData getData()
   {
@@ -235,10 +267,6 @@ public class ClientGame implements IGame
     return false;
   }
 
-  public void shutdown()
-  {
-    m_messenger.shutDown();
-  }
   public IRandomSource getRandomSource()
   {
     return null;
@@ -268,6 +296,11 @@ public class ClientGame implements IGame
     public void removeDisplay(IDisplay display)
     {
         m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.DISPLAY_CHANNEL);
+    }
+
+    public boolean isGameOver()
+    {
+        return m_isGameOver;
     }
 	
 	

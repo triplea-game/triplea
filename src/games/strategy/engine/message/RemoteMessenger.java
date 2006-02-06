@@ -45,7 +45,7 @@ public class RemoteMessenger implements IRemoteMessenger
     private void assertRemoteExists(String channelName)
     {
         if(!m_unifiedMessenger.isAwareOfEndPoint(getUnifiedName(channelName)))
-            throw new IllegalStateException("No remote called " + channelName);
+            throw new RemoteNotFoundException("No remote called " + channelName);
     }
 
     

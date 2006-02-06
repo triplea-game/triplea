@@ -168,14 +168,21 @@ public class BattleDisplay extends JPanel
 
         });
 
+        m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
+        
         //wait for the button to be pressed.
         try
         {
             continueLatch.await();
         } catch (InterruptedException ie)
         {
-
+            
         }
+        finally
+        {
+            m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
+        }
+        
 
         SwingUtilities.invokeLater(new Runnable()
         {
@@ -293,12 +300,17 @@ public class BattleDisplay extends JPanel
                 });
 
         
+        m_mapPanel.getUIContext().addShutdownLatch(latch);
         try
         {
             latch.await();
         } catch (InterruptedException e1)
         {
-            e1.printStackTrace();
+            
+        }
+        finally
+        {
+            m_mapPanel.getUIContext().removeShutdownLatch(latch);
         }
         
         SwingUtilities.invokeLater(new Runnable()

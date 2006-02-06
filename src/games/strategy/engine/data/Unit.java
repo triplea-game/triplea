@@ -22,21 +22,21 @@ package games.strategy.engine.data;
 
 import games.strategy.net.GUID;
 
-import java.io.Serializable;
+import java.io.*;
 
 
 /**
  *
  * @author  Sean Bridges
- * @version 1.0
  */
+//written often over the network, so made externalizable
 public class Unit extends GameDataComponent implements Serializable
 {
   private PlayerID m_owner;
   private GUID m_uid;
   private int m_hits;
-
   private UnitType m_type;
+  
 
   /**
    * Creates new Unit.  Should use a call to UnitType.create() instead.
@@ -49,7 +49,7 @@ public class Unit extends GameDataComponent implements Serializable
     m_uid = new GUID();
     data.getUnits().put(this);
   }
-
+  
   private void init(UnitType type, PlayerID owner, GameData data)
   {
     m_type = type;
@@ -115,5 +115,7 @@ public class Unit extends GameDataComponent implements Serializable
   {
     return m_type.getName() + " owned by " + m_owner.getName();
   }
+
+
 
 }

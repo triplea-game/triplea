@@ -42,9 +42,9 @@ public class ClientOptions extends JDialog
   /**
    * Creates a new instance of ClientOptions
    */
-  public ClientOptions(Frame parent, String defaultName, int defaultPort, String defaultAddress)
+  public ClientOptions(Component parent, String defaultName, int defaultPort, String defaultAddress)
   {
-    super(parent, "Client options", true);
+    super(JOptionPane.getFrameForComponent(parent), "Client options", true);
 
     initComponents();
     layoutComponents();

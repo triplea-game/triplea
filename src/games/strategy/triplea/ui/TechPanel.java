@@ -74,16 +74,7 @@ public class TechPanel extends ActionPanel
         if(getAvailableTechs().isEmpty())
             return null;
         
-        try
-        {
-            synchronized (getLock())
-            {
-                getLock().wait();
-            }
-        } catch (InterruptedException ie)
-        {
-            waitForTech();
-        }
+        waitForRelease();
 
         if (m_techRoll == null)
             return null;
@@ -144,10 +135,7 @@ public class TechPanel extends ActionPanel
                 m_techRoll = new TechRoll(null, quantity);
             else
                 m_techRoll = new TechRoll(advance, quantity);
-            synchronized (getLock())
-            {
-                getLock().notifyAll();
-            }
+            release();
 
         }
     };
@@ -156,11 +144,9 @@ public class TechPanel extends ActionPanel
     {
         public void actionPerformed(ActionEvent event)
         {
-            synchronized (getLock())
-            {
-                m_techRoll = null;
-                getLock().notifyAll();
-            }
+            m_techRoll = null;
+            release();
+            
         }
     };
 

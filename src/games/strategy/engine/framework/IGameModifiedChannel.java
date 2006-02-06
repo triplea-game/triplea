@@ -42,4 +42,6 @@ public interface IGameModifiedChannel extends IChannelSubscribor
      * @param loadedFromSavedGame - true if the game step has changed because we were loaded from a saved game
      */
     public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame);
+    
+    public void shutDown();
 }

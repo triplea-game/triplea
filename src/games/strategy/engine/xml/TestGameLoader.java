@@ -65,7 +65,10 @@ public class TestGameLoader implements IGameLoader
     public Class<? extends IRemote> getRemotePlayerType()
     {
        return IRemote.class;
-    }	
+    }
+
+    public void shutDown()
+    {}	
 	
 	
 }

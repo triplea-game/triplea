@@ -16,6 +16,7 @@ package games.strategy.engine.delegate;
 
 import java.util.Properties;
 
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -125,9 +126,18 @@ public class DefaultDelegateBridge implements IDelegateBridge
      */
     public IRemote getRemote(PlayerID id)
     {
-        Object implementor = m_game.getRemoteMessenger().getRemote(
-                ServerGame.getRemoteName(id));
-        return (IRemote) getOutbound(implementor);
+        try
+        {
+            Object implementor = m_game.getRemoteMessenger().getRemote(
+                    ServerGame.getRemoteName(id));
+            return (IRemote) getOutbound(implementor);
+        }
+        catch(RemoteNotFoundException rnfe)
+        {
+            if(m_game.isGameOver())
+                throw new GameOverException("Game Over");
+            throw rnfe;
+        }
     }
 
     /* (non-Javadoc)

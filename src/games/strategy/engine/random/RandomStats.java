@@ -21,11 +21,18 @@ import games.strategy.util.IntegerMap;
 public class RandomStats implements IRandomStats
 {
        
+    private final IRemoteMessenger m_remoteMessenger;
     private IntegerMap<Integer> m_randomStats = new IntegerMap<Integer>();
     
     public RandomStats(IRemoteMessenger remoteMessenger)
     {
+        m_remoteMessenger = remoteMessenger;
         remoteMessenger.registerRemote(IRandomStats.class, this, RANDOM_STATS_REMOTE_NAME);
+    }
+    
+    public void shutDown()
+    {
+        m_remoteMessenger.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
     }
     
     public synchronized void addRandom(int[] random)

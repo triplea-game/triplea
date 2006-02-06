@@ -53,6 +53,9 @@ class UnifiedInvocationHandler implements InvocationHandler
         {
             RemoteMethodCallResults[] response = m_messenger.invokeAndWait(m_endPointName, remoteMethodMsg);
 
+            if(m_assertExactlyOneResults && response.length == 0)
+                throw new RemoteNotFoundException("Remote not found:" + m_endPointName);
+            
             if(m_assertExactlyOneResults && response.length != 1)
                 throw new IllegalStateException("Expecting only one result, but got:" + response.length + " end point:" + m_endPointName);
                 

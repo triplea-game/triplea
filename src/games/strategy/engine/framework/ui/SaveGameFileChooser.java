@@ -32,7 +32,7 @@ public class SaveGameFileChooser extends JFileChooser
 {
 
 	
-	public static final String AUTOSAVE_FILE_NAME = "autosave.svg";
+	public static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
 
 	public static final File DEFAULT_DIRECTORY;
 	
@@ -108,12 +108,13 @@ public class SaveGameFileChooser extends JFileChooser
 			if (f.isDirectory())
 				return true;
 
-			return f.getName().endsWith(".svg");
+            //the extension should be .tsvg, but find svg extensions as well
+			return f.getName().endsWith(".tsvg") || f.getName().endsWith(".svg");
 		}
 
 		public String getDescription()
 		{
-		    return "Saved Games, *.svg";
+		    return "Saved Games, *.tsvg";
 		}
 	};
 }

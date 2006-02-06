@@ -1,5 +1,9 @@
 package games.strategy.triplea.ui;
 
+import java.awt.Window;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+
 import games.strategy.triplea.image.*;
 
 /**
@@ -17,6 +21,11 @@ public class UIContext
     private FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
     private DiceImageFactory m_diceImageFactory = new DiceImageFactory();
 
+    private boolean m_isShutDown;
+    
+    private List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
+    private List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
+    
     public UIContext()
     {
         m_mapImage = new MapImage();
@@ -73,4 +82,88 @@ public class UIContext
         return m_diceImageFactory;
     }
     
+    /**
+     * Add a latch that will be released when the game shuts down.
+     */
+    public void addShutdownLatch(CountDownLatch latch)
+    {
+        synchronized(this)
+        {
+            if(m_isShutDown)
+            {
+                releaseLatch(latch);
+                return;
+            }
+            m_latchesToCloseOnShutdown.add(latch);
+        }
+    }
+        
+    public void removeShutdownLatch(CountDownLatch latch)
+    {
+        synchronized(this)
+        {
+            m_latchesToCloseOnShutdown.remove(latch);
+        }
+    }
+    
+    /**
+     * Add a latch that will be released when the game shuts down.
+     */
+    public void addShutdownWindow(Window window)
+    {
+        synchronized(this)
+        {
+            if(m_isShutDown)
+            {
+                closeWindow(window);
+                return;
+            }
+            m_windowsToCloseOnShutdown.add(window);
+        }
+    }
+        
+    private void closeWindow(Window window)
+    {
+       window.setVisible(false);
+    }
+
+    public void removeShutdownWindow(Window window)
+    {
+        synchronized(this)
+        {
+            m_latchesToCloseOnShutdown.remove(window);
+        }
+    }    
+    
+    
+    private void releaseLatch(CountDownLatch latch)
+    {
+        while(latch.getCount() > 0)
+        {
+            latch.countDown();
+        }
+    
+    }
+
+    
+    public void shutDown()
+    {
+        synchronized(this)
+        {
+            if(m_isShutDown)
+                return;
+            m_isShutDown = true;
+            
+            for(CountDownLatch latch : m_latchesToCloseOnShutdown)
+            { 
+                releaseLatch(latch);
+            }
+            
+            for(Window window : m_windowsToCloseOnShutdown)
+            { 
+                closeWindow(window);
+            }
+            
+        }
+    }
 }

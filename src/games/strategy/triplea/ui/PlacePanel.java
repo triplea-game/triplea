@@ -110,19 +110,15 @@ public class PlacePanel extends ActionPanel
         m_bridge = bridge;
         refreshActionLabelText(bid);
         refreshUndoButton();
-        try
-        {
-            synchronized (getLock())
-            {
-                getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
-                getLock().wait();
-                getMap().removeMapSelectionListener(
-                        PLACE_MAP_SELECTION_LISTENER);
-            }
-        } catch (InterruptedException ie)
-        {
-            return waitForPlace(bid, bridge);
-        }
+        
+        getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
+
+        waitForRelease();
+        
+        getMap().removeMapSelectionListener(
+                PLACE_MAP_SELECTION_LISTENER);
+
+
 
         removeAll();
         m_bridge = null;
@@ -160,11 +156,10 @@ public class PlacePanel extends ActionPanel
                     return;
             }
 
-            synchronized (getLock())
-            {
-                m_placeData = null;
-                getLock().notify();
-            }
+            m_placeData = null;
+
+            release();
+
         }
     };
 
@@ -203,10 +198,7 @@ public class PlacePanel extends ActionPanel
 
                 m_placeData = new PlaceData(choosen, territory);
                 updateUnits();
-                synchronized (getLock())
-                {
-                    getLock().notify();
-                }
+                release();
             }
         }
     };
