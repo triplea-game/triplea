@@ -56,12 +56,22 @@ public class ClientModel implements IMessengerErrorListener
         m_listener = listener;
     }
     
-    public boolean createClientMessenger(Component ui)
+    
+    private ClientProps getProps(Component ui)
     {
-        m_gameDataOnStartup = m_gameSelectorModel.getGameData();
-        
-        ui = JOptionPane.getFrameForComponent(ui);
-        m_ui = ui;
+        if(System.getProperties().getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true") &&
+                System.getProperties().getProperty(GameRunner2.TRIPLEA_STARTED, "").equals("")     
+           )
+        {
+            ClientProps props = new ClientProps();
+            props.setHost(System.getProperty(GameRunner2.TRIPLEA_HOST_PROPERTY));
+            props.setName(System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY));
+            props.setPort(Integer.parseInt(System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY)));
+            
+            System.setProperty(GameRunner2.TRIPLEA_STARTED, "true");
+            return props;
+        }
+             
         
         //load in the saved name!
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
@@ -75,22 +85,44 @@ public class ClientModel implements IMessengerErrorListener
         
         if (!options.getOKPressed())
         {
-            return false;
+            return null;
         }
+        ClientProps props = new ClientProps();
+        props.setHost(options.getAddress());
+        props.setName(options.getName());
+        props.setPort(options.getPort());
+        
+        return props;
+    }
+    
+    
+    public boolean createClientMessenger(Component ui)
+    {
+        m_gameDataOnStartup = m_gameSelectorModel.getGameData();
+        
+        ui = JOptionPane.getFrameForComponent(ui);
+        m_ui = ui;
+        
+        //load in the saved name!
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 
-        String name = options.getName();
+        ClientProps props = getProps(ui);
+        if(props == null)
+            return false;
+
+        String name = props.getName();
         s_logger.log(Level.FINE, "Client playing as:" + name);
         //save the name! -- lnxduk
         prefs.put(ServerModel.PLAYERNAME, name);
 
-        int port = options.getPort();
+        int port = props.getPort();
         if (port >= 65536 || port == 0)
         {
             JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        String address = options.getAddress();
+        String address = props.getHost();
 
         try
         {
@@ -315,5 +347,41 @@ public class ClientModel implements IMessengerErrorListener
         return m_chatPanel;
     }
 
+    
+}
+
+
+class ClientProps
+{
+    private int port;
+    private String name;
+    private String host;
+    
+    public String getHost()
+    {
+        return host;
+    }
+    public void setHost(String host)
+    {
+        this.host = host;
+    }
+    public String getName()
+    {
+        return name;
+    }
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+    public int getPort()
+    {
+        return port;
+    }
+    public void setPort(int port)
+    {
+        this.port = port;
+    }
+    
+    
     
 }

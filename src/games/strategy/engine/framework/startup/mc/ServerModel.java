@@ -94,19 +94,23 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     }
 
     
-    /**
-     * UI can be null.  We use it as the parent for message dialogs we show.
-     * If you have a component displayed, use it. 
-     */
-    public boolean createServerMessenger(Component ui)
+    private ServerProps getServerProps(Component ui)
     {
-        ui = JOptionPane.getFrameForComponent(ui);
-        m_ui = ui;
-        
-        //load in the saved name! -- lnxduk
+        if(System.getProperties().getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true") &&
+                System.getProperties().getProperty(GameRunner2.TRIPLEA_STARTED, "").equals("")     
+           )
+        {
+            ServerProps props = new ServerProps();
+            props.setName(System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY));
+            props.setPort(Integer.parseInt(System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY)));
+            
+            System.setProperty(GameRunner2.TRIPLEA_STARTED, "true");
+            return props;
+        }
+             
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String playername = prefs.get(PLAYERNAME, "Server");
-
+       
         ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT);
         options.setLocationRelativeTo(ui);
 
@@ -115,7 +119,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
 
         if (!options.getOKPressed())
         {           
-            return false;
+            return null;
         }
 
         String name = options.getName();
@@ -127,12 +131,34 @@ public class ServerModel extends Observable implements IMessengerErrorListener
         if (port >= 65536 || port == 0)
         {
             JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+            return null;
         }
+       
+        ServerProps props = new ServerProps();
+        
+        props.setName(options.getName());
+        props.setPort(options.getPort());
+        
+        return props;
+    }
+    
+    /**
+     * UI can be null.  We use it as the parent for message dialogs we show.
+     * If you have a component displayed, use it. 
+     */
+    public boolean createServerMessenger(Component ui)
+    {
+        ui = JOptionPane.getFrameForComponent(ui);
+        m_ui = ui;
+        
+
+        ServerProps props = getServerProps(ui);
+        if(props == null)
+            return false;
 
         try
         {
-            m_serverMessenger = new ServerMessenger(name, port, m_objectStreamFactory);
+            m_serverMessenger = new ServerMessenger(props.getName(), props.getPort(), m_objectStreamFactory);
             m_serverMessenger.setAcceptNewConnections(true);
             m_serverMessenger.addErrorListener(this);
             UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_serverMessenger);
@@ -323,3 +349,30 @@ public class ServerModel extends Observable implements IMessengerErrorListener
 }
 
 
+class ServerProps
+{
+    
+    private String name;
+    private int port;
+    
+    public String getName()
+    {
+        return name;
+    }
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+    public int getPort()
+    {
+        return port;
+    }
+    public void setPort(int port)
+    {
+        this.port = port;
+    }
+    
+    
+    
+    
+}

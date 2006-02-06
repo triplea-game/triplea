@@ -1,12 +1,30 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
+import java.io.File;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.startup.mc.*;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
+
+/**
+ * arguments
+ * 
+ * to host a game
+ * triplea.server=true
+ * triplea.port=3300
+ * 
+ *  to connect to a game
+ *  triplea.client=true
+ *  triplea.port=300
+ *  triplea.host=127.0.0.1
+ * 
+ * 
+ * @author Sean Bridges
+ *
+ */
 public class MainFrame extends JFrame
 {
     
@@ -48,11 +66,56 @@ public class MainFrame extends JFrame
         games.strategy.ui.Util.center(this);
     }
     
+    /**
+     * After the game has been left, call this.
+     *
+     */
     public void reset()
     {
         m_gameSelectorModel.loadDefaultGame(this);
         m_setupPanelModel.showSelectType();
         setVisible(true);
+    }
+    
+    private void loadGameFile(String fileName)
+    {
+        File f = new File(fileName);
+        m_gameSelectorModel.load(f, this);
+    }
+
+    /**
+     * For displaying on startup.
+     * 
+     * Only call once!
+     *
+     */
+    public void start()
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+                if(fileName.length() > 0)
+                    loadGameFile(fileName);
+                
+                setVisible(true);
+                
+                if(System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true"))
+                {
+                    m_setupPanelModel.showServer(MainFrame.this);
+                }
+                else if(System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equals("true"))
+                {
+                    m_setupPanelModel.showClient(MainFrame.this);
+                }
+            }
+        
+        });
+            
+        
+        
+        
     }
     
     
