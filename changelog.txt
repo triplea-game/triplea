@@ -1,3 +1,7 @@
+* new startup screen
+
+* add minimap (map by Clausewitz)
+
 * add delegate execution manager, block delegates from executing while save in progress
 
 * make game data lock into a read/write lock, extend the game data lock to history
