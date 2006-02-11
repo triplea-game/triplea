@@ -93,7 +93,10 @@ public class ServerMessenger implements IServerMessenger
    */
   public Set<INode> getNodes()
   {
-      return new HashSet<INode>(m_allNodes);
+      synchronized(m_allNodes)
+      {
+          return new HashSet<INode>(m_allNodes);
+      }
   }
 
   public synchronized void shutDown()
@@ -215,10 +218,13 @@ public class ServerMessenger implements IServerMessenger
   
   private boolean isNameTaken(String nodeName)
   {
-      for(INode node : m_allNodes)
+      synchronized(m_allNodes)
       {
-          if(node.getName().equalsIgnoreCase(nodeName))
-              return true;
+          for(INode node : m_allNodes)
+          {
+              if(node.getName().equalsIgnoreCase(nodeName))
+                  return true;
+          }
       }
       
       return false;
@@ -294,7 +300,11 @@ public class ServerMessenger implements IServerMessenger
 
     m_allNodes.add(c.getRemoteNode());
 
-    ClientInitServerMessage init = new ClientInitServerMessage(new HashSet<INode>(m_allNodes));
+    ClientInitServerMessage init; 
+    synchronized(m_allNodes)
+    {
+        init = new ClientInitServerMessage(new HashSet<INode>(m_allNodes));
+    }
     MessageHeader header = new MessageHeader(m_node, c.getRemoteNode(), init);
     c.send(header);
 
