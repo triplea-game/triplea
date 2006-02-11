@@ -14,6 +14,8 @@
 
 package games.strategy.engine.message;
 
+import java.util.concurrent.atomic.*;
+
 import games.strategy.net.*;
 import junit.framework.TestCase;
 
@@ -202,7 +204,257 @@ public class RemoteMessengerTest extends TestCase
     }
     
     
+    public void testShutDownServer() throws Exception
+    {
+       
+        //when the server shutdown, remotes created
+        //on the server should not be visible on clients
+        
+        ServerMessenger server = null;
+        ClientMessenger client = null;
+        int port = 12026;
+        try
+        {
+            server = new ServerMessenger("server", port);
+            server.setAcceptNewConnections(true);
+            
+            client = new ClientMessenger("localhost", port, "client");
+           
+            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
+            serverRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
+            
+            RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
+
+            clientRM.waitForRemote("test", 200);
+            assertTrue(clientRM.hasRemote("test"));
+            
+            server.shutDown();
+            sleep(100);            
+            
+            assertFalse(clientRM.hasRemote("test"));
+            
+
+        }
+        finally
+        {
+            if(server!= null)
+                server.shutDown();   
+            if(client != null)
+                client.shutDown();
+        }
+    }
     
+    private void sleep(int ms)
+    {
+        try
+        {
+            Thread.sleep(ms);
+        } catch (InterruptedException e)
+        {
+        }
+    }
+    
+    public void testShutDownClient() throws Exception
+    {
+       
+        //when the client shutdown, remotes created
+        //on the client should not be visible on server
+
+        
+        ServerMessenger server = null;
+        ClientMessenger client = null;
+        int port = 12026;
+        try
+        {
+            server = new ServerMessenger("server", port);
+            server.setAcceptNewConnections(true);
+            
+            client = new ClientMessenger("localhost", port, "client");
+           
+            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
+            
+            
+            RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
+            clientRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
+            
+            serverRM.waitForRemote("test", 200);
+            assertTrue(serverRM.hasRemote("test"));
+                       
+            client.shutDown();
+            sleep(100);
+            
+            assertFalse(serverRM.hasRemote("test"));
+            
+
+        }
+        finally
+        {
+            if(server!= null)
+                server.shutDown();   
+            if(client != null)
+                client.shutDown();
+        }
+    }    
+    
+    
+    public void testMethodReturnsOnWait() throws Exception
+    {
+       
+        //when the client shutdown, remotes created
+        //on the client should not be visible on server
+
+        ServerMessenger server = null;
+        ClientMessenger client = null;
+        int port = 12029;
+        try
+        {
+            server = new ServerMessenger("server", port);
+            server.setAcceptNewConnections(true);
+            
+            client = new ClientMessenger("localhost", port, "client");
+           
+            final RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));            
+            RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
+            
+            final Object lock = new Object();
+            
+            IFoo foo = new IFoo()
+            {
+                public void foo() 
+                {
+                    synchronized(lock)
+                    {
+                        try
+                        {
+                            lock.wait();
+                        } catch (InterruptedException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+            
+            clientRM.registerRemote(IFoo.class, foo, "test");
+            
+            serverRM.waitForRemote("test", 200);
+            assertTrue(serverRM.hasRemote("test"));
+                     
+            final AtomicReference<RemoteNotFoundException> rme = new AtomicReference<RemoteNotFoundException>(null);
+            final AtomicBoolean started = new AtomicBoolean(false);   
+            
+            Runnable r = new Runnable()
+            {
+                public void run()
+                {
+                    try
+                    {
+                        IFoo remoteFoo = (IFoo) serverRM.getRemote("test");
+                        started.set(true);
+                        remoteFoo.foo();
+                    }
+                    catch(RemoteNotFoundException e)
+                    {
+                        rme.set(e);
+                    }
+            
+                }
+            };
+
+            Thread t = new Thread(r);
+            t.start();
+            
+            //wait for the thread to start
+            while(started.get() == false)
+                sleep(1);
+            
+            sleep(20);
+           
+            
+            client.shutDown();
+            
+            
+            //when the client shutdowns, this should wake up.
+            //and an error should be thrown
+            //give the thread a chance to execute
+            t.join(200);
+            
+            synchronized(lock)
+            {
+                lock.notifyAll();
+            }
+            
+            assertNotNull(rme.get());
+        }
+        finally
+        {
+            if(server!= null)
+                server.shutDown();   
+            if(client != null)
+                client.shutDown();
+        }
+    }    
+    
+    
+    public void testShutDownWithTwoClients() throws Exception
+    {
+       
+        //three nodes, one server and 2 clients
+        //make sure that when client1 shutdown, remotes
+        //created on client1 are not visible anymore
+
+        
+        ServerMessenger server = null;
+        ClientMessenger client = null;
+        ClientMessenger client2 = null;
+        int port = 12027;
+        try
+        {
+            server = new ServerMessenger("server", port);
+            server.setAcceptNewConnections(true);
+            
+            client = new ClientMessenger("localhost", port, "client1");
+            client2 = new ClientMessenger("localhost", port, "client2");
+           
+            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
+            RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
+            RemoteMessenger client2RM = new RemoteMessenger(new UnifiedMessenger( client2));
+            
+            
+            clientRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
+            
+            serverRM.waitForRemote("test", 200);
+            client2RM.waitForRemote("test", 200);
+            assertTrue(serverRM.hasRemote("test"));
+            assertTrue(client2RM.hasRemote("test"));
+                       
+            
+            client.shutDown();
+            sleep(100);
+            
+            assertFalse(serverRM.hasRemote("test"));
+            assertFalse(client2RM.hasRemote("test"));
+            
+
+        }
+        finally
+        {
+            if(server!= null)
+                server.shutDown();   
+            if(client != null)
+                client.shutDown();
+            if(client2 != null)
+                client.shutDown();            
+        }
+    }        
+    
+    
+}
+
+
+interface IFoo extends IRemote
+{
+    public void foo();
 }
 
 

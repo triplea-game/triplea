@@ -32,6 +32,9 @@ public interface IMessenger
 {
     /**
      * Send a message to the given node. Returns immediately.
+     * 
+     * If the message cannot be delivered, this method will not throw an exception, but will
+     * fail silently.
      */
     public void send(Serializable msg, INode to);
     /**

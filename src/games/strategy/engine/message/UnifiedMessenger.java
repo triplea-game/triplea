@@ -56,6 +56,10 @@ public class UnifiedMessenger
     //maps GUID -> CountDownLatch of clients we are awaiting responses from
     private final Map<GUID, CountDownLatch> m_methodCallWaitCount = new ConcurrentHashMap<GUID, CountDownLatch>();
 
+    //maps GUID -> CountDownLatch of clients we are awaiting responses from
+    private final Map<GUID, List<INode>> m_methodCallWaitNodes = new ConcurrentHashMap<GUID, List<INode>>();
+
+
     //synchronize on this to wait for the init data to arrive
     private final CountDownLatch m_initCountDownLatch = new CountDownLatch(1);
 
@@ -65,6 +69,31 @@ public class UnifiedMessenger
     //used to synchronize access to m_remoteNodesWithImplementors 
     private final Object m_nodesWithImplementorsMutex = new Object();
 
+    
+    private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
+    {
+    
+        public void messengerInvalid(IMessenger messenger, Exception reason, List unsent)
+        {
+            UnifiedMessenger.this.messengerInvalid();
+        }
+    
+        public void connectionLost(INode node, Exception reason, List unsent)
+        {}
+    
+    };
+    
+    private final IConnectionChangeListener m_connectionChangeListener = new IConnectionChangeListener()
+    {
+        public void connectionRemoved(INode to)
+        {
+            UnifiedMessenger.this.connectionRemoved(to);
+        }
+    
+        public void connectionAdded(INode to)
+        {}
+    
+    };
     /**
      * @param messenger
      */
@@ -72,6 +101,8 @@ public class UnifiedMessenger
     {
         m_messenger = messenger;
         m_messenger.addMessageListener(m_messageListener);
+        m_messenger.addConnectionChangeListener(m_connectionChangeListener);
+        m_messenger.addErrorListener(m_messengerErrorListener);
 
         if (m_messenger.isServer())
         {
@@ -91,6 +122,64 @@ public class UnifiedMessenger
         }
     }
 
+    protected void messengerInvalid()
+    {
+        synchronized(m_nodesWithImplementorsMutex)
+        {
+            m_remoteNodesWithImplementors.clear();
+        }
+        synchronized(m_endPointmutex)
+        {
+            m_localEndPoints.clear();
+        }
+        
+        //we need to wake up threads that have been invoked
+        for(GUID methodCallId : m_methodCallWaitNodes.keySet() )
+        {
+            List<INode> nodes = m_methodCallWaitNodes.get(methodCallId);
+            for(int i = 0; i < nodes.size(); i++)
+            {
+                m_methodCallResults.get(methodCallId).add(new RemoteMethodCallResults(new RemoteNotFoundException("Connection Lost")) );
+                m_methodCallWaitCount.get(methodCallId).countDown();
+            }
+            nodes.clear();
+        }
+    }
+
+    private void connectionRemoved(INode lostNode)
+    {
+        synchronized(m_nodesWithImplementorsMutex)
+        {
+            m_remoteNodesWithImplementors.remove(lostNode);
+        }
+        
+        synchronized(m_endPointmutex)
+        {
+            for(String endPointName : m_localEndPoints.keySet())
+            {
+                EndPoint endPoint = m_localEndPoints.get(endPointName);
+                if(lostNode.equals(endPoint.getPossessiveNode()))
+                {
+                    m_localEndPoints.remove(endPointName);
+                }
+            }
+        }
+        
+        //we need to wake up threads that are waiting
+        for(GUID methodCallId : m_methodCallWaitNodes.keySet() )
+        {
+            List<INode> nodes = m_methodCallWaitNodes.get(methodCallId);
+            if(nodes.contains(lostNode))
+            {
+                nodes.remove(lostNode);
+                //add our results
+                m_methodCallResults.get(methodCallId).add(new RemoteMethodCallResults(new RemoteNotFoundException("Connection Lost")) );
+                m_methodCallWaitCount.get(methodCallId).countDown();
+            }
+        }
+        
+    }
+
     /**
      * Create an end point. Creating an equivalent end point multiple times is
      * ok, subsequent calls will be ignored if the end point is the same, but an
@@ -104,15 +193,22 @@ public class UnifiedMessenger
      *            if more than one thread can be calling methods on end points
      *            at a time.
      */
-    public void createEndPoint(String name, Class[] classes, boolean singleThreaded)
+    public void createEndPoint(String name, Class[] classes, boolean singleThreaded, boolean possesive)
     {
-        createEndPointInternal(name, classes, singleThreaded);
-        m_messenger.broadcast(new EndPointCreated(RemoteMethodCall.classesToString(classes), name, singleThreaded));
+        INode possesiveNode;
+        if(possesive)
+            possesiveNode = getLocalNode();
+        else
+            possesiveNode = null;
+        
+        createEndPointInternal(name, classes, singleThreaded, possesiveNode);
+        
+        m_messenger.broadcast(new EndPointCreated(RemoteMethodCall.classesToString(classes), name, singleThreaded, possesiveNode));
     }
 
-    private void createEndPointInternal(String name, Class[] classes, boolean singleThreaded)
+    private void createEndPointInternal(String name, Class[] classes, boolean singleThreaded, INode possesiveNode)
     {
-        EndPoint endPoint = new EndPoint(name, classes, singleThreaded);
+        EndPoint endPoint = new EndPoint(name, classes, singleThreaded, possesiveNode);
         synchronized (m_endPointmutex)
         {
             //if we already have it, make sure its the same classes
@@ -201,6 +297,9 @@ public class UnifiedMessenger
 
         if (remote.length > 0)
         {
+            //these are the nodes we are waiting for
+            m_methodCallWaitNodes.put(methodCallID, Collections.synchronizedList(new ArrayList<INode>(Arrays.asList(remote))));
+            
             //we need to indicate how many returns we are waiting for
             m_methodCallWaitCount.put(methodCallID, latch);
             //the list should be synchronized since we may add to it in
@@ -244,6 +343,7 @@ public class UnifiedMessenger
             results.addAll(m_methodCallResults.get(methodCallID));
             m_methodCallResults.remove(methodCallID);
             m_methodCallWaitCount.remove(methodCallID);
+            m_methodCallWaitNodes.remove(methodCallID);
 
         }
 
@@ -375,7 +475,7 @@ public class UnifiedMessenger
                             localNodesWithImplementors.add(endPoint.getName());
                         }
 
-                        created[i] = new EndPointCreated(RemoteMethodCall.classesToString(endPoint.getClasses()), name, endPoint.isSingleThreaded());
+                        created[i] = new EndPointCreated(RemoteMethodCall.classesToString(endPoint.getClasses()), name, endPoint.isSingleThreaded(), endPoint.getPossessiveNode());
                         i++;
                     }
                 }
@@ -417,7 +517,7 @@ public class UnifiedMessenger
             } else if (msg instanceof EndPointCreated)
             {
                 EndPointCreated created = (EndPointCreated) msg;
-                createEndPointInternal(created.name, RemoteMethodCall.stringsToClasses(created.classes), created.singleThreaded);
+                createEndPointInternal(created.name, RemoteMethodCall.stringsToClasses(created.classes), created.singleThreaded, created.possesiveNode);
             } else if (msg instanceof EndPointDestroyed)
             {
                 EndPointDestroyed destroyed = (EndPointDestroyed) msg;
@@ -495,6 +595,7 @@ public class UnifiedMessenger
                 //both of these should already be populated
                 //this list should be a synchronized list so we can do the add all
                 m_methodCallResults.get(methodID).addAll(results.results);
+                m_methodCallWaitNodes.get(methodID).remove(from);
                 m_methodCallWaitCount.get(methodID).countDown();
 
             }
@@ -511,7 +612,7 @@ public class UnifiedMessenger
             {
                 EndPointCreated endPointCreated = initMessage.endPoints[i];
                 createEndPointInternal(endPointCreated.name, RemoteMethodCall.stringsToClasses(endPointCreated.classes),
-                        endPointCreated.singleThreaded);
+                        endPointCreated.singleThreaded, endPointCreated.possesiveNode);
             }
 
             //initialize who has endpoints
@@ -637,17 +738,27 @@ class EndPoint
     private final Class[] m_classes;
     private final List<Object> m_implementors = new ArrayList<Object>();
     private final boolean m_singleThreaded;
+    //we are bound to this node, when the node is removed
+    //from the network, we are removed as well
+    //if null, we are not bound to a single node
+    private final INode m_possesiveNode;
 
-    public EndPoint(final String name, final Class[] classes, boolean singleThreaded)
+    public EndPoint(final String name, final Class[] classes, boolean singleThreaded, INode possessiveNode)
     {
         if (classes.length <= 0)
             throw new IllegalArgumentException("No classes defined");
 
+        m_possesiveNode = possessiveNode;
         m_name = name;
         m_classes = classes;
         m_singleThreaded = singleThreaded;
     }
 
+    public INode getPossessiveNode()
+    {
+        return m_possesiveNode;
+    }
+    
     public long takeANumber()
     {
         return m_nextGivenNumber.getAndIncrement();
@@ -872,12 +983,16 @@ class EndPointCreated implements Serializable
     public final String[] classes;
     public final String name;
     public final boolean singleThreaded;
+    //if not null, then this end point is tied to the given node
+    //if the given node is removed from the network, the end point should be destroyed
+    public final INode possesiveNode;
 
-    public EndPointCreated(String[] classes, String name, boolean singleThreaded)
+    public EndPointCreated(String[] classes, String name, boolean singleThreaded, INode posessiveNode)
     {
         this.classes = classes;
         this.name = name;
         this.singleThreaded = singleThreaded;
+        this.possesiveNode = posessiveNode;
     }
 }
 

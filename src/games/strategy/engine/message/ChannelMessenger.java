@@ -93,7 +93,7 @@ public class ChannelMessenger implements IChannelMessenger
         if(!channelInterface.isInterface())
             throw new IllegalArgumentException(channelInterface.getName() +  " must be an interface");
         
-        m_unifiedMessenger.createEndPoint(getUnifiedName(channelName), new Class[] {channelInterface, IChannelSubscribor.class}, true);
+        m_unifiedMessenger.createEndPoint(getUnifiedName(channelName), new Class[] {channelInterface, IChannelSubscribor.class}, true, false);
     }
 
     /* 

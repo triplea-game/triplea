@@ -94,16 +94,20 @@ public class ClientMessenger implements IMessenger
             throw new IllegalArgumentException("Unknown server messgae:" + msg);
     }
 
-    private synchronized void nodeChangeMessageReceived(NodeChangeServerMessage msg)
+    private void nodeChangeMessageReceived(NodeChangeServerMessage msg)
     {
         INode node = msg.getNode();
-        if (msg.getAdd())
+        synchronized(this)
         {
-            m_allNodes.add(node);
-        } else
-        {
-            m_allNodes.remove(node);
+            if (msg.getAdd())
+            {
+                m_allNodes.add(node);
+            } else
+            {
+                m_allNodes.remove(node);
+            }
         }
+        
         notifyConnectionsChanged(msg.getAdd(), node);
     }
 

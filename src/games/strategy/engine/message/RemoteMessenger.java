@@ -84,7 +84,7 @@ public class RemoteMessenger implements IRemoteMessenger
              throw new IllegalStateException("Remote already bound:" + name);
         }
          
-        m_unifiedMessenger.createEndPoint(unifiedName, new Class[] {remoteInterface, IRemote.class}, false); 
+        m_unifiedMessenger.createEndPoint(unifiedName, new Class[] {remoteInterface, IRemote.class}, false, true); 
         m_unifiedMessenger.addImplementor(unifiedName, implementor);
     }
 
