@@ -32,6 +32,8 @@ import games.strategy.util.*;
 import java.lang.reflect.*;
 import java.util.*;
 
+import com.sun.org.apache.xerces.internal.impl.xs.identity.Selector.Matcher;
+
 /**
  * 
  * Handles logic for battles in which fighting actually occurs.
@@ -506,7 +508,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
             }
         }
-        if (canAttackerRetreat())
+
+        //if we are a sea zone, then we may not be able to retreat
+        //(ie a sub travelled under another unit to get to the battle sight)
+        //or an enemy sub retreated to our sea zone
+        //however, if all our sea units die, then
+        //the air units can still retreat, so if we have any air units attacking in
+        //a sea zone, we always have to have the retreat
+        //option shown
+        //later, if our sea units die, we may ask the user to retreat
+        boolean someAirAtSea = m_battleSite.isWater() && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
+        
+        if (canAttackerRetreat() || someAirAtSea)
         {
             steps.add(m_attacker.getName() + ATTACKER_WITHDRAW);
         } else if (canAttackerRetreatPlanes())
