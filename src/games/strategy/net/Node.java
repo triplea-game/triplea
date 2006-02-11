@@ -67,6 +67,8 @@ public class Node implements INode, Externalizable
   
   public boolean equals(Object obj)
   {
+    if(obj == this)
+        return true;
     if (obj == null)
       return false;
     if (!(obj instanceof Node))

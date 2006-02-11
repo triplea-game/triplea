@@ -41,9 +41,18 @@ public class VerifiedRandomNumbersDialog extends JDialog
         List verified = RemoteRandom.getVerifiedRandomNumbers();
         String[][] tableValues = getTableValues(verified);
         
-        DefaultTableModel model = new DefaultTableModel(tableValues, new String[] {"Reason","Dice Rolls"});
+        DefaultTableModel model = new DefaultTableModel(tableValues, new String[] {"Reason","Dice Rolls"})
+        {
+            @Override
+            public boolean isCellEditable(int row, int column)
+            {
+               return false;
+            }
+        };
+        
         
         JTable table = new JTable(model);
+        
                 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);

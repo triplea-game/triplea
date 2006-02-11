@@ -30,7 +30,6 @@ public class GameSelectorPanel extends JPanel implements Observer
     
     private final GameSelectorModel m_model;
     
-    
     public GameSelectorPanel(GameSelectorModel model)
     {
         m_model = model;
@@ -51,6 +50,7 @@ public class GameSelectorPanel extends JPanel implements Observer
         m_fileNameText.setText(m_model.getFileName());
     }
 
+    
     private void createComponents()
     {
         m_nameLabel = new JLabel("Game Name:");
@@ -142,9 +142,12 @@ public class GameSelectorPanel extends JPanel implements Observer
 
     private void setWidgetActivation()
     {
-        boolean hasGameData = m_model != null && m_model.getGameData() != null;
-        m_gameOptions.setEnabled(hasGameData);
         
+        boolean canSelectGameData = m_model != null && m_model.getGameData() != null;
+       
+        m_loadSavedGame.setEnabled(canSelectGameData);
+        m_loadNewGame.setEnabled(canSelectGameData);
+        m_gameOptions.setEnabled(canSelectGameData);
     }
 
     public void update(Observable o, Object arg)

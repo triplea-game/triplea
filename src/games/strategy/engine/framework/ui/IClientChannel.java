@@ -13,8 +13,11 @@
  */
 package games.strategy.engine.framework.ui;
 
+import java.util.Map;
+
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.net.INode;
 
 /**
  * 
@@ -27,7 +30,13 @@ public interface IClientChannel extends IChannelSubscribor
     public static final String CHANNEL_NAME = "games.strategy.engine.framework.ui.IClientChannel.CHANNEL";
     
     public void playerListingChanged(PlayerListing listing);
-    public void doneSelectingPlayers(byte[] gameData);
+    
+    /**
+     * 
+     * @param gameData
+     * @param players who is playing who
+     */
+    public void doneSelectingPlayers(byte[] gameData, Map<String, INode>  players);
     
     public void gameReset();
 }

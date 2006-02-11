@@ -106,7 +106,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Matches.enemyUnit(attacker, data)));
         m_defender = findDefender(battleSite);
     }
-
+    
+    
     private boolean canSubsSubmerge()
     {
 

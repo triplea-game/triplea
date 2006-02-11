@@ -14,22 +14,29 @@
 
 package games.strategy.engine.framework.startup.mc;
 
-public interface RemoteModelListener
+import java.util.Map;
+
+import games.strategy.engine.message.IRemote;
+import games.strategy.net.INode;
+
+/**
+ * A callback remote.
+ * 
+ * Allows the server to add the player as an observer when the game is in progress.
+ * 
+ * @author sgb
+ */
+public interface IObserverWaitingToJoin extends IRemote
 {
     /**
-     * The players available have changed.
+     * This method should not return until the client is ready to start the game.
+     * This includes the display running, with all remote and channel listeners set up.
      */
-    public void playerListChanged();
-    
+    public void joinGame(byte[] gameData, Map<String, INode> players);
+
     /**
-     * The players taken have changed
+     * You could not join the game, usually this is due to an error.
      */
-    public void playersTakenChanged();
-    
-    
-    public static RemoteModelListener NULL_LISTENER = new RemoteModelListener( )
-    {
-        public void playerListChanged() {}
-        public void playersTakenChanged() {}
-    };
+    public void cannotJoinGame(String reason);
+   
 }

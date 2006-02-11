@@ -47,6 +47,7 @@ public class TripleA implements IGameLoader
 
     
     private transient TripleaDisplay m_display;
+    private transient IGame m_game;
 
     /**
      * @see IGameLoader.createPlayers(playerNames)
@@ -76,7 +77,9 @@ public class TripleA implements IGameLoader
 
     public void shutDown()
     {
+        m_game.removeDisplay(m_display);
         m_display.shutDown();
+        
     }
     
     public void startGame(final IGame game, Set<IGamePlayer> players)
@@ -88,6 +91,7 @@ public class TripleA implements IGameLoader
 	       Retreive the map name from xml file
 	       This is the key for triplea to find the maps
 	    */
+            m_game = game;
             String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
             final TripleAFrame frame = new TripleAFrame(game, players, mapDir);

@@ -280,6 +280,9 @@ public class MapPanel extends ImageScrollerLargeView
 
     private int normalizeX(int x)
     {
+        if(!m_uiContext.getMapData().scrollWrapX())
+            return x;
+        
         int imageWidth = (int) getImageDimensions().getWidth();
         if (x < 0)
             x += imageWidth;

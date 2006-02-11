@@ -98,6 +98,7 @@ public class TripleaDisplay implements ITripleaDisplay
         //we just told the game to retreat, so we already know
         if(m_ui.playing(retreatingPlayer))
             return;
+        
         m_ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
     }
 

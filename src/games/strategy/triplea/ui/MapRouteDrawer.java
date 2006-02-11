@@ -152,8 +152,12 @@ public class MapRouteDrawer
             graphics.setColor(Color.YELLOW);
             graphics.setFont(new Font("Dialog", Font.BOLD, 18));
             graphics.drawString(String.valueOf(numTerritories - 1), points[numTerritories - 1].x + textXOffset - xOffset, points[numTerritories - 1].y + textyOffset - yOffset);
-            graphics.drawString(String.valueOf(numTerritories - 1), points[numTerritories - 1].x + textXOffset - xOffset + translate, points[numTerritories - 1].y + textyOffset - yOffset);
-            graphics.drawString(String.valueOf(numTerritories - 1), points[numTerritories - 1].x + textXOffset - xOffset - translate, points[numTerritories - 1].y + textyOffset - yOffset);
+            
+            if(mapData.scrollWrapX())
+            {
+                graphics.drawString(String.valueOf(numTerritories - 1), points[numTerritories - 1].x + textXOffset - xOffset + translate, points[numTerritories - 1].y + textyOffset - yOffset);
+                graphics.drawString(String.valueOf(numTerritories - 1), points[numTerritories - 1].x + textXOffset - xOffset - translate, points[numTerritories - 1].y + textyOffset - yOffset);
+            }
         }
     }
 

@@ -383,7 +383,7 @@ public class MapData
     {
         List polys = getPolygons(name);
         if (polys == null)
-            throw new IllegalStateException("No polygons found for:" + name);
+            throw new IllegalStateException("No polygons found for:" + name + " All territories:" + m_polys.keySet());
 
         Rectangle bounds = null;
 

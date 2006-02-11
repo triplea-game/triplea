@@ -61,6 +61,9 @@ public class ServerStartup extends JPanel
   
   public static final String SERVER_REMOTE_NAME = "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE";
   
+
+  
+  
   /**
    * Creates a new instance of ServerStartup
    */
@@ -380,6 +383,12 @@ public class ServerStartup extends JPanel
     public void releasePlayer(INode who, String playerName)
     {
         takePlayerInternal(who, false, playerName);
+    }
+
+    public boolean isGameStarted(INode newNode)
+    {
+       
+        return false;
     }
 
   };

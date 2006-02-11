@@ -115,7 +115,8 @@ public class BattlePanel extends ActionPanel
         {
             public void run()
             {
-                m_battleDisplay.endBattle(message, m_battleFrame);
+                if(m_battleDisplay != null)
+                    m_battleDisplay.endBattle(message, m_battleFrame);
             }
         });
 
@@ -179,7 +180,8 @@ public class BattlePanel extends ActionPanel
         removeAll();
 
         getMap().centerOn(m_battleDisplay.getBattleLocation());
-        m_battleDisplay.listBattle(steps);
+        if(m_battleDisplay != null)
+            m_battleDisplay.listBattle(steps);
     }
 
     public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
@@ -264,7 +266,8 @@ public class BattlePanel extends ActionPanel
         {
             public void run()
             {
-                m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents);
+                if(m_battleDisplay != null)
+                    m_battleDisplay.casualtyNotification(step, dice, player, killed, damaged, dependents);
             }
         });
     }
@@ -325,7 +328,8 @@ public class BattlePanel extends ActionPanel
     public void gotoStep(GUID battleID, final String step)
     {
         //this method can be called outside the event dispatch thread.
-        m_battleDisplay.setStep(step);
+        if(m_battleDisplay != null)
+            m_battleDisplay.setStep(step);
     }
 
     public void notifyRetreat(final Collection retreating)
@@ -335,7 +339,8 @@ public class BattlePanel extends ActionPanel
         {
             public void run()
             {
-                m_battleDisplay.notifyRetreat(retreating);
+                if(m_battleDisplay != null)
+                    m_battleDisplay.notifyRetreat(retreating);
             }
         });
     }
@@ -346,7 +351,8 @@ public class BattlePanel extends ActionPanel
         {
             public void run()
             {
-                m_battleDisplay.bombingResults(dice, cost);
+                if(m_battleDisplay != null)
+                    m_battleDisplay.bombingResults(dice, cost);
             }
         });
 

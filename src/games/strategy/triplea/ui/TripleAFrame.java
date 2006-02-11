@@ -29,6 +29,7 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.*;
+import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.random.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
@@ -108,7 +109,6 @@ public class TripleAFrame extends JFrame
         setIconImage(GameRunner.getGameIcon(this));
 
         m_game = game;
-        m_game.getMessenger().addErrorListener(m_messengerErrorListener);
 
         m_data = game.getData();
         m_localPlayers = players;
@@ -200,7 +200,6 @@ public class TripleAFrame extends JFrame
 
     public void stopGame()
     {        
-        m_game.getMessenger().removeErrorListener(m_messengerErrorListener);
         m_uiContext.shutDown();
     }
     
@@ -240,6 +239,7 @@ public class TripleAFrame extends JFrame
 
         createFileMenu(menuBar);
         createGameMenu(menuBar);
+        createNetworkMenu(menuBar);
         createHelpMenu(menuBar);
 
         this.setJMenuBar(menuBar);
@@ -394,7 +394,31 @@ public class TripleAFrame extends JFrame
         addShowEnemyCasualties(menuGame);
         addShowDiceStats(menuGame);
         addExportStats(menuGame);
+        addShowPlayers(menuGame);
+        
     }
+    
+    /**
+     * @param menuBar
+     */
+    private void createNetworkMenu(JMenuBar menuBar)
+    {
+        //revisit
+        //if we are not a client or server game 
+        //then this will not create the network menu
+        if(m_game.getMessenger() instanceof DummyMessenger)
+            return;
+
+        if(!m_game.getMessenger().isServer())
+            return;
+        
+        JMenu menuNetwork = new JMenu("Network");
+        addAllowObserversToJoin(menuNetwork);
+        menuBar.add(menuNetwork);
+    }
+
+    
+    
 
     /**
      * @param parentMenu
@@ -411,6 +435,33 @@ public class TripleAFrame extends JFrame
         if (m_game instanceof ClientGame)
             parentMenu.add(showVerifiedDice);
     }
+    
+    /**
+     * @param parentMenu
+     */
+    private void addAllowObserversToJoin(JMenu parentMenu)
+    {
+        if(!m_game.getMessenger().isServer())
+            return;
+        
+        final IServerMessenger messeneger = (IServerMessenger) m_game.getMessenger();
+        
+        final JCheckBoxMenuItem allowObservers = new JCheckBoxMenuItem("Allow New Observers");
+        allowObservers.setSelected(messeneger.isAcceptNewConnections());
+        
+        
+        allowObservers.addActionListener(new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                messeneger.setAcceptNewConnections(allowObservers.isSelected());
+            }
+        });
+
+        parentMenu.add(allowObservers);
+        return;
+    }
+    
 
     /**
      * @param parentMenu
@@ -451,6 +502,29 @@ public class TripleAFrame extends JFrame
 
         }
     }
+    
+    /**
+     * @param menuGame
+     */
+    private void addShowPlayers(JMenu menuGame)
+    {
+        if (!m_game.getData().getProperties().getEditableProperties().isEmpty())
+        {
+            AbstractAction optionsAction = new AbstractAction("Show Who is Who...")
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    PlayersPanel.showPlayers(m_game,m_uiContext,TripleAFrame.this);
+                }
+            };
+            
+
+            menuGame.add(optionsAction);
+
+        }
+    }
+    
+    
 
     /**
      * @param parentMenu
@@ -833,16 +907,7 @@ public class TripleAFrame extends JFrame
         JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
         {
             public void actionPerformed(ActionEvent e)
-            {
-                if (!m_game.canSave())
-                {
-                    JOptionPane.showMessageDialog(TripleAFrame.this, "You cannot save the game if you are playing as a client", "Cant save",
-                            JOptionPane.OK_OPTION);
-                    return;
-                }
-
-               
-
+            {               
                 JFileChooser fileChooser = SaveGameFileChooser.getInstance();
 
                 int rVal = fileChooser.showSaveDialog(TripleAFrame.this);
@@ -869,7 +934,7 @@ public class TripleAFrame extends JFrame
                     }
 
                     
-                    ((ServerGame) m_game).saveGame(f);                            
+                    m_game.saveGame(f);                            
                     JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
                 }
 
@@ -1171,21 +1236,6 @@ public class TripleAFrame extends JFrame
         }
         return false;
     }
-
-    private IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
-    {
-        public void connectionLost(INode node, Exception reason, java.util.List unsent)
-        {
-            String message = "Connection lost to " + node.getName() + ". Game over.";
-            JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        public void messengerInvalid(IMessenger messenger, Exception reason, java.util.List unsent)
-        {
-            String message = "Network connection lost. Game over.";
-            JOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    };
 
     public static int save(String filename, GameData m_data)
     {

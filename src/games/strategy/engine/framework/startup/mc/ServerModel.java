@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.EngineVersion;
@@ -25,6 +39,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     public static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
     public static final String SERVER_REMOTE_NAME = "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE";
 
+    
+    
+    public static String getObserverWaitingToStartName(INode node)
+    {
+        return "games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName();
+    }
+    
     final static String PLAYERNAME = "PlayerName";
     private static Logger s_logger = Logger.getLogger(ServerModel.class.getName());
     
@@ -40,6 +61,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     private final GameSelectorModel m_gameSelectorModel;
     private Component m_ui;
     private ChatPanel m_chatPanel;
+    private boolean m_inGame = false;
+    private ServerLauncher m_serverLauncher;
     
     private Observer m_gameSelectorObserver = new Observer()
     {
@@ -49,6 +72,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             gameDataChanged();
         }
     };
+    
+    
+    
     
     
     public ServerModel(GameSelectorModel gameSelectorModel, SetupPanelModel typePanelModel)
@@ -202,7 +228,23 @@ public class ServerModel extends Observable implements IMessengerErrorListener
           takePlayerInternal(who, false, playerName);
       }
 
+      public boolean isGameStarted(INode newNode)
+      {
+          if(m_inGame)
+          {
+              IObserverWaitingToJoin observerWaitingToJoin = (IObserverWaitingToJoin) m_remoteMessenger.getRemote(getObserverWaitingToStartName(newNode));
+              m_serverLauncher.addObserver(observerWaitingToJoin);
+              return true;
+          }
+          else
+          {
+              return false;
+          }
+      }
+
     };
+    
+    
     
     
     
@@ -275,6 +317,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener
 
     public void connectionLost(INode node, Exception reason, List unsent)
     {
+        //will be handled elsewhere
+        if(m_inGame)
+        {
+            m_serverLauncher.connectionLost(node);
+            return;
+        }
+        
         //we lost a node.  Remove the players he plays.
         
         List<String> free = new ArrayList<String>();
@@ -341,9 +390,16 @@ public class ServerModel extends Observable implements IMessengerErrorListener
 
     public void newGame()
     {
+        m_serverMessenger.setAcceptNewConnections(true);
         IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
         notifyChanellPlayersChanged();
         channel.gameReset();
+    }
+    
+    public void setInGame(boolean aBool, ServerLauncher launcher)
+    {
+        m_serverLauncher = launcher;
+        m_inGame = aBool;
     }
     
 }

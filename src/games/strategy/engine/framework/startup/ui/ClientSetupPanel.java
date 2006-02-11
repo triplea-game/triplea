@@ -266,5 +266,6 @@ public class ClientSetupPanel extends SetupPanel
     {
         return m_model.getChatPanel();
     }
+    
 
 }

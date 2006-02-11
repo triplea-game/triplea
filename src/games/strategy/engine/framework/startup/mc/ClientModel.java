@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.EngineVersion;
@@ -142,9 +156,11 @@ public class ClientModel implements IMessengerErrorListener
         
         if(!m_channelMessenger.hasChannel(IClientChannel.CHANNEL_NAME ))
             m_channelMessenger.createChannel(IClientChannel.class, IClientChannel.CHANNEL_NAME );
+        
         m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
         m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME);        
         
+        m_remoteMessenger.registerRemote(IObserverWaitingToJoin.class, m_observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
         //save this, it will be cleared later
         m_gameDataOnStartup = m_gameSelectorModel.getGameData();
         
@@ -161,6 +177,10 @@ public class ClientModel implements IMessengerErrorListener
         
         internalePlayerListingChanged(players);
         
+        if(!serverStartup.isGameStarted(m_messenger.getLocalNode()))
+        {
+            m_remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
+        }
         
         return true;
     }
@@ -215,64 +235,90 @@ public class ClientModel implements IMessengerErrorListener
           MainFrame.getInstance().setVisible(true);
       }
       
-      public void doneSelectingPlayers(byte[] gameData)
+      public void doneSelectingPlayers(byte[] gameData, Map<String, INode> players)
       {
-          final GameData data;
-          try
-          {
-            data  = new GameDataManager().loadGame(new ByteArrayInputStream(gameData));
-          }
-          catch (IOException ex)
-          {
-            ex.printStackTrace();
-            return;
-          }
-          m_objectStreamFactory.setData(data);
-
-          
-          Map<String, String> playerMapping = new HashMap<String,String>();
-          for(String player : m_players.keySet())
-          {
-              String playedBy = m_players.get(player);
-              if(playedBy.equals(m_messenger.getLocalNode().getName()))
-              {
-                  playerMapping.put(player, IGameLoader.CLIENT_PLAYER_TYPE);
-              }
-          }
-          
-          
-          
-          
-          final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
-
-          final ClientGame clientGame = new ClientGame(data, playerSet, m_messenger,
-                  m_channelMessenger, m_remoteMessenger);
-
-          
-          Thread t = new Thread("Client Game Launcher")
-          {
-              public void run()
-              {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    public void run()
-                    {
-                        JOptionPane.getFrameForComponent(m_ui).setVisible(false);
-                    }
-                
-                });
-                  
-                  data.getGameLoader().startGame(clientGame, playerSet);    
-                  ((IServerReady) m_remoteMessenger.getRemote(LauncherFrame.CLIENT_READY_CHANNEL)).clientReady();
-              }
-          };
-          t.start();
-              
-             
+         startGame(gameData, players);
       }
 
         
     };
+    
+    IObserverWaitingToJoin m_observerWaitingToJoin = new IObserverWaitingToJoin()    
+    {
+
+        public void joinGame(byte[] gameData, Map<String, INode> players)
+        {
+            m_remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
+            startGame(gameData, players);
+        }
+
+        public void cannotJoinGame(String reason)
+        {
+            JOptionPane.showMessageDialog(m_ui, "Could not join game:" + reason);
+            m_typePanelModel.showSelectType();
+        }
+        
+    };
+    
+    
+    private void startGame(byte[] gameData, Map<String, INode> players)
+    {
+        final GameData data;
+        try
+        {
+          data  = new GameDataManager().loadGame(new ByteArrayInputStream(gameData));
+        }
+        catch (IOException ex)
+        {
+          ex.printStackTrace();
+          return;
+        }
+        m_objectStreamFactory.setData(data);
+
+        
+        Map<String, String> playerMapping = new HashMap<String,String>();
+        for(String player : m_players.keySet())
+        {
+            String playedBy = m_players.get(player);
+            if(playedBy.equals(m_messenger.getLocalNode().getName()))
+            {
+                playerMapping.put(player, IGameLoader.CLIENT_PLAYER_TYPE);
+            }
+        }
+        
+        
+        
+        
+        final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
+
+        final ClientGame clientGame = new ClientGame(data, playerSet, m_messenger,
+                m_channelMessenger, m_remoteMessenger, new PlayerManager(players));
+
+        
+        Thread t = new Thread("Client Game Launcher")
+        {
+            public void run()
+            {
+              SwingUtilities.invokeLater(new Runnable()
+              {
+                  public void run()
+                  {
+                      JOptionPane.getFrameForComponent(m_ui).setVisible(false);
+                  }
+              
+              });
+                
+              data.getGameLoader().startGame(clientGame, playerSet);    
+              
+              //we will not have this remote if we are starting as an observer
+              if(m_remoteMessenger.hasRemote(LauncherFrame.CLIENT_READY_CHANNEL))
+                  ((IServerReady) m_remoteMessenger.getRemote(LauncherFrame.CLIENT_READY_CHANNEL)).clientReady();
+            }
+        };
+        t.start();
+            
+    }
+    
     
     public void takePlayer(String playerName)
     {
@@ -346,6 +392,8 @@ public class ClientModel implements IMessengerErrorListener
     {
         return m_chatPanel;
     }
+
+
 
     
 }

@@ -20,9 +20,12 @@
 
 package games.strategy.engine.framework;
 
+import java.io.File;
+
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.framework.ui.PlayerManager;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.vault.Vault;
@@ -64,7 +67,7 @@ public interface IGame
   public IRandomSource getRandomSource();
 
   /**
-   * add a display that will recieve broadvasts from the IDelegateBridge.getDisplayBroadvaster
+   * add a display that will recieve broadcasts from the IDelegateBridge.getDisplayBroadvaster
    */
   public void addDisplay(IDisplay display);
   
@@ -75,4 +78,17 @@ public interface IGame
   public void removeDisplay(IDisplay display);
   
   public boolean isGameOver();
+  
+  /**
+   * 
+   * @return a listing of who is playing who.
+   */
+  public PlayerManager getPlayerManager();
+  
+  /**
+   * Save the game to the given directory.
+   * 
+   * The file should exist and be writeable.
+   */
+  public void saveGame(File f);
 }

@@ -30,6 +30,8 @@ public interface IServerMessenger extends IMessenger
 {
 	public void setAcceptNewConnections(boolean accept);
 	
+    public boolean isAcceptNewConnections();
+    
 	/**
 	 * Can be set to null.
 	 * If not null the server will only accept connections that

@@ -25,110 +25,129 @@ import java.util.*;
 
 public class DummyMessenger implements IServerMessenger
 {
-	/**
-	 *  Send a message to the given node.  Returns immediately.
-	 */
-	public void send(Serializable msg, INode to)
-	{}
+    /**
+     * Send a message to the given node. Returns immediately.
+     */
+    public void send(Serializable msg, INode to)
+    {
+    }
 
-	/**
-	 *  Send a message to all nodes.
-	 */
-	public void broadcast(Serializable msg)
-	{}
+    /**
+     * Send a message to all nodes.
+     */
+    public void broadcast(Serializable msg)
+    {
+    }
 
-	/**
-	 * Listen for messages of a certain type.
-	 */
-	public void addMessageListener(IMessageListener listener)
-	{}
+    /**
+     * Listen for messages of a certain type.
+     */
+    public void addMessageListener(IMessageListener listener)
+    {
+    }
 
-	/**
-	 *  Stop listening to messages.
-	 */
-	public void removeMessageListener(IMessageListener listener)
-	{}
+    /**
+     * Stop listening to messages.
+     */
+    public void removeMessageListener(IMessageListener listener)
+    {
+    }
 
-	/**
-	 * Listen for messages of a certain type.
-	 */
-	public void addErrorListener(IMessengerErrorListener listener)
-	{}
+    /**
+     * Listen for messages of a certain type.
+     */
+    public void addErrorListener(IMessengerErrorListener listener)
+    {
+    }
 
-	/**
-	 *  Stop listening to messages.
-	 */
-	public void removeErrorListener(IMessengerErrorListener listener)
-	{}
+    /**
+     * Stop listening to messages.
+     */
+    public void removeErrorListener(IMessengerErrorListener listener)
+    {
+    }
 
-	
-	private final INode m_node = new Node("dummy", null, 0);
-	/**
-	 * Get the local node
-	 */
-	public INode getLocalNode()
-	{
-	    return m_node;
-	}
+    private final INode m_node = new Node("dummy", null, 0);
 
-	/**
-	 * Get a list of nodes.
-	 */
+    /**
+     * Get the local node
+     */
+    public INode getLocalNode()
+    {
+        return m_node;
+    }
+
+    /**
+     * Get a list of nodes.
+     */
     public Set<INode> getNodes()
-	{return new HashSet<INode>();}
+    {
+        return new HashSet<INode>();
+    }
 
-	/**
-	 * test the connection.
-	 */
-	public boolean isConnected()
-	{return true;}
+    /**
+     * test the connection.
+     */
+    public boolean isConnected()
+    {
+        return true;
+    }
 
-	/**
-	 * Shut the connection down.
-	 */
-	public void shutDown()
-	{}
+    /**
+     * Shut the connection down.
+     */
+    public void shutDown()
+    {
+    }
 
-	/**
-	 * Add a listener for change in connection status.
-	 **/
-	public void addConnectionChangeListener(IConnectionChangeListener  listener)	{}
+    /**
+     * Add a listener for change in connection status.
+     */
+    public void addConnectionChangeListener(IConnectionChangeListener listener)
+    {
+    }
 
-	/**
-	 * Remove a listener for change in connection status.
-	 **/
-	public void removeConnectionChangeListener(IConnectionChangeListener  listener)
-	{}
+    /**
+     * Remove a listener for change in connection status.
+     */
+    public void removeConnectionChangeListener(IConnectionChangeListener listener)
+    {
+    }
 
-	/**
-	 * Returns when all messages have been written over the network.
-	 * shutdown causes this method to return.
-	 * Does not gaurantee that the messages have reached their destination.
-	 */
-	public void flush()
-	{}
+    /**
+     * Returns when all messages have been written over the network. shutdown
+     * causes this method to return. Does not gaurantee that the messages have
+     * reached their destination.
+     */
+    public void flush()
+    {
+    }
 
+    public void setAcceptNewConnections(boolean accept)
+    {
+    }
 
-	public void setAcceptNewConnections(boolean accept)
-	{}
+    /**
+     * Can be set to null. If not null the server will only accept connections
+     * that the accepter accepts.
+     */
+    public void setConnectionAccepter(IConnectionAccepter accepter)
+    {
+    }
 
-	/**
-	 * Can be set to null.
-	 * If not null the server will only accept connections that
-	 * the accepter accepts.
-	 */
-	public void setConnectionAccepter(IConnectionAccepter accepter)
-	{}
+    public void waitForAllMessagsToBeProcessed()
+    {
 
-  
-  public void waitForAllMessagsToBeProcessed()
-  {
-      
-  }
-  
-  public boolean isServer()
-  {
-      return true;
-  }
+    }
+
+    public boolean isServer()
+    {
+        return true;
+    }
+
+    public boolean isAcceptNewConnections()
+    {
+        return false;
+    }
 
 }

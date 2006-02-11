@@ -364,6 +364,11 @@ public class ServerMessenger implements IServerMessenger
   {
     m_acceptNewConnection = accept;
   }
+  
+  public boolean isAcceptNewConnections()
+  {
+      return m_acceptNewConnection;
+  }
 
   /**
    * Get the local node

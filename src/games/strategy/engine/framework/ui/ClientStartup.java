@@ -25,6 +25,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.message.*;
+import games.strategy.net.INode;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -261,7 +262,7 @@ private void initComponents()
         
     }
 
-    public void doneSelectingPlayers(byte[] gameData)
+    public void doneSelectingPlayers(byte[] gameData, Map<String, INode> players)
     {
         SwingUtilities.invokeLater(new Runnable()
         {

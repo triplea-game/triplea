@@ -39,7 +39,6 @@ public abstract class SetupPanel extends JPanel
     {
         return null;
     }
-
     
     /**
      * Cleanup should occur here that occurs when we cancel

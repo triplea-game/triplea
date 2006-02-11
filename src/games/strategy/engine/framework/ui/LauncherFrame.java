@@ -211,7 +211,7 @@ public class LauncherFrame extends JFrame
         //tell the clients to start,
         //later we will wait for them to all
         //signal that they are ready.
-        ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes);
+        ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes, null);
 
         Map<String, String> localPlayerMapping = m_serverStartup.getLocalPlayerMapping();
         Set<IGamePlayer> localPlayerSet = m_gameData.getGameLoader().createPlayers(localPlayerMapping);
@@ -275,7 +275,7 @@ public class LauncherFrame extends JFrame
         Set<IGamePlayer> playerSet = m_gameData.getGameLoader().createPlayers(playerMapping);
 
         ClientGame clientGame = new ClientGame(m_gameData, playerSet, m_messenger,
-                m_channelMessenger, m_remoteMessenger);
+                m_channelMessenger, m_remoteMessenger, null);
 
         m_gameData.getGameLoader().startGame(clientGame, playerSet);
         

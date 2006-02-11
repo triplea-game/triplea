@@ -52,7 +52,10 @@ public class HistoryPanel extends JPanel
     m_tree.setCellRenderer(renderer);
     m_tree.setBackground(getBackground());
 
-    add(new JScrollPane(m_tree), BorderLayout.CENTER);
+    JScrollPane scroll = new JScrollPane(m_tree);
+    scroll.setBorder(null);
+    scroll.setViewportBorder(null);
+    add(scroll, BorderLayout.CENTER);
     m_tree.setEditable(false);
 
     HistoryNode node = m_data.getHistory().getLastNode();

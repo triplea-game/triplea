@@ -15,11 +15,13 @@ import javax.swing.*;
  * to host a game
  * triplea.server=true
  * triplea.port=3300
+ * triplea.name=myName
  * 
  *  to connect to a game
  *  triplea.client=true
  *  triplea.port=300
  *  triplea.host=127.0.0.1
+ *  triplea.name=myName
  * 
  * 
  * @author Sean Bridges

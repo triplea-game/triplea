@@ -23,6 +23,7 @@ package games.strategy.engine.framework;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.*;
+import games.strategy.engine.framework.ui.PlayerManager;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.message.*;
@@ -32,6 +33,7 @@ import games.strategy.net.*;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ListenerList;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -51,15 +53,21 @@ public class ClientGame implements IGame
   //maps PlayerID->GamePlayer
   private Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
   private final Vault m_vault;
+  private final PlayerManager m_playerManager;
   
   public static final String getRemoteStepAdvancerName(INode node)
   {
       return "games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName();  
   }
 
-  public ClientGame(GameData data, Set<IGamePlayer> gamePlayers, IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
+  public ClientGame(GameData data, Set<IGamePlayer> gamePlayers, IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, PlayerManager playerManager)
   {
     m_data = data;
+    
+    m_playerManager = playerManager;
+    if(m_playerManager == null)
+        throw new IllegalArgumentException("Player manager cant be null");
+    
     
     m_messenger = messenger;
     
@@ -302,6 +310,38 @@ public class ClientGame implements IGame
     {
         return m_isGameOver;
     }
+
+    public PlayerManager getPlayerManager()
+    {
+        return m_playerManager;
+    }
 	
+    
+    public void saveGame(File f)
+    {
+        IServerRemote server =  (IServerRemote) m_remoteMessenger.getRemote(ServerGame.SERVER_REMOTE);
+        byte[] bytes = server.getSavedGame();
+        FileOutputStream fout = null;
+        try
+        {
+            fout = new FileOutputStream(f);
+            fout.write(bytes);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new IllegalStateException(e.getMessage());
+        }
+        finally
+        {
+            if(fout != null)
+                try
+                {
+                    fout.close();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+        }
+    }
 	
 }

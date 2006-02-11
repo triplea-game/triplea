@@ -25,7 +25,8 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.display.*;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
+import games.strategy.engine.framework.ui.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.*;
@@ -49,6 +50,7 @@ import java.util.*;
 public class ServerGame implements IGame
 {
     public static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.ServerGame.DISPLAY_CHANNEL";
+    public static final String SERVER_REMOTE = "games.strategy.engine.framework.ServerGame.SERVER_REMOTE";
     
     private ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<GameStepListener>();
     private final GameData m_data;
@@ -63,9 +65,6 @@ public class ServerGame implements IGame
     private final IChannelMessenger m_channelMessenger;
     private final Vault m_vault;
 
-    //maps playerName -> INode
-    //only for remote nodes
-    private final Map<String,INode> m_remotePlayers;
     
     private final RandomStats m_randomStats;
 
@@ -74,6 +73,26 @@ public class ServerGame implements IGame
     
     private DelegateExecutionManager m_delegateExecutionManager = new DelegateExecutionManager();
     private volatile boolean m_isGameOver = false;
+    private IServerRemote m_serverRemote = new IServerRemote()
+    {
+    
+        public byte[] getSavedGame()
+        {
+            ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
+            try
+            {
+                saveGame(sink);
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+                throw new IllegalStateException(e);
+            }
+            return sink.toByteArray();
+        }
+    
+    };
+    
+    private final PlayerManager m_players;
     
     /**
      *
@@ -90,8 +109,13 @@ public class ServerGame implements IGame
         m_remoteMessenger = remoteMessenger;
         m_channelMessenger = channelMessenger;
         m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
-        
-        m_remotePlayers = new HashMap<String,INode>(remotePlayerMapping);
+
+        Map<String, INode> allPlayers = new HashMap<String,INode>(remotePlayerMapping);
+        for(IGamePlayer player : localPlayers)
+        {
+            allPlayers.put(player.getName(), m_messenger.getLocalNode());
+        }
+        m_players = new PlayerManager(allPlayers);
 
         m_channelMessenger.createChannel(IGameModifiedChannel.class, IGame.GAME_MODIFICATION_CHANNEL);
         m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
@@ -105,6 +129,8 @@ public class ServerGame implements IGame
 
         m_changePerformer = new ChangePerformer(data);
         m_randomStats = new RandomStats(m_remoteMessenger);
+        
+        m_remoteMessenger.registerRemote(IServerRemote.class, m_serverRemote, SERVER_REMOTE);
     }
 
     /**
@@ -124,6 +150,35 @@ public class ServerGame implements IGame
             
             m_remoteMessenger.registerRemote(m_data.getGameLoader().getRemotePlayerType(), gp, getRemoteName(gp.getID()));
 
+        }
+    }
+    
+    public void addObserver(IObserverWaitingToJoin observer)
+    {
+        try
+        {
+            if(!m_delegateExecutionManager.blockDelegateExecution(2000))
+                throw new IllegalStateException("Could not block delegate execution");
+        } catch (InterruptedException e)
+        {
+            observer.cannotJoinGame(e.getMessage());
+            return;
+        }
+        try
+        {
+            ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
+            saveGame(sink);
+            observer.joinGame(sink.toByteArray(), m_players.getPlayerMapping());
+            
+        }
+        catch(IOException ioe)
+        {
+            observer.cannotJoinGame(ioe.getMessage());
+            return;
+        }
+        finally
+        {
+            m_delegateExecutionManager.resumeDelegateExecution();
         }
     }
 
@@ -234,6 +289,7 @@ public class ServerGame implements IGame
             getGameModifiedBroadcaster().shutDown();
             m_randomStats.shutDown();
             m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+            m_remoteMessenger.unregisterRemote(SERVER_REMOTE);
             m_vault.shutDown();
             
             Iterator<IGamePlayer> localPlayersIter = m_gamePlayers.values().iterator();
@@ -308,7 +364,6 @@ public class ServerGame implements IGame
             saveGame(fout);
         } catch (IOException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         finally
@@ -377,7 +432,7 @@ public class ServerGame implements IGame
         if(m_isGameOver)
             return;        
         
-        endStep();
+        boolean autoSaveAfterDelegateDone = endStep();
         
         
         if(m_isGameOver)
@@ -387,10 +442,19 @@ public class ServerGame implements IGame
         {
             m_data.getHistory().getHistoryWriter().startNextRound(m_data.getSequence().getRound());
         }
+        
+        //save after the step has advanced
+        //otherwise, the delegate will execute again.
+        if(autoSaveAfterDelegateDone)
+            autoSave();
 
     }
 
-	private void endStep() 
+    /**
+     * 
+     * @return true if the step should autosave
+     */
+	private boolean endStep() 
 	{
         m_delegateExecutionManager.enterDelegateExecution();
         try
@@ -407,8 +471,9 @@ public class ServerGame implements IGame
     	if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
     	{
     		if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).afterStepEnd())
-    			autoSave();
+    			return true;
     	}
+        return false;
 	}
 
 	private void startStep(boolean stepIsRestoredFromSavedGame) 
@@ -467,7 +532,7 @@ public class ServerGame implements IGame
         else
         {
             //a remote player
-            INode destination = m_remotePlayers.get(playerID.getName());
+            INode destination = m_players.getNode(playerID.getName());
             IGameStepAdvancer advancer = (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
             advancer.startPlayerStep(getCurrentStep().getName(), playerID);
         }
@@ -618,7 +683,15 @@ public class ServerGame implements IGame
     {
         return m_isGameOver;
     }
+
+    public PlayerManager getPlayerManager()
+    {
+        return m_players;
+    }
     
-    
-    
+}
+
+interface IServerRemote extends IRemote 
+{
+    public byte[] getSavedGame();
 }
