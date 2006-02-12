@@ -27,7 +27,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 
- * chat logic.  each chat is bound to one chatPanel
+ * chat logic.<p>
+ * 
+ * A chat can be bound to multiple chat panels.<p>
  * 
  * @author Sean Bridges
  */

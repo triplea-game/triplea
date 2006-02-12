@@ -33,6 +33,10 @@ import games.strategy.triplea.sound.SoundPath;
 /**
  * A Chat window.  
  * 
+ * Mutiple chat panels can be connected to the same Chat.<p>
+ * 
+ * We can change the chat we are connected to using the setChat(...) method.
+ * 
  * @author Sean Bridges
  */
 public class ChatPanel extends JPanel implements IChatListener
@@ -109,6 +113,7 @@ public class ChatPanel extends JPanel implements IChatListener
         {
             m_send.setEnabled(false);
             m_text.setEnabled(false);
+            updatePlayerList(Collections.<String>emptyList());
         }
     }
     
@@ -314,6 +319,9 @@ public class ChatPanel extends JPanel implements IChatListener
 
 		public void actionPerformed(ActionEvent e)
 		{
+            if(m_chat == null)
+                return;
+            
             m_chat.getSentMessagesHistory().next();
 		    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
 
@@ -324,6 +332,9 @@ public class ChatPanel extends JPanel implements IChatListener
 
 		public void actionPerformed(ActionEvent e)
 		{
+            if(m_chat == null)
+                return;
+            
             m_chat.getSentMessagesHistory().prev();
 		    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
 		}
