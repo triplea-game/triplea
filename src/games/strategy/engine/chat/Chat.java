@@ -173,7 +173,7 @@ public class Chat
         }
         if (destination != null)
         {          
-            IChatChannel remote = (IChatChannel) m_channelMessenger.getChannelBroadcastor(ChatController.getChatChannelName(m_chatChannelName));
+            IChatChannel remote = (IChatChannel) m_channelMessenger.getChannelBroadcastor(m_chatChannelName);
             remote.slapOccured(m_channelMessenger.getLocalNode(), destination);
         }
     }
@@ -315,14 +315,18 @@ public class Chat
                 {
                     for(IChatListener listener: m_listeners)
                     {
-                        listener.addMessage("You were slapped by " + from.getName(), from.getName(), false);
+                        String message = "You were slapped by " + from.getName();
+                        m_chatHistory.add(new ChatMessage(message, from.getName(), false ));
+                        listener.addMessage(message, from.getName(), false);
                     }
                 }
                 else if(from.equals(m_channelMessenger.getLocalNode()))
                 {
                     for(IChatListener listener: m_listeners)
                     {
-                        listener.addMessage("You just slapped " + to.getName(), from.getName(), false);
+                        String message = "You just slapped " + to.getName();
+                        m_chatHistory.add(new ChatMessage(message, from.getName(), false ));
+                        listener.addMessage(message, from.getName(), false);
                     }
                 }
             }
