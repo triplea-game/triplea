@@ -51,7 +51,15 @@ public class ServerLauncher implements ILauncher
     private final ServerModel m_serverModel; 
     private ServerGame m_serverGame;
     private Component m_ui;
-
+    private final CountDownLatch m_erroLatch = new CountDownLatch(1);
+    private boolean m_isLaunching = true;
+    private ServerReady m_serverReady;
+    private volatile boolean m_abortLaunch = false;
+    //a list of observers that tried to join the game during starup
+    //we need to track these, because when we loose connections to them
+    //we can ignore the connection lost
+    private List<INode> m_observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<INode>());
+    
     public ServerLauncher(int clientCount, IRemoteMessenger remoteMessenger, IChannelMessenger channelMessenger, IMessenger messenger, GameSelectorModel gameSelectorModel, Map<String, String> localPlayerMapping, Map<String, INode> remotelPlayers, ServerModel serverModel)
     {
         m_clientCount = clientCount;
@@ -67,15 +75,19 @@ public class ServerLauncher implements ILauncher
 
     public void launch(final Component parent)
     {
-        //TODO - there is a dangerous period here
-        //after the game is launched, but before it reall starts,
-        //observers trying to come in at this time will mess things up
+        //TODO -
+        //we take some care to handles players being lost during startup
+        //and to turn away obserers trying to join during startup
+        //but there are a couple edge cases still (though quite unlikely)
+        //where things can screw up.  
      
         m_ui = parent;
+     
+        m_serverModel.setServerLauncher(this);
         
         s_logger.fine("Starting server");
-        ServerReady serverReady = new ServerReady(m_clientCount);
-        m_remoteMessenger.registerRemote(IServerReady.class, serverReady, CLIENT_READY_CHANNEL);
+        m_serverReady = new ServerReady(m_clientCount);
+        m_remoteMessenger.registerRemote(IServerReady.class, m_serverReady, CLIENT_READY_CHANNEL);
 
         byte[] gameDataAsBytes;
         try
@@ -108,11 +120,10 @@ public class ServerLauncher implements ILauncher
             CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, m_serverGame);
             m_serverGame.setRandomSource(randomSource);
         }
-            
-        m_serverModel.setInGame(true, this);
+        
         m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet);
 
-        serverReady.await();
+        m_serverReady.await();
         m_remoteMessenger.unregisterRemote(CLIENT_READY_CHANNEL);
 
         if (useSecureRandomSource)
@@ -134,7 +145,41 @@ public class ServerLauncher implements ILauncher
         {
             public void run()
             {
-                m_serverGame.startGame();
+                try
+                {
+                    m_isLaunching = false;
+                    if(!m_abortLaunch)
+                    {
+                        m_serverGame.startGame();    
+                    }
+                    else
+                    {
+                        m_serverGame.stopGame();
+                        SwingUtilities.invokeLater(new Runnable()
+                        {
+                            public void run()
+                            {
+                                JOptionPane.showMessageDialog(m_ui, "Connection lost to player during startup, game aborted.");
+                            }
+                        });
+                    }
+                    
+                } catch(MessengerException me)
+                {
+                    me.printStackTrace(System.out);
+
+                    //we lost a connection 
+                    //wait for the connection handler to notice, and shut us down
+                    try
+                    {
+                        //we are already aborting the launch
+                        if(!m_abortLaunch)
+                            m_erroLatch.await();
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
                 
                 m_gameSelectorModel.loadDefaultGame(parent);
                 
@@ -147,15 +192,22 @@ public class ServerLauncher implements ILauncher
                             }
                         });
                 
-                m_serverModel.setInGame(false, null);
+                m_serverModel.setServerLauncher(null);
                 m_serverModel.newGame();
             }
         };
         t.start();
     }
     
-    public void addObserver(IObserverWaitingToJoin observer)
+    public void addObserver(IObserverWaitingToJoin observer, INode newNode)
     {
+        if(m_isLaunching)
+        {
+            m_observersThatTriedToJoinDuringStartup.add(newNode);
+            observer.cannotJoinGame("Game is launching, try again soon");
+            return;
+        }
+        
         m_serverGame.addObserver(observer);
     }
     
@@ -171,26 +223,29 @@ public class ServerLauncher implements ILauncher
 
     public void connectionLost(final INode node)
     {
+        if(m_isLaunching)
+        {
+            //this is expected, we told the observer
+            //he couldnt join, so now we loose the connection
+            if(m_observersThatTriedToJoinDuringStartup.remove(node))
+                return;
+            
+            //a player has dropped out
+            //abort
+            m_serverReady.clientReady();
+            m_abortLaunch = true;
+            return;
+        }
+        
         //if we loose a connection to a player, shut down
         //the game (after saving) and go back to the main screen
         if(m_serverGame.getPlayerManager().isPlaying(node))
         {
-            DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
+            saveAndEndGame(node);
             
-            final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
-            m_serverGame.saveGame(f);
-            m_serverGame.stopGame();
-            
-            SwingUtilities.invokeLater(new Runnable()
-            {
-            
-                public void run()
-                {
-                    String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
-                    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
-                }
-            
-            });
+            //if the game already exited do to a networking error 
+            //we need to let them continue
+            m_erroLatch.countDown();
         }
         else
         {
@@ -199,6 +254,26 @@ public class ServerLauncher implements ILauncher
             //which is ok.
         }
         
+    }
+
+    private void saveAndEndGame(final INode node)
+    {
+        DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
+        
+        final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
+        m_serverGame.saveGame(f);
+        m_serverGame.stopGame();
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
+                JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
+            }
+        
+        });
     }
 
 }

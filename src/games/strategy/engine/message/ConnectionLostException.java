@@ -14,26 +14,30 @@
 
 package games.strategy.engine.message;
 
-
 /**
- * No Remote could be found.<p>
+ * Called when the connection to a node is lost while invoking a remote method.<p>
  * 
- * This can be thrown by the remote messenger in two cases,<p>
- * 
- * 1) looking up a someRemoteMessenger.getRemote(...)<br>
- * 2) invoking a method on the object returned by someRemoteMessenger.getRemote(...).<p>
- * 
- * There are two possibel causes.  Either the remote never existed, or a remote was once
- * bound to that name, but is no longer bound. 
- * 
- * @author Sean Bridges
+ * Only returned on remotes or channels that wait for the results of the method invocation.<p>
+ *  
+ * @author sgb
  */
-public class RemoteNotFoundException extends MessengerException
+public class ConnectionLostException extends MessengerException
 {
-
-    public RemoteNotFoundException(String string)
+    public ConnectionLostException(String message)
     {
-        super(string);
+        super(message, new Exception("Invoker Stack"));
     }
-
+    
+    /**
+     * We were created in a thread that is not related to the remote
+     * that called the method.  This allows us to see the stack trace of
+     * the invoker.
+     */
+    public void fillInInvokerStackTrace()
+    {
+        getCause().setStackTrace(Thread.currentThread().getStackTrace());
+    }
+    
+    
+    
 }

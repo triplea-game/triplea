@@ -139,7 +139,7 @@ public class UnifiedMessenger
             List<INode> nodes = m_methodCallWaitNodes.get(methodCallId);
             for(int i = 0; i < nodes.size(); i++)
             {
-                m_methodCallResults.get(methodCallId).add(new RemoteMethodCallResults(new RemoteNotFoundException("Connection Lost")) );
+                m_methodCallResults.get(methodCallId).add(new RemoteMethodCallResults(new ConnectionLostException("Connection Lost")) );
                 m_methodCallWaitCount.get(methodCallId).countDown();
             }
             nodes.clear();
@@ -173,7 +173,7 @@ public class UnifiedMessenger
             {
                 nodes.remove(lostNode);
                 //add our results
-                m_methodCallResults.get(methodCallId).add(new RemoteMethodCallResults(new RemoteNotFoundException("Connection Lost")) );
+                m_methodCallResults.get(methodCallId).add(new RemoteMethodCallResults(new ConnectionLostException("Connection Lost")) );
                 m_methodCallWaitCount.get(methodCallId).countDown();
             }
         }

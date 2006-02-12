@@ -340,7 +340,7 @@ public class RemoteMessengerTest extends TestCase
             serverRM.waitForRemote("test", 200);
             assertTrue(serverRM.hasRemote("test"));
                      
-            final AtomicReference<RemoteNotFoundException> rme = new AtomicReference<RemoteNotFoundException>(null);
+            final AtomicReference<ConnectionLostException> rme = new AtomicReference<ConnectionLostException>(null);
             final AtomicBoolean started = new AtomicBoolean(false);   
             
             Runnable r = new Runnable()
@@ -353,7 +353,7 @@ public class RemoteMessengerTest extends TestCase
                         started.set(true);
                         remoteFoo.foo();
                     }
-                    catch(RemoteNotFoundException e)
+                    catch(ConnectionLostException e)
                     {
                         rme.set(e);
                     }

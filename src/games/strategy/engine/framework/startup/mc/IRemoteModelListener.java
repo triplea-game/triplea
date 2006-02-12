@@ -14,7 +14,7 @@
 
 package games.strategy.engine.framework.startup.mc;
 
-public interface RemoteModelListener
+public interface IRemoteModelListener
 {
     /**
      * The players available have changed.
@@ -27,7 +27,7 @@ public interface RemoteModelListener
     public void playersTakenChanged();
     
     
-    public static RemoteModelListener NULL_LISTENER = new RemoteModelListener( )
+    public static IRemoteModelListener NULL_LISTENER = new IRemoteModelListener( )
     {
         public void playerListChanged() {}
         public void playersTakenChanged() {}

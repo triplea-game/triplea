@@ -57,12 +57,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     private GameData m_data;
     
     private Map<String, String> m_players  = new HashMap<String, String>();
-    private RemoteModelListener m_listener = RemoteModelListener.NULL_LISTENER;
+    private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
     private final GameSelectorModel m_gameSelectorModel;
     private Component m_ui;
     private ChatPanel m_chatPanel;
-    private boolean m_inGame = false;
-    private ServerLauncher m_serverLauncher;
+    
+    //while our server launcher is not null, delegate new/lost connections to it
+    private volatile ServerLauncher m_serverLauncher;
     
     private Observer m_gameSelectorObserver = new Observer()
     {
@@ -91,10 +92,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener
         m_serverMessenger.removeErrorListener(this);
     }
     
-    public void setRemoteModelListener(RemoteModelListener listener)
+    public void setRemoteModelListener(IRemoteModelListener listener)
     {
         if(listener == null)
-            listener = RemoteModelListener.NULL_LISTENER;
+            listener = IRemoteModelListener.NULL_LISTENER;
         
         m_listener = listener;
     }
@@ -230,10 +231,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener
 
       public boolean isGameStarted(INode newNode)
       {
-          if(m_inGame)
+          if(m_serverLauncher != null)
           {
               IObserverWaitingToJoin observerWaitingToJoin = (IObserverWaitingToJoin) m_remoteMessenger.getRemote(getObserverWaitingToStartName(newNode));
-              m_serverLauncher.addObserver(observerWaitingToJoin);
+              m_serverLauncher.addObserver(observerWaitingToJoin, newNode);
               return true;
           }
           else
@@ -318,7 +319,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     public void connectionLost(INode node, Exception reason, List unsent)
     {
         //will be handled elsewhere
-        if(m_inGame)
+        if(m_serverLauncher != null)
         {
             m_serverLauncher.connectionLost(node);
             return;
@@ -396,10 +397,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener
         channel.gameReset();
     }
     
-    public void setInGame(boolean aBool, ServerLauncher launcher)
+    public void setServerLauncher(ServerLauncher launcher)
     {
         m_serverLauncher = launcher;
-        m_inGame = aBool;
     }
     
 }

@@ -1,10 +1,10 @@
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.GameOverException;
-import games.strategy.engine.message.RemoteNotFoundException;
+import games.strategy.engine.message.MessengerException;
 
 import java.lang.reflect.*;
-import java.util.concurrent.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.*;
 
@@ -115,10 +115,9 @@ public class DelegateExecutionManager
                 {
                     return method.invoke(implementor, args);
                 }
-                catch(RemoteNotFoundException rnfe)
+                catch(MessengerException me)
                 {
-                   assertGameNotOver();
-                   throw rnfe;
+                    throw new GameOverException("Game Over");
                 }
                 catch(InvocationTargetException ite)
                 {

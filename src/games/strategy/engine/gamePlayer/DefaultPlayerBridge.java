@@ -94,16 +94,9 @@ public class DefaultPlayerBridge implements IPlayerBridge
             IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
             return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
         }
-        catch(RemoteNotFoundException rnfe)
+        catch(MessengerException me)
         {
-            if(m_game.isGameOver())
-            {
-                throw new GameOverException("Game Over");
-            }
-            else
-            {
-                throw rnfe;
-            }
+            throw new GameOverException("Game Over");
         }
     }
     
@@ -151,11 +144,7 @@ class GameOverInvocationHandler implements InvocationHandler
         }
         catch(RemoteNotFoundException rnfe)
         {
-            if(!m_game.isGameOver())
-                throw rnfe;
-            else
-                throw new GameOverException("Game Over Exception");
-                    
+            throw new GameOverException("Game Over");
         }
         
     }

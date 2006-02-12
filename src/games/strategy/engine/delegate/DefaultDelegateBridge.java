@@ -132,11 +132,9 @@ public class DefaultDelegateBridge implements IDelegateBridge
                     ServerGame.getRemoteName(id));
             return (IRemote) getOutbound(implementor);
         }
-        catch(RemoteNotFoundException rnfe)
+        catch(MessengerException me)
         {
-            if(m_game.isGameOver())
-                throw new GameOverException("Game Over");
-            throw rnfe;
+            throw new GameOverException("Game Over");
         }
     }
 

@@ -14,7 +14,7 @@ import games.strategy.engine.framework.startup.mc.*;
 
 import games.strategy.net.*;
 
-public class ServerSetupPanel extends SetupPanel implements RemoteModelListener
+public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 {
     private final ServerModel m_model;    
     
@@ -172,7 +172,7 @@ public class ServerSetupPanel extends SetupPanel implements RemoteModelListener
     @Override
     public void cancel()
     {
-        m_model.setRemoteModelListener(RemoteModelListener.NULL_LISTENER);
+        m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
         m_model.cancel();
     }
 

@@ -26,6 +26,8 @@ package games.strategy.engine.message;
  * Modifications to the paramaters of an IRemote may or may not 
  * be visible to the calling object. <br>
  * 
+ * All methods declared by an IRemote may though a MessengerException.<p>
+ * 
  *  @author Sean Bridges
  */
 public interface IRemote

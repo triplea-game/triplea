@@ -19,25 +19,22 @@ public class ClientSetupPanel extends SetupPanel
     private final ClientModel m_model;
     private JLabel m_nameLabel;
     private List<PlayerRow> m_playerRows = Collections.emptyList();
-    private RemoteModelListener m_listener = new RemoteModelListener()
-    {
     
+    
+    private IRemoteModelListener m_listener = new IRemoteModelListener()
+    {
         public void playersTakenChanged()
-        {
-           
-            
-            
-        }
+        {}
     
         public void playerListChanged()
         {
             SwingUtilities.invokeLater(new Runnable()
-                    {            
-                        public void run()
-                        {
-                            internalPlayersChanged();
-                        }
-                    });
+            {            
+                public void run()
+                {
+                    internalPlayersChanged();
+                }
+            });
             
         }
     

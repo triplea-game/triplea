@@ -158,7 +158,10 @@ public class ServerGame implements IGame
         try
         {
             if(!m_delegateExecutionManager.blockDelegateExecution(2000))
-                throw new IllegalStateException("Could not block delegate execution");
+            {
+                observer.cannotJoinGame("Could not block delegate execution");
+                return;
+            }
         } catch (InterruptedException e)
         {
             observer.cannotJoinGame(e.getMessage());

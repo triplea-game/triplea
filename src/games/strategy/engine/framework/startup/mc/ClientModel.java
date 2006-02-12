@@ -39,7 +39,7 @@ public class ClientModel implements IMessengerErrorListener
 {
     private static Logger s_logger = Logger.getLogger(ClientModel.class.getName());
     
-    private RemoteModelListener m_listener = RemoteModelListener.NULL_LISTENER;
+    private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
     private IChannelMessenger m_channelMessenger;
     private IRemoteMessenger m_remoteMessenger;
     private IMessenger m_messenger;
@@ -62,10 +62,10 @@ public class ClientModel implements IMessengerErrorListener
         m_gameSelectorModel = gameSelectorModel;
     }
     
-    public void setRemoteModelListener(RemoteModelListener listener)
+    public void setRemoteModelListener(IRemoteModelListener listener)
     {
         if(listener == null)
-            listener = RemoteModelListener.NULL_LISTENER;
+            listener = IRemoteModelListener.NULL_LISTENER;
         
         m_listener = listener;
     }
@@ -198,8 +198,6 @@ public class ClientModel implements IMessengerErrorListener
         m_messenger.shutDown();
         m_gameSelectorModel.setGameData(m_gameDataOnStartup);
         m_messenger.removeErrorListener(this);
-        m_messenger = null;
-        
     }
     
     
@@ -252,10 +250,18 @@ public class ClientModel implements IMessengerErrorListener
             startGame(gameData, players);
         }
 
-        public void cannotJoinGame(String reason)
+        public void cannotJoinGame(final String reason)
         {
-            JOptionPane.showMessageDialog(m_ui, "Could not join game:" + reason);
-            m_typePanelModel.showSelectType();
+            SwingUtilities.invokeLater(new Runnable()
+            {
+            
+                public void run()
+                {
+                    m_typePanelModel.showSelectType();
+                    JOptionPane.showMessageDialog(m_ui, "Could not join game:" + reason);
+                }
+            
+            });
         }
         
     };
@@ -349,7 +355,6 @@ public class ClientModel implements IMessengerErrorListener
         
         SwingUtilities.invokeLater(new Runnable()
         {
-        
             public void run()
             {
                 m_listener.playerListChanged();

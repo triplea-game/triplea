@@ -60,7 +60,15 @@ class UnifiedInvocationHandler implements InvocationHandler
                 throw new IllegalStateException("Expecting only one result, but got:" + response.length + " end point:" + m_endPointName);
                 
             if(response[0].getException() != null)
+            {
+                if(response[0].getException() instanceof ConnectionLostException)
+                {
+                    ConnectionLostException cle = (ConnectionLostException) response[0].getException();
+                    cle.fillInInvokerStackTrace();
+                    
+                }
                 throw response[0].getException();
+            }
             return response[0].getRVal();
         }
     }   
