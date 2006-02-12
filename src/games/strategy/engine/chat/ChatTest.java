@@ -114,14 +114,17 @@ public class ChatTest extends TestCase
         Thread.sleep(20);
         
         
-        final Chat server = new Chat(m_server, m_serverChatListener, "c", m_scm, m_srm);
+        final Chat server = new Chat(m_server, "c", m_scm, m_srm);
+        server.addChatListener(m_serverChatListener);
         server.init();
        
-        final Chat client1 = new Chat(m_client1, m_client1ChatListener, "c", m_c1cm, m_c1rm);        
+        final Chat client1 = new Chat(m_client1, "c", m_c1cm, m_c1rm);
+        client1.addChatListener(m_client1ChatListener);
         client1.init();
 
 
-        final Chat client2 = new Chat(m_client2, m_client2ChatListener, "c", m_c2cm, m_c2rm);        
+        final Chat client2 = new Chat(m_client2, "c", m_c2cm, m_c2rm);
+        client2.addChatListener(m_client2ChatListener);
         client2.init();
 
         flush();
@@ -269,25 +272,12 @@ public class ChatTest extends TestCase
             Thread.yield();
         }
     }
-
-    
-    /**
-     * Run the main test a couple times 
-     */
-    public void testAllMultiple() throws Exception
-    {
-        for(int i = 0; i < 10; i++)
-        {
-            setUp();
-            testAll();
-            tearDown();
-        }
-    }
+  
 }
 
 
 
-class TestChatListener implements ChatListener
+class TestChatListener implements IChatListener
 {
     
     public List<String> m_players;

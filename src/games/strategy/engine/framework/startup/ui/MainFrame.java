@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui;
 import java.awt.BorderLayout;
 import java.io.File;
 
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.startup.mc.*;
 
@@ -66,6 +67,30 @@ public class MainFrame extends JFrame
         pack();
 
         games.strategy.ui.Util.center(this);
+    }
+    
+    /**
+     * todo, replace with something better
+     * 
+     * Get the chat for the game, or null if there is no chat
+     */
+    public Chat getChat()
+    {
+        SetupPanel model = m_setupPanelModel.getPanel();
+        
+        if(model instanceof ServerSetupPanel)
+        {
+            return model.getChatPanel().getChat();
+        }
+        else if(model instanceof ClientSetupPanel)
+        {
+            return model.getChatPanel().getChat();
+        }
+        else
+        {
+            return null;
+        }
+        
     }
     
     /**

@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.*;
@@ -71,6 +72,9 @@ public class TripleAFrame extends JFrame
     private boolean m_inHistory = false;
     private HistorySynchronizer m_historySyncher;
     private final UIContext m_uiContext;
+    private JPanel m_mapAndChatPanel;
+    private ChatPanel m_chatPanel;
+    private JSplitPane m_chatSplit;
 
     /** Creates new TripleAFrame */
     public TripleAFrame(IGame game, Set<IGamePlayer> players, String mapDir) throws IOException
@@ -104,6 +108,29 @@ public class TripleAFrame extends JFrame
 
         m_mapPanel.initSmallMap();
 
+        
+        m_mapAndChatPanel = new JPanel();
+        m_mapAndChatPanel.setLayout(new BorderLayout());
+        if(MainFrame.getInstance().getChat() != null)
+        {
+            m_chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
+            Dimension chatPrefSize = new Dimension((int) m_chatPanel.getPreferredSize().getWidth(), 95);
+            m_chatPanel.setPreferredSize(chatPrefSize);
+            
+            
+            m_chatSplit = new JSplitPane();
+            m_chatSplit.setTopComponent(m_mapPanel);
+            m_chatSplit.setBottomComponent(m_chatPanel);
+            m_chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+            m_chatSplit.setResizeWeight(0.95);
+                        
+            m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
+        }
+        else
+        {
+            m_mapAndChatPanel.add(m_mapPanel, BorderLayout.CENTER);
+        }
+        
         m_gameMainPanel.setLayout(new BorderLayout());
 
         this.getContentPane().setLayout(new BorderLayout());
@@ -132,13 +159,9 @@ public class TripleAFrame extends JFrame
         JPanel gameCenterPanel = new JPanel();
         gameCenterPanel.setLayout(new BorderLayout());
 
-        JPanel mapBorderPanel = new JPanel();
-        mapBorderPanel.setLayout(new BorderLayout());
-        //    mapBorderPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-        mapBorderPanel.setBorder(null);
-        mapBorderPanel.add(m_mapPanel, BorderLayout.CENTER);
-
-        gameCenterPanel.add(mapBorderPanel, BorderLayout.CENTER);
+        
+        
+        gameCenterPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
 
         m_rightHandSidePanel.setLayout(new BorderLayout());
         m_rightHandSidePanel.add(m_smallView, BorderLayout.NORTH);
@@ -171,6 +194,8 @@ public class TripleAFrame extends JFrame
     public void stopGame()
     {        
         m_uiContext.shutDown();
+        if(m_chatPanel != null)
+            m_chatPanel.setChat(null);
     }
     
     void shutdown()
@@ -626,7 +651,7 @@ public class TripleAFrame extends JFrame
         JSplitPane split = new JSplitPane();
         m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel, m_uiContext);
         split.setLeftComponent(m_historyTree);
-        split.setRightComponent(m_mapPanel);
+        split.setRightComponent(m_mapAndChatPanel);
         split.setDividerLocation(150);
 
         m_historyPanel.add(split, BorderLayout.CENTER);
@@ -658,6 +683,14 @@ public class TripleAFrame extends JFrame
             return null;
         }
     }
+    
+    @SuppressWarnings("deprecation")
+    @Override
+    public void show()
+    {
+        super.show();
+        
+    }
 
     public void showGame()
     {
@@ -684,7 +717,7 @@ public class TripleAFrame extends JFrame
 
         m_gameMainPanel.removeAll();
         m_gameMainPanel.setLayout(new BorderLayout());
-        m_gameMainPanel.add(m_mapPanel, BorderLayout.CENTER);
+        m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
         m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
         m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
 

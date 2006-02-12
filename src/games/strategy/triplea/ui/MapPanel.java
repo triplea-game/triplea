@@ -127,13 +127,24 @@ public class MapPanel extends ImageScrollerLargeView
     // Beagle Code used to chnage map skin
     public void changeImage(Dimension newDimensions)
     {
- 
-       
         super.setDimensions(newDimensions);
         m_tileManager.createTiles(new Rectangle(newDimensions), m_data, m_uiContext.getMapData());
         m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
+    }
+    
+    
 
-        
+    @Override
+    public Dimension getPreferredSize()
+    {
+       return getImageDimensions();
+    }
+    
+
+    @Override
+    public Dimension getMinimumSize()
+    {
+       return new Dimension(200,200);
     }
 
     public boolean isShowing(Territory territory)
@@ -261,14 +272,15 @@ public class MapPanel extends ImageScrollerLargeView
         m_unitSelectionListeners.remove(listener);
     }
 
-    public void notifyUnitSelected(List<Unit> units, Territory t, MouseEvent me)
+    private void notifyUnitSelected(List<Unit> units, Territory t, MouseEvent me)
     {
         for(UnitSelectionListener listener : m_unitSelectionListeners)
         {
             listener.unitsSelected(units,t, me);
         }
-            
     }
+    
+    
     
     private Territory getTerritory(int x, int y)
     {

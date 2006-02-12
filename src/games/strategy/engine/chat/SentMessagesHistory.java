@@ -23,13 +23,13 @@ import java.util.*;
  * @author lnxduk
  *
  */
-class ChatHistory
+class SentMessagesHistory
 {
 	
 	private final List<String> m_history =new ArrayList<String>();
 	private int m_HistoryPosition;
 	
-	ChatHistory()
+	SentMessagesHistory()
 	{
 	}
 	

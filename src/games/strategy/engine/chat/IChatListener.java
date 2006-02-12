@@ -8,7 +8,7 @@ import java.util.*;
  * 
  * @author sgb
  */
-public interface ChatListener
+public interface IChatListener
 {
 
     public void updatePlayerList(final Collection<String> players);

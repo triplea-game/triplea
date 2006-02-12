@@ -23,6 +23,7 @@ import games.strategy.net.*;
 import games.strategy.util.Tuple;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 
@@ -30,35 +31,55 @@ import java.util.*;
  * 
  * @author Sean Bridges
  */
-class Chat 
+public class Chat 
 {    
-    private final ChatListener m_listener;
+    private final List<IChatListener>  m_listeners = new CopyOnWriteArrayList<IChatListener>();
     private final IMessenger m_messenger;
     private final IChannelMessenger m_channelMessenger;
     private final IRemoteMessenger m_remoteMesenger;
     private final String m_chatChannelName;
     private final String m_chatName;
-    
+    private final SentMessagesHistory m_sentMessages;
     private long m_chatInitVersion = -1;
     
     private final Object m_mutex = new Object();
     private List<INode> m_nodes;
     
     private List<Runnable> m_queuedInitMessages = new ArrayList<Runnable>();
-    
+    private List<ChatMessage> m_chatHistory = new ArrayList<ChatMessage>();
 
 
     /** Creates a new instance of Chat */
-    public Chat(IMessenger messenger, ChatListener ui, String chatName, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
+    public Chat(IMessenger messenger, String chatName, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
     {
-
-        m_listener = ui;
         m_messenger = messenger;
         m_channelMessenger = channelMessenger;
         m_remoteMesenger = remoteMessenger;
         m_chatChannelName = ChatController.getChatChannelName(chatName);
         m_chatName = chatName;
-
+        m_sentMessages = new SentMessagesHistory();
+        
+    }
+    
+    public SentMessagesHistory getSentMessagesHistory()
+    {
+        return m_sentMessages;
+    }
+    
+    public void addChatListener(IChatListener listener)
+    {
+        m_listeners.add(listener);
+        updateConnections();
+    }
+    
+    public void removeChatListener(IChatListener listener)
+    {
+        m_listeners.remove(listener);
+    }
+    
+    public Object getMutex()
+    {
+        return m_mutex;
     }
     
     void init()
@@ -112,8 +133,6 @@ class Chat
             m_queuedInitMessages = null;
             
         }
-        
-        
         updateConnections();
     }
     
@@ -166,6 +185,8 @@ class Chat
             remote.meMessageOccured(message, m_channelMessenger.getLocalNode());
         else
             remote.chatOccured(message, m_channelMessenger.getLocalNode());
+        
+        m_sentMessages.append(message);
     }
 
 
@@ -174,6 +195,9 @@ class Chat
 
         synchronized(m_mutex)
         {
+            if(m_nodes == null)
+                return;
+            
             List<String> playerNames = new ArrayList<String>(m_nodes.size());
             
             Iterator<INode> iter = m_nodes.iterator();
@@ -185,25 +209,43 @@ class Chat
             }
 
             Collections.sort(playerNames);
-            m_listener.updatePlayerList(playerNames);
+            
+            for(IChatListener listener: m_listeners)
+            {
+                listener.updatePlayerList(playerNames);
+            }
         }
     }
 
-   
-
-    
-
+   public INode getLocalNode()
+   {
+       return m_messenger.getLocalNode();
+   }
 
     private IChatChannel m_chatChannelSubscribor = new IChatChannel()
     {
         public void chatOccured(String message, INode from)
         {
-            m_listener.addMessage(message, from.getName(), false);
+            synchronized(m_mutex)
+            {
+                m_chatHistory.add(new ChatMessage(message, from.getName(), false ));
+                for(IChatListener listener: m_listeners)
+                {
+                    listener.addMessage(message, from.getName(), false);
+                }
+            }
         }
         
         public void meMessageOccured(String message, INode from)
         {
-            m_listener.addMessage(message, from.getName(), true);
+            synchronized(m_mutex)
+            {
+                m_chatHistory.add(new ChatMessage(message, from.getName(), true));
+                for(IChatListener listener: m_listeners)
+                {
+                    listener.addMessage(message, from.getName(), true);
+                }
+            }
         }
 
         public void speakerAdded(final INode node, final long version)
@@ -267,24 +309,67 @@ class Chat
         
         public void slapOccured(INode from, INode to)
         {
-            if(to.equals(m_channelMessenger.getLocalNode()))
+            synchronized(m_mutex)
             {
-                m_listener.addMessage("You were slapped by " + from.getName(), from.getName(), false);
-            }
-            else if(from.equals(m_channelMessenger.getLocalNode()))
-            {
-                m_listener.addMessage("You just slapped " + to.getName(), from.getName(), false);
+                if(to.equals(m_channelMessenger.getLocalNode()))
+                {
+                    for(IChatListener listener: m_listeners)
+                    {
+                        listener.addMessage("You were slapped by " + from.getName(), from.getName(), false);
+                    }
+                }
+                else if(from.equals(m_channelMessenger.getLocalNode()))
+                {
+                    for(IChatListener listener: m_listeners)
+                    {
+                        listener.addMessage("You just slapped " + to.getName(), from.getName(), false);
+                    }
+                }
             }
         }
-        
-        
     };
+    
+    
+    /**
+     * 
+     * While using this, you should synchronize on getMutex().
+     * 
+     * @return the messages that have occured so far.  
+     */
+    public List<ChatMessage> getChatHistory()
+    {
+        return m_chatHistory;
+    }
     
     
 }
 
+class ChatMessage
+{
+    private final String m_message;
+    private final String m_from;
+    private final boolean m_isMeMessage;
+    
+    public ChatMessage(String message, String from, boolean isMeMessage)
+    {
+        m_message = message;
+        m_from = from;
+        m_isMeMessage = isMeMessage;
+    }
 
+    public String getFrom()
+    {
+        return m_from;
+    }
 
+    public boolean isMeMessage()
+    {
+        return m_isMeMessage;
+    }
 
-
+    public String getMessage()
+    {
+        return m_message;
+    }    
+}
 

@@ -35,9 +35,8 @@ import games.strategy.triplea.sound.SoundPath;
  * 
  * @author Sean Bridges
  */
-public class ChatPanel extends JPanel implements ChatListener
+public class ChatPanel extends JPanel implements IChatListener
 {
-
     private JTextPane m_text;
     private JScrollPane m_scrollPane;
     private JTextField m_nextMessage;
@@ -45,13 +44,10 @@ public class ChatPanel extends JPanel implements ChatListener
     private JButton m_send;
     private Chat m_chat;
     private DefaultListModel m_listModel;
-    
-    private ChatHistory m_ChatHistory;
 
     private final SimpleAttributeSet bold = new SimpleAttributeSet();
     private final SimpleAttributeSet normal = new SimpleAttributeSet();
-    private final IChannelMessenger m_channelMessenger;
-
+    
     public static final String ME = "/me ";
     public static boolean isThirdPerson(String msg)
     {
@@ -61,19 +57,61 @@ public class ChatPanel extends JPanel implements ChatListener
     /** Creates a new instance of ChatFrame */
     public ChatPanel(IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, String chatName)
     {
-        m_channelMessenger = channelMessenger;
+        init();
         
+        Chat chat  = new Chat(messenger, chatName, channelMessenger, remoteMessenger  );
+        chat.init();
+        
+        setChat(chat);
+    }
+    
+    public ChatPanel(Chat chat)
+    {
+        init();
+        setChat(chat);
+    }
+    
+    private void init()
+    {
         createComponents();
         layoutComponents();
 
-        m_chat = new Chat(messenger, this, chatName, channelMessenger, remoteMessenger  );
-        m_chat.init();
-		m_ChatHistory = new ChatHistory();
-
         StyleConstants.setBold(bold, true);
         setSize(300, 200);
-        
     }
+    
+    
+    
+    public void setChat(Chat chat)
+    {
+        if(m_chat != null)
+            m_chat.removeChatListener(this);
+        
+        m_chat = chat;
+        
+        if(m_chat != null)
+        {
+           m_chat.addChatListener(this);
+           m_send.setEnabled(true);
+           m_text.setEnabled(true);
+           
+           synchronized(m_chat.getMutex())
+           {
+               m_text.setText("");
+               for(ChatMessage message : m_chat.getChatHistory())
+               {
+                   addChatMessage(message.getMessage(), message.getFrom(), message.isMeMessage());
+               }
+           }
+           
+        }
+        else
+        {
+            m_send.setEnabled(false);
+            m_text.setEnabled(false);
+        }
+    }
+    
 
     public Chat getChat()
     {
@@ -162,7 +200,7 @@ public class ChatPanel extends JPanel implements ChatListener
             return;
         final String playerName = m_listModel.get(index).toString();
         //you cant slap yourself
-        if(playerName.equals(m_channelMessenger.getLocalNode().getName()))
+        if(playerName.equals(m_chat.getLocalNode().getName()))
                 return;
         
         Action slap = new AbstractAction("Slap " + playerName)
@@ -183,31 +221,19 @@ public class ChatPanel extends JPanel implements ChatListener
     /** thread safe */
     public void addMessage(final String message, final String from, final boolean thirdperson)
     {
-
         Runnable runner = new Runnable()
         {
-
             public void run()
             {
-
-                try
-                {
-                    Document doc = m_text.getDocument();
-                    if(thirdperson)
-                    	doc.insertString(doc.getLength(), "*"+from, bold);
-                    else
-                        doc.insertString(doc.getLength(), from+": ", bold);
-                    doc.insertString(doc.getLength()," "+message + "\n", normal);
-                } catch (BadLocationException ble)
-                {
-                    ble.printStackTrace();
-                }
+                addChatMessage(message, from, thirdperson);
              
                 BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
                 scrollModel.setValue(scrollModel.getMaximum());
                 
                 ClipPlayer.getInstance().playClip(SoundPath.MESSAGE, SoundPath.class);                
             }
+
+           
         };
 
         //invoke in the swing event thread
@@ -217,6 +243,22 @@ public class ChatPanel extends JPanel implements ChatListener
             SwingUtilities.invokeLater(runner);
     }
 
+    private void addChatMessage(final String message, final String from, final boolean thirdperson)
+    {
+        try
+        {
+            Document doc = m_text.getDocument();
+            if(thirdperson)
+                doc.insertString(doc.getLength(), "*"+from, bold);
+            else
+                doc.insertString(doc.getLength(), from+": ", bold);
+            doc.insertString(doc.getLength()," "+message + "\n", normal);
+        } catch (BadLocationException ble)
+        {
+            ble.printStackTrace();
+        }
+    }
+    
     /**
      * @arg players - a collection of Strings representing player names.
      */
@@ -251,17 +293,19 @@ public class ChatPanel extends JPanel implements ChatListener
 
         public void actionPerformed(ActionEvent e)
         {
-
             if (m_nextMessage.getText().trim().length() == 0)
                 return;
-            if(isThirdPerson(m_nextMessage.getText())){
+         
+            
+            if(isThirdPerson(m_nextMessage.getText()))
+            {
                 m_chat.sendMessage(m_nextMessage.getText().substring(ME.length()), true);
             	
-            } else {
-            	
+            } else 
+            {
             	m_chat.sendMessage(m_nextMessage.getText(), false);
             }
-			m_ChatHistory.append(m_nextMessage.getText());
+			
             m_nextMessage.setText("");
         }
     };
@@ -270,8 +314,8 @@ public class ChatPanel extends JPanel implements ChatListener
 
 		public void actionPerformed(ActionEvent e)
 		{
-		    m_ChatHistory.next();
-		    m_nextMessage.setText(m_ChatHistory.current());
+            m_chat.getSentMessagesHistory().next();
+		    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
 
 		}
 	};
@@ -280,8 +324,8 @@ public class ChatPanel extends JPanel implements ChatListener
 
 		public void actionPerformed(ActionEvent e)
 		{
-		    m_ChatHistory.prev();
-		    m_nextMessage.setText(m_ChatHistory.current());
+            m_chat.getSentMessagesHistory().prev();
+		    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
 		}
 	};
 }

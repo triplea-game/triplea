@@ -32,8 +32,6 @@ import games.strategy.util.*;
 import java.lang.reflect.*;
 import java.util.*;
 
-import com.sun.org.apache.xerces.internal.impl.xs.identity.Selector.Matcher;
-
 /**
  * 
  * Handles logic for battles in which fighting actually occurs.

@@ -58,7 +58,10 @@ public class SetupPanelModel extends Observable
     {
         ServerModel model = new ServerModel(m_gameSelectorModel, this);
         if(!model.createServerMessenger(ui))
+        {
+            model.cancel();
             return;
+        }
         setGameTypePanel(new ServerSetupPanel(model, m_gameSelectorModel));
     }
 
@@ -66,7 +69,10 @@ public class SetupPanelModel extends Observable
     {
         ClientModel model = new ClientModel(m_gameSelectorModel, this);
         if(!model.createClientMessenger(ui))
+        {
+            model.cancel();
             return;
+        }
         setGameTypePanel(new ClientSetupPanel(model));
     }
 

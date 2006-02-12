@@ -88,8 +88,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     public void cancel()
     {
         m_gameSelectorModel.deleteObserver(m_gameSelectorObserver);
-        m_serverMessenger.shutDown();
-        m_serverMessenger.removeErrorListener(this);
+        
+        if(m_serverMessenger != null)
+        {
+            m_serverMessenger.shutDown();
+            m_serverMessenger.removeErrorListener(this);
+        }
     }
     
     public void setRemoteModelListener(IRemoteModelListener listener)
