@@ -40,6 +40,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -114,6 +115,8 @@ public class TripleAFrame extends JFrame
         if(MainFrame.getInstance().getChat() != null)
         {
             m_chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
+            m_chatPanel.setPlayerRenderer(new PlayerChatRenderer(m_game, m_uiContext ));
+            
             Dimension chatPrefSize = new Dimension((int) m_chatPanel.getPreferredSize().getWidth(), 95);
             m_chatPanel.setPreferredSize(chatPrefSize);
             
@@ -852,3 +855,88 @@ public class TripleAFrame extends JFrame
     }
 }
 
+
+
+
+class PlayerChatRenderer extends DefaultListCellRenderer
+{
+    private final IGame m_game;
+    private final UIContext m_uiContext;
+    
+    PlayerChatRenderer(IGame game, UIContext uiContext)
+    {
+        m_game = game;
+        m_uiContext  = uiContext;
+    }
+
+    @Override
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+    {
+       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+       
+       Set<String> players = m_game.getPlayerManager().getPlayedBy(value.toString());
+       
+       if(players.size() > 0)
+       {
+           setHorizontalTextPosition(SwingConstants.LEFT);
+           List<Icon> icons = new ArrayList<Icon>(players.size());
+           for(String player : players)
+           {
+               icons.add(new ImageIcon( m_uiContext.getFlagImageFactory().getSmallFlag( m_game.getData().getPlayerList().getPlayerID(player) )));
+           }
+           setIcon(new CompositeIcon(icons));
+       }
+       
+       return this;
+    }
+    
+}
+
+
+class CompositeIcon implements Icon
+{
+    private static final int GAP = 2;
+    
+    private final List<Icon> m_incons;
+    
+    CompositeIcon(List<Icon> icons)
+    {
+        m_incons = icons;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y)
+    {
+        int dx = 0;
+        for(Icon icon : m_incons)
+        {
+            icon.paintIcon(c, g, x + dx, y);
+            dx += GAP;
+            dx += icon.getIconWidth();
+        }
+        
+    }
+
+    public int getIconWidth()
+    {
+        int sum = 0;
+        for(Icon icon : m_incons)
+        {
+            sum += icon.getIconWidth();
+            sum += GAP;
+        }
+        return sum;
+    }
+
+    public int getIconHeight()
+    {
+        int max = 0;
+        for(Icon icon : m_incons)
+        {
+            max = Math.max(icon.getIconHeight(), max);
+        
+        }
+        return max;
+        
+    }
+    
+}

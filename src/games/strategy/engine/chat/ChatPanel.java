@@ -69,6 +69,11 @@ public class ChatPanel extends JPanel implements IChatListener
         setChat(chat);
     }
     
+    public void setPlayerRenderer(ListCellRenderer renderer)
+    {
+        m_players.setCellRenderer(renderer);
+    }
+    
     public ChatPanel(Chat chat)
     {
         init();

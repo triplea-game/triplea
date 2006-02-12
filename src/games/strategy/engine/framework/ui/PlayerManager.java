@@ -56,6 +56,19 @@ public class PlayerManager
         return new HashSet<String>(m_playerMapping.keySet());
     }
     
+    public Set<String> getPlayedBy(String playerName)
+    {
+        Set<String> rVal = new HashSet<String>();
+        for(String player : m_playerMapping.keySet())
+        {
+            if(m_playerMapping.get(player).getName().equals(playerName) )
+            {
+                rVal.add(player);
+            }
+        }
+        return rVal;
+    }
+    
     
     /**
      * Get a player from an opposing side, if possible, else
