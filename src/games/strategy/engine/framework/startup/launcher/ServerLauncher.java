@@ -37,7 +37,6 @@ import javax.swing.*;
 public class ServerLauncher implements ILauncher
 {
 
-    public static final String CLIENT_READY_CHANNEL = "games.strategy.engine.framework.ui.LauncherFrame.CLIENT_READY_CHANNEL";
     private static final Logger s_logger = Logger.getLogger(ServerLauncher.class.getName());    
     
     private final int m_clientCount;
@@ -75,19 +74,13 @@ public class ServerLauncher implements ILauncher
 
     public void launch(final Component parent)
     {
-        //TODO -
-        //we take some care to handles players being lost during startup
-        //and to turn away obserers trying to join during startup
-        //but there are a couple edge cases still (though quite unlikely)
-        //where things can screw up.  
-     
         m_ui = parent;
      
         m_serverModel.setServerLauncher(this);
         
         s_logger.fine("Starting server");
         m_serverReady = new ServerReady(m_clientCount);
-        m_remoteMessenger.registerRemote(IServerReady.class, m_serverReady, CLIENT_READY_CHANNEL);
+        m_remoteMessenger.registerRemote(IServerReady.class, m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
 
         byte[] gameDataAsBytes;
         try
@@ -124,7 +117,7 @@ public class ServerLauncher implements ILauncher
         m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet);
 
         m_serverReady.await();
-        m_remoteMessenger.unregisterRemote(CLIENT_READY_CHANNEL);
+        m_remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
 
         if (useSecureRandomSource)
         {
