@@ -34,6 +34,7 @@ public class MapData
     private final String DEFAULT_UNIT_SCALE_PROPERTY = "units.scale";
     private final String HAS_RELIEF_IMAGES = "map.hasRelief";
     private final String SHOW_CAPITOL_MARKERS = "map.showCapitolMarkers";
+    private final String SHOW_TERRITORY_NAMES = "map.showTerritoryNames";
     
     private static final String CENTERS_FILE = "centers.txt";
     private static final String POLYGON_FILE = "polygons.txt";
@@ -42,6 +43,7 @@ public class MapData
     private static final String CAPITAL_MARKERS = "capitols.txt";
     private static final String VC_MARKERS = "vc.txt";
     private static final String IMPASSIBLE = "Impassible";
+    private static final String IPC_PLACE_FILE = "ipc_place.txt";
 
 
     //default colour if none is defined.
@@ -63,6 +65,9 @@ public class MapData
 
     //maps String -> Point    
     private Map<String,Point> m_vcPlace;
+
+    //maps String -> Point    
+    private Map<String,Point> m_ipcPlace;
     
     //maps String -> Point
     private Map<String,Point> m_capitolPlace;
@@ -98,6 +103,7 @@ public class MapData
             m_centers = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CENTERS_FILE));
             m_vcPlace = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + VC_MARKERS));
             m_capitolPlace = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CAPITAL_MARKERS));
+            m_ipcPlace = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + IPC_PLACE_FILE));            
             m_mapProperties = new Properties();
             
             try
@@ -143,6 +149,11 @@ public class MapData
     public boolean drawCapitolMarkers()
     {
         return Boolean.valueOf(m_mapProperties.getProperty(SHOW_CAPITOL_MARKERS, "true")).booleanValue();
+    }
+
+    public boolean drawTerritoryNames()
+    {
+        return Boolean.valueOf(m_mapProperties.getProperty(SHOW_TERRITORY_NAMES, "true")).booleanValue();
     }
     
     
@@ -330,6 +341,13 @@ public class MapData
         if(m_vcPlace.containsKey(terr.getName()))
             return (Point) m_vcPlace.get(terr.getName());
         return getCenter(terr);
+    }
+    
+    public Point getIPCPlacementPoint(Territory terr)
+    {
+        if(m_ipcPlace.containsKey(terr.getName()))
+            return (Point) m_ipcPlace.get(terr.getName());
+        return null;  
     }
     
     /**

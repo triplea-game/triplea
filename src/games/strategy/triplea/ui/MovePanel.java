@@ -186,11 +186,14 @@ public class MovePanel extends ActionPanel
         });
         
         m_forced = null;
-
-        getRootPane().registerKeyboardAction(null,
+        JComponent rootPane = getRootPane();
+        if(rootPane != null)
+        {
+            rootPane.registerKeyboardAction(null,
                 KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
                 WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
                 );
+        }
     }
 
 

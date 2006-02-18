@@ -135,7 +135,7 @@ public class UIContext
         {
             if(m_isShutDown)
             {
-                closeActive(actor);
+                closeActor(actor);
                 return;
             }
             m_activeToDeactivate.add(actor);
@@ -192,7 +192,7 @@ public class UIContext
            JMenuBar menu = (JMenuBar) frame.getJMenuBar();
            if(menu != null)
            {
-               while(menu.getMenuCount() < 0)
+               while(menu.getMenuCount() > 0)
                    menu.remove(0);
            }
            
@@ -252,27 +252,35 @@ public class UIContext
             if(m_isShutDown)
                 return;
             m_isShutDown = true;
-            
-            for(CountDownLatch latch : m_latchesToCloseOnShutdown)
-            { 
-                releaseLatch(latch);
-            }
-            
-            for(Window window : m_windowsToCloseOnShutdown)
-            { 
-                closeWindow(window);
-            }
-            
-            for(Active actor : m_activeToDeactivate)
-            {
-                closeActive(actor);
-            }
-            
         }
+        
+        for(CountDownLatch latch : m_latchesToCloseOnShutdown)
+        { 
+            releaseLatch(latch);
+        }
+        
+        for(Window window : m_windowsToCloseOnShutdown)
+        { 
+            closeWindow(window);
+        }
+        
+        for(Active actor : m_activeToDeactivate)
+        {
+            closeActor(actor);
+        }
+     
     }
 
-    private void closeActive(Active actor) 
+    private void closeActor(Active actor) 
     {
-        actor.deactivate();
+        try
+        {
+            actor.deactivate();
+        }
+        catch(RuntimeException re)
+        {
+            re.printStackTrace();
+        }
+        
     }
 }

@@ -101,14 +101,32 @@ class TerritoryNameDrawable implements IDrawable
         x -= fm.stringWidth(territory.getName()) >> 1;
         y += fm.getAscent() >> 1;
 
-        graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
+        if(mapData.drawTerritoryNames())
+            graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
 
+        //draw the ipcs.
         if (ta.getProduction() > 0)
         {
             String prod = new Integer(ta.getProduction()).toString();
-            x = territoryBounds.x + ((((int) territoryBounds.getWidth()) - fm.stringWidth(prod)) >> 1);
-            y += fm.getLeading() + fm.getAscent();
-            graphics.drawString(prod, x - bounds.x, y - bounds.y);
+            Point place = mapData.getIPCPlacementPoint(territory);
+            //if ipc_place.txt is specified draw there
+            if(place != null)
+            {
+                graphics.drawString(prod, place.x - bounds.x, place.y - bounds.y);                
+            }
+            //otherwise, draw under the territory name
+            else
+            {
+                x = territoryBounds.x + ((((int) territoryBounds.getWidth()) - fm.stringWidth(prod)) >> 1);
+                y += fm.getLeading() + fm.getAscent();
+                graphics.drawString(prod, x - bounds.x, y - bounds.y);
+                
+            }
+                
+            
+ 
+            
+
         }
 
     }
