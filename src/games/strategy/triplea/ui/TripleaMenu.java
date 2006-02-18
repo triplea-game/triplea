@@ -182,8 +182,8 @@ public class TripleaMenu extends JMenuBar
                 "<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()+
         "<br><b>Game:</b> "+getData().getGameName()+
                 "<br><b>Game Version:</b>" + getData().getGameVersion()+"</p>"+
-        "<p>For more information please visit,<br>"+
-                "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b>";
+        "<p>For more information please visit,<br><br>"+
+                "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
 
                 JEditorPane editorPane = new JEditorPane();
                 editorPane.setBorder(null);

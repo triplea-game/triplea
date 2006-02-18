@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.*;
 
 public class MainPanel extends JPanel implements Observer
 {
@@ -49,6 +49,7 @@ public class MainPanel extends JPanel implements Observer
         m_cancelButton = new JButton("Cancel");
         
         m_gameSelectorPanel = new GameSelectorPanel(m_gameSelectorModel);
+        m_gameSelectorPanel.setBorder(new EtchedBorder());
         
         m_gameSetupPanelHolder = new JPanel();
         m_gameSetupPanelHolder.setLayout(new BorderLayout());
@@ -61,6 +62,7 @@ public class MainPanel extends JPanel implements Observer
     private void layoutComponents()
     {
         JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBorder(new EtchedBorder());
         buttonsPanel.setLayout(new FlowLayout( FlowLayout.CENTER ));
         buttonsPanel.add(m_playButton);
         buttonsPanel.add(m_quitButton);
@@ -75,7 +77,7 @@ public class MainPanel extends JPanel implements Observer
         addChat();
         
         
-        add(buttonsPanel, new GridBagConstraints(0,2, 2,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.VERTICAL, new Insets(00,0,0,0), 0,0));
+        add(buttonsPanel, new GridBagConstraints(0,2, 2,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00,0,0,0), 0,0));
         
         
         setPreferredSize(m_initialSize);

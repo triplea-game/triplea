@@ -79,9 +79,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
         m_info.setLayout(new GridBagLayout());
 
-        m_info.add(new JLabel("Name:"), new GridBagConstraints(0,0,1,1,0.5,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
-        m_info.add(new JLabel("Address:"), new GridBagConstraints(0,1,1,1,0.5,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
-        m_info.add(new JLabel("Port:"), new GridBagConstraints(0,2,1,1,0.5,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+        m_info.add(new JLabel("Name:"), new GridBagConstraints(0,0,1,1,0,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,10,0,5), 0,0));
+        m_info.add(new JLabel("Address:"), new GridBagConstraints(0,1,1,1,0,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,10,0,5), 0,0));
+        m_info.add(new JLabel("Port:"), new GridBagConstraints(0,2,1,1,0,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,10,0,5), 0,0));
 
         m_info.add(m_nameField, new GridBagConstraints(1,0,1,1,0.5,1.0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5,0,0,5), 0,0));
         m_info.add(m_addressField, new GridBagConstraints(1,1,1,1,0.5,1.0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5,0,0,5), 0,0));
