@@ -66,7 +66,7 @@ public class MainFrame extends JFrame
         
         pack();
 
-        games.strategy.ui.Util.center(this);
+        setLocationRelativeTo(null);
     }
     
     /**

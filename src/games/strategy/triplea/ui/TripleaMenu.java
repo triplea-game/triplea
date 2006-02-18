@@ -18,26 +18,22 @@ import games.strategy.debug.Console;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.random.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
-import games.strategy.net.IServerMessenger;
+import games.strategy.net.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.TileImageFactory;
 
 import java.awt.event.*;
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.text.*;
-import java.text.DecimalFormat;
 import java.util.*;
 
 import javax.swing.*;
-import javax.swing.JMenuBar;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -241,12 +237,10 @@ public class TripleaMenu extends JMenuBar
         //then this will not create the network menu
         if(getGame().getMessenger() instanceof DummyMessenger)
             return;
-
-        if(!getGame().getMessenger().isServer())
-            return;
         
         JMenu menuNetwork = new JMenu("Network");
         addAllowObserversToJoin(menuNetwork);
+        addBootPlayer(menuNetwork);
         addShowPlayers(menuNetwork);
         menuBar.add(menuNetwork);
     }
@@ -268,6 +262,61 @@ public class TripleaMenu extends JMenuBar
         };
         if (getGame() instanceof ClientGame)
             parentMenu.add(showVerifiedDice);
+    }
+    
+    /**
+     * @param parentMenu
+     */
+    private void addBootPlayer(JMenu parentMenu)
+    {
+        if(!getGame().getMessenger().isServer())
+            return;
+        
+        final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
+        
+        Action boot =  new AbstractAction("Remove Player From Game...")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                
+                
+                DefaultComboBoxModel model = new DefaultComboBoxModel();
+                JComboBox combo = new JComboBox(model);
+                model.addElement("");
+                
+                for(INode node : messenger.getNodes())
+                {
+                    if(!node.equals(messenger.getLocalNode()))
+                        model.addElement(node.getName());
+                }
+                
+                if(model.getSize() == 1)
+                {
+                    JOptionPane.showMessageDialog(m_frame,  "No remote players", "No Remote Players" , JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                int rVal = JOptionPane.showConfirmDialog(m_frame, combo, "Select player to remove", JOptionPane.OK_CANCEL_OPTION);
+                if(rVal != JOptionPane.OK_OPTION)
+                    return;
+                
+                String name = (String) combo.getSelectedItem();
+                
+                for(INode node : messenger.getNodes())
+                {
+                    if(node.getName().equals(name))
+                    {
+                        messenger.removeConnection(node);
+                        return;
+                    }
+                }
+                
+            }
+        };
+
+        
+        parentMenu.add(boot);
+        return;
     }
     
     /**

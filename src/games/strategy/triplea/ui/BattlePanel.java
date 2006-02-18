@@ -207,7 +207,8 @@ public class BattlePanel extends ActionPanel
 
                     m_battleFrame.getContentPane().add(m_battleDisplay);
                     m_battleFrame.setSize(750, 500);
-                    games.strategy.ui.Util.center(m_battleFrame);
+                    m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+                    
                     
                     m_battleFrame.setVisible(true);
                     m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

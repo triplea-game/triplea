@@ -19,14 +19,11 @@
 
 package games.strategy.ui;
 
-import games.strategy.triplea.ui.Active;
-
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
-import java.util.List;
 
 /**
  * 

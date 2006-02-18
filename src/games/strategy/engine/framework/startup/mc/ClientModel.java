@@ -48,6 +48,7 @@ public class ClientModel implements IMessengerErrorListener
     private final SetupPanelModel m_typePanelModel;
     private Component m_ui;
     private ChatPanel m_chatPanel;
+    private ClientGame m_game;
     
     //we set the game data to be null, since we
     //are a client game, and the game data lives on the server
@@ -301,7 +302,7 @@ public class ClientModel implements IMessengerErrorListener
         
         final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
 
-        final ClientGame clientGame = new ClientGame(data, playerSet, m_messenger,
+        m_game  = new ClientGame(data, playerSet, m_messenger,
                 m_channelMessenger, m_remoteMessenger, new PlayerManager(players));
 
         
@@ -317,8 +318,10 @@ public class ClientModel implements IMessengerErrorListener
                   }
               
               });
-                
-              data.getGameLoader().startGame(clientGame, playerSet);    
+              
+              //game will be null if we loose the connection
+              if(m_game != null)
+                  data.getGameLoader().startGame(m_game, playerSet);    
               
               //we will not have this remote if we are starting as an observer
               if(m_remoteMessenger.hasRemote(CLIENT_READY_CHANNEL))
@@ -384,7 +387,13 @@ public class ClientModel implements IMessengerErrorListener
     private void connectionLost()
     {
         JOptionPane.showMessageDialog(m_ui,"Connection Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE );
-        m_typePanelModel.showSelectType();
+        if(m_game != null)
+        {
+            m_game.shutDown();
+            m_game = null;
+        }
+        
+        MainFrame.getInstance().clientLeftGame();
     }
     
     public void connectionLost(INode node, Exception reason, List unsent)

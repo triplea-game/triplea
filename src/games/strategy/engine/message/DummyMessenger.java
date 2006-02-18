@@ -150,4 +150,10 @@ public class DummyMessenger implements IServerMessenger
         return false;
     }
 
+    public void removeConnection(INode node)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

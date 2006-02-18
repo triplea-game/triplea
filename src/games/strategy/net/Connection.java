@@ -181,7 +181,7 @@ class Connection
         m_waitingToBeSent.offer(msg);
     }
 
-    public void shutDown()
+    public boolean shutDown()
     {
             if (!m_shutdown)
             {
@@ -190,13 +190,14 @@ class Connection
                 {
                     m_socket.close();
                     m_writer.interrupt();
+                    return true;
                 } catch (Exception e)
                 {
                     System.err.println("Exception shutting down");
                     e.printStackTrace();
                 }
             }
-
+            return false;
     }
 
     public boolean isConnected()
@@ -257,10 +258,12 @@ class Connection
                     if (!m_shutdown)
                     {
                         ioe.printStackTrace();
-                        shutDown();
-                        List<MessageHeader> unsent = new ArrayList<MessageHeader>(m_waitingToBeSent);
-                        unsent.add(next);
-                        m_listener.fatalError(ioe, Connection.this, unsent);
+                        if(shutDown())
+                        {
+                            List<MessageHeader> unsent = new ArrayList<MessageHeader>(m_waitingToBeSent);
+                            unsent.add(next);
+                            m_listener.fatalError(ioe, Connection.this, unsent);
+                        }
                     }
                 }
             }
@@ -311,9 +314,11 @@ class Connection
                             
                         
                         
-                        shutDown();
-                        List<MessageHeader> unsent = new ArrayList(Arrays.asList(m_waitingToBeSent.toArray()));
-                        m_listener.fatalError(ioe, Connection.this, unsent);
+                        if(shutDown())
+                        {
+                            List<MessageHeader> unsent = new ArrayList(Arrays.asList(m_waitingToBeSent.toArray()));
+                            m_listener.fatalError(ioe, Connection.this, unsent);
+                        }
                     }
                 }
             }

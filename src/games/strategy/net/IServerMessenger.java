@@ -38,5 +38,10 @@ public interface IServerMessenger extends IMessenger
 	 * the accepter accepts.
 	 */
 	public void setConnectionAccepter(IConnectionAccepter accepter);
+    
+    /**
+     * Remove the node from the network.
+     */
+    public void removeConnection(INode node);
 }
 

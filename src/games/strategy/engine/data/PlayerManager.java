@@ -37,6 +37,11 @@ public class PlayerManager
         return new HashMap<String, INode>(m_playerMapping);
     }
     
+    public Set<INode> getNodes()
+    {
+        return new HashSet<INode>( m_playerMapping.values());
+    }
+    
     public INode getNode(String playerName)
     {
         return m_playerMapping.get(playerName);
