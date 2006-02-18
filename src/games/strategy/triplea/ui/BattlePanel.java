@@ -48,12 +48,19 @@ public class BattlePanel extends ActionPanel
     private FightBattleDetails m_fightBattleMessage;
 
     private BattleDisplay m_battleDisplay;
-    private JFrame m_battleFrame;
+    
+    //there is a bug in linux jdk1.5.0_6 where frames are not
+    //being garbage collected
+    //reuse one frame
+    private final JFrame m_battleFrame;
 
     /** Creates new BattlePanel */
     public BattlePanel(GameData data, MapPanel map)
     {
         super(data, map);
+        m_battleFrame = new JFrame();
+        m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame ));
+        getMap().getUIContext().addShutdownWindow(m_battleFrame);
 
     }
 
@@ -130,14 +137,8 @@ public class BattlePanel extends ActionPanel
         if (m_battleDisplay != null)
         {
             m_battleDisplay.cleanUp();
+            m_battleFrame.getContentPane().removeAll();
             m_battleDisplay = null;
-            if (m_battleFrame.isVisible())
-            {
-                getMap().getUIContext().addShutdownWindow(m_battleFrame);
-                m_battleFrame.setVisible(false);
-                m_battleFrame.dispose();
-            }
-            m_battleFrame = null;
         }
     }
 
@@ -201,13 +202,12 @@ public class BattlePanel extends ActionPanel
 
                     m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
                     
-                    m_battleFrame = new JFrame(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-                    m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame ));
+                    m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+                    
+
                     m_battleFrame.getContentPane().add(m_battleDisplay);
                     m_battleFrame.setSize(750, 500);
                     games.strategy.ui.Util.center(m_battleFrame);
-                    
-                    getMap().getUIContext().addShutdownWindow(m_battleFrame);
                     
                     m_battleFrame.setVisible(true);
                     m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

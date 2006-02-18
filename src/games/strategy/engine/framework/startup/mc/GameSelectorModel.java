@@ -15,10 +15,8 @@
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.GameDataManager;
-import games.strategy.engine.framework.ui.NewGameFileChooser;
+import games.strategy.engine.framework.startup.ui.NewGameFileChooser;
 
 import java.awt.Component;
 import java.io.*;
@@ -38,6 +36,7 @@ public class GameSelectorModel extends Observable
     private String m_gameVersion;
     private String m_gameRound;
     private String m_fileName;
+    private boolean m_canSelect = true;;
     
     
     public GameSelectorModel()
@@ -101,6 +100,19 @@ public class GameSelectorModel extends Observable
         return m_data;
     }
     
+    public void setCanSelect(boolean aBool)
+    {
+        m_canSelect = aBool;
+        
+        notifyObs();
+        
+    }
+    
+    public boolean canSelect()
+    {
+        return m_canSelect;
+    }
+    
     
     /**
      * We dont have a gane data (ie we are a remote player and the data has not been sent yet), but
@@ -113,9 +125,7 @@ public class GameSelectorModel extends Observable
         m_gameRound = gameRound;
         m_gameVersion = gameVersion;
         
-        super.setChanged();
-        super.notifyObservers(m_data);
-        super.clearChanged();
+        notifyObs();
     }
     
     public String getFileName()
@@ -156,6 +166,11 @@ public class GameSelectorModel extends Observable
         
         m_data = data;
         
+        notifyObs();
+    }
+
+    private void notifyObs()
+    {
         super.setChanged();
         super.notifyObservers(m_data);
         super.clearChanged();

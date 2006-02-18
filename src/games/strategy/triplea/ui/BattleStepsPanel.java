@@ -27,7 +27,7 @@ import javax.swing.*;
  *
  * @author Sean Bridges
  */
-class BattleStepsPanel extends JPanel
+class BattleStepsPanel extends JPanel implements Active
 {
     //if this is the target step, we want to walk to the last step
     private final static String LAST_STEP = "NULL MARKER FOR LAST STEP";
@@ -58,7 +58,7 @@ class BattleStepsPanel extends JPanel
                 {
                     try
                     {
-                        m_mutex.wait();
+                        m_mutex.wait(2000);
                     } catch (InterruptedException e)
                     {
                     }
@@ -81,11 +81,11 @@ class BattleStepsPanel extends JPanel
         m_walkThread.start();
     }
 
-    public void deactivate()
+     public void deactivate()
     {
+        m_deactivated = true;
         synchronized(m_mutex)
         {
-            m_deactivated = true;
             m_mutex.notifyAll();
         }
     }

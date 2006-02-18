@@ -16,7 +16,7 @@
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.framework.ui.NewGameFileChooser;
+import games.strategy.engine.framework.startup.ui.NewGameFileChooser;
 
 import java.io.*;
 

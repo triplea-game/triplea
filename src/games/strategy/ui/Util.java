@@ -43,6 +43,7 @@ public class Util
         MediaTracker tracker = new MediaTracker(comp);
         tracker.addImage(anImage, 1);
         tracker.waitForAll();
+        tracker.removeImage(anImage);
     }
 
     public static Image copyImage(BufferedImage img, boolean needAlpha)

@@ -97,7 +97,7 @@ public class MainFrame extends JFrame
      * After the game has been left, call this.
      *
      */
-    public void reset()
+    public void clientLeftGame()
     {
         m_gameSelectorModel.loadDefaultGame(this);
         m_setupPanelModel.showSelectType();

@@ -18,7 +18,6 @@ import java.awt.*;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.IGame;
-import games.strategy.engine.framework.ui.PlayerManager;
 
 import javax.swing.*;
 

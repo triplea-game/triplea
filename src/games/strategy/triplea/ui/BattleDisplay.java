@@ -92,6 +92,8 @@ public class BattleDisplay extends JPanel
     public void cleanUp()
     {
         m_steps.deactivate();
+        m_mapPanel.getUIContext().removeACtive(m_steps);
+        m_steps = null;
     }
     
     public Territory getBattleLocation()
@@ -202,7 +204,6 @@ public class BattleDisplay extends JPanel
             public void actionPerformed(ActionEvent e)
             {
                 enclosingFrame.setVisible(false);
-                enclosingFrame.dispose();
             }
         };
 
@@ -565,6 +566,8 @@ public class BattleDisplay extends JPanel
         m_messagePanel.add(m_messageLabel, BorderLayout.CENTER);
 
         m_steps = new BattleStepsPanel();
+        
+        m_mapPanel.getUIContext().addActive(m_steps);
         m_steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         m_dicePanel = new DicePanel(m_mapPanel.getUIContext());
 
@@ -677,7 +680,9 @@ public class BattleDisplay extends JPanel
 
         Image territory = m_mapPanel.getTerritoryImage(m_location);
 
-        finalImage.getGraphics().drawImage(territory, 0, 0, MY_WIDTH, MY_HEIGHT, this);
+        Graphics g = finalImage.getGraphics();
+        g.drawImage(territory, 0, 0, MY_WIDTH, MY_HEIGHT, this);
+        g.dispose();
 
         return new JLabel(new ImageIcon(finalImage));
 
@@ -832,7 +837,7 @@ class Renderer implements TableCellRenderer
 class TableData
 {
 
-    static TableData NULL = new TableData();
+    static final TableData NULL = new TableData();
     private int m_count;
     private Icon m_icon;
 

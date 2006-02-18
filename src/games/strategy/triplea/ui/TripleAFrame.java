@@ -53,8 +53,8 @@ import javax.swing.border.*;
  */
 public class TripleAFrame extends JFrame
 {
-    private final GameData m_data;
-    private final IGame m_game;
+    private GameData m_data;
+    private IGame m_game;
     private MapPanel m_mapPanel;
     private MapPanelSmallView m_smallView;
     private JLabel m_message = new JLabel("No selection");
@@ -72,7 +72,7 @@ public class TripleAFrame extends JFrame
     private HistoryPanel m_historyTree;
     private boolean m_inHistory = false;
     private HistorySynchronizer m_historySyncher;
-    private final UIContext m_uiContext;
+    private UIContext m_uiContext;
     private JPanel m_mapAndChatPanel;
     private ChatPanel m_chatPanel;
     private JSplitPane m_chatSplit;
@@ -196,9 +196,69 @@ public class TripleAFrame extends JFrame
 
     public void stopGame()
     {        
+        
+        
         m_uiContext.shutDown();
         if(m_chatPanel != null)
+        {
+            m_chatPanel.setPlayerRenderer(new DefaultListCellRenderer());
             m_chatPanel.setChat(null);
+        }
+            
+
+        if(m_historySyncher != null)
+        {
+            m_historySyncher.deactivate();
+            m_historySyncher = null;
+        }
+
+        
+        //there is a bug in java (1.50._06  for linux at least)
+        //where frames are not garbage collected.
+        //
+        //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6364875
+        //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6368950
+        //
+        //so remove all references to everything
+        //to minimize the damage
+
+        
+        m_game.removeGameStepListener(m_stepListener);
+        
+        m_game = null;
+        m_uiContext = null;
+        m_data = null;
+        
+        MAP_SELECTION_LISTENER = null;
+                
+        
+        m_actionButtons = null;
+        m_chatPanel = null;
+        m_chatSplit = null;
+        m_details = null;        
+        m_gameMainPanel = null;
+        m_stepListener = null;
+        m_gameSouthPanel = null;
+        m_historyTree = null;
+        m_historyPanel= null;        
+        m_mapPanel = null;
+        m_mapAndChatPanel = null;
+        m_message = null;
+        m_rightHandSidePanel = null;
+        m_smallView = null;
+        m_statsPanel = null;
+        m_step = null;
+        m_round = null;
+        m_tabsPanel = null;
+        
+        m_showGameAction = null;
+        m_showHistoryAction = null;
+        m_localPlayers = null;
+        
+        
+        removeWindowListener(WINDOW_LISTENER);
+        WINDOW_LISTENER = null;
+
     }
     
     void shutdown()
@@ -227,7 +287,7 @@ public class TripleAFrame extends JFrame
             
             //an ugly hack, we need a better
             //way to get the main frame
-            MainFrame.getInstance().reset();
+            MainFrame.getInstance().clientLeftGame();
         }
     }
 
@@ -243,7 +303,7 @@ public class TripleAFrame extends JFrame
 
 
 
-    private final WindowListener WINDOW_LISTENER = new WindowAdapter()
+    private WindowListener WINDOW_LISTENER = new WindowAdapter()
     {
         public void windowClosing(WindowEvent e)
         {
@@ -251,7 +311,7 @@ public class TripleAFrame extends JFrame
         }
     };
 
-    public final MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
+    public MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
     {
         Territory in;
 
@@ -563,6 +623,10 @@ public class TripleAFrame extends JFrame
 
     private void updateStep()
     {
+        UIContext context = m_uiContext;
+        if(context == null || context.isShutDown())
+            return;
+        
         if (m_data.getSequence().getStep() == null)
             return;
 

@@ -23,7 +23,6 @@ package games.strategy.engine.framework;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.*;
-import games.strategy.engine.framework.ui.PlayerManager;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.message.*;

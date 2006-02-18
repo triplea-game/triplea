@@ -13,11 +13,12 @@
  */
 
 /*
- * ClientOptions.java
+ * ServerOptions.java
  *
- * Created on February 1, 2002, 1:50 PM
+ * Created on February 1, 2002, 12:18 PM
  */
-package games.strategy.engine.framework.ui;
+
+package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.ui.IntTextField;
 
@@ -27,35 +28,32 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 /**
- * UI for choosing client options.
+ * UI for choosing server options.
  *
  * @author  Sean Bridges
  */
-public class ClientOptions extends JDialog
+public class ServerOptions extends JDialog
 {
 
   private JTextField m_nameField;
-  private JTextField m_addressField;
   private IntTextField m_portField;
   private boolean m_okPressed;
 
   /**
-   * Creates a new instance of ClientOptions
+   * Creates a new instance of ServerOptions
    */
-  public ClientOptions(Component parent, String defaultName, int defaultPort, String defaultAddress)
+  public ServerOptions(Component owner, String defaultName, int defaultPort)
   {
-    super(JOptionPane.getFrameForComponent(parent), "Client options", true);
+    super(JOptionPane.getFrameForComponent(owner), "Server options", true);
 
     initComponents();
     layoutComponents();
 
     m_nameField.setText(defaultName);
     m_portField.setValue(defaultPort);
-    m_addressField.setText(defaultAddress);
 
     pack();
   }
-
 
   public String getName()
   {
@@ -66,11 +64,6 @@ public class ClientOptions extends JDialog
   	return s;
   }
 
-  public String getAddress()
-  {
-    return m_addressField.getText().trim();
-  }
-
   public int getPort()
   {
     return m_portField.getValue();
@@ -79,7 +72,6 @@ public class ClientOptions extends JDialog
   private void initComponents()
   {
     m_nameField = new JTextField(10);
-    m_addressField = new JTextField(10);
     m_portField = new IntTextField(0, Integer.MAX_VALUE);
     m_portField.setColumns(7);
   }
@@ -90,14 +82,14 @@ public class ClientOptions extends JDialog
     content.setLayout(new BorderLayout());
 
     JPanel title = new JPanel();
-    title.add(new JLabel("Select client options"));
+    title.add(new JLabel("Select server options"));
     content.add(title, BorderLayout.NORTH);
 
     Insets labelSpacing = new Insets(3,7,0,0);
     Insets fieldSpacing = new Insets(3,5,0,7);
 
     GridBagConstraints labelConstraints = new GridBagConstraints();
-    labelConstraints.anchor = GridBagConstraints.EAST;
+    labelConstraints.anchor = GridBagConstraints.WEST;
     labelConstraints.gridx = 0;
     labelConstraints.insets = labelSpacing;
 
@@ -112,23 +104,16 @@ public class ClientOptions extends JDialog
     fields.setLayout(layout);
 
     JLabel nameLabel = new JLabel("Name:");
-    JLabel portLabel = new JLabel("Server Port:");
-    JLabel addressLabel = new JLabel("Server Address:");
-
+    JLabel portLabel = new JLabel("Port:");
     layout.setConstraints(portLabel, labelConstraints);
     layout.setConstraints(nameLabel, labelConstraints);
-    layout.setConstraints(addressLabel, labelConstraints);
-
     layout.setConstraints(m_portField, fieldConstraints);
     layout.setConstraints(m_nameField, fieldConstraints);
-    layout.setConstraints(m_addressField, fieldConstraints);
 
     fields.add(nameLabel);
     fields.add(m_nameField);
     fields.add(portLabel);
     fields.add(m_portField);
-    fields.add(addressLabel);
-    fields.add(m_addressField);
 
     content.add(fields, BorderLayout.CENTER);
 
@@ -144,9 +129,9 @@ public class ClientOptions extends JDialog
     return m_okPressed;
   }
 
-  private Action m_okAction = new AbstractAction("Connect")
-  {
 
+  private Action m_okAction = new AbstractAction("OK")
+  {
     public void actionPerformed(ActionEvent e)
     {
       setVisible(false);

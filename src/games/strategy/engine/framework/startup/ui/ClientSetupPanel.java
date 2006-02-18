@@ -17,7 +17,7 @@ public class ClientSetupPanel extends SetupPanel
 {
     private final Insets BUTTON_INSETS = new Insets(0,0,0,0);
     private final ClientModel m_model;
-    private JLabel m_nameLabel;
+    
     private List<PlayerRow> m_playerRows = Collections.emptyList();
     
     
@@ -70,7 +70,7 @@ public class ClientSetupPanel extends SetupPanel
     
     private void createComponents()
     {
-        m_nameLabel = new JLabel("Name:" + m_model.getMessenger().getLocalNode().getName());
+        
     }
 
     private void layoutComponents()
@@ -80,7 +80,7 @@ public class ClientSetupPanel extends SetupPanel
 
         JPanel info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
-        info.add(m_nameLabel);
+        
         info.add(new JLabel(" "));
         add(info, BorderLayout.NORTH);
 

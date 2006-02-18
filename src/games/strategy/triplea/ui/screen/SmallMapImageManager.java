@@ -84,14 +84,21 @@ public class SmallMapImageManager
         
         // make it transparent
         //http://www-106.ibm.com/developerworks/library/j-begjava/
-        Graphics2D g =  (Graphics2D) largeImage.getGraphics();
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-        g.setColor(new Color(0));
-        g.fillRect(0, 0, bounds.width, bounds.height);
+        {
+            Graphics2D g =  (Graphics2D) largeImage.getGraphics();
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+            g.setColor(new Color(0));
+            g.fillRect(0, 0, bounds.width, bounds.height);
+            g.dispose();
+        }
         
         //draw the territory
-        LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
-        drawable.draw(bounds, data, (Graphics2D) largeImage.getGraphics(), mapData);
+        {
+            Graphics g = largeImage.getGraphics();
+            LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
+            drawable.draw(bounds, data, (Graphics2D)g , mapData);
+            g.dispose();
+        }
         
         //scale it down
         int thumbWidth = (int) (bounds.width / m_view.getRatioX()) ;        
@@ -108,16 +115,23 @@ public class SmallMapImageManager
         
         //create the thumb image
         Image thumbImage = Util.createImage( thumbWidth, thumbHeight , true);
-        thumbImage.getGraphics().drawImage(largeImage, 0,0, thumbImage.getWidth(null), thumbImage.getHeight(null), null);
-
+        {
+            Graphics g = thumbImage.getGraphics();
+            g.drawImage(largeImage, 0,0, thumbImage.getWidth(null), thumbImage.getHeight(null), null);
+            g.dispose();
+        }
         
-        //draw it on our offscreen
-        m_offscreen.getGraphics().drawImage( thumbImage,
-                							 thumbsX,
-                		 	                 thumbsY,
-                		 	                 thumbImage.getWidth(null),
-                		 	                 thumbImage.getHeight(null),
-                		 	                 null);
+        {
+           Graphics g = m_offscreen.getGraphics();
+            //draw it on our offscreen
+            g.drawImage( thumbImage,
+                    							 thumbsX,
+                    		 	                 thumbsY,
+                    		 	                 thumbImage.getWidth(null),
+                    		 	                 thumbImage.getHeight(null),
+                    		 	                 null);
+            g.dispose();
+        }
         
     }
     

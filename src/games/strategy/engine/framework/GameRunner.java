@@ -20,14 +20,10 @@
 
 package games.strategy.engine.framework;
 
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.awt.*;
+import java.io.*;
+import java.net.*;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -43,7 +39,7 @@ public class GameRunner
 {
     public final static int PORT = 3300;
 
-    public static Image getGameIcon(JFrame frame)
+    public static Image getGameIcon(Window frame)
     {
         Image img = null;
         try

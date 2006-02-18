@@ -45,16 +45,28 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     {
         IServerMessenger messenger = m_model.getMessenger();
         
+        Color backGround = new JTextField().getBackground();
+        
         m_portField = new JTextField("" + messenger.getLocalNode().getPort());
-        m_portField.setEnabled(false);
+        m_portField.setEnabled(true);
+        m_portField.setEditable(false);
+        m_portField.setBackground(backGround);
+        
         m_portField.setColumns(6);
 
         m_addressField = new JTextField(messenger.getLocalNode().getAddress().getHostAddress());
-        m_addressField.setEnabled(false);
+        m_addressField.setEnabled(true);
+        m_addressField.setEditable(false);
+        m_addressField.setBackground(backGround);
+
         m_addressField.setColumns(20);
 
         m_nameField = new JTextField(messenger.getLocalNode().getName());
-        m_nameField.setEnabled(false);
+        m_nameField.setEnabled(true);
+        m_nameField.setEditable(false);
+        m_nameField.setBackground(backGround);
+        
+
         m_nameField.setColumns(20);
         
         m_info = new JPanel();
@@ -67,13 +79,13 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
         m_info.setLayout(new GridBagLayout());
 
-        m_info.add(new JLabel("Name:"), new GridBagConstraints(0,0,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
-        m_info.add(new JLabel("Address:"), new GridBagConstraints(0,1,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
-        m_info.add(new JLabel("Port:"), new GridBagConstraints(0,2,1,1,0.5,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+        m_info.add(new JLabel("Name:"), new GridBagConstraints(0,0,1,1,0.5,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+        m_info.add(new JLabel("Address:"), new GridBagConstraints(0,1,1,1,0.5,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+        m_info.add(new JLabel("Port:"), new GridBagConstraints(0,2,1,1,0.5,0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
 
-        m_info.add(m_nameField, new GridBagConstraints(1,0,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
-        m_info.add(m_addressField, new GridBagConstraints(1,1,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
-        m_info.add(m_portField, new GridBagConstraints(1,2,1,1,0.5,0.5,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,0,0,0), 0,0));
+        m_info.add(m_nameField, new GridBagConstraints(1,0,1,1,0.5,1.0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5,0,0,5), 0,0));
+        m_info.add(m_addressField, new GridBagConstraints(1,1,1,1,0.5,1.0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5,0,0,5), 0,0));
+        m_info.add(m_portField, new GridBagConstraints(1,2,1,1,0.5,1.0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5,0,0,5), 0,0));
 
         add(m_info, BorderLayout.NORTH);
 

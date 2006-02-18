@@ -83,17 +83,19 @@ public class GameSelectorPanel extends JPanel implements Observer
         add(m_roundLabel, new GridBagConstraints(0,2,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,3,5), 0,0));
         add(m_roundText, new GridBagConstraints(1,2,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,3,0), 0,0));
 
-        add(m_fileNameLabel, new GridBagConstraints(0,3,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,3,5), 0,0));
-        add(m_fileNameText, new GridBagConstraints(1,3,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,3,0), 0,0));
+        
+        
+        add(m_fileNameLabel, new GridBagConstraints(0,3,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(20,10,3,5), 0,0));
+        add(m_fileNameText, new GridBagConstraints(0,4,2,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,3,5), 0,0));
 
         
         
-        add(m_loadNewGame, new GridBagConstraints(0,4,2,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(25,10,10,10), 0,0));
-        add(m_loadSavedGame, new GridBagConstraints(0,5,2,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,10,10), 0,0));
-        add(m_gameOptions, new GridBagConstraints(0,6,2,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,10,10), 0,0));        
+        add(m_loadNewGame, new GridBagConstraints(0,5,2,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(25,10,10,10), 0,0));
+        add(m_loadSavedGame, new GridBagConstraints(0,6,2,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,10,10), 0,0));
+        add(m_gameOptions, new GridBagConstraints(0,7,2,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(25,10,10,10), 0,0));        
         
         //spacer
-        add(new JPanel(), new GridBagConstraints(0,6,2,1,1,1,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
+        add(new JPanel(), new GridBagConstraints(0,8,2,1,1,1,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
         
         
         
@@ -143,11 +145,11 @@ public class GameSelectorPanel extends JPanel implements Observer
     private void setWidgetActivation()
     {
         
-        boolean canSelectGameData = m_model != null && m_model.getGameData() != null;
+        boolean canSelectGameData = m_model != null && m_model.canSelect();
        
         m_loadSavedGame.setEnabled(canSelectGameData);
         m_loadNewGame.setEnabled(canSelectGameData);
-        m_gameOptions.setEnabled(canSelectGameData);
+        m_gameOptions.setEnabled(canSelectGameData && m_model.getGameData() != null);
     }
 
     public void update(Observable o, Object arg)

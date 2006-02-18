@@ -118,7 +118,7 @@ public class PurchasePanel extends ActionPanel
   {
     public void actionPerformed(ActionEvent e)
     {
-      m_purchase = ProductionPanel.show(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase,getMap().getUIContext());
+      m_purchase = ProductionPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase,getMap().getUIContext());
       m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, getCurrentPlayer(), getData());
       if(m_purchase.totalValues() == 0)
       {

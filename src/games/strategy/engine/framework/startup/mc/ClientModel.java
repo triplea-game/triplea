@@ -16,13 +16,11 @@ package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
-import games.strategy.engine.framework.startup.ui.MainFrame;
-import games.strategy.engine.framework.ui.*;
-
+import games.strategy.engine.framework.startup.ui.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
@@ -37,6 +35,8 @@ import javax.swing.*;
 
 public class ClientModel implements IMessengerErrorListener
 {
+    
+    public static final String CLIENT_READY_CHANNEL = "games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL";
     private static Logger s_logger = Logger.getLogger(ClientModel.class.getName());
     
     private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
@@ -143,7 +143,7 @@ public class ClientModel implements IMessengerErrorListener
             m_messenger = new ClientMessenger(address, port, name, m_objectStreamFactory);
         } catch (Exception ioe)
         {
-            ioe.printStackTrace();
+            ioe.printStackTrace(System.out);
             JOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -182,6 +182,7 @@ public class ClientModel implements IMessengerErrorListener
             m_remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
         }
         
+        m_gameSelectorModel.setCanSelect(false);
         return true;
     }
 
@@ -195,8 +196,10 @@ public class ClientModel implements IMessengerErrorListener
         if(m_messenger == null)
             return;
         
+        m_objectStreamFactory.setData(null);
         m_messenger.shutDown();
         m_gameSelectorModel.setGameData(m_gameDataOnStartup);
+        m_gameSelectorModel.setCanSelect(true);
         m_messenger.removeErrorListener(this);
     }
     
@@ -230,6 +233,7 @@ public class ClientModel implements IMessengerErrorListener
 
       public void gameReset()
       {
+          m_objectStreamFactory.setData(null);
           MainFrame.getInstance().setVisible(true);
       }
       
@@ -317,8 +321,8 @@ public class ClientModel implements IMessengerErrorListener
               data.getGameLoader().startGame(clientGame, playerSet);    
               
               //we will not have this remote if we are starting as an observer
-              if(m_remoteMessenger.hasRemote(LauncherFrame.CLIENT_READY_CHANNEL))
-                  ((IServerReady) m_remoteMessenger.getRemote(LauncherFrame.CLIENT_READY_CHANNEL)).clientReady();
+              if(m_remoteMessenger.hasRemote(CLIENT_READY_CHANNEL))
+                  ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
             }
         };
         t.start();

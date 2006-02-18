@@ -25,7 +25,6 @@ import java.io.File;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.ui.PlayerManager;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.vault.Vault;

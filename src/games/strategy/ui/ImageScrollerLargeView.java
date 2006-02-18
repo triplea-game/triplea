@@ -19,6 +19,8 @@
 
 package games.strategy.ui;
 
+import games.strategy.triplea.ui.Active;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -42,7 +44,7 @@ import java.util.List;
  * our location and size.  Subclasses must take care of rendering 
  *  
  */
-public class ImageScrollerLargeView extends JComponent
+public class ImageScrollerLargeView extends JComponent 
 {
     //bit flags for determining which way we are scrolling
     final static int NONE = 0;
@@ -70,7 +72,7 @@ public class ImageScrollerLargeView extends JComponent
     
     protected Dimension m_dimensions;
 
-    private ActionListener mTimerAction = new ActionListener()
+    private ActionListener m_timerAction = new ActionListener()
     {
 
         public final void actionPerformed(ActionEvent e)
@@ -94,7 +96,7 @@ public class ImageScrollerLargeView extends JComponent
     };
 
     //scrolling
-    private javax.swing.Timer m_timer = new javax.swing.Timer(50, mTimerAction);
+    private javax.swing.Timer m_timer = new javax.swing.Timer(50, m_timerAction);
     private boolean m_inside = false;
     private int m_insideCount = 0;
     private int m_edge = NONE;
@@ -462,5 +464,12 @@ public class ImageScrollerLargeView extends JComponent
         {
             scroll();
         }
+    }
+
+    public void deactivate()
+    {
+        m_timer.stop();
+        m_timer.removeActionListener(m_timerAction);
+        
     }
 }

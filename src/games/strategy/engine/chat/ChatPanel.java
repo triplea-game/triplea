@@ -94,12 +94,16 @@ public class ChatPanel extends JPanel implements IChatListener
     public void setChat(Chat chat)
     {
         if(m_chat != null)
+        {
             m_chat.removeChatListener(this);
+            cleanupKeyMap();
+        }
         
         m_chat = chat;
         
         if(m_chat != null)
         {
+           setupKeyMap();
            m_chat.addChatListener(this);
            m_send.setEnabled(true);
            m_text.setEnabled(true);
@@ -165,10 +169,7 @@ public class ChatPanel extends JPanel implements IChatListener
 
         m_nextMessage = new JTextField(10);
         //when enter is pressed, send the message
-        Keymap nextMessageKeymap = m_nextMessage.getKeymap();
-        nextMessageKeymap.addActionForKeyStroke(KeyStroke.getKeyStroke('\n'), m_sendAction);
-		nextMessageKeymap.addActionForKeyStroke(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP,0,false), m_UpAction);
-		nextMessageKeymap.addActionForKeyStroke(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN,0,false), m_DownAction);
+        
 
 		
         m_listModel = new DefaultListModel();
@@ -199,6 +200,26 @@ public class ChatPanel extends JPanel implements IChatListener
         });
 
     }
+
+
+    private void setupKeyMap()
+    {
+        InputMap nextMessageKeymap = m_nextMessage.getInputMap();
+        nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), m_sendAction);
+		nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP,0,false), m_UpAction);
+		nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN,0,false), m_DownAction);
+    }
+    
+
+    private void cleanupKeyMap()
+    {
+        InputMap nextMessageKeymap = m_nextMessage.getInputMap();
+        nextMessageKeymap.remove(KeyStroke.getKeyStroke('\n') );
+        nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP,0,false));
+        nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN,0,false));
+    }
+    
+    
 
     private void mouseOnPlayersList(MouseEvent e)
     {
@@ -345,3 +366,4 @@ public class ChatPanel extends JPanel implements IChatListener
 		}
 	};
 }
+

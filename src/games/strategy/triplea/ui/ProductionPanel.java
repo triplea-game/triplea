@@ -42,11 +42,10 @@ import javax.swing.border.EtchedBorder;
  */
 public class ProductionPanel extends JPanel
 {
-    //TODO - this should really not be static
-    private static JFrame s_owner;
-    private static JDialog s_dialog;
-    private static ProductionPanel s_panel;
-    private static UIContext s_uiContext;
+
+    private JFrame m_owner;
+    private JDialog m_dialog;
+    private final UIContext m_uiContext;
     
     private List<Rule> m_rules = new ArrayList<Rule>();
     private JLabel m_left = new JLabel();
@@ -55,57 +54,65 @@ public class ProductionPanel extends JPanel
     private GameData m_data;
     
 
+    public static IntegerMap<ProductionRule> getProduction(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<ProductionRule> initialPurchase, UIContext context)
+    {
+        return new ProductionPanel(context).show(id, parent, data, bid, initialPurchase);
+    }
+    
+    
+    
     /**
      * Shows the production panel, and returns a map of selected rules.
      */
-    public static IntegerMap<ProductionRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<ProductionRule> initialPurchase, UIContext uiContext)
+    public IntegerMap<ProductionRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<ProductionRule> initialPurchase)
     {
-        s_uiContext = uiContext;
-        
-        if (!(parent == s_owner))
-            s_dialog = null;
+        if (!(parent == m_owner))
+            m_dialog = null;
 
-        if (s_dialog == null)
+        if (m_dialog == null)
             initDialog(parent);
 
-        s_panel.m_bid = bid;
-        s_panel.m_data = data;
-        s_panel.initRules(id, data, initialPurchase);
-        s_panel.initLayout(id);
-        s_panel.calculateLimits();
+        this.m_bid = bid;
+        this.m_data = data;
+        this.initRules(id, data, initialPurchase);
+        this.initLayout(id);
+        this.calculateLimits();
 
-        s_dialog.pack();
-        s_dialog.setLocationRelativeTo(parent);
-        s_dialog.setVisible(true);
+        m_dialog.pack();
+        m_dialog.setLocationRelativeTo(parent);
+        m_dialog.setVisible(true);
+        
+        m_dialog.dispose();
 
-        return s_panel.getProduction();
+        return getProduction();
 
     }
 
-    private static void initDialog(JFrame root)
+    private void initDialog(JFrame root)
     {
-        s_panel = new ProductionPanel();
-        s_dialog = new JDialog(root, "Produce", true);
-        s_dialog.getContentPane().add(s_panel);
+      
+        m_dialog = new JDialog(root, "Produce", true);
+        m_dialog.getContentPane().add(this);
 
         Action closeAction = new AbstractAction("")
         {
             public void actionPerformed(ActionEvent e)
             {
-                s_dialog.setVisible(false);
+                m_dialog.setVisible(false);
             }
         };
         
         //close the window on escape
         //this is mostly for developers, makes it much easier to quickly cycle through steps
         KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        s_dialog.getRootPane().registerKeyboardAction(closeAction, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+        m_dialog.getRootPane().registerKeyboardAction(closeAction, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
     
     }
 
     /** Creates new ProductionPanel */
-    private ProductionPanel()
+    private ProductionPanel(UIContext uiContext)
     {
+        m_uiContext = uiContext;
         
       
     }
@@ -117,7 +124,7 @@ public class ProductionPanel extends JPanel
         while (iter.hasNext())
         {
             ProductionRule productionRule = (ProductionRule) iter.next();
-            Rule rule = new Rule(productionRule, player, s_uiContext);
+            Rule rule = new Rule(productionRule, player, m_uiContext);
             int initialQuantity = initialPurchase.getInt(productionRule);
             rule.setQuantity(initialQuantity);
             m_rules.add(rule);
@@ -160,11 +167,11 @@ public class ProductionPanel extends JPanel
     {
         public void actionPerformed(ActionEvent e)
         {
-            s_dialog.setVisible(false);
+            m_dialog.setVisible(false);
         }
     };
 
-    public IntegerMap<ProductionRule> getProduction()
+    private IntegerMap<ProductionRule> getProduction()
     {
         IntegerMap<ProductionRule> prod = new IntegerMap<ProductionRule>();
         Iterator<Rule> iter = m_rules.iterator();
@@ -220,11 +227,11 @@ public class ProductionPanel extends JPanel
         private int m_cost; 
         private UnitType m_type;
         private ProductionRule m_rule;
-        private final UIContext m_uiContext;
+ 
 
         Rule(ProductionRule rule, PlayerID id, UIContext uiContext)
         {
-            m_uiContext = uiContext;
+            
             setLayout(new GridBagLayout());
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));

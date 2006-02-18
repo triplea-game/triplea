@@ -176,6 +176,8 @@ public class ServerLauncher implements ILauncher
                 
                 m_gameSelectorModel.loadDefaultGame(parent);
                 
+                
+                
                 SwingUtilities.invokeLater(new Runnable()
                         {
                         

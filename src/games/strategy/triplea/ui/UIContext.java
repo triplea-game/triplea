@@ -1,10 +1,26 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.triplea.ui;
+
+import games.strategy.triplea.image.*;
 
 import java.awt.Window;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
-import games.strategy.triplea.image.*;
+import javax.swing.*;
 
 /**
  * A place to find images and map data for a ui.
@@ -25,6 +41,8 @@ public class UIContext
     
     private List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
     private List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
+    private List<Active> m_activeToDeactivate = new ArrayList<Active>();
+    
     
     public UIContext()
     {
@@ -98,6 +116,35 @@ public class UIContext
         }
     }
         
+    
+    
+    public void removeACtive(Active actor)
+    {
+        synchronized(this)
+        {
+            m_activeToDeactivate.remove(actor);
+        }
+    }
+    
+    /**
+     * Add a latch that will be released when the game shuts down.
+     */
+    public void addActive(Active actor)
+    {
+        synchronized(this)
+        {
+            if(m_isShutDown)
+            {
+                closeActive(actor);
+                return;
+            }
+            m_activeToDeactivate.add(actor);
+        }
+    }
+
+    
+    
+    
     public void removeShutdownLatch(CountDownLatch latch)
     {
         synchronized(this)
@@ -122,10 +169,57 @@ public class UIContext
         }
     }
         
-    private void closeWindow(Window window)
+    private static void closeWindow(Window window)
     {
        window.setVisible(false);
+       window.dispose();
+       
+       
+       //there is a bug in java (1.50._06  for linux at least)
+       //where frames are not garbage collected.
+       //
+       //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6364875
+       //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6368950
+       //
+       //so remove all references to everything
+       //to minimize the damage
+
+
+       if(window instanceof JFrame)
+       {
+           JFrame frame = ((JFrame) window);
+           
+           JMenuBar menu = (JMenuBar) frame.getJMenuBar();
+           if(menu != null)
+           {
+               while(menu.getMenuCount() < 0)
+                   menu.remove(0);
+           }
+           
+           frame.setMenuBar(null);
+           frame.setJMenuBar(null);
+           frame.getRootPane().removeAll();           
+           frame.getRootPane().setJMenuBar(null);
+           frame.getContentPane().removeAll();
+           frame.setIconImage(null);
+           
+           
+           clearInputMap(frame.getRootPane());
+           
+       }
+ 
+       
     }
+    
+    private static void clearInputMap(JComponent c)
+    {
+       c.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
+       c.getInputMap(JComponent.WHEN_FOCUSED).clear();
+       c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).clear();
+       
+        c.getActionMap().clear();
+    }
+    
 
     public void removeShutdownWindow(Window window)
     {
@@ -146,6 +240,11 @@ public class UIContext
     }
 
     
+    public boolean isShutDown()
+    {
+        return m_isShutDown;
+    }
+    
     public void shutDown()
     {
         synchronized(this)
@@ -164,6 +263,16 @@ public class UIContext
                 closeWindow(window);
             }
             
+            for(Active actor : m_activeToDeactivate)
+            {
+                closeActive(actor);
+            }
+            
         }
+    }
+
+    private void closeActive(Active actor) 
+    {
+        actor.deactivate();
     }
 }

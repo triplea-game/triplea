@@ -20,7 +20,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.*;
-import games.strategy.engine.framework.ui.*;
+import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
 import games.strategy.util.Version;
@@ -38,7 +38,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     
     public static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
     public static final String SERVER_REMOTE_NAME = "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE";
-
     
     
     public static String getObserverWaitingToStartName(INode node)
@@ -61,7 +60,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     private final GameSelectorModel m_gameSelectorModel;
     private Component m_ui;
     private ChatPanel m_chatPanel;
-    
+    private ChatController m_chatController; 
+
     //while our server launcher is not null, delegate new/lost connections to it
     private volatile ServerLauncher m_serverLauncher;
     
@@ -91,6 +91,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
         
         if(m_serverMessenger != null)
         {
+            m_chatController.deactivate();
             m_serverMessenger.shutDown();
             m_serverMessenger.removeErrorListener(this);
         }
@@ -201,7 +202,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             m_channelMessenger = new ChannelMessenger(unifiedMessenger);
             m_channelMessenger.createChannel(IClientChannel.class, IClientChannel.CHANNEL_NAME);            
             
-            ChatController m_chatController = new ChatController(CHAT_NAME,m_serverMessenger, m_remoteMessenger, m_channelMessenger);
+            m_chatController = new ChatController(CHAT_NAME,m_serverMessenger, m_remoteMessenger, m_channelMessenger);
             m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);
             
             gameDataChanged();
@@ -209,7 +210,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             return true;
         } catch (IOException ioe)
         {
-            ioe.printStackTrace();
+            ioe.printStackTrace(System.out);
             JOptionPane.showMessageDialog(ui, "Unable to create server socket:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }

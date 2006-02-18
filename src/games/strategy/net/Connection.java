@@ -126,11 +126,11 @@ class Connection
             throw new IllegalStateException("INode class not found");
         }
 
-        m_reader = new Thread(new Reader(), "ConnectionReader for " + m_localNode.getName());
+        m_reader = new Thread(new Reader(), "ConnectionReader for " + m_localNode.getName() + ":" + m_localNode.getAddress());
 
         m_reader.start();
 
-        m_writer = new Thread(new Writer(), "ConnectionWriter for" + m_localNode.getName());
+        m_writer = new Thread(new Writer(), "ConnectionWriter for " + m_localNode.getName() + ":" + m_localNode.getAddress());
         m_writer.start();
     }
 

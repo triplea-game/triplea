@@ -11,11 +11,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package games.strategy.engine.framework.ui;
+package games.strategy.engine.framework.startup.mc;
+
+import java.util.Map;
 
 import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.message.IRemote;
-import games.strategy.net.*;
+import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.net.INode;
 
 /**
  * 
@@ -23,24 +25,18 @@ import games.strategy.net.*;
  *
  * @author Sean Bridges
  */
-public interface IServerStartupRemote extends IRemote
+public interface IClientChannel extends IChannelSubscribor
 {
+    public static final String CHANNEL_NAME = "games.strategy.engine.framework.ui.IClientChannel.CHANNEL";
+    
+    public void playerListingChanged(PlayerListing listing);
+    
     /**
      * 
-     * @return a listing of the players in the game
+     * @param gameData
+     * @param players who is playing who
      */
-    public PlayerListing getPlayerListing();
+    public void doneSelectingPlayers(byte[] gameData, Map<String, INode>  players);
     
-    public void takePlayer(INode who, String playerName);
-    
-    public void releasePlayer(INode who, String playerName);
-    
-    /**
-     * Has the game already started?
-     * If true, the server will call our ObserverWaitingToJoin to start the game.
-     * Note, the return value may come back after our ObserverWaitingToJoin has been created 
-     */
-    public boolean isGameStarted(INode newNode);
-    
-    
+    public void gameReset();
 }

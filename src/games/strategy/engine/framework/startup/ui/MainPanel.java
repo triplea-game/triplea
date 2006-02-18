@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class MainPanel extends JPanel implements Observer
 {
@@ -23,7 +24,7 @@ public class MainPanel extends JPanel implements Observer
     private JPanel m_chatPanelHolder;
     private final SetupPanelModel m_gameTypePanelModel;
     
-    private final Dimension m_initialSize = new Dimension(500,400);
+    private final Dimension m_initialSize = new Dimension(625,450);
     //private final Dimension m_initialSizeWithChat = new Dimension(500,650);
     private boolean m_isChatShowing;
     
@@ -83,6 +84,7 @@ public class MainPanel extends JPanel implements Observer
 
     private void addChat()
     {
+        m_chatPanelHolder.removeAll();
         remove(m_chatPanelHolder);
         
         ChatPanel chat = m_gameTypePanelModel.getPanel().getChatPanel();
@@ -114,6 +116,9 @@ public class MainPanel extends JPanel implements Observer
         if(!( panel instanceof MetaSetupPanel))
         {
             JPanel cancelPanel = new JPanel();
+            
+            cancelPanel.setBorder(new EmptyBorder(10,0,10,10));
+            
             cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
             cancelPanel.add(m_cancelButton);
             m_gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);

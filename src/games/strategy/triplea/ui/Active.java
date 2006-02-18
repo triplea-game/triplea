@@ -11,32 +11,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package games.strategy.engine.framework.ui;
+package games.strategy.triplea.ui;
 
-import java.util.Map;
 
-import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.net.INode;
-
-/**
- * 
- *
- *
- * @author Sean Bridges
- */
-public interface IClientChannel extends IChannelSubscribor
+public interface Active 
 {
-    public static final String CHANNEL_NAME = "games.strategy.engine.framework.ui.IClientChannel.CHANNEL";
-    
-    public void playerListingChanged(PlayerListing listing);
-    
-    /**
-     * 
-     * @param gameData
-     * @param players who is playing who
-     */
-    public void doneSelectingPlayers(byte[] gameData, Map<String, INode>  players);
-    
-    public void gameReset();
+    public void deactivate();
 }

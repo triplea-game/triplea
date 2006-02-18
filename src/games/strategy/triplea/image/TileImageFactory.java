@@ -211,6 +211,7 @@ public final class TileImageFactory
 		        Graphics g = image.getGraphics();
 		        g.drawImage(fromFile, 0,0, null);
 		        g.dispose();
+                fromFile.flush();
 		        loadingImages.done();
 		        
 		    } catch (IOException e)

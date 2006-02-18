@@ -227,7 +227,7 @@ public class TripleaMenu extends JMenuBar
         addShowEnemyCasualties(menuGame);
         addShowDiceStats(menuGame);
         addExportStats(menuGame);
-        addShowPlayers(menuGame);
+        
         
     }
     
@@ -247,6 +247,7 @@ public class TripleaMenu extends JMenuBar
         
         JMenu menuNetwork = new JMenu("Network");
         addAllowObserversToJoin(menuNetwork);
+        addShowPlayers(menuNetwork);
         menuBar.add(menuNetwork);
     }
 

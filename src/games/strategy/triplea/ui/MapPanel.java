@@ -79,7 +79,7 @@ public class MapPanel extends ImageScrollerLargeView
         super(uiContext.getMapData().getMapDimensions());
 
         m_uiContext = uiContext;
-        m_backgroundDrawer = new BackgroundDrawer(this, m_uiContext);
+        m_backgroundDrawer = new BackgroundDrawer(this);
         m_tileManager = new TileManager(m_uiContext);
         
         Thread t = new Thread(m_backgroundDrawer, "Map panel background drawer");
@@ -117,6 +117,17 @@ public class MapPanel extends ImageScrollerLargeView
         });
         m_tileManager.createTiles(new Rectangle(m_uiContext.getMapData().getMapDimensions()), data, m_uiContext.getMapData());
         m_tileManager.resetTiles(data, uiContext.getMapData());
+        
+        m_uiContext.addActive(new Active()
+        {
+        
+            public void deactivate()
+            {
+                //super.deactivate
+                MapPanel.this.deactivate();
+            }
+        
+        });
     } 
      
     GameData getData()
@@ -791,12 +802,10 @@ class BackgroundDrawer implements Runnable
     
     //use a weak reference, if we see the panel is gc'd, then we can stop this thread
     private final WeakReference<MapPanel> m_mapPanelRef;
-    private final UIContext m_uiContext;
     
-    BackgroundDrawer(MapPanel panel, UIContext uiContext)
+    BackgroundDrawer(MapPanel panel)
     {
         m_mapPanelRef = new WeakReference<MapPanel>(panel);
-        m_uiContext = uiContext;
     }
     
     public void stop()
@@ -820,7 +829,7 @@ class BackgroundDrawer implements Runnable
             Tile tile;
             try
             {
-                tile = m_tiles.poll(2000, TimeUnit.MICROSECONDS);
+                tile = m_tiles.poll(2000, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e)
             {
                continue;
@@ -836,7 +845,7 @@ class BackgroundDrawer implements Runnable
             }
             
             GameData data = mapPanel.getData();
-            tile.getImage(data, m_uiContext.getMapData());
+            tile.getImage(data, mapPanel.getUIContext().getMapData());
             
             SwingUtilities.invokeLater(new Runnable()
             {

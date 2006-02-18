@@ -71,6 +71,39 @@ public class ActionButtons extends JPanel
         add(m_purchasePanel, m_purchasePanel.toString());
         add(m_placePanel, m_placePanel.toString());
         add(m_techPanel, m_techPanel.toString());
+        
+        
+        //this should not be necceessary
+        //but it makes tracking down garbage leaks easier
+        //in the profiler
+        //since it removes a lot of links
+        //between objects
+        //
+        //and if there is a memory leak
+        //this will minimize the damage
+        map.getUIContext().addActive(new Active()
+        {        
+            public void deactivate()
+            {
+               removeAll();
+               m_current = null;
+               
+               m_battlePanel.removeAll();
+               m_movePanel.removeAll();
+               m_purchasePanel.removeAll();
+               m_placePanel.removeAll();
+               m_techPanel.removeAll();
+               
+               m_battlePanel = null;
+               m_movePanel = null;
+               m_purchasePanel = null;
+               m_placePanel = null;
+               m_techPanel = null;
+
+               
+            }
+        });
+        
     }
 
     public void changeToMove(PlayerID id, boolean nonCombat)
