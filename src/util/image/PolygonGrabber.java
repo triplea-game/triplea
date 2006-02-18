@@ -258,7 +258,9 @@ public class PolygonGrabber extends JFrame
         }
 
         m_bufferedImage = new BufferedImage(m_image.getWidth(null), m_image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        m_bufferedImage.getGraphics().drawImage(m_image, 0,0, this);
+        Graphics g = m_bufferedImage.getGraphics();
+        g.drawImage(m_image, 0,0, this);
+        g.dispose();
     }
 
 
