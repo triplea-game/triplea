@@ -1,16 +1,34 @@
-* new startup screen
+* allow defining where to place ipc markers using ipc_place.txt (sgb)
+
+* allow turn off drawing map names in map.properties using,  map.showTerritoryNames=false (sgb)
+
+* move chat panel to main window for networked games (sgb)
+
+* fixed bug where autosave game would add too many ipcs at start up (sgb)
+
+* fix bug where attacking air units couldnt retreat if all attacking subs moved to attacking sea zone via submerged route (sgb)
+
+* allow clients to save a networked game (sgb)
+
+* game menu to show who is playing what player (sgb)
+
+* when a player (not an observer) leaves the game, the game is saved automatically, and the game ends (sgb)
+
+* observers can join and leave the game (server can optionally ban new observers) (sgb)
+
+* new startup screen (sgb)
 
 * add minimap (map by Clausewitz)
 
-* add delegate execution manager, block delegates from executing while save in progress
+* add delegate execution manager, block delegates from executing while save in progress (sgb)
 
-* make game data lock into a read/write lock, extend the game data lock to history
+* make game data lock into a read/write lock, extend the game data lock to history (sgb)
 
-* add random ai
+* add random ai (sgb)
 
-* if two players with the same name join the game, add a _1 to the second player
+* if two players with the same name join the game, add a _1 to the second player (sgb)
 
-* remove ISaveableDelegate, all Delegates are saveabel
+* remove ISaveableDelegate, all Delegates are saveable (sgb)
 
 Changes for 0.7.2.4
 
