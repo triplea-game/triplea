@@ -38,6 +38,11 @@ class Connection
 {
     private static Logger s_logger = Logger.getLogger(Connection.class.getName());
     private Socket m_socket;
+    
+    private OutputStream m_socketOut;
+    private InputStream m_socketIn;
+    
+    
     private ObjectOutputStream m_out;
     private ObjectInputStream m_in;
     private volatile boolean m_shutdown = false;
@@ -104,7 +109,8 @@ class Connection
         m_listener = listener;
 
         //create the output
-        BufferedOutputStream bufferedOut = new BufferedOutputStream(m_socket.getOutputStream());
+        m_socketOut = m_socket.getOutputStream();
+        BufferedOutputStream bufferedOut = new BufferedOutputStream(m_socketOut);
         m_out = m_objectStreamFactory.create(bufferedOut);
 
         //write out our identity
@@ -112,7 +118,8 @@ class Connection
         m_out.flush();
 
         //create the input
-        BufferedInputStream bufferedIn = new BufferedInputStream(m_socket.getInputStream());
+        m_socketIn = m_socket.getInputStream();
+        BufferedInputStream bufferedIn = new BufferedInputStream(m_socketIn);
         m_in = m_objectStreamFactory.create(bufferedIn);
 
         //read the remote connections identity
@@ -188,8 +195,32 @@ class Connection
                 m_shutdown = true;
                 try
                 {
+                    try
+                    {
+                        //shutting down the input and output
+                        //wakes up the thread at the other side
+                        m_socket.shutdownInput();
+                        m_socket.shutdownOutput();
+                        m_socketIn.close();
+                        m_socketOut.close();
+                    } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                    
                     m_socket.close();
                     m_writer.interrupt();
+                    
+                    if(!m_socket.isClosed())
+                        throw new IllegalStateException("Not closed");
+                    
+                    if(!m_socket.isOutputShutdown())
+                        throw new IllegalStateException("Output not closed");
+                    
+                    if(!m_socket.isInputShutdown())
+                        throw new IllegalStateException("Input not closed");                    
+                    
+                    
                     return true;
                 } catch (Exception e)
                 {
@@ -238,6 +269,7 @@ class Connection
                 
                 
             }
+            
         }
                 
 
@@ -276,6 +308,7 @@ class Connection
         @SuppressWarnings("unchecked")
         public void run()
         {
+            
             while (!m_shutdown)
             {
                 try
@@ -286,6 +319,7 @@ class Connection
 
                 } catch (ClassNotFoundException cnfe)
                 {
+                    //should never happen
                     cnfe.printStackTrace();
                 } catch (IOException ioe)
                 {
@@ -311,8 +345,6 @@ class Connection
                         {
                             ioe.printStackTrace();
                         }
-                            
-                        
                         
                         if(shutDown())
                         {
