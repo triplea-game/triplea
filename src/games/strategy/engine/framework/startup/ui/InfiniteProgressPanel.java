@@ -1,6 +1,3 @@
-//http://www.jroller.com/page/gfx?entry=high_performance_infinite_progress_panel
-
-
 package games.strategy.engine.framework.startup.ui;
 
 /**
@@ -15,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
+import java.awt.*;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -61,13 +59,16 @@ import java.awt.image.BufferedImage;
 public class InfiniteProgressPanel extends JComponent implements ActionListener {
 
    private static final int NUMBER_OF_BARS = 14;
-   private double m_dScale = 0.75d;
+   private double m_dScale = 1.5d;
    private MouseAdapter m_oMouseAdapter = new MouseAdapter() {
    };
    private MouseMotionAdapter m_oMouseMotionAdapter = new MouseMotionAdapter() {
    };
    private KeyAdapter m_oKeyAdapter = new KeyAdapter() {
    };
+   
+   
+   private Font font = new Font("Serif", Font.PLAIN, 32);
    /**
     * Disable back buffering if the window is resized
     */
@@ -188,7 +189,7 @@ public class InfiniteProgressPanel extends JComponent implements ActionListener 
        super.setBounds(x, y, width, height);
        // update centering transform
        m_oCenterAndScaleTransform = new AffineTransform();
-       m_oCenterAndScaleTransform.translate((double) getWidth() / 6d, (double) getHeight() / 2d);
+       m_oCenterAndScaleTransform.translate((double) getWidth() / 2d, (double) getHeight() / 2d);
        m_oCenterAndScaleTransform.scale(m_dScale, m_dScale);
        // calc new bars bounds
        if (m_oBarsBounds != null) {
@@ -224,6 +225,11 @@ public class InfiniteProgressPanel extends JComponent implements ActionListener 
                g2.fill(m_oBars[i]);
            }
        }
+       
+       g.setColor(Color.BLACK);
+       //g.fillRect(10,10,100,100);
+       g.setFont(font);
+       g.drawString("Loading, Please Wait", 50,220);
    }
 
    /**

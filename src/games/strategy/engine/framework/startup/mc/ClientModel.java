@@ -49,6 +49,7 @@ public class ClientModel implements IMessengerErrorListener
     private Component m_ui;
     private ChatPanel m_chatPanel;
     private ClientGame m_game;
+    private GameLoadingWindow m_gameLoadingWindow = new GameLoadingWindow();
     
     //we set the game data to be null, since we
     //are a client game, and the game data lives on the server
@@ -199,6 +200,7 @@ public class ClientModel implements IMessengerErrorListener
         
         m_objectStreamFactory.setData(null);
         m_messenger.shutDown();
+        m_chatPanel.setChat(null);
         m_gameSelectorModel.setGameData(m_gameDataOnStartup);
         m_gameSelectorModel.setCanSelect(true);
         m_messenger.removeErrorListener(this);
@@ -272,7 +274,48 @@ public class ClientModel implements IMessengerErrorListener
     };
     
     
-    private void startGame(byte[] gameData, Map<String, INode> players)
+    
+    private void startGame(final byte[] gameData, final Map<String, INode> players)
+    {
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_gameLoadingWindow.setVisible(true);
+                m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(m_ui));
+                m_gameLoadingWindow.showWait();
+            }
+        
+        });
+        
+        
+        Runnable r = new Runnable()
+        {
+        
+            public void run()
+            {           
+                try
+                {
+                    startGameInNewThread(gameData, players);
+                } catch(RuntimeException e)
+                {
+                    m_gameLoadingWindow.doneWait();
+                    throw e;
+                }
+            }
+        
+        };
+        Thread t = new Thread(r);
+        
+        
+        
+        t.start();
+    }
+    
+    
+    private void startGameInNewThread(byte[] gameData, Map<String, INode> players)
     {
         final GameData data;
         try
@@ -295,10 +338,7 @@ public class ClientModel implements IMessengerErrorListener
             {
                 playerMapping.put(player, IGameLoader.CLIENT_PLAYER_TYPE);
             }
-        }
-        
-        
-        
+        }        
         
         final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
 
@@ -319,13 +359,21 @@ public class ClientModel implements IMessengerErrorListener
               
               });
               
-              //game will be null if we loose the connection
-              if(m_game != null)
-                  data.getGameLoader().startGame(m_game, playerSet);    
+              try
+              {
+                  //game will be null if we loose the connection
+                  if(m_game != null)
+                      data.getGameLoader().startGame(m_game, playerSet);    
+                  
+                  //we will not have this remote if we are starting as an observer
+                  if(m_remoteMessenger.hasRemote(CLIENT_READY_CHANNEL))
+                      ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+              }
+              finally
+              {
+                  m_gameLoadingWindow.doneWait();
+              }
               
-              //we will not have this remote if we are starting as an observer
-              if(m_remoteMessenger.hasRemote(CLIENT_READY_CHANNEL))
-                  ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
             }
         };
         t.start();

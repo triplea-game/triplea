@@ -94,6 +94,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             m_chatController.deactivate();
             m_serverMessenger.shutDown();
             m_serverMessenger.removeErrorListener(this);
+            m_chatPanel.setChat(null);
         }
     }
     

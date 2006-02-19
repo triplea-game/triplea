@@ -17,6 +17,7 @@ package games.strategy.engine.framework.startup.launcher;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.GameLoadingWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
@@ -33,6 +34,7 @@ public class LocalLauncher implements ILauncher
     private IRandomSource m_randomSource;
     private final Map<String,String> m_playerTypes;
     private final GameSelectorModel m_gameSelectorModel;
+    private GameLoadingWindow m_gameLoadingWindow = new GameLoadingWindow();
     
     public LocalLauncher(GameSelectorModel gameSelectorModel, IRandomSource randomSource, Map<String,String> playerTypes)
     {
@@ -42,33 +44,69 @@ public class LocalLauncher implements ILauncher
         m_playerTypes = playerTypes;
     }
     
+    
     public void launch(final Component parent)
+    {
+        if(!SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread");
+        
+        Runnable r = new Runnable()
+        {
+        
+            public void run()
+            {
+                launchInNewThread(parent);
+            }
+        
+        };
+        Thread t = new Thread(r);
+        
+        
+        
+        t.start();
+        
+        m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
+        m_gameLoadingWindow.setVisible(true);
+        m_gameLoadingWindow.showWait();
+    }
+ 
+    
+    private void launchInNewThread(final Component parent)
     {
         Runnable runner = new Runnable()
         {
             public void run()
             {
-                IServerMessenger messenger = new DummyMessenger();
                 
-                
-                UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
-                ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
-                RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
-
-               Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerTypes);
-               ServerGame game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap<String,INode>(), channelMessenger, remoteMessenger);
-                
-
-               game.setRandomSource(m_randomSource);
-                
-                //for debugging, we can use a scripted random source
-                if(ScriptedRandomSource.useScriptedRandom())
+                ServerGame game;
+                try
                 {
-                    game.setRandomSource(new ScriptedRandomSource());
+                    IServerMessenger messenger = new DummyMessenger();
+                    
+                    
+                    UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
+                    ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
+                    RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
+    
+                   Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerTypes);
+                   game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap<String,INode>(), channelMessenger, remoteMessenger);
+                    
+    
+                   game.setRandomSource(m_randomSource);
+                    
+                    //for debugging, we can use a scripted random source
+                    if(ScriptedRandomSource.useScriptedRandom())
+                    {
+                        game.setRandomSource(new ScriptedRandomSource());
+                    }
+    
+                    m_gameData.getGameLoader().startGame(game, gamePlayers);
                 }
-
-                m_gameData.getGameLoader().startGame(game, gamePlayers);
-
+                finally
+                {
+                    m_gameLoadingWindow.doneWait();
+                }
+                
                 game.startGame();
 
                 

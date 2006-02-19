@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.awt.Font;
+import games.strategy.engine.framework.GameRunner;
+
+import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -8,27 +10,25 @@ import javax.swing.border.EmptyBorder;
 public class GameLoadingWindow extends JWindow 
 {
     
-    InfiniteProgressPanel m_waitPanel = new InfiniteProgressPanel(true);
-
+    private InfiniteProgressPanel m_waitPanel = new InfiniteProgressPanel(true);
+    
+    
     public GameLoadingWindow()
     {
 //        super("Game Loading, Please wait");
 //        setIconImage(GameRunner.getGameIcon(this));
-        setSize(450,200);
+        setSize(400,400);
         
+        setLayout(new BorderLayout());
+        
+//        JPanel p = new JPanel();
+//        add(p, BorderLayout.CENTER);
+//        
         //center ourselves
         setLocationRelativeTo(null);
         
-        JLabel label = new JLabel();
-        label.setFont(new Font("Serif", Font.PLAIN, 22)); 
-        label.setText("Loading, please wait...");
-        
-        label.setBorder(new EmptyBorder(0,150,0,0));
-        getContentPane().add(label);
-        
-        
-        
-//        etDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+       
+      //  setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
     }
 
@@ -41,7 +41,6 @@ public class GameLoadingWindow extends JWindow
             public void run()
             {
                 
-                setVisible(true);
                 
                 SwingUtilities.invokeLater(new Runnable()
                 {
@@ -49,18 +48,17 @@ public class GameLoadingWindow extends JWindow
                     public void run()
                     {
                         setGlassPane(m_waitPanel);
-                        m_waitPanel.setVisible(true);
-                                
+                        m_waitPanel.setVisible(true);  
+                        
+                        
                     }
-                
                 });
-                
-                
             }
         
         });
         
     }
+
     
     public void doneWait()
     {
@@ -71,6 +69,7 @@ public class GameLoadingWindow extends JWindow
                     {
                         setVisible(false);
                         m_waitPanel.setVisible(false);
+                        dispose();
 
                     }
                 }
@@ -80,7 +79,22 @@ public class GameLoadingWindow extends JWindow
     
     public static void main(String[] args)
     {
-        new GameLoadingWindow().showWait();
+        
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                final GameLoadingWindow window = new GameLoadingWindow();
+                window.setVisible(true);
+                
+                window.showWait();
+        
+            }
+        
+        });
+        
     }
     
 }

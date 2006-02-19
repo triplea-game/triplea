@@ -17,6 +17,7 @@ package games.strategy.engine.framework.startup.launcher;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.startup.mc.*;
+import games.strategy.engine.framework.startup.ui.GameLoadingWindow;
 import games.strategy.engine.framework.ui.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
@@ -59,6 +60,8 @@ public class ServerLauncher implements ILauncher
     //we can ignore the connection lost
     private List<INode> m_observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<INode>());
     
+    private GameLoadingWindow m_gameLoadingWindow = new GameLoadingWindow();
+    
     public ServerLauncher(int clientCount, IRemoteMessenger remoteMessenger, IChannelMessenger channelMessenger, IMessenger messenger, GameSelectorModel gameSelectorModel, Map<String, String> localPlayerMapping, Map<String, INode> remotelPlayers, ServerModel serverModel)
     {
         m_clientCount = clientCount;
@@ -73,6 +76,39 @@ public class ServerLauncher implements ILauncher
     }
 
     public void launch(final Component parent)
+    {
+        if(!SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread");
+        
+        Runnable r = new Runnable()
+        {
+        
+            public void run()
+            {
+                try
+                {
+                    launchInNewThread(parent);
+                }
+                finally
+                {
+                    m_gameLoadingWindow.doneWait();
+                }
+
+            }
+        
+        };
+        Thread t = new Thread(r);
+        
+        
+        
+        t.start();
+        
+        m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
+        m_gameLoadingWindow.setVisible(true);
+        m_gameLoadingWindow.showWait();
+    }
+    
+    private void launchInNewThread(final Component parent)
     {
         m_ui = parent;
      
@@ -131,7 +167,6 @@ public class ServerLauncher implements ILauncher
                 }
             };
             t.start();
-
         }
 
         Thread t = new Thread("Triplea, start server game")
@@ -143,6 +178,7 @@ public class ServerLauncher implements ILauncher
                     m_isLaunching = false;
                     if(!m_abortLaunch)
                     {
+                        m_gameLoadingWindow.doneWait();
                         m_serverGame.startGame();    
                     }
                     else
