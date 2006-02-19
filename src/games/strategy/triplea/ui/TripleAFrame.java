@@ -196,7 +196,9 @@ public class TripleAFrame extends JFrame
 
     public void stopGame()
     {        
-        
+        //we have already shut down
+        if(m_uiContext == null)
+            return;
         
         m_uiContext.shutDown();
         if(m_chatPanel != null)
