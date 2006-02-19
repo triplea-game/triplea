@@ -190,8 +190,6 @@ public class MainPanel extends JPanel implements Observer
     {
         ErrorHandler.setGameOver(false);
         m_gameSetupPanel.preStartGame();
-        Frame f = JOptionPane.getFrameForComponent(this);
-        f.setVisible(false);
         m_gameTypePanelModel.getPanel().getLauncher().launch(this);
         m_gameSetupPanel.postStartGame();
         

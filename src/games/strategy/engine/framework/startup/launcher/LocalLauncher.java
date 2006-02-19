@@ -68,6 +68,8 @@ public class LocalLauncher implements ILauncher
         m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
         m_gameLoadingWindow.setVisible(true);
         m_gameLoadingWindow.showWait();
+        
+        JOptionPane.getFrameForComponent(parent).setVisible(false);
     }
  
     

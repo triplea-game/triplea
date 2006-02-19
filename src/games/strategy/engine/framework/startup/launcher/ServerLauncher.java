@@ -100,12 +100,13 @@ public class ServerLauncher implements ILauncher
         Thread t = new Thread(r);
         
         
-        
-        t.start();
-        
         m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
         m_gameLoadingWindow.setVisible(true);
         m_gameLoadingWindow.showWait();
+        
+        JOptionPane.getFrameForComponent(parent).setVisible(false);
+        
+        t.start();
     }
     
     private void launchInNewThread(final Component parent)
