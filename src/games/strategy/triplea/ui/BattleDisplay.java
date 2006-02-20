@@ -22,6 +22,7 @@ import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.sound.SoundPath;
+import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
@@ -33,7 +34,8 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
+import javax.swing.border.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
 
 /**
@@ -373,7 +375,7 @@ public class BattleDisplay extends JPanel
                 //retreat
 
                 RetreatComponent comp = new RetreatComponent(possible);
-                int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message, JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
                 if (option == JOptionPane.OK_OPTION)
                 {
                     if (comp.getSelection() != null)
@@ -432,7 +434,8 @@ public class BattleDisplay extends JPanel
     private class RetreatComponent extends JPanel
     {
         private JList m_list;
-
+        private JLabel m_retreatTerritory = new JLabel("");
+        
         RetreatComponent(Collection<Territory> possible)
         {
 
@@ -440,6 +443,13 @@ public class BattleDisplay extends JPanel
 
             JLabel label = new JLabel("Retreat to...");
             this.add(label, BorderLayout.NORTH);
+            JPanel imagePanel = new JPanel();
+            imagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            imagePanel.add(m_retreatTerritory);
+            
+            imagePanel.setBorder(new EmptyBorder(10,0,10,0));
+            
+            this.add(imagePanel, BorderLayout.EAST);
 
             Vector<Territory> listElements = new Vector<Territory>(possible);
 
@@ -449,6 +459,37 @@ public class BattleDisplay extends JPanel
                 m_list.setSelectedIndex(0);
             JScrollPane scroll = new JScrollPane(m_list);
             this.add(scroll, BorderLayout.CENTER);
+            updateImage();
+            
+            
+            m_list.addListSelectionListener(new ListSelectionListener()
+            {
+            
+                public void valueChanged(ListSelectionEvent e)
+                {
+                    updateImage();
+                }
+            
+            });
+            
+        }
+        
+        private void updateImage()
+        {
+            int width = 150;
+            int height = 150;
+            Image img = m_mapPanel.getTerritoryImage( (Territory) m_list.getSelectedValue()); 
+            
+            Image finalImage = Util.createImage(width, height, true);
+
+            
+
+            Graphics g = finalImage.getGraphics();
+            g.drawImage(img, 0, 0, width, height, this);
+            g.dispose();
+            
+            
+            m_retreatTerritory.setIcon(new ImageIcon( finalImage ));
         }
 
         public Territory getSelection()
