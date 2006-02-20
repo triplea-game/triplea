@@ -1,12 +1,15 @@
-* maps (and skins) can be zip files
+* allow map to have ipc images.  Images should be in the map folder, in a folder called ipcs.  They should be named 1.png, 2.png... 
+  if no png image is found for a given number, a string will be drawninstead. (sgb)
 
-* map skins can override unit,flag and vc images
+* maps (and skins) can be zip files (sgb)
 
-* map skin directories must now be named original_map_name:Skin, rather than original_map_nameSkin as before
+* map skins can override unit,flag and vc images (sgb)
 
-* move images and maps to top level folders (these are not on the classpath).  
+* map skin directories must now be named original_map_name:Skin, rather than original_map_nameSkin as before (sgb)
 
-* allow defining where to place ipc markers using ipc_place.txt (sgb)
+* move images and maps to top level folders (these are not on the classpath).  (sgb)
+
+* allow defining where to place ipc markers using ipc_place.txt.  The x,y location is such the point is the bottom left of the image. (sgb)
 
 * allow turn off drawing map names in map.properties using,  map.showTerritoryNames=false (sgb)
 
