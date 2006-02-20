@@ -1,3 +1,5 @@
+* maps (and skins) can be zip files
+
 * map skins can override unit,flag and vc images
 
 * map skin directories must now be named original_map_name:Skin, rather than original_map_nameSkin as before
