@@ -290,8 +290,17 @@ public class UIContext
         for(File f : root.listFiles())
         {
             if(!f.isDirectory())
-                continue;
-            if(f.getName().startsWith(mapName + ":") )
+            {
+                //jar files
+                if(f.getName().endsWith(".zip") && f.getName().startsWith(mapName + ":"))
+                {
+                    String nameWithExtension = f.getName().substring(f.getName().indexOf(':') +1);
+                    rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4),  f.getName());
+                    
+                }
+            }
+            //directories
+            else if(f.getName().startsWith(mapName + ":") )
             {
                 rVal.put(f.getName().substring(f.getName().indexOf(':') +1),  f.getName());
             }

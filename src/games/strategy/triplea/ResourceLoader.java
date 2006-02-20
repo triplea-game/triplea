@@ -19,6 +19,16 @@ public class ResourceLoader
     
     public static ResourceLoader getMapresourceLoader(String mapName)
     {
+        File dir = new File(GameRunner.getRootFolder(), "/maps/" + mapName);
+        File zip = new File(GameRunner.getRootFolder(), "/maps/" + mapName + ".zip");
+        
+        //if we have a zip file, but no directory, use the zip file
+        if(!dir.exists() && zip.exists())
+        {
+            return getMapresourceLoader(mapName + ".zip");
+        }
+        
+        
         return new ResourceLoader( new String[] {"/maps/" + mapName, "/images"} );
     }
 
@@ -35,9 +45,9 @@ public class ResourceLoader
             {
                 System.err.println(f + " does not exist");
             }
-            if(!f.isDirectory())
+            if(!f.isDirectory()  && !f.getName().endsWith(".zip"))
             {
-                System.err.println(f + " is not a directory");
+                System.err.println(f + " is not a directory or a zip file");
             }
             
             try
