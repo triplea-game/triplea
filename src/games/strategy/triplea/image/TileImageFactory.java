@@ -12,16 +12,16 @@ package games.strategy.triplea.image;
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-import java.util.concurrent.atomic.AtomicInteger;
-import games.strategy.triplea.Constants;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
 import java.lang.ref.*;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.*;
 import java.util.prefs.*;
 
@@ -65,11 +65,11 @@ public final class TileImageFactory
         }
     }
 
-    private String m_mapDir;
+    private ResourceLoader m_resourceLoader;
 
-    public void setMapDir(String dir)
+    public void setMapDir(ResourceLoader loader)
     {
-        m_mapDir = dir;
+        m_resourceLoader = loader;
         synchronized (m_mutex)
         {
             //we manually want to clear each ref to allow the soft reference to
@@ -90,31 +90,6 @@ public final class TileImageFactory
     }
 
     /**
-     * Take advantage of awt loading of images in another thread this starts the
-     * loading of an image in a background thread calls to getImage will ensure
-     * the image has finished loading
-     */
-    public void prepareReliefTile(int x, int y)
-    {
-        String fileName = getReliefTileImageName(x, y);
-        //image is already loaded
-        prepareImage(fileName, true);
-    }
-
-    private void prepareImage(String fileName, boolean transparent)
-    {
-        synchronized (m_mutex)
-        {
-            if (isImageLoaded(fileName) != null)
-                return;
-            URL url = this.getClass().getResource(fileName);
-            if (url == null)
-                return;
-            startLoadingImage(url, fileName, transparent);
-        }
-    }
-
-    /**
      * @param fileName
      * @return
      */
@@ -123,18 +98,6 @@ public final class TileImageFactory
         if (m_imageCache.get(fileName) == null)
             return null;
         return m_imageCache.get(fileName).getImage();
-    }
-
-    /**
-     * Take advantage of awt loading of images in another thread this starts the
-     * loading of an image in a background thread calls to getImage will ensure
-     * the image has finished loading
-     */
-    public void prepareBaseTile(int x, int y)
-    {
-        String fileName = getBaseTileImageName(x, y);
-        //image is already loaded
-        prepareImage(fileName, false);
     }
 
     public Image getBaseTile(int x, int y)
@@ -150,7 +113,7 @@ public final class TileImageFactory
      */
     private String getBaseTileImageName(int x, int y)
     {
-        String fileName = Constants.MAP_DIR + m_mapDir + File.separator + "baseTiles" + java.io.File.separator + x + "_" + y + ".png";
+        String fileName = "baseTiles" + java.io.File.separator + x + "_" + y + ".png";
         return fileName;
     }
 
@@ -166,7 +129,7 @@ public final class TileImageFactory
             if (rVal != null)
                 return rVal;
 
-            URL url = this.getClass().getResource(fileName);
+            URL url = m_resourceLoader.getResource(fileName);
             if (url == null)
                 return null;
 
@@ -188,7 +151,7 @@ public final class TileImageFactory
      */
     private String getReliefTileImageName(int x, int y)
     {
-        String fileName = Constants.MAP_DIR + m_mapDir + File.separator + "reliefTiles" + java.io.File.separator + x + "_" + y + ".png";
+        String fileName = "reliefTiles" + java.io.File.separator + x + "_" + y + ".png";
         return fileName;
     }
 

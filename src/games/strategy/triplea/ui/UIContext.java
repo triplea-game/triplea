@@ -14,9 +14,13 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.triplea.*;
 import games.strategy.triplea.image.*;
 
 import java.awt.Window;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
@@ -32,7 +36,7 @@ public class UIContext
     private MapData m_mapData;
     private TileImageFactory m_tileImageFactory = new TileImageFactory();
     private String m_mapDir;
-    private UnitImageFactory m_unitImageFactory;
+    private UnitImageFactory m_unitImageFactory = new UnitImageFactory();
     private MapImage m_mapImage ;
     private FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
     private DiceImageFactory m_diceImageFactory = new DiceImageFactory();
@@ -51,16 +55,16 @@ public class UIContext
 
     public void setMapDir(String dir)
     {
-        m_mapData = new MapData(dir);
-        m_tileImageFactory.setMapDir(dir);
-
-        m_mapImage.loadMaps(dir); // load map data
+        ResourceLoader loader = ResourceLoader.getMapresourceLoader(dir);
         
-        //only create once
-        if(m_mapDir == null)
-        {
-            m_unitImageFactory = new UnitImageFactory(m_mapData.getDefaultUnitScale());
-        }
+        m_mapData = new MapData(loader);
+        
+        m_unitImageFactory.setResourceLoader(loader, m_mapData.getDefaultUnitScale());
+        m_flagIconImageFactory.setResourceLoader(loader);
+        
+        m_tileImageFactory.setMapDir(loader);
+        m_mapImage.loadMaps(loader); // load map data
+        
 
         m_mapDir = dir;
     }
@@ -267,8 +271,32 @@ public class UIContext
         for(Active actor : m_activeToDeactivate)
         {
             closeActor(actor);
+        }     
+    }
+    
+    /**
+     * returns the map skins for the game data.
+     * 
+     * returns is a map of display-name -> map directory
+     */
+    public static Map<String,String> getSkins(GameData data)
+    {
+        String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
+        Map <String,String> rVal = new LinkedHashMap<String,String>();
+        rVal.put("Original", mapName);
+        
+        
+        File root = new File( GameRunner.getRootFolder(), "maps" );
+        for(File f : root.listFiles())
+        {
+            if(!f.isDirectory())
+                continue;
+            if(f.getName().startsWith(mapName + ":") )
+            {
+                rVal.put(f.getName().substring(f.getName().indexOf(':') +1),  f.getName());
+            }
         }
-     
+        return rVal;
     }
 
     private void closeActor(Active actor) 

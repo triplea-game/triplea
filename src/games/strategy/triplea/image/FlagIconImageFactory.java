@@ -21,6 +21,7 @@
 package games.strategy.triplea.image;
 
 import games.strategy.engine.data.PlayerID;
+import games.strategy.triplea.ResourceLoader;
 
 import java.awt.Image;
 import java.io.IOException;
@@ -48,6 +49,8 @@ public class FlagIconImageFactory
     //maps name -> image
     private final Map<String, Image> m_images = new HashMap<String, Image>();
 
+    private ResourceLoader m_resourceLoader;
+    
     /** Creates new IconImageFactory */
     public FlagIconImageFactory()
     {
@@ -60,6 +63,12 @@ public class FlagIconImageFactory
         return getImage(key);
     }
     
+    public void setResourceLoader(ResourceLoader loader)
+    {
+        m_resourceLoader = loader;
+        m_images.clear();
+    }
+    
     /**
      * @param key
      * @return
@@ -69,7 +78,7 @@ public class FlagIconImageFactory
 
         if (!m_images.containsKey(key))
         {
-            URL url = this.getClass().getResource("images/flags/" + key);
+            URL url = m_resourceLoader.getResource("flags/" + key);
             if (url == null)
                 throw new IllegalStateException("No flag for player:" + key);
 

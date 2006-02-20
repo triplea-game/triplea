@@ -20,7 +20,7 @@
 
 package games.strategy.triplea.image;
 
-import games.strategy.triplea.Constants;
+import games.strategy.triplea.*;
 import games.strategy.ui.Util;
 
 import java.awt.*;
@@ -34,9 +34,10 @@ import java.net.URL;
 public class MapImage
 {
 
-  private static Image loadImage(String name)
+  private static Image loadImage(ResourceLoader loader, String name)
   {
-    URL mapFileUrl=MapImage.class.getResource(name);
+    URL mapFileUrl= loader.getResource(name);
+    
     if(mapFileUrl == null)
         throw new IllegalStateException("resource not found:" + name);
     Image img =  Toolkit.getDefaultToolkit().createImage(mapFileUrl);
@@ -53,7 +54,7 @@ public class MapImage
     catch(InterruptedException ie)
     {
       ie.printStackTrace();
-      return loadImage(name);
+      return loadImage(loader, name);
     }
   }
 
@@ -72,9 +73,9 @@ public class MapImage
     return m_smallMapImage;
   }
 
-  public void loadMaps(String mapDir)
+  public void loadMaps(ResourceLoader loader)
   {
-     Image smallFromFile =  loadImage(Constants.MAP_DIR+mapDir+java.io.File.separator+Constants.SMALL_MAP_FILENAME);
+     Image smallFromFile =  loadImage(loader, Constants.SMALL_MAP_FILENAME);
       
      m_smallMapImage = Util.createImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
      Graphics g = m_smallMapImage.getGraphics();

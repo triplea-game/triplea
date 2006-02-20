@@ -21,7 +21,7 @@
 package games.strategy.triplea.image;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.Constants;
+import games.strategy.triplea.*;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
 
@@ -50,7 +50,7 @@ public class UnitImageFactory
    **/
   public static final int UNIT_ICON_HEIGHT = 48;
 
-  private static final String FILE_NAME_BASE = "images/units/";
+  private static final String FILE_NAME_BASE = "units/";
 
   //maps Point -> image
   private final Map<String, Image> m_images = new HashMap<String, Image>();
@@ -58,12 +58,24 @@ public class UnitImageFactory
   private final Map<String, ImageIcon> m_icons = new HashMap<String, ImageIcon>();
   // Scaling factor for unit images
   private double m_scaleFactor;
+  
+  private ResourceLoader m_resourceLoader;
+  
 
   /** Creates new IconImageFactory */
-  public UnitImageFactory(double scaleFactor)
+  public UnitImageFactory()
+  {
+  
+  }
+  
+  
+  public void setResourceLoader(ResourceLoader loader, double scaleFactor)
   {
       m_scaleFactor = scaleFactor;
+      m_resourceLoader = loader;
+      clearImageCache();
   }
+  
 
   /**
    * Set the unitScaling factor
@@ -143,7 +155,7 @@ public class UnitImageFactory
   private Image getBaseImage(String baseImageName, PlayerID id, boolean damaged)
   {
     String fileName = FILE_NAME_BASE + id.getName() + "/"  + baseImageName  + ".png";
-    URL url = this.getClass().getResource(fileName);
+    URL url = m_resourceLoader.getResource(fileName);
     if(url == null)
       throw new IllegalStateException("Cant load :"+ baseImageName + " looking in:" + fileName);
 

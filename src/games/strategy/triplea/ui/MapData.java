@@ -15,7 +15,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.Constants;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.*;
@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 /**
  * contains data about the territories useful for drawing
@@ -78,10 +80,19 @@ public class MapData
     private Properties m_mapProperties;
 
     
+    private final ResourceLoader m_resourceLoader;
+    
     public boolean scrollWrapX()
     {
         return Boolean.valueOf(m_mapProperties.getProperty("map.scrollWrapX", "true")).booleanValue();
     }
+    
+    
+    public MapData(String mapNameDir)
+    {
+        this( ResourceLoader.getMapresourceLoader(mapNameDir));
+    }
+    
     
     /**
      * Constructor TerritoryData(java.lang.String)
@@ -92,23 +103,26 @@ public class MapData
      *            mapNameDir the given map directory
      *  
      */
-    public MapData(String mapNameDir)
+    public MapData(ResourceLoader loader)
     {
+        m_resourceLoader = loader;
+        
         try
         {
-            String prefix = Constants.MAP_DIR + mapNameDir + "/";
+            
+            String prefix = "";
 	
-            m_place = PointFileReaderWriter.readOneToMany(this.getClass().getResourceAsStream(prefix + PLACEMENT_FILE));
-            m_polys = PointFileReaderWriter.readOneToManyPolygons(this.getClass().getResourceAsStream(prefix + POLYGON_FILE));
-            m_centers = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CENTERS_FILE));
-            m_vcPlace = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + VC_MARKERS));
-            m_capitolPlace = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + CAPITAL_MARKERS));
-            m_ipcPlace = PointFileReaderWriter.readOneToOne(this.getClass().getResourceAsStream(prefix + IPC_PLACE_FILE));            
+            m_place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
+            m_polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
+            m_centers = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CENTERS_FILE));
+            m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
+            m_capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
+            m_ipcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + IPC_PLACE_FILE));            
             m_mapProperties = new Properties();
             
             try
             {
-                URL url = this.getClass().getResource(prefix + MAP_PROPERTIES);
+                URL url = loader.getResource(prefix + MAP_PROPERTIES);
                 if(url == null)
                     throw new IllegalStateException("No map.properties file defined");
                 m_mapProperties.load(url.openStream());
@@ -453,5 +467,32 @@ public class MapData
         return rVal;
 
     }
+    
+    private Image m_vcImage;
+    
+    public Image getVCImage()
+    {
+        if(m_vcImage != null)
+            return m_vcImage;
+        
+        
+        URL url = m_resourceLoader.getResource("misc/vc.png");
+        if(url == null)
+            throw new IllegalStateException("Could not load vc image");
+        
+        try
+        {
+            m_vcImage = ImageIO.read(url);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new IllegalStateException(e.getMessage());
+        }
+        
+        return m_vcImage;
+    }
+    
+
+    
 
 }

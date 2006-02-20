@@ -25,7 +25,6 @@ import games.strategy.engine.random.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
 import games.strategy.net.*;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.TileImageFactory;
 
 import java.awt.event.*;
@@ -656,90 +655,39 @@ public class TripleaMenu extends JMenuBar
         JMenu mapSubMenu = new JMenu("Map Skins");
         ButtonGroup mapButtonGroup = new ButtonGroup();
 
-        // Create A String array of compatible MapDirs
-
-        final String currentMapSubDir = getUIContext().getMapDir();
-        final File mapsDir = new File(GameRunner.getRootFolder() + java.io.File.separator + "classes" + Constants.MAP_SKINS_DIR);
-
-        if (currentMapSubDir != null)
-        {
-            //Filter only MapDirs that start with the originals name
-
-            FilenameFilter filter = new FilenameFilter()
-            {
-                public boolean accept(File aDir, String name)
-                {
-                    if (name.startsWith(currentMapSubDir))
-                    {
-                        File file = new File(aDir + java.io.File.separator + name);
-                        return file.isDirectory();
-                    }
-                    return (false);
-                }
-            };
-
-            String[] mapDirs = mapsDir.list(filter);
-            if(mapDirs == null)
-                return;
-            
-            //create entry for each mapdir
-            String mapMenuItemName;
-            for (int i = 0; i < mapDirs.length; i++)
-            {
-                mapMenuItemName = mapDirs[i].replaceFirst(currentMapSubDir, "");
-                if (mapMenuItemName.length() == 0)
-                {
-                    // mapMenuItemName="Original";
-                    mapMenuItem = new JRadioButtonMenuItem("Original");
-                    mapMenuItem.setSelected(true);
-                } else
-                {
-                    mapMenuItem = new JRadioButtonMenuItem(mapMenuItemName);
-                }
-
-                // add item to button group and sub menu
-
-                mapButtonGroup.add(mapMenuItem);
-                mapSubMenu.add(mapMenuItem);
-
-                //add the listening code
-
-                mapMenuItem.addActionListener(new ActionListener()
-                {
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        if (e.getActionCommand() == "Original")
-                        {
-                            try
-                            {
-                                m_frame.updateMap(currentMapSubDir);
-                            } catch (Exception se)
-                            {
-                                se.printStackTrace();
-                                JOptionPane.showMessageDialog(m_frame, se.getMessage(), "Error Changing Map Skin", JOptionPane.OK_OPTION);
-                            }
-                        } else
-                        {
-                            try
-                            {
-                                m_frame.updateMap(currentMapSubDir + e.getActionCommand());
-                            } catch (Exception se)
-                            {
-                                se.printStackTrace();
-                                JOptionPane.showMessageDialog(m_frame, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
-                            }
-
-                        }//else
-
-                    }//actionPerformed
-                });
-
-            }//for
-
-        }//if
-
-        // add the sub menu to the menu
         menuGame.add(mapSubMenu);
+        
+        final Map<String,String> skins = UIContext.getSkins(m_frame.getGame().getData());
+        for(final String key : skins.keySet() )
+        {
+            mapMenuItem = new JRadioButtonMenuItem(key);
+            
+            
+            mapButtonGroup.add(mapMenuItem);
+            mapSubMenu.add(mapMenuItem);
+            
+            mapMenuItem.addActionListener(new ActionListener()
+                    {
+                        public void actionPerformed(ActionEvent e)
+                        {
+                           
+                                try
+                                {
+                                    m_frame.updateMap(skins.get(key));
+                                } catch (Exception se)
+                                {
+                                    se.printStackTrace();
+                                    JOptionPane.showMessageDialog(m_frame, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
+                                }
+
+                            }//else
+
+                        }//actionPerformed
+                    );
+        }
+
+        
+       
     }
 
     /**

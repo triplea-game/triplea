@@ -20,13 +20,9 @@ import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.*;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.logging.*;
-
-import javax.imageio.ImageIO;
 
 /**
  * @author Sean Bridges
@@ -140,24 +136,6 @@ class TerritoryNameDrawable implements IDrawable
 class VCDrawable implements IDrawable
 {
 
-    static Image s_vcImage;
-    
-    static
-    {
-        URL url = ClassLoader.getSystemClassLoader().getResource("games/strategy/triplea/image/images/vc.png");
-        if(url == null)
-            throw new IllegalStateException("Could not load vc image");
-        
-        try
-        {
-            s_vcImage = ImageIO.read(url);
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-            throw new IllegalStateException(e.getMessage());
-        }
-    }
-    
     private final Territory m_location;
     
     
@@ -171,7 +149,7 @@ class VCDrawable implements IDrawable
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
     {
         Point point = mapData.getVCPlacementPoint(m_location);
-        graphics.drawImage(s_vcImage, point.x - bounds.x, point.y - bounds.y, null);
+        graphics.drawImage(mapData.getVCImage(), point.x - bounds.x, point.y - bounds.y, null);
         
     }
 
