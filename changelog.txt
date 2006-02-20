@@ -1,3 +1,9 @@
+* map skins can override unit,flag and vc images
+
+* map skin directories must now be named original_map_name:Skin, rather than original_map_nameSkin as before
+
+* move images and maps to top level folders (these are not on the classpath).  
+
 * allow defining where to place ipc markers using ipc_place.txt (sgb)
 
 * allow turn off drawing map names in map.properties using,  map.showTerritoryNames=false (sgb)
