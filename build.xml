@@ -141,6 +141,14 @@
         <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
             <include name="*.xml"/>
         </zipfileset>
+
+        <zipfileset dir="images/" prefix="triplea_${triplea.version}/images/">
+            <include name="**/*.*"/>
+        </zipfileset>
+
+        <zipfileset dir="maps/" prefix="triplea_${triplea.version}/maps/">
+            <include name="**/*.*"/>
+        </zipfileset>
 	
         <zipfileset dir="." prefix="triplea_${triplea.version}/">
             <include name="readme.html"/>
@@ -214,6 +222,16 @@
             <include name="gpl.txt"/>
         </zipfileset>
       
+        <zipfileset dir="images/" prefix="triplea_${triplea.version}/images/">
+            <include name="**/*.*"/>
+        </zipfileset>
+
+        <zipfileset dir="maps/" prefix="triplea_${triplea.version}/maps/">
+            <include name="**/*.*"/>
+        </zipfileset>
+
+
+
         <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
             <include name="*.xml"/>
         </zipfileset>
