@@ -228,7 +228,7 @@ public class TileManager
                 drawing.add(new LandTerritoryDrawable(territory.getName(), true));
         } 
         
-        drawing.add(new TerritoryNameDrawable(territory.getName()));
+        drawing.add(new TerritoryNameDrawable(territory.getName(), m_uiContext));
         
         TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if(ta != null &&  ta.isCapital() && mapData.drawCapitolMarkers())

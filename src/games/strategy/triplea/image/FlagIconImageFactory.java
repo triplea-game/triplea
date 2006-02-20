@@ -21,35 +21,24 @@
 package games.strategy.triplea.image;
 
 import games.strategy.engine.data.PlayerID;
-import games.strategy.triplea.ResourceLoader;
 
 import java.awt.Image;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-
-import javax.imageio.ImageIO;
 
 /**
  * 
  * @author Sean Bridges
  * @version 1.0
  */
-public class FlagIconImageFactory
+public class FlagIconImageFactory extends ImageFactory
 {
 
     public static final int FLAG_ICON_WIDTH = 30;
-
     public static final int FLAG_ICON_HEIGHT = 15;
-
     public static final int SMALL_FLAG_ICON_WIDTH = 12;
-
     public static final int SMALL_FLAG_ICON_HEIGHT = 7;
 
-    //maps name -> image
-    private final Map<String, Image> m_images = new HashMap<String, Image>();
 
-    private ResourceLoader m_resourceLoader;
+    private final String PREFIX = "flags/";
     
     /** Creates new IconImageFactory */
     public FlagIconImageFactory()
@@ -58,55 +47,22 @@ public class FlagIconImageFactory
 
     public Image getFlag(PlayerID id)
     {
-        String key = id.getName() + ".gif";
+        String key = PREFIX + id.getName() + ".gif";
         
-        return getImage(key);
-    }
-    
-    public void setResourceLoader(ResourceLoader loader)
-    {
-        m_resourceLoader = loader;
-        m_images.clear();
-    }
-    
-    /**
-     * @param key
-     * @return
-     */
-    private Image getImage(String key)
-    {
-
-        if (!m_images.containsKey(key))
-        {
-            URL url = m_resourceLoader.getResource("flags/" + key);
-            if (url == null)
-                throw new IllegalStateException("No flag for player:" + key);
-
-            Image image;
-            try
-            {
-                image = ImageIO.read(url);
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-                throw new IllegalStateException(e.getMessage());
-            }
-            m_images.put(key, image);
-        }
-
-        return m_images.get(key);
+        return getImage(key, true);
     }
 
+  
     public Image getSmallFlag(PlayerID id)
     {
-        String key = id.getName() + "_small.gif";
-        return getImage(key);
+        String key = PREFIX + id.getName() + "_small.gif";
+        return getImage(key, true);
     }
 
     public Image getLargeFlag(PlayerID id)
     {
-        String key = id.getName() +  "_large.png";
-        return getImage(key);
+        String key = PREFIX + id.getName() +  "_large.png";
+        return getImage(key, true);
     }
 
     

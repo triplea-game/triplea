@@ -40,7 +40,7 @@ public class UIContext
     private MapImage m_mapImage ;
     private FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
     private DiceImageFactory m_diceImageFactory = new DiceImageFactory();
-
+    private final IPCImageFactory m_ipcImageFactory = new IPCImageFactory();
     private boolean m_isShutDown;
     
     private List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
@@ -61,6 +61,7 @@ public class UIContext
         
         m_unitImageFactory.setResourceLoader(loader, m_mapData.getDefaultUnitScale());
         m_flagIconImageFactory.setResourceLoader(loader);
+        m_ipcImageFactory.setResourceLoader(loader);
         
         m_tileImageFactory.setMapDir(loader);
         m_mapImage.loadMaps(loader); // load map data
@@ -98,6 +99,12 @@ public class UIContext
     {
         return m_flagIconImageFactory;
     }
+    
+    public IPCImageFactory getIPCImageFactory()
+    {
+        return m_ipcImageFactory;
+    }
+    
     
     public DiceImageFactory getDiceImageFactory()
     {
