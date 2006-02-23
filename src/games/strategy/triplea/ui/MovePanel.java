@@ -761,7 +761,7 @@ public class MovePanel extends ActionPanel
             
 
             
-            if(units.isEmpty())
+            if(units.isEmpty() && m_selectedUnits.isEmpty())
             {
                 if(!me.isShiftDown())
                 {
