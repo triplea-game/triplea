@@ -1,5 +1,6 @@
-* allow map to have ipc images.  Images should be in the map folder, in a folder called ipcs.  They should be named 1.png, 2.png... 
-  if no png image is found for a given number, a string will be drawninstead. (sgb)
+* better retreat dialog (sgb)
+
+* allow map to have ipc images.  Images should be in the map folder, in a folder called ipcs.  They should be named 1.png, 2.png...  if no png image is found for a given number, a string will be drawninstead. (sgb)
 
 * maps (and skins) can be zip files (sgb)
 
