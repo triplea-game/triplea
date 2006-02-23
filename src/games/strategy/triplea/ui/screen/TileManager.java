@@ -308,54 +308,196 @@ public class TileManager
     
     public Image createTerritoryImage(Territory t, GameData data, MapData mapData)
     {
+        return createTerritoryImage(t,t, data, mapData, true);
+        
+//        synchronized(m_mutex)
+//        {
+//	        Rectangle bounds = mapData.getBoundingRect(t);
+//	        
+//	        Image rVal = Util.createImage( bounds.width, bounds.height, false);
+//	        Graphics2D graphics = (Graphics2D) rVal.getGraphics();
+//	        
+//	        //start as a set to prevent duplicates
+//	        Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
+//	        Iterator<Tile> tiles = getTiles(bounds).iterator();
+//	        
+//	        while(tiles.hasNext())
+//	        {
+//	            Tile tile = tiles.next();
+//	            drawablesSet.addAll(tile.getDrawables());
+//	        }
+//	        
+//	        List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
+//	        Collections.sort(orderedDrawables, new DrawableComparator());
+//	        Iterator<IDrawable> drawers =  orderedDrawables.iterator();
+//	        while (drawers.hasNext())
+//	        {
+//	             IDrawable drawer = drawers.next();
+//	             if(drawer.getLevel() >= IDrawable.UNITS_LEVEL)
+//	                 break;
+//	             if(drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)
+//	                 continue;
+//	             drawer.draw(bounds, data, graphics, mapData);
+//	        }
+//	        
+//	        Iterator iter = mapData.getPolygons(t).iterator();
+//	        
+//	        graphics.setStroke(new BasicStroke(5));
+//	        graphics.setColor(Color.RED);
+//	        
+//	        while (iter.hasNext())
+//            {
+//                Polygon poly = (Polygon) iter.next();
+//                poly = new Polygon(poly.xpoints, poly.ypoints, poly.npoints);
+//                poly.translate(-bounds.x, -bounds.y);
+//                graphics.drawPolygon(poly);
+//            }
+//	        
+//	        graphics.dispose();
+//	        return rVal;
+//        }
+
+    }
+    
+    public Image createTerritoryImage(Territory selected, Territory focusOn, GameData data, MapData mapData)
+    {
+        return createTerritoryImage(selected, focusOn, data, mapData, false);
+    }
+    
+    private Image createTerritoryImage(Territory selected, Territory focusOn, GameData data, MapData mapData, boolean drawOutline)
+    {
         synchronized(m_mutex)
         {
-	        Rectangle bounds = mapData.getBoundingRect(t);
-	        
-	        Image rVal = Util.createImage( bounds.width, bounds.height, false);
-	        Graphics2D graphics = (Graphics2D) rVal.getGraphics();
-	        
-	        //start as a set to prevent duplicates
-	        Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
-	        Iterator<Tile> tiles = getTiles(bounds).iterator();
-	        
-	        while(tiles.hasNext())
-	        {
-	            Tile tile = tiles.next();
-	            drawablesSet.addAll(tile.getDrawables());
-	        }
-	        
-	        List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
-	        Collections.sort(orderedDrawables, new DrawableComparator());
-	        Iterator<IDrawable> drawers =  orderedDrawables.iterator();
-	        while (drawers.hasNext())
-	        {
-	             IDrawable drawer = drawers.next();
-	             if(drawer.getLevel() >= IDrawable.UNITS_LEVEL)
-	                 break;
-	             if(drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)
-	                 continue;
-	             drawer.draw(bounds, data, graphics, mapData);
-	        }
-	        
-	        Iterator iter = mapData.getPolygons(t).iterator();
-	        
-	        graphics.setStroke(new BasicStroke(5));
-	        graphics.setColor(Color.RED);
-	        
-	        while (iter.hasNext())
+            Rectangle bounds = mapData.getBoundingRect(focusOn);
+            
+            //make it square
+            if(bounds.width > bounds.height)
+                bounds.height = bounds.width;
+            else
+                bounds.width = bounds.height;
+            
+            int grow = bounds.width / 4;
+            bounds.x -= grow;
+            bounds.y -= grow;
+            bounds.width += grow * 2;
+            bounds.height += grow * 2;
+            
+            //keep it in bounds
+            if(bounds.x < 0 && !mapData.scrollWrapX())
+            {
+                bounds.x = 0;
+            }
+            if(bounds.y < 0)
+            {
+                bounds.y = 0;
+            }
+            
+            if(bounds.width + bounds.x > mapData.getMapDimensions().width && !mapData.scrollWrapX())
+            {
+                int move = bounds.width + bounds.x - mapData.getMapDimensions().width;
+                bounds.x -= move;
+            }
+            
+            if(bounds.height + bounds.y > mapData.getMapDimensions().height)
+            {
+                int move = bounds.height + bounds.y - mapData.getMapDimensions().height;
+                bounds.y -= move;
+            }    
+            
+            if(bounds.width != bounds.height)
+                throw new IllegalStateException("NOt equal");
+            
+            Image rVal = Util.createImage( bounds.width, bounds.height, false);
+            Graphics2D graphics = (Graphics2D) rVal.getGraphics();
+ 
+            if(bounds.x < 0)
+            {
+                bounds.x += mapData.getMapDimensions().width;
+                drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+                bounds.x -= mapData.getMapDimensions().width;
+            }
+            
+            
+            //start as a set to prevent duplicates
+            drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+            
+             
+            if(bounds.x + bounds.height > mapData.getMapDimensions().width)
+            {
+                bounds.x -= mapData.getMapDimensions().width;
+                drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+                bounds.x += mapData.getMapDimensions().width;
+            }
+
+            graphics.dispose();
+            return rVal;
+        }
+
+    }
+
+    private void drawForCreate(Territory selected, GameData data, MapData mapData, Rectangle bounds, Graphics2D graphics, boolean drawOutline)
+    {
+        Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
+        
+        
+        
+        List<Tile> intersectingTiles = getTiles(bounds);
+        
+        for(Tile tile : intersectingTiles)
+        {
+            drawablesSet.addAll(tile.getDrawables());
+        }
+        
+        
+        List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
+        Collections.sort(orderedDrawables, new DrawableComparator());
+        Iterator<IDrawable> drawers =  orderedDrawables.iterator();
+        while (drawers.hasNext())
+        {
+             IDrawable drawer = drawers.next();
+             if(drawer.getLevel() >= IDrawable.UNITS_LEVEL)
+                 break;
+             if(drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)
+                 continue;
+             drawer.draw(bounds, data, graphics, mapData);
+        }
+        
+        
+        
+        if(!drawOutline)
+        {
+            Color c;
+            if(selected.isWater())
+            {
+                c = Color.RED;
+            }
+            else
+            {
+                c = mapData.getPlayerColor(selected.getOwner().getName());
+                c = new Color(c.getRed() ^ c.getRed(),  c.getGreen() ^ c.getGreen(), c.getRed() ^ c.getRed() );
+            }
+
+            
+            TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(),  100);
+            told.draw(bounds, data, graphics, mapData);
+        }
+
+          Iterator iter = mapData.getPolygons(selected).iterator();
+          
+          graphics.setStroke(new BasicStroke(10));
+          graphics.setColor(Color.RED);
+          
+          while (iter.hasNext())
             {
                 Polygon poly = (Polygon) iter.next();
                 poly = new Polygon(poly.xpoints, poly.ypoints, poly.npoints);
                 poly.translate(-bounds.x, -bounds.y);
                 graphics.drawPolygon(poly);
             }
-	        
-	        graphics.dispose();
-	        return rVal;
-        }
+            
+        
 
-    }
+    }    
     
     
     public Tuple<Territory,List<Unit>> getUnitsAtPoint(int x, int y, GameData gameData)

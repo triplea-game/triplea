@@ -641,6 +641,11 @@ public class MapPanel extends ImageScrollerLargeView
         return m_tileManager.createTerritoryImage(territory, m_data,m_uiContext.getMapData());
     }
 
+    public Image getTerritoryImage(Territory territory, Territory focusOn)
+    {
+        return m_tileManager.createTerritoryImage(territory, focusOn, m_data,m_uiContext.getMapData());
+    }
+    
 
 
     /**

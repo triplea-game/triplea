@@ -12,7 +12,6 @@
 
 package games.strategy.triplea.ui;
 
-import java.util.concurrent.CountDownLatch;
 import games.strategy.engine.data.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
@@ -22,7 +21,6 @@ import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.sound.SoundPath;
-import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
@@ -31,6 +29,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.prefs.Preferences;
 
 import javax.swing.*;
@@ -442,12 +441,13 @@ public class BattleDisplay extends JPanel
             this.setLayout(new BorderLayout());
 
             JLabel label = new JLabel("Retreat to...");
+            label.setBorder(new EmptyBorder(0,0,10,0));
             this.add(label, BorderLayout.NORTH);
             JPanel imagePanel = new JPanel();
             imagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
             imagePanel.add(m_retreatTerritory);
             
-            imagePanel.setBorder(new EmptyBorder(10,0,10,0));
+            imagePanel.setBorder(new EmptyBorder(10,10,10,0));
             
             this.add(imagePanel, BorderLayout.EAST);
 
@@ -459,6 +459,8 @@ public class BattleDisplay extends JPanel
                 m_list.setSelectedIndex(0);
             JScrollPane scroll = new JScrollPane(m_list);
             this.add(scroll, BorderLayout.CENTER);
+            
+            scroll.setBorder(new EmptyBorder(10,0,10,0));
             updateImage();
             
             
@@ -476,9 +478,9 @@ public class BattleDisplay extends JPanel
         
         private void updateImage()
         {
-            int width = 150;
-            int height = 150;
-            Image img = m_mapPanel.getTerritoryImage( (Territory) m_list.getSelectedValue()); 
+            int width = 250;
+            int height = 250;
+            Image img = m_mapPanel.getTerritoryImage((Territory) m_list.getSelectedValue(), m_location); 
             
             Image finalImage = Util.createImage(width, height, true);
 
