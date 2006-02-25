@@ -4,6 +4,7 @@ import games.strategy.engine.framework.GameRunner;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 
 
 /**
@@ -19,18 +20,86 @@ public class ResourceLoader
     
     public static ResourceLoader getMapresourceLoader(String mapName)
     {
-        File dir = new File(GameRunner.getRootFolder(), "/maps/" + mapName);
-        File zip = new File(GameRunner.getRootFolder(), "/maps/" + mapName + ".zip");
+        List<String> dirs = getPaths(mapName);
+        dirs.add("/images");
         
-        //if we have a zip file, but no directory, use the zip file
-        if(!dir.exists() && zip.exists())
+        return new ResourceLoader( dirs.toArray(new String[0]));
+    }
+    
+    
+    private static List<String> getPaths(String mapName)
+    {
+        //find the primary directory/file
+        
+        String dirName = "/maps/" + mapName;
+        String zipName = dirName + ".zip";
+        
+        File dir = new File(GameRunner.getRootFolder(), dirName);
+        File zip = new File(GameRunner.getRootFolder(), zipName);
+
+        //they cant both exist
+        if(dir.exists() && zip.exists())
         {
-            return getMapresourceLoader(mapName + ".zip");
+            throw new IllegalStateException("Found both zip:" + zip + " and dir:" + dir + " for skin:" + mapName);
+        }
+        //at least one must exist
+        if(!dir.exists() && !zip.exists())
+        {
+            throw new IllegalStateException("Found neither zip:" + zip + " or dir:" + dir + " for skin:" + mapName);
         }
         
         
-        return new ResourceLoader( new String[] {"/maps/" + mapName, "/images"} );
+       
+        File addedFile;
+        List<String> rVal = new ArrayList<String>();
+        if(dir.exists())
+        {
+            rVal.add(dirName);
+            addedFile = dir;
+        }
+        else
+        {
+            rVal.add(zipName);
+            addedFile = zip;
+        }
+            
+        //find dependencies
+        try
+        {
+            URLClassLoader url = new URLClassLoader(new URL[] {addedFile.toURI().toURL()});
+            URL dependencesURL = url.getResource("dependencies.txt");
+            if(dependencesURL != null)
+            {
+                java.util.Properties dependenciesFile = new java.util.Properties(  );
+                InputStream stream = dependencesURL.openStream();
+                try
+                {
+                    dependenciesFile.load(stream);
+                    String dependencies = dependenciesFile.getProperty("dependencies");
+                    StringTokenizer tokens = new StringTokenizer(dependencies, ",", false ) ;
+                    while(tokens.hasMoreTokens())
+                    {
+                        //add the dependencies recursivly
+                        rVal.addAll(getPaths(tokens.nextToken()));
+                    }
+                    
+                }
+                finally
+                {
+                    stream.close();
+                }
+            }
+            
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        
+        return rVal;
     }
+    
 
     private ResourceLoader(String[]  paths)
     {
