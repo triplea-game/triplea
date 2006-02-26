@@ -59,7 +59,17 @@ public class GameLoadingWindow extends JWindow
             @Override
             public void run()
             {
-                toFront();
+		SwingUtilities.invokeLater(new Runnable() 
+				{
+					public void run()
+					{
+				                toFront();
+					}
+				}
+
+				
+				);
+
         
             }
         
