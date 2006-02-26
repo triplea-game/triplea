@@ -61,6 +61,11 @@ public class GameRunner
         return img;
     }
 
+    static boolean isWindows()
+    {
+        return System.getProperties().getProperty("os.name").toLowerCase().indexOf("windows") != -1;
+    }    
+    
     static boolean isMac()
     {
         return System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
@@ -142,7 +147,12 @@ public class GameRunner
 	//we are in a jar file
 	if(fileName.indexOf("triplea.jar!") != -1)
 	{
-		String subString = fileName.substring("file:/".length(), fileName.indexOf("triplea.jar!") -1);
+		String subString = fileName.substring("file:/".length()  - ( isWindows() ? 0 : 1)  , fileName.indexOf("triplea.jar!") -1);
+        
+         
+        System.out.println(fileName);
+        System.out.println(subString);
+        
 		File f = new File(subString).getParentFile();
 		
 		if(!f.exists())
