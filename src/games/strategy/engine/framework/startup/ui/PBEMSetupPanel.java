@@ -3,7 +3,7 @@ package games.strategy.engine.framework.startup.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.launcher.*;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.random.IronyGamesDiceRollerRandomSource;
+import games.strategy.engine.random.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -26,6 +26,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
     private JLabel m_gameIDLabel = new JLabel();
     private JButton m_testButton = new JButton();
     private  JTextArea m_instructionsText = new JTextArea();
+    private JComboBox m_diceServers = new JComboBox();
     
     
     private final GameSelectorModel m_gameSelectorModel;
@@ -64,6 +65,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         m_instructionsText.setWrapStyleWord(true);
         
         
+        DefaultComboBoxModel diceServerModel = new DefaultComboBoxModel();
+        diceServerModel.addElement(new TripleAWarClubDiceServer());
+        diceServerModel.addElement(new IronyRemoteDiceServer());
+        m_diceServers.setModel(diceServerModel);
+        
+        
         m_instructionsText.setText("\nPBEM differs from single player in that dice rolls are done by a dice server, and the results "
                 + "are mailed to the email addresses below.\n\n" + "Dice are rolled using the dice server at http://www.irony.com/mailroll.html"
                 + "\n\nYou can enter up to 5 addresses in the To: or CC: fields, seperating each address by a space." 
@@ -97,16 +104,27 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         this.add(m_gameIDLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0,
                 5), 0, 0));
 
+        JPanel diceServer = new JPanel();
+        diceServer.add(new JLabel("Dice Server:"));
+        diceServer.add(m_diceServers);
         
+
+        this.add(diceServer, new GridBagConstraints(0, 5, 3, 1, 0.2, 0.2, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                new Insets(0, 15, 0, 0), 0, 0));        
+
         
-        this.add(m_testButton, new GridBagConstraints(0, 5, 3, 1, 0.2, 0.2, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        
+        this.add(m_testButton, new GridBagConstraints(0, 6, 3, 1, 0.2, 0.2, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                new Insets(0, 0, 0, 0), 0, 0));        
+    }
+    
+    private IRemoteDiceServer getDiceServer()
+    {
+        return (IRemoteDiceServer) m_diceServers.getSelectedItem();
     }
     
     void test()
     {
-        IronyGamesDiceRollerRandomSource random = new IronyGamesDiceRollerRandomSource(m_email1TextField.getText(), m_email2TextField.getText(), getGameID());
+        PBEMDiceRoller random = new PBEMDiceRoller(m_email1TextField.getText(), m_email2TextField.getText(), getGameID(), getDiceServer());
         random.test();
     }
 
@@ -203,7 +221,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
     @Override
     public ILauncher getLauncher()
     {
-        IronyGamesDiceRollerRandomSource randomSource = new IronyGamesDiceRollerRandomSource(getEmail1(), getEmail2(), getGameID());
+        PBEMDiceRoller randomSource = new PBEMDiceRoller(getEmail1(), getEmail2(), getGameID(), getDiceServer());
         
         
         Map<String,String> playerTypes = new HashMap<String,String>();

@@ -14,12 +14,13 @@
 
 package games.strategy.engine.random;
 
-import java.util.*;
-import java.net.*;
-import java.io.*;
-import javax.swing.*;
-import java.awt.event.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+import java.net.SocketException;
+
+import javax.swing.*;
 
 /**
  * Rolls the dice using http://www.irony.com/mailroll.html
@@ -29,17 +30,19 @@ import java.awt.*;
  * dice roll finishes. If there is an error we wait until we get a good roll
  * before returning.
  */
-public class IronyGamesDiceRollerRandomSource implements IRandomSource
+public class PBEMDiceRoller implements IRandomSource
 {
     private final String m_player1Email;
     private final String m_player2Email;
     private final String m_gameID;
+    private final IRemoteDiceServer m_remoteDiceServer;
 
-    public IronyGamesDiceRollerRandomSource(String player1Email, String player2Email, String gameID)
+    public PBEMDiceRoller(String player1Email, String player2Email, String gameID, IRemoteDiceServer diceServer)
     {
         m_player1Email = player1Email;
         m_player2Email = player2Email;
         m_gameID = gameID;
+        m_remoteDiceServer = diceServer;
     }
 
     /**
@@ -47,7 +50,7 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
      */
     public void test()
     {
-        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID);
+        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer);
         dialog.setTest();
 
         dialog.roll();
@@ -60,7 +63,7 @@ public class IronyGamesDiceRollerRandomSource implements IRandomSource
     public int[] getRandom(final int max, final int count, final String annotation)
     {
         
-        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID);
+        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer);
         dialog.roll();
         return dialog.getDiceRoll();
     }
@@ -122,6 +125,7 @@ class HttpDiceRollerDialog extends JDialog
 
     private final String m_email2;
     private final String m_gameID;
+    private final IRemoteDiceServer m_diceServer;
 
     private Object m_lock;
 
@@ -129,7 +133,7 @@ class HttpDiceRollerDialog extends JDialog
 
     private JPanel m_buttons = new JPanel();
 
-    public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2, String gameID)
+    public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2, String gameID, IRemoteDiceServer diceServer)
     {
         super(owner, "Dice roller", true);
         m_max = max;
@@ -138,6 +142,7 @@ class HttpDiceRollerDialog extends JDialog
         m_email1 = email1;
         m_email2 = email2;
         m_gameID = gameID;
+        m_diceServer = diceServer;
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         m_exitButton.addActionListener(new ActionListener()
@@ -327,12 +332,12 @@ class HttpDiceRollerDialog extends JDialog
                 Thread.yield();
 
             appendText(m_annotation + "\n");
-            appendText("Contacting  http://www.irony.com/mailroll.html...\n");
+            appendText("Contacting  " + m_diceServer.getName() + "\n");
 
             String text = null;
             try
             {
-                text = DiceStatic.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID);
+                text = m_diceServer.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID);
 
                 if (text.length() == 0)
                 {
@@ -343,7 +348,7 @@ class HttpDiceRollerDialog extends JDialog
 
                 if (!m_test)
                     appendText("Contacted :" + text + "\n");
-                m_diceRoll = DiceStatic.getDice(text, m_count);
+                m_diceRoll = m_diceServer.getDice(text, m_count);
                 appendText("Success!");
                 if (!m_test)
                     closeAndReturn();
@@ -394,6 +399,8 @@ class HttpDiceRollerDialog extends JDialog
     }//end of method
 
 
+
+    
     /**
      * allow multiple fully qualified email adresses seperated by spaces, or a blank string 
      */
@@ -411,116 +418,4 @@ class HttpDiceRollerDialog extends JDialog
         String regex = "(\\s*" + EMAIL + "\\s*)*";
         return emailAddress.matches(regex);
     }
-}
-
-class DiceStatic
-{
-
-    public static String postRequest(String player1, String player2, int max, int numDice, String text, String gameID) throws IOException
-    {
-        if(gameID.trim().length() == 0)
-            gameID = "TripleA";
-        String message = gameID + ":" + text;
-        
-        
-        //text must be limited to 91 characters, not quite sure why
-        //if we dont do this the dice roller will fail
-        if (message.length() > 99)
-            message = message.substring(0, 98);
-
-        URL url = new URL("http://www.irony.com/cgi-bin/mroll-query");
-        URLConnection urlConn = url.openConnection();
-        urlConn.setDoInput(true);
-        urlConn.setDoOutput(true);
-        urlConn.setUseCaches(false);
-        urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-        DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
-
-        String content = "numdice=" + URLEncoder.encode(numDice + "", "UTF-8") + "&numsides=" + URLEncoder.encode(Integer.toString(max), "UTF-8")
-                + "&modroll=" + URLEncoder.encode("No", "UTF-8") +
-                //how many times to repeat
-                "&numroll=" + URLEncoder.encode("1", "UTF-8") +
-
-                "&subject=" + URLEncoder.encode(message, "UTF-8") + "&roller=" + URLEncoder.encode(player1, "UTF-8") + "&gm="
-                + URLEncoder.encode(player2, "UTF-8");
-
-        out.writeBytes(content);
-        out.flush();
-        out.close();
-
-        BufferedReader input = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-        try
-        {
-            StringBuilder results = new StringBuilder();
-
-            while (input.ready())
-            {
-                results.append(input.readLine());
-            }
-            return results.toString();
-        } finally
-        {
-            try
-            {
-                input.close();
-            } catch (Exception e)
-            {
-
-            }
-        }
-    }
-
-    /**
-     * 
-     * @throws IOException
-     *             if there was an error parsing the string
-     */
-    public static int[] getDice(String string, int count) throws IOException
-    {
-        String rollStartString;
-        String rollEndString;
-        if (count == 1)
-        {
-            rollStartString = "Roll 1: <b>";
-            rollEndString = "</b>";
-        } else
-        {
-            rollStartString = "<p>Roll 1:";
-            rollEndString = "=";
-        }
-
-        int startIndex = string.indexOf(rollStartString);
-        if (startIndex == -1)
-        {
-            throw new IOException("Cound not find start index, text returned is:" + string);
-
-        }
-        startIndex += rollStartString.length();
-
-        int endIndex = string.indexOf(rollEndString, startIndex);
-        if (endIndex == -1)
-        {
-            throw new IOException("Cound not find end index");
-        }
-
-        StringTokenizer tokenizer = new StringTokenizer(string.substring(startIndex, endIndex), " ,", false);
-
-        int[] rVal = new int[count];
-        for (int i = 0; i < count; i++)
-        {
-            try
-            {
-                //-1 since we are 0 based
-                rVal[i] = Integer.parseInt(tokenizer.nextToken()) - 1;
-            } catch (NumberFormatException ex)
-            {
-                ex.printStackTrace();
-                throw new IOException(ex.getMessage());
-            }
-        }
-
-        return rVal;
-    }
-
 }
