@@ -335,10 +335,10 @@ public class ServerGame implements IGame
             SaveGameFileChooser.ensureDefaultDirExists();
             File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME);
             
-            System.out.print("Autosaving...");
+            
             out = new FileOutputStream(autosaveFile);
             saveGame(out);
-            System.out.println("done");
+            
         }
         catch (Exception e)
         {
