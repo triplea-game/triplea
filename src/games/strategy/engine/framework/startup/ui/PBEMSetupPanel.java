@@ -72,8 +72,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         
         
         m_instructionsText.setText("\nPBEM differs from single player in that dice rolls are done by a dice server, and the results "
-                + "are mailed to the email addresses below.\n\n" + "Dice are rolled using the dice server at http://www.irony.com/mailroll.html"
-                + "\n\nYou can enter up to 5 addresses in the To: or CC: fields, seperating each address by a space." 
+                + "are mailed to the email addresses below.\n\nYou can enter up to 5 addresses in the To: or CC: fields, seperating each address by a space." 
                 + "\n\nYou must enter an address in the To: field."
                 
         );
