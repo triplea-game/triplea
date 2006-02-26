@@ -291,6 +291,8 @@ public class ServerLauncher implements ILauncher
     private void saveAndEndGame(final INode node)
     {
         DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
+
+	SaveGameFileChooser.ensureDefaultDirExists();
         
         final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
         m_serverGame.saveGame(f);
