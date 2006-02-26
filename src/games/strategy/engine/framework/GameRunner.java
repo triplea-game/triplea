@@ -117,9 +117,6 @@ public class GameRunner
      */
     public static File getRootFolder()
     {
-        //this will fail if we are in a jar
-        //what we are doing is looking up the url to GameRunner.class
-        //we can find it because we are it
         //we know that the class file is in a directory one above the games root folder
         //so navigate up from the class file, and we have root.
         
@@ -131,6 +128,8 @@ public class GameRunner
         int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
         
         String fileName = url.getFile();
+
+	
         try
         {
             //deal with spaces in the file name which would be url encoded
@@ -139,20 +138,37 @@ public class GameRunner
         {
             e.printStackTrace();
         }
-        File f = new File(fileName);
+
+	//we are in a jar file
+	if(fileName.indexOf("triplea.jar!") != -1)
+	{
+		String subString = fileName.substring("file:/".length(), fileName.indexOf("triplea.jar!") -1);
+		File f = new File(subString).getParentFile();
+		
+		if(!f.exists())
+		{
+			throw new IllegalStateException("File not found:" + f);
+		}
+		return f;
+	}
+	else
+	{
+				
+	        File f = new File(fileName);
         
         
-        for(int i = 0; i < moveUpCount; i++)
-        {
-            f = f.getParentFile();
-        }
+	        for(int i = 0; i < moveUpCount; i++)
+	        {
+	            f = f.getParentFile();
+	        }
         
-        if(!f.exists())
-        {
-            System.err.println("Could not find root folder, does  not exist:" + f);
-            return new File(System.getProperties().getProperty("user.dir"));
-        }
+        	if(!f.exists())
+	        {
+        	    System.err.println("Could not find root folder, does  not exist:" + f);
+	            return new File(System.getProperties().getProperty("user.dir"));
+        	}
         
-        return f;
+	        return f;
+	 }
     }
 }

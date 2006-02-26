@@ -46,7 +46,9 @@
         		</or>
         	</condition>    	
     	</fail>
-    	
+
+	<!-- we only need this for deployment -->	
+	<delete file="bin/triplea.jar"/>
     	
         <mkdir dir="classes"/>
         <copy todir="classes">
@@ -94,22 +96,17 @@
     <!-- zip -->
     <target name="zip" depends="init,compile" description="create a zip file for end users">
         <mkdir dir="release" />
-        
+
+	<delete file="bin/triplea.jar"/>
+	<jar destfile="bin/triplea.jar" basedir="classes">
+		<manifest>
+			<attribute name="Main-Class" value="games.strategy.engine.framework.GameRunner"/>
+			<attribute name="Class-Path" value="../lib/looks-1.3.1.jar"/>
+		</manifest>
+	</jar>
+	
 	<zip zipfile="release/triplea_${triplea.version}.zip" compress="true" >
-        
-	<zipfileset dir="classes/" prefix="triplea_${triplea.version}/classes/">
-	    <include name="**/*.class"/>
-	    <exclude name="**/*Test.class"/>  <!-- dont put Test classes in the main distribution -->
-            <include name="**/*.dtd"/>
-            <include name="**/*.gif"/>
-            <include name="**/*.png"/>
-	    <include name="**/*.jpg"/>
-	    <include name="**/*.jpeg"/>
-            <include name="**/*.txt"/>
-            <include name="**/*.wav"/>
-	    <include name="**/*.properties"/>
-        </zipfileset>
-      
+
         <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
             <include name="**/*.jar"/>
         	<!-- we dont need junit in the release -->
@@ -130,6 +127,7 @@
         <zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
             <include name="**/*.sh"/>
 	    <include name="**/*.bat"/>
+	    <include name="**/*.jar"/>
         </zipfileset>
 	
         <zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
@@ -154,6 +152,7 @@
             <include name="readme.html"/>
 	    <include name="*.bat"/>
 	    <include name="*.sh"/>
+	    <include name="triplea.exe"/>
 	    <include name="changelog.txt"/>
         </zipfileset>
 	
@@ -203,6 +202,7 @@
 	    <include name="*.bat"/>
 	    <include name="*.sh"/>
 	    <include name="changelog.txt"/>
+	    <include name="launch4j.config.xml"/>
         </zipfileset>
       
         <zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
@@ -229,8 +229,6 @@
         <zipfileset dir="maps/" prefix="triplea_${triplea.version}/maps/">
             <include name="**/*.*"/>
         </zipfileset>
-
-
 
         <zipfileset dir="games/" prefix="triplea_${triplea.version}/games/">
             <include name="*.xml"/>
