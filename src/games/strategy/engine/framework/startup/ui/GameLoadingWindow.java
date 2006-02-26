@@ -1,12 +1,17 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.*;
+import java.util.*;
+import java.util.Timer;
 
 import javax.swing.*;
 import javax.swing.border.*;
 
 public class GameLoadingWindow extends JWindow 
 {
+    
+    
+    Timer t = new Timer();
     
     
     public GameLoadingWindow()
@@ -48,13 +53,27 @@ public class GameLoadingWindow extends JWindow
     
     public void showWait()
     {
-       
+       TimerTask task = new TimerTask()
+        {
+        
+            @Override
+            public void run()
+            {
+                toFront();
+        
+            }
+        
+        };  
+        
+       t.schedule(task, 15, 15);
        
     }
 
     
     public void doneWait()
     {
+        t.cancel();
+        
         SwingUtilities.invokeLater(new Runnable()
                 {
                 
