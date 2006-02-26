@@ -94,6 +94,7 @@ public class ResourceLoader
         } catch (Exception e)
         {
             e.printStackTrace();
+            throw new IllegalStateException(e.getMessage());
         }
         
         
