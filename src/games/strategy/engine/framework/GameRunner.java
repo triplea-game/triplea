@@ -150,9 +150,6 @@ public class GameRunner
 		String subString = fileName.substring("file:/".length()  - ( isWindows() ? 0 : 1)  , fileName.indexOf("triplea.jar!") -1);
         
          
-        System.out.println(fileName);
-        System.out.println(subString);
-        
 		File f = new File(subString).getParentFile();
 		
 		if(!f.exists())
