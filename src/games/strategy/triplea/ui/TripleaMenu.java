@@ -46,6 +46,7 @@ public class TripleaMenu extends JMenuBar
 {
 
     private final TripleAFrame m_frame;
+    private JCheckBoxMenuItem showMapDetails; 
     
     TripleaMenu(TripleAFrame frame)
     {
@@ -55,6 +56,8 @@ public class TripleaMenu extends JMenuBar
         createGameMenu(this);
         createNetworkMenu(this);
         createHelpMenu(this);
+
+	setWidgetActivation();
 
     }
     
@@ -609,14 +612,20 @@ public class TripleaMenu extends JMenuBar
         };
         parentMenu.add(showDiceStats);
     }
-    
-    
+   
+
+   private void setWidgetActivation()
+   {
+        showMapDetails.setEnabled(getUIContext().getMapData().getHasRelief());
+   }
+   
+
     /**
      * @param menuGame
      */
     private void addShowMapDetails(JMenu menuGame)
     {
-        final JCheckBoxMenuItem showMapDetails = new JCheckBoxMenuItem("Show Map Details");
+        showMapDetails = new JCheckBoxMenuItem("Show Map Details");
 
         showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
 
@@ -640,7 +649,6 @@ public class TripleaMenu extends JMenuBar
             }
         });
         menuGame.add(showMapDetails);
-        showMapDetails.setEnabled(getUIContext().getMapData().getHasRelief());
     }
 
     /**
@@ -674,6 +682,7 @@ public class TripleaMenu extends JMenuBar
                                 try
                                 {
                                     m_frame.updateMap(skins.get(key));
+				    setWidgetActivation();
                                 } catch (Exception se)
                                 {
                                     se.printStackTrace();
