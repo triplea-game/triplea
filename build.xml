@@ -159,7 +159,33 @@
         </zip>
     </target>
 
+    <!-- must be done after a ant zip has been executed (we dont depend since ant zip 
+         takes a while.  NSIS must be installed, and makensis must be on the path
+	 -->
+    <target name="zipInstaller" depends="init" description="prepare_installer">
+	    <delete dir="release/installer"/>
+	    <mkdir dir="release/installer"/>
 
+	    <unzip src="release/triplea_${triplea.version}.zip" dest="release/installer"/>
+	    <unzip src="installer/jre1.5.0_06.zip" dest="release/installer"/>
+	    <move toDir="release/installer/triplea_${triplea.version}/jre">
+		<fileset dir="release/installer/jre1.5.0_06"/>
+	    </move>
+	    
+	    <copy file="installer/installer.nsi" toFile="release/installer/installer.nsi"/>
+	    <copy file="triplea_embeded_jre.exe" toFile="release/installer/triplea_${triplea.version}/triplea.exe"/>
+	    <!-- the bat file doesnt work, since it does not point to the jre -->
+	    <delete file="release/installer/triplea_${triplea.version}/triplea_windows.bat"/>
+
+
+	    <exec executable="makensis" dir="release/installer">
+		    <arg line="installer.nsi"/>
+	    </exec>
+
+	    <move file="release/installer/triplea_installer.exe" toFile="release/triplea_${triplea.version}_windows_installer.exe"/>
+	    
+    </target>
+    
     <!-- zipSource -->
     <target name="zipSource" depends="init" description="create a zip file for developers">
         <mkdir dir="release" />
