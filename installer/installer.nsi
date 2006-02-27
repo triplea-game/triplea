@@ -1,7 +1,8 @@
 ;--------------------------------
 
-
-SetCompressor /SOLID lzma
+;Solid seems to fail at times
+;SetCompressor /SOLID lzma
+SetCompressor  lzma
 
 ; The name of the installer
 Name "TripleA Installer"
