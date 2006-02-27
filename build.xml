@@ -105,7 +105,7 @@
 		</manifest>
 	</jar>
 	
-	<zip zipfile="release/triplea_${triplea.version}.zip" compress="true" >
+	<zip zipfile="release/triplea_${triplea.version}_all_platforms.zip" compress="true" >
 
         <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
             <include name="**/*.jar"/>
@@ -162,15 +162,15 @@
     <!-- must be done after a ant zip has been executed (we dont depend since ant zip 
          takes a while.  NSIS must be installed, and makensis must be on the path
 	 -->
-    <target name="zipInstaller" depends="init" description="prepare_installer">
+    <target name="zipInstallerWithJava" depends="init" description="prepare_installer">
 	    <delete dir="release/installer"/>
 	    <mkdir dir="release/installer"/>
 
-	    <unzip src="release/triplea_${triplea.version}.zip" dest="release/installer"/>
+	    <unzip src="release/triplea_${triplea.version}_all_platforms.zip" dest="release/installer"/>
 	    <unzip src="installer/jre1.5.0_06.zip" dest="release/installer"/>
 	    <move toDir="release/installer/triplea_${triplea.version}/jre">
 		<fileset dir="release/installer/jre1.5.0_06"/>
-	    </move>
+  	    </move>
 	    
 	    <copy file="installer/installer.nsi" toFile="release/installer/installer.nsi"/>
 	    <copy file="triplea_embeded_jre.exe" toFile="release/installer/triplea_${triplea.version}/triplea.exe"/>
@@ -179,10 +179,32 @@
 
 
 	    <exec executable="makensis" dir="release/installer">
-		    <arg line="installer.nsi"/>
+		    <arg line="/Dversion=${triplea.version} installer.nsi "/>
+	    </exec>
+
+	    <move file="release/installer/triplea_installer.exe" toFile="release/triplea_${triplea.version}_windows_installer_with_java.exe"/>
+    </target>
+
+
+    <target name="release" depends="clean,compile,zip,zipInstaller,zipInstallerWithJava,zipSource"/>
+
+   <!-- must be done after a ant zip has been executed (we dont depend since ant zip 
+         takes a while.  NSIS must be installed, and makensis must be on the path
+	 -->
+    <target name="zipInstaller" depends="init" description="prepare_installer">
+	    <delete dir="release/installer"/>
+	    <mkdir dir="release/installer"/>
+
+	    <unzip src="release/triplea_${triplea.version}_all_platforms.zip" dest="release/installer"/>
+	    
+	    <copy file="installer/installer.nsi" toFile="release/installer/installer.nsi"/>
+
+	    <exec executable="makensis" dir="release/installer">
+		    <arg line="/Dversion=${triplea.version} installer.nsi "/>
 	    </exec>
 
 	    <move file="release/installer/triplea_installer.exe" toFile="release/triplea_${triplea.version}_windows_installer.exe"/>
+	    
 	    
     </target>
     
@@ -190,7 +212,7 @@
     <target name="zipSource" depends="init" description="create a zip file for developers">
         <mkdir dir="release" />
 	
-        <zip zipfile="release/triplea_source_${triplea.version}.zip" compress="true" >
+        <zip zipfile="release/triplea_${triplea.version}_source_code_only.zip" compress="true" >
         
 	<zipfileset dir="src/" prefix="triplea_${triplea.version}/src/">
             <include name="**/*.java"/>

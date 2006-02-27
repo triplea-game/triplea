@@ -1,10 +1,3 @@
-; example1.nsi
-;
-; This script is perhaps one of the simplest NSIs you can make. All of the
-; optional settings are left to their default settings. The installer simply 
-; prompts the user asking them where to install, and drops a copy of example1.nsi
-; there. 
-
 ;--------------------------------
 
 
@@ -36,6 +29,12 @@ Section "" ;No components page, name is not important
   
   ; Put file there
   File /r triplea* 
+
+  ;create the shortcut
+  CreateDirectory $SMPROGRAMS\TripleA\TripleA_${version}
+  CreateShortCut "$SMPROGRAMS\TripleA\TripleA_${version}\triplea.lnk" "$INSTDIR\triplea_${version}\triplea.exe"
+
+  
   
 SectionEnd ; end the section
 
