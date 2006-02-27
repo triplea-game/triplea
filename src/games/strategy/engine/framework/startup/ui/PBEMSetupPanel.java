@@ -66,8 +66,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         
         
         DefaultComboBoxModel diceServerModel = new DefaultComboBoxModel();
-        diceServerModel.addElement(new TripleAWarClubDiceServer());
+        //switch defaults when we are ready
         diceServerModel.addElement(new IronyRemoteDiceServer());
+        diceServerModel.addElement(new TripleAWarClubDiceServer());
+        
         m_diceServers.setModel(diceServerModel);
         
         
@@ -107,9 +109,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         diceServer.add(new JLabel("Dice Server:"));
         diceServer.add(m_diceServers);
         
-
-        this.add(diceServer, new GridBagConstraints(0, 5, 3, 1, 0.2, 0.2, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 15, 0, 0), 0, 0));        
+        //hide until we are ready
+//        this.add(diceServer, new GridBagConstraints(0, 5, 3, 1, 0.2, 0.2, GridBagConstraints.WEST, GridBagConstraints.NONE,
+//                new Insets(0, 15, 0, 0), 0, 0));        
 
         
         this.add(m_testButton, new GridBagConstraints(0, 6, 3, 1, 0.2, 0.2, GridBagConstraints.CENTER, GridBagConstraints.NONE,
