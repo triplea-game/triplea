@@ -1,3 +1,5 @@
+Changes for 0.7.4
+
 * allow map skins to depend on each other (add a dependencies.txt file to the skin, with a single line dependencies=skin1,skin2,skin3)  skin1 is the name of the skin (eg pact_of_steel:coal, if pact_of_steel:coal is in a zip file, do not include the .zip)
 
 * better retreat dialog (sgb)
