@@ -201,6 +201,17 @@ public class MovePanel extends ActionPanel
     {
         public void actionPerformed(ActionEvent e)
         {
+            if(m_undableMovesPanel.getCountOfMovesMade() == 0)
+            {
+                int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( MovePanel.this), "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
+                if(rVal != JOptionPane.YES_OPTION)
+                {
+                    return;
+                }
+
+            }
+            
+            
             release();
             m_moveMessage = null;
         }

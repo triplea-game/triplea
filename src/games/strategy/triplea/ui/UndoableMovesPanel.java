@@ -43,6 +43,11 @@ public class UndoableMovesPanel extends JPanel
         initLayout();
 
     }
+    
+    public int getCountOfMovesMade()
+    {
+        return m_moves.size();
+    }
 
     private void initLayout()
     {
