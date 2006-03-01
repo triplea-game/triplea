@@ -144,7 +144,7 @@ public class PurchasePanel extends ActionPanel
         boolean hasPurchased = m_purchase.totalValues() != 0;
         if(!hasPurchased)
         {
-            int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "Are you sure you dont want to buy anything?", "End Pruchase", JOptionPane.YES_NO_OPTION);
+            int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "Are you sure you dont want to buy anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
             if(rVal != JOptionPane.YES_OPTION)
             {
                 return;
