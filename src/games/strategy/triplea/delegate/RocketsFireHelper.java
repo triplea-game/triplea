@@ -66,7 +66,7 @@ public class RocketsFireHelper
             if (target != null)
             {
                 attackedTerritories.add(target);
-                fireRocket(player, target, bridge, data);
+                fireRocket(player, target, bridge, data, territory);
             }
         }
     }
@@ -89,7 +89,7 @@ public class RocketsFireHelper
 
         Territory attacked = getTarget(targets, player, bridge, null);
         if (attacked != null)
-            fireRocket(player, attacked, bridge, data);
+            fireRocket(player, attacked, bridge, data, null);
     }
 
     private Set<Territory> getTerritoriesWithRockets(GameData data, PlayerID player)
@@ -143,7 +143,7 @@ public class RocketsFireHelper
         return ((ITripleaPlayer) bridge.getRemote()).whereShouldRocketsAttack(targets, from);
     }
 
-    private void fireRocket(PlayerID player, Territory attackedTerritory, IDelegateBridge bridge, GameData data)
+    private void fireRocket(PlayerID player, Territory attackedTerritory, IDelegateBridge bridge, GameData data, Territory attackFrom)
     {
 
         PlayerID attacked = attackedTerritory.getOwner();
@@ -190,6 +190,23 @@ public class RocketsFireHelper
 
         Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, ipcs, -cost);
         bridge.addChange(rocketCharge);
+        
+        //this is null in 3rd edition
+        if(attackFrom != null)
+        {
+            List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd(Matches.UnitIsAA, Matches.unitIsOwnedBy(player) ));
+            
+            if(units.size() > 0)
+            {
+                //only one fired
+                DelegateFinder.moveDelegate(data).markNoMovement( Collections.singleton(units.get(0)));
+            }
+            else
+            {
+                new IllegalStateException("No aa guns?" + attackFrom.getUnits().getUnits());
+            }
+        }
+        
 
     }
 
