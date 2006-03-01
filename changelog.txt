@@ -1,4 +1,8 @@
-* add tripleawarclub dice server (clausewitz, sgb, pughead)
+* if user presses done when no moves were made, confirm that they do not want to move (sgb)
+
+* fix bug [ 1440134 ] rockets shouldnt move after firing (sgb)
+
+* add tripleawarclub dice server (clausewitz, pughead, sgb)
 
 Changes for 0.7.4
 
