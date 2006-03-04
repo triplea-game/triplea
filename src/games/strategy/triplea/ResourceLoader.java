@@ -31,7 +31,7 @@ public class ResourceLoader
     {
         //find the primary directory/file
         
-        String dirName = "/maps/" + mapName;
+        String dirName = File.separator + "maps" + File.separator + mapName;
         String zipName = dirName + ".zip";
         
         File dir = new File(GameRunner.getRootFolder(), dirName);

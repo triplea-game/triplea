@@ -113,7 +113,8 @@ public final class TileImageFactory
      */
     private String getBaseTileImageName(int x, int y)
     {
-        String fileName = "baseTiles" + java.io.File.separator + x + "_" + y + ".png";
+	//we are loading with a class loader now, use /
+        String fileName = "baseTiles" + "/" + x + "_" + y + ".png";
         return fileName;
     }
 
@@ -151,7 +152,8 @@ public final class TileImageFactory
      */
     private String getReliefTileImageName(int x, int y)
     {
-        String fileName = "reliefTiles" + java.io.File.separator + x + "_" + y + ".png";
+	//we are loading with a class loader now, use /
+        String fileName = "reliefTiles" + "/" + x + "_" + y + ".png";
         return fileName;
     }
 
