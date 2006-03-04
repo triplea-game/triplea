@@ -225,7 +225,7 @@ public class TileManager
         {
             // draw a convoy overlay
             if(TerritoryAttachment.get(territory) != null)
-                drawing.add(new LandTerritoryDrawable(territory.getName(), true));
+                drawing.add(new ConvoyZoneDrawable(territory.getName()));
         } 
         
         drawing.add(new TerritoryNameDrawable(territory.getName(), m_uiContext));

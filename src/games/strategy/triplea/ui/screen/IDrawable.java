@@ -36,6 +36,8 @@ public interface IDrawable
     public static final int POLYGONS_LEVEL = 2;
 
     public static final int RELIEF_LEVEL = 3;
+    
+    public static final int CONVOY_LEVEL = 4;
 
     public static final int CAPITOL_MARKER_LEVEL = 7;
 
@@ -315,23 +317,61 @@ class BaseMapDrawable extends MapTileDrawable
     }
 }
 
-// for water or land
+class ConvoyZoneDrawable implements IDrawable
+{
+    private final String m_territoryName;
+
+    public ConvoyZoneDrawable(final String territoryName)
+    {
+        m_territoryName = territoryName;
+    }
+
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    {
+
+        Territory territory = data.getMap().getTerritory(m_territoryName);
+        Color territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
+        territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 220);
+        
+        List polys = mapData.getPolygons(territory);
+
+        Iterator iter2 = polys.iterator();
+        while (iter2.hasNext())
+        {
+            Polygon polygon = (Polygon) iter2.next();
+
+            // if we dont have to draw, dont
+            if (!polygon.intersects(bounds) && !polygon.contains(bounds))
+                continue;
+
+            // use a copy since we will move the polygon
+            polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+
+            polygon.translate(-bounds.x, -bounds.y);
+            graphics.setColor(territoryColor);
+            graphics.fillPolygon(polygon);
+            graphics.setColor(Color.BLACK);
+            graphics.drawPolygon(polygon);
+        }
+
+    }
+
+    public int getLevel()
+    {
+        return CONVOY_LEVEL;
+    }
+
+}
+
+
+
 class LandTerritoryDrawable implements IDrawable
 {
     private final String m_territoryName;
 
-    private final boolean m_isWater;
-
     public LandTerritoryDrawable(final String territoryName)
     {
         m_territoryName = territoryName;
-        m_isWater = false;
-    }
-
-    public LandTerritoryDrawable(final String territoryName, final boolean isWater)
-    {
-        m_territoryName = territoryName;
-        m_isWater = isWater;
     }
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
@@ -346,8 +386,6 @@ class LandTerritoryDrawable implements IDrawable
         } else
         {
             territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
-            if (m_isWater)
-                territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 220);
         }
 
         List polys = mapData.getPolygons(territory);
@@ -375,8 +413,6 @@ class LandTerritoryDrawable implements IDrawable
 
     public int getLevel()
     {
-        if (m_isWater)
-            return BASE_MAP_LEVEL;
         return POLYGONS_LEVEL;
     }
 
