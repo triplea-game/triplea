@@ -10,4 +10,5 @@ fi
 relativePathToGame=`dirname $0`
 cd $relativePathToGame
 
+
 java -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:bin/triplea.jar games.strategy.engine.framework.GameRunner
