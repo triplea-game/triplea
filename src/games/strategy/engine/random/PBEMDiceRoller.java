@@ -17,7 +17,6 @@ package games.strategy.engine.random;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.net.*;
 import java.net.SocketException;
 
 import javax.swing.*;

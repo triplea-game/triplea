@@ -194,7 +194,7 @@ public class RocketsFireHelper
         //this is null in 3rd edition
         if(attackFrom != null)
         {
-            List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd(Matches.UnitIsAA, Matches.unitIsOwnedBy(player) ));
+            List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAA, Matches.unitIsOwnedBy(player) ));
             
             if(units.size() > 0)
             {
