@@ -20,10 +20,11 @@
 
 package games.strategy.util;
 
+import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.awt.*;
+
 
 /**
  *
@@ -35,6 +36,8 @@ import java.awt.*;
  */
 public class PointFileReaderWriter
 {
+        
+    
 	/** Creates a new instance of PointFileReader */
     public PointFileReaderWriter()
 	{
@@ -240,44 +243,85 @@ public class PointFileReaderWriter
         return mapping;
     }
 
-
     private static void readMultiplePolygons(String line, HashMap<String, List<Polygon>> mapping) throws IOException
     {
-        StringTokenizer tokens = new StringTokenizer(line, "");
-        String name = tokens.nextToken("<").trim();
-        List<Polygon> polygons = new ArrayList<Polygon>();
+        //this loop is executed a lot when loading games
+        //so it is hand optimized
+        
+        String name = line.substring(0, line.indexOf('<')).trim();
 
+        int index = name.length();
+        
+        List<Polygon> polygons = new ArrayList<Polygon>(64);
+        ArrayList<Point> points = new ArrayList<Point>();
+        
+        final int length = line.length();
+        while(index < length)
+        {
+            char current = line.charAt(index);
+            if(current == '<')
+            {
+                int x = 0;
+                int y = 0;
+                
+                int base = 0;
+                
+                //inside a poly
+                while(true)
+                {
+                    current = line.charAt(++index);
+                    
+                    switch (current)
+                    {
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            base *= 10;
+                            base += current - '0';
+                        break;
+                        case ',':
+                            x = base;
+                            base = 0;
+                        break;
+                        case ')':
+                            y = base;
+                            base = 0;
+                            points.add(new Point(x,y));
+                        break;
+
+                        default:
+                        break;
+                    }
+                    
+                    
+                    if(current == '>')
+                    {
+                        //end poly
+                        createPolygonFromPoints(polygons, points);
+                        points.clear();
+                        //break from while(true)
+                        break;
+                    }
+                }
+                
+            }
+            index++; 
+        }
+        
         if(mapping.containsKey(name))
             throw new IOException("name found twice:" + name);
-
-        ArrayList<Point> points = new ArrayList<Point>();
-        while(tokens.hasMoreTokens())
-        {
-            String xString = tokens.nextToken(",<(), ");
-
-            //end of a polygon
-            if(xString.trim().equals(">"))
-            {
-                createPolygonFromPoints(polygons, points);
-                continue;
-            }
-
-
-            if(!tokens.hasMoreTokens())
-                continue;
-
-
-            String yString = tokens.nextToken(",() ");
-
-            int x = Integer.parseInt(xString);
-            int y = Integer.parseInt(yString);
-            points.add(new Point(x,y));
-        }
 
         mapping.put(name, polygons);
     }
 
-    private static void createPolygonFromPoints(Collection<Polygon> polygons, ArrayList<Point> points)
+     private static void createPolygonFromPoints(Collection<Polygon> polygons, ArrayList<Point> points)
     {
         int[] xPoints = new int[points.size()];
         int[] yPoints = new int[points.size()];
@@ -288,7 +332,6 @@ public class PointFileReaderWriter
             yPoints[i] = p.y;
         }
         polygons.add(new Polygon(xPoints, yPoints, xPoints.length));
-        points.clear();
     }
 
 
