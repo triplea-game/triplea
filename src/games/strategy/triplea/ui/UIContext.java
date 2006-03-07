@@ -18,11 +18,13 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.*;
 import games.strategy.triplea.image.*;
+import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.Window;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.*;
 
 import javax.swing.*;
 
@@ -33,6 +35,9 @@ import javax.swing.*;
  */
 public class UIContext
 {
+    
+    private static final Logger s_logger = Logger.getLogger(UIContext.class.getName());
+    
     private MapData m_mapData;
     private TileImageFactory m_tileImageFactory = new TileImageFactory();
     private String m_mapDir;
@@ -55,6 +60,8 @@ public class UIContext
 
     public void setMapDir(String dir)
     {
+        Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
+        
         ResourceLoader loader = ResourceLoader.getMapresourceLoader(dir);
         
         m_mapData = new MapData(loader);
@@ -68,6 +75,8 @@ public class UIContext
         
 
         m_mapDir = dir;
+        
+        stopWatch.done();
     }
     
     public MapData getMapData()
