@@ -1,3 +1,9 @@
+Change for 0.7.5
+
+* fix map skins in zip files on windows (sgb)
+
+* map skins must use - not : to seperate skin from map names (eg revised-Coal, not revised:Coal).  Windows doesnt allow : in file names (sgb)
+
 * if user presses done when no moves were made, confirm that they do not want to move (sgb)
 
 * fix bug [ 1440134 ] rockets shouldnt move after firing (sgb)
