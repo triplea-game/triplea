@@ -243,7 +243,7 @@ abstract class MapTileDrawable implements IDrawable
         Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
         graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
 
-        Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing images");
+        Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing tile images");
         graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y, null);
         drawStopWatch.done();
 
