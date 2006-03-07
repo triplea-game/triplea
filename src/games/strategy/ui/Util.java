@@ -55,14 +55,14 @@ public class Util
         return copy;
     }
 
-    public static Image createVolatileImage(int width, int height)
-    {
-
-        GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-                .getDefaultConfiguration();
-        return localGraphicSystem.createCompatibleVolatileImage(width, height);
-
-    }
+//    public static Image createVolatileImage(int width, int height)
+//    {
+//
+//        GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+//                .getDefaultConfiguration();
+//        return localGraphicSystem.createCompatibleVolatileImage(width, height);
+//
+//    }
 
     /**
      * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
