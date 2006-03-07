@@ -25,7 +25,10 @@ import games.strategy.ui.Util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 /**
  * Responsible for drawing countries on the map.
@@ -40,22 +43,31 @@ public class MapImage
     
     if(mapFileUrl == null)
         throw new IllegalStateException("resource not found:" + name);
-    Image img =  Toolkit.getDefaultToolkit().createImage(mapFileUrl);
     
-    MediaTracker tracker = new MediaTracker( new Panel());
-    tracker.addImage(img, 1 );
     try
     {
-      tracker.waitForAll();
-      if(tracker.isErrorAny())
-      	throw new IllegalStateException("Error loading");
-      return img;
-    }
-    catch(InterruptedException ie)
+        return ImageIO.read(mapFileUrl);
+    } catch (IOException e)
     {
-      ie.printStackTrace();
-      return loadImage(loader, name);
+       e.printStackTrace();
+       throw new IllegalStateException(e.getMessage());
     }
+//    Image img =  Toolkit.getDefaultToolkit().createImage(mapFileUrl);
+//    
+//    MediaTracker tracker = new MediaTracker( new Panel());
+//    tracker.addImage(img, 1 );
+//    try
+//    {
+//      tracker.waitForAll();
+//      if(tracker.isErrorAny())
+//      	throw new IllegalStateException("Error loading");
+//      return img;
+//    }
+//    catch(InterruptedException ie)
+//    {
+//      ie.printStackTrace();
+//      return loadImage(loader, name);
+//    }
   }
 
   

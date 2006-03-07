@@ -17,6 +17,7 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.ref.*;
 import java.net.URL;
@@ -168,16 +169,24 @@ public final class TileImageFactory
 		    Image image;
 		    try
 		    {
-		        Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINEST, "Loading image:" + imageLocation);
-		        Image fromFile = ImageIO.read(imageLocation);
-		    
-		        //using a copy reduces memory, a simpler memory format?
-		        image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
-		        Graphics g = image.getGraphics();
-		        g.drawImage(fromFile, 0,0, null);
-		        g.dispose();
+		        Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading image:" + imageLocation);
+               
+                BufferedImage fromFile = ImageIO.read(imageLocation);
+                loadingImages.done();
+                
+                Stopwatch copyingImage = new Stopwatch(s_logger, Level.FINE, "Copying image:" + imageLocation);
+                //if we dont copy, drawing the tile to the screen takes significantly longer
+                //has something to do with the colour model and type of the images
+                //some images can be copeid quickly to the screen
+                //this step is a significant bottle neck in the image drawing process
+                //we should try to find a way to avoid it, and load the 
+                //png directly as the right type
+                image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
+                Graphics g = image.getGraphics();
+                g.drawImage(fromFile, 0,0, null);
+                g.dispose();
                 fromFile.flush();
-		        loadingImages.done();
+                copyingImage.done();
 		        
 		    } catch (IOException e)
 		    {
@@ -188,6 +197,46 @@ public final class TileImageFactory
             m_imageCache.put(fileName, ref);
         }
     }
+    
+    //a failed experiment
+    //to load a png directly as an argb image
+    //throws an exception on both linux and mac
+    //http://lists.apple.com/archives/java-dev/2005/Apr/msg00456.html
+    //http://archives.java.sun.com/archives/jai-interest.html
+    //http://forums.java.net/jive/thread.jspa?threadID=9862&tstart=30
+//    private BufferedImage createImageDirectly(URL input, String fileName, boolean transparent) throws IOException
+//    {
+//        InputStream istream = null;
+//        try {
+//            istream = input.openStream();
+//        } catch (IOException e) {
+//            throw new IIOException("Can't get input stream from URL!", e);
+//        }
+//        ImageInputStream stream = ImageIO.createImageInputStream(istream);
+//
+//        Iterator iter = ImageIO.getImageReaders(stream);
+//        if (!iter.hasNext()) {
+//            return null;
+//        }
+//
+//        ImageReader reader = (ImageReader)iter.next();
+//        ImageReadParam param =  new ImageReadParam(); //reader.getDefaultReadParam();
+//        BufferedImage destination = Util.createImage(TileManager.TILE_SIZE, TileManager.TILE_SIZE, transparent);
+//        //param.setDestination(destination);
+//        //param.setDestinationBands(null);
+//        //param.setDestinationType(ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_4BYTE_ABGR));
+//        
+//        //param.setDestinationType(new ImageTypeSpecifier(Util.createImage(1,1, transparent)));
+//        reader.setInput(stream, true, true);
+//        BufferedImage bi = reader.read(0, param);
+//        stream.close();
+//        reader.dispose();
+//        return bi;
+//        
+//  }
+    
+    
+    
 
 }//end class TerritoryImageFactory
 
