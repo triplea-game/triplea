@@ -11,7 +11,7 @@
 
 <game>
 
-	<info name="+ Europe +" version="0.21"/>
+	<info name="+ Europe +" version="0.22"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -550,6 +550,7 @@
 			<frontierRules name="buyBomber"/>
 			<frontierRules name="buyTransport"/>
 			<frontierRules name="buySubmarine"/>
+			<frontierRules name="buyDestroyer"/>
 			<frontierRules name="buyCarrier"/>
 			<frontierRules name="buyBattleship"/>
 			<frontierRules name="buyAAGun"/>
