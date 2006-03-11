@@ -30,6 +30,7 @@ import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.*;
+import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.ui.history.*;
 import games.strategy.ui.*;
@@ -896,7 +897,11 @@ public class TripleAFrame extends JFrame
     void updateMap(String mapdir) throws IOException
     {
         m_uiContext.setMapDir(mapdir);
-
+        //when changing skins, always show relief images
+        if(m_uiContext.getMapData().getHasRelief())
+        {
+            TileImageFactory.setShowReliefImages(true);
+        }
         
         m_mapPanel.setGameData(m_data);
 

@@ -633,6 +633,8 @@ public class TripleaMenu extends JMenuBar
         {
             public void actionPerformed(ActionEvent e)
             {
+                if(TileImageFactory.getShowReliefImages() == showMapDetails.isSelected())
+                    return;
 
                 TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
                 Thread t = new Thread("Triplea : Show map details thread")
@@ -682,7 +684,11 @@ public class TripleaMenu extends JMenuBar
                                 try
                                 {
                                     m_frame.updateMap(skins.get(key));
-				    setWidgetActivation();
+                                    if(m_frame.getUIContext().getMapData().getHasRelief())
+                                    {
+                                        showMapDetails.setSelected(true);
+                                    }
+                                    setWidgetActivation();
                                 } catch (Exception se)
                                 {
                                     se.printStackTrace();
