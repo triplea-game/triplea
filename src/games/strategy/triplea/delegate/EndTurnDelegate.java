@@ -69,6 +69,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
 		    return;
 
+        
+        if(germans == null || russians == null || british == null || japanese == null || americans == null)
+            return;
+        
 		// Quick check to see who still owns their own capital
 		boolean russia = TerritoryAttachment.getCapital(russians, m_data).getOwner().equals(russians);
 		boolean germany = TerritoryAttachment.getCapital(germans, m_data).getOwner().equals(germans);
