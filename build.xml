@@ -30,6 +30,7 @@
         <delete dir="release"/>
         <delete dir="classes"/>
         <delete dir="savedGames"/>
+    		<delete dir="TripleA.app"/>
     </target>
 
     <!-- Compile -->
@@ -91,8 +92,75 @@
   
     <!-- compileClean -->
     <target name="compileClean" depends="clean,compile" description="Clean then compile"/>
+	
+	<target name="macRelease" depends="init,compile" description="create a mac os x application">
+		<delete dir="TripleA.app"/>		
+		
+		<mkdir dir="TripleA.app"/>
+		<mkdir dir="TripleA.app/Contents"/>
+		<mkdir dir="TripleA.app/Contents/MacOS"/>
+		<mkdir dir="TripleA.app/Contents/Resources/"/>
+		<mkdir dir="TripleA.app/Contents/Resources/Java"/>
+		
+		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" 
+			 todir="TripleA.app/Contents/MacOS/"/>
 
+		<exec executable="chmod">
+			<arg line="755 TripleA.app/Contents/MacOS/JavaApplicationStub"/>
+		</exec>
+		
+		<jar destfile="TripleA.app/Contents/Resources/Java/triplea.jar" basedir="classes">
+			<manifest>
+				<attribute name="Main-Class" value="games.strategy.engine.framework.GameRunner"/>
+				<attribute name="Class-Path" value="./looks-1.3.1.jar"/>
+			</manifest>
+		</jar>		
+		
+		<copy file="Info.plist"
+			 todir="TripleA.app/Contents/"/>
+		
+		<echo message="APPL????" file="TripleA.app/Contents/PkgInfo"/>
+		
+		<copy file="lib/looks-1.3.1.jar"
+			 todir="TripleA.app/Contents/Resources/Java/"/>
+		
+		<copy file="icons/icon.icns"
+			 todir="TripleA.app/Contents/Resources/"/>
 
+		<exec executable="cp">
+			<arg line="-r additonalImageData TripleA.app/Contents/Resources/"/>
+		</exec>
+		
+		<exec executable="cp">
+			<arg line="-r data TripleA.app/Contents/Resources/"/>
+		</exec>
+		
+		<exec executable="cp">
+			<arg line="-r games TripleA.app/Contents/Resources/"/>
+		</exec>
+		
+		<exec executable="cp">
+			<arg line="-r icons TripleA.app/Contents/Resources/"/>
+		</exec>
+		
+		<exec executable="cp">
+			<arg line="-r images TripleA.app/Contents/Resources/"/>
+		</exec>	
+			
+		<exec executable="cp">
+			<arg line="-r license TripleA.app/Contents/Resources/"/>
+		</exec>
+		
+		<exec executable="cp">
+			<arg line="-r maps TripleA.app/Contents/Resources/"/>
+		</exec>
+		
+		<exec executable="/Developer/Tools/SetFile">
+			<arg line="-a B TripleA.app"/>
+		</exec>
+		
+	</target>
+	
     <!-- zip -->
     <target name="zip" depends="init,compile" description="create a zip file for end users">
         <mkdir dir="release" />
@@ -101,7 +169,7 @@
 	<jar destfile="bin/triplea.jar" basedir="classes">
 		<manifest>
 			<attribute name="Main-Class" value="games.strategy.engine.framework.GameRunner"/>
-			<attribute name="Class-Path" value="../lib/looks-1.3.1.jar"/>
+			<attribute name="Class-Path" value="../lib/looks-1.3.1.jar ../lib/MRJToolkitStubs.zip"/>
 		</manifest>
 	</jar>
 	
@@ -109,6 +177,7 @@
 
         <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
             <include name="**/*.jar"/>
+        	   <include name="**/*.zip"/>
         	<!-- we dont need junit in the release -->
         	<exclude name="**/junit.jar" />
         </zipfileset>
@@ -224,6 +293,7 @@
       
         <zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
             <include name="**/*.jar"/>
+        	   <include name="**/*.zip"/>
         </zipfileset>
       
         <zipfileset dir="data/" prefix="triplea_${triplea.version}/data/">
