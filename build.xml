@@ -30,7 +30,7 @@
         <delete dir="release"/>
         <delete dir="classes"/>
         <delete dir="savedGames"/>
-    		<delete dir="TripleA.app"/>
+    	<delete dir="TripleA.app"/>
     </target>
 
     <!-- Compile -->
@@ -129,15 +129,7 @@
 		
 		<copy file="icons/icon.icns"
 			 todir="TripleA.app/Contents/Resources/"/>
-
-		<exec executable="cp">
-			<arg line="-r additonalImageData TripleA.app/Contents/Resources/"/>
-		</exec>
-		
-		<exec executable="cp">
-			<arg line="-r data TripleA.app/Contents/Resources/"/>
-		</exec>
-		
+			
 		<exec executable="cp">
 			<arg line="-r games TripleA.app/Contents/Resources/"/>
 		</exec>
