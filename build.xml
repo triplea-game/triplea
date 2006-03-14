@@ -105,6 +105,9 @@
 		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" 
 			 todir="TripleA.app/Contents/MacOS/"/>
 
+		<copy file="icons/Icon"
+			todir="TripleA.app"/>
+		
 		<exec executable="chmod">
 			<arg line="755 TripleA.app/Contents/MacOS/JavaApplicationStub"/>
 		</exec>
