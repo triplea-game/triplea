@@ -95,6 +95,13 @@
 	
 	<target name="macRelease" depends="init,compile" description="create a mac os x application">
 		<delete dir="TripleA.app"/>		
+		<delete>
+		  <fileset dir="." includes="*.dmg"/>
+		</delete>
+		
+		<exec executable="hdiutil">
+			<arg line="detach /Volumes/TripleA" />
+		</exec>		
 		
 		<mkdir dir="TripleA.app"/>
 		<mkdir dir="TripleA.app/Contents"/>
@@ -146,13 +153,41 @@
 		<exec executable="cp">
 			<arg line="-r maps TripleA.app/Contents/Resources/"/>
 		</exec>
-		
+				
 		<exec executable="/Developer/Tools/SetFile">
 			<arg line="-a B TripleA.app"/>
 		</exec>
 		
 		<unzip src="icons/Icon.zip" dest="TripleA.app/" encoding="MacRoman"/>
 				
+		<exec executable="hdiutil">
+			<arg line="create -size 20m -fs HFS+ -volname TripleA triplea_${triplea.version}_mac.dmg" />
+		</exec>
+
+		<exec executable="hdiutil">
+			<arg line="attach triplea_${triplea.version}_mac.dmg" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r TripleA.app /Volumes/TripleA/"/>
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r doc /Volumes/TripleA/"/>
+		</exec>
+		
+		<exec executable="cp">
+			<arg line="readme.html /Volumes/TripleA/"/>
+		</exec>
+		
+		<exec executable="cp">
+			<arg line="license/gpl.txt /Volumes/TripleA/COPYING"/>
+		</exec>
+
+		<exec executable="hdiutil">
+			<arg line="detach /Volumes/TripleA" />
+		</exec>
+		
 	</target>
 	
     <!-- zip -->
