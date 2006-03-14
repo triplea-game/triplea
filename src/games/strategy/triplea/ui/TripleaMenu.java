@@ -721,7 +721,8 @@ public class TripleaMenu extends JMenuBar
      * @param parentMenu
      */
     private void addExitMenu(JMenu parentMenu)
-    {
+    {	boolean isMac = System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
+    
         JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game")
         {
             public void actionPerformed(ActionEvent e)
@@ -729,19 +730,40 @@ public class TripleaMenu extends JMenuBar
                 m_frame.leaveGame();
             }
         });
-        leaveGameMenuExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
-        
+        if (isMac)
+        {	// On Mac OS X, the command-Q is reserved for the Quit action,
+        		//    so set the command-L key combo for the Leave Game action
+        		leaveGameMenuExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        }
+        else
+        {	// On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
+        		leaveGameMenuExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        }
         parentMenu.add(leaveGameMenuExit);
         
-        JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
+        // Mac OS X automatically creates a Quit menu item under the TripleA menu, 
+        //     so all we need to do is register that menu item with triplea's shutdown mechanism
+        if (isMac)
+        {
+        		com.apple.mrj.MRJApplicationUtils.registerQuitHandler(new com.apple.mrj.MRJQuitHandler()
+                    {
+                       public void handleQuit()
+                       {
+                          m_frame.shutdown();
+                       }
+                    });
+        }
+        else
+        {	// On non-Mac operating systems, we need to manually create an Exit menu item
+        		JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
                 {
                     public void actionPerformed(ActionEvent e)
                     {
                         m_frame.shutdown();
                     }
                 });  
-        parentMenu.add(menuFileExit);
-        
+        		parentMenu.add(menuFileExit);
+        }
     }
 
     /**
@@ -786,7 +808,7 @@ public class TripleaMenu extends JMenuBar
 
             }
         });
-        menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
         parent.add(menuFileSave);
     }
