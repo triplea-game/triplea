@@ -104,9 +104,6 @@
 		
 		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" 
 			 todir="TripleA.app/Contents/MacOS/"/>
-
-		<copy file="icons/Icon"
-			todir="TripleA.app"/>
 		
 		<exec executable="chmod">
 			<arg line="755 TripleA.app/Contents/MacOS/JavaApplicationStub"/>
@@ -154,6 +151,8 @@
 			<arg line="-a B TripleA.app"/>
 		</exec>
 		
+		<unzip src="icons/Icon.zip" dest="TripleA.app/" encoding="MacRoman"/>
+				
 	</target>
 	
     <!-- zip -->
