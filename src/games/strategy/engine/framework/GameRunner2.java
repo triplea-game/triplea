@@ -144,7 +144,7 @@ public class GameRunner2
                 com.jgoodies.looks.Options.setPopupDropShadowEnabled(true);
 
             }
-        } catch (Exception ex)
+        } catch (Throwable ex)
         {
             ex.printStackTrace();
         }
