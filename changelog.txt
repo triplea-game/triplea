@@ -1,4 +1,10 @@
+* highlight units on mouse over when moving (sgb)
+
 Change for 0.7.5
+
+* when changing to a skin that has relief images, always show the relief images (sgb)
+
+* add destroyer production to europe map (sgb)
 
 * fix map skins in zip files on windows (sgb)
 
