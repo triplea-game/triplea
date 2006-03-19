@@ -500,6 +500,26 @@ public class TileManager
     }    
     
     
+    public Rectangle getUnitRect(List<Unit> units, GameData data)
+    {
+        if(units == null)
+            return null;
+        
+        synchronized(m_mutex)
+        {
+            for(UnitsDrawer drawer : m_allUnitDrawables)
+            {
+                if(units.containsAll( drawer.getUnits(data).getSecond() ))
+                {
+                    Point placementPoint = drawer.getPlacementPoint();
+                    return new Rectangle(placementPoint.x, placementPoint.y, m_uiContext.getUnitImageFactory().getUnitImageWidth(),  m_uiContext.getUnitImageFactory().getUnitImageHeight() );
+                }
+                
+            }
+            return null;
+        }
+    }
+    
     public Tuple<Territory,List<Unit>> getUnitsAtPoint(int x, int y, GameData gameData)
     {
         synchronized(m_mutex)

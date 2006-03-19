@@ -160,6 +160,7 @@ public class MovePanel extends ActionPanel
         m_bridge = bridge;
         getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
         getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
+        getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
          
         getRootPane().registerKeyboardAction(CANCEL_MOVE_ACTION,
                 KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
@@ -173,6 +174,10 @@ public class MovePanel extends ActionPanel
     {
         getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
         getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
+        getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+        
+        getMap().setUnitHighlight(null, null);
+        
         m_bridge = null;
         m_selectedUnits.clear();
         updateRouteAndMouseShadowUnits(null);
@@ -983,6 +988,22 @@ public class MovePanel extends ActionPanel
         p.x +=  getMap().getXOffset();
         p.y += getMap().getYOffset();
     }
+    
+    private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
+    {
+
+        public void mouseEnter(List<Unit> units, Territory territory, MouseEvent me)
+        {
+            boolean someOwned = Match.someMatch(units, Matches.unitIsOwnedBy(getCurrentPlayer()));
+            boolean isCorrectTerritory = m_firstSelectedTerritory == null || m_firstSelectedTerritory == territory;
+            if(someOwned && isCorrectTerritory)
+                getMap().setUnitHighlight(units, territory);
+            else
+                getMap().setUnitHighlight(null, null);
+        }
+        
+    };
+
     
     private final MapSelectionListener MAP_SELECTION_LISTENER = new
         DefaultMapSelectionListener()

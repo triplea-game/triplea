@@ -51,12 +51,16 @@ public class MapPanel extends ImageScrollerLargeView
     
     private ListenerList<MapSelectionListener> m_mapSelectionListeners = new ListenerList<MapSelectionListener>();
     private ListenerList<UnitSelectionListener> m_unitSelectionListeners = new ListenerList<UnitSelectionListener>();
+    private ListenerList<MouseOverUnitListener> m_mouseOverUnitsListeners = new ListenerList<MouseOverUnitListener>();    
 
     private GameData m_data;
     private Territory m_currentTerritory; //the territory that the mouse is
     // currently over
     //could be null
     private MapPanelSmallView m_smallView;
+    
+    //units the mouse is currently over
+    private Tuple<Territory, List<Unit>> m_currentUnits;
 
     private SmallMapImageManager m_smallMapImageManager;
     
@@ -72,6 +76,9 @@ public class MapPanel extends ImageScrollerLargeView
     
     private BufferedImage m_mouseShadowImage = null;
     private final UIContext m_uiContext;
+    
+
+    private List<Unit> m_highlightUnits;
     
     /** Creates new MapPanel */
     public MapPanel(GameData data, MapPanelSmallView smallView, UIContext uiContext) throws IOException
@@ -107,7 +114,6 @@ public class MapPanel extends ImageScrollerLargeView
                     public void run()
                     {
                         repaint();
-                        
                     }
                 
                 });
@@ -128,6 +134,9 @@ public class MapPanel extends ImageScrollerLargeView
             }
         
         });
+        
+        
+       
     } 
      
     GameData getData()
@@ -150,7 +159,7 @@ public class MapPanel extends ImageScrollerLargeView
     {
        return getImageDimensions();
     }
-    
+
 
     @Override
     public Dimension getMinimumSize()
@@ -168,6 +177,17 @@ public class MapPanel extends ImageScrollerLargeView
 
     }
 
+    /**
+     * the units must all be in the same stack on the map, and exist in the given territory.
+     * call with an null args
+     */
+    public void setUnitHighlight(List<Unit> units, Territory territory)
+    {
+        m_highlightUnits =units;
+       
+        repaint();
+    }
+    
     public void centerOn(Territory territory)
     {
 
@@ -227,7 +247,6 @@ public class MapPanel extends ImageScrollerLargeView
 
     public void addMapSelectionListener(MapSelectionListener listener)
     {
-
         m_mapSelectionListeners.add(listener);
     }
 
@@ -236,6 +255,17 @@ public class MapPanel extends ImageScrollerLargeView
         m_mapSelectionListeners.remove(listener);
     }
 
+    public void addMouseOverUnitListener(MouseOverUnitListener listener)
+    {
+        m_mouseOverUnitsListeners.add(listener);
+    }
+
+    public void removeMouseOverUnitListener(MouseOverUnitListener listener)
+    {
+        m_mouseOverUnitsListeners.remove(listener);
+    }
+    
+    
     private void notifyTerritorySelected(Territory t, MouseEvent me)
     {
 
@@ -291,6 +321,13 @@ public class MapPanel extends ImageScrollerLargeView
         }
     }
     
+    private void notifyMouseEnterUnit(List<Unit> units, Territory t, MouseEvent me)
+    {
+        for(MouseOverUnitListener listener : m_mouseOverUnitsListeners)
+        {
+            listener.mouseEnter(units,t, me);
+        }
+    }
     
     
     private Territory getTerritory(int x, int y)
@@ -330,13 +367,21 @@ public class MapPanel extends ImageScrollerLargeView
        m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
        
     }
-    
-    
-    
 
     private MouseListener MOUSE_LISTENER = new MouseAdapter()
     {
-
+        /**
+         * Invoked when the mouse exits a component.
+         */
+        public void mouseExited(MouseEvent e)
+        {
+            if(unitsChanged(null))
+            {
+                m_currentUnits = null;
+                notifyMouseEnterUnit(Collections.<Unit>emptyList(), getTerritory(e.getX(),e.getY()), e );
+            }
+        }
+        
         public void mouseReleased(MouseEvent e)
         {
             int x = normalizeX(e.getX() + getXOffset());
@@ -355,10 +400,14 @@ public class MapPanel extends ImageScrollerLargeView
                 
                 notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), e );
             }
+
             
         }
 
     };
+    
+
+    
 
     private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
     {
@@ -374,10 +423,46 @@ public class MapPanel extends ImageScrollerLargeView
                 m_currentTerritory = terr;
                 notifyMouseEntered(terr);
             }
-
             notifyMouseMoved(terr, e);
+
+            
+            int x = normalizeX(e.getX() + getXOffset());
+            int y =  e.getY() + getYOffset();     
+            
+            Tuple<Territory, List<Unit>> tuple = m_tileManager.getUnitsAtPoint(x,y, m_data);
+            
+            if(unitsChanged(tuple))
+            {
+                m_currentUnits = tuple;
+                if(tuple == null)
+                    notifyMouseEnterUnit(Collections.<Unit>emptyList(), getTerritory(x,y), e );
+                else
+                    notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), e );
+            }
+                
+            
+            
         }
     };
+    
+    private boolean unitsChanged( Tuple<Territory, List<Unit>> newUnits)
+    {
+        //both are null
+        if(newUnits == m_currentUnits)
+            return false;
+        
+        //one is null
+        if(newUnits == null || m_currentUnits == null)
+            return true;
+
+        
+        if(!newUnits.getFirst().equals(m_currentUnits.getFirst()))
+            return true;
+        
+        return !games.strategy.util.Util.equals(newUnits.getSecond(), m_currentUnits.getSecond());
+        
+    }
+    
 
     public void updateCounties(Collection<Territory> countries)
     {
@@ -507,6 +592,8 @@ public class MapPanel extends ImageScrollerLargeView
 
     };
 
+    
+
         
     public void paint(Graphics g)
     {
@@ -551,6 +638,20 @@ public class MapPanel extends ImageScrollerLargeView
         m_images.clear();
         m_images.addAll(images);
 
+        
+        if(m_highlightUnits != null)
+        {
+            Rectangle r = m_tileManager.getUnitRect(m_highlightUnits, m_data );
+            Unit first = m_highlightUnits.get(0);
+            
+            Image highlight = m_uiContext.getUnitImageFactory().getHighlightImage(first.getType(), first.getOwner(), m_data, first.getHits() != 0);
+            ((Graphics2D) g).drawImage(highlight, (int) r.getX() - getXOffset(), (int) r.getY() - getYOffset(), this );
+            
+//            ((Graphics2D) g).setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//            g.setColor(new Color(200,200,200, 80) );
+//            ((Graphics2D) g).fillRoundRect(m_unitBox.x - getXOffset() , m_unitBox.y - getYOffset(), m_unitBox.width, m_unitBox.height, 15,15);
+        }
+            
                 
         //draw the tiles nearest us first
         //then draw farther away
