@@ -40,6 +40,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         layoutComponents();
         setupListeners();
         setWidgetActivation();
+        if(model.getGameData() != null)
+        {
+            loadEmails(model.getGameData());
+        }
     }
 
     private void createComponents()
