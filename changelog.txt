@@ -1,3 +1,7 @@
+* replace random ai with weak ai (sgb)
+
+* fix pbem saved emails not always showing up on the start screen (sgb)
+
 * highlight units on mouse over when moving (sgb)
 
 Change for 0.7.5
