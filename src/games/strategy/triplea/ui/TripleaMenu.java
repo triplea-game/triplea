@@ -680,7 +680,7 @@ public class TripleaMenu extends JMenuBar
                     {
                         public void actionPerformed(ActionEvent e)
                         {
-                           
+                            
                                 try
                                 {
                                     m_frame.updateMap(skins.get(key));

@@ -59,6 +59,11 @@ public class DefaultPlayerBridge implements IPlayerBridge
         return m_currentStep;
     }
     
+    public boolean isGameOver()
+    {
+        return m_game.isGameOver();
+    }
+    
     /**
      * Return the game data
      */

@@ -417,6 +417,23 @@ public class Matches
     };
 
 
+    public static Match<Territory> territoryHasEnemyFactory(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                if(data.getAllianceTracker().isAllied(player, t.getOwner()))
+                    return false;
+                if(t.getOwner().isNull())
+                    return false;
+                if(!t.getUnits().someMatch(Matches.UnitIsFactory))
+                    return false;
+                return true;
+            }
+        };
+    }
+    
 
     public static Match<Territory> territoryIsEmptyOfCombatUnits(final GameData data, final PlayerID player)
     {
@@ -508,6 +525,17 @@ public class Matches
             public boolean match(Territory t)
             {
                 return data.getAllianceTracker().isAllied(player, t.getOwner());
+            }
+        };
+    }
+    
+    public static Match<Territory> isTerritoryOwnedBy(final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return t.getOwner().equals(player);
             }
         };
     }

@@ -57,4 +57,9 @@ public interface IPlayerBridge
 	 * Get the properties for the current step.
 	 */
 	public Properties getStepProperties();
+    
+    /**
+     * is the game over?
+     */
+    public boolean isGameOver();
 }

@@ -255,6 +255,10 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
                 
                 FightBattleDetails details = m_ui.getBattle(m_id, battles
                         .getBattles(), battles.getStrategicRaids());
+                
+                if(m_bridge.isGameOver())
+                    return;
+                
                 String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid());
 
                 if(error != null)

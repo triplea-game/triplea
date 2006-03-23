@@ -561,6 +561,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     private String validateBasic(Collection<Unit> units, Route route, PlayerID player, Collection<Unit> transportsToLoad)
     {
 
+        if(units.size() == 0)
+        {
+            return "No units";
+        }
+        
         if (m_submergedTracker.areAnySubmerged(units))
         {
             return "You cannot move submerged units";

@@ -184,8 +184,16 @@ public class MapPanel extends ImageScrollerLargeView
     public void setUnitHighlight(List<Unit> units, Territory territory)
     {
         m_highlightUnits =units;
-       
-        repaint();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                repaint();
+            }
+        
+        });
+        
     }
     
     public void centerOn(Territory territory)

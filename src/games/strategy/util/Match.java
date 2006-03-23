@@ -170,6 +170,11 @@ public abstract class Match<T>
 	 * Returns true if the object matches some condition.
 	 */
 	public abstract boolean match(T o);
+    
+    public final Match<T> invert()
+    {
+        return new InverseMatch<T>(this);
+    }
 }
 
 class NeverMatch extends Match

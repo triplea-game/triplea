@@ -29,6 +29,7 @@ import games.strategy.triplea.randomAI.RandomAI;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.*;
+import games.strategy.triplea.weakAI.WeakAI;
 
 import java.awt.Frame;
 import java.io.IOException;
@@ -43,7 +44,8 @@ import javax.swing.SwingUtilities;
 public class TripleA implements IGameLoader
 {
     private static final String HUMAN_PLAYER_TYPE = "Human";
-    private static final String COMPUTER_PLAYER_TYPE = "Random AI";
+    private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
+    private static final String WEAK_COMPUTER_PLAYER_TYPE = "Weak AI";
 
     
     private transient TripleaDisplay m_display;
@@ -60,14 +62,20 @@ public class TripleA implements IGameLoader
         {
             String name = (String) iter.next();
             String type = (String) playerNames.get(name);
-            if (type.equals(COMPUTER_PLAYER_TYPE))
+            if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
             {
                 players.add(new RandomAI(name));
-            } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
+            }
+            else if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
+            {
+                players.add(new WeakAI(name));
+            }
+            else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
             {
                 TripleAPlayer player = new TripleAPlayer(name);
                 players.add(player);
-            } else
+            }
+            else
             {
                 throw new IllegalStateException("Player type not recognized:" + type);
             }
@@ -99,24 +107,28 @@ public class TripleA implements IGameLoader
             m_display = new TripleaDisplay(frame);
             game.addDisplay(m_display);
 
-            frame.setVisible(true);
-
-            while (!frame.isVisible())
+            SwingUtilities.invokeLater(new Runnable()
             {
-                Thread.yield();
-            }
-            //size when minimized
             
-            SwingUtilities.invokeLater(
-                new Runnable()
+                public void run()
                 {
-                    public void run()
-                    {
-                        frame.setSize(700, 400);
-                        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-                    }
+                    frame.setVisible(true);
+                    
+                    SwingUtilities.invokeLater(
+                        new Runnable()
+                        {
+                            public void run()
+                            {
+                                frame.setSize(700, 400);
+                                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+                            }
+                        }
+                    );
+                    
                 }
-            );
+            
+            });
+            
 
             connectPlayers(players, frame);
 
@@ -156,7 +168,7 @@ public class TripleA implements IGameLoader
     {
         
         return new String[]
-        {HUMAN_PLAYER_TYPE, COMPUTER_PLAYER_TYPE};
+        {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE};
             
     }
 
