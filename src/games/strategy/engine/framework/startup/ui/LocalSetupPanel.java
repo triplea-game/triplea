@@ -51,6 +51,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer
         String[] playerTypes =  data.getGameLoader().getServerPlayerTypes();
 
         String[] playerNames = data.getPlayerList().getNames();
+        Arrays.sort(playerNames);
 
         for(int i = 0; i < playerNames.length; i++)
         {

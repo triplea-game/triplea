@@ -253,7 +253,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         
         m_playerRows = new ArrayList<PlayerRow>();
         Map<String,String> players = m_model.getPlayers();
-        for(String name: players.keySet())
+        List<String> keys = new ArrayList<String>(players.keySet());
+        Collections.sort(keys);
+        for(String name: keys)
         {
             PlayerRow newPlayerRow = new PlayerRow(name);
             

@@ -54,12 +54,16 @@ public class ClientSetupPanel extends SetupPanel
         Map<String,String> m_players = m_model.getPlayerMapping();
         
         m_playerRows = new ArrayList<PlayerRow>();
-        Iterator<String> iter = m_players.keySet().iterator();
+        
 
+        List<String> keys = new ArrayList<String>(m_players.keySet());
+        Collections.sort(keys);
+        Iterator<String> iter = keys.iterator();
+        
         
         while(iter.hasNext())
         {
-          String name = (String) iter.next();
+          String name = iter.next();
           PlayerRow playerRow = new PlayerRow(name, IGameLoader.CLIENT_PLAYER_TYPE);
           m_playerRows.add(playerRow);
           playerRow.setPlayerName(m_players.get(name));
