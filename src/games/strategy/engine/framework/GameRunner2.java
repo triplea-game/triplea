@@ -6,7 +6,7 @@ import games.strategy.triplea.ui.ErrorHandler;
 
 import java.util.logging.LogManager;
 
-import javax.swing.UIManager;
+import javax.swing.*;
 
 
 public class GameRunner2
@@ -36,8 +36,19 @@ public class GameRunner2
 
     private static void showMainFrame()
     {
-        MainFrame frame = new MainFrame();        
-        frame.start();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                MainFrame frame = new MainFrame();        
+                frame.start();
+                frame.requestFocus();
+                frame.toFront();
+
+            }
+        
+        });
     }
     
     /**
