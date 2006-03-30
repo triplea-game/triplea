@@ -75,7 +75,7 @@ public class PBEMDiceRoller implements IRandomSource
         {
             //find the window with focus, failing that, get something that is
             // visible
-            if (frames[i].getFocusOwner() != null)
+            if (frames[i].isFocused())
                 rVal = frames[i];
             else if (rVal == null && frames[i].isVisible())
             {
@@ -131,10 +131,12 @@ class HttpDiceRollerDialog extends JDialog
     public boolean m_test = false;
 
     private JPanel m_buttons = new JPanel();
-
+    private final Window m_owner;
+    
     public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2, String gameID, IRemoteDiceServer diceServer)
     {
         super(owner, "Dice roller", true);
+        m_owner = owner;
         m_max = max;
         m_count = count;
         m_annotation = annotation;
@@ -295,6 +297,7 @@ class HttpDiceRollerDialog extends JDialog
             public void run()
             {
                 setVisible(false);
+                m_owner.toFront();
             }
         
         });
