@@ -45,7 +45,7 @@ public class TripleA implements IGameLoader
 {
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-    private static final String WEAK_COMPUTER_PLAYER_TYPE = "Weak AI";
+    private static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy AI";
 
     
     private transient TripleaDisplay m_display;
