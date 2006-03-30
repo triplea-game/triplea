@@ -33,6 +33,7 @@ import games.strategy.triplea.weakAI.WeakAI;
 
 import java.awt.Frame;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import javax.swing.SwingUtilities;
@@ -90,7 +91,7 @@ public class TripleA implements IGameLoader
         
     }
     
-    public void startGame(final IGame game, Set<IGamePlayer> players)
+    public void startGame(final IGame game, final Set<IGamePlayer> players)
     {
         try
         {
@@ -100,37 +101,56 @@ public class TripleA implements IGameLoader
 	       This is the key for triplea to find the maps
 	    */
             m_game = game;
-            String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
+            final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
-            final TripleAFrame frame = new TripleAFrame(game, players, mapDir);
-           
-            m_display = new TripleaDisplay(frame);
-            game.addDisplay(m_display);
 
-            SwingUtilities.invokeLater(new Runnable()
-            {
-            
-                public void run()
+
+                SwingUtilities.invokeAndWait(new Runnable()
                 {
-                    frame.setVisible(true);
-                    
-                    SwingUtilities.invokeLater(
-                        new Runnable()
+                
+                    public void run()
+                    {
+                        final TripleAFrame frame;
+                        try
                         {
-                            public void run()
-                            {
-                                frame.setSize(700, 400);
-                                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-                            }
+                            frame = new TripleAFrame(game, players, mapDir);
+                        } catch (IOException e)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                            System.exit(-1);
+                            return;
                         }
-                    );
-                    
-                }
-            
-            });
+                        
+                        m_display = new TripleaDisplay(frame);
+                        game.addDisplay(m_display);
+                        frame.setVisible(true);
+                        connectPlayers(players, frame);
+                        
+                        SwingUtilities.invokeLater(
+                            new Runnable()
+                            {
+                                public void run()
+                                {
+                                    frame.setSize(700, 400);
+                                    frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+                                }
+                            }
+                        );
+                        
+                    }
+                
+                });
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            } catch (InvocationTargetException e)
+            {
+                e.printStackTrace();
+            }
             
 
-            connectPlayers(players, frame);
+            
 
             //load the sounds in a background thread,
             //avoids the pause where sounds dont load right away
@@ -143,11 +163,6 @@ public class TripleA implements IGameLoader
             };
             new Thread(loadSounds, "Triplea sound loader").start();
 
-        } catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-            System.exit(0);
-        }
     }
 
     private void connectPlayers(Set<IGamePlayer> players, TripleAFrame frame)
