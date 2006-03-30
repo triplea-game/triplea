@@ -299,6 +299,7 @@ public class BattleTracker implements java.io.Serializable
         }
     }
 
+    
     @SuppressWarnings("unchecked")
     protected void takeOver(Territory territory, final PlayerID id, IDelegateBridge bridge, GameData data, UndoableMove changeTracker, Collection<Unit> arrivingUnits)
     {
@@ -384,8 +385,18 @@ public class BattleTracker implements java.io.Serializable
         {
             Unit currentUnit = (Unit) iter.next();
             PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
+            Territory originalOwnersCapitol = null;
+            if(originalOwner != null)
+                originalOwnersCapitol = TerritoryAttachment.getCapital(originalOwner, data); 
             if (originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id)
-                    && TerritoryAttachment.getCapital(originalOwner, data).getOwner().equals(originalOwner))
+                    && 
+                    ( 
+                            originalOwnersCapitol.getOwner().equals(originalOwner) ||
+                            //we are taking over this country, so if we dont own it then
+                            //we will soon
+                            originalOwnersCapitol == territory
+                    )
+                 )
             {
                 Change capture = ChangeFactory.changeOwner(currentUnit, originalOwner, territory);
                 bridge.addChange(capture);
