@@ -1115,6 +1115,28 @@
 		    <option name="production" value="2" />
 	    </attatchment>
 	    
+	    <!-- canals -->
+	    
+	    <attatchment name="canalAttatchment" attatchTo="East Mediteranean Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+	    	<option name="canalName" value="Suez Canal"/>
+	    	<option name="landTerritories" value="Anglo Sudan Egypt:Syria Jordan"/>
+	    </attatchment>
+	    
+	    <attatchment name="canalAttatchment" attatchTo="Red Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+	    	<option name="canalName" value="Suez Canal"/>
+	    	<option name="landTerritories" value="Anglo Sudan Egypt:Syria Jordan"/>
+	    </attatchment>
+	    
+   	    <attatchment name="canalAttatchment" attatchTo="Carribean Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+	    	<option name="canalName" value="Panama Canal"/>
+	    	<option name="landTerritories" value="Panama"/>
+	    </attatchment>
+	    
+	    <attatchment name="canalAttatchment" attatchTo="West Panama Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+	    	<option name="canalName" value="Panama Canal"/>
+	    	<option name="landTerritories" value="Panama"/>
+	    </attatchment>
+	    
 	</attatchmentList>
 	
 	<initialize>
