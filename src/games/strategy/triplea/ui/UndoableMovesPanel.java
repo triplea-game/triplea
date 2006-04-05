@@ -40,8 +40,15 @@ public class UndoableMovesPanel extends JPanel
     public void setMoves(List<UndoableMove> moves)
     {
         m_moves = moves;
-        initLayout();
-
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                initLayout();
+            }
+        
+        });
     }
     
     public int getCountOfMovesMade()

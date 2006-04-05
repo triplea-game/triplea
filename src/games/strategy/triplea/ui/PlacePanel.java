@@ -57,21 +57,27 @@ public class PlacePanel extends ActionPanel
         m_unitsToPlace = new SimpleUnitPanel(map.getUIContext());
     }
 
-    public void display(PlayerID id)
+    public void display(final PlayerID id)
     {
         super.display(id);
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                removeAll();
+                actionLabel.setText(id.getName() + " place");
+                add(actionLabel);
+                add(new JButton(UNDO_PLACE_ACTION));
+                add(new JButton(DONE_PLACE_ACTION));
+                SwingUtilities.invokeLater(REFRESH);
 
-        removeAll();
-        actionLabel.setText(id.getName() + " place");
-        add(actionLabel);
-        add(new JButton(UNDO_PLACE_ACTION));
-        add(new JButton(DONE_PLACE_ACTION));
-        SwingUtilities.invokeLater(REFRESH);
-
-        add(new JLabel("Units left to place:"));
-        add(m_unitsToPlace);
-        updateUnits();
-
+                add(new JLabel("Units left to place:"));
+                add(m_unitsToPlace);
+                updateUnits();
+                
+            }
+        });
     }
 
     private void refreshUndoButton() throws NumberFormatException
@@ -114,15 +120,20 @@ public class PlacePanel extends ActionPanel
         getMap().addMapSelectionListener(PLACE_MAP_SELECTION_LISTENER);
 
         waitForRelease();
-        
+
         getMap().removeMapSelectionListener(
                 PLACE_MAP_SELECTION_LISTENER);
-
-
-
-        removeAll();
         m_bridge = null;
-        SwingUtilities.invokeLater(REFRESH);
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                removeAll();
+                SwingUtilities.invokeLater(REFRESH);
+            }
+        });
+        
         return m_placeData;
     }
 

@@ -197,6 +197,21 @@ public class MainPanel extends JPanel implements Observer
 
     private void setWidgetActivation()
     {
+        
+        if(!SwingUtilities.isEventDispatchThread())
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+            
+                public void run()
+                {
+                    setWidgetActivation();
+                }
+            
+            });
+            return;
+        }
+        
         if(m_gameSetupPanel != null)
         {
             m_playButton.setEnabled(m_gameSetupPanel.canGameStart());

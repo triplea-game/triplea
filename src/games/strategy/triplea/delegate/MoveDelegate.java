@@ -1455,6 +1455,20 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         return m_alreadyMoved;
     }
 
+    public List<Unit> getUnitsAlreadyMoved()
+    {
+        List<Unit> rVal = new ArrayList<Unit>();
+        for(Unit u : m_alreadyMoved.keySet())
+        {
+            if(m_alreadyMoved.getInt(u) > 0 )
+            {
+                rVal.add(u);
+            }
+        }
+        return rVal;
+        
+    }
+
 
 }
 

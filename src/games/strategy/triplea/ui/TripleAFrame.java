@@ -344,98 +344,25 @@ public class TripleAFrame extends JFrame
 
     public IntegerMap<ProductionRule> getProduction(final PlayerID player, boolean bid)
     {
-        try
-        {
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-            
-                public void run()
-                {
-                    m_actionButtons.changeToProduce(player);
-                }
-            
-            });
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        } catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        
+        m_actionButtons.changeToProduce(player);
         return m_actionButtons.waitForPurchase(bid);
     }
 
     public MoveDescription getMove(final PlayerID player, IPlayerBridge bridge, final boolean nonCombat)
     {
-        try
-        {
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-            
-                public void run()
-                {
-                    m_actionButtons.changeToMove(player, nonCombat);
-                }
-            
-            });
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        } catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-
+        m_actionButtons.changeToMove(player, nonCombat);
         return m_actionButtons.waitForMove(bridge);
     }
 
     public PlaceData waitForPlace(final PlayerID player, final boolean bid, final IPlayerBridge bridge)
     {
-        try
-        {
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-            
-                public void run()
-                {
-                    m_actionButtons.changeToPlace(player);
-                }
-            
-            });
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        } catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        
+        m_actionButtons.changeToPlace(player);
         return m_actionButtons.waitForPlace(bid, bridge);
     }
 
     public FightBattleDetails getBattle(final PlayerID player, final Collection<Territory> battles, final Collection<Territory> bombingRaids)
     {
-        try
-        {
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-            
-                public void run()
-                {
-                    m_actionButtons.changeToBattle(player, battles, bombingRaids);
-                }
-            
-            });
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        } catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        
-        
+        m_actionButtons.changeToBattle(player, battles, bombingRaids);
         return m_actionButtons.waitForBattleSelection();
     }
 
@@ -510,26 +437,7 @@ public class TripleAFrame extends JFrame
 
     public TechRoll getTechRolls(final PlayerID id)
     {
-        
-        try
-        {
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-            
-                public void run()
-                {
-                    m_actionButtons.changeToTech(id);
-                }
-            
-            });
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        } catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        
+        m_actionButtons.changeToTech(id);
         return m_actionButtons.waitForTech();
     }
 

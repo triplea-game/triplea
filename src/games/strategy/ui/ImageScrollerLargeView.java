@@ -157,23 +157,38 @@ public class ImageScrollerLargeView extends JComponent
      * @param newX
      * @param newY
      */
-    private void setCoordsInternal(int newX, int newY)
+    private void setCoordsInternal(final int newX, final int newY)
     {
+        if(!SwingUtilities.isEventDispatchThread())
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+            
+                public void run()
+                {
+                    setCoordsInternal(newX, newY);
+                }
+            
+            });
+            return;
+        }
+        
+        int correctedX = newX;
         if(!m_control.getScrollWrapX())
         {
             if(newX < -getWidth() / 2)
             {
-                newX = (int)  m_dimensions.getWidth() - getWidth() ;
+                correctedX = (int)  m_dimensions.getWidth() - getWidth() ;
             }
             else if(newX < 0)
             {
-                newX =0;
+                correctedX =0;
             }
         }
         
         
-        setCoords(newX, newY);
-        m_control.setLargeCoords(newX, newY);
+        setCoords(correctedX, newY);
+        m_control.setLargeCoords(correctedX, newY);
     }
 
     public int getImageWidth()

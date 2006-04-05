@@ -30,7 +30,7 @@ import java.io.*;
  *
  * A prototype for units.
  */
-public class UnitType extends NamedAttatchable implements Serializable
+public class UnitType extends NamedAttachable implements Serializable
 {
 
 	private static final long serialVersionUID = 4885339076798905247L;

@@ -1,7 +1,7 @@
 package games.strategy.triplea.weakAI;
 
 import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.*;
 
@@ -32,8 +32,9 @@ public class Utils
     
     /**
      * get a quick and dirty estimate of the strenght of the units 
+     * @param sea TODO
      */
-    public static float strength(Collection<Unit> units, boolean attacking)
+    public static float strength(Collection<Unit> units, boolean attacking, boolean sea)
     {
         int strength = 0;
         
@@ -44,16 +45,30 @@ public class Utils
             {
                 //nothing
             }
-            else
+            else if(unitAttatchment.isSea() == sea)
             {
                 //2 points since we can absorb a hit
-                strength += 2;
+                strength +=  2;
+                
+                //two hit
+                if(unitAttatchment.isTwoHit())
+                    strength +=1.5;
                 
                 //the number of pips on the dice
                 if(attacking)
                     strength += unitAttatchment.getAttack(u.getOwner());
                 else
                     strength += unitAttatchment.getDefense(u.getOwner());    
+                
+                if(attacking)
+                {
+                    //a unit with attack of 0 isnt worth much
+                    //we dont want transports to try and gang up on subs
+                    if(unitAttatchment.getAttack(u.getOwner()) == 0)
+                    {
+                        strength -= 1.2;
+                    }
+                }
      
             }
         }
@@ -73,10 +88,10 @@ public class Utils
     public static float getStrengthOfPotentialAttackers(Territory location, GameData data)
     {
         float strength = 0;
-        for(Territory t : data.getMap().getNeighbors(location, Matches.TerritoryIsLand))
+        for(Territory t : data.getMap().getNeighbors(location,  location.isWater() ? Matches.TerritoryIsWater :  Matches.TerritoryIsLand))
         {
             List<Unit> enemies = t.getUnits().getMatches(Matches.enemyUnit(location.getOwner(), data));
-            strength+= strength(enemies, true);
+            strength+= strength(enemies, true, location.isWater());
             
         }
         return strength;
@@ -106,6 +121,29 @@ public class Utils
         
         return shortestRoute;
         
+        
+    }
+    
+    
+    public  static boolean hasLandRouteToEnemyOwnedCapitol(Territory t, PlayerID us, GameData data)
+    {
+        for(PlayerID player : data.getPlayerList())
+        {
+            Territory capitol = TerritoryAttachment.getCapital(player, data);
+            
+            if(data.getAllianceTracker().isAllied(us, capitol.getOwner()))
+                continue;
+            
+            
+            if(capitol != null)
+            {
+                if(data.getMap().getDistance(t, capitol, Matches.TerritoryIsLand) != -1)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
         
     }
     

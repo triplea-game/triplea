@@ -106,21 +106,36 @@ public class ActionButtons extends JPanel
         
     }
 
-    public void changeToMove(PlayerID id, boolean nonCombat)
+    public void changeToMove(final PlayerID id, final boolean nonCombat)
     {
         m_current.setActive(false);
         m_current = m_movePanel;
         m_movePanel.display(id, nonCombat);
-        m_layout.show(this, m_movePanel.toString());
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                
+                m_layout.show(ActionButtons.this, m_movePanel.toString());
+            }
+        });
 
     }
 
-    public void changeToProduce(PlayerID id)
+    public void changeToProduce(final PlayerID id)
     {
         m_current.setActive(false);
         m_current = m_purchasePanel;
         m_purchasePanel.display(id);
-        m_layout.show(this, m_purchasePanel.toString());
+    
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                m_layout.show(ActionButtons.this, m_purchasePanel.toString());
+            }
+       });
     }
 
     public void changeToPlace(PlayerID id)
@@ -128,7 +143,16 @@ public class ActionButtons extends JPanel
         m_current.setActive(false);
         m_current = m_placePanel;
         m_placePanel.display(id);
-        m_layout.show(this, m_placePanel.toString());
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_layout.show(ActionButtons.this, m_placePanel.toString());
+            }
+        
+        });
+        
     }
 
     public void changeToBattle(PlayerID id, Collection<Territory> battles,
@@ -137,8 +161,16 @@ public class ActionButtons extends JPanel
         m_current.setActive(false);
         m_current = m_battlePanel;
         m_battlePanel.display(id, battles, bombing);
-        m_layout.show(this, m_battlePanel.toString());
-
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                m_layout.show(ActionButtons.this, m_battlePanel.toString());
+            }
+        
+        });
     }
 
     public void changeToTech(PlayerID id)
@@ -146,9 +178,15 @@ public class ActionButtons extends JPanel
         m_current.setActive(false);
         m_current = m_techPanel;
         m_techPanel.display(id);
-        m_layout.show(this, m_techPanel.toString());
-
-    }
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                m_layout.show(ActionButtons.this, m_techPanel.toString());
+            }
+        });
+     }
 
     /**
      * Blocks until the user selects their purchase.

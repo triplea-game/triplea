@@ -61,12 +61,12 @@ public class GameRunner
         return img;
     }
 
-    static boolean isWindows()
+    public static boolean isWindows()
     {
         return System.getProperties().getProperty("os.name").toLowerCase().indexOf("windows") != -1;
     }    
     
-    static boolean isMac()
+    public static boolean isMac()
     {
         return System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
     }

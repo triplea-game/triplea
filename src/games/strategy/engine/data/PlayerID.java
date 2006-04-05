@@ -27,7 +27,7 @@ import java.io.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class PlayerID extends NamedAttatchable implements NamedUnitHolder, Serializable
+public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serializable
 {
 	private final boolean m_optional;
 	private final UnitCollection m_unitsHeld;

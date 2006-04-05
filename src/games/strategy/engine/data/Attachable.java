@@ -13,38 +13,20 @@
  */
 
 /*
- * NamedAttatchable.java
+ * Attatchable.java
  *
- * Created on October 22, 2001, 6:49 PM
+ * Created on October 14, 2001, 12:46 PM
  */
 
 package games.strategy.engine.data;
-
-import java.util.*;
 
 /**
  *
  * @author  Sean Bridges
  * @version 1.0
  */
-public class NamedAttatchable extends DefaultNamed implements Attatchable 
+public interface Attachable 
 {
-
-	private Map<String, IAttachment> m_attatchments = new HashMap<String, IAttachment>();
-	
-	/** Creates new NamedAttatchable */
-    public NamedAttatchable(String name, GameData data) 
-	{
-		super(name, data);
-    }
-
-	public IAttachment getAttatchment(String key) 
-	{
-		return m_attatchments.get(key);
-	}
-	
-	public void addAttatchment(String key, IAttachment value) 
-	{
-		m_attatchments.put(key, value);
-	}
+	public void addAttachment(String key, IAttachment value);
+	public IAttachment getAttachment(String key);
 }

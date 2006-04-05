@@ -36,7 +36,7 @@ public class PlayerAttachment extends DefaultAttachment
      */
     public static PlayerAttachment get(PlayerID p)
     {
-        return (PlayerAttachment) p.getAttatchment(Constants.PLAYER_ATTATCHMENT_NAME);
+        return (PlayerAttachment) p.getAttachment(Constants.PLAYER_ATTATCHMENT_NAME);
     }
 
     private int m_vps = 0;

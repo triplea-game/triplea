@@ -188,7 +188,7 @@ public class Route implements java.io.Serializable
 
 	public String toString()
 	{
-		StringBuilder buf = new StringBuilder("Route:");
+		StringBuilder buf = new StringBuilder("Route:").append(m_start).append(" -> ");
 		for(int i = 0; i < getLength(); i++)
 		{
 			buf.append(at(i).getName() );

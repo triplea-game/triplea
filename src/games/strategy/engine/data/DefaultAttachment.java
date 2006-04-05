@@ -31,7 +31,7 @@ public class DefaultAttachment implements IAttachment
 {
     
     private GameData m_data;
-    private Attatchable m_attatchedTo;
+    private Attachable m_attatchedTo;
     private String m_name;
     
     /**
@@ -80,12 +80,12 @@ public class DefaultAttachment implements IAttachment
     {
     }
     
-    public Attatchable getAttatchedTo()
+    public Attachable getAttatchedTo()
     {
         return m_attatchedTo;
     }
     
-    public void setAttatchedTo(Attatchable attatchable)
+    public void setAttatchedTo(Attachable attatchable)
     {
         m_attatchedTo = attatchable;
     }

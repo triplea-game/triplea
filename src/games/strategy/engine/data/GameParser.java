@@ -625,7 +625,7 @@ public class GameParser
       Element current = (Element) elements.get(i);
 
       //must find either a resource or a unit with the given name
-      NamedAttatchable result = null;
+      NamedAttachable result = null;
       result = getResource(current, "resourceOrUnit", false);
       if(result == null)
         result = getUnitType(current, "resourceOrUnit", false);
@@ -694,19 +694,19 @@ public class GameParser
 
       //find the attatchable
       String type = current.getAttribute("type");
-      Attatchable attatchable = findAttatchment(current, type);
+      Attachable attatchable = findAttatchment(current, type);
 
       //attatch
       String name = current.getAttribute("name");
-      attatchable.addAttatchment(name, attatchment);
+      attatchable.addAttachment(name, attatchment);
       attatchment.setAttatchedTo(attatchable);
       attatchment.setName(name);
     }
   }
 
-  private Attatchable findAttatchment(Element element, String type) throws GameParseException
+  private Attachable findAttatchment(Element element, String type) throws GameParseException
   {
-    Attatchable returnVal;
+    Attachable returnVal;
     final String name = "attatchTo";
 
     if(type.equals("unitType"))

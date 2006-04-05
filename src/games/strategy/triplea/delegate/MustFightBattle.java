@@ -1493,7 +1493,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         private void notifyCasualties(final IDelegateBridge bridge)
         {
-            getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, m_casualties, Collections.<Unit>emptyList(), m_dependentUnits);
+            getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, new ArrayList<Unit>(m_casualties), Collections.<Unit>emptyList(), m_dependentUnits);
             
             getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
             Runnable r = new Runnable()
@@ -2037,7 +2037,7 @@ class Fire implements IExecutable
     private void notifyAndRemoveCasualties(final IDelegateBridge bridge)
     {
         
-        MustFightBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer, m_killed, m_damaged, m_dependentUnits);
+        MustFightBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer, new ArrayList<Unit>(m_killed), new ArrayList<Unit>(m_damaged), m_dependentUnits);
 
 
         Runnable r = new Runnable()

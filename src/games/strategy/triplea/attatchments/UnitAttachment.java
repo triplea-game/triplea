@@ -38,7 +38,7 @@ public class UnitAttachment extends DefaultAttachment
    */
   public static UnitAttachment get(UnitType type)
   {
-    return (UnitAttachment) type.getAttatchment(Constants.UNIT_ATTATCHMENT_NAME);
+    return (UnitAttachment) type.getAttachment(Constants.UNIT_ATTATCHMENT_NAME);
   }
 
   private boolean m_isAir = false;

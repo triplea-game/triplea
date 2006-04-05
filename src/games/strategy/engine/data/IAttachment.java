@@ -38,8 +38,8 @@ public interface IAttachment extends Serializable
 	 */
 	public void validate() throws GameParseException;
 
-  public Attatchable getAttatchedTo();
-  void setAttatchedTo(Attatchable attatchable);
+  public Attachable getAttatchedTo();
+  void setAttatchedTo(Attachable attatchable);
 
   public String getName();
   public void setName(String aString);

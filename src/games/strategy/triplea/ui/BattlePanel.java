@@ -64,28 +64,39 @@ public class BattlePanel extends ActionPanel
 
     }
 
-    public void display(PlayerID id, Collection<Territory> battles, Collection<Territory> bombing)
+    public void display(final PlayerID id,final Collection<Territory> battles, final Collection<Territory> bombing)
     {
         super.display(id);
-        removeAll();
-        m_actionLabel.setText(id.getName() + " battle");
-        add(m_actionLabel);
-        Iterator<Territory> iter = battles.iterator();
-        while (iter.hasNext())
+        
+        SwingUtilities.invokeLater(new Runnable()
         {
-            Territory next = iter.next();
-            Action action = new FightBattleAction(next, false);
-            add(new JButton(action));
-        }
+        
+            public void run()
+            {
+                removeAll();
+                m_actionLabel.setText(id.getName() + " battle");
+                add(m_actionLabel);
+                Iterator<Territory> iter = battles.iterator();
+                while (iter.hasNext())
+                {
+                    Territory next = iter.next();
+                    Action action = new FightBattleAction(next, false);
+                    add(new JButton(action));
+                }
 
-        iter = bombing.iterator();
-        while (iter.hasNext())
-        {
-            Territory next = iter.next();
-            Action action = new FightBattleAction(next, true);
-            add(new JButton(action));
-        }
-        SwingUtilities.invokeLater(REFRESH);
+                iter = bombing.iterator();
+                while (iter.hasNext())
+                {
+                    Territory next = iter.next();
+                    Action action = new FightBattleAction(next, true);
+                    add(new JButton(action));
+                }
+                SwingUtilities.invokeLater(REFRESH);
+
+        
+            }
+        
+        });
     }
 
     public void notifyRetreat(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
@@ -170,7 +181,7 @@ public class BattlePanel extends ActionPanel
             };
             try
             {
-                SwingUtilities.invokeAndWait(r);
+                SwingUtilities.invokeLater(r);
             } catch (Exception e)
             {
                 e.printStackTrace();

@@ -18,7 +18,6 @@ package games.strategy.triplea.ui;
 import games.strategy.triplea.delegate.DiceRoll;
 
 import java.awt.Dimension;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.*;
 
@@ -55,29 +54,19 @@ public class DicePanel extends JPanel
   {
     if(!SwingUtilities.isEventDispatchThread() )  
     {
-        try
+
+        SwingUtilities.invokeLater(
+        new Runnable()        
         {
-            SwingUtilities.invokeAndWait(
-            new Runnable()        
+            public void run()
             {
-                public void run()
-                {
-                    setDiceRoll(diceRoll);
-                }
+                setDiceRoll(diceRoll);
             }
-            
-            );
-        } catch (InterruptedException e)
-        {
-            
-            e.printStackTrace();
-        } catch (InvocationTargetException e)
-        {
-            
-            e.printStackTrace();
         }
         
-        return;
+        );
+    
+    return;
     }
       
       

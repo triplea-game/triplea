@@ -52,6 +52,16 @@ public class CompositeMatchAnd<T> extends CompositeMatch<T>
         add(second);
         add(third);
     }
+    
+    /** Creates new CompositeMatchOr */
+    public CompositeMatchAnd(Match<T> first, Match<T> second, Match<T> third, Match<T> fourth) 
+    {
+        super();
+        add(first);
+        add(second);
+        add(third);
+        add(fourth);
+    }
 
 	public boolean match(T o) 
 	{

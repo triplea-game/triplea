@@ -95,20 +95,23 @@ public class GameSelectorModel extends Observable
         JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game", JOptionPane.ERROR_MESSAGE );
     }
     
-    public GameData getGameData()
+    public synchronized GameData getGameData()
     {
         return m_data;
     }
     
     public void setCanSelect(boolean aBool)
     {
-        m_canSelect = aBool;
+        synchronized(this)
+        {
+            m_canSelect = aBool;
+        }
         
         notifyObs();
         
     }
     
-    public boolean canSelect()
+    public synchronized boolean canSelect()
     {
         return m_canSelect;
     }
@@ -120,15 +123,18 @@ public class GameSelectorModel extends Observable
      */    
     public void clearDataButKeepGameInfo(String gameName, String gameRound, String gameVersion)
     {
-        m_data = null;
-        m_gameName = gameName;
-        m_gameRound = gameRound;
-        m_gameVersion = gameVersion;
+        synchronized(this)
+        {
+            m_data = null;
+            m_gameName = gameName;
+            m_gameRound = gameRound;
+            m_gameVersion = gameVersion;
+        }
         
         notifyObs();
     }
     
-    public String getFileName()
+    public synchronized String getFileName()
     {
         if(m_data == null)
             return "-";
@@ -136,35 +142,38 @@ public class GameSelectorModel extends Observable
             return m_fileName;
     }
     
-    public String getGameName()
+    public synchronized String getGameName()
     {
         return m_gameName;
     }
 
-    public String getGameRound()
+    public synchronized String getGameRound()
     {
         return m_gameRound;
     }
 
-    public String getGameVersion()
+    public synchronized String getGameVersion()
     {
         return m_gameVersion;
     }
 
     public void setGameData(GameData data)
     {
-        if(data == null)
+        synchronized(this)
         {
-            m_gameName = m_gameRound = m_gameVersion = "-";
-        }
-        else
-        {
-            m_gameName = data.getGameName();
-            m_gameRound = "" + data.getSequence().getRound();
-            m_gameVersion = data.getGameVersion().toString();
-        }
+            if(data == null)
+            {
+                m_gameName = m_gameRound = m_gameVersion = "-";
+            }
+            else
+            {
+                m_gameName = data.getGameName();
+                m_gameRound = "" + data.getSequence().getRound();
+                m_gameVersion = data.getGameVersion().toString();
+            }
         
-        m_data = data;
+            m_data = data;
+        }
         
         notifyObs();
     }
@@ -181,7 +190,7 @@ public class GameSelectorModel extends Observable
         //load the previously saved value
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         
-        String defaultFileName = "classic_a&a.xml";
+        String defaultFileName = "classic.xml";
         String s= prefs.get(DEFAULT_FILE_NAME_PREF, defaultFileName);
         
         File defaultGame =  new File(NewGameFileChooser.DEFAULT_DIRECTORY, s);

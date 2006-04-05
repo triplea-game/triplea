@@ -22,11 +22,8 @@ import java.util.Observable;
 public class SetupPanelModel extends Observable
 {
     
-    
     private final GameSelectorModel m_gameSelectorModel;
     private SetupPanel m_panel;
-    
-    
     
     
     public SetupPanelModel(GameSelectorModel gameSelectorModel)

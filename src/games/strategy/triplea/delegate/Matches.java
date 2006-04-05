@@ -507,6 +507,18 @@ public class Matches
         };
     }
 
+    public static Match<Unit> unitIsLandAndOwnedBy(final PlayerID player)
+    {
+        return new Match<Unit>()
+        {
+            public boolean match(Unit unit)
+            {
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                return !ua.isSea() &&  unit.getOwner().equals(player);
+            }
+        };
+    }
+    
 	public static Match<Unit> unitIsOwnedBy(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -689,6 +701,22 @@ public class Matches
 
   }
 
+  public static Match<Territory> territoryHasLandUnitsOwnedBy(final PlayerID player)
+  {
+      final CompositeMatch<Unit> unitOwnedBy = new CompositeMatchAnd<Unit>(unitIsOwnedBy(player), Matches.UnitIsLand );
+
+      return new Match<Territory>()
+  {
+
+    public boolean match(Territory t)
+    {
+      return t.getUnits().someMatch(unitOwnedBy);
+    }
+  };
+
+  }
+
+  
   public static Match<Territory> territoryHasUnitsOwnedBy(final PlayerID player)
   {
       final Match<Unit> unitOwnedBy = unitIsOwnedBy(player);
@@ -751,6 +779,18 @@ public class Matches
 
 	}
 
+    
+    public static Match<Territory> territoryHasEnemyLandUnits(final PlayerID player, final GameData data)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                return t.getUnits().someMatch( enemyUnit(player,data)) && t.getUnits().someMatch(Matches.UnitIsLand);
+            }
+        };
+
+    }
 	
 	public static Match<Territory> territoryHasEnemyUnits(final PlayerID player, final GameData data)
 	{

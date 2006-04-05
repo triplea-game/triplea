@@ -20,13 +20,13 @@ import java.lang.reflect.Method;
 
 public class ChangeAttachmentChange extends Change
 {
-  private final Attatchable m_attatchedTo;
+  private final Attachable m_attatchedTo;
   private final String m_attatchmentName;
   private final String m_newValue;
   private String m_oldValue;
   private final String m_property;
 
-  public Attatchable getAttatchedTo()
+  public Attachable getAttatchedTo()
   {
     return m_attatchedTo;
   }
@@ -54,7 +54,7 @@ public class ChangeAttachmentChange extends Change
      }
   }
 
-  public ChangeAttachmentChange(Attatchable attatchTo, String attatchmentName, String newValue, String oldValue, String property)
+  public ChangeAttachmentChange(Attachable attatchTo, String attatchmentName, String newValue, String oldValue, String property)
   {
     m_attatchmentName = attatchmentName;
     m_attatchedTo = attatchTo;
@@ -77,7 +77,7 @@ public class ChangeAttachmentChange extends Change
   {
     try
     {
-      IAttachment attachment = m_attatchedTo.getAttatchment(m_attatchmentName);
+      IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
       Method setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(m_property), new Class[]
         {String.class});
       setter.invoke(attachment, new Object[] {m_newValue});

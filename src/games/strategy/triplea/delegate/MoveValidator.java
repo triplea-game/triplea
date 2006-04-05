@@ -393,64 +393,91 @@ public class MoveValidator
 
   public static String validateCanal(Route route, PlayerID player, GameData data)
   {
-    Collection territories = route.getTerritories();
-
-    //check suez canal
-    Territory eastMed = data.getMap().getTerritory("East Mediteranean Sea Zone");
-    Territory redSea = data.getMap().getTerritory("Red Sea Zone");
-    if (territories.contains(eastMed) && territories.contains(redSea))
-    {
-      Territory egypt = data.getMap().getTerritory("Anglo Sudan Egypt");
-      Territory iraq = data.getMap().getTerritory("Syria Jordan");
-
-      if (!data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
-          !data.getAllianceTracker().isAllied(player, iraq.getOwner()))
-        return "Must own Egypt and Syria/Jordan  to go through Suez Canal";
-
-      BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-      if (tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
-        return "Cannot move through canal without owning Egypt and Syria/Jordan for an entire turn.";
+    Collection<Territory> territories = route.getTerritories();
+    
+    BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
+    
+    for(Territory routeTerritory : territories)
+    {   
+        CanalAttachment attachment = CanalAttachment.get(routeTerritory);
+        if(attachment == null)
+            continue;
+        if(!territories.containsAll( CanalAttachment.getAllCanalSeaZones(attachment.getCanalName(), data) ))
+        {
+            continue;
+        }
+        
+        
+        for(Territory borderTerritory : attachment.getLandTerritories())
+        {
+            if (!data.getAllianceTracker().isAllied(player, borderTerritory.getOwner()))
+            {
+                  return "Must own " + borderTerritory.getName() + " to go through " + attachment.getCanalName();
+            }
+            if(tracker.wasConquered(borderTerritory))
+            {
+                return "Cannot move through " + attachment.getCanalName() + " without owning " + borderTerritory.getName() + " for an entire turn";
+            }            
+        }
     }
+    
+
+//    //check suez canal
+//    Territory eastMed = data.getMap().getTerritory("East Mediteranean Sea Zone");
+//    Territory redSea = data.getMap().getTerritory("Red Sea Zone");
+//    if (territories.contains(eastMed) && territories.contains(redSea))
+//    {
+//      Territory egypt = data.getMap().getTerritory("Anglo Sudan Egypt");
+//      Territory iraq = data.getMap().getTerritory("Syria Jordan");
+//
+//      if (!data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
+//          !data.getAllianceTracker().isAllied(player, iraq.getOwner()))
+//        return "Must own Egypt and Syria/Jordan  to go through Suez Canal";
+//
+//      
+//      if (tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
+//        return "Cannot move through canal without owning Egypt and Syria/Jordan for an entire turn.";
+//    }
 
     //suez 4th edition
-    Territory sz15 = data.getMap().getTerritory("15 Sea Zone");
-    Territory sz34 = data.getMap().getTerritory("34 Sea Zone");
-    if (territories.contains(sz15) && territories.contains(sz34))
-    {
-      Territory egypt = data.getMap().getTerritory("Anglo Egypt");
-      Territory iraq = data.getMap().getTerritory("Trans-Jordan");
-
-      if (!data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
-          !data.getAllianceTracker().isAllied(player, iraq.getOwner()))
-        return "Must own Egypt and Jordan  to go through Suez Canal";
-
-      BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-      if (tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
-        return "Cannot move through canal without owning Egypt and Jordan for an entire turn.";
-
-    }
+//    Territory sz15 = data.getMap().getTerritory("15 Sea Zone");
+//    Territory sz34 = data.getMap().getTerritory("34 Sea Zone");
+//    if (territories.contains(sz15) && territories.contains(sz34))
+//    {
+//      Territory egypt = data.getMap().getTerritory("Anglo Egypt");
+//      Territory iraq = data.getMap().getTerritory("Trans-Jordan");
+//
+//      if (!data.getAllianceTracker().isAllied(player, egypt.getOwner()) ||
+//          !data.getAllianceTracker().isAllied(player, iraq.getOwner()))
+//        return "Must own Egypt and Jordan  to go through Suez Canal";
+//
+//      
+//      if (tracker.wasConquered(egypt) || tracker.wasConquered(iraq))
+//        return "Cannot move through canal without owning Egypt and Jordan for an entire turn.";
+//
+//    }
     
     //check panama canal
-    Territory carib = data.getMap().getTerritory("Carribean Sea Zone");
-    Territory westPan = data.getMap().getTerritory("West Panama Sea Zone");
-    
-    Territory sz19 = data.getMap().getTerritory("19 Sea Zone");
-    Territory sz20 = data.getMap().getTerritory("20 Sea Zone");
+//    Territory carib = data.getMap().getTerritory("Carribean Sea Zone");
+//    Territory westPan = data.getMap().getTerritory("West Panama Sea Zone");
+//    
+//    Territory sz19 = data.getMap().getTerritory("19 Sea Zone");
+//    Territory sz20 = data.getMap().getTerritory("20 Sea Zone");
 
     
-    if ( (territories.contains(carib) && territories.contains(westPan)) ||
-          (territories.contains(sz19) && territories.contains(sz20)) )
-    {
-      Territory panama = data.getMap().getTerritory("Panama");
-
-      if (!data.getAllianceTracker().isAllied(player, panama.getOwner()))
-
-        return "Must own panama to go through Panama Canal";
-
-      BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-      if (tracker.wasConquered(panama))
-        return "Cannot move through canal without owning panama an entire turn.";
-    }
+//    if ( (territories.contains(carib) && territories.contains(westPan)) ||
+//          (territories.contains(sz19) && territories.contains(sz20)) )
+//    {
+//      Territory panama = data.getMap().getTerritory("Panama");
+//
+//      if (!data.getAllianceTracker().isAllied(player, panama.getOwner()))
+//
+//        return "Must own panama to go through Panama Canal";
+//
+//      BattleTracker tracker = DelegateFinder.battleDelegate(data).getBattleTracker();
+//      if (tracker.wasConquered(panama))
+//        return "Cannot move through canal without owning panama an entire turn.";
+//    }
 
     return null;
 

@@ -721,7 +721,8 @@ public class TripleaMenu extends JMenuBar
      * @param parentMenu
      */
     private void addExitMenu(JMenu parentMenu)
-    {	boolean isMac = System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
+    {	
+        boolean isMac = GameRunner.isMac();
     
         JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game")
         {
@@ -745,13 +746,7 @@ public class TripleaMenu extends JMenuBar
         //     so all we need to do is register that menu item with triplea's shutdown mechanism
         if (isMac)
         {
-        		com.apple.mrj.MRJApplicationUtils.registerQuitHandler(new com.apple.mrj.MRJQuitHandler()
-                    {
-                       public void handleQuit()
-                       {
-                          m_frame.shutdown();
-                       }
-                    });
+        		MacWrapper.registerMacShutdownHandler(m_frame);
         }
         else
         {	// On non-Mac operating systems, we need to manually create an Exit menu item
@@ -765,6 +760,8 @@ public class TripleaMenu extends JMenuBar
         		parentMenu.add(menuFileExit);
         }
     }
+
+    
 
     /**
      * @param parent

@@ -198,7 +198,6 @@ public class MapPanel extends ImageScrollerLargeView
     
     public void centerOn(Territory territory)
     {
-
         if (territory == null)
             return;
 

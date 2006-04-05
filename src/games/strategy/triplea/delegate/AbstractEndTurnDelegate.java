@@ -146,7 +146,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
 		while(iter.hasNext() )
 		{
 			Territory current = (Territory) iter.next();
-			TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttatchment(Constants.TERRITORY_ATTATCHMENT_NAME);
+			TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
 
 			if(attatchment == null)
 				throw new IllegalStateException("Nn attatchment for owned territory:" + current.getName());

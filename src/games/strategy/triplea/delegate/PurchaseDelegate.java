@@ -97,7 +97,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   public String purchase(IntegerMap<ProductionRule> productionRules)
   {
     IntegerMap<Resource> costs = getCosts(productionRules);
-    IntegerMap<NamedAttatchable> results = getResults(productionRules);
+    IntegerMap<NamedAttachable> results = getResults(productionRules);
 
     if(!(canAfford(costs, m_player)))
       return "Not enough resources";
@@ -121,9 +121,9 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     return costs;
   }
 
-  private IntegerMap<NamedAttatchable> getResults(IntegerMap<ProductionRule> productionRules)
+  private IntegerMap<NamedAttachable> getResults(IntegerMap<ProductionRule> productionRules)
   {
-    IntegerMap<NamedAttatchable> costs = new IntegerMap<NamedAttatchable>();
+    IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
 
     Iterator<ProductionRule> rules = productionRules.keySet().iterator();
     while(rules.hasNext() )
@@ -135,9 +135,9 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
   }
 
 
-  protected void addToPlayer(PlayerID player, IntegerMap<NamedAttatchable> resourcesAndUnits)
+  protected void addToPlayer(PlayerID player, IntegerMap<NamedAttachable> resourcesAndUnits)
   {
-    Iterator<NamedAttatchable> iter = resourcesAndUnits.keySet().iterator();
+    Iterator<NamedAttachable> iter = resourcesAndUnits.keySet().iterator();
     Collection<Unit> totalUnits = new ArrayList<Unit>();
     while(iter.hasNext() )
     {

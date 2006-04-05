@@ -55,27 +55,36 @@ public class PurchasePanel extends ActionPanel
     m_buyButton.addActionListener(PURCHASE_ACTION);
   }
 
-  public void display(PlayerID id)
+  public void display(final PlayerID id)
   {
     super.display(id);
     m_purchase = new IntegerMap<ProductionRule>();
-    removeAll();
-    actionLabel.setText(id.getName() + " production");
-    m_buyButton.setText(BUY);
-    add(actionLabel);
-    add(m_buyButton);
-    add(new JButton(DoneAction));
-    m_purchasedSoFar.setText("");
-
-    add(Box.createVerticalStrut(9));
-    add(m_purchasedSoFar);
-    add(Box.createVerticalStrut(4));
-
-    m_unitsPanel.setUnitsFromProductionRuleMap(new IntegerMap<ProductionRule>(), id, getData());
-    add(m_unitsPanel);
-    add(Box.createVerticalGlue());
-    SwingUtilities.invokeLater(REFRESH);
     
+    SwingUtilities.invokeLater(new Runnable()
+    {
+    
+        public void run()
+        {
+            removeAll();
+            actionLabel.setText(id.getName() + " production");
+            m_buyButton.setText(BUY);
+            add(actionLabel);
+            add(m_buyButton);
+            add(new JButton(DoneAction));
+            m_purchasedSoFar.setText("");
+
+            add(Box.createVerticalStrut(9));
+            add(m_purchasedSoFar);
+            add(Box.createVerticalStrut(4));
+
+            m_unitsPanel.setUnitsFromProductionRuleMap(new IntegerMap<ProductionRule>(), id, getData());
+            add(m_unitsPanel);
+            add(Box.createVerticalGlue());
+            SwingUtilities.invokeLater(REFRESH);
+        }
+    
+    });
+        
   }
 
   private void refreshActionLabelText()

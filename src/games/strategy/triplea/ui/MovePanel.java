@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -72,6 +73,10 @@ import javax.swing.SwingUtilities;
  */
 public class MovePanel extends ActionPanel
 {
+    
+    private static final Logger s_logger = Logger.getLogger(MovePanel.class.getName());
+    
+    private boolean m_listening = false;
     private JLabel m_actionLabel = new JLabel();
     private MoveDescription m_moveMessage;
     //access only through getter and setter!
@@ -110,23 +115,35 @@ public class MovePanel extends ActionPanel
         return b;
     }
 
-    public void display(PlayerID id, boolean nonCombat)
+    public void display(final PlayerID id, final boolean nonCombat)
     {
+        
         super.display(id);
         m_nonCombat = nonCombat;
-        removeAll();
-        m_actionLabel.setText(id.getName() +
-                              (nonCombat ? " non combat" : " combat") + " move");
-        this.add(leftBox(m_actionLabel));
-        this.add(leftBox(new JButton(CANCEL_MOVE_ACTION)));
-        this.add(leftBox(new JButton(DONE_MOVE_ACTION)));
-        this.add(Box.createVerticalStrut(15));
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                removeAll();
+                m_actionLabel.setText(id.getName() +
+                                      (nonCombat ? " non combat" : " combat") + " move");
+                add(leftBox(m_actionLabel));
+                add(leftBox(new JButton(CANCEL_MOVE_ACTION)));
+                add(leftBox(new JButton(DONE_MOVE_ACTION)));
+                add(Box.createVerticalStrut(15));
 
 
-        this.add(m_undableMovesPanel);
-        this.add(Box.createGlue());
+                add(m_undableMovesPanel);
+                add(Box.createGlue());
 
-        SwingUtilities.invokeLater(REFRESH);
+                SwingUtilities.invokeLater(REFRESH);
+        
+            }
+        
+        });
+        
     }
 
     private IMoveDelegate getDelegate()
@@ -142,63 +159,95 @@ public class MovePanel extends ActionPanel
     public MoveDescription waitForMove(IPlayerBridge bridge)
     {
         setUp(bridge);
-        updateMoves();
+        
         
         waitForRelease();
         
         cleanUp();
-        removeAll();
-        SwingUtilities.invokeLater(REFRESH);
+        
+
         return m_moveMessage;
         
     }
 
-    private void setUp(IPlayerBridge bridge)
+    private void setUp(final IPlayerBridge bridge)
     {
-        setFirstSelectedTerritory(null);
-        m_forced = null;
-        m_bridge = bridge;
-        getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
-        getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
-        getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
-         
-        getRootPane().registerKeyboardAction(CANCEL_MOVE_ACTION,
-                KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
-                WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
-                );
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                s_logger.fine("setup");
+                
+                setFirstSelectedTerritory(null);
+                m_forced = null;
+                m_bridge = bridge;
+                updateMoves();
+
+                if(m_listening)
+                    throw new IllegalStateException("Not listening");
+                m_listening = true;
+                
+                getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
+                getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
+                getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+                
+                getRootPane().registerKeyboardAction(CANCEL_MOVE_ACTION,
+                        KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
+                        WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+                        );
+
+        
+            }
+        
+        });
 
         
     }
 
     private void cleanUp()
     {
-        getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
-        getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
-        getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
-        
-        getMap().setUnitHighlight(null, null);
-        
-        m_bridge = null;
-        m_selectedUnits.clear();
-        updateRouteAndMouseShadowUnits(null);
+
         SwingUtilities.invokeLater(new Runnable()
         {
             public void run()
             {
+                s_logger.fine("cleanup");
+                
+                if(!m_listening)
+                    throw new IllegalStateException("Not listening");
+                m_listening = false;
+                
+                
+                getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
+                getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
+                getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+                
+                getMap().setUnitHighlight(null, null);
+                
+                m_bridge = null;
+                m_selectedUnits.clear();
+                updateRouteAndMouseShadowUnits(null);
+                
                 CANCEL_MOVE_ACTION.setEnabled(false);
+                JComponent rootPane = getRootPane();
+                if(rootPane != null)
+                {
+                    rootPane.registerKeyboardAction(null,
+                        KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
+                        WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+                        );
+                }
+                m_forced = null;
+                
+                removeAll();
+                REFRESH.run();
+
             }
         
         });
         
-        m_forced = null;
-        JComponent rootPane = getRootPane();
-        if(rootPane != null)
-        {
-            rootPane.registerKeyboardAction(null,
-                KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
-                WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
-                );
-        }
+
+
     }
 
 
@@ -230,7 +279,16 @@ public class MovePanel extends ActionPanel
     public void setActive(boolean active)
     {
       super.setActive(active);
-      CANCEL_MOVE_ACTION.actionPerformed(null);
+      SwingUtilities.invokeLater(new Runnable()
+    {
+    
+        public void run()
+        {
+            CANCEL_MOVE_ACTION.actionPerformed(null);
+        }
+    
+    });
+      
     }
 
     private final AbstractAction CANCEL_MOVE_ACTION = new AbstractAction(
@@ -728,6 +786,9 @@ public class MovePanel extends ActionPanel
     
         public void unitsSelected(List<Unit> units, Territory t, MouseEvent me)
         {
+            if(!m_listening)
+                return;
+            
             //check if we can handle this event, are we active?
             if(!getActive())
                 return;
@@ -925,6 +986,7 @@ public class MovePanel extends ActionPanel
             if (units.size() == 0)
             {
                 CANCEL_MOVE_ACTION.actionPerformed(null);
+                JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(MovePanel.this), "No units have enough movement");
                 return;
             }
             else
@@ -994,6 +1056,9 @@ public class MovePanel extends ActionPanel
 
         public void mouseEnter(List<Unit> units, Territory territory, MouseEvent me)
         {
+            if(!m_listening)
+                return;
+            
             boolean someOwned = Match.someMatch(units, Matches.unitIsOwnedBy(getCurrentPlayer()));
             boolean isCorrectTerritory = m_firstSelectedTerritory == null || m_firstSelectedTerritory == territory;
             if(someOwned && isCorrectTerritory)
@@ -1015,6 +1080,9 @@ public class MovePanel extends ActionPanel
         
         public void mouseMoved(Territory territory, MouseEvent me)
         {
+            if(!m_listening)
+                return;
+            
             if (getFirstSelectedTerritory() != null && territory != null)
             {
                 m_mouseCurrentPoint= me.getPoint();

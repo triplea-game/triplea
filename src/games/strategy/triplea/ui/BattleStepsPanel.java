@@ -14,6 +14,7 @@ package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.*;
 
@@ -44,32 +45,8 @@ class BattleStepsPanel extends JPanel implements Active
     //notifyAll on this object
     private final Object m_mutex = new Object();
     
-    private boolean m_deactivated = false;
-
-    //do all walking in a single thread
-    private final Thread m_walkThread = new Thread("Triplea Battle steps panel step walking thread")
-    {
-        public void run()
-        {
-            while (!m_deactivated)
-            {
-                //we will be notified if we need to start walking
-                synchronized (m_mutex)
-                {
-                    try
-                    {
-                        m_mutex.wait(2000);
-                    } catch (InterruptedException e)
-                    {
-                    }
-                }
-
-                while (!doneWalkingSteps() && !m_deactivated)
-                    walkStep();
-
-            }
-        }
-    };
+    private final List<CountDownLatch> m_waiters = new ArrayList<CountDownLatch>();
+    private boolean m_hasWalkThread = false;
 
     BattleStepsPanel()
     {
@@ -77,23 +54,28 @@ class BattleStepsPanel extends JPanel implements Active
         add(m_list, BorderLayout.CENTER);
         m_list.setBackground(this.getBackground());
         m_list.setSelectionModel(m_listSelectionModel);
-        m_walkThread.setDaemon(true);
-        m_walkThread.start();
     }
 
-     public void deactivate()
+    public void deactivate()
     {
-        m_deactivated = true;
-        synchronized(m_mutex)
-        {
-            m_mutex.notifyAll();
-        }
+        wakeAll();
     }
     
+    private void wakeAll()
+    {
+       synchronized(m_mutex)
+       {
+           for(CountDownLatch l : m_waiters)
+           {
+               l.countDown();
+           }
+           m_waiters.clear();
+       }
+        
+    }
+
     /**
-     * Set the steps given, walking to the first step.
-     * This method blocks until the first step is reached, unless 
-     * this method is called from the swing event thread.
+     * Set the steps given, setting the selected step to the first step.
      *   
      * @param steps
      */
@@ -112,18 +94,18 @@ class BattleStepsPanel extends JPanel implements Active
                 m_listModel.addElement(iter.next());
             }
             m_listSelectionModel.hiddenSetSelectionInterval(0);
-            if(!steps.contains(m_targetStep) && m_targetStep != LAST_STEP)
-                m_targetStep = null;
         }
 
         validate();
-        goToTarget();
     }
 
     private void clearTargetStep()
     {
-        m_targetStep = null;
-        m_mutex.notifyAll();
+        synchronized(m_mutex)
+        {
+            m_targetStep = null;
+        }
+        wakeAll();
     }
 
     private boolean doneWalkingSteps()
@@ -145,42 +127,16 @@ class BattleStepsPanel extends JPanel implements Active
             //at end, we are done
             if (m_targetStep == LAST_STEP && m_list.getSelectedIndex() == m_listModel.getSize() - 1)
             {
-                clearTargetStep();
                 return true;
             }
 
             //we found it, we are done
             if (m_targetStep.equals(m_list.getSelectedValue()))
             {
-                clearTargetStep();
                 return true;
             }
         }
         return false;
-    }
-
-    private void goToTarget()
-    {
-        boolean wait = !SwingUtilities.isEventDispatchThread();
-
-        synchronized (m_mutex)
-        {
-            //signal that we want to walk
-            m_mutex.notifyAll();
-
-            if (!wait)
-                return;
-
-            try
-            {
-                m_mutex.wait(2000);
-            } catch (InterruptedException e)
-            {
-                return;
-            }
-            if (!doneWalkingSteps())
-                goToTarget();
-        }
     }
 
     /**
@@ -188,40 +144,68 @@ class BattleStepsPanel extends JPanel implements Active
      */
     private void walkStep()
     {
+        if(!SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread");
 
-        //we want to run in the swing event thread
-        Runnable advanceStep = new Runnable()
+        if (doneWalkingSteps())
+        {
+            wakeAll();
+            return;
+        }
+
+        int index = m_list.getSelectedIndex() + 1;
+        if (index >= m_list.getModel().getSize())
+            index = 0;
+        m_listSelectionModel.hiddenSetSelectionInterval(index);
+
+       waitThenWalk();
+        
+        
+    }
+
+    private void waitThenWalk()
+    {
+        Thread t = new Thread("Walk single step started at:" + new Date())
         {
             public void run()
             {
-                synchronized (m_mutex)
+                synchronized(m_mutex)
                 {
-                    if (doneWalkingSteps())
+                    if(m_hasWalkThread)
                         return;
-
-                    int index = m_list.getSelectedIndex() + 1;
-                    if (index >= m_list.getModel().getSize())
-                        index = 0;
-
-                    m_listSelectionModel.hiddenSetSelectionInterval(index);
+                    m_hasWalkThread = true;
                 }
+                try
+                {
+                
+                    try
+                    {
+                        sleep(400);
+                    } catch (InterruptedException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    SwingUtilities.invokeLater(new Runnable()
+                    {
+                    
+                        public void run()
+                        {
+                            walkStep();
+                        }
+                    });
+                } finally
+                {
+                    synchronized (m_mutex)
+                    {
+                        m_hasWalkThread = false;
+                    }
+                }
+                
             }
         };
-
-        try
-        {
-            SwingUtilities.invokeAndWait(advanceStep);
-            //pause to allow the user to follow
-            Thread.sleep(300);
-        } catch (InterruptedException ie)
-        {
-            ie.printStackTrace();
-        } catch (java.lang.reflect.InvocationTargetException ioe)
-        {
-            ioe.printStackTrace();
-            throw new RuntimeException(ioe.getMessage());
-        }
-
+        t.start();
+        
     }
 
     /**
@@ -238,14 +222,6 @@ class BattleStepsPanel extends JPanel implements Active
         goToTarget();
     }
 
-    public String getStep()
-    {
-        synchronized (m_mutex)
-        {
-            return (String) m_list.getSelectedValue();
-        }
-    }
-
     /**
     * This method blocks until the step is reached, unless 
     * this method is called from the swing event thread.
@@ -259,11 +235,30 @@ class BattleStepsPanel extends JPanel implements Active
         goToTarget();
 
     }
-    
-    public void finalize()
+
+    private void goToTarget()
     {
-        m_deactivated = true;
+        if(!SwingUtilities.isEventDispatchThread())
+        {
+            CountDownLatch latch = new CountDownLatch(1);
+            synchronized(m_mutex)
+            {
+                m_waiters.add(latch);
+            }
+            waitThenWalk();
+            try
+            {
+                latch.await();
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }            
+        }
+        waitThenWalk();
+        
     }
+    
+
 }
 
 

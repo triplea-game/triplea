@@ -39,12 +39,12 @@ public class TestAttachment implements games.strategy.engine.data.IAttachment {
   {
   }
 
-  public Attatchable getAttatchedTo()
+  public Attachable getAttatchedTo()
   {
     return null;
   }
 
-  public void setAttatchedTo(Attatchable unused)
+  public void setAttatchedTo(Attachable unused)
   {
 
   }

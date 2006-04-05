@@ -25,11 +25,14 @@ import games.strategy.net.*;
 
 import java.awt.Component;
 import java.util.*;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 
 public class LocalLauncher implements ILauncher
 {
+    private static final Logger s_logger = Logger.getLogger(ILauncher.class.getName());
+    
     private final GameData m_gameData;
     private IRandomSource m_randomSource;
     private final Map<String,String> m_playerTypes;
@@ -109,7 +112,9 @@ public class LocalLauncher implements ILauncher
                     m_gameLoadingWindow.doneWait();
                 }
                 
+                s_logger.fine("Game starting");
                 game.startGame();
+                s_logger.fine("Game over");
 
                 
                 m_gameSelectorModel.loadDefaultGame(parent);
@@ -130,6 +135,17 @@ public class LocalLauncher implements ILauncher
         
         Thread thread = new Thread(runner, "Triplea start local thread");
         thread.start();
+        
+        if(SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread");
+        try
+        {
+            thread.join();
+        } catch (InterruptedException e)
+        {
+        }
+        s_logger.fine("Thread done!");
+        
         
         
 

@@ -31,7 +31,7 @@ import java.io.Serializable;
 public class ProductionRule extends DefaultNamed implements Serializable
 {
 	private IntegerMap<Resource> m_cost = new IntegerMap<Resource>();
-	private IntegerMap<NamedAttatchable> m_results = new IntegerMap<NamedAttatchable>();
+	private IntegerMap<NamedAttachable> m_results = new IntegerMap<NamedAttachable>();
 	
 	/** Creates new ProductionRule */
     public ProductionRule(String name, GameData data) 
@@ -47,7 +47,7 @@ public class ProductionRule extends DefaultNamed implements Serializable
 	/** 
 	 * Benefits must be a resource or a unit.
 	 */
-	protected void addResult(NamedAttatchable obj, int quantity)
+	protected void addResult(NamedAttachable obj, int quantity)
 	{
 		if(! (obj instanceof UnitType) && ! (obj instanceof Resource))
 			throw new IllegalArgumentException("results must be units or resources, not:" + obj.getClass().getName() );
@@ -60,7 +60,7 @@ public class ProductionRule extends DefaultNamed implements Serializable
 		return m_cost.copy();
 	}
 	
-	public IntegerMap<NamedAttatchable> getResults()
+	public IntegerMap<NamedAttachable> getResults()
 	{
 		return m_results.copy();
 	}

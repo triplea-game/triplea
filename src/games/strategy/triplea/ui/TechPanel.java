@@ -51,16 +51,24 @@ public class TechPanel extends ActionPanel
         super(data, map);
     }
 
-    public void display(PlayerID id)
+    public void display(final PlayerID id)
     {
         super.display(id);
-        removeAll();
-        m_actionLabel.setText(id.getName() + " Tech Roll");
-        add(m_actionLabel);
-        add(new JButton(GetTechRollsAction));
-        add(new JButton(DontBother));
+        SwingUtilities.invokeLater(new Runnable()
+        {
+        
+            public void run()
+            {
+                removeAll();
+                m_actionLabel.setText(id.getName() + " Tech Roll");
+                add(m_actionLabel);
+                add(new JButton(GetTechRollsAction));
+                add(new JButton(DontBother));
 
-        getMap().centerOn(TerritoryAttachment.getCapital(id, getData()));
+                getMap().centerOn(TerritoryAttachment.getCapital(id, getData()));
+            }
+        
+        });
 
     }
 

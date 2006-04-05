@@ -44,6 +44,20 @@ public class GameSelectorPanel extends JPanel implements Observer
 
     private void updateGameData()
     {
+
+        if(!SwingUtilities.isEventDispatchThread())
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+                    updateGameData();
+                }
+            });
+            return;
+        }
+
+        
         m_nameText.setText(m_model.getGameName());
         m_versionText.setText(m_model.getGameVersion());
         m_roundText.setText(m_model.getGameRound());
@@ -144,7 +158,17 @@ public class GameSelectorPanel extends JPanel implements Observer
 
     private void setWidgetActivation()
     {
-        
+        if(!SwingUtilities.isEventDispatchThread())
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+                    setWidgetActivation();
+                }
+            });
+            return;
+        }
         boolean canSelectGameData = m_model != null && m_model.canSelect();
        
         m_loadSavedGame.setEnabled(canSelectGameData);

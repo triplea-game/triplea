@@ -28,7 +28,7 @@ import java.util.*;
  * @version 1.0
  *
  */
-public class PlayerList extends GameDataComponent
+public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 {
 
 	//maps String playerName -> PlayerID
@@ -69,5 +69,10 @@ public class PlayerList extends GameDataComponent
 	{
 		return m_players.values();
 	}
+
+    public Iterator<PlayerID> iterator()
+    {
+        return getPlayers().iterator();
+    }
 }
 

@@ -28,7 +28,7 @@ public class TechAttachment extends DefaultAttachment
 
   public static TechAttachment get(PlayerID id)
   {
-    TechAttachment attatchment = (TechAttachment) id.getAttatchment(Constants.TECH_ATTATCHMENT_NAME);
+    TechAttachment attatchment = (TechAttachment) id.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
     //dont crash
     if(attatchment == null)
         return new TechAttachment();
