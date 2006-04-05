@@ -150,6 +150,8 @@ public class BattlePanel extends ActionPanel
             m_battleDisplay.cleanUp();
             m_battleFrame.getContentPane().removeAll();
             m_battleDisplay = null;
+	    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
+
         }
     }
 
@@ -221,6 +223,7 @@ public class BattlePanel extends ActionPanel
                     m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
                     
                     
+		    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);		    
                     m_battleFrame.setVisible(true);
                     m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 

@@ -36,6 +36,19 @@ public class PBEMDiceRoller implements IRandomSource
     private final String m_gameID;
     private final IRemoteDiceServer m_remoteDiceServer;
 
+    private static Frame s_focusWindow;
+
+    /*
+     * If the game has multiple frames, allows the ui to 
+     * set what frame should be the parent of the dice rolling window
+     * if set to null, or not set, we try to guess by finding the currently 
+     * focused window (or a visble window if none are focused).
+     */
+    public static void setFocusWindow(Frame w)
+    {
+	s_focusWindow = w;	    
+    }    
+    
     public PBEMDiceRoller(String player1Email, String player2Email, String gameID, IRemoteDiceServer diceServer)
     {
         m_player1Email = player1Email;
@@ -69,6 +82,9 @@ public class PBEMDiceRoller implements IRandomSource
 
     private Frame getFocusedFrame()
     {
+        if(s_focusWindow != null)
+		return s_focusWindow;
+	    
         Frame[] frames = Frame.getFrames();
         Frame rVal = null;
         for (int i = 0; i < frames.length; i++)
@@ -76,12 +92,15 @@ public class PBEMDiceRoller implements IRandomSource
             //find the window with focus, failing that, get something that is
             // visible
             if (frames[i].isFocused())
+	    {
                 rVal = frames[i];
+	    }
             else if (rVal == null && frames[i].isVisible())
             {
                 rVal = frames[i];
             }
         }
+
         return rVal;
 
     }
