@@ -1,3 +1,11 @@
+* save last used map skin and unit size (beagle)
+
+* renamed game xml files (sgb)
+
+* moves canal info to the xml file (if you have a mod based on revised or classic, canals will be broken unless you add them in the xml, do a search for canal in classic.xml or revised.xml to see how it is done) (sgb)
+
+* fix bug where aa guns in retaken allied capitols werent reverting to there original owner (sgb)
+
 * replace random ai with weak ai (sgb)
 
 * fix pbem saved emails not always showing up on the start screen (sgb)
