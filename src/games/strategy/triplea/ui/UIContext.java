@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.*;
+import java.util.prefs.*;
 
 import javax.swing.*;
 
@@ -35,6 +36,9 @@ import javax.swing.*;
  */
 public class UIContext
 {
+    
+    private static final String UNIT_SCALE_PREF = "UnitScale";
+    private static final String MAP_SKIN_PREF = "MapSkin";
     
     private static final Logger s_logger = Logger.getLogger(UIContext.class.getName());
     
@@ -58,22 +62,87 @@ public class UIContext
         m_mapImage = new MapImage();
     }
 
-    public void setMapDir(String dir)
+    /**
+     * Get the preferences for the map. 
+     */
+    private static Preferences getPreferencesForMap(String mapName)
+    {
+        return Preferences.userNodeForPackage(UIContext.class).node(mapName);
+    }
+
+    /**
+     * Get the preferences for the map or map skin
+     */
+    private static Preferences getPreferencesMapOrSkin(String mapDir)
+    {
+        return Preferences.userNodeForPackage(UIContext.class).node(mapDir);
+    }
+    
+    private static String getDefaultMapDir(GameData data)
+    {
+        String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
+        Preferences prefs = getPreferencesForMap(mapName);
+        String mapDir =  prefs.get(MAP_SKIN_PREF, mapName);
+     
+        //check for existence
+        try
+        {
+            ResourceLoader.getMapresourceLoader(mapDir);
+        }
+        catch(RuntimeException re)
+        {
+            //an error
+            //clear the skin
+            prefs.remove(MAP_SKIN_PREF);
+            //return the default
+            return mapName;
+        }
+        return mapDir;
+        
+    }
+    
+    public void setDefaltMapDir(GameData data)
+    {
+        internalSetMapDir(getDefaultMapDir(data));
+    }
+    
+    
+    public void setMapDir(GameData data, String mapDir)
+    {
+        internalSetMapDir(mapDir);
+        
+        //set the default after internal suceeds, if an error is thrown
+        //we dont want to persist it
+        String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
+        Preferences prefs = getPreferencesForMap(mapName);
+        prefs.put(MAP_SKIN_PREF, mapDir);
+        
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private void internalSetMapDir(String dir)
     {
         Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
         
         ResourceLoader loader = ResourceLoader.getMapresourceLoader(dir);
-        
+
         m_mapData = new MapData(loader);
         
-        m_unitImageFactory.setResourceLoader(loader, m_mapData.getDefaultUnitScale());
+        double scale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
+        m_unitImageFactory.setResourceLoader(loader, scale);
+        
         m_flagIconImageFactory.setResourceLoader(loader);
         m_ipcImageFactory.setResourceLoader(loader);
         
         m_tileImageFactory.setMapDir(loader);
         m_mapImage.loadMaps(loader); // load map data
         
-
         m_mapDir = dir;
         
         stopWatch.done();
@@ -333,6 +402,21 @@ public class UIContext
         catch(RuntimeException re)
         {
             re.printStackTrace();
+        }
+        
+    }
+
+    public void setUnitScaleFactor(double scaleFactor)
+    {
+        m_unitImageFactory.setScaleFactor(scaleFactor);
+        Preferences prefs = getPreferencesMapOrSkin(getMapDir());
+        prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException e)
+        {
+            e.printStackTrace();
         }
         
     }

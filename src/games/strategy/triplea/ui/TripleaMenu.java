@@ -669,12 +669,16 @@ public class TripleaMenu extends JMenuBar
         
         final Map<String,String> skins = UIContext.getSkins(m_frame.getGame().getData());
         for(final String key : skins.keySet() )
-        {
+        { 
             mapMenuItem = new JRadioButtonMenuItem(key);
             
             
             mapButtonGroup.add(mapMenuItem);
             mapSubMenu.add(mapMenuItem);
+            mapSubMenu.setEnabled(skins.size() > 1);
+            
+            if(skins.get(key).equals(m_frame.getUIContext().getMapDir()))
+                mapMenuItem.setSelected(true);
             
             mapMenuItem.addActionListener(new ActionListener()
                     {
@@ -829,7 +833,7 @@ public class TripleaMenu extends JMenuBar
 
             public void actionPerformed(ActionEvent e)
             {
-                getUIContext().getUnitImageFactory().setScaleFactor(m_scaleFactor);
+                getUIContext().setUnitScaleFactor(m_scaleFactor);
                 m_frame.getMapPanel().resetMap();
             }
         }
@@ -865,7 +869,7 @@ public class TripleaMenu extends JMenuBar
         {
             JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();
             UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
-            if (Math.abs(action.m_scaleFactor - getUIContext().getMapData().getDefaultUnitScale()) < 0.01)
+            if (Math.abs(action.m_scaleFactor - getUIContext().getUnitImageFactory().getScaleFactor() ) < 0.01)
             {
                 menuItem.setSelected(true);
                 matchFound = true;

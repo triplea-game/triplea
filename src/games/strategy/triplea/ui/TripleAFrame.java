@@ -79,7 +79,7 @@ public class TripleAFrame extends JFrame
     private JSplitPane m_chatSplit;
 
     /** Creates new TripleAFrame */
-    public TripleAFrame(IGame game, Set<IGamePlayer> players, String mapDir) throws IOException
+    public TripleAFrame(IGame game, Set<IGamePlayer> players) throws IOException
     {
         super("TripleA");
         setIconImage(GameRunner.getGameIcon(this));
@@ -93,7 +93,7 @@ public class TripleAFrame extends JFrame
         this.addWindowListener(WINDOW_LISTENER);
 
         m_uiContext = new UIContext();
-        m_uiContext.setMapDir(mapDir);
+        m_uiContext.setDefaltMapDir(game.getData());
         m_uiContext.getMapData().verify(m_data);
 
         createMenuBar();
@@ -804,7 +804,7 @@ public class TripleAFrame extends JFrame
     // Beagle Code Called to Change Mapskin
     void updateMap(String mapdir) throws IOException
     {
-        m_uiContext.setMapDir(mapdir);
+        m_uiContext.setMapDir(m_data, mapdir);
         //when changing skins, always show relief images
         if(m_uiContext.getMapData().getHasRelief())
         {

@@ -113,7 +113,7 @@ public class TripleA implements IGameLoader
                         final TripleAFrame frame;
                         try
                         {
-                            frame = new TripleAFrame(game, players, mapDir);
+                            frame = new TripleAFrame(game, players);
                         } catch (IOException e)
                         {
                             // TODO Auto-generated catch block
