@@ -399,8 +399,14 @@ public class MapData
     
     public Dimension getMapDimensions()
     {
-        int width = Integer.parseInt(m_mapProperties.getProperty("map.width"));
-        int height = Integer.parseInt(m_mapProperties.getProperty("map.height"));
+        String widthProperty = m_mapProperties.getProperty("map.width");
+        String heightProperty = m_mapProperties.getProperty("map.height");
+        
+        if(widthProperty == null || heightProperty == null)
+            throw new IllegalStateException("Missing map.width or map.height in " + MAP_PROPERTIES);
+        
+        int width = Integer.parseInt(widthProperty);
+        int height = Integer.parseInt(heightProperty);
         
         return new Dimension(width, height);
     }
