@@ -670,7 +670,49 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
         //find the territories we can just walk into
         
         
-        Collection<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), Matches.isTerritoryEnemyAndNotNeutral(m_id, data));
+        List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), Matches.isTerritoryEnemyAndNotNeutral(m_id, data));
+
+        
+        Collections.sort(enemyOwned, new Comparator<Territory>()
+        {        
+            private Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
+            
+            public int compare(Territory o1, Territory o2)
+            {
+                
+                TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
+                TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
+                
+                //take capitols first if we can
+                if(ta1 != null && ta2 != null)
+                {
+                    if(ta1.isCapital() && !ta2.isCapital())
+                        return 1;
+                    if(!ta1.isCapital() && ta2.isCapital())
+                        return -1;
+                }
+                
+                boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitIsFactory);
+                boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitIsFactory);
+                
+                //next take territories with factories
+                if(factoryInT1 && !factoryInT2)
+                    return 1;
+                if(!factoryInT1 && factoryInT2)
+                    return -1;
+
+                //randomness is a better guide than any other metric
+                //sort the remaining randomly
+                if(!randomInts.containsKey(o1))
+                    randomInts.put(o1,(int) Math.random() * 1000);
+                if(!randomInts.containsKey(o2))
+                    randomInts.put(o2,(int) Math.random() * 1000);
+
+                return randomInts.get(o1) - randomInts.get(o2);
+            }
+        
+        }  );
+        
         
         //first find the territories we can just walk into
         for(Territory enemy : enemyOwned)
@@ -734,7 +776,7 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
                         );
                 attackable.add(Matches.UnitIsNotAA);
                 attackable.add(Matches.UnitIsNotFactory);
-                attackable.add(Matches.UnitIsLand);
+                attackable.add(Matches.UnitIsNotSea);
                 
                 Set<Territory> dontMoveFrom = new HashSet<Territory>();
                 
@@ -757,16 +799,27 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
                    ourStrength += Utils.strength(owned.getUnits().getMatches(attackable), true, false);
                 }
                 
-                if(ourStrength > 1.32 * enemyStrength)
+                //prevents 2 infantry from attacking 1 infantry
+                if(ourStrength > 1.37 * enemyStrength)
                 {
-                    s_logger.info("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength );
                     
+                    //this is all we need to take it, dont go overboard, since we may be able to use the units to attack somewhere else
+                    double remainingStrengthNeeded = (2.5 * enemyStrength) + 4;
                     for(Territory owned : attackFrom )
                     {
                         if(dontMoveFrom.contains(owned))
                             continue;
                         
                         List<Unit> units = owned.getUnits().getMatches(attackable);
+                        
+                        //only take the units we need if 
+                        //1) we are not an amphibious attack
+                        //2) we can potentially attack another territory
+                        if(!owned.isWater() && data.getMap().getNeighbors(owned, Matches.territoryHasEnemyLandUnits(m_id, data)).size() > 1  )
+                            units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units, true, false);
+                        
+                        remainingStrengthNeeded -= Utils.strength(units, true, false);
+                        
                         if(units.size() > 0)
                         {
                             unitsAlreadyMoved.addAll(units);
@@ -774,7 +827,10 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
                             moveRoutes.add(data.getMap().getRoute(owned, enemy));
                         }
                     }
+                    
+                    s_logger.info("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength + " remaining strength needed " + remainingStrengthNeeded);
                 }
+                
             }
         }
         
@@ -872,12 +928,18 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
                 
                 //give a preferene to cheap units, and to transports
                 //but dont go overboard with buying transports
-                int maxTransports = 0;
+                int goodNumberOfTransports = 0;
                 if(amphibRoute != null)
                 {
-                    maxTransports = (amphibRoute.getTerritories().size() * 2) + 2;
+                    goodNumberOfTransports = ((int) (amphibRoute.getTerritories().size() * 2.6)) + 1;
                 }
-                if(Math.random() * cost < 2 || (transportCapacity > 0 && Math.random() < 0.2 && transportCount < maxTransports ))
+                
+                boolean isTransport = transportCapacity > 0;
+                boolean buyBecauseTransport = (Math.random() < 0.7 && transportCount < goodNumberOfTransports) || Math.random() < 0.10 ;
+                boolean dontBuyBecauseTooManyTransports = transportCount > 2 * goodNumberOfTransports;
+                
+                if(  (!isTransport && Math.random() * cost < 2)  ||
+                     (isTransport && buyBecauseTransport && !dontBuyBecauseTooManyTransports)  )
                 {
                     if(cost <= leftToSpend)
                     {

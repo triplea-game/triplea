@@ -30,6 +30,25 @@ public class Utils
         return rVal;
     }
     
+    public static List<Unit> getUnitsUpToStrength(double maxStrength, Collection<Unit> units, boolean attacking, boolean sea)
+    {
+        if(strength(units, attacking, sea) < maxStrength)
+            return new ArrayList<Unit>(units);
+        
+        ArrayList<Unit> rVal = new ArrayList<Unit>();
+        
+        for(Unit u : units)
+        {
+            rVal.add(u);
+            if(strength(rVal, attacking, sea) > maxStrength)
+                return rVal;
+        }
+        
+        return rVal;
+        
+        
+    }
+    
     /**
      * get a quick and dirty estimate of the strenght of the units 
      * @param sea TODO
