@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GUID implements Externalizable
 {
     //this prefix is unique across vms
-    private static final VMID vm_prefix = new java.rmi.dgc.VMID();
+    private static VMID vm_prefix = new java.rmi.dgc.VMID();
     
     //the local identifier
     //this coupled with the unique vm prefix comprise
@@ -52,8 +52,14 @@ public class GUID implements Externalizable
 	public GUID() 
 	{
 		m_id = s_lastID.getAndIncrement();
-		m_prefix = vm_prefix;
-		
+        m_prefix = vm_prefix;
+        
+        //handle wrap around if needed
+        if(m_id < 0)
+        {
+            vm_prefix = new VMID();
+            s_lastID = new AtomicInteger();
+        }
 	}
 	
 	public boolean equals(Object o)
@@ -65,7 +71,7 @@ public class GUID implements Externalizable
 		
 		GUID other = (GUID) o;
 
-		return other.m_prefix.equals(this.m_prefix) && this.m_id == other.m_id;
+		return this.m_id == other.m_id && other.m_prefix.equals(this.m_prefix);
 	}
 	
 	public int hashCode()
