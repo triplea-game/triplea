@@ -1,3 +1,5 @@
+Changes for 0.8
+
 * save last used map skin and unit size (beagle)
 
 * renamed game xml files (sgb)
