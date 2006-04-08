@@ -180,7 +180,7 @@ class BattleStepsPanel extends JPanel implements Active
                 
                     try
                     {
-                        sleep(400);
+                        sleep(330);
                     } catch (InterruptedException e)
                     {
                         // TODO Auto-generated catch block
