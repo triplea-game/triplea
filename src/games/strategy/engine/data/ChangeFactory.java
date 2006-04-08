@@ -231,7 +231,7 @@ class RemoveUnits extends Change
     {
 
         UnitHolder holder = data.getUnitHolder(m_name);
-        if(!holder.getUnits().getUnits().containsAll(m_units))
+        if(!holder.getUnits().containsAll(m_units))
         {
             throw new IllegalStateException("Not all units present.  Trying to remove:" + m_units + " present:" + holder.getUnits().getUnits());
         }
