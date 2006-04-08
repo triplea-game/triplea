@@ -91,7 +91,7 @@ public class ClientModel implements IMessengerErrorListener
         
         //load in the saved name!
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-        String playername = prefs.get(ServerModel.PLAYERNAME, "Client");
+        String playername = prefs.get(ServerModel.PLAYERNAME, System.getProperty("user.name"));
 
         ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
         options.setLocationRelativeTo(ui);
@@ -434,7 +434,7 @@ public class ClientModel implements IMessengerErrorListener
 
     private void connectionLost()
     {
-        JOptionPane.showMessageDialog(m_ui,"Connection Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE );
+        JOptionPane.showMessageDialog(m_ui," Connection To Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE );
         if(m_game != null)
         {
             m_game.shutDown();
