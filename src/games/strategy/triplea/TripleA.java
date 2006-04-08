@@ -124,6 +124,7 @@ public class TripleA implements IGameLoader
                         
                         m_display = new TripleaDisplay(frame);
                         game.addDisplay(m_display);
+                        frame.setSize(700, 400);
                         frame.setVisible(true);
                         connectPlayers(players, frame);
                         
@@ -132,8 +133,8 @@ public class TripleA implements IGameLoader
                             {
                                 public void run()
                                 {
-                                    frame.setSize(700, 400);
                                     frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+                                    frame.toFront();
                                 }
                             }
                         );
