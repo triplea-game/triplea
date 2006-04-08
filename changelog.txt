@@ -2,6 +2,8 @@ Changes for 0.8
 
 * save last used map skin and unit size (beagle)
 
+* add next and back buttons to history (sgb)
+
 * renamed game xml files (sgb)
 
 * moves canal info to the xml file (if you have a mod based on revised or classic, canals will be broken unless you add them in the xml, do a search for canal in classic.xml or revised.xml to see how it is done) (sgb)
