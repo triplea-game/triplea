@@ -332,7 +332,7 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
             
             if(moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null)
             {
-                s_logger.info("Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
+                s_logger.fine("Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
                 new Exception("Invalid route for ai").printStackTrace(System.out);
                 continue;
             }
@@ -346,7 +346,7 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
             
             if(result != null)
             {
-                s_logger.info("could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result);
+                s_logger.fine("could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result);
             }
         }
     }
@@ -488,7 +488,7 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
                 
                 if(ourStrength > 1.32 * enemyStrength)
                 {
-                    s_logger.info("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength );
+                    s_logger.fine("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength );
                     
                     for(Territory owned : attackFrom )
                     {
@@ -828,7 +828,7 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
                         }
                     }
                     
-                    s_logger.info("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength + " remaining strength needed " + remainingStrengthNeeded);
+                    s_logger.fine("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength + " remaining strength needed " + remainingStrengthNeeded);
                 }
                 
             }
@@ -1055,8 +1055,8 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
         String message = del.placeUnits(toPlace, where);
         if(message != null)
         {
-            s_logger.info(message);
-            s_logger.info("Attempt was at:" + where + " with:" + toPlace);
+            s_logger.fine(message);
+            s_logger.fine("Attempt was at:" + where + " with:" + toPlace);
         }
     }
 
