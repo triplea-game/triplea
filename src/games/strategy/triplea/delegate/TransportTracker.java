@@ -60,6 +60,17 @@ public class TransportTracker implements java.io.Serializable
 
 		return new ArrayList<Unit>(transporting);
 	}
+    
+    public boolean isTransporting(Unit transport)
+    {
+        Collection<Unit> transporting = m_transporting.get(transport);
+        if(transporting == null)
+            return false;
+
+        return !transporting.isEmpty();
+        
+    }
+    
 
   
   /**
