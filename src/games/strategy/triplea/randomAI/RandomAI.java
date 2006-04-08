@@ -349,7 +349,7 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
         
         IAbstractPlaceDelegate del = (IAbstractPlaceDelegate) m_bridge
         .getRemote();
-        del.placeUnits(toPlace, capital);
+        del.placeUnits(new ArrayList<Unit>(toPlace), capital);
 
 
     }
