@@ -13,7 +13,7 @@ Coded by Iron__Cross
 -->
 
 <game>
-    <info name="Pacific - Alpha" version="1.0.1"/>
+    <info name="Pacific - Alpha" version="1.0.2"/>
     
     <loader javaClass="games.strategy.triplea.TripleA"/>
     
@@ -1368,219 +1368,238 @@ Coded by Iron__Cross
         
         <unitInitialize>
             
-            <!-- British Unit Placements -->
-            <unitPlacement unitType="factory" territory="India" quantity="1"
-                owner="British"/>
-            <unitPlacement unitType="factory" territory="New South Wales"
-                quantity="1" owner="British"/>
+            <!-- British Land Placements -->
+            
             <unitPlacement unitType="infantry" territory="India" quantity="6"
                 owner="British"/>
-            <unitPlacement unitType="artillery" territory="India" quantity="1"
-                owner="British"/>
-            <unitPlacement unitType="aaGun" territory="India" quantity="1"
-                owner="British"/>
-            <unitPlacement unitType="fighter" territory="India" quantity="1"
-                owner="British"/>
-            
             <unitPlacement unitType="infantry" territory="Borneo" quantity="1"
                 owner="British"/>
-            
             <unitPlacement unitType="infantry" territory="Burma" quantity="2"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="Shan State" quantity="1"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="Hong Kong" quantity="2"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="Malaya" quantity="3"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="Queensland" quantity="2"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="New South Wales"
+                quantity="2" owner="British"/>
+            <unitPlacement unitType="infantry" territory="Western Australia"
+                quantity="1" owner="British"/>
+            <unitPlacement unitType="infantry" territory="Northern Territory"
+                quantity="2" owner="British"/>
+            <unitPlacement unitType="infantry" territory="New Zealand" quantity="2"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="Papua" quantity="1"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="New Britain" quantity="1"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="Celebes" quantity="1"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="Java" quantity="2"
+                owner="British"/>
+            <unitPlacement unitType="infantry" territory="Sumatra" quantity="1"
+                owner="British"/>
+            
+            <unitPlacement unitType="artillery" territory="India" quantity="1"
                 owner="British"/>
             <unitPlacement unitType="artillery" territory="Burma" quantity="2"
                 owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="Shan State" quantity="1"
-                owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="Hong Kong" quantity="2"
-                owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="Malaya" quantity="3"
-                owner="British"/>
-            <unitPlacement unitType="fighter" territory="Malaya" quantity="1"
-                owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="Queensland" quantity="2"
-                owner="British"/>
             <unitPlacement unitType="artillery" territory="Queensland" quantity="2"
-                owner="British"/>
-            <unitPlacement unitType="fighter" territory="Queensland" quantity="1"
-                owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="New South Wales"
-                quantity="2" owner="British"/>
-            <unitPlacement unitType="aaGun" territory="New South Wales"
-                quantity="1" owner="British"/>
-            <unitPlacement unitType="fighter" territory="New South Wales"
-                quantity="1" owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="Western Australia"
-                quantity="1" owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="Northern Territory"
-                quantity="2" owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="New Zealand" quantity="2"
-                owner="British"/>
-            <unitPlacement unitType="fighter" territory="New Zealand" quantity="1"
-                owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="Papua" quantity="1"
                 owner="British"/>
             <unitPlacement unitType="artillery" territory="Papua" quantity="1"
                 owner="British"/>
             
-            <unitPlacement unitType="infantry" territory="New Britain" quantity="1"
+            <unitPlacement unitType="aaGun" territory="India" quantity="1"
                 owner="British"/>
+            <unitPlacement unitType="aaGun" territory="New South Wales"
+                quantity="1" owner="British"/>
             
-            <unitPlacement unitType="infantry" territory="Celebes" quantity="1"
+            <unitPlacement unitType="fighter" territory="India" quantity="1"
                 owner="British"/>
-            
-            <unitPlacement unitType="infantry" territory="Java" quantity="2"
+            <unitPlacement unitType="fighter" territory="Malaya" quantity="1"
+                owner="British"/>
+            <unitPlacement unitType="fighter" territory="Queensland" quantity="1"
+                owner="British"/>
+            <unitPlacement unitType="fighter" territory="New South Wales"
+                quantity="1" owner="British"/>
+            <unitPlacement unitType="fighter" territory="New Zealand" quantity="1"
                 owner="British"/>
             <unitPlacement unitType="fighter" territory="Java" quantity="1"
                 owner="British"/>
             
-            <unitPlacement unitType="infantry" territory="Sumatra" quantity="1"
+            <unitPlacement unitType="factory" territory="India" quantity="1"
+                owner="British"/>
+            <unitPlacement unitType="factory" territory="New South Wales"
+                quantity="1" owner="British"/>
+            
+            <!-- British Sea Placements -->
+            
+            <unitPlacement unitType="fighter" territory="50 Sea Zone" quantity="1"
                 owner="British"/>
             
-            <!-- British Naval Units -->
-            <unitPlacement unitType="transport" territory="13 Sea Zone"
+            <unitPlacement unitType="battleship" territory="46 Sea Zone"
                 quantity="1" owner="British"/>
-            <unitPlacement unitType="submarine" territory="27 Sea Zone"
+            <unitPlacement unitType="battleship" territory="50 Sea Zone"
                 quantity="1" owner="British"/>
+            
+            <unitPlacement unitType="carrier" territory="50 Sea Zone" quantity="1"
+                owner="British"/>
+            
             <unitPlacement unitType="destroyer" territory="29 Sea Zone"
                 quantity="1" owner="British"/>
-            <unitPlacement unitType="transport" territory="29 Sea Zone"
-                quantity="1" owner="British"/>
-            <unitPlacement unitType="submarine" territory="29 Sea Zone"
-                quantity="1" owner="British"/>
-            
-            <unitPlacement unitType="transport" territory="30 Sea Zone"
-                quantity="1" owner="British"/>
             <unitPlacement unitType="destroyer" territory="43 Sea Zone"
-                quantity="1" owner="British"/>
-            <unitPlacement unitType="transport" territory="43 Sea Zone"
-                quantity="1" owner="British"/>
-            
-            <unitPlacement unitType="battleship" territory="46 Sea Zone"
                 quantity="1" owner="British"/>
             <unitPlacement unitType="destroyer" territory="46 Sea Zone"
                 quantity="1" owner="British"/>
             
-            <unitPlacement unitType="battleship" territory="50 Sea Zone"
+            <unitPlacement unitType="transport" territory="13 Sea Zone"
                 quantity="1" owner="British"/>
-            <unitPlacement unitType="carrier" territory="50 Sea Zone" quantity="1"
-                owner="British"/>
+            <unitPlacement unitType="transport" territory="29 Sea Zone"
+                quantity="1" owner="British"/>
+            <unitPlacement unitType="transport" territory="30 Sea Zone"
+                quantity="1" owner="British"/>
+            <unitPlacement unitType="transport" territory="43 Sea Zone"
+                quantity="1" owner="British"/>
+            <unitPlacement unitType="transport" territory="54 Sea Zone"
+                quantity="1" owner="British"/>
             
-            <!-- Japanese Unit Placements -->
-            <!-- Japan Corps Units -->
-            <unitPlacement unitType="factory" territory="Japan" quantity="1"
-                owner="Japanese"/>
+            <unitPlacement unitType="submarine" territory="27 Sea Zone"
+                quantity="1" owner="British"/>
+            <unitPlacement unitType="submarine" territory="29 Sea Zone"
+                quantity="1" owner="British"/>
+            <unitPlacement unitType="submarine" territory="54 Sea Zone"
+                quantity="1" owner="British"/>
+            
+            <!-- Japanese Land Placements -->
+            
             <unitPlacement unitType="infantry" territory="Japan" quantity="8"
                 owner="Japanese"/>
-            <unitPlacement unitType="artillery" territory="Japan" quantity="2"
-                owner="Japanese"/>
-            <unitPlacement unitType="armour" territory="Japan" quantity="1"
-                owner="Japanese"/>
-            <unitPlacement unitType="aaGun" territory="Japan" quantity="1"
-                owner="Japanese"/>
-            <unitPlacement unitType="fighter" territory="Japan" quantity="1"
-                owner="Japanese"/>
-            <unitPlacement unitType="bomber" territory="Japan" quantity="1"
-                owner="Japanese"/>
-            
             <unitPlacement unitType="infantry" territory="Korea" quantity="2"
                 owner="Japanese"/>
             <unitPlacement unitType="infantry" territory="Manchuria" quantity="6"
                 owner="Japanese"/>
-            <unitPlacement unitType="artillery" territory="Manchuria" quantity="1"
-                owner="Japanese"/>
-            <unitPlacement unitType="armour" territory="Manchuria" quantity="1"
-                owner="Japanese"/>
-            <unitPlacement unitType="fighter" territory="Manchuria" quantity="1"
-                owner="Japanese"/>
-            
             <unitPlacement unitType="infantry" territory="Shantung" quantity="4"
                 owner="Japanese"/>
-            <unitPlacement unitType="artillery" territory="Shantung" quantity="1"
-                owner="Japanese"/>
-            
             <unitPlacement unitType="infantry" territory="Ryukyu" quantity="2"
                 owner="Japanese"/>
-            
+            <unitPlacement unitType="infantry" territory="Mariana" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="infantry" territory="Palau" quantity="2"
+                owner="Japanese"/>
+            <unitPlacement unitType="infantry" territory="Caroline" quantity="4"
+                owner="Japanese"/>
             <unitPlacement unitType="infantry" territory="French Indo-China"
                 quantity="4" owner="Japanese"/>
-            <unitPlacement unitType="artillery" territory="French Indo-China"
-                quantity="2" owner="Japanese"/>
-            <unitPlacement unitType="armour" territory="French Indo-China"
-                quantity="1" owner="Japanese"/>
-            <unitPlacement unitType="fighter" territory="French Indo-China"
-                quantity="1" owner="Japanese"/>
-            <unitPlacement unitType="bomber" territory="French Indo-China"
-                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="infantry" territory="Marshall" quantity="2"
+                owner="Japanese"/>
+            <unitPlacement unitType="infantry" territory="Hainan" quantity="4"
+                owner="Japanese"/>
             <unitPlacement unitType="infantry" territory="Bonin" quantity="2"
                 owner="Japanese"/>
             
-            <!-- Japan Naval Units -->
-            <unitPlacement unitType="submarine" territory="18 Sea Zone"
+            <unitPlacement unitType="artillery" territory="Japan" quantity="2"
+                owner="Japanese"/>
+            <unitPlacement unitType="artillery" territory="Manchuria" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="artillery" territory="Shantung" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="artillery" territory="Caroline" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="artillery" territory="French Indo-China"
+                quantity="2" owner="Japanese"/>
+            
+            <unitPlacement unitType="armour" territory="Japan" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="armour" territory="Manchuria" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="armour" territory="French Indo-China"
+                quantity="1" owner="Japanese"/>
+            
+            <unitPlacement unitType="aaGun" territory="Japan" quantity="1"
+                owner="Japanese"/>
+            
+            <unitPlacement unitType="fighter" territory="Japan" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="fighter" territory="Manchuria" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="fighter" territory="Formosa" quantity="2"
+                owner="Japanese"/>
+            <unitPlacement unitType="fighter" territory="Mariana" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="fighter" territory="Caroline" quantity="2"
+                owner="Japanese"/>
+            <unitPlacement unitType="fighter" territory="French Indo-China"
+                quantity="1" owner="Japanese"/>
+            
+            <unitPlacement unitType="bomber" territory="Japan" quantity="1"
+                owner="Japanese"/>
+            <unitPlacement unitType="bomber" territory="French Indo-China"
+                quantity="1" owner="Japanese"/>
+            
+            <unitPlacement unitType="factory" territory="Japan" quantity="1"
+                owner="Japanese"/>
+            
+            <!-- Japan Sea Placements -->
+            
+            <unitPlacement unitType="fighter" territory="20 Sea Zone" quantity="6"
+                owner="Japanese"/>
+            <unitPlacement unitType="fighter" territory="45 Sea Zone" quantity="2"
+                owner="Japanese"/>
+            
+            <unitPlacement unitType="battleship" territory="26 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="battleship" territory="36 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="battleship" territory="45 Sea Zone"
                 quantity="1" owner="Japanese"/>
             
             <unitPlacement unitType="carrier" territory="20 Sea Zone" quantity="3"
                 owner="Japanese"/>
-            <unitPlacement unitType="submarine" territory="20 Sea Zone"
-                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="carrier" territory="45 Sea Zone" quantity="1"
+                owner="Japanese"/>
             
             <unitPlacement unitType="destroyer" territory="24 Sea Zone"
                 quantity="1" owner="Japanese"/>
-            
             <unitPlacement unitType="destroyer" territory="25 Sea Zone"
-                quantity="1" owner="Japanese"/>
-            <unitPlacement unitType="transport" territory="25 Sea Zone"
-                quantity="1" owner="Japanese"/>
-            
-            <unitPlacement unitType="battleship" territory="26 Sea Zone"
                 quantity="1" owner="Japanese"/>
             <unitPlacement unitType="destroyer" territory="26 Sea Zone"
                 quantity="1" owner="Japanese"/>
-            <unitPlacement unitType="transport" territory="26 Sea Zone"
-                quantity="2" owner="Japanese"/>
-            <unitPlacement unitType="submarine" territory="26 Sea Zone"
-                quantity="1" owner="Japanese"/>
-            
             <unitPlacement unitType="destroyer" territory="34 Sea Zone"
-                quantity="1" owner="Japanese"/>
-            <unitPlacement unitType="transport" territory="34 Sea Zone"
-                quantity="1" owner="Japanese"/>
-            
-            <unitPlacement unitType="transport" territory="35 Sea Zone"
-                quantity="1" owner="Japanese"/>
-            
-            <unitPlacement unitType="battleship" territory="36 Sea Zone"
                 quantity="1" owner="Japanese"/>
             <unitPlacement unitType="destroyer" territory="36 Sea Zone"
                 quantity="1" owner="Japanese"/>
-            <unitPlacement unitType="transport" territory="36 Sea Zone"
-                quantity="3" owner="Japanese"/>
-            <unitPlacement unitType="submarine" territory="36 Sea Zone"
-                quantity="1" owner="Japanese"/>
-            
-            <unitPlacement unitType="transport" territory="37 Sea Zone"
-                quantity="2" owner="Japanese"/>
-            
-            <unitPlacement unitType="battleship" territory="45 Sea Zone"
-                quantity="1" owner="Japanese"/>
-            <unitPlacement unitType="carrier" territory="45 Sea Zone" quantity="1"
-                owner="Japanese"/>
             <unitPlacement unitType="destroyer" territory="45 Sea Zone"
                 quantity="1" owner="Japanese"/>
+            
+            <unitPlacement unitType="transport" territory="25 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="transport" territory="26 Sea Zone"
+                quantity="2" owner="Japanese"/>
+            <unitPlacement unitType="transport" territory="34 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="transport" territory="35 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="transport" territory="36 Sea Zone"
+                quantity="3" owner="Japanese"/>
+            <unitPlacement unitType="transport" territory="37 Sea Zone"
+                quantity="2" owner="Japanese"/>
             <unitPlacement unitType="transport" territory="45 Sea Zone"
                 quantity="2" owner="Japanese"/>
             
-            <!-- Chinese Unit Placements -->
-            <unitPlacement unitType="factory" territory="Szechwan" quantity="1"
-                owner="Chinese"/>
+            <unitPlacement unitType="submarine" territory="18 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="submarine" territory="20 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="submarine" territory="26 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            <unitPlacement unitType="submarine" territory="36 Sea Zone"
+                quantity="1" owner="Japanese"/>
+            
+            <!-- Chinese Placements -->
+            
             <unitPlacement unitType="chineseInfantry" territory="Szechwan"
                 quantity="3" owner="Chinese"/>
             <unitPlacement unitType="chineseInfantry" territory="Kwangsi"
@@ -1603,80 +1622,93 @@ Coded by Iron__Cross
             <unitPlacement unitType="aaGun" territory="Szechwan" quantity="1"
                 owner="Chinese"/>
             
-            <!-- American Corps Unit Placements -->
-            <unitPlacement unitType="factory" territory="United States"
-                quantity="1" owner="Americans"/>
-            <unitPlacement unitType="factory" territory="Hawaiian" quantity="1"
+            <unitPlacement unitType="factory" territory="Szechwan" quantity="1"
+                owner="Chinese"/>
+            
+            <!-- American Land Placements -->
+            
+            <unitPlacement unitType="marine" territory="United States" quantity="1"
                 owner="Americans"/>
-            <unitPlacement unitType="infantry" territory="United States"
-                quantity="2" owner="Americans"/>
-            <unitPlacement unitType="artillery" territory="United States"
-                quantity="1" owner="Americans"/>
-            <unitPlacement unitType="aaGun" territory="United States" quantity="1"
+            <unitPlacement unitType="marine" territory="Wake" quantity="1"
                 owner="Americans"/>
-            <unitPlacement unitType="fighter" territory="United States"
-                quantity="2" owner="Americans"/>
-            <unitPlacement unitType="bomber" territory="United States" quantity="1"
+            <unitPlacement unitType="marine" territory="Guam" quantity="1"
                 owner="Americans"/>
             
+            <unitPlacement unitType="infantry" territory="United States"
+                quantity="2" owner="Americans"/>
             <unitPlacement unitType="infantry" territory="Hawaiian" quantity="2"
                 owner="Americans"/>
+            <unitPlacement unitType="infantry" territory="Midway" quantity="1"
+                owner="Americans"/>
+            <unitPlacement unitType="infantry" territory="Line" quantity="2"
+                owner="Americans"/>
+            <unitPlacement unitType="infantry" territory="Philippines" quantity="2"
+                owner="Americans"/>
+            
+            <unitPlacement unitType="artillery" territory="United States"
+                quantity="1" owner="Americans"/>
+            
+            <unitPlacement unitType="aaGun" territory="United States" quantity="1"
+                owner="Americans"/>
+            
+            <unitPlacement unitType="fighter" territory="United States"
+                quantity="2" owner="Americans"/>
             <unitPlacement unitType="fighter" territory="Hawaiian" quantity="1"
+                owner="Americans"/>
+            <unitPlacement unitType="fighter" territory="Midway" quantity="1"
+                owner="Americans"/>
+            <unitPlacement unitType="fighter" territory="Philippines" quantity="1"
+                owner="Americans"/>
+            <unitPlacement unitType="fighter" territory="Szechwan" quantity="1"
+                owner="Americans"/>
+            
+            <unitPlacement unitType="bomber" territory="United States" quantity="1"
                 owner="Americans"/>
             <unitPlacement unitType="bomber" territory="Hawaiian" quantity="1"
                 owner="Americans"/>
             
-            <unitPlacement unitType="infantry" territory="Midway" quantity="1"
-                owner="Americans"/>
-            <unitPlacement unitType="fighter" territory="Midway" quantity="1"
-                owner="Americans"/>
-            
-            <unitPlacement unitType="infantry" territory="Line" quantity="2"
+            <unitPlacement unitType="factory" territory="United States"
+                quantity="1" owner="Americans"/>
+            <unitPlacement unitType="factory" territory="Hawaiian" quantity="1"
                 owner="Americans"/>
             
-            <unitPlacement unitType="infantry" territory="Philippines" quantity="2"
-                owner="Americans"/>
-            <unitPlacement unitType="fighter" territory="Philippines" quantity="1"
-                owner="Americans"/>
-            
-            <unitPlacement unitType="fighter" territory="Szechwan" quantity="1"
-                owner="Americans"/>
-            
-            <!-- American Naval Units -->
-            <unitPlacement unitType="transport" territory="3 Sea Zone" quantity="1"
-                owner="Americans"/>
-            <unitPlacement unitType="submarine" territory="3 Sea Zone" quantity="1"
-                owner="Americans"/>
+            <!-- American Naval Placements -->
             
             <unitPlacement unitType="fighter" territory="5 Sea Zone" quantity="1"
                 owner="Americans"/>
-            <unitPlacement unitType="carrier" territory="5 Sea Zone" quantity="1"
-                owner="Americans"/>
-            <unitPlacement unitType="destroyer" territory="5 Sea Zone" quantity="2"
-                owner="Americans"/>
-            <unitPlacement unitType="transport" territory="5 Sea Zone" quantity="2"
-                owner="Americans"/>
-            <unitPlacement unitType="submarine" territory="5 Sea Zone" quantity="1"
+            <unitPlacement unitType="fighter" territory="11 Sea Zone" quantity="2"
                 owner="Americans"/>
             
             <unitPlacement unitType="battleship" territory="9 Sea Zone"
                 quantity="2" owner="Americans"/>
-            <unitPlacement unitType="destroyer" territory="9 Sea Zone" quantity="1"
-                owner="Americans"/>
-            <unitPlacement unitType="transport" territory="9 Sea Zone" quantity="1"
-                owner="Americans"/>
             
-            <unitPlacement unitType="fighter" territory="11 Sea Zone" quantity="2"
+            <unitPlacement unitType="carrier" territory="5 Sea Zone" quantity="1"
                 owner="Americans"/>
             <unitPlacement unitType="carrier" territory="11 Sea Zone" quantity="1"
                 owner="Americans"/>
+            
+            <unitPlacement unitType="destroyer" territory="5 Sea Zone" quantity="2"
+                owner="Americans"/>
+            <unitPlacement unitType="destroyer" territory="9 Sea Zone" quantity="1"
+                owner="Americans"/>
             <unitPlacement unitType="destroyer" territory="11 Sea Zone"
                 quantity="1" owner="Americans"/>
-            
             <unitPlacement unitType="destroyer" territory="38 Sea Zone"
                 quantity="1" owner="Americans"/>
+            
+            <unitPlacement unitType="transport" territory="3 Sea Zone" quantity="1"
+                owner="Americans"/>
+            <unitPlacement unitType="transport" territory="5 Sea Zone" quantity="2"
+                owner="Americans"/>
+            <unitPlacement unitType="transport" territory="9 Sea Zone" quantity="1"
+                owner="Americans"/>
             <unitPlacement unitType="transport" territory="38 Sea Zone"
                 quantity="1" owner="Americans"/>
+            
+            <unitPlacement unitType="submarine" territory="3 Sea Zone" quantity="1"
+                owner="Americans"/>
+            <unitPlacement unitType="submarine" territory="5 Sea Zone" quantity="1"
+                owner="Americans"/>
             <unitPlacement unitType="submarine" territory="38 Sea Zone"
                 quantity="1" owner="Americans"/>
             
