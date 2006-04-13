@@ -101,7 +101,7 @@ public class TripleA implements IGameLoader
 	       This is the key for triplea to find the maps
 	    */
             m_game = game;
-            final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
+           // final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
 
 
