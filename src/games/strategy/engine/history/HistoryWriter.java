@@ -131,6 +131,7 @@ public class HistoryWriter implements java.io.Serializable
                 return;
             }
             m_current = (HistoryNode) m_current.getParent();
+            ((IndexedHistoryNode) old).setChangeEndIndex(m_history.getChanges().size());
         }
         finally
         {
@@ -138,7 +139,7 @@ public class HistoryWriter implements java.io.Serializable
         }
             
         
-        ((IndexedHistoryNode) old).setChangeEndIndex(m_history.getChanges().size());
+       
         
     }
 
