@@ -149,9 +149,6 @@ public class BattleDisplay extends JPanel
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("This cant be in dispatch thread");
 
-        if (!getShowEnemyCasualtyNotification())
-            return;
-
         final CountDownLatch continueLatch = new CountDownLatch(1);
 
         //set the action in the swing thread.
