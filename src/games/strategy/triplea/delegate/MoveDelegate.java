@@ -313,7 +313,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
         //get air that must be carried by our carriers
-        Collection<Unit> ownedCarrier = Match.getMatches(units, Matches.UnitIsCarrier);
+        Collection<Unit> ownedCarrier = Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));
 
         Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
         while (ownedCarrierIter.hasNext())
