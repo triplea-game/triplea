@@ -25,6 +25,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.*;
 
@@ -111,6 +112,7 @@ public class StrategicBombingRaidBattle implements Battle
         {
             showBattle(bridge);
             m_stack.execute(bridge, m_data);
+            return;
         }
             
        
@@ -210,6 +212,8 @@ public class StrategicBombingRaidBattle implements Battle
     class FireAA implements IExecutable
     {
         DiceRoll m_dice;
+        Collection<Unit> m_casualties;
+        
         public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
         {
             IExecutable roll = new IExecutable()
@@ -220,18 +224,43 @@ public class StrategicBombingRaidBattle implements Battle
                 }
             };
         
+            IExecutable calculateCasualties = new IExecutable()
+            {
+            
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    m_casualties = calculateCasualties(bridge, m_dice);
+            
+                }
+            
+            };
+            
+            IExecutable notifyCasualties = new IExecutable()
+            {
+            
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    notifyAAHits(bridge, m_dice, m_casualties);
+            
+                }
+            
+            };
+
+            
             IExecutable removeHits = new IExecutable()
             {
 
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                    removeAAHits(bridge, m_dice);
+                    removeAAHits(bridge, m_dice, m_casualties);
                 }
                 
             };
             
             //push in reverse order of execution
             stack.push(removeHits);
+            stack.push(notifyCasualties);
+            stack.push(calculateCasualties);
             stack.push(roll);
             
         }
@@ -253,7 +282,7 @@ public class StrategicBombingRaidBattle implements Battle
         return m_data.getProperties().get(Constants.PACIFIC_EDITION, false);
     }
 
-    private void removeAAHits(IDelegateBridge bridge, DiceRoll dice)
+    private Collection<Unit> calculateCasualties(IDelegateBridge bridge, DiceRoll dice)
     {
         Collection<Unit> casualties = null;
         if (isFourthEdition())
@@ -270,9 +299,46 @@ public class StrategicBombingRaidBattle implements Battle
 
         if (casualties.size() != dice.getHits())
             throw new IllegalStateException("Wrong number of casualties");
+        
+        return casualties;
+    }
 
+    private void notifyAAHits(final IDelegateBridge bridge, DiceRoll dice, Collection<Unit> casualties)
+    {
         getDisplay(bridge).casualtyNotification(m_battleID, FIRE_AA, dice, m_attacker, casualties, Collections.<Unit>emptyList(), Collections.<Unit, Collection<Unit>>emptyMap());
         
+        Runnable r = new Runnable()
+        {
+            public void run()
+            {
+                ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemote(m_defender);
+                defender.confirmEnemyCasualties(m_battleID, "Click to continue", m_attacker);        
+            }
+        };
+        Thread t = new Thread(r, "click to continue waiter");
+        t.start();
+        
+        ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
+        attacker.confirmOwnCasualties(m_battleID, "Click to continue");
+        
+        try
+        {
+            bridge.leaveDelegateExecution();
+            t.join();
+        } catch (InterruptedException e)
+        {
+          //ignore
+        }
+        finally
+        {
+            bridge.enterDelegateExecution();
+        }
+        
+        
+    }
+    
+    private void removeAAHits(IDelegateBridge bridge, DiceRoll dice, Collection<Unit> casualties)
+    {
         bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
 
         m_units.removeAll(casualties);
