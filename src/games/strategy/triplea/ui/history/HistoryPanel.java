@@ -16,7 +16,7 @@ package games.strategy.triplea.ui.history;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.history.*;
-import games.strategy.engine.history.Event;
+
 import games.strategy.triplea.ui.UIContext;
 
 import java.awt.*;
@@ -231,6 +231,9 @@ public class HistoryPanel extends JPanel
 
     private void treeSelectionChanged(TreeSelectionEvent e)
     {
+        if(!SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread");
+        
         // move the game to the state of the selected node
         HistoryNode node = (HistoryNode) e.getPath().getLastPathComponent();
         gotoNode(node);
