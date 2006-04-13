@@ -156,19 +156,23 @@ public class HistoryWriter implements java.io.Serializable
 
         Event event = new Event(eventName, m_history.getChanges().size());
 
+        HistoryNode oldCurrent = m_current;
+        
         m_history.getGameData().aquireWriteLock();
         try
         {
             m_current.add(event);
             m_current = event;
+            
         }
         finally
         {
             m_history.getGameData().releaseWriteLock();
         }
 
+        m_history.reload(oldCurrent);
             
-        m_history.reload(m_current);
+        
 
     }
 
