@@ -131,7 +131,7 @@ public class HistoryPanel extends JPanel
         });
     }
 
-    protected void previous()
+    private void previous()
     {
         if (m_tree.getSelectionCount() == 0)
         {
@@ -175,16 +175,20 @@ public class HistoryPanel extends JPanel
         m_tree.expandPath(newPath);
         m_tree.setSelectionPath(newPath);
         
-        Rectangle bounds = m_tree.getRowBounds( m_tree.getRowForPath(newPath) );
+        int row = m_tree.getRowForPath(newPath);
+        if(row == -1)
+            return;
+        
+        Rectangle bounds = m_tree.getRowBounds(row);
+        if(bounds == null)
+            return;
+        //scroll to the far left
         bounds.x = 0;
         bounds.width = 10;
-        
-        
         m_tree.scrollRectToVisible(bounds);
-        
     }
 
-    protected void next()
+    private void next()
     {
         if (m_tree.getSelectionCount() == 0)
         {
