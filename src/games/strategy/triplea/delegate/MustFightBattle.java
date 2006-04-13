@@ -1437,7 +1437,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                    notifyCasualties(bridge);
+                    notifyCasualtiesAA(bridge);
                     
                 }
                 
@@ -1486,12 +1486,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 m_casualties = MustFightBattle.this.selectCasualties(SELECT_AA_CASUALTIES, bridge, attackable, false,
                         "AA guns fire,", m_dice).getKilled();
             }
-
-            
         }
 
 
-        private void notifyCasualties(final IDelegateBridge bridge)
+        private void notifyCasualtiesAA(final IDelegateBridge bridge)
         {
             getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, new ArrayList<Unit>(m_casualties), Collections.<Unit>emptyList(), m_dependentUnits);
             
