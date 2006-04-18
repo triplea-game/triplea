@@ -1,5 +1,9 @@
 Changes for 0.8.1
 
+* fix "Not enough units in starting territory" bug when hitting done
+
+* documentation updates (sgb)
+
 * fix history update bug in multiplayer (sgb)
 
 * fix bug where if A has 1 carrier and no fighters in a sea zone and is allied to B with 1 carrier and 3 fighters in the saem sea zone, when A moves his carrier out of the sea zone, B's 1 fighter doesnt move with it (if A moved his carrier in the sea zone after B moved his carrier into the sea zone)
