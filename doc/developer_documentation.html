@@ -144,11 +144,7 @@
 					<li><b>7.5</b> <a href="#sec_7.5">Statistics</a></li>
 				</ul>
 			
-			<li><b>8.0</b> <a href="#sec_8">TroxAI (Artificial Intelligence)</a></li>
-				<ul>
-					<li><b>8.1</b> <a href="#sec_8.1">Turning AI On</a></li>
-					<li><b>8.2</b> <a href="#sec_8.2">Adding AI Players</a></li>
-				</ul>
+			<li><b>8.0</b> <a href="#sec_8">AI (Artificial Intelligence)</a></li>
 				
 			<li><b>9.0</b> <a href="#sec_9">TripleA Release Model</a></li>
 			<li><b>10.0</b> <a href="#sec_10">Developer Programming Conventions</a></li>
@@ -1246,6 +1242,16 @@
 								in a Zip file. The Zip file is placed in a folder named <i>release</i>.
 							</td>
 						</tr>
+						<tr>
+							<td valign="top">
+								<b>ant release</b>
+							</td>
+							
+							<td>
+								Runs the clean command, then creates all the release files (except the mac specific builds) and places them in the release folder.
+								This command must be done on a windows machine with NSIS installed.
+							</td>
+						</tr>
 						
 						
 						<tr>
@@ -1332,11 +1338,8 @@
 				</p>
 				
 				<p>
-					 We assume you have <i>ANT</i> installed, as well as a suitable <i>Java JDK</i> whose version is 1.4.x
-					 or higher, and <i>Junit</i> installed (you only need to download the Junit package and unzip
-					 it somewhere on your system. The <b>.ant.properties</b> file, (if not included in the source
-					 package, you will have to make your own) from which it will reference the Junit installation
-					 directory.
+					 We assume you have <i>ANT</i> installed, as well as a suitable <i>Java JDK</i> whose version is 1.5
+					 or higher.
 				</p>
 				
 				<p>
@@ -1347,7 +1350,7 @@
 					 includes two peices of information:
 					 
 					 <ol>
-					 	<li>The absolute path of Junit</li>
+
 					 	<li>The version number of TripleA</li>
 					 </ol>
 
@@ -1368,7 +1371,6 @@
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								junit.jar=<i>PATH TO THE JUNIT JAR FILE</i><br/>
 								triplea.version=<i>X_X_X</i>
 								</code>
 							</td>
@@ -1395,8 +1397,7 @@
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								junit.jar=C:junit3.8.1\junit.jar<br/>
-								triplea.version=0_6_0_1
+								triplea.version=0_8_1
 								</code>
 							</td>
 						</tr>
@@ -1581,7 +1582,7 @@
 										<td bgcolor="#ffffcc">
 											<code>
 											Variable name: JAVA_HOME<br/>
-											Variable value: C:\j2sdk1.4.2_04
+											Variable value: C:\j2sdk1.5_06
 											</code>
 										</td>
 									</tr>
@@ -1664,7 +1665,7 @@
 							<td bgcolor="#ffffcc">
 								<code>
 								Variable name: PATH<br/>
-								Variable value: C:\j2sdk1.4.2_04\bin\;C:\apache-ant-1.6.2\bin\
+								Variable value: C:\j2sdk1.5_06\bin\;C:\apache-ant-1.6.2\bin\
 								</code>
 							</td>
 						</tr>
@@ -1698,9 +1699,10 @@
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								Java version "1.4.2_04"<br/>
-								Java (TM) 2 Runtime Environment, Standard Edition (build 1.4.2_04-b05)<br/>
-								Java HotSpot(TM) Client VM (build 1.4.2_04-b05, mixed mode)
+								java version "1.5.0_06"<br>
+								Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_06-b05)<br>
+								Java HotSpot(TM) Client VM (build 1.5.0_06-b05, mixed mode, sharing)<br>
+
 								</code>
 							</td>
 						</tr>
@@ -1788,18 +1790,24 @@
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								Buildfile: build.xml<br/>
-								<br/>
-								init:<br/>
-								<br/>
-								compile:<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[echo] looking for junit.jar, edit .ant.properties to set junit location<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mkdir] Created dir: C:\triplea_0_6_0_1\classes<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[copy] Copying 1083 files to C:\triplea_0_6_0_1\classes<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[javac] Compiling 325 source files to C:\triplea_0_6_0_1\classes<br/>
-								<br/>
-								BUILD SUCCESSFUL<br/>
-								Total time: 34 seconds
+<pre>
+Buildfile: build.xml
+
+init:
+
+compile:
+    [mkdir] Created dir: /home/sgb/dev/triplea/classes
+     [copy] Copying 20 files to /home/sgb/dev/triplea/classes
+    [javac] Compiling 381 source files to /home/sgb/dev/triplea/classes
+    [javac] Note: /home/sgb/dev/triplea/src/games/strategy/triplea/delegate/TechnologyDelegate.java uses unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+   [delete] Deleting 1 files from /home/sgb/dev/triplea/classes
+    [javac] Compiling 1 source file to /home/sgb/dev/triplea/classes
+
+BUILD SUCCESSFUL
+Total time: 13 seconds
+</pre>
+
 								</code>
 							</td>
 						</tr>
@@ -1890,7 +1898,6 @@
 				<p>
 					These are the values that <b>.ant.properties</b> keeps track of:
 					<ul>
-						<li>The absolute path of JUnit</li>
 						<li>Version number of TripleA</li>
 					</ul>
 					
@@ -1909,7 +1916,6 @@
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								junit.jar=<i>PATH TO THE JUNIT JAR FILE</i><br/>
 								triplea.version=<i>X_X_X</i>
 								</code>
 							</td>
@@ -1936,7 +1942,6 @@
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								/usr/junit3.8.1/junit.jar<br/>
 								triplea.version=0_6_0_1
 								</code>
 							</td>
@@ -1989,18 +1994,23 @@
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								Buildfile: build.xml<br/>
-								<br/>
-								init:<br/>
-								<br/>
-								compile:<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[echo] looking for junit.jar, edit .ant.properties to set junit location<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mkdir] Created dir: /home/george/triplea_0_6_0_1/classes<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[copy] Copying 1083 files to /home/george/triplea_0_6_0_1/classes<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[javac] Compiling 325 source files to /home/george/triplea_0_6_0_1/classes<br/>
-								<br/>
-								BUILD SUCCESSFUL<br/>
-								Total time: 34 seconds
+<pre>
+Buildfile: build.xml
+
+init:
+
+compile:
+    [mkdir] Created dir: /home/sgb/dev/triplea/classes
+     [copy] Copying 20 files to /home/sgb/dev/triplea/classes
+    [javac] Compiling 381 source files to /home/sgb/dev/triplea/classes
+    [javac] Note: /home/sgb/dev/triplea/src/games/strategy/triplea/delegate/TechnologyDelegate.java uses unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+   [delete] Deleting 1 files from /home/sgb/dev/triplea/classes
+    [javac] Compiling 1 source file to /home/sgb/dev/triplea/classes
+
+BUILD SUCCESSFUL
+Total time: 13 seconds
+</pre>
 								</code>
 							</td>
 						</tr>
@@ -2072,14 +2082,18 @@
 							
 						<td bgcolor="#ffffcc">
 							<code>
-							@echo off<br/>
-							java -classpath lib/patch.jar;classes;lib/looks-1.3.1.jar;lib/backport-util-concurrent.jar  games.strategy.engine.framework.GameRunner<br/>
+							@echo off<br>
+							java -Xmx128m -classpath lib/patch.jar;classes;bin/triplea.jar;lib/looks-1.3.1.jar;  games.strategy.engine.framework.GameRunner<br>
 							pause
 							</code>
 						</td>
 					</tr>
 				</table>
 				<br/>
+			</p>
+
+			<p>
+			Note, the triplea.exe file looks for java classes in /bin/triplea.jar, not the classes directory.  This makes triplea.exe unsuited for day to day development use.
 			</p>
 			
 			<p>
@@ -2105,11 +2119,9 @@
 			</p>
 			
 			<p>
-				Both of the shell scripts above contain identical start up commands. The
-				reason why the decision was made to provide two was mainly for Mac OS X
-				users. Since Mac OS X is UNIX based they use the same start-up script as
-				you would use for GNU/Linux or SGI/IRIX. It would seem weird for the average
-				Mac user to be using a script labeled as &quot;Unix&quot;.
+				The triplea_unix.sh command will work on any unix variant, including Mac-os, Linux, BSD, SGI/IRIX. triplea_max_is_x.sh 
+				contains mac specific flags, and a reference to the location of jdk 1.5 on mac systems, and 
+				will only run on mac os-x.
 			</p>
 			
 			<p>
@@ -2127,7 +2139,7 @@
 				<table border="1" cellspacing="2" cellpadding="2">
 					<tr>
 						<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-							<b>Contents of triplea_unix.sh & triplea_mac_os_x.sh</b>
+							<b>Contents of triplea_unix.sh</b>
 						</td>
 					</tr>
 						
@@ -2138,19 +2150,23 @@
 							
 						<td bgcolor="#ffffcc">
 							<code>
-							#!/bin/sh<br/>
-							<br/>
-							if ! java -version >& /dev/null<br/>
-							then<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "Could not find Java."<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "You must have Java installed and in your path."<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit<br/>
-							fi<br/>
-							<br/>
-							relativePathToGame=`dirname $0`<br/>
-							cd $relativePathToGame<br/>
-							<br/>
-							java -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:lib/backport-util-concurrent.jar games.strategy.engine.framework.GameRunner
+<pre>
+#!/bin/sh
+
+if ! java -version >& /dev/null
+then
+echo "Could not find Java."
+echo "You must have Java installed and in your path."
+exit
+fi
+
+relativePathToGame=`dirname $0`
+cd $relativePathToGame
+
+
+java -Xmx128m -cp lib/patch.jar:classes:lib/looks-1.3.1.jar:bin/triplea.jar games.strategy.engine.framework.GameRunner
+
+</pre>
 							</code>
 						</td>
 					</tr>
@@ -2242,45 +2258,67 @@
 							
 						<td bgcolor="#ffffcc">
 <pre>
-public static File getRootFolder()
-{
-	// This will fail if we are in a jar file.
-	// What we are doing is looking up the URL of GameRunner.class
-	// We are guaranteed to find it because we are in it.
-	// We know that the class file is in a directory one above the
-	// games root folder, so navigate up from the class file, and we have root.
-
-	// Find the url of our class
-	URL url = GameRunner.class.getResource("GameRunner.class");
+    /**
+     * Get the root folder for the application
+     */
+    public static File getRootFolder()
+    {
+        //we know that the class file is in a directory one above the games root folder
+        //so navigate up from the class file, and we have root.
         
-	// We want to move up 1 directory for each package
-	int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
+        //find the url of our class
+        URL url = GameRunner.class.getResource("GameRunner.class");
         
-	String fileName = url.getFile();
-	try
-	{
-		fileName  = URLDecoder.decode(fileName, "UTF-8");
-							
-	} catch (UnsupportedEncodingException e)
-	{
-		e.printStackTrace();
-	}
-									
-	File f = new File(fileName);
-
-	for(int i = 0; i < moveUpCount; i++)
-	{
-		f = f.getParentFile();
-	}
-
-	if(!f.exists())
-	{
-		System.err.println("Could not find root folder, does  not exist:" + f);
-		return new File(System.getProperties().getProperty("user.dir"));
-	}
+        //we want to move up 1 directory for each  
+        //package
+        int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
         
-	return f;
-}
+        String fileName = url.getFile();
+
+	
+        try
+        {
+            //deal with spaces in the file name which would be url encoded
+            fileName  = URLDecoder.decode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+
+	//we are in a jar file
+	if(fileName.indexOf("triplea.jar!") != -1)
+	{
+		String subString = fileName.substring("file:/".length()  - ( isWindows() ? 0 : 1)  , fileName.indexOf("triplea.jar!") -1);
+        
+         
+		File f = new File(subString).getParentFile();
+		
+		if(!f.exists())
+		{
+			throw new IllegalStateException("File not found:" + f);
+		}
+		return f;
+	}
+	else
+	{
+				
+	        File f = new File(fileName);
+        
+        
+	        for(int i = 0; i < moveUpCount; i++)
+	        {
+	            f = f.getParentFile();
+	        }
+        
+        	if(!f.exists())
+	        {
+        	    System.err.println("Could not find root folder, does  not exist:" + f);
+	            return new File(System.getProperties().getProperty("user.dir"));
+        	}
+        
+	        return f;
+	 }
+    }
 </pre>
 						</td>
 					</tr>
@@ -2639,7 +2677,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				black as in #000000 or R=0 G=0 B=0. The insides of the territories should be
 				white and the oceans or water values need to be colored.<br/>
 				<br/>
-				<u>The entire TripleA package needs to be compiled for the utilities to work.</u>
+				<u><strong>You should run the map utilities using a binary (not source) distribution of TripleA.</strong></u>
 			</p>
 			
 			<p>
@@ -2649,7 +2687,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			<h4><a name="sec_5.1.1">5.1.1</a> Center Picker</h4>
 			<blockquote>
 				<p>
-					Run the center picker from the <b>classes</b> directory.
+					Run the center picker from the <b>bin</b> directory.
 					<br/>
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
@@ -2666,8 +2704,8 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								
 							<td bgcolor="#ffffcc">
 								<code>
-								cd classes<br/>
-								java util/images/CenterPicker
+								cd bin<br/>
+								java -classpath triplea.jar util/image/CenterPicker
 								</code>
 							</td>
 						</tr>
@@ -2832,7 +2870,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			<h4><a name="sec_5.1.2">5.1.2</a> Polygon Grabber</h4>
 			<blockquote>
 				<p>
-					Run the polygon grabber from the <b>classes</b> directory.
+					Run the polygon grabber from the <b>bin</b> directory.
 					<br/>
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
@@ -2849,8 +2887,8 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								
 							<td bgcolor="#ffffcc">
 								<code>
-								cd classes<br/>
-								java util/images/PolygonGrabber
+								cd bin<br/>
+								java -classpath triplea.jar util/image/PolygonGrabber
 								</code>
 							</td>
 						</tr>
@@ -3054,7 +3092,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			<h4><a name="sec_5.1.3">5.1.3</a> Placement Picker</h4>
 			<blockquote>
 				<p>
-					Run the placement picker from the <b>classes</b> directory.
+					Run the placement picker from the <b>bin</b> directory.
 					<br/>
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
@@ -3071,8 +3109,8 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								
 							<td bgcolor="#ffffcc">
 								<code>
-								cd classes<br/>
-								java util/images/PlacementPicker
+								cd bin<br/>
+								java -classpath triplea.jar util/image/PlacementPicker
 								</code>
 							</td>
 						</tr>
@@ -3190,11 +3228,11 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 				</p>
 				
 				<p>
-					Run the placement picker from the <b>classes</b> directory. When run
+					Run the placement picker from the <b>bin</b> directory. When run
 					it will ask for the map name, this relates to the name of the folder
 					it is in. For example, <i>revised</i> would be entered if we wanted it
 					to find placements for the A&A Revised map, which in turn would have all
-					the text files inside <i>triplea_0_6_0_1/classes/games/strategy/triplea/image/images/maps/revised</i>
+					the text files inside <i>triplea_0_6_0_1/maps/revised</i>
 					<br/>
 					<br/>
 					<table border="1" cellspacing="2" cellpadding="2">
@@ -3211,8 +3249,8 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								
 							<td bgcolor="#ffffcc">
 								<code>
-								cd classes<br/>
-								java util/images/AutoPlacementFinder
+								cd bin<br/>
+								java -classpath triplea.jar util/image/AutoPlacementFinder
 								</code>
 							</td>
 						</tr>
@@ -3271,8 +3309,8 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								
 							<td bgcolor="#ffffcc">
 								<code>
-								cd classes<br/>
-								java util/images/TileImageBreaker
+								cd bin<br/>
+								java -classpath triplea.jar util/image/TileImageBreaker
 								</code>
 							</td>
 						</tr>
@@ -3416,8 +3454,8 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								
 							<td bgcolor="#ffffcc">
 								<code>
-								cd classes<br/>
-								java util/images/ReliefImageBreaker
+								cd bin<br/>
+								java -classpath triplea.jar util/image/ReliefImageBreaker
 								</code>
 							</td>
 						</tr>
@@ -3545,8 +3583,8 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								
 							<td bgcolor="#ffffcc">
 								<code>
-								cd classes<br/>
-								java util/images/ImageShrinker
+								cd bin<br/>
+								java -classpath triplea.jar util/image/ImageShrinker
 								</code>
 							</td>
 						</tr>
@@ -3643,10 +3681,10 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 					map directory&quot;. The directory itself has some special conditions that needs
 					to be met:
 					<ol>
-						<li>Located in triplea_0_6_0_1/classes/games/strategy/triplea/image/images/maps</li>
+						<li>Located in triplea_0_6_0_1/maps</li>
 						<br/>
 						<li>Name of the map directory must be same as the &quot;mapName&quot; field in the
-						XML game file for that game. For example; AA4th_edition.xml has the mapName
+						XML game file for that game. For example; revised.xml has the mapName
 						field showing a value of <b>revised</b> thus the folder where TripleA will find
 						the map is also <b>revised</b></li>
 						<br/>
@@ -3658,6 +3696,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								<li>map.properties</li>
 								<li>capitols.txt (optional for victory capitols)</li>
 								<li>vc.txt (optional for victory markers)</li>
+								<li>ipc_place.txt(optional, if it exists this is where ipc markers will be placed)</li>
 							</ul>
 						</li>
 						<br/>
@@ -3695,7 +3734,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 							</td>
 							
 							<td bgcolor="#ffffcc">
-								Go into directory: triplea_0_6_0_1/classes/games/strategy/triplea/image/images/maps
+								Go into directory: triplea_0_6_0_1/maps
 							</td>
 						</tr>
 						
@@ -3949,21 +3988,6 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 								Lock X-Axis scrolling
 							</td>
 						</tr>
-						
-						<tr>
-							<td bgcolor="#ffffcc">
-								map.scrollWrapY=
-							</td>
-							
-							<td bgcolor="#ccffff">
-								Boolean
-							</td>
-							
-							<td>
-								Lock Y-Axis scrolling
-							</td>
-						</tr>
-						
 						<tr>
 							<td bgcolor="#ffffcc">
 								map.width=
@@ -4093,13 +4117,19 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								triplea_0_6_0_1/classes/games/strategy/triplea/image/images/flags<br/>
+								triplea_0_6_0_1/images/flags<br/>
 								</code>
 							</td>
 						</tr>
 					</table>
 					<br/>
 				</p>
+
+				<p>
+					If you want to add custom capitol markers to your game (or override the defaults), add a
+					put your flags in maps/mapName/images/flags/
+				</p>
+
 				
 				<p>
 					Below is a list of TripleA's captial markers that are used for Axis & Allies
@@ -4264,7 +4294,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 <xmp>
 <attatchment name="territoryAttatchment"
              attatchTo="Germany"
-             javaClass="games.strategy.triplea.attatchments.TerritoryAttatchment"
+             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
              type="territory">
 
              <option name="production" value="10"/>
@@ -4347,7 +4377,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 							
 							<td bgcolor="#ffffcc">
 								<code>
-								triplea_0_6_0_1/classes/games/strategy/triplea/image/images/vc.png
+								triplea_0_6_0_1/images/vc.png
 								</code>
 							</td>
 						</tr>
@@ -5362,7 +5392,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 							</td>
 							
 							<td>
-								Number of maximum occurances
+								Number of times the delegate will run.
 							</td>
 						</tr>
 						
@@ -6665,28 +6695,24 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			</p>
 		</blockquote>
 
-		<h2><a name="sec_8">8.0</a> TroxAI (Artificial Intelligence)</h2>
+		<h2><a name="sec_8">8.0</a> AI</h2>
 		<blockquote>
-			
 			<p>
-				<a href="#top">- Top -</a>
-			</p>
-		</blockquote>
-		
-		<h4><a name="sec_8.1">8.1</a> </h4>
-		<blockquote>
+			If you are interested in writing an AI, there is a functioning AI in the package games.strategy.triplea.weakAI<p>
+
+			<p>To add your AI to the game, you must modify games.strategy.triplea.TripleA.  The two methods
+<code>
+<pre>
+public Set<IGamePlayer> createPlayers(Map playerNames)
+public String[] getServerPlayerTypes()
+</pre>
+</code>	Create the mapping between AI names and AI instances.
+
+
 			
-			<p>
-				<a href="#top">- Top -</a>
+
 			</p>
-		</blockquote>
-		
-		<h4><a name="sec_8.2">8.2</a> </h4>
-		<blockquote>
-			
-			<p>
-				<a href="#top">- Top -</a>
-			</p>
+
 		</blockquote>
 		
 		<h2><a name="sec_9">9.0</a> TripleA Release Model</h2>
