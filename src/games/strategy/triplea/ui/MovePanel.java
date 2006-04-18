@@ -165,8 +165,9 @@ public class MovePanel extends ActionPanel
         
         cleanUp();
         
-
-        return m_moveMessage;
+        MoveDescription rVal = m_moveMessage;
+        m_moveMessage = null;
+        return rVal;
         
     }
 
@@ -265,9 +266,9 @@ public class MovePanel extends ActionPanel
 
             }
             
-            
-            release();
             m_moveMessage = null;
+            release();
+            
         }
     };
 
