@@ -1228,16 +1228,12 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
 
     public void confirmOwnCasualties(GUID battleId, String message)
     {
+        pause();
     }
 
     public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
     {
     }
 
-
-    public void confirmOwnCasualties(GUID battleID, String message, String Step, DiceRoll dice)
-    {
-        
-    }
 
 }
