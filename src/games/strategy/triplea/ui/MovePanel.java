@@ -867,6 +867,8 @@ public class MovePanel extends ActionPanel
                     
                     if (option != JOptionPane.OK_OPTION)
                         return;
+                    if(chooser.getSelected(false).isEmpty())
+                        return;
                     
                     m_selectedUnits.addAll(chooser.getSelected(false));
                 }
