@@ -1,5 +1,7 @@
 Changes for 0.8.1
 
+* fix move bug when no units are selected with pop up (sgb)
+
 * fix "Not enough units in starting territory" bug when hitting done
 
 * documentation updates (sgb)
