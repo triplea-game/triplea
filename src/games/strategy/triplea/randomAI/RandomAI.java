@@ -28,7 +28,6 @@ import games.strategy.util.*;
 import java.util.*;
 
 /*
- * TripleAPlayer.java
  *
  * More useful for testing and for an example of how an ai could be written rather than as an actual ai.
  * 
