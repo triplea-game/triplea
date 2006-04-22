@@ -1,8 +1,12 @@
 Changes for 0.8.1
 
+* add capture the flag map (iron cross)
+
+* let ai place in places other than the capitol if not all units can be placed in the capitol (sgb)
+
 * fix move bug when no units are selected with pop up (sgb)
 
-* fix "Not enough units in starting territory" bug when hitting done
+* fix "Not enough units in starting territory" bug when hitting done (sgb)
 
 * documentation updates (sgb)
 
