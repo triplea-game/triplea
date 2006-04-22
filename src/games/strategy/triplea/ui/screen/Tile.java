@@ -114,8 +114,8 @@ public class Tile
         Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + m_bounds);
         
         //clear
-        g.setColor(Color.WHITE);
-        g.fill(m_bounds);
+        g.setColor(Color.BLACK);
+        g.fill(new Rectangle(0,0,TileManager.TILE_SIZE, TileManager.TILE_SIZE));
      
         Collections.sort(m_contents, new DrawableComparator());
         Iterator<IDrawable> iter = m_contents.iterator();
