@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 
 
 /*
- * TripleAPlayer.java
  *
  * A very weak ai, based on some simple rules.<p>
  * 
@@ -1040,50 +1039,84 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
     private void place(boolean bid)
     {
         
-        pause();
+        
 
         if (m_id.getUnits().size() == 0)
             return;
 
        
-        GameData g = m_bridge.getGameData();
-
-        Territory capital =  TerritoryAttachment.getCapital(m_id, g);
-
-        Collection<Unit> toPlace;
+        GameData data = m_bridge.getGameData();
+        Territory capitol =  TerritoryAttachment.getCapital(m_id, data);
         
-        if(m_bridge.getGameData().getProperties().get(Constants.FOURTH_EDITION, false))
-        {
-               List<Unit> list = new ArrayList<Unit>(toPlace = m_id.getUnits().getMatches(Matches.UnitIsLand));
-               
-               int maxPlacement = Math.min(TerritoryAttachment.get(capital).getProduction() -1, list.size());
-               
-               
-               toPlace = list.subList(0, maxPlacement);
-        }
-        else
-        {
-            toPlace = m_id.getUnits().getMatches(Matches.UnitIsLand);  
-        }
+        //place in capitol first
+        placeAllWeCanOn(data, capitol);
         
-        IAbstractPlaceDelegate del = (IAbstractPlaceDelegate) m_bridge
-        .getRemote();
-        doPlace(capital, toPlace, del);
-
-        
-        List<Unit> seaUnits = new ArrayList<Unit>(toPlace = m_id.getUnits().getMatches(Matches.UnitIsSea));
-        if(seaUnits.size() > 0)
+        List<Territory> randomTerritories = new ArrayList<Territory>(data.getMap().getTerritories());
+        Collections.shuffle(randomTerritories);
+        for(Territory t : randomTerritories)
         {
-            Route amphibRoute = getAmphibRoute();
-            
-            if(amphibRoute != null)
+            if(t != capitol && t.getOwner().equals(m_id) && t.getUnits().someMatch(Matches.UnitIsFactory))
             {
-                Territory seaPlace = amphibRoute.getTerritories().get(1);
-                doPlace(seaPlace, toPlace, del);
-
+                placeAllWeCanOn(data, t);
             }
         }
 
+    }
+
+
+    private void placeAllWeCanOn(GameData data, Territory placeAt)
+    {
+        IAbstractPlaceDelegate del = (IAbstractPlaceDelegate) m_bridge
+        .getRemote();
+        
+        PlaceableUnits pu = del.getPlaceableUnits(m_id.getUnits().getUnits() , placeAt);
+        if(pu.getErrorMessage() != null)
+            return;
+        
+        int placementLeft =  pu.getMaxUnits();
+        if(placementLeft == -1)
+            placementLeft = Integer.MAX_VALUE;
+        
+        List<Unit> seaUnits = new ArrayList<Unit>(m_id.getUnits().getMatches(Matches.UnitIsSea));
+        
+        if(seaUnits.size() > 0)
+        {
+            Route amphibRoute = getAmphibRoute();
+            Territory seaPlaceAt = null;
+            
+            if(amphibRoute != null)
+            {
+                seaPlaceAt = amphibRoute.getTerritories().get(1);
+            }
+            else
+            {
+                Set<Territory> seaNeighbors =  data.getMap().getNeighbors(placeAt, Matches.TerritoryIsWater);
+                
+                if(!seaNeighbors.isEmpty())
+                    seaPlaceAt = seaNeighbors.iterator().next();
+            }
+            
+            if(seaPlaceAt != null)
+            {
+                int seaPlacement = Math.min(placementLeft, seaUnits.size());
+                placementLeft -= seaPlacement;
+                Collection<Unit> toPlace = seaUnits.subList(0, seaPlacement);
+                doPlace(seaPlaceAt, toPlace, del);
+            }
+        }
+        
+        
+        List<Unit> landUnits = new ArrayList<Unit>(m_id.getUnits().getMatches(Matches.UnitIsLand));
+        if(!landUnits.isEmpty())
+        {   
+            int landPlaceCount = Math.min(placementLeft, landUnits.size());
+            placementLeft -= landPlaceCount;
+            Collection<Unit> toPlace = landUnits.subList(0, landPlaceCount);
+        
+            
+            doPlace(placeAt, toPlace, del);
+        }
+        
     }
 
 
@@ -1095,6 +1128,7 @@ public class WeakAI implements IGamePlayer, ITripleaPlayer
             s_logger.fine(message);
             s_logger.fine("Attempt was at:" + where + " with:" + toPlace);
         }
+        pause();
     }
 
     /*
