@@ -50,10 +50,11 @@ public class PlaceableUnits implements java.io.Serializable
 		return m_units;
 	}
 	
-	public void setMaxUnits(int maxUnits)
-	{
-	}
-	
+
+	/**
+     * 
+     * @return -1 if no limit
+	 */
 	public int getMaxUnits()
 	{
 	    return m_maxUnits;
