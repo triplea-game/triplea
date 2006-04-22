@@ -193,9 +193,12 @@ public class BattlePanel extends ActionPanel
 
         removeAll();
 
-        getMap().centerOn(m_battleDisplay.getBattleLocation());
+        
         if(m_battleDisplay != null)
+        {
+            getMap().centerOn(m_battleDisplay.getBattleLocation());
             m_battleDisplay.listBattle(steps);
+        }
     }
 
     public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
