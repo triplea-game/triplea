@@ -108,7 +108,7 @@
 	
 	<playerList>
 
-		<player name="Neutral" optional="false"/>
+
 		<player name="Germans" optional="false"/>
 		<player name="Italians" optional="false"/>
 		<player name="Chinese" optional="false"/>
@@ -544,7 +544,7 @@
 		<unitInitialize>
 
 			<!-- Neutral Starting Units -->
-			<unitPlacement unitType="infantry" territory="Flag" quantity ="3" owner="Neutral" /> 
+			<unitPlacement unitType="infantry" territory="Flag" quantity ="3"  /> 
 
 			<!-- Russian Starting Units -->
 			<unitPlacement unitType="factory" territory="RussianBase" quantity ="1" owner="Russians" /> 
