@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="two_if_by_sea" version="0.5"/>
+	<info name="5 If By Sea" version="0.6"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -450,6 +450,9 @@
 	<playerList>
 		<player name="Japanese" optional="false"/>
 		<player name="British" optional="false"/>
+		<player name="Germans" optional="false"/>
+		<player name="Americans" optional="false"/>
+		<player name="Russians" optional="false"/>
 	</playerList>
 
 	<unitList>
@@ -495,6 +498,34 @@
 			<step name="japaneseNonCombatMove" delegate="move" player="Japanese"/>
 			<step name="japanesePlace" delegate="place" player="Japanese"/>
 			<step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
+
+			<step name="americanTech" delegate="tech" player="Americans"/>
+                        <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
+			<step name="americanPurchase" delegate="purchase" player="Americans"/>
+			<step name="americanCombatMove" delegate="move" player="Americans"/>
+			<step name="americanBattle" delegate="battle" player="Americans"/>
+			<step name="americanNonCombatMove" delegate="move" player="Americans"/>
+			<step name="americanPlace" delegate="place" player="Americans"/>
+			<step name="americanEndTurn" delegate="endTurn" player="Americans"/>
+
+			<step name="germanTech" delegate="tech" player="Germans"/>
+                        <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
+			<step name="germanPurchase" delegate="purchase" player="Germans"/>
+			<step name="germanCombatMove" delegate="move" player="Germans"/>
+			<step name="germanBattle" delegate="battle" player="Germans"/>
+			<step name="germanNonCombatMove" delegate="move" player="Germans"/>
+			<step name="germanPlace" delegate="place" player="Germans"/>
+			<step name="germanEndTurn" delegate="endTurn" player="Germans"/>
+
+			<step name="russianTech" delegate="tech" player="Russians"/>
+                        <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
+			<step name="russianPurchase" delegate="purchase" player="Russians"/>
+			<step name="russianCombatMove" delegate="move" player="Russians"/>
+			<step name="russianBattle" delegate="battle" player="Russians"/>
+			<step name="russianNonCombatMove" delegate="move" player="Russians"/>
+			<step name="russianPlace" delegate="place" player="Russians"/>
+			<step name="russianEndTurn" delegate="endTurn" player="Russians"/>
+
 		</sequence>
 	</gamePlay>
 
@@ -627,6 +658,9 @@
 
 		<playerProduction player="British" frontier="production"/>
 		<playerProduction player="Japanese" frontier="production"/>
+		<playerProduction player="Americans" frontier="production"/>
+		<playerProduction player="Germans" frontier="production"/>
+		<playerProduction player="Russians" frontier="production"/>
 
 	</production> 
 	
@@ -652,6 +686,35 @@
 			   <option name="longRangeAir" value="false"/>
 	    </attatchment>
 
+	   <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttachment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	   <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
+
+	   <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttachment"
+	                   type="player">
+			   <option name="heavyBomber" value="false"/>
+			   <option name="jetPower" value="false"/>
+			   <option name="industrialTechnology" value="false"/>
+			   <option name="superSub" value="false"/>
+			   <option name="rocket" value="false"/>
+			   <option name="longRangeAir" value="false"/>
+	    </attatchment>
 	    <attatchment name="unitAttatchment"
 			 attatchTo="infantry"
 			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
@@ -812,7 +875,9 @@
 	    </attatchment>
 	    
 	    <attatchment name="territoryAttatchment"  attatchTo="Cuba" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
-		    <option name="production" value="2" />
+		    <option name="production" value="15" />
+                    <option name="originalFactory" value="true" />
+                    <option name="capital" value="Russians" />
 	    </attatchment>
 	    
 	    <attatchment name="territoryAttatchment"  attatchTo="East Indies" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
@@ -902,7 +967,9 @@
 	    </attatchment>
 	    
 	    <attatchment name="territoryAttatchment"  attatchTo="Madagascar" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
-		    <option name="production" value="2" />
+		    <option name="production" value="15" />
+                    <option name="originalFactory" value="true" />
+                    <option name="capital" value="Germans" />
 	    </attatchment>
 	    
 	    <attatchment name="territoryAttatchment"  attatchTo="Manchuria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
@@ -930,7 +997,9 @@
 	    </attatchment>
 	    
 	    <attatchment name="territoryAttatchment"  attatchTo="New Zealand" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
-		    <option name="production" value="2" />
+		    <option name="production" value="15" />
+                    <option name="originalFactory" value="true" />
+                    <option name="capital" value="Americans" />
 	    </attatchment>
 	    
 	    <attatchment name="territoryAttatchment"  attatchTo="Novosibirsk" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
@@ -1087,6 +1156,9 @@
 		<ownerInitialize>
 		    <territoryOwner territory="United Kingdom" owner="British" />
 		    <territoryOwner territory="Japan" owner="Japanese" />
+		    <territoryOwner territory="Cuba" owner="Russians" />
+		    <territoryOwner territory="Madagascar" owner="Germans" />
+		    <territoryOwner territory="New Zealand" owner="Americans" />
 		</ownerInitialize>
 
 		<unitInitialize>
@@ -1097,6 +1169,27 @@
 			<unitPlacement unitType="transport" territory="North Sea Zone" quantity="2" owner="British" /> 
 			<unitPlacement unitType="battleship" territory="North Sea Zone" quantity="1" owner="British" /> 
 			
+			<unitPlacement unitType="aaGun" territory="Cuba" quantity="1" owner="Russians" /> 
+			<unitPlacement unitType="factory" territory="Cuba" quantity="1" owner="Russians" /> 
+			<unitPlacement unitType="infantry" territory="Cuba" quantity="2" owner="Russians" /> 
+			<unitPlacement unitType="armour" territory="Cuba" quantity="1" owner="Russians" /> 
+			<unitPlacement unitType="transport" territory="Carribean Sea Zone" quantity="2" owner="Russians" /> 
+			<unitPlacement unitType="battleship" territory="Carribean Sea Zone" quantity="1" owner="Russians" />
+
+			<unitPlacement unitType="aaGun" territory="Madagascar" quantity="1" owner="Germans" /> 
+			<unitPlacement unitType="factory" territory="Madagascar" quantity="1" owner="Germans" /> 
+			<unitPlacement unitType="infantry" territory="Madagascar" quantity="2" owner="Germans" /> 
+			<unitPlacement unitType="armour" territory="Madagascar" quantity="1" owner="Germans" /> 
+			<unitPlacement unitType="transport" territory="West Compass Sea Zone" quantity="2" owner="Germans" /> 
+			<unitPlacement unitType="battleship" territory="West Compass Sea Zone" quantity="1" owner="Germans" />
+
+			<unitPlacement unitType="aaGun" territory="New Zealand" quantity="1" owner="Americans" /> 
+			<unitPlacement unitType="factory" territory="New Zealand" quantity="1" owner="Americans" /> 
+			<unitPlacement unitType="infantry" territory="New Zealand" quantity="2" owner="Americans" /> 
+			<unitPlacement unitType="armour" territory="New Zealand" quantity="1" owner="Americans" /> 
+			<unitPlacement unitType="transport" territory="New Zealand Sea Zone" quantity="2" owner="Americans" /> 
+			<unitPlacement unitType="battleship" territory="New Zealand Sea Zone" quantity="1" owner="Americans" />
+
 			<unitPlacement unitType="aaGun" territory="Japan" quantity="1" owner="Japanese" /> 
 			<unitPlacement unitType="factory" territory="Japan" quantity="1" owner="Japanese" /> 
 			<unitPlacement unitType="infantry" territory="Japan" quantity="2" owner="Japanese" /> 
@@ -1119,7 +1212,6 @@
 			<unitPlacement unitType="infantry" territory="China" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Columbia" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Congo" quantity="1"  /> 
-			<unitPlacement unitType="infantry" territory="Cuba" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="East Indies" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="East Canada" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="East Europe" quantity="1"  /> 
@@ -1140,14 +1232,12 @@
 			<unitPlacement unitType="infantry" territory="Kenya-Rhodesnia" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Kwangtung" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Libya" quantity="1"  /> 
-			<unitPlacement unitType="infantry" territory="Madagascar" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Manchuria" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Mexico" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Midway" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Mongolia" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Mozambique" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="New Guinea" quantity="1"  /> 
-			<unitPlacement unitType="infantry" territory="New Zealand" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Novosibirsk" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Okinawa" quantity="1"  /> 
 			<unitPlacement unitType="infantry" territory="Panama" quantity="1"  /> 
@@ -1178,6 +1268,9 @@
 		<resourceInitialize>
 			<resourceGiven player="Japanese" resource="IPCs" quantity="38"/>
 			<resourceGiven player="British" resource="IPCs" quantity="38"/>
+			<resourceGiven player="Americans" resource="IPCs" quantity="38"/>
+			<resourceGiven player="Germans" resource="IPCs" quantity="38"/>
+			<resourceGiven player="Russians" resource="IPCs" quantity="38"/>
 		</resourceInitialize>
 	</initialize>
 
