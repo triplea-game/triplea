@@ -222,7 +222,7 @@ public class BattlePanel extends ActionPanel
                     
 
                     m_battleFrame.getContentPane().add(m_battleDisplay);
-                    m_battleFrame.setSize(750, 500);
+                    m_battleFrame.setSize(750, 540);
                     m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
                     
                     
