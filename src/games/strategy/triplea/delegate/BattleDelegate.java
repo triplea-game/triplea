@@ -50,7 +50,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     private GameData m_data;
 
     
-    private boolean m_needToInitialize;
+    private boolean m_needToInitialize = true;
     
     private Battle m_currentBattle = null;
 

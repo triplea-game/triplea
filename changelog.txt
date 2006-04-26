@@ -1,5 +1,7 @@
 Changes for 0.8.1.1
 
+* fix bug where naval bombardment doesnt work for the first player to fight in round 0 (sgb)
+
 * change two if by sea to five if by sea (rod the god)
 
 * remove nuetral player in capture the flag (sgb)
