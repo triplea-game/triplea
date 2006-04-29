@@ -17,6 +17,8 @@ package games.strategy.engine.history;
 import java.util.logging.*;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerID;
 
@@ -34,12 +36,20 @@ public class HistoryWriter implements java.io.Serializable
     {
         m_history = history;
     }
+    
+    private void assertCorrectThread()
+    {
+        if(m_history.getGameData().areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread");
+    }
 
     /**
      * Can only be called if we are currently in a round or a step
      */
     public void startNextStep(String stepName, String delegateName, PlayerID player, String stepDisplayName)
     {
+        assertCorrectThread();
+        
         s_logger.log(Level.FINE, "start step, stepName:" + stepName + " delegateName:" + delegateName + " player:" + player + " displayName:"
                 + stepDisplayName);
 
@@ -80,6 +90,8 @@ public class HistoryWriter implements java.io.Serializable
 
     public void startNextRound(int round)
     {
+        assertCorrectThread();
+        
         s_logger.log(Level.FINE, "Starting round:" + round);
 
         if (isCurrentEvent())
@@ -109,6 +121,8 @@ public class HistoryWriter implements java.io.Serializable
 
     private void closeCurrent()
     {
+        assertCorrectThread();
+        
         HistoryNode old = m_current;
         m_history.getGameData().aquireWriteLock();
         try
@@ -145,6 +159,8 @@ public class HistoryWriter implements java.io.Serializable
 
     public void startEvent(String eventName)
     {
+        assertCorrectThread();
+        
         s_logger.log(Level.FINE, "Starting event:" + eventName);
 
         //close the current event
@@ -196,6 +212,8 @@ public class HistoryWriter implements java.io.Serializable
      */
     public void addChildToEvent(EventChild node)
     {
+        assertCorrectThread();
+        
         s_logger.log(Level.FINE, "Adding child:" + node);
 
         
@@ -226,6 +244,8 @@ public class HistoryWriter implements java.io.Serializable
      */
     public void addChange(Change change)
     {
+        assertCorrectThread();
+        
         s_logger.log(Level.FINE, "Adding change:" + change);
 
         if (!isCurrentEvent())
@@ -238,6 +258,8 @@ public class HistoryWriter implements java.io.Serializable
 
     public void setRenderingData(Object details)
     {
+        assertCorrectThread();
+        
         s_logger.log(Level.FINE, "Setting rendering data:" + details);
 
         if (!isCurrentEvent())

@@ -46,6 +46,7 @@ public class HistorySynchronizer
             throw new IllegalStateException("You dont need a history synchronizer to synchronize game data that is managed by an IGame");
 
         m_data = data;
+        m_data.forceChangesOnlyInSwingEventThread();
         m_currentRound = data.getSequence().getRound();
 
         m_game = game;
@@ -152,7 +153,7 @@ public class HistorySynchronizer
     {
         try
         {
-            ByteArrayOutputStream sink = new ByteArrayOutputStream();
+            ByteArrayOutputStream sink = new ByteArrayOutputStream(256);
             GameObjectOutputStream out = new GameObjectOutputStream(sink);
             out.writeObject(msg);
             out.flush();

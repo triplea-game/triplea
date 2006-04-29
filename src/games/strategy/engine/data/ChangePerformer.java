@@ -20,6 +20,8 @@
 
 package games.strategy.engine.data;
 
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author  Sean Bridges
@@ -44,6 +46,10 @@ public class ChangePerformer
 
 	public void perform(Change aChange)
 	{
+        
+        if(m_data.areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong thread");
+        
 		try
 		{
 		    m_data.aquireWriteLock();

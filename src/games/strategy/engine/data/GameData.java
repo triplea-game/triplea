@@ -45,6 +45,7 @@ public class GameData implements java.io.Serializable
 {
     private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
 
+    private transient boolean m_forceInSwingEventThread = false;
     
     private String m_gameName;
 	private Version m_gameVersion;
@@ -107,6 +108,16 @@ public class GameData implements java.io.Serializable
 	{
 		return m_alliances;
 	}
+    
+    public boolean areChangesOnlyInSwingEventThread()
+    {
+        return m_forceInSwingEventThread;
+    }
+    
+    public void forceChangesOnlyInSwingEventThread()
+    {
+        m_forceInSwingEventThread = true;
+    }
 
 	public GameSequence getSequence()
 	{
