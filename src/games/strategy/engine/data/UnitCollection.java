@@ -33,7 +33,9 @@ import games.strategy.util.*;
  */
 public class UnitCollection extends GameDataComponent
 {
-	private final List<Unit> m_units = new ArrayList<Unit>(8);
+    //use a synchronized list, had a weird bug that 
+    //could only be explained by non synchronized collection
+	private final List<Unit> m_units = Collections.synchronizedList(new ArrayList<Unit>(8));
 	private final NamedUnitHolder m_holder;
 
 	/** Creates new UnitCollection */
