@@ -1,8 +1,10 @@
-Changes for 0.8.1.1
+Changes for 0.8.2
+
+* fix bug where casualty selection would sometimes appear before the battle panel (sgb)
 
 * fix bug where naval bombardment doesnt work for the first player to fight in round 0 (sgb)
 
-* change two if by sea to five if by sea (rod the god)
+* change two if by sea to four if by sea (rod the god)
 
 * remove nuetral player in capture the flag (sgb)
 
