@@ -162,13 +162,13 @@ class AddUnits extends Change
 
     AddUnits(UnitCollection collection, Collection<Unit> units)
     {
-        m_units = Collections.unmodifiableCollection(units);
+        m_units = new ArrayList<Unit>(units);
         m_name = collection.getHolder().getName();
     }
 
     AddUnits(String name, Collection<Unit> units)
     {
-        m_units = Collections.unmodifiableCollection(units);
+        m_units = new ArrayList<Unit>(units);
         m_name = name;
     }
 
@@ -210,14 +210,14 @@ class RemoveUnits extends Change
     RemoveUnits(String name, Collection<Unit> units)
     {
 
-        m_units = Collections.unmodifiableCollection(units);
+        m_units = new ArrayList<Unit>(units);
         m_name = name;
     }
 
     RemoveUnits(String name, Collection<Unit> units, boolean isCasualty)
     {
 
-        m_units = Collections.unmodifiableCollection(units);
+        m_units = new ArrayList<Unit>(units);
         m_name = name;
     }
 
@@ -233,7 +233,7 @@ class RemoveUnits extends Change
         UnitHolder holder = data.getUnitHolder(m_name);
         if(!holder.getUnits().containsAll(m_units))
         {
-            throw new IllegalStateException("Not all units present.  Trying to remove:" + m_units + " present:" + holder.getUnits().getUnits());
+            throw new IllegalStateException("Not all units present in:" + m_name + ".  Trying to remove:" + m_units + " present:" + holder.getUnits().getUnits());
         }
         
         holder.getUnits().removeAllUnits(m_units);
