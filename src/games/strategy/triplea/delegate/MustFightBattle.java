@@ -1315,7 +1315,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         PlayerID hit = defender ? m_defender : m_attacker;
         return BattleCalculator.selectCasualties(step, hit, attackableUnits,
-                bridge, text, m_data, dice, defender);
+                bridge, text, m_data, dice, defender, m_battleID);
     }
 
     void removeCasualties(Collection<Unit> killed, boolean canReturnFire,
@@ -2024,7 +2024,7 @@ class Fire implements IExecutable
         } else
         {     
             CasualtyDetails message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
-                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending);
+                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID);
 
             m_killed = message.getKilled();
             m_damaged = message.getDamaged();

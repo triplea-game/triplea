@@ -41,10 +41,11 @@ public interface ITripleaPlayer extends IRemote
      * @param hit - the player hit
      * @param dice - the dice rolled for the casualties 
      * @param defaultCasualties - default casualties as selected by the game
+     * @param battleID - the battle we are fighting in, may be null if this is an aa casualty selection during a move
      * @return the selected casualties
      */
     public CasualtyDetails selectCasualties(
-            Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties     
+            Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID     
     );
     
     /**

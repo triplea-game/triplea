@@ -14,6 +14,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -217,7 +218,7 @@ class AAInMoveUtil implements Serializable
                 {
                     getRemotePlayer().reportMessage("No aa hits in " + territory.getName());
                 } else
-                    selectCasualties(dice[0], units, territory);
+                    selectCasualties(dice[0], units, territory, null);
             }
         
         };
@@ -232,7 +233,7 @@ class AAInMoveUtil implements Serializable
      * hits are removed from units. Note that units are removed in the order
      * that the iterator will move through them.
      */
-    private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory)
+    private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory, GUID battleID)
     {
 
         String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
@@ -243,7 +244,7 @@ class AAInMoveUtil implements Serializable
             casualties = BattleCalculator.fourthEditionAACasualties(units, dice, m_bridge);
         } else
         {
-            CasualtyDetails casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false);
+            CasualtyDetails casualtyMsg = BattleCalculator.selectCasualties(m_player, units, m_bridge, text, m_data, dice, false, battleID);
             casualties = casualtyMsg.getKilled();
         }
 

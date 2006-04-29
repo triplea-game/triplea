@@ -48,6 +48,10 @@ public class BattlePanel extends ActionPanel
     private FightBattleDetails m_fightBattleMessage;
 
     private BattleDisplay m_battleDisplay;
+    //if we are showing a battle, then this will be set to the currently
+    //displayed battle.  This will only be set after the display 
+    //is shown on the screen
+    private volatile GUID m_currentBattleDisplayed;
     
     //there is a bug in linux jdk1.5.0_6 where frames are not
     //being garbage collected
@@ -147,17 +151,19 @@ public class BattlePanel extends ActionPanel
     {
         if (m_battleDisplay != null)
         {
+            m_currentBattleDisplayed = null;
             m_battleDisplay.cleanUp();
             m_battleFrame.getContentPane().removeAll();
             m_battleDisplay = null;
-	    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
+            games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
 
         }
     }
 
     private void ensureBattleIsDisplayed(GUID battleID)
     {
-        while (m_battleDisplay == null || !m_battleDisplay.getBattleID().equals(battleID))
+        GUID displayed = m_currentBattleDisplayed;
+        while (displayed == null || !battleID.equals(displayed))
         {
             try
             {
@@ -214,6 +220,7 @@ public class BattlePanel extends ActionPanel
                     if (m_battleDisplay != null)
                     {
                         cleanUpBattleWindow();
+                        m_currentBattleDisplayed = null;
                     }
 
                     m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, battleID, BattlePanel.this.getMap());
@@ -230,6 +237,8 @@ public class BattlePanel extends ActionPanel
                     m_battleFrame.setVisible(true);
                     m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
+                    m_currentBattleDisplayed = battleID;
+                    
                     SwingUtilities.invokeLater(new Runnable()
                     {
                         public void run()
@@ -297,13 +306,14 @@ public class BattlePanel extends ActionPanel
     }
 
     public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
-            final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties)
+            final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties, GUID battleID)
     {
-        //if the battle display is null, then this is a bombing raid
-        if (m_battleDisplay == null)
+        //if the battle display is null, then this is an aa fire during move
+        if (battleID == null)
             return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
         else
         {
+            ensureBattleIsDisplayed(battleID);
             return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
         }
 

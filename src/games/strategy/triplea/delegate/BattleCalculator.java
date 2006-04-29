@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -107,13 +108,17 @@ public class BattleCalculator
     }
 
     public static CasualtyDetails selectCasualties(PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text, GameData data,
-            DiceRoll dice, boolean defending)
+            DiceRoll dice, boolean defending, GUID battleID)
     {
-        return selectCasualties(null, player, targets, bridge, text, data, dice, defending);
+        return selectCasualties(null, player, targets, bridge, text, data, dice, defending, battleID);
     }
 
+    /**
+     * 
+     * @param battleID may be null if we are not in a battle (eg, if this is an aa fire due to moving
+     */
     public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
-            GameData data, DiceRoll dice, boolean defending)
+            GameData data, DiceRoll dice, boolean defending, GUID battleID)
     {
         int hits = dice.getHits();
         if (hits == 0)
@@ -147,7 +152,7 @@ public class BattleCalculator
         ITripleaPlayer tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
         
         CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, dice.getHits(), text, dice, player,
-                defaultCasualties);
+                defaultCasualties, battleID);
 
         List killed = casualtySelection.getKilled();
         List damaged = casualtySelection.getDamaged();
@@ -156,13 +161,13 @@ public class BattleCalculator
         if (!(killed.size() + damaged.size() == dice.getHits()))
         {
             tripleaPlayer.reportError("Wrong number of casualties selected");
-            return selectCasualties(player, targets, bridge, text, data, dice, defending);
+            return selectCasualties(player, targets, bridge, text, data, dice, defending, battleID);
         }
         //check we have enough of each type
         if (!targets.containsAll(killed) || !targets.containsAll(damaged))
         {
             tripleaPlayer.reportError("Cannot remove enough units of those types");
-            return selectCasualties(player, targets, bridge, text, data, dice, defending);
+            return selectCasualties(player, targets, bridge, text, data, dice, defending, battleID);
         }
         return casualtySelection;
     }

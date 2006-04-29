@@ -298,7 +298,7 @@ public class TroxAIPlayer implements IGamePlayer, ITripleaPlayer
      *      games.strategy.engine.data.PlayerID, java.util.List)
      */
     public CasualtyDetails selectCasualties(
-            Collection selectFrom, Map dependents,  int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties)
+            Collection selectFrom, Map dependents,  int count, String message, DiceRoll dice, PlayerID hit, List defaultCasualties, GUID battleID)
     {
 
         List<Unit> killed = new ArrayList<Unit>();

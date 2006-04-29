@@ -30,6 +30,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.Preferences;
 
 import javax.swing.*;
@@ -56,20 +57,18 @@ public class BattleDisplay extends JPanel
 
     private final JButton m_actionButton = new JButton("");
 
-    private BattleModel m_defenderModel;
-    private BattleModel m_attackerModel;
+    private final BattleModel m_defenderModel;
+    private final BattleModel m_attackerModel;
     private BattleStepsPanel m_steps;
 
-    private CasualtyDetails m_selectCasualtyResponse;
-
     private DicePanel m_dicePanel;
-    private CasualtyNotificationPanel m_casualties;
+    private final CasualtyNotificationPanel m_casualties;
     private JPanel m_actionPanel;
-    private CardLayout m_actionLayout = new CardLayout();
-    private JPanel m_messagePanel = new JPanel();
+    private final CardLayout m_actionLayout = new CardLayout();
+    private final JPanel m_messagePanel = new JPanel();
     private final MapPanel m_mapPanel;
 
-    private JLabel m_messageLabel = new JLabel();
+    private final JLabel m_messageLabel = new JLabel();
 
     public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection<Unit> attackingUnits,
             Collection<Unit> defendingUnits, GUID battleID, MapPanel mapPanel)
@@ -504,7 +503,9 @@ public class BattleDisplay extends JPanel
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("This method should not be run in teh event dispatch thread");
 
+        final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<CasualtyDetails>();
         final CountDownLatch continueLatch = new CountDownLatch(1);
+        
         SwingUtilities.invokeLater(new Runnable()
         {
 
@@ -519,7 +520,6 @@ public class BattleDisplay extends JPanel
                 final String btnText = hit.getName() + ", click to select " + count + (plural ? " casualties" : " casualty");
                 m_actionButton.setAction(new AbstractAction(btnText)
                 {
-
                     public void actionPerformed(ActionEvent e)
                     {
 
@@ -541,10 +541,16 @@ public class BattleDisplay extends JPanel
                         {
                             JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", hit.getName()
                                     + " select casualties", JOptionPane.ERROR_MESSAGE);
+                            return;
                         } else
                         {
                             CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
-                            m_selectCasualtyResponse = response;
+                            casualtyDetails.set(response);
+                            
+                            m_dicePanel.clear();
+                            m_actionButton.setEnabled(false);
+                            m_actionButton.setAction(null);
+
                             continueLatch.countDown();
                         }
                     }
@@ -557,24 +563,12 @@ public class BattleDisplay extends JPanel
             continueLatch.await();
         } catch (InterruptedException ex)
         {
+            ex.printStackTrace();
         }
 
-
-
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            public void run()
-            {
-                m_dicePanel.clear();
-                m_actionButton.setEnabled(false);
-                m_actionButton.setAction(null);
-            }
-        });
-
-        CasualtyDetails rVal = m_selectCasualtyResponse;
-        m_selectCasualtyResponse = null;
-        return rVal;
-
+        
+        return casualtyDetails.get();
+        
     }
 
     private void initLayout()
