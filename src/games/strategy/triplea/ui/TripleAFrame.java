@@ -596,18 +596,27 @@ public class TripleAFrame extends JFrame
 
     }
 
-    public void showHistory()
+    private void showHistory()
     {
         m_inHistory = true;
         setWidgetActivation();
 
-        //we want to use a clone of the data, so we can make changes to it
-        GameData clonedGameData = cloneGameData(m_data);
-        if (clonedGameData == null)
-            return;
-
-        clonedGameData.getAllianceTracker();
-        m_historySyncher = new HistorySynchronizer(clonedGameData, m_game);
+        GameData clonedGameData; 
+        m_data.aquireReadLock();
+        try
+        {
+            //we want to use a clone of the data, so we can make changes to it
+            //as we walk up and down the history
+            clonedGameData = cloneGameData(m_data);
+            if (clonedGameData == null)
+                return;
+    
+            m_historySyncher = new HistorySynchronizer(clonedGameData, m_game);
+        }
+        finally
+        {
+            m_data.releaseReadLock();
+        }
 
         m_statsPanel.setGameData(clonedGameData);
         m_details.setGameData(clonedGameData);
