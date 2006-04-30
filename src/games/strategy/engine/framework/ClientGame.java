@@ -50,7 +50,7 @@ public class ClientGame implements IGame
   private volatile boolean m_isGameOver = false;
   
   //maps PlayerID->GamePlayer
-  private Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
+  private final Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
   private final Vault m_vault;
   private final PlayerManager m_playerManager;
   
