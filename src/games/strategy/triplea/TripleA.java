@@ -116,7 +116,6 @@ public class TripleA implements IGameLoader
                             frame = new TripleAFrame(game, players);
                         } catch (IOException e)
                         {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                             System.exit(-1);
                             return;
