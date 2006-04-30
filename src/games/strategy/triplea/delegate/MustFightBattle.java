@@ -20,6 +20,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -1498,7 +1499,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
             {
                 public void run()
                 {
-                    getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", m_attacker);        
+                    try
+                    {
+                        getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", m_attacker);
+                    
+                    }
+                    catch(ConnectionLostException cle)
+                    {
+                        //somone else will deal with this
+                        cle.printStackTrace(System.out);
+                    }
                 }
             };
             Thread t = new Thread(r, "click to continue waiter");
@@ -2042,7 +2052,15 @@ class Fire implements IExecutable
         {
             public void run()
             {
-                MustFightBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue",  m_hitPlayer);
+                try
+                {
+                    MustFightBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue",  m_hitPlayer);
+                }
+                catch(ConnectionLostException cle)
+                {
+                    //somone else will deal with this
+                    cle.printStackTrace(System.out);
+                }
             }
         };
 
