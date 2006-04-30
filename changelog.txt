@@ -1,5 +1,9 @@
 Changes for 0.8.2
 
+* fix bug where observers joining mid game may ignore some updates (sgb)
+
+* lock game data before switching to history (sgb)
+
 * fix bug where casualty selection would sometimes appear before the battle panel (sgb)
 
 * fix bug where naval bombardment doesnt work for the first player to fight in round 0 (sgb)
