@@ -405,25 +405,36 @@ public class StatPanel extends JPanel
         public void update()
         {
             clearAdvances();
-            Iterator playerIter = m_data.getPlayerList().getPlayers().iterator();
+            //copy so aquire/release read lock are on the same object!
+            final GameData gameData = m_data;
+            
+            Iterator playerIter = gameData.getPlayerList().getPlayers().iterator();
 
-            while (playerIter.hasNext())
+            gameData.aquireReadLock();
+            try
             {
-                PlayerID pid = (PlayerID) playerIter.next();
-                if (colMap.get(pid.getName()) == null)
-                    throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
-
-                int col = colMap.get(pid.getName()).intValue();
-
-                Iterator advances = TechTracker.getTechAdvances(pid).iterator();
-
-                while (advances.hasNext())
+                while (playerIter.hasNext())
                 {
-                    int row = rowMap.get(((TechAdvance) advances.next()).getName()).intValue();
-                    // System.err.println("(" + row + ", " + col + ")");
-                    data[row][col] = "X";
-                    // data[row][col] = colList[col].substring(0, 1);
+                    PlayerID pid = (PlayerID) playerIter.next();
+                    if (colMap.get(pid.getName()) == null)
+                        throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
+    
+                    int col = colMap.get(pid.getName()).intValue();
+    
+                    Iterator advances = TechTracker.getTechAdvances(pid).iterator();
+    
+                    while (advances.hasNext())
+                    {
+                        int row = rowMap.get(((TechAdvance) advances.next()).getName()).intValue();
+                        // System.err.println("(" + row + ", " + col + ")");
+                        data[row][col] = "X";
+                        // data[row][col] = colList[col].substring(0, 1);
+                    }
                 }
+            }
+            finally
+            {
+                gameData.releaseReadLock();
             }
         }
 
