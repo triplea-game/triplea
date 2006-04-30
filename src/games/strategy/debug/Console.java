@@ -84,7 +84,11 @@ public class Console extends JFrame
 		m_text.append(s);
 	}
 	
-	
+	public void dumpStacks()
+    {
+	    m_threadDiagnoseAction.actionPerformed(null);
+    }
+    
 	/**
 	 * Displays standard error to the console
 	 */
@@ -126,54 +130,29 @@ public class Console extends JFrame
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-		    //call the jdk1.5 getAllStackTraces method if available
-		    //call using reflection so we are 1.4 compatable
-		    try
-            {
 
-                Map stackTraces = Thread.getAllStackTraces();
-                Iterator iter = stackTraces.keySet().iterator();
-                while (iter.hasNext())
-                {
-                    Thread t = (Thread) iter.next();
-                    System.out.println(t);
-                    StackTraceElement[] stackTrace = (StackTraceElement[]) stackTraces.get(t);
-                    for(int i = 0;  i < stackTrace.length; i++)
-                    {
-                        System.out.print("  ");
-                        System.out.println(stackTrace[i]);
-                    }
-                    System.out.println();
-                    
-                } 
-               
-                return;
-            } catch (Exception e1)
+		    
+		    System.out.println("THEAD DUMPS");
+            Map stackTraces = Thread.getAllStackTraces();
+            Iterator iter = stackTraces.keySet().iterator();
+            while (iter.hasNext())
             {
-                //wrong vm
-            }
-		    
-		    
-			Thread[] threads = new Thread[ Thread.activeCount()];
-			int count = Thread.enumerate(threads);
-			
-			StringBuilder buf = new StringBuilder();
-			buf.append("**\n");
-			for(int i = 0; i < count; i++)
-			{
-				appendThreadInfo(buf, threads[i]);
-			}
-			append(buf.toString());
-		
+                Thread t = (Thread) iter.next();
+                System.out.println(t);
+                StackTraceElement[] stackTrace = (StackTraceElement[]) stackTraces.get(t);
+                for(int i = 0;  i < stackTrace.length; i++)
+                {
+                    System.out.print("  ");
+                    System.out.println(stackTrace[i]);
+                }
+                System.out.println();
+                
+            } 
+           
+            return;
+        
 		}
 		
-		private void appendThreadInfo(StringBuilder buf, Thread thread)
-		{
-			buf.append("Name:").append(thread.getName()).append("\n");
-			buf.append("Priority:").append(thread.getPriority()).append("\n");
-			buf.append("Alive:").append(thread.isAlive()).append("\n");
-			buf.append("\n");
-		}
 	};
 	
 
