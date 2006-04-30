@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.debug.Console;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.GUID;
@@ -163,15 +164,26 @@ public class BattlePanel extends ActionPanel
     private void ensureBattleIsDisplayed(GUID battleID)
     {
         GUID displayed = m_currentBattleDisplayed;
+        int count = 0;
         while (displayed == null || !battleID.equals(displayed))
         {
             try
             {
-                Thread.sleep(20);
+                count++;
+                Thread.sleep(count);
             } catch (InterruptedException e)
             {
                 return;
             }
+            
+            //something is wrong, we shouldnt have to wait this long
+            if(count > 200)
+            {
+                Console.getConsole().dumpStacks();
+                new IllegalStateException("battle not displayed").printStackTrace();
+                return;
+            }
+            displayed = m_currentBattleDisplayed;
         }
     }
 
@@ -233,7 +245,7 @@ public class BattlePanel extends ActionPanel
                     m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
                     
                     
-		    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);		    
+                    games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);		    
                     m_battleFrame.setVisible(true);
                     m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
