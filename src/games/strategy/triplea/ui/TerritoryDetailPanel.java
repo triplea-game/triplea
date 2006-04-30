@@ -67,7 +67,19 @@ public class TerritoryDetailPanel extends JPanel
         }
 
         add(new JLabel(territory.getName()));
-        Set units = UnitSeperator.categorize(territory.getUnits().getUnits());
+        
+        Collection<Unit> unitsInTerritory;
+        m_data.aquireReadLock();
+        try
+        {
+            unitsInTerritory = territory.getUnits().getUnits();
+        }
+        finally
+        {
+            m_data.releaseReadLock();
+        }
+        
+        Set units = UnitSeperator.categorize(unitsInTerritory);
         Iterator iter = units.iterator();
         PlayerID currentPlayer = null;
         while (iter.hasNext())
