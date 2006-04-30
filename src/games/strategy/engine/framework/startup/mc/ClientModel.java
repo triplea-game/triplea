@@ -28,6 +28,7 @@ import games.strategy.net.*;
 import java.awt.Component;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.logging.*;
 import java.util.prefs.Preferences;
 
@@ -242,7 +243,18 @@ public class ClientModel implements IMessengerErrorListener
       
       public void doneSelectingPlayers(byte[] gameData, Map<String, INode> players)
       {
-         startGame(gameData, players);
+         CountDownLatch latch = new CountDownLatch(1);
+         startGame(gameData, players, latch);
+         
+         try
+         {
+             latch.await(10, TimeUnit.SECONDS );
+         } catch (InterruptedException e)
+         {
+             e.printStackTrace();
+         }
+
+         
       }
 
         
@@ -254,7 +266,15 @@ public class ClientModel implements IMessengerErrorListener
         public void joinGame(byte[] gameData, Map<String, INode> players)
         {
             m_remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
-            startGame(gameData, players);
+            CountDownLatch latch = new CountDownLatch(1);
+            startGame(gameData, players, latch);
+            try
+            {
+                latch.await(10, TimeUnit.SECONDS );
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
 
         public void cannotJoinGame(final String reason)
@@ -275,7 +295,7 @@ public class ClientModel implements IMessengerErrorListener
     
     
     
-    private void startGame(final byte[] gameData, final Map<String, INode> players)
+    private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone)
     {
         
         SwingUtilities.invokeLater(new Runnable()
@@ -303,6 +323,11 @@ public class ClientModel implements IMessengerErrorListener
                 {
                     m_gameLoadingWindow.doneWait();
                     throw e;
+                }
+                finally
+                {
+                    if(onDone != null)
+                        onDone.countDown();
                 }
             }
         
