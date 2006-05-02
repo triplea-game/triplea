@@ -1,3 +1,7 @@
+Changes for 0.8.2.1
+
+* fix nz territory in four if by sea (rod the god)
+
 Changes for 0.8.2
 
 * fix bug where observers joining mid game may ignore some updates (sgb)
