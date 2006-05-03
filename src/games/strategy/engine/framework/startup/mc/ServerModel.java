@@ -339,7 +339,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             for(String player : m_players.keySet())
             {
                 String playedBy = m_players.get(player);
-                if(playedBy.equals(node.getName()))
+                if(playedBy != null &&  playedBy.equals(node.getName()))
                 {
                     free.add(player);
                 }
