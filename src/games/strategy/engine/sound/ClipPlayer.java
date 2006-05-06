@@ -118,6 +118,9 @@ public class ClipPlayer
 
   private Clip loadClip(String clipName, Class<SoundPath> resourceLocation)
   {
+      if(getBeSilent())
+          return null;
+      
     Clip clip;
     if(m_sounds.containsKey(clipName))
     {
