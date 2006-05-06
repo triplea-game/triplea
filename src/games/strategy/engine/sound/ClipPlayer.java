@@ -34,7 +34,7 @@ import java.util.*;
 
 public class ClipPlayer
 {
-  private static final String SOUND_PREFERENCE = "beSilent";
+  private static final String SOUND_PREFERENCE = "beSilent2";
   private static ClipPlayer s_clipPlayer;
   private boolean m_beSilent = false;
   private HashMap<String, Clip> m_sounds = new HashMap<String, Clip>();
@@ -52,7 +52,7 @@ public class ClipPlayer
   private ClipPlayer()
   {
     Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    m_beSilent = prefs.getBoolean(SOUND_PREFERENCE, false);
+    m_beSilent = prefs.getBoolean(SOUND_PREFERENCE, true);
   }
 
   /**
