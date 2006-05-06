@@ -1,5 +1,9 @@
 Changes for 0.8.2.1
 
+* fix installer with embedded java to actually use the embedded java (sgb)
+
+* default sound to off (sgb)
+
 * fix nz territory in four if by sea (rod the god)
 
 Changes for 0.8.2
