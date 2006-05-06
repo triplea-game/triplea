@@ -271,7 +271,7 @@
   	    </move>
 	    
 	    <copy file="installer/installer.nsi" toFile="release/installer/installer.nsi"/>
-	    <copy file="triplea_embeded_jre.exe" toFile="release/installer/triplea_${triplea.version}/triplea.exe"/>
+	    <copy file="triplea_embeded_jre.exe" toFile="release/installer/triplea_${triplea.version}/triplea.exe" overwrite="true"/>
 	    <!-- the bat file doesnt work, since it does not point to the jre -->
 	    <delete file="release/installer/triplea_${triplea.version}/triplea_windows.bat"/>
 
