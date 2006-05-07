@@ -13,7 +13,7 @@ Coded by Iron__Cross
 -->
 
 <game>
-    <info name="Pacific - Alpha" version="1.0.2"/>
+    <info name="Pacific - Alpha" version="1.0.3"/>
     
     <loader javaClass="games.strategy.triplea.TripleA"/>
     
@@ -177,8 +177,8 @@ Coded by Iron__Cross
         <connection t1="Anhwe" t2="Suiyuan"/>
         <connection t1="Kiangsi" t2="Shantung"/>
         <connection t1="Shansi" t2="Sikang"/>
-        <connection t1="Manchuria" t2="Kweichow"/>
-        <connection t1="Manchuria" t2="Szechwan"/>
+
+		<connection t1="Shansi" t2="Kweichow"/>
         <connection t1="Hopei" t2="Suiyuan"/>
         <connection t1="Hopei" t2="Kweichow"/>
         <connection t1="Hopei" t2="Anhwe"/>
@@ -397,6 +397,7 @@ Coded by Iron__Cross
         <connection t1="Burma" t2="54 Sea Zone"/>
         <connection t1="Shan State" t2="53 Sea Zone"/>
         <connection t1="Siam" t2="53 Sea Zone"/>
+         <connection t1="Siam" t2="46 Sea Zone"/>
         <connection t1="French Indo-China" t2="46 Sea Zone"/>
         <connection t1="French Indo-China" t2="45 Sea Zone"/>
         <connection t1="Kwangsi" t2="45 Sea Zone"/>

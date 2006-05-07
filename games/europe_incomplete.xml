@@ -11,7 +11,7 @@
 
 <game>
 
-	<info name="+ Europe +" version="0.23"/>
+	<info name="+ Europe +" version="0.24"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -186,6 +186,7 @@
 		<connection t1="Karelia" t2="Archangel" />
 		<connection t1="Karelia" t2="Russia" />
 		<connection t1="Karelia" t2="Archangel" />
+        <connection t1="Karelia" t2="Vyborg" />
 		<connection t1="Karelia" t2="Finland" />
 		<connection t1="Sweden" t2="Norway" />
 		<connection t1="Sweden" t2="Finland" />
@@ -293,6 +294,7 @@
 		<connection t1="Halifax Sea Sea Zone" t2="Atlantic Sea Zone" />
 		<connection t1="Halifax Sea Sea Zone" t2="U.S. Eastern Coast Sea Zone" />
 		<connection t1="Atlantic Sea Zone" t2="North Atlantic Sea Zone" />
+  		<connection t1="Atlantic Sea Zone" t2="Celtic Sea Sea Zone" />
 		<connection t1="U.S. Eastern Coast Sea Zone" t2="U.S. Convoy 2 Sea Zone" />
 		<connection t1="U.S. Eastern Coast Sea Zone" t2="U.S. Convoy 1 Sea Zone" />
 		<connection t1="Eastern Mediterranean Sea Zone" t2="Central Mediterranean Sea Zone" />
