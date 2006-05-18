@@ -369,6 +369,7 @@ Coded by Iron__Cross
         <connection t1="Hawaiian" t2="9 Sea Zone"/>
         <connection t1="Johnston" t2="10 Sea Zone"/>
         <connection t1="Line" t2="4 Sea Zone"/>
+		<connection t1="New Zealand" t2="13 Sea Zone"/>
         
         <!-- Shoreline Line connections -->
         
