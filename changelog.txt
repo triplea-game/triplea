@@ -1,4 +1,4 @@
-* pacific and europe map fixes (Opurt)
+* pacific and europe map fixes (Opurt, FlyingSpaghettiMonster)
 
 Changes for 0.8.2.1
 
