@@ -104,6 +104,9 @@ public class Route implements java.io.Serializable
 	
 	public void setStart(Territory t)
 	{
+        if(t == null)
+            throw new IllegalStateException("Null territory");
+        
 		m_start = t;
 	}
 
@@ -145,6 +148,9 @@ public class Route implements java.io.Serializable
 
 	public void add(Territory t)
 	{
+        if(t == null)
+            throw new IllegalStateException("Null territory");
+        
 		if(m_route.contains(t))
 			throw new IllegalArgumentException("Loops not allowed in m_routes");
 

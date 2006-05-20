@@ -110,6 +110,7 @@ public class DelegateTest extends TestCase
 		
 		InputStream input= url.openStream();
 		m_data = (new GameParser()).parse(input);
+        input.close();
 		
 		british = m_data.getPlayerList().getPlayerID("British");
 		british.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());
@@ -184,7 +185,8 @@ public class DelegateTest extends TestCase
 		suite.addTestSuite(PlaceDelegateTest.class);
 		suite.addTestSuite(MoveDelegateTest.class);
 		suite.addTestSuite(MoveValidatorTest.class);
-    suite.addTestSuite(EmailValidatorTest.class);
+		suite.addTestSuite(EmailValidatorTest.class);
+        suite.addTestSuite(LHTRTest.class);
 		return suite;
 	}
 	

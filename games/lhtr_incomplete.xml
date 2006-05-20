@@ -1591,7 +1591,7 @@
                         <boolean/>
                 </property>
                 
-                <property name="Always on AA" value="true" editable="false">
+                <property name="Always on AA" value="false" editable="false">
                         <boolean/>
                 </property>
                 

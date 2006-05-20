@@ -24,9 +24,9 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.*;
+import games.strategy.engine.random.IRandomSource;
 
 import java.util.*;
-import java.util.Random;
 
 /**
  * 
@@ -38,14 +38,15 @@ import java.util.Random;
  */
 public class TestDelegateBridge implements IDelegateBridge
 {
-    GameData m_data;
-    PlayerID m_id;
-    String m_stepName = "no name specified";
+    private GameData m_data;
+    private PlayerID m_id;
+    private String m_stepName = "no name specified";
 
-    Random m_rand = new Random(System.currentTimeMillis());
+    private IRandomSource m_randomSource;
 
     private DelegateHistoryWriter m_historyWriter;
-
+    private IRemote m_remote;
+    
     /** Creates new TestDelegateBridge */
     public TestDelegateBridge(GameData data, PlayerID id)
     {
@@ -66,17 +67,12 @@ public class TestDelegateBridge implements IDelegateBridge
      */
     public int getRandom(int max, String annotation)
     {
-        return m_rand.nextInt(max);
+        return m_randomSource.getRandom(max, annotation);
     }
 
     public int[] getRandom(int max, int count, String annotation)
     {
-        int[] r = new int[count];
-        for (int i = 0; i < count; i++)
-        {
-            r[i] = getRandom(max, annotation);
-        }
-        return r;
+        return m_randomSource.getRandom(max, count, annotation);
     }
 
     /**
@@ -142,7 +138,7 @@ public class TestDelegateBridge implements IDelegateBridge
     public IRemote getRemote()
     {
 
-        return null;
+        return m_remote;
     }
 
     /*
@@ -150,8 +146,7 @@ public class TestDelegateBridge implements IDelegateBridge
      */
     public IRemote getRemote(PlayerID id)
     {
-
-        return null;
+        return m_remote;
     }
 
     /* (non-Javadoc)
@@ -172,4 +167,14 @@ public class TestDelegateBridge implements IDelegateBridge
     public void enterDelegateExecution() {}
     
 
+    public void setRandomSource(IRandomSource randomSource)
+    {
+        m_randomSource = randomSource;
+    }
+
+    
+    public void setRemote(IRemote remote)
+    {
+        m_remote = remote;
+    }
 }
