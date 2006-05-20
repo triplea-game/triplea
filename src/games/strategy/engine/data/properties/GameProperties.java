@@ -92,7 +92,7 @@ public class GameProperties extends GameDataComponent
         Object value = get(key);
         if (value == null)
             return defaultValue;
-        return defaultValue;
+        return value;
     }
 
     public void addEditableProperty(IEditableProperty property)

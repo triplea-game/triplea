@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="LHTR 4th Edition" version="1.0"/>
+        <info name="LHTR 4th Edition" version="1.01"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1601,7 +1601,7 @@
                 
                 <property name="neutralCharge" value="9999999"/>
             
-                <property name="superSubDefenseBonus" value="1"/>
+                <property name="Super Sub Defence Bonus" value="1"/>
                 
                 <property name="maxFactoriesPerTerritory" value="1"/>
 
