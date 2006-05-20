@@ -315,6 +315,14 @@ public class UnitAttachment extends DefaultAttachment
       if(TechTracker.hasJetFighter(player))
         return m_defense + 1;
     }
+    if(m_isSub && TechTracker.hasSuperSubs(player))
+    {
+        String bonusString = (String) player.getData().getProperties().get(Constants.SUPER_SUB_DEFENSE_BONUS, "0");
+        int bonus = Integer.parseInt(bonusString);
+        if(bonus > 0)
+            return m_defense + bonus;
+    }
+    
     return m_defense;
   }
 

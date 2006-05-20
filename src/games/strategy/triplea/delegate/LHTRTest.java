@@ -7,6 +7,7 @@ import java.util.List;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.player.ITripleaPlayer;
 import junit.framework.TestCase;
 
@@ -81,6 +82,32 @@ public class LHTRTest extends TestCase
         List<Unit> fighter = route.getStart().getUnits().getMatches(Matches.UnitIsAir);
         
         delegate.move(fighter, route);
+    }
+    
+    public void testSubDefenseBonus()
+    {
+        UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
+        UnitAttachment attachment = UnitAttachment.get(sub);
+        
+        PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+        
+        //before the advance, subs defend and attack at 2
+        assertEquals(2, attachment.getDefense(japanese));
+        assertEquals(2, attachment.getAttack(japanese));
+        
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese);
+        
+        TechTracker.addAdvance(japanese, m_data, bridge, TechAdvance.SUPER_SUBS);
+        
+        
+        //after tech advance, this is now 3
+        assertEquals(3, attachment.getDefense(japanese));
+        assertEquals(3, attachment.getAttack(japanese));
+
+        //make sure this only changes for the player with the tech
+        PlayerID americans = m_data.getPlayerList().getPlayerID("Americans"); 
+        assertEquals(2, attachment.getDefense(americans));
+        assertEquals(2, attachment.getAttack(americans));
     }
     
     

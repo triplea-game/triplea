@@ -186,6 +186,7 @@ public class DelegateTest extends TestCase
 		suite.addTestSuite(MoveDelegateTest.class);
 		suite.addTestSuite(MoveValidatorTest.class);
 		suite.addTestSuite(EmailValidatorTest.class);
+        suite.addTestSuite(RevisedTest.class);
         suite.addTestSuite(LHTRTest.class);
 		return suite;
 	}

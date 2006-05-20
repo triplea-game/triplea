@@ -40,7 +40,7 @@ public class GameDataComponent implements java.io.Serializable
     }
 
 
-	protected GameData getData()
+	public GameData getData()
 	{
 		return m_data;
 	}

@@ -1600,6 +1600,8 @@
                 </property>
                 
                 <property name="neutralCharge" value="9999999"/>
+            
+                <property name="superSubDefenseBonus" value="1"/>
                 
                 <property name="maxFactoriesPerTerritory" value="1"/>
 
