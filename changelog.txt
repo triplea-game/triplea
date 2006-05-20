@@ -1,3 +1,7 @@
+* add lhtr victory citries (sgb)
+
+* super subs defend at 3 in lhtr (sgb)
+
 * make lhtr aa guns not fire in non combat move (sgb)
 
 * pacific and europe map fixes (Opurt, FlyingSpaghettiMonster)
