@@ -75,7 +75,7 @@ public class LHTRTest extends TestCase
         
         Route route = new Route();
         route.setStart(m_data.getMap().getTerritory("Ukraine S.S.R."));
-        route.add(m_data.getMap().getTerritory("Caucus"));
+        route.add(m_data.getMap().getTerritory("Caucasus"));
         route.add(m_data.getMap().getTerritory("West Russia"));
         
         
