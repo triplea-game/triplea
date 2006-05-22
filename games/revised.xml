@@ -30,14 +30,14 @@
                 <territory name="Afghanistan"/>
                 <territory name="Philipine Islands"/>
                 <territory name="Archangel"/>
-                <territory name="Novisibirsk"/>
+                <territory name="Novosibirsk"/>
                 <territory name="Eire"/>
                 <territory name="Mozambique"/>
                 <territory name="Italian East Africa"/>
                 <territory name="Eastern Europe"   />
                 <territory name="Western United States"/>
                 <territory name="Karelia S.S.R."/>
-                <territory name="Kwangtung"/>
+                <territory name="Kwantung"/>
                 <territory name="Brazil"/>
                 <territory name="Borneo"/>
                 <territory name="French Madagascar"/>
@@ -50,7 +50,7 @@
                 <territory name="French Indochina"/>
                 <territory name="West Indies"/>
                 <territory name="Kazakh S.S.R."/>
-                <territory name="Venezuala"/>
+                <territory name="Venezuela"/>
                 <territory name="Trans-Jordan"/>
                 <territory name="United Kingdom"/>
                 <territory name="Western Europe"/>
@@ -61,13 +61,13 @@
                 <territory name="French Equatorial Africa"/>
                 <territory name="Gibraltar"/>
                 <territory name="Solomon Islands"/>
-                <territory name="Caucus"/>
+                <territory name="Caucasus"/>
                 <territory name="Sinkiang"/>
                 <territory name="Algeria"/>
                 <territory name="Balkans"/>
                 <territory name="Wake Island"/>
-                <territory name="Himilaya"/>
-                <territory name="Evanki National Okrug"/>
+                <territory name="Himalaya"/>
+                <territory name="Evenki National Okrug"/>
                 <territory name="Sweden"/>
                 <territory name="Libya"/>
                 <territory name="Ukraine S.S.R."/>
@@ -76,7 +76,7 @@
                 <territory name="Peru"/>
                 <territory name="Eastern United States"/>
                 <territory name="Belorussia"/>
-                <territory name="Burytia S.S.R."/>
+                <territory name="Buryatia S.S.R."/>
                 <territory name="Russia"/>
                 <territory name="Anglo Egypt"/>
                 <territory name="New Guinea"/>
@@ -165,37 +165,37 @@
                 <connection t1="15 Sea Zone" t2="Turkey"/>
                 <connection t1="16 Sea Zone" t2="Turkey"/>
                 <connection t1="17 Sea Zone" t2="Rio De Oro"/>
-                <connection t1="19 Sea Zone" t2="Venezuala"/>
-                <connection t1="20 Sea Zone" t2="Venezuala"/>
+                <connection t1="19 Sea Zone" t2="Venezuela"/>
+                <connection t1="20 Sea Zone" t2="Venezuela"/>
                 <connection t1="21 Sea Zone" t2="Peru"/>
                 <connection t1="21 Sea Zone" t2="Argentina"/>
                 <connection t1="25 Sea Zone" t2="Argentina"/>
                 <connection t1="27 Sea Zone" t2="Angola"/>
                 <connection t1="33 Sea Zone" t2="Mozambique"/>
                 <connection t1="34 Sea Zone" t2="Saudia Arabia"/>
-                <connection t1="Panama" t2="Venezuala"/>
-                <connection t1="Venezuala" t2="Brazil"/>
-                <connection t1="Venezuala" t2="Peru"/>
+                <connection t1="Panama" t2="Venezuela"/>
+                <connection t1="Venezuela" t2="Brazil"/>
+                <connection t1="Venezuela" t2="Peru"/>
                 <connection t1="Brazil" t2="Peru"/>
                 <connection t1="Brazil" t2="Argentina"/>
                 <connection t1="Peru" t2="Argentina"/>
                 <connection t1="Eire" t2="United Kingdom"/>
                 <connection t1="Gibraltar" t2="Spain"/>
                 <connection t1="Spain" t2="Western Europe"/>
-                <connection t1="Caucus" t2="Turkey"/>
+                <connection t1="Caucasus" t2="Turkey"/>
                 <connection t1="Kazakh S.S.R." t2="Afghanistan"/>
-                <connection t1="Himilaya" t2="Afghanistan"/>
+                <connection t1="Himalaya" t2="Afghanistan"/>
                 <connection t1="India" t2="Afghanistan"/>
-                <connection t1="India" t2="Himilaya"/>
-                <connection t1="Sinkiang" t2="Himilaya"/>
-                <connection t1="China" t2="Himilaya"/>
-                <connection t1="French Indochina" t2="Himilaya"/>
-                <connection t1="Novisibirsk" t2="Mongolia"/>
+                <connection t1="India" t2="Himalaya"/>
+                <connection t1="Sinkiang" t2="Himalaya"/>
+                <connection t1="China" t2="Himalaya"/>
+                <connection t1="French Indochina" t2="Himalaya"/>
+                <connection t1="Novosibirsk" t2="Mongolia"/>
                 <connection t1="Sinkiang" t2="Mongolia"/>
                 <connection t1="Manchuria" t2="Mongolia"/>
                 <connection t1="China" t2="Mongolia"/>
                 <connection t1="Yakut S.S.R." t2="Mongolia"/>
-                <connection t1="Burytia S.S.R." t2="Mongolia"/>
+                <connection t1="Buryatia S.S.R." t2="Mongolia"/>
                 <connection t1="Persia" t2="Afghanistan"/>
                 <connection t1="Persia" t2="Turkey"/>
                 <connection t1="Trans-Jordan" t2="Turkey"/>
@@ -271,7 +271,7 @@
                 <connection t1="15 Sea Zone" t2="Anglo Egypt"/>
                 <connection t1="16 Sea Zone" t2="Balkans"/>
                 <connection t1="16 Sea Zone" t2="Ukraine S.S.R."/>
-                <connection t1="16 Sea Zone" t2="Caucus"/>
+                <connection t1="16 Sea Zone" t2="Caucasus"/>
                 <connection t1="17 Sea Zone" t2="18 Sea Zone"/>
                 <connection t1="17 Sea Zone" t2="22 Sea Zone"/>
                 <connection t1="17 Sea Zone" t2="23 Sea Zone"/>
@@ -417,15 +417,15 @@
                 <connection t1="58 Sea Zone" t2="Okinawa"/>
                 <connection t1="59 Sea Zone" t2="60 Sea Zone"/>
                 <connection t1="59 Sea Zone" t2="61 Sea Zone"/>
-                <connection t1="59 Sea Zone" t2="Kwangtung"/>
+                <connection t1="59 Sea Zone" t2="Kwantung"/>
                 <connection t1="60 Sea Zone" t2="61 Sea Zone"/>
                 <connection t1="60 Sea Zone" t2="62 Sea Zone"/>
                 <connection t1="60 Sea Zone" t2="Japan"/>
-                <connection t1="60 Sea Zone" t2="Burytia S.S.R."/>
+                <connection t1="60 Sea Zone" t2="Buryatia S.S.R."/>
                 <connection t1="61 Sea Zone" t2="Japan"/>
                 <connection t1="61 Sea Zone" t2="Manchuria"/>
                 <connection t1="62 Sea Zone" t2="63 Sea Zone"/>
-                <connection t1="62 Sea Zone" t2="Burytia S.S.R."/>
+                <connection t1="62 Sea Zone" t2="Buryatia S.S.R."/>
                 <connection t1="62 Sea Zone" t2="Soviet Far East"/>
                 <connection t1="63 Sea Zone" t2="64 Sea Zone"/>
                 <connection t1="63 Sea Zone" t2="Alaska"/>
@@ -461,34 +461,34 @@
                 <connection t1="Belorussia" t2="West Russia"/>
                 <connection t1="Belorussia" t2="Ukraine S.S.R." />
                 <connection t1="Ukraine S.S.R." t2="West Russia"/>
-                <connection t1="Ukraine S.S.R." t2="Caucus"/>
-                <connection t1="Caucus" t2="Persia"/>
-                <connection t1="Caucus" t2="West Russia"/>
-                <connection t1="Caucus" t2="Russia"/>
-                <connection t1="Caucus" t2="Kazakh S.S.R."/>
+                <connection t1="Ukraine S.S.R." t2="Caucasus"/>
+                <connection t1="Caucasus" t2="Persia"/>
+                <connection t1="Caucasus" t2="West Russia"/>
+                <connection t1="Caucasus" t2="Russia"/>
+                <connection t1="Caucasus" t2="Kazakh S.S.R."/>
                 <connection t1="West Russia" t2="Russia"/>
                 <connection t1="West Russia" t2="Archangel"/>
                 <connection t1="Archangel" t2="Russia"/>
-                <connection t1="Russia" t2="Evanki National Okrug"/>
-                <connection t1="Russia" t2="Novisibirsk"/>
+                <connection t1="Russia" t2="Evenki National Okrug"/>
+                <connection t1="Russia" t2="Novosibirsk"/>
                 <connection t1="Russia" t2="Kazakh S.S.R."/>
-                <connection t1="Kazakh S.S.R." t2="Novisibirsk"/>
+                <connection t1="Kazakh S.S.R." t2="Novosibirsk"/>
                 <connection t1="Kazakh S.S.R." t2="Sinkiang"/>
                 <connection t1="Kazakh S.S.R." t2="Persia"/>
                 <connection t1="India" t2="French Indochina"/>
-                <connection t1="Evanki National Okrug" t2="Yakut S.S.R."/>
-                <connection t1="Evanki National Okrug" t2="Novisibirsk"/>
-                <connection t1="Novisibirsk" t2="Yakut S.S.R."/>
-                <connection t1="Novisibirsk" t2="Sinkiang"/>
+                <connection t1="Evenki National Okrug" t2="Yakut S.S.R."/>
+                <connection t1="Evenki National Okrug" t2="Novosibirsk"/>
+                <connection t1="Novosibirsk" t2="Yakut S.S.R."/>
+                <connection t1="Novosibirsk" t2="Sinkiang"/>
                 <connection t1="Sinkiang" t2="China"/>
                 <connection t1="Yakut S.S.R." t2="Soviet Far East"/>
-                <connection t1="Yakut S.S.R." t2="Burytia S.S.R."/>
-                <connection t1="Burytia S.S.R." t2="Manchuria"/>
-                <connection t1="Burytia S.S.R." t2="Soviet Far East"/>
+                <connection t1="Yakut S.S.R." t2="Buryatia S.S.R."/>
+                <connection t1="Buryatia S.S.R." t2="Manchuria"/>
+                <connection t1="Buryatia S.S.R." t2="Soviet Far East"/>
                 <connection t1="Manchuria" t2="China"/>
-                <connection t1="Manchuria" t2="Kwangtung"/>
-                <connection t1="Kwangtung" t2="China"/>
-                <connection t1="Kwangtung" t2="French Indochina"/>
+                <connection t1="Manchuria" t2="Kwantung"/>
+                <connection t1="Kwantung" t2="China"/>
+                <connection t1="Kwantung" t2="French Indochina"/>
                 <connection t1="China" t2="French Indochina"/>
                 <connection t1="Persia" t2="India"/>
                 <connection t1="Persia" t2="Trans-Jordan"/>
@@ -1027,7 +1027,7 @@
                         <option name="production" value="2"/>
                   </attatchment>
                 
-                  <attatchment name="territoryAttatchment" attatchTo="Novisibirsk" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                  <attatchment name="territoryAttatchment" attatchTo="Novosibirsk" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
                   </attatchment>
                 
@@ -1059,7 +1059,7 @@
                         <option name="victoryCity" value="true"/>
                   </attatchment>
                 
-                  <attatchment name="territoryAttatchment" attatchTo="Kwangtung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                  <attatchment name="territoryAttatchment" attatchTo="Kwantung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                         <option name="victoryCity" value="true"/>                        
                   </attatchment>
@@ -1114,7 +1114,7 @@
                         <option name="production" value="2"/>
                   </attatchment>
                 
-                  <attatchment name="territoryAttatchment" attatchTo="Venezuala" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                  <attatchment name="territoryAttatchment" attatchTo="Venezuela" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                         <option name="isImpassible" value="true"/>
                   </attatchment>
@@ -1165,7 +1165,7 @@
                         <option name="production" value="0"/>
                   </attatchment>
 
-                  <attatchment name="territoryAttatchment" attatchTo="Caucus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                  <attatchment name="territoryAttatchment" attatchTo="Caucasus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
                   </attatchment>
                 
@@ -1185,12 +1185,12 @@
                         <option name="production" value="0"/>
                   </attatchment>
                 
-                  <attatchment name="territoryAttatchment" attatchTo="Himilaya" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                  <attatchment name="territoryAttatchment" attatchTo="Himalaya" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                         <option name="isImpassible" value="true"/>
                   </attatchment>
 
-                  <attatchment name="territoryAttatchment" attatchTo="Evanki National Okrug" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                  <attatchment name="territoryAttatchment" attatchTo="Evenki National Okrug" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                   </attatchment>
                 
@@ -1231,7 +1231,7 @@
                         <option name="production" value="2"/>
                   </attatchment>
                 
-                  <attatchment name="territoryAttatchment" attatchTo="Burytia S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                  <attatchment name="territoryAttatchment" attatchTo="Buryatia S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                   </attatchment>
 
@@ -1328,13 +1328,13 @@
                         <territoryOwner territory="Karelia S.S.R." owner="Russians"/>
                         <territoryOwner territory="Archangel" owner="Russians"/>
                         <territoryOwner territory="Russia" owner="Russians"/>
-                        <territoryOwner territory="Caucus" owner="Russians"/>
+                        <territoryOwner territory="Caucasus" owner="Russians"/>
                         <territoryOwner territory="Kazakh S.S.R." owner="Russians"/>
-                        <territoryOwner territory="Novisibirsk" owner="Russians"/>
-                        <territoryOwner territory="Evanki National Okrug" owner="Russians"/>
+                        <territoryOwner territory="Novosibirsk" owner="Russians"/>
+                        <territoryOwner territory="Evenki National Okrug" owner="Russians"/>
                         <territoryOwner territory="Yakut S.S.R." owner="Russians"/>
                         <territoryOwner territory="Soviet Far East" owner="Russians"/>
-                        <territoryOwner territory="Burytia S.S.R." owner="Russians"/> 
+                        <territoryOwner territory="Buryatia S.S.R." owner="Russians"/> 
 
                         <!-- British Owned Territories -->
                         <territoryOwner territory="United Kingdom" owner="British"/>
@@ -1357,7 +1357,7 @@
 
                         <!-- Japanese Owned Territories -->
                         <territoryOwner territory="Japan" owner="Japanese"/>
-                        <territoryOwner territory="Kwangtung" owner="Japanese"/>
+                        <territoryOwner territory="Kwantung" owner="Japanese"/>
                         <territoryOwner territory="French Indochina" owner="Japanese"/>
                         <territoryOwner territory="Manchuria" owner="Japanese"/>
                         <territoryOwner territory="East Indies" owner="Japanese"/>
@@ -1391,22 +1391,22 @@
                         <unitPlacement unitType="fighter" territory="Karelia S.S.R." quantity="1" owner="Russians"/>
                         <unitPlacement unitType="armour" territory="Archangel" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Archangel" quantity="3" owner="Russians"/>
-                        <unitPlacement unitType="factory" territory="Caucus" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="aaGun" territory="Caucus" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="artillery" territory="Caucus" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Caucus" quantity="3" owner="Russians"/>
-                        <unitPlacement unitType="armour" territory="Caucus" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="factory" territory="Caucasus" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="aaGun" territory="Caucasus" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="Caucasus" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Caucasus" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="armour" territory="Caucasus" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="factory" territory="Russia" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="aaGun" territory="Russia" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Russia" quantity="3" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Russia" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="armour" territory="Russia" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="fighter" territory="Russia" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Evanki National Okrug" quantity="2" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Novisibirsk" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Evenki National Okrug" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Novosibirsk" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Yakut S.S.R." quantity="2" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Soviet Far East" quantity="2" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Burytia S.S.R." quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Buryatia S.S.R." quantity="2" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Kazakh S.S.R." quantity="2" owner="Russians"/>
                         <unitPlacement unitType="submarine" territory="4 Sea Zone" quantity="1" owner="Russians"/>
 
@@ -1488,7 +1488,7 @@
                         <!-- Japanese Unit Placements -->
                         <unitPlacement unitType="fighter" territory="Manchuria" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="infantry" territory="Manchuria" quantity="2" owner="Japanese"/>
-                        <unitPlacement unitType="infantry" territory="Kwangtung" quantity="3" owner="Japanese"/>
+                        <unitPlacement unitType="infantry" territory="Kwantung" quantity="3" owner="Japanese"/>
                         <unitPlacement unitType="fighter" territory="French Indochina" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="infantry" territory="French Indochina" quantity="2" owner="Japanese"/>
                         <unitPlacement unitType="infantry" territory="Solomon Islands" quantity="1" owner="Japanese"/>
