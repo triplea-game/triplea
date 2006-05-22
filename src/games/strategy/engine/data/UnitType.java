@@ -40,9 +40,9 @@ public class UnitType extends NamedAttachable implements Serializable
 		super(name, data);
     }
 
-	public Collection<Unit> create(int quantity, PlayerID owner)
+	public List<Unit> create(int quantity, PlayerID owner)
 	{
-		Collection<Unit> collection = new ArrayList<Unit>();
+		List<Unit> collection = new ArrayList<Unit>();
 		for(int i = 0; i < quantity; i++)
 		{
 			collection.add(new Unit(this, owner, getData()));

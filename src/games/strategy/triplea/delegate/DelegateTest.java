@@ -21,14 +21,13 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.random.EmailValidatorTest;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
 
 import java.io.InputStream;
 import java.net.URL;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
 /**
  *
@@ -176,19 +175,6 @@ public class DelegateTest extends TestCase
 	public void assertError(String string)
 	{
 	    assertNotNull(string);
-	}
-	
-	
-	public static Test suite()
-	{
-		TestSuite suite = new TestSuite();
-		suite.addTestSuite(PlaceDelegateTest.class);
-		suite.addTestSuite(MoveDelegateTest.class);
-		suite.addTestSuite(MoveValidatorTest.class);
-		suite.addTestSuite(EmailValidatorTest.class);
-        suite.addTestSuite(RevisedTest.class);
-        suite.addTestSuite(LHTRTest.class);
-		return suite;
 	}
 	
 }

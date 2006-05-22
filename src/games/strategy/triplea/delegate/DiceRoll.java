@@ -82,10 +82,10 @@ public class DiceRoll implements java.io.Serializable
         // Decide whether to use low luck rules or normal rules.
         if (data.getProperties().get(Constants.LOW_LUCK, false))
         {
-            return rollDiceLowLuck(units, defending, player, bridge, data, battle);
+            return rollDiceLowLuck(units, defending, player, bridge,  battle);
         } else
         {
-            return rollDiceNormal(units, defending, player, bridge, data, battle);
+            return rollDiceNormal(units, defending, player, bridge, battle);
         }
     }
 
@@ -93,7 +93,7 @@ public class DiceRoll implements java.io.Serializable
      * Roll dice for units using low luck rules. Low luck rules based on rules
      * in DAAK.
      */
-    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
+    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle)
     {
         String annotation = getAnnotation(units, player, battle);
 
@@ -173,7 +173,7 @@ public class DiceRoll implements java.io.Serializable
      * Roll dice for units per normal rules.
      */
     @SuppressWarnings("unchecked")
-    private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
+    private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle)
     {
         String annotation = getAnnotation(units, player, battle);
 
@@ -293,7 +293,7 @@ public class DiceRoll implements java.io.Serializable
         m_hits = hits;
     }
 
-    public DiceRoll(int[][] dice, int hits)
+    private DiceRoll(int[][] dice, int hits)
     {
         m_hitOnlyIfEquals = false;
         m_rolls = dice;

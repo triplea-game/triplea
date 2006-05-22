@@ -16,9 +16,7 @@ package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.framework.GameRunner;
 
-import java.io.*;
-import java.net.URL;
-import java.util.Properties;
+import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;

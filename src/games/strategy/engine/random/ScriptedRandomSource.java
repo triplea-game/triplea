@@ -34,13 +34,13 @@ import java.util.StringTokenizer;
  */
 public class ScriptedRandomSource implements IRandomSource
 {
-    private final int PAUSE = -2;
-    private final int ERROR = -2;
+    public static final int PAUSE = -2;
+    public static final int ERROR = -3;
     
     private static final String SCRIPTED_RANDOM_PROPERTY = "triplea.scriptedRandom";
  
 
-    private int[] m_numbers;
+    private final int[] m_numbers;
     private int m_currentIndex = 0;
     
     /**
@@ -75,6 +75,11 @@ public class ScriptedRandomSource implements IRandomSource
                 m_numbers[i] = Integer.parseInt(token) -1;
             }
         }
+    }
+    
+    public ScriptedRandomSource(int[] numbers)
+    {
+        m_numbers = numbers;
     }
     
     public int getRandom(int max, String annotation)

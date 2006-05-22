@@ -455,8 +455,8 @@
             </classpath>
 
             <formatter type="plain" />
-            <test name="games.strategy.triplea.delegate.DelegateTest" />
-            <test name="games.strategy.engine.random.EmailValidatorTest" />
+            <test name="games.strategy.triplea.TripleATest" />
+            <test name="games.strategy.StrategyGameTest" />
         </junit>
     </target>
 

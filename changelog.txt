@@ -1,6 +1,6 @@
 * put saved games in users home directory (sgb)
 
-* fix map names in revised and lhtr (Jeffrey Henning)
+* fix misspelt territory names in revised and lhtr (Jeffrey Henning)
 
 * add lhtr victory citries (sgb)
 
