@@ -1,3 +1,5 @@
+* fix map names in revised and lhtr (Jeffrey Henning)
+
 * add lhtr victory citries (sgb)
 
 * super subs defend at 3 in lhtr (sgb)
