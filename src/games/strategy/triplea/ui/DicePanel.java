@@ -15,9 +15,10 @@
 package games.strategy.triplea.ui;
 
 
-import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.*;
 
 import java.awt.Dimension;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -38,11 +39,17 @@ public class DicePanel extends JPanel
     removeAll();
   }
 
-  public void setDiceRollForBombing(int[] dice, int cost)
+  public void setDiceRollForBombing(int[] random, int cost)
   {
     removeAll();
 
-    add(create(dice, -1, false));
+    List<Die> dice = new ArrayList<Die>(random.length);
+    for(int i =0; i < random.length; i++)
+    {
+        dice.add(new Die(random[i]));
+    }
+    
+    add(create(dice, -1));
 
     add(Box.createVerticalGlue());
     add(new JLabel("Cost:" + cost));
@@ -74,13 +81,15 @@ public class DicePanel extends JPanel
     for(int i = 1; i <= 6; i++)
     {
 
-      int[] dice = diceRoll.getRolls(i);
-      if(dice.length == 0)
+      List<Die> dice = diceRoll.getRolls(i);
+      if(dice.isEmpty())
         continue;
 
       add(new JLabel("Rolled at " + (i) + ":"));
-      add(create(diceRoll.getRolls(i), i, diceRoll.getHitOnlyIfEquals()));
+      add(create(diceRoll.getRolls(i), i));
+      
     }
+    
     add(Box.createVerticalGlue());
     add(new JLabel("Total hits:" + diceRoll.getHits()));
 
@@ -89,15 +98,15 @@ public class DicePanel extends JPanel
     repaint();
   }
 
-  private JComponent create(int[] dice, int rollAt, boolean hitOnlyIfEquals)
+  private JComponent create(List<Die> dice, int rollAt)
   {
     JPanel dicePanel = new JPanel();
     dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
     dicePanel.add(Box.createHorizontalStrut(20));
-    for(int dieIndex = 0; dieIndex < dice.length; dieIndex++)
+    for(Die die : dice)
     {
-      int roll = dice[dieIndex] + 1;
-      boolean hit = hitOnlyIfEquals ? roll == rollAt : roll <= rollAt;
+      int roll = die.getValue() + 1;
+      boolean hit = die.isHit();
       dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, hit)));
       dicePanel.add(Box.createHorizontalStrut(2));
     }

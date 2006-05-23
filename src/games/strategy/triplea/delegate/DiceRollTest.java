@@ -81,6 +81,43 @@ public class DiceRollTest extends TestCase
         
     }
     
+    public void testSimpleLowLuck()
+    {
+        makeGameLowLuck();
+        
+        Territory westRussia = m_data.getMap().getTerritory("West Russia");
+        MockBattle battle = new MockBattle(westRussia);
+        PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+        
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians);
+     
+        
+        UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+        List<Unit> infantry = infantryType.create(1, russians);
+        
+        //infantry defends and hits at 1 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+        DiceRoll roll = DiceRoll.rollDice( infantry, true, russians, bridge, m_data, battle);
+        assertEquals(1, roll.getHits());
+        
+        //infantry does not hit at 2 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {2}));
+        DiceRoll roll2 = DiceRoll.rollDice( infantry, true, russians, bridge, m_data, battle);
+        assertEquals(0, roll2.getHits());
+        
+        
+        //infantry attacks and hits at 0 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
+        DiceRoll roll3 = DiceRoll.rollDice( infantry, false, russians, bridge, m_data, battle);
+        assertEquals(1, roll3.getHits());
+        
+        //infantry attack does not hit at 1 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+        DiceRoll roll4 = DiceRoll.rollDice( infantry, false, russians, bridge, m_data, battle);
+        assertEquals(0, roll4.getHits());
+    }
+    
+    
     
     public void testArtillerySupport()
     {
@@ -105,13 +142,7 @@ public class DiceRollTest extends TestCase
     
     public void testLowLuck()
     {
-        for(IEditableProperty property : m_data.getProperties().getEditableProperties())
-        {
-            if(property.getName().equals(Constants.LOW_LUCK))
-            {
-                 ((BooleanProperty)  property).setValue(true);
-            }
-        }
+        makeGameLowLuck();
         
         Territory westRussia = m_data.getMap().getTerritory("West Russia");
         MockBattle battle = new MockBattle(westRussia);
@@ -129,6 +160,40 @@ public class DiceRollTest extends TestCase
         
         DiceRoll roll = DiceRoll.rollDice( units, true, russians, bridge, m_data, battle);
         assertEquals(1, roll.getHits());
+        
     }
+
+    public void testSerialize() throws Exception
+    {
+        for(int i =0; i < 254; i++)
+        {
+            for(int j =0; j < 254; j++)
+            {
+                
+                Die hit = new Die(i,j,false);
+                assertEquals(hit, Die.getFromWriteValue(hit.getCompressedValue()));
+                
+                
+                Die notHit = new Die(i,j,true);
+                assertEquals(notHit, Die.getFromWriteValue(notHit.getCompressedValue()));
+
+            }
+        }
+        
+    }
+    
+    private void makeGameLowLuck()
+    {
+        for(IEditableProperty property : m_data.getProperties().getEditableProperties())
+        {
+            if(property.getName().equals(Constants.LOW_LUCK))
+            {
+                 ((BooleanProperty)  property).setValue(true);
+            }
+        }
+    }
+    
+
+    
     
 }
