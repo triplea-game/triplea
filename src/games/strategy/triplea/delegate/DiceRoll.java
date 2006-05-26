@@ -272,7 +272,6 @@ public class DiceRoll implements Externalizable
      *            when we are equal or less than for example a 5 is a hit when
      *            rolling at 6 for equal and less than, but is not for equals
      */
-    @SuppressWarnings("unchecked")
     public DiceRoll(int[] dice, int hits, int rollAt, boolean hitOnlyIfEquals)
     {
         m_hits = hits;

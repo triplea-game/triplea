@@ -194,6 +194,66 @@ public class DiceRollTest extends TestCase
     }
     
 
+    public void testAA()
+    {
+        Territory westRussia = m_data.getMap().getTerritory("West Russia");
+        
+        PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+        
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians);
+     
+        
+       
+        //aa hits at 0 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
+        
+        DiceRoll hit = DiceRoll.rollAA(1, bridge, westRussia, m_data);
+        assertEquals(hit.getHits(), 1);
+        
+
+        //aa missses at 1 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+        
+        DiceRoll miss = DiceRoll.rollAA(1, bridge, westRussia, m_data);
+        assertEquals(miss.getHits(), 0);
+        
+    }
+
     
+    
+    public void testAALowLuck()
+    {
+        
+        makeGameLowLuck();
+        Territory westRussia = m_data.getMap().getTerritory("West Russia");
+        
+        PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
+        
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians);
+     
+        
+       
+        //aa hits at 0 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
+        
+        DiceRoll hit = DiceRoll.rollAA(1, bridge, westRussia, m_data);
+        assertEquals(hit.getHits(), 1);
+        
+
+        //aa missses at 1 (0 based)
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+        
+        DiceRoll miss = DiceRoll.rollAA(1, bridge, westRussia, m_data);
+        assertEquals(miss.getHits(), 0);
+        
+        //6 bombers, 1 should hit, and nothing should be rolled
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
+        
+        DiceRoll hitNoRoll = DiceRoll.rollAA(6, bridge, westRussia, m_data);
+        assertEquals(hitNoRoll.getHits(),1 );
+        
+        
+    }
+
     
 }
