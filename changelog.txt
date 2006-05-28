@@ -1,3 +1,5 @@
+add convoy centers (iron cross)
+
 * put saved games in users home directory (sgb)
 
 * fix misspelt territory names in revised and lhtr (Jeffrey Henning)

@@ -4,14 +4,14 @@
 <!-- 
 	=================================================== 
 	Axis & Allies Europe map compiled by IC for TripleA 
-
-
+	Baseline by Black-Elk (TripleElk)
+	Convoy center code thanks to Adam...?
 	====================================================
 -->
 
 <game>
 
-	<info name="+ Europe +" version="0.24"/>
+	<info name="+ Europe +" version="0.25"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -944,8 +944,46 @@
 			            <option name="capital" value="Americans" />    
         </attatchment>
 
-	
+		<!-- Convoy Center Attachements -->
+		<attatchment name="territoryAttatchment" attatchTo="British Convoy 1 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="3"/>
+       </attatchment>
+       <attatchment name="territoryAttatchment" attatchTo="British Convoy 2 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="3"/>
+       </attatchment>
+       <attatchment name="territoryAttatchment" attatchTo="British Convoy 3 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="5"/>
+       </attatchment>
+       <attatchment name="territoryAttatchment" attatchTo="British Convoy 4 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="5"/>
+       </attatchment>
+       <attatchment name="territoryAttatchment" attatchTo="U.S. Convoy 1 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="4"/>
+       </attatchment>
+       <attatchment name="territoryAttatchment" attatchTo="U.S. Convoy 2 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="6"/>
+       </attatchment>
+       <attatchment name="territoryAttatchment" attatchTo="Soviet Convoy Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="4"/>
+       </attatchment>
+				
 	</attatchmentList>
+	
+	
 	
 	<initialize>
 		<ownerInitialize>
@@ -1014,7 +1052,17 @@
 			<!-- American Owned Territories -->
 			<territoryOwner territory="United States" owner = "Americans" />
 			
+			<!-- Convoy Centers -->
+			<territoryOwner territory="Soviet Convoy Sea Zone" owner="Russians"/>		
 			
+			<territoryOwner territory="British Convoy 1 Sea Zone" owner="British"/>
+			<territoryOwner territory="British Convoy 2 Sea Zone" owner="British"/>
+			<territoryOwner territory="British Convoy 3 Sea Zone" owner="British"/>
+			<territoryOwner territory="British Convoy 4 Sea Zone" owner="British"/>
+
+			<territoryOwner territory="U.S. Convoy 1 Sea Zone" owner="Americans"/>
+			<territoryOwner territory="U.S. Convoy 2 Sea Zone" owner="Americans"/>
+
 			
 		</ownerInitialize>
 
@@ -1444,20 +1492,20 @@
 		<property name="mapName" value="europe" editable="false"/>
 		
 		<!-- notes appear in the notes menu in the main screen, format as html -->
-		<property name="notes" value="&lt;H1&gt;		Axis and Allies Europe &lt;/H1&gt; &lt;br&gt; &lt;br&gt;
-		This current mod reflects the Axis and Allies Europe edition.  It is currently in beta and &lt;br&gt;
-		this is its first public release out of design/testing.  We hope that not too many problems &lt;br&gt;
-		reside within it and it will serve people well. &lt;br&gt; &lt;br&gt; 
+		<property name="notes" value="&lt;H1&gt;		+ Axis and Allies Europe + &lt;/H1&gt; &lt;br&gt; &lt;br&gt;
+		This current mod reflects the Axis and Allies Europe edition.   &lt;br&gt; &lt;br&gt; 
 
-		There are a few elements still to be added however.  Currently the convoys are not implemented &lt;br&gt;
-		as support within the engine can not give it at this state.  Also the middle east territories &lt;br&gt;
+		ATTENTION:: As of 0.25, Convoy Centers are now working!		&lt;br&gt; &lt;br&gt; 
+		
+		There are a few elements still to be added however, for example, the middle east territories &lt;br&gt;
 		are counted as regular UK territories as their special rules are also not yet currently implemented. &lt;br&gt; 
 		Strategic bombing for now behaves exactly as regular Axis and Allies strategic bombing.  Also &lt;br&gt;
 		there is no extra Russia bonus of commandeering allied units and converting them to Russian owned &lt;br&gt;
 		at this time.  All units created by a nation will stay under ownership by that nation throughout &lt;br&gt;
 		the entire game. &lt;br&gt; &lt;br&gt; &lt;i&gt; 
 				
-		Credits: Triple_Elk (base-line), iron__cross (integration)"/>
+		Credits: Triple_Elk (base-line), iron__cross (integration), Adam (convoy center code), and the rest of the team..."/>
 	</propertyList>
 	
 </game>
+
