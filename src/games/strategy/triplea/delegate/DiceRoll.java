@@ -180,7 +180,6 @@ public class DiceRoll implements Externalizable
     /**
      * Roll dice for units per normal rules.
      */
-    @SuppressWarnings("unchecked")
     private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle)
     {
         String annotation = getAnnotation(units, player, battle);
