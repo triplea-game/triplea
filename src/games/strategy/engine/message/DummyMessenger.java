@@ -127,13 +127,6 @@ public class DummyMessenger implements IServerMessenger
     {
     }
 
-    /**
-     * Can be set to null. If not null the server will only accept connections
-     * that the accepter accepts.
-     */
-    public void setConnectionAccepter(IConnectionAccepter accepter)
-    {
-    }
 
     public void waitForAllMessagsToBeProcessed()
     {

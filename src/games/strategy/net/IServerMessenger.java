@@ -32,13 +32,6 @@ public interface IServerMessenger extends IMessenger
 	
     public boolean isAcceptNewConnections();
     
-	/**
-	 * Can be set to null.
-	 * If not null the server will only accept connections that
-	 * the accepter accepts.
-	 */
-	public void setConnectionAccepter(IConnectionAccepter accepter);
-    
     /**
      * Remove the node from the network.
      */

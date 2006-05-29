@@ -103,52 +103,7 @@ public class MessengerTest extends TestCase
 
     }    
 
-	public void testRefused()
-	{
-		m_server.setConnectionAccepter( new IConnectionAccepter()
-		{
-			public String acceptConnection(IServerMessenger messenger, INode node)
-			{
-				return "No can do";
-			}
-		});
-
-		Exception e = null;
-		try
-		{
-			new ClientMessenger("localhost", SERVER_PORT, "client3");
-		}
-		catch(IOException ioe)
-		{
-			e = ioe;
-		}
-		assertNotNull(e);
-	}
-
-	public void testAccept()
-	{
-		m_server.setConnectionAccepter( new IConnectionAccepter()
-		{
-			public String acceptConnection(IServerMessenger messenger, INode node)
-			{
-				return null;
-			}
-		});
-
-		Exception e = null;
-		try
-		{
-			new ClientMessenger("localhost", SERVER_PORT, "client3");
-		}
-		catch(IOException ioe)
-		{
-			e = ioe;
-		}
-		assertNull(e);
-	}
-
-
-
+	
 
 	public void testServerSend()
 	{

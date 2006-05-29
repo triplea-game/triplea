@@ -21,6 +21,7 @@
 package games.strategy.net;
 
 import java.util.*;
+import java.util.logging.*;
 import java.net.*;
 import java.io.*;
 
@@ -34,6 +35,8 @@ import games.strategy.util.ListenerList;
  */
 public class ServerMessenger implements IServerMessenger
 {
+    private Logger s_logger = Logger.getLogger(ServerMessenger.class.getName());
+    
     private final ServerSocket m_socket;
 
     private final Node m_node;
@@ -51,8 +54,6 @@ public class ServerMessenger implements IServerMessenger
     private final ListenerList<IConnectionChangeListener> m_connectionListeners = new ListenerList<IConnectionChangeListener>();
 
     private boolean m_acceptNewConnection = false;
-
-    private IConnectionAccepter m_connectionAccepter = null;
 
     private IObjectStreamFactory m_inStreamFactory;
 
@@ -275,31 +276,21 @@ public class ServerMessenger implements IServerMessenger
 
     private synchronized void addConnection(Socket s)
     {
+        //TODO - dont synchronize this entire method
         Connection c = null;
 
         try
         {
+            //TODO check the connection is valid before allowing the connection
+            //to add itself as a listener
             c = new Connection(s, m_node, m_connectionListener, m_inStreamFactory);
         } catch (IOException ioe)
         {
-            ioe.printStackTrace();
-        }
-        if (c == null)
+            s_logger.log(Level.WARNING, "Error creating connection", ioe);
             return;
-
-        ensureValidName(c);
-
-        if (m_connectionAccepter != null)
-        {
-            String error = m_connectionAccepter.acceptConnection(this, c.getRemoteNode());
-            if (error != null)
-            {
-                ConnectionRefusedMessage msg = new ConnectionRefusedMessage(error);
-                MessageHeader header = new MessageHeader(m_node, c.getRemoteNode(), msg);
-                c.send(header);
-                return;
-            }
         }
+        
+        ensureValidName(c);
 
         m_allNodes.add(c.getRemoteNode());
 
@@ -315,6 +306,8 @@ public class ServerMessenger implements IServerMessenger
         broadcast(change);
         m_connections.add(c);
 
+        s_logger.info("Connection added to:" + c.getRemoteNode());
+        
         notifyConnectionsChanged(true, c.getRemoteNode());
     }
 
@@ -324,6 +317,8 @@ public class ServerMessenger implements IServerMessenger
         m_allNodes.remove(c.getRemoteNode());
         broadcast(change);
         notifyConnectionsChanged(false, c.getRemoteNode());
+        
+        s_logger.info("Connection removed:" + c.getRemoteNode());
     }
 
     private void notifyListeners(MessageHeader msg)
@@ -390,15 +385,6 @@ public class ServerMessenger implements IServerMessenger
         return m_node;
     }
 
-    /**
-     * Can be set to null. If not null the server will only accept connections
-     * that the accepter accepts.
-     */
-    public synchronized void setConnectionAccepter(IConnectionAccepter accepter)
-    {
-        m_connectionAccepter = accepter;
-    }
-
     private class ConnectionHandler implements Runnable
     {
         public void run()
@@ -408,17 +394,21 @@ public class ServerMessenger implements IServerMessenger
                 try
                 {
                     Socket s = m_socket.accept();
+                    
+                    s_logger.info("Socket opened from:" + s.getRemoteSocketAddress());
+                    
                     if (m_acceptNewConnection)
                     {
                         addConnection(s);
                     } else
                     {
+                        s_logger.info("Not accepting connections, close socket for:" + s.getRemoteSocketAddress());
                         s.close();
                     }
 
                 } catch (IOException e)
                 {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         }
