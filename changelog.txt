@@ -1,4 +1,4 @@
-add convoy centers (iron cross)
+* add convoy centers in europe map (iron cross)
 
 * put saved games in users home directory (sgb)
 
