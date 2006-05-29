@@ -56,7 +56,7 @@ public class ServerMessenger implements IServerMessenger
     private boolean m_acceptNewConnection = false;
 
     private IObjectStreamFactory m_inStreamFactory;
-
+    
     public ServerMessenger(String name, int portNumber, IObjectStreamFactory streamFactory) throws IOException
     {
         m_inStreamFactory = streamFactory;
@@ -408,7 +408,9 @@ public class ServerMessenger implements IServerMessenger
 
                 } catch (IOException e)
                 {
-                    e.printStackTrace();
+                    //accept throws an exception when we shutdown
+                    if(!m_shutdown)
+                        e.printStackTrace();
                 }
             }
         }
@@ -462,6 +464,11 @@ public class ServerMessenger implements IServerMessenger
                 
         }
 
+    }
+
+    public INode getServerNode()
+    {
+        return m_node;
     }
 
 }

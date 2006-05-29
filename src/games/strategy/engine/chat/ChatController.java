@@ -36,7 +36,7 @@ public class ChatController implements IChatController
             {
                 if(m_chatters.contains(to))
                 {
-                    leaveChat(to);
+                    leaveChatInternal(to);
                 }
             }
             
@@ -103,8 +103,9 @@ public class ChatController implements IChatController
     
     
     //a player has joined
-    public Tuple<List<INode>, Long> joinChat(INode node)
+    public Tuple<List<INode>, Long> joinChat()
     {
+        INode node = MessageContext.getSender();
         synchronized(m_mutex)
         {
             m_chatters.add(node);
@@ -117,7 +118,13 @@ public class ChatController implements IChatController
     }
     
     //a player has left
-    public void leaveChat(INode node)
+    public void leaveChat()
+    {
+        leaveChatInternal(MessageContext.getSender());
+
+    }
+    
+    private void leaveChatInternal(INode node)
     {
         synchronized(m_mutex)
         {

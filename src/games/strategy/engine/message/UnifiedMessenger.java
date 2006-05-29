@@ -32,7 +32,7 @@ import java.util.logging.*;
  */
 public class UnifiedMessenger
 {
-
+    
     private final static Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
 
     //a thread pool to run the invoke on
@@ -320,7 +320,7 @@ public class UnifiedMessenger
 
         List<RemoteMethodCallResults> results;
         if(endPoint != null)
-            results = endPoint.invokeLocal(remoteCall, endPoint.takeANumber());
+            results = endPoint.invokeLocal(remoteCall, endPoint.takeANumber(), m_messenger.getLocalNode());
         else
             results = Collections.emptyList();
 
@@ -369,7 +369,7 @@ public class UnifiedMessenger
 
         //invoke locally
 
-        endPoint.invokeLocal(call, endPoint.takeANumber());
+        endPoint.invokeLocal(call, endPoint.takeANumber(), m_messenger.getLocalNode());
     }
 
     /**
@@ -574,7 +574,7 @@ public class UnifiedMessenger
                 {
                     public void run()
                     {
-                        List<RemoteMethodCallResults> results = localFinal.invokeLocal(invoke.call, methodRunNumber);
+                        List<RemoteMethodCallResults> results = localFinal.invokeLocal(invoke.call, methodRunNumber, from);
                         if (invoke.needReturnValues)
                         {
                             m_messenger.send(new InvocationResults(results, invoke.methodCallID), from);
@@ -862,7 +862,7 @@ class EndPoint
      * threaded, then the method will not run until the number comes up. Acquire
      * with getNumber() @return a List of RemoteMethodCallResults
      */
-    public List<RemoteMethodCallResults> invokeLocal(final RemoteMethodCall call, long number)
+    public List<RemoteMethodCallResults> invokeLocal(final RemoteMethodCall call, long number, INode messageOriginator)
     {
 
         try
@@ -871,10 +871,10 @@ class EndPoint
             {
                 waitTillCanBeRun(number);
 
-                return invokeMultiple(call);
+                return invokeMultiple(call, messageOriginator);
 
             } else
-                return invokeMultiple(call);
+                return invokeMultiple(call,messageOriginator);
         } finally
         {
             releaseNumber();
@@ -886,7 +886,7 @@ class EndPoint
      * @param call
      * @param rVal
      */
-    private List<RemoteMethodCallResults> invokeMultiple(RemoteMethodCall call)
+    private List<RemoteMethodCallResults> invokeMultiple(RemoteMethodCall call, INode messageOriginator)
     {
         //copy the implementors
         List<Object> implementorsCopy;
@@ -900,7 +900,7 @@ class EndPoint
         while (iter.hasNext())
         {
             Object implementor = iter.next();
-            results.add(invokeSingle(call, implementor));
+            results.add(invokeSingle(call, implementor,messageOriginator));
         }
         return results;
     }
@@ -910,8 +910,9 @@ class EndPoint
      * @param implementor
      * @return
      */
-    private RemoteMethodCallResults invokeSingle(RemoteMethodCall call, Object implementor)
+    private RemoteMethodCallResults invokeSingle(RemoteMethodCall call, Object implementor, INode messageOriginator)
     {
+        
         Method method;
         try
         {
@@ -927,6 +928,7 @@ class EndPoint
             throw new IllegalStateException(e.getMessage());
         }
 
+        MessageContext.setSenderNodeForThread(messageOriginator);
         try
         {
             Object methodRVal = method.invoke(implementor, call.getArgs());
@@ -940,6 +942,10 @@ class EndPoint
             //this shouldnt happen
             e.printStackTrace();
             throw new IllegalStateException(e.getMessage());
+        }
+        finally
+        {
+            MessageContext.setSenderNodeForThread(null);
         }
     }
 

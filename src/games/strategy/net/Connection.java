@@ -226,6 +226,7 @@ class Connection
                 {
                     System.err.println("Exception shutting down");
                     e.printStackTrace();
+                    s_logger.info("Socket closed:" + m_socket.getRemoteSocketAddress());
                 }
             }
             return false;

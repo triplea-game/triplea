@@ -61,6 +61,7 @@ public class MessengerTest extends TestCase
 	{
         SERVER_PORT++;
 		m_server = new ServerMessenger("Server", SERVER_PORT);
+        
 		m_server.setAcceptNewConnections(true);
 		m_server.addMessageListener(m_serverListener);
 
@@ -69,6 +70,11 @@ public class MessengerTest extends TestCase
 
 		m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
 		m_client2.addMessageListener(m_client2Listener);
+        
+        assertEquals(m_server.getServerNode(), m_server.getLocalNode());
+        assertEquals(m_client1.getServerNode(), m_server.getLocalNode());
+        assertEquals(m_client2.getServerNode(), m_server.getLocalNode());
+
 	}
     
     public void tearDown()

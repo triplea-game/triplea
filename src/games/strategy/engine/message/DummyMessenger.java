@@ -149,4 +149,9 @@ public class DummyMessenger implements IServerMessenger
         
     }
 
+    public INode getServerNode()
+    {
+        return m_node;
+    }
+
 }

@@ -96,4 +96,14 @@ public interface IMessenger
      * There should only be one server node, and it should exist before other nodes.
      */
     public boolean isServer();
+    
+    /**
+     * 
+     * @return local node if we are a server node.
+     */
+    public INode getServerNode();
+    
+    
 }
+
+

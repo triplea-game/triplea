@@ -118,7 +118,7 @@ public class Chat
         }
         m_channelMessenger.registerChannelSubscriber(m_chatChannelSubscribor, m_chatChannelName);   
         
-        Tuple<List<INode>, Long> init = controller.joinChat(m_messenger.getLocalNode());
+        Tuple<List<INode>, Long> init = controller.joinChat();
         if(init == null)
             return;
         
@@ -152,7 +152,7 @@ public class Chat
         {
             String  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
             IChatController controller = (IChatController) m_remoteMesenger.getRemote(chatControllerName);
-            controller.leaveChat(m_messenger.getLocalNode());
+            controller.leaveChat();
         }
         
         
@@ -176,7 +176,7 @@ public class Chat
         if (destination != null)
         {          
             IChatChannel remote = (IChatChannel) m_channelMessenger.getChannelBroadcastor(m_chatChannelName);
-            remote.slapOccured(m_channelMessenger.getLocalNode(), destination);
+            remote.slapOccured(destination);
         }
     }
     
@@ -184,9 +184,9 @@ public class Chat
     {
         IChatChannel remote = (IChatChannel) m_channelMessenger.getChannelBroadcastor(m_chatChannelName);
         if(meMessage)
-            remote.meMessageOccured(message, m_channelMessenger.getLocalNode());
+            remote.meMessageOccured(message);
         else
-            remote.chatOccured(message, m_channelMessenger.getLocalNode());
+            remote.chatOccured(message);
         
         m_sentMessages.append(message);
     }
@@ -226,8 +226,27 @@ public class Chat
 
     private IChatChannel m_chatChannelSubscribor = new IChatChannel()
     {
-        public void chatOccured(String message, INode from)
+        
+        private void assertMessageFromServer()
         {
+            
+            INode senderNode = MessageContext.getSender();
+            INode serverNode = m_messenger.getServerNode();
+            
+            //this will happen if the message is queued
+            //but to queue a message, we must first test where it came from
+            //so it is safe in this case to return ok
+            if(senderNode == null)
+                return;
+            
+            if(!senderNode.equals(serverNode))
+                throw new IllegalStateException("The node:" + senderNode + " sent a message as the server!");
+        }
+        
+        
+        public void chatOccured(String message)
+        {
+            INode from = MessageContext.getSender();
             synchronized(m_mutex)
             {
                 m_chatHistory.add(new ChatMessage(message, from.getName(), false ));
@@ -238,8 +257,9 @@ public class Chat
             }
         }
         
-        public void meMessageOccured(String message, INode from)
+        public void meMessageOccured(String message)
         {
+            INode from = MessageContext.getSender();
             synchronized(m_mutex)
             {
                 m_chatHistory.add(new ChatMessage(message, from.getName(), true));
@@ -252,6 +272,8 @@ public class Chat
 
         public void speakerAdded(final INode node, final long version)
         {
+            assertMessageFromServer();
+            
             synchronized(m_mutex)
             {
                 if(m_chatInitVersion == -1)
@@ -280,6 +302,8 @@ public class Chat
 
         public void speakerRemoved(final INode node, final long version)
         {
+            assertMessageFromServer();
+            
             synchronized(m_mutex)
             {
                 
@@ -295,7 +319,6 @@ public class Chat
                     
                     });
                     return;
-                    
                 }
                 
                 
@@ -309,8 +332,10 @@ public class Chat
             }
         }
         
-        public void slapOccured(INode from, INode to)
+        public void slapOccured(INode to)
         {
+            INode from = MessageContext.getSender();
+            
             synchronized(m_mutex)
             {
                 if(to.equals(m_channelMessenger.getLocalNode()))

@@ -25,7 +25,8 @@ import junit.framework.TestCase;
 public class RemoteMessengerTest extends TestCase
 {
 
-    private RemoteMessenger m_messenger;
+    private IMessenger m_messenger;
+    private RemoteMessenger m_remoteMessenger;
     
     /*
      * @see TestCase#setUp()
@@ -33,8 +34,8 @@ public class RemoteMessengerTest extends TestCase
     protected void setUp() throws Exception
     {
         //simple set up for non networked testing
-        DummyMessenger messenger = new DummyMessenger();
-        m_messenger = new RemoteMessenger(new UnifiedMessenger(messenger));
+        m_messenger = new DummyMessenger();
+        m_remoteMessenger = new RemoteMessenger(new UnifiedMessenger(m_messenger));
     }
 
     /*
@@ -42,33 +43,35 @@ public class RemoteMessengerTest extends TestCase
      */
     protected void tearDown() throws Exception
     {
-        super.tearDown();
+        m_messenger = null;
+        m_remoteMessenger = null;
     }
 
     public void testRegisterUnregister()
     {
         TestRemote testRemote = new TestRemote();
-        m_messenger.registerRemote(ITestRemote.class, testRemote, "test");
-        assertTrue(m_messenger.hasRemote("test"));
-        m_messenger.unregisterRemote("test");
-        assertFalse(m_messenger.hasRemote("test"));
+        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "test");
+        assertTrue(m_remoteMessenger.hasRemote("test"));
+        m_remoteMessenger.unregisterRemote("test");
+        assertFalse(m_remoteMessenger.hasRemote("test"));
     }
     
     public void testMethodCall()
     {
         TestRemote testRemote = new TestRemote();
-        m_messenger.registerRemote(ITestRemote.class, testRemote, "testMethodCall");
-        ITestRemote remote = (ITestRemote) m_messenger.getRemote("testMethodCall");
+        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "testMethodCall");
+        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote("testMethodCall");
         assertEquals(2, remote.increment(1));
+        assertEquals(testRemote.getLastSenderNode(), m_messenger.getLocalNode());
     }
     
     public void testExceptionThrownWhenUnregisteredRemote()
     {
         TestRemote testRemote = new TestRemote();
-        m_messenger.registerRemote(ITestRemote.class, testRemote, "testMethodCall");
-        ITestRemote remote = (ITestRemote) m_messenger.getRemote("testMethodCall");
+        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "testMethodCall");
+        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote("testMethodCall");
         
-        m_messenger.unregisterRemote("testMethodCall");
+        m_remoteMessenger.unregisterRemote("testMethodCall");
         
         try
         {
@@ -86,7 +89,7 @@ public class RemoteMessengerTest extends TestCase
     {
         try
         {
-            m_messenger.getRemote("testMethodCall");
+            m_remoteMessenger.getRemote("testMethodCall");
             fail("No exception thrown");
         }
         catch(RemoteNotFoundException rme)
@@ -99,16 +102,16 @@ public class RemoteMessengerTest extends TestCase
     public void testVoidMethodCall()
     {
         TestRemote testRemote = new TestRemote();
-        m_messenger.registerRemote(ITestRemote.class, testRemote, "testVoidMethodCall");
-        ITestRemote remote = (ITestRemote) m_messenger.getRemote("testVoidMethodCall");
+        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "testVoidMethodCall");
+        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote("testVoidMethodCall");
         remote.testVoid();
     }    
     
     public void testException() throws Exception
     {
         TestRemote testRemote = new TestRemote();
-        m_messenger.registerRemote(ITestRemote.class, testRemote, "testException");
-        ITestRemote remote = (ITestRemote) m_messenger.getRemote("testException");
+        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "testException");
+        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote("testException");
         try
         {
             remote.throwException();
@@ -141,7 +144,8 @@ public class RemoteMessengerTest extends TestCase
             RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
             
             //register it on the server
-            serverRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
+            TestRemote testRemote = new TestRemote();
+            serverRM.registerRemote(ITestRemote.class, testRemote, "test");
 
             //since the registration must go over a socket
             //and through a couple threads, wait for the 
@@ -156,6 +160,7 @@ public class RemoteMessengerTest extends TestCase
             //call it on the client
             int rVal = ( (ITestRemote) clientRM.getRemote("test")).increment(1);
             assertEquals(2, rVal); 
+            assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
 
         }
         finally
@@ -181,7 +186,8 @@ public class RemoteMessengerTest extends TestCase
             client = new ClientMessenger("localhost", 12025, "client");
            
             RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
-            serverRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
+            TestRemote testRemote = new TestRemote();
+            serverRM.registerRemote(ITestRemote.class, testRemote, "test");
             
             RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
             
@@ -190,6 +196,7 @@ public class RemoteMessengerTest extends TestCase
             //reutrn until the initial state of the messenger is good
             int rVal = ( (ITestRemote) clientRM.getRemote("test")).increment(1);
             assertEquals(2, rVal); 
+            assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
 
         }
         finally
@@ -469,18 +476,26 @@ class TestRemote implements ITestRemote
 {
     public static final String EXCEPTION_STRING = "AND GO";
     
+    private INode m_senderNode;
+    
     public int increment(int testVal)
     {
+        m_senderNode = MessageContext.getSender();
         return testVal + 1;
     }
     
     public void testVoid()
     {
-        
+        m_senderNode = MessageContext.getSender();
     }
     
     public void throwException() throws Exception
     {
         throw new Exception(EXCEPTION_STRING);
+    }
+    
+    public INode getLastSenderNode()
+    {
+        return m_senderNode;
     }
 }

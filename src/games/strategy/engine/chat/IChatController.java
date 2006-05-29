@@ -22,11 +22,11 @@ interface IChatController extends IRemote
     /**
      * Join the chat, returns the chatters currently in the chat.
      */
-    public Tuple<List<INode>, Long> joinChat(INode node);
+    public Tuple<List<INode>, Long> joinChat();
     
     /**
      * Leave the chat, and ask that everyone stops bothering me.
      */
-    public void leaveChat(INode node);
+    public void leaveChat();
     
 }

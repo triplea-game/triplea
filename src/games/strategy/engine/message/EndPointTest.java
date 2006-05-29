@@ -27,7 +27,7 @@ public class EndPointTest extends TestCase
         EndPoint endPoint = new EndPoint("", new Class[] {String.class}, false, null);
         endPoint.addImplementor("test");
         RemoteMethodCall call = new RemoteMethodCall("", "toString", new Object[0], new Class[0]);
-        List results = endPoint.invokeLocal(call, endPoint.takeANumber());
+        List results = endPoint.invokeLocal(call, endPoint.takeANumber(), null);
         assertEquals(results.size(), 1);
         assertEquals("test", ((RemoteMethodCallResults) results.iterator().next()).getRVal() );    
     }
