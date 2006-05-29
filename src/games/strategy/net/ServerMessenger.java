@@ -283,7 +283,7 @@ public class ServerMessenger implements IServerMessenger
         {
             //TODO check the connection is valid before allowing the connection
             //to add itself as a listener
-            c = new Connection(s, m_node, m_connectionListener, m_inStreamFactory);
+            c = new Connection(s, m_node, m_connectionListener, m_inStreamFactory, false);
         } catch (IOException ioe)
         {
             s_logger.log(Level.WARNING, "Error creating connection", ioe);

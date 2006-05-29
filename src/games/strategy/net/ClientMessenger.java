@@ -47,7 +47,7 @@ public class ClientMessenger implements IMessenger
         Socket socket = new Socket(host, port);
         m_node = new Node(name, socket.getLocalAddress(), socket.getLocalPort());
 
-        m_connection = new Connection(socket, m_node, m_connectionListener, streamFact);
+        m_connection = new Connection(socket, m_node, m_connectionListener, streamFact, true);
 
         if (m_connection == null)
             throw new IllegalStateException("Null exception");

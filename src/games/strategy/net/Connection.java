@@ -59,8 +59,12 @@ class Connection
     private long m_totalRead = 0;
     private long m_totatlWriten = 0;
 
-    public Connection(Socket s, INode ident, IConnectionListener listener, IObjectStreamFactory fact) throws IOException
+    //is the remote node a server?
+    private final boolean m_remoteIsServer;
+    
+    public Connection(Socket s, INode ident, IConnectionListener listener, IObjectStreamFactory fact, boolean remoteIsServer) throws IOException
     {
+        m_remoteIsServer = remoteIsServer;
         m_objectStreamFactory = fact;
         init(s, ident, listener);
     }
@@ -237,14 +241,21 @@ class Connection
         return !m_shutdown;
     }
 
-    private void messageReceived(MessageHeader obj)
+    private void messageReceived(MessageHeader header)
     {
-        if(obj.getMessage() instanceof NodeNameChange)
+        if(header.getMessage() instanceof NodeNameChange)
         {
-            ((Node) m_localNode).setName( ((NodeNameChange) obj.getMessage()).getNewName() );
+            ((Node) m_localNode).setName( ((NodeNameChange) header.getMessage()).getNewName() );
         }
-        if (obj != null)
-            m_listener.messageReceived(obj, this);
+        
+        //only the server can send messages from a node other than itself
+        if(!m_remoteIsServer && !header.getFrom().equals(m_remoteNode))
+        {
+            throw new IllegalStateException("Non server node trying to spoof a message from a different node");
+        }
+        
+        if (header != null)
+            m_listener.messageReceived(header, this);
     }
 
     class Writer implements Runnable
