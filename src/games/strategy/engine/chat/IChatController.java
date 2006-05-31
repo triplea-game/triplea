@@ -17,7 +17,7 @@ import java.util.List;
  * 
  * @author sgb
  */
-interface IChatController extends IRemote
+public interface IChatController extends IRemote
 {
     /**
      * Join the chat, returns the chatters currently in the chat.

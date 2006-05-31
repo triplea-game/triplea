@@ -18,7 +18,7 @@ public class ChatController implements IChatController
     private final String m_chatName;
     private final List<INode> m_chatters = new ArrayList<INode>();
     
-    private final Object m_mutex = new Object();
+    protected final Object m_mutex = new Object();
     
     private final String m_chatChannel;
     private long m_version;
@@ -124,7 +124,7 @@ public class ChatController implements IChatController
 
     }
     
-    private void leaveChatInternal(INode node)
+    protected void leaveChatInternal(INode node)
     {
         synchronized(m_mutex)
         {
