@@ -86,6 +86,7 @@ public class GameSelectorModel extends Observable
             setGameData(newData);
         } catch (Exception e)
         {
+            e.printStackTrace(System.out);
             error(e.getMessage(), ui);
         }
     }

@@ -749,8 +749,7 @@ public class GameParser
         name = current.getAttribute("name");
         if(name.length() == 0)
           throw new GameParseException("option name with 0 length");
-        name = "set" + capitalizeFirstLetter(name);
-        setter = obj.getClass().getMethod(name, SETTER_ARGS);
+        setter = obj.getClass().getMethod( "set" + capitalizeFirstLetter(name), SETTER_ARGS);
       } catch(NoSuchMethodException nsme)
       {
         throw new GameParseException("No setter for attatchment option. Setter:" + name + " Class:" + obj.getClass().getName());
@@ -769,7 +768,8 @@ public class GameParser
         throw new GameParseException("Setter not public. Setter:" + name + " Class:" + obj.getClass().getName());
       } catch(InvocationTargetException ite)
       {
-        throw new GameParseException("Invocation Exception. Message:" + ite.getMessage());
+        ite.getCause().printStackTrace(System.out);
+        throw new GameParseException("Error setting property:" +  name + " cause:" + ite.getCause().getMessage());
       }
     }
   }
