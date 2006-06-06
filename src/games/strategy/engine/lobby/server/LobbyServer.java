@@ -75,7 +75,7 @@ public class LobbyServer implements ILobby
         {
             for(INode t : m_serverlist)
             {
-                if(t.getAddress() == server.getAddress())
+                if(t.getAddress().equals(server.getAddress()))
                 {
                     m_serverlist.remove(t);
                     m_brodcast.serverRemoved(t);
@@ -105,7 +105,7 @@ public class LobbyServer implements ILobby
                 System.out.println(n.toString());
             }
             System.out.println("end of servers.");
-            return m_serverlist;
+            return new ArrayList(m_serverlist);
         }
     }
     public static void main(String args[])
