@@ -192,23 +192,34 @@ public class ServersPanel extends JPanel implements ILobbyBrodcaster
         });
     }
     
-    public void serverAdded(INode server)
+    public void serverAdded(final INode server)
     {
-        if(m_snodes.size() == 0)
-        {
-            m_servers.clear();
-        }
-        m_snodes.add(server);
-        m_servers.addElement(server.getName());
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run()
+            {
+                if(m_snodes.size() == 0)
+                {
+                    m_servers.clear();
+                }
+                m_snodes.add(server);
+                m_servers.addElement(server.getName());
+            }
+        });
     }
     
-    public void serverRemoved(INode server)
+    public void serverRemoved(final INode server)
     {
-        m_snodes.remove(server);
-        if(m_snodes.size() == 0)
+        SwingUtilities.invokeLater(new Runnable()
         {
-            m_servers.addElement(NO_SERVERS);
-        }
-        m_servers.removeElement(server.getName());
+            public void run()
+            {
+                m_snodes.remove(server);
+                if(m_snodes.size() == 0)
+                {
+                    m_servers.addElement(NO_SERVERS);
+                }
+                m_servers.removeElement(server.getName());
+            }
+        });
     }
 }

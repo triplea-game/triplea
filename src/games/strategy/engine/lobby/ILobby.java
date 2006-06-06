@@ -30,7 +30,7 @@ import java.util.ArrayList;
  */
 public interface ILobby extends IRemote
 {
+    public ArrayList<INode> getServers();
     public void addServer(INode mynode);
     public void removeServer(INode mynode);
-    public ArrayList<INode> getServers();
 }
