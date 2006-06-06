@@ -20,6 +20,9 @@ import games.strategy.net.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 /**
  * LobbyServer.java
  *
@@ -37,17 +40,19 @@ public class LobbyServer implements ILobby
     private UnifiedMessenger m_um;
     private final Object m_mutex = new Object();
     ArrayList<INode> m_serverlist = new ArrayList();
+    Logger m_logger;
     /** Creates a new instance of LobbyServer */
     public LobbyServer(String name,int port)
     {
+        LogManager.getLogManager().addLogger(Logger.getLogger("global"));
+        m_logger = LogManager.getLogManager().getLogger("global");
         try
        {
            m_server = new ServerMessenger(name,port);
        }
        catch(IOException ex)
        {
-           //log
-           System.out.println(ex.toString());
+           m_logger.log(Level.SEVERE,ex.toString());
            return;
        }
        m_server.setAcceptNewConnections(true);
@@ -63,8 +68,7 @@ public class LobbyServer implements ILobby
     {
         synchronized(m_mutex)
         {
-            //log
-            System.out.println("addServer: " + server.toString());
+            m_logger.log(Level.INFO,"addserver: " + server.toString());
             m_serverlist.add(server);
             m_brodcast.serverAdded(server);
         }
@@ -88,8 +92,7 @@ public class LobbyServer implements ILobby
     {
         synchronized(m_mutex)
         {
-            //log
-            System.out.println("removeServer: " + server.toString());
+            m_logger.log(Level.INFO,"removeServer: " + server.toString());
             m_serverlist.remove(server);
             m_brodcast.serverRemoved(server);
         }
@@ -98,13 +101,12 @@ public class LobbyServer implements ILobby
     {
         synchronized(m_mutex)
         {
-            //log
-            System.out.println("Server list requested.... servers:");
+            m_logger.log(Level.INFO,"Server list requested.... servers:");
             for(INode n : m_serverlist)
             {
-                System.out.println(n.toString());
+                m_logger.log(Level.INFO,n.toString());
             }
-            System.out.println("end of servers.");
+            m_logger.log(Level.INFO,"end of servers.");
             return new ArrayList(m_serverlist);
         }
     }

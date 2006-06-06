@@ -23,6 +23,8 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 /**
  * LobbyClient.java
  *
@@ -30,7 +32,7 @@ import java.io.*;
  *
  * @author Harry
  */
-public class LobbyClient extends JFrame
+public class LobbyClient extends JFrame implements WindowListener
 {
     ChatPanel m_cp;
     ServersPanel m_sp;
@@ -40,6 +42,7 @@ public class LobbyClient extends JFrame
     IMessenger m_client;
     UnifiedMessenger m_um;
     
+    INode m_server_node = null;
     ILobby m_lobby;
     MainFrame m_frame;
     
@@ -48,10 +51,37 @@ public class LobbyClient extends JFrame
     public static final String SERVER_ADDR = "triplea.lobbyclient.server_address";
     public static final String SERVER_PORT = "triplea.lobbyclient.server_port";
     
+    public void windowDeactivated(WindowEvent e){}
+    public void windowActivated(WindowEvent e){}
+    public void windowClosed(WindowEvent e){}
+    public void windowOpened(WindowEvent e){}
+    public void windowIconified(WindowEvent e){}
+    public void windowDeiconified(WindowEvent e){}
+    public void windowClosing(WindowEvent e)
+    {
+        if(m_frame.isVisible())
+        {
+            if(m_server_node != null)
+            {
+                m_lobby.removeServer(m_server_node);
+                m_client.shutDown();
+            }
+            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        }
+        else
+        {
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+        }
+    }
+    public void setSeverNode(INode n)
+    {
+        m_server_node = n;
+    }
     /** Creates a new instance of LobbyClient */
     public LobbyClient(String name,String server,int port,MainFrame frame)
     {
         m_frame = frame;
+        addWindowListener(this);
         if(m_frame == null)
         {
             m_frame = new MainFrame();
@@ -68,6 +98,10 @@ public class LobbyClient extends JFrame
             setVisible(false);
         }
         initComponents(name,server,port);
+        if(!m_frame.isVisible())
+        {
+            setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+        }
     }
     
     void initConnections(String name,String server,int port) throws Exception
@@ -79,7 +113,7 @@ public class LobbyClient extends JFrame
         m_cp = new ChatPanel(m_client,m_channel,m_remote,"lobby.chat");
         m_remote.waitForRemote("lobby.lobby",200);
         m_lobby = (ILobby)m_remote.getRemote("lobby.lobby");
-        m_sp = new ServersPanel(m_lobby,m_client,m_frame);
+        m_sp = new ServersPanel(this,m_lobby,m_client,m_frame);
         m_channel.registerChannelSubscriber(m_sp,"lobby.lobbybrodcaster");
         setTitle("Welcome to " + m_client.getServerNode().getName() + ", " + m_client.getLocalNode().getName());
     }

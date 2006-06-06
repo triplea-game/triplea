@@ -39,10 +39,12 @@ public class AddServerConfig extends JFrame
     JLabel m_lport;
     JTextField m_port;
     JButton m_add;
+    LobbyClient m_lc;
     /** Creates a new instance of AddServerConfig */
-    public AddServerConfig(ILobby lobby,IMessenger messenger,MainFrame frame)
+    public AddServerConfig(ILobby lobby,IMessenger messenger,MainFrame frame,LobbyClient lc)
     {
         super("Add a server");
+        m_lc = lc;
         m_lobby = lobby;
         m_messenger = messenger;
         m_frame = frame;
@@ -79,7 +81,9 @@ public class AddServerConfig extends JFrame
                     System.setProperty(LobbyClient.SERVER_ADDR,m_addr.toString());
                     System.setProperty(LobbyClient.SERVER_PORT,m_port.getText());
                     m_frame.start();
-                    m_lobby.addServer(new Node(m_desc.getText(),m_addr,m_iport));
+                    INode n = new Node(m_desc.getText(),m_addr,m_iport);
+                    m_lc.setSeverNode(n);
+                    m_lobby.addServer(n);
                     setVisible(false);
                 }
             }

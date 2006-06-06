@@ -39,6 +39,7 @@ public class ServersPanel extends JPanel implements ILobbyBrodcaster
     MainFrame m_frame;
     ArrayList<INode> m_snodes = new ArrayList();
     DefaultListModel m_servers;
+    LobbyClient m_lc;
 
     private final String NO_SERVERS = "no servers available!";
     
@@ -62,8 +63,9 @@ public class ServersPanel extends JPanel implements ILobbyBrodcaster
             
         }
     };
-    public ServersPanel(ILobby lobby,IMessenger messenger,MainFrame frame)
+    public ServersPanel(LobbyClient lc,ILobby lobby,IMessenger messenger,MainFrame frame)
     {
+        m_lc = lc;
         m_lobby = lobby;
         m_messenger = messenger;
         m_frame = frame;
@@ -114,7 +116,7 @@ public class ServersPanel extends JPanel implements ILobbyBrodcaster
                 {
                     public void run()
                     {
-                        new AddServerConfig(m_lobby,m_messenger,m_frame).setVisible(true);
+                        new AddServerConfig(m_lobby,m_messenger,m_frame,m_lc).setVisible(true);
                     }
                 });
             }

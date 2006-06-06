@@ -19,6 +19,7 @@ import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
 import java.util.List;
+import java.util.logging.Level;
 import games.strategy.util.Tuple;
 /**
  * LobbyChatController.java
@@ -43,8 +44,7 @@ public class LobbyChatController extends ChatController
         INode node = MessageContext.getSender();
         synchronized(m_mutex)
         {
-            //log
-            System.out.println(node.getName() + " has joined!");
+            m_owner.m_logger.log(Level.INFO,node.getName() + " has joined!");
         }
         return super.joinChat();
     }
@@ -55,8 +55,7 @@ public class LobbyChatController extends ChatController
         INode node = MessageContext.getSender();
         synchronized(m_mutex)
         {
-            //log
-            System.out.println(node.getName() + " has left!");
+            m_owner.m_logger.log(Level.INFO,node.getName() + " has left!");
         }
         m_owner.forceRemoveServer(node);
         leaveChatInternal(node);
