@@ -45,12 +45,12 @@ public class Unit extends GameDataComponent implements Serializable
   protected Unit(UnitType type, PlayerID owner, GameData data)
   {
     super(data);
-    init(type, owner, data);
+    init(type, owner);
     m_uid = new GUID();
     data.getUnits().put(this);
   }
   
-  private void init(UnitType type, PlayerID owner, GameData data)
+  private void init(UnitType type, PlayerID owner)
   {
     m_type = type;
     setOwner(owner);
@@ -99,7 +99,7 @@ public class Unit extends GameDataComponent implements Serializable
 
   public boolean equals(Object o)
   {
-    if(o == null || ! (o instanceof Unit))
+    if(! (o instanceof Unit))
       return false;
 
     Unit other = (Unit) o;
