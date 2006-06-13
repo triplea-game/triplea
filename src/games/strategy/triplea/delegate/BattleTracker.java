@@ -103,7 +103,7 @@ public class BattleTracker implements java.io.Serializable
         return m_foughBattles.contains(t);
     }
 
-    public void undoBattle(Route route, Collection<Unit> units, PlayerID player)
+    public void undoBattle(Route route, Collection<Unit> units, PlayerID player, GameData data)
     {
         Iterator<Battle> battleIter = new ArrayList<Battle>(m_pendingBattles).iterator();
         while (battleIter.hasNext())
@@ -124,7 +124,7 @@ public class BattleTracker implements java.io.Serializable
         while (terrIter.hasNext())
         {
             Territory current = (Territory) terrIter.next();
-            if (!current.getOwner().equals(player) && m_conquered.contains(current))
+            if (!data.getAllianceTracker().isAllied(current.getOwner(), player) && m_conquered.contains(current))
             {
                 m_conquered.remove(current);
                 m_blitzed.remove(current);

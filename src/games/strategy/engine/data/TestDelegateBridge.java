@@ -25,6 +25,7 @@ import games.strategy.engine.framework.*;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.triplea.ui.display.DummyDisplay;
 
 import java.util.*;
 
@@ -154,7 +155,7 @@ public class TestDelegateBridge implements IDelegateBridge
      */
     public IChannelSubscribor getDisplayChannelBroadcaster()
     {
-        return null;
+        return new DummyDisplay();
     }
     
     public Properties getStepProperties()

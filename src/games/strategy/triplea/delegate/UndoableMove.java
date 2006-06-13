@@ -191,7 +191,7 @@ public class UndoableMove implements Serializable
                 transportTracker.undoUnload(unit, transport, bridge.getPlayerID());
             }
         }
-        battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID());
+        battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data);
 
         //clean up dependencies
         Iterator iter = m_iDependOn.iterator();
