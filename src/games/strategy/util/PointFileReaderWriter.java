@@ -51,7 +51,7 @@ public class PointFileReaderWriter
 	    if(stream == null)
 	        return Collections.emptyMap();
 	    
-		HashMap<String, Point> mapping = new HashMap<String, Point>();
+		Map<String, Point> mapping = new HashMap<String, Point>();
 		LineNumberReader reader = null;
 		try
 		{
@@ -75,7 +75,7 @@ public class PointFileReaderWriter
 	}
 
 
-	private static void readSingle(String aLine, HashMap<String, Point> mapping) throws IOException
+	private static void readSingle(String aLine, Map<String, Point> mapping) throws IOException
 	{
 		StringTokenizer tokens = new StringTokenizer(aLine, "", false);
 		String name = tokens.nextToken("(").trim();

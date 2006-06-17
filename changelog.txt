@@ -1,3 +1,9 @@
+* fix bug [ 1505192 ] air land in conquered territory (sgb)
+
+* allow games to be password protected
+
+* for mac and linux, save games in home folder (sgb)
+
 * add convoy centers in europe map (iron cross)
 
 * put saved games in users home directory (sgb)

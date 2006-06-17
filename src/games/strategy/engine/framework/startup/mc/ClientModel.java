@@ -14,12 +14,12 @@
 
 package games.strategy.engine.framework.startup.mc;
 
-import games.strategy.engine.EngineVersion;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
+import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
@@ -133,7 +133,7 @@ public class ClientModel implements IMessengerErrorListener
         prefs.put(ServerModel.PLAYERNAME, name);
 
         int port = props.getPort();
-        if (port >= 65536 || port == 0)
+        if (port >= 65536 || port <= 0)
         {
             JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
             return false;
@@ -143,8 +143,14 @@ public class ClientModel implements IMessengerErrorListener
 
         try
         {
-            m_messenger = new ClientMessenger(address, port, name, m_objectStreamFactory);
-        } catch (Exception ioe)
+            m_messenger = new ClientMessenger(address, port, name, m_objectStreamFactory, new ClientLogin(m_ui));
+            
+        }catch (CouldNotLogInException ioe)
+        {
+            //an error message should have already been reported
+            return false;
+        }
+        catch (Exception ioe)
         {
             ioe.printStackTrace(System.out);
             JOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -170,13 +176,6 @@ public class ClientModel implements IMessengerErrorListener
         m_remoteMessenger.waitForRemote(ServerModel.SERVER_REMOTE_NAME, 1000);
         IServerStartupRemote serverStartup = getServerStartup();
         PlayerListing players = serverStartup.getPlayerListing();
-        
-        if(!checkVersion(players, ui))
-        {
-            //clean up
-            cancel();
-            return false;
-        }
         
         internalePlayerListingChanged(players);
         
@@ -206,26 +205,6 @@ public class ClientModel implements IMessengerErrorListener
         m_gameSelectorModel.setCanSelect(true);
         m_messenger.removeErrorListener(this);
     }
-    
-    
-    private boolean checkVersion(PlayerListing msg, Component ui)
-    {
-      if(!msg.getEngineVersion().equals(EngineVersion.VERSION))
-      {
-        
-          StringBuilder version = new StringBuilder();
-          version.append("Error, server running different engine version.  Cannot join game. \n");
-          version.append("Server\n engineVersion:").append(msg.getEngineVersion());
-          version.append("\nClient\n engineVersion:").append(EngineVersion.VERSION);
-    
-          JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), version.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-          return false;
-        
-      }
-      return true;
-    }
-    
-    
     
     private IClientChannel m_channelListener = new IClientChannel()
     {

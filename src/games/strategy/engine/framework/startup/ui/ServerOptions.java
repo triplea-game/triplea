@@ -23,127 +23,185 @@ package games.strategy.engine.framework.startup.ui;
 import games.strategy.ui.IntTextField;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 
 import javax.swing.*;
 
 /**
  * UI for choosing server options.
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  */
 public class ServerOptions extends JDialog
 {
 
-  private JTextField m_nameField;
-  private IntTextField m_portField;
-  private boolean m_okPressed;
+    private JTextField m_nameField;
 
-  /**
-   * Creates a new instance of ServerOptions
-   */
-  public ServerOptions(Component owner, String defaultName, int defaultPort)
-  {
-    super(JOptionPane.getFrameForComponent(owner), "Server options", true);
+    private IntTextField m_portField;
 
-    initComponents();
-    layoutComponents();
+    private JPasswordField m_passwordField;
 
-    m_nameField.setText(defaultName);
-    m_portField.setValue(defaultPort);
+    private boolean m_okPressed;
 
-    pack();
-  }
+    private JCheckBox m_requirePasswordCheckBox;
 
-  public String getName()
-  {
-  	//fixes crash by truncating names to 20 characters
-  	String s=m_nameField.getText().trim();
-  	if(s.length()>20)
-  		return s.substring(0,20);
-  	return s;
-  }
-
-  public int getPort()
-  {
-    return m_portField.getValue();
-  }
-
-  private void initComponents()
-  {
-    m_nameField = new JTextField(10);
-    m_portField = new IntTextField(0, Integer.MAX_VALUE);
-    m_portField.setColumns(7);
-  }
-
-  private void layoutComponents()
-  {
-    Container content = getContentPane();
-    content.setLayout(new BorderLayout());
-
-    JPanel title = new JPanel();
-    title.add(new JLabel("Select server options"));
-    content.add(title, BorderLayout.NORTH);
-
-    Insets labelSpacing = new Insets(3,7,0,0);
-    Insets fieldSpacing = new Insets(3,5,0,7);
-
-    GridBagConstraints labelConstraints = new GridBagConstraints();
-    labelConstraints.anchor = GridBagConstraints.WEST;
-    labelConstraints.gridx = 0;
-    labelConstraints.insets = labelSpacing;
-
-    GridBagConstraints fieldConstraints = new GridBagConstraints();
-    fieldConstraints.anchor = GridBagConstraints.WEST;
-    fieldConstraints.gridx = 1;
-    fieldConstraints.insets = fieldSpacing;
-
-    JPanel fields = new JPanel();
-    GridBagLayout layout = new GridBagLayout();
-
-    fields.setLayout(layout);
-
-    JLabel nameLabel = new JLabel("Name:");
-    JLabel portLabel = new JLabel("Port:");
-    layout.setConstraints(portLabel, labelConstraints);
-    layout.setConstraints(nameLabel, labelConstraints);
-    layout.setConstraints(m_portField, fieldConstraints);
-    layout.setConstraints(m_nameField, fieldConstraints);
-
-    fields.add(nameLabel);
-    fields.add(m_nameField);
-    fields.add(portLabel);
-    fields.add(m_portField);
-
-    content.add(fields, BorderLayout.CENTER);
-
-    JPanel buttons = new JPanel();
-    buttons.add(new JButton(m_okAction));
-    buttons.add(new JButton(m_cancelAction));
-
-    content.add(buttons, BorderLayout.SOUTH);
-  }
-
-  public boolean getOKPressed()
-  {
-    return m_okPressed;
-  }
-
-
-  private Action m_okAction = new AbstractAction("OK")
-  {
-    public void actionPerformed(ActionEvent e)
+    /**
+     * Creates a new instance of ServerOptions
+     */
+    public ServerOptions(Component owner, String defaultName, int defaultPort)
     {
-      setVisible(false);
-      m_okPressed = true;
-    }
-  };
+        super(JOptionPane.getFrameForComponent(owner), "Server options", true);
 
-  private Action m_cancelAction = new AbstractAction("Cancel")
-  {
-    public void actionPerformed(ActionEvent e)
-    {
-      setVisible(false);
+        initComponents();
+        layoutComponents();
+        setupActions();
+
+        m_nameField.setText(defaultName);
+        m_portField.setValue(defaultPort);
+
+        setWidgetActivation();
+
+        pack();
     }
-  };
+
+    private void setupActions()
+    {
+        m_requirePasswordCheckBox.addActionListener(new ActionListener()
+        {
+
+            public void actionPerformed(ActionEvent e)
+            {
+                setWidgetActivation();
+            }
+
+        });
+
+    }
+
+    public String getName()
+    {
+        // fixes crash by truncating names to 20 characters
+        String s = m_nameField.getText().trim();
+        if (s.length() > 20)
+            return s.substring(0, 20);
+        return s;
+    }
+    
+    public String getPassword()
+    {
+        if(!m_requirePasswordCheckBox.isSelected())
+            return null;
+        String password = new String(m_passwordField.getPassword());
+        if(password.trim().length() == 0)
+            return null;
+        return password;
+    }
+
+    public int getPort()
+    {
+        return m_portField.getValue();
+    }
+
+    private void initComponents()
+    {
+        m_nameField = new JTextField(10);
+        m_portField = new IntTextField(0, Integer.MAX_VALUE);
+        m_portField.setColumns(7);
+        m_passwordField = new JPasswordField();
+        m_passwordField.setColumns(10);
+    }
+
+    private void layoutComponents()
+    {
+        Container content = getContentPane();
+        content.setLayout(new BorderLayout());
+
+        JPanel title = new JPanel();
+        title.add(new JLabel("Select server options"));
+        content.add(title, BorderLayout.NORTH);
+
+        Insets labelSpacing = new Insets(3, 7, 0, 0);
+        Insets fieldSpacing = new Insets(3, 5, 0, 7);
+
+        GridBagConstraints labelConstraints = new GridBagConstraints();
+        labelConstraints.anchor = GridBagConstraints.WEST;
+        labelConstraints.gridx = 0;
+        labelConstraints.insets = labelSpacing;
+
+        GridBagConstraints fieldConstraints = new GridBagConstraints();
+        fieldConstraints.anchor = GridBagConstraints.WEST;
+        fieldConstraints.gridx = 1;
+        fieldConstraints.insets = fieldSpacing;
+
+        m_requirePasswordCheckBox = new JCheckBox("");
+        JLabel passwordRequiredLabel = new JLabel("Require Password:");
+
+        JPanel fields = new JPanel();
+        GridBagLayout layout = new GridBagLayout();
+
+        fields.setLayout(layout);
+
+        JLabel nameLabel = new JLabel("Name:");
+        JLabel portLabel = new JLabel("Port:");
+        JLabel passwordLabel = new JLabel("Password:");
+        layout.setConstraints(portLabel, labelConstraints);
+        layout.setConstraints(nameLabel, labelConstraints);
+        layout.setConstraints(passwordLabel, labelConstraints);
+        layout.setConstraints(m_portField, fieldConstraints);
+        layout.setConstraints(m_nameField, fieldConstraints);
+        layout.setConstraints(m_passwordField, fieldConstraints);
+        layout.setConstraints(m_requirePasswordCheckBox, fieldConstraints);
+        layout.setConstraints(passwordRequiredLabel, labelConstraints);
+
+        fields.add(nameLabel);
+        fields.add(m_nameField);
+        fields.add(portLabel);
+        fields.add(m_portField);
+
+        fields.add(passwordRequiredLabel);
+        fields.add(m_requirePasswordCheckBox);
+
+        fields.add(passwordLabel);
+        fields.add(m_passwordField);
+
+        content.add(fields, BorderLayout.CENTER);
+
+        JPanel buttons = new JPanel();
+        buttons.add(new JButton(m_okAction));
+        buttons.add(new JButton(m_cancelAction));
+
+        content.add(buttons, BorderLayout.SOUTH);
+
+    }
+
+    public boolean getOKPressed()
+    {
+        return m_okPressed;
+    }
+
+    private void setWidgetActivation()
+    {
+        m_passwordField.setEnabled(m_requirePasswordCheckBox.isSelected());
+        
+        Color backGround = m_passwordField.isEnabled() ? m_nameField.getBackground() : getBackground();
+        m_passwordField.setBackground(backGround);
+    }
+
+    private Action m_okAction = new AbstractAction("OK")
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            setVisible(false);
+            m_okPressed = true;
+        }
+    };
+
+    private Action m_cancelAction = new AbstractAction("Cancel")
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            setVisible(false);
+        }
+    };
+
 }

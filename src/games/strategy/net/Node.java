@@ -60,11 +60,10 @@ public class Node implements INode, Externalizable
     return m_name;
   }
   
-  public void setName(String newName)
-  {
-      m_name = newName;
-  }
-  
+  /**
+   * Node equality is done based on network adress/port.
+   * The name is not part of the node identity. 
+   */
   public boolean equals(Object obj)
   {
     if(obj == this)
@@ -76,14 +75,14 @@ public class Node implements INode, Externalizable
 
     Node other = (Node) obj;
 
-    return other.m_name.equals(this.m_name) && other.m_port == this.m_port
+    return other.m_port == this.m_port
         && other.m_address.equals(this.m_address);
 
   }
 
   public int hashCode()
   {
-    return m_name.hashCode();
+    return  (37 * m_port) +  m_address.hashCode();
   }
 
   public String toString()

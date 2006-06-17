@@ -15,14 +15,11 @@
 package games.strategy.engine.lobby.server;
 import games.strategy.engine.lobby.*;
 import games.strategy.engine.message.*;
-import games.strategy.engine.chat.*;
 import games.strategy.net.*;
+
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import java.util.logging.*;
 /**
  * LobbyServer.java
  *
@@ -39,8 +36,10 @@ public class LobbyServer implements ILobby
     private IChannelMessenger m_channel;
     private UnifiedMessenger m_um;
     private final Object m_mutex = new Object();
-    ArrayList<INode> m_serverlist = new ArrayList();
+    private ArrayList<INode> m_serverlist = new ArrayList<INode>();
+    
     Logger m_logger;
+    
     /** Creates a new instance of LobbyServer */
     public LobbyServer(String name,int port)
     {
@@ -107,7 +106,7 @@ public class LobbyServer implements ILobby
                 m_logger.log(Level.INFO,n.toString());
             }
             m_logger.log(Level.INFO,"end of servers.");
-            return new ArrayList(m_serverlist);
+            return new ArrayList<INode>(m_serverlist);
         }
     }
     public static void main(String args[])
@@ -120,7 +119,7 @@ public class LobbyServer implements ILobby
         try
         {
             int p = Integer.parseInt(args[1]);
-            LobbyServer ls = new LobbyServer(args[0],p);
+            new LobbyServer(args[0],p);
         }
         catch(Exception ex)
         {

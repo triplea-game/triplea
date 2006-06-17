@@ -45,7 +45,6 @@ public class PlayerListing implements Serializable
    * if node name is null then the player is available to play.
    */
   private final Map<String, String> m_playerListing;
-  private final Version m_engineVersion;
   private final Version m_gameVersion;
   private final String m_gameName;
   private final String m_gameRound;
@@ -53,10 +52,9 @@ public class PlayerListing implements Serializable
   /**
    * Creates a new instance of PlayerListingMessage
    */
-  public PlayerListing(Map<String, String> map, Version engineVersion, Version gameVersion, String gameName, String gameRound)
+  public PlayerListing(Map<String, String> map, Version gameVersion, String gameName, String gameRound)
   {
     m_playerListing = new HashMap<String, String>(map);
-    m_engineVersion = engineVersion;
     m_gameVersion = gameVersion;
     m_gameName = gameName;
     m_gameRound = gameRound;
@@ -75,11 +73,6 @@ public class PlayerListing implements Serializable
   public Version getGameVersion()
   {
     return m_gameVersion;
-  }
-
-  public Version getEngineVersion()
-  {
-    return m_engineVersion;
   }
 
   public String toString()

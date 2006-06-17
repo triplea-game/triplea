@@ -14,12 +14,12 @@
 
 package games.strategy.engine.framework.startup.mc;
 
-import games.strategy.engine.EngineVersion;
 import games.strategy.engine.chat.*;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.*;
+import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
@@ -171,6 +171,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
         
         props.setName(options.getName());
         props.setPort(options.getPort());
+        props.setPassword(options.getPassword());
         
         return props;
     }
@@ -192,6 +193,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener
         try
         {
             m_serverMessenger = new ServerMessenger(props.getName(), props.getPort(), m_objectStreamFactory);
+            ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
+            clientLoginValidator.setGamePassword(props.getPassword());
+            m_serverMessenger.setLoginValidator(clientLoginValidator);
             m_serverMessenger.setAcceptNewConnections(true);
             m_serverMessenger.addErrorListener(this);
             UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_serverMessenger);
@@ -260,9 +264,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener
       synchronized(this)
       {
           if(m_data == null)
-              return new PlayerListing(new HashMap<String,String>(), EngineVersion.VERSION, new Version(0,0), m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound());
+              return new PlayerListing(new HashMap<String,String>(), new Version(0,0), m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound());
           else
-              return new PlayerListing(new HashMap<String,String>(m_players), EngineVersion.VERSION, m_data.getGameVersion(), m_data.getGameName(), m_data.getSequence().getRound() + "");
+              return new PlayerListing(new HashMap<String,String>(m_players), m_data.getGameVersion(), m_data.getGameName(), m_data.getSequence().getRound() + "");
       }
     }
     
@@ -416,7 +420,16 @@ class ServerProps
     
     private String name;
     private int port;
+    private String password;
     
+    public String getPassword()
+    {
+        return password;
+    }
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
     public String getName()
     {
         return name;

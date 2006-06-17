@@ -22,7 +22,7 @@ package games.strategy.engine.lobby;
 
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
-import games.strategy.util.Tuple;
+
 import java.util.ArrayList;
 /**
  *

@@ -21,6 +21,7 @@
 package games.strategy.net;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.*;
 import java.net.*;
 import java.io.*;
@@ -35,27 +36,22 @@ import games.strategy.util.ListenerList;
  */
 public class ServerMessenger implements IServerMessenger
 {
-    private Logger s_logger = Logger.getLogger(ServerMessenger.class.getName());
+    private static Logger s_logger = Logger.getLogger(ServerMessenger.class.getName());
     
     private final ServerSocket m_socket;
-
     private final Node m_node;
-
-    private final Set<INode> m_allNodes = Collections.synchronizedSet(new HashSet<INode>());
-
     private boolean m_shutdown = false;
-
+    
     private final ListenerList<Connection> m_connections = new ListenerList<Connection>();
-
-    private final ListenerList<IMessageListener> m_listeners = new ListenerList<IMessageListener>();
-
-    private final ListenerList<IMessengerErrorListener> m_errorListeners = new ListenerList<IMessengerErrorListener>();
-
-    private final ListenerList<IConnectionChangeListener> m_connectionListeners = new ListenerList<IConnectionChangeListener>();
-
+    private final CopyOnWriteArrayList<IMessageListener> m_listeners = new CopyOnWriteArrayList<IMessageListener>();
+    private final CopyOnWriteArrayList<IMessengerErrorListener> m_errorListeners = new CopyOnWriteArrayList<IMessengerErrorListener>();
+    private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionListeners = new CopyOnWriteArrayList<IConnectionChangeListener>();
+    
+    private final Object m_connectionMutex = new Object();
+    
     private boolean m_acceptNewConnection = false;
-
     private IObjectStreamFactory m_inStreamFactory;
+    private ILoginValidator m_loginValidator;
     
     public ServerMessenger(String name, int portNumber, IObjectStreamFactory streamFactory) throws IOException
     {
@@ -69,10 +65,18 @@ public class ServerMessenger implements IServerMessenger
         else
             m_node = new Node(name, InetAddress.getLocalHost(), m_socket.getLocalPort());
 
-        m_allNodes.add(m_node);
-
         Thread t = new Thread(new ConnectionHandler());
         t.start();
+    }
+    
+    public void setLoginValidator(ILoginValidator loginValidator)
+    {
+        m_loginValidator = loginValidator;
+    }
+    
+    public ILoginValidator getLoginValidator()
+    {
+        return m_loginValidator;
     }
 
     /** Creates new ServerMessenger */
@@ -102,10 +106,15 @@ public class ServerMessenger implements IServerMessenger
      */
     public Set<INode> getNodes()
     {
-        synchronized (m_allNodes)
+        HashSet<INode> nodes = new HashSet<INode>();
+        nodes.add(m_node);
+        
+        for(Connection c : m_connections)
         {
-            return new HashSet<INode>(m_allNodes);
-        }
+            nodes.add(c.getRemoteNode());
+        }            
+        
+        return nodes;
     }
 
     public synchronized void shutDown()
@@ -127,7 +136,7 @@ public class ServerMessenger implements IServerMessenger
                 Connection current = iter.next();
                 current.shutDown();
             }
-            m_allNodes.clear();
+
         }
     }
 
@@ -226,95 +235,122 @@ public class ServerMessenger implements IServerMessenger
 
     private boolean isNameTaken(String nodeName)
     {
-        synchronized (m_allNodes)
+        
+        for (INode node : getNodes())
         {
-            for (INode node : m_allNodes)
-            {
-                if (node.getName().equalsIgnoreCase(nodeName))
-                    return true;
-            }
+            if (node.getName().equalsIgnoreCase(nodeName))
+                return true;
         }
-
         return false;
     }
 
-    private void ensureValidName(Connection c)
+    String getUniqueName(String currentName)
     {
-        String currentName = c.getRemoteNode().getName();
-        boolean replace = false;
-
+     
         if (currentName.length() > 50)
         {
-            currentName.substring(0, 50);
-            replace = true;
+            currentName = currentName.substring(0, 50);
+            
         }
         if (currentName.length() < 2)
         {
             currentName = "aa" + currentName;
-            replace = true;
         }
 
-        if (isNameTaken(currentName))
+        synchronized(m_node)
         {
-            replace = true;
-            int i = 1;
-            while (true)
+            if (isNameTaken(currentName))
             {
-                String newName = currentName + "_" + i;
-                if (!isNameTaken(newName))
+                
+                int i = 1;
+                while (true)
                 {
-                    currentName = newName;
-                    break;
+                    String newName = currentName + " (" + i + ")";
+                    if (!isNameTaken(newName))
+                    {
+                        currentName = newName;
+                        break;
+                    }
+                    i++;
                 }
-                i++;
             }
         }
 
-        if (replace)
-            c.setRemoteName(currentName);
+       return currentName;
     }
 
-    private synchronized void addConnection(Socket s)
+    private void addConnection(Socket s)
     {
-        //TODO - dont synchronize this entire method
+        
+        SocketStreams streams;
+        try
+        {
+            streams = new SocketStreams(s);
+        } catch (IOException e1)
+        {
+            try
+            {
+                s.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace(System.out);
+            }
+            return;
+        }
+        ServerLoginHelper loginHelper = new ServerLoginHelper(s.getRemoteSocketAddress(), m_loginValidator, streams, this);
+        
+        if(!loginHelper.canConnect())
+        {
+            try
+            {
+                s.close();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace(System.out);
+            }
+            
+            return;
+        }
+        
+        
         Connection c = null;
 
         try
         {
-            //TODO check the connection is valid before allowing the connection
-            //to add itself as a listener
-            c = new Connection(s, m_node, m_connectionListener, m_inStreamFactory, false);
+            c = new Connection(s, m_node, m_connectionListener, m_inStreamFactory, false, streams);
         } catch (IOException ioe)
         {
             s_logger.log(Level.WARNING, "Error creating connection", ioe);
             return;
         }
         
-        ensureValidName(c);
-
-        m_allNodes.add(c.getRemoteNode());
-
-        ClientInitServerMessage init;
-        synchronized (m_allNodes)
+        if(!c.getRemoteNode().getName().equals(loginHelper.getClientName()))
         {
-            init = new ClientInitServerMessage(new HashSet<INode>(m_allNodes));
+            c.shutDown();
+            s_logger.log(Level.SEVERE, "Client tried to spoof name, remote node:" + c.getRemoteNode() + " name should have been:" + loginHelper.getClientName() );
+            return;
         }
-        MessageHeader header = new MessageHeader(m_node, c.getRemoteNode(), init);
-        c.send(header);
+            
+        synchronized(m_connectionMutex)
+        {
+            m_connections.add(c);            
+            ClientInitServerMessage init = new ClientInitServerMessage(new HashSet<INode>(getNodes()));
+            MessageHeader header = new MessageHeader(m_node, c.getRemoteNode(), init);
+            c.send(header);
+        }
 
         NodeChangeServerMessage change = new NodeChangeServerMessage(true, c.getRemoteNode());
         broadcast(change);
-        m_connections.add(c);
-
-        s_logger.info("Connection added to:" + c.getRemoteNode());
-        
         notifyConnectionsChanged(true, c.getRemoteNode());
+        
+        s_logger.info("Connection added to:" + c.getRemoteNode());
     }
 
     private void removeConnection(Connection c)
     {
         NodeChangeServerMessage change = new NodeChangeServerMessage(false, c.getRemoteNode());
-        m_allNodes.remove(c.getRemoteNode());
+        
         broadcast(change);
         notifyConnectionsChanged(false, c.getRemoteNode());
         

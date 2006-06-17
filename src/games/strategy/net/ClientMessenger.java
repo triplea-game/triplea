@@ -23,36 +23,54 @@ import games.strategy.util.ListenerList;
 public class ClientMessenger implements IMessenger
 {
     private final INode m_node;
+
     private Set<INode> m_allNodes;
+
     private final ListenerList<IMessageListener> m_listeners = new ListenerList<IMessageListener>();
+
     private final Connection m_connection;
+
     private final ListenerList<IMessengerErrorListener> m_errorListeners = new ListenerList<IMessengerErrorListener>();
+
     private final ListenerList<IConnectionChangeListener> m_connectionListeners = new ListenerList<IConnectionChangeListener>();
-    
+
     private String m_connectionRefusedError;
 
     /**
-     * Note, the name paramater passed in here may not match the name of the ClientMessenger after it has been constructed. 
+     * Note, the name paramater passed in here may not match the name of the
+     * ClientMessenger after it has been constructed.
      */
-    public ClientMessenger(String host, int port, String name) throws IOException, UnknownHostException
+    public ClientMessenger(String host, int port, String name) throws IOException, UnknownHostException, CouldNotLogInException
     {
         this(host, port, name, new DefaultObjectStreamFactory());
     }
 
     /**
-     * Note, the name paramater passed in here may not match the name of the ClientMessenger after it has been constructed. 
+     * Note, the name paramater passed in here may not match the name of the
+     * ClientMessenger after it has been constructed.
      */
-    public ClientMessenger(String host, int port, String name, IObjectStreamFactory streamFact) throws IOException, UnknownHostException
+    public ClientMessenger(String host, int port, String name, IObjectStreamFactory streamFact) throws IOException, UnknownHostException, CouldNotLogInException
+    {
+        this(host, port, name, streamFact, null);
+    }
+    
+    public ClientMessenger(String host, int port, String name, IObjectStreamFactory streamFact, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
     {
         Socket socket = new Socket(host, port);
-        m_node = new Node(name, socket.getLocalAddress(), socket.getLocalPort());
+        SocketStreams streams = new SocketStreams(socket);
 
-        m_connection = new Connection(socket, m_node, m_connectionListener, streamFact, true);
+        ClientLoginHelper clientLoginHelper = new ClientLoginHelper(login, streams, name);
+        if (!clientLoginHelper.login())
+        {
+            socket.close();
+            throw new CouldNotLogInException();
+        }
 
-        if (m_connection == null)
-            throw new IllegalStateException("Null exception");
+        m_node = new Node(clientLoginHelper.getClientName(), socket.getLocalAddress(), socket.getLocalPort());
 
-        //wait for the init message
+        m_connection = new Connection(socket, m_node, m_connectionListener, streamFact, true, streams);
+
+        // wait for the init message
         while (m_allNodes == null && m_connection.isConnected())
         {
             try
@@ -97,7 +115,7 @@ public class ClientMessenger implements IMessenger
     private void nodeChangeMessageReceived(NodeChangeServerMessage msg)
     {
         INode node = msg.getNode();
-        synchronized(this)
+        synchronized (this)
         {
             if (msg.getAdd())
             {
@@ -107,7 +125,7 @@ public class ClientMessenger implements IMessenger
                 m_allNodes.remove(node);
             }
         }
-        
+
         notifyConnectionsChanged(msg.getAdd(), node);
     }
 
@@ -133,7 +151,7 @@ public class ClientMessenger implements IMessenger
     {
         MessageHeader header = new MessageHeader(m_node, msg);
         m_connection.send(header);
-        
+
     }
 
     /*
@@ -167,7 +185,7 @@ public class ClientMessenger implements IMessenger
      */
     public synchronized Set<INode> getNodes()
     {
-        //if the init message hasnt reached us yet, stall
+        // if the init message hasnt reached us yet, stall
         return new HashSet<INode>(m_allNodes);
     }
 
@@ -181,8 +199,9 @@ public class ClientMessenger implements IMessenger
 
     public void shutDown()
     {
-        //it may be that we recieve this message before the connection has been set up
-        //ie in the constructor to m_connection which starts another thread
+        // it may be that we recieve this message before the connection has been
+        // set up
+        // ie in the constructor to m_connection which starts another thread
         while (m_connection == null)
         {
             Thread.yield();
@@ -242,21 +261,19 @@ public class ClientMessenger implements IMessenger
 
     private void notifyConnectionsChanged(boolean added, INode node)
     {
-      Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
-      while (iter.hasNext())
-      {
-        if(added)
+        Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
+        while (iter.hasNext())
         {
-            iter.next().connectionAdded(node);    
+            if (added)
+            {
+                iter.next().connectionAdded(node);
+            } else
+            {
+                iter.next().connectionRemoved(node);
+            }
+
         }
-        else
-        {
-            iter.next().connectionRemoved(node);
-        }
-        
-      }
     }
- 
 
     /**
      * Get the local node
@@ -270,8 +287,7 @@ public class ClientMessenger implements IMessenger
     {
         return m_connection.getRemoteNode();
     }
-  
-    
+
     public boolean isServer()
     {
         return false;

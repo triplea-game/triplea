@@ -37,7 +37,7 @@ public class ServersPanel extends JPanel implements ILobbyBrodcaster
     ILobby m_lobby;
     IMessenger m_messenger;
     MainFrame m_frame;
-    ArrayList<INode> m_snodes = new ArrayList();
+    ArrayList<INode> m_snodes = new ArrayList<INode>();
     DefaultListModel m_servers;
     LobbyClient m_lc;
 

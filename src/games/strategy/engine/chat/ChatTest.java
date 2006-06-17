@@ -11,7 +11,7 @@ import junit.framework.*;
 public class ChatTest extends TestCase
 {
 
-    private static int SERVER_PORT = 12022;
+    private static int SERVER_PORT = 12072;
 
     private IServerMessenger m_server;
     private IMessenger m_client1;

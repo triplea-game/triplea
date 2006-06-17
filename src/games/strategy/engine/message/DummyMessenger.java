@@ -145,13 +145,20 @@ public class DummyMessenger implements IServerMessenger
 
     public void removeConnection(INode node)
     {
-        // TODO Auto-generated method stub
-        
     }
 
     public INode getServerNode()
     {
         return m_node;
+    }
+
+    public void setLoginValidator(ILoginValidator loginValidator)
+    {
+    }
+    
+    public ILoginValidator getLoginValidator()
+    {
+        return null;
     }
 
 }

@@ -18,6 +18,7 @@ import games.strategy.debug.Console;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.DummyMessenger;
@@ -276,46 +277,7 @@ public class TripleaMenu extends JMenuBar
         
         final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
         
-        Action boot =  new AbstractAction("Remove Player From Game...")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                
-                
-                DefaultComboBoxModel model = new DefaultComboBoxModel();
-                JComboBox combo = new JComboBox(model);
-                model.addElement("");
-                
-                for(INode node : messenger.getNodes())
-                {
-                    if(!node.equals(messenger.getLocalNode()))
-                        model.addElement(node.getName());
-                }
-                
-                if(model.getSize() == 1)
-                {
-                    JOptionPane.showMessageDialog(m_frame,  "No remote players", "No Remote Players" , JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                
-                int rVal = JOptionPane.showConfirmDialog(m_frame, combo, "Select player to remove", JOptionPane.OK_CANCEL_OPTION);
-                if(rVal != JOptionPane.OK_OPTION)
-                    return;
-                
-                String name = (String) combo.getSelectedItem();
-                
-                for(INode node : messenger.getNodes())
-                {
-                    if(node.getName().equals(name))
-                    {
-                        messenger.removeConnection(node);
-                        return;
-                    }
-                }
-                
-            }
-        };
-
+        Action boot =  new BootPlayerAction(this, messenger);
         
         parentMenu.add(boot);
         return;

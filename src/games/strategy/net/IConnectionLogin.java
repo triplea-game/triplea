@@ -12,32 +12,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * IServerMessenger.java
- *
- * Created on December 14, 2001, 1:02 PM
- */
-
 package games.strategy.net;
 
+import java.util.Map;
+
 /**
- *
- * A server messenger.  Additional methods for accepting new connections.
- *
- * @author  Sean Bridges
+ * An IConnectionLogin responds to login challenges.<p>
+ * 
+ * An IConnectionLogin is generally paired with an ILoginValidator.  The
+ * validator will send a challenge string, to which the IConnectionLogin will
+ * respond with a key/value map of credentials.  The validator will then 
+ * allow the login, or return an error message.<p>
+ * 
+ * 
+ * @author sgb
  */
-public interface IServerMessenger extends IMessenger
+public interface IConnectionLogin
 {
-	public void setAcceptNewConnections(boolean accept);
-	
-    public boolean isAcceptNewConnections();
-    
-    public void setLoginValidator(ILoginValidator loginValidator);
-    public ILoginValidator getLoginValidator();
     
     /**
-     * Remove the node from the network.
+     * Get the properties to log in given the challenge Properties 
      */
-    public void removeConnection(INode node);
-}
+    public Map<String,String> getProperties(Map<String,String> challengProperties);
+    
+    /**
+     * A notification that the login failed.  The error message supplied should be shown to the user.
+     */
+    public void notifyFailedLogin(String message);
 
+}

@@ -62,11 +62,11 @@ class Connection
     //is the remote node a server?
     private final boolean m_remoteIsServer;
     
-    public Connection(Socket s, INode ident, IConnectionListener listener, IObjectStreamFactory fact, boolean remoteIsServer) throws IOException
+    public Connection(Socket s, INode ident, IConnectionListener listener, IObjectStreamFactory fact, boolean remoteIsServer, SocketStreams streams) throws IOException
     {
         m_remoteIsServer = remoteIsServer;
         m_objectStreamFactory = fact;
-        init(s, ident, listener);
+        init(s, ident, listener, streams);
     }
 
     public void log(MessageHeader header, boolean read)
@@ -99,31 +99,24 @@ class Connection
         }
 
     }
-    
-    public void setRemoteName(String name)
-    {
-        send(new MessageHeader(m_remoteNode,  new NodeNameChange(name)));
-        ((Node)  m_remoteNode).setName(name);
-    }
 
-    private void init(Socket s, INode ident, IConnectionListener listener) throws IOException
+    private void init(Socket s, INode ident, IConnectionListener listener, SocketStreams streams) throws IOException
     {
         m_socket = s;
         m_localNode = ident;
         m_listener = listener;
 
         //create the output
-        m_socketOut = m_socket.getOutputStream();
-        BufferedOutputStream bufferedOut = new BufferedOutputStream(m_socketOut);
-        m_out = m_objectStreamFactory.create(bufferedOut);
+        m_socketOut = streams.getSocketOut();
+        m_out = m_objectStreamFactory.create(streams.getBufferedOut());
 
         //write out our identity
         m_out.writeObject(m_localNode);
         m_out.flush();
 
         //create the input
-        m_socketIn = m_socket.getInputStream();
-        BufferedInputStream bufferedIn = new BufferedInputStream(m_socketIn);
+        m_socketIn = streams.getSocketIn();
+        BufferedInputStream bufferedIn = new BufferedInputStream(streams.getBufferedIn());
         m_in = m_objectStreamFactory.create(bufferedIn);
 
         //read the remote connections identity
@@ -243,11 +236,6 @@ class Connection
 
     private void messageReceived(MessageHeader header)
     {
-        if(header.getMessage() instanceof NodeNameChange)
-        {
-            ((Node) m_localNode).setName( ((NodeNameChange) header.getMessage()).getNewName() );
-        }
-        
         //only the server can send messages from a node other than itself
         if(!m_remoteIsServer && !header.getFrom().equals(m_remoteNode))
         {
@@ -368,20 +356,4 @@ class Connection
             }
         }
     }
-}
-
-class NodeNameChange implements Serializable
-{    
-    private final String m_newName;
-    
-    NodeNameChange(String name)
-    {
-        m_newName = name;
-    }
-    
-    public String getNewName()
-    {
-        return m_newName;
-    }
-
 }

@@ -34,10 +34,10 @@ import games.strategy.engine.data.*;
 public class GameProperties extends GameDataComponent
 {
 
-    private final HashMap<String,Object> m_constantProperties = new HashMap<String,Object>();
+    private final Map<String,Object> m_constantProperties = new HashMap<String,Object>();
 
     //a set of IEditableProperties
-    private final HashMap<String,IEditableProperty> m_editableProperties = new HashMap<String,IEditableProperty>();
+    private final Map<String,IEditableProperty> m_editableProperties = new HashMap<String,IEditableProperty>();
 
     // This list is used to keep track of order properties were
     // added.

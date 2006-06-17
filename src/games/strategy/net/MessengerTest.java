@@ -20,9 +20,10 @@
 
 package games.strategy.net;
 
-import junit.framework.*;
-import java.util.*;
 import java.io.*;
+import java.util.ArrayList;
+
+import junit.framework.TestCase;
 
 
 
@@ -41,14 +42,6 @@ public class MessengerTest extends TestCase
 	private MessageListener m_serverListener = new MessageListener("server");
 	private MessageListener m_client1Listener = new MessageListener("client1");
 	private MessageListener m_client2Listener = new MessageListener("client2");
-
-
-	public static Test suite()
-	{
-		TestSuite suite = new junit.extensions.ActiveTestSuite();
-		suite.addTestSuite(MessengerTest.class);
-		return suite;
-	}
 
 
 	/** Creates a new instance of MangerTest */
@@ -113,6 +106,8 @@ public class MessengerTest extends TestCase
 
 	public void testServerSend()
 	{
+        
+        
 		String message = "Hello";
 
 		m_server.send(message, m_client1.getLocalNode());

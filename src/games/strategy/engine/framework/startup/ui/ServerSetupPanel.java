@@ -21,6 +21,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private JTextField m_portField;
     private JTextField m_addressField;
     private JTextField m_nameField;
+    
     private List<PlayerRow> m_playerRows = new ArrayList<PlayerRow>();
     private final GameSelectorModel m_gameSelectorModel;
     

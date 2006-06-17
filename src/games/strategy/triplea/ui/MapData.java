@@ -33,10 +33,10 @@ import javax.imageio.ImageIO;
 
 public class MapData
 {
-    private final String DEFAULT_UNIT_SCALE_PROPERTY = "units.scale";
-    private final String HAS_RELIEF_IMAGES = "map.hasRelief";
-    private final String SHOW_CAPITOL_MARKERS = "map.showCapitolMarkers";
-    private final String SHOW_TERRITORY_NAMES = "map.showTerritoryNames";
+    private static final String DEFAULT_UNIT_SCALE_PROPERTY = "units.scale";
+    private static final String HAS_RELIEF_IMAGES = "map.hasRelief";
+    private static final String SHOW_CAPITOL_MARKERS = "map.showCapitolMarkers";
+    private static final String SHOW_TERRITORY_NAMES = "map.showTerritoryNames";
     
     private static final String CENTERS_FILE = "centers.txt";
     private static final String POLYGON_FILE = "polygons.txt";

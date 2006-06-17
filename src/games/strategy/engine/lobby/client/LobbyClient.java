@@ -14,17 +14,16 @@
 
 package games.strategy.engine.lobby.client;
 
-import games.strategy.engine.lobby.*;
+import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.lobby.ILobby;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
-import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.startup.ui.MainFrame;
-import javax.swing.*;
+
 import java.awt.*;
-import java.io.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
+
+import javax.swing.*;
 /**
  * LobbyClient.java
  *
@@ -100,7 +99,7 @@ public class LobbyClient extends JFrame implements WindowListener
         initComponents(name,server,port);
         if(!m_frame.isVisible())
         {
-            setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
         }
     }
     
