@@ -25,221 +25,262 @@ import java.util.*;
 import games.strategy.util.*;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * A route between two territories.<p>
+ * 
+ * A route consists of a start territory, and a sequence of steps.  To create a route
+ * do,
+ * 
+ * <code>
+ * Route aRoute = new Route();
+ * route.setStart(someTerritory);
+ * route.add(anotherTerritory);
+ * route.add(yetAnotherTerritory);
+ * </code>
+ * 
+ * 
+ * 
+ * @author Sean Bridges
  * @version 1.0
- *
- * Note that the start territory is not considered to be part of
- * the route.
+ * 
  */
 public class Route implements java.io.Serializable
 {
-	private List<Territory> m_route = new ArrayList<Territory>();
-	private Territory m_start;
+    private List<Territory> m_route = new ArrayList<Territory>();
 
-	/**
-	 * Join the two routes.  It must be the case that
-	 * r1.end() equals r2.start() or r1.end() == null and r1.start() equals r2
-	 * @return a new Route starting at r1.start() going to r2.end() along r1, r2, or null if the routes cant be joined it the joining would form a loop
-	 *
-	 */
-	public static Route join(Route r1, Route r2)
-	{
-		if(r1 == null || r2 == null)
-			throw new IllegalArgumentException("route cant be null r1:" + r1 + " r2:" + r2);
+    private Territory m_start;
 
-		if(r1.getLength() == 0)
-		{
-			if(!r1.getStart().equals(r2.getStart()))
-				throw new IllegalArgumentException("Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
-		}
-		else
-		{
-			if(!r1.getEnd().equals(r2.getStart()))
-				throw new IllegalArgumentException("Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
-		}
+    /**
+     * Join the two routes. It must be the case that r1.end() equals r2.start()
+     * or r1.end() == null and r1.start() equals r2
+     * 
+     * @return a new Route starting at r1.start() going to r2.end() along r1,
+     *         r2, or null if the routes cant be joined it the joining would
+     *         form a loop
+     * 
+     */
+    public static Route join(Route r1, Route r2)
+    {
+        if (r1 == null || r2 == null)
+            throw new IllegalArgumentException("route cant be null r1:" + r1 + " r2:" + r2);
 
-
-		Collection<Territory> c1 = new ArrayList<Territory>(r1.m_route);
-		c1.add(r1.getStart());
-
-		Collection<Territory> c2 = new ArrayList<Territory>(r2.m_route);
-
-		if(!Util.intersection(c1,c2).isEmpty())
-			return null;
-
-
-		Route joined = new Route();
-		joined.setStart(r1.getStart());
-
-		for(int i = 0; i < r1.getLength(); i++)
-		{
-			joined.add(r1.at(i));
-		}
-
-		for(int i = 0; i < r2.getLength(); i++)
-		{
-			joined.add(r2.at(i));
-		}
-
-		return joined;
-	}
-
-	public boolean equals(Object o)
-	{
-	    if(o == null)
-	        return false;
-	    Route other = (Route) o;
-	    if(! (other.getLength() == this.getLength()))
-	        return false;
-	    if(! other.getStart().equals(this.getStart()))
-	        return false;
-	    return other.getTerritories().equals(this.getTerritories());
-	}
-	
-	public int hashCode()
-	{
-	    return toString().hashCode();
-	}
-	
-	public void setStart(Territory t)
-	{
-        if(t == null)
-            throw new IllegalStateException("Null territory");
-        
-		m_start = t;
-	}
-
-	public Territory getStart()
-	{
-		return m_start;
-	}
-
-        /**
-         * Determines if the route crosses water by checking
-         * if any of the territories except the start and end are sea
-         * territories.
-         * @return whether the route encounters water other than
-         * at the start of the route.
-         */
-        public boolean crossesWater()
+        if (r1.getLength() == 0)
         {
-            boolean startLand = !m_start.isWater();
-            boolean overWater = false;
-            Iterator<Territory> routeIter = m_route.iterator();
-            Territory terr = null;
-            while (routeIter.hasNext()) {
-                terr = routeIter.next();
-                if (terr.isWater()) {
-                    overWater = true;
-                }
-            }
-            // If we started on land, went over water, and ended on land, we cross water.
-            return (startLand && overWater && !terr.isWater());
+            if (!r1.getStart().equals(r2.getStart()))
+                throw new IllegalArgumentException("Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
+        } else
+        {
+            if (!r1.getEnd().equals(r2.getStart()))
+                throw new IllegalArgumentException("Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
         }
 
-	public void addFirst(Territory t)
-	{
-		if(m_route.contains(t))
-			throw new IllegalArgumentException("Loops not allowed in m_routes");
+        Collection<Territory> c1 = new ArrayList<Territory>(r1.m_route);
+        c1.add(r1.getStart());
 
-		m_route.add(0,t);
-	}
+        Collection<Territory> c2 = new ArrayList<Territory>(r2.m_route);
 
-	public void add(Territory t)
-	{
-        if(t == null)
+        if (!Util.intersection(c1, c2).isEmpty())
+            return null;
+
+        Route joined = new Route();
+        joined.setStart(r1.getStart());
+
+        for (int i = 0; i < r1.getLength(); i++)
+        {
+            joined.add(r1.at(i));
+        }
+
+        for (int i = 0; i < r2.getLength(); i++)
+        {
+            joined.add(r2.at(i));
+        }
+
+        return joined;
+    }
+
+    public boolean equals(Object o)
+    {
+        if (o == null)
+            return false;
+        Route other = (Route) o;
+        if (!(other.getLength() == this.getLength()))
+            return false;
+        if (!other.getStart().equals(this.getStart()))
+            return false;
+        return other.getTerritories().equals(this.getTerritories());
+    }
+
+    public int hashCode()
+    {
+        return toString().hashCode();
+    }
+
+    /**
+     * Set the start of this route.
+     */
+    public void setStart(Territory t)
+    {
+        if (t == null)
             throw new IllegalStateException("Null territory");
-        
-		if(m_route.contains(t))
-			throw new IllegalArgumentException("Loops not allowed in m_routes");
 
-		m_route.add(t);
-	}
+        m_start = t;
+    }
 
-	public int getLength()
-	{
-		return m_route.size();
-	}
+    /**
+     * Get the start territory for this route.
+     */
+    public Territory getStart()
+    {
+        return m_start;
+    }
 
-	public Territory at(int i)
-	{
-		return m_route.get(i);
-	}
+    /**
+     * Determines if the route crosses water by checking if any of the
+     * territories except the start and end are sea territories.
+     * 
+     * @return whether the route encounters water other than at the start of the
+     *         route.
+     */
+    public boolean crossesWater()
+    {
+        boolean startLand = !m_start.isWater();
+        boolean overWater = false;
+        Iterator<Territory> routeIter = m_route.iterator();
+        Territory terr = null;
+        while (routeIter.hasNext())
+        {
+            terr = routeIter.next();
+            if (terr.isWater())
+            {
+                overWater = true;
+            }
+        }
+        // If we started on land, went over water, and ended on land, we cross
+        // water.
+        return (startLand && overWater && !terr.isWater());
+    }
 
-	public boolean allMatch(Match<Territory> aMatch)
-	{
-		for(int i = 0; i < getLength(); i++)
-		{
-			if( !aMatch.match(at(i)))
-				return false;
-		}
-		return true;
-	}
+    /**
+     * Add the given territory to the end of the route.
+     */
+    public void add(Territory t)
+    {
+        if (t == null)
+            throw new IllegalStateException("Null territory");
+        if(t.equals(m_start))
+            throw new IllegalArgumentException("Loops not allowed in m_routes");
+        if (m_route.contains(t))
+            throw new IllegalArgumentException("Loops not allowed in m_routes");
 
-	public boolean someMatch(Match<Territory> aMatch)
-	{
-		for(int i = 0; i < getLength(); i++)
-		{
-			if( aMatch.match(at(i)))
-				return true;
-		}
-		return false;
-	}
+        m_route.add(t);
+    }
 
-	public Collection<Territory> getMatches(Match<Territory> aMatch)
-	{
-		return Match.getMatches(m_route, aMatch);
-	}
+    /**
+     * 
+     * @return the number of steps in this route.
+     */
+    public int getLength()
+    {
+        return m_route.size();
+    }
 
-	public String toString()
-	{
-		StringBuilder buf = new StringBuilder("Route:").append(m_start).append(" -> ");
-		for(int i = 0; i < getLength(); i++)
-		{
-			buf.append(at(i).getName() );
-			buf.append(" -> ");
-		}
-		return buf.toString();
-	}
+    /**
+     * Get the territory we will be in after the i'th step for this route has been made.
+     *  
+     */
+    public Territory at(int i)
+    {
+        return m_route.get(i);
+    }
 
-	/**
-	 *Returns a collection of all territories,
-	 *including the start.
-	 */
-	public List<Territory> getTerritories()
-	{
-		ArrayList<Territory> list = new ArrayList<Territory>(m_route);
-		list.add(0, m_start);
-		return list;
-	}
+    /**
+     * Do all territories in this route match the given match?  The start territory
+     * is not tested. 
+     */
+    public boolean allMatch(Match<Territory> aMatch)
+    {
+        for (int i = 0; i < getLength(); i++)
+        {
+            if (!aMatch.match(at(i)))
+                return false;
+        }
+        return true;
+    }
 
-	public Territory getEnd()
-	{
-		if(m_route.size() == 0)
-			return null;
-		return m_route.get(m_route.size() -1);
-	}
+    /**
+     * Do some territories in this route match the given match?  The start territory
+     * is not tested. 
+     */
+    public boolean someMatch(Match<Territory> aMatch)
+    {
+        for (int i = 0; i < getLength(); i++)
+        {
+            if (aMatch.match(at(i)))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get all territories in this route match the given match?  The start territory
+     * is not tested. 
+     */
+    public Collection<Territory> getMatches(Match<Territory> aMatch)
+    {
+        return Match.getMatches(m_route, aMatch);
+    }
+
+    public String toString()
+    {
+        StringBuilder buf = new StringBuilder("Route:").append(m_start).append(" -> ");
+        for (int i = 0; i < getLength(); i++)
+        {
+            buf.append(at(i).getName());
+            buf.append(" -> ");
+        }
+        return buf.toString();
+    }
+
+    /**
+     * Returns a collection of all territories in this route, including the start.
+     */
+    public List<Territory> getTerritories()
+    {
+        ArrayList<Territory> list = new ArrayList<Territory>(m_route);
+        list.add(0, m_start);
+        return list;
+    }
+
+    /**
+     * Get the last territory in the route, this is the detination.
+     * If the route consists of only a starting territory, this will return null.
+     */
+    public Territory getEnd()
+    {
+        if (m_route.size() == 0)
+            return null;
+        return m_route.get(m_route.size() - 1);
+    }
 
     /**
      * does this route extend another route
      */
     public boolean extend(Route baseRoute)
     {
-      if(!baseRoute.m_start.equals(baseRoute.m_start))
-      {
-        return false;
-      }
+        if (!baseRoute.m_start.equals(baseRoute.m_start))
+        {
+            return false;
+        }
 
-      if(baseRoute.getLength() > getLength())
-          return false;
+        if (baseRoute.getLength() > getLength())
+            return false;
 
-      for(int i = 0; i < baseRoute.m_route.size(); i++)
-      {
-          if(!baseRoute.at(i).equals(at(i)))
-             return false;
-      }
-      return true;
+        for (int i = 0; i < baseRoute.m_route.size(); i++)
+        {
+            if (!baseRoute.at(i).equals(at(i)))
+                return false;
+        }
+        return true;
 
     }
 

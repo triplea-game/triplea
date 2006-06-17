@@ -49,7 +49,7 @@ public interface IPlayerBridge
 	public IRemote getRemote();
 	
 	/** 
-	 * Get the name of the current step being exectured.
+	 * Get the name of the current step being exectued.
 	 */
 	public String getStepName();
 	

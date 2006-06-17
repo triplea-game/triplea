@@ -25,6 +25,11 @@ import java.util.Properties;
 import games.strategy.engine.delegate.*;
 
 /**
+ * A single step in a game.<p>
+ * 
+ * Typically turn based strategy games are composed of a set of distinct phases (in chess this would
+ * be two, white move, black move).
+ * 
  *
  * @author  Sean Bridges
  * @version 1.0
