@@ -28,8 +28,6 @@ import games.strategy.engine.message.IRemote;
 
 /**
  *
- * @author  Sean Bridges
- * @version 1.0
  *
  * A section of code that implements game logic.
  * The delegate should be deterministic.  All random events should be
@@ -45,6 +43,8 @@ import games.strategy.engine.message.IRemote;
  * Delegates can be made accesseble to players through implementing an IRemote,
  * and will be called through RemoteMessenger.
  *
+ * @author  Sean Bridges
+ * @version 1.0
  */
 public interface IDelegate 
 {

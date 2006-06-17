@@ -23,6 +23,7 @@ package games.strategy.engine.data.events;
 import games.strategy.engine.data.*;
 
 /**
+ * A GameDataChangeListener will be notified on changes to the GameData
  *
  * @author  Sean Bridges
  */

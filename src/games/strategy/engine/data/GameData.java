@@ -34,9 +34,34 @@ import games.strategy.engine.history.*;
  *
  * Central place to find all the information for a running game.
  * Using this object you can find the territores, connections, production rules,
- * unit types...
+ * unit types...<p>
  * 
- * Everything in the xml game file.
+ * Threading.  The game data, and all parts of the game data (such as Territories, Players, Units...) are 
+ * protected by a read/write lock.  If you are reading the game data, you should read while you
+ * have the read lock as below. <p>
+ * 
+ * <code>
+ * data.acquireReadLock();
+ * try
+ * {
+ *   //read data here
+ * }
+ * finally
+ * {
+ *   data.releaseReadLock();
+ * }
+ * </code>
+ * 
+ * The exception is delegates within a start(), end() or any method called from an IGamePlayer through
+ * the delgates remote interface.  The delegate will have a read lock for the duration of those methods.<p>
+ * 
+ * Non engine code must NOT acquire the games writeLock().  All changes to game Data must be made through a
+ * DelegateBridge or through a History object.<p>
+ * 
+ * 
+ * 
+ * 
+ * 
  *
  * @author  Sean Bridges
  * @version 1.0
@@ -74,46 +99,79 @@ public class GameData implements java.io.Serializable
 		m_delegateList = new DelegateList(this);
 	}
 
+    /**
+     * Return the GameMap.  The game map allows you to list the territories in the game, and 
+     * to see which territory is connected to which.
+     * 
+     * @return the map for this game.
+     */
 	public GameMap getMap()
 	{
 		return m_map;
 	}
 
-	public UnitsList getUnits()
+    /**
+     * 
+     * @return a collection of all units in the game
+     */
+	UnitsList getUnits()
 	{
-        	return m_unitsList;
+	    return m_unitsList;
 	}
 
+    /**
+     * Get the list of Players in the game.
+     */
 	public PlayerList getPlayerList()
 	{
 		return m_playerList;
 	}
 
+    /**
+     * Get the list of resources available in the game.
+     */
 	public ResourceList getResourceList()
 	{
 		return m_resourceList;
 	}
 
+    /**
+     * Get the list of production Frontiers for this game.
+     */
 	public ProductionFrontierList getProductionFrontierList()
 	{
 		return m_productionFrontierList;
 	}
 
+    /**
+     * Get the list of Production Rules for the game.
+     */
 	public ProductionRuleList getProductionRuleList()
 	{
 		return m_productionRuleList;
 	}
 
+    /**
+     * Get the Alliance Tracker for the game.
+     */
 	public AllianceTracker getAllianceTracker()
 	{
 		return m_alliances;
 	}
     
+    /**
+     * Should we throw an error if changes to this game data are made outside of the swing
+     * event thread.
+     */
     public boolean areChangesOnlyInSwingEventThread()
     {
         return m_forceInSwingEventThread;
     }
-    
+
+    /**
+     * If set to true, then we will throw an error when the game data is changed outside
+     * the swing event thread.
+     */
     public void forceChangesOnlyInSwingEventThread()
     {
         m_forceInSwingEventThread = true;
@@ -168,7 +226,7 @@ public class GameData implements java.io.Serializable
 	}
 
 
-	protected void notifyTerritoryUnitsChanged(Territory t)
+	void notifyTerritoryUnitsChanged(Territory t)
 	{
 		Iterator iter = m_territoryListeners.iterator();
 		while(iter.hasNext())
@@ -178,7 +236,7 @@ public class GameData implements java.io.Serializable
 		}
 	}
 
-	protected void notifyTerritoryOwnerChanged(Territory t)
+	void notifyTerritoryOwnerChanged(Territory t)
 	{
 		Iterator iter = m_territoryListeners.iterator();
 		while(iter.hasNext())
@@ -188,7 +246,7 @@ public class GameData implements java.io.Serializable
 		}
 	}
 
-	protected void notifyGameDataChanged(Change aChange)
+	void notifyGameDataChanged(Change aChange)
 	{
 		Iterator iter = m_dataChangeListeners.iterator();
 		while(iter.hasNext())
@@ -203,7 +261,7 @@ public class GameData implements java.io.Serializable
 		return m_loader;
 	}
 
-	protected void setGameLoader(IGameLoader loader)
+	void setGameLoader(IGameLoader loader)
 	{
 		m_loader = loader;
 	}
@@ -233,6 +291,9 @@ public class GameData implements java.io.Serializable
         return m_gameHistory;
     }
 
+    /**
+     * Not to be called by mere mortals.
+     */
 	public void postDeSerialize()
 	{
 		m_territoryListeners = new ListenerList<TerritoryListener>();

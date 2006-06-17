@@ -64,6 +64,9 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
     getData().notifyTerritoryOwnerChanged(this);
   }
 
+  /**
+   * Get the units in this territory
+   */
   public UnitCollection getUnits()
   {
     return m_units;

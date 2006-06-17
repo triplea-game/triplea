@@ -81,12 +81,14 @@ public class RevisedTest extends TestCase
         
         //make sinkian japanese owned, put one infantry in it
         Territory sinkiang = m_data.getMap().getTerritory("Sinkiang");
-        sinkiang.getUnits().removeAllUnits(sinkiang.getUnits().getUnits());
+        new ChangePerformer(m_data).perform(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits().getUnits()));
+        
         PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
         sinkiang.setOwner(japanese);
 
         UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
-        sinkiang.getUnits().addAllUnits(infantryType.create(1, japanese));
+        new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
+        
         
         
         //now move to attack it

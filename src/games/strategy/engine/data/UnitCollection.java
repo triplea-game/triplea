@@ -44,25 +44,25 @@ public class UnitCollection extends GameDataComponent
 		m_holder = holder;
     }
 
-	public void addUnit(Unit unit)
+	void addUnit(Unit unit)
 	{
 		m_units.add(unit);
 		m_holder.notifyChanged();
 	}
 
-	public void addAllUnits(UnitCollection collection)
+	void addAllUnits(UnitCollection collection)
 	{
 		m_units.addAll(collection.m_units);
 		m_holder.notifyChanged();
 	}
 
-	public void addAllUnits(Collection<Unit> units)
+	void addAllUnits(Collection<Unit> units)
 	{
 		m_units.addAll(units);
 		m_holder.notifyChanged();
 	}
 
-	public void removeAllUnits(Collection<Unit> units)
+	void removeAllUnits(Collection<Unit> units)
 	{
 		m_units.removeAll(units);
 		m_holder.notifyChanged();
@@ -214,7 +214,10 @@ public class UnitCollection extends GameDataComponent
 		return new ArrayList<Unit>(m_units);
 	}
 
-
+	/**
+     * 
+     * @return a Set of all players who have units in this collection.
+	 */
 	public Set<PlayerID> getPlayersWithUnits()
 	{
 		//note nulls are handled by PlayerID.NULL_PLAYERID
@@ -231,7 +234,10 @@ public class UnitCollection extends GameDataComponent
 	}
 
 
-
+	/**
+     * 
+     * @return the count of units each player has in this collection.
+	 */
 	public IntegerMap<PlayerID> getPlayerUnitCounts()
 	{
 		IntegerMap<PlayerID> count = new IntegerMap<PlayerID>();
