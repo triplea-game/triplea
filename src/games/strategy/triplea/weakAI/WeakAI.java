@@ -19,7 +19,7 @@ import games.strategy.engine.gamePlayer.*;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
-import games.strategy.triplea.baseAI.AbstractAI;
+import games.strategy.triplea.baseAI.*;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.*;
 import games.strategy.triplea.delegate.remote.*;
@@ -413,6 +413,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return r;
     }
 
+    
+
+    
 
     private void populateCombatMoveSea(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
     {
@@ -429,7 +432,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
   
             Territory enemy = t;
             
-            float enemyStrength = Utils.strength(enemy.getUnits().getUnits(), false, true);
+            float enemyStrength = AIUtils.strength(enemy.getUnits().getUnits(), false, true);
             if(enemyStrength > 0)
             {
                 CompositeMatch<Unit> attackable = new CompositeMatchAnd<Unit>(
@@ -457,7 +460,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                        continue;
                    }
                     
-                   ourStrength += Utils.strength(owned.getUnits().getMatches(attackable), true, true);
+                   ourStrength += AIUtils.strength(owned.getUnits().getMatches(attackable), true, true);
                 }
                 
                 
@@ -502,7 +505,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             {
                 //if they are a threat to take our capitol, dont move
                 //compare the strength of units we can place
-                float ourStrength = Utils.strength( player.getUnits().getUnits() , false, false);
+                float ourStrength = AIUtils.strength(player.getUnits().getUnits(), false, false);
                 float attackerStrength = Utils.getStrengthOfPotentialAttackers( t, data );
                 
                 if(attackerStrength > ourStrength)
@@ -691,7 +694,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         //first find the territories we can just walk into
         for(Territory enemy : enemyOwned)
         {
-            if(Utils.strength(enemy.getUnits().getUnits(), true, false) == 0)
+            if(AIUtils.strength(enemy.getUnits().getUnits(), true, false) == 0)
             {
                 //only take it with 1 unit
                 boolean taken = false;
@@ -738,7 +741,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         for(Territory enemy : enemyOwned)
         {
             
-            float enemyStrength = Utils.strength(enemy.getUnits().getUnits(), false, false);
+            float enemyStrength = AIUtils.strength(enemy.getUnits().getUnits(), false, false);
             if(enemyStrength > 0)
             {
                 CompositeMatch<Unit> attackable = new CompositeMatchAnd<Unit>(
@@ -768,14 +771,14 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                    if( TerritoryAttachment.get(owned) != null &&
                        TerritoryAttachment.get(owned).isCapital() && 
                        (Utils.getStrengthOfPotentialAttackers(owned, getPlayerBridge().getGameData()) >
-                       Utils.strength(owned.getUnits().getUnits(), false, false))
+                       AIUtils.strength(owned.getUnits().getUnits(), false, false))
                    )
                    {
                        dontMoveFrom.add(owned);
                        continue;
                    }
                     
-                   ourStrength += Utils.strength(owned.getUnits().getMatches(attackable), true, false);
+                   ourStrength += AIUtils.strength(owned.getUnits().getMatches(attackable), true, false);
                 }
                 
                 //prevents 2 infantry from attacking 1 infantry
@@ -797,7 +800,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         if(!owned.isWater() && data.getMap().getNeighbors(owned, Matches.territoryHasEnemyLandUnits(player, data)).size() > 1  )
                             units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units, true, false);
                         
-                        remainingStrengthNeeded -= Utils.strength(units, true, false);
+                        remainingStrengthNeeded -= AIUtils.strength(units, true, false);
                         
                         if(units.size() > 0)
                         {

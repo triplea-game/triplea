@@ -27,7 +27,7 @@ import java.util.*;
  * @author  Sean Bridges
  * @version 1.0
  */
-public class ProductionFrontier extends DefaultNamed
+public class ProductionFrontier extends DefaultNamed implements Iterable<ProductionRule>
 {
 
 	private final List<ProductionRule> m_rules = new ArrayList<ProductionRule>();
@@ -63,4 +63,9 @@ public class ProductionFrontier extends DefaultNamed
 			m_cachedRules = Collections.unmodifiableList(m_rules);
 		return m_cachedRules;
 	}
+
+    public Iterator<ProductionRule> iterator()
+    {
+        return getRules().iterator();
+    }
 }
