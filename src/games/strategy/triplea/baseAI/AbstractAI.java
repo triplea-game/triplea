@@ -62,36 +62,6 @@ public abstract class AbstractAI
         m_id = id;
     }
     
-    public final void start(String name)
-    {
-        if (name.endsWith("Bid"))
-        {
-            String propertyName = m_id.getName() + " bid";
-            int bidAmount = Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString());
-            
-            purchase(true,bidAmount, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
-        }
-        else if (name.endsWith("Tech"))
-            tech((ITechDelegate) m_bridge.getRemote() , m_bridge.getGameData(), m_id);
-        else if (name.endsWith("Purchase"))
-        {
-            
-            Resource ipcs = m_bridge.getGameData().getResourceList().getResource(Constants.IPCS);
-            int leftToSpend = m_id.getResources().getQuantity(ipcs );
-            
-            purchase(false,leftToSpend, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
-        }
-        else if (name.endsWith("Move"))
-            move(name.endsWith("NonCombatMove"), (IMoveDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
-        else if (name.endsWith("Battle"))
-            battle((IBattleDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
-        else if (name.endsWith("Place"))
-            place(name.indexOf("Bid") != -1, (IAbstractPlaceDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id );
-        else if (name.endsWith("EndTurn"))
-        {}
-    }
-    
-    
     /************************
      * Allow the AI to get game data, playerID
      *************************/
@@ -253,6 +223,36 @@ public abstract class AbstractAI
      * Game Player Methods
      * 
      *****************************************/
+    
+    public final void start(String name)
+    {
+        if (name.endsWith("Bid"))
+        {
+            String propertyName = m_id.getName() + " bid";
+            int bidAmount = Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString());
+            
+            purchase(true,bidAmount, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+        }
+        else if (name.endsWith("Tech"))
+            tech((ITechDelegate) m_bridge.getRemote() , m_bridge.getGameData(), m_id);
+        else if (name.endsWith("Purchase"))
+        {
+            
+            Resource ipcs = m_bridge.getGameData().getResourceList().getResource(Constants.IPCS);
+            int leftToSpend = m_id.getResources().getQuantity(ipcs );
+            
+            purchase(false,leftToSpend, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+        }
+        else if (name.endsWith("Move"))
+            move(name.endsWith("NonCombatMove"), (IMoveDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+        else if (name.endsWith("Battle"))
+            battle((IBattleDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+        else if (name.endsWith("Place"))
+            place(name.indexOf("Bid") != -1, (IAbstractPlaceDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id );
+        else if (name.endsWith("EndTurn"))
+        {}
+    }
+    
     public final Class<ITripleaPlayer> getRemotePlayerType()
     {
         return ITripleaPlayer.class;
