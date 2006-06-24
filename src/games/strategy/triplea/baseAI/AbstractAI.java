@@ -13,7 +13,19 @@ import games.strategy.triplea.delegate.remote.*;
 import games.strategy.triplea.player.ITripleaPlayer;
 
 /**
- * Base class for ais.
+ * Base class for ais.<p>
+ * 
+ *  run with -Dtriplea.abstractai.pause=false to eliminate the human friendly pauses <p>
+ * 
+ * AI's should note that any data that is stored in the ai instance, will be lost when
+ * the game is restarted.  We cannot save data with an AI, since the player
+ * may choose to restart the game with a different ai, or with a human player.<p>
+ * 
+ * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase,
+ * (as would happen if a player saved the game during the middle of an AI's move phase)
+ * it is acceptable for the ai to play badly for a turn, but the ai should recover, and play
+ * correctly when the next phase of the game starts.<p>
+ * 
  * 
  * @author sgb
  */
@@ -21,7 +33,7 @@ public abstract class AbstractAI
 {
     private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
     
-    private static boolean m_pause =  Boolean.valueOf(System.getProperties().getProperty("triplea.weakai.pause", "true"));
+    private static boolean m_pause =  Boolean.valueOf(System.getProperties().getProperty("triplea.abstractai.pause", "true"));
     
     /**
      * Pause the game to allow the human player to see what is going on.
@@ -66,20 +78,33 @@ public abstract class AbstractAI
      * Allow the AI to get game data, playerID
      *************************/
     
+    /**
+     * Get the GameData for the game.
+     */
     protected final GameData getGameData()
     {
         return m_bridge.getGameData();
     }
     
+    /**
+     * Get the IPlayerBridge for this game player.
+     */
     protected final IPlayerBridge getPlayerBridge()
     {
         return m_bridge;
     }
     
+    /**
+     * What player are we playing.
+     */
     protected final PlayerID getWhoAmI()
     {
         return m_id;
     }
+    
+    /************************
+     * The following methods are called when the AI starts a phase.
+     *************************/
     
     /**
      * It is the AI's turn to purchase units.
@@ -112,6 +137,7 @@ public abstract class AbstractAI
     protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player);
     
     /**
+     * It is the AI's turn to place units.  get the units available to place with player.getUnits()
      * 
      * @param placeForBid - is this a placement for bid
      * @param placeDelegate - the place delegate to place with
@@ -133,6 +159,10 @@ public abstract class AbstractAI
     {
         //generally all AI's will follow the same logic.  
         
+        //loop until all battles are fought.
+        //rather than try to analyze battles to figure out which must be fought before others
+        //as in the case of a naval battle preceding an amphibious attack,
+        //keep trying to fight every battle
         while (true)
         {
     
@@ -224,6 +254,9 @@ public abstract class AbstractAI
      * 
      *****************************************/
     
+    /**
+     * The given phase has started.  We parse the phase name and call the apropiate method.
+     */
     public final void start(String name)
     {
         if (name.endsWith("Bid"))

@@ -36,7 +36,6 @@ import java.util.logging.Logger;
  *
  * A very weak ai, based on some simple rules.<p>
  * 
- * run with -Dtriplea.randomai.pause=false to eliminate the human friendly pauses 
  *
  * @author Sean Bridges
  */
