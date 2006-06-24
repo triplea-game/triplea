@@ -23,7 +23,7 @@ public class ClientLoginValidator implements ILoginValidator
     {
         if(password == null)
         {
-            password = null;
+            m_encryptedPassword = null;
         }
         else
         {
