@@ -61,7 +61,7 @@ public class ClientLoginValidator implements ILoginValidator
         }
         
         
-        //check for password if we reuire it
+        //check for password if we reuqire it
         String encryptedPassword = m_encryptedPassword;
         if(encryptedPassword != null)
         {
@@ -72,6 +72,19 @@ public class ClientLoginValidator implements ILoginValidator
             }
             else if(!readPassword.equals(encryptedPassword))
             {
+                
+                try
+                {
+                    //sleep on average 2 seconds
+                    //try to prevent flooding to guess the 
+                    //password
+                    Thread.sleep((int) (4000 * Math.random()));
+                } catch (InterruptedException e)
+                {
+                    //ignore
+                }
+
+                
                 return "Invalid password";
             }
         }
