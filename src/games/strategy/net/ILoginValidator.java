@@ -41,7 +41,7 @@ public interface ILoginValidator
      *
      * @return - null if the attempt was successful, an error message otherwise
      */
-    public String verifyConnection(Map<String,String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress);
+    public String verifyConnection(Map<String,String> propertiesSentToClient, Map<String,String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress);
     
     
 }

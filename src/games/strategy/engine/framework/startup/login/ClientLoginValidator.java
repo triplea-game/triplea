@@ -7,13 +7,25 @@ import games.strategy.engine.EngineVersion;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.*;
 
+
+/**
+ * 
+ * If we require a password, then we challenge the client with a salt value, the salt
+ * being different for each login attempt. .  The client hashes the password entered by 
+ * the user with this salt, and sends it back to us.  This prevents the password from
+ * travelling over the network in plain text, and also prevents someone listening on 
+ * the connection from getting enough information to log in (since the salt will change
+ * on the next login attempt)
+ * 
+ * @author sgb
+ */
 public class ClientLoginValidator implements ILoginValidator
 {
     public static final String SALT_PROPERTY = "Salt";
     public static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
     
     
-    private String m_encryptedPassword;
+    private String m_password;
     
     /**
      * Set the password required for the game, or to null if no password is required.
@@ -21,14 +33,7 @@ public class ClientLoginValidator implements ILoginValidator
      */
     public void setGamePassword(String password)
     {
-        if(password == null)
-        {
-            m_encryptedPassword = null;
-        }
-        else
-        {
-            m_encryptedPassword = MD5Crypt.crypt(password);
-        }
+        m_password = password;
     }
 
     public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
@@ -36,17 +41,30 @@ public class ClientLoginValidator implements ILoginValidator
         Map<String,String> challengeProperties = new HashMap<String,String>();
         
         challengeProperties.put("Sever Version", EngineVersion.VERSION.toString());
-        String encryptedPassword = m_encryptedPassword;
-        if(encryptedPassword != null)
+        
+        
+        
+        if(m_password != null)
         {
+            
+            /**
+             * Get a new random salt. 
+             */
+            
+            String encryptedPassword = MD5Crypt.crypt(m_password);
             challengeProperties.put(SALT_PROPERTY, MD5Crypt.getSalt(MD5Crypt.MAGIC, encryptedPassword));
+            challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
         }
-        challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.valueOf(encryptedPassword != null).toString());
+        else
+        {
+            challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.FALSE.toString());
+        }
+        
         
         return challengeProperties;
     }
 
-    public String verifyConnection(Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+    public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
     {
         String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
         if(versionString == null || versionString.length() > 20 || versionString.trim().length() == 0)
@@ -61,18 +79,18 @@ public class ClientLoginValidator implements ILoginValidator
         }
         
         
-        //check for password if we reuqire it
-        String encryptedPassword = m_encryptedPassword;
-        if(encryptedPassword != null)
+
+        if(propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString()) )
         {
             String readPassword = propertiesReadFromClient.get(ClientLogin.PASSWORD_PROPERTY);
             if(readPassword == null)
             {
                 return "No password";
             }
-            else if(!readPassword.equals(encryptedPassword))
+            
+                        
+            if(!readPassword.equals( MD5Crypt.crypt(m_password, propertiesSentToClient.get(SALT_PROPERTY)) ))
             {
-                
                 try
                 {
                     //sleep on average 2 seconds

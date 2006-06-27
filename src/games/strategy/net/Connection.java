@@ -94,7 +94,6 @@ class Connection
 
         } catch (IOException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -320,7 +319,7 @@ class Connection
                 } catch (ClassNotFoundException cnfe)
                 {
                     //should never happen
-                    cnfe.printStackTrace();
+                    s_logger.log(Level.SEVERE, "class not found? remote connection" + m_socket.getRemoteSocketAddress(), cnfe);
                 } catch (IOException ioe)
                 {
                     if (!m_shutdown)

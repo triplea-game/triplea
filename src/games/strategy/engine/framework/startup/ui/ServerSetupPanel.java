@@ -8,7 +8,9 @@ import java.util.List;
 import javax.swing.*;
 
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.framework.networkMaintenance.*;
 import games.strategy.engine.framework.startup.launcher.*;
+import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.*;
 
 
@@ -26,6 +28,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private final GameSelectorModel m_gameSelectorModel;
     
     private JPanel m_info;
+    private JPanel m_networkPanel;
+    private JButton m_bootPlayerButton;
+    private JButton m_setPasswordButton;
 
     
     public ServerSetupPanel(ServerModel model, GameSelectorModel gameSelectorModel)
@@ -71,6 +76,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_nameField.setColumns(20);
         
         m_info = new JPanel();
+        
+        m_bootPlayerButton = new JButton("Boot Player...");
+        m_setPasswordButton = new JButton("Set Game Password...");
+        
+        m_networkPanel = new JPanel();
+        
     }
 
     private void layoutComponents()
@@ -90,9 +101,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
         add(m_info, BorderLayout.NORTH);
 
-        JPanel lowerPanel = new JPanel();
-        lowerPanel.setLayout(new BorderLayout());
-        lowerPanel.add(new JLabel(" "), BorderLayout.NORTH);
+        m_networkPanel.setLayout(new BoxLayout(m_networkPanel, BoxLayout.X_AXIS));
+        m_networkPanel.add(m_bootPlayerButton);
+        m_networkPanel.add(m_setPasswordButton);
+        add(m_networkPanel, BorderLayout.SOUTH);
 
         
     }
@@ -162,6 +174,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       removeAll();
       add(m_info, BorderLayout.NORTH);
       add(players, BorderLayout.CENTER);
+      add(m_networkPanel, BorderLayout.SOUTH);
 
       
       invalidate();
@@ -174,7 +187,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
     private void setupListeners()
     {
-
+        m_bootPlayerButton.addActionListener( new BootPlayerAction(this, m_model.getMessenger()));
+        m_setPasswordButton.addActionListener(new SetPasswordAction(this, (ClientLoginValidator) m_model.getMessenger().getLoginValidator() ));
     }
 
     private void setWidgetActivation()

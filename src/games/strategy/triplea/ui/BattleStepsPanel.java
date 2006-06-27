@@ -183,7 +183,6 @@ class BattleStepsPanel extends JPanel implements Active
                         sleep(330);
                     } catch (InterruptedException e)
                     {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     SwingUtilities.invokeLater(new Runnable()

@@ -270,7 +270,6 @@ class ImageRef
                         s_logger.finer("Removed soft reference image. Image count:" + s_imageCount.decrementAndGet() );
                     } catch (InterruptedException e)
                     {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }

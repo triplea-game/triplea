@@ -26,7 +26,7 @@ public class MessengerLoginTest extends TestCase
         ILoginValidator validator = new ILoginValidator()
         {
         
-            public String verifyConnection(Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+            public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
             {
                 return null;
             }
@@ -81,7 +81,7 @@ public class MessengerLoginTest extends TestCase
         ILoginValidator validator = new ILoginValidator()
         {
         
-            public String verifyConnection(Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
+            public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, SocketAddress remoteAddress)
             {
                 return "error";
             }

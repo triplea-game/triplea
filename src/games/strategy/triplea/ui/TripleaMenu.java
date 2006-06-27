@@ -18,7 +18,8 @@ import games.strategy.debug.Console;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
+import games.strategy.engine.framework.networkMaintenance.*;
+import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.*;
 import games.strategy.engine.message.DummyMessenger;
@@ -244,6 +245,7 @@ public class TripleaMenu extends JMenuBar
         JMenu menuNetwork = new JMenu("Network");
         addAllowObserversToJoin(menuNetwork);
         addBootPlayer(menuNetwork);
+        addSetGamePassword(menuNetwork);
         addShowPlayers(menuNetwork);
         menuBar.add(menuNetwork);
     }
@@ -347,6 +349,21 @@ public class TripleaMenu extends JMenuBar
             menuGame.add(optionsAction);
 
         }
+    }
+    
+    
+    
+    /**
+     * @param menuGame
+     */
+    private void addSetGamePassword(JMenu parentMenu)
+    {
+        if(!getGame().getMessenger().isServer())
+            return;
+        
+        final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
+        
+        parentMenu.add(new SetPasswordAction(this, (ClientLoginValidator) messenger.getLoginValidator() ));
     }
     
     /**
