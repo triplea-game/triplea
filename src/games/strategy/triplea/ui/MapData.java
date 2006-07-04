@@ -335,7 +335,7 @@ public class MapData
 
     public Point getCenter(String terr)
     {
-        return new Point((Point) m_centers.get(terr));
+        return new Point(m_centers.get(terr));
     }
 
     public Point getCenter(Territory terr)
@@ -346,21 +346,21 @@ public class MapData
     public Point getCapitolMarkerLocation(Territory terr)
     {
         if(m_capitolPlace.containsKey(terr.getName()))
-            return (Point) m_capitolPlace.get(terr.getName());
+            return m_capitolPlace.get(terr.getName());
         return getCenter(terr);
     }
 
     public Point getVCPlacementPoint(Territory terr)
     {        
         if(m_vcPlace.containsKey(terr.getName()))
-            return (Point) m_vcPlace.get(terr.getName());
+            return m_vcPlace.get(terr.getName());
         return getCenter(terr);
     }
     
     public Point getIPCPlacementPoint(Territory terr)
     {
         if(m_ipcPlace.containsKey(terr.getName()))
-            return (Point) m_ipcPlace.get(terr.getName());
+            return m_ipcPlace.get(terr.getName());
         return null;  
     }
     

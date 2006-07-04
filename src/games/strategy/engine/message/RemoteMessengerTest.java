@@ -451,7 +451,7 @@ public class RemoteMessengerTest extends TestCase
             if(client != null)
                 client.shutDown();
             if(client2 != null)
-                client.shutDown();            
+                client2.shutDown();            
         }
     }        
     

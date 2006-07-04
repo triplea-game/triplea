@@ -80,14 +80,14 @@ public class StatPanel extends JPanel
         {
             List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
             stats.add(new VictoryCityStat());
-            m_stats = (IStat[]) stats.toArray(new IStat[stats.size()]);
+            m_stats = stats.toArray(new IStat[stats.size()]);
         }
         //only add the vps in pacific
         if(data.getProperties().get(Constants.PACIFIC_EDITION, false))
         {
             List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
             stats.add(new VPStat());
-            m_stats = (IStat[]) stats.toArray(new IStat[stats.size()]);
+            m_stats = stats.toArray(new IStat[stats.size()]);
         }
         
         setLayout(new GridLayout(2, 1));

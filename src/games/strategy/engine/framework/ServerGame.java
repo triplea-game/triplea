@@ -348,7 +348,8 @@ public class ServerGame implements IGame
         {
             try
             {
-                out.close();
+                if(out != null)
+                    out.close();
             } catch (IOException e)
             {
               

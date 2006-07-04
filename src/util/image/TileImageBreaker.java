@@ -80,6 +80,7 @@ public class TileImageBreaker
             System.out.println("You need to select a map image for this to work");
             System.out.println("Shutting down");
             System.exit(0);
+            return;
         }
 
         //m_baseMap = doBaseMap(); //ask user wether it is sea zone only or

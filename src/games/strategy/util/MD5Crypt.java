@@ -63,7 +63,7 @@ public class MD5Crypt
      */
     static private final int bytes2u( byte inp )
     {
-        return ( int )inp & 0xff;
+        return inp & 0xff;
     }
 
     /**

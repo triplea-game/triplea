@@ -21,6 +21,7 @@
 package games.strategy;
 
 import games.strategy.engine.chat.ChatTest;
+import games.strategy.engine.lobby.server.userDB.DBUserControllerTest;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.CryptoRandomSourceTest;
 import games.strategy.util.*;
@@ -55,6 +56,8 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(VersionTest.class);
 		suite.addTestSuite(EndPointTest.class);
         suite.addTestSuite(ChatTest.class);
+        
+        suite.addTestSuite(DBUserControllerTest.class);
         
         
 

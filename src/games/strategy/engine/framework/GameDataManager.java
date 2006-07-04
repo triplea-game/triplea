@@ -43,7 +43,8 @@ public class GameDataManager
         {
             try
             {
-                input.close();
+                if(input != null)
+                    input.close();
             } catch (Exception e)
             {
             }

@@ -229,7 +229,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         while (iter.hasNext())
         {
             Unit holder = (Unit) iter.next();
-            Collection<Unit> transporting = (Collection<Unit>) dependencies.get(holder);
+            Collection<Unit> transporting = dependencies.get(holder);
             if (m_dependentUnits.get(holder) != null)
                 m_dependentUnits.get(holder)
                         .addAll(transporting);

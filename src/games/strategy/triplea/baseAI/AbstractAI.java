@@ -29,7 +29,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
  * 
  * @author sgb
  */
-public abstract class AbstractAI
+public abstract class AbstractAI implements ITripleaPlayer
 {
     private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
     
@@ -209,10 +209,10 @@ public abstract class AbstractAI
         return (Territory) territories.iterator().next();
     }
     
-    public Territory whereShouldRocketsAttack(Collection candidates, Territory from)
+    public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
     {   
         //just use the first one
-        return (Territory) candidates.iterator().next();
+        return candidates.iterator().next();
     }
     
     public boolean confirmMoveKamikaze()
@@ -233,7 +233,7 @@ public abstract class AbstractAI
     public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
     {}
 
-    public void retreatNotificationMessage(Collection units)
+    public void retreatNotificationMessage(Collection<Unit> units)
     {}
 
     public void reportError(String error)

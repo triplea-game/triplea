@@ -89,16 +89,16 @@ public class PointFileReaderWriter
 		mapping.put(name,p);
 	}
 
-    public static void writeOneToOne(OutputStream sink, Map mapping) throws Exception
+    public static void writeOneToOne(OutputStream sink, Map<String,Point> mapping) throws Exception
     {
         StringBuilder out = new StringBuilder();
-        Iterator keyIter = mapping.keySet().iterator();
+        Iterator<String> keyIter = mapping.keySet().iterator();
         while (keyIter.hasNext())
         {
-            String name = (String) keyIter.next();
+            String name = keyIter.next();
             out.append(name).append(" ");
 
-            Point point = (Point) mapping.get(name);
+            Point point = mapping.get(name);
             out.append(" (").append(point.x).append(",").append(point.y).append(")");
             if(keyIter.hasNext())
             {
@@ -119,11 +119,11 @@ public class PointFileReaderWriter
             String name = (String) keyIter.next();
             out.append(name).append(" ");
             List<Polygon> points = mapping.get(name);
-            Iterator polygonIter = points.iterator();
+            Iterator<Polygon> polygonIter = points.iterator();
             while (polygonIter.hasNext())
             {
                 out.append(" < ");
-                Polygon polygon = (Polygon)polygonIter.next();
+                Polygon polygon = polygonIter.next();
                 for (int i = 0; i < polygon.npoints; i++)
                 {
                     out.append(" (").append(polygon.xpoints[i]).append(",").append(polygon.ypoints[i]).append(")");

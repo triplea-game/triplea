@@ -142,7 +142,7 @@ public class GameRunner2
         return arg.substring(index +1);
     }
 
-    private static void setupLookAndFeel()
+    public static void setupLookAndFeel()
     {
         try
         {

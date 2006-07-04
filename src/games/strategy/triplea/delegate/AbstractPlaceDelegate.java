@@ -201,7 +201,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     /**
      * Make sure the player has enough in hand to place the units.
      */
-    String playerHasEnoughUnits(Collection units, Territory at, PlayerID player)
+    String playerHasEnoughUnits(Collection<Unit> units, Territory at, PlayerID player)
     {
         //make sure the player has enough units in hand to place
         if (!player.getUnits().getUnits().containsAll(units))
@@ -220,7 +220,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      * not allow for fighters to be produced on old carriers.
      */
     private String validateNewAirCanLandOnNewCarriers(Territory to,
-            Collection units)
+            Collection<Unit> units)
     {
         int cost = MoveValidator.carrierCost(units);
         int capacity = MoveValidator.carrierCapacity(units);
@@ -452,7 +452,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      * the placement. AlreadyProduced maps territory->units already produced
      * this turn by that territory.
      */
-    protected String checkProduction(Territory to, Collection units,
+    protected String checkProduction(Territory to, Collection<Unit> units,
             PlayerID player)
     {
         Territory producer = getProducer(to, player);
@@ -588,7 +588,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     private void performPlace(Collection<Unit> units, Territory at, PlayerID player)
     {
         
-        Collection factoryAndAA = Match.getMatches(units,
+        Collection<Unit> factoryAndAA = Match.getMatches(units,
                 Matches.UnitIsAAOrFactory);
         DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
                 .addOriginalOwner(factoryAndAA, m_player);

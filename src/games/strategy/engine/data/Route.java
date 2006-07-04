@@ -155,6 +155,10 @@ public class Route implements java.io.Serializable
                 overWater = true;
             }
         }
+        
+        if(terr == null)
+            return false;
+        
         // If we started on land, went over water, and ended on land, we cross
         // water.
         return (startLand && overWater && !terr.isWater());

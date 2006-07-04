@@ -13,6 +13,7 @@
  */
 
 package games.strategy.engine.lobby.server;
+import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.lobby.*;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
@@ -29,8 +30,8 @@ import java.util.logging.*;
  */
 public class LobbyServer implements ILobby
 {
-    LobbyChatController m_cc;
-    ILobbyBrodcaster m_brodcast;
+    private ChatController m_cc;
+    private ILobbyBrodcaster m_brodcast;
     private IServerMessenger m_server;
     private IRemoteMessenger m_remote;
     private IChannelMessenger m_channel;
@@ -58,10 +59,32 @@ public class LobbyServer implements ILobby
        m_um = new UnifiedMessenger(m_server);
        m_remote = new RemoteMessenger(m_um);
        m_channel = new ChannelMessenger(m_um);
-       m_cc = new LobbyChatController("lobby.chat",m_server,m_remote,m_channel,this);
+       
+       m_cc = new ChatController("lobby.chat",m_server,m_remote, m_channel);
+       m_cc.getClass();
+       
        m_remote.registerRemote(ILobby.class,this,"lobby.lobby");
        m_channel.createChannel(ILobbyBrodcaster.class,"lobby.lobbybrodcaster");
        m_brodcast = (ILobbyBrodcaster)m_channel.getChannelBroadcastor("lobby.lobbybrodcaster");
+       
+       
+       m_server.addConnectionChangeListener(new IConnectionChangeListener()
+       {
+    
+        public void connectionRemoved(INode to)
+        {
+            forceRemoveServer(to);
+        }
+    
+        public void connectionAdded(INode to)
+        {
+            // TODO Auto-generated method stub
+    
+        }
+    
+    });
+       
+       
     }
     public void addServer(INode server)
     {
@@ -96,6 +119,8 @@ public class LobbyServer implements ILobby
             m_brodcast.serverRemoved(server);
         }
     }
+    
+    
     public ArrayList<INode> getServers()
     {
         synchronized(m_mutex)

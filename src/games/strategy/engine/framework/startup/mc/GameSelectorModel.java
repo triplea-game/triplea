@@ -36,7 +36,7 @@ public class GameSelectorModel extends Observable
     private String m_gameVersion;
     private String m_gameRound;
     private String m_fileName;
-    private boolean m_canSelect = true;;
+    private boolean m_canSelect = true;
     
     
     public GameSelectorModel()

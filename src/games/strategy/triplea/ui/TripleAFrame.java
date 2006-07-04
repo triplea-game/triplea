@@ -488,6 +488,7 @@ public class TripleAFrame extends JFrame
         return false;
     }
 
+    
     public static int save(String filename, GameData m_data)
     {
         FileOutputStream fos = null;
@@ -510,16 +511,19 @@ public class TripleAFrame extends JFrame
         {
             try
             {
-                fos.flush();
+                if(oos != null)
+                    oos.close();
             } catch (Exception ignore)
             {
             }
             try
             {
-                oos.close();
+                if(fos != null)
+                    fos.close();
             } catch (Exception ignore)
             {
             }
+           
         }
     }
 

@@ -5,10 +5,13 @@ import games.strategy.net.*;
 import games.strategy.util.Tuple;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class ChatController implements IChatController
 {
 
+    private final static Logger s_logger = Logger.getLogger(ChatController.class.getName());
+    
     private static final String CHAT_REMOTE = "games.strategy.engine.chat.ChatRemote";
     private static final String CHAT_CHANNEL = "games.strategy.engine.chat.ChatController";
     
@@ -106,6 +109,8 @@ public class ChatController implements IChatController
     public Tuple<List<INode>, Long> joinChat()
     {
         INode node = MessageContext.getSender();
+        s_logger.info("Chatter:" + node + " is joining chat:" + m_chatName);
+        
         synchronized(m_mutex)
         {
             m_chatters.add(node);
@@ -115,13 +120,14 @@ public class ChatController implements IChatController
             ArrayList<INode> copy = new ArrayList<INode>(m_chatters);
             return new Tuple<List<INode>, Long>(copy, new Long(m_version) );
         }
+        
+        
     }
     
     //a player has left
     public void leaveChat()
     {
         leaveChatInternal(MessageContext.getSender());
-
     }
     
     protected void leaveChatInternal(INode node)
@@ -132,6 +138,8 @@ public class ChatController implements IChatController
             m_version++;
             
             getChatBroadcaster().speakerRemoved(node, m_version);
+            
+            s_logger.info("Chatter:" + node + " has left chat:" + m_chatName);
         }
     }
 

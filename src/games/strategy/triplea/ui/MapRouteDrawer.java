@@ -266,8 +266,8 @@ public class MapRouteDrawer
         ta = arrowWidth / (2.0f * ((float) Math.tan(theta) / 2.0f) * fLength);
 
         // find the base of the arrow
-        baseX = ((float) xPoints[0] - ta * vecLine[0]);
-        baseY = ((float) yPoints[0] - ta * vecLine[1]);
+        baseX = (xPoints[0] - ta * vecLine[0]);
+        baseY = (yPoints[0] - ta * vecLine[1]);
 
         // build the points on the sides of the arrow
         xPoints[1] = (int) (baseX + th * vecLeft[0]);

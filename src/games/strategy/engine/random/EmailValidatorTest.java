@@ -13,6 +13,7 @@
  */
 package games.strategy.engine.random;
 
+import games.strategy.util.Util;
 import junit.framework.TestCase;
 
 /**
@@ -55,12 +56,12 @@ public class EmailValidatorTest extends TestCase
         
         for(int i = 0; i < good.length; i++)
         {
-            assertTrue(good[i] + " is good but failed",  HttpDiceRollerDialog.isMailValid(good[i]));
+            assertTrue(good[i] + " is good but failed",  Util.isMailValid(good[i]));
         }
         
         for(int i = 0; i < bad.length; i++)
         {
-            assertFalse(bad[i] + " is bad but passed",  HttpDiceRollerDialog.isMailValid(bad[i]));
+            assertFalse(bad[i] + " is bad but passed",  Util.isMailValid(bad[i]));
         }
                                     
     }

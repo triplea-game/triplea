@@ -50,7 +50,7 @@ public class CryptoRandomSource implements IRandomSource
 
     static int byteToIntUnsigned(byte val)
     {
-        return ((int) val) & 0xff;  
+        return val & 0xff;  
     }
     
     public static int[] bytesToInts(byte[] bytes)

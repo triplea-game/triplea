@@ -251,7 +251,7 @@ public class ReliefImageBreaker
 
         while (iter.hasNext())
         {
-            Polygon item = (Polygon) iter.next();
+            Polygon item = iter.next();
             item = new Polygon(item.xpoints, item.ypoints, item.npoints);
             item.translate(-bounds.x, -bounds.y);
             alphaChannelImage.getGraphics().fillPolygon(item);

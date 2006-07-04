@@ -300,7 +300,7 @@ public class BattleTracker implements java.io.Serializable
     }
 
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "null" })
     protected void takeOver(Territory territory, final PlayerID id, IDelegateBridge bridge, GameData data, UndoableMove changeTracker, Collection<Unit> arrivingUnits)
     {
         OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
@@ -388,9 +388,15 @@ public class BattleTracker implements java.io.Serializable
             Territory originalOwnersCapitol = null;
             if(originalOwner != null)
                 originalOwnersCapitol = TerritoryAttachment.getCapital(originalOwner, data); 
+            
+            
+            if(originalOwner != null && originalOwnersCapitol == null)
+                throw new IllegalStateException("No capitol found for " + originalOwner);
+
+            
             if (originalOwner != null && data.getAllianceTracker().isAllied(originalOwner, id)
                     && 
-                    ( 
+                    (       
                             originalOwnersCapitol.getOwner().equals(originalOwner) ||
                             //we are taking over this country, so if we dont own it then
                             //we will soon

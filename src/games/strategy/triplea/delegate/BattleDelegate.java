@@ -229,22 +229,22 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
      * Select which territory to bombard.
      */
     private Battle selectBombardingBattle(Unit u, Territory uTerritory,
-            Collection battles)
+            Collection<Battle> battles)
     {
         boolean hasNotMoved = DelegateFinder.moveDelegate(m_data)
                 .hasNotMoved(u);
         // If only one battle to select from just return that battle
         if ((battles.size() == 1) && !hasNotMoved)
         {
-            return (Battle) battles.iterator().next();
+            return battles.iterator().next();
         }
 
         List<Territory> territories = new ArrayList<Territory>();
         Map<Territory, Battle> battleTerritories = new HashMap<Territory, Battle>();
-        Iterator battlesIter = battles.iterator();
+        Iterator<Battle> battlesIter = battles.iterator();
         while (battlesIter.hasNext())
         {
-            Battle battle = (Battle) battlesIter.next();
+            Battle battle = battlesIter.next();
             territories.add(battle.getTerritory());
             battleTerritories.put(battle.getTerritory(), battle);
         }

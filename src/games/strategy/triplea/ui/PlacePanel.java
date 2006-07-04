@@ -200,7 +200,7 @@ public class PlacePanel extends ActionPanel
                 chooser.setMax(maxUnits[0]);
 
             int option = JOptionPane.showOptionDialog(
-                    (JFrame) getTopLevelAncestor(), chooser, messageText,
+                    getTopLevelAncestor(), chooser, messageText,
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
                     null, null, null);
             if (option == JOptionPane.OK_OPTION)

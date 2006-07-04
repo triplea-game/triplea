@@ -266,7 +266,7 @@ public class UnifiedMessenger
             matching = Match.getKeysWhereValueMatch(m_remoteNodesWithImplementors, containsEndPoint);
         }
 
-        return (INode[]) matching.toArray(new INode[matching.size()]);
+        return matching.toArray(new INode[matching.size()]);
     }
 
     public Class[] getTypes(String endPointName)
@@ -347,7 +347,7 @@ public class UnifiedMessenger
 
         }
 
-        return (RemoteMethodCallResults[]) results.toArray(new RemoteMethodCallResults[results.size()]);
+        return results.toArray(new RemoteMethodCallResults[results.size()]);
     }
 
     /**
@@ -1144,7 +1144,7 @@ class InvocationResults implements Externalizable
 	@SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
 	{
-		results = (Collection) in.readObject();
+		results = (Collection<RemoteMethodCallResults>) in.readObject();
 		methodCallID = (GUID) in.readObject();
 		
 	}
