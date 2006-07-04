@@ -68,6 +68,7 @@ public class TripleAFrame extends JFrame
     private JTabbedPane m_tabsPanel = new JTabbedPane();
     private StatPanel m_statsPanel;
     private TerritoryDetailPanel m_details;
+    private OddsDetailPanel m_odds;
     private JPanel m_historyPanel = new JPanel();
     private JPanel m_gameSouthPanel;
     private HistoryPanel m_historyTree;
@@ -182,6 +183,9 @@ public class TripleAFrame extends JFrame
 
         m_details = new TerritoryDetailPanel(m_mapPanel, m_data, m_uiContext);
         m_tabsPanel.addTab("Territory", m_details);
+        
+        m_odds = new OddsDetailPanel(m_mapPanel, m_data, m_uiContext);
+        m_tabsPanel.addTab("Odds", m_odds);
 
         m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize()
                 .getHeight()));
@@ -488,7 +492,6 @@ public class TripleAFrame extends JFrame
         return false;
     }
 
-    
     public static int save(String filename, GameData m_data)
     {
         FileOutputStream fos = null;
@@ -511,19 +514,18 @@ public class TripleAFrame extends JFrame
         {
             try
             {
-                if(oos != null)
-                    oos.close();
+                if(fos != null)
+                    fos.flush();
             } catch (Exception ignore)
             {
             }
             try
             {
-                if(fos != null)
-                    fos.close();
+                if(oos != null)
+                    oos.close();
             } catch (Exception ignore)
             {
             }
-           
         }
     }
 
@@ -632,6 +634,7 @@ public class TripleAFrame extends JFrame
         m_tabsPanel.add("History", historyDetailPanel);
         m_tabsPanel.add("Stats", m_statsPanel);
         m_tabsPanel.add("Territory", m_details);
+        m_tabsPanel.add("Odds", m_odds);
 
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(false);
@@ -703,6 +706,7 @@ public class TripleAFrame extends JFrame
         m_tabsPanel.add("Action", m_actionButtons);
         m_tabsPanel.add("Territory", m_details);
         m_tabsPanel.add("Stats", m_statsPanel);
+        m_tabsPanel.add("Odds", m_odds);
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(true);
 
