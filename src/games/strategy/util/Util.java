@@ -182,4 +182,20 @@ public class Util
             return emailAddress.matches(regex);
         }
 
+    public static String createUniqueTimeStamp()
+    {
+        long time = System.currentTimeMillis();
+        while(time == System.currentTimeMillis())
+        {
+            try
+            {
+                Thread.sleep(1);
+            } catch (InterruptedException e)
+            {
+                
+            }
+        }
+        return "" +  System.currentTimeMillis();
+    }
+
 }

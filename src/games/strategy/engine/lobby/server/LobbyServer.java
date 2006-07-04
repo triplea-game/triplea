@@ -15,8 +15,11 @@
 package games.strategy.engine.lobby.server;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.lobby.*;
+import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
+
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
+import games.strategy.util.Version;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +33,8 @@ import java.util.logging.*;
  */
 public class LobbyServer implements ILobby
 {
+    public static final Version LOBBY_VERSION = new Version(1,0,0);
+    
     private ChatController m_cc;
     private ILobbyBrodcaster m_brodcast;
     private IServerMessenger m_server;
@@ -55,10 +60,14 @@ public class LobbyServer implements ILobby
            m_logger.log(Level.SEVERE,ex.toString());
            return;
        }
-       m_server.setAcceptNewConnections(true);
+       
        m_um = new UnifiedMessenger(m_server);
        m_remote = new RemoteMessenger(m_um);
        m_channel = new ChannelMessenger(m_um);
+       
+       m_server.setLoginValidator(new LobbyLoginValidator());
+       
+       m_server.setAcceptNewConnections(true);
        
        m_cc = new ChatController("lobby.chat",m_server,m_remote, m_channel);
        m_cc.getClass();
@@ -145,6 +154,10 @@ public class LobbyServer implements ILobby
         {
             int p = Integer.parseInt(args[1]);
             new LobbyServer(args[0],p);
+            
+           
+            
+            System.out.println("Lobby started");
         }
         catch(Exception ex)
         {

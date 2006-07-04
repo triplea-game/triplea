@@ -15,7 +15,7 @@
 package games.strategy.engine.lobby.server.userDB;
 
 
-import games.strategy.util.Util;
+import games.strategy.util.*;
 
 import java.sql.*;
 import java.util.logging.*;
@@ -28,7 +28,7 @@ public class DBUserController
      * 
      * @return if this user is valid
      */
-    String validate(String userName, String email, String hashedPassword )
+    public String validate(String userName, String email, String hashedPassword )
     {
         //is this a valid user?
         if(userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2)
@@ -39,9 +39,9 @@ public class DBUserController
         {
             return "Invalid email address";
         }
-        if(hashedPassword == null || hashedPassword.length() < 3 )
+        if(hashedPassword == null || hashedPassword.length() < 3 || !hashedPassword.startsWith(MD5Crypt.MAGIC) )
         {
-            return "No password";
+            return "Invalid password";
         }
         
         return null;
@@ -52,16 +52,84 @@ public class DBUserController
     {
         Database.getConnection().close();
     }
+    
+    /**
+     * @return null if the user does not exist
+     */
+    public String getPassword(String userName)
+    {
+        String sql = "select password from ta_users where username = ?";
+        Connection con = Database.getConnection();
+        try
+        {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, userName);
+            
+            ResultSet rs = ps.executeQuery();
+            String rVal = null;
+            if(rs.next())
+            {
+                rVal = rs.getString(1);
+            }
+            
+            rs.close();
+            ps.close();
+            
+            return rVal;
+            
+        }
+        catch(SQLException sqle)
+        {
+            s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
+            throw new IllegalStateException(sqle.getMessage());
+
+        }
+        finally
+        {
+            closeConnection(con);
+        }
+    }
+    
+    public boolean doesUserExist(String userName)
+    {
+        String sql = "select username from ta_users where username = ?";
+        Connection con = Database.getConnection();
+        try
+        {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, userName);
+            
+            ResultSet rs = ps.executeQuery();
+            boolean found = rs.next();
+            
+            rs.close();
+            ps.close();
+            
+            return found;
+            
+        }
+        catch(SQLException sqle)
+        {
+            s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
+            throw new IllegalStateException(sqle.getMessage());
+
+        }
+        finally
+        {
+            closeConnection(con);
+        }
+    }
 
 
     /**
-     * Create a user in the database.  If the user name is duplicated an IlelgalStateException will be thrown. 
+     * Create a user in the database. 
+     * If an error occured, an IllegalStateException will be thrown with a user displayable error message.
      */
     public void createUser(String name, String email, String hashedPassword, boolean admin)
     {
         String validationErrors = validate(name, email, hashedPassword); 
         if(validationErrors != null)
-            throw new IllegalArgumentException(validationErrors);
+            throw new IllegalStateException(validationErrors);
         
         Connection con = Database.getConnection();
         try
@@ -79,6 +147,12 @@ public class DBUserController
         }
         catch(SQLException sqle)
         {
+            if(sqle.getErrorCode() == 30000)
+            {
+                s_logger.info("Tried to create duplicate user for name:" + name + " error:" + sqle.getMessage());
+                throw new IllegalStateException("That user name is already taken");
+            }
+            
             s_logger.log(Level.SEVERE, "Error inserting name:" + name + " email: " + email + " pwd: " + hashedPassword, sqle );
             throw new IllegalStateException(sqle.getMessage());
         }
@@ -86,6 +160,7 @@ public class DBUserController
         {
             closeConnection(con);
         }
+        
     }
 
 

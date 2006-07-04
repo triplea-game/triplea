@@ -4,35 +4,20 @@ import java.sql.*;
 
 import junit.framework.TestCase;
 
-import games.strategy.util.MD5Crypt;
+import games.strategy.util.*;
 
 public class DBUserControllerTest extends TestCase
 {
-    private String createUniqueTimeStamp()
-    {
-        long time = System.currentTimeMillis();
-        while(time == System.currentTimeMillis())
-        {
-            try
-            {
-                Thread.sleep(1);
-            } catch (InterruptedException e)
-            {
-                
-            }
-        }
-        return "" +  System.currentTimeMillis();
-    }
-
-    
     public void testCreate() throws Exception
     {
-        String name = createUniqueTimeStamp();
+        String name = Util.createUniqueTimeStamp();
         String email = name +  "@none.none";
         String password = MD5Crypt.crypt(name);
         
         DBUserController controller = new DBUserController();
         controller.createUser(name, email, password, false);
+        
+        assertTrue(controller.doesUserExist(name));
         
         Connection con = Database.getConnection();
         try
@@ -54,7 +39,7 @@ public class DBUserControllerTest extends TestCase
     
     public void testCreateDupe() throws Exception
     {
-        String name = createUniqueTimeStamp();
+        String name = Util.createUniqueTimeStamp();
         String email = name +  "@none.none";
         String password = MD5Crypt.crypt(name);
         
@@ -74,7 +59,7 @@ public class DBUserControllerTest extends TestCase
     
     public void testLogin() throws Exception
     {
-        String name = createUniqueTimeStamp();
+        String name = Util.createUniqueTimeStamp();
         String email = name +  "@none.none";
         String password = MD5Crypt.crypt(name);
         

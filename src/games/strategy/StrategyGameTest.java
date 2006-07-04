@@ -21,6 +21,7 @@
 package games.strategy;
 
 import games.strategy.engine.chat.ChatTest;
+import games.strategy.engine.lobby.server.login.LobbyLoginValidatorTest;
 import games.strategy.engine.lobby.server.userDB.DBUserControllerTest;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.CryptoRandomSourceTest;
@@ -58,6 +59,7 @@ public class StrategyGameTest extends TestCase
         suite.addTestSuite(ChatTest.class);
         
         suite.addTestSuite(DBUserControllerTest.class);
+        suite.addTestSuite(LobbyLoginValidatorTest.class);
         
         
 

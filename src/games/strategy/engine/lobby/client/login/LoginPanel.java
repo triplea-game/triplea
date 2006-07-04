@@ -4,11 +4,8 @@ import games.strategy.engine.framework.GameRunner2;
 import games.strategy.ui.Util;
 
 import java.awt.*;
-import java.awt.geom.GeneralPath;
-import java.awt.image.BufferedImage;
 
 import javax.swing.*;
-import javax.swing.plaf.*;
 
 public class LoginPanel extends JPanel
 {

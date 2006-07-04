@@ -3,6 +3,7 @@ package games.strategy.net;
 import java.io.*;
 import java.net.SocketAddress;
 import java.util.*;
+import java.util.logging.*;
 
 class ServerLoginHelper
 {
@@ -13,7 +14,7 @@ class ServerLoginHelper
      * 2) client writes credentials in response to challenge string
      * 3) server reads credentials, sends null and then client name if login suceeds, otherwise an error message and the connection is closed
      */
-    
+    private final static Logger s_logger = Logger.getLogger(ServerLoginHelper.class.getName());
     
     private final SocketAddress m_remoteAddress;
     private final ILoginValidator m_loginValidator;
@@ -102,7 +103,7 @@ class ServerLoginHelper
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            s_logger.log(Level.SEVERE, e.getMessage(), e);
             return false;
         }
         
