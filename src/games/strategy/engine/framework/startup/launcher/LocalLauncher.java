@@ -17,7 +17,7 @@ package games.strategy.engine.framework.startup.launcher;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.startup.ui.GameLoadingWindow;
+import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
@@ -37,7 +37,7 @@ public class LocalLauncher implements ILauncher
     private IRandomSource m_randomSource;
     private final Map<String,String> m_playerTypes;
     private final GameSelectorModel m_gameSelectorModel;
-    private GameLoadingWindow m_gameLoadingWindow = new GameLoadingWindow();
+    private WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
     
     public LocalLauncher(GameSelectorModel gameSelectorModel, IRandomSource randomSource, Map<String,String> playerTypes)
     {

@@ -21,6 +21,7 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.*;
+import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
@@ -50,7 +51,7 @@ public class ClientModel implements IMessengerErrorListener
     private Component m_ui;
     private ChatPanel m_chatPanel;
     private ClientGame m_game;
-    private GameLoadingWindow m_gameLoadingWindow = new GameLoadingWindow();
+    private WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
     
     //we set the game data to be null, since we
     //are a client game, and the game data lives on the server

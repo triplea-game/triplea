@@ -30,11 +30,6 @@ public class DBUserController
      */
     public String validate(String userName, String email, String hashedPassword )
     {
-        //is this a valid user?
-        if(userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2)
-        {
-            return "Invalid userName, usernames must be at least 3 characters long, and contain alpha numeric characters and _ or -"; 
-        }
         if(email == null || !Util.isMailValid(email) )
         {
             return "Invalid email address";
@@ -44,6 +39,17 @@ public class DBUserController
             return "Invalid password";
         }
         
+        return validateUserName(userName);
+    }
+
+
+    public static String validateUserName(String userName)
+    {
+        //is this a valid user?
+        if(userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2)
+        {
+            return "Invalid userName, usernames must be at least 3 characters long, and contain alpha numeric characters and _ or -"; 
+        }
         return null;
     }
      

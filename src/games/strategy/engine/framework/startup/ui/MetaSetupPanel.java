@@ -1,9 +1,14 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.client.login.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.*;
 
@@ -13,6 +18,7 @@ public class MetaSetupPanel extends SetupPanel
     private JButton m_startPBEM;
     private JButton  m_hostGame;
     private JButton m_connectToHostedGame;
+    private JButton m_connectToLobby;
     private SetupPanelModel m_model;
     
     public MetaSetupPanel(SetupPanelModel model)
@@ -31,6 +37,7 @@ public class MetaSetupPanel extends SetupPanel
         m_startPBEM = new JButton("Start PBEM Game");
         m_hostGame = new JButton("Host Networked Game");
         m_connectToHostedGame = new JButton("Connect to Networked Game");
+        m_connectToLobby = new JButton("Find Games on the Internet");
     }
 
     private void layoutComponents()
@@ -45,6 +52,7 @@ public class MetaSetupPanel extends SetupPanel
         add(m_startPBEM, new GridBagConstraints(0,2,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
         add(m_hostGame, new GridBagConstraints(0,3,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
         add(m_connectToHostedGame, new GridBagConstraints(0,4,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
+        add(m_connectToLobby, new GridBagConstraints(0,5,1,1,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 0,0));
 
         //top space
         add(new JPanel(), new GridBagConstraints(0,100,1,1,1,1,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00,0,0,0), 0,0) );
@@ -93,7 +101,55 @@ public class MetaSetupPanel extends SetupPanel
                 m_model.showClient(MetaSetupPanel.this);
             }
         });
+        
+        m_connectToLobby.addActionListener(new ActionListener()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                connectToLobby();
+        
+            }
+        
+        });
 
+    }
+
+    private void connectToLobby()
+    {
+        final URL serverPropsURL;
+        try
+        {
+            serverPropsURL =new URL(System.getProperties().getProperty("triplea.lobby.serverURL", "http://triplea.sourceforge.net/lobby/server.properties" ));
+        } catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+            throw new IllegalStateException(e);
+        }
+        
+        
+        final AtomicReference<LobbyServerProperties> props = new AtomicReference<LobbyServerProperties>();
+        Runnable r = new Runnable()
+        {
+        
+            public void run()
+            {
+                props.set(new LobbyServerProperties(serverPropsURL));
+            }
+        
+        };
+        
+        BackgroundTaskRunner.runInBackground(this, "Looking Up Server", r);
+        
+        
+        LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props.get());
+        
+        LobbyClient client = login.login();
+        if(client == null)
+            return;
+        
+        
+        
     }
 
     private void setWidgetActivation()

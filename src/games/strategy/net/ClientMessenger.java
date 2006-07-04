@@ -14,11 +14,11 @@
 
 package games.strategy.net;
 
-import java.io.*;
-import java.util.*;
-import java.net.*;
-
 import games.strategy.util.ListenerList;
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class ClientMessenger implements IMessenger
 {
@@ -40,11 +40,20 @@ public class ClientMessenger implements IMessenger
      * Note, the name paramater passed in here may not match the name of the
      * ClientMessenger after it has been constructed.
      */
+    public ClientMessenger(String host, int port, String name, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
+    {
+        this(host, port, name, new DefaultObjectStreamFactory(), login);
+    }
+
+    /**
+     * Note, the name paramater passed in here may not match the name of the
+     * ClientMessenger after it has been constructed.
+     */
     public ClientMessenger(String host, int port, String name) throws IOException, UnknownHostException, CouldNotLogInException
     {
         this(host, port, name, new DefaultObjectStreamFactory());
     }
-
+    
     /**
      * Note, the name paramater passed in here may not match the name of the
      * ClientMessenger after it has been constructed.

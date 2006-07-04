@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui;
+package games.strategy.engine.framework.ui.background;
 
 import java.awt.*;
 import java.util.*;
@@ -7,33 +7,20 @@ import java.util.Timer;
 import javax.swing.*;
 import javax.swing.border.*;
 
-public class GameLoadingWindow extends JWindow
+public class WaitWindow extends JWindow
 {
 
     private final Object m_mutex = new Object();
     private Timer m_timer = new Timer();
 
-    public GameLoadingWindow()
+
+    public WaitWindow(String waitMessage)
     {
         // super("Game Loading, Please wait");
         // setIconImage(GameRunner.getGameIcon(this));
         setSize(200, 80);
 
-        JPanel mainPanel = new JPanel();
-
-        mainPanel.setLayout(new BorderLayout());
-
-        JLabel label = new JLabel("Loading game, please wait.");
-        label.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        mainPanel.add(BorderLayout.NORTH, label);
-
-        int min = 0;
-        int max = 100;
-        JProgressBar progress = new JProgressBar(min, max);
-        progress.setBorder(new EmptyBorder(10, 10, 10, 10));
-        mainPanel.add(progress, BorderLayout.CENTER);
-        progress.setIndeterminate(true);
+        WaitPanel mainPanel = new WaitPanel(waitMessage);
 
         setLocationRelativeTo(null);
         // setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -108,7 +95,7 @@ public class GameLoadingWindow extends JWindow
 
             public void run()
             {
-                final GameLoadingWindow window = new GameLoadingWindow();
+                final WaitWindow window = new WaitWindow("Loading game, please wait.");
                 window.setVisible(true);
 
                 window.showWait();

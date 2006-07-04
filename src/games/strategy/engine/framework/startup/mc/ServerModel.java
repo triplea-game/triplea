@@ -196,7 +196,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
             clientLoginValidator.setGamePassword(props.getPassword());
             m_serverMessenger.setLoginValidator(clientLoginValidator);
-            m_serverMessenger.setAcceptNewConnections(true);
+            
             m_serverMessenger.addErrorListener(this);
             UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_serverMessenger);
             
@@ -209,6 +209,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             
             m_chatController = new ChatController(CHAT_NAME,m_serverMessenger, m_remoteMessenger, m_channelMessenger);
             m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);
+
+            m_serverMessenger.setAcceptNewConnections(true);
             
             gameDataChanged();
             

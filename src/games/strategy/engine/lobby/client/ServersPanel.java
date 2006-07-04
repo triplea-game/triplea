@@ -39,7 +39,7 @@ public class ServersPanel extends JPanel implements ILobbyBrodcaster
     MainFrame m_frame;
     ArrayList<INode> m_snodes = new ArrayList<INode>();
     DefaultListModel m_servers;
-    LobbyClient m_lc;
+    LobbyClientUI m_lc;
 
     private final String NO_SERVERS = "no servers available!";
     
@@ -63,7 +63,7 @@ public class ServersPanel extends JPanel implements ILobbyBrodcaster
             
         }
     };
-    public ServersPanel(LobbyClient lc,ILobby lobby,IMessenger messenger,MainFrame frame)
+    public ServersPanel(LobbyClientUI lc,ILobby lobby,IMessenger messenger,MainFrame frame)
     {
         m_lc = lc;
         m_lobby = lobby;
@@ -128,22 +128,22 @@ public class ServersPanel extends JPanel implements ILobbyBrodcaster
                 {
                     public void run()
                     {
-                        if(System.getProperty(LobbyClient.SERVER_HOSTING).equals("true"))
+                        if(System.getProperty(LobbyClientUI.SERVER_HOSTING).equals("true"))
                         {
-                            String desc = System.getProperty(LobbyClient.SERVER_DESC);
+                            String desc = System.getProperty(LobbyClientUI.SERVER_DESC);
                             InetAddress addr;
                             try
                             {
-                                addr = InetAddress.getByName(System.getProperty(LobbyClient.SERVER_ADDR));
+                                addr = InetAddress.getByName(System.getProperty(LobbyClientUI.SERVER_ADDR));
                             }
                             catch(Exception ex)
                             {
                                 addr = m_messenger.getLocalNode().getAddress();
                             }
-                            int port = Integer.valueOf(System.getProperty(LobbyClient.SERVER_PORT)).intValue();
+                            int port = Integer.valueOf(System.getProperty(LobbyClientUI.SERVER_PORT)).intValue();
                             INode m_node = new Node(desc,addr,port);
                             m_lobby.removeServer(m_node);
-                            System.setProperty(LobbyClient.SERVER_HOSTING,"false");
+                            System.setProperty(LobbyClientUI.SERVER_HOSTING,"false");
                         }
                     }
                 });

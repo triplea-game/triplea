@@ -1,21 +1,28 @@
 package games.strategy.engine.lobby.client.login;
 
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.ui.Util;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
 
 public class CreateAccountPanel extends JPanel
 {
+    
+    public static enum ReturnValue {CANCEL, CREATE_ACCOUNT}
+    
+    private JDialog m_dialog;
+    
     private JTextField m_userName;
     private JTextField m_email;
     private JPasswordField m_password;
     private JPasswordField m_password2;
     private JButton m_okButton;
     private JButton m_cancelButton;
-    
+    private ReturnValue m_returnValue;
     
     public CreateAccountPanel()
     {
@@ -84,13 +91,99 @@ public class CreateAccountPanel extends JPanel
     
     private void setupListeners()
     {
+        m_cancelButton.addActionListener(new ActionListener()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                m_dialog.setVisible(false);
+            }
+        
+        });
+        
+        m_okButton.addActionListener(new ActionListener()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                okPressed();
+        
+            }
+        
+        });
+    }
 
+    @SuppressWarnings("deprecation")
+    private void okPressed()
+    {
+        if(!m_password.getText().equals(m_password2.getText()))
+        {
+            JOptionPane.showMessageDialog(this, "The passwords do not match", "Passwords Do Not Match" , JOptionPane.ERROR_MESSAGE);
+            m_password.setText("");
+            m_password2.setText("");
+            return;
+        }        
+        if(!games.strategy.util.Util.isMailValid( m_email.getText() ))
+        {
+            JOptionPane.showMessageDialog(this, "You must enter a username", "No username" , JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        else if(DBUserController.validateUserName(m_userName.getText()) != null)
+        {
+            JOptionPane.showMessageDialog(this, DBUserController.validateUserName(m_userName.getText()), "Invalid Username" , JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        m_returnValue = ReturnValue.CREATE_ACCOUNT;
+        m_dialog.setVisible(false);
+        
+        
+        
     }
 
     private void setWidgetActivation()
     {
 
     }
+    
+    public ReturnValue show(Window parent)
+    {
+        m_dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
+        
+        m_dialog.getContentPane().add(this);
+        m_dialog.pack();
+        m_dialog.setLocationRelativeTo(parent);
+        m_dialog.setVisible(true);
+        
+        m_dialog.dispose();
+        m_dialog = null;
+        
+        if(m_returnValue == null)
+            return ReturnValue.CANCEL;
+        
+        return m_returnValue;
+    }
+    
+    
+    
+    
+    @SuppressWarnings("deprecation")
+    public String getPassword()
+    {
+        return m_password.getText();
+    }
+    
+    
+    public String getEmail()
+    {
+        return m_email.getText();
+    }
+    
+    public String getUserName()
+    {
+        return m_userName.getText();
+    }
+    
     
     
 }

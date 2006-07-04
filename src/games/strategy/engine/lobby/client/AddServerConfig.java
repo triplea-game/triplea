@@ -39,9 +39,9 @@ public class AddServerConfig extends JFrame
     JLabel m_lport;
     JTextField m_port;
     JButton m_add;
-    LobbyClient m_lc;
+    LobbyClientUI m_lc;
     /** Creates a new instance of AddServerConfig */
-    public AddServerConfig(ILobby lobby,IMessenger messenger,MainFrame frame,LobbyClient lc)
+    public AddServerConfig(ILobby lobby,IMessenger messenger,MainFrame frame,LobbyClientUI lc)
     {
         super("Add a server");
         m_lc = lc;
@@ -76,10 +76,10 @@ public class AddServerConfig extends JFrame
                     System.setProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY,"true");
                     System.setProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,m_name);
                     System.setProperty(GameRunner2.TRIPLEA_PORT_PROPERTY,m_port.getText());
-                    System.setProperty(LobbyClient.SERVER_HOSTING,"true");
-                    System.setProperty(LobbyClient.SERVER_DESC,m_desc.getText());
-                    System.setProperty(LobbyClient.SERVER_ADDR,m_addr.toString());
-                    System.setProperty(LobbyClient.SERVER_PORT,m_port.getText());
+                    System.setProperty(LobbyClientUI.SERVER_HOSTING,"true");
+                    System.setProperty(LobbyClientUI.SERVER_DESC,m_desc.getText());
+                    System.setProperty(LobbyClientUI.SERVER_ADDR,m_addr.toString());
+                    System.setProperty(LobbyClientUI.SERVER_PORT,m_port.getText());
                     m_frame.start();
                     INode n = new Node(m_desc.getText(),m_addr,m_iport);
                     m_lc.setSeverNode(n);

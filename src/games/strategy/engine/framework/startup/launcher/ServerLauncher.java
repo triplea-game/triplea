@@ -17,8 +17,8 @@ package games.strategy.engine.framework.startup.launcher;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.startup.mc.*;
-import games.strategy.engine.framework.startup.ui.GameLoadingWindow;
 import games.strategy.engine.framework.ui.*;
+import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.CryptoRandomSource;
@@ -60,7 +60,7 @@ public class ServerLauncher implements ILauncher
     //we can ignore the connection lost
     private List<INode> m_observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<INode>());
     
-    private GameLoadingWindow m_gameLoadingWindow = new GameLoadingWindow();
+    private WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
     
     public ServerLauncher(int clientCount, IRemoteMessenger remoteMessenger, IChannelMessenger channelMessenger, IMessenger messenger, GameSelectorModel gameSelectorModel, Map<String, String> localPlayerMapping, Map<String, INode> remotelPlayers, ServerModel serverModel)
     {

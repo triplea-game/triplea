@@ -62,7 +62,7 @@ public class LobbyClientConfigure extends JFrame
                             //invalid port message
                             return ;
                         }
-                        new LobbyClient(m_name.getText(),m_server.getText(),m_iport,m_frame);
+                        new LobbyClientUI(m_name.getText(),m_server.getText(),m_iport,m_frame);
                     }
                 });
                 setVisible(false);
