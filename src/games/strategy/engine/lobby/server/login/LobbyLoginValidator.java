@@ -39,7 +39,7 @@ public class LobbyLoginValidator implements ILoginValidator
         
         if(error != null)
         {
-            s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName);    
+            s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName + " error:" + error);    
         }
         else
         {

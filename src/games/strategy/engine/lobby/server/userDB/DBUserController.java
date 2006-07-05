@@ -126,6 +126,38 @@ public class DBUserController
         }
     }
 
+    
+    public void updateUser(String name, String email, String hashedPassword, boolean admin)
+    {
+        String validationErrors = validate(name, email, hashedPassword); 
+        if(validationErrors != null)
+            throw new IllegalStateException(validationErrors);
+        
+        Connection con = Database.getConnection();
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
+            
+            ps.setString(1, hashedPassword);
+            ps.setString(2, email);
+            ps.setBoolean(3, admin);
+            ps.setString(4, name);
+            
+            ps.execute();
+            ps.close();
+            con.commit();
+        }
+        catch(SQLException sqle)
+        {
+            s_logger.log(Level.SEVERE, "Error updating name:" + name + " email: " + email + " pwd: " + hashedPassword, sqle );
+            throw new IllegalStateException(sqle.getMessage());
+        }
+        finally
+        {
+            closeConnection(con);
+        }
+    }
+    
 
     /**
      * Create a user in the database. 
@@ -224,6 +256,51 @@ public class DBUserController
         }
         
         
+    }
+    
+    /**
+     * 
+     * @return null if no such user
+     */
+    public DBUser getUser(String userName)
+    {
+        String sql = "select * from ta_users where username = ?";
+        Connection con = Database.getConnection();
+        try
+        {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, userName);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            if(!rs.next())
+            {
+                return null;
+            }
+            
+            DBUser user = new DBUser(
+                    rs.getString("username"),
+                    rs.getString("email"),
+                    rs.getBoolean("admin"),
+                    rs.getTimestamp("lastLogin"),
+                    rs.getTimestamp("joined")            
+            );
+            
+            rs.close();
+            ps.close();
+            
+            return user;
+        }
+        catch(SQLException sqle)
+        {
+            s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
+            throw new IllegalStateException(sqle.getMessage());
+
+        }
+        finally
+        {
+            closeConnection(con);
+        }
     }
     
     

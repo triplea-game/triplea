@@ -6,12 +6,19 @@ import games.strategy.ui.Util;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.logging.Logger;
+import java.util.prefs.*;
 
 import javax.swing.*;
 
 public class LoginPanel extends JPanel
 {
+    private final static Logger s_logger = Logger.getLogger(LoginPanel.class.getName());
+    
     public static enum ReturnValue {CANCEL, LOGON, CREATE_ACCOUNT}
+    
+    public static final String LAST_LOGIN_NAME_PREF = "LAST_LOGIN_NAME_PREF";
+    public static final String ANONYMOUS_LOGIN_PREF = "ANONYMOUS_LOGIN_PREF";
     
     private JDialog m_dialog;
     private JPasswordField m_password;
@@ -28,7 +35,34 @@ public class LoginPanel extends JPanel
         createComponents();
         layoutComponents();
         setupListeners();
+        readDefaults();
         setWidgetActivation();
+    }
+    
+    private void readDefaults()
+    {
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        String name = prefs.get(LAST_LOGIN_NAME_PREF, System.getProperty("user.name"));
+        boolean anonymous = prefs.getBoolean(ANONYMOUS_LOGIN_PREF, true);
+        
+        m_anonymous.setSelected(anonymous);
+        m_userName.setText(name);
+        
+        SwingUtilities.invokeLater(
+        new Runnable()
+        {
+            public void run()
+            {
+                if (!m_anonymous.isSelected())
+                {
+                    m_password.requestFocusInWindow();
+                } else
+                {
+                    m_userName.requestFocusInWindow();
+                }
+            }
+        } );
+        
     }
 
     private void createComponents()
@@ -123,12 +157,15 @@ public class LoginPanel extends JPanel
 
     private void logonPressed()
     {
-        if(DBUserController.validateUserName(m_userName.getText()) != null)
+        String userName = m_userName.getText();
+        boolean anonymous = m_anonymous.isSelected();
+        
+        if(DBUserController.validateUserName(userName) != null)
         {
-            JOptionPane.showMessageDialog(this, DBUserController.validateUserName(m_userName.getText()), "Invalid Username" , JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, DBUserController.validateUserName(userName), "Invalid Username" , JOptionPane.ERROR_MESSAGE);
             return;
         }
-        else if(m_password.getPassword().length < 3 && !m_anonymous.isSelected())
+        else if(m_password.getPassword().length < 3 && !anonymous)
         {
             JOptionPane.showMessageDialog(LoginPanel.this, "You must enter a password", "No password" , JOptionPane.ERROR_MESSAGE);
             return;
@@ -136,6 +173,21 @@ public class LoginPanel extends JPanel
         
         m_returnValue = ReturnValue.LOGON;
         m_dialog.setVisible(false);
+    }
+
+    public static void storePrefs(String userName, boolean anonymous)
+    {
+        Preferences prefs = Preferences.userNodeForPackage(LoginPanel.class);
+        prefs.put(LAST_LOGIN_NAME_PREF, userName);
+        prefs.putBoolean(ANONYMOUS_LOGIN_PREF, anonymous);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException e)
+        {
+            //not a big deal
+            s_logger.warning(e.getMessage());
+        }
     }
 
     

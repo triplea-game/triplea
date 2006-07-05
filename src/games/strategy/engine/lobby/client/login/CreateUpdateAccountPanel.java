@@ -1,7 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.*;
 import games.strategy.ui.Util;
 
 import java.awt.*;
@@ -9,10 +9,11 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class CreateAccountPanel extends JPanel
+public class CreateUpdateAccountPanel extends JPanel
 {
+
     
-    public static enum ReturnValue {CANCEL, CREATE_ACCOUNT}
+    public static enum ReturnValue {CANCEL, OK}
     
     private JDialog m_dialog;
     
@@ -23,14 +24,34 @@ public class CreateAccountPanel extends JPanel
     private JButton m_okButton;
     private JButton m_cancelButton;
     private ReturnValue m_returnValue;
+
     
-    public CreateAccountPanel()
+    public static CreateUpdateAccountPanel newUpdatePanel(DBUser user)
     {
+        CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
+        panel.m_userName.setText(user.getName());
+        panel.m_userName.setEditable(false);
+        panel.m_email.setText(user.getEmail());
+        return panel;
+    }
+    
+    public static CreateUpdateAccountPanel newCreatePanel()
+    {
+        CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(true);
+        return panel;
+    }
+
+    
+    private CreateUpdateAccountPanel(boolean create)
+    {
+         
         createComponents();
-        layoutComponents();
+        layoutComponents(create);
         setupListeners();
         setWidgetActivation();
     }
+
+
 
     private void createComponents()
     {
@@ -43,9 +64,9 @@ public class CreateAccountPanel extends JPanel
         
     }
 
-    private void layoutComponents()
+    private void layoutComponents(boolean create)
     {
-        JLabel label = new JLabel(new ImageIcon(Util.getBanner("Create Account")));
+        JLabel label = new JLabel(new ImageIcon(Util.getBanner(create ? "Create Account" : "Update Account")));
         setLayout(new BorderLayout());
         add(label, BorderLayout.NORTH);
         
@@ -83,7 +104,7 @@ public class CreateAccountPanel extends JPanel
         GameRunner2.setupLookAndFeel();
         
         JDialog d = new JDialog();
-        d.add(new CreateAccountPanel());
+        d.add(new CreateUpdateAccountPanel(false));
         d.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
         d.pack();
         d.setVisible(true);
@@ -134,7 +155,7 @@ public class CreateAccountPanel extends JPanel
             return;
         }
         
-        m_returnValue = ReturnValue.CREATE_ACCOUNT;
+        m_returnValue = ReturnValue.OK;
         m_dialog.setVisible(false);
         
         

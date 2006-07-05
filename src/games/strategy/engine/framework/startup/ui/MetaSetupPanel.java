@@ -4,6 +4,7 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.*;
+import games.strategy.engine.lobby.client.ui.LobbyFrame;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -148,6 +149,15 @@ public class MetaSetupPanel extends SetupPanel
         if(client == null)
             return;
         
+        
+        LobbyFrame lobbyFrame = new LobbyFrame(client);
+        
+        
+        
+        MainFrame.getInstance().setVisible(false);
+        MainFrame.getInstance().dispose();
+
+        lobbyFrame.setVisible(true);
         
         
     }

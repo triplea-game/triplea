@@ -99,11 +99,13 @@ public class LobbyLogin
             }
 
             );
-            return new LobbyClient(messenger);
+            //sucess, store prefs
+            LoginPanel.storePrefs(panel.getUserName(), panel.isAnonymous());
+            return new LobbyClient(messenger, panel.isAnonymous());
         } catch (CouldNotLogInException clne)
         {
             // this has already been dealt with
-            return createAccount();
+            return loginToServer();
         } catch (IOException ioe)
         {
             ioe.printStackTrace();
@@ -113,9 +115,9 @@ public class LobbyLogin
 
     private LobbyClient createAccount()
     {
-        final CreateAccountPanel createAccount = new CreateAccountPanel();
-        CreateAccountPanel.ReturnValue value = createAccount.show(m_parent);
-        if (value == CreateAccountPanel.ReturnValue.CREATE_ACCOUNT)
+        final CreateUpdateAccountPanel createAccount = CreateUpdateAccountPanel.newCreatePanel();
+        CreateUpdateAccountPanel.ReturnValue value = createAccount.show(m_parent);
+        if (value == CreateUpdateAccountPanel.ReturnValue.OK)
         {
             return createAccount(createAccount);
         } else
@@ -125,7 +127,7 @@ public class LobbyLogin
 
     }
 
-    private LobbyClient createAccount(final CreateAccountPanel createAccount)
+    private LobbyClient createAccount(final CreateUpdateAccountPanel createAccount)
     {
         try
         {
@@ -152,7 +154,11 @@ public class LobbyLogin
             }
 
             );
-            return new LobbyClient(messenger);
+            
+            //default 
+            LoginPanel.storePrefs(createAccount.getUserName(), false);
+            
+            return new LobbyClient(messenger, false);
         } catch (CouldNotLogInException clne)
         {
             // this has already been dealt with
