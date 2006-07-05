@@ -20,7 +20,7 @@
 
 package games.strategy;
 
-import games.strategy.engine.chat.ChatTest;
+import games.strategy.engine.chat.*;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidatorTest;
 import games.strategy.engine.lobby.server.userDB.DBUserControllerTest;
 import games.strategy.engine.message.*;
@@ -49,6 +49,7 @@ public class StrategyGameTest extends TestCase
         suite.addTestSuite(games.strategy.net.MessengerLoginTest.class);
         
         
+        
 		suite.addTestSuite(games.strategy.thread.ThreadPoolTest.class);
 		suite.addTestSuite(games.strategy.engine.framework.GameDataManagerTest.class);
 		suite.addTestSuite(ChannelMessengerTest.class);
@@ -56,6 +57,7 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(CryptoRandomSourceTest.class);
 		suite.addTestSuite(VersionTest.class);
 		suite.addTestSuite(EndPointTest.class);
+        suite.addTestSuite(ChatPanelTest.class);
         suite.addTestSuite(ChatTest.class);
         
         suite.addTestSuite(DBUserControllerTest.class);

@@ -274,8 +274,9 @@ public class ChatPanel extends JPanel implements IChatListener
             SwingUtilities.invokeLater(runner);
     }
 
-    private void addChatMessage(final String message, final String from, final boolean thirdperson)
+    private void addChatMessage(String originalMessage, final String from, final boolean thirdperson)
     {
+        final String message = trimMessage(originalMessage);
         try
         {
             Document doc = m_text.getDocument();
@@ -284,10 +285,68 @@ public class ChatPanel extends JPanel implements IChatListener
             else
                 doc.insertString(doc.getLength(), from+": ", bold);
             doc.insertString(doc.getLength()," "+message + "\n", normal);
+            
+            //don't let the chat get too big
+            trimLines(doc, 5000);
+            
+            
         } catch (BadLocationException ble)
         {
             ble.printStackTrace();
         }
+    }
+
+    /**
+     * Show only the first n lines
+     */
+    public static void trimLines(Document doc, int lineCount)
+    {
+        if(doc.getLength() < lineCount)
+            return;
+        
+        try
+        {
+            String text = doc.getText(0, doc.getLength());
+            int returnsFound = 0;
+            
+            for(int i = text.length() - 1; i >= 0; i--)
+            {
+                if(text.charAt(i) == '\n')
+                {
+                    returnsFound ++;
+                }
+                if(returnsFound == lineCount)
+                {
+                    doc.remove(0, i);
+                    return;
+                }
+                
+            }
+            
+            
+        } catch (BadLocationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        
+        
+        
+    }
+
+    private String trimMessage(String originalMessage)
+    {
+        //dont allow messages that are too long
+        if(originalMessage.length() > 200)
+        {
+            return originalMessage.substring(0, 199) + "...";
+        }
+        else
+        {
+            return originalMessage;
+        }
+        
     }
     
     /**

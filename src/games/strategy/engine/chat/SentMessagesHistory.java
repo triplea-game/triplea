@@ -55,5 +55,11 @@ class SentMessagesHistory
 	{
 	    m_history.add(s);
 		m_HistoryPosition=m_history.size();
+        
+        if(m_history.size() > 100)
+        {
+            m_history.subList(0,50).clear();
+        }
+        
 	}
 }

@@ -254,6 +254,12 @@ public class Chat
                 {
                     listener.addMessage(message, from.getName(), false);
                 }
+                
+                //limit the number of messages in our history.
+                while(m_chatHistory.size() > 1000)
+                {
+                    m_chatHistory.remove(0);
+                }
             }
         }
         
