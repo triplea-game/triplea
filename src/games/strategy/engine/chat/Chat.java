@@ -61,6 +61,8 @@ public class Chat
         m_chatName = chatName;
         m_sentMessages = new SentMessagesHistory();
         
+        init();
+        
     }
     
     public SentMessagesHistory getSentMessagesHistory()
@@ -84,7 +86,7 @@ public class Chat
         return m_mutex;
     }
     
-    void init()
+    private void init()
     {
          String  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
          if(!m_remoteMesenger.hasRemote(chatControllerName))

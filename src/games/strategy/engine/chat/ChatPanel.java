@@ -18,17 +18,12 @@
 
 package games.strategy.engine.chat;
 
-import java.util.*;
+import games.strategy.engine.message.*;
+import games.strategy.net.IMessenger;
+
 import java.awt.*;
-import java.awt.event.*;
 
 import javax.swing.*;
-import javax.swing.text.*;
-
-import games.strategy.engine.message.*;
-import games.strategy.engine.sound.ClipPlayer;
-import games.strategy.net.IMessenger;
-import games.strategy.triplea.sound.SoundPath;
 
 /**
  * A Chat window.  
@@ -39,40 +34,21 @@ import games.strategy.triplea.sound.SoundPath;
  * 
  * @author Sean Bridges
  */
-public class ChatPanel extends JPanel implements IChatListener
+public class ChatPanel extends JPanel 
 {
-    private JTextPane m_text;
-    private JScrollPane m_scrollPane;
-    private JTextField m_nextMessage;
-    private JList m_players;
-    private JButton m_send;
-    private Chat m_chat;
-    private DefaultListModel m_listModel;
-
-    private final SimpleAttributeSet bold = new SimpleAttributeSet();
-    private final SimpleAttributeSet normal = new SimpleAttributeSet();
+   private ChatPlayerPanel m_chatPlayerPanel;
+   private ChatMessagePanel m_chaMessagetPanel;
     
-    public static final String ME = "/me ";
-    public static boolean isThirdPerson(String msg)
-    {
-        return msg.toLowerCase().startsWith(ME);
-    }    
     
     /** Creates a new instance of ChatFrame */
     public ChatPanel(IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, String chatName)
     {
         init();
-        
         Chat chat  = new Chat(messenger, chatName, channelMessenger, remoteMessenger  );
-        chat.init();
-        
         setChat(chat);
     }
     
-    public void setPlayerRenderer(ListCellRenderer renderer)
-    {
-        m_players.setCellRenderer(renderer);
-    }
+
     
     public ChatPanel(Chat chat)
     {
@@ -85,7 +61,6 @@ public class ChatPanel extends JPanel implements IChatListener
         createComponents();
         layoutComponents();
 
-        StyleConstants.setBold(bold, true);
         setSize(300, 200);
     }
     
@@ -93,43 +68,14 @@ public class ChatPanel extends JPanel implements IChatListener
     
     public void setChat(Chat chat)
     {
-        if(m_chat != null)
-        {
-            m_chat.removeChatListener(this);
-            cleanupKeyMap();
-        }
-        
-        m_chat = chat;
-        
-        if(m_chat != null)
-        {
-           setupKeyMap();
-           m_chat.addChatListener(this);
-           m_send.setEnabled(true);
-           m_text.setEnabled(true);
-           
-           synchronized(m_chat.getMutex())
-           {
-               m_text.setText("");
-               for(ChatMessage message : m_chat.getChatHistory())
-               {
-                   addChatMessage(message.getMessage(), message.getFrom(), message.isMeMessage());
-               }
-           }
-           
-        }
-        else
-        {
-            m_send.setEnabled(false);
-            m_text.setEnabled(false);
-            updatePlayerList(Collections.<String>emptyList());
-        }
+        m_chaMessagetPanel.setChat(chat);
+        m_chatPlayerPanel.setChat(chat);
     }
     
 
     public Chat getChat()
     {
-        return m_chat;
+        return m_chaMessagetPanel.getChat();
     }
 
     private void layoutComponents()
@@ -137,292 +83,35 @@ public class ChatPanel extends JPanel implements IChatListener
 
         Container content = this;
         content.setLayout(new BorderLayout());
-        m_scrollPane = new JScrollPane(m_text);
-        
-        content.add(m_scrollPane, BorderLayout.CENTER);
-
-        JScrollPane scrollPlayers = new JScrollPane(m_players);
-        content.add(scrollPlayers, BorderLayout.EAST);
 
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        split.setLeftComponent(m_scrollPane);
-        split.setRightComponent(scrollPlayers);
+        split.setLeftComponent(m_chaMessagetPanel);
+        split.setRightComponent(m_chatPlayerPanel);
+        
         split.setOneTouchExpandable(false);
         split.setDividerSize(5);
         split.setResizeWeight(1);
 
         content.add(split, BorderLayout.CENTER);
-
-        JPanel sendPanel = new JPanel();
-        sendPanel.setLayout(new BorderLayout());
-        sendPanel.add(m_nextMessage, BorderLayout.CENTER);
-        sendPanel.add(m_send, BorderLayout.WEST);
-
-        content.add(sendPanel, BorderLayout.SOUTH);
     }
 
     private void createComponents()
     {
 
-        m_text = new JTextPane();
-        m_text.setEditable(false);
-
-        m_nextMessage = new JTextField(10);
-        //when enter is pressed, send the message
-        
-
-		
-        m_listModel = new DefaultListModel();
-        m_players = new JList(m_listModel);
-
-        Insets inset = new Insets(3, 3, 3, 3);
-        m_send = new JButton(m_sendAction);
-        m_send.setMargin(inset);
-
-        m_players.addMouseListener(new MouseAdapter()
-        {
-
-            public void mouseClicked(MouseEvent e)
-            {
-                mouseOnPlayersList(e);
-            }
-
-            public void mousePressed(MouseEvent e)
-            {
-                mouseOnPlayersList(e);
-            }
-
-            public void mouseReleased(MouseEvent e)
-            {
-                mouseOnPlayersList(e);
-            }
-
-        });
-
-    }
-
-
-    private void setupKeyMap()
-    {
-        InputMap nextMessageKeymap = m_nextMessage.getInputMap();
-        nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), m_sendAction);
-		nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP,0,false), m_UpAction);
-		nextMessageKeymap.put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN,0,false), m_DownAction);
-    }
-    
-
-    private void cleanupKeyMap()
-    {
-        InputMap nextMessageKeymap = m_nextMessage.getInputMap();
-        nextMessageKeymap.remove(KeyStroke.getKeyStroke('\n') );
-        nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_UP,0,false));
-        nextMessageKeymap.remove(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN,0,false));
-    }
-    
-    
-
-    private void mouseOnPlayersList(MouseEvent e)
-    {
-        if(!e.isPopupTrigger())
-            return;
-     
-        int index = m_players.locationToIndex(e.getPoint());
-        if(index == -1)
-            return;
-        final String playerName = m_listModel.get(index).toString();
-        //you cant slap yourself
-        if(playerName.equals(m_chat.getLocalNode().getName()))
-                return;
-        
-        Action slap = new AbstractAction("Slap " + playerName)
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-               m_chat.sendSlap(playerName);
-            }
-        };
-        
-        JPopupMenu menu = new JPopupMenu();
-        menu.add(slap);
-        menu.show(m_players, e.getX(), e.getY());
-        
-        
-    }
-    
-    /** thread safe */
-    public void addMessage(final String message, final String from, final boolean thirdperson)
-    {
-        Runnable runner = new Runnable()
-        {
-            public void run()
-            {
-                addChatMessage(message, from, thirdperson);
-             
-                BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
-                scrollModel.setValue(scrollModel.getMaximum());
-                
-                ClipPlayer.getInstance().playClip(SoundPath.MESSAGE, SoundPath.class);                
-            }
-
-           
-        };
-
-        //invoke in the swing event thread
-        if (SwingUtilities.isEventDispatchThread())
-            runner.run();
-        else
-            SwingUtilities.invokeLater(runner);
-    }
-
-    private void addChatMessage(String originalMessage, final String from, final boolean thirdperson)
-    {
-        final String message = trimMessage(originalMessage);
-        try
-        {
-            Document doc = m_text.getDocument();
-            if(thirdperson)
-                doc.insertString(doc.getLength(), "*"+from, bold);
-            else
-                doc.insertString(doc.getLength(), from+": ", bold);
-            doc.insertString(doc.getLength()," "+message + "\n", normal);
-            
-            //don't let the chat get too big
-            trimLines(doc, 5000);
-            
-            
-        } catch (BadLocationException ble)
-        {
-            ble.printStackTrace();
-        }
-    }
-
-    /**
-     * Show only the first n lines
-     */
-    public static void trimLines(Document doc, int lineCount)
-    {
-        if(doc.getLength() < lineCount)
-            return;
-        
-        try
-        {
-            String text = doc.getText(0, doc.getLength());
-            int returnsFound = 0;
-            
-            for(int i = text.length() - 1; i >= 0; i--)
-            {
-                if(text.charAt(i) == '\n')
-                {
-                    returnsFound ++;
-                }
-                if(returnsFound == lineCount)
-                {
-                    doc.remove(0, i);
-                    return;
-                }
-                
-            }
-            
-            
-        } catch (BadLocationException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-        
-        
+        m_chatPlayerPanel = new ChatPlayerPanel(null);
+        m_chaMessagetPanel = new ChatMessagePanel(null);
         
     }
 
-    private String trimMessage(String originalMessage)
+
+
+    public void setPlayerRenderer(DefaultListCellRenderer renderer)
     {
-        //dont allow messages that are too long
-        if(originalMessage.length() > 200)
-        {
-            return originalMessage.substring(0, 199) + "...";
-        }
-        else
-        {
-            return originalMessage;
-        }
+        m_chatPlayerPanel.setPlayerRenderer(renderer);
         
     }
-    
-    /**
-     * @arg players - a collection of Strings representing player names.
-     */
-    public synchronized void updatePlayerList(final Collection<String> players)
-    {
 
-        Runnable runner = new Runnable()
-        {
-            public void run()
-            {
 
-                m_listModel.clear();
-
-                Iterator<String> iter = players.iterator();
-                while (iter.hasNext())
-                {
-                    String name = iter.next();
-                    m_listModel.addElement(name);
-                }
-            }
-        };
-
-        //invoke in the swing event thread
-        if (SwingUtilities.isEventDispatchThread())
-            runner.run();
-        else
-            SwingUtilities.invokeLater(runner);
-    }
-
-    private Action m_sendAction = new AbstractAction("Send")
-    {
-
-        public void actionPerformed(ActionEvent e)
-        {
-            if (m_nextMessage.getText().trim().length() == 0)
-                return;
-         
-            
-            if(isThirdPerson(m_nextMessage.getText()))
-            {
-                m_chat.sendMessage(m_nextMessage.getText().substring(ME.length()), true);
-            	
-            } else 
-            {
-            	m_chat.sendMessage(m_nextMessage.getText(), false);
-            }
-			
-            m_nextMessage.setText("");
-        }
-    };
-	private Action m_DownAction = new AbstractAction()
-	{
-
-		public void actionPerformed(ActionEvent e)
-		{
-            if(m_chat == null)
-                return;
-            
-            m_chat.getSentMessagesHistory().next();
-		    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
-
-		}
-	};
-	private Action m_UpAction = new AbstractAction()
-	{
-
-		public void actionPerformed(ActionEvent e)
-		{
-            if(m_chat == null)
-                return;
-            
-            m_chat.getSentMessagesHistory().prev();
-		    m_nextMessage.setText(m_chat.getSentMessagesHistory().current());
-		}
-	};
+  
 }
 

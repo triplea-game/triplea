@@ -14,7 +14,7 @@
 
 package games.strategy.engine.lobby.client.ui;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
@@ -40,12 +40,31 @@ public class LobbyFrame extends JFrame
         m_client = client;
         setJMenuBar(new LobbyMenu(this));
         
-        ChatPanel chatPanel = new ChatPanel(m_client.getMessenger(), m_client.getChannelMessenger(), m_client.getRemoteMessenger(), LobbyServer.LOBBY_CHAT);
+        Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(), m_client.getRemoteMessenger());
+        ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat);
         
-        add(chatPanel, BorderLayout.CENTER);
+        ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
+        chatPlayers.setPreferredSize(new Dimension(200,600 ));
     
         LobbyGamePanel gamePanel = new LobbyGamePanel(m_client);
-        add(gamePanel, BorderLayout.NORTH);
+        
+    
+        JSplitPane leftSplit = new JSplitPane( );
+        leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        leftSplit.setTopComponent(gamePanel);
+        leftSplit.setBottomComponent(chatMessagePanel);
+        
+        leftSplit.setResizeWeight(0.8);
+        gamePanel.setPreferredSize(new Dimension(700,200 ));
+        chatMessagePanel.setPreferredSize(new Dimension(700,400 ));
+        
+        
+        JSplitPane mainSplit = new JSplitPane();
+        mainSplit.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+        mainSplit.setLeftComponent(leftSplit);
+        mainSplit.setRightComponent(chatPlayers);
+        
+        add(mainSplit, BorderLayout.CENTER);
         
         pack();
         setLocationRelativeTo(null);

@@ -23,7 +23,6 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.table.*;
-import javax.swing.undo.UndoManager;
 
 public class DBExplorerPanel extends JPanel
 {

@@ -38,7 +38,7 @@ public class MetaSetupPanel extends SetupPanel
         m_startPBEM = new JButton("Start PBEM Game");
         m_hostGame = new JButton("Host Networked Game");
         m_connectToHostedGame = new JButton("Connect to Networked Game");
-        m_connectToLobby = new JButton("Find Games on the Internet");
+        m_connectToLobby = new JButton("Find Games On The Lobby Server");
     }
 
     private void layoutComponents()
