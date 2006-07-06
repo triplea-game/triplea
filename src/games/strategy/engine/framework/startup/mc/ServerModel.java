@@ -137,6 +137,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             props.setName(System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY));
             props.setPort(Integer.parseInt(System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY)));
             
+            if(System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY)  != null )
+            {
+                props.setPassword(System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY));
+            }
+            
             System.setProperty(GameRunner2.TRIPLEA_STARTED, "true");
             return props;
         }

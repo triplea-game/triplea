@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.*;
@@ -32,12 +46,16 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private JButton m_bootPlayerButton;
     private JButton m_setPasswordButton;
 
+    private InGameLobbyWatcher m_lobbyWatcher;
+    
     
     public ServerSetupPanel(ServerModel model, GameSelectorModel gameSelectorModel)
     {
         m_model = model;
         m_gameSelectorModel = gameSelectorModel;
         m_model.setRemoteModelListener(this);
+        
+        m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher();
         
         createComponents();
         layoutComponents();
@@ -201,6 +219,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     {
         m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
         m_model.cancel();
+        
+        if(m_lobbyWatcher != null)
+        {
+            m_lobbyWatcher.shutDown();
+        }
     }
 
     @Override

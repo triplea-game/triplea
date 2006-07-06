@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.engine.lobby.server.*;
@@ -9,7 +23,7 @@ import java.util.*;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
-public class GameTableModel extends AbstractTableModel
+public class LobbyGameTableModel extends AbstractTableModel
 {
     private enum Column {HostedBy, GameName, Players, Status, Join, PostDate}
     
@@ -22,28 +36,37 @@ public class GameTableModel extends AbstractTableModel
     private List<GameDescription> m_games = new ArrayList<GameDescription>();
     
     
-    public GameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger)
+    public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger)
     {
         m_messenger = messenger;
         m_channelMessenger = channelMessenger;
         m_remoteMessenger = remoteMessenger;
         
-        m_channelMessenger.registerChannelSubscriber(new IGameBroadcaster()
+        m_channelMessenger.registerChannelSubscriber(new ILobbyGameBroadcaster()
         {
         
             public void gameUpdated(GUID gameId, GameDescription description)
             {
+                assertSentFromServer();
                 updateGame(gameId, description);
             }
         
             public void gameAdded(GUID gameId, GameDescription description)
             {
+                assertSentFromServer();
                 addGame(gameId, description);
             }
+
+            public void gameRemoved(GUID gameId)
+            {
+                assertSentFromServer();
+                removeGame(gameId);
+                
+            }
         
-        }, IGameBroadcaster.GAME_BROADCASTER_CHANNEL  );
+        }, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL  );
         
-        Map<GUID, GameDescription> games = ((IGameController) m_remoteMessenger.getRemote(IGameController.GAME_CONTROLLER_REMOTE)).listGames();
+        Map<GUID, GameDescription> games = ((ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
         for(GUID id : games.keySet())
         {
             addGame(id, games.get(id));
@@ -56,10 +79,30 @@ public class GameTableModel extends AbstractTableModel
     
 
 
+    private void removeGame(final GUID gameId)
+    {
+        SwingUtilities.invokeLater(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        int index = m_gameIDs.indexOf(gameId);
+                        
+                        m_gameIDs.remove(index);
+                        m_games.remove(index);
+                        
+                        fireTableRowsDeleted(index, index);
+                    }
+                });
+        
+    }
+
+
+
+
+
     private void addGame(final GUID gameId, final GameDescription description)
     {
-        assertSentFromServer();
-        
         SwingUtilities.invokeLater(
         new Runnable()
         {
@@ -78,16 +121,14 @@ public class GameTableModel extends AbstractTableModel
 
     private void assertSentFromServer()
     {
-        assertSentFromServer();
+        if(!MessageContext.getSender().equals(m_messenger.getServerNode()))
+            throw new IllegalStateException("Invalid sender");
         
     }
 
 
     private void updateGame(final GUID gameId, final GameDescription description)
     {
-        if(!MessageContext.getSender().equals(m_messenger.getServerNode()))
-            throw new IllegalStateException("Invalid sender");
-        
         SwingUtilities.invokeLater(
             new Runnable()
             {
@@ -142,7 +183,9 @@ public class GameTableModel extends AbstractTableModel
     
             case Join:
                 return "Click To Join";
-                
+
+            case Status:
+                return description.getStatus();
             case PostDate:
                 return description.getStartDateTime();
             default:

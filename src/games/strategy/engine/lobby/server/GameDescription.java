@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.engine.lobby.server;
 
 import games.strategy.net.*;
@@ -14,9 +28,10 @@ public class GameDescription implements Serializable
     private final Date m_startDateTime;
     private final String m_gameName;
     private final int m_playerCount;
+    private final int m_round;
     private final GameStatus m_status;
     
-    public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status)
+    public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, int round)
     {
         m_hostedBy = hostedBy;
         m_port = port;
@@ -24,6 +39,12 @@ public class GameDescription implements Serializable
         m_gameName = gameName;
         m_playerCount = playerCount;
         m_status = status;
+        m_round = round;
+    }
+    
+    public int getRound()
+    {
+        return m_round;
     }
     public String getGameName()
     {

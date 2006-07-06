@@ -14,11 +14,18 @@ public class GameRunner2
     public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
     public static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
     public static final String TRIPLEA_PORT_PROPERTY = "triplea.port";
+    public static final String TRIPLEA_SERVER_PASSWORD_PROPERTY = "triplea.server.password";
     public static final String TRIPLEA_CLIENT_PROPERTY = "triplea.client";
     public static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
     public static final String TRIPLEA_NAME_PROPERTY = "triplea.name";
     public static final String TRIPLEA_STARTED = "triplea.started";
 
+    //these properties are for games that should connect to the Lobby Server
+    public static final String LOBBY_PORT = "triplea.lobby.port";
+    public static final String LOBBY_HOST = "triplea.lobby.host";
+    
+    
+    
     public static void main(String[] args)
     {
         setupLogging();
@@ -56,7 +63,7 @@ public class GameRunner2
      */
     private static void handleCommandLineArgs(String[] args)
     {
-        String[] properties = new String[] {TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_HOST_PROPERTY, TRIPLEA_GAME_PROPERTY, TRIPLEA_NAME_PROPERTY};
+        String[] properties = new String[] {TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_HOST_PROPERTY, TRIPLEA_GAME_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY};
         
         
         //if only 1 arg, it must be the game name
@@ -131,7 +138,10 @@ public class GameRunner2
                 "\n" + 
                 "   to start a server with the given game\n" + 
                 "\n" + 
-                "   triplea triplea.game=/home/sgb/games/test.xml triplea.server=true triplea.port=3300 triplea.name=Allan");
+                "   triplea triplea.game=/home/sgb/games/test.xml triplea.server=true triplea.port=3300 triplea.name=Allan" + 
+                "\n" +
+                "   to start a server, you can optionally password protect the game using triplea.server.password=foo" 
+                );
     }
     
     private static String getValue(String arg)

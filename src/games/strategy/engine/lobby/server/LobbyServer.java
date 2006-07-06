@@ -66,8 +66,8 @@ public class LobbyServer
         new ChatController(LOBBY_CHAT, m_server, m_remote, m_channel);
         new UserManager().register(m_remote);
         
-        m_channel.createChannel(IGameBroadcaster.class, IGameBroadcaster.GAME_BROADCASTER_CHANNEL);
-        GameController controller = new GameController((IGameBroadcaster) m_channel.getChannelBroadcastor(IGameBroadcaster.GAME_BROADCASTER_CHANNEL));
+        m_channel.createChannel(ILobbyGameBroadcaster.class, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+        LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_channel.getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), m_server);
         controller.register(m_remote);
         
         

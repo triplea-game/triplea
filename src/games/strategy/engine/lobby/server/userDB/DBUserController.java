@@ -15,6 +15,7 @@
 package games.strategy.engine.lobby.server.userDB;
 
 
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.util.*;
 
 import java.sql.*;
@@ -50,6 +51,12 @@ public class DBUserController
         {
             return "Invalid userName, usernames must be at least 3 characters long, and contain alpha numeric characters and _ or -"; 
         }
+        
+        if(userName.equals(InGameLobbyWatcher.LOBBY_WATCHER_NAME))
+        {
+            return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " is a reserved name";
+        }
+        
         return null;
     }
      
