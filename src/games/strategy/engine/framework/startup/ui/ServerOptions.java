@@ -63,6 +63,11 @@ public class ServerOptions extends JDialog
 
         pack();
     }
+    
+    public void setNameEditable(boolean editable)
+    {
+        m_nameField.setEditable(editable);
+    }
 
     private void setupActions()
     {
@@ -183,7 +188,7 @@ public class ServerOptions extends JDialog
     {
         m_passwordField.setEnabled(m_requirePasswordCheckBox.isSelected());
         
-        Color backGround = m_passwordField.isEnabled() ? m_nameField.getBackground() : getBackground();
+        Color backGround = m_passwordField.isEnabled() ? m_portField.getBackground() : getBackground();
         m_passwordField.setBackground(backGround);
     }
 

@@ -18,14 +18,19 @@ import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.GameDescription;
+import games.strategy.ui.TableSorter;
 
-import java.awt.BorderLayout;
+
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class LobbyGamePanel extends JPanel
 {
@@ -34,6 +39,7 @@ public class LobbyGamePanel extends JPanel
     private LobbyGameTableModel m_gameTableModel;
     private LobbyClient m_lobbyClient;
     private JTable m_gameTable;
+    private TableSorter m_tableSorter;
     
     public LobbyGamePanel(LobbyClient lobbyClient)
     {
@@ -49,7 +55,40 @@ public class LobbyGamePanel extends JPanel
         m_hostGame = new JButton("Host Game");
         m_joinGame = new JButton("Join Game");
         m_gameTableModel = new LobbyGameTableModel(m_lobbyClient.getMessenger(), m_lobbyClient.getChannelMessenger(), m_lobbyClient.getRemoteMessenger());
-        m_gameTable = new JTable(m_gameTableModel);
+        
+        
+        
+        m_tableSorter = new TableSorter(m_gameTableModel); 
+        m_gameTable = new JTable(m_tableSorter);         
+        m_tableSorter.setTableHeader(m_gameTable.getTableHeader());
+
+        
+        //only allow one row to be selected
+        m_gameTable.setColumnSelectionAllowed(false);
+        m_gameTable.setRowSelectionAllowed(true);
+        m_gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        //by default, sort newest first
+        int dateColumn = m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started);
+         m_tableSorter.setSortingStatus(dateColumn, TableSorter.DESCENDING);
+        
+         m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players)).setPreferredWidth(65);
+         m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status )).setPreferredWidth(150);
+         m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name )).setPreferredWidth(150);
+         
+         m_gameTable.setDefaultRenderer(Date.class, new DefaultTableCellRenderer()
+         {
+
+            private SimpleDateFormat format = new SimpleDateFormat("h:m a" ); 
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+            {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                setText(format.format((Date) value));
+                return this;
+            }
+         
+         });
         
     }
 
@@ -105,7 +144,10 @@ public class LobbyGamePanel extends JPanel
         int selectedIndex = m_gameTable.getSelectedRow();
         if(selectedIndex == -1)
             return;
-        GameDescription description = m_gameTableModel.get(selectedIndex);
+        
+        //we sort the table, so get the correct index
+        int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+        GameDescription description = m_gameTableModel.get(modelIndex);
         
         
         List<String> commands = new ArrayList<String>();
@@ -149,6 +191,7 @@ public class LobbyGamePanel extends JPanel
     {
         ServerOptions options = new ServerOptions(this, m_lobbyClient.getMessenger().getLocalNode().getName() ,3300);
         options.setLocationRelativeTo(this);
+        options.setNameEditable(false);
         options.setVisible(true);
         if(!options.getOKPressed())
         {
@@ -169,12 +212,8 @@ public class LobbyGamePanel extends JPanel
         if(options.getPassword() != null &&  options.getPassword().length() > 0)
             commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + options.getPassword());
 
-        
-        
         String javaClass = "games.strategy.engine.framework.GameRunner";
         commands.add(javaClass);
-                
-        
         
         try
         {
@@ -192,7 +231,6 @@ public class LobbyGamePanel extends JPanel
 //            }
         } catch (IOException e)
         {
-         
             e.printStackTrace();
         }
         

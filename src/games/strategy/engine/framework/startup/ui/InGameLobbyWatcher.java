@@ -135,7 +135,7 @@ public class InGameLobbyWatcher
         
         m_gameMessenger = serverMessenger;
         
-        m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-");
+        m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-", m_gameMessenger.getLocalNode().getName());
         
         ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
         synchronized(m_mutex)

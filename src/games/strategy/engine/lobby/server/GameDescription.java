@@ -29,7 +29,9 @@ public class GameDescription implements Serializable,Cloneable
 {
     public enum GameStatus
     {
-        LAUNCHING, IN_PROGRESS, WAITING_FOR_PLAYERS
+        LAUNCHING {public String toString() {return "Launching";}}, 
+        IN_PROGRESS {public String toString() {return "In Progress";}}, 
+        WAITING_FOR_PLAYERS {public String toString() {return "Waiting For Players";}}
     }
 
     private INode m_hostedBy;
@@ -47,9 +49,12 @@ public class GameDescription implements Serializable,Cloneable
     private GameStatus m_status;
 
     private int m_version;
+    
+    private String m_hostName;
 
-    public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, String round)
+    public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, String round, String hostName)
     {
+        m_hostName = hostName;
         m_hostedBy = hostedBy;
         m_port = port;
         m_startDateTime = startDateTime;
@@ -157,4 +162,16 @@ public class GameDescription implements Serializable,Cloneable
         return m_status;
     }
 
+    public String getHostName()
+    {
+        return m_hostName;
+    }
+
+    public void setHostName(String hostName)
+    {
+        m_version++;
+        m_hostName = hostName;
+    }
+
+    
 }

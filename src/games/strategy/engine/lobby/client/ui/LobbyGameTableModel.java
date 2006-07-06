@@ -25,7 +25,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class LobbyGameTableModel extends AbstractTableModel
 {
-    private enum Column {HostedBy, GameName, Players, Status, Join, PostDate, Port, GameRound}
+    enum Column {Host, Name, Round, Players, Started,  Status}
     
     private final IMessenger m_messenger;
     private final IChannelMessenger m_channelMessenger;
@@ -81,6 +81,14 @@ public class LobbyGameTableModel extends AbstractTableModel
     }
     
 
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex)
+    {
+        if(columnIndex == getColumnIndex(Column.Started))
+            return Date.class;
+        return Object.class;
+    }
 
     private void removeGame(final GUID gameId)
     {
@@ -155,6 +163,10 @@ public class LobbyGameTableModel extends AbstractTableModel
         return Column.values()[column].toString();
     }
     
+    public int getColumnIndex(Column column)
+    {
+        return column.ordinal();
+    }
 
     public int getColumnCount()
     {
@@ -175,26 +187,22 @@ public class LobbyGameTableModel extends AbstractTableModel
         
         switch (column)
         {
-            case HostedBy:
-                return description.getHostedBy();
+            case Host:
+                return description.getHostName();
                 
-            case GameRound :
+            case Round :
                 return description.getRound();
                 
-            case GameName:
+            case Name:
                 return description.getGameName();
                 
             case Players:
                 return description.getPlayerCount();
-    
-            case Join:
-                return "Click To Join";
-            case Port:
-                return description.getPort();
 
             case Status:
                 return description.getStatus();
-            case PostDate:
+                
+            case Started:
                 return description.getStartDateTime();
             default:
                 throw new IllegalStateException("Unknown column:" + column);

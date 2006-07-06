@@ -18,6 +18,7 @@ import games.strategy.engine.framework.GameRunner;
 
 import java.io.File;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.*;
 
@@ -42,7 +43,20 @@ public class Database
     private static boolean s_areDBTablesCreated = false;
 
     
-    private static File getDerbyRootDir()
+    private static File getCurrentDataBaseDir()
+    {
+        File dbRootDir = getDBRoot();
+        File dbDir = new File(dbRootDir, "current");
+        if(!dbDir.exists())
+        {
+            if(!dbDir.mkdirs())
+                throw new IllegalStateException("Could not create derby dir");
+        }
+        return dbDir;
+        
+    }
+
+    private static File getDBRoot()
     {
         File root = GameRunner.getRootFolder();
         if(!root.exists())
@@ -50,14 +64,8 @@ public class Database
             throw new IllegalStateException("Root dir does not exist");
         }
         
-        File derby = new File(root, "derby_db/database");
-        if(!derby.exists())
-        {
-            if(!derby.mkdirs())
-                throw new IllegalStateException("Could not create derby dir");
-        }
-        return derby;
-        
+        File dbRootDir = new File(root, "derby_db");
+        return dbRootDir;
     }
     
     public static Connection getConnection()
@@ -161,7 +169,7 @@ public class Database
                 return;
             
             //setup the derby location
-            System.getProperties().setProperty("derby.system.home", getDerbyRootDir().getAbsolutePath());
+            System.getProperties().setProperty("derby.system.home", getCurrentDataBaseDir().getAbsolutePath());
 
             //load the driver
             try
@@ -185,7 +193,78 @@ public class Database
             
             s_isDbSetup = true;
         }
+        
+        //we want to backup the database every 24 hours
+        Thread backupThread = new Thread(new Runnable()
+        {
+            public void run()
+            {
+                while(true)
+                {
+                    
+                    //wait 1 day
+                    try
+                    {
+                        Thread.sleep(24 * 60 * 60 * 1000);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    backup();
+                    
+                }
+                
+            }
+        
+        });
+        backupThread.setDaemon(true);
+        backupThread.start();
+        
     
+    }
+    
+    
+    private static void backup()
+    {
+        String backupDirName = "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
+        
+        File backupRootDir = new File(getDBRoot(), "backups");
+        File backupDir = new File(backupRootDir, backupDirName);
+        
+        if(!backupDir.mkdirs())
+        {
+            s_logger.severe("Could not create backup dir" + backupDirName);
+            return;
+        }
+        
+        s_logger.log(Level.INFO, "Backing up database to " + backupDir.getAbsolutePath());
+        
+        Connection con = getConnection();
+        try
+        {
+        
+            //http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
+            String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
+            CallableStatement cs = con.prepareCall(sqlstmt); 
+            cs.setString(1, backupDir.getAbsolutePath());
+            cs.execute(); 
+            cs.close();
+        }
+        catch(Exception e)
+        {
+            s_logger.log(Level.SEVERE, "Could not back up database", e);
+        }
+        finally
+        {
+            try
+            {
+                con.close();
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        
     }
     
     private static void shutDownDB()
