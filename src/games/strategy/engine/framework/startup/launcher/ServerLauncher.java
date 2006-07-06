@@ -17,9 +17,11 @@ package games.strategy.engine.framework.startup.launcher;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.startup.mc.*;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.ui.*;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.*;
@@ -61,6 +63,8 @@ public class ServerLauncher implements ILauncher
     private List<INode> m_observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<INode>());
     
     private WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
+    private InGameLobbyWatcher m_inGameLobbyWatcher;
+    
     
     public ServerLauncher(int clientCount, IRemoteMessenger remoteMessenger, IChannelMessenger channelMessenger, IMessenger messenger, GameSelectorModel gameSelectorModel, Map<String, String> localPlayerMapping, Map<String, INode> remotelPlayers, ServerModel serverModel)
     {
@@ -75,6 +79,11 @@ public class ServerLauncher implements ILauncher
         m_serverModel = serverModel;
     }
 
+    public void setInGameLobbyWatcher(InGameLobbyWatcher watcher)
+    {
+        m_inGameLobbyWatcher = watcher;
+    }
+    
     public void launch(final Component parent)
     {
         if(!SwingUtilities.isEventDispatchThread())
@@ -92,6 +101,12 @@ public class ServerLauncher implements ILauncher
                 finally
                 {
                     m_gameLoadingWindow.doneWait();
+                    
+                    if(m_inGameLobbyWatcher!= null)
+                    {
+                        m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS);
+                    }
+                    
                 }
 
             }
@@ -111,6 +126,12 @@ public class ServerLauncher implements ILauncher
     
     private void launchInNewThread(final Component parent)
     {
+        
+        if(m_inGameLobbyWatcher!= null)
+        {
+            m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING);
+        }
+        
         m_ui = parent;
      
         m_serverModel.setServerLauncher(this);
@@ -226,6 +247,10 @@ public class ServerLauncher implements ILauncher
                 
                 m_serverModel.setServerLauncher(null);
                 m_serverModel.newGame();
+                if(m_inGameLobbyWatcher != null)
+                {
+                    m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS);
+                }
             }
         };
         t.start();
@@ -292,7 +317,7 @@ public class ServerLauncher implements ILauncher
     {
         DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
 
-	SaveGameFileChooser.ensureDefaultDirExists();
+        SaveGameFileChooser.ensureDefaultDirExists();
         
         final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
         m_serverGame.saveGame(f);

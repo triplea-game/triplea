@@ -22,6 +22,7 @@ package games.strategy.net;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.*;
 
 import junit.framework.TestCase;
 
@@ -247,6 +248,61 @@ public class MessengerTest extends TestCase
 			m_serverListener.clearLastMessage();
 		}
 	}
+    
+    public void testCorrectNodeCountInRemove()
+    {
+        //when we receive the notification that a 
+        //connection has been lost, the node list
+        //should reflect that change
+        
+        for(int i =0; i < 100; i++)
+        {
+            if(m_server.getNodes().size() == 3)
+                break;
+            try
+            {
+                Thread.sleep(1);
+            } catch (InterruptedException e)
+            {}
+        }
+        
+        
+        final AtomicInteger m_serverCount = new AtomicInteger(-1);
+        
+        m_server.addConnectionChangeListener(new IConnectionChangeListener()
+        {
+        
+            public void connectionRemoved(INode to)
+            {
+                m_serverCount.set(m_server.getNodes().size());
+            }
+        
+            public void connectionAdded(INode to)
+            {
+                fail();
+        
+            }
+        
+        });
+        
+        
+        m_client1.shutDown();
+        
+        
+        for(int i =0; i < 100; i++)
+        {
+            if(m_server.getNodes().size() == 2)
+                break;
+            try
+            {
+                Thread.sleep(1);
+            } catch (InterruptedException e)
+            {}
+        }
+        
+        assertEquals(2, m_serverCount.get());
+        
+    }
     
     public void testDisconnect()
     {

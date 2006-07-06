@@ -15,12 +15,15 @@
 package games.strategy.engine.lobby.server;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
 
 public class LobbyGameController implements ILobbyGameController
 {
+    private final static Logger s_logger = Logger.getLogger(LobbyGameController.class.getName());
+    
     private final Object m_mutex = new Object(); 
     private final Map<GUID, GameDescription> m_allGames = new HashMap<GUID, GameDescription>();
     private final ILobbyGameBroadcaster m_broadcaster;
@@ -77,10 +80,7 @@ public class LobbyGameController implements ILobbyGameController
     public void postGame(GUID gameID, GameDescription description)
     {
         INode from = MessageContext.getSender();
-        if(!from.equals(description.getHostedBy()))
-        {
-            throw new IllegalStateException("Game from the wrong host");
-        }
+        assertCorrectHost(description, from);
         
         
         synchronized(m_mutex)
@@ -92,17 +92,30 @@ public class LobbyGameController implements ILobbyGameController
         
     }
 
-    public void updateGame(GUID gameID, GameDescription description)
+    private void assertCorrectHost(GameDescription description, INode from)
     {
-        INode from = MessageContext.getSender();
-        if(!from.equals(description.getHostedBy()))
+        
+        s_logger.severe("Game modified from wrong host, from:" + from + " game host:" + description.getHostedBy());
+        if(!from.getAddress().getHostAddress().equals(description.getHostedBy().getAddress().getHostAddress() ))
         {
             throw new IllegalStateException("Game from the wrong host");
         }
+    }
+
+    public void updateGame(GUID gameID, GameDescription description)
+    {
+        INode from = MessageContext.getSender();
+        assertCorrectHost(description, from);
         
         synchronized(m_mutex)
         {
             GameDescription oldDescription = m_allGames.get(gameID);
+            
+            //out of order updates
+            //ignore, we already have the latest
+            if(oldDescription.getVersion() > description.getVersion())
+                return;
+            
             if(!oldDescription.getHostedBy().equals(description.getHostedBy()))
             {
                 throw new IllegalStateException("Game modified by wrong host");

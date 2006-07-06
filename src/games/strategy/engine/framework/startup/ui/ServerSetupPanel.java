@@ -55,7 +55,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_gameSelectorModel = gameSelectorModel;
         m_model.setRemoteModelListener(this);
         
-        m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher();
+        m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger());
+        if(m_lobbyWatcher != null)
+        {
+            m_lobbyWatcher.setGameSelectorModel(gameSelectorModel);
+        }
         
         createComponents();
         layoutComponents();
@@ -366,7 +370,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     @Override
     public ILauncher getLauncher()
     {
-        return m_model.getLauncher();
+        ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
+        launcher.setInGameLobbyWatcher(m_lobbyWatcher);
+        return launcher;
     }
     
 }

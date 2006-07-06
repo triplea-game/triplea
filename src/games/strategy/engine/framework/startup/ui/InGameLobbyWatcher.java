@@ -15,6 +15,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.lobby.server.*;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
@@ -37,9 +38,28 @@ public class InGameLobbyWatcher
     
     public static final String LOBBY_WATCHER_NAME = "in_game_lobby_watcher";
     
+    //this is the messenger used by the game
+    //it is different than the messenger we use to connect to 
+    //the game lobby
+    private final IServerMessenger m_gameMessenger;
+    
     private final GUID m_gameID = new GUID();
+    
+    private GameSelectorModel m_gameSelectorModel;
+    private Observer m_gameSelectorModelObserver = new Observer()
+    {
+    
+        public void update(Observable o, Object arg)
+        {   
+            gameSelectorModelUpdated();
+        }
+    };
+    
+    //we create this messenger, and use it to connect to the 
+    //game lobby
     private final IMessenger m_messenger;
     private final IRemoteMessenger m_remoteMessenger;
+    private GameDescription m_gameDescription;
 
     private final Object m_mutex = new Object();
     
@@ -50,7 +70,7 @@ public class InGameLobbyWatcher
      * 
      * @return null if no watcher should be created
      */
-    public static InGameLobbyWatcher newInGameLobbyWatcher()
+    public static InGameLobbyWatcher newInGameLobbyWatcher(IServerMessenger gameMessenger)
     {
         String host = System.getProperties().getProperty(GameRunner2.LOBBY_HOST);
         String port = System.getProperties().getProperty(GameRunner2.LOBBY_PORT);
@@ -85,7 +105,7 @@ public class InGameLobbyWatcher
             ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),LOBBY_WATCHER_NAME, login);
             UnifiedMessenger um = new UnifiedMessenger(messenger);
             RemoteMessenger rm = new RemoteMessenger(um);
-            return new InGameLobbyWatcher(messenger, rm);
+            return new InGameLobbyWatcher(messenger, rm, gameMessenger);
         }  catch (Exception e)
         {
             e.printStackTrace();
@@ -95,25 +115,114 @@ public class InGameLobbyWatcher
 
     
     
-    public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger)
+    private void gameSelectorModelUpdated()
+    {
+        synchronized(m_mutex)
+        {
+            m_gameDescription.setGameName(m_gameSelectorModel.getGameName());
+            m_gameDescription.setRound(m_gameSelectorModel.getGameRound());
+            postUpdate();
+        }
+        
+    }
+
+
+
+    public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IServerMessenger serverMessenger)
     {
         m_messenger = messenger;
         m_remoteMessenger = remoteMessenger;
         
+        m_gameMessenger = serverMessenger;
+        
+        m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-");
+        
         ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
         synchronized(m_mutex)
         {
-            GameDescription description = new GameDescription(m_messenger.getLocalNode(), 1, new Date(), "", 0, GameStatus.WAITING_FOR_PLAYERS, -1);
-            controller.postGame(m_gameID, description);
+
+            controller.postGame(m_gameID, (GameDescription) m_gameDescription.clone());
+        }
+        
+        m_gameMessenger.addConnectionChangeListener(new IConnectionChangeListener()
+        {
+        
+            public void connectionRemoved(INode to)
+            {
+                updatePlayerCount();
+        
+            }
+        
+            public void connectionAdded(INode to)
+            {
+                updatePlayerCount();
+        
+            }
+        
+        });
+        
+    }
+    
+    public void setGameSelectorModel(GameSelectorModel model)
+    {
+        cleanUpGameModelListener();
+        
+        if(model != null)
+        {
+            m_gameSelectorModel = model;
+            m_gameSelectorModel.addObserver(m_gameSelectorModelObserver);
+            gameSelectorModelUpdated();
+        }
+    }
+
+
+
+    private void cleanUpGameModelListener()
+    {
+        if(m_gameSelectorModel != null)
+        {
+            m_gameSelectorModel.deleteObserver(m_gameSelectorModelObserver);
         }
     }
     
     
+    
+    protected void updatePlayerCount()
+    {
+        synchronized(m_mutex)
+        {
+            m_gameDescription.setPlayerCount(m_gameMessenger.getNodes().size());
+            postUpdate();
+        }
+        
+    }
+
+
+
+    private void postUpdate()
+    {
+        synchronized(m_mutex)
+        {
+            ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
+            controller.updateGame(m_gameID, (GameDescription) m_gameDescription.clone());
+        }
+    }
+
+
+
     public void shutDown()
     {
         m_messenger.shutDown();
+        cleanUpGameModelListener();
     }
     
-    
+    public void setGameStatus(GameDescription.GameStatus status)
+    {
+        synchronized(m_mutex)
+        {
+            m_gameDescription.setStatus(status);
+            postUpdate();
+        }
+    }
 
 }

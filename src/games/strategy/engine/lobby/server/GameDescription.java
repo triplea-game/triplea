@@ -19,19 +19,36 @@ import games.strategy.net.*;
 import java.io.Serializable;
 import java.util.Date;
 
-public class GameDescription implements Serializable
+/**
+ * 
+ * NOTE - this class is not thread safe.  Modifications should be done holding an external lock.
+ * 
+ * @author sgb
+ */
+public class GameDescription implements Serializable,Cloneable
 {
-    public enum GameStatus {IN_PROGRESS, WAITING_FOR_PLAYERS}
-    
-    private final INode m_hostedBy;
-    private final int m_port;
-    private final Date m_startDateTime;
-    private final String m_gameName;
-    private final int m_playerCount;
-    private final int m_round;
-    private final GameStatus m_status;
-    
-    public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, int round)
+    public enum GameStatus
+    {
+        LAUNCHING, IN_PROGRESS, WAITING_FOR_PLAYERS
+    }
+
+    private INode m_hostedBy;
+
+    private int m_port;
+
+    private Date m_startDateTime;
+
+    private String m_gameName;
+
+    private int m_playerCount;
+
+    private String m_round;
+
+    private GameStatus m_status;
+
+    private int m_version;
+
+    public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, String round)
     {
         m_hostedBy = hostedBy;
         m_port = port;
@@ -42,36 +59,102 @@ public class GameDescription implements Serializable
         m_round = round;
     }
     
-    public int getRound()
+    public Object clone() 
+    {
+        try
+        {
+            return super.clone();
+        } catch (CloneNotSupportedException e)
+        {
+            throw new IllegalStateException("how did that happen");
+        }
+    }
+
+    /**
+     * The version number is updated after every change.  This
+     * handles synchronization problems where updates arrive out of order
+     * 
+     */
+    public int getVersion()
+    {
+        return m_version;
+    }
+
+    public void setGameName(String gameName)
+    {
+        m_version++;
+        m_gameName = gameName;
+    }
+
+    public void setHostedBy(INode hostedBy)
+    {
+        m_version++;
+        m_hostedBy = hostedBy;
+    }
+
+    public void setPlayerCount(int playerCount)
+    {
+        m_version++;
+        m_playerCount = playerCount;
+    }
+
+    public void setPort(int port)
+    {
+        m_version++;
+        m_port = port;
+    }
+
+    public void setRound(String round)
+    {
+        m_version++;
+        m_round = round;
+    }
+
+    public void setStartDateTime(Date startDateTime)
+    {
+        m_version++;
+        m_startDateTime = startDateTime;
+    }
+
+    public void setStatus(GameStatus status)
+    {
+        m_version++;
+        m_status = status;
+    }
+
+    public String getRound()
     {
         return m_round;
     }
+
     public String getGameName()
     {
         return m_gameName;
     }
+
     public INode getHostedBy()
     {
         return m_hostedBy;
     }
+
     public int getPlayerCount()
     {
         return m_playerCount;
     }
+
     public int getPort()
     {
         return m_port;
     }
+
     public Date getStartDateTime()
     {
         return m_startDateTime;
     }
+
     public GameStatus getStatus()
     {
         return m_status;
     }
-    
-    
-    
-    
+
 }

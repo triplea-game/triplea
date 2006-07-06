@@ -25,7 +25,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class LobbyGameTableModel extends AbstractTableModel
 {
-    private enum Column {HostedBy, GameName, Players, Status, Join, PostDate}
+    private enum Column {HostedBy, GameName, Players, Status, Join, PostDate, Port, GameRound}
     
     private final IMessenger m_messenger;
     private final IChannelMessenger m_channelMessenger;
@@ -75,7 +75,10 @@ public class LobbyGameTableModel extends AbstractTableModel
         
     }
     
-    
+    public GameDescription get(int i)
+    {
+        return m_games.get(i);
+    }
     
 
 
@@ -175,6 +178,9 @@ public class LobbyGameTableModel extends AbstractTableModel
             case HostedBy:
                 return description.getHostedBy();
                 
+            case GameRound :
+                return description.getRound();
+                
             case GameName:
                 return description.getGameName();
                 
@@ -183,6 +189,8 @@ public class LobbyGameTableModel extends AbstractTableModel
     
             case Join:
                 return "Click To Join";
+            case Port:
+                return description.getPort();
 
             case Status:
                 return description.getStatus();

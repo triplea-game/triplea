@@ -33,7 +33,7 @@ import java.util.logging.*;
  * 
  * @author sgb
  */
-class Database
+public class Database
 {
     private final static Logger s_logger = Logger.getLogger(Database.class.getName());
     
@@ -60,7 +60,7 @@ class Database
         
     }
     
-    static Connection getConnection()
+    public static Connection getConnection()
     {
         ensureDbIsSetup();
         
