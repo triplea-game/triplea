@@ -31,6 +31,8 @@ import java.util.logging.*;
  * 
  * The database will be shutdown on System.exit through a shutdown hook.<p>
  * 
+ * Getting a connection will also schedule backups at 24 hour intervals.<p>
+ * 
  * 
  * @author sgb
  */
@@ -224,7 +226,7 @@ public class Database
     }
     
     
-    private static void backup()
+    public static void backup()
     {
         String backupDirName = "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
         
@@ -264,6 +266,8 @@ public class Database
                 e.printStackTrace();
             }
         }
+        
+        s_logger.log(Level.INFO, "Done backing up database");
         
     }
     

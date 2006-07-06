@@ -42,6 +42,7 @@ public class InGameLobbyWatcher
     //it is different than the messenger we use to connect to 
     //the game lobby
     private final IServerMessenger m_gameMessenger;
+    private boolean m_shutdown = false;
     
     private final GUID m_gameID = new GUID();
     
@@ -62,6 +63,8 @@ public class InGameLobbyWatcher
     private GameDescription m_gameDescription;
 
     private final Object m_mutex = new Object();
+
+    private IConnectionChangeListener m_connectionChangeListener;
     
     /**
      * Reads SystemProperties to see if we should connect to a lobby server<p>
@@ -144,22 +147,40 @@ public class InGameLobbyWatcher
             controller.postGame(m_gameID, (GameDescription) m_gameDescription.clone());
         }
         
-        m_gameMessenger.addConnectionChangeListener(new IConnectionChangeListener()
+        //if we loose our connection, then shutdown
+        m_messenger.addErrorListener(new IMessengerErrorListener()
         {
         
-            public void connectionRemoved(INode to)
+            public void messengerInvalid(IMessenger messenger, Exception reason, List unsent)
             {
-                updatePlayerCount();
-        
+                shutDown();
             }
         
-            public void connectionAdded(INode to)
-            {
-                updatePlayerCount();
-        
-            }
+            public void connectionLost(INode node, Exception reason, List unsent)
+            {}
         
         });
+        
+        
+        m_connectionChangeListener = new IConnectionChangeListener()
+                        {
+                        
+                            public void connectionRemoved(INode to)
+                            {
+                                updatePlayerCount();
+                        
+                            }
+                        
+                            public void connectionAdded(INode to)
+                            {
+                                updatePlayerCount();
+                        
+                            }
+                        
+                        };
+        //when players join or leave the game
+        //update the connection count
+        m_gameMessenger.addConnectionChangeListener(m_connectionChangeListener);
         
     }
     
@@ -201,6 +222,9 @@ public class InGameLobbyWatcher
 
     private void postUpdate()
     {
+        if(m_shutdown)
+            return;
+        
         synchronized(m_mutex)
         {
             ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
@@ -212,7 +236,9 @@ public class InGameLobbyWatcher
 
     public void shutDown()
     {
+        m_shutdown = true;
         m_messenger.shutDown();
+        m_gameMessenger.removeConnectionChangeListener(m_connectionChangeListener);
         cleanUpGameModelListener();
     }
     

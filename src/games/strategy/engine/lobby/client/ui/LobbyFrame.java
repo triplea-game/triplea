@@ -16,6 +16,7 @@ package games.strategy.engine.lobby.client.ui;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
+import java.util.List;
 
 import games.strategy.engine.chat.*;
 import games.strategy.engine.framework.GameRunner;
@@ -57,12 +58,26 @@ public class LobbyFrame extends JFrame
             {
                 if(to.equals(m_client.getMessenger().getServerNode()))
                 {
-                    JOptionPane.showMessageDialog(LobbyFrame.this, "Connection to Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE, null);
+                    connectionToServerLost();
                 }
         
             }
         
             public void connectionAdded(INode to)
+            {}
+        
+        });
+        
+        m_client.getMessenger().addErrorListener(new IMessengerErrorListener()
+        {
+        
+            public void messengerInvalid(IMessenger messenger, Exception reason, List unsent)
+            {
+                connectionToServerLost();
+        
+            }
+        
+            public void connectionLost(INode node, Exception reason, List unsent)
             {}
         
         });
@@ -91,6 +106,11 @@ public class LobbyFrame extends JFrame
 //            return;
 
         System.exit(0);
+    }
+
+    private void connectionToServerLost()
+    {
+        JOptionPane.showMessageDialog(LobbyFrame.this, "Connection to Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE, null);
     }
 
 }

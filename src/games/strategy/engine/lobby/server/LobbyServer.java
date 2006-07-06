@@ -16,6 +16,7 @@ package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
+import games.strategy.engine.lobby.server.ui.LobbyAdminConsole;
 import games.strategy.engine.lobby.server.userDB.Database;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
@@ -88,15 +89,24 @@ public class LobbyServer
         try
         {
             int p = Integer.parseInt(args[1]);
-            new LobbyServer(args[0], p);
+            LobbyServer server = new LobbyServer(args[0], p);
 
             //initialize the databse
             Database.getConnection().close();
             
             System.out.println("Lobby started");
+            
+            LobbyAdminConsole console = new LobbyAdminConsole(server);
+            console.pack();
+            console.setVisible(true);
         } catch (Exception ex)
         {
             System.out.println(ex.toString());
         }
+    }
+    
+    public IServerMessenger getMessenger()
+    {
+        return m_server;
     }
 }
