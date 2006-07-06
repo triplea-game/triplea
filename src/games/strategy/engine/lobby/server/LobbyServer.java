@@ -15,15 +15,12 @@
 package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.chat.ChatController;
-import games.strategy.engine.lobby.*;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
 import games.strategy.util.Version;
 
 import java.io.IOException;
-import java.util.*;
 import java.util.logging.*;
 
 /**
@@ -33,29 +30,18 @@ import java.util.logging.*;
  * 
  * @author Harry
  */
-public class LobbyServer implements ILobby
+public class LobbyServer
 {
+    
     private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
-
     public static final String LOBBY_CHAT = "games.strategy.engine.lobby.client.ui.LOBBY_CHAT";
-
     public static final Version LOBBY_VERSION = new Version(1, 0, 0);
+    
 
-    private ChatController m_cc;
-
-    private ILobbyBrodcaster m_brodcast;
-
-    private IServerMessenger m_server;
-
-    private IRemoteMessenger m_remote;
-
-    private IChannelMessenger m_channel;
-
-    private UnifiedMessenger m_um;
-
-    private final Object m_mutex = new Object();
-
-    private List<INode> m_serverlist = new ArrayList<INode>();
+    private final IServerMessenger m_server;
+    private final IRemoteMessenger m_remote;
+    private final IChannelMessenger m_channel;
+    private final UnifiedMessenger m_um;
 
     /** Creates a new instance of LobbyServer */
     public LobbyServer(String name, int port)
@@ -67,7 +53,7 @@ public class LobbyServer implements ILobby
         } catch (IOException ex)
         {
             s_logger.log(Level.SEVERE, ex.toString());
-            return;
+            throw new IllegalStateException(ex.getMessage());
         }
 
         m_um = new UnifiedMessenger(m_server);
@@ -79,80 +65,20 @@ public class LobbyServer implements ILobby
         // setup common objects
         new ChatController(LOBBY_CHAT, m_server, m_remote, m_channel);
         new UserManager().register(m_remote);
-
-        m_remote.registerRemote(ILobby.class, this, "lobby.lobby");
-        m_channel.createChannel(ILobbyBrodcaster.class, "lobby.lobbybrodcaster");
-        m_brodcast = (ILobbyBrodcaster) m_channel.getChannelBroadcastor("lobby.lobbybrodcaster");
-
-        m_server.addConnectionChangeListener(new IConnectionChangeListener()
-        {
-
-            public void connectionRemoved(INode to)
-            {
-                forceRemoveServer(to);
-            }
-
-            public void connectionAdded(INode to)
-            {
-            }
-
-        });
         
-        // and we are open for business
+        m_channel.createChannel(IGameBroadcaster.class, IGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+        GameController controller = new GameController((IGameBroadcaster) m_channel.getChannelBroadcastor(IGameBroadcaster.GAME_BROADCASTER_CHANNEL));
+        controller.register(m_remote);
+        
+        
+        
+        //now we are open for business
         m_server.setAcceptNewConnections(true);
-
     }
 
-    public void addServer(INode server)
-    {
-        synchronized (m_mutex)
-        {
-            s_logger.log(Level.INFO, "addserver: " + server.toString());
-            m_serverlist.add(server);
-            m_brodcast.serverAdded(server);
-        }
-    }
+   
 
-    public void forceRemoveServer(INode server)
-    {
-        synchronized (m_mutex)
-        {
-            for (INode t : m_serverlist)
-            {
-                if (t.getAddress().equals(server.getAddress()))
-                {
-                    m_serverlist.remove(t);
-                    m_brodcast.serverRemoved(t);
-                    return;
-                }
-            }
-        }
-    }
-
-    public void removeServer(INode server)
-    {
-        synchronized (m_mutex)
-        {
-            s_logger.log(Level.INFO, "removeServer: " + server.toString());
-            m_serverlist.remove(server);
-            m_brodcast.serverRemoved(server);
-        }
-    }
-
-    public ArrayList<INode> getServers()
-    {
-        synchronized (m_mutex)
-        {
-            s_logger.log(Level.INFO, "Server list requested.... servers:");
-            for (INode n : m_serverlist)
-            {
-                s_logger.log(Level.INFO, n.toString());
-            }
-            s_logger.log(Level.INFO, "end of servers.");
-            return new ArrayList<INode>(m_serverlist);
-        }
-    }
-
+   
     public static void main(String args[])
     {
         if (args.length != 2)

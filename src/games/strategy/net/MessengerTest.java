@@ -102,7 +102,6 @@ public class MessengerTest extends TestCase
 
     }    
 
-	
 
 	public void testServerSend()
 	{
@@ -248,6 +247,38 @@ public class MessengerTest extends TestCase
 			m_serverListener.clearLastMessage();
 		}
 	}
+    
+    public void testDisconnect()
+    {
+        for(int i =0; i < 100; i++)
+        {
+            if(m_server.getNodes().size() == 3)
+                break;
+            try
+            {
+                Thread.sleep(1);
+            } catch (InterruptedException e)
+            {}
+        }
+        assertEquals(m_server.getNodes().size(), 3);
+        
+        
+        m_client1.shutDown();
+        m_client2.shutDown();
+        
+        for(int i =0; i < 100; i++)
+        {
+            if(m_server.getNodes().size() == 1)
+                break;
+            try
+            {
+                Thread.sleep(1);
+            } catch (InterruptedException e)
+            {}
+        }
+        
+        assertEquals(m_server.getNodes().size(), 1);
+    }
 }
 
 

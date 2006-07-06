@@ -17,6 +17,7 @@ public class LobbyFrame extends JFrame
     private final LobbyClient m_client;
     
     
+    
     public LobbyFrame(LobbyClient client)
     {
         super("TripleA Lobby");
@@ -27,6 +28,9 @@ public class LobbyFrame extends JFrame
         ChatPanel chatPanel = new ChatPanel(m_client.getMessenger(), m_client.getChannelMessenger(), m_client.getRemoteMessenger(), LobbyServer.LOBBY_CHAT);
         
         add(chatPanel, BorderLayout.CENTER);
+    
+        GamePanel gamePanel = new GamePanel(m_client);
+        add(gamePanel, BorderLayout.NORTH);
         
         pack();
         setLocationRelativeTo(null);

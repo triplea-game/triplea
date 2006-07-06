@@ -355,6 +355,11 @@ public class ServerMessenger implements IServerMessenger
         notifyConnectionsChanged(false, c.getRemoteNode());
         
         s_logger.info("Connection removed:" + c.getRemoteNode());
+        
+        synchronized(m_connectionMutex)
+        {
+            m_connections.remove(c);
+        }
     }
 
     private void notifyListeners(MessageHeader msg)

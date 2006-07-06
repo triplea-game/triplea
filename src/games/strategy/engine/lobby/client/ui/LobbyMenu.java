@@ -52,7 +52,7 @@ public class LobbyMenu extends JMenuBar
 
     private void updateAccountDetails()
     {
-        IUserManager manager = (IUserManager) m_frame.getLobbyClient().getRemoteMessenger().getRemote(UserManager.USER_MANAGER);
+        IUserManager manager = (IUserManager) m_frame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.USER_MANAGER);
         DBUser user = manager.getUserInfo( m_frame.getLobbyClient().getMessenger().getLocalNode().getName() );
         if(user == null)
         {

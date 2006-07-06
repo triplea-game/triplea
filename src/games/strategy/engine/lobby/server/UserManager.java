@@ -10,11 +10,9 @@ public class UserManager implements IUserManager
 {
     private final static Logger s_logger = Logger.getLogger(UserManager.class.getName());
 
-    public static final String USER_MANAGER = "games.strategy.engine.lobby.server.USER_MANAGER";
-    
     public void register(IRemoteMessenger messenger)
     {
-        messenger.registerRemote(IUserManager.class, this, USER_MANAGER);
+        messenger.registerRemote(IUserManager.class, this, IUserManager.USER_MANAGER);
     }
 
     /**
