@@ -108,7 +108,7 @@ public class LobbyLogin
             return loginToServer();
         } catch (IOException ioe)
         {
-            ioe.printStackTrace();
+            JOptionPane.showMessageDialog(m_parent, "Could Not Connect to Lobby : " + ioe.getMessage(), "Could not connect", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
