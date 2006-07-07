@@ -50,13 +50,13 @@ public class UnifiedMessenger
     // implementors for
     private final Map<INode, Collection<String>> m_remoteNodesWithImplementors = new HashMap<INode, Collection<String>>();
 
-    //maps GUID-> synchronized list of RemoteMethodResults
+    //maps Integer-> synchronized list of RemoteMethodResults
     private final Map<Integer, List<RemoteMethodCallResults>> m_methodCallResults = new ConcurrentHashMap<Integer, List<RemoteMethodCallResults>>();
 
-    //maps GUID -> CountDownLatch of clients we are awaiting responses from
+    //maps Integer -> CountDownLatch of clients we are awaiting responses from
     private final Map<Integer, CountDownLatch> m_methodCallWaitCount = new ConcurrentHashMap<Integer, CountDownLatch>();
 
-    //maps GUID -> CountDownLatch of clients we are awaiting responses from
+    //maps Integer -> CountDownLatch of clients we are awaiting responses from
     private final Map<Integer, List<INode>> m_methodCallWaitNodes = new ConcurrentHashMap<Integer, List<INode>>();
 
 
@@ -1114,7 +1114,8 @@ class Invoke implements Externalizable
         needReturnValues = in.readBoolean();
         if(needReturnValues)
             methodCallID = in.readInt();
-        call = (RemoteMethodCall) in.readObject();
+        call = new RemoteMethodCall();
+        call.readExternal(in);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
@@ -1122,7 +1123,7 @@ class Invoke implements Externalizable
         out.writeBoolean(needReturnValues);
         if(needReturnValues)
             out.writeInt(methodCallID.intValue());
-        out.writeObject(call);
+        call.writeExternal(out);
     }
 
 }
@@ -1152,14 +1153,14 @@ class InvocationResults implements Externalizable
 
 	public void writeExternal(ObjectOutput out) throws IOException 
 	{
-        //if only 1 result (the common case) don't write the collection
-        if(results.size() == 1)
+        //generally there will only be one
+        if(results.size() >= 255)
+            throw new IllegalArgumentException("Too many results");
+        
+        out.writeByte(results.size());
+        for(RemoteMethodCallResults result : results)
         {
-            out.writeObject(results.iterator().next());
-        }
-        else
-        {
-            out.writeObject(results);
+            result.writeExternal(out);
         }
         
 		out.writeInt(methodCallID);
@@ -1169,17 +1170,14 @@ class InvocationResults implements Externalizable
 	@SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
 	{
-        Object result = in.readObject();
-        if(result instanceof RemoteMethodCallResults)
+        int count = in.readByte();
+        results = new ArrayList(count);
+        for(int i =0; i < count; i++)
         {
-            results = Collections.singleton((RemoteMethodCallResults) result);
-        }
-        else
-        {
-            results = (Collection<RemoteMethodCallResults>) result;    
-        }
-        
-		
+            RemoteMethodCallResults result = new RemoteMethodCallResults();
+            result.readExternal(in);
+            results.add(result);
+        }		
 		methodCallID = in.readInt();
 		
 	}
