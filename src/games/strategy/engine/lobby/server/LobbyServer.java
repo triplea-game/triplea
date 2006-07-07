@@ -36,7 +36,7 @@ public class LobbyServer
 {
     
     private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
-    public static final String LOBBY_CHAT = "games.strategy.engine.lobby.client.ui.LOBBY_CHAT";
+    public static final String LOBBY_CHAT = "_LOBBY_CHAT";
     public static final Version LOBBY_VERSION = new Version(1, 0, 0);
     
 

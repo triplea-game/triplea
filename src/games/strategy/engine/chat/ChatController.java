@@ -12,8 +12,8 @@ public class ChatController implements IChatController
 
     private final static Logger s_logger = Logger.getLogger(ChatController.class.getName());
     
-    private static final String CHAT_REMOTE = "games.strategy.engine.chat.ChatRemote";
-    private static final String CHAT_CHANNEL = "games.strategy.engine.chat.ChatController";
+    private static final String CHAT_REMOTE = "_ChatRmt";
+    private static final String CHAT_CHANNEL = "_ChatCtrl";
     
     private final IMessenger m_messenger;
     private final IRemoteMessenger m_remoteMessenger;
