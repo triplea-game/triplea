@@ -279,7 +279,10 @@ class Connection
             {
                 try
                 {
-                    m_out.writeObject(next);
+                    m_out.writeObject(next.getFor());
+                    m_out.writeObject(next.getFrom());
+                    m_out.writeObject(next.getMessage());
+                    
                     m_out.flush();
                     m_out.reset();
                 } catch (IOException ioe)
@@ -312,7 +315,12 @@ class Connection
             {
                 try
                 {
-                    final MessageHeader msg = (MessageHeader) m_in.readObject();
+                    INode to = (INode) m_in.readObject();
+                    INode from = (INode) m_in.readObject();
+                    Serializable message = (Serializable) m_in.readObject();
+                    
+                    
+                    final MessageHeader msg = new MessageHeader(to,from,message);
                     log(msg, true);
                     messageReceived(msg);
 
