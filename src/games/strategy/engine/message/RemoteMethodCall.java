@@ -37,6 +37,15 @@ public class RemoteMethodCall implements Externalizable
     public RemoteMethodCall(final String remoteName, final String methodName,
             final Object[] args, final Class[] argTypes)
     {
+        if(argTypes == null)
+            throw new IllegalArgumentException("ArgTypes are null");
+        if(args == null && argTypes.length != 0)
+            throw new IllegalArgumentException("args but no types");
+        if(args != null && args.length != argTypes.length)
+            throw new IllegalArgumentException("Arg and arg type lengths dont match");
+
+
+        
         m_remoteName = remoteName;
         m_methodName = methodName;
         m_args = args;
@@ -155,18 +164,54 @@ public class RemoteMethodCall implements Externalizable
 
 	public void writeExternal(ObjectOutput out) throws IOException 
 	{
-		out.writeObject(m_remoteName);
-		out.writeObject(m_methodName);
-		out.writeObject(m_args);
-		out.writeObject(m_argTypes);
-		
+		out.writeUTF(m_remoteName);
+		out.writeUTF(m_methodName);
+        
+        if(m_args == null)
+        {
+            out.writeBoolean(false);
+        }
+        else
+        {
+            out.writeBoolean(true);
+            out.writeByte(m_args.length);
+            for(int i =0; i < m_args.length; i++)
+            {
+                out.writeObject(m_args[i]);
+            }
+            for(int i =0; i < m_argTypes.length; i++)
+            {
+                out.writeObject(m_argTypes[i]);
+            }            
+        }
+        
 	}
 
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
 	{
-		m_remoteName = (String) in.readObject();
-		m_methodName = (String) in.readObject();
-		m_args = (Object[]) in.readObject();
-		m_argTypes = (String[]) in.readObject();
+        m_remoteName = in.readUTF();
+        m_methodName = in.readUTF();
+        
+        boolean hasArgs = in.readBoolean();
+        if(hasArgs)
+        {
+            byte count = in.readByte();
+            m_args = new Object[count];
+            m_argTypes = new String[count];
+            
+            for(int i =0; i < count; i++)
+            {
+                m_args[i] = in.readObject();
+            }
+            for(int i =0; i < count; i++)
+            {
+                m_argTypes[i] = (String) in.readObject();
+            }
+        }
+        else
+        {
+            m_argTypes = new String[0];
+        }
+
 	}
 }
