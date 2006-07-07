@@ -87,14 +87,12 @@ public class LocalLauncher implements ILauncher
                 try
                 {
                     IServerMessenger messenger = new DummyMessenger();
+                   
+                    Messengers messengers = new Messengers(messenger);
                     
-                    
-                    UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
-                    ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
-                    RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
-    
+                   
                    Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerTypes);
-                   game = new ServerGame(m_gameData, gamePlayers, messenger, new HashMap<String,INode>(), channelMessenger, remoteMessenger);
+                   game = new ServerGame(m_gameData, gamePlayers, new HashMap<String,INode>(), messengers);
                     
     
                    game.setRandomSource(m_randomSource);

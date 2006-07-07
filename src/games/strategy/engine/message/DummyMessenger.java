@@ -17,6 +17,7 @@ package games.strategy.engine.message;
 import games.strategy.net.*;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 /**
@@ -25,6 +26,19 @@ import java.util.*;
 
 public class DummyMessenger implements IServerMessenger
 {
+    
+    public DummyMessenger()
+    {
+        try
+        {
+            m_node = new Node("dummy", InetAddress.getLocalHost(), 0);
+        } catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+    
     /**
      * Send a message to the given node. Returns immediately.
      */
@@ -67,7 +81,7 @@ public class DummyMessenger implements IServerMessenger
     {
     }
 
-    private final INode m_node = new Node("dummy", null, 0);
+    private final INode m_node;
 
     /**
      * Get the local node

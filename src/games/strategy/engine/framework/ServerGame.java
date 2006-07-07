@@ -100,14 +100,16 @@ public class ServerGame implements IGame
      * @param messenger IServerMessenger
      * @param remotePlayerMapping Map
      */
-    public ServerGame(GameData data, Set<IGamePlayer> localPlayers, IServerMessenger messenger, Map<String,INode> remotePlayerMapping, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
+    public ServerGame(GameData data, Set<IGamePlayer> localPlayers, Map<String,INode> remotePlayerMapping, Messengers messengers)
     {
         m_data = data;
-        m_messenger = messenger;
+        m_messenger = (IServerMessenger) messengers.getMessenger();
         
         
-        m_remoteMessenger = remoteMessenger;
-        m_channelMessenger = channelMessenger;
+        m_remoteMessenger = messengers.getRemoteMessenger();
+        m_channelMessenger = messengers.getChannelMessenger();
+        
+        
         m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
 
         Map<String, INode> allPlayers = new HashMap<String,INode>(remotePlayerMapping);

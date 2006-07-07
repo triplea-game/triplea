@@ -77,6 +77,11 @@ public class ChatController implements IChatController
     }
     
   
+    public ChatController(String name, Messengers messenger)
+    {
+        this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger());
+    }
+
     //clean up
     public void deactivate()
     {

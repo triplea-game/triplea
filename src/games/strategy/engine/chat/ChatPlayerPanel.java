@@ -12,7 +12,9 @@
 
 package games.strategy.engine.chat;
 
-import java.awt.BorderLayout;
+import games.strategy.net.INode;
+
+import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
@@ -24,6 +26,13 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     private DefaultListModel m_listModel;
     private Chat m_chat;
     
+    private IStatusListener m_statusListener;
+    
+    //if our renderer is overridden
+    //we do not set this directly on the JList,
+    //instead we feed it the node name and staus as a string
+    private ListCellRenderer m_setCellRenderer = new DefaultListCellRenderer();
+    
     public ChatPlayerPanel(Chat chat)
     {
         
@@ -31,6 +40,15 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         layoutComponents();
         setupListeners();
         setWidgetActivation();
+        
+        m_statusListener = new IStatusListener()
+        {
+            public void statusChanged(INode node, String newStatus)
+            {
+                repaint();
+            }
+        
+        };
         
         setChat(chat);
     }
@@ -40,18 +58,22 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         if(m_chat != null)
         {
             m_chat.removeChatListener(this);
+            m_chat.getStatusManager().removeStatusListener(m_statusListener);
         }
         m_chat = chat;
         
         if(chat != null)
         {
             chat.addChatListener(this);
+            m_chat.getStatusManager().addStatusListener(m_statusListener);
         }
         else
         {
             //empty our player list
-            updatePlayerList(Collections.<String>emptyList());
+            updatePlayerList(Collections.<INode>emptyList());
         }
+        
+        repaint();
         
     }
 
@@ -59,6 +81,19 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     {
         m_listModel = new DefaultListModel();
         m_players = new JList(m_listModel);
+        
+        
+        m_players.setCellRenderer(new ListCellRenderer()
+        {
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+            {
+                INode node = (INode) value;
+                return m_setCellRenderer.getListCellRendererComponent(list, getDisplayString(node), index, isSelected, cellHasFocus);
+            }
+            
+        });
+        
+        
     }
 
     private void layoutComponents()
@@ -97,10 +132,13 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 
     }
     
-    
+    /**
+     * 
+     * The renderer will be passed in a string
+     */
     public void setPlayerRenderer(ListCellRenderer renderer)
     {
-        m_players.setCellRenderer(renderer);
+        m_setCellRenderer = renderer;
     }
     
     private void mouseOnPlayersList(MouseEvent e)
@@ -111,9 +149,10 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         int index = m_players.locationToIndex(e.getPoint());
         if(index == -1)
             return;
-        final String playerName = m_listModel.get(index).toString();
+        INode player = (INode) m_listModel.get(index);
+        final String playerName = player.getName();
         //you cant slap yourself
-        if(playerName.equals(m_chat.getLocalNode().getName()))
+        if(player.equals(m_chat.getLocalNode()))
                 return;
         
         Action slap = new AbstractAction("Slap " + playerName)
@@ -134,7 +173,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     /**
      * @arg players - a collection of Strings representing player names.
      */
-    public synchronized void updatePlayerList(final Collection<String> players)
+    public synchronized void updatePlayerList(final Collection<INode> players)
     {
 
         Runnable runner = new Runnable()
@@ -144,10 +183,10 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 
                 m_listModel.clear();
 
-                Iterator<String> iter = players.iterator();
+                Iterator<INode> iter = players.iterator();
                 while (iter.hasNext())
                 {
-                    String name = iter.next();
+                    INode name = iter.next();
                     m_listModel.addElement(name);
                 }
             }
@@ -164,6 +203,17 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     {
        
         
+    }
+    
+    private String getDisplayString(INode node)
+    {
+        String status = m_chat.getStatusManager().getStatus(node);
+        if(status == null || status.length() == 0)
+        {
+            return node.getName();
+        }
+        
+        return node.getName() + " (" + status + ")";
     }
     
     

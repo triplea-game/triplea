@@ -36,9 +36,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Chat 
 {    
     private final List<IChatListener>  m_listeners = new CopyOnWriteArrayList<IChatListener>();
-    private final IMessenger m_messenger;
-    private final IChannelMessenger m_channelMessenger;
-    private final IRemoteMessenger m_remoteMesenger;
+    private final Messengers m_messengers;
     private final String m_chatChannelName;
     private final String m_chatName;
     private final SentMessagesHistory m_sentMessages;
@@ -49,14 +47,14 @@ public class Chat
     
     private List<Runnable> m_queuedInitMessages = new ArrayList<Runnable>();
     private List<ChatMessage> m_chatHistory = new ArrayList<ChatMessage>();
-
+    private final StatusManager m_statusManager;
 
     /** Creates a new instance of Chat */
-    public Chat(IMessenger messenger, String chatName, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
+    public Chat(String chatName, Messengers messengers)
     {
-        m_messenger = messenger;
-        m_channelMessenger = channelMessenger;
-        m_remoteMesenger = remoteMessenger;
+        m_messengers = messengers;
+        m_statusManager = new StatusManager(messengers);
+        
         m_chatChannelName = ChatController.getChatChannelName(chatName);
         m_chatName = chatName;
         m_sentMessages = new SentMessagesHistory();
@@ -65,6 +63,11 @@ public class Chat
         
     }
     
+    public Chat(IMessenger messenger, String chatName, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger)
+    {
+        this(chatName, new Messengers(messenger, remoteMessenger, channelMessenger));
+    }
+
     public SentMessagesHistory getSentMessagesHistory()
     {
         return m_sentMessages;
@@ -74,6 +77,11 @@ public class Chat
     {
         m_listeners.add(listener);
         updateConnections();
+    }
+    
+    public StatusManager getStatusManager()
+    {
+        return m_statusManager;
     }
     
     public void removeChatListener(IChatListener listener)
@@ -89,9 +97,9 @@ public class Chat
     private void init()
     {
          String  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
-         if(!m_remoteMesenger.hasRemote(chatControllerName))
+         if(!m_messengers.getRemoteMessenger().hasRemote(chatControllerName))
          {
-             m_remoteMesenger.waitForRemote(chatControllerName, 2000);
+             m_messengers.getRemoteMessenger().waitForRemote(chatControllerName, 2000);
          }
          
          
@@ -112,13 +120,13 @@ public class Chat
          //
          // this all seems a lot more involved than it needs to be.
          
-        IChatController controller = (IChatController) m_remoteMesenger.getRemote(chatControllerName);
+        IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(chatControllerName);
         
-        if(!m_channelMessenger.hasChannel(m_chatChannelName))
+        if(!m_messengers.getChannelMessenger().hasChannel(m_chatChannelName))
         {
-            m_channelMessenger.createChannel(IChatChannel.class, m_chatChannelName);
+            m_messengers.getChannelMessenger().createChannel(IChatChannel.class, m_chatChannelName);
         }
-        m_channelMessenger.registerChannelSubscriber(m_chatChannelSubscribor, m_chatChannelName);   
+        m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor, m_chatChannelName);   
         
         Tuple<List<INode>, Long> init = controller.joinChat();
         if(init == null)
@@ -147,13 +155,13 @@ public class Chat
     public void shutdown()
     {
        
-        m_channelMessenger.unregisterChannelSubscriber(m_chatChannelSubscribor, ChatController.getChatChannelName(m_chatChannelName));
+        m_messengers.getChannelMessenger().unregisterChannelSubscriber(m_chatChannelSubscribor, ChatController.getChatChannelName(m_chatChannelName));
         
         
-        if(m_messenger.isConnected())
+        if(m_messengers.getMessenger().isConnected())
         {
             String  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
-            IChatController controller = (IChatController) m_remoteMesenger.getRemote(chatControllerName);
+            IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(chatControllerName);
             controller.leaveChat();
         }
         
@@ -163,7 +171,7 @@ public class Chat
     public void sendSlap(String playerName)
     {
         
-        Iterator<INode> iter = m_messenger.getNodes().iterator();
+        Iterator<INode> iter = m_messengers.getMessenger().getNodes().iterator();
         INode destination = null;
         while (iter.hasNext())
         {
@@ -177,14 +185,14 @@ public class Chat
         }
         if (destination != null)
         {          
-            IChatChannel remote = (IChatChannel) m_channelMessenger.getChannelBroadcastor(m_chatChannelName);
+            IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(m_chatChannelName);
             remote.slapOccured(destination);
         }
     }
     
     void sendMessage(String message, boolean meMessage)
     {
-        IChatChannel remote = (IChatChannel) m_channelMessenger.getChannelBroadcastor(m_chatChannelName);
+        IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(m_chatChannelName);
         if(meMessage)
             remote.meMessageOccured(message);
         else
@@ -202,15 +210,9 @@ public class Chat
             if(m_nodes == null)
                 return;
             
-            List<String> playerNames = new ArrayList<String>(m_nodes.size());
+            List<INode> playerNames = new ArrayList<INode>(m_nodes);
             
-            Iterator<INode> iter = m_nodes.iterator();
-            while (iter.hasNext())
-            {
-                INode node = iter.next();
-                String name = node.getName();
-                playerNames.add(name);
-            }
+           
 
             Collections.sort(playerNames);
             
@@ -223,7 +225,7 @@ public class Chat
 
    public INode getLocalNode()
    {
-       return m_messenger.getLocalNode();
+       return m_messengers.getMessenger().getLocalNode();
    }
 
     private IChatChannel m_chatChannelSubscribor = new IChatChannel()
@@ -233,7 +235,7 @@ public class Chat
         {
             
             INode senderNode = MessageContext.getSender();
-            INode serverNode = m_messenger.getServerNode();
+            INode serverNode = m_messengers.getMessenger().getServerNode();
             
             //this will happen if the message is queued
             //but to queue a message, we must first test where it came from
@@ -346,7 +348,7 @@ public class Chat
             
             synchronized(m_mutex)
             {
-                if(to.equals(m_channelMessenger.getLocalNode()))
+                if(to.equals(m_messengers.getChannelMessenger().getLocalNode()))
                 {
                     for(IChatListener listener: m_listeners)
                     {
@@ -355,7 +357,7 @@ public class Chat
                         listener.addMessage(message, from.getName(), false);
                     }
                 }
-                else if(from.equals(m_channelMessenger.getLocalNode()))
+                else if(from.equals(m_messengers.getChannelMessenger().getLocalNode()))
                 {
                     for(IChatListener listener: m_listeners)
                     {

@@ -115,4 +115,12 @@ public class Node implements INode, Externalizable
     out.writeObject(m_address);
   }
 
+  public int compareTo(INode o)
+  {
+      if(o == null)
+          return -1;
+      return this.m_name.compareToIgnoreCase(o.getName());
+  
+  }
+
 }

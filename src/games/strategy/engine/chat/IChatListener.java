@@ -1,5 +1,7 @@
 package games.strategy.engine.chat;
 
+import games.strategy.net.INode;
+
 import java.util.*;
 
 
@@ -11,7 +13,7 @@ import java.util.*;
 public interface IChatListener
 {
 
-    public void updatePlayerList(final Collection<String> players);
+    public void updatePlayerList(final Collection<INode> players);
 
     public void addMessage(final String message, final String from, final boolean thirdperson);
 

@@ -19,6 +19,7 @@ package games.strategy.engine.chat;
 
 
 import games.strategy.engine.sound.ClipPlayer;
+import games.strategy.net.INode;
 import games.strategy.triplea.sound.SoundPath;
 
 import java.awt.*;
@@ -44,6 +45,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     private JTextField m_nextMessage;
     
     private JButton m_send;
+    private JButton m_setStatus;
     private Chat m_chat;
     
 
@@ -105,7 +107,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         {
             m_send.setEnabled(false);
             m_text.setEnabled(false);
-            updatePlayerList(Collections.<String>emptyList());
+            updatePlayerList(Collections.<INode>emptyList());
         }
     }
     
@@ -131,6 +133,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         sendPanel.setLayout(new BorderLayout());
         sendPanel.add(m_nextMessage, BorderLayout.CENTER);
         sendPanel.add(m_send, BorderLayout.WEST);
+        sendPanel.add(m_setStatus, BorderLayout.EAST);
 
         content.add(sendPanel, BorderLayout.SOUTH);
     }
@@ -145,7 +148,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         //when enter is pressed, send the message
         
 
-        
+        m_setStatus = new JButton(m_setStatusAction);
         
 
         Insets inset = new Insets(3, 3, 3, 3);
@@ -250,11 +253,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
                 }
                 
             }
-            
-            
         } catch (BadLocationException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
@@ -278,6 +278,20 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     }
     
  
+    private Action m_setStatusAction = new AbstractAction("Status...")
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this), "Enter Status Text", "");
+            if(status != null)
+            {
+                if(status.trim().length() == 0)
+                    status = null;
+                m_chat.getStatusManager().setStatus(status);
+            }
+        }
+    };
+    
 
     private Action m_sendAction = new AbstractAction("Send")
     {
@@ -326,7 +340,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         }
     };
     
-    public void updatePlayerList(Collection<String> players)
+    public void updatePlayerList(Collection<INode> players)
     {}
 }
 

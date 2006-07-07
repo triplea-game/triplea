@@ -253,6 +253,7 @@ public class ChatTest extends TestCase
         
     
     }
+    
 
     private void flush()
     {
@@ -280,17 +281,17 @@ public class ChatTest extends TestCase
 class TestChatListener implements IChatListener
 {
     
-    public List<String> m_players;
+    public List<INode> m_players;
     public List<String> m_messages = new ArrayList<String>();
     public List<Boolean> m_thirdPerson = new ArrayList<Boolean>();
     public List<String> m_from = new ArrayList<String>();
     
     
-    public void updatePlayerList(Collection<String> players)
+    public void updatePlayerList(Collection<INode> players)
     {
         synchronized(this)
         {
-            m_players = new ArrayList<String>(players);
+            m_players = new ArrayList<INode>(players);
         }
         
     }

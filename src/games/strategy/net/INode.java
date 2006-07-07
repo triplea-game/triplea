@@ -24,7 +24,7 @@ import java.io.Serializable;
  * 
  * @author sgb
  */
-public interface INode extends Serializable
+public interface INode extends Serializable, Comparable<INode>
 {
 	public String getName();
 	

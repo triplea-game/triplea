@@ -152,8 +152,8 @@ public class ServerLauncher implements ILauncher
                 
         Set<IGamePlayer> localPlayerSet = m_gameData.getGameLoader().createPlayers(m_localPlayerMapping);
 
-        m_serverGame = new ServerGame(m_gameData, localPlayerSet, (IServerMessenger) m_messenger, m_remotelPlayers, m_channelMessenger,
-                m_remoteMessenger);
+        Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger );
+        m_serverGame = new ServerGame(m_gameData, localPlayerSet, m_remotelPlayers, messengers);
         
         //tell the clients to start,
         //later we will wait for them to all

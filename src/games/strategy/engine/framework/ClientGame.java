@@ -46,6 +46,7 @@ public class ClientGame implements IGame
   private final IMessenger m_messenger;
   private final IRemoteMessenger m_remoteMessenger;
   private final IChannelMessenger m_channelMessenger;
+  private final Messengers m_messengers;
   private final ChangePerformer m_changePerformer;
   private volatile boolean m_isGameOver = false;
   
@@ -59,7 +60,7 @@ public class ClientGame implements IGame
       return "games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName();  
   }
 
-  public ClientGame(GameData data, Set<IGamePlayer> gamePlayers, IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, PlayerManager playerManager)
+  public ClientGame(GameData data, Set<IGamePlayer> gamePlayers, PlayerManager playerManager, Messengers messengers)
   {
     m_data = data;
     
@@ -67,11 +68,11 @@ public class ClientGame implements IGame
     if(m_playerManager == null)
         throw new IllegalArgumentException("Player manager cant be null");
     
+    m_messengers = messengers;
+    m_messenger = m_messengers.getMessenger();
     
-    m_messenger = messenger;
-    
-    m_remoteMessenger = remoteMessenger;
-    m_channelMessenger = channelMessenger;
+    m_remoteMessenger = m_messengers.getRemoteMessenger();
+    m_channelMessenger = m_messengers.getChannelMessenger();
     m_vault = new Vault(m_channelMessenger, m_remoteMessenger);
     
     

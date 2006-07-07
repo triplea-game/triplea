@@ -347,8 +347,8 @@ public class ClientModel implements IMessengerErrorListener
         
         final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
 
-        m_game  = new ClientGame(data, playerSet, m_messenger,
-                m_channelMessenger, m_remoteMessenger, new PlayerManager(players));
+        Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
+        m_game  = new ClientGame(data, playerSet, new PlayerManager(players), messengers);
 
         
         Thread t = new Thread("Client Game Launcher")

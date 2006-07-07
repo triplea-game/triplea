@@ -14,11 +14,10 @@
 
 package games.strategy.engine.lobby.server;
 
-import games.strategy.engine.chat.ChatController;
+import games.strategy.engine.chat.*;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.ui.LobbyAdminConsole;
 import games.strategy.engine.lobby.server.userDB.Database;
-import games.strategy.engine.message.*;
 import games.strategy.net.*;
 import games.strategy.util.Version;
 
@@ -40,42 +39,45 @@ public class LobbyServer
     public static final Version LOBBY_VERSION = new Version(1, 0, 0);
     
 
-    private final IServerMessenger m_server;
-    private final IRemoteMessenger m_remote;
-    private final IChannelMessenger m_channel;
-    private final UnifiedMessenger m_um;
+    private Messengers m_messengers;
 
     /** Creates a new instance of LobbyServer */
     public LobbyServer(String name, int port)
     {
 
+        IServerMessenger server;
         try
         {
-            m_server = new ServerMessenger(name, port);
+            server = new ServerMessenger(name, port);
         } catch (IOException ex)
         {
             s_logger.log(Level.SEVERE, ex.toString());
             throw new IllegalStateException(ex.getMessage());
         }
 
-        m_um = new UnifiedMessenger(m_server);
-        m_remote = new RemoteMessenger(m_um);
-        m_channel = new ChannelMessenger(m_um);
-
-        m_server.setLoginValidator(new LobbyLoginValidator());
-
-        // setup common objects
-        new ChatController(LOBBY_CHAT, m_server, m_remote, m_channel);
-        new UserManager().register(m_remote);
+        m_messengers = new Messengers(server);
         
-        m_channel.createChannel(ILobbyGameBroadcaster.class, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
-        LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_channel.getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), m_server);
-        controller.register(m_remote);
+        
+
+        server.setLoginValidator(new LobbyLoginValidator());
+
+        
+        // setup common objects
+        new ChatController(LOBBY_CHAT, m_messengers);
+        //register the status controller
+        StatusManager statusManager = new StatusManager(m_messengers);
+        //we dont need this manager now
+        statusManager.shutDown();
+        new UserManager().register(m_messengers.getRemoteMessenger());
+        
+        m_messengers.getChannelMessenger().createChannel(ILobbyGameBroadcaster.class, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+        LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers.getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
+        controller.register(m_messengers.getRemoteMessenger());
         
         
         
         //now we are open for business
-        m_server.setAcceptNewConnections(true);
+        server.setAcceptNewConnections(true);
     }
 
    
@@ -107,6 +109,6 @@ public class LobbyServer
     
     public IServerMessenger getMessenger()
     {
-        return m_server;
+        return (IServerMessenger) m_messengers.getMessenger();
     }
 }

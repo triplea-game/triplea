@@ -59,6 +59,8 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(EndPointTest.class);
         suite.addTestSuite(ChatPanelTest.class);
         suite.addTestSuite(ChatTest.class);
+        suite.addTestSuite(StatusTest.class);
+        
         
         suite.addTestSuite(DBUserControllerTest.class);
         suite.addTestSuite(LobbyLoginValidatorTest.class);
