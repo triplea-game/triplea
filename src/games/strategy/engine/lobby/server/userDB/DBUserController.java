@@ -57,6 +57,11 @@ public class DBUserController
             return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " is a reserved name";
         }
         
+        if(userName.toLowerCase().indexOf("admin") >= 0)
+        {
+            return "Username can't contain the word admin";
+        }
+        
         return null;
     }
      

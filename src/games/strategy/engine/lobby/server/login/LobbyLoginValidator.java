@@ -98,6 +98,9 @@ public class LobbyLoginValidator implements ILoginValidator
 
     private String anonymousLogin(Map<String, String> propertiesReadFromClient,String  userName)
     {
+       if(userName.toLowerCase().indexOf("admin") != -1)
+           return "You can't log in anonymously with admin in the name";
+        
        if(!new DBUserController().doesUserExist(userName))
        {
            return null;

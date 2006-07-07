@@ -46,7 +46,7 @@ public class LobbyFrame extends JFrame
         ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
         chatPlayers.setPreferredSize(new Dimension(200,600 ));
     
-        LobbyGamePanel gamePanel = new LobbyGamePanel(m_client);
+        LobbyGamePanel gamePanel = new LobbyGamePanel(m_client.getMessengers());
         
     
         JSplitPane leftSplit = new JSplitPane( );

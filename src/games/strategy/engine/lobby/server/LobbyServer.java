@@ -43,13 +43,13 @@ public class LobbyServer
     private Messengers m_messengers;
 
     /** Creates a new instance of LobbyServer */
-    public LobbyServer(String name, int port)
+    public LobbyServer(int port)
     {
 
         IServerMessenger server;
         try
         {
-            server = new ServerMessenger(name, port);
+            server = new ServerMessenger("Admin", port);
         } catch (IOException ex)
         {
             s_logger.log(Level.SEVERE, ex.toString());
@@ -85,9 +85,9 @@ public class LobbyServer
     public static void main(String args[])
     {
         
-        if (args.length != 2)
+        if (args.length != 1)
         {
-            System.out.println("Usage: LobbyServer [servername] [port]");
+            System.out.println("Usage: LobbyServer [port]");
             return;
         }
         try
@@ -96,8 +96,8 @@ public class LobbyServer
             GameRunner2.setupLookAndFeel();
             
             
-            int p = Integer.parseInt(args[1]);
-            LobbyServer server = new LobbyServer(args[0], p);
+            int p = Integer.parseInt(args[0]);
+            LobbyServer server = new LobbyServer( p);
 
             //initialize the databse
             Database.getConnection().close();
@@ -105,7 +105,8 @@ public class LobbyServer
             System.out.println("Lobby started");
             
             LobbyAdminConsole console = new LobbyAdminConsole(server);
-            console.pack();
+            console.setSize(800,700);
+            console.setLocationRelativeTo(null);
             console.setVisible(true);
         } catch (Exception ex)
         {
@@ -116,5 +117,10 @@ public class LobbyServer
     public IServerMessenger getMessenger()
     {
         return (IServerMessenger) m_messengers.getMessenger();
+    }
+    
+    public Messengers getMessengers()
+    {
+        return m_messengers;
     }
 }

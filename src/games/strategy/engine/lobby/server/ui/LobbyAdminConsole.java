@@ -14,7 +14,9 @@
 
 package games.strategy.engine.lobby.server.ui;
 
+import games.strategy.engine.chat.*;
 import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
+import games.strategy.engine.lobby.client.ui.LobbyGamePanel;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.userDB.Database;
 
@@ -32,6 +34,8 @@ public class LobbyAdminConsole extends JFrame
     private JButton m_bootPlayer;
     private DBExplorerPanel m_executor;
     private AllUsersPanel m_allUsers;
+    private LobbyGamePanel m_lobbyGamePanel;
+    private ChatMessagePanel m_chatPanel;
     
     public LobbyAdminConsole(LobbyServer server)
     {
@@ -53,6 +57,9 @@ public class LobbyAdminConsole extends JFrame
         m_exit = new JButton("Exit");
         m_executor = new DBExplorerPanel();
         m_allUsers = new AllUsersPanel(m_server.getMessenger());
+        m_lobbyGamePanel = new LobbyGamePanel(m_server.getMessengers());
+        Chat chat = new Chat(LobbyServer.LOBBY_CHAT, m_server.getMessengers());
+        m_chatPanel = new ChatMessagePanel(chat);
 
     }
 
@@ -65,8 +72,21 @@ public class LobbyAdminConsole extends JFrame
         toolBar.add(m_backupNow);
         add(toolBar, BorderLayout.NORTH);
         
-        add(m_executor, BorderLayout.CENTER);
-        add(m_allUsers, BorderLayout.EAST);
+        JSplitPane leftTopSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        leftTopSplit.setTopComponent(m_executor);
+        leftTopSplit.setBottomComponent(m_lobbyGamePanel);
+        
+        
+        JSplitPane letSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        letSplit.setTopComponent(leftTopSplit);
+        letSplit.setBottomComponent(m_chatPanel);
+        
+        JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        mainSplit.setLeftComponent(letSplit);
+        mainSplit.setRightComponent(m_allUsers);
+        
+        add(mainSplit, BorderLayout.CENTER);
+        
     }
 
     private void setupListeners()

@@ -16,10 +16,9 @@ package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.GameDescription;
+import games.strategy.net.Messengers;
 import games.strategy.ui.TableSorter;
-
 
 import java.awt.*;
 import java.awt.event.*;
@@ -37,13 +36,13 @@ public class LobbyGamePanel extends JPanel
     private JButton m_hostGame;
     private JButton m_joinGame;
     private LobbyGameTableModel m_gameTableModel;
-    private LobbyClient m_lobbyClient;
+    private Messengers m_messengers;
     private JTable m_gameTable;
     private TableSorter m_tableSorter;
     
-    public LobbyGamePanel(LobbyClient lobbyClient)
+    public LobbyGamePanel(Messengers messengers)
     {
-        m_lobbyClient = lobbyClient;
+        m_messengers = messengers;
         createComponents();
         layoutComponents();
         setupListeners();
@@ -54,7 +53,7 @@ public class LobbyGamePanel extends JPanel
     {
         m_hostGame = new JButton("Host Game");
         m_joinGame = new JButton("Join Game");
-        m_gameTableModel = new LobbyGameTableModel(m_lobbyClient.getMessenger(), m_lobbyClient.getChannelMessenger(), m_lobbyClient.getRemoteMessenger());
+        m_gameTableModel = new LobbyGameTableModel(m_messengers.getMessenger(), m_messengers.getChannelMessenger(), m_messengers.getRemoteMessenger());
         
         
         
@@ -157,7 +156,7 @@ public class LobbyGamePanel extends JPanel
         commands.add("-D" + GameRunner2.TRIPLEA_CLIENT_PROPERTY + "=true");
         commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + description.getPort());
         commands.add("-D" + GameRunner2.TRIPLEA_HOST_PROPERTY + "=" + description.getHostedBy().getAddress().getHostAddress());
-        commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + m_lobbyClient.getMessenger().getLocalNode().getName());
+        commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + m_messengers.getMessenger().getLocalNode().getName());
         
          
         String javaClass = "games.strategy.engine.framework.GameRunner";
@@ -190,7 +189,7 @@ public class LobbyGamePanel extends JPanel
 
     protected void hostGame()
     {
-        ServerOptions options = new ServerOptions(this, m_lobbyClient.getMessenger().getLocalNode().getName() ,3300, true);
+        ServerOptions options = new ServerOptions(this, m_messengers.getMessenger().getLocalNode().getName() ,3300, true);
         options.setLocationRelativeTo(this);
         options.setNameEditable(false);
         options.setVisible(true);
@@ -207,8 +206,8 @@ public class LobbyGamePanel extends JPanel
         commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + options.getName());
         
         
-        commands.add("-D" + GameRunner2.LOBBY_HOST + "=" + m_lobbyClient.getMessenger().getServerNode().getAddress().getHostAddress());
-        commands.add("-D" + GameRunner2.LOBBY_PORT + "=" + m_lobbyClient.getMessenger().getServerNode().getPort());
+        commands.add("-D" + GameRunner2.LOBBY_HOST + "=" + m_messengers.getMessenger().getServerNode().getAddress().getHostAddress());
+        commands.add("-D" + GameRunner2.LOBBY_PORT + "=" + m_messengers.getMessenger().getServerNode().getPort());
         commands.add("-D" + GameRunner2.LOBBY_GAME_COMMENTS + "=" + options.getComments());
 
         if(options.getPassword() != null &&  options.getPassword().length() > 0)
