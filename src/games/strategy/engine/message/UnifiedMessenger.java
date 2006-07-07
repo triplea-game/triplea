@@ -308,7 +308,7 @@ public class UnifiedMessenger
         }
 
         //invoke remotely
-        Invoke invoke = new Invoke(methodCallID, true, remoteCall, endPointName);
+        Invoke invoke = new Invoke(methodCallID, true, remoteCall);
         for (int i = 0; i < remote.length; i++)
         {
             m_messenger.send(invoke, remote[i]);
@@ -361,7 +361,7 @@ public class UnifiedMessenger
         //with local invocation
         INode[] destinations = getRemoteNodesWithImplementors(endPointName);
 
-        Invoke invoke = new Invoke(null, false, call, endPointName);
+        Invoke invoke = new Invoke(null, false, call);
         for (int i = 0; i < destinations.length; i++)
         {
             m_messenger.send(invoke, destinations[i]);
@@ -547,7 +547,7 @@ public class UnifiedMessenger
             } else if (msg instanceof Invoke)
             {
                 final Invoke invoke = (Invoke) msg;
-                EndPoint local = m_localEndPoints.get(invoke.endPointName);
+                EndPoint local = m_localEndPoints.get(invoke.call.getRemoteName());
 
                 //something a bit strange here, it may be the case
                 //that the endpoint was deleted locally
@@ -1072,7 +1072,6 @@ class Invoke implements Externalizable
     public GUID methodCallID;
     public boolean needReturnValues;
     public RemoteMethodCall call;
-    public String endPointName;
 
     public Invoke()
     {
@@ -1081,15 +1080,14 @@ class Invoke implements Externalizable
 
     public String toString()
     {
-        return "invoke on:" + endPointName + " method name:" + call.getMethodName() + " method call id:" + methodCallID;
+        return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:" + methodCallID;
     }
 
-    public Invoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call, String endPointName)
+    public Invoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call)
     {
         this.methodCallID = methodCallID;
         this.needReturnValues = needReturnValues;
         this.call = call;
-        this.endPointName = endPointName;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
@@ -1097,8 +1095,6 @@ class Invoke implements Externalizable
         methodCallID = (GUID) in.readObject();
         needReturnValues = in.readBoolean();
         call = (RemoteMethodCall) in.readObject();
-        endPointName = (String) in.readObject();
-
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
@@ -1106,7 +1102,6 @@ class Invoke implements Externalizable
         out.writeObject(methodCallID);
         out.writeBoolean(needReturnValues);
         out.writeObject(call);
-        out.writeObject(endPointName);
     }
 
 }
