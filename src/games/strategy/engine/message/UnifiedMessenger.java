@@ -14,7 +14,7 @@
 package games.strategy.engine.message;
 
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.*;
 import games.strategy.net.*;
 import games.strategy.thread.ThreadPool;
 import games.strategy.util.Match;
@@ -51,13 +51,13 @@ public class UnifiedMessenger
     private final Map<INode, Collection<String>> m_remoteNodesWithImplementors = new HashMap<INode, Collection<String>>();
 
     //maps GUID-> synchronized list of RemoteMethodResults
-    private final Map<GUID, List<RemoteMethodCallResults>> m_methodCallResults = new ConcurrentHashMap<GUID, List<RemoteMethodCallResults>>();
+    private final Map<Integer, List<RemoteMethodCallResults>> m_methodCallResults = new ConcurrentHashMap<Integer, List<RemoteMethodCallResults>>();
 
     //maps GUID -> CountDownLatch of clients we are awaiting responses from
-    private final Map<GUID, CountDownLatch> m_methodCallWaitCount = new ConcurrentHashMap<GUID, CountDownLatch>();
+    private final Map<Integer, CountDownLatch> m_methodCallWaitCount = new ConcurrentHashMap<Integer, CountDownLatch>();
 
     //maps GUID -> CountDownLatch of clients we are awaiting responses from
-    private final Map<GUID, List<INode>> m_methodCallWaitNodes = new ConcurrentHashMap<GUID, List<INode>>();
+    private final Map<Integer, List<INode>> m_methodCallWaitNodes = new ConcurrentHashMap<Integer, List<INode>>();
 
 
     //synchronize on this to wait for the init data to arrive
@@ -69,6 +69,10 @@ public class UnifiedMessenger
     //used to synchronize access to m_remoteNodesWithImplementors 
     private final Object m_nodesWithImplementorsMutex = new Object();
 
+    //the sequence for method call ids
+    //method ids are only used on the local machine
+    //so they do not need to be globally unique
+    private final AtomicInteger m_invocationIDSequence = new AtomicInteger(Integer.MIN_VALUE);
     
     private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
     {
@@ -134,7 +138,7 @@ public class UnifiedMessenger
         }
         
         //we need to wake up threads that have been invoked
-        for(GUID methodCallId : m_methodCallWaitNodes.keySet() )
+        for(Integer methodCallId : m_methodCallWaitNodes.keySet() )
         {
             List<INode> nodes = m_methodCallWaitNodes.get(methodCallId);
             for(int i = 0; i < nodes.size(); i++)
@@ -166,7 +170,7 @@ public class UnifiedMessenger
         }
         
         //we need to wake up threads that are waiting
-        for(GUID methodCallId : m_methodCallWaitNodes.keySet() )
+        for(Integer methodCallId : m_methodCallWaitNodes.keySet() )
         {
             List<INode> nodes = m_methodCallWaitNodes.get(methodCallId);
             if(nodes.contains(lostNode))
@@ -289,7 +293,7 @@ public class UnifiedMessenger
 
         //prepatory to anything else...
         //generate a unique id
-        final GUID methodCallID = new GUID();
+        final Integer methodCallID = m_invocationIDSequence.incrementAndGet();
 
         //who do we call
         final INode[] remote = getRemoteNodesWithImplementors(endPointName);
@@ -599,7 +603,7 @@ public class UnifiedMessenger
             {
                 InvocationResults results = (InvocationResults) msg;
 
-                GUID methodID = results.methodCallID;
+                Integer methodID = results.methodCallID;
 
                 //both of these should already be populated
                 //this list should be a synchronized list so we can do the add all
@@ -1078,7 +1082,7 @@ class UnifiedInitMessage implements Serializable
 
 class Invoke implements Externalizable
 {
-    public GUID methodCallID;
+    public Integer methodCallID;
     public boolean needReturnValues;
     public RemoteMethodCall call;
 
@@ -1092,8 +1096,14 @@ class Invoke implements Externalizable
         return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:" + methodCallID;
     }
 
-    public Invoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call)
+    public Invoke(Integer methodCallID, boolean needReturnValues, RemoteMethodCall call)
     {
+        if(needReturnValues && methodCallID == null)
+            throw new IllegalArgumentException("Cant have no id and need return values");
+        if(!needReturnValues && methodCallID != null)
+            throw new IllegalArgumentException("Cant have id and not need return values");
+
+        
         this.methodCallID = methodCallID;
         this.needReturnValues = needReturnValues;
         this.call = call;
@@ -1101,15 +1111,17 @@ class Invoke implements Externalizable
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
-        methodCallID = (GUID) in.readObject();
         needReturnValues = in.readBoolean();
+        if(needReturnValues)
+            methodCallID = in.readInt();
         call = (RemoteMethodCall) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        out.writeObject(methodCallID);
         out.writeBoolean(needReturnValues);
+        if(needReturnValues)
+            out.writeInt(methodCallID.intValue());
         out.writeObject(call);
     }
 
@@ -1120,14 +1132,14 @@ class Invoke implements Externalizable
 class InvocationResults implements Externalizable
 {
     public Collection<RemoteMethodCallResults> results;
-    public GUID methodCallID;
+    public Integer methodCallID;
 
     public InvocationResults()
     {
     	
     }
     
-    public InvocationResults(Collection<RemoteMethodCallResults> results, GUID methodCallID)
+    public InvocationResults(Collection<RemoteMethodCallResults> results, Integer methodCallID)
     {
         this.results = results;
         this.methodCallID = methodCallID;
@@ -1150,7 +1162,7 @@ class InvocationResults implements Externalizable
             out.writeObject(results);
         }
         
-		out.writeObject(methodCallID);
+		out.writeInt(methodCallID);
 		
 	}
 
@@ -1168,7 +1180,7 @@ class InvocationResults implements Externalizable
         }
         
 		
-		methodCallID = (GUID) in.readObject();
+		methodCallID = in.readInt();
 		
 	}
 
