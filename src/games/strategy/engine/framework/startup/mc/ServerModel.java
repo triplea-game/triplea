@@ -149,7 +149,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String playername = prefs.get(PLAYERNAME, System.getProperty("user.name"));
        
-        ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT);
+        ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
         options.setLocationRelativeTo(ui);
 
         options.setVisible(true);

@@ -138,7 +138,7 @@ public class InGameLobbyWatcher
         
         m_gameMessenger = serverMessenger;
         
-        m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-", m_gameMessenger.getLocalNode().getName());
+        m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-", m_gameMessenger.getLocalNode().getName(), System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS));
         
         ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
         synchronized(m_mutex)
@@ -247,6 +247,20 @@ public class InGameLobbyWatcher
         synchronized(m_mutex)
         {
             m_gameDescription.setStatus(status);
+            postUpdate();
+        }
+    }
+    
+    public String getComments()
+    {
+        return m_gameDescription.getComment();
+    }
+    
+    public void setGameComments(String comments)
+    {
+        synchronized(m_mutex)
+        {
+            m_gameDescription.setComment(comments);
             postUpdate();
         }
     }

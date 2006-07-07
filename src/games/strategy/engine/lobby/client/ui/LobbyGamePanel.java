@@ -75,6 +75,7 @@ public class LobbyGamePanel extends JPanel
          m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players)).setPreferredWidth(65);
          m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status )).setPreferredWidth(150);
          m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name )).setPreferredWidth(150);
+         m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments )).setPreferredWidth(150);
          
          m_gameTable.setDefaultRenderer(Date.class, new DefaultTableCellRenderer()
          {
@@ -189,7 +190,7 @@ public class LobbyGamePanel extends JPanel
 
     protected void hostGame()
     {
-        ServerOptions options = new ServerOptions(this, m_lobbyClient.getMessenger().getLocalNode().getName() ,3300);
+        ServerOptions options = new ServerOptions(this, m_lobbyClient.getMessenger().getLocalNode().getName() ,3300, true);
         options.setLocationRelativeTo(this);
         options.setNameEditable(false);
         options.setVisible(true);
@@ -208,6 +209,7 @@ public class LobbyGamePanel extends JPanel
         
         commands.add("-D" + GameRunner2.LOBBY_HOST + "=" + m_lobbyClient.getMessenger().getServerNode().getAddress().getHostAddress());
         commands.add("-D" + GameRunner2.LOBBY_PORT + "=" + m_lobbyClient.getMessenger().getServerNode().getPort());
+        commands.add("-D" + GameRunner2.LOBBY_GAME_COMMENTS + "=" + options.getComments());
 
         if(options.getPassword() != null &&  options.getPassword().length() > 0)
             commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + options.getPassword());

@@ -45,6 +45,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private JPanel m_networkPanel;
     private JButton m_bootPlayerButton;
     private JButton m_setPasswordButton;
+    private JButton m_setCommentsButton;
 
     private InGameLobbyWatcher m_lobbyWatcher;
     
@@ -101,6 +102,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         
         m_bootPlayerButton = new JButton("Boot Player...");
         m_setPasswordButton = new JButton("Set Game Password...");
+        m_setCommentsButton = new JButton("Edit Game Comment...");
         
         m_networkPanel = new JPanel();
         
@@ -126,6 +128,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_networkPanel.setLayout(new BoxLayout(m_networkPanel, BoxLayout.X_AXIS));
         m_networkPanel.add(m_bootPlayerButton);
         m_networkPanel.add(m_setPasswordButton);
+        if(m_lobbyWatcher != null)
+            m_networkPanel.add(m_setCommentsButton);
         add(m_networkPanel, BorderLayout.SOUTH);
 
         
@@ -211,6 +215,23 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     {
         m_bootPlayerButton.addActionListener( new BootPlayerAction(this, m_model.getMessenger()));
         m_setPasswordButton.addActionListener(new SetPasswordAction(this, (ClientLoginValidator) m_model.getMessenger().getLoginValidator() ));
+        
+        
+        m_setCommentsButton.addActionListener(new ActionListener()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                String current = m_lobbyWatcher.getComments();
+                String rVal = JOptionPane.showInputDialog( ServerSetupPanel.this, "Edit the comments for the game", current );
+                if(rVal != null)
+                {
+                    m_lobbyWatcher.setGameComments(rVal);
+                }
+            }
+        
+        });
+        
     }
 
     private void setWidgetActivation()

@@ -25,7 +25,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class LobbyGameTableModel extends AbstractTableModel
 {
-    enum Column {Host, Name, Round, Players, Started,  Status}
+    enum Column {Host, Name, Round, Players, Started,  Status, Comments}
     
     private final IMessenger m_messenger;
     private final IChannelMessenger m_channelMessenger;
@@ -201,6 +201,9 @@ public class LobbyGameTableModel extends AbstractTableModel
 
             case Status:
                 return description.getStatus();
+            
+            case Comments:
+                return description.getComment();
                 
             case Started:
                 return description.getStartDateTime();

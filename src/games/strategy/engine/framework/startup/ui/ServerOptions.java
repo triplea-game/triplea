@@ -44,14 +44,18 @@ public class ServerOptions extends JDialog
     private boolean m_okPressed;
 
     private JCheckBox m_requirePasswordCheckBox;
+    private JTextField m_comment;
+    private boolean m_showComment = false;
 
     /**
      * Creates a new instance of ServerOptions
      */
-    public ServerOptions(Component owner, String defaultName, int defaultPort)
+    public ServerOptions(Component owner, String defaultName, int defaultPort, boolean showComment)
     {
         super(JOptionPane.getFrameForComponent(owner), "Server options", true);
-
+        m_showComment = showComment;
+        
+        
         initComponents();
         layoutComponents();
         setupActions();
@@ -114,6 +118,8 @@ public class ServerOptions extends JDialog
         m_portField.setColumns(7);
         m_passwordField = new JPasswordField();
         m_passwordField.setColumns(10);
+        m_comment = new JTextField();
+        m_comment.setColumns(20);
     }
 
     private void layoutComponents()
@@ -149,9 +155,10 @@ public class ServerOptions extends JDialog
         JLabel nameLabel = new JLabel("Name:");
         JLabel portLabel = new JLabel("Port:");
         JLabel passwordLabel = new JLabel("Password:");
+        JLabel commentLabel = new JLabel("Comments:");
         layout.setConstraints(portLabel, labelConstraints);
         layout.setConstraints(nameLabel, labelConstraints);
-        layout.setConstraints(passwordLabel, labelConstraints);
+        layout.setConstraints(passwordLabel, labelConstraints);        
         layout.setConstraints(m_portField, fieldConstraints);
         layout.setConstraints(m_nameField, fieldConstraints);
         layout.setConstraints(m_passwordField, fieldConstraints);
@@ -168,6 +175,15 @@ public class ServerOptions extends JDialog
 
         fields.add(passwordLabel);
         fields.add(m_passwordField);
+        
+        if(m_showComment)
+        {
+            layout.setConstraints(commentLabel, labelConstraints);            
+            layout.setConstraints(m_comment, fieldConstraints);
+            
+            fields.add(commentLabel);
+            fields.add(m_comment);
+        }
 
         content.add(fields, BorderLayout.CENTER);
 
@@ -209,4 +225,10 @@ public class ServerOptions extends JDialog
         }
     };
 
+    public String getComments()
+    {
+        return m_comment.getText();
+    }
+    
+    
 }

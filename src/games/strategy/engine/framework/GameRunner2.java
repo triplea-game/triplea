@@ -23,6 +23,7 @@ public class GameRunner2
     //these properties are for games that should connect to the Lobby Server
     public static final String LOBBY_PORT = "triplea.lobby.port";
     public static final String LOBBY_HOST = "triplea.lobby.host";
+    public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
     
     
     

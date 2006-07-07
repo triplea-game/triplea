@@ -21,38 +21,50 @@ import java.util.Date;
 
 /**
  * 
- * NOTE - this class is not thread safe.  Modifications should be done holding an external lock.
+ * NOTE - this class is not thread safe. Modifications should be done holding an
+ * external lock.
  * 
  * @author sgb
  */
-public class GameDescription implements Serializable,Cloneable
+public class GameDescription implements Serializable, Cloneable
 {
     public enum GameStatus
     {
-        LAUNCHING {public String toString() {return "Launching";}}, 
-        IN_PROGRESS {public String toString() {return "In Progress";}}, 
-        WAITING_FOR_PLAYERS {public String toString() {return "Waiting For Players";}}
+        LAUNCHING
+        {
+            public String toString()
+            {
+                return "Launching";
+            }
+        },
+        IN_PROGRESS
+        {
+            public String toString()
+            {
+                return "In Progress";
+            }
+        },
+        WAITING_FOR_PLAYERS
+        {
+            public String toString()
+            {
+                return "Waiting For Players";
+            }
+        }
     }
 
     private INode m_hostedBy;
-
     private int m_port;
-
     private Date m_startDateTime;
-
     private String m_gameName;
-
     private int m_playerCount;
-
     private String m_round;
-
     private GameStatus m_status;
-
-    private int m_version;
-    
+    private int m_version = Integer.MIN_VALUE;
     private String m_hostName;
+    private String m_comment;
 
-    public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, String round, String hostName)
+    public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, String round, String hostName, String comment)
     {
         m_hostName = hostName;
         m_hostedBy = hostedBy;
@@ -62,9 +74,10 @@ public class GameDescription implements Serializable,Cloneable
         m_playerCount = playerCount;
         m_status = status;
         m_round = round;
+        m_comment = comment;
     }
-    
-    public Object clone() 
+
+    public Object clone()
     {
         try
         {
@@ -76,8 +89,8 @@ public class GameDescription implements Serializable,Cloneable
     }
 
     /**
-     * The version number is updated after every change.  This
-     * handles synchronization problems where updates arrive out of order
+     * The version number is updated after every change. This handles
+     * synchronization problems where updates arrive out of order
      * 
      */
     public int getVersion()
@@ -173,5 +186,15 @@ public class GameDescription implements Serializable,Cloneable
         m_hostName = hostName;
     }
 
-    
+    public String getComment()
+    {
+        return m_comment;
+    }
+
+    public void setComment(String comment)
+    {
+        m_version++;
+        m_comment = comment;
+    }
+
 }
