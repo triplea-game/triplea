@@ -15,6 +15,7 @@
 package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.chat.*;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.ui.LobbyAdminConsole;
 import games.strategy.engine.lobby.server.userDB.Database;
@@ -83,6 +84,7 @@ public class LobbyServer
    
     public static void main(String args[])
     {
+        
         if (args.length != 2)
         {
             System.out.println("Usage: LobbyServer [servername] [port]");
@@ -90,6 +92,10 @@ public class LobbyServer
         }
         try
         {
+            GameRunner2.setupLogging();
+            GameRunner2.setupLookAndFeel();
+            
+            
             int p = Integer.parseInt(args[1]);
             LobbyServer server = new LobbyServer(args[0], p);
 

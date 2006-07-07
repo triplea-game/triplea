@@ -22,7 +22,6 @@ package games.strategy.net;
 
 import java.io.*;
 import java.rmi.dgc.VMID;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -96,8 +95,20 @@ public class GUID implements Externalizable
         out.writeObject(m_prefix);
     }
     
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
         System.out.println(new GUID().toString());
+        
+        ByteArrayOutputStream sink = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(sink);
+        
+        for(int i =0; i < 1000; i++)
+        {
+            out.writeObject(new GUID());
+        }
+        
+        
+        out.close();
+        System.out.println("1000 ids is:" + sink.toByteArray().length + " bytes");
     }
 }

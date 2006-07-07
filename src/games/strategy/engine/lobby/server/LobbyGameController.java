@@ -94,10 +94,9 @@ public class LobbyGameController implements ILobbyGameController
 
     private void assertCorrectHost(GameDescription description, INode from)
     {
-        
-        s_logger.severe("Game modified from wrong host, from:" + from + " game host:" + description.getHostedBy());
         if(!from.getAddress().getHostAddress().equals(description.getHostedBy().getAddress().getHostAddress() ))
         {
+            s_logger.severe("Game modified from wrong host, from:" + from + " game host:" + description.getHostedBy());
             throw new IllegalStateException("Game from the wrong host");
         }
     }

@@ -32,9 +32,7 @@ public class RemoteMethodCall implements Externalizable
     private String[] m_argTypes;
 
     public RemoteMethodCall()
-    {
-    	
-    }
+    {}
     
     public RemoteMethodCall(final String remoteName, final String methodName,
             final Object[] args, final Class[] argTypes)
@@ -42,7 +40,7 @@ public class RemoteMethodCall implements Externalizable
         m_remoteName = remoteName;
         m_methodName = methodName;
         m_args = args;
-        m_argTypes = classesToString(argTypes);
+        m_argTypes = classesToString(argTypes, args);
     }
 
     /**
@@ -74,18 +72,25 @@ public class RemoteMethodCall implements Externalizable
      */
     public Class[] getArgTypes()
     {
-        return stringsToClasses(m_argTypes);
+        return stringsToClasses(m_argTypes, m_args);
     }
 
-    public static Class[] stringsToClasses(String[] strings)
+    public static Class[] stringsToClasses(String[] strings, Object[] args)
     {
         Class[] rVal = new Class[strings.length];
         for (int i = 0; i < strings.length; i++)
         {
             try
             {
+                //null if we skipped writing because the arg is the expected 
+                //class, this saves some space since generally the arg will
+                //be of the correct type
+                if(strings[i] == null)
+                {
+                    rVal[i] = args[i].getClass();
+                }
                 //handle primitives
-                if (strings[i].equals("int"))
+                else if (strings[i].equals("int"))
                 {
                     rVal[i] = Integer.TYPE;
                 } else if (strings[i].equals("short"))
@@ -119,12 +124,26 @@ public class RemoteMethodCall implements Externalizable
         return rVal;
     }
     
-    public static String[] classesToString(Class[] classes)
+    public static String[] classesToString(Class[] classes, Object[] args)
     {
+        //as an optimization, if args[i].getClass == classes[i] then leave classes[i] as null
+        //this will reduce the amount of info we write over the network in the common
+        //case where the object is the same type as its arg
+        
         String[] rVal = new String[classes.length];
         for(int i = 0; i < classes.length; i++)
         {
-            rVal[i] = classes[i].getName();
+            if(args != null && args[i] != null && classes[i] == args[i].getClass())
+            {
+                rVal[i] = null;
+            }
+            else
+            {
+                rVal[i] = classes[i].getName();    
+            }
+                
+           
+            
         }
         return rVal;
     }

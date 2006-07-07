@@ -20,10 +20,7 @@
 
 package games.strategy.net;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 import java.net.InetAddress;
 
 /**
@@ -122,5 +119,21 @@ public class Node implements INode, Externalizable
       return this.m_name.compareToIgnoreCase(o.getName());
   
   }
+  
+  public static void main(String[] args) throws IOException
+  {
+      ByteArrayOutputStream sink = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(sink);
+      for(int i =0; i < 1000; i++)
+      {
+          out.writeObject(new Node("" + i, InetAddress.getLocalHost(), i));
+      }
+
+      
+      out.close();
+      System.out.println("1000 nodes is:" + sink.toByteArray().length);
+      
+  }
+  
 
 }

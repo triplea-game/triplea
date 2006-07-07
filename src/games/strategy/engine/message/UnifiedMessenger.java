@@ -203,7 +203,7 @@ public class UnifiedMessenger
         
         createEndPointInternal(name, classes, singleThreaded, possesiveNode);
         
-        m_messenger.broadcast(new EndPointCreated(RemoteMethodCall.classesToString(classes), name, singleThreaded, possesiveNode));
+        m_messenger.broadcast(new EndPointCreated(RemoteMethodCall.classesToString(classes, null), name, singleThreaded, possesiveNode));
     }
 
     private void createEndPointInternal(String name, Class[] classes, boolean singleThreaded, INode possesiveNode)
@@ -475,7 +475,7 @@ public class UnifiedMessenger
                             localNodesWithImplementors.add(endPoint.getName());
                         }
 
-                        created[i] = new EndPointCreated(RemoteMethodCall.classesToString(endPoint.getClasses()), name, endPoint.isSingleThreaded(), endPoint.getPossessiveNode());
+                        created[i] = new EndPointCreated(RemoteMethodCall.classesToString(endPoint.getClasses(), null), name, endPoint.isSingleThreaded(), endPoint.getPossessiveNode());
                         i++;
                     }
                 }
@@ -517,7 +517,7 @@ public class UnifiedMessenger
             } else if (msg instanceof EndPointCreated)
             {
                 EndPointCreated created = (EndPointCreated) msg;
-                createEndPointInternal(created.name, RemoteMethodCall.stringsToClasses(created.classes), created.singleThreaded, created.possesiveNode);
+                createEndPointInternal(created.name, RemoteMethodCall.stringsToClasses(created.classes, null), created.singleThreaded, created.possesiveNode);
             } else if (msg instanceof EndPointDestroyed)
             {
                 EndPointDestroyed destroyed = (EndPointDestroyed) msg;
@@ -611,7 +611,7 @@ public class UnifiedMessenger
             for (int i = 0; i < initMessage.endPoints.length; i++)
             {
                 EndPointCreated endPointCreated = initMessage.endPoints[i];
-                createEndPointInternal(endPointCreated.name, RemoteMethodCall.stringsToClasses(endPointCreated.classes),
+                createEndPointInternal(endPointCreated.name, RemoteMethodCall.stringsToClasses(endPointCreated.classes, null),
                         endPointCreated.singleThreaded, endPointCreated.possesiveNode);
             }
 

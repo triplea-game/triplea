@@ -36,7 +36,7 @@ public class RemoteMessenger implements IRemoteMessenger
     {
         //synchronize to ensure the name returned is written to main memory
         //synchronizing on "R" since it happens to be a convenient object
-        synchronized("R")
+        synchronized("R:")
         {
             return "R:" + channelName;
         }

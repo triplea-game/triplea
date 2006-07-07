@@ -171,7 +171,7 @@ public class GameRunner2
         }
     }
     
-    private static void setupLogging()
+    public static void setupLogging()
     {
         //setup logging to read our logging.properties
         try
