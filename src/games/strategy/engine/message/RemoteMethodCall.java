@@ -114,7 +114,12 @@ public class RemoteMethodCall implements Externalizable
                 } else if (strings[i].equals("float"))
                 {
                     rVal[i] = Float.TYPE;
-                } else if (strings[i].equals("boolean"))
+                }
+                else if (strings[i].equals("double"))
+                {
+                    rVal[i] = Double.TYPE;
+                }
+                else if (strings[i].equals("boolean"))
                 {
                     rVal[i] = Boolean.TYPE;
                 }
