@@ -249,29 +249,35 @@ class Connection
 
     private void writeHeader(MessageHeader next, ObjectOutputStream out) throws IOException
     {
-        //there are three case, in the common case
-        //getFor will by the remote node,
-        //in that case simply write a marker object
-        //otherwise write the node
+        
         if(next.getFor() == null)
         {
-            out.writeObject(null);
-        }
-        else if(next.getFor().equals(m_localNode))
-        {
-            out.writeObject(Boolean.TRUE);
+            out.writeBoolean(true);
         }
         else
         {
-            out.writeObject(next.getFor());    
+            out.writeBoolean(false);
+            if(next.getFor().equals(m_remoteNode))
+            {
+                out.writeBoolean(true);
+            }
+            else
+            {
+                out.writeBoolean(false);
+                next.getFor().writeExternal(out);
+            }
         }
         
         
-        //if from is us, then don't bother writing
         if(next.getFrom().equals(m_localNode))
-            out.writeObject(null);
+        {
+            out.writeBoolean(true);
+        }
         else
-            out.writeObject(next.getFrom());
+        {
+            out.writeBoolean(false);
+            next.getFrom().writeExternal(out);
+        }
         
         out.writeObject(next.getMessage());
         
@@ -336,6 +342,46 @@ class Connection
     class Reader implements Runnable
     {
 
+        private MessageHeader readMessageHeader() throws IOException, ClassNotFoundException
+        {
+            INode to;
+            if(m_in.readBoolean())
+            {
+                to = null;
+            }
+            else
+            {
+                
+                if(m_in.readBoolean())
+                {
+                    to = m_localNode;
+                }
+                else
+                {
+                    to = new Node();
+                    to.readExternal(m_in);
+                }
+            }
+            
+            
+            INode from;
+            if(m_in.readBoolean())
+            {
+                from = m_remoteNode;
+            }
+            else
+            {
+                from = new Node();
+                from.readExternal(m_in);
+            }
+
+            
+            Serializable message = (Serializable) m_in.readObject();
+            
+            
+            return new MessageHeader(to,from,message);
+        }
+        
         @SuppressWarnings("unchecked")
         public void run()
         {
@@ -344,31 +390,8 @@ class Connection
             {
                 try
                 {
+                    MessageHeader msg = readMessageHeader();
                     
-                    INode to;
-                    Object toObject = m_in.readObject();
-                    if(toObject == null)
-                    {
-                        to = null;
-                    }
-                    else if(toObject instanceof INode)
-                    {
-                        to = (INode) toObject;
-                    }
-                    else
-                    {
-                        to = m_localNode;
-                    }
-                    
-                    //in the common case, from will be null
-                    INode from = (INode) m_in.readObject();
-                    if(from == null)
-                        from = m_remoteNode;
-                    
-                    Serializable message = (Serializable) m_in.readObject();
-                    
-                    
-                    final MessageHeader msg = new MessageHeader(to,from,message);
                     log(msg, true);
                     messageReceived(msg);
 

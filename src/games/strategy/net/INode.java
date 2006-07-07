@@ -15,7 +15,7 @@
 package games.strategy.net;
 
 import java.net.*;
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * A Node in a network.
@@ -24,7 +24,7 @@ import java.io.Serializable;
  * 
  * @author sgb
  */
-public interface INode extends Serializable, Comparable<INode>
+public interface INode extends Externalizable, Comparable<INode>
 {
 	public String getName();
 	
