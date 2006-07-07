@@ -80,7 +80,9 @@ class Connection
         try
         {
             ObjectOutputStream out = m_objectStreamFactory.create(sink);
-            out.writeObject(header);
+            
+            writeHeader(header, out);
+            
             sink.close();
             int size = sink.toByteArray().length;
             
@@ -245,6 +247,38 @@ class Connection
             m_listener.messageReceived(header, this);
     }
 
+    private void writeHeader(MessageHeader next, ObjectOutputStream out) throws IOException
+    {
+        //there are three case, in the common case
+        //getFor will by the remote node,
+        //in that case simply write a marker object
+        //otherwise write the node
+        if(next.getFor() == null)
+        {
+            out.writeObject(null);
+        }
+        else if(next.getFor().equals(m_localNode))
+        {
+            out.writeObject(Boolean.TRUE);
+        }
+        else
+        {
+            out.writeObject(next.getFor());    
+        }
+        
+        
+        //if from is us, then don't bother writing
+        if(next.getFrom().equals(m_localNode))
+            out.writeObject(null);
+        else
+            out.writeObject(next.getFrom());
+        
+        out.writeObject(next.getMessage());
+        
+        out.flush();
+        out.reset();
+    }
+
     class Writer implements Runnable
     {
 
@@ -279,12 +313,7 @@ class Connection
             {
                 try
                 {
-                    m_out.writeObject(next.getFor());
-                    m_out.writeObject(next.getFrom());
-                    m_out.writeObject(next.getMessage());
-                    
-                    m_out.flush();
-                    m_out.reset();
+                    writeHeader(next, m_out);
                 } catch (IOException ioe)
                 {
                     if(ioe instanceof ObjectStreamException)
@@ -315,8 +344,27 @@ class Connection
             {
                 try
                 {
-                    INode to = (INode) m_in.readObject();
+                    
+                    INode to;
+                    Object toObject = m_in.readObject();
+                    if(toObject == null)
+                    {
+                        to = null;
+                    }
+                    else if(toObject instanceof INode)
+                    {
+                        to = (INode) toObject;
+                    }
+                    else
+                    {
+                        to = m_localNode;
+                    }
+                    
+                    //in the common case, from will be null
                     INode from = (INode) m_in.readObject();
+                    if(from == null)
+                        from = m_remoteNode;
+                    
                     Serializable message = (Serializable) m_in.readObject();
                     
                     
