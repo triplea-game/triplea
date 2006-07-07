@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class MessengerLoginTest extends TestCase
 {
-    private int SERVER_PORT = 10122;
+    private int SERVER_PORT = 10152;
     
     @Override
     public void setUp()
