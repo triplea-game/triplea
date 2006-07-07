@@ -327,8 +327,13 @@ public class UnifiedMessenger
         //wait for the remote calls to finish
         if (remote.length > 0)
         {
-            s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
+            
+            if(s_logger.isLoggable(Level.FINER))
+            {
+                s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
                     + " with id:" + methodCallID);
+            }
+            
             try
             {
                 latch.await();
@@ -337,8 +342,12 @@ public class UnifiedMessenger
                 s_logger.log(Level.WARNING, e.getMessage());
             }
 
-            s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
-                    + " with id:" + methodCallID);
+            
+            if(s_logger.isLoggable(Level.FINER))
+            {
+                s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
+                        + " with id:" + methodCallID);
+            }
 
             results.addAll(m_methodCallResults.get(methodCallID));
             m_methodCallResults.remove(methodCallID);
@@ -554,7 +563,7 @@ public class UnifiedMessenger
                 //regardless, the other side is expecting our reply
                 if (local == null)
                 {
-                    m_messenger.send(new InvocationResults(new ArrayList<RemoteMethodCallResults>(), invoke.methodCallID), from);
+                    m_messenger.send(new InvocationResults(new ArrayList<RemoteMethodCallResults>(0), invoke.methodCallID), from);
                     return;
                 }
 
@@ -1131,15 +1140,34 @@ class InvocationResults implements Externalizable
 
 	public void writeExternal(ObjectOutput out) throws IOException 
 	{
-		 out.writeObject(results);
-		 out.writeObject(methodCallID);
+        //if only 1 result (the common case) don't write the collection
+        if(results.size() == 1)
+        {
+            out.writeObject(results.iterator().next());
+        }
+        else
+        {
+            out.writeObject(results);
+        }
+        
+		out.writeObject(methodCallID);
 		
 	}
 
 	@SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
 	{
-		results = (Collection<RemoteMethodCallResults>) in.readObject();
+        Object result = in.readObject();
+        if(result instanceof RemoteMethodCallResults)
+        {
+            results = Collections.singleton((RemoteMethodCallResults) result);
+        }
+        else
+        {
+            results = (Collection<RemoteMethodCallResults>) result;    
+        }
+        
+		
 		methodCallID = (GUID) in.readObject();
 		
 	}
