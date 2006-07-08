@@ -218,7 +218,7 @@ public class Database
                 
             }
         
-        });
+        }, "TripleA Database Backup Thread");
         backupThread.setDaemon(true);
         backupThread.start();
         
