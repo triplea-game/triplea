@@ -25,6 +25,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     private JList m_players;
     private DefaultListModel m_listModel;
     private Chat m_chat;
+    public Set<String> m_ignoredPlayers = new HashSet<String>();
     
     private IStatusListener m_statusListener;
     
@@ -53,6 +54,11 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         setChat(chat);
     }
 
+    public void addIgnoredPlayerName(String name)
+    {
+        m_ignoredPlayers.add(name);
+    }
+    
     public void setChat(Chat chat)
     {
         if(m_chat != null)
@@ -187,7 +193,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
                 while (iter.hasNext())
                 {
                     INode name = iter.next();
-                    m_listModel.addElement(name);
+                    if(!m_ignoredPlayers.contains(name.getName()))
+                        m_listModel.addElement(name);
                 }
             }
         };

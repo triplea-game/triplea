@@ -109,7 +109,7 @@ public class DBExplorerPanel extends JPanel
             else
             {
                 ResultSet rs = ps.executeQuery(sql);
-                TableModel model = DbExplorerPanel(rs);
+                TableModel model = createTableModel(rs);
                 if(model != null)
                     m_table.setModel(model);
             }
@@ -138,7 +138,7 @@ public class DBExplorerPanel extends JPanel
     }
     
     
-    public static TableModel DbExplorerPanel(ResultSet rs)
+    public static TableModel createTableModel(ResultSet rs)
     { 
         try
         {
@@ -150,6 +150,8 @@ public class DBExplorerPanel extends JPanel
             if(count <= 0)
                 return null;
             
+            model.addColumn("Count");
+            
             for(int i =1; i < count; i++)
             {
                 String columnName = rs.getMetaData().getColumnName(i);
@@ -157,10 +159,13 @@ public class DBExplorerPanel extends JPanel
                 model.addColumn(columnName);
             }
             
+            int index = 1;
             while(rs.next())
             {
                 
+                
                 List<String> values = new ArrayList<String>();
+                values.add("" + index++);
                 for(String column : columnNames)
                 {
                     values.add(rs.getString(column));

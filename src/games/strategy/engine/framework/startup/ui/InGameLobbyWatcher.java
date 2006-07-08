@@ -14,7 +14,9 @@
 
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.events.GameStepListener;
+import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.lobby.server.*;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
@@ -55,6 +57,19 @@ public class InGameLobbyWatcher
             gameSelectorModelUpdated();
         }
     };
+
+    private IGame m_game;
+    private GameStepListener m_gameStepListener = new GameStepListener()
+    {
+        
+        public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+        {
+            InGameLobbyWatcher.this.gameStepChanged(stepName, round);
+        }
+
+    
+    };
+    
     
     //we create this messenger, and use it to connect to the 
     //game lobby
@@ -116,6 +131,35 @@ public class InGameLobbyWatcher
         }
     }
 
+
+    public void setGame(IGame game)
+    {
+        if(m_game != null)
+        {
+            m_game.removeGameStepListener(m_gameStepListener);
+        }
+        
+        m_game = game;
+        
+        if(game != null)
+        {
+            game.addGameStepListener(m_gameStepListener);
+            gameStepChanged(game.getData().getSequence().getStep().getName(),  game.getData().getSequence().getRound());
+        }
+    }
+    
+    private void gameStepChanged(String stepName, int round)
+    {
+        synchronized(m_mutex)
+        {
+            if(!m_gameDescription.getRound().equals(Integer.toString(round)))
+            {
+                m_gameDescription.setRound(round + "");
+            }
+            postUpdate();
+        }
+    }
+
     
     
     private void gameSelectorModelUpdated()
@@ -123,7 +167,6 @@ public class InGameLobbyWatcher
         synchronized(m_mutex)
         {
             m_gameDescription.setGameName(m_gameSelectorModel.getGameName());
-            m_gameDescription.setRound(m_gameSelectorModel.getGameRound());
             postUpdate();
         }
         
@@ -242,11 +285,23 @@ public class InGameLobbyWatcher
         cleanUpGameModelListener();
     }
     
-    public void setGameStatus(GameDescription.GameStatus status)
+    public void setGameStatus(GameDescription.GameStatus status, IGame game)
     {
         synchronized(m_mutex)
         {
             m_gameDescription.setStatus(status);
+            
+            if(game == null)
+            {
+                m_gameDescription.setRound("-");
+            }
+            else
+            {
+                m_gameDescription.setRound(game.getData().getSequence().getRound() + "");
+            }
+            setGame(game);
+            
+            
             postUpdate();
         }
     }

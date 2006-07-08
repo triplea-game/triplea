@@ -35,6 +35,7 @@ import java.util.logging.*;
 public class LobbyServer
 {
     
+    public static final String ADMIN_USERNAME = "Admin";
     private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
     public static final String LOBBY_CHAT = "_LOBBY_CHAT";
     public static final Version LOBBY_VERSION = new Version(1, 0, 0);
@@ -49,7 +50,7 @@ public class LobbyServer
         IServerMessenger server;
         try
         {
-            server = new ServerMessenger("Admin", port);
+            server = new ServerMessenger(ADMIN_USERNAME, port);
         } catch (IOException ex)
         {
             s_logger.log(Level.SEVERE, ex.toString());

@@ -43,7 +43,9 @@ public class LobbyFrame extends JFrame
         Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(), m_client.getRemoteMessenger());
         ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat);
         
-        ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
+        ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
+        chatPlayers.addIgnoredPlayerName(LobbyServer.ADMIN_USERNAME);
+        chatPlayers.setChat(chat);
         chatPlayers.setPreferredSize(new Dimension(200,600 ));
     
         LobbyGamePanel gamePanel = new LobbyGamePanel(m_client.getMessengers());

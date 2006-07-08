@@ -16,7 +16,7 @@ package games.strategy.engine.lobby.server;
 
 import games.strategy.net.*;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 
 /**
@@ -26,7 +26,7 @@ import java.util.Date;
  * 
  * @author sgb
  */
-public class GameDescription implements Serializable, Cloneable
+public class GameDescription implements Externalizable, Cloneable
 {
     public enum GameStatus
     {
@@ -63,7 +63,13 @@ public class GameDescription implements Serializable, Cloneable
     private int m_version = Integer.MIN_VALUE;
     private String m_hostName;
     private String m_comment;
+    //if you add a field, add it to write/read object as well
 
+    //for externalizable
+    public GameDescription()
+    {}
+
+    
     public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, String round, String hostName, String comment)
     {
         m_hostName = hostName;
@@ -195,6 +201,36 @@ public class GameDescription implements Serializable, Cloneable
     {
         m_version++;
         m_comment = comment;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+      
+        m_hostedBy = new Node();
+        m_hostedBy.readExternal(in);
+        m_port = in.readInt();
+        m_startDateTime = new Date();
+        m_startDateTime.setTime(in.readLong());
+        m_playerCount = in.readByte();
+        m_round = in.readUTF();
+        m_status = GameStatus.values()[in.readByte()];
+        m_version = in.readInt();
+        m_hostName = in.readUTF();
+        m_comment = in.readUTF();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        m_hostedBy.writeExternal(out);
+        out.writeInt(m_port);
+        out.writeLong(m_startDateTime.getTime());
+        out.writeByte(m_playerCount);
+        out.writeUTF(m_round);
+        out.writeByte(m_status.ordinal());
+        out.writeInt(m_version);
+        out.writeUTF(m_hostName);
+        out.writeUTF(m_comment);
+        
     }
 
 }

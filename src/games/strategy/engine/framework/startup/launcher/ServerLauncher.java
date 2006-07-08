@@ -104,7 +104,7 @@ public class ServerLauncher implements ILauncher
                     
                     if(m_inGameLobbyWatcher!= null)
                     {
-                        m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS);
+                        m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, m_serverGame);
                     }
                     
                 }
@@ -129,7 +129,7 @@ public class ServerLauncher implements ILauncher
         
         if(m_inGameLobbyWatcher!= null)
         {
-            m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING);
+            m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING, null);
         }
         
         m_ui = parent;
@@ -249,7 +249,7 @@ public class ServerLauncher implements ILauncher
                 m_serverModel.newGame();
                 if(m_inGameLobbyWatcher != null)
                 {
-                    m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS);
+                    m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
                 }
             }
         };

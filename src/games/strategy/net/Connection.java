@@ -82,6 +82,8 @@ class Connection
             ObjectOutputStream out = m_objectStreamFactory.create(sink);
             
             writeHeader(header, out);
+            out.flush();
+            out.close();
             
             sink.close();
             int size = sink.toByteArray().length;
@@ -281,7 +283,6 @@ class Connection
         
         out.writeObject(next.getMessage());
         
-        out.flush();
         out.reset();
     }
 
@@ -320,6 +321,11 @@ class Connection
                 try
                 {
                     writeHeader(next, m_out);
+                    
+                    //if we have nothing to send immediately, then flush
+                    if(m_waitingToBeSent.peek() == null)
+                        m_out.flush();
+                    
                 } catch (IOException ioe)
                 {
                     if(ioe instanceof ObjectStreamException)

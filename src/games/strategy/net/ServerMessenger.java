@@ -185,15 +185,15 @@ public class ServerMessenger implements IServerMessenger
         else
         {
 
-            if (msg.getFor() == null || msg.getFor().equals(m_node))
-            {
-                notifyListeners(msg);
-            }
-
             if (msg.getFor() == null)
                 forwardBroadcast(msg);
             else
                 forward(msg);
+            
+            if (msg.getFor() == null || msg.getFor().equals(m_node))
+            {
+                notifyListeners(msg);
+            }
         }
     }
 

@@ -113,10 +113,6 @@ public class ClientMessenger implements IMessenger
         } else if (msg instanceof ClientInitServerMessage)
         {
             initMessageReceived((ClientInitServerMessage) msg);
-        } else if (msg instanceof ConnectionRefusedMessage)
-        {
-            m_connectionRefusedError = ((ConnectionRefusedMessage) msg).getError();
-            shutDown();
         } else
             throw new IllegalArgumentException("Unknown server messgae:" + msg);
     }
