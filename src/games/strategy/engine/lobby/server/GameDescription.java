@@ -217,6 +217,7 @@ public class GameDescription implements Externalizable, Cloneable
         m_version = in.readInt();
         m_hostName = in.readUTF();
         m_comment = in.readUTF();
+        m_gameName = in.readUTF();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
@@ -230,6 +231,7 @@ public class GameDescription implements Externalizable, Cloneable
         out.writeInt(m_version);
         out.writeUTF(m_hostName);
         out.writeUTF(m_comment);
+        out.writeUTF(m_gameName);
         
     }
 
