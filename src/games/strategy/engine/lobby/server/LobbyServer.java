@@ -86,19 +86,19 @@ public class LobbyServer
     public static void main(String args[])
     {
         
-        if (args.length != 1)
-        {
-            System.out.println("Usage: LobbyServer [port]");
-            return;
-        }
         try
         {
             GameRunner2.setupLogging();
             GameRunner2.setupLookAndFeel();
             
             
-            int p = Integer.parseInt(args[0]);
-            LobbyServer server = new LobbyServer( p);
+            int port;
+            if(args.length == 1)
+                port =Integer.parseInt(args[0]);
+            else
+                port = 3301;
+            
+            LobbyServer server = new LobbyServer( port);
 
             //initialize the databse
             Database.getConnection().close();
