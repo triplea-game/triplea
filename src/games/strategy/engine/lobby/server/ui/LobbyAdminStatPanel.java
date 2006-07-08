@@ -14,24 +14,28 @@
 
 package games.strategy.engine.lobby.server.ui;
 
-import java.awt.BorderLayout;
-
-import javax.swing.*;
+import java.awt.GridLayout;
+import java.util.Date;
 
 import games.strategy.net.*;
 
-public class AllUsersPanel extends JPanel
-{
-    
-    private final IMessenger m_messenger;
-    private JList m_nodes;
-    private DefaultListModel m_nodesModel;
-    private LobbyAdminStatPanel m_statPane;
+import javax.swing.*;
 
-    public AllUsersPanel(IMessenger messenger)
+public class LobbyAdminStatPanel extends JPanel
+{
+
+    private JLabel m_upSince;
+    private JLabel m_maxPlayersLabel;
+    private JLabel m_totalLoginsLabel;
+    private JLabel m_currentLoginsLabel;
+    private int m_maxPlayers;
+    private int m_totalLogins;
+    private int m_currentLogins;
+    private final IMessenger m_messenger;
+    
+    public LobbyAdminStatPanel(IMessenger messenger)
     {
         m_messenger = messenger;
-        
         createComponents();
         layoutComponents();
         setupListeners();
@@ -40,18 +44,20 @@ public class AllUsersPanel extends JPanel
 
     private void createComponents()
     {
-        m_nodesModel = new DefaultListModel();
-        m_nodes = new JList(m_nodesModel);
-        m_statPane = new LobbyAdminStatPanel(m_messenger);
-
+        m_currentLoginsLabel = new JLabel("Current Players: -----");
+        m_maxPlayersLabel = new JLabel("Max Concurrent Players : ----");
+        m_totalLoginsLabel = new JLabel("Total Logins : ------");
+        m_upSince = new JLabel("Up since " + new Date());
+        
     }
 
     private void layoutComponents()
     {
-        setLayout(new BorderLayout());
-        add(new JScrollPane(m_nodes), BorderLayout.CENTER);
-        add(m_statPane, BorderLayout.SOUTH);
-
+        setLayout(new GridLayout(4,1));
+        add(m_currentLoginsLabel);
+        add(m_totalLoginsLabel);
+        add(m_maxPlayersLabel);
+        add(m_upSince);
     }
 
     private void setupListeners()
@@ -59,30 +65,39 @@ public class AllUsersPanel extends JPanel
         m_messenger.addConnectionChangeListener(new IConnectionChangeListener()
         {
         
-            public void connectionRemoved(final INode to)
+            public void connectionRemoved(INode to)
             {
                 SwingUtilities.invokeLater(new Runnable()
                 {
                 
                     public void run()
                     {
-                      m_nodesModel.removeElement(to);
-                
+                        m_currentLogins--;
+                        m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
                     }
                 
                 });
         
             }
         
-            public void connectionAdded(final INode to)
+            public void connectionAdded(INode to)
             {
                 SwingUtilities.invokeLater(new Runnable()
                 {
                 
                     public void run()
                     {
-                      m_nodesModel.addElement(to);
-                
+                        m_currentLogins++;
+                        m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
+                        
+                        if(m_currentLogins > m_maxPlayers)
+                        {
+                            m_maxPlayers = m_currentLogins;
+                            m_maxPlayersLabel.setText("Max Concurrent Players : " + m_maxPlayers);
+                        }
+                        m_totalLogins++;
+                        m_totalLoginsLabel.setText("Total Logins : " + m_totalLogins);
+                        
                     }
                 
                 });
@@ -91,12 +106,11 @@ public class AllUsersPanel extends JPanel
             }
         
         });
-
+        
     }
 
     private void setWidgetActivation()
     {
 
     }
-    
 }
