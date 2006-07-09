@@ -16,7 +16,7 @@ public class BootPlayerAction extends AbstractAction
 
     public BootPlayerAction(Component parent, IServerMessenger messenger)
     {
-        super("Remove Player From Game...");
+        super("Remove Player...");
         m_parent = JOptionPane.getFrameForComponent(parent);
         m_messenger = messenger;
 

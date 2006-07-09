@@ -154,6 +154,7 @@ public class ServerLauncher implements ILauncher
 
         Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger );
         m_serverGame = new ServerGame(m_gameData, localPlayerSet, m_remotelPlayers, messengers);
+        m_serverGame.setInGameLobbyWatcher(m_inGameLobbyWatcher);
         
         //tell the clients to start,
         //later we will wait for them to all

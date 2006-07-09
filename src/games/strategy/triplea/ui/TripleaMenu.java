@@ -20,8 +20,10 @@ import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.networkMaintenance.*;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.*;
+import games.strategy.engine.lobby.client.ui.action.*;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.random.*;
 import games.strategy.engine.sound.ClipPlayer;
@@ -57,12 +59,33 @@ public class TripleaMenu extends JMenuBar
         createFileMenu(this);
         createGameMenu(this);
         createNetworkMenu(this);
+        createLobbyMenu(this);
         createHelpMenu(this);
 
 	setWidgetActivation();
 
     }
     
+    private void createLobbyMenu(JMenuBar menuBar)
+    {
+        if(!(m_frame.getGame() instanceof ServerGame))
+            return;
+        ServerGame serverGame = (ServerGame) m_frame.getGame();
+        InGameLobbyWatcher watcher = serverGame.getInGameLobbyWatcher();
+        if(watcher == null || !watcher.isActive())
+        {
+            return;
+        }
+        
+        JMenu lobby = new JMenu("Lobby");
+        menuBar.add(lobby);
+        
+        lobby.add(new EditGameCommentAction( watcher, m_frame ));
+        lobby.add(new RemoveGameFromLobbyAction(watcher));
+        
+        
+    }
+
     public GameData getData()
     {
         return m_frame.getGame().getData();

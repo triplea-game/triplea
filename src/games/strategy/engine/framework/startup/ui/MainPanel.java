@@ -7,6 +7,7 @@ import games.strategy.triplea.ui.ErrorHandler;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -122,7 +123,14 @@ public class MainPanel extends JPanel implements Observer
             cancelPanel.setBorder(new EmptyBorder(10,0,10,10));
             
             cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            
+            
+            
+            createUserActionMenu(cancelPanel);
+            
             cancelPanel.add(m_cancelButton);
+
+            
             m_gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
         }
         
@@ -132,6 +140,43 @@ public class MainPanel extends JPanel implements Observer
 
         invalidate();
         revalidate();
+        
+    }
+
+    private void createUserActionMenu(JPanel cancelPanel)
+    {
+        if(m_gameSetupPanel.getUserActions() == null)
+            return;
+        
+        //if we need this for something other than network, add a way to set it
+        final JButton button = new JButton("Network...");
+        
+        
+        button.addActionListener(new ActionListener()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                JPopupMenu menu = new JPopupMenu();
+        
+                List<Action> actions = m_gameSetupPanel.getUserActions();
+                if(actions != null && !actions.isEmpty())
+                {
+                    for(Action a : actions)
+                    {
+                        menu.add(a);
+                    }
+                }
+                
+                menu.show(button, 0 , button.getHeight());
+        
+            }
+        
+        });
+        cancelPanel.add(button);
+        
+        
+        
         
     }
 

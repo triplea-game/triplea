@@ -26,6 +26,7 @@ import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.display.*;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.ui.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.history.*;
@@ -73,6 +74,9 @@ public class ServerGame implements IGame
     
     private DelegateExecutionManager m_delegateExecutionManager = new DelegateExecutionManager();
     private volatile boolean m_isGameOver = false;
+    
+    private InGameLobbyWatcher m_inGameLobbyWatcher;
+    
     private IServerRemote m_serverRemote = new IServerRemote()
     {
     
@@ -693,6 +697,16 @@ public class ServerGame implements IGame
     public PlayerManager getPlayerManager()
     {
         return m_players;
+    }
+
+    public InGameLobbyWatcher getInGameLobbyWatcher()
+    {
+        return m_inGameLobbyWatcher;
+    }
+
+    public void setInGameLobbyWatcher(InGameLobbyWatcher inGameLobbyWatcher)
+    {
+        m_inGameLobbyWatcher = inGameLobbyWatcher;
     }
     
 }

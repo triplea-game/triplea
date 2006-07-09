@@ -26,6 +26,7 @@ import games.strategy.engine.framework.networkMaintenance.*;
 import games.strategy.engine.framework.startup.launcher.*;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.*;
+import games.strategy.engine.lobby.client.ui.action.*;
 
 
 import games.strategy.net.*;
@@ -43,9 +44,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     
     private JPanel m_info;
     private JPanel m_networkPanel;
-    private JButton m_bootPlayerButton;
-    private JButton m_setPasswordButton;
-    private JButton m_setCommentsButton;
 
     private InGameLobbyWatcher m_lobbyWatcher;
     
@@ -100,9 +98,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         
         m_info = new JPanel();
         
-        m_bootPlayerButton = new JButton("Boot Player...");
-        m_setPasswordButton = new JButton("Set Game Password...");
-        m_setCommentsButton = new JButton("Edit Game Comment...");
+
         
         m_networkPanel = new JPanel();
         
@@ -124,15 +120,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_info.add(m_portField, new GridBagConstraints(1,2,1,1,0.5,1.0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5,0,0,5), 0,0));
 
         add(m_info, BorderLayout.NORTH);
-
-        m_networkPanel.setLayout(new BoxLayout(m_networkPanel, BoxLayout.X_AXIS));
-        m_networkPanel.add(m_bootPlayerButton);
-        m_networkPanel.add(m_setPasswordButton);
-        if(m_lobbyWatcher != null)
-            m_networkPanel.add(m_setCommentsButton);
-        add(m_networkPanel, BorderLayout.SOUTH);
-
-        
+       
     }
     
     private void layoutPlayers()
@@ -213,24 +201,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
     private void setupListeners()
     {
-        m_bootPlayerButton.addActionListener( new BootPlayerAction(this, m_model.getMessenger()));
-        m_setPasswordButton.addActionListener(new SetPasswordAction(this, (ClientLoginValidator) m_model.getMessenger().getLoginValidator() ));
-        
-        
-        m_setCommentsButton.addActionListener(new ActionListener()
-        {
-        
-            public void actionPerformed(ActionEvent e)
-            {
-                String current = m_lobbyWatcher.getComments();
-                String rVal = JOptionPane.showInputDialog( ServerSetupPanel.this, "Edit the comments for the game", current );
-                if(rVal != null)
-                {
-                    m_lobbyWatcher.setGameComments(rVal);
-                }
-            }
-        
-        });
         
     }
 
@@ -394,6 +364,23 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
         launcher.setInGameLobbyWatcher(m_lobbyWatcher);
         return launcher;
+    }
+    
+    public List<Action> getUserActions()
+    {
+
+        List<Action> rVal = new ArrayList<Action>();
+        rVal.add(new BootPlayerAction(this, m_model.getMessenger()));
+        rVal.add(new SetPasswordAction(this, (ClientLoginValidator) m_model.getMessenger().getLoginValidator() ));
+        
+        if(m_lobbyWatcher != null && m_lobbyWatcher.isActive())
+        {
+            rVal.add(new EditGameCommentAction(m_lobbyWatcher, ServerSetupPanel.this));
+            rVal.add(new RemoveGameFromLobbyAction(m_lobbyWatcher));
+        }
+        return rVal;
+     
+        
     }
     
 }

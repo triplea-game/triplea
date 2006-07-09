@@ -1,3 +1,7 @@
+* lobby server/client (sgb)
+
+* you can kick players out of a game on startup screen (sgb)
+
 * add odds calculator (zengland)
 
 * fix bug [ 1505192 ] air land in conquered territory (sgb)

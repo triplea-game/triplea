@@ -6,7 +6,7 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public abstract class SetupPanel extends JPanel
 {
@@ -59,6 +59,11 @@ public abstract class SetupPanel extends JPanel
     public ILauncher getLauncher()
     {
         throw new IllegalStateException("NOt implemented");
+    }
+    
+    public List<Action> getUserActions()
+    {
+        return null;
     }
     
 }

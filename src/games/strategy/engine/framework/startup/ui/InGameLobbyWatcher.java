@@ -285,6 +285,11 @@ public class InGameLobbyWatcher
         cleanUpGameModelListener();
     }
     
+    public boolean isActive()
+    {
+        return !m_shutdown;
+    }
+    
     public void setGameStatus(GameDescription.GameStatus status, IGame game)
     {
         synchronized(m_mutex)

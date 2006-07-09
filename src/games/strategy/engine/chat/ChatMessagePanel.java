@@ -282,7 +282,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     {
         public void actionPerformed(ActionEvent e)
         {
-            String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this), "Enter Status Text", "");
+            String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this), "Enter Status Text (leave blank for no status)", "");
             if(status != null)
             {
                 if(status.trim().length() == 0)

@@ -190,7 +190,7 @@ public class LobbyGamePanel extends JPanel
     protected void hostGame()
     {
         ServerOptions options = new ServerOptions(JOptionPane.getFrameForComponent(this), m_messengers.getMessenger().getLocalNode().getName() ,3300, true);
-        options.setLocationRelativeTo(this);
+        options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
         options.setNameEditable(false);
         options.setVisible(true);
         if(!options.getOKPressed())
