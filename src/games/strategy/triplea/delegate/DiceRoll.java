@@ -20,6 +20,7 @@ import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.*;
 import games.strategy.util.Match;
 
@@ -54,7 +55,7 @@ public class DiceRoll implements Externalizable
             {
                 dice = bridge.getRandom(Constants.MAX_DICE, 1, "Roll aa guns in " + location.getName());
                 boolean hit = hitsFractional > dice[0];
-                Die die = new Die(dice[0], 1, hit);
+                Die die = new Die(dice[0], 1, hit ? DieType.HIT : DieType.MISS);
                 
                 sortedDice.add(die);
                 if (hit)
@@ -71,7 +72,7 @@ public class DiceRoll implements Externalizable
             for (int i = 0; i < dice.length; i++)
             {
                 boolean hit = dice[i] == 0;
-                sortedDice.add(new Die(dice[i], 1, hit));
+                sortedDice.add(new Die(dice[i], 1, hit ? DieType.HIT : DieType.MISS));
                 if (hit)
                     hits++;
             }
@@ -168,7 +169,7 @@ public class DiceRoll implements Externalizable
             {
                 hitCount++;
             }
-            dice.add(new Die(random[0], power, hit));
+            dice.add(new Die(random[0], power, hit ? DieType.HIT : DieType.MISS ));
         }
 
         // Create DiceRoll object
@@ -184,6 +185,8 @@ public class DiceRoll implements Externalizable
     {
         String annotation = getAnnotation(units, player, battle);
 
+        boolean lhtrBombers = player.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
+        
         int rollCount = BattleCalculator.getRolls(units, player, defending);
         if (rollCount == 0)
         {
@@ -206,35 +209,78 @@ public class DiceRoll implements Externalizable
             Unit current = (Unit) iter.next();
             UnitAttachment ua = UnitAttachment.get(current.getType());
 
-            int rolls = defending ? 1 : ua.getAttackRolls(player);
+            int rolls = BattleCalculator.getRolls(current, player, defending);
 
-            for (int i = 0; i < rolls; i++)
+            //lhtr heavy bombers take best of n dice for both attack and defense
+            if(rolls > 1 && lhtrBombers && ua.isStrategicBomber())
             {
                 int strength;
-                if (defending)
+                if(defending)
                     strength = ua.getDefense(current.getOwner());
                 else
-                {
                     strength = ua.getAttack(current.getOwner());
-                    if (ua.isArtillerySupportable() && artillerySupportAvailable > 0)
-                    {
-                        strength++;
-                        artillerySupportAvailable--;
-                    }
-                    if (ua.getIsMarine() && battle.isAmphibious())
-                    {
-                        Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
-                        if(!landUnits.contains(current))
-                            ++strength;
-                    } 
+                
+                //it is easier to assume two for now
+                //if it is something else, the code below gets a
+                //bit more general
+                if(rolls != 2)
+                    throw new IllegalStateException("Only expecting 2 dice for lhtr heavy bombers");
+                
+
+                
+                if(random[diceIndex] >= random[diceIndex+1])
+                {
+                    boolean hit = strength > random[diceIndex];
+                    dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
+                    dice.add(new Die(random[diceIndex+1], strength, DieType.IGNORED));
+                    if(hit)
+                        hitCount++;
                 }
+                else
+                {
+                    boolean hit = strength >= random[diceIndex + 1];
+                    dice.add(new Die(random[diceIndex],  strength, DieType.IGNORED));
+                    dice.add(new Die(random[diceIndex+1], strength, hit ? DieType.HIT : DieType.MISS));
+                    if(hit)
+                        hitCount++;
 
-                boolean hit = strength > random[diceIndex];
-                dice.add(new Die(random[diceIndex], strength, hit ));
-
-                if (hit)
-                    hitCount++;
+                }
+                    
+                //2 dice
                 diceIndex++;
+                diceIndex++;
+                
+            }
+            else
+            {
+                for (int i = 0; i < rolls; i++)
+                {
+                    int strength;
+                    if (defending)
+                        strength = ua.getDefense(current.getOwner());
+                    else
+                    {
+                        strength = ua.getAttack(current.getOwner());
+                        if (ua.isArtillerySupportable() && artillerySupportAvailable > 0)
+                        {
+                            strength++;
+                            artillerySupportAvailable--;
+                        }
+                        if (ua.getIsMarine() && battle.isAmphibious())
+                        {
+                            Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
+                            if(!landUnits.contains(current))
+                                ++strength;
+                        } 
+                    }
+    
+                    boolean hit = strength > random[diceIndex];
+                    dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
+    
+                    if (hit)
+                        hitCount++;
+                    diceIndex++;
+                }
             }
         }
 
@@ -284,7 +330,7 @@ public class DiceRoll implements Externalizable
             else
                 hit = dice[i] <= rollAt;
            
-            m_rolls.add(new Die(dice[i], rollAt, hit));
+            m_rolls.add(new Die(dice[i], rollAt, hit ? DieType.HIT : DieType.MISS));
         }
     }
 

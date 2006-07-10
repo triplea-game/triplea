@@ -1,3 +1,5 @@
+* lhtr hb rules (not sure if low luck is correct) (sgb)
+
 * lobby server/client (sgb)
 
 * you can kick players out of a game on startup screen (sgb)

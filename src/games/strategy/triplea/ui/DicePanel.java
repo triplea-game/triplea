@@ -106,8 +106,8 @@ public class DicePanel extends JPanel
     for(Die die : dice)
     {
       int roll = die.getValue() + 1;
-      boolean hit = die.isHit();
-      dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, hit)));
+      
+      dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, die.getType())));
       dicePanel.add(Box.createHorizontalStrut(2));
     }
     JScrollPane scroll = new JScrollPane(dicePanel);

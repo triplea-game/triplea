@@ -336,9 +336,15 @@ public class BattleCalculator
 
     public static int getRolls(Unit unit, PlayerID id, boolean defend)
     {
+        UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
         if (defend)
+        {
+            if(unitAttachment.isStrategicBomber() && id.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false))
+                return 2;
             return 1;
-        return UnitAttachment.get(unit.getType()).getAttackRolls(id);
+        }
+        
+        return unitAttachment.getAttackRolls(id);
 
     }
 

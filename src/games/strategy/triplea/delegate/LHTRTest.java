@@ -6,7 +6,8 @@ import java.util.List;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.*;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.player.ITripleaPlayer;
 import junit.framework.TestCase;
@@ -110,6 +111,53 @@ public class LHTRTest extends TestCase
         assertEquals(2, attachment.getAttack(americans));
     }
     
+    
+    public void testLHTRBombingRaid()
+    {
+        Territory germany = m_data.getMap().getTerritory("Germany");
+        Territory uk = m_data.getMap().getTerritory("United Kingdom");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        
+        BattleTracker tracker = new BattleTracker();
+        StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans,  tracker );
+        
+        battle.addAttack(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, british);
+        TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
+        
+        //aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
+        bridge.setRandomSource(new ScriptedRandomSource( new int[] {3,2,3} ));
+
+        
+        //if we try to move aa, then the game will ask us if we want to move
+        //fail if we are called
+        InvocationHandler handler = new InvocationHandler()
+        {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            {
+                return null;
+            }
+        };
+        
+        ITripleaPlayer player = (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler ); 
+        bridge.setRemote(player);
+        
+        
+        int ipcsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        
+        battle.fight(bridge);
+        
+        int ipcsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        
+        //largets dice is 4, so damage is 1 + 4 = 5
+        assertEquals(ipcsBeforeRaid - 5, ipcsAfterRaid);
+        
+        
+    }
     
 }
 

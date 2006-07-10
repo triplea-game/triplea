@@ -1,13 +1,16 @@
 package games.strategy.triplea.delegate;
 
 
+
 /**
  * A single roll of a die.
  * 
  */
 public class Die
 {
-    private final boolean m_hit;
+    public static enum DieType {MISS, HIT, IGNORED}
+
+    private final DieType m_type;
     //the value of the dice, 0 based
     private final int m_value;
     //this value is 1 based
@@ -17,19 +20,19 @@ public class Die
     
     public Die(int value)
     {
-        this(value, -1, false);
+        this(value, -1, DieType.MISS);
     }
     
-    public Die(int value, int rolledAt, boolean hit)
+    public Die(int value, int rolledAt, DieType type)
     {
-        m_hit = hit;
+        m_type = type;
         m_value = value;
         m_rolledAt = rolledAt;
     }
-
-    public boolean isHit()
+    
+    public Die.DieType getType()
     {
-        return m_hit;
+       return m_type;
     }
 
     public int getValue()
@@ -50,7 +53,7 @@ public class Die
         if(m_value > 255 || m_rolledAt > 255)
             throw new IllegalStateException("too big to serialize");
         
-        return (m_rolledAt << 8) + (m_value << 16) + (m_hit ? 1 : 0);
+        return (m_rolledAt << 8) + (m_value << 16) + (m_type.ordinal());
     }
     
     //read from an int
@@ -58,8 +61,8 @@ public class Die
     {
         int rolledAt = (value & 0x0FF00) >> 8; 
         int roll = (value & 0x0FF0000) >> 16;
-        boolean hit = (value & 0x01) > 0;
-        return new Die(roll, rolledAt, hit);
+        DieType type = DieType.values()[(value & 0x0F)];
+        return new Die(roll, rolledAt, type);
     }
     
     public boolean equals(Object o)
@@ -67,7 +70,7 @@ public class Die
         if(!(o instanceof Die))
             return false;
         Die other = (Die) o;
-        return other.m_hit == this.m_hit &&
+        return other.m_type == this.m_type &&
                other.m_value == this.m_value &&
                other.m_rolledAt == this.m_rolledAt;
     }
@@ -79,7 +82,7 @@ public class Die
     
     public String toString()
     {
-        return "Die roll" + m_value + " rolled at:" + m_rolledAt + " hit:" + m_hit;
+        return "Die roll" + m_value + " rolled at:" + m_rolledAt + " type:" + m_type;
     }
         
 }

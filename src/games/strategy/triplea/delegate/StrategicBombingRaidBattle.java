@@ -404,6 +404,8 @@ public class StrategicBombingRaidBattle implements Battle
             
             int cost = 0;
             boolean fourthEdition = m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+            boolean lhtrHeavyBombers = m_data.getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
+            
             int production = TerritoryAttachment.get(m_battleSite).getProduction();
 
             Iterator<Unit> iter = m_units.iterator();
@@ -416,11 +418,29 @@ public class StrategicBombingRaidBattle implements Battle
                 rolls = BattleCalculator.getRolls(iter.next(), m_attacker, false);
                 
                 int costThisUnit = 0;
-                for (int i = 0; i < rolls; i++)
+                
+                if(lhtrHeavyBombers && rolls > 1)
                 {
-                    costThisUnit += m_dice[index] + 1;
-                    index++;
+                    int max = 0;
+                    for(int i =0; i < rolls; i++)
+                    {
+                        //+1 since 0 based
+                        max = Math.max(max, m_dice[index]  + 1);
+                        index++;
+                    }
+                    //add 1
+                    costThisUnit = max + 1; 
+                    
                 }
+                else
+                {
+                    for (int i = 0; i < rolls; i++)
+                    {
+                        costThisUnit += m_dice[index] + 1;
+                        index++;
+                    }                    
+                }
+                
 
                 if (fourthEdition)
                     cost += Math.min(costThisUnit, production);

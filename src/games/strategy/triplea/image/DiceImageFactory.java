@@ -17,6 +17,8 @@ package games.strategy.triplea.image;
 
 import java.awt.*;
 import java.util.*;
+
+import games.strategy.triplea.delegate.Die;
 import games.strategy.ui.Util;
 import javax.swing.*;
 
@@ -33,20 +35,18 @@ public class DiceImageFactory
   //maps Integer -> Image
   private Map<Integer, Image> m_images = new HashMap<Integer, Image>();
   private Map<Integer, Image> m_imagesHit = new HashMap<Integer, Image>();
-
-  //maps Integer -> ImageIcon
-  private Map<Integer, ImageIcon> m_icons = new HashMap<Integer, ImageIcon>();
-  private Map<Integer, ImageIcon> m_iconsHit = new HashMap<Integer, ImageIcon>();
+  private Map<Integer, Image> m_imagesIgnored = new HashMap<Integer, Image>();
 
   public DiceImageFactory()
   {
     final int PIP_SIZE = 6;
 
-    generateDice(PIP_SIZE, Color.black, m_images, m_icons);
-    generateDice(PIP_SIZE, Color.red, m_imagesHit, m_iconsHit);
+    generateDice(PIP_SIZE, Color.black, m_images);
+    generateDice(PIP_SIZE, Color.red, m_imagesHit);
+    generateDice(PIP_SIZE, Color.blue, m_imagesIgnored);
   }
 
-  private void generateDice(int PIP_SIZE, Color color, Map<Integer, Image> images, Map<Integer, ImageIcon> icons)
+  private void generateDice(int PIP_SIZE, Color color, Map<Integer, Image> images)
   {
     for(int i = 1; i <= 6; i++)
     {
@@ -94,35 +94,35 @@ public class DiceImageFactory
       }
       images.put(new Integer(i), canvas);
 
-      icons.put(new Integer(i), new ImageIcon(canvas));
       graphics.dispose();
     }
   }
 
-  public Image getDieImage(int i, boolean hit)
+  public Image getDieImage(int i, Die.DieType type)
   {
     if(i <= 0)
       throw new IllegalArgumentException("die must be greater than 0, not:" + i);
     if(i > 6)
       throw new IllegalArgumentException("die must be less than 6, not:" + i);
-    if(hit)
-      return m_imagesHit.get(new Integer(i));
-    else
-      return m_images.get(new Integer(i));
+    
+    switch(type)
+    {
+    case HIT :
+        return m_imagesHit.get(new Integer(i));
+    case MISS :
+        return m_images.get(new Integer(i));
+    case IGNORED :
+        return m_imagesIgnored.get(new Integer(i));
+    default:
+        throw new IllegalStateException("??");
+            
+    }
 
   }
 
-  public Icon getDieIcon(int i, boolean hit)
+  public Icon getDieIcon(int i, Die.DieType type)
   {
-    if(i <= 0)
-      throw new IllegalArgumentException("die must be greater than 0, not:" + i);
-    if(i > 6)
-      throw new IllegalArgumentException("die must be less than 6, not:" + i);
-
-    if (hit)
-      return m_iconsHit.get(new Integer(i));
-    else
-      return m_icons.get(new Integer(i));
+    return new ImageIcon( getDieImage(i , type));
   }
 
 
@@ -133,13 +133,13 @@ public class DiceImageFactory
     for(int i = 1; i <= 6; i++)
     {
       frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, false)));
+      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, Die.DieType.HIT)));
       frame.getContentPane().add(Box.createVerticalStrut(4));
     }
     for(int i = 1; i <= 6; i++)
     {
       frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, true)));
+      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, Die.DieType.MISS)));
       frame.getContentPane().add(Box.createVerticalStrut(4));
     }
 

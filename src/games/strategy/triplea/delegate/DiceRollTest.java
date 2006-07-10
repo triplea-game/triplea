@@ -5,6 +5,7 @@ import games.strategy.engine.data.properties.*;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.Die.DieType;
 
 import java.io.*;
 import java.util.List;
@@ -170,12 +171,17 @@ public class DiceRollTest extends TestCase
             for(int j =0; j < 254; j++)
             {
                 
-                Die hit = new Die(i,j,false);
+                Die hit = new Die(i,j,DieType.MISS);
                 assertEquals(hit, Die.getFromWriteValue(hit.getCompressedValue()));
                 
                 
-                Die notHit = new Die(i,j,true);
+                Die notHit = new Die(i,j, DieType.HIT);
                 assertEquals(notHit, Die.getFromWriteValue(notHit.getCompressedValue()));
+                
+                Die ignored = new Die(i,j, DieType.IGNORED);
+                assertEquals(ignored, Die.getFromWriteValue(ignored.getCompressedValue()));
+
+                
 
             }
         }
@@ -254,6 +260,133 @@ public class DiceRollTest extends TestCase
         
         
     }
+    
+    public void testHeavyBombers()
+    {
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british);
+        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        
+        List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        
+        testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {2,3} ));
+        
+        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")));
+        
+        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(1).getType() );
+    }
+    
+    
+    public void testHeavyBombersDefend()
+    {
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british);
+        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        
+        List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        
+        testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0,1} ));
+        
+        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")));
+        
+        assertEquals(1, dice.getRolls(1).size());
+        assertEquals(Die.DieType.HIT, dice.getRolls(1).get(0).getType() );
+        
+    }
+    
+    
+    public void testHeavyBombersLHTR()
+    {
+        m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
+        
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british);
+        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        
+        List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        
+        testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {2,3} ));
+        
+        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")));
+        
+        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(0).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(1).getType() );
+        assertEquals(1, dice.getHits());
+    }
 
+    
+    public void testHeavyBombersLHTR2()
+    {
+        m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
+        
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british);
+        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        
+        List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        
+        testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {3,2} ));
+        
+        DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")));
+        
+        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(1).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
+        assertEquals(1, dice.getHits());
+    }
+    
+    public void testHeavyBombersDefendLHTR()
+    {
+        m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
+        
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british);
+        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+        
+        List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        
+        testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0,1} ));
+        
+        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")));
+        
+        assertEquals(2, dice.getRolls(1).size());
+        assertEquals(1, dice.getHits());
+        assertEquals(Die.DieType.IGNORED, dice.getRolls(1).get(0).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(1).get(1).getType() );
+        
+    }
+
+    public void testDiceRollCount()
+    {
+        
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        Unit bombers =  m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber).get(0);
+        
+        //default 1 roll
+        assertEquals(1, BattleCalculator.getRolls(bombers, british, false) );
+        assertEquals(1, BattleCalculator.getRolls(bombers, british, true) );
+        
+        
+        //hb, for revised 2 on attack, 1 on defence
+
+        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british);
+        TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+
+        assertEquals(2, BattleCalculator.getRolls(bombers, british, false) );
+        assertEquals(1, BattleCalculator.getRolls(bombers, british, true) );
+
+
+        
+        //lhtr hb, 2 for both
+        m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
+        assertEquals(2, BattleCalculator.getRolls(bombers, british, false) );
+        assertEquals(2, BattleCalculator.getRolls(bombers, british, true) );
+
+    }
     
 }
