@@ -43,7 +43,7 @@ public class DiceImageFactory
 
     generateDice(PIP_SIZE, Color.black, m_images);
     generateDice(PIP_SIZE, Color.red, m_imagesHit);
-    generateDice(PIP_SIZE, Color.blue, m_imagesIgnored);
+    generateDice(PIP_SIZE,  new Color(100,100,100,200), m_imagesIgnored);
   }
 
   private void generateDice(int PIP_SIZE, Color color, Map<Integer, Image> images)
@@ -140,6 +140,12 @@ public class DiceImageFactory
     {
       frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       frame.getContentPane().add(new JLabel(instance.getDieIcon(i, Die.DieType.MISS)));
+      frame.getContentPane().add(Box.createVerticalStrut(4));
+    }
+    for(int i = 1; i <= 6; i++)
+    {
+      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+      frame.getContentPane().add(new JLabel(instance.getDieIcon(i, Die.DieType.IGNORED)));
       frame.getContentPane().add(Box.createVerticalStrut(4));
     }
 

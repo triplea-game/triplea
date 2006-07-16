@@ -228,7 +228,7 @@ public class DiceRoll implements Externalizable
                 
 
                 
-                if(random[diceIndex] >= random[diceIndex+1])
+                if(random[diceIndex] <= random[diceIndex+1])
                 {
                     boolean hit = strength > random[diceIndex];
                     dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));

@@ -313,8 +313,8 @@ public class DiceRollTest extends TestCase
         
         DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")));
         
-        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(0).getType() );
-        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(1).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
+        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(1).getType() );
         assertEquals(1, dice.getHits());
     }
 
@@ -334,8 +334,8 @@ public class DiceRollTest extends TestCase
         
         DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")));
         
-        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(1).getType() );
-        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(0).getType() );
+        assertEquals(Die.DieType.IGNORED, dice.getRolls(4).get(0).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(4).get(1).getType() );
         assertEquals(1, dice.getHits());
     }
     
@@ -356,8 +356,8 @@ public class DiceRollTest extends TestCase
         
         assertEquals(2, dice.getRolls(1).size());
         assertEquals(1, dice.getHits());
-        assertEquals(Die.DieType.IGNORED, dice.getRolls(1).get(0).getType() );
-        assertEquals(Die.DieType.HIT, dice.getRolls(1).get(1).getType() );
+        assertEquals(Die.DieType.HIT, dice.getRolls(1).get(0).getType() );
+        assertEquals(Die.DieType.IGNORED, dice.getRolls(1).get(1).getType() );
         
     }
 

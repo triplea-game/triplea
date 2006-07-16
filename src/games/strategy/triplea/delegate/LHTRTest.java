@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.util.List;
+import java.util.*;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.GameRunner;
@@ -155,6 +155,60 @@ public class LHTRTest extends TestCase
         
         //largets dice is 4, so damage is 1 + 4 = 5
         assertEquals(ipcsBeforeRaid - 5, ipcsAfterRaid);
+        
+        
+    }
+    
+    
+    public void testLHTRBombingRaid2Bombers()
+    {
+        Territory germany = m_data.getMap().getTerritory("Germany");
+        Territory uk = m_data.getMap().getTerritory("United Kingdom");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        //add a unit
+        Unit bomber = m_data.getUnitTypeList().getUnitType("bomber").create(british);
+        Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));
+        new ChangePerformer(m_data).perform(change);
+        
+        
+        BattleTracker tracker = new BattleTracker();
+        StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans,  tracker );
+        
+        battle.addAttack(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, british);
+        TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
+        
+        //aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
+        bridge.setRandomSource(new ScriptedRandomSource( new int[] {3,3,2,3,0,1} ));
+
+        
+        //if we try to move aa, then the game will ask us if we want to move
+        //fail if we are called
+        InvocationHandler handler = new InvocationHandler()
+        {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            {
+                return null;
+            }
+        };
+        
+        ITripleaPlayer player = (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler ); 
+        bridge.setRemote(player);
+        
+        
+        int ipcsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        
+        battle.fight(bridge);
+        
+        int ipcsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
+        
+        //largets dice is 4, so damage is 1 + 4 = 5
+        //bomber 2 hits at 2, so damage is 3 
+        assertEquals(ipcsBeforeRaid - 8, ipcsAfterRaid);
         
         
     }
