@@ -1,3 +1,5 @@
+* better factory images (eleazar)
+
 * lhtr hb rules (not sure if low luck is correct) (sgb)
 
 * lobby server/client (sgb)
