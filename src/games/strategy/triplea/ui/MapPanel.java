@@ -81,9 +81,9 @@ public class MapPanel extends ImageScrollerLargeView
     private List<Unit> m_highlightUnits;
     
     /** Creates new MapPanel */
-    public MapPanel(GameData data, MapPanelSmallView smallView, UIContext uiContext) throws IOException
+    public MapPanel(GameData data, MapPanelSmallView smallView, UIContext uiContext, ImageScrollModel model) throws IOException
     {
-        super(uiContext.getMapData().getMapDimensions());
+        super(uiContext.getMapData().getMapDimensions(), model);
 
         m_uiContext = uiContext;
         m_backgroundDrawer = new BackgroundDrawer(this);
@@ -605,6 +605,10 @@ public class MapPanel extends ImageScrollerLargeView
     public void paint(Graphics g)
     {
         super.paint(g);
+        
+        int x = m_model.getX();
+        int y = m_model.getY();
+        
         List<Tile> images = new ArrayList<Tile>();
         List<Tile> undrawnTiles = new ArrayList<Tile>();
         
@@ -614,21 +618,21 @@ public class MapPanel extends ImageScrollerLargeView
         final GameData data = m_data;
         
         //handle wrapping off the screen to the left
-        if(m_x < 0  && m_uiContext.getMapData().scrollWrapX())
+        if(x < 0  && m_uiContext.getMapData().scrollWrapX())
         {
-            Rectangle leftBounds = new Rectangle(m_dimensions.width + m_x, m_y, -m_x, getHeight());
+            Rectangle leftBounds = new Rectangle(m_dimensions.width + x, y, -x, getHeight());
             drawTiles(g, images, data, leftBounds,0, undrawnTiles);
         }
         
         //handle the non overlap
-	    Rectangle mainBounds = new Rectangle(m_x, m_y, getWidth(), getHeight());
+	    Rectangle mainBounds = new Rectangle(x, y, getWidth(), getHeight());
 	    drawTiles(g, images, data, mainBounds,0, undrawnTiles);
         
-        double leftOverlap = m_x + getWidth() - m_dimensions.getWidth();
+        double leftOverlap = x + getWidth() - m_dimensions.getWidth();
         //handle wrapping off the screen to the right
         if(leftOverlap > 0 && m_uiContext.getMapData().scrollWrapX())
         {
-            Rectangle rightBounds = new Rectangle(0 , m_y, (int) leftOverlap, getHeight());
+            Rectangle rightBounds = new Rectangle(0 , y, (int) leftOverlap, getHeight());
             drawTiles(g, images, data, rightBounds, leftOverlap, undrawnTiles);
         }
 
@@ -687,7 +691,7 @@ public class MapPanel extends ImageScrollerLargeView
         if(undrawnTiles.isEmpty())
         {
             
-            Rectangle extendedBounds = new Rectangle( Math.max(m_x -preDrawMargin, 0),Math.max(m_y -preDrawMargin, 0), getWidth() + (2 * preDrawMargin),  getHeight() + (2 * preDrawMargin));
+            Rectangle extendedBounds = new Rectangle( Math.max(m_model.getX() -preDrawMargin, 0),Math.max(m_model.getY() -preDrawMargin, 0), getWidth() + (2 * preDrawMargin),  getHeight() + (2 * preDrawMargin));
             Iterator tiles = m_tileManager.getTiles(extendedBounds).iterator();
 
             while (tiles.hasNext())
@@ -737,7 +741,7 @@ public class MapPanel extends ImageScrollerLargeView
     	            images.add(tile);
                 }
                 if(img != null)
-                    g.drawImage(img, tile.getBounds().x -bounds.x, tile.getBounds().y - m_y, this);
+                    g.drawImage(img, tile.getBounds().x -bounds.x, tile.getBounds().y - m_model.getY(), this);
             }
             
           

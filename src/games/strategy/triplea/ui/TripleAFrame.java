@@ -99,15 +99,18 @@ public class TripleAFrame extends JFrame
 
         createMenuBar();
         
-        Image small = m_uiContext.getMapImage().getSmallMapImage();
-        m_smallView = new MapPanelSmallView(small);
+        ImageScrollModel model = new ImageScrollModel();
+        model.setScrollX(m_uiContext.getMapData().scrollWrapX());
+        model.setMaxBounds(m_uiContext.getMapData().getMapDimensions().width, m_uiContext.getMapData().getMapDimensions().height);
         
-        m_mapPanel = new MapPanel(m_data, m_smallView, m_uiContext);
+        Image small = m_uiContext.getMapImage().getSmallMapImage();
+        m_smallView = new MapPanelSmallView(small, model);
+        
+        m_mapPanel = new MapPanel(m_data, m_smallView, m_uiContext, model);
         m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
 
         //link the small and large images
-        ImageScrollControl control = new ImageScrollControl(m_mapPanel, m_smallView);
-        control.setScrollWrapX(m_uiContext.getMapData().scrollWrapX());
+        
 
         m_mapPanel.initSmallMap();
 

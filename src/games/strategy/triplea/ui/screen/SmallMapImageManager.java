@@ -60,8 +60,8 @@ public class SmallMapImageManager
         while (iter.hasNext())
         {
             UnitsDrawer drawer = iter.next();
-            int x = (int) (drawer.getPlacementPoint().x / m_view.getRatioX());
-            int y = (int) (drawer.getPlacementPoint().y / m_view.getRatioY());
+            int x = (int) (drawer.getPlacementPoint().x * m_view.getRatioX());
+            int y = (int) (drawer.getPlacementPoint().y * m_view.getRatioY());
             
             onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker() );
             onScreenGraphics.fillRect(x,y, UNIT_BOX_SIZE, UNIT_BOX_SIZE);
@@ -101,16 +101,16 @@ public class SmallMapImageManager
         }
         
         //scale it down
-        int thumbWidth = (int) (bounds.width / m_view.getRatioX()) ;        
-        int thumbHeight = (int) (bounds.height / m_view.getRatioY());
+        int thumbWidth = (int) (bounds.width * m_view.getRatioX()) ;        
+        int thumbHeight = (int) (bounds.height * m_view.getRatioY());
         
         //make the image a little bigger
         //the images wont overlap perfectly after being scaled, make them a little bigger to rebalance that
         thumbWidth+=3;
         thumbHeight+=3;
 
-        int thumbsX = (int) ( bounds.x / m_view.getRatioX()) -1; 
-        int thumbsY = (int) ( bounds.y / m_view.getRatioY()) -1;
+        int thumbsX = (int) ( bounds.x * m_view.getRatioX()) -1; 
+        int thumbsY = (int) ( bounds.y * m_view.getRatioY()) -1;
 
         
         //create the thumb image

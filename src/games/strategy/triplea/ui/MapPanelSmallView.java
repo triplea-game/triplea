@@ -18,16 +18,16 @@ package games.strategy.triplea.ui;
 
 import java.awt.Image;
 
-import games.strategy.ui.ImageScrollerSmallView;
+import games.strategy.ui.*;
 
 
 
 public class MapPanelSmallView extends ImageScrollerSmallView
 {
 
-    public  MapPanelSmallView(Image img)
+    public  MapPanelSmallView(Image img, ImageScrollModel model)
     {
-        super(img);
+        super(img, model);
 
     }
 }

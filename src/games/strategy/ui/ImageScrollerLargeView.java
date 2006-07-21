@@ -30,11 +30,8 @@ import javax.swing.*;
  * @author Sean Bridges
  * @version 1.0
  * 
- * A large image that can be scrolled according to a ImageScrollController.
+ * A large image that can be scrolled according to a ImageScrollModel.
  * Generally used in conjunction with a ImageScrollerSmallView.
- * 
- * Notifies the controller when the component has been resized, or the image has
- * been scrolled when the user holds the mouse near the edge of the component.
  * 
  * 
  * We do not take care of drawing ourselves.  All we do is keep track of 
@@ -58,11 +55,8 @@ public class ImageScrollerLargeView extends JComponent
     //how much we scroll
     private final static int SCROLL_DISTANCE = 30;
 
-    protected ImageScrollControl m_control;
+    protected final ImageScrollModel m_model;
 
-    protected int m_x = 0;
-    protected int m_y = 0;
-    
 
     private int m_drag_scrolling_lastx;
     private int m_drag_scrolling_lasty;
@@ -100,10 +94,11 @@ public class ImageScrollerLargeView extends JComponent
     private List<ScrollListener> m_scrollListeners = new ArrayList<ScrollListener>();
 
     /** Creates new ImageScroller */
-    public ImageScrollerLargeView(Dimension dimensions)
+    public ImageScrollerLargeView(Dimension dimensions, ImageScrollModel model)
     {
         super();
 
+        m_model = model;
         
         m_dimensions = dimensions;
 
@@ -118,6 +113,17 @@ public class ImageScrollerLargeView extends JComponent
         addComponentListener(COMPONENT_LISTENER);
 
         m_timer.start();
+        
+        m_model.addObserver(new Observer()
+        {
+        
+            public void update(Observable o, Object arg)
+            {
+               repaint();
+               notifyScollListeners();        
+            }
+        
+        });
     }
 
     // Beagle Code used to chnage map skin
@@ -125,6 +131,7 @@ public class ImageScrollerLargeView extends JComponent
     {
 
         m_dimensions = new Dimension(dimensions);
+        m_model.setMaxBounds(getImageWidth(), getImageHeight());
     }
 
     /**
@@ -132,64 +139,19 @@ public class ImageScrollerLargeView extends JComponent
      */
     protected void setTopLeft(int x, int y)
     {
-        int newX = x;
-        //newX = checkBounds(newX, m_originalImage.getWidth(this),
-        // this.getWidth(), true);
-
-        int newY = y;
-        newY = checkBounds(newY, (int)  m_dimensions.getHeight(), this.getHeight());
-
-        setCoordsInternal(newX, newY);
+        m_model.set(x, y);
     }
 
     protected void setTopLeftNoWrap(int x, int y)
     {
-        int newX = x;
-        newX = checkBounds(newX, (int)  m_dimensions.getWidth(), this.getWidth());
-
-        int newY = y;
-        newY = checkBounds(newY, (int)  m_dimensions.getHeight(), this.getHeight());
-
-        setCoordsInternal(newX, newY);
+        if(x < 0)
+            x = 0;
+        if(y < 0)
+            y = 0;
+        m_model.set(x, y);
     }
 
-    /**
-     * @param newX
-     * @param newY
-     */
-    private void setCoordsInternal(final int newX, final int newY)
-    {
-        if(!SwingUtilities.isEventDispatchThread())
-        {
-            SwingUtilities.invokeLater(new Runnable()
-            {
-            
-                public void run()
-                {
-                    setCoordsInternal(newX, newY);
-                }
-            
-            });
-            return;
-        }
-        
-        int correctedX = newX;
-        if(!m_control.getScrollWrapX())
-        {
-            if(newX < -getWidth() / 2)
-            {
-                correctedX = (int)  m_dimensions.getWidth() - getWidth() ;
-            }
-            else if(newX < 0)
-            {
-                correctedX =0;
-            }
-        }
-        
-        
-        setCoords(correctedX, newY);
-        m_control.setLargeCoords(correctedX, newY);
-    }
+   
 
     public int getImageWidth()
     {
@@ -201,13 +163,7 @@ public class ImageScrollerLargeView extends JComponent
         return (int) m_dimensions.getHeight();
     }
 
-    void setCoords(int x, int y)
-    {
-        m_x = x;
-        m_y = y;
-
-        notifyScollListeners();
-    }
+    
     
     public void addScrollListener(ScrollListener s)
     {
@@ -225,7 +181,7 @@ public class ImageScrollerLargeView extends JComponent
         while (iter.hasNext())
         {
             ScrollListener element = iter.next();
-            element.scrolled(m_x, m_y);
+            element.scrolled(m_model.getX(), m_model.getY());
             
         }
     }
@@ -256,7 +212,7 @@ public class ImageScrollerLargeView extends JComponent
         else if ((m_edge & RIGHT) != 0)
             dx = SCROLL_DISTANCE;
 
-        int newX = (m_x + dx);
+        int newX = (m_model.getX() + dx);
         if (newX > (int) m_dimensions.getWidth() - getWidth())
             newX -= (int) m_dimensions.getWidth();
         if (newX < -getWidth())
@@ -264,10 +220,10 @@ public class ImageScrollerLargeView extends JComponent
         // newX = checkBounds(newX, m_originalImage.getWidth(this),
         // this.getWidth(), true);
 
-        int newY = m_y + dy;
+        int newY = m_model.getY() + dy;
         newY = checkBounds(newY, (int) m_dimensions.getHeight(), this.getHeight());
 
-        setCoordsInternal(newX, newY);
+        m_model.set(newX, newY);
 
     }
 
@@ -276,11 +232,7 @@ public class ImageScrollerLargeView extends JComponent
         return new Dimension(m_dimensions);
     }
 
-    void setController(ImageScrollControl control)
-    {
-        m_control = control;
-    }
-
+  
 
 
     private MouseAdapter MOUSE_LISTENER = new MouseAdapter()
@@ -318,7 +270,7 @@ public class ImageScrollerLargeView extends JComponent
     {
         public void componentResized(ComponentEvent e)
         {
-            m_control.largeViewChangedSize();
+            m_model.setBoxDimensions(getWidth(), getHeight());
         }
     };
 
@@ -346,18 +298,18 @@ public class ImageScrollerLargeView extends JComponent
                 dy = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
 
             //move left and right and test for wrap
-            int newX = (m_x + dx);
+            int newX = (m_model.getX() + dx);
             if (newX > (int)  m_dimensions.getWidth() - getWidth())
                 newX -= (int)  m_dimensions.getWidth();
             if (newX < -getWidth())
                 newX += (int)  m_dimensions.getWidth();
 
             //move up and down and test for edges
-            int newY = m_y + dy;
+            int newY = m_model.getY() + dy;
             newY = checkBounds(newY,(int)  m_dimensions.getHeight(), height);
 
             //update the map
-            setCoordsInternal(newX, newY);
+            m_model.set(newX, newY);
 
         }
     };
@@ -399,7 +351,7 @@ public class ImageScrollerLargeView extends JComponent
                 int dy = -(m_drag_scrolling_lasty - y) * ((int)  m_dimensions.getHeight() - height) / height;
 
                 //move left and right and test for wrap
-                int newX = (m_x + dx);
+                int newX = (m_model.getX() + dx);
                 if (newX > (int)  m_dimensions.getWidth() - getWidth())
                     newX -= (int)  m_dimensions.getWidth();
                 if (newX < -getWidth())
@@ -409,11 +361,11 @@ public class ImageScrollerLargeView extends JComponent
                 // this.getWidth(), true);
 
                 //move up and down and test for edges
-                int newY = m_y + dy;
+                int newY = m_model.getY() + dy;
                 newY = checkBounds(newY, (int)  m_dimensions.getHeight(), height);
 
                 //update the map
-                setCoordsInternal(newX, newY);
+                m_model.set(newX, newY);
 
                 //store the location of the mouse for the next move
                 m_drag_scrolling_lastx = e.getX();
@@ -462,12 +414,12 @@ public class ImageScrollerLargeView extends JComponent
 
     public int getXOffset()
     {
-        return m_x;
+        return m_model.getX();
     }
 
     public int getYOffset()
     {
-        return m_y;
+        return m_model.getY();
     }
 
     private class Scroller implements Runnable

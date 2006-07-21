@@ -189,7 +189,10 @@ public class Tile
     
     public List<IDrawable> getDrawables()
     {
-        return m_contents;
+        synchronized(m_mutex)
+        {       
+            return new ArrayList<IDrawable>( m_contents);
+        }
     }
     
     public Rectangle getBounds()

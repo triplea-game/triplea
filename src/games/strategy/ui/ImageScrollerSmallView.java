@@ -21,8 +21,10 @@ package games.strategy.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+import java.util.*;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 import javax.swing.border.EtchedBorder;
 
 /**
@@ -33,25 +35,18 @@ import javax.swing.border.EtchedBorder;
  * A small image that tracks a selection area within a small image. Generally
  * used in conjunction with a ImageScrollerLarrgeView.
  * 
- * Notifies the controller when the selected area has been moved.
  */
 public class ImageScrollerSmallView extends JComponent
 {
 
-    private ImageScrollControl m_control;
-
-    //width of the selection box
-    private int m_selectionHeight = 50;
-    private int m_selectionWidth = 50;
-    //location of the selection width and height
-    private int m_selectionX;
-    private int m_selectionY;
+    private final ImageScrollModel m_model;
+    
     private Image m_image;
 
-    
-    /** Creates new ImageScrollControl */
-    public ImageScrollerSmallView(Image image)
+        
+    public ImageScrollerSmallView(Image image, ImageScrollModel model)
     {
+        m_model = model;
         try
         {
             Util.ensureImageLoaded(image, this);
@@ -74,6 +69,15 @@ public class ImageScrollerSmallView extends JComponent
 
         this.addMouseListener(MOUSE_LISTENER);
         this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
+        model.addObserver(new Observer()
+        {
+        
+            public void update(Observable o, Object arg)
+            {
+              repaint();          
+            }
+        
+        });
     }
 
     public void changeImage(Image image)
@@ -90,40 +94,7 @@ public class ImageScrollerSmallView extends JComponent
     }
     
     
-    /**
-     * Check for the case where we dont need to scroll because we
-     * can see the entire map image without scrolling. 
-     * 
-     *
-     */
-    private void checkScrollBounds()
-    {
-        boolean update = false;
-        
-        if(m_selectionHeight >= getHeight() - getInsetsHeight() && m_selectionY != 0)
-        {
-            m_selectionY = 0;            
-            update = true;
-        }
-
-        if(m_selectionWidth >= getWidth() - getInsetsWidth() && m_selectionX != 0)
-        {
-            m_selectionX = 0;
-            update = true;
-        }
-        
-        if(update)
-        {
-            m_control.setSmallCoords(m_selectionX, m_selectionY);
-        }
-            
-
-        
-            
-    }
-    
-    
-
+  
     private int getInsetsWidth()
     {
         return getInsets().left + getInsets().right;
@@ -134,38 +105,10 @@ public class ImageScrollerSmallView extends JComponent
         return getInsets().top + getInsets().bottom;
     }
 
-    //called by the controller
-    void setSelectionBound(int width, int height)
-    {
-        m_selectionWidth = width;
-        m_selectionHeight = height;
-        
-        checkScrollBounds();
-        
-        repaint();
-    }
-
-    void setController(ImageScrollControl control)
-    {
-        m_control = control;
-    }
 
     void setCoords(int x, int y)
     {
-        m_selectionX = x;
-        m_selectionY = y;
-        
-        checkScrollBounds();
-        
-        SwingUtilities.invokeLater(new Runnable()
-        {
-        
-            public void run()
-            {
-                repaint();
-            }
-        
-        });
+       m_model.set(x, y);
         
     }
 
@@ -175,32 +118,39 @@ public class ImageScrollerSmallView extends JComponent
     }
 
 
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
-        super.paint(g);
-        int xOff = getInsets().left;
-        int yOff = getInsets().top;
-
-        g.drawImage(m_image, xOff, yOff, this);
+        g.drawImage(m_image, 0, 0, this);
         g.setColor(Color.white);
         
-        
-        
-        drawViewBox(g);
+        drawViewBox((Graphics2D) g);
 
     }
-
-    private void drawViewBox(Graphics g)
+    
+    private void drawViewBox(Graphics2D g)
     {
-        int xOff = getInsets().left;
-        int yOff = getInsets().top;
-
-        g.drawRect(m_selectionX + xOff, m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
         
-        if(m_control.getScrollWrapX())
+        
+        double ratioX = getRatioX();
+        double ratioY = getRatioY();
+        
+        double x = m_model.getX() * ratioX;
+        double y = m_model.getY() * ratioY;
+        
+        double width = m_model.getBoxWidth() * ratioX;
+        double height = m_model.getBoxHeight() * ratioY;
+        
+        Rectangle2D.Double rect = new Rectangle2D.Double(x,y,width,height);
+        g.draw(rect);
+        
+        if(m_model.getScrollX())
         {
-            g.drawRect(m_selectionX + xOff + getWidth(), m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
-            g.drawRect(m_selectionX + xOff - getWidth(), m_selectionY + yOff, m_selectionWidth, m_selectionHeight);
+            double mapWidth = m_model.getMaxWidth() * ratioX;
+            
+            rect.x += mapWidth;
+            g.draw(rect);
+            rect.x -= 2 * mapWidth;
+            g.draw(rect);
         }
     }
 
@@ -211,34 +161,7 @@ public class ImageScrollerSmallView extends JComponent
 
     private void setSelection(int x, int y)
     {
-        if (y + m_selectionHeight > getHeight() - getInsetsHeight())
-            //take off 1 more so the rectangle will be visible
-            y = getHeight() - m_selectionHeight - getInsetsHeight() - 1;
-        //
-        //		if(x + m_selectionWidth > getWidth() - getInsetsWidth())
-        //			//take off 1 more so the rectangle will be visible
-        //			x = getWidth() - m_selectionWidth - getInsetsWidth() - 1;
-        //
-        //		if(x < 0)
-        //			x = 0;
-        if (y < 0)
-            y = 0;
-
-        if (!m_control.getScrollWrapX())
-        {
-            if (x + m_selectionWidth >= getWidth() - getInsetsWidth() - 1)
-                x = getWidth() - m_selectionWidth - getInsetsWidth() - 1;
-            if (x < 0)
-                x = 0;            
-        }
-        
-        m_selectionX = x;
-        m_selectionY = y;
-        
-        checkScrollBounds();
-        
-        m_control.setSmallCoords(x, y);
-        repaint();
+      m_model.set(x, y);
     }
 
     private long mLastUpdate = 0;
@@ -264,34 +187,39 @@ public class ImageScrollerSmallView extends JComponent
                 return;
 
             //try to center around the click
-            int x = e.getX() - (m_selectionWidth / 2);
-            int y = e.getY() - (m_selectionHeight / 2);
+            int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
+            int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
 
             setSelection(x, y);
         }
     };
+    
+   
+
 
     private final MouseAdapter MOUSE_LISTENER = new MouseAdapter()
     {
         public void mouseClicked(MouseEvent e)
         {
             //try to center around the click
-            int x = e.getX() - (m_selectionWidth / 2);
-            int y = e.getY() - (m_selectionHeight / 2);
-
-            setSelection(x, y);
+            int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
+            int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
+            
+            m_model.set(x, y);
         }
     };
-    
-    public double getRatioX()
-    {
-        return m_control.getRatioX();
-    }
+
 
     public double getRatioY()
     {
-        return m_control.getRatioY();
+        return m_image.getHeight(null) / (double) m_model.getMaxHeight();
+    }
+    
+    public double getRatioX()
+    {
+        return m_image.getWidth(null) / (double) m_model.getMaxWidth();
     }
 
+    
     
 }
