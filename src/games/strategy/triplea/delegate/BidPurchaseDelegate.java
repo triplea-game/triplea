@@ -29,7 +29,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
     private static int getBidAmount(GameData data, PlayerID currentPlayer)
     {
       String propertyName = currentPlayer.getName() + " bid";
-        int bid = Integer.parseInt(data.getProperties().get(propertyName).toString());
+      int bid = Integer.parseInt(data.getProperties().get(propertyName, "0").toString());
       return bid;
     }
     
