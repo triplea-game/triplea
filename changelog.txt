@@ -1,3 +1,7 @@
+* fix [ 1533252 ] prob lem clearing out pbem (sgb)
+
+* make the game look better on a mac (sgb)
+
 * better factory images (eleazar)
 
 * lhtr hb rules (not sure if low luck is correct) (sgb)

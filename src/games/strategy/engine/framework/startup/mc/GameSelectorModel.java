@@ -91,6 +91,11 @@ public class GameSelectorModel extends Observable
         }
     }
     
+    public boolean isSavedGame()
+    {
+        return !m_fileName.endsWith(".xml");
+    }
+    
     private void error(String message, Component ui)
     {
         JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game", JOptionPane.ERROR_MESSAGE );

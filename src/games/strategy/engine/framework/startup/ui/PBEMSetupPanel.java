@@ -167,21 +167,18 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
     
     private void loadEmails(GameData data)
     {
-        if(data.getProperties().get(EMAIL_1_PROP_NAME) != null)
+        if (m_gameSelectorModel.isSavedGame())
         {
-            if(m_email1TextField.getText().trim().length() == 0)
-                m_email1TextField.setText(data.getProperties().get(EMAIL_1_PROP_NAME).toString());            
-        }
-        if(data.getProperties().get(EMAIL_2_PROP_NAME) != null)
-        {
-            if(m_email2TextField.getText().trim().length() == 0)
-                m_email2TextField.setText(data.getProperties().get(EMAIL_2_PROP_NAME).toString());            
-        }
-        if(data.getProperties().get(EMAIL_ID_PROP_NAME) != null)
-        {
-            if(m_gameIDTextField.getText().trim().length() == 0)
-                m_gameIDTextField.setText(data.getProperties().get(EMAIL_ID_PROP_NAME).toString());            
-        }        
+
+            m_email1TextField.setText(data.getProperties().get(
+                    EMAIL_1_PROP_NAME).toString());
+
+            m_email2TextField.setText(data.getProperties().get(
+                    EMAIL_2_PROP_NAME).toString());
+
+            m_gameIDTextField.setText(data.getProperties().get(
+                    EMAIL_ID_PROP_NAME).toString());
+        }     
 
         
     }    
