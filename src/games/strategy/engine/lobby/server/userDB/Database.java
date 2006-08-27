@@ -22,6 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.*;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+
 /**
  * Utility to get connections to the database.<p>
  * 
@@ -75,9 +79,7 @@ public class Database
         ensureDbIsSetup();
         
         Connection conn = null;
-        Properties props = new Properties();
-        props.put("user", "user1");
-        props.put("password", "user1");
+        Properties props = getDbProps();
 
         /*
            The connection specifies create=true to cause
@@ -226,11 +228,38 @@ public class Database
     }
     
     
+    /**
+     * This must be the first db call made.
+     * 
+     * Run Database as a main method to run the backup.
+     * 
+     * @param backupDir
+     * @throws SQLException
+     */
+    public static void restoreFromBackup(File backupDir) throws SQLException
+    {
+        //http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
+        String url = "jdbc:derby:ta_users;restoreFrom="+ backupDir.getAbsolutePath() ;
+
+        Properties props = getDbProps();
+        
+        Connection con = DriverManager.getConnection(url, props);
+        con.close();
+    }
+
+    private static Properties getDbProps()
+    {
+        Properties props = new Properties();
+        props.put("user", "user1");
+        props.put("password", "user1");
+        return props;
+    }
+    
     public static void backup()
     {
         String backupDirName = "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
         
-        File backupRootDir = new File(getDBRoot(), "backups");
+        File backupRootDir = getBackupDir();
         File backupDir = new File(backupRootDir, backupDirName);
         
         if(!backupDir.mkdirs())
@@ -270,6 +299,11 @@ public class Database
         s_logger.log(Level.INFO, "Done backing up database");
         
     }
+
+    public static File getBackupDir()
+    {
+        return new File(getDBRoot(), "backups");
+    }
     
     private static void shutDownDB()
     {
@@ -283,5 +317,40 @@ public class Database
                 s_logger.log(Level.WARNING, se.getMessage(), se);
         }
 
+    }
+    
+    /**
+     * 
+     * Restore the database.
+     */
+    public static void main(String[] args)
+    {
+
+            ensureDbIsSetup();
+            JFileChooser chooser = new JFileChooser(Database.getBackupDir()) ;
+            chooser.setMultiSelectionEnabled(false);
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            
+            int rVal = chooser.showOpenDialog(null);
+
+            if(rVal == JFileChooser.APPROVE_OPTION)
+            {
+                File f = chooser.getSelectedFile();
+                if(!f.exists() && f.isDirectory())
+                    throw new IllegalStateException("Does not exist, or not a directory");
+                
+                try
+                {
+                    Database.restoreFromBackup(chooser.getSelectedFile());
+                    
+                }
+                catch(SQLException sqle)
+                {
+                    JOptionPane.showMessageDialog(null, sqle.getMessage());
+                    sqle.printStackTrace();
+                }
+            }
+            
+        
     }
 }

@@ -146,7 +146,7 @@ public class CreateUpdateAccountPanel extends JPanel
         }        
         if(!games.strategy.util.Util.isMailValid( m_email.getText() ))
         {
-            JOptionPane.showMessageDialog(this, "You must enter a username", "No username" , JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "You must enter a valid email", "No email" , JOptionPane.ERROR_MESSAGE);
             return;
         }
         else if(DBUserController.validateUserName(m_userName.getText()) != null)
