@@ -17,14 +17,19 @@ package games.strategy.engine.lobby.server.userDB;
 import games.strategy.engine.framework.GameRunner;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
 /**
  * Utility to get connections to the database.<p>
