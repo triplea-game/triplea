@@ -116,7 +116,7 @@ public class UnifiedMessenger
         } else
         {
 
-            m_messenger.broadcast(new UnifiedInitRequest());
+            m_messenger.send(new UnifiedInitRequest(), m_messenger.getServerNode());
             try
             {
                 m_initCountDownLatch.await();
