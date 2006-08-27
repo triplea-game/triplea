@@ -25,6 +25,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.util.ListenerList;
 
 /**
@@ -102,6 +103,14 @@ public class ScrollableTextField extends JPanel
     add(m_text);
 
     Insets inset = new Insets(0,0,0,0);
+    if(GameRunner.isMac())
+    {
+        inset = new Insets(2,0,2,0);
+    }
+ 
+
+    
+    
 
     m_up = new JButton(s_up);
     m_up.addActionListener(m_incrementAction);
@@ -131,6 +140,7 @@ public class ScrollableTextField extends JPanel
 
     add(upDown);
     add(maxMin);
+    //add(new JSpinner());
 
     m_text.addChangeListener(m_textListener);
 

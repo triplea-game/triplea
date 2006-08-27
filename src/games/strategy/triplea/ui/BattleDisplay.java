@@ -13,6 +13,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
@@ -622,9 +623,12 @@ public class BattleDisplay extends JPanel
         add(diceAndSteps, BorderLayout.CENTER);
 
         add(m_actionButton, BorderLayout.SOUTH);
-        m_actionButton.setBackground(Color.lightGray.darker());
         m_actionButton.setEnabled(false);
-        m_actionButton.setForeground(Color.white);
+        if(!GameRunner.isMac())
+        {
+            m_actionButton.setBackground(Color.lightGray.darker());
+            m_actionButton.setForeground(Color.white);
+        }
 
         setDefaultWidhts(defenderTable);
         setDefaultWidhts(attackerTable);
