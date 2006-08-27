@@ -131,6 +131,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         Collection<Unit> attackingFromMapUnits = m_attackingFromMap
                 .get(attackingFrom);
+        //handle possible null pointer
+        if(attackingFromMapUnits == null)
+        {
+            attackingFromMapUnits = new ArrayList<Unit>();
+        }
         attackingFromMapUnits.removeAll(units);
         if (attackingFromMapUnits.isEmpty())
         {
