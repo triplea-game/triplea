@@ -13,6 +13,8 @@
  */
 package games.strategy.engine.message;
 
+import games.strategy.triplea.util.WrappedInvocationHandler;
+
 import java.lang.reflect.*;
 
 /**
@@ -24,7 +26,7 @@ import java.lang.reflect.*;
 /**
  * Handles the invocation for a channel
  */
-class UnifiedInvocationHandler implements InvocationHandler
+class UnifiedInvocationHandler extends WrappedInvocationHandler
 {
     private final UnifiedMessenger m_messenger;
     private final String m_endPointName;
@@ -32,6 +34,8 @@ class UnifiedInvocationHandler implements InvocationHandler
       
     public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults)
     {
+        //equality and hash code are bassed on end point name
+        super(endPointName);
         m_messenger = messenger;
         m_endPointName = endPointName;
         m_ignoreResults = ignoreResults;
@@ -40,6 +44,9 @@ class UnifiedInvocationHandler implements InvocationHandler
     
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
+        if(super.shouldHandle(method, args))
+            return super.handle(method, args);
+        
         RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(m_endPointName, method.getName(), args, method.getParameterTypes());
         if(m_ignoreResults)
         {
@@ -52,9 +59,9 @@ class UnifiedInvocationHandler implements InvocationHandler
 
             if(response.getException() != null)
             {
-                if(response.getException() instanceof ConnectionLostException)
+                if(response.getException() instanceof MessengerException)
                 {
-                    ConnectionLostException cle = (ConnectionLostException) response.getException();
+                    MessengerException cle = (MessengerException) response.getException();
                     cle.fillInInvokerStackTrace();
                     
                 }

@@ -329,6 +329,10 @@ public class ServerGame implements IGame
             }            
             
         }
+        catch(RuntimeException re)
+        {
+            re.printStackTrace();
+        }
         finally
         {
             m_delegateExecutionManager.resumeDelegateExecution();

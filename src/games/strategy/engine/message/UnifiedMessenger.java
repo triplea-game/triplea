@@ -233,7 +233,7 @@ public class UnifiedMessenger
         }
     }
     
-    public void removeImplementor(String name, Object implementor)
+    void removeImplementor(String name, Object implementor)
     {
         EndPoint endPoint;
         synchronized(m_endPointMutex)
@@ -242,9 +242,15 @@ public class UnifiedMessenger
         
             if(endPoint == null)
                 throw new IllegalStateException("No end point for:" + name);
+            if(implementor == null)
+                throw new IllegalArgumentException("null implementor");
+            
             boolean noneLeft = endPoint.removeImplementor(implementor);
             if(noneLeft)
+            {
                 m_localEndPoints.remove(name);
+                send(new NoLongerHasEndPointImplementor(name), m_messenger.getServerNode());
+            }
         }
         
     }
@@ -365,7 +371,7 @@ public class UnifiedMessenger
             {
                 if(invoke.needReturnValues)
                 {
-                    send(new HubInvocationResults(new RemoteMethodCallResults(new RemoteNotFoundException("No implementors")), invoke.methodCallID), from);
+                    send(new HubInvocationResults(new RemoteMethodCallResults(new RemoteNotFoundException("No implementors for " + invoke.call)), invoke.methodCallID), from);
                 }
                 return;
             }
@@ -583,11 +589,14 @@ class EndPoint
      * 
      * @return - we have no more implementors
      */
-    public boolean removeImplementor(Object implementor)
+    boolean removeImplementor(Object implementor)
     {
         synchronized (m_implementorsMutext)
         {
-            m_implementors.remove(implementor);
+            if(!m_implementors.remove(implementor))
+            {
+                throw new IllegalStateException("Not removed, impl:" + implementor + " have " + m_implementors);
+            }
             return m_implementors.isEmpty();
         }
     }

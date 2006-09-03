@@ -21,13 +21,20 @@ package games.strategy.engine.message;
  */
 public class MessengerException extends RuntimeException
 {
-    public MessengerException(String message)
-    {
-        super(message);
-    }
-    
     public MessengerException(String message, Throwable cause)
     {
         super(message, cause);
     }
+    
+    /**
+     * We were created in a thread that is not related to the remote
+     * that called the method.  This allows us to see the stack trace of
+     * the invoker.
+     */
+    public void fillInInvokerStackTrace()
+    {
+        getCause().setStackTrace(Thread.currentThread().getStackTrace());
+    }
+    
+    
 }

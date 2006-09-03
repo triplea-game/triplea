@@ -2,6 +2,7 @@ package games.strategy.engine.delegate;
 
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.message.MessengerException;
+import games.strategy.triplea.util.WrappedInvocationHandler;
 
 import java.lang.reflect.*;
 import java.util.concurrent.TimeUnit;
@@ -156,10 +157,13 @@ public class DelegateExecutionManager
     {
         assertGameNotOver();
                 
-        InvocationHandler ih = new InvocationHandler()
+        InvocationHandler ih = new WrappedInvocationHandler(implementor)
         {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
             {
+               if(super.shouldHandle(method, args))
+                   return super.handle(method, args);
+                
                 assertGameNotOver(); 
                 
                 enterDelegateExecution();

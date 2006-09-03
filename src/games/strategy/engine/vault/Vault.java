@@ -98,7 +98,7 @@ public class Vault implements IServerVault
     
     public void shutDown()
     {
-        m_channelMessenger.unregisterChannelSubscriber(m_channelMessenger, VAULT_CHANNEL);
+        m_channelMessenger.unregisterChannelSubscriber(m_remoteVault, VAULT_CHANNEL);
         
         if(m_channelMessenger.isServer())
         {

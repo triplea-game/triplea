@@ -221,7 +221,7 @@ public class ClientModel implements IMessengerErrorListener
       public void doneSelectingPlayers(byte[] gameData, Map<String, INode> players)
       {
          CountDownLatch latch = new CountDownLatch(1);
-         startGame(gameData, players, latch);
+         startGame(gameData, players, latch, false);
          
          try
          {
@@ -244,7 +244,7 @@ public class ClientModel implements IMessengerErrorListener
         {
             m_remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
             CountDownLatch latch = new CountDownLatch(1);
-            startGame(gameData, players, latch);
+            startGame(gameData, players, latch, true);
             try
             {
                 latch.await(10, TimeUnit.SECONDS );
@@ -272,7 +272,7 @@ public class ClientModel implements IMessengerErrorListener
     
     
     
-    private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone)
+    private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone, final boolean gameRunning)
     {
         
         SwingUtilities.invokeLater(new Runnable()
@@ -295,7 +295,7 @@ public class ClientModel implements IMessengerErrorListener
             {           
                 try
                 {
-                    startGameInNewThread(gameData, players);
+                    startGameInNewThread(gameData, players, gameRunning);
                 } catch(RuntimeException e)
                 {
                     m_gameLoadingWindow.doneWait();
@@ -317,7 +317,7 @@ public class ClientModel implements IMessengerErrorListener
     }
     
     
-    private void startGameInNewThread(byte[] gameData, Map<String, INode> players)
+    private void startGameInNewThread(byte[] gameData, Map<String, INode> players, final boolean gameRunning)
     {
         final GameData data;
         try
@@ -367,7 +367,8 @@ public class ClientModel implements IMessengerErrorListener
                   if(m_game != null)
                       data.getGameLoader().startGame(m_game, playerSet);    
                   
-                   ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+                  if(!gameRunning)
+                      ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
               }
               finally
               {

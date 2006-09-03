@@ -27,16 +27,7 @@ public class ConnectionLostException extends MessengerException
     {
         super(message, new Exception("Invoker Stack"));
     }
-    
-    /**
-     * We were created in a thread that is not related to the remote
-     * that called the method.  This allows us to see the stack trace of
-     * the invoker.
-     */
-    public void fillInInvokerStackTrace()
-    {
-        getCause().setStackTrace(Thread.currentThread().getStackTrace());
-    }
+
     
     
     

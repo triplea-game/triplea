@@ -33,7 +33,7 @@ public class RemoteNotFoundException extends MessengerException
 
     public RemoteNotFoundException(String string)
     {
-        super(string);
+        super(string, new IllegalStateException("remote not found"));
     }
 
 }

@@ -86,6 +86,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
                     nodes = new ArrayList<INode>();
                     m_endPoints.put(hasEndPoint.endPointName, nodes);
                 }
+                if(nodes.contains(from))
+                    throw new IllegalStateException("Already contained, new" + from + " existing, " + nodes + " name " + hasEndPoint.endPointName);
                 nodes.add(from);
             }
         } else if(msg instanceof NoLongerHasEndPointImplementor)
@@ -194,7 +196,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         {
             if(remote.size() != 1)
             {
-                throw new IllegalStateException("Too many nodes:" + remote);
+                throw new IllegalStateException("Too many nodes:" + remote + " for remote name " + hubInvoke.call);
             }
             
             InvocationInProgress invocationInProgress = new InvocationInProgress(remote.iterator().next(), hubInvoke, from);
