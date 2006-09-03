@@ -72,7 +72,7 @@ public class LobbyServer
         statusManager.shutDown();
         new UserManager().register(m_messengers.getRemoteMessenger());
         
-        m_messengers.getChannelMessenger().createChannel(ILobbyGameBroadcaster.class, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+        
         LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers.getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
         controller.register(m_messengers.getRemoteMessenger());
         

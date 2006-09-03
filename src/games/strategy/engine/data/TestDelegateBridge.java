@@ -21,13 +21,18 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.history.*;
-import games.strategy.engine.message.*;
+import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.history.History;
+import games.strategy.engine.history.HistoryWriter;
+import games.strategy.engine.message.ChannelMessenger;
+import games.strategy.engine.message.DummyMessenger;
+import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.triplea.ui.display.DummyDisplay;
 
-import java.util.*;
+import java.util.Properties;
 
 /**
  * 
@@ -58,7 +63,7 @@ public class TestDelegateBridge implements IDelegateBridge
         historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
         
         ChannelMessenger channelMessenger = new ChannelMessenger( new UnifiedMessenger( new DummyMessenger()));
-        channelMessenger.createChannel(IGameModifiedChannel.class, IGame.GAME_MODIFICATION_CHANNEL);
+        
         m_historyWriter = new DelegateHistoryWriter(channelMessenger);
         
     }

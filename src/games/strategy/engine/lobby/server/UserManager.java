@@ -12,7 +12,7 @@ public class UserManager implements IUserManager
 
     public void register(IRemoteMessenger messenger)
     {
-        messenger.registerRemote(IUserManager.class, this, IUserManager.USER_MANAGER);
+        messenger.registerRemote(this, IUserManager.USER_MANAGER);
     }
 
     /**

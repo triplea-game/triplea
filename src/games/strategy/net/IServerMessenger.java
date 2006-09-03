@@ -20,6 +20,8 @@
 
 package games.strategy.net;
 
+import java.util.Set;
+
 /**
  *
  * A server messenger.  Additional methods for accepting new connections.
@@ -36,8 +38,23 @@ public interface IServerMessenger extends IMessenger
     public ILoginValidator getLoginValidator();
     
     /**
+     * Add a listener for change in connection status.
+     */
+    public void addConnectionChangeListener(IConnectionChangeListener listener);
+
+    /**
+     * Remove a listener for change in connection status.
+     */
+    public void removeConnectionChangeListener(IConnectionChangeListener listener);
+    
+    /**
      * Remove the node from the network.
      */
     public void removeConnection(INode node);
+    
+    /**
+     * Get a list of nodes.
+     */
+    public Set<INode> getNodes();
 }
 

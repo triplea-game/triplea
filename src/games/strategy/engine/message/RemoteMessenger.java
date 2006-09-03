@@ -32,76 +32,32 @@ public class RemoteMessenger implements IRemoteMessenger
         m_unifiedMessenger = messenger;
     }
     
-    private static String getUnifiedName(String channelName)
-    {
-        //synchronize to ensure the name returned is written to main memory
-        //synchronizing on "R" since it happens to be a convenient object
-        synchronized("R:")
-        {
-            return "R:" + channelName;
-        }
-    }
     
-    private void assertRemoteExists(String channelName)
-    {
-        if(!m_unifiedMessenger.isAwareOfEndPoint(getUnifiedName(channelName)))
-            throw new RemoteNotFoundException("No remote called " + channelName);
-    }
 
     
-    public IRemote getRemote(String remoteName)
+    public IRemote getRemote(RemoteName remoteName)
     {
-        //return an IChannelSubscribor  that knows how to call the methods correctly
-        assertRemoteExists(remoteName);
-     
-        String unifiedName = getUnifiedName(remoteName);
         
-        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,unifiedName, false, true);
+        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,remoteName.getName(), false);
         
         IRemote rVal = (IRemote) Proxy.newProxyInstance(
                   Thread.currentThread().getContextClassLoader(), 
-                  m_unifiedMessenger.getTypes(unifiedName), ih );
+                  new Class[] {remoteName.getClazz()}, ih );
         
         return rVal;
     }
 
-    /* 
-     * @see games.strategy.net.IRemoteMessenger#registerRemote(java.lang.Class, java.lang.Object, java.lang.String)
-     */
-    public void registerRemote(Class<? extends IRemote> remoteInterface, Object implementor,
-            String name)
+    
+    public void registerRemote(Object implementor,
+            RemoteName name)
     {
-          if(!remoteInterface.isAssignableFrom(implementor.getClass()))
-             throw new IllegalArgumentException(implementor + " does not implement " + remoteInterface.getName());
-         if(!remoteInterface.isInterface())
-             throw new IllegalArgumentException(remoteInterface.getName() +  " must be an interface");
-        
-         
-        String unifiedName = getUnifiedName(name);
-        if(m_unifiedMessenger.isAwareOfEndPoint(unifiedName))
-        {
-             m_unifiedMessenger.dumpState(System.err);
-             throw new IllegalStateException("Remote already bound:" + name);
-        }
-         
-        m_unifiedMessenger.createEndPoint(unifiedName, new Class[] {remoteInterface, IRemote.class}, false, true); 
-        m_unifiedMessenger.addImplementor(unifiedName, implementor);
+        m_unifiedMessenger.addImplementor(name, implementor, false); 
     }
 
-    /* 
-     * @see games.strategy.net.IRemoteMessenger#unregisterRemote(java.lang.String)
-     */
-    public void unregisterRemote(String name)
-    {
-        m_unifiedMessenger.destroyEndPoint(getUnifiedName(name));
-    }
     
-    /* 
-     * @see games.strategy.net.IRemoteMessenger#hasRemote(java.lang.String)
-     */
-    public boolean hasRemote(String name)
+    public void unregisterRemote(RemoteName name)
     {
-        return m_unifiedMessenger.isAwareOfEndPoint(getUnifiedName(name));
+        unregisterRemote(name.getName());
     }
     
     public void flush()
@@ -114,10 +70,18 @@ public class RemoteMessenger implements IRemoteMessenger
         return m_unifiedMessenger.isServer();
     }
 
-    
-    public void waitForRemote(String name, long timeoutMS)
+
+
+
+    public void unregisterRemote(String name)
     {
-        m_unifiedMessenger.waitForImplementors(getUnifiedName(name), timeoutMS);
+        m_unifiedMessenger.removeImplementor(name, m_unifiedMessenger.getImplementor(name));
+        
+    }
+
+    public boolean hasLocalImplementor(RemoteName descriptor)
+    {
+        return m_unifiedMessenger.getLocalEndPointCount(descriptor) == 1;
     }
     
 }

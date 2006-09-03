@@ -27,7 +27,7 @@ public class RandomStats implements IRandomStats
     public RandomStats(IRemoteMessenger remoteMessenger)
     {
         m_remoteMessenger = remoteMessenger;
-        remoteMessenger.registerRemote(IRandomStats.class, this, RANDOM_STATS_REMOTE_NAME);
+        remoteMessenger.registerRemote(this, RANDOM_STATS_REMOTE_NAME);
     }
     
     public void shutDown()

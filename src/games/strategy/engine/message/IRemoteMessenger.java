@@ -32,8 +32,10 @@ package games.strategy.engine.message;
  * On VM A you have code like 
  * <pre>
  * 
+ * RemoteName FOO = new RemoteName("Foo", IFoo.class);
+ * 
  * IFoo aFoo = new Foo(); 
- * aRemoteMessenger.registerRemote(IFoo.class, aFoo, "FOO");
+ * aRemoteMessenger.registerRemote(IFoo.class, aFoo, FOO);
  * 
  * </pre>
  * 
@@ -41,7 +43,7 @@ package games.strategy.engine.message;
  * 
  * <pre>
  *   
- * IFoo someFoo = anotherRemoteMessenger.getRemote("FOO");
+ * IFoo someFoo = anotherRemoteMessenger.getRemote(FOO);
  * boolean rVal = someFoo.fee();
  * if(rVal)
  *   ...
@@ -76,7 +78,7 @@ public interface IRemoteMessenger
      * @param name the name the remote is registered under.
      * @return a remote reference to the registered remote.
      */
-    public IRemote getRemote(String name);
+    public IRemote getRemote(RemoteName name);
    
     
     /**
@@ -85,17 +87,20 @@ public interface IRemoteMessenger
      * @param implementor - an object that implements remoteInterface
      * @param name - the name that implementor will be registered under
      */
-    public void registerRemote(Class<? extends IRemote> remoteInterface, Object implementor, String name);
-    
+    public void registerRemote(Object implementor, RemoteName name);
+
     /**
      * Remove the remote registered under name.
      */
     public void unregisterRemote(String name);
+
     
     /**
-     * Is there a remote registered with the given name 
+     * Remove the remote registered under name.
      */
-    public boolean hasRemote(String name);
+    public void unregisterRemote(RemoteName name);
+    
+    public boolean hasLocalImplementor(RemoteName name);
     
     /**
      * wait for the underlying transport layer to finish transmitting all data queued
@@ -104,14 +109,5 @@ public interface IRemoteMessenger
     
     public boolean isServer();
 
-    /**
-     * Wait for a remote to be visible to this IRemoteMessenger.
-     * IRemote registered in one vm will not be instantly visible to 
-     * all vms
-     * 
-     * @param name the remote name
-     * @param timeout if -1, means wait forever
-     */
-    public void waitForRemote(String name, long timeoutMS);
     
 }

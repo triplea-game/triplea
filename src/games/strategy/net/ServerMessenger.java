@@ -20,13 +20,22 @@
 
 package games.strategy.net;
 
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.*;
-import java.net.*;
-import java.io.*;
-
 import games.strategy.util.ListenerList;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A Messenger that can have many clients connected to it.
@@ -335,13 +344,9 @@ public class ServerMessenger implements IServerMessenger
         synchronized(m_connectionMutex)
         {
             m_connections.add(c);            
-            ClientInitServerMessage init = new ClientInitServerMessage(new HashSet<INode>(getNodes()));
-            MessageHeader header = new MessageHeader(m_node, c.getRemoteNode(), init);
-            c.send(header);
         }
 
-        NodeChangeServerMessage change = new NodeChangeServerMessage(true, c.getRemoteNode());
-        broadcast(change);
+        c.send(new MessageHeader(m_node, new ServerMessage()));
         notifyConnectionsChanged(true, c.getRemoteNode());
         
         s_logger.info("Connection added to:" + c.getRemoteNode());
@@ -349,10 +354,6 @@ public class ServerMessenger implements IServerMessenger
 
     private void removeConnection(Connection c)
     {
-        NodeChangeServerMessage change = new NodeChangeServerMessage(false, c.getRemoteNode());
-        
-        broadcast(change);
-        
         synchronized(m_connectionMutex)
         {
             m_connections.remove(c);

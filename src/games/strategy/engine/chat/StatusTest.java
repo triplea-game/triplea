@@ -20,7 +20,7 @@ public class StatusTest extends TestCase
 {
 
     
-    public void testStatus()
+    public void testStatus() throws Exception
     {
         DummyMessenger messenger = new DummyMessenger();
         Messengers messengers = new Messengers(messenger);
@@ -31,6 +31,9 @@ public class StatusTest extends TestCase
         
         manager.setStatus("test");
         
+        
+        Thread.sleep(200);
+        
         assertEquals("test", manager.getStatus(messenger.getLocalNode()));
         
         
@@ -40,3 +43,4 @@ public class StatusTest extends TestCase
     }
     
 }
+ 

@@ -16,12 +16,13 @@ package games.strategy.engine.lobby.server;
 
 import java.util.Map;
 
+import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.GUID;
 
 public interface ILobbyGameController extends IRemote
 {
-    public static final String GAME_CONTROLLER_REMOTE = "games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE";
+    public static final RemoteName GAME_CONTROLLER_REMOTE = new RemoteName("games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE", ILobbyGameController.class);
 
     public void postGame(GUID gameID, GameDescription description);
     

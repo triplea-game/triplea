@@ -28,12 +28,12 @@ public class StatusController implements IStatusController
     {
         m_messengers = messengers;   
         
-        m_messengers.getMessenger().addConnectionChangeListener(new IConnectionChangeListener()
+        ((IServerMessenger) m_messengers.getMessenger()).addConnectionChangeListener(new IConnectionChangeListener()
         {
         
             public void connectionRemoved(INode to)
             {
-                StatusController.this.connectioNRemoved(to);
+                StatusController.this.connectionRemoved(to);
             }
         
             public void connectionAdded(INode to)
@@ -42,7 +42,7 @@ public class StatusController implements IStatusController
         });
     }
 
-    protected void connectioNRemoved(INode to)
+    protected void connectionRemoved(INode to)
     {
         synchronized(m_mutex)
         {

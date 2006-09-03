@@ -12,6 +12,7 @@
 
 package games.strategy.engine.chat;
 
+import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
 
@@ -20,7 +21,7 @@ import java.util.Map;
 public interface IStatusController extends IRemote
 {
     
-    public static final String STATUS_CONTROLLER = "games.strategy.engine.chat.IStatusController.STATUS_CONTROLLER";
+    public static final RemoteName STATUS_CONTROLLER = new RemoteName("games.strategy.engine.chat.IStatusController.STATUS_CONTROLLER", IStatusController.class);
     
     /**
      * Set the status for our node.

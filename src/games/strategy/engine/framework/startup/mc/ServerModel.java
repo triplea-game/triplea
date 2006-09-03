@@ -37,12 +37,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener
 {
     
     public static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
-    public static final String SERVER_REMOTE_NAME = "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE";
+    public static final RemoteName SERVER_REMOTE_NAME =  new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
     
     
-    public static String getObserverWaitingToStartName(INode node)
+    public static RemoteName getObserverWaitingToStartName(INode node)
     {
-        return "games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName();
+        return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName() , IObserverWaitingToJoin.class);
     }
     
     final static String PLAYERNAME = "PlayerName";
@@ -207,10 +207,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             
             
             m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
-            m_remoteMessenger.registerRemote(IServerStartupRemote.class, m_serverStartupRemote, SERVER_REMOTE_NAME);
+            m_remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
             
             m_channelMessenger = new ChannelMessenger(unifiedMessenger);
-            m_channelMessenger.createChannel(IClientChannel.class, IClientChannel.CHANNEL_NAME);            
+                        
             
             m_chatController = new ChatController(CHAT_NAME,m_serverMessenger, m_remoteMessenger, m_channelMessenger);
             m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);

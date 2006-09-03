@@ -55,9 +55,10 @@ public class ClientGame implements IGame
   private final Vault m_vault;
   private final PlayerManager m_playerManager;
   
-  public static final String getRemoteStepAdvancerName(INode node)
+  public static final RemoteName getRemoteStepAdvancerName(INode node)
   {
-      return "games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName();  
+      
+      return new RemoteName("games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName(), IGameStepAdvancer.class);  
   }
 
   public ClientGame(GameData data, Set<IGamePlayer> gamePlayers, PlayerManager playerManager, Messengers messengers)
@@ -77,7 +78,7 @@ public class ClientGame implements IGame
     
     
     m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
-    m_remoteMessenger.registerRemote(IGameStepAdvancer.class, m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
+    m_remoteMessenger.registerRemote(m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
 
 
     Iterator<IGamePlayer> iter = gamePlayers.iterator();
@@ -90,10 +91,10 @@ public class ClientGame implements IGame
       IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
 
-      m_remoteMessenger.registerRemote(m_data.getGameLoader().getRemotePlayerType(), gp, ServerGame.getRemoteName(gp.getID()));
+      m_remoteMessenger.registerRemote(gp, ServerGame.getRemoteName(gp.getID(), data ) );
       
       IRemoteRandom remoteRandom = new RemoteRandom(this);
-      m_remoteMessenger.registerRemote(IRemoteRandom.class, remoteRandom, ServerGame.getRemoteRandomName(player));
+      m_remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
       
     }
 
@@ -175,7 +176,7 @@ public class ClientGame implements IGame
         PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
         m_gamePlayers.put(player, gp);
         
-        m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getID()));
+        m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getID(), m_data ));
         
         m_remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
         
@@ -294,7 +295,7 @@ public class ClientGame implements IGame
     public void addDisplay(IDisplay display)
     {
         display.initialize(new DefaultDisplayBridge(m_data));
-        m_channelMessenger.registerChannelSubscriber(display, ServerGame.DISPLAY_CHANNEL);
+        m_channelMessenger.registerChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
         
     }
 
@@ -303,7 +304,7 @@ public class ClientGame implements IGame
      */
     public void removeDisplay(IDisplay display)
     {
-        m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.DISPLAY_CHANNEL);
+        m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
     }
 
     public boolean isGameOver()

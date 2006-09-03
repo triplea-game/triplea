@@ -138,7 +138,7 @@ public class ServerLauncher implements ILauncher
         
         s_logger.fine("Starting server");
         m_serverReady = new ServerReady(m_clientCount);
-        m_remoteMessenger.registerRemote(IServerReady.class, m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
+        m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
 
         byte[] gameDataAsBytes;
         try

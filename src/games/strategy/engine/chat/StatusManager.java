@@ -54,11 +54,10 @@ public class StatusManager
 
         };
 
-        if (messengers.getMessenger().isServer() && !messengers.getRemoteMessenger().hasRemote(IStatusController.STATUS_CONTROLLER))
+        if (messengers.getMessenger().isServer() && !messengers.getRemoteMessenger().hasLocalImplementor(IStatusController.STATUS_CONTROLLER))
         {
             StatusController controller = new StatusController(messengers);
-            messengers.getRemoteMessenger().registerRemote(IStatusController.class, controller, IStatusController.STATUS_CONTROLLER);
-            messengers.getChannelMessenger().createChannel(IStatusChannel.class,  IStatusChannel.STATUS_CHANNEL);
+            messengers.getRemoteMessenger().registerRemote(controller, IStatusController.STATUS_CONTROLLER);
         }
 
         m_messengers.getChannelMessenger().registerChannelSubscriber(m_statusChannelSubscribor, IStatusChannel.STATUS_CHANNEL);

@@ -36,7 +36,7 @@ public class LobbyGameController implements ILobbyGameController
         m_broadcaster = broadcaster;
         m_messenger = messenger;
         
-        m_messenger.addConnectionChangeListener(new IConnectionChangeListener()
+        ((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
         {
         
             public void connectionRemoved(INode to)
@@ -137,7 +137,7 @@ public class LobbyGameController implements ILobbyGameController
 
     public void register(IRemoteMessenger remote)
     {
-        remote.registerRemote(ILobbyGameController.class, this, GAME_CONTROLLER_REMOTE);
+        remote.registerRemote(this, GAME_CONTROLLER_REMOTE);
         
     }
 

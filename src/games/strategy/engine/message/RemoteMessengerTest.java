@@ -27,6 +27,7 @@ public class RemoteMessengerTest extends TestCase
 
     private IMessenger m_messenger;
     private RemoteMessenger m_remoteMessenger;
+    private UnifiedMessengerHub m_hub;
     
     /*
      * @see TestCase#setUp()
@@ -36,6 +37,7 @@ public class RemoteMessengerTest extends TestCase
         //simple set up for non networked testing
         m_messenger = new DummyMessenger();
         m_remoteMessenger = new RemoteMessenger(new UnifiedMessenger(m_messenger));
+        
     }
 
     /*
@@ -50,17 +52,19 @@ public class RemoteMessengerTest extends TestCase
     public void testRegisterUnregister()
     {
         TestRemote testRemote = new TestRemote();
-        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "test");
-        assertTrue(m_remoteMessenger.hasRemote("test"));
-        m_remoteMessenger.unregisterRemote("test");
-        assertFalse(m_remoteMessenger.hasRemote("test"));
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
+        m_remoteMessenger.registerRemote(testRemote, test);
+        assertTrue(m_remoteMessenger.hasLocalImplementor(test));
+        m_remoteMessenger.unregisterRemote(test);
+        assertFalse(m_remoteMessenger.hasLocalImplementor(test));
     }
     
     public void testMethodCall()
     {
         TestRemote testRemote = new TestRemote();
-        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "testMethodCall");
-        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote("testMethodCall");
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
+        m_remoteMessenger.registerRemote(testRemote, test);
+        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote(test);
         assertEquals(2, remote.increment(1));
         assertEquals(testRemote.getLastSenderNode(), m_messenger.getLocalNode());
     }
@@ -68,10 +72,11 @@ public class RemoteMessengerTest extends TestCase
     public void testExceptionThrownWhenUnregisteredRemote()
     {
         TestRemote testRemote = new TestRemote();
-        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "testMethodCall");
-        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote("testMethodCall");
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
+        m_remoteMessenger.registerRemote(testRemote, test);
+        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote(test);
         
-        m_remoteMessenger.unregisterRemote("testMethodCall");
+        m_remoteMessenger.unregisterRemote("test");
         
         try
         {
@@ -87,9 +92,12 @@ public class RemoteMessengerTest extends TestCase
     
     public void testNoRemote()
     {
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
         try
         {
-            m_remoteMessenger.getRemote("testMethodCall");
+            m_remoteMessenger.getRemote(test);
+            ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote(test);
+            remote.testVoid();
             fail("No exception thrown");
         }
         catch(RemoteNotFoundException rme)
@@ -102,16 +110,19 @@ public class RemoteMessengerTest extends TestCase
     public void testVoidMethodCall()
     {
         TestRemote testRemote = new TestRemote();
-        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "testVoidMethodCall");
-        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote("testVoidMethodCall");
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
+        m_remoteMessenger.registerRemote(testRemote, test);
+        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote(test);
         remote.testVoid();
     }    
     
     public void testException() throws Exception
     {
         TestRemote testRemote = new TestRemote();
-        m_remoteMessenger.registerRemote(ITestRemote.class, testRemote, "testException");
-        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote("testException");
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
+        
+        m_remoteMessenger.registerRemote(testRemote, test);
+        ITestRemote remote = (ITestRemote) m_remoteMessenger.getRemote(test);
         try
         {
             remote.throwException();
@@ -130,6 +141,8 @@ public class RemoteMessengerTest extends TestCase
     
     public void testRemoteCall() throws Exception
     {
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
+        
         ServerMessenger server = null;
         ClientMessenger client = null;
         try
@@ -140,25 +153,28 @@ public class RemoteMessengerTest extends TestCase
             client = new ClientMessenger("localhost", 12024, "client");
             
             
-            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
+            UnifiedMessenger serverUM = new UnifiedMessenger( server);
+            m_hub = serverUM.getHub();
+            RemoteMessenger serverRM = new RemoteMessenger(serverUM);
+            
             RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
             
             //register it on the server
             TestRemote testRemote = new TestRemote();
-            serverRM.registerRemote(ITestRemote.class, testRemote, "test");
+            serverRM.registerRemote(testRemote, test);
 
             //since the registration must go over a socket
             //and through a couple threads, wait for the 
             //client to get it
             int waitCount = 0;
-            while(!clientRM.hasRemote("test") && waitCount < 20)
+            while(!m_hub.hasImplementors(test.getName()) && waitCount < 20)
             {
                 waitCount++;
                 Thread.sleep(50);
             }
             
             //call it on the client
-            int rVal = ( (ITestRemote) clientRM.getRemote("test")).increment(1);
+            int rVal = ( (ITestRemote) clientRM.getRemote(test)).increment(1);
             assertEquals(2, rVal); 
             assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
 
@@ -176,6 +192,7 @@ public class RemoteMessengerTest extends TestCase
     
     public void testRemoteCall2() throws Exception
     {
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
         ServerMessenger server = null;
         ClientMessenger client = null;
         try
@@ -187,14 +204,14 @@ public class RemoteMessengerTest extends TestCase
            
             RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
             TestRemote testRemote = new TestRemote();
-            serverRM.registerRemote(ITestRemote.class, testRemote, "test");
+            serverRM.registerRemote(testRemote, test);
             
             RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
             
             //call it on the client
             //should be no need to wait since the constructor should not
             //reutrn until the initial state of the messenger is good
-            int rVal = ( (ITestRemote) clientRM.getRemote("test")).increment(1);
+            int rVal = ( (ITestRemote) clientRM.getRemote(test)).increment(1);
             assertEquals(2, rVal); 
             assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
 
@@ -211,45 +228,7 @@ public class RemoteMessengerTest extends TestCase
     }
     
     
-    public void testShutDownServer() throws Exception
-    {
-       
-        //when the server shutdown, remotes created
-        //on the server should not be visible on clients
-        
-        ServerMessenger server = null;
-        ClientMessenger client = null;
-        int port = 12026;
-        try
-        {
-            server = new ServerMessenger("server", port);
-            server.setAcceptNewConnections(true);
-            
-            client = new ClientMessenger("localhost", port, "client");
-           
-            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
-            serverRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
-            
-            RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
-
-            clientRM.waitForRemote("test", 200);
-            assertTrue(clientRM.hasRemote("test"));
-            
-            server.shutDown();
-            sleep(100);            
-            
-            assertFalse(clientRM.hasRemote("test"));
-            
-
-        }
-        finally
-        {
-            if(server!= null)
-                server.shutDown();   
-            if(client != null)
-                client.shutDown();
-        }
-    }
+    
     
     private void sleep(int ms)
     {
@@ -266,7 +245,7 @@ public class RemoteMessengerTest extends TestCase
        
         //when the client shutdown, remotes created
         //on the client should not be visible on server
-
+        RemoteName test = new RemoteName(ITestRemote.class, "test");
         
         ServerMessenger server = null;
         ClientMessenger client = null;
@@ -278,19 +257,21 @@ public class RemoteMessengerTest extends TestCase
             
             client = new ClientMessenger("localhost", port, "client");
            
-            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
+            UnifiedMessenger serverUM = new UnifiedMessenger( server);
             
             
             RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
-            clientRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
+            clientRM.registerRemote(new TestRemote(), test);
             
-            serverRM.waitForRemote("test", 200);
-            assertTrue(serverRM.hasRemote("test"));
+            serverUM.getHub().waitForNodesToImplement(test.getName(), 200);
+            
+            
+            assertTrue(serverUM.getHub().hasImplementors(test.getName()));
                        
             client.shutDown();
-            sleep(100);
+            sleep(200);
             
-            assertFalse(serverRM.hasRemote("test"));
+            assertTrue(!serverUM.getHub().hasImplementors(test.getName()));
             
 
         }
@@ -309,7 +290,8 @@ public class RemoteMessengerTest extends TestCase
        
         //when the client shutdown, remotes created
         //on the client should not be visible on server
-
+        final RemoteName test = new RemoteName(IFoo.class, "test");
+        
         ServerMessenger server = null;
         ClientMessenger client = null;
         int port = 12029;
@@ -320,7 +302,8 @@ public class RemoteMessengerTest extends TestCase
             
             client = new ClientMessenger("localhost", port, "client");
            
-            final RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));            
+            UnifiedMessenger serverUM = new UnifiedMessenger( server);
+            final RemoteMessenger serverRM = new RemoteMessenger(serverUM);            
             RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
             
             final Object lock = new Object();
@@ -342,10 +325,11 @@ public class RemoteMessengerTest extends TestCase
                 }
             };
             
-            clientRM.registerRemote(IFoo.class, foo, "test");
+            clientRM.registerRemote(foo, test);
             
-            serverRM.waitForRemote("test", 200);
-            assertTrue(serverRM.hasRemote("test"));
+            serverUM.getHub().waitForNodesToImplement(test.getName(), 200);
+            
+            assertTrue(serverUM.getHub().hasImplementors(test.getName()));
                      
             final AtomicReference<ConnectionLostException> rme = new AtomicReference<ConnectionLostException>(null);
             final AtomicBoolean started = new AtomicBoolean(false);   
@@ -356,7 +340,7 @@ public class RemoteMessengerTest extends TestCase
                 {
                     try
                     {
-                        IFoo remoteFoo = (IFoo) serverRM.getRemote("test");
+                        IFoo remoteFoo = (IFoo) serverRM.getRemote(test);
                         started.set(true);
                         remoteFoo.foo();
                     }
@@ -403,59 +387,7 @@ public class RemoteMessengerTest extends TestCase
     }    
     
     
-    public void testShutDownWithTwoClients() throws Exception
-    {
-       
-        //three nodes, one server and 2 clients
-        //make sure that when client1 shutdown, remotes
-        //created on client1 are not visible anymore
-
-        
-        ServerMessenger server = null;
-        ClientMessenger client = null;
-        ClientMessenger client2 = null;
-        int port = 12027;
-        try
-        {
-            server = new ServerMessenger("server", port);
-            server.setAcceptNewConnections(true);
-            
-            client = new ClientMessenger("localhost", port, "client1");
-            client2 = new ClientMessenger("localhost", port, "client2");
-           
-            RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
-            RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger( client));
-            RemoteMessenger client2RM = new RemoteMessenger(new UnifiedMessenger( client2));
-            
-            
-            clientRM.registerRemote(ITestRemote.class, new TestRemote(), "test");
-            
-            serverRM.waitForRemote("test", 200);
-            client2RM.waitForRemote("test", 200);
-            assertTrue(serverRM.hasRemote("test"));
-            assertTrue(client2RM.hasRemote("test"));
-                       
-            
-            client.shutDown();
-            sleep(100);
-            
-            assertFalse(serverRM.hasRemote("test"));
-            assertFalse(client2RM.hasRemote("test"));
-            
-
-        }
-        finally
-        {
-            if(server!= null)
-                server.shutDown();   
-            if(client != null)
-                client.shutDown();
-            if(client2 != null)
-                client2.shutDown();            
-        }
-    }        
-    
-    
+  
 }
 
 

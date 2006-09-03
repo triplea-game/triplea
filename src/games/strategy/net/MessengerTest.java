@@ -22,6 +22,8 @@ package games.strategy.net;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.*;
 
 import junit.framework.TestCase;
@@ -118,12 +120,12 @@ public class MessengerTest extends TestCase
 		assertEquals(m_client2Listener.getMessageCount(), 0);
 	}
 
-	public void testServerSendToClient2()
+	public void testServerSendToClient2() throws Exception
 	{
 		String message = "Hello";
 
 		m_server.send(message, m_client2.getLocalNode());
-
+        
 		assertEquals(m_client2Listener.getLastMessage(), message);
 		assertEquals(m_client2Listener.getLastSender(), m_server.getLocalNode());
 
@@ -144,12 +146,13 @@ public class MessengerTest extends TestCase
 		assertEquals(m_client2Listener.getMessageCount(), 0);
 	}
 
-	public void testClientSendToClient()
+	public void testClientSendToClient() throws InterruptedException
 	{
 		String message = "Hello";
 
 		m_client1.send(message, m_client2.getLocalNode());
 
+        
 		assertEquals(m_client2Listener.getLastMessage(), message);
 		assertEquals(m_client2Listener.getLastSender(), m_client1.getLocalNode());
 
@@ -340,7 +343,7 @@ public class MessengerTest extends TestCase
 
 class MessageListener implements IMessageListener
 {
-	private ArrayList<Serializable> messages = new ArrayList<Serializable>();
+	private List<Serializable> messages = Collections.synchronizedList(new ArrayList<Serializable>());
 	private ArrayList<INode> senders = new ArrayList<INode>();
 	private Object lock = new Object();
 

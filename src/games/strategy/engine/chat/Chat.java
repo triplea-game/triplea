@@ -18,11 +18,18 @@
 
 package games.strategy.engine.chat;
 
-import games.strategy.engine.message.*;
-import games.strategy.net.*;
+import games.strategy.engine.message.IChannelMessenger;
+import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.engine.message.MessageContext;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.net.IMessenger;
+import games.strategy.net.INode;
+import games.strategy.net.Messengers;
 import games.strategy.util.Tuple;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -96,12 +103,6 @@ public class Chat
     
     private void init()
     {
-         String  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
-         if(!m_messengers.getRemoteMessenger().hasRemote(chatControllerName))
-         {
-             m_messengers.getRemoteMessenger().waitForRemote(chatControllerName, 2000);
-         }
-         
          
          //the order of events is significant.
          //
@@ -119,18 +120,13 @@ public class Chat
          //   server version is incorrect.
          //
          // this all seems a lot more involved than it needs to be.
-         
-        IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(chatControllerName);
         
-        if(!m_messengers.getChannelMessenger().hasChannel(m_chatChannelName))
-        {
-            m_messengers.getChannelMessenger().createChannel(IChatChannel.class, m_chatChannelName);
-        }
-        m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor, m_chatChannelName);   
+        
+        IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(ChatController.getChatControlerRemoteName(m_chatName));
+        
+        m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor, new RemoteName(m_chatChannelName, IChatChannel.class));   
         
         Tuple<List<INode>, Long> init = controller.joinChat();
-        if(init == null)
-            return;
         
         
         synchronized(m_mutex)
@@ -155,12 +151,12 @@ public class Chat
     public void shutdown()
     {
        
-        m_messengers.getChannelMessenger().unregisterChannelSubscriber(m_chatChannelSubscribor, ChatController.getChatChannelName(m_chatChannelName));
+        m_messengers.getChannelMessenger().unregisterChannelSubscriber(m_chatChannelSubscribor, new RemoteName( m_chatChannelName, IChatChannel.class));
         
         
         if(m_messengers.getMessenger().isConnected())
         {
-            String  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
+            RemoteName  chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
             IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(chatControllerName);
             controller.leaveChat();
         }
@@ -171,28 +167,14 @@ public class Chat
     public void sendSlap(String playerName)
     {
         
-        Iterator<INode> iter = m_messengers.getMessenger().getNodes().iterator();
-        INode destination = null;
-        while (iter.hasNext())
-        {
-            INode node = iter.next();
-            String name = node.getName();
-            if (name.equals(playerName))
-            {
-                destination = node;
-                break;
-            }
-        }
-        if (destination != null)
-        {          
-            IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(m_chatChannelName);
-            remote.slapOccured(destination);
-        }
+        IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
+        remote.slapOccured(playerName);
+
     }
     
     void sendMessage(String message, boolean meMessage)
     {
-        IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(m_chatChannelName);
+        IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
         if(meMessage)
             remote.meMessageOccured(message);
         else
@@ -342,7 +324,7 @@ public class Chat
             }
         }
         
-        public void slapOccured(INode to)
+        public void slapOccured(String to)
         {
             INode from = MessageContext.getSender();
             
@@ -361,7 +343,7 @@ public class Chat
                 {
                     for(IChatListener listener: m_listeners)
                     {
-                        String message = "You just slapped " + to.getName();
+                        String message = "You just slapped " + to;
                         m_chatHistory.add(new ChatMessage(message, from.getName(), false ));
                         listener.addMessage(message, from.getName(), false);
                     }

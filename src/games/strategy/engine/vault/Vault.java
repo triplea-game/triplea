@@ -40,7 +40,7 @@ import javax.crypto.spec.DESKeySpec;
  */
 public class Vault implements IServerVault
 {
-    private static final String VAULT_CHANNEL = "games.strategy.engine.vault.IServerVault.VAULT_CHANNEL";
+    private static final RemoteName VAULT_CHANNEL = new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_CHANNEL", IRemoteVault.class);
     
     private static final String ALGORITHM = "DES";
 
@@ -70,7 +70,8 @@ public class Vault implements IServerVault
     
     private final Object m_waitForLock = new Object();
     
-    private static final String VAULT_SERVER_REMOTE = "games.strategy.engine.vault.IServerVault.VAULT_SERVER_REMOTE";
+    private static final RemoteName
+    VAULT_SERVER_REMOTE =  new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_SERVER_REMOTE", IServerVault.class);
     
     /**
      * @param channelMessenger
@@ -80,10 +81,6 @@ public class Vault implements IServerVault
         m_channelMessenger = channelMessenger;
         m_remoteMessenger = remoteMessenger;
         
-        if(!m_channelMessenger.hasChannel(VAULT_CHANNEL))
-        {
-            m_channelMessenger.createChannel(IRemoteVault.class, VAULT_CHANNEL);
-        }
         m_channelMessenger.registerChannelSubscriber(m_remoteVault, VAULT_CHANNEL);
         
         handleInit(remoteMessenger);
@@ -148,11 +145,10 @@ public class Vault implements IServerVault
         if(m_channelMessenger.isServer())
         {
             //we init others
-            remoteMessenger.registerRemote(IServerVault.class, this, VAULT_SERVER_REMOTE);
+            remoteMessenger.registerRemote(this, VAULT_SERVER_REMOTE);
         }
         else
         {
-            remoteMessenger.waitForRemote(VAULT_SERVER_REMOTE, 5000);
             //we need to be initialized
             IServerVault server = (IServerVault) remoteMessenger.getRemote(VAULT_SERVER_REMOTE);
             Map<VaultID, byte[]> [] initValues = server.getInitData();

@@ -14,8 +14,7 @@
 
 package games.strategy.net;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
 
 /**
  * A simple way to connect multiple socket end points.
@@ -63,10 +62,7 @@ public interface IMessenger
      */
     public INode getLocalNode();
 
-    /**
-     * Get a list of nodes.
-     */
-    public Set<INode> getNodes();
+
     /**
      * test the connection.
      */
@@ -75,16 +71,6 @@ public interface IMessenger
      * Shut the connection down.
      */
     public void shutDown();
-
-    /**
-     * Add a listener for change in connection status.
-     */
-    public void addConnectionChangeListener(IConnectionChangeListener listener);
-
-    /**
-     * Remove a listener for change in connection status.
-     */
-    public void removeConnectionChangeListener(IConnectionChangeListener listener);
 
     /**
      * Returns when all messages have been written over the network. shutdown causes this method to return. Does not gaurantee that the messages have reached their destination.

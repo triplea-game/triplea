@@ -19,21 +19,20 @@ import games.strategy.util.ListenerList;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class ClientMessenger implements IMessenger
 {
     private final INode m_node;
-
-    private Set<INode> m_allNodes;
 
     private final ListenerList<IMessageListener> m_listeners = new ListenerList<IMessageListener>();
 
     private final Connection m_connection;
 
     private final ListenerList<IMessengerErrorListener> m_errorListeners = new ListenerList<IMessengerErrorListener>();
-
-    private final ListenerList<IConnectionChangeListener> m_connectionListeners = new ListenerList<IConnectionChangeListener>();
-
+    
+    private CountDownLatch m_initLatch = new CountDownLatch(1);
     private String m_connectionRefusedError;
 
     /**
@@ -79,19 +78,14 @@ public class ClientMessenger implements IMessenger
 
         m_connection = new Connection(socket, m_node, m_connectionListener, streamFact, true, streams);
 
-        // wait for the init message
-        while (m_allNodes == null && m_connection.isConnected())
+        
+        //make sure we recieve a message
+        //this will mean the server is ready to send us messages
+        try
         {
-            try
-            {
-                synchronized (this)
-                {
-                    wait(100);
-                }
-            } catch (InterruptedException ie)
-            {
-            }
-        }
+            m_initLatch.await(3, TimeUnit.SECONDS);
+        } catch (InterruptedException e)
+        {}
 
         if (!m_connection.isConnected())
         {
@@ -105,41 +99,7 @@ public class ClientMessenger implements IMessenger
         }
     }
 
-    private void serverMessageReceived(ServerMessage msg)
-    {
-        if (msg instanceof NodeChangeServerMessage)
-        {
-            nodeChangeMessageReceived((NodeChangeServerMessage) msg);
-        } else if (msg instanceof ClientInitServerMessage)
-        {
-            initMessageReceived((ClientInitServerMessage) msg);
-        } else
-            throw new IllegalArgumentException("Unknown server messgae:" + msg);
-    }
-
-    private void nodeChangeMessageReceived(NodeChangeServerMessage msg)
-    {
-        INode node = msg.getNode();
-        synchronized (this)
-        {
-            if (msg.getAdd())
-            {
-                m_allNodes.add(node);
-            } else
-            {
-                m_allNodes.remove(node);
-            }
-        }
-
-        notifyConnectionsChanged(msg.getAdd(), node);
-    }
-
-    private synchronized void initMessageReceived(ClientInitServerMessage msg)
-    {
-        m_allNodes = msg.getAllNodes();
-        this.notifyAll();
-    }
-
+   
     /*
      * @see IMessenger#send(Serializable, INode)
      */
@@ -185,14 +145,7 @@ public class ClientMessenger implements IMessenger
         m_errorListeners.remove(listener);
     }
 
-    /*
-     * @see IMessenger#getNodes()
-     */
-    public synchronized Set<INode> getNodes()
-    {
-        // if the init message hasnt reached us yet, stall
-        return new HashSet<INode>(m_allNodes);
-    }
+
 
     /*
      * @see IMessenger#isConnected()
@@ -213,7 +166,6 @@ public class ClientMessenger implements IMessenger
             System.out.println("Client Messenger waiting for connection to be set");
         }
         m_connection.shutDown();
-        m_allNodes = Collections.emptySet();
     }
 
     private IConnectionListener m_connectionListener = new IConnectionListener()
@@ -225,6 +177,9 @@ public class ClientMessenger implements IMessenger
 
         public void fatalError(Exception error, Connection connection, List unsent)
         {
+            //if we havnet already finished
+            m_initLatch.countDown();
+            
             Iterator<IMessengerErrorListener> iter = m_errorListeners.iterator();
             while (iter.hasNext())
             {
@@ -236,16 +191,18 @@ public class ClientMessenger implements IMessenger
 
     private void messageReceived(MessageHeader msg)
     {
-        if (msg.getMessage() instanceof ServerMessage)
-            serverMessageReceived((ServerMessage) msg.getMessage());
-        else
+        //we have been initialized
+        if(msg.getMessage() instanceof ServerMessage)
         {
-            Iterator<IMessageListener> iter = m_listeners.iterator();
-            while (iter.hasNext())
-            {
-                IMessageListener listener = iter.next();
-                listener.messageReceived(msg.getMessage(), msg.getFrom());
-            }
+            m_initLatch.countDown();
+            return;
+        }
+        
+        Iterator<IMessageListener> iter = m_listeners.iterator();
+        while (iter.hasNext())
+        {
+            IMessageListener listener = iter.next();
+            listener.messageReceived(msg.getMessage(), msg.getFrom());
         }
     }
 
@@ -254,31 +211,7 @@ public class ClientMessenger implements IMessenger
         m_connection.flush();
     }
 
-    public void addConnectionChangeListener(IConnectionChangeListener listener)
-    {
-        m_connectionListeners.add(listener);
-    }
-
-    public void removeConnectionChangeListener(IConnectionChangeListener listener)
-    {
-        m_connectionListeners.remove(listener);
-    }
-
-    private void notifyConnectionsChanged(boolean added, INode node)
-    {
-        Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
-        while (iter.hasNext())
-        {
-            if (added)
-            {
-                iter.next().connectionAdded(node);
-            } else
-            {
-                iter.next().connectionRemoved(node);
-            }
-
-        }
-    }
+    
 
     /**
      * Get the local node

@@ -32,6 +32,7 @@ public class ChannelMessengerTest extends TestCase
 	
 	private ChannelMessenger m_serverMessenger;
 	private ChannelMessenger m_clientMessenger;
+    private UnifiedMessengerHub m_hub;
     
     public ChannelMessengerTest(String name)
     {
@@ -44,7 +45,9 @@ public class ChannelMessengerTest extends TestCase
 		m_server = new ServerMessenger("Server", SERVER_PORT);
 		m_server.setAcceptNewConnections(true);
 		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
-		m_serverMessenger = new ChannelMessenger( new UnifiedMessenger(m_server));
+		UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_server);
+        m_hub = unifiedMessenger.getHub();
+        m_serverMessenger = new ChannelMessenger( unifiedMessenger);
 		m_clientMessenger = new ChannelMessenger(new UnifiedMessenger(m_client1));
 	}
 	
@@ -71,18 +74,13 @@ public class ChannelMessengerTest extends TestCase
 		
 	}
 
-
-	public void testCreateDestroy()
-	{
-	    m_serverMessenger.createChannel(IChannelTest.class, "channelTest");
-	    m_serverMessenger.destroyChannel("channelTest");
-	}
 	
 	public void testLocalCall()
 	{
-	    m_serverMessenger.createChannel(IChannelTest.class, "testLocalCall");
-	    m_serverMessenger.registerChannelSubscriber(new ChannelSubscribor(), "testLocalCall");
-	    IChannelTest subscribor = (IChannelTest) m_serverMessenger.getChannelBroadcastor("testLocalCall");
+        
+	    RemoteName descriptor = new RemoteName(IChannelTest.class, "testLocalCall");
+	    m_serverMessenger.registerChannelSubscriber(new ChannelSubscribor(), descriptor);
+	    IChannelTest subscribor = (IChannelTest) m_serverMessenger.getChannelBroadcastor(descriptor);
 	    subscribor.testNoParams();
 	    subscribor.testPrimitives(1,(short) 0, (long) 1, (byte) 1,true, (float) 1.0);
 	    subscribor.testString("a");
@@ -90,16 +88,15 @@ public class ChannelMessengerTest extends TestCase
 	
 	public void testRemoteCall()
 	{
-	    m_serverMessenger.createChannel(IChannelTest.class, "testRemote");
+        RemoteName testRemote = new RemoteName(IChannelTest.class, "testRemote");
 	    
 	    ChannelSubscribor subscribor1 = new ChannelSubscribor();
-	    m_serverMessenger.registerChannelSubscriber(subscribor1, "testRemote" );
+	    m_serverMessenger.registerChannelSubscriber(subscribor1, testRemote );
+	    
+        assertHasChannel(testRemote, m_hub);
 	    
 	    
-	    assertHasChannel("testRemote", m_clientMessenger);
-	    assertTrue(m_clientMessenger.hasSubscribors("testRemote"));
-	    
-	    IChannelTest channelTest = (IChannelTest) m_clientMessenger.getChannelBroadcastor("testRemote");
+	    IChannelTest channelTest = (IChannelTest) m_clientMessenger.getChannelBroadcastor(testRemote);
 	    channelTest.testNoParams();
 	    assertCallCountIs(subscribor1, 1);
 	   
@@ -111,39 +108,18 @@ public class ChannelMessengerTest extends TestCase
 
 	    channelTest.testArray(null, null, null, null, null, null );
 	    assertCallCountIs(subscribor1, 4);
-
-	    
 	}
 
-	/**
-     * @param channelName
-     */
-    private void assertHasSubscribor(String channelName, ChannelMessenger channel)
-    {
-        int waitCount = 0;
-	    while(waitCount < 10 &&  !channel.hasSubscribors(channelName))
-	    {   
-	        try
-            {
-                Thread.sleep(100);
-            } catch (InterruptedException e)
-            {
-                //like, whatever man
-                e.printStackTrace();
-            }   
-            waitCount++;
-	    }
-	    assertTrue(channel.hasSubscribors(channelName));
-	    
-    }
+
 	
 	/**
      * @param channelName
      */
-    private void assertHasChannel(String channelName, ChannelMessenger channel)
+    private void assertHasChannel(RemoteName descriptor, UnifiedMessengerHub hub)
     {
+        
         int waitCount = 0;
-	    while(waitCount < 10 &&  !channel.hasChannel(channelName))
+	    while(waitCount < 10 &&  !hub.hasImplementors(descriptor.getName()))
 	    {   
 	        try
             {
@@ -155,7 +131,8 @@ public class ChannelMessengerTest extends TestCase
             }   
             waitCount++;
 	    }
-	    assertTrue(channel.hasChannel(channelName));
+        
+	    assertTrue(hub.hasImplementors(descriptor.getName()));
 	    
     }
     
@@ -164,54 +141,50 @@ public class ChannelMessengerTest extends TestCase
         
         //set up the client and server
         //so that the client has 1 subscribor, and the server knows about it
-        m_serverMessenger.createChannel(IChannelTest.class, "test");
+        RemoteName test = new RemoteName(IChannelTest.class, "test");
         
         ChannelSubscribor client1Subscriboror = new ChannelSubscribor();
        
-        assertHasChannel("test", m_clientMessenger);
-        m_clientMessenger.registerChannelSubscriber(client1Subscriboror, "test");
         
-        assertHasSubscribor("test", m_serverMessenger);
+        m_clientMessenger.registerChannelSubscriber(client1Subscriboror, test);
+        assertHasChannel(test, m_hub);
+        
+        assertEquals(1, m_clientMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
+        
         
         //add a new client
         ClientMessenger clientMessenger2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
         
         ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
-        assertHasChannel("test", client2);
-        
-        assertHasSubscribor("test", client2);
         
         
-        ((IChannelTest) client2.getChannelBroadcastor("test")).testString("a");
+        ((IChannelTest) client2.getChannelBroadcastor(test)).testString("a");
          
          assertCallCountIs(client1Subscriboror, 1);
     }
 
     public void testMultipleChannels()
 	{
-	    m_serverMessenger.createChannel(IChannelTest.class, "testRemote");
-	    m_serverMessenger.createChannel(IChannelTest.class, "testRemote2");
-	    m_serverMessenger.createChannel(IChannelTest.class, "testRemote3");
-	    
-	    assertHasChannel("testRemote", m_clientMessenger);
-	    assertHasChannel("testRemote2", m_clientMessenger);
-	    assertHasChannel("testRemote3", m_clientMessenger);
-	   
+        
+        
+        RemoteName testRemote2 = new RemoteName(IChannelTest.class, "testRemote2");
+        RemoteName testRemote3 = new RemoteName(IChannelTest.class, "testRemote3");
 
 	    ChannelSubscribor subscribor2 = new ChannelSubscribor();
-	    m_clientMessenger.registerChannelSubscriber(subscribor2, "testRemote2");
+	    m_clientMessenger.registerChannelSubscriber(subscribor2, testRemote2);
 
 	    ChannelSubscribor subscribor3 = new ChannelSubscribor();
-	    m_clientMessenger.registerChannelSubscriber(subscribor3, "testRemote3");
+	    m_clientMessenger.registerChannelSubscriber(subscribor3, testRemote3);
+
+        assertHasChannel(testRemote2, m_hub);
+        assertHasChannel(testRemote3, m_hub);
+        
 	    
-	    assertHasSubscribor("testRemote2",m_serverMessenger);
-	    assertHasSubscribor("testRemote3",m_serverMessenger);
-	    
-	    IChannelTest channelTest2 = (IChannelTest) m_serverMessenger.getChannelBroadcastor("testRemote2");
+	    IChannelTest channelTest2 = (IChannelTest) m_serverMessenger.getChannelBroadcastor(testRemote2);
 	    channelTest2.testNoParams();
 	    assertCallCountIs(subscribor2, 1);
 
-	    IChannelTest channelTest3 = (IChannelTest) m_serverMessenger.getChannelBroadcastor("testRemote3");
+	    IChannelTest channelTest3 = (IChannelTest) m_serverMessenger.getChannelBroadcastor(testRemote3);
 	    channelTest3.testNoParams();
 	    assertCallCountIs(subscribor3, 1);
 	}
@@ -234,27 +207,6 @@ public class ChannelMessengerTest extends TestCase
 	    }
 	    assertEquals(expected, subscribor.getCallCount());
 	}
- 
-	   public void testInit() throws Exception
-	    {
-	        m_serverMessenger.createChannel(IChannelTest.class, "testInit");
-	        
-	       
-	        ClientMessenger client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
-	        try
-	        {
-	            ChannelMessenger client2Messenger = new ChannelMessenger(new UnifiedMessenger(client2));	            
-	            assertTrue (client2Messenger.hasChannel("testInit"));
-
-	        }
-	        finally
-	        {
-	            client2.shutDown();
-	        }
-	        
-	        
-	    }
-	    
 	
 } 
 

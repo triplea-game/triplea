@@ -38,7 +38,7 @@ import javax.swing.*;
 public class ClientModel implements IMessengerErrorListener
 {
     
-    public static final String CLIENT_READY_CHANNEL = "games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL";
+    public static final RemoteName CLIENT_READY_CHANNEL = new RemoteName("games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL", IServerReady.class);
     private static Logger s_logger = Logger.getLogger(ClientModel.class.getName());
     
     private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
@@ -164,17 +164,14 @@ public class ClientModel implements IMessengerErrorListener
         m_channelMessenger = new ChannelMessenger(unifiedMessenger);
         m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
         
-        if(!m_channelMessenger.hasChannel(IClientChannel.CHANNEL_NAME ))
-            m_channelMessenger.createChannel(IClientChannel.class, IClientChannel.CHANNEL_NAME );
-        
         m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
         m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME);        
         
-        m_remoteMessenger.registerRemote(IObserverWaitingToJoin.class, m_observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
+        m_remoteMessenger.registerRemote(m_observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
         //save this, it will be cleared later
         m_gameDataOnStartup = m_gameSelectorModel.getGameData();
         
-        m_remoteMessenger.waitForRemote(ServerModel.SERVER_REMOTE_NAME, 1000);
+        
         IServerStartupRemote serverStartup = getServerStartup();
         PlayerListing players = serverStartup.getPlayerListing();
         
@@ -370,9 +367,7 @@ public class ClientModel implements IMessengerErrorListener
                   if(m_game != null)
                       data.getGameLoader().startGame(m_game, playerSet);    
                   
-                  //we will not have this remote if we are starting as an observer
-                  if(m_remoteMessenger.hasRemote(CLIENT_READY_CHANNEL))
-                      ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+                   ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
               }
               finally
               {

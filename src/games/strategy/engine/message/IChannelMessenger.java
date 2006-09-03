@@ -17,18 +17,18 @@ package games.strategy.engine.message;
 import games.strategy.net.INode;
 
 /**
- * A simple way to multicast method calls over several machines and several objects.<br>
+ * A simple way to multicast method calls over several machines and possibly several objects on each machine.<br>
  * 
  * A channel can be created such that all channel subscribers must implement the same<br>
  * interface.  Channel subscribors can be on multiple machines.
  * 
+ * 
  * On VM A
  * <pre>
- * 
- * someChannelMessenger.createChannel(IFoo.class, "FOO");
+ * RemoteName FOO = new RemoteName("Foo", IFoo.class);
  * 
  * IFoo aFoo = new Foo(); 
- * someChannelMessenger.registerChannelSubscribor(aFoo, "FOO");
+ * someChannelMessenger.registerChannelSubscribor(aFoo, FOO);
  * 
  * </pre>
  * 
@@ -36,10 +36,10 @@ import games.strategy.net.INode;
  * <pre>
  * 
  * IFoo anotherFoo = new Foo();
- * anotherChannelMessenger.registerChannelSubscribor(anotherFoo, "FOO");
+ * anotherChannelMessenger.registerChannelSubscribor(anotherFoo, FOO);
  * 
  * 
- * IFoo multicastFoo = (IFoo) anotherChannelMessenger.getChannelBroadcastor("FOO");
+ * IFoo multicastFoo = (IFoo) anotherChannelMessenger.getChannelBroadcastor(FOO);
  * multicastFoo.fee();
 
  * </pre>
@@ -74,46 +74,18 @@ public interface IChannelMessenger
      * Get a reference such that methods called on it will be multicast
      * to all subscribors of the channel 
      */
-    public IChannelSubscribor getChannelBroadcastor(String channelName);
+    public IChannelSubscribor getChannelBroadcastor(RemoteName channelName);
     
     /**
      * register a subscribor to a channel 
      */
-    public void registerChannelSubscriber(Object implementor, String channelName);
+    public void registerChannelSubscriber(Object implementor, RemoteName channelName);
     
     /**
      * unregister a subscribor to a channel 
      */
-    public void unregisterChannelSubscriber(Object implementor, String channelName);
+    public void unregisterChannelSubscriber(Object implementor, RemoteName channelName);
     
-    
-    /**
-     * Create a channel.
-     * Calling this method will create the channel for all IChannelMessengers
-     * that this IChannelMessenger is connected to.
-     */
-    public void createChannel(Class<? extends IChannelSubscribor> channelInterface, String channelName);
-
-    /**
-     * Destroy a channel.
-     * Calling this method will destroy the channel for all IChannelMessengers
-     * that this IChannelMessenger is connected to. 
-     * 
-     */
-    public void destroyChannel(String channelName);
-    
-    /**
-     * The number of subscribors registered on this instance on  the given channel 
-     *  
-     */
-    public int getLocalSubscriborCount(String channelName);
-    
-    /**
-     * Does the channel exist. 
-     * Note that due to threading and networking delays, a channel created
-     * on a seperate IChannelMessenger may take a while to be propogated. 
-     */
-    public boolean hasChannel(String channelName);
     
     public INode getLocalNode();
     
@@ -122,15 +94,9 @@ public interface IChannelMessenger
      */
     public void flush();
     
+    /**
+     * Is the underlying messenger a server?
+     */
     public boolean isServer();
     
-    /**
-     * 
-     * Wait for the channel messenger to be aware of a channel.  Channels created
-     * on other vms will not instantly be visible to all messengers.
-     * 
-     * @param channelName - the channel to wait for
-     * @param timeoutMS - if -1 means wait forever
-     */
-    public void waitForChannelToExist(String channelName, long timeoutMS);
 }

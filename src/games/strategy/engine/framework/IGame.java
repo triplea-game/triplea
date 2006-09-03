@@ -42,7 +42,7 @@ import games.strategy.net.IMessenger;
  */
 public interface IGame
 {
-  public static final String GAME_MODIFICATION_CHANNEL = "games.strategy.engine.framework.IGame.GAME_MODIFICATION_CHANNEL";  
+  public static final RemoteName GAME_MODIFICATION_CHANNEL = new RemoteName("games.strategy.engine.framework.IGame.GAME_MODIFICATION_CHANNEL", IGameModifiedChannel.class);  
     
   public GameData getData();
 

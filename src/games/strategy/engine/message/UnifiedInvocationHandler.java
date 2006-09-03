@@ -29,15 +29,12 @@ class UnifiedInvocationHandler implements InvocationHandler
     private final UnifiedMessenger m_messenger;
     private final String m_endPointName;
     private final boolean m_ignoreResults;
-    private final boolean m_assertExactlyOneResults;
-
       
-    public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults, boolean assertExactlyOneResult)
+    public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults)
     {
         m_messenger = messenger;
         m_endPointName = endPointName;
         m_ignoreResults = ignoreResults;
-        m_assertExactlyOneResults = assertExactlyOneResult;
     }
     
     
@@ -51,25 +48,19 @@ class UnifiedInvocationHandler implements InvocationHandler
         }
         else
         {
-            RemoteMethodCallResults[] response = m_messenger.invokeAndWait(m_endPointName, remoteMethodMsg);
+            RemoteMethodCallResults response = m_messenger.invokeAndWait(m_endPointName, remoteMethodMsg);
 
-            if(m_assertExactlyOneResults && response.length == 0)
-                throw new RemoteNotFoundException("Remote not found:" + m_endPointName);
-            
-            if(m_assertExactlyOneResults && response.length != 1)
-                throw new IllegalStateException("Expecting only one result, but got:" + response.length + " end point:" + m_endPointName);
-                
-            if(response[0].getException() != null)
+            if(response.getException() != null)
             {
-                if(response[0].getException() instanceof ConnectionLostException)
+                if(response.getException() instanceof ConnectionLostException)
                 {
-                    ConnectionLostException cle = (ConnectionLostException) response[0].getException();
+                    ConnectionLostException cle = (ConnectionLostException) response.getException();
                     cle.fillInInvokerStackTrace();
                     
                 }
-                throw response[0].getException();
+                throw response.getException();
             }
-            return response[0].getRVal();
+            return response.getRVal();
         }
     }   
 }

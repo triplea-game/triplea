@@ -56,7 +56,7 @@ public class AllUsersPanel extends JPanel
 
     private void setupListeners()
     {
-        m_messenger.addConnectionChangeListener(new IConnectionChangeListener()
+        ((IServerMessenger)m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
         {
         
             public void connectionRemoved(final INode to)

@@ -49,9 +49,9 @@ public class ChatController implements IChatController
     };
     
     
-    public static String getChatControlerRemoteName(String chatName)
+    public static RemoteName getChatControlerRemoteName(String chatName)
     {
-        return CHAT_REMOTE  + chatName;
+        return new RemoteName(CHAT_REMOTE  + chatName, IChatController.class);
     }
     
     public static String getChatChannelName(String chatName)
@@ -69,11 +69,11 @@ public class ChatController implements IChatController
         m_channelMessenger = channelMessenger;
         m_chatChannel = getChatChannelName(name);
         
-        m_remoteMessenger.registerRemote(IChatController.class, this, getChatControlerRemoteName(name));
-        m_channelMessenger.createChannel(IChatChannel.class,  getChatChannelName(m_chatChannel));
+        m_remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
         
         
-        m_messenger.addConnectionChangeListener(m_connectionChangeListener);
+        
+        ((IServerMessenger) m_messenger).addConnectionChangeListener(m_connectionChangeListener);
     }
     
   
@@ -95,17 +95,17 @@ public class ChatController implements IChatController
             }
             
 
-            m_channelMessenger.destroyChannel(m_chatChannel);
             m_remoteMessenger.unregisterRemote(getChatControlerRemoteName(m_chatName));
             
         }
-        m_messenger.removeConnectionChangeListener(m_connectionChangeListener);
+        
+        ((IServerMessenger) m_messenger).removeConnectionChangeListener(m_connectionChangeListener);
     }
 
     
     private IChatChannel getChatBroadcaster()
     {
-        IChatChannel chatter = (IChatChannel) m_channelMessenger.getChannelBroadcastor(m_chatChannel);
+        IChatChannel chatter = (IChatChannel) m_channelMessenger.getChannelBroadcastor(new RemoteName(m_chatChannel, IChatChannel.class));
         return chatter;
     }
     

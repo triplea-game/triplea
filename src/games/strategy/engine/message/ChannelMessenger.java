@@ -32,37 +32,21 @@ public class ChannelMessenger implements IChannelMessenger
         m_unifiedMessenger = messenger;
     }
     
-    private static String getUnifiedName(String channelName)
+    UnifiedMessenger getUnifiedMessenger()
     {
-        //synchronized to ensure the unified name is fully created before it is used
-        //synchronize on "C:"
-        synchronized("C:")
-        {
-            return "C:" + channelName;
-        }
-    }
-    
-    private void assertChannelExists(String channelName)
-    {
-        if(!m_unifiedMessenger.isAwareOfEndPoint(getUnifiedName(channelName)))
-            throw new IllegalStateException("No channel called " + channelName);
+        return m_unifiedMessenger;
     }
     
     /* 
      * @see games.strategy.net.IChannelMessenger#getChannelBroadcastor(java.lang.String)
      */
-    public IChannelSubscribor getChannelBroadcastor(String channelName)
+    public IChannelSubscribor getChannelBroadcastor(RemoteName channelName)
     {
-        //return an IChannelSubscribor  that knows how to call the methods correctly
-        assertChannelExists(channelName);
-     
-        String unifiedName = getUnifiedName(channelName);
-        
-        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,unifiedName, true, false);
+        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,channelName.getName(), true);
         
         IChannelSubscribor rVal = (IChannelSubscribor) Proxy.newProxyInstance(
                   Thread.currentThread().getContextClassLoader(), 
-                  m_unifiedMessenger.getTypes(unifiedName), ih );
+                  new Class[] {channelName.getClazz()}, ih );
         
         return rVal;
     }
@@ -71,59 +55,25 @@ public class ChannelMessenger implements IChannelMessenger
     /* 
      * @see games.strategy.net.IChannelMessenger#registerChannelSubscriber(java.lang.Object, java.lang.String)
      */
-    public void registerChannelSubscriber(Object implementor, String channelName)
+    public void registerChannelSubscriber(Object implementor, RemoteName channelName)
     {
-        m_unifiedMessenger.addImplementor(getUnifiedName(channelName),implementor );
+        if(!IChannelSubscribor.class.isAssignableFrom(channelName.getClazz()))
+            throw new IllegalStateException(channelName.getClazz() + " is not a channel subscribor");
+        
+        m_unifiedMessenger.addImplementor(channelName,implementor, true );
     }
 
 
     /* 
      * @see games.strategy.net.IChannelMessenger#unregisterChannelSubscriber(java.lang.Object, java.lang.String)
      */
-    public void unregisterChannelSubscriber(Object implementor, String channelName)
+    public void unregisterChannelSubscriber(Object implementor, RemoteName channelName)
     {
-        m_unifiedMessenger.removeImplementor(getUnifiedName(channelName), implementor);
+        m_unifiedMessenger.removeImplementor(channelName.getName(), implementor);
     }    
     
-    /* 
-     * @see games.strategy.net.IChannelMessenger#createChannel(java.lang.Class, java.lang.String)
-     */
-    public void createChannel(Class<? extends IChannelSubscribor> channelInterface, String channelName)
-    {
-        if(!channelInterface.isInterface())
-            throw new IllegalArgumentException(channelInterface.getName() +  " must be an interface");
-        
-        m_unifiedMessenger.createEndPoint(getUnifiedName(channelName), new Class[] {channelInterface, IChannelSubscribor.class}, true, false);
-    }
-
-    /* 
-     * @see games.strategy.net.IChannelMessenger#destroyChannel(java.lang.String)
-     */
-    public void destroyChannel(String channelName)
-    {
-        m_unifiedMessenger.destroyEndPoint(getUnifiedName(channelName));
-    }
-
-    /* 
-     * @see games.strategy.net.IChannelMessenger#getLocalSubscriborCount(java.lang.String)
-     */
-    public int getLocalSubscriborCount(String channelName)
-    {
-        return m_unifiedMessenger.getLocalImplementorCount(getUnifiedName(channelName));
-    }
     
-    public boolean hasSubscribors(String channelName)
-    {
-        return m_unifiedMessenger.isAwareOfImplementors(getUnifiedName(channelName));
-    }
-    
-    /* 
-     * @see games.strategy.net.IChannelMessenger#hasChannel(java.lang.String)
-     */
-    public boolean hasChannel(String channelName)
-    {
-       return m_unifiedMessenger.isAwareOfEndPoint(getUnifiedName(channelName));
-    }
+
 
     /* (non-Javadoc)
      * @see games.strategy.net.IChannelMessenger#getLocalNode()
@@ -143,14 +93,7 @@ public class ChannelMessenger implements IChannelMessenger
         return m_unifiedMessenger.isServer();
     }
 
-    /* 
-     * @see games.strategy.net.IChannelMessenger#waitForChannelToExist(java.lang.String, long)
-     */
-    public void waitForChannelToExist(String channelName, long timeoutMS)
-    {
-       m_unifiedMessenger.waitForEndPoint(getUnifiedName(channelName), timeoutMS); 
-    }
-
+ 
 
 }
 

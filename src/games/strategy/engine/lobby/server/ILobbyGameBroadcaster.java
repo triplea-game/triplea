@@ -19,7 +19,7 @@ import games.strategy.net.GUID;
 
 public interface ILobbyGameBroadcaster extends IChannelSubscribor 
 {
-    public static final String GAME_BROADCASTER_CHANNEL = "games.strategy.engine.lobby.server.IGameBroadcaster.CHANNEL";
+    public static final RemoteName GAME_BROADCASTER_CHANNEL = new RemoteName("games.strategy.engine.lobby.server.IGameBroadcaster.CHANNEL", ILobbyGameBroadcaster.class);
     
     public void gameAdded(GUID gameId, GameDescription description);
     

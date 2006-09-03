@@ -71,23 +71,7 @@ public class LobbyFrame extends JFrame
         pack();
         setLocationRelativeTo(null);
         
-        
-        m_client.getMessenger().addConnectionChangeListener(new IConnectionChangeListener()
-        {
-        
-            public void connectionRemoved(INode to)
-            {
-                if(to.equals(m_client.getMessenger().getServerNode()))
-                {
-                    connectionToServerLost();
-                }
-        
-            }
-        
-            public void connectionAdded(INode to)
-            {}
-        
-        });
+      
         
         m_client.getMessenger().addErrorListener(new IMessengerErrorListener()
         {
