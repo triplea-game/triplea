@@ -8,7 +8,7 @@
     <path id="full.path">
         <pathelement path="lib\junit.jar"/>
         <pathelement path="lib\standalone-compiler.jar"/>
-        <pathelement path="lib\looks-1.3.1.jar"/>
+        <pathelement path="lib\looks-2.0.4.jar"/>
         <pathelement path="lib\MRJToolkitStubs.zip"/>
         <pathelement path="${classpath}"/>
         <pathelement path="classes/"/>
@@ -119,7 +119,7 @@
 		<jar destfile="TripleA.app/Contents/Resources/Java/triplea.jar" basedir="classes">
 			<manifest>
 				<attribute name="Main-Class" value="games.strategy.engine.framework.GameRunner"/>
-				<attribute name="Class-Path" value="./looks-1.3.1.jar"/>
+				<attribute name="Class-Path" value="./looks-2.0.4.jar"/>
 			</manifest>
 		</jar>		
 		
@@ -128,7 +128,7 @@
 		
 		<echo message="APPL????" file="TripleA.app/Contents/PkgInfo"/>
 		
-		<copy file="lib/looks-1.3.1.jar"
+		<copy file="lib/looks-2.0.4.jar"
 			 todir="TripleA.app/Contents/Resources/Java/"/>
 		
 		<copy file="icons/icon.icns"
@@ -198,7 +198,7 @@
 	<jar destfile="bin/triplea.jar" basedir="classes">
 		<manifest>
 			<attribute name="Main-Class" value="games.strategy.engine.framework.GameRunner"/>
-			<attribute name="Class-Path" value="../lib/looks-1.3.1.jar ../lib/MRJToolkitStubs.zip"/>
+			<attribute name="Class-Path" value="../lib/looks-2.0.4 ../lib/MRJToolkitStubs.zip"/>
 		</manifest>
 	</jar>
 	
