@@ -27,6 +27,11 @@
 
 package games.strategy.net;
 
+import games.strategy.engine.message.HubInvocationResults;
+import games.strategy.engine.message.HubInvoke;
+import games.strategy.engine.message.SpokeInvocationResults;
+import games.strategy.engine.message.SpokeInvoke;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -248,6 +253,47 @@ class Connection
         if (header != null)
             m_listener.messageReceived(header, this);
     }
+    
+    /**
+     * Most messages we pass will be one of the types below
+     * since each of these is externalizable, we can 
+     * reduce network traffic considerably by skipping the 
+     * writing of the full identifiers, and simply write a single
+     * byte to show the type. 
+     */
+    static byte getType(Object msg)
+    {
+        if(msg instanceof HubInvoke)
+            return 1;
+        else if(msg instanceof SpokeInvoke)
+            return 2;
+        else if(msg instanceof HubInvocationResults)
+            return 3;
+        else if(msg instanceof SpokeInvocationResults)
+            return 4;
+    
+        return Byte.MAX_VALUE;
+        
+    }
+    
+    private Externalizable getTemplate(byte type)
+    {
+        switch (type)
+        {
+        case 1:
+            return new HubInvoke();
+        case 2:
+            return new SpokeInvoke();
+        case 3:
+            return new HubInvocationResults();
+        case 4:
+            return new SpokeInvocationResults();
+        default:
+            throw new IllegalStateException("not recognized, " + type);
+        }
+            
+    }
+    
 
     private void writeHeader(MessageHeader next, ObjectOutputStream out) throws IOException
     {
@@ -280,9 +326,16 @@ class Connection
             out.writeBoolean(false);
             next.getFrom().writeExternal(out);
         }
-        
-        out.writeObject(next.getMessage());
-        
+        byte type =  getType(next.getMessage());
+        out.writeByte(type);
+        if(type != Byte.MAX_VALUE)
+        {
+            ((Externalizable) next.getMessage()).writeExternal(out);
+        }
+        else
+        {
+            out.writeObject(next.getMessage());    
+        }
         out.reset();
     }
 
@@ -343,6 +396,10 @@ class Connection
                 }
             }
         }
+
+
+
+       
     }
 
     class Reader implements Runnable
@@ -381,8 +438,18 @@ class Connection
                 from.readExternal(m_in);
             }
 
-            
-            Serializable message = (Serializable) m_in.readObject();
+            Serializable message;
+            byte type = m_in.readByte();
+            if(type != Byte.MAX_VALUE)
+            {
+                Externalizable template = getTemplate(type);
+                template.readExternal(m_in);
+                message = template;
+            }
+            else
+            {
+                message = (Serializable) m_in.readObject();
+            }
             
             
             return new MessageHeader(to,from,message);

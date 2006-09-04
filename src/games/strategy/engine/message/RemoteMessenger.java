@@ -38,7 +38,7 @@ public class RemoteMessenger implements IRemoteMessenger
     public IRemote getRemote(RemoteName remoteName)
     {
         
-        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,remoteName.getName(), false);
+        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,remoteName.getName(), false, remoteName.getClazz());
         
         IRemote rVal = (IRemote) Proxy.newProxyInstance(
                   Thread.currentThread().getContextClassLoader(), 

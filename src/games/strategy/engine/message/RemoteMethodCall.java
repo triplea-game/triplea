@@ -12,6 +12,8 @@
 
 package games.strategy.engine.message;
 
+import games.strategy.util.Tuple;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,6 +29,11 @@ public class RemoteMethodCall implements Externalizable
     private String m_remoteName;
     private String m_methodName;
     private Object[] m_args;
+    
+    //to save space, we dont serialize method name/types
+    //instead we just serialize a number which can be transalted into
+    //the correct method.
+    private int m_methodNumber;
 
     //stored as a String[] so we can be serialzed
     private String[] m_argTypes;
@@ -35,7 +42,7 @@ public class RemoteMethodCall implements Externalizable
     {}
     
     public RemoteMethodCall(final String remoteName, final String methodName,
-            final Object[] args, final Class[] argTypes)
+            final Object[] args, final Class[] argTypes, Class remoteInterface)
     {
         if(argTypes == null)
             throw new IllegalArgumentException("ArgTypes are null");
@@ -50,6 +57,7 @@ public class RemoteMethodCall implements Externalizable
         m_methodName = methodName;
         m_args = args;
         m_argTypes = classesToString(argTypes, args);
+        m_methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
     }
 
     /**
@@ -169,54 +177,56 @@ public class RemoteMethodCall implements Externalizable
 
 	public void writeExternal(ObjectOutput out) throws IOException 
 	{
-		out.writeUTF(m_remoteName);
-		out.writeUTF(m_methodName);
-        
+        out.writeUTF(m_remoteName);
+        out.writeByte(m_methodNumber);
         if(m_args == null)
         {
-            out.writeBoolean(false);
+            out.writeByte(Byte.MAX_VALUE);;
         }
         else
         {
-            out.writeBoolean(true);
             out.writeByte(m_args.length);
             for(int i =0; i < m_args.length; i++)
             {
                 out.writeObject(m_args[i]);
-            }
-            for(int i =0; i < m_argTypes.length; i++)
-            {
-                out.writeObject(m_argTypes[i]);
             }            
         }
+            
+            
         
 	}
 
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 
 	{
         m_remoteName = in.readUTF();
-        m_methodName = in.readUTF();
+        m_methodNumber = in.readByte();
         
-        boolean hasArgs = in.readBoolean();
-        if(hasArgs)
+        byte count = in.readByte();
+        
+        if(count != Byte.MAX_VALUE)
         {
-            byte count = in.readByte();
+            
             m_args = new Object[count];
-            m_argTypes = new String[count];
             
             for(int i =0; i < count; i++)
             {
                 m_args[i] = in.readObject();
             }
-            for(int i =0; i < count; i++)
-            {
-                m_argTypes[i] = (String) in.readObject();
-            }
         }
-        else
-        {
-            m_argTypes = new String[0];
-        }
-
 	}
+    
+    /**
+     * After we have been de-serialized, we do not transmit enough
+     * informatin to determine the method without being told
+     * what class we operate on.
+     */
+    public void resolve(Class remoteType)
+    {
+        if(m_methodName != null)
+            return;
+        
+        Tuple<String,Class[]> values = RemoteInterfaceHelper.getMethodInfo(m_methodNumber, remoteType);
+        m_methodName = values.getFirst();
+        m_argTypes = classesToString(values.getSecond(), m_args);
+    }
 }

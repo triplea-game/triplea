@@ -42,7 +42,7 @@ public class ChannelMessenger implements IChannelMessenger
      */
     public IChannelSubscribor getChannelBroadcastor(RemoteName channelName)
     {
-        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,channelName.getName(), true);
+        InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger,channelName.getName(), true, channelName.getClazz());
         
         IChannelSubscribor rVal = (IChannelSubscribor) Proxy.newProxyInstance(
                   Thread.currentThread().getContextClassLoader(), 

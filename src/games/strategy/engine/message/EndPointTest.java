@@ -13,6 +13,7 @@
  */
 package games.strategy.engine.message;
 
+import java.util.Comparator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -24,11 +25,16 @@ public class EndPointTest extends TestCase
 {
     public void testEndPoint()
     {
-        EndPoint endPoint = new EndPoint("", new Class[] {String.class}, false);
-        endPoint.addImplementor("test");
-        RemoteMethodCall call = new RemoteMethodCall("", "toString", new Object[0], new Class[0]);
+        EndPoint endPoint = new EndPoint("", Comparator.class, false);
+        endPoint.addImplementor(new Comparator() {
+
+            public int compare(Object o1, Object o2)
+            {
+                return 2;
+            }});
+        RemoteMethodCall call = new RemoteMethodCall("", "compare", new Object[] {"", ""}, new Class[] {Object.class, Object.class}, Comparator.class);
         List results = endPoint.invokeLocal(call, endPoint.takeANumber(), null);
         assertEquals(results.size(), 1);
-        assertEquals("test", ((RemoteMethodCallResults) results.iterator().next()).getRVal() );    
+        assertEquals(2, ((RemoteMethodCallResults) results.iterator().next()).getRVal() );    
     }
 }

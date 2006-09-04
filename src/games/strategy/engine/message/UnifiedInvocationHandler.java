@@ -31,14 +31,16 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler
     private final UnifiedMessenger m_messenger;
     private final String m_endPointName;
     private final boolean m_ignoreResults;
+    private final Class m_remoteType;
       
-    public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults)
+    public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults, Class remoteType)
     {
         //equality and hash code are bassed on end point name
         super(endPointName);
         m_messenger = messenger;
         m_endPointName = endPointName;
         m_ignoreResults = ignoreResults;
+        m_remoteType = remoteType;
     }
     
     
@@ -47,7 +49,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler
         if(super.shouldHandle(method, args))
             return super.handle(method, args);
         
-        RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(m_endPointName, method.getName(), args, method.getParameterTypes());
+        RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(m_endPointName, method.getName(), args, method.getParameterTypes(), m_remoteType);
         if(m_ignoreResults)
         {
             m_messenger.invoke(m_endPointName, remoteMethodMsg);

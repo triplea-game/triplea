@@ -65,6 +65,8 @@ public class StrategyGameTest extends TestCase
         suite.addTestSuite(DBUserControllerTest.class);
         suite.addTestSuite(LobbyLoginValidatorTest.class);
         
+        suite.addTestSuite(RemoteInterfaceHelperTest.class);
+        
         
 
 		return suite;

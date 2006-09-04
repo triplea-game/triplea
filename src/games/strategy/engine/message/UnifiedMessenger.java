@@ -18,7 +18,6 @@ import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
-import games.strategy.net.Node;
 import games.strategy.thread.ThreadPool;
 
 import java.io.Externalizable;
@@ -267,7 +266,7 @@ public class UnifiedMessenger
                 return m_localEndPoints.get(endPointDescriptor.getName());
             
             
-            endPoint = new EndPoint(endPointDescriptor.getName(), new Class[] {endPointDescriptor.getClazz()}, singleThreaded);
+            endPoint = new EndPoint(endPointDescriptor.getName(), endPointDescriptor.getClazz(), singleThreaded);
             m_localEndPoints.put(endPointDescriptor.getName(), endPoint);
             
             
@@ -479,18 +478,16 @@ class EndPoint
     private final Object m_implementorsMutext = new Object();
 
     private final String m_name;
-    private final Class[] m_classes;
+    private final Class m_remoteClass;
     private final List<Object> m_implementors = new ArrayList<Object>();
     private final boolean m_singleThreaded;
 
 
-    public EndPoint(final String name, final Class[] classes, boolean singleThreaded)
+    public EndPoint(final String name, final Class remoteClass, boolean singleThreaded)
     {
-        if (classes.length <= 0)
-            throw new IllegalArgumentException("No classes defined");
 
         m_name = name;
-        m_classes = classes;
+        m_remoteClass = remoteClass;
         m_singleThreaded = singleThreaded;
     }
 
@@ -548,13 +545,10 @@ class EndPoint
     @SuppressWarnings("unchecked")
     public boolean addImplementor(Object implementor)
     {
-        //check that implementor implements the correct interfaces
-        for (int i = 0; i < m_classes.length; i++)
-        {
-            if (!m_classes[i].isAssignableFrom(implementor.getClass()))
-                throw new IllegalArgumentException(m_classes[i] + " is not assignable from " + implementor.getClass());
-        }
 
+        if (!m_remoteClass.isAssignableFrom(implementor.getClass()))
+            throw new IllegalArgumentException(m_remoteClass + " is not assignable from " + implementor.getClass());
+   
         synchronized (m_implementorsMutext)
         {
             boolean rVal = m_implementors.isEmpty();
@@ -606,9 +600,9 @@ class EndPoint
         return m_name;
     }
 
-    public Class[] getClasses()
+    public Class getRemoteClass()
     {
-        return m_classes;
+        return m_remoteClass;
     }
 
     /*
@@ -666,7 +660,7 @@ class EndPoint
      */
     private RemoteMethodCallResults invokeSingle(RemoteMethodCall call, Object implementor, INode messageOriginator)
     {
-        
+        call.resolve(m_remoteClass);
         Method method;
         try
         {
@@ -709,13 +703,8 @@ class EndPoint
             return false;
         if (!other.m_name.equals(this.m_name))
             return false;
-        if (!(other.m_classes.length == this.m_classes.length))
+        if (!(other.m_remoteClass.equals(m_remoteClass)))
             return false;
-        for (int i = 0; i < m_classes.length; i++)
-        {
-            if (!other.m_classes[i].equals(this.m_classes[i]))
-                return false;
-        }
         return true;
     }
     
@@ -794,58 +783,8 @@ class NoLongerHasEndPointImplementor implements Serializable
 }
 
 
-class HubInvoke extends Invoke
-{
 
-  public HubInvoke()
-  {
-      super();
-  }
 
-  public HubInvoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call)
-  {
-      super(methodCallID, needReturnValues, call);
-  }
-  
-}
-
-class SpokeInvoke extends Invoke
-{
-    
-  private INode m_invoker;
-
-  public SpokeInvoke()
-  {
-      super();
-  }
-
-  public SpokeInvoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call, INode invoker)
-  {
-      super(methodCallID, needReturnValues, call);
-      m_invoker = invoker;
-  }
-  
-  public INode getInvoker()
-  {
-      return m_invoker;
-  }
-  
-  public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-  {
-      super.readExternal(in);
-      m_invoker = new Node();
-      m_invoker.readExternal(in);
-      
-  }
-
-  public void writeExternal(ObjectOutput out) throws IOException
-  {
-      super.writeExternal(out);
-      m_invoker.writeExternal(out);
-  }
-  
-  
-}
 
 //someone wants us to invoke something locally
 
@@ -897,35 +836,9 @@ abstract class Invoke implements Externalizable
 
 }
 
-class HubInvocationResults extends InvocationResults
-{
 
-  public HubInvocationResults()
-  {
-      super();
-  }
 
-  public HubInvocationResults(RemoteMethodCallResults results, GUID methodCallID)
-  {
-      super(results, methodCallID);
-  }
-  
-}
 
-class SpokeInvocationResults extends InvocationResults
-{
-
-  public SpokeInvocationResults()
-  {
-      super();
-  }
-
-  public SpokeInvocationResults(RemoteMethodCallResults results, GUID methodCallID)
-  {
-      super(results, methodCallID);
-  }
-  
-}
 
 //the results of a remote invocation
 
