@@ -20,7 +20,12 @@
 
 package games.strategy.net;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 
 /**
@@ -100,16 +105,25 @@ public class Node implements INode, Externalizable
   public void readExternal(ObjectInput in) throws IOException,
       ClassNotFoundException
   {
-    m_name = (String) in.readObject();
+    m_name = (String) in.readUTF();
     m_port = in.readInt();
-    m_address = (InetAddress) in.readObject();
+    
+    int length = in.read();
+    byte[] bytes = new byte[length];
+    for(int i =0; i < length; i++)
+    {
+        bytes[i] = in.readByte();
+    }
+    
+    m_address = InetAddress.getByAddress(bytes);
   }
 
   public void writeExternal(ObjectOutput out) throws IOException
   {
-    out.writeObject(m_name);
+    out.writeUTF(m_name);
     out.writeInt(m_port);
-    out.writeObject(m_address);
+    out.write(m_address.getAddress().length);
+    out.write(m_address.getAddress());
   }
 
   public int compareTo(INode o)

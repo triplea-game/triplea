@@ -352,10 +352,20 @@ public class UnifiedMessenger
     };
 
     
+    private void assertIsServer(INode from)
+    {
+        if(!from.equals(m_messenger.getServerNode()))
+            throw new IllegalStateException("Not from server!  Instead from:" + from);
+    }
+    
     void messageReceived(Serializable msg, final INode from)
     {
         if (msg instanceof SpokeInvoke)
         {
+            //if this isn't the server, something is wrong
+            //maybe an attempt to spoof a message
+            assertIsServer(from);
+            
             final SpokeInvoke invoke = (SpokeInvoke) msg;
             EndPoint local;
             synchronized(m_endPointMutex)
@@ -416,6 +426,11 @@ public class UnifiedMessenger
         // a remote machine is returning results
         else if (msg instanceof SpokeInvocationResults)
         {
+            //if this isn't the server, something is wrong
+            //maybe an attempt to spoof a message
+            assertIsServer(from);
+
+            
             SpokeInvocationResults results = (SpokeInvocationResults) msg;
 
             GUID methodID = results.methodCallID;
@@ -819,7 +834,7 @@ abstract class Invoke implements Externalizable
 
   public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
   {
-      needReturnValues = in.readBoolean();
+      needReturnValues = in.read() == 1;
       if(needReturnValues)
           methodCallID = (GUID) in.readObject();
       call = new RemoteMethodCall();
@@ -828,7 +843,7 @@ abstract class Invoke implements Externalizable
 
   public void writeExternal(ObjectOutput out) throws IOException
   {
-      out.writeBoolean(needReturnValues);
+      out.write(needReturnValues ? 1 : 0);
       if(needReturnValues)
           out.writeObject(methodCallID);
       call.writeExternal(out);

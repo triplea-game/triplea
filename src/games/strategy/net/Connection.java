@@ -300,18 +300,18 @@ class Connection
         
         if(next.getFor() == null)
         {
-            out.writeBoolean(true);
+            out.write(1);
         }
         else
         {
-            out.writeBoolean(false);
+            out.write(0);
             if(next.getFor().equals(m_remoteNode))
             {
-                out.writeBoolean(true);
+                out.write(1);
             }
             else
             {
-                out.writeBoolean(false);
+                out.write(0);
                 next.getFor().writeExternal(out);
             }
         }
@@ -319,15 +319,15 @@ class Connection
         
         if(next.getFrom().equals(m_localNode))
         {
-            out.writeBoolean(true);
+            out.write(1);
         }
         else
         {
-            out.writeBoolean(false);
+            out.write(0);
             next.getFrom().writeExternal(out);
         }
         byte type =  getType(next.getMessage());
-        out.writeByte(type);
+        out.write(type);
         if(type != Byte.MAX_VALUE)
         {
             ((Externalizable) next.getMessage()).writeExternal(out);
@@ -408,14 +408,14 @@ class Connection
         private MessageHeader readMessageHeader() throws IOException, ClassNotFoundException
         {
             INode to;
-            if(m_in.readBoolean())
+            if(m_in.read() == 1)
             {
                 to = null;
             }
             else
             {
                 
-                if(m_in.readBoolean())
+                if(m_in.read() == 1)
                 {
                     to = m_localNode;
                 }
@@ -428,7 +428,7 @@ class Connection
             
             
             INode from;
-            if(m_in.readBoolean())
+            if(m_in.read() == 1)
             {
                 from = m_remoteNode;
             }
@@ -439,7 +439,7 @@ class Connection
             }
 
             Serializable message;
-            byte type = m_in.readByte();
+            byte type = (byte) m_in.read();
             if(type != Byte.MAX_VALUE)
             {
                 Externalizable template = getTemplate(type);
