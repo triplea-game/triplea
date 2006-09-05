@@ -113,10 +113,7 @@ public class UnifiedMessenger
     
     private void messengerInvalid()
     {
-        synchronized(m_endPointMutex)
-        {
-            m_localEndPoints.clear();
-        }
+
         
         synchronized(m_pendingLock)
         {

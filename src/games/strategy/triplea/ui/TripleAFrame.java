@@ -619,6 +619,9 @@ public class TripleAFrame extends JFrame
             clonedGameData = cloneGameData(m_data);
             if (clonedGameData == null)
                 return;
+            
+            if(m_historySyncher != null)
+                throw new IllegalStateException("Two history synchers?");
     
             m_historySyncher = new HistorySynchronizer(clonedGameData, m_game);
         }
@@ -694,7 +697,10 @@ public class TripleAFrame extends JFrame
         m_inHistory = false;
 
         if (m_historySyncher != null)
+        {
             m_historySyncher.deactivate();
+            m_historySyncher = null;
+        }
 
         setWidgetActivation();
 
