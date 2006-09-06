@@ -136,7 +136,29 @@ public class UnifiedMessenger
      */
     public RemoteMethodCallResults invokeAndWait(String endPointName, RemoteMethodCall remoteCall)
     {
-  
+        EndPoint local;
+        synchronized(m_endPointMutex)
+        {
+            local = m_localEndPoints.get(endPointName);
+        }
+        if(local == null)
+            return invokeAndWaitRemote(remoteCall);
+        //we have the implementor here, just invoke it
+        else
+        {
+            long number = local.takeANumber();
+            List<RemoteMethodCallResults> results = local.invokeLocal(remoteCall, number, getLocalNode());
+            if(results.size() == 0)
+                throw new RemoteNotFoundException("Not found:" + endPointName);
+            if(results.size() > 1)
+                throw new IllegalStateException("Too many implementors, got back:" + results);
+            return results.get(0);
+        }
+            
+    }
+
+    private RemoteMethodCallResults invokeAndWaitRemote(RemoteMethodCall remoteCall)
+    {
         //prepatory to anything else...
         //generate a unique id
         GUID methodCallID = new GUID();
@@ -191,8 +213,22 @@ public class UnifiedMessenger
      */
     public void invoke(final String endPointName, final RemoteMethodCall call)
     {
+        //send the remote invocation
         Invoke invoke = new HubInvoke(null, false, call);
         send(invoke, m_messenger.getServerNode());
+        
+        //invoke locally
+        EndPoint endPoint;
+        synchronized(m_endPointMutex)
+        {
+            endPoint = m_localEndPoints.get(endPointName);
+        }
+        if(endPoint != null)
+        {
+            long number = endPoint.takeANumber();
+            endPoint.invokeLocal(call, number, getLocalNode());
+        }
+        
     }
     
     

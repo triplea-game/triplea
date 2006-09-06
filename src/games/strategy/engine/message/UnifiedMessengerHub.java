@@ -117,6 +117,10 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
                     endPointCols.addAll(m_endPoints.get(invoke.call.getRemoteName()));
             
             }
+            
+            //the node will already have routed messages to local invokers
+            endPointCols.remove(from);
+            
             if(endPointCols.isEmpty())
             {
                 if(invoke.needReturnValues)
@@ -217,7 +221,6 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         {
             send(invoke, node);
         }
-        
     }
     
     
