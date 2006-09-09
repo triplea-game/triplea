@@ -208,12 +208,12 @@
 
 		<zip zipfile="release/triplea_${triplea.version}_all_platforms.zip" compress="true">
 
-			<zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
+			<!--zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
 				<include name="**/*.jar" />
 				<include name="**/*.zip" />
-				<!-- we dont need junit in the release -->
+
 				<exclude name="**/junit.jar" />
-			</zipfileset>
+			</zipfileset -->
 
 			<zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
 				<include name="**/*.html" />
@@ -224,12 +224,6 @@
 
 			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
 				<include name="gpl.txt" />
-			</zipfileset>
-
-			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
-				<include name="**/*.sh" />
-				<include name="**/*.bat" />
-				<include name="**/*.jar" />
 			</zipfileset>
 
 			<zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
@@ -253,11 +247,20 @@
 			<zipfileset dir="." prefix="triplea_${triplea.version}/">
 				<include name="readme.html" />
 				<include name="*.bat" />
-				<include name="*.sh" />
 				<include name="triplea.exe" />
 				<include name="changelog.txt" />
 			</zipfileset>
 
+			<zipfileset dir="." prefix="triplea_${triplea.version}/" filemode="755">
+				<include name="*.sh"/>
+				<exclude name="fix_mac_icon.sh"/>
+			</zipfileset>
+			
+			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/" filemode="755">
+				<include name="**/triplea.jar" />
+			</zipfileset>
+
+			
 		</zip>
 	</target>
 
