@@ -145,7 +145,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       GridBagConstraints localConstraints = new GridBagConstraints();
       localConstraints.anchor = GridBagConstraints.WEST;
       localConstraints.gridx = 2;
-      localConstraints.insets = lastSpacing;
+      localConstraints.insets = spacing;
+      
+      GridBagConstraints typeConstraints = new GridBagConstraints();
+      typeConstraints.anchor = GridBagConstraints.WEST;
+      typeConstraints.gridx = 3;
+      typeConstraints.insets = lastSpacing;
 
       JLabel nameLabel = new JLabel("Name");
       nameLabel.setForeground(Color.black);
@@ -161,6 +166,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       localLabel.setForeground(Color.black);
       layout.setConstraints(localLabel, localConstraints);
       players.add(localLabel);
+      
+      JLabel typeLabel = new JLabel("Type");
+      typeLabel.setForeground(Color.black);
+      layout.setConstraints(typeLabel, typeConstraints);
+      players.add(typeLabel);
+
 
       Iterator<PlayerRow> iter = m_playerRows.iterator();
 
@@ -183,6 +194,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
         layout.setConstraints(row.getLocal(), localConstraints);
         players.add(row.getLocal());
+        
+        layout.setConstraints(row.getType(), typeConstraints);
+        players.add(row.getType());
+
       }
 
       removeAll();
@@ -290,7 +305,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         Collections.sort(keys);
         for(String name: keys)
         {
-            PlayerRow newPlayerRow = new PlayerRow(name);
+            PlayerRow newPlayerRow = new PlayerRow(name, m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
             
             m_playerRows.add(newPlayerRow);
             newPlayerRow.update(players);
@@ -305,16 +320,33 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       private JLabel m_nameLabel;
       private JLabel m_playerLabel;
       private JCheckBox m_localCheckBox;
+      private JComboBox m_type;
 
-      PlayerRow(String playerName)
+      PlayerRow(String playerName, String[] types)
       {
         m_nameLabel = new JLabel(playerName);
         m_playerLabel = new JLabel(m_model.getMessenger().getLocalNode().getName());
         m_localCheckBox = new JCheckBox();
         m_localCheckBox.addActionListener(m_actionListener);
         m_localCheckBox.setSelected(true);
+        m_type = new JComboBox(types);
+        m_type.addActionListener(new ActionListener()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                m_model.setLocalPlayerTyp(m_nameLabel.getText(), (String) m_type.getSelectedItem());
+        
+            }
+        
+        });
       }
 
+      public JComboBox getType()
+      {
+          return m_type;
+      }
+      
       public JLabel getName()
       {
         return m_nameLabel;
@@ -330,6 +362,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         return m_localCheckBox;
       }      
       
+      
       public void update(Map<String,String> players)
       {
           String text = players.get(m_nameLabel.getText());
@@ -337,6 +370,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
               text = "-";
           m_playerLabel.setText(text);
           m_localCheckBox.setSelected(text.equals(m_model.getMessenger().getLocalNode().getName()));
+          setWidgetActivation();
+      }
+      
+      private void setWidgetActivation()
+      {
+          m_type.setEnabled(m_localCheckBox.isSelected());
       }
       
       private ActionListener m_actionListener = new ActionListener()
@@ -347,6 +386,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
                 m_model.takePlayer( m_nameLabel.getText());
             else
                 m_model.releasePlayer( m_nameLabel.getText());
+            
+            setWidgetActivation();
         }
       };
     }
@@ -365,10 +406,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         launcher.setInGameLobbyWatcher(m_lobbyWatcher);
         return launcher;
     }
+
+
     
     public List<Action> getUserActions()
     {
-
         List<Action> rVal = new ArrayList<Action>();
         rVal.add(new BootPlayerAction(this, m_model.getMessenger()));
         rVal.add(new SetPasswordAction(this, (ClientLoginValidator) m_model.getMessenger().getLoginValidator() ));
@@ -379,8 +421,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             rVal.add(new RemoveGameFromLobbyAction(m_lobbyWatcher));
         }
         return rVal;
-     
-        
     }
     
 }

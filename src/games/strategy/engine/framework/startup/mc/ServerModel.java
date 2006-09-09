@@ -61,6 +61,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     private Component m_ui;
     private ChatPanel m_chatPanel;
     private ChatController m_chatController; 
+    private Map<String,String> m_localPlayerTypes = new HashMap<String,String>();
 
     //while our server launcher is not null, delegate new/lost connections to it
     private volatile ServerLauncher m_serverLauncher;
@@ -105,6 +106,19 @@ public class ServerModel extends Observable implements IMessengerErrorListener
         
         m_listener = listener;
     }
+    
+    public void setLocalPlayerTyp(String player, String type)
+    {
+        synchronized(this)
+        {
+            m_localPlayerTypes.put(player, type);
+        }
+    }
+    
+    public String getLocalPlayerType(String player)
+    {
+        return m_localPlayerTypes.get(player);
+    }
         
     private void gameDataChanged()
     {
@@ -120,7 +134,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener
                 }
             }
             m_objectStreamFactory.setData(m_data);
+            m_localPlayerTypes.clear();
         }
+        
         
         notifyChanellPlayersChanged();
         m_listener.playerListChanged();
@@ -378,14 +394,18 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             Map<String,String> localPlayerMappings = new HashMap<String,String>();
             Map<String,INode> remotePlayers = new HashMap<String,INode>();
             
-            String localPlayerType = m_data.getGameLoader().getServerPlayerTypes()[0];
+            String defaultLocalType = m_data.getGameLoader().getServerPlayerTypes()[0];
+            
             
             for(String player : m_players.keySet() )
             {
                 String playedBy = m_players.get(player);
                 if(playedBy.equals( m_serverMessenger.getLocalNode().getName()))
                 {
-                    localPlayerMappings.put(player, localPlayerType);
+                    String type = defaultLocalType;
+                    if(m_localPlayerTypes.containsKey(player))
+                        type = m_localPlayerTypes.get(player);
+                    localPlayerMappings.put(player, type);
                 }
                 else
                 {
