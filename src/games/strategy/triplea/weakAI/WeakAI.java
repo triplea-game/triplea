@@ -1022,7 +1022,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
     private void doPlace(Territory where, Collection<Unit> toPlace, IAbstractPlaceDelegate del)
     {
-        String message = del.placeUnits(toPlace, where);
+        String message = del.placeUnits(new ArrayList<Unit>(toPlace), where);
         if(message != null)
         {
             s_logger.fine(message);
