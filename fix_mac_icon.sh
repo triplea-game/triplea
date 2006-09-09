@@ -9,4 +9,4 @@
 # Ant doesn't seem to play nice with this strange encoding,
 #     so run this file after running the macRelease ant target
 
-mv TripleA.app/Icon TripleA.app/Icon^M 
+mv release/TripleA.app/Icon release/TripleA.app/Icon^M 

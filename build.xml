@@ -33,7 +33,6 @@
 		<delete dir="release" />
 		<delete dir="classes" />
 		<delete dir="savedGames" />
-		<delete dir="TripleA.app" />
 	</target>
 
 	<!-- Compile -->
@@ -84,81 +83,78 @@
 
 
 	<!-- compileClean -->
-	<target name="compileClean" depends="clean,compile" description="Clean then compile" />
+	<target name="compileClean" depends="clean,compile,zip" description="Clean then compile" />
 
-	<target name="macRelease" depends="init,compile" description="create a mac os x application">
-		<delete dir="TripleA.app" />
-		<delete>
-			<fileset dir="." includes="*.dmg" />
-		</delete>
+	<target name="macRelease" depends="init,clean,compile,zip" description="create a mac os x application">
+		
+		<property name="dmg.file" value="release/triplea_${triplea.version}_mac.dmg"></property>
+		<property name="app.file" value="release/Triplea.app"></property>
+		
 
 		<exec executable="hdiutil">
 			<arg line="detach /Volumes/TripleA" />
 		</exec>
 
-		<mkdir dir="TripleA.app" />
-		<mkdir dir="TripleA.app/Contents" />
-		<mkdir dir="TripleA.app/Contents/MacOS" />
-		<mkdir dir="TripleA.app/Contents/Resources/" />
-		<mkdir dir="TripleA.app/Contents/Resources/Java" />
+		<mkdir dir="${app.file}" />
+		<mkdir dir="${app.file}/Contents" />
+		<mkdir dir="${app.file}/Contents/MacOS" />
+		<mkdir dir="${app.file}/Contents/Resources/" />
+		<mkdir dir="${app.file}/Contents/Resources/Java" />
 
-		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="TripleA.app/Contents/MacOS/" />
+		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${app.file}/Contents/MacOS/" />
 
 		<exec executable="chmod">
-			<arg line="755 TripleA.app/Contents/MacOS/JavaApplicationStub" />
+			<arg line="755 ${app.file}/Contents/MacOS/JavaApplicationStub" />
 		</exec>
 
-		<jar destfile="TripleA.app/Contents/Resources/Java/triplea.jar" basedir="classes">
-			<manifest>
-				<attribute name="Main-Class" value="games.strategy.engine.framework.GameRunner" />
-				<attribute name="Class-Path" value="./looks-2.0.4.jar" />
-			</manifest>
-		</jar>
+		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"></copy>
 
-		<copy file="Info.plist" todir="TripleA.app/Contents/" />
+		<copy file="Info.plist" todir="${app.file}/Contents/" />
 
-		<echo message="APPL????" file="TripleA.app/Contents/PkgInfo" />
+		<echo message="APPL????" file="${app.file}/Contents/PkgInfo" />
 
-		<copy file="lib/looks-2.0.4.jar" todir="TripleA.app/Contents/Resources/Java/" />
+		
 
-		<copy file="icons/icon.icns" todir="TripleA.app/Contents/Resources/" />
+		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
 
 		<exec executable="cp">
-			<arg line="-r games TripleA.app/Contents/Resources/" />
+			<arg line="-r games ${app.file}/Contents/Resources/" />
 		</exec>
 
 		<exec executable="cp">
-			<arg line="-r icons TripleA.app/Contents/Resources/" />
+			<arg line="-r icons ${app.file}/Contents/Resources/" />
 		</exec>
 
 		<exec executable="cp">
-			<arg line="-r images TripleA.app/Contents/Resources/" />
+			<arg line="-r images ${app.file}/Contents/Resources/" />
 		</exec>
 
 		<exec executable="cp">
-			<arg line="-r license TripleA.app/Contents/Resources/" />
+			<arg line="-r license ${app.file}/Contents/Resources/" />
 		</exec>
 
 		<exec executable="cp">
-			<arg line="-r maps TripleA.app/Contents/Resources/" />
+			<arg line="-r maps ${app.file}/Contents/Resources/" />
 		</exec>
 
 		<exec executable="/Developer/Tools/SetFile">
-			<arg line="-a B TripleA.app" />
+			<arg line="-a B ${app.file}" />
 		</exec>
 
-		<unzip src="icons/Icon.zip" dest="TripleA.app/" encoding="MacRoman" />
+		<unzip src="icons/Icon.zip" dest="${app.file}/" encoding="MacRoman" />
 
+		<echo message="making dmg"/>
 		<exec executable="hdiutil">
-			<arg line="create -size 20m -fs HFS+ -volname TripleA triplea_${triplea.version}_mac.dmg" />
+			<arg line="create -size 20m -fs HFS+ -volname TripleA ${dmg.file}" />
 		</exec>
 
+
 		<exec executable="hdiutil">
-			<arg line="attach triplea_${triplea.version}_mac.dmg" />
+			<arg line="attach ${dmg.file}" />
 		</exec>
 
 		<exec executable="cp">
-			<arg line="-r TripleA.app /Volumes/TripleA/" />
+			<arg line="-r ${app.file} /Volumes/TripleA/" />
 		</exec>
 
 		<exec executable="cp">
