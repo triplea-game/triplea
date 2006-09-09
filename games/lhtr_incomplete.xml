@@ -1595,6 +1595,10 @@
                         <number min="2" max="3"/>
                 </property>
                 
+                <property name="LHTR Heavy Bombers" value="true" editable="false">
+                	  <boolean/>
+                </property>
+                
                 <property name="Two hit battleship" value="true" editable="false">
                         <boolean/>
                 </property>
