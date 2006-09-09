@@ -187,16 +187,6 @@ public class ImageScrollerLargeView extends JComponent
     }
     
 
-    private int checkBounds(int dim, int max, int width)
-    {
-        if (dim < 0)
-            return 0;
-
-        if (dim + width > max)
-            return max - width;
-        return dim;
-    }
-
     private void scroll()
     {
 
@@ -221,7 +211,7 @@ public class ImageScrollerLargeView extends JComponent
         // this.getWidth(), true);
 
         int newY = m_model.getY() + dy;
-        newY = checkBounds(newY, (int) m_dimensions.getHeight(), this.getHeight());
+        
 
         m_model.set(newX, newY);
 
@@ -282,8 +272,6 @@ public class ImageScrollerLargeView extends JComponent
 
         public void mouseWheelMoved(MouseWheelEvent e)
         {
-            int height = getHeight();
-            //int width = getWidth();
 
             if (m_edge == NONE)
                 m_insideCount = 0;
@@ -306,7 +294,7 @@ public class ImageScrollerLargeView extends JComponent
 
             //move up and down and test for edges
             int newY = m_model.getY() + dy;
-            newY = checkBounds(newY,(int)  m_dimensions.getHeight(), height);
+            
 
             //update the map
             m_model.set(newX, newY);
@@ -362,7 +350,7 @@ public class ImageScrollerLargeView extends JComponent
 
                 //move up and down and test for edges
                 int newY = m_model.getY() + dy;
-                newY = checkBounds(newY, (int)  m_dimensions.getHeight(), height);
+                
 
                 //update the map
                 m_model.set(newX, newY);
