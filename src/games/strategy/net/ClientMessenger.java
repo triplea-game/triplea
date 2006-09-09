@@ -65,6 +65,7 @@ public class ClientMessenger implements IMessenger
     public ClientMessenger(String host, int port, String name, IObjectStreamFactory streamFact, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
     {
         Socket socket = new Socket(host, port);
+        socket.setKeepAlive(true);
         SocketStreams streams = new SocketStreams(socket);
 
         ClientLoginHelper clientLoginHelper = new ClientLoginHelper(login, streams, name);

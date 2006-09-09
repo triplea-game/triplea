@@ -439,6 +439,7 @@ public class ServerMessenger implements IServerMessenger
                 try
                 {
                     Socket s = m_socket.accept();
+                    s.setKeepAlive(true);
                     
                     s_logger.info("Socket opened from:" + s.getRemoteSocketAddress());
                     

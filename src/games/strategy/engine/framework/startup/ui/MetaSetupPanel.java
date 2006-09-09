@@ -9,6 +9,9 @@ import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.*;
@@ -27,7 +30,7 @@ public class MetaSetupPanel extends SetupPanel
         m_model = model;
         
         createComponents();
-        layoutComponents();
+        layoutComponents(); 
         setupListeners();
         setWidgetActivation();
     }
@@ -128,22 +131,70 @@ public class MetaSetupPanel extends SetupPanel
             throw new IllegalStateException(e);
         }
         
+        //sourceforge sometimes takes a long while
+        //to return results
+        //so run a couple requests in parallell, starting
+        //with delays to try and get
+        //a response quickly
+        final AtomicReference<LobbyServerProperties> ref = new AtomicReference<LobbyServerProperties>();
+
+        final CountDownLatch latch = new CountDownLatch(1);
         
-        final AtomicReference<LobbyServerProperties> props = new AtomicReference<LobbyServerProperties>();
+        
         Runnable r = new Runnable()
         {
-        
             public void run()
             {
-                props.set(new LobbyServerProperties(serverPropsURL));
+                for(int i =0; i < 5; i++)
+                {
+                    spawnRequest(serverPropsURL, ref, latch);
+                    try
+                    {
+                        latch.await(2, TimeUnit.SECONDS);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    if(ref.get() != null)
+                        break;
+                }
+                
+                //we have spawned a bunch of requests
+                try
+                {
+                    latch.await(15, TimeUnit.SECONDS);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            private void spawnRequest(final URL serverPropsURL, final AtomicReference<LobbyServerProperties> ref, final CountDownLatch latch)
+            {
+                Thread t1 = new Thread(new Runnable()
+                {
+                    public void run()
+                    {
+                        ref.set(new LobbyServerProperties(serverPropsURL));
+                        latch.countDown();
+                    }
+                
+                });
+                t1.start();
+                
             }
         
         };
         
         BackgroundTaskRunner.runInBackground(this, "Looking Up Server", r);
         
+        LobbyServerProperties props = ref.get();
+        if(props == null)
+        {
+            props = new LobbyServerProperties(null, -1, "Server Lookup failed, try again later");
+        }
         
-        LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props.get());
+        LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props);
         
         LobbyClient client = login.login();
         if(client == null)

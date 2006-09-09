@@ -7,6 +7,9 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.*;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+
 /**
  * Server properties.<p>
  * 
@@ -29,7 +32,7 @@ public class LobbyServerProperties
     private final int m_port;
     private final String m_serverErrorMessage;
 
-    
+    private volatile boolean m_done;
     
     public LobbyServerProperties(final String host, final int port, final String serverErrorMessage)
     {
@@ -38,35 +41,68 @@ public class LobbyServerProperties
         m_serverErrorMessage = serverErrorMessage;
     }
 
+    public boolean isDone()
+    {
+        return m_done;
+    }
+    
     /**
      * Read the server properties from a given url. 
      * If an error occurs during read, then ErrorMessage will be populated.
      */
     public LobbyServerProperties(URL url)
     {
+
         Properties props = new Properties();
+        HttpClient client = new HttpClient();
+        client.getHostConfiguration().setHost(url.getHost());
+        
+        
+        GetMethod method = new GetMethod(url.getPath());
+        //pretend to be ie
+        method.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
         
         try
         {
-            InputStream input = url.openStream();
-                    
-            try
-            {
-                props.load(input);
-            } finally
-            {
-                input.close();
-            }            
+            client.executeMethod(method);
+            String propsString = method.getResponseBodyAsString();
+            
+            props.load(new ByteArrayInputStream(propsString.getBytes()));
         }
         catch(IOException ioe)
         {
             s_logger.log(Level.WARNING, ioe.getMessage(), ioe );
             props.put("ERROR_MESSAGE", ioe.getMessage());
         }
+        finally
+        {
+            method.releaseConnection();
+        }
+        
+//        Properties props = new Properties();
+//        
+//        try
+//        {
+//            InputStream input = url.openStream();
+//                    
+//            try
+//            {
+//                props.load(input);
+//            } finally
+//            {
+//                input.close();
+//            }            
+//        }
+//        catch(IOException ioe)
+//        {
+//            s_logger.log(Level.WARNING, ioe.getMessage(), ioe );
+//            props.put("ERROR_MESSAGE", ioe.getMessage());
+//        }
                 
         m_host = props.getProperty("HOST");
         m_port = Integer.parseInt(props.getProperty("PORT", "-1"));
         m_serverErrorMessage = props.getProperty("ERROR_MESSAGE", "");
+        m_done = true;
     }
     
     public String getHost()
