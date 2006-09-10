@@ -163,6 +163,8 @@ public class ClientGame implements IGame
   
   public void shutDown()
   {
+      if(m_isGameOver)
+          return;
       m_isGameOver = true;
       ErrorHandler.setGameOver(true);
       m_channelMessenger.unregisterChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
