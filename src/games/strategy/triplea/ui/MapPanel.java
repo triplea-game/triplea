@@ -617,8 +617,11 @@ public class MapPanel extends ImageScrollerLargeView
         //make sure we use the same data for the entire paint
         final GameData data = m_data;
         
+        //if the map fits on screen, dont draw any overlap
+        boolean mapFitsOnScreen = mapFitsOnScreen();
+        
         //handle wrapping off the screen to the left
-        if(x < 0  && m_uiContext.getMapData().scrollWrapX())
+        if(!mapFitsOnScreen && x < 0  && m_uiContext.getMapData().scrollWrapX())
         {
             Rectangle leftBounds = new Rectangle(m_dimensions.width + x, y, -x, getHeight());
             drawTiles(g, images, data, leftBounds,0, undrawnTiles);
@@ -630,7 +633,7 @@ public class MapPanel extends ImageScrollerLargeView
         
         double leftOverlap = x + getWidth() - m_dimensions.getWidth();
         //handle wrapping off the screen to the right
-        if(leftOverlap > 0 && m_uiContext.getMapData().scrollWrapX())
+        if(!mapFitsOnScreen && leftOverlap > 0 && m_uiContext.getMapData().scrollWrapX())
         {
             Rectangle rightBounds = new Rectangle(0 , y, (int) leftOverlap, getHeight());
             drawTiles(g, images, data, rightBounds, leftOverlap, undrawnTiles);
@@ -677,6 +680,11 @@ public class MapPanel extends ImageScrollerLargeView
         
         stopWatch.done();
         
+    }
+
+    boolean mapFitsOnScreen()
+    {
+        return m_model.getMaxWidth() < getWidth();
     }
 
    

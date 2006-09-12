@@ -16,12 +16,22 @@
 
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.*;
-import games.strategy.ui.ImageScrollerLargeView;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.QuadCurve2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +49,7 @@ public class MapRouteDrawer
     /**
      * Draw m_route to the screen, do nothing if null.
      */
-    public static void drawRoute(Graphics2D graphics, RouteDescription routeDescription, ImageScrollerLargeView view, MapData mapData)
+    public static void drawRoute(Graphics2D graphics, RouteDescription routeDescription, MapPanel view, MapData mapData)
     {
         
         if(routeDescription == null)
@@ -120,7 +130,7 @@ public class MapRouteDrawer
 
             drawWithTranslate(graphics, shape, 0);
             
-            if(mapData.scrollWrapX())
+            if(mapData.scrollWrapX()  && !view.mapFitsOnScreen())
             {
                 drawWithTranslate(graphics, shape, translate);
                 drawWithTranslate(graphics, shape, -translate);
@@ -153,7 +163,7 @@ public class MapRouteDrawer
             graphics.setFont(new Font("Dialog", Font.BOLD, 18));
             graphics.drawString(String.valueOf(numTerritories - 1), points[numTerritories - 1].x + textXOffset - xOffset, points[numTerritories - 1].y + textyOffset - yOffset);
             
-            if(mapData.scrollWrapX())
+            if(mapData.scrollWrapX() && !view.mapFitsOnScreen())
             {
                 graphics.drawString(String.valueOf(numTerritories - 1), points[numTerritories - 1].x + textXOffset - xOffset + translate, points[numTerritories - 1].y + textyOffset - yOffset);
                 graphics.drawString(String.valueOf(numTerritories - 1), points[numTerritories - 1].x + textXOffset - xOffset - translate, points[numTerritories - 1].y + textyOffset - yOffset);
