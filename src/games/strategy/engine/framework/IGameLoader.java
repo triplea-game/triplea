@@ -52,8 +52,9 @@ public interface IGameLoader extends java.io.Serializable
 
   /**
    * The game is about to start.
+   * @throws Exception 
    */
-  public void startGame(IGame game, Set<IGamePlayer> players);
+  public void startGame(IGame game, Set<IGamePlayer> players) throws Exception;
   
   /**
    * Get the type of the display

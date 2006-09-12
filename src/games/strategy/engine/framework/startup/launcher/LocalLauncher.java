@@ -83,7 +83,8 @@ public class LocalLauncher implements ILauncher
             public void run()
             {
                 
-                ServerGame game;
+                Exception exceptionLoadingGame = null;
+                ServerGame game = null;
                 try
                 {
                     IServerMessenger messenger = new DummyMessenger();
@@ -105,27 +106,42 @@ public class LocalLauncher implements ILauncher
     
                     m_gameData.getGameLoader().startGame(game, gamePlayers);
                 }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                    exceptionLoadingGame = ex;
+                }
                 finally
                 {
                     m_gameLoadingWindow.doneWait();
                 }
                 
-                s_logger.fine("Game starting");
-                game.startGame();
-                s_logger.fine("Game over");
-
-                
-                m_gameSelectorModel.loadDefaultGame(parent);
-                
-                SwingUtilities.invokeLater(new Runnable()
+                try
                 {
                 
-                    public void run()
+                    if(exceptionLoadingGame == null)
                     {
-                        JOptionPane.getFrameForComponent(parent).setVisible(true);
+                        s_logger.fine("Game starting");
+                        game.startGame();
+                        s_logger.fine("Game over");
                     }
-                
-                });
+                }
+                finally
+                {
+    
+                    
+                    m_gameSelectorModel.loadDefaultGame(parent);
+                    
+                    SwingUtilities.invokeLater(new Runnable()
+                    {
+                    
+                        public void run()
+                        {
+                            JOptionPane.getFrameForComponent(parent).setVisible(true);
+                        }
+                    
+                    });
+                }
                 
             }
         };

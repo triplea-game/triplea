@@ -173,7 +173,15 @@ public class ServerLauncher implements ILauncher
             m_serverGame.setRandomSource(randomSource);
         }
         
-        m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet);
+        try
+        {
+            m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            m_abortLaunch = true;
+        }
 
         m_serverReady.await();
         m_remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
@@ -211,7 +219,7 @@ public class ServerLauncher implements ILauncher
                         {
                             public void run()
                             {
-                                JOptionPane.showMessageDialog(m_ui, "Connection lost to player during startup, game aborted.");
+                                JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
                             }
                         });
                     }

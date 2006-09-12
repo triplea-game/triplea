@@ -91,7 +91,7 @@ public class TripleA implements IGameLoader
         
     }
     
-    public void startGame(final IGame game, final Set<IGamePlayer> players)
+    public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
     {
         try
         {
@@ -146,7 +146,14 @@ public class TripleA implements IGameLoader
                 e.printStackTrace();
             } catch (InvocationTargetException e)
             {
-                e.printStackTrace();
+                if(e.getCause() instanceof Exception)
+                    throw (Exception) e.getCause();
+                else
+                {
+                    e.printStackTrace();
+                    throw new IllegalStateException(e.getCause().getMessage());
+                }
+                     
             }
             
 

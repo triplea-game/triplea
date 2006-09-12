@@ -365,7 +365,20 @@ public class ClientModel implements IMessengerErrorListener
               {
                   //game will be null if we loose the connection
                   if(m_game != null)
-                      data.getGameLoader().startGame(m_game, playerSet);    
+                  {
+                      try
+                      {
+                          data.getGameLoader().startGame(m_game, playerSet);
+                      }
+                      catch(Exception e)
+                      {
+                          e.printStackTrace();
+                          m_messenger.shutDown();
+                          m_gameLoadingWindow.doneWait();
+                          
+                      }
+                  } 
+                          
                   
                   if(!gameRunning)
                       ((IServerReady) m_remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();

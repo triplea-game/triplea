@@ -31,7 +31,12 @@ public class UnitTypeComparator implements Comparator
 
         UnitAttachment ua1 = UnitAttachment.get(u1);
         UnitAttachment ua2 = UnitAttachment.get(u2);
-
+        
+        if(ua1 ==null)
+            throw new IllegalStateException("No unit type attachment for unit type : " + u1.getName());
+        if(ua2 ==null)
+            throw new IllegalStateException("No unit type attachment for unit type : " + u2.getName());
+        
         if (ua1.isFactory() && !ua2.isFactory())
             return 1;
         if (ua2.isFactory() && !ua1.isFactory())
