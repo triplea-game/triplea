@@ -39,6 +39,7 @@ public class UIContext
     
     private static final String UNIT_SCALE_PREF = "UnitScale";
     private static final String MAP_SKIN_PREF = "MapSkin";
+    private static final String MAP_SCALE_PREF = "MapScale";
     
     private static final Logger s_logger = Logger.getLogger(UIContext.class.getName());
     
@@ -56,11 +57,35 @@ public class UIContext
     private List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
     private List<Active> m_activeToDeactivate = new ArrayList<Active>();
     
+    private double m_scale = 1;
     
     public UIContext()
     {
         m_mapImage = new MapImage();
     }
+    
+    public double getScale()
+    {
+        return m_scale;
+    }
+    
+    public void setScale(double scale)
+    {
+        m_scale = scale;
+        m_tileImageFactory.setScale(scale);     
+        
+        
+        Preferences prefs = getPreferencesMapOrSkin(getMapDir());
+        prefs.putDouble(MAP_SCALE_PREF, scale);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
 
     /**
      * Get the preferences for the map. 
@@ -134,13 +159,15 @@ public class UIContext
 
         m_mapData = new MapData(loader);
         
-        double scale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
-        m_unitImageFactory.setResourceLoader(loader, scale);
+        double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
+        m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
+        m_unitImageFactory.setResourceLoader(loader, unitScale);
         
         m_flagIconImageFactory.setResourceLoader(loader);
         m_ipcImageFactory.setResourceLoader(loader);
         
         m_tileImageFactory.setMapDir(loader);
+        m_tileImageFactory.setScale(m_scale);
         m_mapImage.loadMaps(loader); // load map data
         
         m_mapDir = dir;

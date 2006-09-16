@@ -8,6 +8,7 @@ import games.strategy.triplea.ui.*;
 import games.strategy.util.*;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.List;
 
 public class UnitsDrawer implements IDrawable
@@ -45,7 +46,7 @@ public class UnitsDrawer implements IDrawable
         return m_playerName;
     }
     
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
         if(m_overflow)
         {

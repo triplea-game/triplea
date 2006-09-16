@@ -129,7 +129,9 @@ public class ImageScrollerSmallView extends JComponent
     
     private void drawViewBox(Graphics2D g)
     {
-        
+        if(m_model.getBoxWidth() > m_model.getMaxWidth() &&
+           m_model.getBoxHeight() > m_model.getMaxHeight()     )
+            return;
         
         double ratioX = getRatioX();
         double ratioY = getRatioY();

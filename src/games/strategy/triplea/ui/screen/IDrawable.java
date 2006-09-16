@@ -20,6 +20,7 @@ import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.*;
 import java.util.List;
 import java.util.logging.*;
@@ -51,8 +52,14 @@ public interface IDrawable
 
     /**
      * Draw the tile
+     * 
+     * If the graphics are scaled, then unscaled and scaled will be non null.<p>
+     * 
+     * The affine transform will be set to the scaled version.
+     * 
+     * 
      */
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData);
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled);
 
     public int getLevel();
 }
@@ -78,7 +85,7 @@ class TerritoryNameDrawable implements IDrawable
         this.m_uiContext = context;
     }
 
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
         Territory territory = data.getMap().getTerritory(m_territoryName);
 
@@ -168,7 +175,7 @@ class VCDrawable implements IDrawable
         m_location = location;
     }
 
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
         Point point = mapData.getVCPlacementPoint(m_location);
         graphics.drawImage(mapData.getVCImage(), point.x - bounds.x, point.y - bounds.y, null);
@@ -199,7 +206,7 @@ class CapitolMarkerDrawable implements IDrawable
         m_uiContext = uiContext;
     }
 
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
         Image img = m_uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
         Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
@@ -232,7 +239,7 @@ abstract class MapTileDrawable implements IDrawable
 
     protected abstract Image getImage();
 
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
 
         Image img = getImage();
@@ -242,11 +249,16 @@ abstract class MapTileDrawable implements IDrawable
 
         Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
         graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-
+        //the tile images are already scaled
+        if(unscaled != null)
+            graphics.setTransform(unscaled);
+        
         Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing tile images");
         graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y, null);
         drawStopWatch.done();
 
+        if(unscaled != null)
+            graphics.setTransform(scaled);
         if (oldValue == null)
             graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
         else
@@ -326,7 +338,7 @@ class ConvoyZoneDrawable implements IDrawable
         m_territoryName = territoryName;
     }
 
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
 
         Territory territory = data.getMap().getTerritory(m_territoryName);
@@ -374,7 +386,7 @@ class LandTerritoryDrawable implements IDrawable
         m_territoryName = territoryName;
     }
 
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
 
         Territory territory = data.getMap().getTerritory(m_territoryName);

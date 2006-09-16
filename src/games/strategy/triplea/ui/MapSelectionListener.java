@@ -20,8 +20,6 @@
 
 package games.strategy.triplea.ui;
 
-import java.awt.event.MouseEvent;
-
 import games.strategy.engine.data.Territory;
 
 
@@ -32,7 +30,7 @@ import games.strategy.engine.data.Territory;
  */
 public interface MapSelectionListener 
 {
-	public void territorySelected(Territory territory, MouseEvent me);
+	public void territorySelected(Territory territory, MouseDetails md);
 	
 	/**
 	 * The mouse has entered the given territory, 
@@ -40,5 +38,5 @@ public interface MapSelectionListener
 	 */
 	public void mouseEntered(Territory territory);
 	
-	public void mouseMoved(Territory territory, MouseEvent me);
+	public void mouseMoved(Territory territory, MouseDetails md);
 }

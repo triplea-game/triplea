@@ -96,7 +96,7 @@ public class SmallMapImageManager
         {
             Graphics g = largeImage.getGraphics();
             LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
-            drawable.draw(bounds, data, (Graphics2D)g , mapData);
+            drawable.draw(bounds, data, (Graphics2D)g , mapData, null, null);
             g.dispose();
         }
         

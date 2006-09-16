@@ -367,7 +367,7 @@ public class MapData
     /**
      * Get the territory at the x,y co-ordinates could be null.
      */
-    public String getTerritoryAt(int x, int y)
+    public String getTerritoryAt(double x, double y)
     {
         String seaName = null;
 

@@ -17,6 +17,7 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.ref.*;
@@ -38,6 +39,8 @@ public final class TileImageFactory
 
     private static final Logger s_logger = Logger.getLogger(TileImageFactory.class.getName());
     
+    private double m_scale = 1;
+    
     //maps image name to ImageRef
     private HashMap<String, ImageRef> m_imageCache = new HashMap<String, ImageRef>();
 
@@ -52,6 +55,17 @@ public final class TileImageFactory
         return s_showReliefImages;
     }
 
+    public void setScale(double newScale)
+    {
+        if(newScale > 1)
+            throw new IllegalArgumentException("Wrong scale");
+        synchronized(m_mutex)
+        {
+            m_scale = newScale;
+            m_imageCache.clear();
+        }
+    }
+    
     public static void setShowReliefImages(boolean aBool)
     {
         s_showReliefImages = aBool;
@@ -182,7 +196,14 @@ public final class TileImageFactory
                 //we should try to find a way to avoid it, and load the 
                 //png directly as the right type
                 image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
-                Graphics g = image.getGraphics();
+                Graphics2D g = (Graphics2D) image.getGraphics();
+                if(m_scale != 1.0)
+                {
+                    AffineTransform transform = new AffineTransform();
+                    transform.scale(m_scale, m_scale);
+                    g.setTransform(transform);
+                }
+                
                 g.drawImage(fromFile, 0,0, null);
                 g.dispose();
                 fromFile.flush();

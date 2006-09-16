@@ -19,6 +19,8 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.lang.ref.SoftReference;
 import java.util.*;
 import java.util.List;
@@ -42,16 +44,19 @@ public class Tile
     private final int m_x;
     private final int m_y;
     
+    private final double m_scale;
+    
     private final Object m_mutex = new Object();
     
     private final List<IDrawable> m_contents = new ArrayList<IDrawable>();
     
-    public Tile(final Rectangle bounds, int x, int y)
+    public Tile(final Rectangle bounds, int x, int y, final double scale)
     {
         //s_logger.log(Level.FINER, "Tile created for:" + bounds);
         m_bounds = bounds;
         m_x = x;
         m_y = y;
+        m_scale = scale;
         
     }
      
@@ -70,28 +75,35 @@ public class Tile
         
             if(m_imageRef == null)
             {
-                m_imageRef = new SoftReference<Image>(Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false));
+                m_imageRef = new SoftReference<Image>(createBlankImage());
                 m_isDirty = true;
             }
             
             Image image = m_imageRef.get();
             if(image == null)
             {
-                image = Util.createImage((int) m_bounds.getWidth(), (int) m_bounds.getHeight(), false);
+                image = createBlankImage();
                 m_imageRef = new SoftReference<Image>(image);
                 m_isDirty = true;
             }
             
             if(m_isDirty)
             {
-                Graphics g = image.getGraphics();
-                draw((Graphics2D) g, data, mapData);
+                Graphics2D g = (Graphics2D) image.getGraphics();
+                                
+                
+                draw(g, data, mapData);
                 g.dispose();
             }
             
             return image;
         }
         
+    }
+
+    private BufferedImage createBlankImage()
+    {
+        return Util.createImage((int) ( m_bounds.getWidth() * m_scale), (int) (m_bounds.getHeight() * m_scale), false);
     }
     
     
@@ -111,6 +123,20 @@ public class Tile
     
     private void draw(Graphics2D g, GameData data, MapData mapData)
     {
+        AffineTransform unscaled = g.getTransform();
+        AffineTransform scaled;
+        if(m_scale != 1)
+        {
+            scaled = new AffineTransform();
+            scaled.scale(m_scale, m_scale);
+            g.setTransform(scaled);
+        }
+        else
+        {
+            scaled = unscaled;
+        }
+        
+        
         Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + m_bounds);
         
         //clear
@@ -123,7 +149,7 @@ public class Tile
         while (iter.hasNext())
         {
             IDrawable drawable = iter.next();
-            drawable.draw(m_bounds, data, g, mapData);
+            drawable.draw(m_bounds, data, g, mapData, unscaled, scaled);
         }
         m_isDirty = false;
         

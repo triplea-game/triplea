@@ -43,9 +43,7 @@ import games.strategy.util.Util;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -785,7 +783,7 @@ public class MovePanel extends ActionPanel
     private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener()
     {
     
-        public void unitsSelected(List<Unit> units, Territory t, MouseEvent me)
+        public void unitsSelected(List<Unit> units, Territory t, MouseDetails me)
         {
             if(!m_listening)
                 return;
@@ -798,7 +796,7 @@ public class MovePanel extends ActionPanel
           
 
             
-            boolean rightMouse = ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0);
+            boolean rightMouse = me.isRightButton();
             boolean noSelectedTerritory = (m_firstSelectedTerritory == null);
             boolean isFirstSelectedTerritory = (m_firstSelectedTerritory == t);
 
@@ -815,7 +813,7 @@ public class MovePanel extends ActionPanel
             
         }
 
-        private void selectUnitsToMove(List<Unit> units, Territory t, MouseEvent me)
+        private void selectUnitsToMove(List<Unit> units, Territory t, MouseDetails me)
         {
             
             //are any of the units ours, note - if no units selected thats still ok
@@ -880,10 +878,8 @@ public class MovePanel extends ActionPanel
             {
                 setFirstSelectedTerritory(t);
                 
-                m_mouseSelectedPoint = me.getPoint();
-                m_mouseCurrentPoint = me.getPoint();
-                adjustPointForMapOffset(m_mouseSelectedPoint);
-                adjustPointForMapOffset(m_mouseCurrentPoint);
+                m_mouseSelectedPoint = me.getMapPoint();
+                m_mouseCurrentPoint = me.getMapPoint();
                 
                 CANCEL_MOVE_ACTION.setEnabled(true);                
             }
@@ -918,7 +914,7 @@ public class MovePanel extends ActionPanel
                     getFirstSelectedTerritory()));
         }
 
-        private void deselectUnits(List<Unit> units, Territory t, MouseEvent me)
+        private void deselectUnits(List<Unit> units, Territory t, MouseDetails me)
         {         
             
             
@@ -1045,19 +1041,10 @@ public class MovePanel extends ActionPanel
     };
     
     
-    /**
-     * 
-     */
-    private  void adjustPointForMapOffset(Point p)
-    {
-        p.x +=  getMap().getXOffset();
-        p.y += getMap().getYOffset();
-    }
-    
     private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
     {
 
-        public void mouseEnter(List<Unit> units, Territory territory, MouseEvent me)
+        public void mouseEnter(List<Unit> units, Territory territory, MouseDetails me)
         {
             if(!m_listening)
                 return;
@@ -1076,21 +1063,19 @@ public class MovePanel extends ActionPanel
     private final MapSelectionListener MAP_SELECTION_LISTENER = new
         DefaultMapSelectionListener()
     {
-        public void territorySelected(Territory territory, MouseEvent me)
+        public void territorySelected(Territory territory, MouseDetails me)
         {
            
         }
         
-        public void mouseMoved(Territory territory, MouseEvent me)
+        public void mouseMoved(Territory territory, MouseDetails me)
         {
             if(!m_listening)
                 return;
             
             if (getFirstSelectedTerritory() != null && territory != null)
             {
-                m_mouseCurrentPoint= me.getPoint();
-                adjustPointForMapOffset(m_mouseCurrentPoint);
-                
+                m_mouseCurrentPoint= me.getMapPoint();
                 updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), territory));
             }
         }

@@ -182,7 +182,7 @@ public class PlacePanel extends ActionPanel
 
     private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
     {
-        public void territorySelected(Territory territory, MouseEvent e)
+        public void territorySelected(Territory territory, MouseDetails e)
         {
             if (!getActive() || (e.getButton() != MouseEvent.BUTTON1))
                 return;

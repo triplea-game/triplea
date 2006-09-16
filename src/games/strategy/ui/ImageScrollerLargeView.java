@@ -56,12 +56,12 @@ public class ImageScrollerLargeView extends JComponent
     private final static int SCROLL_DISTANCE = 30;
 
     protected final ImageScrollModel m_model;
-
-
+    
+    protected double m_scale = 1;
+    
     private int m_drag_scrolling_lastx;
     private int m_drag_scrolling_lasty;
     
-    protected Dimension m_dimensions;
 
     private ActionListener m_timerAction = new ActionListener()
     {
@@ -93,17 +93,18 @@ public class ImageScrollerLargeView extends JComponent
     private int m_edge = NONE;
     private List<ScrollListener> m_scrollListeners = new ArrayList<ScrollListener>();
 
-    /** Creates new ImageScroller */
-    public ImageScrollerLargeView(Dimension dimensions, ImageScrollModel model)
+    /** Creates new ImageScroller 
+     *  */
+    public ImageScrollerLargeView(Dimension dimension, ImageScrollModel model)
     {
         super();
 
         m_model = model;
+        m_model.setMaxBounds((int)dimension.getWidth(), (int)dimension.getHeight());
         
-        m_dimensions = dimensions;
 
-        setPreferredSize(m_dimensions);
-        setMaximumSize(m_dimensions);
+        setPreferredSize(getImageDimensions());
+        setMaximumSize(getImageDimensions());
 
         addMouseWheelListener(MOUSE_WHEEL_LISTENER);
         addMouseListener(MOUSE_LISTENER);
@@ -126,13 +127,6 @@ public class ImageScrollerLargeView extends JComponent
         });
     }
 
-    // Beagle Code used to chnage map skin
-    public void setDimensions(Dimension dimensions)
-    {
-
-        m_dimensions = new Dimension(dimensions);
-        m_model.setMaxBounds(getImageWidth(), getImageHeight());
-    }
 
     /**
      * For subclasses needing to set the location of the image.
@@ -155,12 +149,12 @@ public class ImageScrollerLargeView extends JComponent
 
     public int getImageWidth()
     {
-        return (int) m_dimensions.getWidth();
+        return m_model.getMaxWidth();
     }
 
     public int getImageHeight()
     {
-        return (int) m_dimensions.getHeight();
+        return m_model.getMaxHeight();
     }
 
     
@@ -202,11 +196,14 @@ public class ImageScrollerLargeView extends JComponent
         else if ((m_edge & RIGHT) != 0)
             dx = SCROLL_DISTANCE;
 
+        dx = (int)  (dx / m_scale);
+        dy = (int)  (dy / m_scale);
+        
         int newX = (m_model.getX() + dx);
-        if (newX > (int) m_dimensions.getWidth() - getWidth())
-            newX -= (int) m_dimensions.getWidth();
+        if (newX > (int) m_model.getMaxWidth() - getWidth())
+            newX -= (int) m_model.getMaxWidth();
         if (newX < -getWidth())
-            newX += (int) m_dimensions.getWidth();
+            newX += (int) m_model.getMaxWidth();
         // newX = checkBounds(newX, m_originalImage.getWidth(this),
         // this.getWidth(), true);
 
@@ -219,7 +216,7 @@ public class ImageScrollerLargeView extends JComponent
 
     public Dimension getImageDimensions()
     {
-        return new Dimension(m_dimensions);
+        return new Dimension(m_model.getMaxWidth(), m_model.getMaxHeight());
     }
 
   
@@ -260,9 +257,21 @@ public class ImageScrollerLargeView extends JComponent
     {
         public void componentResized(ComponentEvent e)
         {
-            m_model.setBoxDimensions(getWidth(), getHeight());
+            refreshBoxSize();
         }
+
     };
+    
+    protected void refreshBoxSize()
+    {
+        m_model.setBoxDimensions( (int) (getWidth() / m_scale), (int) (getHeight() / m_scale));
+    }
+
+    public void setScale(double scale)
+    {
+        m_scale = scale;
+        refreshBoxSize();
+    }
 
     /**
      * used for the mouse wheel
@@ -287,10 +296,10 @@ public class ImageScrollerLargeView extends JComponent
 
             //move left and right and test for wrap
             int newX = (m_model.getX() + dx);
-            if (newX > (int)  m_dimensions.getWidth() - getWidth())
-                newX -= (int)  m_dimensions.getWidth();
+            if (newX > (int)  m_model.getMaxWidth() - getWidth())
+                newX -= (int)  m_model.getMaxWidth();
             if (newX < -getWidth())
-                newX += (int)  m_dimensions.getWidth();
+                newX += (int)  m_model.getMaxWidth();
 
             //move up and down and test for edges
             int newY = m_model.getY() + dy;
@@ -335,15 +344,15 @@ public class ImageScrollerLargeView extends JComponent
                     m_insideCount = 0;
 
                 //compute the amount to move
-                int dx = -(m_drag_scrolling_lastx - x) * ((int)  m_dimensions.getWidth()- width) / width;
-                int dy = -(m_drag_scrolling_lasty - y) * ((int)  m_dimensions.getHeight() - height) / height;
+                int dx = -(m_drag_scrolling_lastx - x) * ((int)  m_model.getMaxWidth()- width) / width;
+                int dy = -(m_drag_scrolling_lasty - y) * ((int)  m_model.getMaxHeight() - height) / height;
 
                 //move left and right and test for wrap
                 int newX = (m_model.getX() + dx);
-                if (newX > (int)  m_dimensions.getWidth() - getWidth())
-                    newX -= (int)  m_dimensions.getWidth();
+                if (newX > (int)  m_model.getMaxWidth() - getWidth())
+                    newX -= (int)  m_model.getMaxHeight();
                 if (newX < -getWidth())
-                    newX += (int)  m_dimensions.getWidth();
+                    newX += (int)  m_model.getMaxHeight();
 
                 // newX = checkBounds(newX, m_originalImage.getWidth(this),
                 // this.getWidth(), true);
@@ -417,6 +426,17 @@ public class ImageScrollerLargeView extends JComponent
             scroll();
         }
     }
+    
+    protected double getScaledWidth()
+    {
+        return getWidth() / m_scale;
+    }
+    
+    protected double getScaledHeight()
+    {
+        return getHeight() / m_scale;
+    }
+
 
     public void deactivate()
     {

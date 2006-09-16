@@ -21,6 +21,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
 import java.util.logging.*;
@@ -48,15 +49,16 @@ public class TileManager
     private final Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<UnitsDrawer>();
     
     private final UIContext m_uiContext;
-    
+    private double m_scale = 1;
     
     
     public TileManager(UIContext context)
     {
         m_uiContext = context;
+        m_scale = context.getScale();
     }
 
-    public List<Tile> getTiles(Rectangle bounds)
+    public List<Tile> getTiles(Rectangle2D bounds)
     {
         synchronized(m_mutex)
         {
@@ -91,7 +93,7 @@ public class TileManager
 	        {
 	            for (int y = 0; (y) * TILE_SIZE < bounds.height; y++)
 	            {
-	                m_tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x,y));
+	                m_tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x,y, m_scale));
 	            }
 	        }
         }
@@ -459,7 +461,7 @@ public class TileManager
                  break;
              if(drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)
                  continue;
-             drawer.draw(bounds, data, graphics, mapData);
+             drawer.draw(bounds, data, graphics, mapData, null, null);
         }
         
         
@@ -479,7 +481,7 @@ public class TileManager
 
             
             TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(),  100);
-            told.draw(bounds, data, graphics, mapData);
+            told.draw(bounds, data, graphics, mapData, null, null);
         }
 
           Iterator iter = mapData.getPolygons(selected).iterator();
@@ -520,7 +522,7 @@ public class TileManager
         }
     }
     
-    public Tuple<Territory,List<Unit>> getUnitsAtPoint(int x, int y, GameData gameData)
+    public Tuple<Territory,List<Unit>> getUnitsAtPoint(double x, double y, GameData gameData)
     {
         synchronized(m_mutex)
         {
@@ -553,5 +555,12 @@ public class TileManager
         m_territoryOverlays.remove(territory.getName());
         updateTerritory(territory, data, mapData);
     }
+
+    public void setScale(double scale)
+    {
+        m_scale = scale;
+    }
+
+ 
     
 }

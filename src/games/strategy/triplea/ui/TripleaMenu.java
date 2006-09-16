@@ -15,28 +15,64 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.debug.Console;
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.PropertiesUI;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.networkMaintenance.*;
+import games.strategy.engine.framework.ClientGame;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
+import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.history.*;
-import games.strategy.engine.lobby.client.ui.action.*;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Round;
+import games.strategy.engine.history.Step;
+import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
+import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
-import games.strategy.engine.random.*;
+import games.strategy.engine.random.IRandomStats;
+import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
-import games.strategy.net.*;
+import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.image.TileImageFactory;
 
-import java.awt.event.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeSet;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.KeyStroke;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -57,6 +93,7 @@ public class TripleaMenu extends JMenuBar
         m_frame = frame;
         
         createFileMenu(this);
+        createViewMenu(this);
         createGameMenu(this);
         createNetworkMenu(this);
         createLobbyMenu(this);
@@ -239,12 +276,10 @@ public class TripleaMenu extends JMenuBar
         menuGame.add(m_frame.getShowGameAction());
         menuGame.add(m_frame.getShowHistoryAction());
         addShowVerifiedDice(menuGame);
-        // Put in unit size menu
-        addUnitSizeMenu(menuGame);
 
-        addMapSkinsMenu(menuGame);
+        
         addEnableSound(menuGame);
-        addShowMapDetails(menuGame);
+        
         menuGame.addSeparator();
         addGameOptionsMenu(menuGame);
         addShowEnemyCasualties(menuGame);
@@ -254,6 +289,94 @@ public class TripleaMenu extends JMenuBar
         
     }
     
+    
+    /**
+     * @param menuBar
+     */
+    private void createViewMenu(JMenuBar menuBar)
+    {
+        JMenu menuGame = new JMenu("View");
+        menuBar.add(menuGame);
+        
+        
+        addZoomMenu(menuGame);
+        addUnitSizeMenu(menuGame);
+        addMapSkinsMenu(menuGame);
+        addShowMapDetails(menuGame);
+        
+    }
+
+    
+    private void addZoomMenu(JMenu menuGame)
+    {
+        Action mapZoom = new AbstractAction("Map Zoom")
+        {
+
+            public void actionPerformed(ActionEvent arg0)
+            {
+                final SpinnerNumberModel model = new SpinnerNumberModel();
+                model.setMaximum(100);
+                model.setMinimum(15);
+                model.setStepSize(1);
+                model.setValue( (int) (m_frame.getMapPanel().getScale() * 100));
+                JSpinner spinner = new JSpinner(model);
+                
+                JPanel panel = new JPanel();
+                panel.setLayout(new BorderLayout());
+                panel.add(new JLabel("Choose Map Scale Percentage"), BorderLayout.NORTH);
+                panel.add(spinner, BorderLayout.CENTER);
+                
+                JPanel buttons = new JPanel();
+                JButton fitWidth = new JButton("Fit Width");
+                buttons.add(fitWidth);
+                JButton fitHeight = new JButton("Fit Height");
+                buttons.add(fitHeight);
+
+                panel.add(buttons, BorderLayout.SOUTH);
+                
+                fitWidth.addActionListener(new ActionListener()
+                {
+                
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        double screenWidth = m_frame.getMapPanel().getWidth();
+                        double mapWidth = m_frame.getMapPanel().getImageWidth();
+                        double ratio =  screenWidth / mapWidth;
+                        ratio = Math.max(0.15, ratio);
+                        model.setValue((int) (ratio * 100));
+                    }
+                
+                });
+                
+                fitHeight.addActionListener(new ActionListener()
+                {
+                
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        double screenHeight = m_frame.getMapPanel().getHeight();
+                        double mapHeight = m_frame.getMapPanel().getImageHeight();
+                        double ratio =  screenHeight / mapHeight;
+                        ratio = Math.max(0.15, ratio);
+                        model.setValue((int) (ratio * 100));
+                
+                    }
+                
+                });
+
+                
+                
+                int result = JOptionPane.showOptionDialog(m_frame, panel, "Choose Map Scale", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,null, new String[] {"OK","Cancel"}, 0);
+                if(result != 0)
+                    return;
+                m_frame.getMapPanel().setScale(((Number)model.getValue() ).doubleValue() / (double) 100.0);
+            }
+        
+        };
+        
+        menuGame.add(mapZoom);
+        
+    }
+
     /**
      * @param menuBar
      */

@@ -15,7 +15,7 @@
 
 package games.strategy.ui;
 
-import java.util.*;
+import java.util.Observable;
 
 /**
  * 
@@ -39,8 +39,6 @@ public class ImageScrollModel extends Observable
     private int m_maxWidth;
     private int m_maxHeight;
     private boolean m_scrollX;
-    
-    
     
     public void setMaxBounds(int maxWidth, int maxHeight)
     {
@@ -148,6 +146,8 @@ public class ImageScrollModel extends Observable
         enforceBounds();
         updateListeners();
     }
+
+    
     
     
 }

@@ -4,6 +4,7 @@ import games.strategy.engine.data.*;
 import games.strategy.triplea.ui.MapData;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.*;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class TerritoryOverLayDrawable implements IDrawable
 
     
     
-    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData)
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
         Territory territory = data.getMap().getTerritory(m_territoryName);
        
