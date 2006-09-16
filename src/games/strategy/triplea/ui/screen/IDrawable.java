@@ -13,17 +13,30 @@
  */
 package games.strategy.triplea.ui.screen;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.image.*;
-import games.strategy.triplea.ui.*;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.ui.MapData;
+import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.util.Stopwatch;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Sean Bridges
@@ -224,19 +237,22 @@ class CapitolMarkerDrawable implements IDrawable
 
 abstract class MapTileDrawable implements IDrawable
 {
-
     protected boolean m_noImage = false;
-
     protected final int m_x;
-
     protected final int m_y;
+    protected final UIContext m_uiContext;
+    protected boolean m_unscaled;
 
-    public MapTileDrawable(final int x, final int y)
+    public MapTileDrawable(final int x, final int y, UIContext context)
     {
         m_x = x;
         m_y = y;
+        m_uiContext = context;
+        m_unscaled = false;
     }
 
+    public abstract MapTileDrawable getUnscaledCopy();
+    
     protected abstract Image getImage();
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
@@ -265,19 +281,29 @@ abstract class MapTileDrawable implements IDrawable
             graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
 
     }
+    
+    
+    
 
 }
 
 class ReliefMapDrawable extends MapTileDrawable
 {
-    private final UIContext m_context;
+    
 
     public ReliefMapDrawable(int x, int y, UIContext context)
     {
-        super(x, y);
-        m_context = context;
+        super(x, y, context);
+        
     }
 
+    public MapTileDrawable getUnscaledCopy()
+    {
+       ReliefMapDrawable copy = new ReliefMapDrawable(m_x, m_y, m_uiContext);
+       copy.m_unscaled = true;
+       return copy;
+    }
+    
     protected Image getImage()
     {
         if (m_noImage)
@@ -286,7 +312,12 @@ class ReliefMapDrawable extends MapTileDrawable
         if (!TileImageFactory.getShowReliefImages())
             return null;
 
-        Image rVal = m_context.getTileImageFactory().getReliefTile(m_x, m_y);
+        Image rVal;
+        if(m_unscaled)
+            rVal = m_uiContext.getTileImageFactory().getUnscaledUncachedReliefTile(m_x, m_y);
+        else
+            rVal = m_uiContext.getTileImageFactory().getReliefTile(m_x, m_y);
+        
         if (rVal == null)
             m_noImage = true;
 
@@ -303,20 +334,31 @@ class ReliefMapDrawable extends MapTileDrawable
 class BaseMapDrawable extends MapTileDrawable
 {
 
-    private final UIContext m_uiContext;
-
     public BaseMapDrawable(final int x, final int y, UIContext context)
     {
-        super(x, y);
-        m_uiContext = context;
+        super(x, y, context);
     }
 
+    public MapTileDrawable getUnscaledCopy()
+    {
+        BaseMapDrawable copy = new BaseMapDrawable(m_x, m_y, m_uiContext);
+       copy.m_unscaled = true;
+       return copy;
+    }
+
+    
     protected Image getImage()
     {
         if (m_noImage)
             return null;
 
-        Image rVal = m_uiContext.getTileImageFactory().getBaseTile(m_x, m_y);
+        Image rVal;
+        
+        if(m_unscaled)
+            rVal = m_uiContext.getTileImageFactory().getUnscaledUncachedBaseTile(m_x, m_y);
+        else
+            rVal = m_uiContext.getTileImageFactory().getBaseTile(m_x, m_y);
+        
         if (rVal == null)
             m_noImage = true;
 
@@ -327,6 +369,8 @@ class BaseMapDrawable extends MapTileDrawable
     {
         return BASE_MAP_LEVEL;
     }
+    
+    
 }
 
 class ConvoyZoneDrawable implements IDrawable

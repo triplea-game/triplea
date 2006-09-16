@@ -450,6 +450,26 @@ public class TileManager
             drawablesSet.addAll(tile.getDrawables());
         }
         
+        //the base tiles are scaled to save memory
+        //but we want to draw them unscaled here
+        //so unscale them
+        if(m_scale != 1)
+        {
+            List<IDrawable> toAdd = new ArrayList<IDrawable>();
+            Iterator<IDrawable> iter = drawablesSet.iterator();
+            while(iter.hasNext())
+            {
+                IDrawable drawable = iter.next();
+                if(drawable instanceof MapTileDrawable)
+                {
+                    iter.remove();
+                    toAdd.add(((MapTileDrawable) drawable).getUnscaledCopy()); 
+                }
+            }
+            drawablesSet.addAll(toAdd);
+                
+        }
+        
         
         List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
         Collections.sort(orderedDrawables, new DrawableComparator());

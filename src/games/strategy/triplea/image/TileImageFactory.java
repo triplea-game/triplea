@@ -120,7 +120,18 @@ public final class TileImageFactory
         String fileName = getBaseTileImageName(x, y);
         return getImage(fileName, false);
     }
-
+    
+    public Image getUnscaledUncachedBaseTile(int x, int y)
+    {
+        String fileName = getBaseTileImageName(x, y);
+        
+        URL url = m_resourceLoader.getResource(fileName);
+        if (url == null)
+            return null;
+        
+        return loadImage(url, fileName, false,false,false);
+    }
+    
     /**
      * @param x
      * @param y
@@ -149,7 +160,7 @@ public final class TileImageFactory
             if (url == null)
                 return null;
 
-            startLoadingImage(url, fileName, transparent);
+            loadImage(url, fileName, transparent, true, true);
         }
         return getImage(fileName, transparent);
     }
@@ -160,6 +171,20 @@ public final class TileImageFactory
         return getImage(fileName, true);
     }
 
+    
+    public Image getUnscaledUncachedReliefTile(int x, int y)
+    {
+        String fileName = getReliefTileImageName(x, y);
+        
+        URL url = m_resourceLoader.getResource(fileName);
+        if (url == null)
+            return null;
+        
+        return loadImage(url, fileName, true,false,false);
+    }
+
+
+    
     /**
      * @param x
      * @param y
@@ -176,7 +201,7 @@ public final class TileImageFactory
      * @param imageLocation
      * @return
      */
-    private void startLoadingImage(URL imageLocation, String fileName, boolean transparent)
+    private Image loadImage(URL imageLocation, String fileName, boolean transparent, boolean cache, boolean scale)
     {
         synchronized (m_mutex)
         {
@@ -197,7 +222,7 @@ public final class TileImageFactory
                 //png directly as the right type
                 image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
                 Graphics2D g = (Graphics2D) image.getGraphics();
-                if(m_scale != 1.0)
+                if(scale && m_scale != 1.0)
                 {
                     AffineTransform transform = new AffineTransform();
                     transform.scale(m_scale, m_scale);
@@ -215,7 +240,9 @@ public final class TileImageFactory
 		    }
 		    
             ImageRef ref = new ImageRef(image);
-            m_imageCache.put(fileName, ref);
+            if(cache)
+                m_imageCache.put(fileName, ref);
+            return image;
         }
     }
     
