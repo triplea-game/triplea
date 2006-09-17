@@ -80,6 +80,8 @@ public class MapPanel extends ImageScrollerLargeView
     private final UIContext m_uiContext;
     
 
+    private final LinkedBlockingQueue<Tile> m_undrawnTiles = new LinkedBlockingQueue<Tile>();
+    
     private List<Unit> m_highlightUnits;
     
     /** Creates new MapPanel */
@@ -90,6 +92,7 @@ public class MapPanel extends ImageScrollerLargeView
         m_uiContext = uiContext;
         m_scale = uiContext.getScale();
         m_backgroundDrawer = new BackgroundDrawer(this);
+        
         m_tileManager = new TileManager(m_uiContext);
         
         
@@ -134,12 +137,19 @@ public class MapPanel extends ImageScrollerLargeView
             {
                 //super.deactivate
                 MapPanel.this.deactivate();
+                m_undrawnTiles.clear();
+                m_backgroundDrawer.stop();
             }
         
         });
         
         
        
+    }
+    
+    public LinkedBlockingQueue<Tile> getUndrawnTiles()
+    {
+        return m_undrawnTiles;
     }
 
     private void recreateTiles(GameData data, UIContext uiContext)
@@ -531,7 +541,7 @@ public class MapPanel extends ImageScrollerLargeView
         m_data.addDataChangeListener(TECH_UPDATE_LISTENER);
         
         //stop painting in the background
-        m_backgroundDrawer.setTiles(Collections.<Tile>emptySet());
+        m_undrawnTiles.clear();
         
         m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
 
@@ -712,7 +722,8 @@ public class MapPanel extends ImageScrollerLargeView
         updateUndrawnTiles(undrawnTiles, 767, false);
         
         
-        m_backgroundDrawer.setTiles(undrawnTiles);
+        m_undrawnTiles.clear();
+        m_undrawnTiles.addAll(undrawnTiles);
         
         stopWatch.done();
         
@@ -978,7 +989,7 @@ class RouteDescription
 
 class BackgroundDrawer implements Runnable
 {
-    private final LinkedBlockingQueue<Tile> m_tiles = new LinkedBlockingQueue<Tile>();
+    
     
     //use a weak reference, if we see the panel is gc'd, then we can stop this thread
     private final WeakReference<MapPanel> m_mapPanelRef;
@@ -989,27 +1000,27 @@ class BackgroundDrawer implements Runnable
     }
     
     public void stop()
-    {        
-        m_mapPanelRef.clear();
-        m_tiles.clear();
-        //the thread will eventually wake up and notice we are done
-        
-    }
-    
-    public void setTiles(Collection<Tile> aCollection) 
     {
-        m_tiles.clear();
-        m_tiles.addAll(aCollection);
+        //the thread will eventually wake up and notice we are done
+        m_mapPanelRef.clear();
     }
     
     public void run()
     {
+        
         while(m_mapPanelRef.get() != null)
         {
+            LinkedBlockingQueue<Tile> undrawnTiles;
+            MapPanel panel = m_mapPanelRef.get();
+            if(panel == null)
+                continue;
+            undrawnTiles = panel.getUndrawnTiles();
+            panel = null;
+            
             Tile tile;
             try
             {
-                tile = m_tiles.poll(2000, TimeUnit.MILLISECONDS);
+                tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e)
             {
                continue;
