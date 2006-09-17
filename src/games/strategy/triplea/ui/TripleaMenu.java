@@ -370,7 +370,13 @@ public class TripleaMenu extends JMenuBar
                 int result = JOptionPane.showOptionDialog(m_frame, panel, "Choose Map Scale", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,null, new String[] {"OK","Cancel"}, 0);
                 if(result != 0)
                     return;
-                m_frame.getMapPanel().setScale(((Number)model.getValue() ).doubleValue() / (double) 100.0);
+                
+                double ratio = ((Number)model.getValue() ).doubleValue() / (double) 100.0;
+                //we want the ratio to be a multiple of 1/256
+                //so that the tiles have integer widths and heights
+                ratio = ((int) (ratio * 256)) / ((double) 256);
+                
+                m_frame.getMapPanel().setScale(ratio);
             }
         
         };
