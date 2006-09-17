@@ -86,4 +86,9 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
   {
     return getName().compareTo(o.getName());
   }
+
+  public String getType()
+  {
+    return UnitHolder.TERRITORY;
+  }
 }

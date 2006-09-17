@@ -159,29 +159,32 @@ class AddUnits extends Change
 
     private final String m_name;
     private final Collection<Unit> m_units;
+    private final String m_type;
 
     AddUnits(UnitCollection collection, Collection<Unit> units)
     {
         m_units = new ArrayList<Unit>(units);
         m_name = collection.getHolder().getName();
+        m_type = collection.getHolder().getType();
     }
 
-    AddUnits(String name, Collection<Unit> units)
+    AddUnits(String name, String type, Collection<Unit> units)
     {
         m_units = new ArrayList<Unit>(units);
+        m_type = type;
         m_name = name;
     }
 
     public Change invert()
     {
 
-        return new RemoveUnits(m_name, m_units);
+        return new RemoveUnits(m_name, m_type, m_units);
     }
 
     protected void perform(GameData data)
     {
 
-        UnitHolder holder = data.getUnitHolder(m_name);
+        UnitHolder holder = data.getUnitHolder(m_name, m_type);
         holder.getUnits().addAllUnits(m_units);
     }
 
@@ -200,23 +203,25 @@ class RemoveUnits extends Change
 
     private final String m_name;
     private final Collection<Unit> m_units;
+    private final String m_type;
 
     RemoveUnits(UnitCollection collection, Collection<Unit> units)
     {
 
-        this(collection.getHolder().getName(), units);
+        this(collection.getHolder().getName(), collection.getHolder().getType(), units);
     }
  
-    RemoveUnits(String name, Collection<Unit> units)
+    RemoveUnits(String name, String type, Collection<Unit> units)
     {
-
+        
         m_units = new ArrayList<Unit>(units);
         m_name = name;
+        m_type = type;
     }
 
-    RemoveUnits(String name, Collection<Unit> units, boolean isCasualty)
+    RemoveUnits(String name, String type, Collection<Unit> units, boolean isCasualty)
     {
-
+        m_type = type;
         m_units = new ArrayList<Unit>(units);
         m_name = name;
     }
@@ -224,13 +229,13 @@ class RemoveUnits extends Change
     public Change invert()
     {
 
-        return new AddUnits(m_name, m_units);
+        return new AddUnits(m_name, m_type, m_units);
     }
 
     protected void perform(GameData data)
     {
 
-        UnitHolder holder = data.getUnitHolder(m_name);
+        UnitHolder holder = data.getUnitHolder(m_name, m_type);
         if(!holder.getUnits().containsAll(m_units))
         {
             throw new IllegalStateException("Not all units present in:" + m_name + ".  Trying to remove:" + m_units + " present:" + holder.getUnits().getUnits());

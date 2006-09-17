@@ -192,12 +192,18 @@ public class GameData implements java.io.Serializable
 		return m_delegateList;
 	}
 
-	public UnitHolder getUnitHolder(String name)
+    /**
+     * 
+     */
+	public UnitHolder getUnitHolder(String name, String type)
 	{
-		//two choices
-		if(m_map.getTerritory(name) != null)
+		if(type.equals(UnitHolder.PLAYER))
+            return m_playerList.getPlayerID(name);
+        else if(type.equals(UnitHolder.TERRITORY))
 			return m_map.getTerritory(name);
-		return m_playerList.getPlayerID(name);
+        else
+            throw new IllegalStateException("Invalid type:" + type);
+		
 	}
 
 	public GameProperties getProperties()

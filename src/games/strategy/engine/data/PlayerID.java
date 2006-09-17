@@ -90,6 +90,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return "PlayerID named:" + getName();
 	}
 
+    public String getType()
+    {
+        return UnitHolder.PLAYER;
+    }
+
 
 }
 
