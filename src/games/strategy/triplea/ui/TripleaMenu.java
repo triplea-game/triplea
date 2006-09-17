@@ -343,6 +343,8 @@ public class TripleaMenu extends JMenuBar
                         double mapWidth = m_frame.getMapPanel().getImageWidth();
                         double ratio =  screenWidth / mapWidth;
                         ratio = Math.max(0.15, ratio);
+                        ratio = Math.min(1, ratio);
+                        
                         model.setValue((int) (ratio * 100));
                     }
                 
