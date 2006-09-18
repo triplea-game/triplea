@@ -102,6 +102,7 @@ public class LobbyGamePanel extends JPanel
         
         toolBar.add(m_hostGame);
         toolBar.add(m_joinGame);
+        toolBar.setFloatable(false);
         
         add(toolBar, BorderLayout.SOUTH);
     }

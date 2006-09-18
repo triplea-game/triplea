@@ -4,6 +4,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.server.*;
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.util.MD5Crypt;
 
 import java.awt.event.*;
@@ -18,8 +19,16 @@ public class LobbyMenu extends JMenuBar
     public LobbyMenu(LobbyFrame frame)
     {
         m_frame = frame;
-        createFileMenu(this);
+        
+        //file only has one value
+        //and on mac it is in the apple menu
+        if(!GameRunner.isMac())
+            createFileMenu(this);
+        else
+            MacLobbyWrapper.registerMacShutdownHandler(m_frame);
+            
         createAccountMenu(this);
+        createSettingsMenu(this);
     }
 
     private void createAccountMenu(LobbyMenu menuBar)
@@ -29,6 +38,34 @@ public class LobbyMenu extends JMenuBar
         
         addUpdateAccountMenu(account);
         
+    }
+    
+    private void createSettingsMenu(LobbyMenu menuBar)
+    {
+        JMenu settings = new JMenu("Settings");
+        menuBar.add(settings);
+        
+        addSoundMenu(settings);
+        
+    }
+
+    
+    private void addSoundMenu(JMenu parentMenu)
+    {
+        final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
+
+        soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
+        //temporarily disable sound
+
+        soundCheckBox.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
+            }
+        });
+        parentMenu.add(soundCheckBox);
+
     }
 
     private void addUpdateAccountMenu(JMenu account)
@@ -88,11 +125,7 @@ public class LobbyMenu extends JMenuBar
         
         // Mac OS X automatically creates a Quit menu item under the TripleA menu, 
         //     so all we need to do is register that menu item with triplea's shutdown mechanism
-        if (isMac)
-        {
-                MacLobbyWrapper.registerMacShutdownHandler(m_frame);
-        }
-        else
+        if (!isMac)
         {   // On non-Mac operating systems, we need to manually create an Exit menu item
                 JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
                 {

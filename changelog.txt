@@ -1,3 +1,5 @@
+* allow for map scaling (sgb)
+
 * let ai play in multiplayer games (sgb)
 
 * fix [ 1533252 ] problem clearing out pbem (sgb)
