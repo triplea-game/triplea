@@ -61,6 +61,7 @@ public class TripleAFrame extends JFrame
     private JLabel m_message = new JLabel("No selection");
     private JLabel m_step = new JLabel("xxxxxx");
     private JLabel m_round = new JLabel("xxxxxx");
+    private JLabel m_player = new JLabel("xxxxxx");
     private ActionButtons m_actionButtons;
     private Set<IGamePlayer> m_localPlayers;
     private JPanel m_gameMainPanel = new JPanel();
@@ -152,12 +153,18 @@ public class TripleAFrame extends JFrame
         JPanel stepPanel = new JPanel();
         stepPanel.setLayout(new GridBagLayout());
         stepPanel.add(m_step,
-                new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        stepPanel.add(m_round, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0,
+                new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        stepPanel.add(m_player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0,
                 0));
+
+        stepPanel.add(m_round, new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0,
+                0));
+
+        
 
         m_step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
         m_round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+        m_player.setBorder(new EtchedBorder(EtchedBorder.RAISED));
         m_step.setHorizontalTextPosition(SwingConstants.LEADING);
 
         m_gameSouthPanel.add(stepPanel, BorderLayout.EAST);
@@ -207,6 +214,13 @@ public class TripleAFrame extends JFrame
         //we have already shut down
         if(m_uiContext == null)
             return;
+        
+        
+        if(GameRunner.isMac()) 
+        {
+            //this frame should not handle shutdowns anymore
+            MacWrapper.unregisterShutdownHandler();
+        }
         
         m_uiContext.shutDown();
         if(m_chatPanel != null)
@@ -259,6 +273,7 @@ public class TripleAFrame extends JFrame
         m_statsPanel = null;
         m_step = null;
         m_round = null;
+        m_player = null;
         m_tabsPanel = null;
         
         m_showGameAction = null;
@@ -582,6 +597,8 @@ public class TripleAFrame extends JFrame
 
         m_round.setText("Round:" + round + " ");
         m_step.setText(stepDisplayName);
+        if(player != null)
+            m_player.setText(player.getName());
         if (player != null && !player.isNull())
             m_round.setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag(player)));
 
