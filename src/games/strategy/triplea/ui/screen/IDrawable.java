@@ -120,7 +120,7 @@ class TerritoryNameDrawable implements IDrawable
         x -= fm.stringWidth(territory.getName()) >> 1;
         y += fm.getAscent() >> 1;
 
-        if(mapData.drawTerritoryNames())
+        if(mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(m_territoryName))
             graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
 
         // draw the ipcs.

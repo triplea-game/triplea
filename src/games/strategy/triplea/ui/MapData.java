@@ -46,7 +46,8 @@ public class MapData
     private static final String VC_MARKERS = "vc.txt";
     private static final String IMPASSIBLE = "Impassible";
     private static final String IPC_PLACE_FILE = "ipc_place.txt";
-
+    private static final String DONT_DRAW_TERRITORY_NAME = "dont_draw_territory_names";
+    
 
     //default colour if none is defined.
     private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[]
@@ -79,6 +80,8 @@ public class MapData
 
     private Properties m_mapProperties;
 
+    //we shouldnt draw the names to these territories
+    private Set<String> m_undrawnTerritoriesNames;
     
     private final ResourceLoader m_resourceLoader;
     
@@ -155,6 +158,16 @@ public class MapData
         }
     }
 
+    public boolean shouldDrawTerritoryName(String territoryName)
+    {
+        if(m_undrawnTerritoriesNames == null)
+        {
+            String property = m_mapProperties.getProperty(DONT_DRAW_TERRITORY_NAME, "");
+            m_undrawnTerritoriesNames = new HashSet<String>(Arrays.asList(property.split(",")));
+        }
+        return !m_undrawnTerritoriesNames.contains(territoryName);
+    }
+    
     public boolean getHasRelief()
     {
         return Boolean.valueOf(m_mapProperties.getProperty(HAS_RELIEF_IMAGES, "true")).booleanValue();
