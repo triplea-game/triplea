@@ -129,6 +129,24 @@ public class TileManager
 		            drawTerritory(territory, data, mapData);
 		
 		        }
+                
+                //add the decorations
+                Map<Image, List<Point>> decorations = mapData.getDecorations();
+                for(Image img : decorations.keySet())
+                {
+                    for(Point p : decorations.get(img))
+                    {
+                        DecoratorDrawable drawable = new DecoratorDrawable(p, img);
+                        
+                        
+                        Rectangle bounds = new Rectangle(p.x, p.y, img.getWidth(null), img.getHeight(null));
+                        for(Tile t : getTiles(bounds))
+                        {
+                            t.addDrawable(drawable);
+                        }
+                    }
+                }
+                
 	        }
         }
         finally

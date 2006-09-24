@@ -56,6 +56,9 @@ public interface IDrawable
     public static final int CAPITOL_MARKER_LEVEL = 7;
 
     public static final int VC_MARKER_LEVEL = 8;
+    
+    public static final int DECORATOR_LEVEL = 9;
+    
 
     public static final int TERRITORY_TEXT_LEVEL = 10;
 
@@ -200,6 +203,33 @@ class VCDrawable implements IDrawable
         return VC_MARKER_LEVEL;
     }
 
+}
+
+class DecoratorDrawable implements IDrawable
+{
+
+    private final Point m_point;
+    private final Image m_image;
+    
+    
+    
+    public DecoratorDrawable(final Point point, final Image image)
+    {
+        super();
+        m_point = point;
+        m_image = image;
+    }
+
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+    {
+        graphics.drawImage(m_image, m_point.x - bounds.x, m_point.y - bounds.y, null);
+    }
+
+    public int getLevel()
+    {
+        return DECORATOR_LEVEL;
+    }
+    
 }
 
 class CapitolMarkerDrawable implements IDrawable

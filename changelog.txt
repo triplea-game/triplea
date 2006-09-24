@@ -1,3 +1,8 @@
+* add map decoration images.  create a file called decorations.txt in the map directory.  The format is the same as place.txt, with an image name, then list of points where
+the image should be drawn (multiple points are fine).  The image name should be the name of a file in the misc image folder (the same folder that has vc.png) (sgb)
+
+* disable territory name drawing for territories listed in map.properties with a property like dont_draw_territory_names=Germany,Japan (sgb)
+
 * allow for map scaling (sgb)
 
 * let ai play in multiplayer games (sgb)

@@ -20,7 +20,9 @@ import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -47,6 +49,8 @@ public class MapData
     private static final String IMPASSIBLE = "Impassible";
     private static final String IPC_PLACE_FILE = "ipc_place.txt";
     private static final String DONT_DRAW_TERRITORY_NAME = "dont_draw_territory_names";
+
+    private static final String DECORATIONS_FILE = "decorations.txt";
     
 
     //default colour if none is defined.
@@ -82,8 +86,12 @@ public class MapData
 
     //we shouldnt draw the names to these territories
     private Set<String> m_undrawnTerritoriesNames;
+
+    private Map <Image, List<Point>> m_decorations;
     
     private final ResourceLoader m_resourceLoader;
+    
+    private BufferedImage m_vcImage;
     
     public boolean scrollWrapX()
     {
@@ -122,6 +130,7 @@ public class MapData
             m_capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
             m_ipcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + IPC_PLACE_FILE));            
             m_mapProperties = new Properties();
+            loadDecorations();
             
             try
             {
@@ -141,6 +150,50 @@ public class MapData
             ex.printStackTrace();
         }
     }
+
+    private void loadDecorations() throws IOException
+    {
+        URL decorations = m_resourceLoader.getResource(DECORATIONS_FILE);
+        if(decorations == null)
+        {
+            m_decorations = Collections.emptyMap();
+            return;
+        }
+        
+        m_decorations = new HashMap<Image, List<Point>>();
+        InputStream stream = null;
+        try
+        {            
+            stream = decorations.openStream();
+
+            Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(stream);
+            
+            for(String name : points.keySet())
+            {
+                Image img = loadImage("misc/" +  name);
+                m_decorations.put(img, points.get(name));
+            }
+
+            
+        }
+        finally
+        {
+            if(stream != null)
+            {
+                try
+                {
+                    stream.close();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+      
+        
+    }
+
 
     public double getDefaultUnitScale()
     {
@@ -487,7 +540,7 @@ public class MapData
 
     }
     
-    private Image m_vcImage;
+    
     
     public Image getVCImage()
     {
@@ -495,20 +548,33 @@ public class MapData
             return m_vcImage;
         
         
-        URL url = m_resourceLoader.getResource("misc/vc.png");
+        m_vcImage = loadImage("misc/vc.png");
+        
+        return m_vcImage;
+    }
+
+
+    private BufferedImage loadImage(String imageName)
+    {
+        
+        URL url = m_resourceLoader.getResource(imageName);
         if(url == null)
-            throw new IllegalStateException("Could not load vc image");
+            throw new IllegalStateException("Could not load " + imageName);
         
         try
         {
-            m_vcImage = ImageIO.read(url);
+            return ImageIO.read(url);
         } catch (IOException e)
         {
             e.printStackTrace();
             throw new IllegalStateException(e.getMessage());
         }
-        
-        return m_vcImage;
+    }
+
+
+    public Map<Image, List<Point>> getDecorations()
+    {
+        return Collections.unmodifiableMap(m_decorations);
     }
     
 
