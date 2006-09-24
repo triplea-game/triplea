@@ -28,13 +28,19 @@ import games.strategy.util.*;
 public class AutoPlacementFinder
 {
 
-    private static final int PLACEWIDTH  = 46;
-    private static final int PLACEHEIGHT = 46;
+    private static int PLACEWIDTH  = 46;
+    private static int PLACEHEIGHT = 46;
     private static MapData s_mapData;
 
     
     public static void main(String[] args)
     {
+        if(args.length == 1)
+        {
+            double percent = Double.parseDouble(args[0]);
+            PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
+            PLACEWIDTH = (int) (percent * PLACEWIDTH);
+        }
         calculate();
     }
     

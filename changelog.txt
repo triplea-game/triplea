@@ -1,3 +1,6 @@
+* allow scaling of auto placement finder.  On the command line, type the scale after the command, 
+eg "java -classpath triplea.jar util/image/AutoPlacementFinder 0.5" (sgb)
+
 * add map decoration images.  create a file called decorations.txt in the map directory.  The format is the same as place.txt, with an image name, then list of points where
 the image should be drawn (multiple points are fine).  The image name should be the name of a file in the misc image folder (the same folder that has vc.png) (sgb)
 
