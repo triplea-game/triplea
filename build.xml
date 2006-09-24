@@ -145,7 +145,7 @@
 
 		<echo message="making dmg"/>
 		<exec executable="hdiutil">
-			<arg line="create -size 20m -fs HFS+ -volname TripleA ${dmg.file}" />
+			<arg line="create -size 30m -fs HFS+ -volname TripleA ${dmg.file}" />
 		</exec>
 
 
@@ -172,6 +172,13 @@
 		<exec executable="hdiutil">
 			<arg line="detach /Volumes/TripleA" />
 		</exec>
+		
+		<!-- compress the dmg file -->
+		<move file="${dmg.file}" tofile="temp.dmg"> </move>
+		<exec executable="hdiutil">
+			<arg line="convert temp.dmg -o ${dmg.file} -format UDBZ "/>
+ 		</exec>
+		<delete file="temp.dmg"></delete>
 
 	</target>
 
