@@ -31,7 +31,7 @@ import games.strategy.util.*;
  *
  * A collection of units.
  */
-public class UnitCollection extends GameDataComponent
+public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 {
 
 	private final List<Unit> m_units = new ArrayList<Unit>();
@@ -317,4 +317,9 @@ public class UnitCollection extends GameDataComponent
 		}
 		return buf.toString();
 	}
+
+    public Iterator<Unit> iterator()
+    {
+       return Collections.unmodifiableList(m_units).iterator();
+    }
 }

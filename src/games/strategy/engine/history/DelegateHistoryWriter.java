@@ -26,16 +26,23 @@ import games.strategy.engine.message.IChannelMessenger;
 
 public class DelegateHistoryWriter
 {
-    private final IChannelMessenger m_channelMessenger;
+    private final IGameModifiedChannel m_channel;
 
     public DelegateHistoryWriter(IChannelMessenger messenger)
     {
-        m_channelMessenger = messenger;
+        m_channel = (IGameModifiedChannel) messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
     }
 
+    
+    public DelegateHistoryWriter(IGameModifiedChannel channel)
+    {
+        m_channel = channel;
+    }
+
+    
     private IGameModifiedChannel getGameModifiedChannel()
     {
-        return (IGameModifiedChannel) m_channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
+        return m_channel; 
     }
     
     public void startEvent(String eventName)

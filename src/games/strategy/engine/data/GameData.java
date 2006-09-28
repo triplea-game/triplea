@@ -313,7 +313,7 @@ public class GameData implements java.io.Serializable
 	 * until the release method is called
 	 * 
 	 */
-	public void aquireReadLock()
+	public void acquireReadLock()
 	{
         //this can happen in very odd cirumcstances while deserializing
         if(m_readWriteLock == null)

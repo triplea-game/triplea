@@ -110,7 +110,7 @@ public class BattleCalculator
     public static CasualtyDetails selectCasualties(PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text, GameData data,
             DiceRoll dice, boolean defending, GUID battleID)
     {
-        return selectCasualties(null, player, targets, bridge, text, data, dice, defending, battleID);
+        return selectCasualties(null, player, targets, bridge, text, data, dice, defending, battleID, false);
     }
 
     /**
@@ -118,13 +118,17 @@ public class BattleCalculator
      * @param battleID may be null if we are not in a battle (eg, if this is an aa fire due to moving
      */
     public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
-            GameData data, DiceRoll dice, boolean defending, GUID battleID)
+            GameData data, DiceRoll dice, boolean defending, GUID battleID, boolean headLess)
     {
         int hits = dice.getHits();
         if (hits == 0)
             return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
 
-        Map<Unit, Collection<Unit>> dependents = getDependents(targets, data);
+        Map<Unit, Collection<Unit>> dependents;
+        if(headLess)
+            dependents= Collections.emptyMap();
+        else
+            dependents= getDependents(targets, data);
 
         // If all targets are one type and not two hit then
         // just remove the appropriate amount of units of that type.
@@ -369,27 +373,32 @@ class UnitBattleComparator implements Comparator<Unit>
 
     public int compare(Unit u1, Unit u2)
     {
-
+        if(u1.equals(u2))
+            return 0;
+        
         UnitAttachment ua1 = UnitAttachment.get(u1.getType());
         UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+        
+        if(ua1 == ua2)
+            return 0;
+        
         int rolls1 = BattleCalculator.getRolls(u1, m_player, m_defending);
         int rolls2 = BattleCalculator.getRolls(u2, m_player, m_defending);
-        int power1 = m_defending ? ua1.getDefense(m_player) : ua1.getAttack(m_player);
-        int power2 = m_defending ? ua2.getDefense(m_player) : ua2.getAttack(m_player);
-        int cost1 = m_costs.getInt(u1.getType());
-        int cost2 = m_costs.getInt(u2.getType());
-        //    System.out.println("Unit 1: " + u1 + " rolls: " + rolls1 + " power: "
-        // + power1 + " cost: " + cost1);
-        //    System.out.println("Unit 2: " + u2 + " rolls: " + rolls2 + " power: "
-        // + power2 + " cost: " + cost2);
+
         if (rolls1 != rolls2)
         {
             return rolls1 - rolls2;
         }
+        int power1 = m_defending ? ua1.getDefense(m_player) : ua1.getAttack(m_player);
+        int power2 = m_defending ? ua2.getDefense(m_player) : ua2.getAttack(m_player);
+
         if (power1 != power2)
         {
             return power1 - power2;
         }
+        int cost1 = m_costs.getInt(u1.getType());
+        int cost2 = m_costs.getInt(u2.getType());
+
         if (cost1 != cost2)
         {
             return cost1 - cost2;

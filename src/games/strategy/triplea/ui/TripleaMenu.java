@@ -19,6 +19,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
@@ -39,6 +40,7 @@ import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -285,11 +287,13 @@ public class TripleaMenu extends JMenuBar
         addShowEnemyCasualties(menuGame);
         addShowDiceStats(menuGame);
         addExportStats(menuGame);
+        addBattleCalculatorMenu(menuGame);
         
         
     }
     
     
+
     /**
      * @param menuBar
      */
@@ -602,6 +606,23 @@ public class TripleaMenu extends JMenuBar
         };
         parentMenu.add(showDiceStats);
     }
+    
+    private void addBattleCalculatorMenu(JMenu menuGame)
+    {
+        Action showBattleMenu = new AbstractAction("Battle Calculator...")
+        {
+        
+            public void actionPerformed(ActionEvent arg0)
+            {
+                OddsCalculatorDialog.show(m_frame, null);
+            }
+        
+        };
+        
+        menuGame.add(showBattleMenu);
+        
+    }
+
 
     /**
      * @param parentMenu
@@ -629,8 +650,17 @@ public class TripleaMenu extends JMenuBar
                 
                 if(chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
                     return;
-                                
-                GameData clone = TripleAFrame.cloneGameData(getData());
+
+                GameData clone;
+                
+                getData().acquireReadLock();
+                try
+                {
+                    clone = GameDataUtils.cloneGameData(getData());
+                } finally
+                {
+                    getData().releaseReadLock();
+                }                
                 IStat[] stats = statPanel.getStats();
 
                 String[] alliances = (String[]) statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);

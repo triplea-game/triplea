@@ -14,10 +14,12 @@
 
 package games.strategy.engine.framework;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.EventChild;
+
 import javax.swing.SwingUtilities;
-import java.io.*;
 
 /**
  * Synchronizes a GameData by listening on the history channel for messages.
@@ -151,32 +153,7 @@ public class HistorySynchronizer
      */
     private Object translateIntoMyData(Object msg)
     {
-        try
-        {
-            ByteArrayOutputStream sink = new ByteArrayOutputStream(256);
-            GameObjectOutputStream out = new GameObjectOutputStream(sink);
-            out.writeObject(msg);
-            out.flush();
-            out.close();
-
-            ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
-            sink = null;
-
-            GameObjectStreamFactory factory = new GameObjectStreamFactory(m_data);
-            ObjectInputStream in = factory.create(source);
-            try
-            {
-
-                return in.readObject();
-            } catch (ClassNotFoundException ex)
-            {
-                //should never happen
-                throw new RuntimeException(ex);
-            }
-        } catch (IOException ioe)
-        {
-            throw new RuntimeException(ioe);
-        }
+        return GameDataUtils.translateIntoOtherGameData(msg, m_data);
     }
 
 }

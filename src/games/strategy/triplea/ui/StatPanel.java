@@ -197,7 +197,7 @@ public class StatPanel extends JPanel
 
         private synchronized void loadData()
         {
-            m_data.aquireReadLock();
+            m_data.acquireReadLock();
             try
             {
                 List players = getPlayers();
@@ -296,7 +296,7 @@ public class StatPanel extends JPanel
                 //no need to recalculate all the stats just to get the row count
                 //getting the row count is a fairly frequent operation, and will
                 //happen even if we are not displayed!
-                m_data.aquireReadLock();
+                m_data.acquireReadLock();
                 try
                 {
                     return m_data.getPlayerList().size() + getAlliances().size();
@@ -410,7 +410,7 @@ public class StatPanel extends JPanel
             
             Iterator playerIter = gameData.getPlayerList().getPlayers().iterator();
 
-            gameData.aquireReadLock();
+            gameData.acquireReadLock();
             try
             {
                 while (playerIter.hasNext())

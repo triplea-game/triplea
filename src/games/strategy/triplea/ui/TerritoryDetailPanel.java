@@ -15,8 +15,11 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 
 import javax.swing.*;
@@ -27,10 +30,15 @@ public class TerritoryDetailPanel extends JPanel
 
     private GameData m_data;
     private final UIContext m_uiContext;
+    private JButton m_showOdds;
+    private Territory m_currentTerritory;
+    private final TripleAFrame m_frame;
 
-    public TerritoryDetailPanel(MapPanel mapPanel, GameData data, UIContext uiContext)
+    public TerritoryDetailPanel(MapPanel mapPanel, GameData data, UIContext uiContext, TripleAFrame frame)
     {
         m_data = data;
+        m_frame = frame;
+        m_showOdds = new JButton("Show Battle Calculator...");
         m_uiContext = uiContext;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(5, 5, 0, 0));
@@ -46,6 +54,16 @@ public class TerritoryDetailPanel extends JPanel
 
         }
         );
+        
+        m_showOdds.addActionListener(new ActionListener()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+               OddsCalculatorDialog.show(m_frame, m_currentTerritory);
+            }
+        
+        });
     }
 
     public void setGameData(GameData data)
@@ -58,6 +76,7 @@ public class TerritoryDetailPanel extends JPanel
     
     private void territoryChanged(Territory territory)
     {
+        m_currentTerritory = territory;
         removeAll();
         refresh();
 
@@ -68,8 +87,10 @@ public class TerritoryDetailPanel extends JPanel
 
         add(new JLabel(territory.getName()));
         
+        add(m_showOdds);
+        
         Collection<Unit> unitsInTerritory;
-        m_data.aquireReadLock();
+        m_data.acquireReadLock();
         try
         {
             unitsInTerritory = territory.getUnits().getUnits();

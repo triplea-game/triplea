@@ -85,17 +85,18 @@ public class DiceRoll implements Externalizable
 
     /**
      * Roll dice for units.
+     * @param annotation TODO
      *  
      */
-    public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle)
+    public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
         // Decide whether to use low luck rules or normal rules.
         if (data.getProperties().get(Constants.LOW_LUCK, false))
         {
-            return rollDiceLowLuck(units, defending, player, bridge,  battle);
+            return rollDiceLowLuck(units, defending, player, bridge,  battle, annotation);
         } else
         {
-            return rollDiceNormal(units, defending, player, bridge, battle);
+            return rollDiceNormal(units, defending, player, bridge, battle, annotation);
         }
     }
 
@@ -103,9 +104,9 @@ public class DiceRoll implements Externalizable
      * Roll dice for units using low luck rules. Low luck rules based on rules
      * in DAAK.
      */
-    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle)
+    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
     {
-        String annotation = getAnnotation(units, player, battle);
+        
 
         int rollCount = BattleCalculator.getRolls(units, player, defending);
         if (rollCount == 0)
@@ -181,9 +182,9 @@ public class DiceRoll implements Externalizable
     /**
      * Roll dice for units per normal rules.
      */
-    private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle)
+    private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
     {
-        String annotation = getAnnotation(units, player, battle);
+        
 
         boolean lhtrBombers = player.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
         
@@ -295,12 +296,13 @@ public class DiceRoll implements Externalizable
      * @param battle
      * @return
      */
-    private static String getAnnotation(List<Unit> units, PlayerID player, Battle battle)
+    public static String getAnnotation(List<Unit> units, PlayerID player, Battle battle)
     {
-        String annotation = player.getName() + " roll dice for " + MyFormatter.unitsToTextNoOwner(units);
+        StringBuilder buffer = new StringBuilder(80);
+        buffer.append(player.getName()).append(" roll dice for ").append(MyFormatter.unitsToTextNoOwner(units));
         if (battle != null)
-            annotation = annotation + " in " + battle.getTerritory().getName() + ", round " + (battle.getBattleRound() + 1);
-        return annotation;
+            buffer.append(" in ").append(battle.getTerritory().getName()).append(", round ").append((battle.getBattleRound() + 1));
+        return buffer.toString();
 
     }
 

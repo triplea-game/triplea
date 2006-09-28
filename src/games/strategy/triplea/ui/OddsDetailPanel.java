@@ -27,6 +27,9 @@ import javax.swing.border.EmptyBorder;
 public class OddsDetailPanel extends JPanel
 {
 
+    //fight the battle this many times to get a good average
+    private static final int FIGHT_COUNT = 1000;
+
     private GameData m_data;
     //private final UIContext m_uiContext;
     
@@ -120,7 +123,7 @@ public class OddsDetailPanel extends JPanel
         
         
         OCBattle terrBattle = null;
-        m_data.aquireReadLock();
+        m_data.acquireReadLock();
         try
         {
         	terrBattle = new OCBattle(m_currentTerritory, m_data);
@@ -133,7 +136,7 @@ public class OddsDetailPanel extends JPanel
         
 
         if(terrBattle.getAttackers().size()>0&&terrBattle.getDefenders().size()>0)
-        	terrBattle.rollBattles(5000);
+        	terrBattle.rollBattles(FIGHT_COUNT);
         
         JPanel resultsPanel = new JPanel();
 		resultsPanel.setLayout(new GridLayout(6,2));

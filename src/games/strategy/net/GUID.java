@@ -70,7 +70,11 @@ public class GUID implements Externalizable
 		
 		GUID other = (GUID) o;
 
-		return this.m_id == other.m_id && other.m_prefix.equals(this.m_prefix);
+        if(other == this)
+            return true;
+        
+		return this.m_id == other.m_id && 
+               (other.m_prefix == this.m_prefix || other.m_prefix.equals(this.m_prefix));
 	}
 	
 	public int hashCode()

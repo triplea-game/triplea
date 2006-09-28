@@ -62,7 +62,7 @@ public class ProductionRule extends DefaultNamed implements Serializable
 	
 	public IntegerMap<NamedAttachable> getResults()
 	{
-		return m_results.copy();
+		return m_results;
 	}
 	
 	public String toString()

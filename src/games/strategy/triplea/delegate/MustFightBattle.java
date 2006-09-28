@@ -48,16 +48,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private final Territory m_battleSite;
 
+    //In headless mode we are just being used to calculate results
+    //for an odds calculator
+    //we can skip some steps for effeciency.
+    //as well, in headless mode we should
+    //not access Delegates
+    private boolean m_headless = false;
+    
     //maps Territory-> units
     //stores a collection of who is attacking from where, needed
     //for undoing moves
     private Map<Territory,Collection<Unit>> m_attackingFromMap = new HashMap<Territory,Collection<Unit>>();
-    private List<Unit> m_attackingUnits = new LinkedList<Unit>();
+    private List<Unit> m_attackingUnits = new ArrayList<Unit>();
     private Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
     private Set<Territory> m_attackingFrom = new HashSet<Territory>();
     private Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
     private Collection<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
-    private List<Unit> m_defendingUnits = new LinkedList<Unit>();
+    private List<Unit> m_defendingUnits = new ArrayList<Unit>();
     private Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
     private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
     private boolean m_amphibious = false;
@@ -106,6 +113,22 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(
                 Matches.enemyUnit(attacker, data)));
         m_defender = findDefender(battleSite);
+    }
+
+    /**
+     * Used for headless battles 
+     */
+    public void setUnits(Collection<Unit> defending, Collection<Unit> attacking, Collection<Unit> bombarding, PlayerID defender)
+    {
+        m_defendingUnits = new ArrayList<Unit>(defending);
+        m_attackingUnits = new ArrayList<Unit>(attacking);
+        m_bombardingUnits = new ArrayList<Unit>(bombarding);
+        m_defender = defender;
+    }
+    
+    public void setHeadless(boolean aBool)
+    {
+        m_headless = aBool;
     }
     
     
@@ -285,7 +308,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
         if (max == -1)
-            throw new IllegalStateException("No defender found");
+        {
+            //this is ok, we are a headless battle
+        }
+            
 
         return defender;
     }
@@ -341,7 +367,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite);
         bridge.getHistoryWriter().setRenderingData(m_battleSite);
         removeAirNoLongerInTerritory();
-
+        
         //it is possible that no attacking units are present, if so
         //end now
         if (m_attackingUnits.size() == 0)
@@ -371,13 +397,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         display.listBattleSteps(m_battleID, m_stepStrings);
 
-        //take the casualties with least movement first
-        if(isAmphibious())
-            sortAmphib(m_attackingUnits, m_data);
-        else 
-            BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
+        if(!m_headless)
+        {
+            //take the casualties with least movement first
+            if(isAmphibious())
+                sortAmphib(m_attackingUnits, m_data);
+            else 
+                BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
+            BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
+        }
+        
         //System.out.print(m_attackingUnits);
-        BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
+        
         //System.out.print(m_defendingUnits);
 
         //push on stack in opposite order of execution
@@ -386,9 +417,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
         m_stack.execute(bridge, m_data);
     }
 
-
     private void removeAirNoLongerInTerritory()
     {
+        if(m_headless)
+            return;
 
         //remove any air units that were once in this attack, but have now
         // moved out of the territory
@@ -401,6 +433,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 airNotInTerritory));
 
     }
+
 
     public List<String> determineStepStrings(boolean showFirstRun)
     {
@@ -917,6 +950,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private boolean canDefenderRetreatSubs()
     {
+        if(m_headless)
+            return false;
+        
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
             return false;
 
@@ -1239,7 +1275,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         
         m_stack.push(new Fire(attackableUnits, canReturnFire, firing, defending, firingUnits, stepName, text, this, defender, 
-                m_dependentUnits, m_stack));
+                m_dependentUnits, m_stack, m_headless));
         
         
     }
@@ -1321,7 +1357,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         PlayerID hit = defender ? m_defender : m_attacker;
         return BattleCalculator.selectCasualties(step, hit, attackableUnits,
-                bridge, text, m_data, dice, defender, m_battleID);
+                bridge, text, m_data, dice, defender, m_battleID, m_headless);
     }
 
     void removeCasualties(Collection<Unit> killed, boolean canReturnFire,
@@ -1355,7 +1391,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Matches.UnitIsDestructible);
 
         //bombarding units cant move after bombarding
-        DelegateFinder.moveDelegate(m_data).markNoMovement(bombard);
+        if(!m_headless)
+            DelegateFinder.moveDelegate(m_data).markNoMovement(bombard);
 
         //4th edition, bombardment casualties cant return fire
         boolean canReturnFire = !isFourthEdition();
@@ -1444,6 +1481,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
                     notifyCasualtiesAA(bridge);
+                    removeCasualties(m_casualties, false, false, bridge);
                     
                 }
                 
@@ -1497,6 +1535,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         private void notifyCasualtiesAA(final IDelegateBridge bridge)
         {
+            if(m_headless)
+                return;
+            
             getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, new ArrayList<Unit>(m_casualties), Collections.<Unit>emptyList(), m_dependentUnits);
             
             getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
@@ -1533,7 +1574,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             
             
             
-            removeCasualties(m_casualties, false, false, bridge);
+            
         }
         
     }
@@ -1705,6 +1746,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
             PlayerID defender)
     {
 
+        if(m_headless)
+            return;
+        
         //not water, not relevant.
         if (!m_battleSite.isWater())
             return;
@@ -1805,6 +1849,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         getDisplay(bridge).battleEnd(m_battleID, m_attacker.getName() + " win");
 
+        if(m_headless)
+            return;
+        
         //do we need to change ownership
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotAir))
         {
@@ -1842,6 +1889,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
         clearWaitingToDie(bridge);
         m_over = true;
         m_tracker.removeBattle(this);
+    }
+    
+    public List getRemainingAttackingUnits()
+    {
+        return m_attackingUnits;
+    }
+    
+    public List getRemainingDefendingUnits()
+    {
+        return m_defendingUnits;
     }
 
     public String toString()
@@ -1988,10 +2045,11 @@ class Fire implements IExecutable
     private Collection<Unit> m_killed;
     private Collection<Unit> m_damaged;
     private boolean m_confirmOwnCasualties = true;
+    private final boolean m_isHeadless;
     
     public Fire(Collection<Unit> attackableUnits, boolean canReturnFire, PlayerID firingPlayer, PlayerID hitPlayer, 
             Collection<Unit> firingUnits, String stepName, String text, MustFightBattle battle, 
-            boolean defending, Map<Unit, Collection<Unit>> dependentUnits, ExecutionStack stack)
+            boolean defending, Map<Unit, Collection<Unit>> dependentUnits, ExecutionStack stack, boolean headless)
     {
         m_attackableUnits = attackableUnits;
         
@@ -2005,7 +2063,7 @@ class Fire implements IExecutable
         m_firingPlayer = firingPlayer;
         m_defending = defending;
         m_dependentUnits = dependentUnits;
-        
+        m_isHeadless = headless;
         
         m_battleID = battle.getBattleID();
     
@@ -2019,8 +2077,17 @@ class Fire implements IExecutable
         if(m_dice != null)
             throw new IllegalStateException("Already rolled");
         
-        m_dice = DiceRoll.rollDice(new ArrayList<Unit>(m_firingUnits), m_defending,
-                m_firingPlayer, bridge, data, m_battle);
+        List<Unit> units = new ArrayList<Unit>(m_firingUnits);
+        
+        String annotation;
+        if(m_isHeadless)
+            annotation = "";
+        else
+            annotation = DiceRoll.getAnnotation(units, m_firingPlayer, m_battle);
+        
+        
+        m_dice = DiceRoll.rollDice(units, m_defending,
+                m_firingPlayer, bridge, data, m_battle, annotation);
 
     }
     
@@ -2039,7 +2106,7 @@ class Fire implements IExecutable
         } else
         {     
             CasualtyDetails message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
-                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID);
+                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless);
 
             m_killed = message.getKilled();
             m_damaged = message.getDamaged();
@@ -2047,8 +2114,11 @@ class Fire implements IExecutable
         }
     }
     
-    private void notifyAndRemoveCasualties(final IDelegateBridge bridge)
+    private void notifyCasualties(final IDelegateBridge bridge)
     {
+        
+        if(m_isHeadless)
+            return;
         
         MustFightBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer, new ArrayList<Unit>(m_killed), new ArrayList<Unit>(m_damaged), m_dependentUnits);
 
@@ -2092,10 +2162,7 @@ class Fire implements IExecutable
         
 
 
-        if (m_damaged != null)
-            m_battle.markDamaged(m_damaged, bridge);
-
-        m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
+      
 
         
     }
@@ -2136,7 +2203,12 @@ class Fire implements IExecutable
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {
-                notifyAndRemoveCasualties(bridge);
+                notifyCasualties(bridge);
+                
+                if (m_damaged != null)
+                    m_battle.markDamaged(m_damaged, bridge);
+
+                m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
         
             }
         };

@@ -24,13 +24,13 @@ import games.strategy.triplea.attatchments.*;
 
 public class UnitCategory implements Comparable
 {
-   private UnitType m_type;
+   private final UnitType m_type;
    //Collection of UnitOwners, the type of our dependents, not the dependents
    private Collection<UnitOwner> m_dependents;
-   private int m_movement; //movement of the units
-   private PlayerID m_owner;
+   private final int m_movement; //movement of the units
+   private final PlayerID m_owner;
    //the units in the category, may be duplicates.
-   private List<Unit> m_units = new ArrayList<Unit>();
+   private final List<Unit> m_units = new ArrayList<Unit>();
 
    private boolean m_damaged = false;
 
@@ -38,6 +38,16 @@ public class UnitCategory implements Comparable
    {
        this(unit, dependents, movement, false);
    }
+   
+   public UnitCategory(UnitType type, PlayerID owner)
+   {
+       m_type = type;
+       m_dependents = Collections.emptyList();
+       m_movement = -1;
+       m_owner = owner;
+       
+   }
+   
 
    public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, boolean damaged)
    {

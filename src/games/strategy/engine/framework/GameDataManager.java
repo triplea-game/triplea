@@ -143,7 +143,7 @@ public class GameDataManager
         ObjectOutputStream outStream = new ObjectOutputStream(bytes);
 
         outStream.writeObject(games.strategy.engine.EngineVersion.VERSION);
-        data.aquireReadLock();
+        data.acquireReadLock();
         try
         {
             outStream.writeObject(data);

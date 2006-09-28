@@ -69,7 +69,7 @@ public class TripleAFrame extends JFrame
     private JTabbedPane m_tabsPanel = new JTabbedPane();
     private StatPanel m_statsPanel;
     private TerritoryDetailPanel m_details;
-    private OddsDetailPanel m_odds;
+    
     private JPanel m_historyPanel = new JPanel();
     private JPanel m_gameSouthPanel;
     private HistoryPanel m_historyTree;
@@ -191,12 +191,10 @@ public class TripleAFrame extends JFrame
         m_statsPanel = new StatPanel(m_data);
         m_tabsPanel.addTab("Stats", m_statsPanel);
 
-        m_details = new TerritoryDetailPanel(m_mapPanel, m_data, m_uiContext);
+        m_details = new TerritoryDetailPanel(m_mapPanel, m_data, m_uiContext, this);
         m_tabsPanel.addTab("Territory", m_details);
         
-        m_odds = new OddsDetailPanel(m_mapPanel, m_data, m_uiContext);
-        m_tabsPanel.addTab("Odds", m_odds);
-
+    
         m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize()
                 .getHeight()));
         gameCenterPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
@@ -628,12 +626,12 @@ public class TripleAFrame extends JFrame
         setWidgetActivation();
 
         GameData clonedGameData; 
-        m_data.aquireReadLock();
+        m_data.acquireReadLock();
         try
         {
             //we want to use a clone of the data, so we can make changes to it
             //as we walk up and down the history
-            clonedGameData = cloneGameData(m_data);
+            clonedGameData = GameDataUtils.cloneGameData(m_data);
             if (clonedGameData == null)
                 return;
             
@@ -657,7 +655,7 @@ public class TripleAFrame extends JFrame
         m_tabsPanel.add("History", historyDetailPanel);
         m_tabsPanel.add("Stats", m_statsPanel);
         m_tabsPanel.add("Territory", m_details);
-        m_tabsPanel.add("Odds", m_odds);
+        
 
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(false);
@@ -680,26 +678,7 @@ public class TripleAFrame extends JFrame
         validate();
     }
 
-    /**
-     * Create a deep copy of GameData
-     */
-    public static GameData cloneGameData(GameData data)
-    {
-        try
-        {
-            GameDataManager manager = new GameDataManager();
-            ByteArrayOutputStream sink = new ByteArrayOutputStream(10000);
-            manager.saveGame(sink, data, false);
-            sink.close();
-            ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
-            sink = null;
-            return manager.loadGame(source);
-        } catch (IOException ex)
-        {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+
     
     @SuppressWarnings("deprecation")
     @Override
@@ -732,7 +711,7 @@ public class TripleAFrame extends JFrame
         m_tabsPanel.add("Action", m_actionButtons);
         m_tabsPanel.add("Territory", m_details);
         m_tabsPanel.add("Stats", m_statsPanel);
-        m_tabsPanel.add("Odds", m_odds);
+        
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(true);
 

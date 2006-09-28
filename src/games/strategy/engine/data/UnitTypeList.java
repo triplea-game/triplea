@@ -29,7 +29,7 @@ import java.util.*;
  *
  * A collection of unit types
  */
-public class UnitTypeList extends GameDataComponent
+public class UnitTypeList extends GameDataComponent implements Iterable<UnitType>
 {
 
 	private final Map<String, UnitType> m_unitTypes = new HashMap<String, UnitType>();

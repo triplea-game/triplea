@@ -173,15 +173,23 @@ public class Matches
 		}
 	};
 
-	public static final Match UnitTypeIsNotSea = new Match()
+	public static final Match<UnitType> UnitTypeIsNotSea = new Match<UnitType>()
 	{
-		public boolean match(Object obj)
+		public boolean match(UnitType type)
 		{
-			UnitType type = (UnitType) obj;
 			UnitAttachment ua = UnitAttachment.get(type);
 			return !ua.isSea();
 		}
 	};
+    
+    public static final Match<UnitType> UnitTypeIsSeaOrAir = new Match<UnitType>()
+    {
+        public boolean match(UnitType type)
+        {
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.isSea() || ua.isAir();
+        }
+    };
 
 
 
@@ -203,6 +211,20 @@ public class Matches
 		}
 	};
 
+    public static Match<UnitType> unitTypeCanBombard(final PlayerID id)
+    {
+        return new Match<UnitType>()
+        {
+        
+            public boolean match(UnitType type)
+            {
+                UnitAttachment ua = UnitAttachment.get(type);
+                return ua.getCanBombard(id);
+            }
+        };
+    }
+
+    
 	public static Match<Unit> unitCanBombard(final PlayerID id)
 	{
 	    return new Match<Unit>()

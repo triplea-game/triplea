@@ -55,6 +55,8 @@ public interface ITripleaDisplay extends IDisplay
      */
     public void battleEnd(GUID battleID, String message);
     
+    
+    
     /**
      * Notify that the casuatlies occured
      *  

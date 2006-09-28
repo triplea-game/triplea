@@ -101,7 +101,7 @@ public class TileManager
 
     public void resetTiles(GameData data, MapData mapData)
     {
-        data.aquireReadLock();
+        data.acquireReadLock();
         
         try
         {
@@ -158,7 +158,7 @@ public class TileManager
     
     public void updateTerritories(Collection territories, GameData data, MapData mapData)
     {
-        data.aquireReadLock();
+        data.acquireReadLock();
         try
         {
         
@@ -190,7 +190,7 @@ public class TileManager
 	        s_logger.log(Level.FINER, "Updating " + territory.getName());
 	        clearTerritory(territory);
             
-            data.aquireReadLock();
+            data.acquireReadLock();
             try
             {
                 drawTerritory(territory, data, mapData);

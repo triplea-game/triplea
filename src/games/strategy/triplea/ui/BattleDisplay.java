@@ -71,6 +71,13 @@ public class BattleDisplay extends JPanel
 
     private final JLabel m_messageLabel = new JLabel();
 
+    private Action m_nullAction = new AbstractAction(" "){
+    
+        public void actionPerformed(ActionEvent e)
+        {}
+    
+    };
+    
     public BattleDisplay(GameData data, Territory territory, PlayerID attacker, PlayerID defender, Collection<Unit> attackingUnits,
             Collection<Unit> defendingUnits, GUID battleID, MapPanel mapPanel)
     {
@@ -188,7 +195,7 @@ public class BattleDisplay extends JPanel
         {
             public void run()
             {
-                m_actionButton.setAction(null);
+                m_actionButton.setAction(m_nullAction);
             }
         });
 
@@ -317,7 +324,7 @@ public class BattleDisplay extends JPanel
         
             public void run()
             {
-                m_actionButton.setAction(null);
+                m_actionButton.setAction(m_nullAction);
         
             }
         
@@ -417,7 +424,7 @@ public class BattleDisplay extends JPanel
         
             public void run()
             {
-                m_actionButton.setAction(null);
+                m_actionButton.setAction(m_nullAction);
         
             }
         
@@ -550,7 +557,7 @@ public class BattleDisplay extends JPanel
                             
                             m_dicePanel.clear();
                             m_actionButton.setEnabled(false);
-                            m_actionButton.setAction(null);
+                            m_actionButton.setAction(m_nullAction);
 
                             continueLatch.countDown();
                         }

@@ -42,19 +42,27 @@ public class UnitType extends NamedAttachable implements Serializable
 
 	public List<Unit> create(int quantity, PlayerID owner)
 	{
-		List<Unit> collection = new ArrayList<Unit>();
-		for(int i = 0; i < quantity; i++)
-		{
-			collection.add(new Unit(this, owner, getData()));
-		}
-		return collection;
+		return create(quantity, owner, false);
 	}
+    
+    public List<Unit> create(int quantity, PlayerID owner, boolean isTemp)
+    {
+        List<Unit> collection = new ArrayList<Unit>();
+        for(int i = 0; i < quantity; i++)
+        {
+            collection.add(new Unit(this, owner, getData(), isTemp));
+        }
+        return collection;
+    }
+
 
 	public Unit create(PlayerID owner)
 	{
-		return new Unit(this, owner, getData());
+		return new Unit(this, owner, getData(), false);
 	}
 
+    
+    
 	public boolean equals(Object o)
 	{
 		if(o == null)
