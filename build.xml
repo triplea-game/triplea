@@ -186,6 +186,7 @@
 	<target name="zip" depends="init,compile" description="create a zip file for end users">
 		<mkdir dir="release" />
 
+		<mkdir file="bin"/>
 		<delete file="bin/triplea.jar" />
 		
 		<!-- we want to merge all the jar files we use
@@ -359,12 +360,14 @@
 				<include name="*.sh" />
 				<include name="changelog.txt" />
 				<include name="launch4j.config.xml" />
+				<include name="info.plist" />
 			</zipfileset>
 
 			<zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
 				<include name="**/*.png" />
 				<include name="**/*.bmp" />
 				<include name="**/*.ico" />
+				<include name="**/*.icns" />
 			</zipfileset>
 
 			<zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
