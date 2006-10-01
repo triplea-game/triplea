@@ -38,7 +38,7 @@
 
 	    <territory name="Caroline Islands"/>
 
-	    <territory name="Caucaus"/>
+	    <territory name="Caucasus"/>
 
 	    <territory name="China"/>
 
@@ -84,7 +84,7 @@
 
 	    <territory name="Kazakh S.S.R."/>
 
-	    <territory name="Kenya-Rhodesnia"/>
+	    <territory name="Kenya-Rhodesia"/>
 
 	    <territory name="Kwangtung"/>
 
@@ -116,7 +116,7 @@
 
 	    <territory name="Peru"/>
 
-	    <territory name="Philipines"/>
+	    <territory name="Philippines"/>
 
 	    <territory name="Rio del Oro"/>
 
@@ -230,7 +230,7 @@
 
 	    <territory name="Peru Sea Zone" water="true" />
 
-	    <territory name="Philipines Sea Zone" water="true" />
+	    <territory name="Philippines Sea Zone" water="true" />
 
 	    <territory name="Red Sea Zone" water="true" />
 
@@ -444,9 +444,9 @@
 
 	    <connection t1="Anglo Sudan Egypt" t2="Congo" />
 
-	    <connection t1="Anglo Sudan Egypt" t2="Kenya-Rhodesnia" />
+	    <connection t1="Anglo Sudan Egypt" t2="Kenya-Rhodesia" />
 
-	    <connection t1="Italian East Africa" t2="Kenya-Rhodesnia" />
+	    <connection t1="Italian East Africa" t2="Kenya-Rhodesia" />
 
 	    <connection t1="Italian East Africa" t2="Red Sea Zone" />
 
@@ -454,17 +454,17 @@
 
 	    <connection t1="Congo" t2="Angola" />
 
-	    <connection t1="Congo" t2="Kenya-Rhodesnia" />
+	    <connection t1="Congo" t2="Kenya-Rhodesia" />
 
-	    <connection t1="Angola" t2="Kenya-Rhodesnia" />
+	    <connection t1="Angola" t2="Kenya-Rhodesia" />
 
-	    <connection t1="Kenya-Rhodesnia" t2="South Africa" />
+	    <connection t1="Kenya-Rhodesia" t2="South Africa" />
 
 	    <connection t1="Angola" t2="South Africa" />
 
 	    <connection t1="South Africa" t2="Mozambique" />
 
-	    <connection t1="Mozambique" t2="Kenya-Rhodesnia" />
+	    <connection t1="Mozambique" t2="Kenya-Rhodesia" />
 
 	    <connection t1="South Africa Sea Zone" t2="South East Madagascar Sea Zone" />
 
@@ -474,7 +474,7 @@
 
 	    <connection t1="Mozambique" t2="Mozambique Sea Zone" />
 
-	    <connection t1="Kenya-Rhodesnia" t2="Mozambique Sea Zone" />
+	    <connection t1="Kenya-Rhodesia" t2="Mozambique Sea Zone" />
 
 	    <connection t1="South Africa Sea Zone" t2="Madagascar" />
 
@@ -538,7 +538,7 @@
 
 	    <connection t1="Black Sea Zone" t2="Turkey" />
 
-	    <connection t1="Black Sea Zone" t2="Caucaus" />
+	    <connection t1="Black Sea Zone" t2="Caucasus" />
 
 	    <connection t1="Black Sea Zone" t2="East Europe" />
 
@@ -546,7 +546,7 @@
 
 	    <connection t1="Black Sea Zone" t2="East Mediteranean Sea Zone" />
 
-	    <connection t1="Caspian Sea Zone" t2="Caucaus" />
+	    <connection t1="Caspian Sea Zone" t2="Caucasus" />
 
 	    <connection t1="Caspian Sea Zone" t2="Kazakh S.S.R." />
 
@@ -560,11 +560,11 @@
 
 	    <connection t1="Ukraine S.S.R." t2="Karelia S.S.R." />
 
-	    <connection t1="Ukraine S.S.R." t2="Caucaus" />
+	    <connection t1="Ukraine S.S.R." t2="Caucasus" />
 
-	    <connection t1="Caucaus" t2="Karelia S.S.R." />
+	    <connection t1="Caucasus" t2="Karelia S.S.R." />
 
-	    <connection t1="Caucaus" t2="Russia" />
+	    <connection t1="Caucasus" t2="Russia" />
 
 	    <connection t1="Russia" t2="Kazakh S.S.R." />
 
@@ -594,9 +594,9 @@
 
 	    <connection t1="Turkey" t2="Persia" />
 
-	    <connection t1="Caucaus" t2="Persia" />
+	    <connection t1="Caucasus" t2="Persia" />
 
-	    <connection t1="Turkey" t2="Caucaus" />
+	    <connection t1="Turkey" t2="Caucasus" />
 
 	    <connection t1="Evenki National Okrug" t2="Yakut S.S.R." />
 
@@ -768,7 +768,7 @@
 
 	    <connection t1="Okinawa" t2="Okinawa Sea Zone" />
 
-	    <connection t1="Philipines" t2="Philipines Sea Zone" />
+	    <connection t1="Philippines" t2="Philippines Sea Zone" />
 
 	    <connection t1="New Guinea" t2="New Guinea Sea Zone" />
 
@@ -788,23 +788,23 @@
 
 	    <connection t1="Japan Sea Zone" t2="Okinawa Sea Zone" />
 
-	    <connection t1="Japan Sea Zone" t2="Philipines Sea Zone" />
+	    <connection t1="Japan Sea Zone" t2="Philippines Sea Zone" />
 
 	    <connection t1="Japan Sea Zone" t2="Kwangtung Sea Zone" />
 
-	    <connection t1="Okinawa Sea Zone" t2="Philipines Sea Zone" />
+	    <connection t1="Okinawa Sea Zone" t2="Philippines Sea Zone" />
 
 	    <connection t1="Okinawa Sea Zone" t2="Wake Island Sea Zone" />
 
-	    <connection t1="Borneo Sea Zone" t2="Philipines Sea Zone" />
+	    <connection t1="Borneo Sea Zone" t2="Philippines Sea Zone" />
 
-	    <connection t1="French Indo China Sea Zone" t2="Philipines Sea Zone" />
+	    <connection t1="French Indo China Sea Zone" t2="Philippines Sea Zone" />
 
 	    <connection t1="French Indo China Sea Zone" t2="Borneo Sea Zone" />
 
 	    <connection t1="French Indo China Sea Zone" t2="Kwangtung Sea Zone" />
 
-	    <connection t1="Philipines Sea Zone" t2="Kwangtung Sea Zone" />
+	    <connection t1="Philippines Sea Zone" t2="Kwangtung Sea Zone" />
 
 	    <connection t1="Japan Sea Zone" t2="Wake Island Sea Zone" />
 
@@ -868,7 +868,7 @@
 
 	    <connection t1="Caroline Islands Sea Zone" t2="Okinawa Sea Zone" />
 
-	    <connection t1="Caroline Islands Sea Zone" t2="Philipines Sea Zone" />
+	    <connection t1="Caroline Islands Sea Zone" t2="Philippines Sea Zone" />
 
 	    <connection t1="Caroline Islands Sea Zone" t2="Borneo Sea Zone" />
 
@@ -1682,7 +1682,7 @@
 
 	    
 
-	    <attatchment name="territoryAttatchment"  attatchTo="Caucaus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    <attatchment name="territoryAttatchment"  attatchTo="Caucasus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 
 		    <option name="production" value="2" />
 
@@ -1874,7 +1874,7 @@
 
 	    
 
-	    <attatchment name="territoryAttatchment"  attatchTo="Kenya-Rhodesnia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    <attatchment name="territoryAttatchment"  attatchTo="Kenya-Rhodesia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 
 		    <option name="production" value="2" />
 
@@ -2006,7 +2006,7 @@
 
 	    
 
-	    <attatchment name="territoryAttatchment"  attatchTo="Philipines" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
+	    <attatchment name="territoryAttatchment"  attatchTo="Philippines" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 
 		    <option name="production" value="2" />
 
@@ -2366,7 +2366,7 @@
 
 			<unitPlacement unitType="infantry" territory="Caroline Islands" quantity="1"  /> 
 
-			<unitPlacement unitType="infantry" territory="Caucaus" quantity="1"  /> 
+			<unitPlacement unitType="infantry" territory="Caucasus" quantity="1"  /> 
 
 			<unitPlacement unitType="infantry" territory="China" quantity="1"  /> 
 
@@ -2408,7 +2408,7 @@
 
 			<unitPlacement unitType="infantry" territory="Kazakh S.S.R." quantity="1"  /> 
 
-			<unitPlacement unitType="infantry" territory="Kenya-Rhodesnia" quantity="1"  /> 
+			<unitPlacement unitType="infantry" territory="Kenya-Rhodesia" quantity="1"  /> 
 
 			<unitPlacement unitType="infantry" territory="Kwangtung" quantity="1"  /> 
 
@@ -2438,7 +2438,7 @@
 
 			<unitPlacement unitType="infantry" territory="Peru" quantity="1"  /> 
 
-			<unitPlacement unitType="infantry" territory="Philipines" quantity="1"  /> 
+			<unitPlacement unitType="infantry" territory="Philippines" quantity="1"  /> 
 
 			<unitPlacement unitType="infantry" territory="Rio del Oro" quantity="1"  /> 
 

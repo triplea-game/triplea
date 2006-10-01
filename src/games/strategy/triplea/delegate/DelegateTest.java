@@ -128,7 +128,7 @@ public class DelegateTest extends TestCase
 		egypt= m_data.getMap().getTerritory("Anglo Sudan Egypt");
 		congo= m_data.getMap().getTerritory("Congo");
 		congoSeaZone = m_data.getMap().getTerritory("Congo Sea Zone");
-		kenya= m_data.getMap().getTerritory("Kenya-Rhodesnia");
+		kenya= m_data.getMap().getTerritory("Kenya-Rhodesia");
 		eastAfrica = m_data.getMap().getTerritory("Italian East Africa");
 		libya = m_data.getMap().getTerritory("Libya");
 		algeria = m_data.getMap().getTerritory("Algeria");
