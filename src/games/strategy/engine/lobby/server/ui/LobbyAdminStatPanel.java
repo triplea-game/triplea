@@ -18,6 +18,7 @@ import java.awt.GridLayout;
 import java.util.Date;
 
 import games.strategy.net.*;
+import games.strategy.triplea.ui.MemoryLabel;
 
 import javax.swing.*;
 
@@ -53,11 +54,12 @@ public class LobbyAdminStatPanel extends JPanel
 
     private void layoutComponents()
     {
-        setLayout(new GridLayout(4,1));
+        setLayout(new GridLayout(5,1));
         add(m_currentLoginsLabel);
         add(m_totalLoginsLabel);
         add(m_maxPlayersLabel);
         add(m_upSince);
+        add(new MemoryLabel());
     }
 
     private void setupListeners()

@@ -96,7 +96,7 @@ public class LobbyServer
             if(args.length == 1)
                 port =Integer.parseInt(args[0]);
             else
-                port = 3301;
+                port = 3302;
             
             LobbyServer server = new LobbyServer( port);
 
