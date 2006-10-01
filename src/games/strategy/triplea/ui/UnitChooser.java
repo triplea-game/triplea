@@ -93,6 +93,17 @@ public class UnitChooser extends JPanel
     m_autoSelectButton.setVisible(false);
     m_selectNoneButton.setVisible(false);
   }
+  
+  public void setMaxAndShowMaxButton(int max)
+  {
+      
+    m_total = max;
+    m_textFieldListener.changedValue(null);
+    
+    
+    m_autoSelectButton.setText("Max");
+  }
+
 
   public void setTitle(String title)
   {
@@ -104,13 +115,8 @@ public class UnitChooser extends JPanel
     if(m_total == -1)
       return;
 
-    int selected = 0;
-    Iterator<ChooserEntry> iter = m_entries.iterator();
-    while(iter.hasNext())
-    {
-      ChooserEntry entry = iter.next();
-      selected += entry.getTotalHits();
-    }
+    Iterator<ChooserEntry> iter;
+    int selected = getSelectedCount();
 
     m_leftToSelect.setText("Left to select:" + (m_total - selected));
 
@@ -123,6 +129,19 @@ public class UnitChooser extends JPanel
 
     m_leftToSelect.setText("Left to select:" + (m_total - selected));
 
+  }
+
+
+  private int getSelectedCount()
+  {
+    int selected = 0;
+    Iterator<ChooserEntry> iter = m_entries.iterator();
+    while(iter.hasNext())
+    {
+      ChooserEntry entry = iter.next();
+      selected += entry.getTotalHits();
+    }
+    return selected;
   }
 
 
@@ -277,11 +296,35 @@ public class UnitChooser extends JPanel
 
   private void autoSelect()
   {
-    Iterator<ChooserEntry> iter = m_entries.iterator();
-    while (iter.hasNext())
+    
+    if(m_total == -1)
     {
-      ChooserEntry entry = iter.next();
-      entry.selectAll();
+        Iterator<ChooserEntry> iter = m_entries.iterator();
+        while (iter.hasNext())
+        {
+          ChooserEntry entry = iter.next();
+          
+          entry.selectAll();
+        }
+    }
+    else
+    {
+        int leftToSelect = m_total - getSelectedCount();
+        for(ChooserEntry entry : m_entries)
+        {
+            int canSelect = entry.getMax() - entry.getFirstHits();
+            if(canSelect >= leftToSelect)
+            {
+                entry.selectAll();
+                leftToSelect -= canSelect;
+            }
+            else
+            {
+                entry.set(entry.getFirstHits() + canSelect);
+                leftToSelect = 0;
+                break;
+            }
+        }
     }
   }
 
@@ -400,6 +443,15 @@ class ChooserEntry
       }
   }
 
+  public int getMax()
+  {
+      return m_hitText.getMax();
+  }
+  
+  public void set(int value)
+  {
+      m_hitText.setValue(value);
+  }
 
   public UnitCategory getCategory()
   {

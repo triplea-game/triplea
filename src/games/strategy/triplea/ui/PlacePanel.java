@@ -197,7 +197,7 @@ public class PlacePanel extends ActionPanel
                     getMap().getUIContext());
             String messageText = "Place units in " + territory.getName();
             if (maxUnits[0] > 0)
-                chooser.setMax(maxUnits[0]);
+                chooser.setMaxAndShowMaxButton(maxUnits[0]);
 
             int option = JOptionPane.showOptionDialog(
                     getTopLevelAncestor(), chooser, messageText,

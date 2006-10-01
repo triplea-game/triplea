@@ -1,3 +1,11 @@
+* add max button to place dialog where number of units that can be placed is limited (sgb)
+
+* fix bug [ 1563239 ] Bad scroll increment for scrollbars (sgb)
+
+* fix bug  [ 1563227 ] Continue button does not show up (sgb)
+
+Changes for 0.8.3
+
 * make odds calculator use MustFightBattle, update ui (sgb)
 
 * allow scaling of auto placement finder.  On the command line, type the scale after the command, 
