@@ -73,12 +73,16 @@ public class UndoableMovesPanel extends JPanel
         if(iter.hasNext())
             add(new JLabel("Moves:"), BorderLayout.NORTH);
 
+        int scrollIncrement = 10;
         Dimension seperatorSize = new Dimension(150,20);
         while (iter.hasNext())
         {
 
             UndoableMove item = (UndoableMove)iter.next();
-            items.add(createComponentForMove(item));
+            JComponent moveComponent = createComponentForMove(item);
+            scrollIncrement = moveComponent.getPreferredSize().height;            
+            
+            items.add(moveComponent);
 
             if(iter.hasNext())
             {
@@ -91,7 +95,10 @@ public class UndoableMovesPanel extends JPanel
 
         JScrollPane scroll = new JScrollPane(items);
         scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(scrollIncrement);
 
+        
+        
         add(scroll, BorderLayout.CENTER);
         SwingUtilities.invokeLater(new Runnable()
         {
