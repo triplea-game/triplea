@@ -186,7 +186,7 @@ public class DiceRoll implements Externalizable
     {
         
 
-        boolean lhtrBombers = player.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
+        boolean lhtrBombers = bridge.getPlayerID().getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
         
         int rollCount = BattleCalculator.getRolls(units, player, defending);
         if (rollCount == 0)

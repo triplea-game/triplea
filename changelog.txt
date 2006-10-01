@@ -1,3 +1,7 @@
+* fix neutral fighting bug (sgb)
+
+* fix spelling mstakes in classic map (sgb, RogerCooper)
+
 * add max button to place dialog where number of units that can be placed is limited (sgb)
 
 * fix bug [ 1563239 ] Bad scroll increment for scrollbars (sgb)
