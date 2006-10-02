@@ -186,7 +186,7 @@
 	<target name="zip" depends="init,compile" description="create a zip file for end users">
 		<mkdir dir="release" />
 
-		<mkdir file="bin"/>
+		<mkdir dir="bin"/>
 		<delete file="bin/triplea.jar" />
 		
 		<!-- we want to merge all the jar files we use
@@ -423,8 +423,27 @@
 			</sourcepath>
 		</javadoc>
 	</target>
+	
+	<target name="zipServer" depends="zip">
+		<zip zipfile="release/triplea_${triplea.version}_server.zip" compress="true">
 
 
+			<zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
+				<include name="**/derby*.jar" />
+			</zipfileset>
+			
+			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
+				<include name="**/*.jar" />
+			</zipfileset>
+
+			<zipfileset dir="." prefix="triplea_${triplea.version}" filemode="744">
+				<include name="run-server.sh"/>
+			</zipfileset>
+		</zip>			
+			
+	</target>
+		
+	
 	<!-- test -->
 	<target name="test" depends="init,compile" description="run junit tests">
 		<junit fork="yes" haltonerror="on">
