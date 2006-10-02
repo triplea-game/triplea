@@ -14,16 +14,21 @@
 
 package games.strategy.engine.lobby.server;
 
-import games.strategy.engine.chat.*;
-import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.chat.ChatController;
+import games.strategy.engine.chat.StatusManager;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.ui.LobbyAdminConsole;
 import games.strategy.engine.lobby.server.userDB.Database;
-import games.strategy.net.*;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.Messengers;
+import games.strategy.net.ServerMessenger;
+import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.Version;
 
 import java.io.IOException;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * LobbyServer.java
@@ -82,15 +87,32 @@ public class LobbyServer
         server.setAcceptNewConnections(true);
     }
 
+    private static void setUpLogging() 
+    {
+
+        
+        //  setup logging to read our logging.properties
+        try
+        {
+            LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("server-logging.properties"));
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        Logger.getAnonymousLogger().info("Redirecting std out");
+        System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
+        System.setOut(new LoggingPrintStream("OUT", Level.INFO));
+        
+    }
    
     public static void main(String args[])
     {
         
+        
         try
         {
-            GameRunner2.setupLogging();
-            GameRunner2.setupLookAndFeel();
-            
+            setUpLogging();
             
             int port;
             if(args.length == 1)
