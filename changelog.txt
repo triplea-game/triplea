@@ -1,3 +1,5 @@
+* make convoy zones moree transparent (sgb)
+
 * fix neutral fighting bug (sgb)
 
 * fix spelling mstakes in classic map (sgb, RogerCooper)

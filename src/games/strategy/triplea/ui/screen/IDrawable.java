@@ -417,7 +417,7 @@ class ConvoyZoneDrawable implements IDrawable
 
         Territory territory = data.getMap().getTerritory(m_territoryName);
         Color territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
-        territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 220);
+        territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 145);
         
         List polys = mapData.getPolygons(territory);
 
