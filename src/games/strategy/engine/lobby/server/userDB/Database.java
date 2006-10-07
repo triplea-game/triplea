@@ -321,6 +321,7 @@ public class Database
             if(se.getErrorCode() != 45000)
                 s_logger.log(Level.WARNING, se.getMessage(), se);
         }
+        s_logger.info("Databse shut down");
 
     }
     
