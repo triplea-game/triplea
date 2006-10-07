@@ -14,6 +14,7 @@
 
 package games.strategy.engine.lobby.client.ui;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.server.GameDescription;
@@ -246,6 +247,13 @@ public class LobbyGamePanel extends JPanel
         commands.add("-classpath");
         commands.add(System.getProperty("java.class.path"));
         commands.add("-Xmx128m");
+        
+        if(GameRunner.isMac())
+        {   
+            commands.add("-Dapple.laf.useScreenMenuBar=true");
+            commands.add("-Xdock:name=\"TripleA\"");
+            commands.add("-Xdock:icon=\"./icons/triplea_icon.png\"");
+        }
     }
 
 
