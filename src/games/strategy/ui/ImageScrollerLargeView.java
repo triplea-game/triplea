@@ -200,12 +200,7 @@ public class ImageScrollerLargeView extends JComponent
         dy = (int)  (dy / m_scale);
         
         int newX = (m_model.getX() + dx);
-        if (newX > (int) m_model.getMaxWidth() - getWidth())
-            newX -= (int) m_model.getMaxWidth();
-        if (newX < -getWidth())
-            newX += (int) m_model.getMaxWidth();
-        // newX = checkBounds(newX, m_originalImage.getWidth(this),
-        // this.getWidth(), true);
+        
 
         int newY = m_model.getY() + dy;
         
