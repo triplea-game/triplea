@@ -239,7 +239,7 @@ public class LobbyGamePanel extends JPanel
         
     }
 
-    private void populateBasicJavaArgs(List<String> commands)
+    private static void populateBasicJavaArgs(List<String> commands)
     {
         String javaCommand =  System.getProperty("java.home") + File.separator + "bin" + File.separator + "java"  ;
         commands.add(javaCommand);
@@ -248,11 +248,21 @@ public class LobbyGamePanel extends JPanel
         commands.add(System.getProperty("java.class.path"));
         commands.add("-Xmx128m");
         
+        
+        
         if(GameRunner.isMac())
         {   
             commands.add("-Dapple.laf.useScreenMenuBar=true");
+            
+            
             commands.add("-Xdock:name=\"TripleA\"");
-            commands.add("-Xdock:icon=\"./icons/triplea_icon.png\"");
+            
+            File icons = new File(GameRunner.getRootFolder(), "icons/triplea_icon.png" );
+            if(!icons.exists())
+                throw new IllegalStateException("Icon file not found");
+            
+            
+            commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
         }
     }
 
@@ -262,7 +272,6 @@ public class LobbyGamePanel extends JPanel
         boolean selected = m_gameTable.getSelectedRow() >= 0;
         m_joinGame.setEnabled(selected);
     }
-    
     
 
 }
