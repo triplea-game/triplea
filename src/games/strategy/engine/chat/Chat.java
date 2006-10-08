@@ -287,6 +287,12 @@ public class Chat
                 {
                     m_nodes.add(node);
                     updateConnections();
+                    
+                    for(IChatListener listener: m_listeners)
+                    {
+                        listener.addStatusMessage(node.getName() + " has joined");
+                    }
+                    
                 }
             }
             
@@ -318,6 +324,12 @@ public class Chat
                 {
                     m_nodes.remove(node);
                     updateConnections();
+                    
+                    for(IChatListener listener: m_listeners)
+                    {
+                        listener.addStatusMessage(node.getName() + " has left");
+                    }
+                    
                 }
                 
                 

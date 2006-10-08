@@ -40,6 +40,7 @@ import javax.swing.text.*;
  */
 public class ChatMessagePanel extends JPanel implements IChatListener
 {
+    private static final int MAX_LINES = 5000;
     private JTextPane m_text;
     private JScrollPane m_scrollPane;
     private JTextField m_nextMessage;
@@ -50,6 +51,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     
 
     private final SimpleAttributeSet bold = new SimpleAttributeSet();
+    private final SimpleAttributeSet italic = new SimpleAttributeSet();
     private final SimpleAttributeSet normal = new SimpleAttributeSet();
     
     public static final String ME = "/me ";
@@ -71,6 +73,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         layoutComponents();
 
         StyleConstants.setBold(bold, true);
+        StyleConstants.setItalic(italic, true);
         setSize(300, 200);
     }
     
@@ -218,7 +221,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
             doc.insertString(doc.getLength()," "+message + "\n", normal);
             
             //don't let the chat get too big
-            trimLines(doc, 5000);
+            trimLines(doc, MAX_LINES);
             
             
         } catch (BadLocationException ble)
@@ -226,6 +229,25 @@ public class ChatMessagePanel extends JPanel implements IChatListener
             ble.printStackTrace();
         }
     }
+    
+    public void addStatusMessage(String message)
+    {
+        try
+        {
+            Document doc = m_text.getDocument();
+            
+            doc.insertString(doc.getLength(), message + "\n", italic);
+            
+            //don't let the chat get too big
+            trimLines(doc, MAX_LINES);
+            
+            
+        } catch (BadLocationException ble)
+        {
+            ble.printStackTrace();
+        }
+    }
+    
 
     /**
      * Show only the first n lines

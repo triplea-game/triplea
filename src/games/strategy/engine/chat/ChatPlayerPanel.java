@@ -222,6 +222,10 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         
         return node.getName() + " (" + status + ")";
     }
+
+    public void addStatusMessage(String message)
+    {
+    }
     
     
 }

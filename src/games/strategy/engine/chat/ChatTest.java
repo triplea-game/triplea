@@ -305,6 +305,9 @@ class TestChatListener implements IChatListener
             m_from.add(from);
         }
     }
+
+    public void addStatusMessage(String message)
+    {}
     
 }
 

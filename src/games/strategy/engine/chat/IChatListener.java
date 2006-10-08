@@ -16,5 +16,7 @@ public interface IChatListener
     public void updatePlayerList(final Collection<INode> players);
 
     public void addMessage(final String message, final String from, final boolean thirdperson);
+    
+    public void addStatusMessage(final String message);
 
 }
