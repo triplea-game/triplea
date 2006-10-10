@@ -1,6 +1,4 @@
-#!/bin/sh
-
-if ! java -version >& /dev/null
+if ! java -version > /dev/null 2>&1
 then
 echo "Could not find Java."
 echo "You must have Java installed and in your path."
