@@ -1,3 +1,7 @@
+* add great_war mode (surtur2 and Triplelk)
+
+* update triplea_linux.sh (Daniel Roethlisberger)
+
 * show messages when people join/leave chat (sgb)
 
 * fix scroll bug where map would jump when mouse scrolled in non wrappable maps (sgb)

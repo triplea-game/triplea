@@ -1,0 +1,8 @@
+United States  (190,1455)
+Vienna  (1830,1100)
+London  (1335,655)
+Paris  (1338,985)
+Berlin  (1775,817)
+Rome  (1660,1490)
+Istanbul  (2230,1480)
+Petrograd  (2275,435)
