@@ -1,3 +1,5 @@
+* fix sea zone boundaries when map is scaled (sgb)
+
 * add great_war mode (surtur2 and Triplelk)
 
 * update triplea_linux.sh (Daniel Roethlisberger)

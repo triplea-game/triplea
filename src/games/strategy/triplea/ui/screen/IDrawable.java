@@ -449,7 +449,46 @@ class ConvoyZoneDrawable implements IDrawable
 
 }
 
+class SeaZoneOutlineDrawable implements IDrawable
+{
+    private final String m_territoryName;
 
+    public SeaZoneOutlineDrawable(final String territoryName)
+    {
+        m_territoryName = territoryName;
+    }
+
+    public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+    {
+
+        Territory territory = data.getMap().getTerritory(m_territoryName);
+                List polys = mapData.getPolygons(territory);
+
+        Iterator iter2 = polys.iterator();
+        while (iter2.hasNext())
+        {
+            Polygon polygon = (Polygon) iter2.next();
+
+            // if we dont have to draw, dont
+            if (!polygon.intersects(bounds) && !polygon.contains(bounds))
+                continue;
+
+            // use a copy since we will move the polygon
+            polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+
+            polygon.translate(-bounds.x, -bounds.y);
+            graphics.setColor(Color.BLACK);
+            graphics.drawPolygon(polygon);
+        }
+
+    }
+
+    public int getLevel()
+    {
+        return POLYGONS_LEVEL;
+    }
+    
+}
 
 class LandTerritoryDrawable implements IDrawable
 {
