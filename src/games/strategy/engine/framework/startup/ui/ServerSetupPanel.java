@@ -202,7 +202,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
       removeAll();
       add(m_info, BorderLayout.NORTH);
-      add(players, BorderLayout.CENTER);
+      JScrollPane scroll = new JScrollPane(players);
+      scroll.setBorder(null);
+      scroll.setViewportBorder(null);
+      add(scroll, BorderLayout.CENTER);
       add(m_networkPanel, BorderLayout.SOUTH);
 
       
