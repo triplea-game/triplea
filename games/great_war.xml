@@ -8,7 +8,7 @@
 
 <game>
 
-        <info name="The Great War" version="1.0"/>
+        <info name="The Great War" version="1.1"/>
 
 
 
@@ -3156,13 +3156,13 @@
 
                     <attatchment name="territoryAttatchment" attatchTo="India" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 
-                        <option name="production" value="3"/>
+                        <option name="production" value="4"/>
 
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 
-                        <option name="production" value="3"/>
+                        <option name="production" value="2"/>
 
                     </attatchment>
 
