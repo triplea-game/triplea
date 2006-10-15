@@ -114,14 +114,28 @@ class TerritoryNameDrawable implements IDrawable
         TerritoryAttachment ta = TerritoryAttachment.get(territory);
         graphics.setColor(Color.black);
         FontMetrics fm = graphics.getFontMetrics();
-        int x = territoryBounds.x;
-        int y = territoryBounds.y;
-
-        x += (int) territoryBounds.getWidth() >> 1;
-        y += (int) territoryBounds.getHeight() >> 1;
-
-        x -= fm.stringWidth(territory.getName()) >> 1;
-        y += fm.getAscent() >> 1;
+        int x;
+        int y;
+        
+        //if we specify a placement point, use it
+        //otherwise, put it in the center
+        Point namePlace = mapData.getNamePlacementPoint(territory);
+        if(namePlace == null)
+        {
+            x = territoryBounds.x;
+            y = territoryBounds.y;
+    
+            x += (int) territoryBounds.getWidth() >> 1;
+            y += (int) territoryBounds.getHeight() >> 1;
+    
+            x -= fm.stringWidth(territory.getName()) >> 1;
+            y += fm.getAscent() >> 1;
+        }
+        else
+        {
+            x = namePlace.x;
+            y = namePlace.y;
+        }
 
         if(mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(m_territoryName))
             graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
@@ -145,7 +159,7 @@ class TerritoryNameDrawable implements IDrawable
             // otherwise, draw under the territory name
             else
             {
-                x = territoryBounds.x + ((((int) territoryBounds.getWidth()) - fm.stringWidth(prod)) >> 1);
+                x = x + ((fm.stringWidth(m_territoryName)) >> 1)  -    ((fm.stringWidth(prod)) >> 1);
                 y += fm.getLeading() + fm.getAscent();
                 
                 draw(bounds, graphics, x, y, img, prod);
@@ -436,8 +450,6 @@ class ConvoyZoneDrawable implements IDrawable
             polygon.translate(-bounds.x, -bounds.y);
             graphics.setColor(territoryColor);
             graphics.fillPolygon(polygon);
-            graphics.setColor(Color.BLACK);
-            graphics.drawPolygon(polygon);
         }
 
     }
