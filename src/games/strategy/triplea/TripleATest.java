@@ -21,6 +21,7 @@ public class TripleATest
         suite.addTestSuite(DiceRollTest.class);
         suite.addTestSuite(AIUtilsTest.class);
         suite.addTestSuite(OddsCalculatorTest.class);
+        suite.addTestSuite(AirThatCantLandUtilTest.class);
         return suite;
     }
 

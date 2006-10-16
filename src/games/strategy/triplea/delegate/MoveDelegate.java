@@ -1117,6 +1117,12 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     }
 
+    private void removeAirThatCantLand()
+    {
+        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand();
+        
+    }
+
     /**
      * returns a map of unit -> transport. returns null if no mapping can be
      * done either because there is not sufficient transport capacity or because
@@ -1267,75 +1273,10 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-        Collection<Territory> cantLand = new ArrayList<Territory>();
-        Iterator territories = m_data.getMap().getTerritories().iterator();
-        while (territories.hasNext())
-        {
-            Territory current = (Territory) territories.next();
-            CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
-            ownedAir.add(Matches.UnitIsAir);
-            ownedAir.add(Matches.alliedUnit(m_player, m_data));
-            Collection<Unit> air = current.getUnits().getMatches(ownedAir);
-            if (air.size() != 0 && !MoveValidator.canLand(air, current, m_player, m_data))
-            {
-                cantLand.add(current);
-            }
-        }
-        return cantLand;
+        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand();
     }
 
-    private void removeAirThatCantLand()
-    {
-        Iterator<Territory> territories = getTerritoriesWhereAirCantLand().iterator();
-        while (territories.hasNext())
-        {
-            Territory current = territories.next();
-            CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
-            ownedAir.add(Matches.UnitIsAir);
-            ownedAir.add(Matches.alliedUnit(m_player, m_data));
-            Collection<Unit> air = current.getUnits().getMatches(ownedAir);
-
-            removeAirThatCantLand(current, air);
-        }
-    }
-
-    private void removeAirThatCantLand(Territory territory, Collection<Unit> airUnits)
-    {
-
-        Collection<Unit> toRemove = new ArrayList<Unit>(airUnits.size());
-        //if we cant land on land then none can
-        if (!territory.isWater())
-        {
-            toRemove.addAll(airUnits);
-        } else
-        //on water we may just no have enough carriers
-        {
-            //find the carrier capacity
-            Collection carriers = territory.getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
-            int capacity = MoveValidator.carrierCapacity(carriers);
-
-            Iterator iter = airUnits.iterator();
-            while (iter.hasNext())
-            {
-                Unit unit = (Unit) iter.next();
-                UnitAttachment ua = UnitAttachment.get(unit.getType());
-                int cost = ua.getCarrierCost();
-                if (cost == -1 || cost > capacity)
-                    toRemove.add(unit);
-                else
-                    capacity -= cost;
-            }
-        }
-
-        Change remove = ChangeFactory.removeUnits(territory, toRemove);
-
-        String transcriptText = MyFormatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName() + " and "
-                + (toRemove.size() > 1 ? "were" : "was") + " removed";
-        m_bridge.getHistoryWriter().startEvent(transcriptText);
-
-        m_bridge.addChange(remove);
-
-    }
+ 
 
 
     /**
