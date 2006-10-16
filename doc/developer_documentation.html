@@ -39,27 +39,8 @@
 		
 		<h2>Developer Documentation :: Quick Nav</h2>
 		<ul>
-			<li><b>1.0</b> <a href="#sec_1">Project Management With CVS</a></li>
-				<ul>
-					<li><b>1.1</b> <a href="#sec_1.1">CVS For Developers</a></li>
-						<ul>
-							<li><b>1.1.1</b> <a href="#sec_1.1.1">Module Check Out</a></li>
-							<li><b>1.1.2</b> <a href="#sec_1.1.2">Commiting Items</a></li>
-							<li><b>1.1.3</b> <a href="#sec_1.1.3">Adding Items</a></li>
-							<li><b>1.1.4</b> <a href="#sec_1.1.4">Removing Items</a></li>
-							<li><b>1.1.5</b> <a href="#sec_1.1.5">Tagging Items</a></li>
-							<li><b>1.1.6</b> <a href="#sec_1.1.6">Updating Your CVS Copy</a></li>
-							<li><b>1.1.7</b> <a href="#sec_1.1.7">Viewing Changes</a></li>
-						</ul>
+			<li><b>1.0</b> <a href="#sec_1">Project Management With Subversion</a></li>
 
-					<li><b>1.2</b> <a href="#sec_1.2">CVS For Non-Developers</a></li>
-						<ul>
-							<li><b>1.2.1</b> <a href="#sec_1.2.1">Module Check Out</a></li>
-							<li><b>1.2.2</b> <a href="#sec_1.2.2">Updating Your CVS Copy</a></li>
-							<li><b>1.2.3</b> <a href="#sec_1.2.3">Viewing Changes</a></li>
-						</ul>
-				</ul>
-			
 			<li><b>2.0</b> <a href="#sec_2">Compiling The TripleA Source Code</a></li>
 				<ul>
 					<li><b>2.1</b> <a href="#sec_2.1">Prerequisites</a></li>
@@ -153,979 +134,35 @@
 		<hr/>
 		<br/>
 		
-		<h2><a name="sec_1">1.0</a> Project Management With CVS</h2>
+		<h2><a name="sec_1">1.0</a> Project Management With Subversion</h2>
 		<blockquote>
 			<p>
 				TripleA's source code is managed through the use of
 				<a href="http://sourceforge.net" target="_blank">Source-Forge's</a>
-				<b>Concurrent Versions System</b> (CVS) server. Developers use
-				CVS to read, write, remove, and revert files for the TripleA project.
+				<b>Subversion</b> (svn) server. Developers use
+				subversion to read, write, remove, and revert files for the TripleA project.
 			</p>
-			
-			<p>
-				Not all developers use the same Operating System and not all use the same
-				development environment. For this reason, we cannot show a proper guide that
-				would suite everyone. This section will focus on how to use the CVS from a
-				UNIX based console. This would work on most systems such as <b>Mac OS X</b>,
-				<b>GNU/Linux</b>, and <b>SGI/IRIX</b>. IDEs such as <b>Eclipse</b> that
-				provides a CVS front end will not be covered. It is recommended that developers
-				find out the capabilities of their development environment and see if there
-				is support for CVS or not.
-			</p>
-			
-			<p>
-				Sections <a href="#sec_1.1">1.1</a> and <a href="#sec_1.2">1.2</a> will briefly
-				explain some basic commands that will get a developer started. It is highly
-				recommended to read the official CVS manual on how to use the CVS, as it is very
-				explicit and detailed.
-				<ul>
-					<li><a href="http://www.gnu.org/software/cvs">Official CVS Homepage</a></li>
-					<li><a href="http://www.gnu.org/software/cvs/manual">Official CVS Manual</a></li>
-					<li><a href="http://sourceforge.net/docman/display_doc.php?docid=14033&group_id=1">Source-Forge CVS Help Page</a></li>
-					<li><a href="http://www.gentoo.org/doc/en/cvs-tutorial.xml">Gentoo Linux CVS Guide</a></li>
-				</ul>
-			</p>
-			
-			<p>
-				<a href="#top">- Top -</a>
-			</p>
-		</blockquote>
-		
-		
-		<h2><a name="sec_1.1">1.1</a> CVS For Developers</h2>
-		<blockquote>
-			<p>
-				This section provides some basic CVS commands that would interest developers.
-				We assume you have CVS already installed and have access to some sort of UNIX 
-				console like bash or tcsh.
-			</p>
-			
-			
-			<h4><a name="sec_1.1.1">1.1.1</a> Module Check Out</h4>
-			<blockquote>
-				<p>
-					A <i>check out</i> will allow you to have a complete copy of the source
-					code on your computer. It also sets up all the necesary CVS related files
-					to keep track of various versions and revisions of each individual source
-					file.
-				</p>
-				
-				<p>
-					<ol>
-						<li>Set the CVS_RSH environment variable to <i>ssh</i></li>
-						<li>Go to a suitable directory where you wish to have TripleA checked out</li>
-						<li>Run the command to check out the TripleA module</li>
-					</ol>
-					
-					<table border="1" cellspacing="2" cellpadding="2" width="400">
-						<tr>
-							<td bgcolor="#ffcc99" colspan="2">
-								<b>Helpful Information</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/info.png" width="48" height="48" alt="info image" />
-							</td>
-							
-							<td valign="middle">
-								<span style="font-style: italic; font-size: small;">
-									In the example below; <b>USERNAME</b> would be the developer's source-forge account.
-									That means if you are a developer, you will put your source-forge user name
-									in place of <b>USERNAME</b>.
-								</span>
-							</td>
-						</tr>
-					</table>
 
-					<br/>
-					
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Checking out a module.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								export CVS_RSH=ssh<br/>
-								cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea checkout triplea
-								</code>
-							</td>
-						</tr>
-					</table>
-					<br/>
-				</p>
-				
-				<p>
-					When prompted to input a password; enter the appropriate password corresponding
-					with the user name chosen for the check out command. CVS will download the current
-					CVS source tree for TripleA to your computer in the current working directory.
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
-			
-			
-			<h4><a name="sec_1.1.2">1.1.2</a> Commiting Items</h4>
-			<blockquote>
-				<p>
-					The <i>commit</i> command will physically upload any changes made to
-					the CVS copy on your computer to the CVS tree on Source-Forge. This command
-					can be used in a few different ways:
-					<ol>
-						<li>To commit a single file or directory</li>
-						<li>To commit multiple files or directories</li>
-						<li>1 & 2 with a single message</li>
-					</ol>
-				</p>
-				
-				<p>
-					<table border="0" cellspacing="2" cellpadding="2">
-						<tr>
-							<td colspan="2">				
-								<table border="1" cellspacing="2" cellpadding="2" width="100%">
-									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-											<b>Commit a single file</b>
-										</td>
-									</tr>
-						
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-										</td>
-						
-										<td valign="middle" bgcolor="#ffffcc">
-											<code>
-											cvs -d:ext:<b>USERNAME</b>@cvs.sf.net:/cvsroot/triplea commit SourceFile.java
-											</code>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						
-						<tr>
-							<td>
-								<table border="1" cellspacing="2" cellpadding="2" width="400">
-									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-											<b>Commit a single file</b>
-										</td>
-									</tr>
-						
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-										</td>
-						
-										<td valign="middle" bgcolor="#ffffcc">
-											<code>
-											cvs commit SourceFile.java
-											</code>
-										</td>
-									</tr>
-								</table>
-							</td>
-							
-							<td rowspan="2" valign="top">
-								<table border="1" cellspacing="2" cellpadding="2" height="180">
-									<tr>
-										<td bgcolor="#ffcc99" colspan="2">
-											<b>Helpful Information</b>
-										</td>
-									</tr>
-									
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/info.png" width="48" height="48" alt="info image" />
-										</td>
-							
-										<td valign="top">
-											<span style="font-style: italic; font-size: small;">
-												You can commit a change by issuing the the <b>commit</b> command
-												alone or with all the user options and module names. Either will
-												work. Wild cards such as <b>*</b> can also be used to specify
-												multiple files and/or directories. If you just run the <b>commit</b>
-												command alone without specifying a file. It will recursively scan
-												all files and directories and commit those that have changed from the
-												on-line CVS Tree. 
-											</span>
-										</td>
-						
-									</tr>
-								</table>
-							</td>
-						</tr>
-					
-						<tr>
-							<td>
-								<table border="1" cellspacing="2" cellpadding="2" width="400">
-									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-											<b>Commit a single directory</b>
-										</td>
-									</tr>
-						
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-										</td>
-						
-										<td valign="middle" bgcolor="#ffffcc">
-											<code>
-											cvs commit new_dir
-											</code>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					When commiting a change in the way shown above, you will be prompted
-					to enter a message using the system default console text editor (ie. nano or pico).
-					Sometimes this is useful when you want type a long and detailed description. There
-					is a way to commit changes without having an editor open after ever commit;
-					that is to commit a change with the message in the command line.
-					<br/>
-					<br/>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Commit with a message.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs commit SourceFile.java -m "fix was aplied to lines 345"
-								</code>
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
-			
-			
-			<h4><a name="sec_1.1.3">1.1.3</a> Adding Items</h4>
-			<blockquote>
-				<p>
-					Adding items to the CVS tree is relatively simple. There are three most commonly
-					faced situations when adding items to the CVS tree.
-					<ol>
-						<li>Adding a source file (ie. source code)</li>
-						<li>Adding a binary file (ie. images, pdfs ..etc)</li>
-						<li>Adding a directory</li>
-					</ol>
-					
-					Adding items to the CVS tree is different from <b>commiting</b> items. When
-					you <i>add</i> a file; it is queued for addition on the CVS server. If and only if
-					the file has been <i>add</i>ed, then you can finally <i>commit</i> it to the CVS tree. 
-				</p>
-				
-				<p>
-					<table border="0" cellspacing="2" cellpadding="2">
-						<tr>
-							<td>
-								<table border="1" cellspacing="2" cellpadding="2" width="400">
-									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-											<b>Adding a source file.</b>
-										</td>
-									</tr>
-						
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-										</td>
-						
-										<td valign="middle" bgcolor="#ffffcc">
-											<code>
-											cvs add MySourceFile.java<br/>
-											cvs commit
-											</code>
-										</td>
-									</tr>
-								</table>
-							</td>
-							
-							<td rowspan="2" valign="top">
-								<table border="1" cellspacing="2" cellpadding="2" width="400">
-									<tr>
-										<td bgcolor="#ffcc99" colspan="2">
-											<b>Helpful Information</b>
-										</td>
-									</tr>
-									
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/info.png" width="48" height="48" alt="info image" />
-										</td>
-							
-										<td valign="top">
-											<span style="font-style: italic; font-size: small;">
-												When a binary file is committed without the <b>-kb</b> option
-												it will make the file be saved in a textual format.<br/>
-												<br/>
-												Although this does not pose any problems to UNIX based
-												systems, it does for developers who use Microsoft Windows.
-											</span>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
+			<p>
+				The trunk for triplea can be accessed using the subversion url, https://svn.sourceforge.net/svnroot/triplea/trunk  <br>
 
-						<tr>
-							<td>
-								<table border="1" cellspacing="2" cellpadding="2" width="400">
-									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-											<b>Adding a binary file.</b>
-										</td>
-									</tr>
-						
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-										</td>
-						
-										<td valign="middle" bgcolor="#ffffcc">
-											<code>
-											cvs add -kb Some_Image.png<br/>
-											cvs commit
-											</code>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						
-						<tr>
-							<td>
-								<br/>
-								<table border="1" cellspacing="2" cellpadding="2" width="400">
-									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-											<b>Adding a directory.</b>
-										</td>
-									</tr>
-						
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-										</td>
-						
-										<td valign="middle" bgcolor="#ffffcc">
-											<code>
-											mkdir new_directory<br/>
-											cvs add new_directory<br/>
-											cvs commit<br/>
-											</code>
-										</td>
-									</tr>
-								</table>
-							</td>
-							
-							<td>
-								&nbsp;
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
+				The repository can be browsed online <a href="http://svn.sourceforge.net/viewvc/triplea/"> here</a>
+
+			</p>
+
+
+
+			<p>
+				If you are using windows it is highly recomended that you use <a href="http://tortoisesvn.tigris.org/">TortoiseSVN</a> as you svn client.
+
+			</p>
+
 			
-			
-			<h4><a name="sec_1.1.4">1.1.4</a> Removing Items</h4>
-			<blockquote>
-				<p>
-					Removing items from the CVS tree works in a similar way to adding items.
-					The item to be removed will be removed from your local CVS copy but will
-					remain in the on line CVS tree. Removing it will basically make it "hidden."
-					So in other words, nothing is ever deleted from the on line tree, only hidden.
-				</p>
-				
-				<p>
-					To remove a file from the CVS, one must follow three simple steps:
-					<ol>
-						<li>Physically remove the file from the local CVS tree</li>
-						<li>Issue the cvs command to remove the file from the on line CVS tree</li>
-						<li>Commit the changes</li>
-					</ol>
-					
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Removing a file.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								rm SourceFile.java<br/>
-								cvs remove<br/>
-								cvs commit
-								</code>
-							</td>
-						</tr>
-					</table>
-					
-					<br/>
-					
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Removing a file with a message.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								rm SourceFile.java<br/>
-								cvs remove<br/>
-								cvs commit -m "no longer needed"
-								</code>
-							</td>
-						</tr>
-					</table>
-					<br/>
-				</p>
-				
-				<p>
-					Removing directories works in a similar way, except for one thing. The directory to be
-					removed needs to have all of its contents removed first. Below is an example of how to
-					remove a directory that is filled with source files.
-        				<br/>
-					<br/>
-					<table border="0" cellspacing="4" cellpadding="2">
-						<tr>
-							<td valign="top">
-								<table border="1" cellspacing="2" cellpadding="2" width="400" height="160">
-									<tr>
-										<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-											<b>Removing a full directory.</b>
-										</td>
-									</tr>
-						
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-										</td>
-						
-										<td valign="middle" bgcolor="#ffffcc">
-											<code>
-											cd myDir<br/>
-											rm *.java<br/>
-											cvs remove<br/>
-											cvs commit<br/>
-											cd ..<br/>
-											cvs remove myDir<br/>
-											rm -rf myDir<br/>
-											cvs commit
-											</code>
-										</td>
-									</tr>
-								</table>
-							</td>
-							
-							<td valign="top">
-								<table border="1" cellspacing="2" cellpadding="2" width="400">
-									<tr>
-										<td bgcolor="#ffcc99" colspan="2">
-											<b>Helpful Information</b>
-										</td>
-									</tr>
-									
-									<tr>
-										<td align="left" valign="top" height="48" width="48">
-											<img src="images/info.png" width="48" height="48" alt="info image" />
-										</td>
-							
-										<td valign="top">
-											<span style="font-style: italic; font-size: small;">
-												When issuing the <b>remove</b> command by it self, it will
-												recurse through all the files and directories and queue
-												for removal all files that have been manually deleted.<br/>
-												<br/>
-												You can specify what file you want it to queue for removal
-												by appending the file name after the word <b>remove</b>.
-											</span>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockqote>
-			
-			
-			<h4><a name="sec_1.1.5">1.1.5</a> Tagging Items</h4>
-			<blockquote>
-				<p>
-					Normally, before pushing out a release, we <i>tag</i> all the files in the CVS with
-					a name. This tag allows us to identify what branch we're working on and for which
-					version of TripleA it was included into. There are at least two tag names we use
-					(please not that the upper-case Xs represent the version number of TripleA):
-					<ol>
-						<li><b>sX-X-X-release</b> : Stable release</li>
-						<li><b>uX-X-X-release</b> : Unstable release</li>
-					</ol>
-					
-					To tag the CVS tree before a release; we run the command from the root directory
-					of TripleA. That way every file and directory gets tagged.
-				</p>
-				
-				<p>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Tagging the CVS Tree.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs tag s0-6-0-release
-								</code>
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
-			
-			
-			<h4><a name="sec_1.1.6">1.1.6</a> Updating Your CVS Copy</h4>
-			<blockquote>
-				<p>
-					It is very important for a developer to keep their local copy of the CVS as
-					up-to-date as possible. One can achieve this goal by running the <b>update</b>
-					command from the cvs. It will synchronize your local copy to the remote copy on
-					the CVS server. Has the ability to download all new files and even remove files
-					(on your local copy) that have been removed (hidden) from the CVS Tree.
-				</p>
-				
-				<p>
-					In the root folder of TripleA run the command below. This will update all
-					files and directories recursively. This will not remove un-wanted files.
-					<br/>
-					<br/>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Updating the local CVS copy.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						 	
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs update
-								</code>
-							</td>
-						</tr>
-					</table>
-					<br/>
-				</p>
-				
-				<p>
-					The example below will perform the update and will remove any empty
-					folders or files that have been removed from the on-line CVS Tree. The
-					<i>-q</i> switch will make the CVS only echo a status message when a file
-					has been updated.
-					<br/>
-					<br/>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Updating the local CVS copy with options.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs -q update -dAP
-								</code>
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
-			
-			
-			<h4><a name="sec_1.1.7">1.1.7</a> Viewing Changes</h4>
-			<blockquote>
-				<p>
-					To keep track of the who has been changing what files, for what reason, and
-					when is easily done with the <i>annotate</i> command provided by CVS. Given
-					the file name; it will annotate every single line of the source file telling
-					you when each line was modified and by whom. Normally this output is echoed
-					right into the console, but with simple Shell commands you can pipe it to a
-					text file.
-				</p>
-				
-				<p>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Basic annotation.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs annotate SourceFile.java
-								</code>
-							</td>
-						</tr>
-					</table>
-					
-					<br/>
-					
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Annotate to a file.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs annotate SourceFile.java  > AnnotatedFile.txt
-								</code>
-							</td>
-						</tr>
-					</table>
-					
-					<br/>
-					
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Example of an annotated file.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/txt.png" width="48" height="48" alt="text image"/>
-							</td>
-						
-							<td valign="top" bgcolor="#ffffcc">
-								<code>
-								1.34&nbsp;&nbsp;&nbsp;&nbsp;(userOne 19-Feb-05):&nbsp;&nbsp;&nbsp;&nbsp;if (sentinel != null)<br/>
-								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
-								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):<br/>
-								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;if (t_sec > (x+y))<br/>
-								1.27&nbsp;&nbsp;&nbsp;&nbsp;(userOne 10-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
-								</code>
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
 		</blockquote>
 		
 		
-		<h2><a name="sec_1.2">1.2</a> CVS For Non-Developers</h2>
-		<blockquote>
-			<p>
-				Accessing the TripleA CVS tree is not only for developers. Non-developers have access
-				to it. They can check out the TripleA module and keep it up-to-date with the very
-				latest changes. They, however, cannot make changes to the CVS tree; only read access
-				is granted to non-developers.
-			</p>
-			
-			<p>
-				In this section we assume you have CVS already installed and have access to some sort
-				of UNIX console like bash or tcsh.
-			</p>
-			
-			<h4><a name="sec_1.2.1">1.2.1</a> Module Check Out</h4>
-			<blockquote>
-				<p>
-					A <i>check out</i> will allow you to have a complete copy of the source
-					code on your computer. It also sets up all the necesary CVS related files
-					to keep track of various versions and revisions of each individual source
-					file.
-				</p>
-				
-				<p>
-					<ol>
-						<li>Set the CVS_RSH environment variable to <i>ssh</i></li>
-						<li>Go to a suitable directory where you wish to have TripleA checked out</li>
-						<li>Run the command to check out the TripleA module</li>
-					</ol>
-					
-					<br/>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Checking out a module.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								export CVS_RSH=ssh<br/>
-								cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/triplea checkout triplea
-								</code>
-							</td>
-						</tr>
-					</table>
-					<br/>
-				</p>
-				
-				<p>
-					The above command will allow anonymous access to check out a copy of the CVS tree.
-					Once the triplea module has been checked out and saved on your system, you can do
-					whatever you want with it. The only restriction is that you are not allowed to add
-					or commit changes to the CVS tree that is on line. Those actions are reserved for
-					developers who log in to the CVS with their SourceForge accounts.
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
-			
-			<h4><a name="sec_1.2.2">1.2.2</a> Updating Your CVS Copy</h4>
-			<blockquote>
-				<p>
-					Once a copy of the triplea CVS module has been checked out, it can be kept up-to-date
-					by running the <b>update</b> command. It will synchronize your local copy to the remote copy on
-					the CVS server. It Has the ability to download all new files and even remove files
-					(on your local copy) that have been removed (hidden) from the CVS Tree.
-				</p>
-				
-				<p>
-					In the root folder of TripleA run the command below. This will update all
-					files and directories recursively. This will not remove un-wanted files.
-					<br/>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Updating the local CVS copy.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						 	
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs update
-								</code>
-							</td>
-						</tr>
-					</table>
-					<br/>
-				</p>
-				
-				<p>
-					The example below will perform the update and will remove any empty
-					folders or files that have been removed from the on-line CVS Tree. The
-					<i>-q</i> switch will make the CVS only echo a status message when a file
-					has been updated.
-					<br/>
-					<br/>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Updating the local CVS copy with options.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs -q update -dAP
-								</code>
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
 			
 			
-			<h4><a name="sec_1.2.3">1.2.3</a> Viewing Changes</h4>
-			<blockquote>
-				<p>
-					To keep track of the who has been changing what files, for what reason, and
-					when is easily done with the <i>annotate</i> command provided by CVS. Given
-					the file name; it will annotate every single line of the source file telling
-					you when each line was modified and by whom. Normally this output is echoed
-					right into the console, but with simple Shell commands you can pipe it to a
-					text file.
-				</p>
-				
-				<p>
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Basic annotation.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs annotate SourceFile.java
-								</code>
-							</td>
-						</tr>
-					</table>
-					
-					<br/>
-					
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Annotate to a file.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/shellscript.png" width="48" height="48" border="0" alt="shell image"/>
-							</td>
-						
-							<td valign="middle" bgcolor="#ffffcc">
-								<code>
-								cvs annotate SourceFile.java  > AnnotatedFile.txt
-								</code>
-							</td>
-						</tr>
-					</table>
-					
-					<br/>
-					
-					<table border="1" cellspacing="2" cellpadding="2">
-						<tr>
-							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
-								<b>Example of an annotated file.</b>
-							</td>
-						</tr>
-						
-						<tr>
-							<td align="left" valign="top" height="48" width="48">
-								<img src="images/txt.png" width="48" height="48" alt="text image"/>
-							</td>
-						
-							<td valign="top" bgcolor="#ffffcc">
-								<code>
-								1.34&nbsp;&nbsp;&nbsp;&nbsp;(userOne 19-Feb-05):&nbsp;&nbsp;&nbsp;&nbsp;if (sentinel != null)<br/>
-								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
-								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):<br/>
-								1.29&nbsp;&nbsp;&nbsp;&nbsp;(userTwo 11-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;if (t_sec > (x+y))<br/>
-								1.27&nbsp;&nbsp;&nbsp;&nbsp;(userOne 10-Apr-04):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>
-								</code>
-							</td>
-						</tr>
-					</table>
-				</p>
-				
-				<p>
-					<a href="#top">- Top -</a>
-				</p>
-			</blockquote>
-		</blockquote>
-		
 		
 		<h2><a name="sec_2">2.0</a> Compiling The TripleA Source Code</h2>
 		<blockquote>
@@ -1149,7 +186,6 @@
 					<ul>
 						<li>Apache ANT (<a target="_blank" href="http://ant.apache.org">http://ant.apache.org</a>)</li>
 						<li>Sun Micro Systems Compliant Java JDK (<a target="_blank" href="http://java.sun.com">http://java.sun.com</a>)</li>
-						<li>Junit (<a target="_blank" href="http://www.junit.org">http://www.junit.org</a>)</li>
 					</ul>
 				</p>
 				
@@ -6698,7 +5734,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 		<h2><a name="sec_8">8.0</a> AI</h2>
 		<blockquote>
 			<p>
-			If you are interested in writing an AI, there is a functioning AI in the package games.strategy.triplea.weakAI<p>
+			If you are interested in writing an AI, there is a functioning AI in the package games.strategy.triplea.weakAI.  Extending the class AbstractAI is the best place to start when writing an AI.<p>
 
 			<p>To add your AI to the game, you must modify games.strategy.triplea.TripleA.  The two methods
 <code>
@@ -6720,7 +5756,7 @@ public String[] getServerPlayerTypes()
 			<p>
 				This section will go over the three types of releases :<br/>
 				<ul>
-					<li>CVS</li>
+					<li>SVNS</li>
 					<li>Unstable</li>
 					<li>Stable</li>
 				</ul>
@@ -6743,50 +5779,48 @@ public String[] getServerPlayerTypes()
 					</td>
 							
 					<td valign="middle">
-						CVS ---&gt; Unstable ---&gt; Stable ---&gt; Future Requirements ---&gt; CVS ...etc
+						SVN ---&gt; Unstable ---&gt; Stable ---&gt; Future Requirements ---&gt; SVN ...etc
 					</td>
 				</tr>
 			</table>
 			
 			<p>
 				The release model follows a spiral pattern. This spiral pattern
-				allows TripleA to be worked on in several stages, thus being the CVS,
+				allows TripleA to be worked on in several stages, thus being the SVN,
 				Unstable, and Stable stage. A spiral pattern is imperative to any form
 				of development. This type of model ensures the software will be
 				developed, tested, released, and improved over time.
 			</p>
 			
-			<h3>CVS:</h3>
+			<h3>SVN:</h3>
 
 			<p>
-				The CVS package is meant to be used by developers only. Of course it is not
+				The SVN package is meant to be used by developers only. Of course it is not
 				strictly restricted to developers but, anyone can check out a fresh
-				copy of the CVS and run it. Although it should be considered highly
-				unstable. The CVS is where the bulk of the coding will take place. This
+				copy of the SVN and run it. Although it should be considered highly
+				unstable. The SVN is where the bulk of the coding will take place. This
 				is basically the experimental developing grounds where new features are
-				developed. Below are a list of issues that we exepect from a CVS build at
+				developed. Below are a list of issues that we exepect from a SVN build at
 				this stage:
 				<ol>
 					<li>Expected to contain freshly developed features that may not exists in other builds</li>
 					<li>Expect high instability, program crashes, bugs, and run-time errors</li>
-					<li>Expect new builds of the CVS almost nightly</li>
-					<li>Should not be compile broken. The CVS must compile without errors</li>
+					<li>Expect new builds of the SVN almost nightly</li>
+					<li>Should not be compile broken. The SVN must compile without errors</li>
 					<li>Testing grounds for the design and implementation of new features</li>
 				</ol>
 			</p>
 			
 			<p>
-				CVS packages will not be released and placed on the main
-				download site. Users can obtain a copy of the CVS anonymously through
-				sourceforge. Instructions for anonymous CVS access for non-developers
-				can be found in this document's CVS module check-out sections <a href="#sec_1.1.1">1.1.1</a>
-				and <a href="#sec_1.2.1">1.2.1</a>
+				SVN packages will not be released and placed on the main
+				download site. Users can obtain a copy of the SVN anonymously through
+				sourceforge.
 			</p>
 			
 			<h3>Unstable:</h3>
 
 			<p>
-				Once certain requirements are made and implemented into the CVS, it
+				Once certain requirements are made and implemented into the SVN, it
 				is ready for testing. An Unstable build is released with a numbering
 				system that portrays its version number, feature number, release number,
 				and sometimes a micro-release number.<br/>
@@ -6836,7 +5870,7 @@ public String[] getServerPlayerTypes()
 				
 				<p>
 					The unstable build is packaged and released in order to test the
-					newly implemented features that have been added during the CVS stage.
+					newly implemented features that have been added during the SVN stage.
 					This build is intended for use by developers and the end user. The
 					purpose of an unstable build is to increase the speed of error detection
 					and possible bug fixes. Due to the nature of Open Source projects,
