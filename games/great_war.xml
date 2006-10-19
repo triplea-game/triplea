@@ -8,7 +8,8 @@
 
 <game>
 
-        <info name="The Great War" version="1.1"/>
+        <info name="The Great War" version="1.0.2"/>
+
 
 
 
@@ -1282,6 +1283,10 @@
                 <connection t1="Karelia" t2="Suzdal"/>
                 <connection t1="Karelia" t2="Novgorod"/>
                 <connection t1="Karelia" t2="Petrograd"/>
+
+		    <connection t1="Lake Onega" t2="Karelia"/>
+                <connection t1="Lake Onega" t2="Suzdal"/>
+                <connection t1="Lake Onega" t2="Novgorod"/>
 
                 <connection t1="Arkhangelsk" t2="Suzdal"/>
                 <connection t1="Arkhangelsk" t2="Kazan"/>
