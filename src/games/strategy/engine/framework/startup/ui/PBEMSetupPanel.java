@@ -1,12 +1,16 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.launcher.*;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.random.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
 import javax.swing.*;
@@ -71,9 +75,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         
         DefaultComboBoxModel diceServerModel = new DefaultComboBoxModel();
         
-        diceServerModel.addElement(new TripleAWarClubDiceServer());
-        diceServerModel.addElement(new IronyRemoteDiceServer());
+        //diceServerModel.addElement(new TripleAWarClubDiceServer());
         
+        //diceServerModel.addElement(new IronyRemoteDiceServer());
+        populateDiceRollModel(diceServerModel);
         
         m_diceServers.setModel(diceServerModel);
         
@@ -85,6 +90,57 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         );
 
         m_instructionsText.setBackground(this.getBackground());
+    }
+    
+    private void populateDiceRollModel(DefaultComboBoxModel model) {
+        File f = new File(GameRunner.getRootFolder(), "dice_servers");
+        if(!f.exists()) {
+            throw new IllegalStateException("No dice server folder:" + f);
+        }
+        
+        java.util.List<Properties> propFiles = new ArrayList<Properties>();
+        
+        File[] files =  f.listFiles();
+        for(File file : files) 
+        {
+            if(!file.isDirectory() && file.getName().endsWith(".properties")) 
+            {
+                try
+                {
+                    Properties props = new Properties();
+                    FileInputStream fin = new FileInputStream(file);
+                    try
+                    {
+                        props.load(fin);
+                        propFiles.add(props);
+                        
+                    }
+                    finally
+                    {
+                        fin.close();
+                    }
+                }
+                catch(IOException e) 
+                {
+                    System.out.println("error reading file:" + file);
+                    e.printStackTrace(System.out);
+                }
+            }
+        }
+        
+        Collections.sort(propFiles, new Comparator<Properties>() {
+
+            public int compare(Properties o1, Properties o2)
+            {
+                int n1 = Integer.parseInt(o1.getProperty("order"));
+                int n2 = Integer.parseInt(o1.getProperty("order"));
+                return n1 - n2;
+            }
+        });
+        
+        for(Properties prop : propFiles) {
+            model.addElement(new PropertiesDiceRoller(prop));
+        }
     }
 
     private void layoutComponents()

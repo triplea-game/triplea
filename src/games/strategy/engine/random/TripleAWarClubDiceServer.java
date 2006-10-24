@@ -64,48 +64,6 @@ public class TripleAWarClubDiceServer implements IRemoteDiceServer
         {
             post.releaseConnection();
         }
-//
-//        URL url = new URL("http://dice.tripleawarclub.org/MARTI.php");
-//        URLConnection urlConn = url.openConnection();
-//        urlConn.setDoInput(true);
-//        urlConn.setDoOutput(true);
-//        urlConn.setUseCaches(false);
-//        urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//
-//        DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
-//
-//        String content = "numdice=" + URLEncoder.encode(numDice + "", "UTF-8") + "&numsides=" + URLEncoder.encode(Integer.toString(max), "UTF-8")
-//                + "&modroll=" + URLEncoder.encode("No", "UTF-8") +
-//                //how many times to repeat
-//                "&numroll=" + URLEncoder.encode("1", "UTF-8") +
-//                "&subject=" + URLEncoder.encode(message, "UTF-8") + "&roller=" + URLEncoder.encode(player1, "UTF-8") + "&gm="
-//                + URLEncoder.encode(player2, "UTF-8") +
-//                "&send=" + URLEncoder.encode("true", "UTF-8");
-//
-//        out.writeBytes(content);
-//        out.flush();
-//        out.close();
-//
-//        BufferedReader input = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-//        try
-//        {
-//            StringBuilder results = new StringBuilder();
-//
-//            while (input.ready())
-//            {
-//                results.append(input.readLine());
-//            }
-//            return results.toString();
-//        } finally
-//        {
-//            try
-//            {
-//                input.close();
-//            } catch (Exception e)
-//            {
-//
-//            }
-//        }
     }
 
     /**

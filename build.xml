@@ -132,6 +132,10 @@
 		<exec executable="cp">
 			<arg line="-r license ${app.file}/Contents/Resources/" />
 		</exec>
+		
+		<exec executable="cp">
+			<arg line="-r dice_servers ${app.file}/Contents/Resources/" />
+		</exec>
 
 		<exec executable="cp">
 			<arg line="-r maps ${app.file}/Contents/Resources/" />
@@ -227,6 +231,10 @@
 
 			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
 				<include name="gpl.txt" />
+			</zipfileset>
+			
+			<zipfileset dir="dice_servers/" prefix="triplea_${triplea.version}/dice_servers/">
+				<include name="*.properties" />
 			</zipfileset>
 
 			<zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
@@ -360,6 +368,7 @@
 				<include name="*.sh" />
 				<include name="changelog.txt" />
 				<include name="launch4j.config.xml" />
+				<include name="launch4j_embedded_jre.config.xml" />
 				<include name="info.plist" />
 			</zipfileset>
 
@@ -381,6 +390,11 @@
 				<include name="gpl.txt" />
 			</zipfileset>
 
+			<zipfileset dir="dice_servers/" prefix="triplea_${triplea.version}/dice_servers/">
+				<include name="*.properties" />
+			</zipfileset>
+
+			
 			<zipfileset dir="images/" prefix="triplea_${triplea.version}/images/">
 				<include name="**/*.*" />
 			</zipfileset>
