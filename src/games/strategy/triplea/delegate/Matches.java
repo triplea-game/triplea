@@ -438,6 +438,21 @@ public class Matches
         }
     };
 
+    
+    public static Match<Territory> territoryHasOwnedFactory(final GameData data, final PlayerID player)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                if(!t.getOwner().equals(player))
+                    return false;
+                if(!t.getUnits().someMatch(Matches.UnitIsFactory))
+                    return false;
+                return true;
+            }
+        };
+    }
 
     public static Match<Territory> territoryHasEnemyFactory(final GameData data, final PlayerID player)
     {

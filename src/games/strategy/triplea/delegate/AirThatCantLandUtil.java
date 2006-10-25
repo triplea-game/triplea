@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
@@ -47,7 +48,10 @@ public class AirThatCantLandUtil
         m_player = m_bridge.getPlayerID();
     }
 
-
+    public static boolean isLHTRCarrierProdcution(GameData data)
+    {
+        return data.getProperties().get(Constants.LHTR_CARRIER_PRODUCTION_RULES, false);
+    }
 
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
@@ -68,7 +72,7 @@ public class AirThatCantLandUtil
         return cantLand;
     }
 
-    public void removeAirThatCantLand()
+    public void removeAirThatCantLand(boolean spareAirIsSeaZonesBesideFactories)
     {
         Iterator<Territory> territories = getTerritoriesWhereAirCantLand().iterator();
         while (territories.hasNext())
@@ -79,7 +83,11 @@ public class AirThatCantLandUtil
             ownedAir.add(Matches.alliedUnit(m_player, m_data));
             Collection<Unit> air = current.getUnits().getMatches(ownedAir);
 
-            removeAirThatCantLand(current, air);
+            boolean hasNeighboringFriendlyFactory =  m_data.getMap().getNeighbors(current, Matches.territoryHasOwnedFactory(m_data, m_player)).size() > 0;
+            boolean skip = spareAirIsSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
+
+            if(!skip)
+                removeAirThatCantLand(current, air);
         }
     }
 

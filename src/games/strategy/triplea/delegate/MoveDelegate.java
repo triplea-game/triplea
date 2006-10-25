@@ -1119,7 +1119,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     private void removeAirThatCantLand()
     {
-        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand();
+        boolean lhtrCarrierProd = AirThatCantLandUtil.isLHTRCarrierProdcution(m_data);
+        boolean hasProducedCarriers = m_player.getUnits().someMatch(Matches.UnitIsCarrier);
+        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand(lhtrCarrierProd && hasProducedCarriers);
         
     }
 

@@ -29,7 +29,10 @@ import games.strategy.engine.gamePlayer.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.AirThatCantLandUtil;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.*;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.ui.history.*;
@@ -396,10 +399,22 @@ public class TripleAFrame extends JFrame
         JOptionPane.showMessageDialog(this, message, message, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public boolean getOKToLetAirDie(String message)
+    
+    
+    public boolean getOKToLetAirDie(PlayerID m_id, String message)
     {
-        String ok = "Kill air";
-        String cancel = "Keep moving";
+        boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProdcution(m_data);
+        int carrierCount = m_id.getUnits().getMatches(Matches.UnitIsCarrier).size();
+        boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0; 
+        
+        if(canProduceCarriersUnderFighter && carrierCount > 0)
+        {
+            message = message + " You have " + carrierCount + MyFormatter.pluralize("carrier", carrierCount);
+        }
+        
+        
+        String ok = "OK";
+        String cancel = "Cancel";
         String[] options =
         { cancel, ok };
         int choice = JOptionPane.showOptionDialog(this, message, "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,

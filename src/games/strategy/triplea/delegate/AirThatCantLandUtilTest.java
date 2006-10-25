@@ -70,7 +70,7 @@ public class AirThatCantLandUtilTest extends TestCase
         assertEquals(1,cantLand.size());
         assertEquals(balkans, cantLand.iterator().next());
         
-        airThatCantLandUtil.removeAirThatCantLand();
+        airThatCantLandUtil.removeAirThatCantLand(false);
         //jsut the original german fighter
         assertEquals(1,balkans.getUnits().getMatches(Matches.UnitIsAir).size());
     }
@@ -90,11 +90,26 @@ public class AirThatCantLandUtilTest extends TestCase
         assertEquals(1,cantLand.size());
         assertEquals(sz_55, cantLand.iterator().next());
         
-        airThatCantLandUtil.removeAirThatCantLand();
+        airThatCantLandUtil.removeAirThatCantLand(false);
         assertEquals(0,sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
 
     }
 
+    
+    public void testSpareNextToFactory()
+    {
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, m_americans);
+        Territory sz_55 = m_data.getMap().getTerritory("55 Sea Zone");
+        Change addAir = ChangeFactory.addUnits(sz_55, m_fighter.create(2, m_americans));
+        
+        new ChangePerformer(m_data).perform(addAir);
+        
+        AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(m_data, bridge);
+                
+        airThatCantLandUtil.removeAirThatCantLand(true);
+        assertEquals(2,sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
+
+    }
     
     
     public void testCantLandCarrier()
@@ -112,7 +127,7 @@ public class AirThatCantLandUtilTest extends TestCase
         assertEquals(1,cantLand.size());
         assertEquals(sz_52, cantLand.iterator().next());
         
-        airThatCantLandUtil.removeAirThatCantLand();
+        airThatCantLandUtil.removeAirThatCantLand(false);
         //just the original american fighter, plus one that can land on the carrier
         assertEquals(2,sz_52.getUnits().getMatches(Matches.UnitIsAir).size());
 

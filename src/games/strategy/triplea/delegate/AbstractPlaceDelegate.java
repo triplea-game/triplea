@@ -606,6 +606,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         change.add(place);
 
         //can we move planes to land there
+        
         moveAirOntoNewCarriers(at, units, player, change);
         m_bridge.addChange(change);
         m_placements.add(new UndoPlace(m_data, this, change));
@@ -630,9 +631,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (!territory.isWater())
             return;
         //not enabled
-        if (!m_data.getProperties().get(
-                Constants.CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false))
+        if (!canProduceFightersOnCarriers())
             return;
+        //lhtr rules dont allow this
+        if(AirThatCantLandUtil.isLHTRCarrierProdcution(getData()))
+            return;
+        
         if (Match.noneMatch(units, Matches.UnitIsCarrier))
             return;
 
@@ -722,6 +726,18 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         //reset ourseleves for next turn
         m_produced = new HashMap<Territory, Collection<Unit>>();
         m_placements.clear();
+        
+        //only for lhtr rules
+        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand(false);
+    }
+    
+    /**
+     * Get what air units must move before the end of the players turn
+     * @return a list of Territories with air units that must move
+     */
+    public Collection<Territory> getTerritoriesWhereAirCantLand()
+    {
+        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand();
     }
 
     /**

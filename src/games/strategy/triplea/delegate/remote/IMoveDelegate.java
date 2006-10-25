@@ -73,6 +73,7 @@ public interface IMoveDelegate extends IRemote
      */
     public Collection<Territory> getTerritoriesWhereAirCantLand();
     
+    
     public List<Unit> getUnitsAlreadyMoved();
     
 }

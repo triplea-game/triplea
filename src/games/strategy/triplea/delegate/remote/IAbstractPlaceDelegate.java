@@ -14,8 +14,8 @@
 
 package games.strategy.triplea.delegate.remote;
 
-import games.strategy.engine.data.*;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 
@@ -54,4 +54,12 @@ public interface IAbstractPlaceDelegate extends IRemote
      *         of times we have made succesful placements
      */
     public int getPlacementsMade();
+    
+    
+    /**
+     * Get what air units must move before the end of the players turn
+     * @return a list of Territories with air units that must move
+     */
+    public Collection<Territory> getTerritoriesWhereAirCantLand();
+    
 }

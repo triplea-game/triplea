@@ -20,18 +20,40 @@
 
 package games.strategy.triplea;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.gamePlayer.*;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.net.GUID;
-import games.strategy.triplea.delegate.*;
-import games.strategy.triplea.delegate.dataObjects.*;
-import games.strategy.triplea.delegate.remote.*;
+import games.strategy.triplea.delegate.BidPurchaseDelegate;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.dataObjects.BattleListing;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
+import games.strategy.triplea.delegate.dataObjects.MoveDescription;
+import games.strategy.triplea.delegate.dataObjects.TechResults;
+import games.strategy.triplea.delegate.dataObjects.TechRoll;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.triplea.delegate.remote.IBattleDelegate;
+import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
+import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.*;
-import games.strategy.util.*;
+import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.PlaceData;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.InverseMatch;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -140,7 +162,10 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         if (moveDescription == null)
         {
             if (nonCombat)
-                ensureAirCanLand();
+            {
+                if(!canAirLand(true))
+                    move(nonCombat);
+            }
             return;
         }
 
@@ -152,12 +177,17 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         move(nonCombat);	
     }
 
-    private void ensureAirCanLand()
+    private boolean canAirLand(boolean movePhase)
     {
-        Collection airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
+        
+        Collection airCantLand;
+        if(movePhase)
+            airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
+        else
+            airCantLand = ((IAbstractPlaceDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
         
         if (airCantLand.isEmpty())
-            return;
+            return true;
         else
         {
             StringBuilder buf = new StringBuilder(
@@ -168,11 +198,12 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
                 buf.append(((Territory) iter.next()).getName());
                 buf.append(" ");
             }
-            if (!m_ui.getOKToLetAirDie(buf.toString()))
-                move(true);
+            if (!m_ui.getOKToLetAirDie(m_id, buf.toString()))
+                return false;
+            return true;
         }
     }
-
+    
     private boolean hasUnitsThatCanMove(boolean nonCom)
     {
         CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
@@ -276,7 +307,11 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         {
             PlaceData data = m_ui.waitForPlace(m_id ,bid, m_bridge);
             if(data == null)
-                return;
+            {
+                //this only happens in lhtr rules
+                if(canAirLand(false))
+                    return;
+            }
             IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
             String error = placeDel.placeUnits(data.getUnits(), data.getAt());
             if(error != null)

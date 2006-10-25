@@ -361,7 +361,7 @@ public class UnitAttachment extends DefaultAttachment
         m_canBombard || 
         m_isMarine
         )
-        throw new GameParseException("Invalid Unit attatchment");
+        throw new GameParseException("Invalid Unit attatchment" + this);
 
     }
     else if(m_isSea)
