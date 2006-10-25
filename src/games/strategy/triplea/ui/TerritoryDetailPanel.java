@@ -38,7 +38,7 @@ public class TerritoryDetailPanel extends JPanel
     {
         m_data = data;
         m_frame = frame;
-        m_showOdds = new JButton("Show Battle Calculator...");
+        m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
         m_uiContext = uiContext;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(5, 5, 0, 0));
@@ -55,15 +55,31 @@ public class TerritoryDetailPanel extends JPanel
         }
         );
         
+        String show_battle_calc = "show_battle_calc";
+        final Action showBattleCalc = new AbstractAction(show_battle_calc)
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                OddsCalculatorDialog.show(m_frame, m_currentTerritory);
+            }
+        
+        };
+        
         m_showOdds.addActionListener(new ActionListener()
         {
         
             public void actionPerformed(ActionEvent e)
             {
-               OddsCalculatorDialog.show(m_frame, m_currentTerritory);
+                showBattleCalc.actionPerformed(e);
             }
-        
         });
+        
+        
+        ((JComponent)m_frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc );
+        ((JComponent)m_frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK), show_battle_calc );
+        ((JComponent)m_frame.getContentPane()).getActionMap().put(show_battle_calc, showBattleCalc);
+
     }
 
     public void setGameData(GameData data)

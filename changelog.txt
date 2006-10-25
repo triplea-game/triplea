@@ -1,6 +1,8 @@
 Changes for 0.8.4
 
-* ctrl+ and ctrl - zoom in and out 
+* show battle calculator on current territory when pressing ctrl B (sgb)
+
+* ctrl+ and ctrl - zoom in and out (sgb)
 
 * mark lhtr as complete. low luck rules for heavy bombers still need to be added for all versions (sgb)
 
