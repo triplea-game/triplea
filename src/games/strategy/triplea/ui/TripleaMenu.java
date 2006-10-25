@@ -375,19 +375,19 @@ public class TripleaMenu extends JMenuBar
                 if(result != 0)
                     return;
                 
-                double ratio = ((Number)model.getValue() ).doubleValue() / (double) 100.0;
-                //we want the ratio to be a multiple of 1/256
-                //so that the tiles have integer widths and heights
-                ratio = ((int) (ratio * 256)) / ((double) 256);
                 
-                m_frame.getMapPanel().setScale(ratio);
+                Number value = (Number)model.getValue();
+                m_frame.setScale(value.doubleValue());
             }
+
+           
         
         };
         
         menuGame.add(mapZoom);
         
     }
+
 
     /**
      * @param menuBar

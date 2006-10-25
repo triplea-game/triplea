@@ -1,5 +1,7 @@
 Changes for 0.8.4
 
+* ctrl+ and ctrl - zoom in and out 
+
 * mark lhtr as complete. low luck rules for heavy bombers still need to be added for all versions (sgb)
 
 * allow fighters to hover in sea zone where carriers can be produced under them for lhtr (sgb)

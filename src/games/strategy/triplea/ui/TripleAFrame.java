@@ -93,6 +93,8 @@ public class TripleAFrame extends JFrame
 
         m_data = game.getData();
         m_localPlayers = players;
+        
+        addZoomKeyboardShortcuts();
 
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(WINDOW_LISTENER);
@@ -209,6 +211,72 @@ public class TripleAFrame extends JFrame
 
         m_uiContext.addShutdownWindow(this);
     }
+
+    private void addZoomKeyboardShortcuts()
+    {
+        String zoom_map_in = "zoom_map_in";
+        //do both = and + (since = is what you get when you hit ctrl+ )
+        ((JComponent)getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.META_MASK), zoom_map_in );
+        ((JComponent)getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in );
+        ((JComponent)getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.META_MASK), zoom_map_in );
+        ((JComponent)getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in );
+        ((JComponent)getContentPane()).getActionMap().put(zoom_map_in, new AbstractAction(zoom_map_in)
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                if(getScale() < 100)
+                    setScale(getScale() + 10  );
+            }
+        
+        });
+        
+
+        String zoom_map_out = "zoom_map_out";
+        ((JComponent)getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.META_MASK), zoom_map_out );
+        ((JComponent)getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.CTRL_MASK), zoom_map_out );
+        ((JComponent)getContentPane()).getActionMap().put(zoom_map_out, new AbstractAction(zoom_map_out)
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                if(getScale() > 16)
+                    setScale(getScale() - 10  );
+            }
+        
+        });
+        
+        
+    }
+
+    /**
+     * 
+     * @param value - a number between 15 and 100
+     */
+    void setScale(double value)
+    {
+        if(value < 15)
+            value = 15;
+        if(value > 100)
+            value = 100;
+        
+        double ratio = value/ (double) 100.0;
+        //we want the ratio to be a multiple of 1/256
+        //so that the tiles have integer widths and heights
+        ratio = ((int) (ratio * 256)) / ((double) 256);
+        
+        getMapPanel().setScale(ratio);
+    }
+    
+    /**
+     * 
+     * @return a scale between 15 and 100
+     */
+    private double getScale() 
+    {
+        return getMapPanel().getScale() * 100;
+    }
+    
 
     public void stopGame()
     {        
