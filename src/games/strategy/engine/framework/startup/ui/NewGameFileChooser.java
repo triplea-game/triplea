@@ -64,7 +64,7 @@ public class NewGameFileChooser extends JFileChooser
 
 		public String getDescription()
 		{
-		    return "Game Files, *.txml";
+		    return "Game Files, *.xml";
 		}
 	};
 }
