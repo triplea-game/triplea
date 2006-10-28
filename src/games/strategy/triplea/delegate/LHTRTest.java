@@ -22,7 +22,7 @@ public class LHTRTest extends TestCase
     {
         File gameRoot  = GameRunner.getRootFolder();
         File gamesFolder = new File(gameRoot, "games");
-        File lhtr = new File(gamesFolder, "lhtr_incomplete.xml");
+        File lhtr = new File(gamesFolder, "lhtr.xml");
         
         if(!lhtr.exists())
             throw new IllegalStateException("LHTR does not exist");
