@@ -391,7 +391,7 @@ class HttpDiceRollerDialog extends JDialog
                     appendText("  2: Firewall could be blocking TripleA from connecting to Irony Dice Server\n");
                     appendText("  3: The e-mail address does not exist\n");
                     appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
-                    appendText("     Visit http://maddlinks.com/triplea  for extra help\n");
+                    appendText("     Visit http://tripleadev.org  for extra help\n");
 
                     if (text != null)
                     {
