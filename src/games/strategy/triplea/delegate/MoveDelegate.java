@@ -451,12 +451,30 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if (getBattleTracker().hasPendingBattle(route.getStart(), false)
                 && Match.someMatch(units, Matches.UnitIsNotAir))
         {
-            boolean unload = MoveValidator.isUnload(route);
-            PlayerID endOwner = route.getEnd().getOwner();
-            boolean attack = !m_data.getAllianceTracker().isAllied(endOwner, m_player) || getBattleTracker().wasConquered(route.getEnd());
-            //unless they are unloading into another battle
-            if (!(unload && attack))
-                return "Cant move units out of battle zone";
+            //if the units did not move into the territory, then they can move out
+            //this will happen if there is a submerged sub in the area, and 
+            //a different unit moved into the sea zone setting up a battle
+            //but the original unit can still remain
+            boolean unitsStartedInTerritory = true;
+            for(Unit unit : units) 
+            {
+                if(getRouteUsedToMoveInto(unit, route.getEnd()) != null)
+                {
+                    unitsStartedInTerritory = false;
+                    break;
+                }
+            }
+            
+            if(!unitsStartedInTerritory)
+            {
+            
+                boolean unload = MoveValidator.isUnload(route);
+                PlayerID endOwner = route.getEnd().getOwner();
+                boolean attack = !m_data.getAllianceTracker().isAllied(endOwner, m_player) || getBattleTracker().wasConquered(route.getEnd());
+                //unless they are unloading into another battle
+                if (!(unload && attack))
+                    return "Cant move units out of battle zone";
+            }
         }
 
         //make sure we can afford to pay neutral fees

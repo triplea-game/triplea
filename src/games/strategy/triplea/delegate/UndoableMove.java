@@ -215,7 +215,13 @@ public class UndoableMove implements Serializable
                 Route routeUnitUsedToMove = DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
                 if(battleLand != null && !battleLand.isOver())
                 {
-                    battleLand.addAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                    //route units used to move will be null in the case
+                    //where an enemry sub is submerged in the territory, and another unit
+                    //moved in to attack it, but some of the units in the original 
+                    //territory are moved out.  Undoing this last move, the route used to move
+                    //into the battle zone will be null
+                    if(routeUnitUsedToMove != null)
+                        battleLand.addAttack(routeUnitUsedToMove, Collections.singleton(unit));
                 }
                 if(battleAir != null && !battleAir.isOver())
                 {

@@ -16,6 +16,7 @@ package games.strategy.triplea.delegate;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -25,6 +26,7 @@ import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.CompositeMatchAnd;
 
 public class RevisedTest extends TestCase 
 {
@@ -155,6 +157,59 @@ public class RevisedTest extends TestCase
         assertEquals(1, moveDelegate.getTerritoriesWhereAirCantLand().size());
         
         
+    }
+    
+    public void testMoveSubAwayFromSubmergedSubsInBattleZone()
+    {
+        Territory sz45 = m_data.getMap().getTerritory("45 Sea Zone");
+        Territory sz50 = m_data.getMap().getTerritory("50 Sea Zone");
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+
+        //put 1 british sub in sz 45, this simulates a submerged enemy sub
+        UnitType sub = m_data.getUnitTypeList().getUnitType("submarine");
+        Change c = ChangeFactory.addUnits(sz45, sub.create(1, british));
+        new ChangePerformer(m_data).perform(c);
+        
+        
+        //new move delegate
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese);
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+
+        //move a fighter into the sea zone, this will cause a battle
+        Route sz50To45 = new Route();
+        sz50To45.setStart(sz50);
+        sz50To45.add(sz45);
+        String error = moveDelegate.move(sz50.getUnits().getMatches(Matches.UnitIsAir), sz50To45);
+        assertNull(error);
+        
+        assertEquals(1, moveDelegate.getBattleTracker().getPendingBattleSites(false).size());
+        
+        
+        //we should be able to move the sub out of the sz
+        Route sz45To50 = new Route();
+        sz45To50.setStart(sz45);
+        sz45To50.add(sz50);
+        
+        List<Unit> japSub = sz45.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsSub, Matches.unitIsOwnedBy(japanese)));
+        error = moveDelegate.move(japSub, sz45To50);
+        //make sure no error
+        assertNull(error);
+        //make sure the battle is still there
+        assertEquals(1, moveDelegate.getBattleTracker().getPendingBattleSites(false).size());
+        
+        
+        //we should be abe to undo the move of the sub
+        error = moveDelegate.undoMove(1);
+        assertNull(error);
+        
+        //undo the move of the fighter, should be no battles now
+        error = moveDelegate.undoMove(0);
+        assertNull(error);
+        assertEquals(0, moveDelegate.getBattleTracker().getPendingBattleSites(false).size());
     }
 
     
