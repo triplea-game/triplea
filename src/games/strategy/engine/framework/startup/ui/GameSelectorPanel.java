@@ -61,7 +61,16 @@ public class GameSelectorPanel extends JPanel implements Observer
         m_nameText.setText(m_model.getGameName());
         m_versionText.setText(m_model.getGameVersion());
         m_roundText.setText(m_model.getGameRound());
-        m_fileNameText.setText(m_model.getFileName());
+        
+        String fileName = m_model.getFileName();
+        if(fileName.length() > 25)
+        {
+            int length = fileName.length();
+            fileName = fileName.substring(0,18) + "..."  + fileName.substring(length - 6, length);
+        }
+
+        
+        m_fileNameText.setText(fileName);
     }
 
     
