@@ -60,10 +60,6 @@ public class RemoteMessenger implements IRemoteMessenger
         unregisterRemote(name.getName());
     }
     
-    public void flush()
-    {
-        m_unifiedMessenger.flush();
-    }
     
     public boolean isServer()
     {

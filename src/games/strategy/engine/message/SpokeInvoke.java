@@ -48,14 +48,14 @@ public class SpokeInvoke extends Invoke
   {
       super.readExternal(in);
       m_invoker = new Node();
-      m_invoker.readExternal(in);
+      ((Node)m_invoker).readExternal(in);
       
   }
 
   public void writeExternal(ObjectOutput out) throws IOException
   {
       super.writeExternal(out);
-      m_invoker.writeExternal(out);
+      ((Node)m_invoker).writeExternal(out);
   }
   
   

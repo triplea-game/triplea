@@ -57,7 +57,7 @@ class ClientLoginHelper
                 throw new IllegalStateException("Challenged, but no login generator");
             
 
-            Map<String,String> props =m_login.getProperties(challenge);
+            Map<String,String> props = m_login.getProperties(challenge);
             
             
             out.writeObject(props);

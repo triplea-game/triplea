@@ -102,10 +102,7 @@ public interface IRemoteMessenger
     
     public boolean hasLocalImplementor(RemoteName name);
     
-    /**
-     * wait for the underlying transport layer to finish transmitting all data queued
-     */
-    public void flush();
+    
     
     public boolean isServer();
 

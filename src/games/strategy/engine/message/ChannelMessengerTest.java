@@ -14,7 +14,11 @@
 
 package games.strategy.engine.message;
 
-import games.strategy.net.*;
+import games.strategy.net.ClientMessenger;
+import games.strategy.net.IMessenger;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.ServerMessenger;
+import games.strategy.test.TestUtil;
 
 import java.io.IOException;
 
@@ -28,7 +32,7 @@ public class ChannelMessengerTest extends TestCase
 	private IServerMessenger m_server;
 	private IMessenger m_client1;
 	
-	private static int SERVER_PORT = 12022;
+	private static int SERVER_PORT = -1;
 	
 	private ChannelMessenger m_serverMessenger;
 	private ChannelMessenger m_clientMessenger;
@@ -41,7 +45,9 @@ public class ChannelMessengerTest extends TestCase
     
 	public void setUp() throws IOException
 	{
-        SERVER_PORT++;
+     
+        SERVER_PORT = TestUtil.getUniquePort();
+        
 		m_server = new ServerMessenger("Server", SERVER_PORT);
 		m_server.setAcceptNewConnections(true);
 		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
@@ -143,10 +149,10 @@ public class ChannelMessengerTest extends TestCase
         //so that the client has 1 subscribor, and the server knows about it
         RemoteName test = new RemoteName(IChannelTest.class, "test");
         
-        ChannelSubscribor client1Subscriboror = new ChannelSubscribor();
+        ChannelSubscribor client1Subscribor = new ChannelSubscribor();
        
         
-        m_clientMessenger.registerChannelSubscriber(client1Subscriboror, test);
+        m_clientMessenger.registerChannelSubscriber(client1Subscribor, test);
         assertHasChannel(test, m_hub);
         
         assertEquals(1, m_clientMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
@@ -160,7 +166,7 @@ public class ChannelMessengerTest extends TestCase
         
         ((IChannelTest) client2.getChannelBroadcastor(test)).testString("a");
          
-         assertCallCountIs(client1Subscriboror, 1);
+         assertCallCountIs(client1Subscribor, 1);
     }
 
     public void testMultipleChannels()

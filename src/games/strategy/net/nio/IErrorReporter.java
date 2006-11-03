@@ -12,20 +12,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package games.strategy.net;
+package games.strategy.net.nio;
 
-import java.io.*;
-import java.util.*;
+import java.nio.channels.SocketChannel;
 
-interface IConnectionListener
+public interface IErrorReporter
 {
-	/**
-	 * A message has been received.
-	 */
-	public void messageReceived(Serializable msg, Connection connection);
-	/**
-	 * An error has occured and the connection is no longer valid.
-	 * the given messages were not sent completely.
-	 */
-	public void fatalError(Exception error, Connection connection, List<MessageHeader> unsent);
+
+    /**
+     * An io error occured while reading or writing to the socket, and it should be removed from the network
+     */
+    public void error(SocketChannel channel, Exception e);
+    
 }

@@ -2,6 +2,7 @@ package games.strategy.net;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.startup.login.*;
+import games.strategy.test.TestUtil;
 import games.strategy.util.MD5Crypt;
 
 import java.net.SocketAddress;
@@ -11,12 +12,12 @@ import junit.framework.TestCase;
 
 public class MessengerLoginTest extends TestCase
 {
-    private int SERVER_PORT = 10152;
+    private int SERVER_PORT = -1;
     
     @Override
     public void setUp()
     {
-        SERVER_PORT++;
+        SERVER_PORT = TestUtil.getUniquePort();
     }
     
     

@@ -248,10 +248,7 @@ public class UnifiedMessenger
         return m_messenger.getLocalNode();
     }
 
-    public void flush()
-    {
-        m_messenger.flush();
-    }
+ 
 
     /**
      * Get the 1 and only implementor for the endpoint.  throws an exception if there are not exctly 1 implementors 

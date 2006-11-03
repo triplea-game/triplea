@@ -121,6 +121,12 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
             //the node will already have routed messages to local invokers
             endPointCols.remove(from);
             
+            if (s_logger.isLoggable(Level.FINEST))
+            {
+                s_logger.log(Level.FINEST, "Forwarding invocation:" + msg + " to:" + endPointCols);
+            }
+            
+            
             if(endPointCols.isEmpty())
             {
                 if(invoke.needReturnValues)

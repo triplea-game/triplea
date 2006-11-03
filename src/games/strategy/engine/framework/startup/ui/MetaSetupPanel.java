@@ -200,6 +200,13 @@ public class MetaSetupPanel extends SetupPanel
             props = new LobbyServerProperties(null, -1, "Server Lookup failed, try again later");
         }
         
+        //for development, ignore what we read,
+        //connect instead to localhost
+        if(System.getProperties().getProperty("triplea.lobby.debug") != null)
+        {
+            props = new LobbyServerProperties("127.0.0.1", 3302, "");
+        }
+        
         LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props);
         
         LobbyClient client = login.login();

@@ -27,11 +27,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 /**
  *
  * @author  Sean Bridges
- * @version 1.0
  */
 
 //written very often over the network, so make externalizable to make faster and reduce traffic
@@ -43,12 +44,33 @@ public class Node implements INode, Externalizable
   private int m_port;
   private InetAddress m_address;
 
+  public static final INode NULL_NODE;
+  static
+  {
+    try
+    {
+        NULL_NODE = new Node("NULL", InetAddress.getLocalHost(), -1);
+    } catch (UnknownHostException e)
+    {
+        throw new IllegalStateException(e);
+    }
+  }
+
+  
   //needed to support Externalizable
   public Node()
   {
 
   }
 
+  
+  /** Creates new Node */
+  public Node(String name, InetSocketAddress address)
+  {
+    m_name = name;
+    m_address = address.getAddress();
+    m_port = address.getPort();
+  }
   /** Creates new Node */
   public Node(String name, InetAddress address, int port)
   {
@@ -148,6 +170,12 @@ public class Node implements INode, Externalizable
       System.out.println("1000 nodes is:" + sink.toByteArray().length);
       
   }
+
+
+    public InetSocketAddress getSocketAddress()
+    {
+        return new InetSocketAddress(m_address, m_port);
+    }
   
 
 }

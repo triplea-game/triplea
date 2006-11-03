@@ -16,11 +16,11 @@ package games.strategy.engine.vault;
 import java.io.IOException;
 
 import games.strategy.engine.message.*;
-import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.ServerMessenger;
+import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
 
 /**
@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 public class VaultTest extends TestCase
 {
 
-	private static int SERVER_PORT = 12122;
+	private static int SERVER_PORT = -1;
 
 	private IServerMessenger m_server;
 	private IMessenger m_client1;
@@ -39,7 +39,7 @@ public class VaultTest extends TestCase
 
 	public void setUp() throws IOException
 	{
-        SERVER_PORT++;
+        SERVER_PORT = TestUtil.getUniquePort();
 		m_server = new ServerMessenger("Server", SERVER_PORT);
 		m_server.setAcceptNewConnections(true);
 		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");		
@@ -51,8 +51,6 @@ public class VaultTest extends TestCase
 		m_clientVault =  new Vault(new ChannelMessenger(clientUM), new RemoteMessenger(clientUM));
 		
 		Thread.yield();
-		m_server.flush();
-		m_client1.flush();
 		
 		
 	}

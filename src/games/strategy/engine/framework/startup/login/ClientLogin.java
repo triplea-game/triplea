@@ -45,16 +45,7 @@ public class ClientLogin implements IConnectionLogin
 
     public void notifyFailedLogin(final String message)
     {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-        
-            public void run()
-            {
-                JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), message);
-            }
-        
-        });
-        
+        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), message);
     }
 
 }

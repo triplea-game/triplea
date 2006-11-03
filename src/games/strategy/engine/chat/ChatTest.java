@@ -2,6 +2,7 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
+import games.strategy.test.TestUtil;
 
 import java.io.IOException;
 import java.util.*;
@@ -11,7 +12,7 @@ import junit.framework.*;
 public class ChatTest extends TestCase
 {
 
-    private static int SERVER_PORT = 14197;
+    private static int SERVER_PORT = -1;
 
     private IServerMessenger m_server;
     private IMessenger m_client1;
@@ -39,7 +40,7 @@ public class ChatTest extends TestCase
     
     public void setUp() throws IOException
     {
-        SERVER_PORT++;
+        SERVER_PORT = TestUtil.getUniquePort();
         m_server = new ServerMessenger("Server", SERVER_PORT);
         m_server.setAcceptNewConnections(true);
         m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1");
@@ -262,9 +263,6 @@ public class ChatTest extends TestCase
         //but it does something
         for(int i = 0; i < 5; i++)
         {
-            m_server.flush();
-            m_client1.flush();
-            m_client2.flush();
     
             m_sum.waitForAllJobs();
             m_c1um.waitForAllJobs();

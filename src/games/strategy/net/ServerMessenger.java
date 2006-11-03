@@ -20,19 +20,26 @@
 
 package games.strategy.net;
 
-import games.strategy.util.ListenerList;
+import games.strategy.net.nio.NIOSocket;
+import games.strategy.net.nio.NIOSocketListener;
+import games.strategy.net.nio.QuarantineConversation;
+import games.strategy.net.nio.ServerQuarantineConversation;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Collections;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,38 +50,47 @@ import java.util.logging.Logger;
  * @author Sean Bridges
  * @version 1.0
  */
-public class ServerMessenger implements IServerMessenger
+public class ServerMessenger implements IServerMessenger, NIOSocketListener
 {
     private static Logger s_logger = Logger.getLogger(ServerMessenger.class.getName());
     
-    private final ServerSocket m_socket;
+    private final Selector m_acceptorSelector;
+    private final ServerSocketChannel m_socketChannel;
     private final Node m_node;
     private boolean m_shutdown = false;
+    private final NIOSocket m_nioSocket;
     
-    private final ListenerList<Connection> m_connections = new ListenerList<Connection>();
+    
     private final CopyOnWriteArrayList<IMessageListener> m_listeners = new CopyOnWriteArrayList<IMessageListener>();
     private final CopyOnWriteArrayList<IMessengerErrorListener> m_errorListeners = new CopyOnWriteArrayList<IMessengerErrorListener>();
     private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionListeners = new CopyOnWriteArrayList<IConnectionChangeListener>();
     
-    private final Object m_connectionMutex = new Object();
     
     private boolean m_acceptNewConnection = false;
-    private IObjectStreamFactory m_inStreamFactory;
     private ILoginValidator m_loginValidator;
     
+    //all our nodes
+    private ConcurrentHashMap<INode, SocketChannel> m_nodeToChannel = new ConcurrentHashMap<INode, SocketChannel>();
+    private ConcurrentHashMap<SocketChannel, INode> m_channelToNode = new ConcurrentHashMap<SocketChannel, INode>();
+       
     public ServerMessenger(String name, int portNumber, IObjectStreamFactory streamFactory) throws IOException
     {
-        m_inStreamFactory = streamFactory;
-        m_socket = new ServerSocket();
-        m_socket.setReuseAddress(true);
-        m_socket.bind(new InetSocketAddress(portNumber), 10);
-
+        m_socketChannel = ServerSocketChannel.open();
+        m_socketChannel.configureBlocking(false);
+        m_socketChannel.socket().setReuseAddress(true);
+        m_socketChannel.socket().bind(new InetSocketAddress(portNumber), 10);
+        
+        m_nioSocket = new NIOSocket(streamFactory, this, "Server");
+        
+        m_acceptorSelector = Selector.open();
+        
         if (IPFinder.findInetAddress() != null)
-            m_node = new Node(name, IPFinder.findInetAddress(), m_socket.getLocalPort());
+            m_node = new Node(name, IPFinder.findInetAddress(), portNumber);
         else
-            m_node = new Node(name, InetAddress.getLocalHost(), m_socket.getLocalPort());
+            m_node = new Node(name, InetAddress.getLocalHost(), portNumber);
 
-        Thread t = new Thread(new ConnectionHandler());
+        
+        Thread t = new Thread(new ConnectionHandler(), "Server Messenger Connection Handler");
         t.start();
     }
     
@@ -115,37 +131,32 @@ public class ServerMessenger implements IServerMessenger
      */
     public Set<INode> getNodes()
     {
-        HashSet<INode> nodes = new HashSet<INode>();
-        nodes.add(m_node);
         
-        for(Connection c : m_connections)
-        {
-            nodes.add(c.getRemoteNode());
-        }            
+        Set<INode> rVal = new HashSet<INode>(m_nodeToChannel.keySet());
+        rVal.add(m_node);
+        return rVal;
         
-        return nodes;
     }
 
     public synchronized void shutDown()
     {
+        
         if (!m_shutdown)
         {
             m_shutdown = true;
 
+            m_nioSocket.shutDown();
+
             try
             {
-                m_socket.close();
+                m_socketChannel.close();
             } catch (Exception e)
             {
+                //ignore
             }
 
-            Iterator<Connection> iter = m_connections.iterator();
-            while (iter.hasNext())
-            {
-                Connection current = iter.next();
-                current.shutDown();
-            }
-
+            if(m_acceptorSelector != null)
+                m_acceptorSelector.wakeup();
         }
     }
 
@@ -159,19 +170,20 @@ public class ServerMessenger implements IServerMessenger
      */
     public void send(Serializable msg, INode to)
     {
+        if(m_shutdown)
+            return;
+        
+        if (s_logger.isLoggable(Level.FINEST))
+        {
+            s_logger.log(Level.FINEST, "Sending" + msg + " to:" + to);
+        }
+
+        
         MessageHeader header = new MessageHeader(to, m_node, msg);
-        forward(header);
+        m_nioSocket.send(m_nodeToChannel.get(to) , header);
+        
     }
 
-    public void flush()
-    {
-        Iterator<Connection> iter = m_connections.iterator();
-        while (iter.hasNext())
-        {
-            Connection c = iter.next();
-            c.flush();
-        }
-    }
 
     /**
      * Send a message to all nodes.
@@ -182,27 +194,22 @@ public class ServerMessenger implements IServerMessenger
         forwardBroadcast(header);
     }
 
-    private void serverMessageReceived(ServerMessage msg)
+    
+    public void messageReceived(MessageHeader msg,  SocketChannel channel)
     {
 
-    }
-
-    private void messageReceived(MessageHeader msg)
-    {
-        if (msg.getMessage() instanceof ServerMessage)
-            serverMessageReceived((ServerMessage) msg.getMessage());
-        else
+        if (msg.getFor() == null)
         {
-
-            if (msg.getFor() == null)
-                forwardBroadcast(msg);
-            else
-                forward(msg);
-            
-            if (msg.getFor() == null || msg.getFor().equals(m_node))
-            {
-                notifyListeners(msg);
-            }
+            forwardBroadcast(msg);
+            notifyListeners(msg);
+        }
+        else if (msg.getFor().equals(m_node))
+        {
+            notifyListeners(msg);
+        }
+        else 
+        {
+            forward(msg);
         }
     }
 
@@ -210,18 +217,11 @@ public class ServerMessenger implements IServerMessenger
     {
         if (m_shutdown)
             return;
-        INode destination = msg.getFor();
-        Iterator<Connection> iter = m_connections.iterator();
-        while (iter.hasNext())
-        {
-            Connection connection = iter.next();
-            if (connection.getRemoteNode().equals(destination))
-            {
-
-                connection.send(msg);
-                break;
-            }
-        }
+        
+        SocketChannel socketChannel = m_nodeToChannel.get(msg.getFor());
+        if(socketChannel == null)
+            throw new IllegalStateException("No channel for:" + msg.getFor() + " all channels:" + socketChannel);
+        m_nioSocket.send(socketChannel, msg);        
     }
 
     private void forwardBroadcast(MessageHeader msg)
@@ -229,16 +229,19 @@ public class ServerMessenger implements IServerMessenger
         if (m_shutdown)
             return;
 
-        INode source = msg.getFrom();
-        Iterator<Connection> iter = m_connections.iterator();
-        while (iter.hasNext())
+        SocketChannel fromChannel = m_nodeToChannel.get(msg.getFrom());
+        
+        List<SocketChannel> nodes = new ArrayList<SocketChannel>(m_nodeToChannel.values());
+        
+        if (s_logger.isLoggable(Level.FINEST))
         {
-            Connection connection = iter.next();
-            if (!connection.getRemoteNode().equals(source))
-            {
-
-                connection.send(msg);
-            }
+            s_logger.log(Level.FINEST, "broadcasting to" + nodes);
+        }
+        
+        for(SocketChannel channel : nodes)
+        {
+            if(channel != fromChannel)
+                m_nioSocket.send(channel, msg);
         }
     }
 
@@ -253,7 +256,7 @@ public class ServerMessenger implements IServerMessenger
         return false;
     }
 
-    String getUniqueName(String currentName)
+    public String getUniqueName(String currentName)
     {
      
         if (currentName.length() > 50)
@@ -288,83 +291,7 @@ public class ServerMessenger implements IServerMessenger
        return currentName;
     }
 
-    private void addConnection(Socket s)
-    {
-        
-        SocketStreams streams;
-        try
-        {
-            streams = new SocketStreams(s);
-        } catch (IOException e1)
-        {
-            try
-            {
-                s.close();
-            } catch (IOException e)
-            {
-                e.printStackTrace(System.out);
-            }
-            return;
-        }
-        ServerLoginHelper loginHelper = new ServerLoginHelper(s.getRemoteSocketAddress(), m_loginValidator, streams, this);
-        
-        if(!loginHelper.canConnect())
-        {
-            try
-            {
-                s.close();
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace(System.out);
-            }
-            
-            return;
-        }
-        
-        
-        Connection c = null;
 
-        try
-        {
-            c = new Connection(s, m_node, m_connectionListener, m_inStreamFactory, false, streams);
-        } catch (IOException ioe)
-        {
-            s_logger.log(Level.WARNING, "Error creating connection", ioe);
-            return;
-        }
-        
-        if(!c.getRemoteNode().getName().equals(loginHelper.getClientName()))
-        {
-            c.shutDown();
-            s_logger.log(Level.SEVERE, "Client tried to spoof name, remote node:" + c.getRemoteNode() + " name should have been:" + loginHelper.getClientName() );
-            return;
-        }
-            
-        synchronized(m_connectionMutex)
-        {
-            m_connections.add(c);            
-        }
-
-        c.send(new MessageHeader(m_node, new ServerMessage()));
-        notifyConnectionsChanged(true, c.getRemoteNode());
-        
-        s_logger.info("Connection added to:" + c.getRemoteNode());
-    }
-
-    private void removeConnection(Connection c)
-    {
-        synchronized(m_connectionMutex)
-        {
-            m_connections.remove(c);
-        }
-        
-        notifyConnectionsChanged(false, c.getRemoteNode());
-        
-        s_logger.info("Connection removed:" + c.getRemoteNode());
-        
-
-    }
 
     private void notifyListeners(MessageHeader msg)
     {
@@ -434,55 +361,88 @@ public class ServerMessenger implements IServerMessenger
     {
         public void run()
         {
+            
+            
+            try
+            {
+                m_socketChannel.register(m_acceptorSelector, SelectionKey.OP_ACCEPT);
+            } catch (ClosedChannelException e)
+            {
+                s_logger.log(Level.SEVERE, "socket closed",e);
+               shutDown();
+            }
+
+            
             while (!m_shutdown)
             {
                 try
                 {
-                    Socket s = m_socket.accept();
-                    s.setKeepAlive(true);
-                    
-                    s_logger.info("Socket opened from:" + s.getRemoteSocketAddress());
-                    
-                    if (m_acceptNewConnection)
-                    {
-                        addConnection(s);
-                    } else
-                    {
-                        s_logger.info("Not accepting connections, close socket for:" + s.getRemoteSocketAddress());
-                        s.close();
-                    }
-
+                    m_acceptorSelector.select();
                 } catch (IOException e)
                 {
-                    //accept throws an exception when we shutdown
-                    if(!m_shutdown)
-                        e.printStackTrace();
+                    s_logger.log(Level.SEVERE, "Could not accept on server", e);
+                    shutDown();
                 }
+                
+                if(m_shutdown)
+                    continue;
+                
+                Set<SelectionKey> keys = m_acceptorSelector.selectedKeys();
+                Iterator<SelectionKey> iter = keys.iterator();
+                while(iter.hasNext())
+                {
+                    SelectionKey key = iter.next();
+                    iter.remove();
+                 
+                    if(key.isAcceptable() && key.isValid())
+                    {
+                        ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
+
+                        // Accept the connection and make it non-blocking
+                        SocketChannel socketChannel = null;
+                        try
+                        {
+                            socketChannel = serverSocketChannel.accept();
+                            socketChannel.configureBlocking(false);
+                            socketChannel.socket().setKeepAlive(true);
+                        } catch (IOException e)
+                        {
+                            s_logger.log(Level.FINE, "Could not accept channel", e);
+                            
+                            try
+                            {
+                                if(socketChannel != null)
+                                    socketChannel.close();
+                            } catch (IOException e2)
+                            {
+                                s_logger.log(Level.FINE, "Could not close channel", e2);
+                            }
+                            continue;
+                            
+                        }
+                        
+                        //we are not accepting connections
+                        if(!m_acceptNewConnection)
+                        {
+                            try
+                            {
+                                socketChannel.close();
+                            } catch (IOException e)
+                            {
+                                s_logger.log(Level.FINE, "Could not close channel", e);
+                            }
+                            continue;
+                        }
+
+                        m_nioSocket.add(socketChannel, new ServerQuarantineConversation(m_loginValidator, socketChannel, m_nioSocket,  ServerMessenger.this));
+                    }
+                }
+                
             }
         }
     }
 
-    private IConnectionListener m_connectionListener = new IConnectionListener()
-    {
-        public void messageReceived(Serializable message, Connection connection)
-        {
-            ServerMessenger.this.messageReceived((MessageHeader) message);
-        }
-
-        public void fatalError(Exception error, Connection connection, List unsent)
-        {
-            //notify other nodes
-            removeConnection(connection);
-
-            //nofity this node
-            Iterator<IMessengerErrorListener> iter = m_errorListeners.iterator();
-            while (iter.hasNext())
-            {
-                IMessengerErrorListener errorListener = iter.next();
-                errorListener.connectionLost(connection.getRemoteNode(), error, unsent);
-            }
-        }
-    };
+  
 
     public boolean isServer()
     {
@@ -494,27 +454,60 @@ public class ServerMessenger implements IServerMessenger
         if(node.equals(m_node))
             throw new IllegalArgumentException("Cant remove ourself!");
         
-        for(Connection c : m_connections)
-        {
-            if(c.getRemoteNode().equals(node))
-            {
-                //if we caused it to e shutdown, then send the fatal error
-                if(c.shutDown())
-                {
-                    m_connectionListener.fatalError(new Exception("Connection manually closed"), c, Collections.<MessageHeader>emptyList());
-                }
-                
-            
-                return;
-            }
-                
-        }
-
+        
+        
+        SocketChannel channel = m_nodeToChannel.remove(node);
+        
+        
+        m_channelToNode.remove(channel);
+        
+        m_nioSocket.close(channel);
+        notifyConnectionsChanged(false, node);
+        s_logger.info("Connection removed:" + node);        
     }
 
     public INode getServerNode()
     {
         return m_node;
     }
+
+    
+    
+    
+
+    public void socketError(SocketChannel channel, Exception error)
+    {
+        if(channel == null)
+            throw new IllegalArgumentException("Null channel");
+        
+        //already closed, dont report it again
+        if(!m_channelToNode.containsKey(channel))
+            return;
+        
+        removeConnection(m_channelToNode.get(channel));
+    }
+
+    public void socketUnqaurantined(SocketChannel channel, QuarantineConversation conversation)
+    {
+         ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
+         INode remote = new Node(con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress() );
+         
+         if(s_logger.isLoggable(Level.FINER))
+         {
+           s_logger.log(Level.FINER, "Unquarntined node:" + remote);
+         }
+         
+         m_nodeToChannel.put(remote, channel);
+         m_channelToNode.put(channel, remote);
+         
+         notifyConnectionsChanged(true, remote);
+         s_logger.info("Connection added to:" + remote);
+    }
+
+    public INode getRemoteNode(SocketChannel channel)
+    {
+        return m_channelToNode.get(channel);
+    }
+
 
 }

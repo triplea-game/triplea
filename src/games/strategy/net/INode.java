@@ -20,17 +20,41 @@ import java.io.*;
 /**
  * A Node in a network.
  * 
- * Node identity is based on address/port.  The name is just a display name
+ * Node identity is based on address/port.  The name is just a display name<p>
+ * 
+ * Since different nodes may appear as different adresses to different nodes
+ * (eg the server sees a node as its nat accesseble adress, while the node itself
+ * sees itself as a subnet address), the address for a node is defined as the address
+ * that the server sees!
  * 
  * @author sgb
  */
-public interface INode extends Externalizable, Comparable<INode>
+public interface INode extends Serializable, Comparable<INode>
 {
+    
+    /**
+     * 
+     * @return the display/user name for the node
+     */
 	public String getName();
-	
+
+    /**
+     * 
+     * @return the adress for the node as seen by the server
+     */
 	public InetAddress getAddress();
 	
+    /**
+     * 
+     * @return the port for the node as seen by the server
+     */ 
 	public int getPort();
+    
+    /**
+     * 
+     * @return the adress for the node as seen by the server
+     */
+    public InetSocketAddress getSocketAddress();
 }
 
 

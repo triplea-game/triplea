@@ -14,39 +14,36 @@
 
 package games.strategy.net;
 
-import java.io.*;
+import java.io.Serializable;
 
 //written over the network very often, so make externalizable to 
 //increase performance
-class MessageHeader implements Externalizable
+public class MessageHeader
 {
-	private INode m_for;
-	private Serializable m_message;
-	private INode m_from;
-	
+    //if null, then a broadcast
+	private final INode m_for;
+	private final Serializable m_message;
+	private final INode m_from;
+    
 	/**
 	 *  Creates a broadcast message.
 	 */
 	public MessageHeader(INode from, Serializable message)
 	{
-		m_for = null;
-		m_from = from;
-		m_message = message;
+        this(null, from, message);
 	}
 	
-	//for externiliazable
-	public MessageHeader()
-	{
-	    
-	}
-	
+
 	public MessageHeader(INode to, INode from, Serializable message)
 	{
+        //for can be null if we are a broadcast
 		m_for = to;
+        //from can be null if the sending node doesnt know its own address
 		m_from = from;
-		m_message = message;
+		m_message = message;    
 	}
 	
+    
 	/**
 	 * null if a broadcast
 	 */
@@ -76,19 +73,6 @@ class MessageHeader implements Externalizable
 		return "Message header. msg:" + m_message + " to:" + m_for + " from:" + m_from;
 	}
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-    {
-        m_for = (INode) in.readObject();
-        m_message = (Serializable) in.readObject();
-        m_from = (INode) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
-        out.writeObject(m_for);
-        out.writeObject(m_message);
-        out.writeObject(m_from);        
-    }
-	
+  
 }
 

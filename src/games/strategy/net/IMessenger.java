@@ -72,10 +72,6 @@ public interface IMessenger
      */
     public void shutDown();
 
-    /**
-     * Returns when all messages have been written over the network. shutdown causes this method to return. Does not gaurantee that the messages have reached their destination.
-     */
-    public void flush();
     
     /**
      * Am I the server node?

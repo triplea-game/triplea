@@ -20,11 +20,15 @@
 
 package games.strategy.net;
 
-import java.io.*;
+import games.strategy.test.TestUtil;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 
@@ -36,7 +40,7 @@ import junit.framework.TestCase;
  */
 public class MessengerTest extends TestCase
 {
-	private static int SERVER_PORT = 12022;
+	private static int SERVER_PORT = -1;
 
 	private IServerMessenger m_server;
 	private IMessenger m_client1;
@@ -55,7 +59,8 @@ public class MessengerTest extends TestCase
 
 	public void setUp() throws IOException
 	{
-        SERVER_PORT++;
+        SERVER_PORT = TestUtil.getUniquePort();
+        
 		m_server = new ServerMessenger("Server", SERVER_PORT);
         
 		m_server.setAcceptNewConnections(true);
@@ -67,9 +72,10 @@ public class MessengerTest extends TestCase
 		m_client2 = new ClientMessenger("localhost", SERVER_PORT, "client2");
 		m_client2.addMessageListener(m_client2Listener);
         
-        assertEquals(m_server.getServerNode(), m_server.getLocalNode());
+        
         assertEquals(m_client1.getServerNode(), m_server.getLocalNode());
         assertEquals(m_client2.getServerNode(), m_server.getLocalNode());
+        assertEquals(m_server.getServerNode(), m_server.getLocalNode());
 
 	}
     
@@ -160,6 +166,27 @@ public class MessengerTest extends TestCase
 		assertEquals(m_serverListener.getMessageCount(), 0);
 	}
 
+    
+    public void testClientSendToClientLargeMessage() throws InterruptedException
+    {
+        int count = 1 * 1000 * 1000;
+        StringBuilder builder = new StringBuilder(count);
+        for(int i = 0; i < count; i++)
+        {
+            builder.append('a');
+        }
+        String message = builder.toString();
+        
+
+        m_client1.send(message, m_client2.getLocalNode());
+
+        
+        assertEquals(m_client2Listener.getLastMessage(), message);
+        assertEquals(m_client2Listener.getLastSender(), m_client1.getLocalNode());
+
+        assertEquals(m_client1Listener.getMessageCount(), 0);
+        assertEquals(m_serverListener.getMessageCount(), 0);
+    }
 
 	public void testServerBroadcast()
 	{
@@ -216,6 +243,10 @@ public class MessengerTest extends TestCase
 			m_client2Listener.clearLastMessage();
 		}
 	}
+    
+    
+    
+
 
 
 
@@ -233,10 +264,6 @@ public class MessengerTest extends TestCase
 		t2.join();
 		t3.join();
 
-		m_client1.flush();
-		m_client2.flush();
-		m_server.flush();
-
 
 		for(int i = 0; i < 200; i++)
 		{
@@ -252,7 +279,7 @@ public class MessengerTest extends TestCase
 		}
 	}
     
-    public void testCorrectNodeCountInRemove()
+    public void testCorrectNodeCountInRemove() throws InterruptedException
     {
         //when we receive the notification that a 
         //connection has been lost, the node list
@@ -264,20 +291,20 @@ public class MessengerTest extends TestCase
                 break;
             try
             {
-                Thread.sleep(1);
+                Thread.sleep(10);
             } catch (InterruptedException e)
             {}
         }
         
         
-        final AtomicInteger m_serverCount = new AtomicInteger(-1);
+        final AtomicInteger m_serverCount = new AtomicInteger(3);
         
         m_server.addConnectionChangeListener(new IConnectionChangeListener()
         {
         
             public void connectionRemoved(INode to)
             {
-                m_serverCount.set(m_server.getNodes().size());
+                m_serverCount.decrementAndGet();
             }
         
             public void connectionAdded(INode to)
@@ -295,31 +322,26 @@ public class MessengerTest extends TestCase
         for(int i =0; i < 100; i++)
         {
             if(m_server.getNodes().size() == 2)
-                break;
-            try
             {
-                Thread.sleep(1);
-            } catch (InterruptedException e)
-            {}
+                Thread.sleep(10);
+                break;
+            }
+                Thread.sleep(10);
         }
         
         assertEquals(2, m_serverCount.get());
         
     }
     
-    public void testDisconnect()
+    public void testDisconnect() throws InterruptedException
     {
         for(int i =0; i < 100; i++)
         {
             if(m_server.getNodes().size() == 3)
                 break;
-            try
-            {
-                Thread.sleep(1);
-            } catch (InterruptedException e)
-            {}
+            Thread.sleep(10);
         }
-        assertEquals(m_server.getNodes().size(), 3);
+        assertEquals(3, m_server.getNodes().size());
         
         
         m_client1.shutDown();
@@ -328,24 +350,71 @@ public class MessengerTest extends TestCase
         for(int i =0; i < 100; i++)
         {
             if(m_server.getNodes().size() == 1)
-                break;
-            try
             {
-                Thread.sleep(1);
-            } catch (InterruptedException e)
-            {}
+                Thread.sleep(10);
+                break;
+            }
+            Thread.sleep(1);
         }
         
         assertEquals(m_server.getNodes().size(), 1);
     }
+    
+    
+    public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException, InterruptedException
+    {
+        int count = 100;
+        List<ClientMessenger> clients = new ArrayList<ClientMessenger>();
+        List<MessageListener> listeners = new ArrayList<MessageListener>();
+        
+        
+        
+        for(int i =0; i < count; i++)
+        {
+            String name = "newClient" + i;
+            ClientMessenger messenger = new ClientMessenger("localhost", SERVER_PORT, name);
+            
+            MessageListener listener = new MessageListener(name);
+            messenger.addMessageListener(listener);
+            
+            clients.add(messenger);
+            listeners.add(listener);
+        }
+        
+        
+        //wait for all the nodes to join
+        //+3 since we have the 2 client nodes created by setup
+        //and the server node
+        int waitCount = 0;
+        while(m_server.getNodes().size() < count + 3 && waitCount < 10)
+        {
+            Thread.sleep(40);
+            waitCount++;
+        }
+        
+        m_server.broadcast("TEST");
+
+        for(MessageListener listener : listeners)
+        {
+            assertEquals("TEST", listener.getLastMessage());
+        }
+        
+        for(int i = 0; i < count; i++)
+        {
+            clients.get(i).shutDown();
+        }
+        
+        
+    }
+    
 }
 
 
 class MessageListener implements IMessageListener
 {
-	private List<Serializable> messages = Collections.synchronizedList(new ArrayList<Serializable>());
-	private ArrayList<INode> senders = new ArrayList<INode>();
-	private Object lock = new Object();
+	private final List<Serializable> messages = Collections.synchronizedList(new ArrayList<Serializable>());
+	private final ArrayList<INode> senders = new ArrayList<INode>();
+	private final Object lock = new Object();
 
 	public MessageListener(String name)
 	{

@@ -13,8 +13,10 @@
  */
 package games.strategy.util;
 
-import java.util.logging.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
 /**
  * 
@@ -39,7 +41,36 @@ public class TALogFormatter extends Formatter
      */
     public String format(LogRecord record)
     {
-       return record.getLevel() + ":" + record.getLoggerName() + ":->" + record.getMessage() + "\n";
+       String shortName;
+       
+       if(record.getLoggerName() == null)
+           shortName = ".";
+       else if(record.getLoggerName().indexOf('.') == -1)
+           shortName = record.getLoggerName();
+       else
+           shortName = record.getLoggerName().substring(record.getLoggerName().lastIndexOf('.') + 1, record.getLoggerName().length());
+       
+       StringBuilder builder = new StringBuilder();
+       builder.append(record.getLevel());
+       builder.append(" [");
+       builder.append(Thread.currentThread().getName());
+       builder.append("] ");
+       builder.append(shortName);
+       builder.append("->");
+       builder.append(record.getMessage());
+       builder.append("\n");
+       
+       if(record.getThrown() != null)
+       {
+         StringWriter writer = new StringWriter();
+         PrintWriter pw = new PrintWriter(writer);
+         
+         record.getThrown().printStackTrace(pw);
+         pw.flush();
+         builder.append(writer.getBuffer());
+       }
+       
+       return builder.toString();
     }
 
 }

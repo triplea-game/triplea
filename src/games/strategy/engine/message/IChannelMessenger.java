@@ -89,10 +89,6 @@ public interface IChannelMessenger
     
     public INode getLocalNode();
     
-    /**
-     * wait for the underlying transport layer to finish transmitting all data queued
-     */
-    public void flush();
     
     /**
      * Is the underlying messenger a server?

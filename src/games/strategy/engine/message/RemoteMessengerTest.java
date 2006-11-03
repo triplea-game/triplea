@@ -17,6 +17,7 @@ package games.strategy.engine.message;
 import java.util.concurrent.atomic.*;
 
 import games.strategy.net.*;
+import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
 
 /**
@@ -25,6 +26,7 @@ import junit.framework.TestCase;
 public class RemoteMessengerTest extends TestCase
 {
 
+    private int SERVER_PORT = -1;
     private IMessenger m_messenger;
     private RemoteMessenger m_remoteMessenger;
     private UnifiedMessengerHub m_hub;
@@ -37,7 +39,8 @@ public class RemoteMessengerTest extends TestCase
         //simple set up for non networked testing
         m_messenger = new DummyMessenger();
         m_remoteMessenger = new RemoteMessenger(new UnifiedMessenger(m_messenger));
-        
+     
+        SERVER_PORT = TestUtil.getUniquePort();
     }
 
     /*
@@ -147,10 +150,10 @@ public class RemoteMessengerTest extends TestCase
         ClientMessenger client = null;
         try
         {
-            server = new ServerMessenger("server", 12024);
+            server = new ServerMessenger("server", SERVER_PORT);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", 12024, "client");
+            client = new ClientMessenger("localhost", SERVER_PORT, "client");
             
             
             UnifiedMessenger serverUM = new UnifiedMessenger( server);
@@ -197,10 +200,10 @@ public class RemoteMessengerTest extends TestCase
         ClientMessenger client = null;
         try
         {
-            server = new ServerMessenger("server", 12025);
+            server = new ServerMessenger("server", SERVER_PORT);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", 12025, "client");
+            client = new ClientMessenger("localhost", SERVER_PORT, "client");
            
             RemoteMessenger serverRM = new RemoteMessenger(new UnifiedMessenger( server));
             TestRemote testRemote = new TestRemote();
@@ -249,13 +252,13 @@ public class RemoteMessengerTest extends TestCase
         
         ServerMessenger server = null;
         ClientMessenger client = null;
-        int port = 12026;
+        
         try
         {
-            server = new ServerMessenger("server", port);
+            server = new ServerMessenger("server", SERVER_PORT);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", port, "client");
+            client = new ClientMessenger("localhost", SERVER_PORT, "client");
            
             UnifiedMessenger serverUM = new UnifiedMessenger( server);
             
@@ -294,13 +297,13 @@ public class RemoteMessengerTest extends TestCase
         
         ServerMessenger server = null;
         ClientMessenger client = null;
-        int port = 12029;
+        
         try
         {
-            server = new ServerMessenger("server", port);
+            server = new ServerMessenger("server", SERVER_PORT);
             server.setAcceptNewConnections(true);
             
-            client = new ClientMessenger("localhost", port, "client");
+            client = new ClientMessenger("localhost", SERVER_PORT, "client");
            
             UnifiedMessenger serverUM = new UnifiedMessenger( server);
             final RemoteMessenger serverRM = new RemoteMessenger(serverUM);            

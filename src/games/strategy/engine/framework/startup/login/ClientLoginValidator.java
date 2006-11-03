@@ -1,11 +1,13 @@
 package games.strategy.engine.framework.startup.login;
 
-import java.net.SocketAddress;
-import java.util.*;
-
 import games.strategy.engine.EngineVersion;
 import games.strategy.net.ILoginValidator;
-import games.strategy.util.*;
+import games.strategy.util.MD5Crypt;
+import games.strategy.util.Version;
+
+import java.net.SocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -38,6 +40,7 @@ public class ClientLoginValidator implements ILoginValidator
 
     public Map<String,String> getChallengeProperties(String userName, SocketAddress remoteAddress)
     {
+         
         Map<String,String> challengeProperties = new HashMap<String,String>();
         
         challengeProperties.put("Sever Version", EngineVersion.VERSION.toString());

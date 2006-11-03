@@ -1,13 +1,20 @@
 package games.strategy;
 
 
-import games.strategy.engine.chat.*;
+import games.strategy.engine.chat.ChatPanelTest;
+import games.strategy.engine.chat.ChatTest;
+import games.strategy.engine.chat.StatusTest;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidatorTest;
 import games.strategy.engine.lobby.server.userDB.DBUserControllerTest;
-import games.strategy.engine.message.*;
+import games.strategy.engine.message.ChannelMessengerTest;
+import games.strategy.engine.message.EndPointTest;
+import games.strategy.engine.message.RemoteInterfaceHelperTest;
+import games.strategy.engine.message.RemoteMessengerTest;
 import games.strategy.engine.random.CryptoRandomSourceTest;
-import games.strategy.util.*;
-import junit.framework.*;
+import games.strategy.util.VersionTest;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  *

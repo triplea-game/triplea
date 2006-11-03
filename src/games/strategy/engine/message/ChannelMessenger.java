@@ -83,10 +83,6 @@ public class ChannelMessenger implements IChannelMessenger
         return m_unifiedMessenger.getLocalNode();
     }
 
-    public void flush()
-    {
-        m_unifiedMessenger.flush();
-    }
     
     public boolean isServer()
     {

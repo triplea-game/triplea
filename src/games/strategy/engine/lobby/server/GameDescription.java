@@ -207,7 +207,7 @@ public class GameDescription implements Externalizable, Cloneable
     {
       
         m_hostedBy = new Node();
-        m_hostedBy.readExternal(in);
+        ((Node)m_hostedBy).readExternal(in);
         m_port = in.readInt();
         m_startDateTime = new Date();
         m_startDateTime.setTime(in.readLong());
@@ -222,7 +222,7 @@ public class GameDescription implements Externalizable, Cloneable
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        m_hostedBy.writeExternal(out);
+        ((Node)m_hostedBy).writeExternal(out);
         out.writeInt(m_port);
         out.writeLong(m_startDateTime.getTime());
         out.writeByte(m_playerCount);
