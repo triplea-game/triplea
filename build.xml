@@ -464,6 +464,7 @@
 			<classpath>
 				<pathelement path="${junit.jar}" />
 				<pathelement path="${classpath}" />
+				<pathelement path="lib/derby_10_1_2.jar" />
 				<pathelement path="classes/" />
 			</classpath>
 
