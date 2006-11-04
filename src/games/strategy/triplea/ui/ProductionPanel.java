@@ -105,8 +105,11 @@ public class ProductionPanel extends JPanel
         //close the window on escape
         //this is mostly for developers, makes it much easier to quickly cycle through steps
         KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        m_dialog.getRootPane().registerKeyboardAction(closeAction, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
-    
+        
+        String key = "production.panel.close.prod.popup";
+        
+        m_dialog.getRootPane().getActionMap().put(key, closeAction);
+        m_dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
     }
 
     /** Creates new ProductionPanel */

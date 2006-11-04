@@ -52,7 +52,10 @@ public class OddsCalculatorDialog extends JDialog
             }
         
         };
-        dialog.getRootPane().registerKeyboardAction(closeAction, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+        
+        String key = "odds.calc.invoke.close";
+        dialog.getRootPane().getActionMap().put(key, closeAction);
+        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
         
         dialog.setLocationRelativeTo(taFrame);
         dialog.setVisible(true);

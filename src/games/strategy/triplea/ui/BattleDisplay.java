@@ -653,7 +653,10 @@ public class BattleDisplay extends JPanel
         };
  
         //press space to continue
-        registerKeyboardAction(continueAction, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);        
+        String key = "battle.display.press.space.to.contineu";
+        getActionMap().put(key, continueAction);
+        getInputMap( WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), key);
+                
 
 
     }

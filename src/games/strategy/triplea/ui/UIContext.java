@@ -20,6 +20,7 @@ import games.strategy.triplea.*;
 import games.strategy.triplea.image.*;
 import games.strategy.triplea.util.Stopwatch;
 
+import java.awt.BorderLayout;
 import java.awt.Window;
 import java.io.File;
 import java.util.*;
@@ -317,6 +318,8 @@ public class UIContext
            frame.getRootPane().removeAll();           
            frame.getRootPane().setJMenuBar(null);
            frame.getContentPane().removeAll();
+           frame.getContentPane().setLayout(new BorderLayout());
+           frame.setContentPane(new JPanel());
            frame.setIconImage(null);
            
            
@@ -384,6 +387,10 @@ public class UIContext
         {
             closeActor(actor);
         }     
+        
+        m_activeToDeactivate.clear();
+        m_windowsToCloseOnShutdown.clear();
+        m_latchesToCloseOnShutdown.clear();
     }
     
     /**

@@ -320,6 +320,8 @@ public class TripleAFrame extends JFrame
         
         m_game = null;
         m_uiContext = null;
+        if(m_data != null)
+            m_data.clearAllListeners();
         m_data = null;
         
         MAP_SELECTION_LISTENER = null;

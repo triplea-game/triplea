@@ -357,6 +357,10 @@ public class GameData implements java.io.Serializable
         m_readWriteLock.writeLock().unlock();
     }
 
-    
+    public void clearAllListeners()
+    {
+        m_dataChangeListeners.clear();
+        m_territoryListeners.clear();
+    }
 	
 }

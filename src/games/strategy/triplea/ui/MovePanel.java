@@ -44,6 +44,7 @@ import games.strategy.util.Util;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,6 +56,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -72,6 +74,8 @@ import javax.swing.SwingUtilities;
 public class MovePanel extends ActionPanel
 {
     
+    private static final String MOVE_PANEL_CANCEL = "movePanel.cancel";
+
     private static final Logger s_logger = Logger.getLogger(MovePanel.class.getName());
     
     private boolean m_listening = false;
@@ -190,12 +194,9 @@ public class MovePanel extends ActionPanel
                 getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
                 getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
                 
-                getRootPane().registerKeyboardAction(CANCEL_MOVE_ACTION,
-                        KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
-                        WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
-                        );
-
-        
+                String key = MOVE_PANEL_CANCEL;
+                getRootPane().getActionMap().put(key, CANCEL_MOVE_ACTION);
+                getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0), key);
             }
         
         });
@@ -231,10 +232,8 @@ public class MovePanel extends ActionPanel
                 JComponent rootPane = getRootPane();
                 if(rootPane != null)
                 {
-                    rootPane.registerKeyboardAction(null,
-                        KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),
-                        WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
-                        );
+                    
+                    rootPane.getInputMap().put(KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0),null);     
                 }
                 m_forced = null;
                 
@@ -250,7 +249,7 @@ public class MovePanel extends ActionPanel
     }
 
 
-    private final AbstractAction DONE_MOVE_ACTION = new AbstractAction("Done")
+    private final AbstractAction doneMove = new AbstractAction("Done")
     {
         public void actionPerformed(ActionEvent e)
         {
@@ -269,6 +268,8 @@ public class MovePanel extends ActionPanel
             
         }
     };
+    
+    private final Action DONE_MOVE_ACTION = new WeakAction("Done", doneMove);
 
     public void cancelMove()
     {
@@ -290,7 +291,8 @@ public class MovePanel extends ActionPanel
       
     }
 
-    private final AbstractAction CANCEL_MOVE_ACTION = new AbstractAction(
+    
+    private final Action cancelMove =  new AbstractAction(
         "Cancel")
     {
         public void actionPerformed(ActionEvent e)
@@ -303,8 +305,9 @@ public class MovePanel extends ActionPanel
             this.setEnabled(false);
             getMap().setMouseShadowUnits(null);
             
-        }
-    };
+        }};
+    
+    private final AbstractAction CANCEL_MOVE_ACTION = new WeakAction("Cancel", cancelMove);
 
     /**
      * Return the units that to be unloaded for this route.
@@ -1133,3 +1136,29 @@ public class MovePanel extends ActionPanel
 
 
 
+
+
+/**
+ * Avoid holding a strong reference to the action
+ * fixes a memory leak in swing.  
+ */
+class WeakAction extends AbstractAction
+{
+    private final WeakReference<Action> m_delegate;
+    
+    WeakAction(String name,Action delegate)
+    {
+        super(name);
+        m_delegate = new WeakReference<Action>(delegate);
+    }
+    
+    
+    public void actionPerformed(ActionEvent e)
+    {
+        Action a = m_delegate.get();
+        if(a != null)
+            a.actionPerformed(e);
+        
+    }
+    
+}
