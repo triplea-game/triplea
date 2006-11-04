@@ -11,7 +11,7 @@
 
 <game>
 
-	<info name="+ Europe +" version="0.25"/>
+	<info name="+ Europe +" version="0.26"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -326,6 +326,7 @@
 		<connection t1="Adriatic Sea Sea Zone" t2="Northern Italy" />
 		<connection t1="Adriatic Sea Sea Zone" t2="Yugoslavia" />
 		<connection t1="Adriatic Sea Sea Zone" t2="Greece" />
+		<connection t1="Adriatic Sea Sea Zone" t2="Central Mediterranean Sea Zone" />
 		<connection t1="Central Mediterranean Sea Zone" t2="Southern Italy" />
 		<connection t1="Central Mediterranean Sea Zone" t2="Greece" />
 		<connection t1="Central Mediterranean Sea Zone" t2="Libya" />
@@ -625,7 +626,7 @@
 			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="1"/>
-			 <option name="transportCost" value="1"/>
+			 <option name="transportCost" value="2"/>
 			 <option name="attack" value="1"/>
 			 <option name="defense" value="2"/>
 			 <option name="artillerySupportable" value="true"/>
@@ -645,7 +646,7 @@
 			 javaClass="games.strategy.triplea.attatchments.UnitAttachment"
 			 type="unitType">
 			 <option name="movement" value="2"/>
-			 <option name="transportCost" value="2"/>
+			 <option name="transportCost" value="3"/>
 			 <option name="canBlitz" value="true"/>
 			 <option name="attack" value="3"/>
 			 <option name="defense" value="2"/>
@@ -676,7 +677,7 @@
 			 type="unitType">
 			 <option name="movement" value="2"/>
 			 <option name="isSea" value="true"/>   
-			 <option name="transportCapacity" value="5"/>   
+			 <option name="transportCapacity" value="4"/>   
 			 <option name="attack" value="0"/>
 			 <option name="defense" value="1"/>
 	    </attatchment>
@@ -1039,7 +1040,7 @@
 			<territoryOwner territory="Malta" owner = "British" />
 			<territoryOwner territory="Iceland" owner = "British" />
 			<territoryOwner territory="Cyprus" owner = "British" />
-			<territoryOwner territory="Saudi Arabia" owner = "British" />
+
 
 			<!-- Middle-East Owned Territories -->
 			<territoryOwner territory="Syria" owner = "British" />

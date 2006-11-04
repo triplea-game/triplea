@@ -1,5 +1,7 @@
 Changes for 0.8.4
 
+* fix transport capactity in europe, add connection between adriatic and central med, make saudia arabia nuetral (sgb)
+
 * change network to use nio (sgb)
 
 * fix bug where units originally in a sea zone with a submerged sub that is attacked by another unit cant leave the sea zone (sgb)
