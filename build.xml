@@ -369,7 +369,7 @@
 				<include name="changelog.txt" />
 				<include name="launch4j.config.xml" />
 				<include name="launch4j_embedded_jre.config.xml" />
-				<include name="info.plist" />
+				<include name="Info.plist" />
 			</zipfileset>
 
 			<zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
@@ -377,6 +377,7 @@
 				<include name="**/*.bmp" />
 				<include name="**/*.ico" />
 				<include name="**/*.icns" />
+				<include name="**/*.zip" />
 			</zipfileset>
 
 			<zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
