@@ -181,7 +181,11 @@ public class InitializationDelegate implements IDelegate
                 origOwnerTracker.addOriginalOwner(current, current.getOwner());
                 Collection aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrFactory);
                 origOwnerTracker.addOriginalOwner(aaAndFactory, current.getOwner());
-                changes.add(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(current), current.getOwner().getName(), Constants.ORIGINAL_OWNER));
+                TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
+                
+                if(territoryAttachment == null)
+                    throw new IllegalStateException("No territory attachment for " + current);
+                changes.add(ChangeFactory.attachmentPropertyChange(territoryAttachment, current.getOwner().getName(), Constants.ORIGINAL_OWNER));
             }
         }
         aBridge.getHistoryWriter().startEvent("Adding original owners");

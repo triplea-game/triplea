@@ -107,5 +107,10 @@ public class DefaultAttachment implements IAttachment
     }
     
     
+    public String toString()
+    {
+        return getClass().getSimpleName() + " attched to:" + m_attatchedTo + " with name:" + m_name;
+    }
+    
     
 }

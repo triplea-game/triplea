@@ -38,7 +38,11 @@ public class ChangeAttachmentChange extends Change
 
   ChangeAttachmentChange(IAttachment attatchment, String newValue, String property)
   {
+    if(attatchment == null)
+        throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
+      
     m_attatchedTo = attatchment.getAttatchedTo();
+    
     m_attatchmentName = attatchment.getName();
     m_newValue = newValue;
     m_property = property;
