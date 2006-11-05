@@ -33,7 +33,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
-public class ServerModel extends Observable implements IMessengerErrorListener
+public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener
 {
     
     public static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
@@ -219,6 +219,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener
             m_serverMessenger.setLoginValidator(clientLoginValidator);
             
             m_serverMessenger.addErrorListener(this);
+            m_serverMessenger.addConnectionChangeListener(this);
             UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_serverMessenger);
             
             
@@ -342,14 +343,19 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     }
     
 
-    public void messengerInvalid(IMessenger messenger, Exception reason,
-            List unsent)
+    public void messengerInvalid(IMessenger messenger, Exception reason)
     {
         JOptionPane.showMessageDialog(m_ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE );
         m_typePanelModel.showSelectType();
     }
+    
+    
+    public void connectionAdded(INode to)
+    {}
 
-    public void connectionLost(INode node, Exception reason, List unsent)
+
+
+    public void connectionRemoved(INode node)
     {
         //will be handled elsewhere
         if(m_serverLauncher != null)
@@ -438,6 +444,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener
     {
         m_serverLauncher = launcher;
     }
+
+
+
+
     
 }
 

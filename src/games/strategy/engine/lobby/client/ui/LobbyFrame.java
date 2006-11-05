@@ -14,17 +14,23 @@
 
 package games.strategy.engine.lobby.client.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
-
-import games.strategy.engine.chat.*;
+import games.strategy.engine.chat.Chat;
+import games.strategy.engine.chat.ChatMessagePanel;
+import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.net.*;
+import games.strategy.net.IMessenger;
+import games.strategy.net.IMessengerErrorListener;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JSplitPane;
 
 public class LobbyFrame extends JFrame
 {
@@ -76,14 +82,11 @@ public class LobbyFrame extends JFrame
         m_client.getMessenger().addErrorListener(new IMessengerErrorListener()
         {
         
-            public void messengerInvalid(IMessenger messenger, Exception reason, List unsent)
+            public void messengerInvalid(IMessenger messenger, Exception reason)
             {
                 connectionToServerLost();
         
             }
-        
-            public void connectionLost(INode node, Exception reason, List unsent)
-            {}
         
         });
         

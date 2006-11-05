@@ -194,13 +194,11 @@ public class InGameLobbyWatcher
         m_messenger.addErrorListener(new IMessengerErrorListener()
         {
         
-            public void messengerInvalid(IMessenger messenger, Exception reason, List unsent)
+            public void messengerInvalid(IMessenger messenger, Exception reason)
             {
                 shutDown();
             }
-        
-            public void connectionLost(INode node, Exception reason, List unsent)
-            {}
+
         
         });
         

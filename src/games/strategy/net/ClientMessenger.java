@@ -279,7 +279,7 @@ public class ClientMessenger implements IMessenger , NIOSocketListener
         while (iter.hasNext())
         {
             IMessengerErrorListener errorListener = iter.next();
-            errorListener.messengerInvalid(ClientMessenger.this, error, null);
+            errorListener.messengerInvalid(ClientMessenger.this, error);
         }
         
         shutDown();

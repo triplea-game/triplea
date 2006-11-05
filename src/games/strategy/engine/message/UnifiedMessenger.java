@@ -80,13 +80,11 @@ public class UnifiedMessenger
     private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
     {
     
-        public void messengerInvalid(IMessenger messenger, Exception reason, List unsent)
+        public void messengerInvalid(IMessenger messenger, Exception reason)
         {
             UnifiedMessenger.this.messengerInvalid();
         }
     
-        public void connectionLost(INode node, Exception reason, List unsent)
-        {}
     
     };
     

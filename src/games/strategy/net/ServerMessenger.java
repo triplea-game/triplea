@@ -180,7 +180,19 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 
         
         MessageHeader header = new MessageHeader(to, m_node, msg);
-        m_nioSocket.send(m_nodeToChannel.get(to) , header);
+        SocketChannel socketChannel = m_nodeToChannel.get(to);
+        //the socket was removed
+        if(socketChannel == null)
+        {
+            if (s_logger.isLoggable(Level.FINER))
+            {
+                s_logger.log(Level.FINER, "no channel for node:" + to + " dropping message:" + msg);
+            }
+            
+            //the socket has not been added yet
+            return;
+        }
+        m_nioSocket.send(socketChannel , header);
         
     }
 

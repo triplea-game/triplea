@@ -457,13 +457,9 @@ public class ClientModel implements IMessengerErrorListener
         
         MainFrame.getInstance().clientLeftGame();
     }
-    
-    public void connectionLost(INode node, Exception reason, List unsent)
-    {
-        connectionLost();
-    }
+   
 
-    public void messengerInvalid(IMessenger messenger, Exception reason, List unsent)
+    public void messengerInvalid(IMessenger messenger, Exception reason)
     {
         connectionLost();
     }
