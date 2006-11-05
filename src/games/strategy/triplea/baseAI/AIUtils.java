@@ -15,6 +15,7 @@
 package games.strategy.triplea.baseAI;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
@@ -55,6 +56,24 @@ public class AIUtils
         {
             return rule.getCosts().getInt(ipcs);
         }
+    }
+    
+    /**
+     * 
+     * @return a comparator that sorts cheaper units before expensive ones
+     */
+    public static Comparator<Unit> getCostComparator()
+    {
+        return new Comparator<Unit>()
+        {
+
+            public int compare(Unit o1, Unit o2)
+            {
+               return getCost(o1.getType(), o1.getOwner(), o1.getData()) -
+                      getCost(o2.getType(), o2.getOwner(), o2.getData());
+            }
+        };
+        
     }
     
     

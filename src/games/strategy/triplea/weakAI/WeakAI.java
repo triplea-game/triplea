@@ -701,7 +701,12 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 {
                     if(taken)
                         break;
-                    for(Unit unit : attackFrom.getUnits().getUnits())
+                    
+                    //get the cheapest unit to move in
+                    List<Unit> unitsSortedByCost = new ArrayList<Unit>(attackFrom.getUnits().getUnits());
+                    Collections.sort(unitsSortedByCost, AIUtils.getCostComparator());
+                    
+                    for(Unit unit : unitsSortedByCost)
                     {
                         
                         Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotFactory, Matches.UnitIsNotAA );
