@@ -92,6 +92,37 @@ public class OddsCalculatorTest extends TestCase
         
     }
     
+    public void testKeepOneAttackingLand()
+    {
+        //1 bomber and 1 infantry attacking
+        //1 fighter 
+        //if one attacking inf must live, the odds 
+        //much worse
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        
+        
+        Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
+        List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("fighter").create(1,british, false);
+        
+        List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("infantry").create(1,germans, false);
+        attackingUnits.addAll(m_data.getUnitTypeList().getUnitType("bomber").create(1,germans, false));
+        List<Unit> bombardingUnits = Collections.emptyList();
+        
+        OddsCalculator calculator = new OddsCalculator();
+        calculator.setKeepOneAttackingLandUnit(true);
+        AggregateResults results = calculator.calculate(m_data, germans, british, eastCanada, attackingUnits, defendingUnits, bombardingUnits, 10000);
+       
+        
+        assertEquals(0.8, results.getAttackerWinPercent(), 0.02);
+        assertEquals(0.16, results.getDefenderWinPercent(), 0.02);
+        
+       
+        
+    }
+    
     
     public void testNoUnitsInTerritory()
     {
@@ -118,10 +149,6 @@ public class OddsCalculatorTest extends TestCase
         assertEquals(0.33, results.getDrawPercent(), 0.05);
     }
 
-
-    
-    
-    
 
     
 }

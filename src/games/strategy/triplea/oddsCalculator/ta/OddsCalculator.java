@@ -17,9 +17,11 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.baseAI.AIUtils;
 import games.strategy.triplea.baseAI.AbstractAI;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -28,12 +30,15 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.DummyDisplay;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 
 public class OddsCalculator
 {
@@ -46,6 +51,7 @@ public class OddsCalculator
     private Collection<Unit> m_attackingUnits = new ArrayList<Unit>();
     private Collection<Unit> m_defendingUnits = new ArrayList<Unit>();
     private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
+    private boolean m_keepOneAttackingLandUnit = false;
     
     public OddsCalculator()
     {
@@ -70,6 +76,11 @@ public class OddsCalculator
        return calculate(runCount);
         
     }
+    
+    public void setKeepOneAttackingLandUnit(boolean aBool)
+    {
+        m_keepOneAttackingLandUnit = aBool;
+    }
 
 
 
@@ -87,7 +98,7 @@ public class OddsCalculator
             
 
             TransportTracker transportTracker = new TransportTracker();
-            DummyDelegateBridge bridge = new DummyDelegateBridge(m_attacker, m_data);
+            DummyDelegateBridge bridge = new DummyDelegateBridge(m_attacker, m_data, m_keepOneAttackingLandUnit);
             MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker, transportTracker);
             battle.setHeadless(true);
             battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
@@ -114,15 +125,19 @@ class DummyDelegateBridge implements IDelegateBridge
 
     private final PlainRandomSource m_randomSource = new PlainRandomSource();
     private final DummyDisplay m_display = new DummyDisplay();
-    private final DummyPlayer m_player = new DummyPlayer("battle calc dummy");
+    private final DummyPlayer m_attackingPlayer;
+    private final DummyPlayer m_defendingPlayer;
     private final PlayerID m_attacker;
     private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
     private final CompositeChange m_allChanges = new CompositeChange();
     private final GameData m_data;
     private final ChangePerformer m_changePerformer;
     
-    public DummyDelegateBridge(PlayerID attacker, GameData data)
+    public DummyDelegateBridge(PlayerID attacker, GameData data, boolean attackerKeepOneLandUnit)
     {
+        m_attackingPlayer = new DummyPlayer("battle calc dummy", attackerKeepOneLandUnit);
+        m_defendingPlayer = new DummyPlayer("battle calc dummy", false);
+        
         m_data = data;
         m_attacker = attacker;
         m_changePerformer = new ChangePerformer(m_data);
@@ -148,12 +163,16 @@ class DummyDelegateBridge implements IDelegateBridge
 
    public IRemote getRemote(PlayerID id)
    {
-       return m_player;
+       if(id.equals(m_attacker))
+           return m_attackingPlayer;
+       else
+           return m_defendingPlayer;
    }
 
    public IRemote getRemote()
    {
-       return m_player;
+       //the current player is attacker
+       return m_attackingPlayer;
    }
 
    public int[] getRandom(int max, int count, String annotation)
@@ -230,10 +249,13 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 
 class DummyPlayer extends AbstractAI
 {
+    
+    private final boolean m_keepAtLeastOneLand;
 
-    public DummyPlayer(String name)
+    public DummyPlayer(String name, boolean keepAtLeastOneLand)
     {
         super(name);
+        m_keepAtLeastOneLand = keepAtLeastOneLand;
     }
 
     @Override
@@ -285,6 +307,29 @@ class DummyPlayer extends AbstractAI
                 rKilled.add(unit);
         }
         
+        
+        if(m_keepAtLeastOneLand)
+        {
+            List<Unit> notKilled = new ArrayList<Unit>(selectFrom);
+            notKilled.removeAll(rKilled);
+            //no land units left, but we
+            //have a non land unit to kill
+            //and land unit was killed
+            if(!Match.someMatch(notKilled, Matches.UnitIsLand) && Match.someMatch(notKilled, Matches.UnitIsNotLand) && Match.someMatch(rKilled, Matches.UnitIsLand))
+            {
+                List<Unit> notKilledAndNotLand =Match.getMatches(notKilled, Matches.UnitIsNotLand); 
+                 
+                
+                //sort according to cost
+                Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());                
+                
+                //remove the last killed unit, this should be the strongest
+                rKilled.remove(rKilled.size() -1);
+                //add the cheapest unit 
+                rKilled.add(notKilledAndNotLand.get(0));
+            }
+                
+        }
         
         CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
         return m2;
