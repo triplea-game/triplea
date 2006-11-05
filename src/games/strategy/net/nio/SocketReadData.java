@@ -32,10 +32,17 @@ import java.util.logging.Logger;
  */
 class SocketReadData
 {
+    public static final int MAX_MESSAGE_SIZE = 1000 * 1000 * 10;
+
     private static final Logger s_logger = Logger.getLogger(SocketReadData.class.getName());
     
     private static final AtomicInteger s_counter = new AtomicInteger();
 
+    //as a sanity check to make sure
+    //we are talking to another tripea instance
+    //that the upper bits of the packet
+    //size we send is 0x9b
+    public static final int MAGIC = 0x9b000000;
     
     private int m_targetSize = -1;
     //we read into here the first four
@@ -89,8 +96,12 @@ class SocketReadData
                 m_sizeBuffer.flip();
                 m_targetSize = m_sizeBuffer.getInt();
                 
+                if((m_targetSize & 0xFF000000) != MAGIC)
+                    throw new IOException("Did not write magic!");
+                m_targetSize = m_targetSize & 0x00ffffff;
+                
                 //limit messages to 10MB 
-                if(m_targetSize <= 0 || m_targetSize > 1000 * 1000 * 10) 
+                if(m_targetSize <= 0 || m_targetSize > MAX_MESSAGE_SIZE) 
                 {
                     throw new IOException("Invalid triplea packet size:" + m_targetSize);
                 }
@@ -155,5 +166,8 @@ class SocketReadData
     {
         return "<id:" + m_number + " size:" + m_targetSize + ">";
     }
-       
+    
+    
+    
+    
 }

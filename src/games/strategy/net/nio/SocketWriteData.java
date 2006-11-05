@@ -50,6 +50,11 @@ public class SocketWriteData
         m_content = ByteBuffer.allocate(count);
         m_content.put(data, 0, count);
         m_size = ByteBuffer.allocate(4);
+        
+        if(count < 0 || count > SocketReadData.MAX_MESSAGE_SIZE)
+            throw new IllegalStateException("Invalid message size:" + count);
+        count = count ^ SocketReadData.MAGIC;
+        
         m_size.putInt(count);
         m_size.flip();
         m_content.flip();
