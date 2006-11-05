@@ -133,7 +133,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
             public int compare(Properties o1, Properties o2)
             {
                 int n1 = Integer.parseInt(o1.getProperty("order"));
-                int n2 = Integer.parseInt(o1.getProperty("order"));
+                int n2 = Integer.parseInt(o2.getProperty("order"));
                 return n1 - n2;
             }
         });
