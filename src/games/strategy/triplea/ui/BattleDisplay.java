@@ -204,7 +204,7 @@ public class BattleDisplay extends JPanel
     public void endBattle(String message, final Window enclosingFrame)
     {
         m_steps.walkToLastStep();
-        final Action close = new AbstractAction(message + " : (Click to close)")
+        final Action close = new AbstractAction(message + " : (Press Space to close)")
         {
             public void actionPerformed(ActionEvent e)
             {
@@ -525,7 +525,7 @@ public class BattleDisplay extends JPanel
                 m_dicePanel.setDiceRoll(dice);
 
                 boolean plural = count > 1;
-                final String btnText = hit.getName() + ", click to select " + count + (plural ? " casualties" : " casualty");
+                final String btnText = hit.getName() + ", press space to select " + count + (plural ? " casualties" : " casualty");
                 m_actionButton.setAction(new AbstractAction(btnText)
                 {
                     public void actionPerformed(ActionEvent e)

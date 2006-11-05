@@ -1,5 +1,9 @@
 Changes for 0.8.4
 
+* change click to continue text to press space to continue on battle screens (sgb)
+
+* add an option in battle calculator that at least 1 attacking land unit must survive (sgb)
+
 * fix transport capactity in europe, add connection between adriatic and central med, make saudia arabia nuetral (sgb)
 
 * change network to use nio (sgb)

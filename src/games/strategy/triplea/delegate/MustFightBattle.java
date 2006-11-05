@@ -1540,14 +1540,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
             
             getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, new ArrayList<Unit>(m_casualties), Collections.<Unit>emptyList(), m_dependentUnits);
             
-            getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
+            getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
             Runnable r = new Runnable()
             {
                 public void run()
                 {
                     try
                     {
-                        getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Click to continue", m_attacker);
+                        getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
                     
                     }
                     catch(ConnectionLostException cle)
