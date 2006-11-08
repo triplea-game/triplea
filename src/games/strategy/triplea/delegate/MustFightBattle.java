@@ -2129,7 +2129,7 @@ class Fire implements IExecutable
             {
                 try
                 {
-                    MustFightBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Click to continue",  m_hitPlayer);
+                    MustFightBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue",  m_hitPlayer);
                 }
                 catch(ConnectionLostException cle)
                 {
@@ -2144,7 +2144,7 @@ class Fire implements IExecutable
         t.start();
 
         if(m_confirmOwnCasualties)
-            MustFightBattle.getRemote(m_hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Click to continue");
+            MustFightBattle.getRemote(m_hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
 
         
         try

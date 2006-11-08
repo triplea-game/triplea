@@ -312,14 +312,14 @@ public class StrategicBombingRaidBattle implements Battle
             public void run()
             {
                 ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemote(m_defender);
-                defender.confirmEnemyCasualties(m_battleID, "Click to continue", m_attacker);        
+                defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);        
             }
         };
         Thread t = new Thread(r, "click to continue waiter");
         t.start();
         
         ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
-        attacker.confirmOwnCasualties(m_battleID, "Click to continue");
+        attacker.confirmOwnCasualties(m_battleID, "Press space to continue continue");
         
         try
         {
