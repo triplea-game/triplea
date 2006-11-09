@@ -313,7 +313,7 @@ public class UnitChooser extends JPanel
         for(ChooserEntry entry : m_entries)
         {
             int canSelect = entry.getMax() - entry.getFirstHits();
-            if(canSelect >= leftToSelect)
+            if(leftToSelect >= canSelect)
             {
                 entry.selectAll();
                 leftToSelect -= canSelect;
@@ -321,7 +321,7 @@ public class UnitChooser extends JPanel
             else
             {
                 entry.set(entry.getFirstHits() + canSelect);
-                leftToSelect = 0;
+                 leftToSelect = 0;
                 break;
             }
         }

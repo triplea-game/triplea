@@ -1,3 +1,9 @@
+Changes for 0.8.5
+
+* fix max select when more than one type of unit present (sgb)
+
+* fix some click to continue to press sapce to continue (sgb)
+
 Changes for 0.8.4
 
 * change click to continue text to press space to continue on battle screens (sgb)
