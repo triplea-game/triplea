@@ -1,5 +1,7 @@
 Changes for 0.8.5
 
+* allow setting of lobby server lookup url in a file called lobby.properties with a key server in the root triplea directory (sgb)
+
 * fix max select when more than one type of unit present (sgb)
 
 * fix some click to continue to press sapce to continue (sgb)
