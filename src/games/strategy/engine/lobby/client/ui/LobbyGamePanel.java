@@ -80,7 +80,7 @@ public class LobbyGamePanel extends JPanel
          m_gameTable.setDefaultRenderer(Date.class, new DefaultTableCellRenderer()
          {
 
-            private SimpleDateFormat format = new SimpleDateFormat("h:m a" ); 
+            private SimpleDateFormat format = new SimpleDateFormat("hh:mm a" ); 
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
             {
