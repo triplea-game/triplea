@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
@@ -130,7 +131,8 @@ public class MetaSetupPanel extends SetupPanel
         final URL serverPropsURL;
         try
         {
-            serverPropsURL =new URL(System.getProperties().getProperty("triplea.lobby.serverURL", "http://triplea.sourceforge.net/lobby/server.properties" ));
+            String defaultURL = "http://triplea.sourceforge.net/lobby/server_" + EngineVersion.VERSION.toString() +  ".properties" ;
+            serverPropsURL =new URL(System.getProperties().getProperty("triplea.lobby.serverURL", defaultURL));
         } catch (MalformedURLException e)
         {
             e.printStackTrace();

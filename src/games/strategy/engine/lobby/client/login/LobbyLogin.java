@@ -35,7 +35,7 @@ public class LobbyLogin
 
         if (!m_serverProperties.isServerAvailable())
         {
-            JOptionPane.showMessageDialog(m_parent, "Could not connect to server:" + m_serverProperties.getServerErrorMessage(), "Could not connect to server",
+            JOptionPane.showMessageDialog(m_parent, m_serverProperties.getServerErrorMessage(), "Could not connect to server",
                     JOptionPane.ERROR_MESSAGE);
 
             return null;
