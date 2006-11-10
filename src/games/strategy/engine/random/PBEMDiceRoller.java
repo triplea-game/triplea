@@ -19,6 +19,7 @@ import games.strategy.util.Util;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 
 import javax.swing.*;
@@ -379,23 +380,32 @@ class HttpDiceRollerDialog extends JDialog
             //an error in networking
             catch (SocketException ex)
             {
-                appendText("Connection failter:" + ex.getMessage() + "\n" + "Please ensure your internet connection is working, and try again.");
+                appendText("Connection failuer:" + ex.getMessage() + "\n" + "Please ensure your internet connection is working, and try again.");
                 notifyError();
-            } catch (IOException ex)
+            }
+            catch(InvocationTargetException e) 
+            {
+                appendText("\nError:" + e.getMessage() + "\n\n");
+                if (text != null)
+                {
+                    appendText("Text from dice server:\n" + text + "\n");
+                }
+            }
+            catch (IOException ex)
             {
                 try
                 {
                     appendText("An eror has occured!\n");
                     appendText("Possible reasons the error could have happened:\n");
                     appendText("  1: An invalid e-mail address\n");
-                    appendText("  2: Firewall could be blocking TripleA from connecting to Irony Dice Server\n");
+                    appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
                     appendText("  3: The e-mail address does not exist\n");
                     appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
                     appendText("     Visit http://tripleadev.org  for extra help\n");
 
                     if (text != null)
                     {
-                        appendText("text from dice server:\n" + text + "\n");
+                        appendText("Text from dice server:\n" + text + "\n");
                     }
 
                     StringWriter writer = new StringWriter();

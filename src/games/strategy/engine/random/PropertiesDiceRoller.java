@@ -16,6 +16,7 @@ package games.strategy.engine.random;
 
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -103,8 +104,27 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
      * @throws IOException
      *             if there was an error parsing the string
      */
-    public int[] getDice(String string, int count) throws IOException
+    public int[] getDice(String string, int count) throws IOException, InvocationTargetException
     {
+        String errorStartString = m_props.getProperty("error.start");
+        String errorEndString = m_props.getProperty("error.end");
+        //if the error strings are defined
+        if(errorStartString != null && errorStartString.length() > 0 && errorEndString != null && errorEndString.length() > 0) 
+        {
+            int startIndex = string.indexOf(errorStartString);
+            if(startIndex > 0)
+            {
+                int endIndex = string.indexOf(errorEndString, (startIndex + errorStartString.length()));
+                if(endIndex > 0)
+                {
+                    String error = string.substring(startIndex + errorStartString.length(), endIndex);
+                    throw new InvocationTargetException( null, error);
+                    
+                }
+            }
+        }
+        
+        
         String rollStartString;
         String rollEndString;
         if (count == 1)

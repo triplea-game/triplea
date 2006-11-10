@@ -1,6 +1,7 @@
 package games.strategy.engine.random;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public interface IRemoteDiceServer
 {
@@ -12,9 +13,11 @@ public interface IRemoteDiceServer
     
     
     /**
-     * Given the html page returned from postRequest, return the dice [] 
+     * Given the html page returned from postRequest, return the dice []
+     * 
+     *  throw an InvocationTargetException to indicate an error message to be returned
      */
-    public int[] getDice(String string, int count) throws IOException;
+    public int[] getDice(String string, int count) throws IOException, InvocationTargetException;
     
     
     /**
