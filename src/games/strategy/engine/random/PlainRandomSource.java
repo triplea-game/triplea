@@ -78,7 +78,7 @@ public class PlainRandomSource implements IRandomSource
      int[] random =  new PlainRandomSource().getRandom(6, 100000, "Test");
      for(int i = 0; i < random.length; i++)
      {
-         results.add(new Integer(random[i] + 1),  1);
+         results.add(Integer.valueOf(random[i] + 1),  1);
      }
      System.out.println(results);
   }

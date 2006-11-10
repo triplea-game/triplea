@@ -48,13 +48,13 @@ public class NIOReader
     private final LinkedBlockingQueue<SocketReadData> m_outputQueue = new LinkedBlockingQueue<SocketReadData>();
     private volatile boolean m_running = true;
     
-    private Map<SocketChannel, SocketReadData> m_reading = new ConcurrentHashMap<SocketChannel, SocketReadData>();
+    private final Map<SocketChannel, SocketReadData> m_reading = new ConcurrentHashMap<SocketChannel, SocketReadData>();
     private final IErrorReporter m_errorReporter;
     
     private final Selector m_selector;
     
     private final Object m_socketsToAddMutex = new Object();
-    private List<SocketChannel> m_socketsToAdd = new ArrayList<SocketChannel>();
+    private final List<SocketChannel> m_socketsToAdd = new ArrayList<SocketChannel>();
     
     private long m_totalBytes;
     

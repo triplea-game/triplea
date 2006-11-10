@@ -47,7 +47,7 @@ public class NIOWriter
     private final Selector m_selector;
     private final IErrorReporter m_errorReporter;
     //this is the data we are writing
-    private Map<SocketChannel, List<SocketWriteData>> m_writing = new HashMap<SocketChannel, List<SocketWriteData>>();
+    private final Map<SocketChannel, List<SocketWriteData>> m_writing = new HashMap<SocketChannel, List<SocketWriteData>>();
     //these are the sockets we arent selecting on, but should now
     private List<SocketChannel> m_socketsToWake = new ArrayList<SocketChannel>();
     //the writing thread and threads adding data to write synchronize on this lock

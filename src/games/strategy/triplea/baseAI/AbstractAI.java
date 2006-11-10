@@ -33,7 +33,7 @@ public abstract class AbstractAI implements ITripleaPlayer
 {
     private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
     
-    private static boolean m_pause =  Boolean.valueOf(System.getProperties().getProperty("triplea.abstractai.pause", "true"));
+    private static final boolean m_pause =  Boolean.valueOf(System.getProperties().getProperty("triplea.abstractai.pause", "true"));
     
     /**
      * Pause the game to allow the human player to see what is going on.

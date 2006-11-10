@@ -37,10 +37,10 @@ public class ThreadPool
     private final int m_maxThreadCount;
 
     //how many threads we have
-    private AtomicInteger m_threadCount = new AtomicInteger();
+    private final AtomicInteger m_threadCount = new AtomicInteger();
 
     //how many threads arent busy
-    private AtomicInteger m_availableThreads = new AtomicInteger();
+    private final AtomicInteger m_availableThreads = new AtomicInteger();
     
     //how many tasks are queued or running, 
     //usually = m_threadCount - m_availableThreads + m_pendingTasks.size()

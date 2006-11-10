@@ -144,7 +144,7 @@ class TerritoryNameDrawable implements IDrawable
         if (ta.getProduction() > 0)
         {
             Image img = m_uiContext.getIPCImageFactory().getIpcImage(ta.getProduction());
-            String prod = new Integer(ta.getProduction()).toString();
+            String prod = Integer.valueOf(ta.getProduction()).toString();
             
             Point place = mapData.getIPCPlacementPoint(territory);
             // if ipc_place.txt is specified draw there

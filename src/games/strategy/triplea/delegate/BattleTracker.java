@@ -353,7 +353,7 @@ public class BattleTracker implements java.io.Serializable
                 {
                     if(isPacificEdition(data))
                     {
-                        Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (new Integer(capturedIPCCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
+                        Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (Integer.valueOf(capturedIPCCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
                         bridge.addChange(changeVP);
                     } 
                 } 

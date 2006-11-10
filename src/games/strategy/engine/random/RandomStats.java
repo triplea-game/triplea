@@ -39,13 +39,13 @@ public class RandomStats implements IRandomStats
     {
         for(int i = 0; i < random.length; i++)
         {
-            m_randomStats.add(new Integer(random[i] + 1), 1 );
+            m_randomStats.add(Integer.valueOf(random[i] + 1), 1 );
         }
     }
 
     public synchronized void addRandom(int random)
     {
-        m_randomStats.add(new Integer(random + 1), 1 );
+        m_randomStats.add(Integer.valueOf(random + 1), 1 );
     }
 
     public synchronized RandomStatsDetails getRandomStats()

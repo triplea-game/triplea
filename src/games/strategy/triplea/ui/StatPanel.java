@@ -41,8 +41,8 @@ import javax.swing.table.*;
  */
 public class StatPanel extends JPanel
 {
-    private StatTableModel m_dataModel;
-    private TechTableModel m_techModel;
+    private final StatTableModel m_dataModel;
+    private final TechTableModel m_techModel;
     private IStat[] m_stats = new IStat[] {new IPCStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
     private GameData m_data;
     

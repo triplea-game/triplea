@@ -108,11 +108,11 @@ public class DiceImageFactory
     switch(type)
     {
     case HIT :
-        return m_imagesHit.get(new Integer(i));
+        return m_imagesHit.get(Integer.valueOf(i));
     case MISS :
-        return m_images.get(new Integer(i));
+        return m_images.get(Integer.valueOf(i));
     case IGNORED :
-        return m_imagesIgnored.get(new Integer(i));
+        return m_imagesIgnored.get(Integer.valueOf(i));
     default:
         throw new IllegalStateException("??");
             

@@ -136,7 +136,7 @@ public class EndRoundDelegate implements IDelegate
 	 */
 	public Serializable saveState()
 	{
-		return new Boolean(m_gameOver);
+		return Boolean.valueOf(m_gameOver);
 	}
 
 	/**

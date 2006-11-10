@@ -39,8 +39,8 @@ public class RandomStatsDetails implements Serializable
 
             for (int i = 1; i <= 6; i++)
             {
-                sumTotal += i * m_data.getInt(new Integer(i));
-                total += m_data.getInt(new Integer(i));
+                sumTotal += i * m_data.getInt(Integer.valueOf(i));
+                total += m_data.getInt(Integer.valueOf(i));
             }
 
             m_total = total;
