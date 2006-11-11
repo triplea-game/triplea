@@ -40,7 +40,7 @@ import javax.swing.JOptionPane;
  * 
  * The database will be shutdown on System.exit through a shutdown hook.<p>
  * 
- * Getting a connection will also schedule backups at 24 hour intervals.<p>
+ * Getting a connection will also schedule backups at regular intervals.<p>
  * 
  * 
  * @author sgb
@@ -211,10 +211,10 @@ public class Database
                 while(true)
                 {
                     
-                    //wait 1 day
+                    //wait 2 days
                     try
                     {
-                        Thread.sleep(24 * 60 * 60 * 1000);
+                        Thread.sleep(2 * 24 * 60 * 60 * 1000);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
