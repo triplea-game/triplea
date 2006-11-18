@@ -198,7 +198,7 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
                 buf.append(((Territory) iter.next()).getName());
                 buf.append(" ");
             }
-            if (!m_ui.getOKToLetAirDie(m_id, buf.toString()))
+            if (!m_ui.getOKToLetAirDie(m_id, buf.toString(), movePhase))
                 return false;
             return true;
         }
@@ -311,6 +311,8 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
                 //this only happens in lhtr rules
                 if(canAirLand(false))
                     return;
+                else
+                    continue;
             }
             IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
             String error = placeDel.placeUnits(data.getUnits(), data.getAt());
