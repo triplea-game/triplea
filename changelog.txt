@@ -1,5 +1,7 @@
 Changes for 0.8.5
 
+* alt click/unclick selects 1/10 the type (Nate)
+
 * allow weak ai to move into empty nuetral territories (Nate)
 
 * make dialog clearer for planes can't land (sgb)

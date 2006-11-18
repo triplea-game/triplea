@@ -903,12 +903,17 @@ public class MovePanel extends ActionPanel
                 //we want to select units with the most movement
                 sortByDecreasingMovement(units,t);
                 
+                // check for alt key - add 1/10 of total units (useful for splitting large armies)
+            	int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
+            	int addCount = 0;
+            	
                 for(Unit unit : units)
                 {
                     if(!m_selectedUnits.contains(unit))
                     {
                         m_selectedUnits.add(unit);
-                        break;
+                        addCount++;
+                        if (addCount >= iterCount) break;
                     }
                 }
             }
@@ -930,9 +935,14 @@ public class MovePanel extends ActionPanel
             {
                 if(me.isControlDown())
                     m_selectedUnits.clear();
-                else
+                else {
+                    // check for alt key - remove 1/10 of total units (useful for splitting large armies)
+                	int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(m_selectedUnits.size() / 10)) : 1;
+                	
                     //remove the last element
-                    m_selectedUnits.remove( new ArrayList<Unit>(m_selectedUnits).get(m_selectedUnits.size() -1 ) );
+                	for (int i=0; i<iterCount; i++) 
+	                    m_selectedUnits.remove( new ArrayList<Unit>(m_selectedUnits).get(m_selectedUnits.size() -1 ) );
+                }
             }
             //we have actually clicked on a specific unit
             else
@@ -949,12 +959,17 @@ public class MovePanel extends ActionPanel
                     sortByDecreasingMovement(units, t);
                     Collections.reverse(units);
                     
+                    // check for alt key - remove 1/10 of total units (useful for splitting large armies)
+                	int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
+                    int remCount = 0;
+                	
                     for(Unit unit : units)
                     {
                         if(m_selectedUnits.contains(unit))
                         {
                             m_selectedUnits.remove(unit);
-                            break;
+                            remCount++;
+                            if (remCount >= iterCount) break;
                         }
                     }
                 }
