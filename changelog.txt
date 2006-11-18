@@ -1,5 +1,7 @@
 Changes for 0.8.5
 
+* make dialog clearer for planes can't land (sgb)
+
 * handle marti dice server error messages (sgb,clausewitz)
 
 * allow setting of lobby server lookup url in a file called lobby.properties with a key server in the root triplea directory (sgb)

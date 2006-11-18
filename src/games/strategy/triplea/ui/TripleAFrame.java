@@ -471,7 +471,7 @@ public class TripleAFrame extends JFrame
 
     
     
-    public boolean getOKToLetAirDie(PlayerID m_id, String message)
+    public boolean getOKToLetAirDie(PlayerID m_id, String message, boolean movePhase)
     {
         boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProdcution(m_data);
         int carrierCount = m_id.getUnits().getMatches(Matches.UnitIsCarrier).size();
@@ -483,8 +483,8 @@ public class TripleAFrame extends JFrame
         }
         
         
-        String ok = "OK";
-        String cancel = "Cancel";
+        String ok = movePhase ?  "End Move Phase" : "Kill Planes";
+        String cancel = movePhase ? "Keep Moving" : "Change Placement";
         String[] options =
         { cancel, ok };
         int choice = JOptionPane.showOptionDialog(this, message, "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
