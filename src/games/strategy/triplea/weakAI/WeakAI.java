@@ -646,7 +646,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         final Collection<Unit> unitsAlreadyMoved = new HashSet<Unit>();
         //find the territories we can just walk into
         
-        List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), Matches.isTerritoryEnemyAndNotNeutral(player, data));
+        CompositeMatchOr<Territory> walkInto = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemyAndNotNeutral(player, data), Matches.isTerritoryFreeNeutral(data));
+        List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
 
         
         Collections.sort(enemyOwned, new Comparator<Territory>()
@@ -663,9 +664,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 if(ta1 != null && ta2 != null)
                 {
                     if(ta1.isCapital() && !ta2.isCapital())
-                        return 1;
+                        return -1; //1;
                     if(!ta1.isCapital() && ta2.isCapital())
-                        return -1;
+                        return 1; //-1;
                 }
                 
                 boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitIsFactory);
@@ -673,9 +674,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 
                 //next take territories with factories
                 if(factoryInT1 && !factoryInT2)
-                    return 1;
+                    return -1; //1;
                 if(!factoryInT1 && factoryInT2)
-                    return -1;
+                    return 1; //-1;
 
                 //randomness is a better guide than any other metric
                 //sort the remaining randomly

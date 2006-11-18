@@ -20,10 +20,21 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.UnitAttachment;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.util.*;
+import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.InverseMatch;
+import games.strategy.util.Match;
 
 /**
  * Useful match interfaces.
@@ -674,6 +685,19 @@ public class Matches
 		};
 	}
 
+    public static Match<Territory> isTerritoryFreeNeutral(final GameData data)
+    {
+        return new Match<Territory>()
+        {
+          public boolean match(Territory t)
+          {
+            return (t.getOwner().equals(PlayerID.NULL_PLAYERID) && Properties.getNeutralCharge(data) == 0);
+          }
+        };
+    }
+    
+
+    
 /*
 	public static Match<Territory> isTerritoryEnemyAndWater(final PlayerID player, final GameData data)
 	{

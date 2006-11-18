@@ -153,8 +153,15 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
                     moveToIf.add(Matches.isTerritoryFriendly(m_id, data));
                 }
                 
-                //stay out of neutrals
-                moveToIf.add(new InverseMatch<Territory>(Matches.TerritoryIsNuetral));
+                // can enter non-neutral (or free neutral) spaces
+                CompositeMatchOr<Territory> walkInto = new CompositeMatchOr<Territory>();
+                walkInto.add(Matches.isTerritoryAllied(m_id, data));
+                walkInto.add(Matches.isTerritoryEnemyAndNotNeutral(m_id, data));
+                walkInto.add(Matches.isTerritoryFreeNeutral(data));
+                                 
+                // stay out of neutrals
+                //moveToIf.add(new InverseMatch<Territory>(Matches.TerritoryIsNuetral));
+                moveToIf.add(walkInto);
                 
             }
             

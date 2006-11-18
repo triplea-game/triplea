@@ -1,5 +1,7 @@
 Changes for 0.8.5
 
+* allow weak ai to move into empty nuetral territories (Nate)
+
 * make dialog clearer for planes can't land (sgb)
 
 * handle marti dice server error messages (sgb,clausewitz)
