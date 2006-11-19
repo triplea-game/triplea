@@ -1,5 +1,7 @@
 Changes for 0.8.5
 
+* update big world map (surtur2)
+
 * alt click/unclick selects 1/10 the type (Nate)
 
 * allow weak ai to move into empty nuetral territories (Nate)

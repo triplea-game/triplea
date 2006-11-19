@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Big World: 1942" version="2.02"/>
+        <info name="Big World : 1942" version="2.1"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -675,9 +675,9 @@
                 <connection t1="SZ 75 Sea of Okhotsk" t2="Okhotsk"/>
                 <connection t1="SZ 75 Sea of Okhotsk" t2="Kamchatka"/>
                 <connection t1="SZ 75 Sea of Okhotsk" t2="Sakhalin Island"/>
+                <connection t1="SZ 75 Sea of Okhotsk" t2="SZ 76 West Bering Sea"/>
 
                 <connection t1="SZ 76 West Bering Sea" t2="SZ 77 Bering Sea"/>
-                <connection t1="SZ 75 Sea of Okhotsk" t2="SZ 76 West Bering Sea"/>
                 <connection t1="SZ 76 West Bering Sea" t2="SZ 81 North Pacific"/>
                 <connection t1="SZ 76 West Bering Sea" t2="SZ 80 Northwest Pacific"/>
                 <connection t1="SZ 76 West Bering Sea" t2="Kamchatka"/>
@@ -1077,6 +1077,7 @@
                 <connection t1="Omsk" t2="Sverdlovsk"/>
                 <connection t1="Omsk" t2="Western Siberia"/>
                 <connection t1="Omsk" t2="Novo-Sibirsk"/>
+                <connection t1="Omsk" t2="Southwestern Siberia"/>
 
                 <connection t1="Sverdlovsk" t2="Western Siberia"/>
 
@@ -1268,67 +1269,67 @@
                         <!-- Russians Game Sequence -->
                         
                         <step name="russianTech" delegate="tech" player="Russians"/>
-                        <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
                         <step name="russianPurchase" delegate="purchase" player="Russians"/>
                         <step name="russianCombatMove" delegate="move" player="Russians"/>
                         <step name="russianBattle" delegate="battle" player="Russians"/>
                         <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
                         <step name="russianPlace" delegate="place" player="Russians"/>
+                        <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
                         <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
                         <!-- Germans Game Sequence -->
                         
                         <step name="germanTech" delegate="tech" player="Germans"/>
-                        <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
                         <step name="germanPurchase" delegate="purchase" player="Germans"/>
                         <step name="germanCombatMove" delegate="move" player="Germans"/>
                         <step name="germanBattle" delegate="battle" player="Germans"/>
                         <step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
                         <step name="germanPlace" delegate="place" player="Germans"/>
+                        <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
                         <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
                         <!-- British Game Sequence -->
                         
                         <step name="britishTech" delegate="tech" player="British"/>
-                        <step name="britishTechActivation" delegate="tech_activation" player="British"/>
                         <step name="britishPurchase" delegate="purchase" player="British"/>
                         <step name="britishCombatMove" delegate="move" player="British"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
                         <step name="britishPlace" delegate="place" player="British"/>
+                        <step name="britishTechActivation" delegate="tech_activation" player="British"/>
                         <step name="britishEndTurn" delegate="endTurn" player="British"/>
 
                         <!-- Chinese Game Sequence -->
                         
                         <step name="chineseTech" delegate="tech" player="Chinese"/>
-                        <step name="chineseTechActivation" delegate="tech_activation" player="Chinese"/>
                         <step name="chinesePurchase" delegate="purchase" player="Chinese"/>
                         <step name="chineseCombatMove" delegate="move" player="Chinese"/>
                         <step name="chineseBattle" delegate="battle" player="Chinese"/>
                         <step name="chineseNonCombatMove" delegate="move" player="Chinese" display="Non Combat Move"/>
                         <step name="chinesePlace" delegate="place" player="Chinese"/>
+                        <step name="chineseTechActivation" delegate="tech_activation" player="Chinese"/>
                         <step name="chineseEndTurn" delegate="endTurn" player="Chinese"/>
 
                         <!-- Japanese Game Sequence -->
                         
                         <step name="japaneseTech" delegate="tech" player="Japanese"/>
-                        <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
                         <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
                         <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
                         <step name="japaneseBattle" delegate="battle" player="Japanese"/>
                         <step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
                         <step name="japanesePlace" delegate="place" player="Japanese"/>
+                        <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
                         <step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
 
                         <!-- Americans Game Sequence -->
                         
                         <step name="americanTech" delegate="tech" player="Americans"/>
-                        <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
                         <step name="americanPurchase" delegate="purchase" player="Americans"/>
                         <step name="americanCombatMove" delegate="move" player="Americans"/>
                         <step name="americanBattle" delegate="battle" player="Americans"/>
                         <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
                         <step name="americanPlace" delegate="place" player="Americans"/>
+                        <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
                         <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
                         
                         <step name="endRoundStep" delegate="endRound"/>
@@ -1434,17 +1435,17 @@
                 </productionRule>
                 
                 <productionRule name="buyCarrierIndustrialTechnology">
-                        <cost resource="IPCs" quantity="15" />
+                        <cost resource="IPCs" quantity="13" />
                         <result resourceOrUnit="carrier" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyDestroyerIndustrialTechnology">
-                        <cost resource="IPCs" quantity="11" />
+                        <cost resource="IPCs" quantity="7" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyCruiserIndustrialTechnology">
-                        <cost resource="IPCs" quantity="10" />
+                        <cost resource="IPCs" quantity="9" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
 
@@ -1773,7 +1774,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Scotland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="2"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Okhotsk" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1934,7 +1935,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Finland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Syria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1942,7 +1943,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Iraq" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="2"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="South Philippines" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1970,7 +1971,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Western Germany" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="6"/>
+                        <option name="production" value="7"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="French Indo-China" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2084,7 +2085,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Egypt" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="2"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Southern United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2670,9 +2671,8 @@
 
                         <unitPlacement unitType="factory" territory="England" quantity="1" owner="British"/>
                         <unitPlacement unitType="aaGun" territory="England" quantity="1" owner="British"/>
-                        <unitPlacement unitType="infantry" territory="England" quantity="2" owner="British"/>
+                        <unitPlacement unitType="infantry" territory="England" quantity="4" owner="British"/>
                         <unitPlacement unitType="artillery" territory="England" quantity="1" owner="British"/>
-                        <unitPlacement unitType="armour" territory="England" quantity="1" owner="British"/>
                         <unitPlacement unitType="fighter" territory="England" quantity="1" owner="British"/>
                         <unitPlacement unitType="bomber" territory="England" quantity="1" owner="British"/>
 
@@ -2698,8 +2698,7 @@
 
                         <unitPlacement unitType="factory" territory="Scotland" quantity="1" owner="British"/>
                         <unitPlacement unitType="aaGun" territory="Scotland" quantity="1" owner="British"/>
-                        <unitPlacement unitType="infantry" territory="Scotland" quantity="1" owner="British"/>
-                        <unitPlacement unitType="armour" territory="Scotland" quantity="1" owner="British"/>
+                        <unitPlacement unitType="infantry" territory="Scotland" quantity="2" owner="British"/>
                         <unitPlacement unitType="fighter" territory="Scotland" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="infantry" territory="Ethiopia" quantity="1" owner="British"/>
@@ -2714,6 +2713,7 @@
 
                         <unitPlacement unitType="infantry" territory="New Zealand" quantity="2" owner="British"/>
 
+                        <unitPlacement unitType="aaGun" territory="Gibraltar" quantity="1" owner="British"/>
                         <unitPlacement unitType="infantry" territory="Gibraltar" quantity="1" owner="British"/>
                         <unitPlacement unitType="fighter" territory="Gibraltar" quantity="1" owner="British"/>
 
@@ -2756,7 +2756,6 @@
 
                         <unitPlacement unitType="fighter" territory="SZ 99 West Pacific" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="submarine" territory="SZ 99 West Pacific" quantity="1" owner="Japanese"/>
-                        <unitPlacement unitType="cruiser" territory="SZ 99 West Pacific" quantity="1" owner="Japanese"/>
                         <unitPlacement unitType="carrier" territory="SZ 99 West Pacific" quantity="1" owner="Japanese"/>
 
                         <unitPlacement unitType="infantry" territory="Sumatra" quantity="2" owner="Japanese"/>
@@ -2841,7 +2840,6 @@
                         <unitPlacement unitType="battleship" territory="SZ 96 Pacific" quantity="1" owner="Americans"/>
 
                         <unitPlacement unitType="transport" territory="SZ 100 Pacific" quantity="1" owner="Americans"/>
-                        <unitPlacement unitType="submarine" territory="SZ 100 Pacific" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="cruiser" territory="SZ 100 Pacific" quantity="1" owner="Americans"/>
 
                         <unitPlacement unitType="factory" territory="Southwestern United States" quantity="1" owner="Americans"/>
@@ -2853,6 +2851,8 @@
                         <unitPlacement unitType="factory" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="infantry" territory="Hawaiian Islands" quantity="2" owner="Americans"/>
                         <unitPlacement unitType="fighter" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
+
+                        <unitPlacement unitType="fighter" territory="Iceland" quantity="1" owner="Americans"/>
 
                         <unitPlacement unitType="factory" territory="Midwestern United States" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="artillery" territory="Midwestern United States" quantity="1" owner="Americans"/>
@@ -2900,6 +2900,7 @@
 
                         <unitPlacement unitType="infantry" territory="Eastern Turkey" quantity="5"/>
 
+                        <unitPlacement unitType="aaGun" territory="Spain" quantity="1"/>
                         <unitPlacement unitType="infantry" territory="Spain" quantity="8"/>
 
                         <unitPlacement unitType="infantry" territory="Angola" quantity="1"/>
@@ -2930,7 +2931,7 @@
                 </unitInitialize>
         
                 <resourceInitialize>
-                        <resourceGiven player="British" resource="IPCs" quantity="39"/>
+                        <resourceGiven player="British" resource="IPCs" quantity="40"/>
                         <resourceGiven player="Americans" resource="IPCs" quantity="50"/>
                         <resourceGiven player="Japanese" resource="IPCs" quantity="38"/>
                         <resourceGiven player="Chinese" resource="IPCs" quantity="10"/>
@@ -2977,9 +2978,13 @@
                 <property name="Territory Turn Limit" value="true" editable="true">
                         <boolean/>
                 </property>
+
+                <property name="Heavy Bombers Pick best of X Dice" value="true" editable="true">
+                        <boolean/>
+                </property>
                 
                 <!-- Bids -->
-				<property name="Germans bid" value="0" editable="true">
+		<property name="Germans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
                 
@@ -3012,7 +3017,8 @@
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="big_world" editable="false"/>
 		<!-- notes appear in the notes menu in the main screen, format as html -->
-		<property name="notes" value="== Big World: 1942 (v2.01) == &lt;br&gt;A scenario loosely based on the year 1942 of the global conflict of 1939-1945. In Europe, Germany has Leningrad besieged, &lt;br&gt;stands at the gates of Moscow and the verge of defeat at Stalingrad (Dec 1942). In the Pacific, Japan has expanded &lt;br&gt;explosively but faces the turning point at Midway (May 1942). &lt;br&gt;&lt;br&gt;Standard TripleA '4th edition' + 'LHTR' bomber rules apply. However, there are also variant rules to consider.&lt;br&gt;&lt;br&gt;=== Capitols === &lt;br&gt;The capitols of the world powers are as follows: &lt;br&gt;  Russia - Moscow &lt;br&gt;  Germany - Eastern Germany &lt;br&gt;  Britain - England &lt;br&gt;  China - Western Sinkiang &lt;br&gt;  Japan - Southern Japan &lt;br&gt;  USA - Northeastern United States &lt;br&gt;&lt;br&gt;=== Unit definitions === &lt;br&gt;Units have been revised in an effort to bring better balance to the naval cost structure. This &lt;br&gt;includes the addition of a Cruiser unit, and downgrading of the Destroyer. Please note that with this&lt;br&gt;change the Destroyer Bombard tech should be replaced with a Cruiser Bombard tech, but as of this &lt;br&gt;writing (2005-05-01) the required code changes have not been made. &lt;br&gt;&lt;br&gt;Unit definitions (attack, defend, IPC cost)&lt;br&gt;  infantry:   1, 2, 3 (special: artillery enhances attack to 2)&lt;br&gt;  artillery:  2, 2, 4 (special: enhances infantry)&lt;br&gt;  armour:     3, 3, 5&lt;br&gt;  fighter:    3, 4, 10&lt;br&gt;  bomber:     4, 1, 14 (special: SBR)&lt;br&gt;  submarine:  2, 2, 8 (special: submerge, sneak attack)&lt;br&gt;  destroyer:  2, 2, 8 (special: ASW [subs cannot submerge, no sneak attack])&lt;br&gt;  cruiser:    3, 3, 10&lt;br&gt;  carrier:    1, 1, 14 (special: 2 fighters may land on a carrier)&lt;br&gt;  battleship: 4, 4, 22 (special: 2 hits [same turn] to destroy, can shore bombard)&lt;br&gt;"/>
+		<property name="notes" value="== Big World: 1942 (v2.01.06) == &lt;br&gt;A scenario loosely based on the year 1942 of the global conflict of 1939-1945. In Europe, Germany has Leningrad besieged, &lt;br&gt;stands at the gates of Moscow and the verge of defeat at Stalingrad (Dec 1942). In the Pacific, Japan has expanded &lt;br&gt;explosively but faces the turning point at Midway (May 1942). &lt;br&gt;&lt;br&gt;Standard TripleA '4th edition' + 'LHTR' bomber rules apply. However, there are also variant rules to consider.&lt;br&gt;Also 'LHTR' delayed tech activation is applied.&lt;br&gt;&lt;br&gt;=== Capitols === &lt;br&gt;The capitols of the world powers are as follows: &lt;br&gt;  Russia - Moscow &lt;br&gt;  Germany - Eastern Germany &lt;br&gt;  Britain - England &lt;br&gt;  China - Western Sinkiang &lt;br&gt;  Japan - Southern Japan &lt;br&gt;  USA - Northeastern United States &lt;br&gt;&lt;br&gt;=== Unit definitions === &lt;br&gt;Units have been revised in an effort to bring better balance to the naval cost structure. This &lt;br&gt;includes the addition of a Cruiser unit, and downgrading of the Destroyer. Please note that with this&lt;br&gt;change the Destroyer Bombard tech should be replaced with a Cruiser Bombard tech, but as of this &lt;br&gt;writing (2005-05-01) the required code changes have not been made. &lt;br&gt;&lt;br&gt;Unit definitions (attack, defend, IPC cost)&lt;br&gt;  infantry:   1, 2, 3 (special: artillery enhances attack to 2)&lt;br&gt;  artillery:  2, 2, 4 (special: enhances infantry)&lt;br&gt;  armour:     3, 3, 5&lt;br&gt;  fighter:    3, 4, 10&lt;br&gt;  bomber:     4, 1, 14 (special: SBR)&lt;br&gt;  submarine:  2, 2, 8 (special: submerge, sneak attack)&lt;br&gt;  destroyer:  2, 2, 8 (special: ASW [subs cannot submerge, no sneak attack])&lt;br&gt;  cruiser:    3, 3, 10&lt;br&gt;  carrier:    1, 1, 14 (special: 2 fighters may land on a carrier)&lt;br&gt;  battleship: 4, 4, 22 (special: 2 hits [same turn] to destroy, can shore bombard)&lt;br&gt;"/>
+
 
         </propertyList>
 </game>
