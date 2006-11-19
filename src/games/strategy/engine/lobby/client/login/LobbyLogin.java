@@ -9,6 +9,7 @@ import games.strategy.util.MD5Crypt;
 import java.awt.Window;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
 
@@ -63,13 +64,19 @@ public class LobbyLogin
 
     private LobbyClient login(final LoginPanel panel)
     {
+        
+        
         try
         {
             ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), panel.getUserName(), new IConnectionLogin()
             {
+                
+                private final AtomicReference<String> m_internalError = new AtomicReference<String>();
 
                 public void notifyFailedLogin(String message)
                 {
+                    if(m_internalError != null)
+                        message = m_internalError.get();
                     JOptionPane.showMessageDialog(m_parent, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
 
                 }
@@ -85,6 +92,14 @@ public class LobbyLogin
                     else
                     {
                         String salt = challengProperties.get(LobbyLoginValidator.SALT_KEY);
+                        if(salt == null) { 
+                            //the server does not have a salt value
+                            //so there is no user with our name,
+                            //continue as before
+                            m_internalError.set("No account with that name exists" );
+                            salt = "none";
+                        }
+                            
                         String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
                         props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
                     }

@@ -108,6 +108,11 @@ public class MD5Crypt
      */
     static public final String crypt( String password, String salt, String magic ) 
     {
+        
+        if(salt == null)
+            throw new IllegalArgumentException("Null salt!");
+        if(magic == null)
+            throw new IllegalArgumentException("Null salt!");
 
         byte finalState[];
         long l;
