@@ -297,6 +297,26 @@ public class DiceRollTest extends TestCase
         
     }
     
+    public void testLHTRBomberDefend()
+    {
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true );
+        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british);
+        
+        
+        List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        
+        testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0,1} ));
+        
+        DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, m_data, new MockBattle(m_data.getMap().getTerritory("Germany")), "");
+        
+        assertEquals(1, dice.getRolls(1).size());
+        assertEquals(Die.DieType.HIT, dice.getRolls(1).get(0).getType() );
+        
+    }
+    
+    
     
     public void testHeavyBombersLHTR()
     {

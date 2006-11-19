@@ -343,8 +343,13 @@ public class BattleCalculator
         UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
         if (defend)
         {
-            if(unitAttachment.isStrategicBomber() && id.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false))
-                return 2;
+            //if lhtr
+            if(id.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false)) 
+            {
+                //if they have the heavy bomber tech, then 2 rolls for defense
+                if(unitAttachment.isStrategicBomber() && TechTracker.getTechAdvances(id).contains(TechAdvance.HEAVY_BOMBER) )
+                    return 2;
+            }
             return 1;
         }
         
