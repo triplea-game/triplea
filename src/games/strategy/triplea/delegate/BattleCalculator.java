@@ -28,6 +28,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.*;
+import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.*;
 
 import java.util.*;
@@ -153,7 +154,11 @@ public class BattleCalculator
 
         List<Unit> defaultCasualties = getDefaultCasualties(targets, hits, defending, player, costs);
 
-        ITripleaPlayer tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
+        ITripleaPlayer tripleaPlayer;
+        if(player.isNull())
+            tripleaPlayer = new WeakAI(player.getName());
+        else
+            tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
         
         CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, dice.getHits(), text, dice, player,
                 defaultCasualties, battleID);
@@ -344,7 +349,8 @@ public class BattleCalculator
         if (defend)
         {
             //if lhtr
-            if(id.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false)) 
+            //check for nulll id since null players dont have game data
+            if(!id.isNull() && id.getData().getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false)) 
             {
                 //if they have the heavy bomber tech, then 2 rolls for defense
                 if(unitAttachment.isStrategicBomber() && TechTracker.getTechAdvances(id).contains(TechAdvance.HEAVY_BOMBER) )

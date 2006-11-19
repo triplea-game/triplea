@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.*;
 
 import java.lang.reflect.*;
@@ -1708,7 +1709,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         //if its the null player, return a do nothing proxy
         if(player.isNull())
-            return (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, new NullInvocationHandler());
+            return new WeakAI(player.getName());
         return (ITripleaPlayer) bridge.getRemote(player);
     }
 
@@ -2011,14 +2012,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 }
 
 
-class NullInvocationHandler implements InvocationHandler
-{
-
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-    {
-        return null;
-    }
-}
 
 
 

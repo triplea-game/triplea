@@ -1,5 +1,7 @@
 Changes for 0.8.5
 
+* allow neutrals to have different unit types (sgb)
+
 * fix bugs where all bombers in lhtr defend at 2 (sgb)
 
 * update big world map (surtur2)
