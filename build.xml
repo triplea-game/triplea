@@ -265,6 +265,7 @@
 			<zipfileset dir="." prefix="triplea_${triplea.version}/" filemode="755">
 				<include name="*.sh"/>
 				<exclude name="fix_mac_icon.sh"/>
+				<exclude name="run-server.sh"/>
 			</zipfileset>
 			
 			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/" filemode="755">
