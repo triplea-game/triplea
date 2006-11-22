@@ -1,3 +1,7 @@
+Changes for 0.8.6
+
+* Saved games in user.home/triplea (not .triplea) for linux and mac (sgb)
+
 Changes for 0.8.5
 
 * allow neutrals to have different unit types (sgb)

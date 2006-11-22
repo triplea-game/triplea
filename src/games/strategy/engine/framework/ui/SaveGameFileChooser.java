@@ -47,7 +47,7 @@ public class SaveGameFileChooser extends JFileChooser
         if(GameRunner.isWindows())
             defaultDirectory = new File(GameRunner.getRootFolder(), "/savedGames/");
         else
-            defaultDirectory = new File(System.getProperties().getProperty("user.home") +"/.triplea/savedGames/");
+            defaultDirectory = new File(System.getProperties().getProperty("user.home") +"/triplea/savedGames/");
         
 	    DEFAULT_DIRECTORY = defaultDirectory;
 	}
