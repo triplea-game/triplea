@@ -94,7 +94,7 @@ public class RemoteInterfaceHelper
                 return t1.length - t2.length;
             for(int i =0; i < t1.length; i++)
             {
-                if(t1[i].getName().equals(t2[i].getName()))
+                if(!t1[i].getName().equals(t2[i].getName()))
                 {
                     return t1[i].getName().compareTo(t2[i].getName());
                 }
