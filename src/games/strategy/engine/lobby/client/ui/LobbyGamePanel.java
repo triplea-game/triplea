@@ -191,7 +191,7 @@ public class LobbyGamePanel extends JPanel
 
     protected void hostGame()
     {
-        ServerOptions options = new ServerOptions(JOptionPane.getFrameForComponent(this), m_messengers.getMessenger().getLocalNode().getName() ,3300, true);
+        ServerOptions options = new ServerOptions(JOptionPane.getFrameForComponent(this), m_messengers.getMessenger().getLocalNode().getName() , 3300, true);
         options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
         options.setNameEditable(false);
         options.setVisible(true);
@@ -207,9 +207,9 @@ public class LobbyGamePanel extends JPanel
         commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + options.getPort());
         commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + options.getName());
         
-        
-        commands.add("-D" + GameRunner2.LOBBY_HOST + "=" + m_messengers.getMessenger().getServerNode().getAddress().getHostAddress());
-        commands.add("-D" + GameRunner2.LOBBY_PORT + "=" + m_messengers.getMessenger().getServerNode().getPort());
+
+        commands.add("-D" + GameRunner2.LOBBY_HOST + "=" + m_messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
+        commands.add("-D" + GameRunner2.LOBBY_PORT + "=" + m_messengers.getMessenger().getRemoteServerSocketAddress().getPort());
         commands.add("-D" + GameRunner2.LOBBY_GAME_COMMENTS + "=" + options.getComments());
 
         if(options.getPassword() != null &&  options.getPassword().length() > 0)

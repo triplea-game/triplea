@@ -521,5 +521,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
         return m_channelToNode.get(channel);
     }
 
+    public InetSocketAddress getRemoteServerSocketAddress()
+    {
+        return m_node.getSocketAddress();
+    }
+
 
 }

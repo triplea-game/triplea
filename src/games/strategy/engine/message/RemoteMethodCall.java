@@ -18,6 +18,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * All the info neccassary to describe a method call in one handy
@@ -26,6 +29,8 @@ import java.io.ObjectOutput;
  */
 public class RemoteMethodCall implements Externalizable
 {
+    private static final Logger s_logger = Logger.getLogger(RemoteMethodCall.class.getName());
+    
     private String m_remoteName;
     private String m_methodName;
     private Object[] m_args;
@@ -52,12 +57,19 @@ public class RemoteMethodCall implements Externalizable
             throw new IllegalArgumentException("Arg and arg type lengths dont match");
 
 
+        if(s_logger.isLoggable(Level.FINE)) {
+            s_logger.fine("Remote Method Call:" + debugMethodText());
+        }
         
         m_remoteName = remoteName;
         m_methodName = methodName;
         m_args = args;
         m_argTypes = classesToString(argTypes, args);
         m_methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
+    }
+    
+    private String debugMethodText() { 
+        return "." + m_methodName + "(" + Arrays.asList(m_argTypes) + ")";
     }
 
     /**
@@ -228,5 +240,10 @@ public class RemoteMethodCall implements Externalizable
         Tuple<String,Class[]> values = RemoteInterfaceHelper.getMethodInfo(m_methodNumber, remoteType);
         m_methodName = values.getFirst();
         m_argTypes = classesToString(values.getSecond(), m_args);
+        
+
+        if(s_logger.isLoggable(Level.FINE)) {
+            s_logger.fine("Remote Method for class:" + remoteType.getSimpleName() + " Resolved To:" + debugMethodText());
+        }
     }
 }

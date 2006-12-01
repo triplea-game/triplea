@@ -15,6 +15,7 @@
 package games.strategy.net;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 
 /**
  * A simple way to connect multiple socket end points.
@@ -85,6 +86,15 @@ public interface IMessenger
      */
     public INode getServerNode();
     
+    
+    /**
+     * Get the socket address to which we talk to the server.
+     * This may be different than getServerNode().getSocketAddress() since
+     * the server will report the socket that he thinks the server is running on,
+     * if the server is behind a firewall, or a NAT, then this socket will be 
+     * different than the actual port we use.
+     */
+    public InetSocketAddress getRemoteServerSocketAddress(); 
     
 }
 

@@ -175,4 +175,11 @@ public class DummyMessenger implements IServerMessenger
         return null;
     }
 
+    public InetSocketAddress getRemoteServerSocketAddress()
+    {
+        return m_node.getSocketAddress();
+    }
+    
+   
+
 }

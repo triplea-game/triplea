@@ -4,6 +4,8 @@ Changes for 0.8.6
 
 * better logic for finding local ip address (sgb)
 
+* fix loby where clients could not find real server address (sgb)
+
 Changes for 0.8.5
 
 * allow neutrals to have different unit types (sgb)

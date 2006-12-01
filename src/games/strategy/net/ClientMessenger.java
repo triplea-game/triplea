@@ -292,4 +292,9 @@ public class ClientMessenger implements IMessenger , NIOSocketListener
         //we only have one channel
         return m_serverNode;
     }
+
+    public InetSocketAddress getRemoteServerSocketAddress()
+    {
+        return (InetSocketAddress) m_socketChannel.socket().getRemoteSocketAddress();
+    }
 }
