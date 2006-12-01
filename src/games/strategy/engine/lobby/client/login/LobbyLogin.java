@@ -75,7 +75,7 @@ public class LobbyLogin
 
                 public void notifyFailedLogin(String message)
                 {
-                    if(m_internalError != null)
+                    if(m_internalError.get() != null)
                         message = m_internalError.get();
                     JOptionPane.showMessageDialog(m_parent, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
 
