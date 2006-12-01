@@ -119,7 +119,7 @@ public class LobbyGameController implements ILobbyGameController
             {
                 throw new IllegalStateException("Game modified by wrong host");
             }
-            m_allGames.put(gameID, oldDescription);
+            m_allGames.put(gameID, description);
         }
         
         m_broadcaster.gameUpdated(gameID, description);
