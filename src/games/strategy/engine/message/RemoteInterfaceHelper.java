@@ -17,14 +17,22 @@ import games.strategy.util.Tuple;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RemoteInterfaceHelper
 {
+    private static final Logger s_logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
+    
 
     public static int getNumber(String methodName, Class[] argTypes, Class remoteInterface)
     {
         Method[] methods = remoteInterface.getMethods();
         Arrays.sort(methods, methodComparator);
+
+         if(s_logger.isLoggable(Level.FINEST)) {
+            s_logger.fine("Sorted methods:" + Arrays.asList(methods));
+        } 
     
         for(int i =0; i < methods.length; i++)
         {
@@ -59,7 +67,10 @@ public class RemoteInterfaceHelper
     {
         Method[] methods = remoteInterface.getMethods();
         Arrays.sort(methods, methodComparator);
-        
+
+         if(s_logger.isLoggable(Level.FINEST)) {
+            s_logger.fine("Sorted methods:" + Arrays.asList(methods));
+        } 
         return new Tuple<String, Class[]>(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
     }
     
