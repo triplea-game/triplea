@@ -68,8 +68,11 @@ public class RemoteMethodCall implements Externalizable
         m_methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
     }
     
-    private String debugMethodText() { 
-        return "." + m_methodName + "(" + Arrays.asList(m_argTypes) + ")";
+    private String debugMethodText() {
+	if(m_argTypes == null) 
+	        return "." + m_methodName + "(" + ")";
+	else
+	        return "." + m_methodName + "(" + Arrays.asList(m_argTypes) + ")";
     }
 
     /**
