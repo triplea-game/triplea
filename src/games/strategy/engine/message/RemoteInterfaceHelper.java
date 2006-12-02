@@ -91,7 +91,7 @@ public class RemoteInterfaceHelper
             
             
             Class[] t1 = o1.getParameterTypes();
-            Class[] t2 = o1.getParameterTypes();
+            Class[] t2 = o2.getParameterTypes();
             
             //both null
             if(t1 == t2)
