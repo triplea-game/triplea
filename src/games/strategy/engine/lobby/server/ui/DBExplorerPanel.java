@@ -152,7 +152,7 @@ public class DBExplorerPanel extends JPanel
             
             model.addColumn("Count");
             
-            for(int i =1; i < count; i++)
+            for(int i =1; i <= count; i++)
             {
                 String columnName = rs.getMetaData().getColumnName(i);
                 columnNames.add(columnName);
