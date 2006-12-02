@@ -57,15 +57,17 @@ public class RemoteMethodCall implements Externalizable
             throw new IllegalArgumentException("Arg and arg type lengths dont match");
 
 
-        if(s_logger.isLoggable(Level.FINE)) {
-            s_logger.fine("Remote Method Call:" + debugMethodText());
-        }
         
         m_remoteName = remoteName;
         m_methodName = methodName;
         m_args = args;
         m_argTypes = classesToString(argTypes, args);
         m_methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
+
+        if(s_logger.isLoggable(Level.FINE)) {
+            s_logger.fine("Remote Method Call:" + debugMethodText());
+        }
+
     }
     
     private String debugMethodText() {
