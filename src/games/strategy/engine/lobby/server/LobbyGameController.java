@@ -15,6 +15,7 @@
 package games.strategy.engine.lobby.server;
 
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import games.strategy.engine.message.*;
@@ -82,6 +83,7 @@ public class LobbyGameController implements ILobbyGameController
         INode from = MessageContext.getSender();
         assertCorrectHost(description, from);
         
+        s_logger.info("Game added:" + description);
         
         synchronized(m_mutex)
         {
@@ -105,6 +107,9 @@ public class LobbyGameController implements ILobbyGameController
     {
         INode from = MessageContext.getSender();
         assertCorrectHost(description, from);
+        
+        if(s_logger.isLoggable(Level.FINE))
+            s_logger.fine("Game updated:" + description);
         
         synchronized(m_mutex)
         {

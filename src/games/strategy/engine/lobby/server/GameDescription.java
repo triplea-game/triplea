@@ -234,5 +234,9 @@ public class GameDescription implements Externalizable, Cloneable
         out.writeUTF(m_gameName);
         
     }
+    
+    public String toString() {
+        return "Game Hosted By:" + m_hostName + " gameName:"  + m_gameName + " at:" +  m_hostedBy.getAddress() + ":" + m_port + " playerCount:" + m_playerCount;
+    }
 
 }
