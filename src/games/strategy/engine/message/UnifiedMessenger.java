@@ -732,7 +732,12 @@ class EndPoint
         {
             //this shouldnt happen
             e.printStackTrace();
-            throw new IllegalStateException(e.getMessage());
+            return new RemoteMethodCallResults(e);
+        }
+        catch(IllegalArgumentException e) {
+            //this shouldnt happen
+            e.printStackTrace();
+            return new RemoteMethodCallResults(e);            
         }
         finally
         {
