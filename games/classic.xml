@@ -767,8 +767,8 @@
 			 type="unitType">
 			 <option name="movement" value="1"/>
 			 <option name="transportCost" value="1"/>
-			 <option name="attack" value="0"/>
-			 <option name="defense" value="0"/>
+			 <option name="attack" value="1"/>
+			 <option name="defense" value="1"/>
 			 <option name="artillerySupportable" value="true"/>
 	    </attatchment>
 	    
