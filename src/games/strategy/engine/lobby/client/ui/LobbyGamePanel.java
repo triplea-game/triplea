@@ -164,27 +164,7 @@ public class LobbyGamePanel extends JPanel
         String javaClass = "games.strategy.engine.framework.GameRunner";
         commands.add(javaClass);
                 
-        
-        
-        try
-        {
-           
-            
-            @SuppressWarnings("unused")
-            Process p =  Runtime.getRuntime().exec(commands.toArray(new String[] {}));
-            
-//            Reader reader = new InputStreamReader(p.getInputStream());
-//            int c = reader.read();
-//            while(c > 0)
-//            {
-//                System.out.write(c);
-//                c = reader.read();
-//            }
-        } catch (IOException e)
-        {
-         
-            e.printStackTrace();
-        }
+        exec(commands);
         
         
     }
@@ -218,25 +198,46 @@ public class LobbyGamePanel extends JPanel
         String javaClass = "games.strategy.engine.framework.GameRunner";
         commands.add(javaClass);
         
+        exec(commands);
+                
+    }
+    
+    
+    private void exec(List<String> commands) {
+        ProcessBuilder builder = new ProcessBuilder(commands);
+        //merge the streams, so we only have to start one reader thread
+        builder.redirectErrorStream(true);
         try
         {
-           
+            Process p = builder.start();
+            final InputStream s = p.getInputStream();
             
-            @SuppressWarnings("unused")
-            Process p =  Runtime.getRuntime().exec(commands.toArray(new String[] {}));
+            //we need to read the input stream to prevent possible
+            //deadlocks
+            Thread t = new Thread(new Runnable()
+            {
             
-//            Reader reader = new InputStreamReader(p.getInputStream());
-//            int c = reader.read();
-//            while(c > 0)
-//            {
-//                System.out.write(c);
-//                c = reader.read();
-//            }
-        } catch (IOException e)
-        {
-            e.printStackTrace();
+                public void run()
+                {
+                    try
+                    {
+                        while(s.read() >= 0) {
+                            //just read
+                        }
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            
+            }, "Process ouput gobbler");
+            
+            t.setDaemon(true);
+            t.start();
+            
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
         }
-        
     }
 
     private static void populateBasicJavaArgs(List<String> commands)
