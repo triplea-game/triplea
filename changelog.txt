@@ -1,10 +1,12 @@
 Changes for 0.8.6
 
+* fix infantry in classic (sgb)
+
 * make convoy zones stand out better (sgb)
 
 * read output of exec'd lobby games (sgb)
 
-* Saved games in user.home/triplea (not .triplea) for linux and mac (sgb)
+* Saved games in user.home/triplea (not .triplea) for linux and user.home/Documents/triplea for mac (sgb)
 
 * better logic for finding local ip address (sgb)
 
