@@ -22,7 +22,9 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.util.Stopwatch;
+import games.strategy.ui.Util;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -31,7 +33,10 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -431,7 +436,26 @@ class ConvoyZoneDrawable implements IDrawable
 
         Territory territory = data.getMap().getTerritory(m_territoryName);
         Color territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
-        territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 145);
+        territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 185);
+        
+        //must be a power of 2
+        int size = 32;
+        BufferedImage pattern = Util.createImage(size,size,true);
+        Graphics2D pg = pattern.createGraphics();
+        try
+        {
+            pg.setColor(territoryColor);
+            pg.setStroke(new BasicStroke((float)  (size / 6.0)));
+            pg.drawLine(0,0,size ,size );
+            pg.drawLine(size + 0,0,size + size ,size );
+            pg.drawLine(-size + 0,0,-size + size ,size );
+            
+        }
+        finally
+        {
+            pg.dispose();    
+        }
+        
         
         List polys = mapData.getPolygons(territory);
 
@@ -448,7 +472,11 @@ class ConvoyZoneDrawable implements IDrawable
             polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
 
             polygon.translate(-bounds.x, -bounds.y);
-            graphics.setColor(territoryColor);
+            
+            TexturePaint tp = new TexturePaint(pattern, new Rectangle2D.Double(0,0,size,size));
+            
+            graphics.setPaint(tp);
+            
             graphics.fillPolygon(polygon);
         }
 
