@@ -1,3 +1,7 @@
+Changes for 0.9
+
+* client only waits 10 seconds for connection to servr to be made before aborting (sgb)
+
 Changes for 0.8.6
 
 * fix infantry in classic (sgb)
