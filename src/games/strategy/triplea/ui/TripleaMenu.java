@@ -313,7 +313,7 @@ public class TripleaMenu extends JMenuBar
     
     private void addZoomMenu(JMenu menuGame)
     {
-        Action mapZoom = new AbstractAction("Map Zoom")
+        Action mapZoom = new AbstractAction("Map Zoom...")
         {
 
             public void actionPerformed(ActionEvent arg0)
