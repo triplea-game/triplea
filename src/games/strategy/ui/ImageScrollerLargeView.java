@@ -344,13 +344,7 @@ public class ImageScrollerLargeView extends JComponent
 
                 //move left and right and test for wrap
                 int newX = (m_model.getX() + dx);
-                if (newX > (int)  m_model.getMaxWidth() - getWidth())
-                    newX -= (int)  m_model.getMaxHeight();
-                if (newX < -getWidth())
-                    newX += (int)  m_model.getMaxHeight();
-
-                // newX = checkBounds(newX, m_originalImage.getWidth(this),
-                // this.getWidth(), true);
+             
 
                 //move up and down and test for edges
                 int newY = m_model.getY() + dy;

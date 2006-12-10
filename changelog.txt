@@ -1,5 +1,7 @@
 Changes for 0.9
 
+* fix [ 1611289 ] map scrolling bug (sgb)
+
 * client only waits 10 seconds for connection to servr to be made before aborting (sgb)
 
 Changes for 0.8.6
