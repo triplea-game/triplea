@@ -21,19 +21,40 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.debug.Console;
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.dataObjects.*;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * 
@@ -66,6 +87,44 @@ public class BattlePanel extends ActionPanel
         m_battleFrame = new JFrame();
         m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame ));
         getMap().getUIContext().addShutdownWindow(m_battleFrame);
+        
+        m_battleFrame.addWindowListener(new WindowListener()
+        {
+        
+            public void windowActivated(WindowEvent e)
+            {
+                SwingUtilities.invokeLater(new Runnable()
+                {
+                    public void run()
+                    {
+                        if(m_battleDisplay != null)
+                            m_battleDisplay.takeFocus();
+                    }
+                
+                });
+                
+                
+            }
+
+            public void windowClosed(WindowEvent e)
+            {}
+
+            public void windowClosing(WindowEvent e)
+            {}
+
+            public void windowDeactivated(WindowEvent e)
+            {}
+
+            public void windowDeiconified(WindowEvent e)
+            {}
+
+            public void windowIconified(WindowEvent e)
+            {}
+
+            public void windowOpened(WindowEvent e)
+            {}
+        
+        });
 
     }
 

@@ -103,6 +103,14 @@ public class BattleDisplay extends JPanel
         m_mapPanel.getUIContext().removeACtive(m_steps);
         m_steps = null;
     }
+
+    void takeFocus() {
+        //we want a component on this frame to take focus
+        //so that pressing space will work (since it requires in focused
+        //window).  Only seems to be an issue on windows
+        m_actionButton.requestFocus();
+    }
+
     
     public Territory getBattleLocation()
     {
@@ -991,5 +999,6 @@ class CasualtyNotificationPanel extends JPanel
                 m_killed.add(panel);
         }
     }
+    
 
 }
