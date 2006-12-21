@@ -54,7 +54,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_gameSelectorModel = gameSelectorModel;
         m_model.setRemoteModelListener(this);
         
-        m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger());
+        m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this);
         if(m_lobbyWatcher != null)
         {
             m_lobbyWatcher.setGameSelectorModel(gameSelectorModel);

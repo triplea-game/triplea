@@ -1,5 +1,9 @@
 Changes for 0.9
 
+* focus on action button when battle window is activated (sgb)
+
+* lobby server checks client's computer is network accessble when client hosts a game (sgb)
+
 * fix [ 1611289 ] map scrolling bug (sgb)
 
 * client only waits 10 seconds for connection to servr to be made before aborting (sgb)

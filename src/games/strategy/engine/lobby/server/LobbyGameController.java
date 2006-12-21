@@ -14,12 +14,24 @@
 
 package games.strategy.engine.lobby.server;
 
-import java.util.*;
+import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.engine.message.MessageContext;
+import games.strategy.net.GUID;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.IMessenger;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import games.strategy.engine.message.*;
-import games.strategy.net.*;
 
 public class LobbyGameController implements ILobbyGameController
 {
@@ -144,6 +156,42 @@ public class LobbyGameController implements ILobbyGameController
     {
         remote.registerRemote(this, GAME_CONTROLLER_REMOTE);
         
+    }
+    
+    public boolean testGame(GUID gameID) 
+    {
+        
+        GameDescription description;
+        synchronized(m_mutex)
+        {
+            description = m_allGames.get(gameID);
+        }
+        
+        
+        if(description == null)
+            return false;
+        
+        //make sure we are being tested from the right node
+        INode from = MessageContext.getSender();
+        assertCorrectHost(description, from);
+        
+        int port = description.getPort() ;
+        String host = description.getHostedBy().getAddress().getHostAddress();
+        
+        s_logger.fine("Testing game connection on host:" + host + " port:" + port);
+        
+        Socket s = new Socket();
+        try
+        {
+            s.connect(new InetSocketAddress(host,port), 10*1000);
+            s.close();
+            s_logger.fine("Connection test passed for host:" + host + " port:" + port);
+            return true;
+        } catch (IOException e)
+        {
+            s_logger.fine("Connection test failed for host:" + host + " port:" + port + " reason:" + e.getMessage());
+            return false;
+        }
     }
 
 }

@@ -16,15 +16,35 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
-import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.lobby.server.*;
+import games.strategy.engine.lobby.server.GameDescription;
+import games.strategy.engine.lobby.server.ILobbyGameController;
+import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
-import games.strategy.engine.message.*;
-import games.strategy.net.*;
+import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.engine.message.RemoteMessenger;
+import games.strategy.engine.message.UnifiedMessenger;
+import games.strategy.net.ClientMessenger;
+import games.strategy.net.GUID;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.IConnectionLogin;
+import games.strategy.net.IMessenger;
+import games.strategy.net.IMessengerErrorListener;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * 
@@ -88,7 +108,7 @@ public class InGameLobbyWatcher
      * 
      * @return null if no watcher should be created
      */
-    public static InGameLobbyWatcher newInGameLobbyWatcher(IServerMessenger gameMessenger)
+    public static InGameLobbyWatcher newInGameLobbyWatcher(IServerMessenger gameMessenger, JComponent parent)
     {
         String host = System.getProperties().getProperty(GameRunner2.LOBBY_HOST);
         String port = System.getProperties().getProperty(GameRunner2.LOBBY_PORT);
@@ -123,7 +143,7 @@ public class InGameLobbyWatcher
             ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),LOBBY_WATCHER_NAME, login);
             UnifiedMessenger um = new UnifiedMessenger(messenger);
             RemoteMessenger rm = new RemoteMessenger(um);
-            return new InGameLobbyWatcher(messenger, rm, gameMessenger);
+            return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent);
         }  catch (Exception e)
         {
             e.printStackTrace();
@@ -174,7 +194,7 @@ public class InGameLobbyWatcher
 
 
 
-    public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IServerMessenger serverMessenger)
+    public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IServerMessenger serverMessenger, final JComponent parent)
     {
         m_messenger = messenger;
         m_remoteMessenger = remoteMessenger;
@@ -183,7 +203,7 @@ public class InGameLobbyWatcher
         
         m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-", m_gameMessenger.getLocalNode().getName(), System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS));
         
-        ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
+        final ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
         synchronized(m_mutex)
         {
 
@@ -223,6 +243,35 @@ public class InGameLobbyWatcher
         //update the connection count
         m_gameMessenger.addConnectionChangeListener(m_connectionChangeListener);
         
+        Runnable r = new Runnable()
+        {
+            public void run()
+            {
+              //if the server cannot connect to us, then quit  
+              if(!controller.testGame(m_gameID)) 
+              {  
+                  if(isActive()) 
+                  {
+                      shutDown();
+                      SwingUtilities.invokeLater(new Runnable()
+                      {
+                    
+                         public void run()
+                         {
+                             String message = "Your computer is not reachable from the internet.\n" +
+                                              "Please check your firewall or router configuration.";
+                             
+                            JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent),  message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
+                            System.exit(-1);
+                         }
+                    
+                      });
+                  }
+              }
+            }
+        };
+        
+        new Thread(r).start();
     }
     
     public void setGameSelectorModel(GameSelectorModel model)
