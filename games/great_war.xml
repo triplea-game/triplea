@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="1.0.4"/>
+        <info name="The Great War" version="1.0.5"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1039,7 +1039,6 @@
                 <connection t1="Kigoma" t2="Rukwa"/>
 
                 <connection t1="Weidmannshiel" t2="Kilamanjaro"/>
-                <connection t1="Weidmannshiel" t2="Tanga"/>
                 <connection t1="Weidmannshiel" t2="Dar es Salaam"/>
                 <connection t1="Weidmannshiel" t2="Songea"/>
                 <connection t1="Weidmannshiel" t2="Rukwa"/>
@@ -3608,12 +3607,13 @@
 
                         <!-- Americans  Unit Placements -->
                         <unitPlacement unitType="factory" territory="United States" quantity="1" owner="Americans"/>
-
-                        <unitPlacement unitType="cruiser" territory="SZ 1 Atlantic Ocean" quantity="2" owner="Americans"/>
+			<unitPlacement unitType="cavalry" territory="United States" quantity="1" owner="Americans"/>
+			<unitPlacement unitType="infantry" territory="United States" quantity="1" owner="Americans"/>
+                        <unitPlacement unitType="cruiser" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="destroyer" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="submarine" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
-
-
+			<unitPlacement unitType="transport" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
+			
                         <!-- Germans  Unit Placements -->
                         <unitPlacement unitType="factory" territory="Hanover" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="infantry" territory="Hanover" quantity="4" owner="Germans"/>
@@ -4031,7 +4031,7 @@
 		  can shore bombard)&lt;br&gt;&lt;br&gt;=== Map Information ===&lt;br&gt;This map is based on a unique projection developed specifically for the Great War
 		   variant and is designed to take full advantage of the&lt;br&gt;map scaling feature in TripleA 0.8.3.  Our desire to highlight the Western Front,
 		    while still giving the game a truly world-wide scope,&lt;br&gt;required that we make some abstractions to the map.  These include several game 
-		    boxes which connect to the major areas of conflict around&lt;br&gt;Europe, Africa and the Middle East. &lt;br&gt;&lt;br&gt; For more information, refer to 
+		    boxes which connect to the major areas of conflict around&lt;br&gt;Europe, Africa and the Middle East. &lt;br&gt;&lt;br&gt; For complete rules and information, refer to 
 		    this forum post http://tripleadev.org/index.php?showtopic=1110"/>
 
 

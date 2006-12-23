@@ -1,5 +1,15 @@
 Changes for 0.9
 
+* improve great war map (Jason Clark)
+
+* improve great war african markers (Jason Clark)
+
+* fixed orientation of french zeppelin in great war (Jason Clark)
+
+* In great war, the US now has a starting transport, 1 inf and 1 cav.  1 us cruiser removed. (Jason Clark)
+
+* In great war, removed connection between Tanga and Weidmannshiel. (Jason Clark)
+
 * focus on action button when battle window is activated (sgb)
 
 * lobby server checks client's computer is network accessble when client hosts a game (sgb)
