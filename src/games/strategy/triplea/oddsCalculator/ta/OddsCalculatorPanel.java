@@ -510,7 +510,7 @@ public class OddsCalculatorPanel extends JPanel
         m_closeButton = new JButton("Close");
         m_clearButton = new JButton("Clear");
         
-        m_keepOneAttackingLandUnitCombo = new JCheckBox("One attacking unit must live");
+        m_keepOneAttackingLandUnitCombo = new JCheckBox("One attacking land must live");
         
     }
     
