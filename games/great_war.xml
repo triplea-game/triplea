@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="1.0.5"/>
+        <info name="The Great War" version="1.0.6"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -3244,9 +3244,9 @@
                         <!-- British  Unit Placements -->
 
                         <unitPlacement unitType="factory" territory="Scotland" quantity="1" owner="British"/>
-                        <unitPlacement unitType="infantry" territory="Scotland" quantity="2" owner="British"/>
+                        <unitPlacement unitType="infantry" territory="Scotland" quantity="3" owner="British"/>
 
-                        <unitPlacement unitType="infantry" territory="Ireland" quantity="2" owner="British"/>
+                        <unitPlacement unitType="infantry" territory="Ireland" quantity="3" owner="British"/>
 
                         <unitPlacement unitType="infantry" territory="York" quantity="2" owner="British"/>
 			<unitPlacement unitType="factory" territory="York" quantity="1" owner="British"/>
@@ -3282,6 +3282,7 @@
 			<unitPlacement unitType="battlecruiser" territory="SZ 39 North Atlantic" quantity="1" owner="British"/>
 			<unitPlacement unitType="cruiser" territory="SZ 39 North Atlantic" quantity="1" owner="British"/>
 			<unitPlacement unitType="battleship" territory="SZ 39 North Atlantic" quantity="1" owner="British"/>
+			<unitPlacement unitType="destroyer" territory="SZ 39 North Atlantic" quantity="1" owner="British"/>
 
 			<unitPlacement unitType="transport" territory="SZ 41 Irish Sea" quantity="1" owner="British"/>
 
@@ -3290,6 +3291,8 @@
 			<unitPlacement unitType="destroyer" territory="SZ 42 English Channel" quantity="1" owner="British"/>
 			<unitPlacement unitType="battlecruiser" territory="SZ 42 English Channel" quantity="1" owner="British"/>
 			<unitPlacement unitType="cruiser" territory="SZ 42 English Channel" quantity="1" owner="British"/>
+
+			<unitPlacement unitType="destroyer" territory="SZ 43 North Atlantic" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="infantry" territory="Portugal" quantity="2" owner="British"/>
 			<unitPlacement unitType="factory" territory="Portugal" quantity="1" owner="British"/>
