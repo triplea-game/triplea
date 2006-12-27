@@ -1,3 +1,9 @@
+Changes for 0.9.1
+
+* Adjusted British starting units (Jason Clark)
+
+* fixed infantry defense in Classic (sgb)
+
 Changes for 0.9
 
 * improve great war map (Jason Clark)
