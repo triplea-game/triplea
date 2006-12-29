@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="1.0.6"/>
+        <info name="The Great War" version="1.1"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -832,6 +832,7 @@
                 <connection t1="Amiens" t2="Loos"/>
                 <connection t1="Amiens" t2="Arras"/>
                 <connection t1="Amiens" t2="Picardy"/>
+		<connection t1="Amiens" t2="Ypres"/>
 
                 <connection t1="Loos" t2="Vimy"/>
                 <connection t1="Loos" t2="Arras"/>
