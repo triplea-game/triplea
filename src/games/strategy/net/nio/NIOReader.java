@@ -17,6 +17,7 @@ package games.strategy.net.nio;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -210,6 +211,11 @@ public class NIOReader
                             key.cancel();
                             m_errorReporter.error(channel, e);
                         }
+                    } else if(!key.isValid()) {
+                        s_logger.fine("Remotely closed");
+                        SocketChannel channel = (SocketChannel) key.channel();
+                        key.cancel();
+                        m_errorReporter.error(channel, new SocketException("triplea:key cancelled"));
                     }
                 }
             }
