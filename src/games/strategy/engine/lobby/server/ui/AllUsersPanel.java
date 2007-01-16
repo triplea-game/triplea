@@ -15,6 +15,9 @@
 package games.strategy.engine.lobby.server.ui;
 
 import java.awt.BorderLayout;
+import java.util.Comparator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.*;
 
@@ -27,10 +30,21 @@ public class AllUsersPanel extends JPanel
     private JList m_nodes;
     private DefaultListModel m_nodesModel;
     private LobbyAdminStatPanel m_statPane;
+    private final SortedSet<INode> m_orderedNodes;
 
     public AllUsersPanel(IMessenger messenger)
     {
         m_messenger = messenger;
+        
+        m_orderedNodes = new TreeSet<INode>(new Comparator<INode>()
+        {
+        
+            public int compare(INode o1, INode o2)
+            {
+                return o1.toString().compareTo(o2.toString());
+            }
+        
+        });
         
         createComponents();
         layoutComponents();
@@ -66,9 +80,11 @@ public class AllUsersPanel extends JPanel
                 
                     public void run()
                     {
-                      m_nodesModel.removeElement(to);
-                
+                      m_orderedNodes.remove(to);
+                      refreshModel();
+                      
                     }
+
                 
                 });
         
@@ -81,7 +97,8 @@ public class AllUsersPanel extends JPanel
                 
                     public void run()
                     {
-                      m_nodesModel.addElement(to);
+                      m_orderedNodes.add(to);
+                      refreshModel();
                 
                     }
                 
@@ -91,8 +108,18 @@ public class AllUsersPanel extends JPanel
             }
         
         });
-
+        
     }
+    
+    private void refreshModel()
+    {
+        m_nodesModel.clear();
+        for(INode node : m_orderedNodes) {
+            m_nodesModel.addElement(node);
+        }
+        
+    }
+
 
     private void setWidgetActivation()
     {
@@ -100,3 +127,6 @@ public class AllUsersPanel extends JPanel
     }
     
 }
+
+
+
