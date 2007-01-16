@@ -14,14 +14,23 @@
 
 package games.strategy.engine.lobby.server.ui;
 
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.IMessenger;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
+
 import java.awt.BorderLayout;
-import java.util.Comparator;
-import java.util.SortedSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.TreeSet;
 
-import javax.swing.*;
-
-import games.strategy.net.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 public class AllUsersPanel extends JPanel
 {
@@ -30,21 +39,13 @@ public class AllUsersPanel extends JPanel
     private JList m_nodes;
     private DefaultListModel m_nodesModel;
     private LobbyAdminStatPanel m_statPane;
-    private final SortedSet<INode> m_orderedNodes;
+    private final List<INode> m_orderedNodes;
 
     public AllUsersPanel(IMessenger messenger)
     {
         m_messenger = messenger;
         
-        m_orderedNodes = new TreeSet<INode>(new Comparator<INode>()
-        {
-        
-            public int compare(INode o1, INode o2)
-            {
-                return o1.toString().compareTo(o2.toString());
-            }
-        
-        });
+        m_orderedNodes = new ArrayList<INode>();
         
         createComponents();
         layoutComponents();
@@ -113,6 +114,7 @@ public class AllUsersPanel extends JPanel
     
     private void refreshModel()
     {
+        Collections.sort(m_orderedNodes);
         m_nodesModel.clear();
         for(INode node : m_orderedNodes) {
             m_nodesModel.addElement(node);
