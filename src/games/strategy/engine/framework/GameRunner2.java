@@ -24,6 +24,7 @@ public class GameRunner2
     public static final String LOBBY_PORT = "triplea.lobby.port";
     public static final String LOBBY_HOST = "triplea.lobby.host";
     public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
+    public static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
     
     
     

@@ -191,6 +191,7 @@ public class LobbyGamePanel extends JPanel
         commands.add("-D" + GameRunner2.LOBBY_HOST + "=" + m_messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
         commands.add("-D" + GameRunner2.LOBBY_PORT + "=" + m_messengers.getMessenger().getRemoteServerSocketAddress().getPort());
         commands.add("-D" + GameRunner2.LOBBY_GAME_COMMENTS + "=" + options.getComments());
+        commands.add("-D" + GameRunner2.LOBBY_GAME_HOSTED_BY + "=" + m_messengers.getMessenger().getLocalNode().getName());
 
         if(options.getPassword() != null &&  options.getPassword().length() > 0)
             commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + options.getPassword());

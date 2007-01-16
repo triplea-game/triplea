@@ -58,7 +58,7 @@ import javax.swing.SwingUtilities;
 public class InGameLobbyWatcher
 {
     
-    public static final String LOBBY_WATCHER_NAME = "in_game_lobby_watcher";
+    public static final String LOBBY_WATCHER_NAME = "lobby_watcher";
     
     //this is the messenger used by the game
     //it is different than the messenger we use to connect to 
@@ -112,6 +112,7 @@ public class InGameLobbyWatcher
     {
         String host = System.getProperties().getProperty(GameRunner2.LOBBY_HOST);
         String port = System.getProperties().getProperty(GameRunner2.LOBBY_PORT);
+        String hostedBy =  System.getProperties().getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY);
         
         if(host == null || port == null)
         {
@@ -121,6 +122,7 @@ public class InGameLobbyWatcher
         //clear the properties
         System.getProperties().remove(GameRunner2.LOBBY_HOST);
         System.getProperties().remove(GameRunner2.LOBBY_PORT);
+        System.getProperties().remove(GameRunner2.LOBBY_GAME_HOSTED_BY);
         
         IConnectionLogin login = new IConnectionLogin()
         {
@@ -140,7 +142,7 @@ public class InGameLobbyWatcher
         try
         {
             System.out.println("host:" + host + " port:" + port);
-            ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),LOBBY_WATCHER_NAME, login);
+            ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port), hostedBy + "_" + LOBBY_WATCHER_NAME, login);
             UnifiedMessenger um = new UnifiedMessenger(messenger);
             RemoteMessenger rm = new RemoteMessenger(um);
             return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent);

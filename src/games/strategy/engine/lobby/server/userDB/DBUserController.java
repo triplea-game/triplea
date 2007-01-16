@@ -52,9 +52,9 @@ public class DBUserController
             return "Invalid userName, usernames must be at least 3 characters long, and contain alpha numeric characters and _ or -"; 
         }
         
-        if(userName.equals(InGameLobbyWatcher.LOBBY_WATCHER_NAME))
+        if(userName.contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME))
         {
-            return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " is a reserved name";
+            return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
         }
         
         if(userName.toLowerCase().indexOf("admin") >= 0)
