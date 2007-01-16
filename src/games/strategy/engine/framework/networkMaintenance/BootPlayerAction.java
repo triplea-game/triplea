@@ -4,6 +4,7 @@ import games.strategy.net.*;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.TreeSet;
 
 import javax.swing.*;
 
@@ -29,7 +30,7 @@ public class BootPlayerAction extends AbstractAction
         JComboBox combo = new JComboBox(model);
         model.addElement("");
 
-        for (INode node : m_messenger.getNodes())
+        for (INode node : new TreeSet<INode>(m_messenger.getNodes()))
         {
             if (!node.equals(m_messenger.getLocalNode()))
                 model.addElement(node.getName());
