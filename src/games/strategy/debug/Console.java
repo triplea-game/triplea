@@ -26,6 +26,10 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+import java.lang.management.ThreadInfo;
+import java.lang.reflect.Method;
 import java.util.*;
 
 import javax.swing.*;
@@ -38,6 +42,10 @@ public class Console extends JFrame
 {
 	
 	private static Console s_console;
+    
+    
+     private static final ThreadMXBean threadMxBean =
+          ManagementFactory.getThreadMXBean();
 	
 	public static Console getConsole()
 	{
@@ -162,25 +170,54 @@ public class Console extends JFrame
         StringBuilder result = new StringBuilder();
         result.append("THREAD DUMP\n");
     
-        Map<Thread,StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
-        Iterator<Thread> iter = stackTraces.keySet().iterator();
-        while (iter.hasNext())
+        ThreadInfo[] threadInfo = threadMxBean.getThreadInfo(threadMxBean.getAllThreadIds(), Integer.MAX_VALUE);
+        
+        
+        for(ThreadInfo info : threadInfo) 
         {
-            Thread t = iter.next();
-            result.append(t);
-            result.append("\n");
-            
-            StackTraceElement[] stackTrace = (StackTraceElement[]) stackTraces.get(t);
-            for(int i = 0;  i < stackTrace.length; i++)
+            if(info != null)
             {
-                result.append("  ");
-                result.append(stackTrace[i]);
-                result.append("\n");
+                result.append("thread<" +info.getThreadId() + ","  + info.getThreadName() + ">\n")
+                .append("state:" + info.getThreadState())
+                .append("\n");
+                
+                if(info.getLockName() != null) 
+                {
+                    result.append("locked on:" + info.getLockName()).
+                    append(" locked owned by:<" + info.getLockOwnerId() + "," + info.getLockOwnerName() +">\n");    
+                }
+                
+                StackTraceElement[] stackTrace = info.getStackTrace();
+                for(int i = 0;  i < stackTrace.length; i++)
+                {
+                    result.append("  ");
+                    result.append(stackTrace[i]);
+                    result.append("\n");
+                }
             }
-        
         }
-        return result.toString();
         
+        long[] deadlocks;
+        try {
+            //invoke a 1.6 method if available
+            Method m = threadMxBean.getClass().getMethod("findDeadlockedThreads");
+            Object o = m.invoke(threadMxBean);
+            deadlocks = (long[]) o;
+        } catch(Throwable t) {
+            //fall back to 1.5
+            deadlocks = threadMxBean.findMonitorDeadlockedThreads();
+        }
+        
+        if(deadlocks != null) 
+        {
+            result.append("DEADLOCKS!!");
+            for(long l : deadlocks) 
+            {
+                result.append(l).append("\n");
+            }
+        }
+        
+        return result.toString();
     }
     
     
@@ -238,11 +275,33 @@ public class Console extends JFrame
         result.append(getThreadDumps());
         result.append(getProperties());
         result.append(getMemory());
+        result.append(getWindows());
         result.append("ENGINE VERSION").append(EngineVersion.VERSION).append("\n");
+        
+        
         
         return result.toString();
     }
-
+    
+    public static String getWindows() 
+    {
+        StringBuilder builder = new StringBuilder("WINDOWS\n");
+        
+        for(Frame f : Frame.getFrames()) 
+        {
+            if(f.isVisible()) 
+            {
+                builder.append("window:").
+                append("class " + f.getClass()).
+                append(" size " + f.getSize()).
+                append(" title " +f.getTitle()).
+                append("\n");
+            }           
+        }
+        
+        return builder.toString();
+    }
+    
 
 }
 
