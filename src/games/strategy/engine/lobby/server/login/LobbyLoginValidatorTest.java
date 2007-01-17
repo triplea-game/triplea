@@ -94,6 +94,27 @@ public class LobbyLoginValidatorTest extends TestCase
                 ));
 
     }
+
+    public void testAnonymousLoginBadName()
+    {
+        LobbyLoginValidator validator = new LobbyLoginValidator();
+        SocketAddress address = new  InetSocketAddress(5000);
+        
+        String name = "bitCh" + Util.createUniqueTimeStamp();
+        
+        Map<String,String> properties = new HashMap<String,String>();
+        properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+        properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+        
+        
+        
+ 
+        assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME, new LobbyLoginValidator().verifyConnection(
+                validator.getChallengeProperties(name, address),
+                properties, name, address
+                ));
+
+    }
     
     public void testLogin()
     {

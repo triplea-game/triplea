@@ -11,6 +11,10 @@ import games.strategy.util.*;
 
 public class LobbyLoginValidator implements ILoginValidator
 {
+    static final String THATS_NOT_A_NICE_NAME = "Thats not a nice name";
+    //these names cant be in users name
+    static final String[] badWords = {"shit", "bitch", "fuck", "slut", "pussy", "asshole", "hell", "bastard", "nigger", "whore"};
+    
     private final static Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 
     public static final String LOBBY_VERSION = "LOBBY_VERSION";
@@ -59,6 +63,14 @@ public class LobbyLoginValidator implements ILoginValidator
         if(!clientVersion.equals(LobbyServer.LOBBY_VERSION))
         {
             return "Wrong version, we require" + LobbyServer.LOBBY_VERSION.toString() + " but trying to log in with " + clientVersionString;
+        }
+        
+        for(String s : badWords) 
+        {
+            if(clientName.toLowerCase().contains(s)) 
+            {
+                return THATS_NOT_A_NICE_NAME;
+            }
         }
         
         if(propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY))
