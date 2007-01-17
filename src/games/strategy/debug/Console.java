@@ -20,6 +20,8 @@
 
 package games.strategy.debug;
 
+import games.strategy.engine.EngineVersion;
+
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -89,6 +91,11 @@ public class Console extends JFrame
 	    m_threadDiagnoseAction.actionPerformed(null);
     }
     
+    public String getText() 
+    {
+        return m_text.getText();
+    }
+    
 	/**
 	 * Displays standard error to the console
 	 */
@@ -130,27 +137,7 @@ public class Console extends JFrame
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-
-		    
-		    System.out.println("THEAD DUMPS");
-            Map stackTraces = Thread.getAllStackTraces();
-            Iterator iter = stackTraces.keySet().iterator();
-            while (iter.hasNext())
-            {
-                Thread t = (Thread) iter.next();
-                System.out.println(t);
-                StackTraceElement[] stackTrace = (StackTraceElement[]) stackTraces.get(t);
-                for(int i = 0;  i < stackTrace.length; i++)
-                {
-                    System.out.print("  ");
-                    System.out.println(stackTrace[i]);
-                }
-                System.out.println();
-                
-            } 
-           
-            return;
-        
+		    System.out.println(getThreadDumps());
 		}
 		
 	};
@@ -164,42 +151,97 @@ public class Console extends JFrame
             System.runFinalization();
             System.gc();
             
-			StringBuilder buf = new StringBuilder();
-			buf.append("****\n");
-			buf.append("Total memory:" + Runtime.getRuntime().totalMemory());
-			buf.append("\n");
-			buf.append("Free memory:" + Runtime.getRuntime().freeMemory());
-			buf.append("\n");
-            buf.append("Max memory:" + Runtime.getRuntime().maxMemory());
-            buf.append("\n");
-            
-			append(buf.toString());
+			append(getMemory());
 		}
+
+       
 	};
+    
+    public static String getThreadDumps() 
+    {
+        StringBuilder result = new StringBuilder();
+        result.append("THREAD DUMP\n");
+    
+        Map<Thread,StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+        Iterator<Thread> iter = stackTraces.keySet().iterator();
+        while (iter.hasNext())
+        {
+            Thread t = iter.next();
+            result.append(t);
+            result.append("\n");
+            
+            StackTraceElement[] stackTrace = (StackTraceElement[]) stackTraces.get(t);
+            for(int i = 0;  i < stackTrace.length; i++)
+            {
+                result.append("  ");
+                result.append(stackTrace[i]);
+                result.append("\n");
+            }
+        
+        }
+        return result.toString();
+        
+    }
+    
+    
+     public static String getMemory()
+     {
+         StringBuilder buf = new StringBuilder("MEMOORY\n");
+            buf.append("****\n");
+            buf.append("Total memory:" + Runtime.getRuntime().totalMemory());
+            buf.append("\n");
+            buf.append("Free memory:" + Runtime.getRuntime().freeMemory());
+            buf.append("\n");
+         buf.append("Max memory:" + Runtime.getRuntime().maxMemory());
+         buf.append("\n");
+         return buf.toString();
+     }
 	
    
 	private AbstractAction m_propertiesAction = new AbstractAction("Properties")
 	{
-		@SuppressWarnings("unchecked")
+		
         public void actionPerformed(ActionEvent e)
 		{
-			StringBuilder buf = new StringBuilder();
-			Properties props = System.getProperties();
-			java.util.List keys = new ArrayList(props.keySet());
-			
-			Collections.sort(keys);
-			
-			Iterator iter = keys.iterator();
-			while(iter.hasNext())
-			{
-				String property = (String) iter.next();
-				String value = props.getProperty(property);
-				buf.append(property).append(" ").append(value).append("\n"); 
-			}
-			
-			append(buf.toString());
+			String s = getProperties();
+			append(s);
 		}
 	};
+    
+    @SuppressWarnings("unchecked")
+    public static String getProperties()
+    {
+        StringBuilder buf = new StringBuilder("SYSTEM PROPERTIES\n");
+        Properties props = System.getProperties();
+        java.util.List keys = new ArrayList(props.keySet());
+        
+        Collections.sort(keys);
+        
+        Iterator iter = keys.iterator();
+        while(iter.hasNext())
+        {
+            String property = (String) iter.next();
+            String value = props.getProperty(property);
+            buf.append(property).append(" ").append(value).append("\n"); 
+        }
+        
+        return buf.toString();
+    }
+    
+    
+    public static String getDebugReport() 
+    {
+        StringBuilder result = new StringBuilder(500);
+        result.append("CONSOLE_OUTPUT");
+        result.append(Console.getConsole().getText());
+        result.append("\n");
+        result.append(getThreadDumps());
+        result.append(getProperties());
+        result.append(getMemory());
+        result.append("ENGINE VERSION").append(EngineVersion.VERSION).append("\n");
+        
+        return result.toString();
+    }
 
 
 }

@@ -21,10 +21,8 @@ import games.strategy.net.IServerMessenger;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;

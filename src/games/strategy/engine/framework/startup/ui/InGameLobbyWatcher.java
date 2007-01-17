@@ -14,6 +14,7 @@
 
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.debug.HeartBeat;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.GameRunner2;
@@ -145,6 +146,10 @@ public class InGameLobbyWatcher
             ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port), hostedBy + "_" + LOBBY_WATCHER_NAME, login);
             UnifiedMessenger um = new UnifiedMessenger(messenger);
             RemoteMessenger rm = new RemoteMessenger(um);
+            
+            HeartBeat h = new HeartBeat(messenger.getServerNode());
+            rm.registerRemote(h, HeartBeat.getHeartBeatName(um.getLocalNode()));
+            
             return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent);
         }  catch (Exception e)
         {

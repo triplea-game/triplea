@@ -1,7 +1,10 @@
 package games.strategy.engine.lobby.client;
 
-import games.strategy.engine.message.*;
-import games.strategy.net.*;
+import games.strategy.debug.HeartBeat;
+import games.strategy.engine.message.IChannelMessenger;
+import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.net.IMessenger;
+import games.strategy.net.Messengers;
 
 public class LobbyClient
 {
@@ -13,6 +16,12 @@ public class LobbyClient
     {
         m_messengers = new Messengers(messenger);
         m_isAnonymousLogin = anonymousLogin;
+        
+        //add a heart beat server, to allow the server to ping us
+        //we only respond to the server
+        HeartBeat heartBeatServer = new HeartBeat(m_messengers.getMessenger().getServerNode());
+        
+        m_messengers.getRemoteMessenger().registerRemote(heartBeatServer, HeartBeat.getHeartBeatName(m_messengers.getMessenger().getLocalNode()));
     }
 
 
