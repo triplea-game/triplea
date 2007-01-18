@@ -1,4 +1,10 @@
-Changes for 0.9.1
+Changes for 0.9.0.2
+
+* Fix bug where dissapearing networks players would not be removed from the game (sgb)
+
+* allow lobby server to ping clients to ensure the are still there (sgb)
+
+Changes for 0.9.0.1
 
 * Adjusted British starting units (Jason Clark)
 
