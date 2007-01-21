@@ -86,8 +86,10 @@ public class TripleA implements IGameLoader
 
     public void shutDown()
     {
-        m_game.removeDisplay(m_display);
-        m_display.shutDown();
+        if(m_display != null) {
+            m_game.removeDisplay(m_display);
+            m_display.shutDown();
+        }
         
     }
     
