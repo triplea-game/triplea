@@ -376,6 +376,10 @@ public class ClientModel implements IMessengerErrorListener
                           m_messenger.shutDown();
                           m_gameLoadingWindow.doneWait();
                           
+                          //an ugly hack, we need a better
+                          //way to get the main frame
+                          MainFrame.getInstance().clientLeftGame();
+                          
                       }
                   } 
                           
