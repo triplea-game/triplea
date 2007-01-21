@@ -1,5 +1,7 @@
 Changes for 0.9.0.2
 
+* fix bug [ 1640596 ] 0.9.0.1 Revised Map Wrap Issue (sgb)
+
 * Fix bug where dissapearing networks players would not be removed from the game (sgb)
 
 * allow lobby server to ping clients to ensure the are still there (sgb)

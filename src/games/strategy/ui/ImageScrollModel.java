@@ -94,14 +94,29 @@ public class ImageScrollModel extends Observable
             {
                m_x = m_maxWidth - m_boxWidth;
             }
-        }    
+        }
+        else
+        {
+            //don't let the map scroll infinitly, 
+            //when it gets to be twice the length to the left or right, move
+            //it back one length
+            while(m_x >  m_maxWidth ) {
+                m_x -= m_maxWidth;
+            }
+            
+            while(m_x < - m_maxWidth ) {
+                m_x += m_maxWidth;
+            }
+            
+            
+        }
+        
         //if the box is bigger than the map
         //put us at 0,0
         if(m_boxWidth > m_maxWidth)
         {
             m_x = 0;
         }
-
     }
     
     public boolean getScrollX()
