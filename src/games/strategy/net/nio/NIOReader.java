@@ -199,7 +199,7 @@ public class NIOReader
                                     if(sa != null)
                                         remote = sa.toString();
 
-                                    s_logger.log(Level.FINE, " done writing to:" + remote + " size:" + packet.size() + " readCalls;" + packet.getReadCalls()  + " total:" + m_totalBytes);
+                                    s_logger.log(Level.FINE, " done reading from:" + remote + " size:" + packet.size() + " readCalls;" + packet.getReadCalls()  + " total:" + m_totalBytes);
                                 }    
                                 
                                 enque(packet);
