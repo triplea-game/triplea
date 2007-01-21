@@ -32,36 +32,16 @@ import java.util.List;
 public class CompositeMatchAnd<T> extends CompositeMatch<T>
 {
 
-	public CompositeMatchAnd()
-	{
-	}
-	
 	/** Creates new CompositeMatchOr */
-    public CompositeMatchAnd(Match<T> first, Match<T> second) 
+    public CompositeMatchAnd(Match ...matches) 
 	{
 		super();
-		add(first);
-		add(second);
+		for(Match<T> m : matches) 
+        {
+		    add(m);
+        }
     }
     
-    /** Creates new CompositeMatchOr */
-    public CompositeMatchAnd(Match<T> first, Match<T> second, Match<T> third) 
-    {
-        super();
-        add(first);
-        add(second);
-        add(third);
-    }
-    
-    /** Creates new CompositeMatchOr */
-    public CompositeMatchAnd(Match<T> first, Match<T> second, Match<T> third, Match<T> fourth) 
-    {
-        super();
-        add(first);
-        add(second);
-        add(third);
-        add(fourth);
-    }
 
 	public boolean match(T o) 
 	{

@@ -33,16 +33,14 @@ import java.util.List;
 public class CompositeMatchOr<T> extends CompositeMatch<T>
 {
 
-	public CompositeMatchOr()
-	{
-	}
-	
-	/** Creates new CompositeMatchOr */
-    public CompositeMatchOr(Match<T> first, Match<T> second) 
-	{
-		super();
-		add(first);
-		add(second);
+    /** Creates new CompositeMatchOr */
+    public CompositeMatchOr(Match ...matches) 
+    {
+        super();
+        for(Match<T> m : matches) 
+        {
+            add(m);
+        }
     }
 
 	public boolean match(T o) 
