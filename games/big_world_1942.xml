@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Big World : 1942" version="2.1"/>
+        <info name="Big World : 1942" version="2.2"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -2301,6 +2301,37 @@
                         <option name="production" value="2"/>
                     </attatchment>
 
+			<!-- Canals -->
+			<attatchment name="canalAttatchment" attatchTo="SZ 27 Aegean Sea" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Dardanelles"/>
+				<option name="landTerritories" value="Western Turkey"/>
+			</attatchment>
+
+			<attatchment name="canalAttatchment" attatchTo="SZ 29 Black Sea" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Dardanelles"/>
+				<option name="landTerritories" value="Western Turkey"/>
+			</attatchment>
+
+			<attatchment name="canalAttatchment" attatchTo="SZ 28 Eastern Mediterranean" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Suez Canal"/>
+				<option name="landTerritories" value="Egypt:Syria"/>
+			</attatchment>
+
+			<attatchment name="canalAttatchment" attatchTo="SZ 55 Red Sea" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Suez Canal"/>
+				<option name="landTerritories" value="Egypt:Syria"/>
+			</attatchment>
+
+			<attatchment name="canalAttatchment" attatchTo="SZ 36 East Pacific" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Panama Canal"/>
+				<option name="landTerritories" value="Central America"/>
+			</attatchment>
+
+			<attatchment name="canalAttatchment" attatchTo="SZ 37 Caribbean Sea" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Panama Canal"/>
+				<option name="landTerritories" value="Central America"/>
+			</attatchment>
+
 
         </attatchmentList>
         
@@ -3022,3 +3053,4 @@
 
         </propertyList>
 </game>
+

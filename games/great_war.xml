@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="1.1"/>
+        <info name="The Great War" version="1.0.5"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -2975,6 +2975,27 @@
                         <option name="production" value="1"/>
                     </attatchment>
 
+			<!-- Canals -->
+			<attatchment name="canalAttatchment" attatchTo="SZ 62 Black Sea" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Dardanelles"/>
+				<option name="landTerritories" value="Istanbul"/>
+			</attatchment>
+
+			<attatchment name="canalAttatchment" attatchTo="SZ 63 Aegean Sea" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Dardanelles"/>
+				<option name="landTerritories" value="Istanbul"/>
+			</attatchment>
+
+			<attatchment name="canalAttatchment" attatchTo="SZ 66 East Mediterranean" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Suez Canal"/>
+				<option name="landTerritories" value="Cairo"/>
+			</attatchment>
+
+			<attatchment name="canalAttatchment" attatchTo="SZ 67 Red Sea" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+				<option name="canalName" value="Suez Canal"/>
+				<option name="landTerritories" value="Cairo"/>
+			</attatchment>
+
         </attatchmentList>
 
         
@@ -4043,6 +4064,7 @@
         </propertyList>
 
 </game>
+
 
 
 
