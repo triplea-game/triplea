@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="1.0.5"/>
+        <info name="The Great War" version="1.2"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
