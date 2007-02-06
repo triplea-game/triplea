@@ -49,6 +49,7 @@ public class ProductionPanel extends JPanel
     
     private List<Rule> m_rules = new ArrayList<Rule>();
     private JLabel m_left = new JLabel();
+    private JButton m_done;
     private PlayerID m_id;
     private boolean m_bid;
     private GameData m_data;
@@ -80,6 +81,7 @@ public class ProductionPanel extends JPanel
 
         m_dialog.pack();
         m_dialog.setLocationRelativeTo(parent);
+        m_done.requestFocusInWindow();
         m_dialog.setVisible(true);
         
         m_dialog.dispose();
@@ -155,8 +157,8 @@ public class ProductionPanel extends JPanel
 
         add(m_left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
         setLeft(ipcs);
-
-        add(new JButton(m_done_action), new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,
+        m_done = new JButton(m_done_action);
+        add(m_done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,
                 0, 8, 0), 0, 0));
 
     }
