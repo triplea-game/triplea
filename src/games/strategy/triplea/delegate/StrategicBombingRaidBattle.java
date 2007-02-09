@@ -20,6 +20,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -152,7 +153,7 @@ public class StrategicBombingRaidBattle implements Battle
                 
                 m_tracker.removeBattle(StrategicBombingRaidBattle.this);
 
-                bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + MyFormatter.pluralize("ipc", m_bombingRaidCost));
+                bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("ipc", m_bombingRaidCost));
 
                 if(isPacificEdition())
                 {
@@ -164,7 +165,7 @@ public class StrategicBombingRaidBattle implements Battle
                         {
                             changeVP = ChangeFactory.attachmentPropertyChange(pa, (new Integer(-(m_bombingRaidCost / 10) + Integer.parseInt(pa.getVps()))).toString(), "vps");
                             bridge.addChange(changeVP);
-                            bridge.getHistoryWriter().addChildToEvent("AA raid costs " + (m_bombingRaidCost / 10) + MyFormatter.pluralize("vp", (m_bombingRaidCost / 10)));
+                            bridge.getHistoryWriter().addChildToEvent("AA raid costs " + (m_bombingRaidCost / 10) + " " + MyFormatter.pluralize("vp", (m_bombingRaidCost / 10)));
                         } 
                     } 
                 }
@@ -223,7 +224,7 @@ public class StrategicBombingRaidBattle implements Battle
                     m_dice = DiceRoll.rollAA(m_units.size(), bridge, m_battleSite, m_data);
                 }
             };
-        
+
             IExecutable calculateCasualties = new IExecutable()
             {
             
@@ -264,7 +265,7 @@ public class StrategicBombingRaidBattle implements Battle
             stack.push(roll);
             
         }
-                
+
     }
     
 
@@ -319,7 +320,7 @@ public class StrategicBombingRaidBattle implements Battle
         t.start();
         
         ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
-        attacker.confirmOwnCasualties(m_battleID, "Press space to continue continue");
+        attacker.confirmOwnCasualties(m_battleID, "Press space to continue");
         
         try
         {
@@ -339,7 +340,8 @@ public class StrategicBombingRaidBattle implements Battle
     
     private void removeAAHits(IDelegateBridge bridge, DiceRoll dice, Collection<Unit> casualties)
     {
-        bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " killed by aa guns", casualties);
+        if(!casualties.isEmpty())
+            bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " killed by AA guns", casualties);
 
         m_units.removeAll(casualties);
         Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);

@@ -82,8 +82,14 @@ public class HistoryDetailsPanel extends JPanel
                     m_mapPanel.centerOn(moveMessage.getRoute().getEnd());
             } else if (details instanceof Collection)
             {
-                Collection<Unit> units = (Collection<Unit>) details;
-                renderUnits(mainConstraints, units);
+                Collection objects = (Collection)details;
+                Iterator objIter = objects.iterator();
+                if(objIter.hasNext())
+                {
+                    Object obj = objIter.next();
+                    if(obj instanceof Unit)
+                        renderUnits(mainConstraints, objects);
+                }
             } else if (details instanceof Territory)
             {
                 Territory t = (Territory) details;

@@ -25,6 +25,7 @@ import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 import java.io.Serializable;
@@ -102,8 +103,70 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     if(!(canAfford(costs, m_player)))
       return "Not enough resources";
 
-    addToPlayer(m_player, results);
-    removeFromPlayer(m_player, costs);
+    // remove first, since add logs ipcs remaining
+    
+    Iterator<NamedAttachable> iter = results.keySet().iterator();
+    Collection<Unit> totalUnits = new ArrayList<Unit>();
+    Collection<Change> changes = new ArrayList<Change>();
+    Resource ipcs = getData().getResourceList().getResource(Constants.IPCS);
+    int ipcsRemaining = m_player.getResources().getQuantity(ipcs);
+
+    // add changes for added resources
+    //  and find all added units
+    while(iter.hasNext() )
+    {
+      Object next = iter.next();
+      if(next instanceof Resource)
+      {
+        Resource resource = (Resource) next;
+        int quantity = results.getInt(resource);
+        Change change = ChangeFactory.changeResourcesChange(m_player, resource, quantity);
+        changes.add(change);
+      } else
+      {
+        UnitType type = (UnitType) next;
+        int quantity = results.getInt(type);
+        Collection<Unit> units = type.create(quantity, m_player);
+        totalUnits.addAll(units);
+
+      }
+    }
+
+    // add changes for added units
+    if(!totalUnits.isEmpty())
+    {
+      Change change = ChangeFactory.addUnits(m_player, totalUnits);
+      changes.add(change);
+    }
+
+    // add changes for spent resources
+    Iterator<Resource> costsIter = costs.keySet().iterator();
+    while(costsIter.hasNext() )
+    {
+      Resource resource = costsIter.next();
+      int quantity = costs.getInt(resource);
+      ipcsRemaining -= quantity;
+      Change change = ChangeFactory.changeResourcesChange(m_player, resource, -quantity);
+      changes.add(change);
+    }
+
+    // add history event
+    String transcriptText;
+    if(!totalUnits.isEmpty())
+      transcriptText = m_player.getName() + " buy " + MyFormatter.unitsToTextNoOwner(totalUnits)+"; "+ipcsRemaining+" ipcs remaining";
+    else
+      transcriptText = m_player.getName() + " buy nothing; "+ipcsRemaining+" ipcs remaining";
+    m_bridge.getHistoryWriter().startEvent(transcriptText);
+    m_bridge.getHistoryWriter().setRenderingData(totalUnits);
+
+    // commit changes
+    Iterator<Change> changeIter = changes.iterator();
+    while (changeIter.hasNext())
+    {
+      Change change = changeIter.next();
+      m_bridge.addChange(change);
+      changeIter.remove();
+    }
 
     return null;
   }
@@ -134,51 +197,6 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     return costs;
   }
 
-
-  protected void addToPlayer(PlayerID player, IntegerMap<NamedAttachable> resourcesAndUnits)
-  {
-    Iterator<NamedAttachable> iter = resourcesAndUnits.keySet().iterator();
-    Collection<Unit> totalUnits = new ArrayList<Unit>();
-    while(iter.hasNext() )
-    {
-      Object next = iter.next();
-      if(next instanceof Resource)
-      {
-        Resource resource = (Resource) next;
-        int quantity = resourcesAndUnits.getInt(resource);
-        Change change = ChangeFactory.changeResourcesChange(player, resource, quantity);
-        m_bridge.addChange(change);
-      } else
-      {
-        UnitType type = (UnitType) next;
-        int quantity = resourcesAndUnits.getInt(type);
-        Collection<Unit> units = type.create(quantity, player);
-        totalUnits.addAll(units);
-
-      }
-    }
-
-    if(!totalUnits.isEmpty())
-    {
-      String transcriptText = player.getName() + " buys " + MyFormatter.unitsToTextNoOwner(totalUnits);
-      m_bridge.getHistoryWriter().startEvent(transcriptText);
-      m_bridge.getHistoryWriter().setRenderingData(totalUnits);
-      Change change = ChangeFactory.addUnits(player, totalUnits);
-      m_bridge.addChange(change);
-    }
-  }
-
-  protected void removeFromPlayer(PlayerID player, IntegerMap<Resource> resources)
-  {
-    Iterator<Resource> iter = resources.keySet().iterator();
-    while(iter.hasNext() )
-    {
-      Resource resource = iter.next();
-      int quantity = resources.getInt(resource);
-      Change change = ChangeFactory.changeResourcesChange(player, resource, -quantity);
-      m_bridge.addChange(change);
-    }
-  }
 
 
   /**

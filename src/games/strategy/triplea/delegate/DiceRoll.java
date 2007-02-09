@@ -36,7 +36,7 @@ public class DiceRoll implements Externalizable
 
     private List<Die> m_rolls;
     //this does not need to match the Die with isHit true
-    //since for low luch we get many hits with few dice
+    //since for low luck we get many hits with few dice
     private int m_hits;
 
     public static DiceRoll rollAA(int numberOfAirUnits, IDelegateBridge bridge, Territory location, GameData data)
@@ -53,7 +53,8 @@ public class DiceRoll implements Externalizable
 
             if (hitsFractional > 0)
             {
-                dice = bridge.getRandom(Constants.MAX_DICE, 1, "Roll aa guns in " + location.getName());
+                String annotation = "Roll AA guns in " + location.getName();
+                dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
                 boolean hit = hitsFractional > dice[0];
                 Die die = new Die(dice[0], 1, hit ? DieType.HIT : DieType.MISS);
                 
@@ -68,7 +69,8 @@ public class DiceRoll implements Externalizable
         {
             
             // Normal rolling
-            dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, "Roll aa guns in " + location.getName());
+            String annotation = "Roll AA guns in " + location.getName();
+            dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, annotation);
             for (int i = 0; i < dice.length; i++)
             {
                 boolean hit = dice[i] == 0;
@@ -79,7 +81,8 @@ public class DiceRoll implements Externalizable
         }
 
         DiceRoll roll = new DiceRoll(sortedDice, hits);
-        bridge.getHistoryWriter().addChildToEvent("AA guns fire in" + location + " :" + MyFormatter.asDice(dice), roll);
+        String annotation = "AA guns fire in " + location + " : " + MyFormatter.asDice(dice);
+        bridge.getHistoryWriter().addChildToEvent(annotation, roll);
         return roll;
     }
 

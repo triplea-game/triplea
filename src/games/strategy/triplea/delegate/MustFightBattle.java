@@ -301,7 +301,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private String getBattleTitle()
     {
 
-        return m_attacker.getName() + " attacks " + m_defender.getName()
+        return m_attacker.getName() + " attack " + m_defender.getName()
                 + " in " + m_battleSite.getName();
     }
 
@@ -389,7 +389,81 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite);
         bridge.getHistoryWriter().setRenderingData(m_battleSite);
         removeAirNoLongerInTerritory();
-        
+
+        // BEGIN writing all attacking and defending units in history log
+
+        Set playerSet = m_battleSite.getUnits().getPlayersWithUnits();
+        Iterator<PlayerID> playersIter;
+        String transcriptText;
+
+        // find all attacking players (unsorted)
+        Collection<PlayerID> attackers = new ArrayList<PlayerID>();
+        Collection<Unit> allAttackingUnits = new ArrayList<Unit>();
+        transcriptText = "";
+        for (playersIter = playerSet.iterator(); playersIter.hasNext(); )
+        {
+            PlayerID current = (PlayerID)playersIter.next();
+            if (m_data.getAllianceTracker().isAllied(m_attacker, current)
+                    || current.equals(m_attacker))
+                attackers.add(current);
+        }
+
+        // find all attacking units (unsorted)
+        for(Iterator attackersIter = attackers.iterator(); attackersIter.hasNext(); )
+        {
+            PlayerID current = (PlayerID)attackersIter.next();
+            String delim;
+            if(attackersIter.hasNext())
+                delim = "; ";
+            else
+                delim = "";
+            Collection attackingUnits = Match.getMatches(m_attackingUnits, Matches.unitIsOwnedBy(current));
+            String verb = current.equals(m_attacker) ? "attack" : "loiter and taunt";
+            transcriptText += current.getName()+" "+verb+" with "
+                           +MyFormatter.unitsToTextNoOwner(attackingUnits)
+                           +delim;
+            allAttackingUnits.addAll(attackingUnits);
+        }
+        // write attacking units to history
+        if (m_attackingUnits.size() > 0)
+            bridge.getHistoryWriter().addChildToEvent(transcriptText, allAttackingUnits);
+
+        // find all defending players (unsorted)
+        Collection<PlayerID> defenders = new ArrayList<PlayerID>();
+        Collection<Unit> allDefendingUnits = new ArrayList<Unit>();
+        transcriptText = "";
+        for (playersIter = playerSet.iterator(); playersIter.hasNext(); )
+        {
+            PlayerID current = playersIter.next();
+            if (m_data.getAllianceTracker().isAllied(m_defender, current)
+                    || current.equals(m_defender))
+            {
+                defenders.add(current);
+            }
+        }
+
+        // find all defending units (unsorted)
+        for(Iterator defendersIter = defenders.iterator(); defendersIter.hasNext(); )
+        {
+            PlayerID current = (PlayerID)defendersIter.next();
+            Collection defendingUnits;
+            String delim;
+            if(defendersIter.hasNext())
+                delim = "; ";
+            else
+                delim = "";
+            defendingUnits = Match.getMatches(m_defendingUnits, Matches.unitIsOwnedBy(current));
+            transcriptText += current.getName()+" defend with "
+                           +MyFormatter.unitsToTextNoOwner(defendingUnits)
+                           +delim;
+            allDefendingUnits.addAll(defendingUnits);
+        }
+        // write defending units to history
+        if (m_defendingUnits.size() > 0)
+            bridge.getHistoryWriter().addChildToEvent(transcriptText, allDefendingUnits);
+
+        // FINISHED writing all attacking and defending units in history log
+
         //it is possible that no attacking units are present, if so
         //end now
         if (m_attackingUnits.size() == 0)
@@ -399,7 +473,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
         }
 
-        //if is possible that no defending units exist
+        //it is possible that no defending units exist
         if (m_defendingUnits.size() == 0)
         {
             endBattle(bridge);
@@ -1171,7 +1245,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void retreatPlanes(Collection<Unit> retreating, boolean defender,
             IDelegateBridge bridge)
     {
-        String transcriptText = MyFormatter.unitsToTextNoOwner(retreating)
+        String transcriptText = MyFormatter.unitsToText(retreating)
                 + " retreated";
 
         Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
@@ -1198,7 +1272,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void submergeUnits(Collection<Unit> submerging, boolean defender,
             IDelegateBridge bridge)
     {
-        String transcriptText = MyFormatter.unitsToTextNoOwner(submerging)
+        String transcriptText = MyFormatter.unitsToText(submerging)
                 + " Submerged";
 
         Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
@@ -1233,8 +1307,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 new InverseMatch<Unit>(Matches.unitIsOwnedBy(m_attacker)));
         retreating = Match.getMatches(retreating, notMyAir);
 
-        String transcriptText = MyFormatter.unitsToTextNoOwner(retreating)
-                + " retreated to " + to.getName();
+        String transcriptText;
+        // in classic A&A, defending subs can retreat so show owner
+        if (isFourthEdition())
+                transcriptText = MyFormatter.unitsToTextNoOwner(retreating) + " retreated to " + to.getName();
+        else
+                transcriptText = MyFormatter.unitsToText(retreating) + " retreated to " + to.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText,
                 new ArrayList<Unit>(retreating));
 
@@ -1662,7 +1740,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         damagedMap.putAll(damaged, 1);
         damagedChange = ChangeFactory.unitsHit(damagedMap);
         bridge.getHistoryWriter().addChildToEvent(
-                "Units damaged:" + MyFormatter.unitsToTextNoOwner(damaged),
+                "Units damaged: " + MyFormatter.unitsToText(damaged),
                 damaged);
         bridge.addChange(damagedChange);
 
@@ -1719,7 +1797,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         getDisplay(bridge).battleEnd(m_battleID, m_defender.getName()+ " win");
         
         bridge.getHistoryWriter()
-                .addChildToEvent(m_defender.getName() + " win");
+                .addChildToEvent(m_defender.getName() + " win", m_defendingUnits);
         showCasualties(bridge);
 
         checkDefendingPlanesCanLand(bridge, m_defender);
@@ -1883,7 +1961,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         bridge.getHistoryWriter()
-                .addChildToEvent(m_attacker.getName() + " win");
+                .addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
         showCasualties(bridge);
     }
 

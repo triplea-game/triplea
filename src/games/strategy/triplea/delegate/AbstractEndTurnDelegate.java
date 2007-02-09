@@ -41,141 +41,141 @@ import java.util.*;
  */
 public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Serializable
 {
-	private String m_name;
-	private String m_displayName;
-	protected GameData m_data;
+    private String m_name;
+    private String m_displayName;
+    protected GameData m_data;
 
-	//we only want to notify once that the game is over
-	protected boolean m_gameOver = false;
+    //we only want to notify once that the game is over
+    protected boolean m_gameOver = false;
 
-	public void initialize(String name, String displayName)
-	{
-		m_name = name;
-		m_displayName = displayName;
-	}
+    public void initialize(String name, String displayName)
+    {
+        m_name = name;
+        m_displayName = displayName;
+    }
 
-	private boolean doBattleShipsRepair()
-	{
-	    return m_data.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN, false);
-	}
-	
+    private boolean doBattleShipsRepair()
+    {
+        return m_data.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN, false);
+    }
 
-	/**
-	 * Called before the delegate will run.
-	 */
-	public void start(IDelegateBridge aBridge, GameData gameData)
-	{
-		m_data = gameData;
-		PlayerID player = aBridge.getPlayerID();
 
-		//cant collect unless you own your own capital
-		Territory capital = TerritoryAttachment.getCapital(player, m_data);
-		if(!capital.getOwner().equals(player))
-			return;
+    /**
+     * Called before the delegate will run.
+     */
+    public void start(IDelegateBridge aBridge, GameData gameData)
+    {
+        m_data = gameData;
+        PlayerID player = aBridge.getPlayerID();
 
-		Resource ipcs = gameData.getResourceList().getResource(Constants.IPCS);
-		//just collect resources
-		Collection territories = gameData.getMap().getTerritoriesOwnedBy(player);
+        //cant collect unless you own your own capital
+        Territory capital = TerritoryAttachment.getCapital(player, m_data);
+        if(!capital.getOwner().equals(player))
+            return;
 
-		int toAdd = getProduction(territories);
+        Resource ipcs = gameData.getResourceList().getResource(Constants.IPCS);
+        //just collect resources
+        Collection territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
-        String transcriptText = player.getName() + " collects " + toAdd + " ipcs";
+        int toAdd = getProduction(territories);
+        int ipcsTotal = player.getResources().getQuantity(ipcs) + toAdd;
+        String transcriptText = player.getName() + " collect " + toAdd + " ipcs; end with " + ipcsTotal + " ipcs total";
         aBridge.getHistoryWriter().startEvent(transcriptText);
 
-		Change change = ChangeFactory.changeResourcesChange(player, ipcs, toAdd);
-		aBridge.addChange(change);
+        Change change = ChangeFactory.changeResourcesChange(player, ipcs, toAdd);
+        aBridge.addChange(change);
 
 
-                if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
-                {
-                    PlayerAttachment pa = PlayerAttachment.get(player);
+        if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
+        {
+            PlayerAttachment pa = PlayerAttachment.get(player);
                     
-                    if(pa != null)
-                    {
-                        Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
-                        Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
-                        CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
-                        aBridge.addChange(ccVP);
-                    }	
-                } 
+            if(pa != null)
+            {
+                Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
+                Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
+                CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
+                aBridge.addChange(ccVP);
+            }
+        } 
 
-		checkForWinner(aBridge);
-		
-		if(doBattleShipsRepair())
-		{
-		    repairBattleShips(aBridge);
-		}
-	}
-	
-	
-	private void repairBattleShips(IDelegateBridge aBridge)
-	{
-	   Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
-	    
-	   Collection<Unit> damaged = new ArrayList<Unit>();
-	   Iterator iter = m_data.getMap().getTerritories().iterator();
-	   while(iter.hasNext())
-	   {
-	       Territory current = (Territory) iter.next();
-	       damaged.addAll(current.getUnits().getMatches(damagedBattleship));
-	   }
-	   
-	   if(damaged.size() == 0)
-	       return;
-	   
-	   IntegerMap<Unit> hits = new IntegerMap<Unit>();
-	   iter = damaged.iterator();
-	   while(iter.hasNext())
-	   {
-	       Unit unit = (Unit) iter.next();
-	       hits.put(unit,0);
-	   }
-	   aBridge.addChange(ChangeFactory.unitsHit(hits));
-	   aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
-	   
-	}
-	
+        checkForWinner(aBridge);
 
-	protected abstract void checkForWinner(IDelegateBridge bridge);
+        if(doBattleShipsRepair())
+        {
+            repairBattleShips(aBridge);
+        }
+    }
 
 
-	protected int getProduction(Collection territories)
-	{
-		int value = 0;
-		Iterator iter = territories.iterator();
-		while(iter.hasNext() )
-		{
-			Territory current = (Territory) iter.next();
-			TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
+    private void repairBattleShips(IDelegateBridge aBridge)
+    {
+       Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+        
+       Collection<Unit> damaged = new ArrayList<Unit>();
+       Iterator iter = m_data.getMap().getTerritories().iterator();
+       while(iter.hasNext())
+       {
+           Territory current = (Territory) iter.next();
+           damaged.addAll(current.getUnits().getMatches(damagedBattleship));
+       }
 
-			if(attatchment == null)
-				throw new IllegalStateException("Nn attatchment for owned territory:" + current.getName());
-			// Check if territory is convoy	
-			if(current.isWater() && DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(current).equals(current.getOwner()) || !current.isWater())
-				value += attatchment.getProduction();
-		}
-		return value;
-	}
+       if(damaged.size() == 0)
+           return;
+       
+       IntegerMap<Unit> hits = new IntegerMap<Unit>();
+       iter = damaged.iterator();
+       while(iter.hasNext())
+       {
+           Unit unit = (Unit) iter.next();
+           hits.put(unit,0);
+       }
+       aBridge.addChange(ChangeFactory.unitsHit(hits));
+       aBridge.getHistoryWriter().startEvent(damaged.size() + " " +  MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
 
-	public String getName()
-	{
-		return m_name;
-	}
+    }
 
-	public String getDisplayName()
-	{
-		return m_displayName;
-	}
 
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	public void end()
-	{
-		DelegateFinder.battleDelegate(m_data).getBattleTracker().clear();
-	}
+    protected abstract void checkForWinner(IDelegateBridge bridge);
 
-	/* 
+
+    protected int getProduction(Collection territories)
+    {
+        int value = 0;
+        Iterator iter = territories.iterator();
+        while(iter.hasNext() )
+        {
+            Territory current = (Territory) iter.next();
+            TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
+
+            if(attatchment == null)
+                throw new IllegalStateException("No attachment for owned territory:" + current.getName());
+            // Check if territory is convoy	
+            if(current.isWater() && DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker().getOriginalOwner(current).equals(current.getOwner()) || !current.isWater())
+                value += attatchment.getProduction();
+        }
+        return value;
+    }
+
+    public String getName()
+    {
+        return m_name;
+    }
+
+    public String getDisplayName()
+    {
+        return m_displayName;
+    }
+
+    /**
+     * Called before the delegate will stop running.
+     */
+    public void end()
+    {
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().clear();
+    }
+
+    /* 
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */
     public Class<? extends IRemote> getRemoteType()
@@ -198,5 +198,5 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
     {}
 
 
-	
+
 }
