@@ -445,7 +445,8 @@ public class TripleAFrame extends JFrame
     {
         m_actionButtons.changeToMove(player, nonCombat);
         // workaround for panel not receiving focus at beginning of n/c move phase
-        m_tabsPanel.requestFocusInWindow();
+        requestFocusInWindow();
+        transferFocus();
         return m_actionButtons.waitForMove(bridge);
     }
 
@@ -546,7 +547,8 @@ public class TripleAFrame extends JFrame
     {
         m_actionButtons.changeToTech(id);
         // workaround for panel not receiving focus at beginning of tech phase
-        m_tabsPanel.requestFocusInWindow();
+        requestFocusInWindow();
+        transferFocus();
         return m_actionButtons.waitForTech();
     }
 

@@ -146,17 +146,20 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 
         m_text = new JTextPane();
         m_text.setEditable(false);
+        m_text.setFocusable(false);
 
         m_nextMessage = new JTextField(10);
         //when enter is pressed, send the message
         
 
         m_setStatus = new JButton(m_setStatusAction);
+        m_setStatus.setFocusable(false);
         
 
         Insets inset = new Insets(3, 3, 3, 3);
         m_send = new JButton(m_sendAction);
         m_send.setMargin(inset);
+        m_send.setFocusable(false);
 
         
     }

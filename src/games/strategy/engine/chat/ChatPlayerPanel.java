@@ -87,6 +87,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     {
         m_listModel = new DefaultListModel();
         m_players = new JList(m_listModel);
+        m_players.setFocusable(false);
         
         
         m_players.setCellRenderer(new ListCellRenderer()
@@ -226,6 +227,5 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     public void addStatusMessage(String message)
     {
     }
-    
     
 }

@@ -37,7 +37,7 @@ import javax.swing.*;
 public class ChatPanel extends JPanel 
 {
    private ChatPlayerPanel m_chatPlayerPanel;
-   private ChatMessagePanel m_chaMessagetPanel;
+   private ChatMessagePanel m_chatMessagePanel;
     
     
     /** Creates a new instance of ChatFrame */
@@ -68,14 +68,14 @@ public class ChatPanel extends JPanel
     
     public void setChat(Chat chat)
     {
-        m_chaMessagetPanel.setChat(chat);
+        m_chatMessagePanel.setChat(chat);
         m_chatPlayerPanel.setChat(chat);
     }
     
 
     public Chat getChat()
     {
-        return m_chaMessagetPanel.getChat();
+        return m_chatMessagePanel.getChat();
     }
 
     private void layoutComponents()
@@ -85,7 +85,7 @@ public class ChatPanel extends JPanel
         content.setLayout(new BorderLayout());
 
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        split.setLeftComponent(m_chaMessagetPanel);
+        split.setLeftComponent(m_chatMessagePanel);
         split.setRightComponent(m_chatPlayerPanel);
         
         split.setOneTouchExpandable(false);
@@ -99,8 +99,7 @@ public class ChatPanel extends JPanel
     {
 
         m_chatPlayerPanel = new ChatPlayerPanel(null);
-        m_chaMessagetPanel = new ChatMessagePanel(null);
-        
+        m_chatMessagePanel = new ChatMessagePanel(null);
     }
 
 
