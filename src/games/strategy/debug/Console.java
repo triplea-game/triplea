@@ -275,7 +275,7 @@ public class Console extends JFrame
         result.append(getThreadDumps());
         result.append(getProperties());
         result.append(getMemory());
-        result.append(getWindows());
+        result.append(getOpenAppWindows());
         result.append("ENGINE VERSION").append(EngineVersion.VERSION).append("\n");
         
         
@@ -283,7 +283,7 @@ public class Console extends JFrame
         return result.toString();
     }
     
-    public static String getWindows() 
+    public static String getOpenAppWindows() 
     {
         StringBuilder builder = new StringBuilder("WINDOWS\n");
         

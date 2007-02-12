@@ -1,3 +1,5 @@
+* fix bug [ 1655283 ] Java 6 reserves java.awt.Window method getWindows()
+
 * update to great war 1.3 (Jason Clark)
 
 * add canals to Great War and Big World (Black Elk)
