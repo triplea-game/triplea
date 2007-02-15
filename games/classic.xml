@@ -97,6 +97,7 @@
 	    <territory name="East Pacific Sea Zone" water="true" />
 	    <territory name="East US Sea Zone" water="true" />
 	    <territory name="French Indo China Sea Zone" water="true" />
+	    <territory name="Gulf of Mexico Sea Zone" water="true" />
 	    <territory name="Hawaii Sea Zone" water="true" />
 	    <territory name="Indian Ocean Sea Zone" water="true" />
 	    <territory name="Japan Sea Zone" water="true" />
@@ -143,6 +144,9 @@
 	    <connection t1="East Canada Sea Zone" t2="West Canada" />
 	    <connection t1="East Canada" t2="East US" />
 	    <connection t1="East US" t2="East US Sea Zone" />
+	    <connection t1="East US Sea Zone" t2="Gulf of Mexico Sea Zone" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="Carribean Sea Zone" />
+	    <connection t1="West US" t2="Gulf of Mexico Sea Zone" />
 	    <connection t1="Carribean Sea Zone" t2="East US Sea Zone" />
 	    <connection t1="Carribean Sea Zone" t2="North Atlantic Sea Zone" />
 	    <connection t1="Carribean Sea Zone" t2="North Brazil Sea Zone" />

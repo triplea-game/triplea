@@ -368,9 +368,9 @@ public class MapData
         {
             String name = iter.next();
             Territory terr = data.getMap().getTerritory(name);
+            // allow loading saved games with missing territories; just ignore them
             if (terr == null)
-                errors.append("Territory in file could not be found in game data for "
-		               + dataTypeForErrorMessage + ". Territory name <" + name + ">\n");
+                iter.remove();
         }
 
         Iterator territories = data.getMap().getTerritories().iterator();
