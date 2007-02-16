@@ -87,7 +87,7 @@ public class MovePanel extends ActionPanel
 
     private List<Territory> m_forced;
     private boolean m_nonCombat;
-    private UndoableMovesPanel m_undableMovesPanel;
+    private UndoableMovesPanel m_undoableMovesPanel;
     
     private Point m_mouseSelectedPoint;
     private Point m_mouseCurrentPoint;
@@ -106,7 +106,7 @@ public class MovePanel extends ActionPanel
         super(data, map);
         CANCEL_MOVE_ACTION.setEnabled(false);
 
-         m_undableMovesPanel = new UndoableMovesPanel(data, this);
+         m_undoableMovesPanel = new UndoableMovesPanel(data, this);
     }
 
     private JComponent leftBox(JComponent c)
@@ -137,7 +137,7 @@ public class MovePanel extends ActionPanel
                 add(Box.createVerticalStrut(15));
 
 
-                add(m_undableMovesPanel);
+                add(m_undoableMovesPanel);
                 add(Box.createGlue());
 
                 SwingUtilities.invokeLater(REFRESH);
@@ -155,7 +155,7 @@ public class MovePanel extends ActionPanel
     
     private void updateMoves()
     {
-        m_undableMovesPanel.setMoves(getDelegate().getMovesMade());
+        m_undoableMovesPanel.setMoves(getDelegate().getMovesMade());
     }
 
     public MoveDescription waitForMove(IPlayerBridge bridge)
@@ -253,7 +253,7 @@ public class MovePanel extends ActionPanel
     {
         public void actionPerformed(ActionEvent e)
         {
-            if(m_undableMovesPanel.getCountOfMovesMade() == 0)
+            if(m_undoableMovesPanel.getCountOfMovesMade() == 0)
             {
                 int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( MovePanel.this), "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
                 if(rVal != JOptionPane.YES_OPTION)
@@ -346,7 +346,7 @@ public class MovePanel extends ActionPanel
       if(candidateTransports.size() == 1)
           return unitsToMove;
       
-      CompositeMatch<Unit> unloadable = getUnloadableMatch();
+      CompositeMatch<Unit> unloadable = getMovableMatch(route);
       
       if(unitsToMove.size() == route.getStart().getUnits().countMatches(unloadable))
           return unitsToMove;
@@ -410,15 +410,47 @@ public class MovePanel extends ActionPanel
       
     }
 
-    private CompositeMatch<Unit> getUnloadableMatch()
+    private CompositeMatch<Unit> getMovableMatch(final Route route)
     {
-        //are we unloading everything? if we are then we dont need to select the transports
-          CompositeMatch<Unit> unloadable = new CompositeMatchAnd<Unit>();
-          unloadable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
-          unloadable.add(Matches.UnitIsLand);
-          if(m_nonCombat)
-              unloadable.add(new InverseMatch<Unit>(Matches.UnitIsAA));
-        return unloadable;
+        CompositeMatch<Unit> movable = new CompositeMatchAnd<Unit>();
+        movable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
+        movable.add(Matches.UnitIsNotFactory);
+        if(!m_nonCombat)
+            movable.add(new InverseMatch<Unit>( Matches.UnitIsAA));
+        if(route != null)
+        {
+            Match<Unit> enoughMovement = new Match<Unit>()
+            {
+                public boolean match(Unit u)
+                {
+                    return m_mustMoveWithDetails.getMovement().getInt(u) >= route.getLength();
+                }
+
+            };
+            if(MoveValidator.isUnload(route) && route.getLength() == 1)
+            {
+                CompositeMatch<Unit> landOrCanMove = new CompositeMatchOr<Unit>();
+                landOrCanMove.add(Matches.UnitIsLand);
+                CompositeMatch<Unit> notLandAndCanMove = new CompositeMatchAnd<Unit>();
+                notLandAndCanMove.add(enoughMovement);
+                notLandAndCanMove.add(Matches.UnitIsNotLand);
+                landOrCanMove.add(notLandAndCanMove);
+                movable.add(landOrCanMove);
+            }
+            else
+                movable.add(enoughMovement);
+        }
+
+        if (route != null && route.getEnd() != null) 
+        {
+            boolean water = route.getEnd().isWater();
+            boolean load = MoveValidator.isLoad(route);
+            if(water && !load)
+                movable.add(Matches.UnitIsNotLand);
+            if(!water)
+                movable.add(Matches.UnitIsNotSea);
+        }
+        return movable;
     }
     
     /**
@@ -427,17 +459,7 @@ public class MovePanel extends ActionPanel
      */
     private void allowSpecificUnitSelection(Collection<Unit> units, Route route)
     {
-        CompositeMatch<Unit> selectableUnits = new CompositeMatchAnd<Unit>();
-        selectableUnits.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
-        selectableUnits.add(Matches.UnitIsNotFactory);
-        if(!m_nonCombat)
-            selectableUnits.add(new InverseMatch<Unit>( Matches.UnitIsAA));
-        if(route.getEnd().isWater())
-            selectableUnits.add(Matches.UnitIsNotLand);
-        else
-            selectableUnits.add(Matches.UnitIsNotSea);
-        
-        Collection<Unit> ownedUnits = getFirstSelectedTerritory().getUnits().getMatches(selectableUnits);
+        Collection<Unit> ownedUnits = getFirstSelectedTerritory().getUnits().getMatches(getMovableMatch(route));
         
         boolean mustQueryUser = false;
         
@@ -460,10 +482,7 @@ public class MovePanel extends ActionPanel
                 //then the user has to refine his selection
                 if(category1 != category2 &&
                    category1.getType() == category2.getType() &&
-                   (
-                           category1.getMovement() != category2.getMovement() ||
-                           !Util.equals(category2.getDependents(), category1.getDependents())
-                   ) 
+                   !category1.equalsIgnoreMovement(category2)
                    )
                 {
                     //if we are moving all the units from both categories, then nothing to choose
@@ -635,54 +654,10 @@ public class MovePanel extends ActionPanel
     {
         if(route.getLength() == 0)
             return new ArrayList<Unit>(units);
-                
-        
-        Match<Unit> enoughMovement = new Match<Unit>()
-        {
-            public boolean match(Unit u)
-            {
-                return m_mustMoveWithDetails.getMovement().getInt(u) >= route.getLength();
-            }
-        }; 
-        
-        CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
-        
-        //we have to allow land units that have no movement to unload
-        if(MoveValidator.isUnload(route) && route.getLength() == 1)
-        {
-            //the expression here is land || (!land && hasEnoughMovement)
-            
-            CompositeMatch<Unit> landOrCanMove = new CompositeMatchOr<Unit>();
-            landOrCanMove.add(Matches.UnitIsLand);
-            
-            CompositeMatch<Unit> notLandAndCanMove = new CompositeMatchAnd<Unit>();
-            notLandAndCanMove.add(enoughMovement);
-            notLandAndCanMove.add(Matches.UnitIsNotLand);
-            landOrCanMove.add(notLandAndCanMove);
-            
-            
-            match.add(landOrCanMove);
-        }
-        else 
-            match.add(enoughMovement);
-        
-        
-        
-        if(!m_nonCombat)
-            match.add(new InverseMatch<Unit>(Matches.UnitIsAA));
-        
-        if(route.getEnd() != null)
-        {
-            boolean water = route.getEnd().isWater();
-            boolean load = MoveValidator.isLoad(route);
-            if(water && ! load)
-                match.add(Matches.UnitIsNotLand);
-            if(!water)
-                match.add(Matches.UnitIsNotSea);
-        }
-        
-        
-        return Match.getMatches(units, match);
+
+        CompositeMatch<Unit> movableMatch = getMovableMatch(route);
+
+        return Match.getMatches(units, movableMatch);
     }
 
     /**
@@ -827,16 +802,8 @@ public class MovePanel extends ActionPanel
                     return;
                 }
             }
-
-            CompositeMatchAnd<Unit> unitsToMoveMatch = new CompositeMatchAnd<Unit>();
-            unitsToMoveMatch.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
-            if(m_nonCombat)
-                unitsToMoveMatch.add(Matches.UnitIsNotFactory);
-            else
-            {
-                unitsToMoveMatch.add(Matches.UnitIsNotFactory);
-                unitsToMoveMatch.add(Matches.UnitIsNotAA);
-            }
+            // null route for basic match criteria only
+            CompositeMatch<Unit> unitsToMoveMatch = getMovableMatch(null);
             
 
             
@@ -845,11 +812,7 @@ public class MovePanel extends ActionPanel
                 if(!me.isShiftDown())
                 {
                     
-                    
-                    List<Unit> unitsToMove = t.getUnits().getMatches(unitsToMoveMatch
-                            );
-                    
-                    
+                    List<Unit> unitsToMove = t.getUnits().getMatches(unitsToMoveMatch);
                     
                     if(unitsToMove.isEmpty())
                         return;
@@ -904,9 +867,9 @@ public class MovePanel extends ActionPanel
                 sortByDecreasingMovement(units,t);
                 
                 // check for alt key - add 1/10 of total units (useful for splitting large armies)
-            	int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
-            	int addCount = 0;
-            	
+                int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
+                int addCount = 0;
+                
                 for(Unit unit : units)
                 {
                     if(!m_selectedUnits.contains(unit))
@@ -937,11 +900,11 @@ public class MovePanel extends ActionPanel
                     m_selectedUnits.clear();
                 else {
                     // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-                	int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(m_selectedUnits.size() / 10)) : 1;
-                	
+                    int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(m_selectedUnits.size() / 10)) : 1;
+                    
                     //remove the last element
-                	for (int i=0; i<iterCount; i++) 
-	                    m_selectedUnits.remove( new ArrayList<Unit>(m_selectedUnits).get(m_selectedUnits.size() -1 ) );
+                    for (int i=0; i<iterCount; i++) 
+                        m_selectedUnits.remove( new ArrayList<Unit>(m_selectedUnits).get(m_selectedUnits.size() -1 ) );
                 }
             }
             //we have actually clicked on a specific unit
@@ -960,9 +923,9 @@ public class MovePanel extends ActionPanel
                     Collections.reverse(units);
                     
                     // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-                	int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
+                    int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
                     int remCount = 0;
-                	
+                    
                     for(Unit unit : units)
                     {
                         if(m_selectedUnits.contains(unit))
@@ -1016,12 +979,13 @@ public class MovePanel extends ActionPanel
                   if(transports == null)
                       return;
                 }
-                else if(MoveValidator.isUnload(route))
+                else if(MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
                 {
-                    List<Unit> unloadAble = Match.getMatches(m_selectedUnits,getUnloadableMatch());
+                    CompositeMatch<Unit> unloadableMatch = getMovableMatch(route);
+                    List<Unit> unloadAble = Match.getMatches(m_selectedUnits,unloadableMatch);
                     
                     Collection<Unit> canMove = new ArrayList<Unit>(getUnitsToUnload(route, unloadAble));
-                    canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(getUnloadableMatch())));
+                    canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(unloadableMatch)));
                     if(canMove.isEmpty())
                     {
                         CANCEL_MOVE_ACTION.actionPerformed(null);

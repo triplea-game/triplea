@@ -112,6 +112,16 @@ public class UnitCategory implements Comparable
            other.m_owner.equals(this.m_owner) &&
            Util.equals(this.m_dependents, other.m_dependents);
        return equalsIgnoreDamaged;
+    }
+
+    public boolean equalsIgnoreMovement(UnitCategory other)
+    {
+        boolean equalsIgnoreMovement =
+            other.m_type.equals(this.m_type) &&
+            other.m_owner.equals(this.m_owner) &&
+            other.m_damaged == this.m_damaged &&
+            Util.equals(this.m_dependents, other.m_dependents);
+        return equalsIgnoreMovement;
    }
 
    public int hashCode()
