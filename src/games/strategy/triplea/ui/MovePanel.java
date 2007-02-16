@@ -509,8 +509,10 @@ public class MovePanel extends ActionPanel
             }
             List<Unit> candidateUnits = Match.getMatches(ownedUnits, rightUnitTypeMatch);
             
-            
-            UnitChooser chooser = new UnitChooser(candidateUnits, units, m_mustMoveWithDetails.getMustMoveWith(),
+            // sort units in preferred order
+            List<Unit> sortedUnits = new ArrayList<Unit>(units);
+            sortByDecreasingTransportCapacityIncreasingMovement(sortedUnits, m_mustMoveWithDetails);
+            UnitChooser chooser = new UnitChooser(candidateUnits, sortedUnits, m_mustMoveWithDetails.getMustMoveWith(),
                     m_mustMoveWithDetails.getMovement(), m_bridge.getGameData(), false, getMap().getUIContext());
 
             
@@ -615,36 +617,36 @@ public class MovePanel extends ActionPanel
         }
 
 
-	// No aa guns on route predicate
+        // No aa guns on route predicate
         CompositeMatch<Territory> noAA = new CompositeMatchOr<Territory>();
         noAA.add(new InverseMatch<Territory>(Matches.territoryHasEnemyAA(
             getCurrentPlayer(), getData())));
         //ignore the destination
         noAA.add(Matches.territoryIs(end));
 
-	// No neutral countries on route predicate
+        // No neutral countries on route predicate
         Match<Territory> noEmptyNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNuetral, Matches.TerritoryIsEmpty));
 
-	// No neutral countries nor AA guns on route predicate
-	Match<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(noAA, noEmptyNeutral);
+        // No neutral countries nor AA guns on route predicate
+        Match<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(noAA, noEmptyNeutral);
 
-	// Try to avoid both AA guns and neutral territories
-	Route noAAOrNeutralRoute = getData().getMap().getRoute(start, end, noNeutralOrAA);
+        // Try to avoid both AA guns and neutral territories
+        Route noAAOrNeutralRoute = getData().getMap().getRoute(start, end, noNeutralOrAA);
         if (noAAOrNeutralRoute != null &&
             noAAOrNeutralRoute.getLength() == defaultRoute.getLength())
-	  return noAAOrNeutralRoute;
+          return noAAOrNeutralRoute;
 
         // Try to avoid aa guns
         Route noAARoute = getData().getMap().getRoute(start, end, noAA);
         if (noAARoute != null &&
             noAARoute.getLength() == defaultRoute.getLength())
-	  return noAARoute;
+          return noAARoute;
 
-	// Try to avoid neutral countries
+        // Try to avoid neutral countries
         Route noNeutralRoute = getData().getMap().getRoute(start, end, noEmptyNeutral);
         if (noNeutralRoute != null &&
             noNeutralRoute.getLength() == defaultRoute.getLength())
-	  return noNeutralRoute;
+          return noNeutralRoute;
 
         return defaultRoute;
     }
@@ -657,7 +659,35 @@ public class MovePanel extends ActionPanel
 
         CompositeMatch<Unit> movableMatch = getMovableMatch(route);
 
-        return Match.getMatches(units, movableMatch);
+        // get available units at the start of the route
+        Collection<Unit> availUnits = route.getStart().getUnits().getUnits();
+        // get candidate units that are actually movable
+        List<Unit> candidateUnits = new ArrayList(Match.getMatches(availUnits, movableMatch));
+        // sort candidate units in increasing movement order
+        sortByDecreasingTransportCapacityIncreasingMovement(candidateUnits, m_mustMoveWithDetails);
+
+        List<Unit> newUnits = new ArrayList(units.size());
+
+        // loop through selected units and replace with best candidate
+        for (Unit unit: units)
+        {
+            Unit unitToAdd = null;
+            Iterator<Unit> candidateIter = candidateUnits.iterator();
+            // find first matching unit
+            while (candidateIter.hasNext())
+            {
+                Unit checkUnit = (Unit)candidateIter.next();
+                if(!unit.getType().equals(checkUnit.getType()))
+                    continue;
+                // type, owner, and movement matches, do the swap
+                unitToAdd = checkUnit;
+                candidateIter.remove();
+                break;
+            }
+            if(unitToAdd != null)
+                newUnits.add(unitToAdd);
+        }
+        return newUnits;
     }
 
     /**
@@ -736,26 +766,31 @@ public class MovePanel extends ActionPanel
       return chooser.getSelected(false);
     }
 
-    private void sortByDecreasingMovement(List<Unit> units, Territory territory)
+    private void sortByDecreasingTransportCapacityIncreasingMovement(List<Unit> units, final MustMoveWithDetails mustMoveWith)
     {
         if(units.isEmpty())
             return;
         
-         if(!getFirstSelectedTerritory().equals(territory))
-             throw new IllegalStateException("Wrong selected territory");
-         
-         Comparator<Unit> increasingMovement = new Comparator<Unit>()
-         {
-             public int compare(Unit u1, Unit u2)
-             {
-                 int left1 = m_mustMoveWithDetails.getMovement().getInt(u1);
-                 int left2 = m_mustMoveWithDetails.getMovement().getInt(u2);
+        Comparator<Unit> increasingMovement = new Comparator<Unit>()
+        {
+            public int compare(Unit u1, Unit u2)
+            {
+                Collection transporting1 = (Collection) mustMoveWith.getMustMoveWith().get(u1);
+                Collection transporting2 = (Collection) mustMoveWith.getMustMoveWith().get(u2);
+                int cost1 = MoveValidator.getTransportCost(transporting1);
+                int cost2 = MoveValidator.getTransportCost(transporting2);
 
-                 return left2 - left1;                 
-             }
-         };
+                if (cost1 != cost2)
+                    return cost2 - cost1;
+
+                int left1 = mustMoveWith.getMovement().getInt(u1);
+                int left2 = mustMoveWith.getMovement().getInt(u2);
+
+                return left1 - left2;                 
+            }
+        };
          
-         Collections.sort(units,increasingMovement);
+        Collections.sort(units,increasingMovement);
     }
     
     private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener()
@@ -804,8 +839,6 @@ public class MovePanel extends ActionPanel
             }
             // null route for basic match criteria only
             CompositeMatch<Unit> unitsToMoveMatch = getMovableMatch(null);
-            
-
             
             if(units.isEmpty() && m_selectedUnits.isEmpty())
             {
@@ -863,9 +896,10 @@ public class MovePanel extends ActionPanel
             //add one
             else
             {
-                //we want to select units with the most movement
-                sortByDecreasingMovement(units,t);
+                if(!getFirstSelectedTerritory().equals(t))
+                    throw new IllegalStateException("Wrong selected territory");
                 
+                // best candidate unit for route is chosen dynamically later
                 // check for alt key - add 1/10 of total units (useful for splitting large armies)
                 int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
                 int addCount = 0;
@@ -918,10 +952,10 @@ public class MovePanel extends ActionPanel
                 //remove one
                 else
                 {
-                    //remove those with the least movement first
-                    sortByDecreasingMovement(units, t);
-                    Collections.reverse(units);
+                    if(!getFirstSelectedTerritory().equals(t))
+                        throw new IllegalStateException("Wrong selected territory");
                     
+                    // doesn't matter which unit we remove since units are assigned to routes later
                     // check for alt key - remove 1/10 of total units (useful for splitting large armies)
                     int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
                     int remCount = 0;
