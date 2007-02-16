@@ -1407,11 +1407,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Matches.UnitIsNotSub);
         units.addAll(Match.getMatches(m_attackingWaitingToDie,
                 Matches.UnitIsNotSub));
+        // Only attacker can fire, allies can't.
+        Collection<Unit> ownedUnits = Match.getMatches(units,
+                Matches.unitIsOwnedBy(m_attacker));
 
-        if (units.isEmpty())
+        if (ownedUnits.isEmpty())
             return;
 
-        fire(m_defender.getName() + DEFENDER_SELECT_CASUALTIES, units,
+        fire(m_defender.getName() + DEFENDER_SELECT_CASUALTIES, ownedUnits,
                 m_defendingUnits, false, true, bridge, "Attackers fire,");
     }
 
