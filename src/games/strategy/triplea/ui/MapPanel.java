@@ -669,8 +669,8 @@ public class MapPanel extends ImageScrollerLargeView
         }
         
         //handle the non overlap
-	    Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
-	    drawTiles(g2d, images, data, mainBounds,0, undrawnTiles);
+        Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
+        drawTiles(g2d, images, data, mainBounds,0, undrawnTiles);
         
         double leftOverlap = x + getScaledWidth() - m_model.getMaxWidth();
         //handle wrapping off the screen to the right
@@ -686,7 +686,7 @@ public class MapPanel extends ImageScrollerLargeView
         if(m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
         {
             AffineTransform t = new AffineTransform();
-            t.translate(m_scale *  (m_routeDescription.getEnd().getX() - getXOffset()) , m_scale * (m_routeDescription.getEnd().getY() - getYOffset()));
+            t.translate(m_scale * normalizeX(m_routeDescription.getEnd().getX() - getXOffset()) , m_scale * (m_routeDescription.getEnd().getY() - getYOffset()));
             t.scale(m_scale, m_scale);
             g2d.drawImage(m_mouseShadowImage, t, this);
         }
@@ -705,7 +705,7 @@ public class MapPanel extends ImageScrollerLargeView
             BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(first.getType(), first.getOwner(), m_data, first.getHits() != 0);
             
             AffineTransform t = new AffineTransform();
-            t.translate( (r.getX() - getXOffset()) * m_scale, (r.getY() - getYOffset()) * m_scale);
+            t.translate( normalizeX(r.getX() - getXOffset()) * m_scale, (r.getY() - getYOffset()) * m_scale);
             t.scale(m_scale, m_scale);
             
             g2d.drawImage(highlight, t, this );
@@ -792,8 +792,8 @@ public class MapPanel extends ImageScrollerLargeView
                 }
                 else
                 {
-    	            img = tile.getImage(data, m_uiContext.getMapData());
-    	            images.add(tile);
+                    img = tile.getImage(data, m_uiContext.getMapData());
+                    images.add(tile);
                 }
                 if(img != null)
                 {
