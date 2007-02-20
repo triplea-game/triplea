@@ -107,7 +107,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     
     Iterator<NamedAttachable> iter = results.keySet().iterator();
     Collection<Unit> totalUnits = new ArrayList<Unit>();
-    Collection<Change> changes = new ArrayList<Change>();
+    CompositeChange changes = new CompositeChange();
     Resource ipcs = getData().getResourceList().getResource(Constants.IPCS);
     int ipcsRemaining = m_player.getResources().getQuantity(ipcs);
 
@@ -150,6 +150,19 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
       changes.add(change);
     }
 
+    addHistoryEvent(totalUnits, ipcsRemaining);
+
+    
+    // commit changes
+    m_bridge.addChange(changes);
+      
+
+    return null;
+  }
+
+
+private void addHistoryEvent(Collection<Unit> totalUnits, int ipcsRemaining)
+{
     // add history event
     String transcriptText;
     if(!totalUnits.isEmpty())
@@ -158,18 +171,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
       transcriptText = m_player.getName() + " buy nothing; "+ipcsRemaining+" ipcs remaining";
     m_bridge.getHistoryWriter().startEvent(transcriptText);
     m_bridge.getHistoryWriter().setRenderingData(totalUnits);
-
-    // commit changes
-    Iterator<Change> changeIter = changes.iterator();
-    while (changeIter.hasNext())
-    {
-      Change change = changeIter.next();
-      m_bridge.addChange(change);
-      changeIter.remove();
-    }
-
-    return null;
-  }
+}
 
   private IntegerMap<Resource> getCosts(IntegerMap<ProductionRule> productionRules)
   {
