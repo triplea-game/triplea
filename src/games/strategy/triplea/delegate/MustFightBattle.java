@@ -389,9 +389,60 @@ public class MustFightBattle implements Battle, BattleStepStrings
         bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite);
         bridge.getHistoryWriter().setRenderingData(m_battleSite);
         removeAirNoLongerInTerritory();
+        
+        writeUnitsToHistory(bridge);
 
-        // BEGIN writing all attacking and defending units in history log
+        //it is possible that no attacking units are present, if so
+        //end now
+        if (m_attackingUnits.size() == 0)
+        {
+            endBattle(bridge);
+            defenderWins(bridge);
+            return;
+        }
 
+        //it is possible that no defending units exist
+        if (m_defendingUnits.size() == 0)
+        {
+            endBattle(bridge);
+            attackerWins(bridge);
+            return;
+        }
+
+        // Add dependent defending units to dependent unit map
+        Map<Unit, Collection<Unit>> dependencies = transporting(m_defendingUnits);
+        addDependentUnits(dependencies);
+
+        //list the steps
+        m_stepStrings = determineStepStrings(true);
+
+        ITripleaDisplay display = getDisplay(bridge);
+        display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
+
+        display.listBattleSteps(m_battleID, m_stepStrings);
+
+        if(!m_headless)
+        {
+            //take the casualties with least movement first
+            if(isAmphibious())
+                sortAmphib(m_attackingUnits, m_data);
+            else 
+                BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
+            BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
+        }
+        
+        //System.out.print(m_attackingUnits);
+        
+        //System.out.print(m_defendingUnits);
+
+        //push on stack in opposite order of execution
+        pushFightLoopOnStack(bridge);
+        pushFightStartOnStack();
+        m_stack.execute(bridge, m_data);
+    }
+
+    private void writeUnitsToHistory(IDelegateBridge bridge)
+    {
         Set playerSet = m_battleSite.getUnits().getPlayersWithUnits();
         Iterator<PlayerID> playersIter;
         String transcriptText;
@@ -461,56 +512,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         // write defending units to history
         if (m_defendingUnits.size() > 0)
             bridge.getHistoryWriter().addChildToEvent(transcriptText, allDefendingUnits);
-
-        // FINISHED writing all attacking and defending units in history log
-
-        //it is possible that no attacking units are present, if so
-        //end now
-        if (m_attackingUnits.size() == 0)
-        {
-            endBattle(bridge);
-            defenderWins(bridge);
-            return;
-        }
-
-        //it is possible that no defending units exist
-        if (m_defendingUnits.size() == 0)
-        {
-            endBattle(bridge);
-            attackerWins(bridge);
-            return;
-        }
-
-        // Add dependent defending units to dependent unit map
-        Map<Unit, Collection<Unit>> dependencies = transporting(m_defendingUnits);
-        addDependentUnits(dependencies);
-
-        //list the steps
-        m_stepStrings = determineStepStrings(true);
-
-        ITripleaDisplay display = getDisplay(bridge);
-        display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits), removeNonCombatants(m_defendingUnits), m_dependentUnits, m_attacker, m_defender);
-
-        display.listBattleSteps(m_battleID, m_stepStrings);
-
-        if(!m_headless)
-        {
-            //take the casualties with least movement first
-            if(isAmphibious())
-                sortAmphib(m_attackingUnits, m_data);
-            else 
-                BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
-            BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
-        }
-        
-        //System.out.print(m_attackingUnits);
-        
-        //System.out.print(m_defendingUnits);
-
-        //push on stack in opposite order of execution
-        pushFightLoopOnStack(bridge);
-        pushFightStartOnStack();
-        m_stack.execute(bridge, m_data);
     }
 
     private void removeAirNoLongerInTerritory()
