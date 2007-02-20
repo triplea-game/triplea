@@ -13,7 +13,7 @@ public class LobbyLoginValidator implements ILoginValidator
 {
     static final String THATS_NOT_A_NICE_NAME = "Thats not a nice name";
     //these names cant be in users name
-    static final String[] badWords = {"shit", "bitch", "fuck", "slut", "pussy", "asshole", "hell", "bastard", "nigger", "whore"};
+    static final String[] badWords = {"asshole", "bastard", "bitch", "dick", "fuck", "hell", "nigger" ,"pussy", "queer", "slut", "shit", "whore",  };
     
     private final static Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 
