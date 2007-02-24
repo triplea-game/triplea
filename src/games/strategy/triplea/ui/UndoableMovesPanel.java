@@ -35,6 +35,7 @@ public class UndoableMovesPanel extends JPanel
     {
         m_data = data;
         m_movePanel = movePanel;
+        m_moves = Collections.emptyList();
     }
 
     public void setMoves(List<UndoableMove> moves)
