@@ -735,25 +735,85 @@ public class MovePanel extends ActionPanel
       
       
       List<Unit> candidateTransports = new ArrayList<Unit>();
+      List<Unit> candidateAlliedTransports = new ArrayList<Unit>();
 
-      //find the transports with space left
+      // find the transports with space left
       Iterator transportIter = transports.iterator();
       while (transportIter.hasNext())
       {
-        Unit transport = (Unit) transportIter.next();
-        Collection transporting = (Collection) endMustMoveWith.getMustMoveWith().get(transport);
-        int cost = MoveValidator.getTransportCost(transporting);
-        int capacity = UnitAttachment.get(transport.getType()).getTransportCapacity();
-        if(capacity >= cost + minTransportCost)
-          candidateTransports.add(transport);
+          Unit transport = (Unit) transportIter.next();
+          int capacity = getDelegate().getTransportTracker().getAvailableCapacity(transport);
+          if(capacity >= minTransportCost)
+          {
+              if (transport.getOwner().equals(getCurrentPlayer()))
+                  candidateTransports.add(transport);
+              else
+                  candidateAlliedTransports.add(transport);
+          }
       }
+
+      // Determine common-sense candidate transport load order.
+      // For both combat and non-combat, always fill half-full transports first.
+      // Next, for both combat and non-combat, transports that have been 
+      //   moved within loading range this turn are likely candidates. 
+      // Therefore, sort by (decreasing cost, increasing movement).
+      
+      sortByDecreasingTransportCapacityIncreasingMovement(candidateTransports, endMustMoveWith);
+      sortByDecreasingTransportCapacityIncreasingMovement(candidateAlliedTransports, endMustMoveWith);
+      // append allied transports to list - they are a last resort
+      candidateTransports.addAll(candidateAlliedTransports);
 
       if(candidateTransports.size() <= 1)
         return candidateTransports;
 
+      // m_selectedUnits are the units we are loading
+      List<Unit> availableUnits = new ArrayList<Unit>(m_selectedUnits);
+
+      // Make reasonable default selections based on candidate transport load order
+      Collection<Unit> defaultSelections = new ArrayList<Unit>();
+      transportIter = candidateTransports.iterator();
+      while (availableUnits.size() > 0 && transportIter.hasNext())
+      {
+          // Use capacity/cost formulas to fill as few transports as possible.
+          Unit transport = (Unit)transportIter.next();
+          // no movement left; not a good candidate
+          if (endMustMoveWith.getMovement().getInt(transport) == 0)
+              continue;
+          int capacity = getDelegate().getTransportTracker().getAvailableCapacity(transport);
+          boolean isSelected = false;
+
+          // Loop through selected units and assign them to transports.
+          Iterator unitIter = availableUnits.iterator();
+          while (unitIter.hasNext() && (capacity >= minTransportCost))
+          {
+              Unit unit = (Unit)unitIter.next();
+              int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+              if(capacity >= unitCost)
+              {
+                  isSelected = true;
+                  unitIter.remove();
+                  capacity -= unitCost;
+              }
+          }
+          if (isSelected)
+              defaultSelections.add(transport);
+      } 
+
+      // If we've filled all the transports, then no user intervention required.
+      // It is possible to make "wrong" decisions if there are mixed unit types and
+      //   mixed transport categories, but there is no UI to manage that anyway.
+      //   Players will need to load incrementally in such cases.
+      if (defaultSelections.containsAll(candidateTransports))
+          return defaultSelections;
+
+      // If there is only one candidate transport category, then don't prompt
+      // This assumes we want to fill as few transports as possible, which is usually a reasonable assumption.
+      // If you want a bunch of half-full transports than do them separately.
+      if(UnitSeperator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement()).size() == 1)
+          return defaultSelections;
 
       // choosing what units to LOAD.
-      UnitChooser chooser = new UnitChooser(candidateTransports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement(), m_bridge.getGameData(),  getMap().getUIContext());
+      UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement(), m_bridge.getGameData(), false, getMap().getUIContext());
       chooser.setTitle("What transports do you want to load");
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                                                 chooser, "What transports do you want to load",
