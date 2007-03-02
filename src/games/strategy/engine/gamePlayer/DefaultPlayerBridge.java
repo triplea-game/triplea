@@ -143,7 +143,7 @@ class GameOverInvocationHandler implements InvocationHandler
         catch(InvocationTargetException ite)
         {
             if(!m_game.isGameOver())
-                throw ite;
+                throw ite.getCause();
             else
                 throw new GameOverException("Game Over Exception");            
         }

@@ -174,7 +174,7 @@ public class DelegateExecutionManager
                 catch(InvocationTargetException ite)
                 {
                     assertGameNotOver();
-                    throw ite;
+                    throw ite.getCause();
                 }
                 catch(RuntimeException re)
                 {
