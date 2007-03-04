@@ -1028,8 +1028,10 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 {
                     // set all unmapped units as disallowed if there are no transports
                     //   or only one unit category
-                    for (Unit unit : unitsToTransports.keySet())
+                    for (Unit unit : land)
                     {
+                        if (unitsToTransports.containsKey(unit))
+                            continue;
                         UnitAttachment ua = UnitAttachment.get(unit.getType());
                         if (ua.getTransportCost() != -1)
                             result.addDisallowedUnit("Not enough transports", unit);
