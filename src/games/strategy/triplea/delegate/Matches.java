@@ -497,7 +497,7 @@ public class Matches
         };
     }
 
-    public static final Match<Territory> TerritoryIsNuetral = new Match<Territory>()
+    public static final Match<Territory> TerritoryIsNeutral = new Match<Territory>()
     {
         public boolean match(Territory t)
         {
@@ -897,7 +897,7 @@ public class Matches
 	        public boolean match(Unit u)
 	        {
 	            SubmergedTracker tracker = DelegateFinder.moveDelegate(data).getSubmergedTracker();
-	            return tracker.isSuberged(u);
+	            return tracker.isSubmerged(u);
 	        }
 	    };
 	    

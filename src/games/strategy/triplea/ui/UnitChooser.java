@@ -21,6 +21,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
+import games.strategy.util.*;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.*;
 import games.strategy.util.IntegerMap;
@@ -50,10 +51,22 @@ public class UnitChooser extends JPanel
   private JButton m_autoSelectButton;
   private JButton m_selectNoneButton;
   private final UIContext m_uiContext;
+  private Match<Collection<Unit>> m_match;
   
   /** Creates new UnitChooser */ 
   public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data, UIContext context)
   {
+    m_dependents = dependent;
+    m_data = data;
+    m_uiContext = context;
+    m_match = null;
+    createEntries(units, dependent, movement, Collections.<Unit>emptyList());
+    layoutEntries();
+    
+  }
+  public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data, UIContext context, Match<Collection<Unit>> match)
+  {
+    m_match = match;
     m_dependents = dependent;
     m_data = data;
     m_uiContext = context;
@@ -79,8 +92,26 @@ public class UnitChooser extends JPanel
     m_data = data;
     m_allowTwoHit = allowTwoHit;
     m_uiContext = uiContext;
+    m_match = null;
     createEntries(units, dependent, movement, defaultSelections);
     layoutEntries();
+  }
+  
+  public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement, GameData data, boolean allowTwoHit, UIContext uiContext, Match<Collection<Unit>> match)
+  {
+    m_dependents = dependent;
+    m_data = data;
+    m_allowTwoHit = allowTwoHit;
+    m_uiContext = uiContext;
+    m_match = match;
+    createEntries(units, dependent, movement, defaultSelections);
+    layoutEntries();
+    if (match != null)
+    {
+        m_autoSelectButton.setVisible(false);
+        m_selectNoneButton.setVisible(false);
+        checkMatches();
+    }
   }
 
   /**
@@ -131,6 +162,36 @@ public class UnitChooser extends JPanel
 
   }
 
+  private void checkMatches()
+  {
+    Collection<Unit> allSelectedUnits = new ArrayList<Unit>();
+    for (ChooserEntry entry : m_entries)
+        addToCollection(allSelectedUnits, entry, entry.getTotalHits(), true);
+
+    // check match against each scroll button
+    for (ChooserEntry entry : m_entries)
+    {
+        Collection<Unit> newSelectedUnits = new ArrayList<Unit>(allSelectedUnits);
+        int totalHits = entry.getTotalHits();
+        int totalUnits = entry.getCategory().getUnits().size();
+        int leftToSelect = 0;
+        Iterator<Unit> unitIter = entry.getCategory().getUnits().iterator();
+        for (int i=1; i <= totalUnits; i++)
+        {
+            Unit unit = unitIter.next();
+            if (i > totalHits)
+                newSelectedUnits.add(unit);
+            if (i >= totalHits)
+            {
+                if (m_match.match(newSelectedUnits))
+                    leftToSelect = i - totalHits;
+                else
+                    break;
+            }
+        }
+        entry.setLeftToSelect(leftToSelect);
+    }
+  }
 
   private int getSelectedCount()
   {
@@ -353,7 +414,10 @@ public class UnitChooser extends JPanel
   {
     public void changedValue(ScrollableTextField field)
     {
-      updateLeft();
+        if (m_match != null)
+            checkMatches();
+        else
+            updateLeft();
     }
   };
  

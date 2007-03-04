@@ -21,6 +21,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 
 /**
  * Remote interface for MoveDelegate
@@ -46,6 +47,11 @@ public interface IMoveDelegate extends IRemote
      * @return an error message if the move cant be made, null otherwise
      */
     public String move(Collection<Unit> units, Route route);
+
+
+    public MoveValidationResult validateMove(Collection<Unit> units, Route route, PlayerID player, Collection<Unit> transportsToLoad);
+
+    public Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad);
 
     /**
      * Get the moves already made 

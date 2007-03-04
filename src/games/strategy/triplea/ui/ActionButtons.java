@@ -57,7 +57,7 @@ public class ActionButtons extends JPanel
     public ActionButtons(GameData data, MapPanel map, TripleAFrame parent)
     {
         m_battlePanel = new BattlePanel(data, map);
-        m_movePanel = new MovePanel(data, map);
+        m_movePanel = new MovePanel(data, map, parent);
         m_purchasePanel = new PurchasePanel(data, map);
         m_placePanel = new PlacePanel(data, map);
         m_techPanel = new TechPanel(data, map);

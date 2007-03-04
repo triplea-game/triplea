@@ -1085,8 +1085,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Route r = new Route();
                 r.setStart(m_battleSite);
                 r.add(t);
-                return null == MoveValidator.validateCanal(r, m_defender,
-                        m_data);
+                if (MoveValidator.validateCanal(r, m_defender, m_data) != null)
+                    return false;
+                return true;
             }
         };
         match.add(canalMatch);

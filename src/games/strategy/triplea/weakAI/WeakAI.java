@@ -522,7 +522,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             moveOfType.add(Matches.UnitIsLand);
             
             CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(new InverseMatch<Territory>(Matches.TerritoryIsImpassible), 
-                    new InverseMatch<Territory>(Matches.TerritoryIsNuetral),
+                    new InverseMatch<Territory>(Matches.TerritoryIsNeutral),
                     Matches.TerritoryIsLand);
             
             List<Unit> units = t.getUnits().getMatches(moveOfType);

@@ -30,7 +30,7 @@ public class SubmergedTracker implements Serializable
 {
     private Set<Unit> m_submerged = new HashSet<Unit>();
     
-    public boolean isSuberged(Unit unit)
+    public boolean isSubmerged(Unit unit)
     {
         return m_submerged.contains(unit);
     }
@@ -40,7 +40,7 @@ public class SubmergedTracker implements Serializable
         Iterator iter = units.iterator();
         while(iter.hasNext())
         {
-            if(isSuberged((Unit) iter.next()))
+            if(isSubmerged((Unit) iter.next()))
                 return true;
         }
         return false;
@@ -66,6 +66,5 @@ public class SubmergedTracker implements Serializable
     {
         m_submerged.clear();
     }
-    
     
 }

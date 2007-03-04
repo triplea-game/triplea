@@ -251,4 +251,21 @@ public class TransportTracker implements java.io.Serializable
     return false;
   }
 
+  public Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(Collection<Unit> units)
+  {
+    Collection<Unit> retUnits = new ArrayList<Unit>();
+    Iterator<Map.Entry<Unit,ArrayList<Unit>>> iter = m_alliedLoadedThisTurn.entrySet().iterator();
+    while (iter.hasNext())
+    {
+      ArrayList<Unit> loadedInAlliedTransports = iter.next().getValue();
+      for (Unit unit : loadedInAlliedTransports)
+      {
+          if (units.contains(unit))
+              retUnits.add(unit);
+      }
+    }
+    return retUnits;
+  }
+
+
 }

@@ -29,6 +29,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.*;
 
 import java.awt.*;
+import javax.swing.ImageIcon;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -83,6 +84,8 @@ public class MapPanel extends ImageScrollerLargeView
     private final LinkedBlockingQueue<Tile> m_undrawnTiles = new LinkedBlockingQueue<Tile>();
     
     private List<Unit> m_highlightUnits;
+
+    private Cursor m_hiddenCursor = null;
     
     /** Creates new MapPanel */
     public MapPanel(GameData data, MapPanelSmallView smallView, UIContext uiContext, ImageScrollModel model) throws IOException
@@ -229,13 +232,13 @@ public class MapPanel extends ImageScrollerLargeView
 
     public void setRoute(Route route)
     {
-        setRoute(route, null, null);
+        setRoute(route, null, null, null);
     }
 
     /**
      * Set the route, could be null.
      */
-    public void setRoute(Route route, Point start, Point end)
+    public void setRoute(Route route, Point start, Point end, Image cursorImage)
     {
         if (route == null)
         {
@@ -252,7 +255,7 @@ public class MapPanel extends ImageScrollerLargeView
             
             return;
         }
-        RouteDescription newVal = new RouteDescription(route, start, end);
+        RouteDescription newVal = new RouteDescription(route, start, end, cursorImage);
         if (m_routeDescription != null && m_routeDescription.equals(newVal))
         {
             return;
@@ -681,8 +684,6 @@ public class MapPanel extends ImageScrollerLargeView
         }
 
         
-        MapRouteDrawer.drawRoute((Graphics2D) g2d, m_routeDescription, this, m_uiContext.getMapData());
-        
         if(m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
         {
             AffineTransform t = new AffineTransform();
@@ -690,9 +691,11 @@ public class MapPanel extends ImageScrollerLargeView
             t.scale(m_scale, m_scale);
             g2d.drawImage(m_mouseShadowImage, t, this);
         }
+
+        MapRouteDrawer.drawRoute((Graphics2D) g2d, m_routeDescription, this, m_uiContext.getMapData());
         
         //used to keep strong references to what is on the screen so it wont be garbage collected
-        //other references to the images are week references
+        //other references to the images are weak references
         m_images.clear();
         m_images.addAll(images);
 
@@ -852,6 +855,11 @@ public class MapPanel extends ImageScrollerLargeView
     
     public void setMouseShadowUnits(Collection<Unit> units)
     {
+        setMouseShadowUnits(units, null);
+    }
+
+    public void setMouseShadowUnits(Collection<Unit> units, Collection<UnitType> unresolvedTypes)
+    {
         if(units == null || units.isEmpty())
         {
             m_mouseShadowImage = null;
@@ -887,6 +895,16 @@ public class MapPanel extends ImageScrollerLargeView
             UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
                     category.getOwner().getName(), place,category.getDamaged(), false, "", m_uiContext );
             drawer.draw(bounds, m_data, g, m_uiContext.getMapData(), null, null);
+            if (unresolvedTypes != null && unresolvedTypes.contains(category.getType()))
+            {
+                Image helpImage = getHelpImage();
+                // position the icon in the lower-right corner of the unit
+                int unresolvedX = (int)place.getX() + icon_width - helpImage.getWidth(this);
+                int unresolvedY = (int)place.getY() + UnitImageFactory.UNIT_ICON_HEIGHT - helpImage.getHeight(this); 
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f) );
+                g.drawImage(helpImage, unresolvedX, unresolvedY, null);
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f) );
+            }
             i++;
         }
         m_mouseShadowImage = img;
@@ -915,6 +933,39 @@ public class MapPanel extends ImageScrollerLargeView
     {
         return m_uiContext;
     }
+
+    public void hideMouseCursor()
+    {
+        if(m_hiddenCursor == null)
+            m_hiddenCursor = getToolkit().createCustomCursor(new BufferedImage(1,1,BufferedImage.TYPE_4BYTE_ABGR), new Point(0,0), "Hidden");
+        setCursor(m_hiddenCursor);
+    }
+
+    public void showMouseCursor()
+    {
+        setCursor(Cursor.getDefaultCursor());
+    }
+
+    public Image getErrorImage()
+    {
+        return m_uiContext.getMapData().getErrorImage();
+    }
+
+    public Image getWarningImage()
+    {
+        return m_uiContext.getMapData().getWarningImage();
+    }
+
+    public Image getInfoImage()
+    {
+        return m_uiContext.getMapData().getInfoImage();
+    }
+
+    public Image getHelpImage()
+    {
+        return m_uiContext.getMapData().getHelpImage();
+    }
+
 }
 
 class RouteDescription
@@ -926,11 +977,22 @@ class RouteDescription
     //this point is in map co-ordinates, un scaled    
     private final Point m_end;
 
+    private final Image m_cursorImage;
+
     public RouteDescription(Route route, Point start, Point end)
     {
         m_route = route;
         m_start = start;
         m_end = end;
+        m_cursorImage = null;
+    }
+
+    public RouteDescription(Route route, Point start, Point end, Image cursorImage)
+    {
+        m_route = route;
+        m_start = start;
+        m_end = end;
+        m_cursorImage = cursorImage;
     }
 
     public boolean equals(Object o)
@@ -950,6 +1012,9 @@ class RouteDescription
             return false;
 
         if (m_end == null && other.m_end != null || other.m_end == null && m_end != null)
+            return false;
+
+        if (m_cursorImage != other.m_cursorImage)
             return false;
 
         //we dont want to be updating for every small change,
@@ -982,6 +1047,11 @@ class RouteDescription
     public Point getEnd()
     {
         return m_end;
+    }
+
+    public Image getCursorImage()
+    {
+        return m_cursorImage;
     }
     
   

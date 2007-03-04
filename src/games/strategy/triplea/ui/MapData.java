@@ -97,6 +97,14 @@ public class MapData
     private final ResourceLoader m_resourceLoader;
     
     private BufferedImage m_vcImage;
+
+    private BufferedImage m_errorImage = null;
+
+    private BufferedImage m_warningImage = null;
+
+    private BufferedImage m_infoImage = null;
+
+    private BufferedImage m_helpImage = null;
     
     public boolean scrollWrapX()
     {
@@ -555,18 +563,55 @@ public class MapData
     }
     
     
-    
     public Image getVCImage()
     {
         if(m_vcImage != null)
             return m_vcImage;
-        
         
         m_vcImage = loadImage("misc/vc.png");
         
         return m_vcImage;
     }
 
+    public Image getErrorImage()
+    {
+        if(m_errorImage != null)
+            return m_errorImage;
+
+        m_errorImage = loadImage("misc/error.gif");
+        
+        return m_errorImage;
+    }
+
+    public Image getWarningImage()
+    {
+        if(m_warningImage != null)
+            return m_warningImage;
+        
+        m_warningImage = loadImage("misc/warning.gif");
+        
+        return m_warningImage;
+    }
+
+    public Image getInfoImage()
+    {
+        if(m_infoImage != null)
+            return m_infoImage;
+        
+        m_infoImage = loadImage("misc/information.gif");
+        
+        return m_infoImage;
+    }
+
+    public Image getHelpImage()
+    {
+        if(m_helpImage != null)
+            return m_helpImage;
+        
+        m_helpImage = loadImage("misc/help.gif");
+        
+        return m_helpImage;
+    }
 
     private BufferedImage loadImage(String imageName)
     {

@@ -206,7 +206,7 @@ public class BattleTracker implements java.io.Serializable
         // instead of matching with inverse neutral
         conquerable.add(Matches.isTerritoryEnemyAndNotNeutral(id, data));
 
-//       conquerable.addInverse(Matches.TerritoryIsNuetral);
+//       conquerable.addInverse(Matches.TerritoryIsNeutral);
 
         //check the last territory specially to see if its a naval invasion
 
@@ -260,7 +260,7 @@ public class BattleTracker implements java.io.Serializable
         //TODO check for pre existing battles at the sight
         //here and in empty battle
 
-        Collection<Territory> neutral = route.getMatches(Matches.TerritoryIsNuetral);
+        Collection<Territory> neutral = route.getMatches(Matches.TerritoryIsNeutral);
         neutral = Match.getMatches(neutral, Matches.TerritoryIsEmpty);
         //deal with the end seperately
         neutral.remove(route.getEnd());
@@ -276,7 +276,7 @@ public class BattleTracker implements java.io.Serializable
 
         //deal with end territory, may be the case that
         //a naval battle must precede th
-        if (Matches.TerritoryIsNuetral.match(route.getEnd()) && Matches.TerritoryIsEmpty.match(route.getEnd()))
+        if (Matches.TerritoryIsNeutral.match(route.getEnd()) && Matches.TerritoryIsEmpty.match(route.getEnd()))
         {
             Battle precede = getDependentAmphibiousAssault(route);
             if (precede == null)

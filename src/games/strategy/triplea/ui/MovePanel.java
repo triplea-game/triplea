@@ -25,12 +25,14 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -42,6 +44,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 import java.awt.Point;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.lang.ref.WeakReference;
@@ -53,6 +56,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -78,11 +82,13 @@ public class MovePanel extends ActionPanel
 
     private static final Logger s_logger = Logger.getLogger(MovePanel.class.getName());
     
+    private TripleAFrame m_frame;
     private boolean m_listening = false;
     private JLabel m_actionLabel = new JLabel();
     private MoveDescription m_moveMessage;
     //access only through getter and setter!
     private Territory m_firstSelectedTerritory;
+    private Territory m_mouseCurrentTerritory;
     private IPlayerBridge m_bridge;
 
     private List<Territory> m_forced;
@@ -100,13 +106,25 @@ public class MovePanel extends ActionPanel
     //instead we only do so through the private setter
     private MustMoveWithDetails m_mustMoveWithDetails = null;
 
+    // cache this so we can update it only when territory/units change
+    private Collection<Unit> m_unitsThatCanMoveOnRoute;
+
+    private Collection<UnitType> m_unresolvedUnitTypes;
+
+    private Image m_currentCursorImage;
+
     /** Creates new MovePanel */
-    public MovePanel(GameData data, MapPanel map)
+    public MovePanel(GameData data, MapPanel map, TripleAFrame frame)
     {
         super(data, map);
+        m_frame = frame;
         CANCEL_MOVE_ACTION.setEnabled(false);
 
-         m_undoableMovesPanel = new UndoableMovesPanel(data, this);
+        m_undoableMovesPanel = new UndoableMovesPanel(data, this);
+        m_mouseCurrentTerritory = null;
+        m_unitsThatCanMoveOnRoute = Collections.emptyList();
+        m_unresolvedUnitTypes = Collections.emptyList();
+        m_currentCursorImage = null;
     }
 
     private JComponent leftBox(JComponent c)
@@ -298,8 +316,13 @@ public class MovePanel extends ActionPanel
         public void actionPerformed(ActionEvent e)
         {
             setFirstSelectedTerritory(null);
+            m_mouseCurrentTerritory = null;
             m_forced = null;
             m_selectedUnits.clear();
+            m_unresolvedUnitTypes = Collections.emptyList();
+            m_frame.clearStatusMessage();
+            getMap().showMouseCursor();
+            m_currentCursorImage = null;
             updateRouteAndMouseShadowUnits(null);
             
             this.setEnabled(false);
@@ -457,51 +480,73 @@ public class MovePanel extends ActionPanel
      * Allow the user to select specific units, if for example some units
      * have different movement
      */
-    private void allowSpecificUnitSelection(Collection<Unit> units, Route route)
+    private boolean allowSpecificUnitSelection(Collection<Unit> units, final Route route, boolean mustQueryUser, Match<Collection<Unit>> matchCriteria)
     {
         Collection<Unit> ownedUnits = getFirstSelectedTerritory().getUnits().getMatches(getMovableMatch(route));
         
-        boolean mustQueryUser = false;
-        
-        Set<UnitCategory> categories = UnitSeperator.categorize(ownedUnits, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement());
-        
-        for(UnitCategory category1 : categories)
+        if (!mustQueryUser)
         {
-            //we cant move these, dont bother to check
-            if(category1.getMovement() == 0)
-                continue;
+            Set<UnitCategory> categories = UnitSeperator.categorize(ownedUnits, m_mustMoveWithDetails.getMustMoveWith(), m_mustMoveWithDetails.getMovement());
             
-            for(UnitCategory category2 : categories)
+            for(UnitCategory category1 : categories)
             {
                 //we cant move these, dont bother to check
-                if(category2.getMovement() == 0)
+                if(category1.getMovement() == 0)
                     continue;
                 
-                //if we find that two categories are compatable, and some units
-                //are selected from one category, but not the other
-                //then the user has to refine his selection
-                if(category1 != category2 &&
-                   category1.getType() == category2.getType() &&
-                   !category1.equalsIgnoreMovement(category2)
-                   )
+                for(UnitCategory category2 : categories)
                 {
-                    //if we are moving all the units from both categories, then nothing to choose
-                    if(units.containsAll(category1.getUnits()) &&
-                       units.containsAll(category2.getUnits()))
+                    //we cant move these, dont bother to check
+                    if(category2.getMovement() == 0)
                         continue;
-                    //if we are moving some of the units from either category, then we need to stop
-                    if(!Util.intersection(category1.getUnits(), units).isEmpty() ||
-                       !Util.intersection(category2.getUnits(), units).isEmpty() )
+                    
+                    //if we find that two categories are compatable, and some units
+                    //are selected from one category, but not the other
+                    //then the user has to refine his selection
+                    if(category1 != category2 &&
+                       category1.getType() == category2.getType() &&
+                       !category1.equalsIgnoreMovement(category2)
+                       )
                     {
-                        mustQueryUser = true;
+                        //if we are moving all the units from both categories, then nothing to choose
+                        if(units.containsAll(category1.getUnits()) &&
+                           units.containsAll(category2.getUnits()))
+                            continue;
+                        //if we are moving some of the units from either category, then we need to stop
+                        if(!Util.intersection(category1.getUnits(), units).isEmpty() ||
+                           !Util.intersection(category2.getUnits(), units).isEmpty() )
+                        {
+                            mustQueryUser = true;
+                        }
                     }
                 }
+                
             }
-            
         }
         
         if(mustQueryUser)
         {
+
+            List<Unit> defaultSelections = new ArrayList<Unit>(units.size());
+
+            if (MoveValidator.isLoad(route))
+            {
+                final Collection<Unit> transportsToLoad = new ArrayList<Unit>(getTransportsToLoad(route, units, false));
+                Match<Collection<Unit>> enoughTransportsMatch = new Match<Collection<Unit>>()
+                {
+                    public boolean match(Collection<Unit> units)
+                    {
+                        Map<Unit,Unit> unitsToTransports = getDelegate().mapTransports(route, units, transportsToLoad);
+                        return unitsToTransports.keySet().containsAll(units);
+                    }
+                };
+                defaultSelections.addAll(getDelegate().mapTransports(route, units, transportsToLoad).keySet());
+            }
+            else
+            {
+                defaultSelections.addAll(units);
+            }
+
             CompositeMatch<Unit> rightUnitTypeMatch = new CompositeMatchOr<Unit>();
             for(Unit unit : units)
             {
@@ -510,10 +555,9 @@ public class MovePanel extends ActionPanel
             List<Unit> candidateUnits = Match.getMatches(ownedUnits, rightUnitTypeMatch);
             
             // sort units in preferred order
-            List<Unit> sortedUnits = new ArrayList<Unit>(units);
-            sortByDecreasingTransportCapacityIncreasingMovement(sortedUnits, m_mustMoveWithDetails);
-            UnitChooser chooser = new UnitChooser(candidateUnits, sortedUnits, m_mustMoveWithDetails.getMustMoveWith(),
-                    m_mustMoveWithDetails.getMovement(), m_bridge.getGameData(), false, getMap().getUIContext());
+            sortByDecreasingTransportCapacityIncreasingMovement(defaultSelections, m_mustMoveWithDetails);
+            UnitChooser chooser = new UnitChooser(candidateUnits, defaultSelections, m_mustMoveWithDetails.getMustMoveWith(),
+                    m_mustMoveWithDetails.getMovement(), m_bridge.getGameData(), false, getMap().getUIContext(), matchCriteria);
 
             
             
@@ -526,23 +570,31 @@ public class MovePanel extends ActionPanel
             if(option != JOptionPane.OK_OPTION)
             {
                 units.clear();
-                return;
+                return false;
             }
             
             
             units.clear();
             units.addAll(chooser.getSelected(false));
         }
-            
-        //add the dependent units
-        for(Unit unit : new ArrayList<Unit>(units))
+
+        // add the dependent units
+        List<Unit> unitsCopy = new ArrayList<Unit>(units);
+        for(Unit unit : unitsCopy)
         {
             Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
             if(forced != null)
             {
-                units.addAll(forced);
+                // add dependent if necessary 
+                for (Unit dependent : forced)
+                {
+                    if (unitsCopy.indexOf(dependent) == -1)
+                        units.add(dependent);
+                }
             }
         }
+
+        return true;
     }
 
     private Route getRoute(Territory start, Territory end)
@@ -625,7 +677,7 @@ public class MovePanel extends ActionPanel
         noAA.add(Matches.territoryIs(end));
 
         // No neutral countries on route predicate
-        Match<Territory> noEmptyNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNuetral, Matches.TerritoryIsEmpty));
+        Match<Territory> noEmptyNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral, Matches.TerritoryIsEmpty));
 
         // No neutral countries nor AA guns on route predicate
         Match<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(noAA, noEmptyNeutral);
@@ -652,26 +704,35 @@ public class MovePanel extends ActionPanel
     }
     
     
-    private Collection<Unit> getUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)
+    private void updateUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)
     {
+        m_unresolvedUnitTypes = Collections.emptyList();
+
         if(route.getLength() == 0)
-            return new ArrayList<Unit>(units);
+        {
+            m_frame.clearStatusMessage();
+            getMap().showMouseCursor();
+            m_currentCursorImage = null;
+            m_unitsThatCanMoveOnRoute = new ArrayList<Unit>(units);
+            return;
+        }
+
+        getMap().hideMouseCursor();
+
+        List<Unit> bestUnits = new ArrayList<Unit>(units.size());
 
         CompositeMatch<Unit> movableMatch = getMovableMatch(route);
 
-        // get available units at the start of the route
-        Collection<Unit> availUnits = route.getStart().getUnits().getUnits();
-        // get candidate units that are actually movable
-        List<Unit> candidateUnits = new ArrayList(Match.getMatches(availUnits, movableMatch));
+        // get candidate units at the start of the route
+        List<Unit> candidateUnits = Match.getMatches(route.getStart().getUnits().getUnits(), movableMatch);
+
         // sort candidate units in increasing movement order
         sortByDecreasingTransportCapacityIncreasingMovement(candidateUnits, m_mustMoveWithDetails);
 
-        List<Unit> newUnits = new ArrayList(units.size());
-
-        // loop through selected units and replace with best candidate
+        // loop through selected units and replace with best candidate where possible
         for (Unit unit: units)
         {
-            Unit unitToAdd = null;
+            Unit unitToAdd = unit;
             Iterator<Unit> candidateIter = candidateUnits.iterator();
             // find first matching unit
             while (candidateIter.hasNext())
@@ -684,10 +745,108 @@ public class MovePanel extends ActionPanel
                 candidateIter.remove();
                 break;
             }
-            if(unitToAdd != null)
-                newUnits.add(unitToAdd);
+            bestUnits.add(unitToAdd);
         }
-        return newUnits;
+            
+        // add the dependent units temporarily for validation
+        Collection<Unit> forcedDependents = new ArrayList<Unit>();
+        for(Unit unit : bestUnits)
+        {
+            Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
+            if(forced != null)
+            {
+                // add dependent if necessary 
+                for (Unit dependent : forced)
+                {
+                    if (bestUnits.indexOf(dependent) == -1)
+                        forcedDependents.add(dependent);
+                }
+            }
+        }
+        bestUnits.addAll(forcedDependents);
+
+        // getTransportsToLoad causes prompting... need to suppress that here
+        MoveValidationResult result = getDelegate().validateMove(bestUnits,route,getCurrentPlayer(),getTransportsToLoad(route, bestUnits, true));
+
+        // remove dependent units that we just added so they don't show up in shadow units
+        bestUnits.removeAll(forcedDependents);
+        
+        Collection<Unit> resultUnits = new ArrayList<Unit>(bestUnits.size());
+
+        if (result.isMoveValid())
+        {
+            // valid move
+            m_frame.clearStatusMessage();
+            m_currentCursorImage = null;
+            resultUnits.addAll(bestUnits);
+        }
+        else
+        {
+            String errorMsg = null;
+            String warningMsg = null;
+            StringBuilder statusMsg = new StringBuilder(100);
+
+            // invalid move
+            if (result.hasError())
+            {
+                // a show stopper
+                errorMsg = result.getError();
+            }
+            else
+            {
+                if (result.getDisallowedUnitWarnings().size() == 0
+                        && result.getUnresolvedUnitWarnings().size() == 0)
+                    throw new IllegalStateException("Uninitialized MoveValidationResult object!");
+
+                // no show stoppers, but some units had problems 
+
+                resultUnits.addAll(bestUnits);
+                resultUnits.removeAll(result.getDisallowedUnits());
+
+                // remove any units from unresolved list that are also in disallowed list
+                result.removeAnyUnresolvedUnitsThatAreDisallowed();
+
+                if (result.hasUnresolvedUnits())
+                {
+                    // for unresolved units, paint a question mark over the unit type
+                    warningMsg = result.getUnresolvedUnitWarning(0);
+                    m_unresolvedUnitTypes = result.getUnresolvedUnitTypes();
+                }
+                else if (result.hasDisallowedUnits())
+                {
+                    // if disallowed units, but no unresolved units, then just remove the disallowed units
+                    if (resultUnits.isEmpty())
+                    {
+                        // no units left; show an error
+                        errorMsg = result.getDisallowedUnitWarning(0);
+                    }
+                    else
+                    {
+                        // some units are left; show a warning 
+                        warningMsg = result.getDisallowedUnitWarning(0);
+                    }
+                }
+            }
+
+            int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
+
+            String numWarningsMsg = numProblems > 0 ? ("; "+ numProblems + " other warning" + (numProblems==1 ? "" : "s") + " not shown") : "";
+            if (errorMsg != null)
+            {
+                statusMsg.append(errorMsg).append(numWarningsMsg);
+                m_frame.setStatusErrorMessage(statusMsg.toString());
+                m_currentCursorImage = getMap().getErrorImage();
+            }
+            else if (warningMsg != null)
+            {
+                statusMsg.append(warningMsg).append(numWarningsMsg);
+                m_frame.setStatusWarningMessage(statusMsg.toString());
+                m_currentCursorImage = getMap().getWarningImage();
+            }
+        }
+
+        m_unitsThatCanMoveOnRoute = resultUnits;
+
     }
 
     /**
@@ -695,12 +854,12 @@ public class MovePanel extends ActionPanel
      */
     private void updateRouteAndMouseShadowUnits(final Route route)
     {
-        getMap().setRoute(route, m_mouseSelectedPoint, m_mouseCurrentPoint);
+        getMap().setRoute(route, m_mouseSelectedPoint, m_mouseCurrentPoint, m_currentCursorImage);
         if(route == null)
             getMap().setMouseShadowUnits(null);
         else
         {
-            getMap().setMouseShadowUnits( getUnitsThatCanMoveOnRoute(m_selectedUnits, route));
+            getMap().setMouseShadowUnits(m_unitsThatCanMoveOnRoute, m_unresolvedUnitTypes);
         }
     }
 
@@ -709,124 +868,128 @@ public class MovePanel extends ActionPanel
      * 
      * If null is returned, the move should be cancelled.
      */
-    private Collection<Unit> getTransportsToLoad(Route route, Collection<Unit> unitsToLoad)
+    private Collection<Unit> getTransportsToLoad(Route route, Collection<Unit> unitsToLoad, boolean disablePrompts)
     {
-      Match<Unit> alliedTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
-      Collection<Unit> transports = Match.getMatches(route.getEnd().getUnits().getUnits(), alliedTransports);
-      //nothing to choose
-      if(transports.isEmpty())
-        return Collections.emptyList();
-      //only one, no need to choose
-      if(transports.size() == 1)
-        return transports;
+        Match<Unit> alliedTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
+        Collection<Unit> transports = Match.getMatches(route.getEnd().getUnits().getUnits(), alliedTransports);
+        //nothing to choose
+        if(transports.isEmpty())
+            return Collections.emptyList();
+        //only one, no need to choose
+        if(transports.size() == 1)
+            return transports;
 
-      MustMoveWithDetails endMustMoveWith = getDelegate().getMustMoveWith(route.getEnd(), route.getEnd().getUnits().getUnits());
+        MustMoveWithDetails endMustMoveWith = getDelegate().getMustMoveWith(route.getEnd(), route.getEnd().getUnits().getUnits());
       
-      //all the same type, dont ask unless we have more than 1 unit type
-      if(UnitSeperator.categorize(transports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement()).size() == 1 
-         && unitsToLoad.size() == 1     )
-          return transports;
+        //all the same type, dont ask unless we have more than 1 unit type
+        if(UnitSeperator.categorize(transports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement()).size() == 1 
+           && unitsToLoad.size() == 1     )
+            return transports;
           
-      int minTransportCost = 5;
-      for(Unit unit : unitsToLoad)
-      {
-          minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
-      }
+        int minTransportCost = 5;
+        for(Unit unit : unitsToLoad)
+        {
+            minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
+        }
       
       
-      List<Unit> candidateTransports = new ArrayList<Unit>();
-      List<Unit> candidateAlliedTransports = new ArrayList<Unit>();
+        List<Unit> candidateTransports = new ArrayList<Unit>();
+        List<Unit> candidateAlliedTransports = new ArrayList<Unit>();
 
-      // find the transports with space left
-      Iterator transportIter = transports.iterator();
-      while (transportIter.hasNext())
-      {
-          Unit transport = (Unit) transportIter.next();
-          int capacity = getDelegate().getTransportTracker().getAvailableCapacity(transport);
-          if(capacity >= minTransportCost)
-          {
-              if (transport.getOwner().equals(getCurrentPlayer()))
-                  candidateTransports.add(transport);
-              else
-                  candidateAlliedTransports.add(transport);
-          }
-      }
+        // find the transports with space left
+        Iterator transportIter = transports.iterator();
+        while (transportIter.hasNext())
+        {
+            Unit transport = (Unit) transportIter.next();
+            int capacity = getDelegate().getTransportTracker().getAvailableCapacity(transport);
+            if(capacity >= minTransportCost)
+            {
+                if (transport.getOwner().equals(getCurrentPlayer()))
+                    candidateTransports.add(transport);
+                else
+                    candidateAlliedTransports.add(transport);
+            }
+        }
 
-      // Determine common-sense candidate transport load order.
-      // For both combat and non-combat, always fill half-full transports first.
-      // Next, for both combat and non-combat, transports that have been 
-      //   moved within loading range this turn are likely candidates. 
-      // Therefore, sort by (decreasing cost, increasing movement).
+        // Determine common-sense candidate transport load order.
+        // For both combat and non-combat, always fill half-full transports first.
+        // Next, for both combat and non-combat, transports that have been 
+        //   moved within loading range this turn are likely candidates. 
+        // Therefore, sort by (decreasing cost, increasing movement).
       
-      sortByDecreasingTransportCapacityIncreasingMovement(candidateTransports, endMustMoveWith);
-      sortByDecreasingTransportCapacityIncreasingMovement(candidateAlliedTransports, endMustMoveWith);
-      // append allied transports to list - they are a last resort
-      candidateTransports.addAll(candidateAlliedTransports);
+        sortByDecreasingTransportCapacityIncreasingMovement(candidateTransports, endMustMoveWith);
+        sortByDecreasingTransportCapacityIncreasingMovement(candidateAlliedTransports, endMustMoveWith);
+        // append allied transports to list - they are a last resort
+        candidateTransports.addAll(candidateAlliedTransports);
 
-      if(candidateTransports.size() <= 1)
-        return candidateTransports;
+        if(candidateTransports.size() <= 1)
+            return candidateTransports;
 
-      // m_selectedUnits are the units we are loading
-      List<Unit> availableUnits = new ArrayList<Unit>(m_selectedUnits);
+        // m_selectedUnits are the units we are loading
+        List<Unit> availableUnits = new ArrayList<Unit>(m_selectedUnits);
 
-      // Make reasonable default selections based on candidate transport load order
-      Collection<Unit> defaultSelections = new ArrayList<Unit>();
-      transportIter = candidateTransports.iterator();
-      while (availableUnits.size() > 0 && transportIter.hasNext())
-      {
-          // Use capacity/cost formulas to fill as few transports as possible.
-          Unit transport = (Unit)transportIter.next();
-          // no movement left; not a good candidate
-          if (endMustMoveWith.getMovement().getInt(transport) == 0)
-              continue;
-          int capacity = getDelegate().getTransportTracker().getAvailableCapacity(transport);
-          boolean isSelected = false;
+        // Make reasonable default selections based on candidate transport load order
+        Collection<Unit> defaultSelections = new ArrayList<Unit>();
+        transportIter = candidateTransports.iterator();
+        while (availableUnits.size() > 0 && transportIter.hasNext())
+        {
+            // Use capacity/cost formulas to fill as few transports as possible.
+            Unit transport = (Unit)transportIter.next();
+            // no movement left; not a good candidate
+            if (endMustMoveWith.getMovement().getInt(transport) == 0)
+                continue;
+            int capacity = getDelegate().getTransportTracker().getAvailableCapacity(transport);
+            boolean isSelected = false;
 
-          // Loop through selected units and assign them to transports.
-          Iterator unitIter = availableUnits.iterator();
-          while (unitIter.hasNext() && (capacity >= minTransportCost))
-          {
-              Unit unit = (Unit)unitIter.next();
-              int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
-              if(capacity >= unitCost)
-              {
-                  isSelected = true;
-                  unitIter.remove();
-                  capacity -= unitCost;
-              }
-          }
-          if (isSelected)
-              defaultSelections.add(transport);
-      } 
+            // Loop through selected units and assign them to transports.
+            Iterator unitIter = availableUnits.iterator();
+            while (unitIter.hasNext() && (capacity >= minTransportCost))
+            {
+                Unit unit = (Unit)unitIter.next();
+                int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+                if(capacity >= unitCost)
+                {
+                    isSelected = true;
+                    unitIter.remove();
+                    capacity -= unitCost;
+                }
+            }
+            if (isSelected)
+                defaultSelections.add(transport);
+        } 
 
-      // If we've filled all the transports, then no user intervention required.
-      // It is possible to make "wrong" decisions if there are mixed unit types and
-      //   mixed transport categories, but there is no UI to manage that anyway.
-      //   Players will need to load incrementally in such cases.
-      if (defaultSelections.containsAll(candidateTransports))
-          return defaultSelections;
+        // return defaults if we aren't allowed to prompt
+        if (disablePrompts)
+            return defaultSelections;
 
-      // If there is only one candidate transport category, then don't prompt
-      // This assumes we want to fill as few transports as possible, which is usually a reasonable assumption.
-      // If you want a bunch of half-full transports than do them separately.
-      if(UnitSeperator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement()).size() == 1)
-          return defaultSelections;
+        // If we've filled all the transports, then no user intervention is required.
+        // It is possible to make "wrong" decisions if there are mixed unit types and
+        //   mixed transport categories, but there is no UI to manage that anyway.
+        //   Players will need to load incrementally in such cases.
+        if (defaultSelections.containsAll(candidateTransports))
+            return defaultSelections;
 
-      // choosing what units to LOAD.
-      UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement(), m_bridge.getGameData(), false, getMap().getUIContext());
-      chooser.setTitle("What transports do you want to load");
-      int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                                                chooser, "What transports do you want to load",
-                                                JOptionPane.OK_CANCEL_OPTION,
-                                                JOptionPane.PLAIN_MESSAGE, null, null, null);
-      if (option != JOptionPane.OK_OPTION)
-        return null;
+        // If there is only one candidate transport category, then don't prompt
+        // This assumes we want to fill as few transports as possible, which is usually a reasonable assumption.
+        // If you want a bunch of half-full transports than do them separately.
+        if(UnitSeperator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement()).size() == 1)
+            return defaultSelections;
+
+        // choosing what units to LOAD.
+        UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, endMustMoveWith.getMustMoveWith(), endMustMoveWith.getMovement(), m_bridge.getGameData(), false, getMap().getUIContext());
+        chooser.setTitle("What transports do you want to load");
+        int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                                                  chooser, "What transports do you want to load",
+                                                  JOptionPane.OK_CANCEL_OPTION,
+                                                  JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (option != JOptionPane.OK_OPTION)
+            return null;
 
 
-      return chooser.getSelected(false);
+        return chooser.getSelected(false);
     }
 
-    private void sortByDecreasingTransportCapacityIncreasingMovement(List<Unit> units, final MustMoveWithDetails mustMoveWith)
+    private void sortByDecreasingTransportCapacityIncreasingMovement(final List<Unit> units, final MustMoveWithDetails mustMoveWith)
     {
         if(units.isEmpty())
             return;
@@ -839,6 +1002,17 @@ public class MovePanel extends ActionPanel
                 Collection transporting2 = (Collection) mustMoveWith.getMustMoveWith().get(u2);
                 int cost1 = MoveValidator.getTransportCost(transporting1);
                 int cost2 = MoveValidator.getTransportCost(transporting2);
+
+                if (transporting1 == null)
+                    transporting1 = Collections.emptyList();
+                if (transporting2 == null)
+                    transporting2 = Collections.emptyList();
+
+                // see if dependents are also selected
+                int hasDepends1 = units.containsAll(transporting1) ? 1 : 0;
+                int hasDepends2 = units.containsAll(transporting2) ? 1 : 0;
+                if (hasDepends1 != hasDepends2)
+                    return hasDepends1 - hasDepends2;
 
                 if (cost1 != cost2)
                     return cost2 - cost1;
@@ -864,10 +1038,8 @@ public class MovePanel extends ActionPanel
             //check if we can handle this event, are we active?
             if(!getActive())
                 return;
-           if(t == null)
-               return;
-          
-
+            if(t == null)
+                return;
             
             boolean rightMouse = me.isRightButton();
             boolean noSelectedTerritory = (m_firstSelectedTerritory == null);
@@ -880,7 +1052,7 @@ public class MovePanel extends ActionPanel
             else if(!rightMouse && ( noSelectedTerritory || isFirstSelectedTerritory))
                 selectUnitsToMove(units, t, me);
             else if(!rightMouse && me.isControlDown() && !isFirstSelectedTerritory)
-               selectWayPoint(t);
+                selectWayPoint(t);
             else if(!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory)
                 selectEndPoint(t);
             
@@ -942,6 +1114,9 @@ public class MovePanel extends ActionPanel
                 
                 CANCEL_MOVE_ACTION.setEnabled(true);                
             }
+
+            if(!getFirstSelectedTerritory().equals(t))
+                throw new IllegalStateException("Wrong selected territory");
             
             //add all
             if(me.isShiftDown())
@@ -956,9 +1131,6 @@ public class MovePanel extends ActionPanel
             //add one
             else
             {
-                if(!getFirstSelectedTerritory().equals(t))
-                    throw new IllegalStateException("Wrong selected territory");
-                
                 // best candidate unit for route is chosen dynamically later
                 // check for alt key - add 1/10 of total units (useful for splitting large armies)
                 int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
@@ -974,31 +1146,44 @@ public class MovePanel extends ActionPanel
                     }
                 }
             }
+
+            Route route = getRoute(getFirstSelectedTerritory(), t);
+            // update unitsThatCanMoveOnRoute
+            updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
             
-            updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(),
-                    getFirstSelectedTerritory()));
+            updateRouteAndMouseShadowUnits(route);
         }
 
         private void deselectUnits(List<Unit> units, Territory t, MouseDetails me)
         {         
-            
+
+            Collection<Unit> unitsToRemove = new ArrayList<Unit>(m_selectedUnits.size());
             
             //we have right clicked on a unit stack in a different territory
-            if(t != m_firstSelectedTerritory)
+            if(!getFirstSelectedTerritory().equals(t))
                 units = Collections.emptyList();
             
-            //no unit selected, remove the most recent
+            //remove the dependent units so we don't have to micromanage them
+            List<Unit> unitsWithoutDependents = new ArrayList<Unit>(m_selectedUnits);
+            for(Unit unit : m_selectedUnits)
+            {
+                Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
+                if(forced != null)
+                    unitsWithoutDependents.removeAll(forced);
+            }
+
+            //no unit selected, remove the most recent, but skip dependents
             if(units.isEmpty())
             {
                 if(me.isControlDown())
                     m_selectedUnits.clear();
                 else {
                     // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-                    int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(m_selectedUnits.size() / 10)) : 1;
+                    int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(unitsWithoutDependents.size() / 10)) : 1;
                     
-                    //remove the last element
+                    //remove the last n elements
                     for (int i=0; i<iterCount; i++) 
-                        m_selectedUnits.remove( new ArrayList<Unit>(m_selectedUnits).get(m_selectedUnits.size() -1 ) );
+                        unitsToRemove.add( unitsWithoutDependents.get(unitsWithoutDependents.size() -1 ) );
                 }
             }
             //we have actually clicked on a specific unit
@@ -1007,7 +1192,7 @@ public class MovePanel extends ActionPanel
                 //remove all if control is down
                 if(me.isControlDown())
                 {
-                    m_selectedUnits.removeAll(units);
+                    unitsToRemove.addAll(units);
                 }
                 //remove one
                 else
@@ -1024,21 +1209,28 @@ public class MovePanel extends ActionPanel
                     {
                         if(m_selectedUnits.contains(unit))
                         {
-                            m_selectedUnits.remove(unit);
+                            unitsToRemove.add(unit);
                             remCount++;
                             if (remCount >= iterCount) break;
                         }
                     }
                 }
             }
-            
-            //nothing left, cancel move
+
+            // perform the remove
+            m_selectedUnits.removeAll(unitsToRemove);
+
             if(m_selectedUnits.isEmpty())
+            {
+                //nothing left, cancel move
                 CANCEL_MOVE_ACTION.actionPerformed(null);
+            }
             else
-                getMap().setMouseShadowUnits(m_selectedUnits);
-        
-                
+            {
+                // update unitsThatCanMoveOnRoute
+                updateUnitsThatCanMoveOnRoute(m_selectedUnits, getRoute(getFirstSelectedTerritory(), t));
+                updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), t));
+            }
         }
         
         private void selectWayPoint(Territory territory)
@@ -1055,64 +1247,94 @@ public class MovePanel extends ActionPanel
         
         private void selectEndPoint(Territory territory)
         {
-            Route route = getRoute(getFirstSelectedTerritory(), territory);
-            Collection<Unit> units = getUnitsThatCanMoveOnRoute(m_selectedUnits, route);
-            if (units.size() == 0)
+            final Route route = getRoute(getFirstSelectedTerritory(), territory);
+            Collection<Unit> units = m_unitsThatCanMoveOnRoute;
+            if (units.isEmpty())
             {
                 CANCEL_MOVE_ACTION.actionPerformed(null);
-                JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(MovePanel.this), "No units have enough movement");
                 return;
             }
-            else
-            {
     
-                Collection<Unit> transports = null;
-                if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
-                {
-                  transports = getTransportsToLoad(route, units);
-                  if(transports == null)
+            Collection<Unit> transports = null;
+            if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
+            {
+              transports = getTransportsToLoad(route, units, false);
+              if(transports == null)
+                  return;
+
+              if (! m_unresolvedUnitTypes.isEmpty())
+              {
+                  Match<Unit> unresolvedUnitMatch = new Match<Unit>()
+                  {
+                      public boolean match(Unit u)
+                      {
+                          return m_unresolvedUnitTypes.contains(u.getType());
+                      }
+                  };
+
+                  final Collection<Unit> transportsToLoad = new ArrayList<Unit>(transports);
+                  Match<Collection<Unit>> enoughTransportsMatch = new Match<Collection<Unit>>()
+                  {
+                      public boolean match(Collection<Unit> units)
+                      {
+                          Map<Unit,Unit> unitsToTransports = getDelegate().mapTransports(route, units, transportsToLoad);
+                          return unitsToTransports.keySet().containsAll(units);
+                      }
+                  };
+                  
+                  Collection<Unit> unresolvedUnits = Match.getMatches(units, unresolvedUnitMatch);
+
+                  Collection<Unit> newUnits = new ArrayList<Unit>(units);
+                  newUnits.removeAll(unresolvedUnits);
+                  if (!allowSpecificUnitSelection(unresolvedUnits,route, true, enoughTransportsMatch))
                       return;
-                }
-                else if(MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
+
+                  newUnits.addAll(unresolvedUnits);
+                  units.retainAll(newUnits);
+
+                  if (units.isEmpty())
+                      return;
+              }
+
+            }
+            else if(MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
+            {
+                CompositeMatch<Unit> unloadableMatch = getMovableMatch(route);
+                List<Unit> unloadAble = Match.getMatches(m_selectedUnits,unloadableMatch);
+                
+                Collection<Unit> canMove = new ArrayList<Unit>(getUnitsToUnload(route, unloadAble));
+                canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(unloadableMatch)));
+                if(canMove.isEmpty())
                 {
-                    CompositeMatch<Unit> unloadableMatch = getMovableMatch(route);
-                    List<Unit> unloadAble = Match.getMatches(m_selectedUnits,unloadableMatch);
-                    
-                    Collection<Unit> canMove = new ArrayList<Unit>(getUnitsToUnload(route, unloadAble));
-                    canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(unloadableMatch)));
-                    if(canMove.isEmpty())
-                    {
-                        CANCEL_MOVE_ACTION.actionPerformed(null);
-                        return; 
-                    }
-                    else
-                    {
-                        m_selectedUnits.clear();
-                        m_selectedUnits.addAll(canMove);
-                    }
+                    CANCEL_MOVE_ACTION.actionPerformed(null);
+                    return; 
                 }
                 else
                 {
-                    allowSpecificUnitSelection(units, route);
-                    
-                    if(units.isEmpty())
-                    {
-                        CANCEL_MOVE_ACTION.actionPerformed(null);
-                        return;
-                    }
-                    
+                    m_selectedUnits.clear();
+                    m_selectedUnits.addAll(canMove);
                 }
-    
-                MoveDescription message = new MoveDescription(units, route, transports);
-                m_moveMessage = message;
-                setFirstSelectedTerritory(null);
-                m_forced = null;
-                updateRouteAndMouseShadowUnits(null);
-                release();
-            }    
+            }
+            else
+            {
+                allowSpecificUnitSelection(units, route, false, null);
+                
+                if(units.isEmpty())
+                {
+                    CANCEL_MOVE_ACTION.actionPerformed(null);
+                    return;
+                }
+                
+            }
+
+            MoveDescription message = new MoveDescription(units, route, transports);
+            m_moveMessage = message;
+            setFirstSelectedTerritory(null);
+            m_mouseCurrentTerritory = null;
+            m_forced = null;
+            updateRouteAndMouseShadowUnits(null);
+            release();
         }
-        
-        
     
     };
     
@@ -1152,8 +1374,18 @@ public class MovePanel extends ActionPanel
             if (getFirstSelectedTerritory() != null && territory != null)
             {
                 m_mouseCurrentPoint= me.getMapPoint();
-                updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), territory));
+                Route route = getRoute(getFirstSelectedTerritory(), territory);
+                if (m_mouseCurrentTerritory == null || !m_mouseCurrentTerritory.equals(territory))
+                    updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
+
+                updateRouteAndMouseShadowUnits(route);
             }
+            else
+            {
+                //m_frame.clearStatusMessage();
+                //getMap().setCursor(Cursor.getDefaultCursor());
+            }
+            m_mouseCurrentTerritory = territory;
         }
     };
 

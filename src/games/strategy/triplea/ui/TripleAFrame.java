@@ -62,6 +62,7 @@ public class TripleAFrame extends JFrame
     private MapPanel m_mapPanel;
     private MapPanelSmallView m_smallView;
     private JLabel m_message = new JLabel("No selection");
+    private JLabel m_status = new JLabel("");
     private JLabel m_step = new JLabel("xxxxxx");
     private JLabel m_round = new JLabel("xxxxxx");
     private JLabel m_player = new JLabel("xxxxxx");
@@ -152,8 +153,13 @@ public class TripleAFrame extends JFrame
 
         m_gameSouthPanel = new JPanel();
         m_gameSouthPanel.setLayout(new BorderLayout());
-        m_gameSouthPanel.add(m_message, BorderLayout.CENTER);
+        m_gameSouthPanel.add(m_message, BorderLayout.WEST);
         m_message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+        m_message.setText("some text to set a reasonable preferred size");
+        m_message.setPreferredSize(m_message.getPreferredSize());
+        m_message.setText("");
+        m_gameSouthPanel.add(m_status, BorderLayout.CENTER);
+        m_status.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
         JPanel stepPanel = new JPanel();
         stepPanel.setLayout(new GridBagLayout());
@@ -339,6 +345,7 @@ public class TripleAFrame extends JFrame
         m_mapPanel = null;
         m_mapAndChatPanel = null;
         m_message = null;
+        m_status = null;
         m_rightHandSidePanel = null;
         m_smallView = null;
         m_statsPanel = null;
@@ -434,6 +441,39 @@ public class TripleAFrame extends JFrame
             m_message.setText(buf.toString());
         }
     };
+
+    public void clearStatusMessage()
+    {
+        m_status.setText("");
+        m_status.setIcon(null);
+    }
+
+    public void setStatusErrorMessage(String msg)
+    {
+        m_status.setText(msg);
+        if (!msg.equals(""))
+            m_status.setIcon(new ImageIcon(m_mapPanel.getErrorImage()));
+        else
+            m_status.setIcon(null);
+    }
+
+    public void setStatusWarningMessage(String msg)
+    {
+        m_status.setText(msg);
+        if (!msg.equals(""))
+            m_status.setIcon(new ImageIcon(m_mapPanel.getWarningImage()));
+        else
+            m_status.setIcon(null);
+    }
+
+    public void setStatusInfoMessage(String msg)
+    {
+        m_status.setText(msg);
+        if (!msg.equals(""))
+            m_status.setIcon(new ImageIcon(m_mapPanel.getInfoImage()));
+        else
+            m_status.setIcon(null);
+    }
 
     public IntegerMap<ProductionRule> getProduction(final PlayerID player, boolean bid)
     {

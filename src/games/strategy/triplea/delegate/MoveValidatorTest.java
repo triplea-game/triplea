@@ -130,14 +130,14 @@ public class MoveValidatorTest extends DelegateTest
 	{
 		Route route = new Route();
 		route.add(egypt);
-		assertTrue(!MoveValidator.hasNuetralBeforeEnd(route));
+		assertTrue(!MoveValidator.hasNeutralBeforeEnd(route));
 		
 		//nuetral
 		route.add(westAfrica);
-		assertTrue(!MoveValidator.hasNuetralBeforeEnd(route));
+		assertTrue(!MoveValidator.hasNeutralBeforeEnd(route));
 		
 		route.add(libya);
-		assertTrue(MoveValidator.hasNuetralBeforeEnd(route));
+		assertTrue(MoveValidator.hasNeutralBeforeEnd(route));
 	}
 	
 	public void testHasUnitsThatCantGoOnWater()

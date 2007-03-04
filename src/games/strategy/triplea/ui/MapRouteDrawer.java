@@ -19,6 +19,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 
+import java.awt.Image;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -176,6 +177,17 @@ public class MapRouteDrawer
                 {
                     graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translate), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
                     graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translate), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
+                }
+
+                Image cursorImage = routeDescription.getCursorImage();
+                if (cursorImage != null) 
+                {
+                    graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+                    if(mapData.scrollWrapX())
+                    {
+                        graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translate), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+                        graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translate), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+                    }
                 }
             }
         }
