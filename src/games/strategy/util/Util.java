@@ -147,17 +147,6 @@ public class Util
         
     }
 
-	public static <T> List<T> toList(T[] objects)
-	{
-		ArrayList<T> list = new ArrayList<T>(objects.length);
-		for(int i = 0; i < objects.length; i++)
-		{
-			list.add(objects[i]);
-		}
-		return list;
-	}
-
-
 
 	/** Creates new Util */
     private Util()
