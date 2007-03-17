@@ -443,17 +443,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void writeUnitsToHistory(IDelegateBridge bridge)
     {
-        Set playerSet = m_battleSite.getUnits().getPlayersWithUnits();
-        Iterator<PlayerID> playersIter;
+        Set<PlayerID> playerSet = m_battleSite.getUnits().getPlayersWithUnits();
+
         String transcriptText;
 
         // find all attacking players (unsorted)
         Collection<PlayerID> attackers = new ArrayList<PlayerID>();
         Collection<Unit> allAttackingUnits = new ArrayList<Unit>();
         transcriptText = "";
-        for (playersIter = playerSet.iterator(); playersIter.hasNext(); )
+        for (PlayerID current : playerSet )
         {
-            PlayerID current = (PlayerID)playersIter.next();
             if (m_data.getAllianceTracker().isAllied(m_attacker, current)
                     || current.equals(m_attacker))
                 attackers.add(current);
@@ -468,7 +467,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 delim = "; ";
             else
                 delim = "";
-            Collection attackingUnits = Match.getMatches(m_attackingUnits, Matches.unitIsOwnedBy(current));
+            Collection<Unit> attackingUnits = Match.getMatches(m_attackingUnits, Matches.unitIsOwnedBy(current));
             String verb = current.equals(m_attacker) ? "attack" : "loiter and taunt";
             transcriptText += current.getName()+" "+verb+" with "
                            +MyFormatter.unitsToTextNoOwner(attackingUnits)
@@ -483,9 +482,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<PlayerID> defenders = new ArrayList<PlayerID>();
         Collection<Unit> allDefendingUnits = new ArrayList<Unit>();
         transcriptText = "";
-        for (playersIter = playerSet.iterator(); playersIter.hasNext(); )
+        for (PlayerID current : playerSet )
         {
-            PlayerID current = playersIter.next();
             if (m_data.getAllianceTracker().isAllied(m_defender, current)
                     || current.equals(m_defender))
             {
@@ -497,7 +495,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         for(Iterator defendersIter = defenders.iterator(); defendersIter.hasNext(); )
         {
             PlayerID current = (PlayerID)defendersIter.next();
-            Collection defendingUnits;
+            Collection<Unit> defendingUnits;
             String delim;
             if(defendersIter.hasNext())
                 delim = "; ";

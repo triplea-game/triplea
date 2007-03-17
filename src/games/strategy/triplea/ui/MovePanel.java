@@ -532,14 +532,7 @@ public class MovePanel extends ActionPanel
             if (MoveValidator.isLoad(route))
             {
                 final Collection<Unit> transportsToLoad = new ArrayList<Unit>(getTransportsToLoad(route, units, false));
-                Match<Collection<Unit>> enoughTransportsMatch = new Match<Collection<Unit>>()
-                {
-                    public boolean match(Collection<Unit> units)
-                    {
-                        Map<Unit,Unit> unitsToTransports = getDelegate().mapTransports(route, units, transportsToLoad);
-                        return unitsToTransports.keySet().containsAll(units);
-                    }
-                };
+
                 defaultSelections.addAll(getDelegate().mapTransports(route, units, transportsToLoad).keySet());
             }
             else

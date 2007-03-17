@@ -585,12 +585,12 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if(units.size() == 0)
             return result.setErrorReturnResult("No units");
         
-        Collection<Unit> submerged = new ArrayList<Unit>();
-	for (Unit unit : units)
-	{
-	    if (m_submergedTracker.isSubmerged(unit))
-                result.addDisallowedUnit("Cannot move submerged units", unit);
-	}
+        
+    	for (Unit unit : units)
+    	{
+    	    if (m_submergedTracker.isSubmerged(unit))
+    	        result.addDisallowedUnit("Cannot move submerged units", unit);
+    	}
 
         //make sure all units are actually in the start territory
         if (!route.getStart().getUnits().containsAll(units))

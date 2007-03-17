@@ -203,7 +203,7 @@ public class MoveValidator
         return retUnits;
     }
 
-    public static boolean hasUnitsThatCantGoOnWater(Collection units)
+    public static boolean hasUnitsThatCantGoOnWater(Collection<Unit> units)
     {
         return !getUnitsThatCantGoOnWater(units).isEmpty();
     }

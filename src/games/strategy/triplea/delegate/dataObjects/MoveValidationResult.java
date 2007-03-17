@@ -1,10 +1,18 @@
 package games.strategy.triplea.delegate.dataObjects;
 
-import java.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.util.*;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 
-public class MoveValidationResult
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+public class MoveValidationResult implements Serializable
 {
     private String m_error = null;
     private List<String> m_disallowedUnitWarnings;
