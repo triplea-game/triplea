@@ -49,6 +49,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -643,6 +644,7 @@ public class MovePanel extends ActionPanel
     /**
      * Get the route ignoring forced territories
      */
+    @SuppressWarnings("unchecked")
     private Route getRouteNonForced(Territory start, Territory end)
     {
         Route defaultRoute = getData().getMap().getRoute(start, end);
@@ -661,38 +663,51 @@ public class MovePanel extends ActionPanel
                 return waterRoute;
         }
 
+        //ignore the end territory in our tests
+        //it must be in the route, so it shouldn't affect the route choice
+        Match<Territory> territoryIsEnd = Matches.territoryIs(end);
 
         // No aa guns on route predicate
-        CompositeMatch<Territory> noAA = new CompositeMatchOr<Territory>();
-        noAA.add(new InverseMatch<Territory>(Matches.territoryHasEnemyAA(
-            getCurrentPlayer(), getData())));
-        //ignore the destination
-        noAA.add(Matches.territoryIs(end));
+        Match<Territory> noAA = new InverseMatch<Territory>(Matches.territoryHasEnemyAA(getCurrentPlayer(), getData()));
+            
 
         // No neutral countries on route predicate
-        Match<Territory> noEmptyNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral, Matches.TerritoryIsEmpty));
+        Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
 
-        // No neutral countries nor AA guns on route predicate
-        Match<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(noAA, noEmptyNeutral);
-
-        // Try to avoid both AA guns and neutral territories
-        Route noAAOrNeutralRoute = getData().getMap().getRoute(start, end, noNeutralOrAA);
-        if (noAAOrNeutralRoute != null &&
-            noAAOrNeutralRoute.getLength() == defaultRoute.getLength())
-          return noAAOrNeutralRoute;
-
-        // Try to avoid aa guns
-        Route noAARoute = getData().getMap().getRoute(start, end, noAA);
-        if (noAARoute != null &&
-            noAARoute.getLength() == defaultRoute.getLength())
-          return noAARoute;
-
-        // Try to avoid neutral countries
-        Route noNeutralRoute = getData().getMap().getRoute(start, end, noEmptyNeutral);
-        if (noNeutralRoute != null &&
-            noNeutralRoute.getLength() == defaultRoute.getLength())
-          return noNeutralRoute;
-
+        //no enemy units on the route predicate
+        Match<Territory> noEnemy = new InverseMatch(Matches.territoryHasEnemyUnits(getCurrentPlayer(), getData()));
+        
+        
+        //these are the conditions we would like the route to satisfy, starting
+        //with the most important
+        List<Match<Territory>> tests = new ArrayList( Arrays.asList(
+                //best if no enemy and no neutral
+                new CompositeMatchOr<Territory>(noEnemy, noNeutral),
+                //we will be satisfied if no aa and no neutral
+                new CompositeMatchOr<Territory>(noAA, noNeutral),
+                //single matches
+                noEnemy, noAA, noNeutral));
+        
+        
+        //remove matches that already pass
+        //ignore the end
+        for(Iterator<Match<Territory>> iter = tests.iterator(); iter.hasNext(); ) {
+            Match<Territory> current = iter.next();
+            if(defaultRoute.allMatch(new CompositeMatchOr(current, territoryIsEnd))) {
+                iter.remove();
+            }
+        }
+        
+        
+        for(Match<Territory> t : tests) {            
+            Route testRoute = getData().getMap().getRoute(start, end, new CompositeMatchOr<Territory>(t, territoryIsEnd));
+            
+            if(testRoute != null && testRoute.getLength() == defaultRoute.getLength())
+                return testRoute;
+        }
+            
+        
+        
         return defaultRoute;
     }
     
