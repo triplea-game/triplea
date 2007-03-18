@@ -81,6 +81,8 @@ public class SocketWriteData
         if(m_size.hasRemaining())
         {
             int count = channel.write(m_size);
+            if(count == -1)
+                throw new IOException("triplea: end of stream detected");
             
             if(s_logger.isLoggable(Level.FINEST))
             {
@@ -94,6 +96,9 @@ public class SocketWriteData
         }
         
         int count = channel.write(m_content);
+        if(count == -1)
+            throw new IOException("triplea: end of stream detected");
+
         
         if(s_logger.isLoggable(Level.FINEST))
         {
