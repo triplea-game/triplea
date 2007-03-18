@@ -192,8 +192,8 @@ public class LobbyAdminConsole extends JFrame
                 t.start();
                 return;
             }
-            s_logger.info("No node found named:" + name);
         }
+        s_logger.info("No node found named:" + name);
     }
     
 }
