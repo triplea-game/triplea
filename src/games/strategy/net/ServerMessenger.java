@@ -447,7 +447,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
                         }
 
                         m_nioSocket.add(socketChannel, new ServerQuarantineConversation(m_loginValidator, socketChannel, m_nioSocket,  ServerMessenger.this));
+                    } else if(!key.isValid()) {
+                        key.cancel();
                     }
+                        
                 }
                 
             }
