@@ -25,7 +25,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class LobbyGameTableModel extends AbstractTableModel
 {
-    enum Column {Host, Name, Round, Players, Started,  Status, Comments}
+    enum Column {Host, Name, Round, Players, Started,  Status, Comments, GUID}
     
     private final IMessenger m_messenger;
     private final IChannelMessenger m_channelMessenger;
@@ -170,7 +170,8 @@ public class LobbyGameTableModel extends AbstractTableModel
 
     public int getColumnCount()
     {
-        return Column.values().length;
+        //-1 so we don't display the guid
+        return Column.values().length -1;
     }
 
 
@@ -178,8 +179,7 @@ public class LobbyGameTableModel extends AbstractTableModel
     {
         return m_gameIDs.size();
     }
-
-
+    
     public Object getValueAt(int rowIndex, int columnIndex)
     {
         Column column = Column.values()[columnIndex];
@@ -207,6 +207,8 @@ public class LobbyGameTableModel extends AbstractTableModel
                 
             case Started:
                 return description.getStartDateTime();
+            case GUID:
+                return m_gameIDs.get(rowIndex);
             default:
                 throw new IllegalStateException("Unknown column:" + column);
          }

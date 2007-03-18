@@ -1,3 +1,5 @@
+* lobby game table doesn't loose selection when games are added/removed or updated (sgb)
+
 * better route finding logic (sgb)
 
 * added six nation free for all mod for revised map (the_devil_inside)

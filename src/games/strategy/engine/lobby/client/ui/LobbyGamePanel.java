@@ -59,7 +59,7 @@ public class LobbyGamePanel extends JPanel
         
         
         m_tableSorter = new TableSorter(m_gameTableModel); 
-        m_gameTable = new JTable(m_tableSorter);         
+        m_gameTable = new LobbyGameTable(m_tableSorter);         
         m_tableSorter.setTableHeader(m_gameTable.getTableHeader());
 
         
