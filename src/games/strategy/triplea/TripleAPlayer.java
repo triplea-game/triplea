@@ -213,18 +213,26 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
             moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsFactory));
         else //combat move, cant move aa units
             moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
-        
-        Iterator territoryIter = m_bridge.getGameData().getMap()
-                .getTerritories().iterator();
-        while (territoryIter.hasNext())
+
+        m_bridge.getGameData().acquireReadLock();
+        try
         {
-            Territory item = (Territory) territoryIter.next();
-            if (item.getUnits().someMatch(moveableUnitOwnedByMe))
+            Iterator territoryIter = m_bridge.getGameData().getMap()
+                    .getTerritories().iterator();
+            while (territoryIter.hasNext())
             {
-                return true;
+                Territory item = (Territory) territoryIter.next();
+                if (item.getUnits().someMatch(moveableUnitOwnedByMe))
+                {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
+        finally 
+        {
+            m_bridge.getGameData().releaseReadLock();
+        }
 
     }
 
