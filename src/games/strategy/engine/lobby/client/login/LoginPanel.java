@@ -153,6 +153,25 @@ public class LoginPanel extends JPanel
             }
         
         });
+        
+        
+        //close when hitting the escape key
+        Action enterAction = new AbstractAction()
+        {
+        
+            public void actionPerformed(ActionEvent arg0)
+            {                
+                logonPressed();
+            }
+        };
+        
+        String key = "logon.through.enter.key";
+        
+        getActionMap().put(key, enterAction);
+        getActionMap().put(key,  enterAction);
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), key);
+        
+        
     }
 
     private void logonPressed()
