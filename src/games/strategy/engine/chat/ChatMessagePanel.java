@@ -233,22 +233,32 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         }
     }
     
-    public void addStatusMessage(String message)
+    public void addStatusMessage(final String message)
     {
-        try
+        SwingUtilities.invokeLater(new Runnable()
         {
-            Document doc = m_text.getDocument();
-            
-            doc.insertString(doc.getLength(), message + "\n", italic);
-            
-            //don't let the chat get too big
-            trimLines(doc, MAX_LINES);
-            
-            
-        } catch (BadLocationException ble)
-        {
-            ble.printStackTrace();
-        }
+        
+            public void run()
+            {
+                try
+                {
+                    Document doc = m_text.getDocument();
+                    
+                    doc.insertString(doc.getLength(), message + "\n", italic);
+                    
+                    //don't let the chat get too big
+                    trimLines(doc, MAX_LINES);
+                    
+                    
+                } catch (BadLocationException ble)
+                {
+                    ble.printStackTrace();
+                }
+        
+            }
+        
+        });
+        
     }
     
 
