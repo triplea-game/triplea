@@ -162,7 +162,8 @@ public class ServerLauncher implements ILauncher
         ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes, m_serverGame.getPlayerManager().getPlayerMapping());
 
         
-        boolean useSecureRandomSource = !m_remotelPlayers.isEmpty() && !m_localPlayerMapping.isEmpty();
+        final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty() && !m_localPlayerMapping.isEmpty();
+        
         if (useSecureRandomSource)
         {
             //server game.
@@ -186,20 +187,7 @@ public class ServerLauncher implements ILauncher
         m_serverReady.await();
         m_remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
 
-        if (useSecureRandomSource)
-        {
-            //the first roll takes a while, initialize
-            //here in the background so that the user doesnt notice
-            Thread t = new Thread("Warming up crypto random source")
-            {
-                public void run()
-                {
-                    m_serverGame.getRandomSource().getRandom(Constants.MAX_DICE, 2, "Warming up crpyto random source");
-                }
-            };
-            t.start();
-        }
-
+        
         Thread t = new Thread("Triplea, start server game")
         {
             public void run()
@@ -209,6 +197,11 @@ public class ServerLauncher implements ILauncher
                     m_isLaunching = false;
                     if(!m_abortLaunch)
                     {
+                        if (useSecureRandomSource)
+                        {
+                            warmUpCryptoRandomSource();
+                        }
+
                         m_gameLoadingWindow.doneWait();
                         m_serverGame.startGame();    
                     }
@@ -259,6 +252,27 @@ public class ServerLauncher implements ILauncher
                 if(m_inGameLobbyWatcher != null)
                 {
                     m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
+                }
+            }
+
+            
+        };
+        t.start();
+    }
+    
+    private void warmUpCryptoRandomSource()
+    {
+        //the first roll takes a while, initialize
+        //here in the background so that the user doesnt notice
+        Thread t = new Thread("Warming up crypto random source")
+        {
+            public void run()
+            {
+                try
+                {
+                    m_serverGame.getRandomSource().getRandom(Constants.MAX_DICE, 2, "Warming up crpyto random source");
+                } catch(RuntimeException re) {
+                    re.printStackTrace(System.out);
                 }
             }
         };
