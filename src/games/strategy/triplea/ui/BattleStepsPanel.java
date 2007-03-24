@@ -94,6 +94,10 @@ class BattleStepsPanel extends JPanel implements Active
                 m_listModel.addElement(iter.next());
             }
             m_listSelectionModel.hiddenSetSelectionInterval(0);
+            
+            if(!steps.contains(m_targetStep)) {
+                m_targetStep = null;
+            }
         }
 
         validate();
@@ -221,15 +225,18 @@ class BattleStepsPanel extends JPanel implements Active
         goToTarget();
     }
 
-    /**
-    * This method blocks until the step is reached, unless 
-    * this method is called from the swing event thread.
+   /**
+    * Set the target step for this panel 
+    * 
+    * This method returns immediatly, and must be called from the swing event thread.
     */
     public void setStep(String step)
     {
         synchronized (m_mutex)
         {
-            m_targetStep = step;
+            if(m_listModel.indexOf(step) != -1) {
+                m_targetStep = step;    
+            }
         }
         goToTarget();
 
@@ -239,22 +246,9 @@ class BattleStepsPanel extends JPanel implements Active
     {
         if(!SwingUtilities.isEventDispatchThread())
         {
-            CountDownLatch latch = new CountDownLatch(1);
-            synchronized(m_mutex)
-            {
-                m_waiters.add(latch);
-            }
-            waitThenWalk();
-            try
-            {
-                latch.await();
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }            
+            throw new IllegalStateException("Not swing event thread");
         }
-        waitThenWalk();
-        
+        waitThenWalk();     
     }
     
 

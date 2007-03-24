@@ -426,9 +426,14 @@ public class BattlePanel extends ActionPanel
 
     public void gotoStep(GUID battleID, final String step)
     {
-        //this method can be called outside the event dispatch thread.
-        if(m_battleDisplay != null)
-            m_battleDisplay.setStep(step);
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                if (m_battleDisplay != null)
+                    m_battleDisplay.setStep(step);
+            }
+        });
     }
 
     public void notifyRetreat(final Collection retreating)
