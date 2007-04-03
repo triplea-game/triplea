@@ -194,6 +194,7 @@ public class Console extends JFrame
                     result.append(stackTrace[i]);
                     result.append("\n");
                 }
+                result.append("\n");
             }
         }
         
