@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.logging.Logger;
@@ -43,11 +44,13 @@ public class LobbyLoginValidator implements ILoginValidator
         
         if(error != null)
         {
-            s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName + " error:" + error);    
+            s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName + " error:" + error);
+            AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
         }
         else
         {
             s_logger.info("Successful login from:" + remoteAddress + " for user:" + clientName);
+            AccessLog.successfulLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress());
         }
         
         return error;
