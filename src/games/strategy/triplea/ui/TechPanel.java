@@ -65,7 +65,15 @@ public class TechPanel extends ActionPanel
                 add(new JButton(GetTechRollsAction));
                 add(new JButton(DontBother));
 
-                getMap().centerOn(TerritoryAttachment.getCapital(id, getData()));
+                getData().acquireReadLock();
+                try
+                {
+                    getMap().centerOn(TerritoryAttachment.getCapital(id, getData()));
+                }
+                finally 
+                {
+                    getData().releaseReadLock();
+                }
             }
         
         });
@@ -95,10 +103,17 @@ public class TechPanel extends ActionPanel
 
     private List<TechAdvance> getAvailableTechs()
     {
-        Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
-        Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData());
-
-        return Util.difference(allAdvances, currentAdvances);
+        getData().acquireReadLock();
+        try
+        {
+            Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer());
+            Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData());
+            return Util.difference(allAdvances, currentAdvances);
+        }
+        finally 
+        {
+            getData().releaseReadLock();
+        }
     }
 
     private boolean isFourthEdition()

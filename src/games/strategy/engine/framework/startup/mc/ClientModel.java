@@ -369,6 +369,7 @@ public class ClientModel implements IMessengerErrorListener
                       try
                       {
                           data.getGameLoader().startGame(m_game, playerSet);
+                          data.testLocksOnRead();
                       }
                       catch(Exception e)
                       {

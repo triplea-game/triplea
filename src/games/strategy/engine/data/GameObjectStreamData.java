@@ -87,20 +87,28 @@ public class GameObjectStreamData implements Externalizable
 	    if(data == null)
 			throw new IllegalArgumentException("Data cant be null");
 
-        switch(m_type)
-        {
-            case PLAYERID : 
-                return data.getPlayerList().getPlayerID(m_name);
-            case TERRITORY :
-                return data.getMap().getTerritory(m_name);
-            case UNITTYPE :
-                return data.getUnitTypeList().getUnitType(m_name);
-            case PRODUCTIONRULE :
-                return data.getProductionRuleList().getProductionRule(m_name);
-            case PRODUCTIONFRONTIER:
-                return data.getProductionFrontierList().getProductionFrontier(m_name);
+        data.acquireReadLock();
+        try
+        {        
+            switch(m_type)
+            {
+                case PLAYERID : 
+                    return data.getPlayerList().getPlayerID(m_name);
+                case TERRITORY :
+                    return data.getMap().getTerritory(m_name);
+                case UNITTYPE :
+                    return data.getUnitTypeList().getUnitType(m_name);
+                case PRODUCTIONRULE :
+                    return data.getProductionRuleList().getProductionRule(m_name);
+                case PRODUCTIONFRONTIER:
+                    return data.getProductionFrontierList().getProductionFrontier(m_name);
+            }
+            throw new IllegalStateException("Unknown type" + this);
         }
-        throw new IllegalStateException("Unknown type" + this);
+        finally 
+        {
+            data.releaseReadLock();
+        }
 	}
 
 

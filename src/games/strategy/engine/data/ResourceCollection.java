@@ -72,10 +72,18 @@ public class ResourceCollection extends GameDataComponent
 	
 	public int getQuantity(String name)
 	{
-		Resource resource = getData().getResourceList().getResource(name);
-		if(resource == null)
-			throw new IllegalArgumentException("No resource named:" + name);
-		return getQuantity(resource);
+        getData().acquireReadLock();
+        try
+        {
+    		Resource resource = getData().getResourceList().getResource(name);
+    		if(resource == null)
+    			throw new IllegalArgumentException("No resource named:" + name);
+    		return getQuantity(resource);
+        }
+        finally 
+        {
+            getData().releaseReadLock();
+        }
 	}
 	
 	public boolean has(IntegerMap<Resource> map)

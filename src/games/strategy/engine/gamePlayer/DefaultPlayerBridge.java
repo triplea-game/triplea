@@ -96,8 +96,16 @@ public class DefaultPlayerBridge implements IPlayerBridge
             throw new GameOverException("Game Over");
         try
         {
-            IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
-            return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
+            m_game.getData().acquireReadLock();
+            try
+            {
+                IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
+                return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
+            }
+            finally 
+            {
+                m_game.getData().releaseReadLock();
+            }
         }
         catch(MessengerException me)
         {

@@ -54,7 +54,7 @@ public class ServerLauncher implements ILauncher
     private ServerGame m_serverGame;
     private Component m_ui;
     private final CountDownLatch m_erroLatch = new CountDownLatch(1);
-    private boolean m_isLaunching = true;
+    private volatile boolean m_isLaunching = true;
     private ServerReady m_serverReady;
     private volatile boolean m_abortLaunch = false;
     //a list of observers that tried to join the game during starup

@@ -14,6 +14,7 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.*;
+import games.strategy.thread.LockUtil;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.ui.*;
 import games.strategy.triplea.util.*;
@@ -24,6 +25,8 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.*;
 
 /**
@@ -37,7 +40,7 @@ public class TileManager
     private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
     public final static int TILE_SIZE = 256;
     private List<Tile> m_tiles = new ArrayList<Tile>();
-    private final Object m_mutex = new Object();
+    private final Lock m_lock = new ReentrantLock();
     
     private Map<String, TerritoryOverLayDrawable> m_territoryOverlays = new HashMap<String, TerritoryOverLayDrawable>();
     
@@ -60,7 +63,8 @@ public class TileManager
 
     public List<Tile> getTiles(Rectangle2D bounds)
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock);
+        try
         {
 	        List<Tile> rVal = new ArrayList<Tile>();
 	        Iterator<Tile> iter = m_tiles.iterator();
@@ -73,19 +77,30 @@ public class TileManager
 	
 	        return rVal;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
     }
 
     public Collection<UnitsDrawer> getUnitDrawables()
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock);
+        try
         {
             return new ArrayList<UnitsDrawer>(m_allUnitDrawables);
+        }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
         }
     }
     
     public void createTiles(Rectangle bounds, GameData data, MapData mapData)
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock);
+        try
         {
 	        //create our tiles
 	        m_tiles = new ArrayList<Tile>();
@@ -97,6 +112,11 @@ public class TileManager
 	            }
 	        }
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
      }
 
     public void resetTiles(GameData data, MapData mapData)
@@ -105,8 +125,9 @@ public class TileManager
         
         try
         {
-	        synchronized(m_mutex)
-	        {
+            LockUtil.acquireLock(m_lock);
+            try
+            {
 		        Iterator<Tile> allTiles = m_tiles.iterator();
 		        while (allTiles.hasNext())
 		        {
@@ -147,7 +168,12 @@ public class TileManager
                     }
                 }
                 
-	        }
+            }
+            finally 
+            {
+                LockUtil.releaseLock(m_lock);
+            }
+
         }
         finally
         {
@@ -162,8 +188,9 @@ public class TileManager
         try
         {
         
-	        synchronized(m_mutex)
-	        {
+            LockUtil.acquireLock(m_lock);
+            try
+            {
 		        if(territories == null)
 		            return;
 		        
@@ -175,7 +202,12 @@ public class TileManager
 		            updateTerritory(territory, data, mapData);
 		            
 		        }
-	        }
+            }
+            finally 
+            {
+                LockUtil.releaseLock(m_lock);
+            }
+
         }
         finally
         {
@@ -185,7 +217,8 @@ public class TileManager
 
     public void updateTerritory(Territory territory, GameData data, MapData mapData)
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock);
+        try
         {
 	        s_logger.log(Level.FINER, "Updating " + territory.getName());
 	        clearTerritory(territory);
@@ -201,6 +234,11 @@ public class TileManager
             }
             
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
     }
     
     private void clearTerritory(Territory territory)
@@ -387,7 +425,8 @@ public class TileManager
     
     private Image createTerritoryImage(Territory selected, Territory focusOn, GameData data, MapData mapData, boolean drawOutline)
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock);
+        try
         {
             Rectangle bounds = mapData.getBoundingRect(focusOn);
             
@@ -453,6 +492,11 @@ public class TileManager
             graphics.dispose();
             return rVal;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
 
     }
 
@@ -545,8 +589,10 @@ public class TileManager
     {
         if(units == null)
             return null;
-        
-        synchronized(m_mutex)
+
+        data.acquireReadLock();
+        LockUtil.acquireLock(m_lock);
+        try
         {
             for(UnitsDrawer drawer : m_allUnitDrawables)
             {
@@ -559,11 +605,19 @@ public class TileManager
             }
             return null;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+            data.releaseReadLock();
+        }
+
     }
     
     public Tuple<Territory,List<Unit>> getUnitsAtPoint(double x, double y, GameData gameData)
     {
-        synchronized(m_mutex)
+        gameData.acquireReadLock();
+        LockUtil.acquireLock(m_lock);
+        try
         {
             for(UnitsDrawer drawer : m_allUnitDrawables)
             {
@@ -578,6 +632,12 @@ public class TileManager
             }
             return null;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+            gameData.releaseReadLock();
+        }
+
     }
 
     

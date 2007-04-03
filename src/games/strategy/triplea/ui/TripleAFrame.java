@@ -731,8 +731,16 @@ public class TripleAFrame extends JFrame
         if(context == null || context.isShutDown())
             return;
         
-        if (m_data.getSequence().getStep() == null)
-            return;
+        m_data.acquireReadLock();
+        try
+        {
+            if (m_data.getSequence().getStep() == null)
+                return;
+        }
+        finally 
+        {
+            m_data.releaseReadLock();
+        }
 
         //we nee d to invoke and wait here since
         //if we switch to the history as a result of a history
@@ -760,9 +768,20 @@ public class TripleAFrame extends JFrame
             return;
         }
 
-        int round = m_data.getSequence().getRound();
-        String stepDisplayName = m_data.getSequence().getStep().getDisplayName();
-        PlayerID player = m_data.getSequence().getStep().getPlayerID();
+        
+        int round;
+        String stepDisplayName;
+        PlayerID player;
+        m_data.acquireReadLock();
+        try
+        {
+            round = m_data.getSequence().getRound();
+            stepDisplayName = m_data.getSequence().getStep().getDisplayName();
+            player = m_data.getSequence().getStep().getPlayerID();
+        } finally
+        {
+            m_data.releaseReadLock();
+        }        
 
         m_round.setText("Round:" + round + " ");
         m_step.setText(stepDisplayName);
@@ -805,6 +824,8 @@ public class TripleAFrame extends JFrame
             clonedGameData = GameDataUtils.cloneGameData(m_data);
             if (clonedGameData == null)
                 return;
+            
+            clonedGameData.testLocksOnRead();
             
             if(m_historySyncher != null)
                 throw new IllegalStateException("Two history synchers?");
@@ -1054,7 +1075,18 @@ class PlayerChatRenderer extends DefaultListCellRenderer
            List<Icon> icons = new ArrayList<Icon>(players.size());
            for(String player : players)
            {
-               icons.add(new ImageIcon( m_uiContext.getFlagImageFactory().getSmallFlag( m_game.getData().getPlayerList().getPlayerID(player) )));
+               PlayerID playerID;
+               m_game.getData().acquireReadLock();
+               try
+               {
+                   playerID = m_game.getData().getPlayerList().getPlayerID(player);
+               } 
+               finally
+               {
+                   m_game.getData().releaseReadLock();
+               }
+               
+               icons.add(new ImageIcon( m_uiContext.getFlagImageFactory().getSmallFlag( playerID )));
            }
            setIcon(new CompositeIcon(icons));
        }

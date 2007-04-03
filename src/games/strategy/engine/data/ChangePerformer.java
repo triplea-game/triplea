@@ -52,7 +52,7 @@ public class ChangePerformer
         
 		try
 		{
-		    m_data.aquireWriteLock();
+		    m_data.acquireWriteLock();
 			aChange.perform(m_data);
 		} finally
 		{

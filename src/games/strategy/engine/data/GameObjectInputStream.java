@@ -74,14 +74,22 @@ public class GameObjectInputStream extends ObjectInputStream
 
   private Object resolveUnit(Unit unit)
   {
-
-    Unit local = m_dataSource.getData().getUnits().get(unit.getID());
-    if (local != null)
-      return local;
-    else
+    m_dataSource.getData().acquireReadLock();
+    try
     {
-      getData().getUnits().put(unit);
-      return unit;
+        Unit local = m_dataSource.getData().getUnits().get(unit.getID());
+        if (local != null)
+          return local;
+        else
+        {
+          getData().getUnits().put(unit);
+          return unit;
+        }
+    }
+    finally 
+    {
+        m_dataSource.getData().releaseReadLock();
+        
     }
   }
 }

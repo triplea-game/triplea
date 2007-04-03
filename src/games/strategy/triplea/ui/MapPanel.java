@@ -29,6 +29,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
+import games.strategy.thread.LockUtil;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
@@ -819,7 +820,8 @@ public class MapPanel extends ImageScrollerLargeView
             Image img = null;
             Tile tile = (Tile) tiles.next();
 
-            synchronized(tile.getMutex())
+            LockUtil.acquireLock(tile.getLock());
+            try
             {
                 if(tile.isDirty())
                 {
@@ -840,6 +842,11 @@ public class MapPanel extends ImageScrollerLargeView
                     g.drawImage(img, t, this);
                 }
             }
+            finally 
+            {
+                LockUtil.releaseLock(tile.getLock());
+            }
+            
             
           
         }
@@ -847,12 +854,28 @@ public class MapPanel extends ImageScrollerLargeView
 
     public Image getTerritoryImage(Territory territory)
     {
-        return m_tileManager.createTerritoryImage(territory, m_data,m_uiContext.getMapData());
+        getData().acquireReadLock();
+        try
+        {
+            return m_tileManager.createTerritoryImage(territory, m_data,m_uiContext.getMapData());
+        }
+        finally 
+        {
+            getData().releaseReadLock();
+        }
     }
 
     public Image getTerritoryImage(Territory territory, Territory focusOn)
     {
-        return m_tileManager.createTerritoryImage(territory, focusOn, m_data,m_uiContext.getMapData());
+        getData().acquireReadLock();
+        try
+        {
+            return m_tileManager.createTerritoryImage(territory, focusOn, m_data,m_uiContext.getMapData());
+        }
+        finally 
+        {
+            getData().releaseReadLock();
+        }
     }
     
     public double getScale()
@@ -923,24 +946,32 @@ public class MapPanel extends ImageScrollerLargeView
         Rectangle bounds = new Rectangle(0,0,0,0);
         
         
-        int i = 0;
-        for(UnitCategory category : categories)
+        getData().acquireReadLock();
+        try
         {
-            Point place = new Point( i * (icon_width + xSpace), 0);
-            UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
-                    category.getOwner().getName(), place,category.getDamaged(), false, "", m_uiContext );
-            drawer.draw(bounds, m_data, g, m_uiContext.getMapData(), null, null);
-            if (unresolvedTypes != null && unresolvedTypes.contains(category.getType()))
+            int i = 0;
+            for(UnitCategory category : categories)
             {
-                Image helpImage = getHelpImage();
-                // position the icon in the lower-right corner of the unit
-                int unresolvedX = (int)place.getX() + icon_width - helpImage.getWidth(this);
-                int unresolvedY = (int)place.getY() + UnitImageFactory.UNIT_ICON_HEIGHT - helpImage.getHeight(this); 
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f) );
-                g.drawImage(helpImage, unresolvedX, unresolvedY, null);
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f) );
+                Point place = new Point( i * (icon_width + xSpace), 0);
+                UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
+                        category.getOwner().getName(), place,category.getDamaged(), false, "", m_uiContext );
+                drawer.draw(bounds, m_data, g, m_uiContext.getMapData(), null, null);
+                if (unresolvedTypes != null && unresolvedTypes.contains(category.getType()))
+                {
+                    Image helpImage = getHelpImage();
+                    // position the icon in the lower-right corner of the unit
+                    int unresolvedX = (int)place.getX() + icon_width - helpImage.getWidth(this);
+                    int unresolvedY = (int)place.getY() + UnitImageFactory.UNIT_ICON_HEIGHT - helpImage.getHeight(this); 
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f) );
+                    g.drawImage(helpImage, unresolvedX, unresolvedY, null);
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f) );
+                }
+                i++;
             }
-            i++;
+        }
+        finally
+        {
+            getData().releaseReadLock();
         }
         m_mouseShadowImage = img;
         SwingUtilities.invokeLater(new Runnable()
@@ -1141,7 +1172,15 @@ class BackgroundDrawer implements Runnable
             }
             
             GameData data = mapPanel.getData();
-            tile.getImage(data, mapPanel.getUIContext().getMapData());
+            data.acquireReadLock();
+            try
+            {
+                tile.getImage(data, mapPanel.getUIContext().getMapData());
+            }
+            finally 
+            {
+                data.releaseReadLock();
+            }
             
             SwingUtilities.invokeLater(new Runnable()
             {

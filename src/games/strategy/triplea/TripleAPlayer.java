@@ -134,8 +134,16 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
     private void tech()
     {
         //can we tech?
-        if (m_id.getResources().getQuantity(Constants.IPCS) == 0)
-            return;
+        m_bridge.getGameData().acquireReadLock();
+        try
+        {
+            if (m_id.getResources().getQuantity(Constants.IPCS) == 0)
+                return;
+        }
+        finally 
+        {
+            m_bridge.getGameData().releaseReadLock();
+        }
 
         TechRoll techRoll = m_ui.getTechRolls(m_id);
         if (techRoll != null)
@@ -251,16 +259,24 @@ public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
         else
         {
             int minIPCsNeededToBuild = Integer.MAX_VALUE;
-            Iterator prodRules = m_id.getProductionFrontier().getRules().iterator();
-            while(prodRules.hasNext())
+            m_bridge.getGameData().acquireReadLock();
+            try
             {
-                ProductionRule rule = (ProductionRule) prodRules.next();
-                minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
+                Iterator prodRules = m_id.getProductionFrontier().getRules().iterator();
+                while(prodRules.hasNext())
+                {
+                    ProductionRule rule = (ProductionRule) prodRules.next();
+                    minIPCsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.IPCS)), minIPCsNeededToBuild);
+                }
+                
+                //can we buy anything
+                if (m_id.getResources().getQuantity(Constants.IPCS) < minIPCsNeededToBuild)
+                    return;
             }
-            
-            //can we buy anything
-            if (m_id.getResources().getQuantity(Constants.IPCS) < minIPCsNeededToBuild)
-                return;
+            finally
+            {
+                m_bridge.getGameData().releaseReadLock();
+            }
         }
 
         IntegerMap<ProductionRule> prod = m_ui.getProduction(m_id, bid);

@@ -27,6 +27,7 @@ import java.util.concurrent.locks.*;
 import games.strategy.engine.data.events.*;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.*;
+import games.strategy.thread.LockUtil;
 import games.strategy.util.*;
 import games.strategy.engine.history.*;
 
@@ -70,7 +71,7 @@ public class GameData implements java.io.Serializable
 {
     private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
 
-    private transient boolean m_forceInSwingEventThread = false;
+    private volatile transient boolean m_forceInSwingEventThread = false;
     
     private String m_gameName;
 	private Version m_gameVersion;
@@ -92,6 +93,7 @@ public class GameData implements java.io.Serializable
 
 	private IGameLoader m_loader;
 	private final History m_gameHistory = new History(this);
+    private volatile transient boolean m_testLockIsHeld = false;
 
 	/** Creates new GameData */
 	public GameData()
@@ -111,11 +113,29 @@ public class GameData implements java.io.Serializable
 	}
 
     /**
+     * Print an exception report if we are testing the lock is held, and
+     * do not currently hold the read or write lock 
+     */
+    private void ensureLockHeld() {
+        if(!m_testLockIsHeld)
+            return;
+        if(m_readWriteLock == null)
+            return;
+        
+        if(!LockUtil.isLockHeld(m_readWriteLock.readLock()) &&
+           !LockUtil.isLockHeld(m_readWriteLock.writeLock())        
+        ) {
+            new Exception("Lock not held").printStackTrace();
+        }
+    }
+    
+    /**
      * 
      * @return a collection of all units in the game
      */
 	UnitsList getUnits()
 	{
+        ensureLockHeld();
 	    return m_unitsList;
 	}
 
@@ -124,6 +144,7 @@ public class GameData implements java.io.Serializable
      */
 	public PlayerList getPlayerList()
 	{
+        ensureLockHeld();
 		return m_playerList;
 	}
 
@@ -132,6 +153,7 @@ public class GameData implements java.io.Serializable
      */
 	public ResourceList getResourceList()
 	{
+        ensureLockHeld();
 		return m_resourceList;
 	}
 
@@ -140,6 +162,7 @@ public class GameData implements java.io.Serializable
      */
 	public ProductionFrontierList getProductionFrontierList()
 	{
+        ensureLockHeld();
 		return m_productionFrontierList;
 	}
 
@@ -148,6 +171,7 @@ public class GameData implements java.io.Serializable
      */
 	public ProductionRuleList getProductionRuleList()
 	{
+        ensureLockHeld();
 		return m_productionRuleList;
 	}
 
@@ -156,6 +180,7 @@ public class GameData implements java.io.Serializable
      */
 	public AllianceTracker getAllianceTracker()
 	{
+        ensureLockHeld();
 		return m_alliances;
 	}
     
@@ -179,16 +204,19 @@ public class GameData implements java.io.Serializable
 
 	public GameSequence getSequence()
 	{
+        ensureLockHeld();
 		return m_sequence;
 	}
 
 	public UnitTypeList getUnitTypeList()
 	{
+        ensureLockHeld();
 		return m_unitTypeList;
 	}
 
 	public DelegateList getDelegateList()
 	{
+        ensureLockHeld();
 		return m_delegateList;
 	}
 
@@ -197,6 +225,7 @@ public class GameData implements java.io.Serializable
      */
 	public UnitHolder getUnitHolder(String name, String type)
 	{
+        ensureLockHeld();
 		if(type.equals(UnitHolder.PLAYER))
             return m_playerList.getPlayerID(name);
         else if(type.equals(UnitHolder.TERRITORY))
@@ -294,6 +323,9 @@ public class GameData implements java.io.Serializable
 
     public History getHistory()
     {
+        //don't ensure the lock is held when getting the history
+        //history operations often acquire the write lock
+        //and we cant acquire the write lock if we have the read lock
         return m_gameHistory;
     }
 
@@ -319,7 +351,7 @@ public class GameData implements java.io.Serializable
         if(m_readWriteLock == null)
             return;
         
-        m_readWriteLock.readLock().lock();
+        LockUtil.acquireLock(m_readWriteLock.readLock());
 	}
 	
 	
@@ -329,7 +361,7 @@ public class GameData implements java.io.Serializable
         if(m_readWriteLock == null)
             return;
         
-        m_readWriteLock.readLock().unlock();
+        LockUtil.releaseLock(m_readWriteLock.readLock());
 	}
 
 
@@ -339,12 +371,12 @@ public class GameData implements java.io.Serializable
      * until the release method is called
      * 
      */
-    public void aquireWriteLock()
+    public void acquireWriteLock()
     {   
         //this can happen in very odd cirumcstances while deserializing
         if(m_readWriteLock == null)
             return;
-        m_readWriteLock.writeLock().lock();
+        LockUtil.acquireLock(m_readWriteLock.writeLock());
     }
     
     
@@ -354,7 +386,7 @@ public class GameData implements java.io.Serializable
         if(m_readWriteLock == null)
             return;
         
-        m_readWriteLock.writeLock().unlock();
+        LockUtil.releaseLock(m_readWriteLock.writeLock());
     }
 
     public void clearAllListeners()
@@ -363,4 +395,11 @@ public class GameData implements java.io.Serializable
         m_territoryListeners.clear();
     }
 	
+    /**
+     * On reads of the game data components, make sure that the
+     * read or write lock is held. 
+     */
+    public void testLocksOnRead() {
+        m_testLockIsHeld = true;
+    }
 }

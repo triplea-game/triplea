@@ -124,15 +124,23 @@ public class ProductionPanel extends JPanel
 
     private void initRules(PlayerID player, GameData data, IntegerMap<ProductionRule> initialPurchase)
     {
-        m_id = player;
-        Iterator iter = player.getProductionFrontier().getRules().iterator();
-        while (iter.hasNext())
+        m_data.acquireReadLock();
+        try
         {
-            ProductionRule productionRule = (ProductionRule) iter.next();
-            Rule rule = new Rule(productionRule, player, m_uiContext);
-            int initialQuantity = initialPurchase.getInt(productionRule);
-            rule.setQuantity(initialQuantity);
-            m_rules.add(rule);
+            m_id = player;
+            Iterator iter = player.getProductionFrontier().getRules().iterator();
+            while (iter.hasNext())
+            {
+                ProductionRule productionRule = (ProductionRule) iter.next();
+                Rule rule = new Rule(productionRule, player, m_uiContext);
+                int initialQuantity = initialPurchase.getInt(productionRule);
+                rule.setQuantity(initialQuantity);
+                m_rules.add(rule);
+            }
+        }
+        finally 
+        {
+            m_data.releaseReadLock();
         }
 
     }

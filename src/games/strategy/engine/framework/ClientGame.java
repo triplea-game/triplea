@@ -136,10 +136,18 @@ public class ClientGame implements IGame
           m_firstRun = false;
         else
         {
-          m_data.getSequence().next();
-          while (!m_data.getSequence().getStep().getName().equals(stepName))
+          m_data.acquireWriteLock();
+          try
           {
-            m_data.getSequence().next();
+              m_data.getSequence().next();
+              while (!m_data.getSequence().getStep().getName().equals(stepName))
+              {
+                m_data.getSequence().next();
+              }
+          }
+          finally 
+          {
+              m_data.releaseWriteLock();
           }
         }
         
@@ -175,7 +183,15 @@ public class ClientGame implements IGame
       while(iter.hasNext())
       {
         IGamePlayer gp = iter.next();
-        PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
+        PlayerID player;
+        m_data.acquireReadLock();
+        try
+        {
+            player = m_data.getPlayerList().getPlayerID(gp.getName());
+        } finally
+        {
+            m_data.releaseReadLock();
+        }        
         m_gamePlayers.put(player, gp);
         
         m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getID(), m_data ));
@@ -239,8 +255,18 @@ public class ClientGame implements IGame
         //make sure we are in the correct step
         //steps are advanced on a different channel, and the
         //message advancing the step may be being processed in a different thread
-        while(!m_data.getSequence().getStep().getName().equals(stepName))
+        while(true)
         {
+            m_data.acquireReadLock();
+            try
+            {
+                if(m_data.getSequence().getStep().getName().equals(stepName))
+                    break;
+            }
+            finally 
+            {
+                m_data.releaseReadLock();
+            }
             
             try
             {

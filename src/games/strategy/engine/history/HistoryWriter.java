@@ -73,7 +73,7 @@ public class HistoryWriter implements java.io.Serializable
         Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
         HistoryNode old = m_current;
         
-        m_history.getGameData().aquireWriteLock();
+        m_history.getGameData().acquireWriteLock();
         try
         {
             m_current.add(currentStep);
@@ -103,7 +103,7 @@ public class HistoryWriter implements java.io.Serializable
 
         Round currentRound = new Round(round, m_history.getChanges().size());
 
-        m_history.getGameData().aquireWriteLock();
+        m_history.getGameData().acquireWriteLock();
         try
         {
             ((HistoryNode) m_history.getRoot()).add(currentRound);
@@ -124,7 +124,7 @@ public class HistoryWriter implements java.io.Serializable
         assertCorrectThread();
         
         HistoryNode old = m_current;
-        m_history.getGameData().aquireWriteLock();
+        m_history.getGameData().acquireWriteLock();
         try
         {        
             
@@ -174,7 +174,7 @@ public class HistoryWriter implements java.io.Serializable
 
         HistoryNode oldCurrent = m_current;
         
-        m_history.getGameData().aquireWriteLock();
+        m_history.getGameData().acquireWriteLock();
         try
         {
             m_current.add(event);
@@ -217,7 +217,7 @@ public class HistoryWriter implements java.io.Serializable
         s_logger.log(Level.FINE, "Adding child:" + node);
 
         
-        m_history.getGameData().aquireWriteLock();
+        m_history.getGameData().acquireWriteLock();
         try
         {
             if (!isCurrentEvent())
@@ -269,7 +269,7 @@ public class HistoryWriter implements java.io.Serializable
             startEvent("???");
         }
         
-        m_history.getGameData().aquireWriteLock();
+        m_history.getGameData().acquireWriteLock();
         try
         {
             ((Event) m_current).setRenderingData(details);

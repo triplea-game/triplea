@@ -14,6 +14,7 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
@@ -24,6 +25,8 @@ import java.awt.image.BufferedImage;
 import java.lang.ref.SoftReference;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.*;
 
 /**
@@ -46,7 +49,7 @@ public class Tile
     
     private final double m_scale;
     
-    private final Object m_mutex = new Object();
+    private final Lock m_lock = new ReentrantLock();
     
     private final List<IDrawable> m_contents = new ArrayList<IDrawable>();
     
@@ -62,15 +65,21 @@ public class Tile
      
     public boolean isDirty()
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock);
+        try
         {
             return m_isDirty || m_imageRef == null || m_imageRef.get() == null;
+        }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
         }
     }
     
     public Image getImage(GameData data, MapData mapData) 
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock) ;
+        try
         {
         
             if(m_imageRef == null)
@@ -98,6 +107,11 @@ public class Tile
             
             return image;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
         
     }
 
@@ -171,54 +185,90 @@ public class Tile
     
     public void addDrawbles(Collection<IDrawable> drawables)
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock);
+        try
         {
             m_contents.addAll(drawables);
             m_isDirty = true;
-        }        
+        }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
     }
     
     public void addDrawable(IDrawable d)
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock); 
+        try
         {
             m_contents.add(d);
             m_isDirty = true;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
     }
     
     public void removeDrawable(IDrawable d)
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock);
+        try
         {
             m_contents.remove(d);
             m_isDirty = true;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
     }
+    
     public void removeDrawables(Collection c)
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock); 
+        try
         {
             m_contents.removeAll(c);
             m_isDirty = true;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
     }
     
     public void clear()
     {
-        synchronized(m_mutex)
+        LockUtil.acquireLock(m_lock); 
+        try
         {
             m_contents.clear();
             m_isDirty = true;
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
     }
     
     public List<IDrawable> getDrawables()
     {
-        synchronized(m_mutex)
-        {       
+        LockUtil.acquireLock(m_lock);
+        try
+        {      
             return new ArrayList<IDrawable>( m_contents);
         }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+
     }
     
     public Rectangle getBounds()
@@ -235,10 +285,11 @@ public class Tile
     {
         return m_y;
     }
-    
-    public Object getMutex()
+
+    public Lock getLock()
     {
-        return m_mutex;
+        return m_lock;
     }
+
     
 }

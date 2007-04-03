@@ -593,10 +593,18 @@ public class MovePanel extends ActionPanel
 
     private Route getRoute(Territory start, Territory end)
     {
-        if (m_forced == null)
-            return getRouteNonForced(start, end);
-        else
-            return getRouteForced(start, end);
+        getData().acquireReadLock();
+        try
+        {
+            if (m_forced == null)
+                return getRouteNonForced(start, end);
+            else
+                return getRouteForced(start, end);
+        }
+        finally
+        {
+            getData().releaseReadLock();
+        }
     }
 
     /**
@@ -1383,8 +1391,18 @@ public class MovePanel extends ActionPanel
             {
                 m_mouseCurrentPoint= me.getMapPoint();
                 Route route = getRoute(getFirstSelectedTerritory(), territory);
-                if (m_mouseCurrentTerritory == null || !m_mouseCurrentTerritory.equals(territory))
-                    updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
+                if (m_mouseCurrentTerritory == null || !m_mouseCurrentTerritory.equals(territory)) {
+                    getData().acquireReadLock();
+                    try
+                    {
+                        updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
+                    }
+                    finally 
+                    {
+                        getData().releaseReadLock();
+                    }
+                    
+                }
 
                 updateRouteAndMouseShadowUnits(route);
             }

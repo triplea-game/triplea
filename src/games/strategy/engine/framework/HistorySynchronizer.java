@@ -49,7 +49,15 @@ public class HistorySynchronizer
 
         m_data = data;
         m_data.forceChangesOnlyInSwingEventThread();
-        m_currentRound = data.getSequence().getRound();
+        data.acquireReadLock();
+        try
+        {
+            m_currentRound = data.getSequence().getRound();
+        }
+        finally 
+        {
+            data.releaseReadLock();
+        }
 
         m_game = game;
         m_game.getChannelMessenger().registerChannelSubscriber(m_gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);

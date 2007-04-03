@@ -217,45 +217,54 @@ public class PlacePanel extends ActionPanel
     private Collection<Unit> getUnitsToPlace(Territory territory,
             int maxUnits[])
     {
-        // not our territory
-        if (!territory.isWater()
-                && !territory.getOwner().equals(getCurrentPlayer()))
-            return Collections.emptyList();
-
-        // get the units that can be placed on this territory.
-        Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
-        if (territory.isWater())
+        
+        getData().acquireReadLock();
+        try
         {
-            if (!canProduceFightersOnCarriers())
-                units = Match.getMatches(units, Matches.UnitIsSea);
-            else
+            // not our territory
+            if (!territory.isWater()
+                    && !territory.getOwner().equals(getCurrentPlayer()))
+                return Collections.emptyList();
+    
+            // get the units that can be placed on this territory.
+            Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
+            if (territory.isWater())
             {
-                CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(
-                        Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
-                units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
+                if (!canProduceFightersOnCarriers())
+                    units = Match.getMatches(units, Matches.UnitIsSea);
+                else
+                {
+                    CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(
+                            Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+                    units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
+                }
+            } else
+                units = Match.getMatches(units, Matches.UnitIsNotSea);
+    
+            if (units.isEmpty())
+                return Collections.emptyList();
+    
+            IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge
+                    .getRemote();
+    
+            PlaceableUnits production = placeDel
+                    .getPlaceableUnits(units, territory);
+    
+            if (production.isError())
+            {
+                JOptionPane.showMessageDialog(getTopLevelAncestor(), production
+                        .getErrorMessage(), "No units",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return Collections.emptyList();
             }
-        } else
-            units = Match.getMatches(units, Matches.UnitIsNotSea);
-
-        if (units.isEmpty())
-            return Collections.emptyList();
-
-        IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge
-                .getRemote();
-
-        PlaceableUnits production = placeDel
-                .getPlaceableUnits(units, territory);
-
-        if (production.isError())
-        {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), production
-                    .getErrorMessage(), "No units",
-                    JOptionPane.INFORMATION_MESSAGE);
-            return Collections.emptyList();
+    
+            maxUnits[0] = production.getMaxUnits();
+            return production.getUnits();
         }
-
-        maxUnits[0] = production.getMaxUnits();
-        return production.getUnits();
+        finally 
+        {
+            getData().releaseReadLock();
+        }
     }
 
     private void updateUnits()

@@ -39,6 +39,7 @@ public class StrategyGameTest extends TestCase
         
         
 		suite.addTestSuite(games.strategy.thread.ThreadPoolTest.class);
+		suite.addTestSuite(games.strategy.thread.LockUtilTest.class);
 		suite.addTestSuite(games.strategy.engine.framework.GameDataManagerTest.class);
 		suite.addTestSuite(ChannelMessengerTest.class);
 		suite.addTestSuite(RemoteMessengerTest.class);

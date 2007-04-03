@@ -113,7 +113,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     public synchronized void gotoNode(HistoryNode node)
     {
-        getGameData().aquireWriteLock();
+        getGameData().acquireWriteLock();
         try
         {
         
@@ -134,7 +134,7 @@ public class History  extends DefaultTreeModel implements java.io.Serializable
 
     synchronized void changeAdded(Change aChange)
     {
-        getGameData().aquireWriteLock();
+        getGameData().acquireWriteLock();
         try
         {
         
