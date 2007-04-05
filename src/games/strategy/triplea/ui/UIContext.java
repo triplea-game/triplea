@@ -53,6 +53,7 @@ public class UIContext
     private DiceImageFactory m_diceImageFactory = new DiceImageFactory();
     private final IPCImageFactory m_ipcImageFactory = new IPCImageFactory();
     private boolean m_isShutDown;
+    private boolean m_drawUnits=true;
     
     private List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
     private List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
@@ -69,6 +70,8 @@ public class UIContext
     {
         return m_scale;
     }
+    
+    
     
     public void setScale(double scale)
     {
@@ -438,6 +441,15 @@ public class UIContext
             re.printStackTrace();
         }
         
+    }
+    public boolean getShowUnits()
+    {
+    	return m_drawUnits;
+    }
+    
+    public void setShowUnits(boolean aBool)
+    {
+    	m_drawUnits=aBool;
     }
 
     public void setUnitScaleFactor(double scaleFactor)

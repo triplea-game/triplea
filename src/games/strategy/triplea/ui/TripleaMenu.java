@@ -299,14 +299,14 @@ public class TripleaMenu extends JMenuBar
      */
     private void createViewMenu(JMenuBar menuBar)
     {
-        JMenu menuGame = new JMenu("View");
-        menuBar.add(menuGame);
-        
-        
-        addZoomMenu(menuGame);
-        addUnitSizeMenu(menuGame);
-        addMapSkinsMenu(menuGame);
-        addShowMapDetails(menuGame);
+        JMenu menuView = new JMenu("View");
+        menuBar.add(menuView);
+                
+        addZoomMenu(menuView);
+        addUnitSizeMenu(menuView);
+        addShowUnits(menuView);
+        addMapSkinsMenu(menuView);
+        addShowMapDetails(menuView);
         
     }
 
@@ -565,6 +565,22 @@ public class TripleaMenu extends JMenuBar
             }
         });
         parentMenu.add(soundCheckBox);
+    }
+    private void addShowUnits(JMenu parentMenu)
+    {
+    	final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
+    	showUnitsBox.setSelected(true);
+    	showUnitsBox.addActionListener(new ActionListener()
+    	{
+    		public void actionPerformed(ActionEvent e)
+    		{
+    			boolean tfselected=showUnitsBox.isSelected();
+    			getUIContext().setShowUnits(tfselected);
+    			//games.strategy.triplea.ui.screen.TileManager.store(tfselected);
+    			m_frame.getMapPanel().resetMap();
+    		}
+    	});
+    	parentMenu.add(showUnitsBox);
     }
 
     /**

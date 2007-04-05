@@ -40,7 +40,7 @@ public class TileManager
     private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
     public final static int TILE_SIZE = 256;
     private List<Tile> m_tiles = new ArrayList<Tile>();
-    private final Lock m_lock = new ReentrantLock();
+    private final Lock m_lock = new ReentrantLock();    
     
     private Map<String, TerritoryOverLayDrawable> m_territoryOverlays = new HashMap<String, TerritoryOverLayDrawable>();
     
@@ -274,8 +274,12 @@ public class TileManager
         
         if(m_territoryOverlays.get(territory.getName()) != null)
             drawing.add(m_territoryOverlays.get(territory.getName()));
-            
-        drawUnits(territory, data, mapData, drawnOn, drawing);
+           
+        
+        if(m_uiContext.getShowUnits())
+        {
+            drawUnits(territory, data, mapData, drawnOn, drawing);
+        }
         
         if(!territory.isWater())
             drawing.add(new LandTerritoryDrawable(territory.getName()));
