@@ -1,3 +1,5 @@
+* add serialversionuid's to several classes (dagon)
+
 * add unit icon to unit images on the territory tab (dagon)
 
 * add menu to show/hide units (Gansito)

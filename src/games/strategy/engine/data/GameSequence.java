@@ -21,7 +21,7 @@
 package games.strategy.engine.data;
 
 
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.*;
 /**
  *
@@ -33,8 +33,11 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	private final List<GameStep> m_steps = new ArrayList<GameStep>();
 	private int m_currentIndex;
     private int m_round = 1;
-    private final Serializable m_currentStepMutex = new Serializable() {};
+    private transient Object m_currentStepMutex = new Object();
 
+    // compatible with 0.9.0.2 saved games
+    private static final long serialVersionUID = 8205078386807440137L;
+    
 	public GameSequence(GameData data)
 	{
 		super(data);
@@ -111,5 +114,15 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		return m_steps.iterator();
 	}
 
+    /** make sure transient lock object is initialized on deserialization. */
+    private void readObject(java.io.ObjectInputStream in)
+        throws IOException, ClassNotFoundException 
+    {
+        in.defaultReadObject();
+        if (m_currentStepMutex == null)
+        {
+            m_currentStepMutex = new Object();
+        }
+    }
 
 }

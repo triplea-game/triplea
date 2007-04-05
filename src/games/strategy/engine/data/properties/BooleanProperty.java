@@ -20,6 +20,9 @@ import java.awt.event.ActionEvent;
 
 public class BooleanProperty extends AEditableProperty
 {
+  // compatible with 0.9.0.2 saved games
+  private static final long serialVersionUID = -7265501762343216435L;
+  
   private boolean mValue;
 
   public BooleanProperty(String name, boolean defaultValue)

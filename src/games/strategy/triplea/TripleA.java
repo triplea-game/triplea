@@ -44,6 +44,9 @@ import javax.swing.SwingUtilities;
  */
 public class TripleA implements IGameLoader
 {
+    // compatible with 0.9.0.2 saved games
+    private static final long serialVersionUID = -8374315848374732436L;
+    
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
     private static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy AI";

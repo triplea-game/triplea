@@ -21,6 +21,8 @@ import javax.swing.JComponent;
 
 public class NumberProperty extends AEditableProperty
 {
+  // compatible with 0.9.0.2 saved games
+  private static final long serialVersionUID = 6826763550643504789L;
 
   private int m_max;
   private int m_min;

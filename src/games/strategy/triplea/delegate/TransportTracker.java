@@ -36,7 +36,9 @@ import java.util.*;
  */
 public class TransportTracker implements java.io.Serializable
 {
-
+    // compatible with 0.9.0.2 saved games
+    private static final long serialVersionUID = -8724881650087210929L;
+    
 	public static int getCost(Collection units)
 	{
 		return MoveValidator.getTransportCost(units);

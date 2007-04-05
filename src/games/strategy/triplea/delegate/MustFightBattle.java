@@ -64,6 +64,9 @@ import java.util.Set;
  */
 public class MustFightBattle implements Battle, BattleStepStrings
 {
+    // compatible with 0.9.0.2 saved games
+    private static final long serialVersionUID = 5879502298361231540L;
+    
     public static final int DEFAULT_RETREAT_TYPE = 0;
     public static final int SUBS_RETREAT_TYPE = 1;
     public static final int PLANES_RETREAT_TYPE = 2;
@@ -740,6 +743,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Matches.UnitIsSub);
 
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 99991L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -749,6 +754,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         });
         
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 99992L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -760,6 +767,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
 
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 99993L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -770,6 +779,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
 
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = -4316269766293144179L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -789,6 +800,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         });        
 
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 1560702114917865290L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -806,6 +819,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
 
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 8611067962952500496L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -818,6 +833,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 5259103822937067667L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -839,6 +856,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 6775880082912594489L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -850,6 +869,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         
         steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = -1544916305666912480L;
 
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
@@ -859,7 +880,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         });         
 
         steps.add(new IExecutable(){
-
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = -1150863964807721395L;
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 if (canAttackerRetreatPlanes() && !m_over)
@@ -869,7 +891,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         });    
        
         steps.add(new IExecutable(){
-
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 669349383898975048L;
+            
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 attackerRetreat(bridge);
@@ -880,14 +904,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         final IExecutable loop = new IExecutable()
         {
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 3118458517320468680L;
+            
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 pushFightLoopOnStack(bridge);
             }
         };
         
-        steps.add(new IExecutable(){
-
+        steps.add(new IExecutable() {
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = -3993599528368570254L;
+            
             public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
             {
                 if (!m_over)
@@ -2123,6 +2152,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
 class Fire implements IExecutable
 {
+    // compatible with 0.9.0.2 saved games
+    private static final long serialVersionUID = -3687054738070722403L;
+
     private final String m_stepName;
     private final Collection<Unit> m_firingUnits;
     private final  Collection<Unit> m_attackableUnits;
@@ -2294,7 +2326,9 @@ class Fire implements IExecutable
         
         IExecutable notifyCasualties = new IExecutable()
         {
-        
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = -9173385989239225660L;
+
             public void execute(ExecutionStack stack, IDelegateBridge bridge,
                     GameData data)
             {

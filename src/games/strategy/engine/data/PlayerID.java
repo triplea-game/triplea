@@ -79,6 +79,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 
 	public static final PlayerID NULL_PLAYERID = new PlayerID("Neutral", true, null)
 	{
+        // compatible with 0.9.0.2 saved games
+        private static final long serialVersionUID = -6596127754502509049L;
 		public boolean isNull()
 		{
 			return true;

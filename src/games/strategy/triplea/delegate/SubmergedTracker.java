@@ -28,6 +28,9 @@ import java.util.*;
  */
 public class SubmergedTracker implements Serializable
 {
+    // compatible with 0.9.0.2 saved games
+    private static final long serialVersionUID = -8935014766946132204L;
+    
     private Set<Unit> m_submerged = new HashSet<Unit>();
     
     public boolean isSubmerged(Unit unit)
