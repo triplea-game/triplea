@@ -17,6 +17,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.*;
+import games.strategy.ui.OverlayIcon;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -129,12 +130,19 @@ public class TerritoryDetailPanel extends JPanel
                 add(Box.createVerticalStrut(15));
             }
 
-            ImageIcon icon = m_uiContext.getUnitImageFactory().getIcon(
+            ImageIcon unitIcon = m_uiContext.getUnitImageFactory().getIcon(
                 item.getType(), item.getOwner(), m_data, item.getDamaged());
+            ImageIcon flagIcon = new ImageIcon(
+                m_uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
+            
+            // overlay flag onto upper-right of icon
+            Icon flaggedUnitIcon = new OverlayIcon(unitIcon, flagIcon,
+                    unitIcon.getIconWidth() - flagIcon.getIconWidth() - 3, 3);
+            
             JLabel label = new JLabel("x" + item.getUnits().size(),
-                                      icon,
-                                      SwingConstants.LEFT
-                                      );
+                    flaggedUnitIcon,
+                    SwingConstants.LEFT
+                    );
 
             add(label);
 

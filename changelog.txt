@@ -1,3 +1,5 @@
+* add unit icon to unit images on the territory tab (dagon)
+
 * add menu to show/hide units (Gansito)
 
 * lobby game table doesn't loose selection when games are added/removed or updated (sgb)
