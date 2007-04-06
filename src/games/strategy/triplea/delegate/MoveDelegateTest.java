@@ -38,12 +38,10 @@ public class MoveDelegateTest extends DelegateTest
   TestDelegateBridge m_bridge;
 
   /** Creates new PlaceDelegateTest */
-    public MoveDelegateTest(String name)
+  public MoveDelegateTest(String name)
   {
     super(name);
-
-
-    }
+  }
 
   public static Test suite()
   {
@@ -1272,6 +1270,21 @@ public class MoveDelegateTest extends DelegateTest
     Route route = m_data.getMap().getRoute(angola, russia);
     assertNotNull(route);
     assertEquals(route.getEnd(), russia);
+  }
+  
+  public void testTransportCapacity() 
+  {
+      IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+      map = new IntegerMap<UnitType>();
+      map.put(transport, 10);
+       
+      Collection<Unit> transports = getUnits(map, northSea);
+     
+      IntegerMap<Unit> capcity = m_delegate.getAvailableCapacity(transports);
+      for(Unit u : capcity.keySet()) 
+      {
+          assertEquals(2, capcity.getInt(u));
+      }
   }
 
 }

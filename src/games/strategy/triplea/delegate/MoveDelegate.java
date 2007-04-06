@@ -1469,6 +1469,15 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         
     }
 
+    public IntegerMap<Unit> getAvailableCapacity(Collection<Unit> transports)
+    {
+        IntegerMap<Unit> rVal = new IntegerMap<Unit>();
+        for(Unit u : transports) {
+            rVal.put(u, m_transportTracker.getAvailableCapacity(u));
+        }
+        return rVal;
+    }
+
 
 }
 

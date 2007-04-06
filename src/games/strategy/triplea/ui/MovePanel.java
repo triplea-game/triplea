@@ -31,20 +31,21 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
-import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
-import java.awt.Point;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.lang.ref.WeakReference;
@@ -56,8 +57,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -911,13 +912,14 @@ public class MovePanel extends ActionPanel
       
         List<Unit> candidateTransports = new ArrayList<Unit>();
         List<Unit> candidateAlliedTransports = new ArrayList<Unit>();
+        IntegerMap<Unit> transportCapacity = getDelegate().getAvailableCapacity(transports);
 
         // find the transports with space left
         Iterator transportIter = transports.iterator();
         while (transportIter.hasNext())
         {
             Unit transport = (Unit) transportIter.next();
-            int capacity = getDelegate().getTransportTracker().getAvailableCapacity(transport);
+            int capacity = transportCapacity.getInt(transport);
             if(capacity >= minTransportCost)
             {
                 if (transport.getOwner().equals(getCurrentPlayer()))
@@ -954,7 +956,7 @@ public class MovePanel extends ActionPanel
             // no movement left; not a good candidate
             if (endMustMoveWith.getMovement().getInt(transport) == 0)
                 continue;
-            int capacity = getDelegate().getTransportTracker().getAvailableCapacity(transport);
+            int capacity = transportCapacity.getInt(transport);
             boolean isSelected = false;
 
             // Loop through selected units and assign them to transports.
