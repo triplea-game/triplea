@@ -104,7 +104,7 @@ public class DBUserController
         }
         finally
         {
-            closeConnection(con);
+            DbUtil.closeConnection(con);
         }
     }
     
@@ -134,7 +134,7 @@ public class DBUserController
         }
         finally
         {
-            closeConnection(con);
+            DbUtil.closeConnection(con);
         }
     }
 
@@ -166,7 +166,7 @@ public class DBUserController
         }
         finally
         {
-            closeConnection(con);
+            DbUtil.closeConnection(con);
         }
     }
     
@@ -208,23 +208,12 @@ public class DBUserController
         }
         finally
         {
-            closeConnection(con);
+            DbUtil.closeConnection(con);
         }
         
     }
 
 
-    private void closeConnection(Connection con)
-    {
-        try
-        {
-            con.close();
-        } catch (SQLException e)
-        {
-            s_logger.log(Level.WARNING, "Error closing connection",e);
-        }
-    }
-    
     /**
      * Validate the username password, returning true if the user is able to login.
      * 
@@ -264,7 +253,7 @@ public class DBUserController
         }
         finally
         {
-            closeConnection(con);
+            DbUtil.closeConnection(con);
         }
         
         
@@ -311,35 +300,13 @@ public class DBUserController
         }
         finally
         {
-            closeConnection(con);
+            DbUtil.closeConnection(con);
         }
     }
     
     
 
-    //we need to reset the password, and send an email to the user account.
-    //perhaps we can do this manually for now
-//    public void resetPassword(String userName, String email)
-//    {
-//        Connection con = Database.getConnection();
-//        try
-//        {
-//            PreparedStatement ps = con.prepareStatement();
-//            
-//        }
-//        finally
-//        {
-//            closeConnection(con);
-//        }
-//    }
-
-    
-
-//    login( // make sure to update last login time);
-    
-    
-//    updateEmailAddress();
-    
+  
     
     
 }

@@ -47,7 +47,9 @@ public class DBExplorerPanel extends JPanel
         m_sql.setText("select * from ta_users " +
                 "\n\n" +
                 "update ta_users set password = \'foo\' where username = \'1152218272375\'\n\n" +
-                "select * from ta_users where CAST(joined as DATE) < CAST('2008-11-12' AS DATE)"
+                "select * from ta_users where CAST(joined as DATE) < CAST('2008-11-12' AS DATE) \n" +
+                "select * from bad_words \n" +
+                "select * from banned_ips"
                 
         );
         m_table = new JTable();

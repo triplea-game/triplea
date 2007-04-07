@@ -1,20 +1,25 @@
 package games.strategy.engine.lobby.server.login;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.*;
-import java.util.logging.Logger;
-
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.userDB.BadWordController;
+import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.net.ILoginValidator;
-import games.strategy.util.*;
+import games.strategy.util.MD5Crypt;
+import games.strategy.util.Version;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class LobbyLoginValidator implements ILoginValidator
 {
     static final String THATS_NOT_A_NICE_NAME = "Thats not a nice name";
-    //these names cant be in users name
-    static final String[] badWords = {"asshole", "bastard", "bitch", "dick", "fuck", "hell", "nigger" ,"pussy", "queer", "slut", "shit", "whore",  };
+    static final String YOUR_IP_HAS_BEEN_BANNED = "Your ip has been banned";
+
     
     private final static Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 
@@ -68,14 +73,20 @@ public class LobbyLoginValidator implements ILoginValidator
             return "Wrong version, we require" + LobbyServer.LOBBY_VERSION.toString() + " but trying to log in with " + clientVersionString;
         }
         
-        for(String s : badWords) 
+        for(String s : getBadWords()) 
         {
-            if(clientName.toLowerCase().contains(s)) 
+            if(clientName.toLowerCase().contains(s.toLowerCase())) 
             {
                 return THATS_NOT_A_NICE_NAME;
             }
         }
         
+        String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
+        if(new BannedIpController().isIpBanned(remoteIp)) {
+            return YOUR_IP_HAS_BEEN_BANNED;
+        }
+        
+       
         if(propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY))
         {
             return createUser(propertiesReadFromClient, clientName);
@@ -89,6 +100,12 @@ public class LobbyLoginValidator implements ILoginValidator
            return validatePassword(propertiesSentToClient, propertiesReadFromClient, clientName);
         }
     }
+
+    private List<String> getBadWords()
+    {
+        return new BadWordController().list();
+    }
+    
 
     private String validatePassword(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName)
     {

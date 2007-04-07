@@ -24,6 +24,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -122,31 +124,55 @@ public class Database
                 if(s_areDBTablesCreated)
                     return;
                 
-                ResultSet rs = conn.getMetaData().getTables(null, null, "TA_USERS", null);
+                ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
                 
-                if(rs.next())
+                List<String> existing = new ArrayList<String>();
+                while(rs.next()) 
                 {
-                    //we have the table, return
-                    rs.close();
-                    return;
+                    existing.add(rs.getString("TABLE_NAME").toUpperCase());
                 }
-                else
+                rs.close();
+
+                
+                if(!existing.contains("TA_USERS")) 
                 {
-                    rs.close();
+                
+                
+                    Statement s = conn.createStatement();
+                    s.execute("create table ta_users" +
+                                "(" +
+                                "userName varchar(40) NOT NULL PRIMARY KEY, " +
+                                "password varchar(40) NOT NULL, " +
+                                "email varchar(40) NOT NULL, " +
+                                "joined timestamp NOT NULL, " +
+                                "lastLogin timestamp NOT NULL, " +
+                                "admin integer NOT NULL " +
+                                ")"
+                            );
+                    s.close();
                 }
                 
-                
-                Statement s = conn.createStatement();
-                s.execute("create table ta_users" +
+                if(!existing.contains("BANNED_IPS")) 
+                {
+                    Statement s = conn.createStatement();
+                    s.execute("create table banned_ips" +
                             "(" +
-                            "userName varchar(40) NOT NULL PRIMARY KEY, " +
-                            "password varchar(40) NOT NULL, " +
-                            "email varchar(40) NOT NULL, " +
-                            "joined timestamp NOT NULL, " +
-                            "lastLogin timestamp NOT NULL, " +
-                            "admin integer NOT NULL " +
+                            "ip varchar(40) NOT NULL PRIMARY KEY " +
                             ")"
                         );
+                    s.close();
+                }
+                
+                if(!existing.contains("BAD_WORDS")) 
+                {
+                    Statement s = conn.createStatement();
+                    s.execute("create table bad_words" +
+                            "(" +
+                            "word varchar(40) NOT NULL PRIMARY KEY " +
+                            ")"
+                        );
+                    s.close();
+                }
                 
                 s_areDBTablesCreated = true;
             }

@@ -1,3 +1,7 @@
+* banned ips and banned words are stored in lobby database (sgb)
+
+* the lobby server can now ban ip address (sgb)
+
 * add serialversionuid's to several classes (dagon)
 
 * add unit icon to unit images on the territory tab (dagon)

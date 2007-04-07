@@ -1,6 +1,8 @@
 package games.strategy.engine.lobby.server.login;
 
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.userDB.BadWordController;
+import games.strategy.engine.lobby.server.userDB.BannedIpController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.util.*;
 
@@ -101,7 +103,7 @@ public class LobbyLoginValidatorTest extends TestCase
         SocketAddress address = new  InetSocketAddress(5000);
         
         String name = "bitCh" + Util.createUniqueTimeStamp();
-        
+        new BadWordController().addBadWord("bitCh");
         Map<String,String> properties = new HashMap<String,String>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
         properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
@@ -165,5 +167,24 @@ public class LobbyLoginValidatorTest extends TestCase
     }
     
     
+    public void testAnonymousLoginBadIp() throws UnknownHostException
+    {
+        LobbyLoginValidator validator = new LobbyLoginValidator();
+        new BannedIpController().addBannedIp("1.1.1.1");
+        SocketAddress address = new  InetSocketAddress(InetAddress.getByAddress(new byte[] {1,1,1,1}), 5000);
+        
+        String name = "name" + Util.createUniqueTimeStamp();
+        
+        Map<String,String> properties = new HashMap<String,String>();
+        properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+        properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+        
+ 
+        assertEquals(LobbyLoginValidator.YOUR_IP_HAS_BEEN_BANNED, new LobbyLoginValidator().verifyConnection(
+                validator.getChallengeProperties(name, address),
+                properties, name, address
+                ));
+
+    }
     
 }

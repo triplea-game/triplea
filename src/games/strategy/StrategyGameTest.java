@@ -5,6 +5,8 @@ import games.strategy.engine.chat.ChatPanelTest;
 import games.strategy.engine.chat.ChatTest;
 import games.strategy.engine.chat.StatusTest;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidatorTest;
+import games.strategy.engine.lobby.server.userDB.BadWordControllerTest;
+import games.strategy.engine.lobby.server.userDB.BannedIpControllerTest;
 import games.strategy.engine.lobby.server.userDB.DBUserControllerTest;
 import games.strategy.engine.message.ChannelMessengerTest;
 import games.strategy.engine.message.EndPointTest;
@@ -52,6 +54,8 @@ public class StrategyGameTest extends TestCase
         
         
         suite.addTestSuite(DBUserControllerTest.class);
+        suite.addTestSuite(BannedIpControllerTest.class);
+        suite.addTestSuite(BadWordControllerTest.class);
         suite.addTestSuite(LobbyLoginValidatorTest.class);
         
         suite.addTestSuite(RemoteInterfaceHelperTest.class);
