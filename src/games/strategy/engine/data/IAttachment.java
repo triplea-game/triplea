@@ -23,25 +23,26 @@ package games.strategy.engine.data;
 import java.io.Serializable;
 
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
  */
 public interface IAttachment extends Serializable
 {
-	public void setData(GameData m_data);
+    public void setData(GameData m_data);
 
-	/**
-	 * Called after the attatchment is created.
-	 * IF an error occurs should throw an
-	 * exception to halt the parsing
-	 */
-	public void validate() throws GameParseException;
+    /**
+     * Called after the attatchment is created. IF an error occurs should throw
+     * an exception to halt the parsing
+     */
+    public void validate() throws GameParseException;
 
-  public Attachable getAttatchedTo();
-  void setAttatchedTo(Attachable attatchable);
+    public Attachable getAttatchedTo();
 
-  public String getName();
-  public void setName(String aString);
+    void setAttatchedTo(Attachable attatchable);
+
+    public String getName();
+
+    public void setName(String aString);
 
 }
