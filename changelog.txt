@@ -1,3 +1,5 @@
+* allow odds calculator to specify simulation count (Gansito)
+
 * banned ips and banned words are stored in lobby database (sgb)
 
 * the lobby server can now ban ip address (sgb)

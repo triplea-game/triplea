@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
@@ -55,8 +56,6 @@ import javax.swing.SwingUtilities;
 public class OddsCalculatorPanel extends JPanel
 {    
     
-    private static final int FIGHT_COUNT = 5000;
-    
     
     private Window m_parent;
     private JLabel m_attackerWin;
@@ -65,10 +64,14 @@ public class OddsCalculatorPanel extends JPanel
     private JLabel m_defenderLeft;
     private JLabel m_attackerLeft;
     private JLabel m_count;
+
     
     private UIContext m_context;
     private GameData m_data;
     
+    private JLabel m_numRunsLabel;
+    
+    private IntTextField m_numRuns;
     
     private JPanel m_resultsPanel;
     private JButton m_calculateButton;
@@ -97,6 +100,7 @@ public class OddsCalculatorPanel extends JPanel
         createComponents();
         layoutComponents();
         setupListeners();
+
         
         m_parent = parent;
         
@@ -178,6 +182,7 @@ public class OddsCalculatorPanel extends JPanel
     
     private void setupListeners()
     {
+        
         m_defenderCombo.addActionListener(new ActionListener()
         {
         
@@ -308,7 +313,7 @@ public class OddsCalculatorPanel extends JPanel
                     else
                         calculator.setKeepOneAttackingLandUnit(false);
                     
-                    results.set(calculator.calculate(m_data, getAttacker(), getDefender(), location, attacking, defending, bombarding, FIGHT_COUNT));
+                    results.set(calculator.calculate(m_data, getAttacker(), getDefender(), location, attacking, defending, bombarding, m_numRuns.getValue()));
                  
                 }
                 finally
@@ -443,12 +448,14 @@ public class OddsCalculatorPanel extends JPanel
         resultsText.add(m_count, new GridBagConstraints(1,5, 1,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(15,5,0,0), 0,0));
         resultsText.add(m_time, new GridBagConstraints(1,6, 1,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,5,0,0), 0,0));
         
+        resultsText.add(m_numRunsLabel, new GridBagConstraints(0,7, 1,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(35,0,0,0), 0,0));
+        resultsText.add(m_numRuns, new GridBagConstraints(1,7, 1,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(35,5,0,0), 0,0));
         
-        resultsText.add(m_keepOneAttackingLandUnitCombo, new GridBagConstraints(0,7, 2,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(35,5,5,5), 0,0));
-        resultsText.add(m_landBattle, new GridBagConstraints(0,8, 2,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0,0));
+        resultsText.add(m_keepOneAttackingLandUnitCombo, new GridBagConstraints(0,8, 2,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0,0));
+        resultsText.add(m_landBattle, new GridBagConstraints(0,9, 1,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,5,0,0), 0,0));
         
-        resultsText.add(m_clearButton, new GridBagConstraints(0,9, 2,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10,5,5,5), 0,0));
-        resultsText.add(m_calculateButton, new GridBagConstraints(0,10, 2,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25,5,5,5), 0,0));
+        resultsText.add(m_clearButton, new GridBagConstraints(0,10, 2,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10,5,5,5), 0,0));
+        resultsText.add(m_calculateButton, new GridBagConstraints(0,11, 2,1,0,0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25,5,5,5), 0,0));
         
         m_resultsPanel.add(resultsText);
         
@@ -492,6 +499,15 @@ public class OddsCalculatorPanel extends JPanel
         m_attackingUnitsPanel = new PlayerUnitsPanel(m_data, m_context, false);
         
         m_landBattle = new JCheckBox("Land Battle");
+        
+        m_numRunsLabel=new JLabel("Run Count:");
+        m_numRuns = new games.strategy.ui.IntTextField();
+        m_numRuns.setColumns(4);
+        m_numRuns.setMin(1);
+        m_numRuns.setMax(20000);
+        
+        m_numRuns.setValue(5000);
+        
         
         m_calculateButton = new JButton("Calculate Odds");
         m_resultsPanel = new JPanel();
