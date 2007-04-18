@@ -303,7 +303,8 @@
 	</target>
 
 
-	<target name="release" depends="clean,compile,zip,zipInstaller,zipInstallerWithJava,zipSource" />
+	<target name="release" depends="clean,compile,zip,zipInstaller,zipInstallerWithJava,zipSource" description="do a full windows/generic release, this must be done on a windows machine" />
+
 
 	<!-- must be done after a ant zip has been executed (we dont depend since ant zip 
          takes a while.  NSIS must be installed, and makensis must be on the path
