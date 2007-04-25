@@ -408,11 +408,10 @@ public class StatPanel extends JPanel
             //copy so aquire/release read lock are on the same object!
             final GameData gameData = m_data;
             
-            Iterator playerIter = gameData.getPlayerList().getPlayers().iterator();
-
             gameData.acquireReadLock();
             try
             {
+                Iterator playerIter = gameData.getPlayerList().getPlayers().iterator();
                 while (playerIter.hasNext())
                 {
                     PlayerID pid = (PlayerID) playerIter.next();
