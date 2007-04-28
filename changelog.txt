@@ -1,3 +1,5 @@
+* better logic for determining attacker defender in odds calculator (Gansito)
+
 * add uninstaller (Gansito)
 
 * allow odds calculator to specify simulation count (Gansito)
