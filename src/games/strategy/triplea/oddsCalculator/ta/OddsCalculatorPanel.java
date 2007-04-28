@@ -448,9 +448,17 @@ public class OddsCalculatorPanel extends JPanel
     
     private void createComponents()
     {
-        
-        m_attackerCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
-        m_defenderCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
+        m_data.acquireReadLock();
+        try
+        {
+            m_attackerCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
+            m_defenderCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
+        }
+        finally
+        {
+            m_data.releaseReadLock();
+        }
+            
         
         m_defenderCombo.setRenderer(new PlayerRenderer());
         m_attackerCombo.setRenderer(new PlayerRenderer());
