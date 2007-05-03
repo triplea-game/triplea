@@ -153,7 +153,12 @@ public class InitializationDelegate implements IDelegate
     private void initTwoHitBattleship(GameData data, IDelegateBridge aBridge)
     {
         boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
-        UnitAttachment battleShipAttatchment = UnitAttachment.get(data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE));
+        
+        UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
+        if(battleShipUnit == null)
+            return;
+        
+        UnitAttachment battleShipAttatchment = UnitAttachment.get(battleShipUnit);
         boolean defaultEnabled = battleShipAttatchment.isTwoHit();
 
         if (userEnabled != defaultEnabled)
