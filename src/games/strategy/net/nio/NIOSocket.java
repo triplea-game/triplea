@@ -19,6 +19,7 @@ import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -135,8 +136,12 @@ public class NIOSocket implements IErrorReporter
     {
         try
         {
+            
+            Socket s = channel.socket();
+            s.shutdownInput();
+            s.shutdownOutput();
+            s.close();
             channel.close();
-            channel.socket().close();
         } catch (IOException e1)
         {
            s_logger.log(Level.FINE, "error closing channel", e1);
