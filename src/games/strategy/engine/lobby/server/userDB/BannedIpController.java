@@ -18,6 +18,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,14 +33,39 @@ public class BannedIpController
 
     private static final Logger s_logger = Logger.getLogger(BannedIpController.class.getName());
     
+    /**
+     * Ban the ip permanently
+     */
     public void addBannedIp(String ip) 
     {
+        addBannedIp(ip, null);
+    }
+    
+    /**
+     * Ban the given ip.  If banTill is not null, the ban will expire when banTill is reached.<p>
+     * 
+     * If this ip is already banned, this call will update the ban_end. 
+     */
+    public void addBannedIp(String ip, Date banTill) 
+    {
+        
+        if(isIpBanned(ip)) 
+        {
+            removeBannedIp(ip);
+        }
+        
+        Timestamp banTillTs = null;
+        if(banTill != null) {
+            banTillTs = new Timestamp(banTill.getTime());
+        }
+        
         s_logger.fine("Banning ip:" + ip);
         Connection con = Database.getConnection();
         try
         {
-            PreparedStatement ps = con.prepareStatement("insert into banned_ips (ip) values (?)");
+            PreparedStatement ps = con.prepareStatement("insert into banned_ips (ip, ban_till) values (?, ?)");
             ps.setString(1, ip);
+            ps.setTimestamp(2, banTillTs);
             ps.execute();
             ps.close();
             con.commit();
@@ -61,7 +88,7 @@ public class BannedIpController
             DbUtil.closeConnection(con);
         }
     }
-    
+        
     public void removeBannedIp(String ip) 
     {
         s_logger.fine("Removing banned ip:" + ip);
@@ -85,9 +112,15 @@ public class BannedIpController
         }
     }
 
+    /**
+     * Is the given ip banned?  This may have the side effect of removing from the
+     * database any ip's whose ban has expired 
+     */
     public boolean isIpBanned(String ip)
     {
-        String sql = "select ip from banned_ips where ip = ?";
+        boolean found = false;
+        boolean expired = false;
+        String sql = "select ip, ban_till from banned_ips where ip = ?";
         Connection con = Database.getConnection();
         try
         {
@@ -95,12 +128,21 @@ public class BannedIpController
             ps.setString(1, ip);
             
             ResultSet rs = ps.executeQuery();
-            boolean found = rs.next();
+            found = rs.next();
             
+            //if the ban has expird, allow the ip
+            if(found) 
+            {
+                Timestamp banTill = rs.getTimestamp(2);
+                if( banTill != null && banTill.getTime() < System.currentTimeMillis()) 
+                {
+                    s_logger.fine("Ban expired for:" + ip);
+                    expired = true;
+                }
+            }
+                
             rs.close();
             ps.close();
-            
-            return found;
             
         }
         catch(SQLException sqle)
@@ -113,6 +155,14 @@ public class BannedIpController
         {
             DbUtil.closeConnection(con);
         }
+
+        if(expired) 
+        {
+            removeBannedIp(ip);
+            return false;
+        }
+        return found;
+        
     }
     
    

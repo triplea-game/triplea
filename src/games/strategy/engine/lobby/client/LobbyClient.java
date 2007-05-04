@@ -1,6 +1,8 @@
 package games.strategy.engine.lobby.client;
 
 import games.strategy.debug.HeartBeat;
+import games.strategy.engine.lobby.server.IModeratorController;
+import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
@@ -11,6 +13,7 @@ public class LobbyClient
     private final Messengers m_messengers;
     
     private final boolean m_isAnonymousLogin;
+    private Boolean isAdmin;
     
     public LobbyClient(IMessenger messenger, boolean anonymousLogin)
     {
@@ -25,6 +28,16 @@ public class LobbyClient
     }
 
 
+    public boolean isAdmin() 
+    {
+        if(isAdmin == null) 
+        {
+            IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+            isAdmin = controller.isAdmin();
+        }
+        return isAdmin;
+    }
+    
     public boolean isAnonymousLogin()
     {
         return m_isAnonymousLogin;

@@ -76,12 +76,11 @@ public class LobbyServer
         //we dont need this manager now
         statusManager.shutDown();
         new UserManager().register(m_messengers.getRemoteMessenger());
+        new ModeratorController(server).register(m_messengers.getRemoteMessenger());
         
         
         LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers.getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
         controller.register(m_messengers.getRemoteMessenger());
-        
-        
         
         //now we are open for business
         server.setAcceptNewConnections(true);

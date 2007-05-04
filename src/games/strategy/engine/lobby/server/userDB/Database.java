@@ -157,7 +157,8 @@ public class Database
                     Statement s = conn.createStatement();
                     s.execute("create table banned_ips" +
                             "(" +
-                            "ip varchar(40) NOT NULL PRIMARY KEY " +
+                            "ip varchar(40) NOT NULL PRIMARY KEY, " +
+                            "ban_till timestamp  " +
                             ")"
                         );
                     s.close();

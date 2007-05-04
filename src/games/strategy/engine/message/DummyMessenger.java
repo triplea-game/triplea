@@ -19,6 +19,7 @@ import games.strategy.net.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A messenger that doesnt do anything.
@@ -26,6 +27,8 @@ import java.util.*;
 
 public class DummyMessenger implements IServerMessenger
 {
+    
+    private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionChangeListeners = new CopyOnWriteArrayList<IConnectionChangeListener>();
     
     public DummyMessenger()
     {
@@ -119,6 +122,7 @@ public class DummyMessenger implements IServerMessenger
      */
     public void addConnectionChangeListener(IConnectionChangeListener listener)
     {
+        m_connectionChangeListeners.add(listener);
     }
 
     /**
@@ -126,6 +130,7 @@ public class DummyMessenger implements IServerMessenger
      */
     public void removeConnectionChangeListener(IConnectionChangeListener listener)
     {
+        m_connectionChangeListeners.remove(listener);
     }
 
     /**
@@ -159,6 +164,9 @@ public class DummyMessenger implements IServerMessenger
 
     public void removeConnection(INode node)
     {
+        for(IConnectionChangeListener listener : m_connectionChangeListeners) {
+            listener.connectionRemoved(node);
+        }
     }
 
     public INode getServerNode()

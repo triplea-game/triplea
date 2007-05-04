@@ -27,9 +27,8 @@ public class MessageContext
     //the current caller of the remote or channel
     private static final ThreadLocal<INode> m_sender = new ThreadLocal<INode>();
     
-    //package access
     //should only be called by EndPoint
-    static void setSenderNodeForThread(INode node)
+    public static void setSenderNodeForThread(INode node)
     {
         m_sender.set(node);
     }

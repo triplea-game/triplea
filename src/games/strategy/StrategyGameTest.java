@@ -4,6 +4,7 @@ package games.strategy;
 import games.strategy.engine.chat.ChatPanelTest;
 import games.strategy.engine.chat.ChatTest;
 import games.strategy.engine.chat.StatusTest;
+import games.strategy.engine.lobby.server.ModeratorControllerTest;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidatorTest;
 import games.strategy.engine.lobby.server.userDB.BadWordControllerTest;
 import games.strategy.engine.lobby.server.userDB.BannedIpControllerTest;
@@ -57,6 +58,7 @@ public class StrategyGameTest extends TestCase
         suite.addTestSuite(BannedIpControllerTest.class);
         suite.addTestSuite(BadWordControllerTest.class);
         suite.addTestSuite(LobbyLoginValidatorTest.class);
+        suite.addTestSuite(ModeratorControllerTest.class);
         
         suite.addTestSuite(RemoteInterfaceHelperTest.class);
         
