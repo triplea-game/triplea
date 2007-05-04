@@ -17,17 +17,29 @@ package games.strategy.engine.lobby.client.ui;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
+import games.strategy.engine.chat.IPlayerActionFactory;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
+import games.strategy.net.INode;
+import games.strategy.util.MD5Crypt;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
@@ -53,6 +65,15 @@ public class LobbyFrame extends JFrame
         chatPlayers.addIgnoredPlayerName(LobbyServer.ADMIN_USERNAME);
         chatPlayers.setChat(chat);
         chatPlayers.setPreferredSize(new Dimension(200,600 ));
+        chatPlayers.addActionFactory(new IPlayerActionFactory()
+        {
+        
+            public List<Action> mouseOnPlayer(INode clickedOn)
+            {
+                return createAdminActions(clickedOn);
+            }
+        
+        });
     
         LobbyGamePanel gamePanel = new LobbyGamePanel(m_client.getMessengers());
         
@@ -101,6 +122,88 @@ public class LobbyFrame extends JFrame
         
     }
     
+    private List<Action> createAdminActions(final INode clickedOn)
+    {
+        if(!m_client.isAdmin()) 
+            return Collections.emptyList();
+        
+        if(clickedOn.equals(m_client.getMessenger().getLocalNode())) 
+            return Collections.emptyList();
+        
+        
+        final IModeratorController controller = (IModeratorController) m_client.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+        List<Action> rVal = new ArrayList<Action>();
+        rVal.add(new AbstractAction("Boot " + clickedOn.getName())
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                if(!confirm("Boot " + clickedOn.getName())) 
+                {
+                    return;
+                }
+                
+                controller.boot(clickedOn);
+            }
+        
+        });
+        
+        rVal.add(new AbstractAction("Ban IP for 1 day")
+        {
+            
+            public void actionPerformed(ActionEvent e)
+            {
+                if(!confirm("Ban ip for 1 day?")) 
+                {
+                    return;
+                }
+                
+                long expire = System.currentTimeMillis() +
+                              24 * 60 * 60 * 1000;
+                controller.banIp(clickedOn, new Date(expire));
+            }        
+        });
+
+        rVal.add(new AbstractAction("Ban IP forever")
+        {
+            
+            public void actionPerformed(ActionEvent e)
+            {
+                if(!confirm("Ban ip forever?")) 
+                {
+                    return;
+                }
+                
+                controller.banIp(clickedOn, null);
+            }        
+        });
+
+        rVal.add(new AbstractAction("Reset password")
+        {
+            
+            public void actionPerformed(ActionEvent e)
+            {
+                String newPassword = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");
+                if(newPassword == null || newPassword.length() < 2)
+                    return;                
+                                
+                boolean set = controller.setPassword(clickedOn,MD5Crypt.crypt(newPassword));
+                String msg = set ? "Password set" : "Password not set";
+                
+                JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), msg);
+            }
+        });
+        
+        
+        return rVal;
+    }
+    
+    private boolean confirm(String question) 
+    {
+        int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(this), question, "Question", JOptionPane.OK_CANCEL_OPTION);
+        return rVal == JOptionPane.OK_OPTION;
+    }
+
     public LobbyClient getLobbyClient()
     {
         return m_client;

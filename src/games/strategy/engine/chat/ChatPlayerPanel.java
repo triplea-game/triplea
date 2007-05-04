@@ -17,6 +17,7 @@ import games.strategy.net.INode;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -33,6 +34,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     //we do not set this directly on the JList,
     //instead we feed it the node name and staus as a string
     private ListCellRenderer m_setCellRenderer = new DefaultListCellRenderer();
+    
+    private List<IPlayerActionFactory> m_actionFactories = new ArrayList<IPlayerActionFactory>();
     
     public ChatPlayerPanel(Chat chat)
     {
@@ -132,6 +135,26 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 
         });
 
+        
+        m_actionFactories.add(new IPlayerActionFactory()
+        {
+            public List<Action> mouseOnPlayer(final INode clickedOn)
+            {
+                //you cant slap yourself
+                if(clickedOn.equals(m_chat.getLocalNode()))
+                        return Collections.emptyList();
+                
+                
+                Action slap = new AbstractAction("Slap " + clickedOn.getName())
+                {
+                    public void actionPerformed(ActionEvent event)
+                    {
+                       m_chat.sendSlap(clickedOn.getName());
+                    }
+                };
+                return Collections.singletonList(slap);
+            }
+        });
     }
 
     private void setWidgetActivation()
@@ -154,27 +177,34 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
             return;
      
         int index = m_players.locationToIndex(e.getPoint());
+        
         if(index == -1)
             return;
         INode player = (INode) m_listModel.get(index);
-        final String playerName = player.getName();
-        //you cant slap yourself
-        if(player.equals(m_chat.getLocalNode()))
-                return;
-        
-        Action slap = new AbstractAction("Slap " + playerName)
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-               m_chat.sendSlap(playerName);
-            }
-        };
         
         JPopupMenu menu = new JPopupMenu();
-        menu.add(slap);
-        menu.show(m_players, e.getX(), e.getY());
+        boolean hasActions = false;
+        for(IPlayerActionFactory factory : m_actionFactories) 
+        {
+            List<Action> actions = factory.mouseOnPlayer(player);
+            if(actions != null && !actions.isEmpty()) 
+            {
+                if(hasActions) 
+                {
+                    menu.addSeparator();
+                }
+                hasActions = true;
+                
+                for(Action a : actions)
+                {
+                    menu.add(a);
+                }
+            }
+        }
         
-        
+
+        if(hasActions)
+            menu.show(m_players, e.getX(), e.getY());
     }
     
     /**
@@ -215,6 +245,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     
     private String getDisplayString(INode node)
     {
+        if(m_chat == null)
+            return "";
         String status = m_chat.getStatusManager().getStatus(node);
         if(status == null || status.length() == 0)
         {
@@ -226,6 +258,20 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 
     public void addStatusMessage(String message)
     {
+    }
+
+    /**
+     * Add an action factory that will be used to populate the pop up meny when 
+     * right clicking on a player in the chat panel.
+     */
+    public void addActionFactory(IPlayerActionFactory actionFactory)
+    {
+        m_actionFactories.add(actionFactory);
+    }
+    
+    public void remove(IPlayerActionFactory actionFactory)
+    {
+        m_actionFactories.remove(actionFactory);
     }
     
 }

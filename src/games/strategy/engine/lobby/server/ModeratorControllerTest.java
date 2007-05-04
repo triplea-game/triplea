@@ -56,7 +56,7 @@ public class ModeratorControllerTest extends TestCase
     public void testBoot() throws UnknownHostException
     {
         MessageContext.setSenderNodeForThread(m_adminNode);
-        INode booted = new Node("foo", InetAddress.getLocalHost(), 0);
+        INode booted = new Node("foo", InetAddress.getByAddress(new byte[]{1,2,3,4}), 0);
         m_controller.boot(booted);
         assertTrue(m_listener.getRemoved().contains(booted));
     }
@@ -74,14 +74,26 @@ public class ModeratorControllerTest extends TestCase
         assertTrue(new BannedIpController().isIpBanned(bannedAddress.getHostAddress()));
     }
     
-    public void testResetUserPassword() 
+    public void testResetUserPassword() throws UnknownHostException 
     {
         String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
-        assertTrue(m_controller.setPassword(m_adminNode, newPassword));
+        String userName = Util.createUniqueTimeStamp();
         
-        assertTrue(new DBUserController().login(m_adminNode.getName(), newPassword));
+        new DBUserController().createUser(userName, "n@n.n", newPassword, false);
+        INode node = new Node(userName, InetAddress.getLocalHost(), 0);
+        
+        assertTrue(m_controller.setPassword(node, newPassword));
+        
+        assertTrue(new DBUserController().login(node.getName(), newPassword));
     }
 
+    
+    public void testCantResetAdminPassword() throws UnknownHostException 
+    {
+        String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
+        assertFalse(m_controller.setPassword(m_adminNode, newPassword));
+    }
+    
     public void testResetUserPassworUnknownUserd() throws UnknownHostException 
     {
         String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());

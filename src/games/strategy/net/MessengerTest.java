@@ -28,6 +28,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
@@ -360,6 +361,31 @@ public class MessengerTest extends TestCase
         assertEquals(m_server.getNodes().size(), 1);
     }
     
+    
+    public void testClose() throws InterruptedException  
+    {
+        final AtomicBoolean closed = new AtomicBoolean(false);
+        m_client1.addErrorListener(new IMessengerErrorListener()
+        {
+        
+            public void messengerInvalid(IMessenger messenger, Exception reason)
+            {
+                closed.set(true);
+            }
+        });
+        
+        m_server.removeConnection(m_client1.getLocalNode());
+        
+        int waitCount = 0;
+        while(!closed.get() && waitCount < 10) 
+        {
+            Thread.sleep(40);
+            waitCount++;
+        }
+        
+        assert(closed.get());
+        
+    }
     
     public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException, InterruptedException
     {

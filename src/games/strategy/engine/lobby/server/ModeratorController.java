@@ -55,6 +55,12 @@ public class ModeratorController implements IModeratorController
     public void boot(INode node)
     {
         assertUserIsAdmin();
+        
+        //you can't boot the server node
+        if(m_messenger.getServerNode().equals(node)) 
+        {            
+            throw new IllegalStateException("Cant boot server node");
+        }
         m_messenger.removeConnection(node);
     }
 
@@ -71,7 +77,10 @@ public class ModeratorController implements IModeratorController
         INode node = MessageContext.getSender();
         String name = getRealName(node);
         DBUserController controller = new DBUserController();
-        return controller.getUser(name).isAdmin(); 
+        DBUser user = controller.getUser(name);
+        if(user == null)
+            return false;
+        return user.isAdmin(); 
     }
 
     private String getRealName(INode node)
