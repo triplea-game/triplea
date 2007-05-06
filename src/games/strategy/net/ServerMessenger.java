@@ -496,10 +496,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
             throw new IllegalArgumentException("Null channel");
         
         //already closed, dont report it again
-        if(!m_channelToNode.containsKey(channel))
-            return;
-        
-        removeConnection(m_channelToNode.get(channel));
+        INode node = m_channelToNode.get(channel);
+        if(node != null)
+            removeConnection(node);
     }
 
     public void socketUnqaurantined(SocketChannel channel, QuarantineConversation conversation)
