@@ -38,6 +38,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class BattlePanel extends ActionPanel
     private JLabel m_actionLabel = new JLabel();
     private FightBattleDetails m_fightBattleMessage;
 
-    private BattleDisplay m_battleDisplay;
+    private volatile BattleDisplay m_battleDisplay;
     //if we are showing a battle, then this will be set to the currently
     //displayed battle.  This will only be set after the display 
     //is shown on the screen
@@ -220,8 +221,11 @@ public class BattlePanel extends ActionPanel
         }
     }
 
-    private void ensureBattleIsDisplayed(GUID battleID)
+    private boolean ensureBattleIsDisplayed(GUID battleID) 
     {
+        if(SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Wrong threads");
+        
         GUID displayed = m_currentBattleDisplayed;
         int count = 0;
         while (displayed == null || !battleID.equals(displayed))
@@ -232,18 +236,20 @@ public class BattlePanel extends ActionPanel
                 Thread.sleep(count);
             } catch (InterruptedException e)
             {
-                return;
+                return false;
             }
             
             //something is wrong, we shouldnt have to wait this long
             if(count > 200)
             {
                 Console.getConsole().dumpStacks();
-                new IllegalStateException("battle not displayed").printStackTrace();
-                return;
+                new IllegalStateException("battle not displayed, looking for:" +  battleID + " showing:" + m_currentBattleDisplayed).printStackTrace();
+                return false;
             }
             displayed = m_currentBattleDisplayed;
         }
+        
+        return true;
     }
 
     public void listBattle(final GUID battleID, final List steps)
@@ -372,7 +378,10 @@ public class BattlePanel extends ActionPanel
 
     public void confirmCasualties(final GUID battleId, final String message)
     {
-        ensureBattleIsDisplayed(battleId);
+        //something is wrong
+        if(!ensureBattleIsDisplayed(battleId)) {
+            return;
+        }
         m_battleDisplay.waitForConfirmation(message);
     }
 
@@ -384,7 +393,10 @@ public class BattlePanel extends ActionPanel
             return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
         else
         {
-            ensureBattleIsDisplayed(battleID);
+            //something is wong
+            if(!ensureBattleIsDisplayed(battleID))
+                return new CasualtyDetails(defaultCasualties, Collections.<Unit>emptyList(), true);
+            
             return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
         }
 
@@ -420,7 +432,9 @@ public class BattlePanel extends ActionPanel
 
     public Territory getRetreat(GUID battleID, String message, Collection<Territory> possible, boolean submerge)
     {
-        ensureBattleIsDisplayed(battleID);
+        //something is really wrong
+        if(!ensureBattleIsDisplayed(battleID))
+            return null;
         return m_battleDisplay.getRetreat(message, possible, submerge);
     }
 
