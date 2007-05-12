@@ -3,12 +3,17 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class MockBattle implements Battle
 {
 
     private final Territory m_location;
+    
+    private Collection<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
+
+    private boolean m_isAmphibious;
     
     public MockBattle(Territory location)
     {
@@ -58,10 +63,14 @@ public class MockBattle implements Battle
 
     public boolean isAmphibious()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return m_isAmphibious;
     }
 
+    public void setIsAmphibious(boolean aBool)
+    {
+        m_isAmphibious = aBool;
+    }
+    
     public void removeAttack(Route route, Collection<Unit> units)
     {
         // TODO Auto-generated method stub
@@ -82,8 +91,12 @@ public class MockBattle implements Battle
 
     public Collection<Unit> getAmphibiousLandAttackers()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return m_amphibiousLandAttackers;
+    }
+    
+    public void setAmphibiousLandAttackers(Collection<Unit> units) 
+    {
+        m_amphibiousLandAttackers = new ArrayList<Unit>(units);
     }
 
     public int getBattleRound()

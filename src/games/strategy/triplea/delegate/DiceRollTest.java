@@ -8,7 +8,11 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
 
 import java.io.*;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
+import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
@@ -20,14 +24,20 @@ public class DiceRollTest extends TestCase
     @Override
     protected void setUp() throws Exception
     {
+        String gameName = "revised.xml";
+        loadGame(gameName);
+    }
+
+    private void loadGame(String gameName) throws FileNotFoundException, GameParseException, SAXException, IOException
+    {
         File gameRoot  = GameRunner.getRootFolder();
         File gamesFolder = new File(gameRoot, "games");
-        File lhtr = new File(gamesFolder, "revised.xml");
+        File gameFile = new File(gamesFolder, gameName);
         
-        if(!lhtr.exists())
-            throw new IllegalStateException("revised does not exist");
+        if(!gameFile.exists())
+            throw new IllegalStateException("game does not exist");
         
-        InputStream input = new BufferedInputStream(new FileInputStream(lhtr));
+        InputStream input = new BufferedInputStream(new FileInputStream(gameFile));
         
         try
         {
@@ -200,6 +210,51 @@ public class DiceRollTest extends TestCase
     }
     
 
+    public void testMarineAttackPlus1() throws Exception 
+    {
+        loadGame("iron_blitz.xml");
+        
+        Territory algeria = m_data.getMap().getTerritory("Algeria");
+        PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+        
+        UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
+        List<Unit> attackers = marine.create(1, americans);
+        
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, americans);
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+        
+        MockBattle battle = new MockBattle(algeria);
+        battle.setAmphibiousLandAttackers(attackers);
+        battle.setIsAmphibious(true);
+        
+        
+        DiceRoll roll=  DiceRoll.rollDice(attackers, false, americans,bridge,m_data, battle, "");
+        assertEquals(1, roll.getHits());        
+    }
+
+    public void testMarineAttacNormalIfNotAmphibious() throws Exception 
+    {
+        loadGame("iron_blitz.xml");
+        
+        Territory algeria = m_data.getMap().getTerritory("Algeria");
+        PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+        
+        UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
+        List<Unit> attackers = marine.create(1, americans);
+        
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, americans);
+        bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+        
+        MockBattle battle = new MockBattle(algeria);
+        battle.setAmphibiousLandAttackers(Collections.<Unit>emptyList());
+        battle.setIsAmphibious(true);
+                
+        
+        DiceRoll roll=  DiceRoll.rollDice(attackers, false, americans,bridge,m_data, battle, "");
+        assertEquals(0, roll.getHits());        
+    }
+
+    
     public void testAA()
     {
         Territory westRussia = m_data.getMap().getTerritory("West Russia");
