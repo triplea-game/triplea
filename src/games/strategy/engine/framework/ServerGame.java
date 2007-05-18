@@ -644,30 +644,42 @@ public class ServerGame implements IGame
 
         public void gameDataChanged(Change aChange)
         {
+            assertCorrectCaller();
             m_changePerformer.perform(aChange);
             m_data.getHistory().getHistoryWriter().addChange(aChange);
         }
 
+        private void assertCorrectCaller()
+        {
+            if(!MessageContext.getSender().equals(m_messenger.getServerNode())) {
+                throw new IllegalStateException("Only server can change game data");
+            }
+        }
+
         public void startHistoryEvent(String event)
         {
+            assertCorrectCaller();
             m_data.getHistory().getHistoryWriter().startEvent(event);
             
         }
 
         public void addChildToEvent(String text, Object renderingData)
         {
+            assertCorrectCaller();
             m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
             
         }
 
         public void setRenderingData(Object renderingData)
         {
+            assertCorrectCaller();
             m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
             
         }
 
         public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
         {
+            assertCorrectCaller();
             if(loadedFromSavedGame)
                 return;
             
