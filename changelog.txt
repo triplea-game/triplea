@@ -1,3 +1,5 @@
+* new unit images (lssah)
+
 * add moderator functions, moderators can boot players, change passwords, and ban ip addresses (sgb)
 
 * better logic for determining attacker defender in odds calculator (Gansito)
@@ -390,6 +392,8 @@ changes for 0.7.1
 * various no pop up movement bugs (sgb)
 
 * fixed chinese tech in big world 1942 map (sgb)
+
+* partial fix for marines (marines still do not show up correctly in battle table) (sgb)
 
 * fixed missing connection from solomon in pacific map (sgb)
 
