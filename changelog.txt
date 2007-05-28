@@ -1,3 +1,5 @@
+* alt mouse scroll zooms the map in and out (ahmet)
+
 * new unit images (lssah)
 
 * add moderator functions, moderators can boot players, change passwords, and ban ip addresses (sgb)

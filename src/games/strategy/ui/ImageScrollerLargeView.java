@@ -262,9 +262,22 @@ public class ImageScrollerLargeView extends JComponent
         m_model.setBoxDimensions( (int) (getWidth() / m_scale), (int) (getHeight() / m_scale));
     }
 
-    public void setScale(double scale)
+    /** 
+     * @param value - a double between 0 and 1.
+     */
+    public void setScale(double value)
     {
-        m_scale = scale;
+        if(value < 0.15)
+            value = 0.15;
+        if(value > 1)
+            value = 1;
+        
+        
+        //we want the ratio to be a multiple of 1/256
+        //so that the tiles have integer widths and heights
+        value = ((int) (value * 256)) / ((double) 256);
+        
+        m_scale = value;
         refreshBoxSize();
     }
 
@@ -276,33 +289,46 @@ public class ImageScrollerLargeView extends JComponent
 
         public void mouseWheelMoved(MouseWheelEvent e)
         {
+        	if (!e.isAltDown())
+        	{
+	            if (m_edge == NONE)
+	                m_insideCount = 0;
+	
+	            //compute the amount to move
+	            int dx = 0;
+	            int dy = 0;
+	
+	            if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK)
+	                dx = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
+	            else
+	                dy = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
+	
+	            //move left and right and test for wrap
+	            int newX = (m_model.getX() + dx);
+	            if (newX > (int)  m_model.getMaxWidth() - getWidth())
+	                newX -= (int)  m_model.getMaxWidth();
+	            if (newX < -getWidth())
+	                newX += (int)  m_model.getMaxWidth();
+	
+	            //move up and down and test for edges
+	            int newY = m_model.getY() + dy;
+	            
+	
+	            //update the map
+	            m_model.set(newX, newY);
+        	}
+        	else
+        	{
+				double value = m_scale;
+				
+				if (e.getUnitsToScroll() < 0)
+					value = value - 0.15;
+				else
+					value = value + 0.15;
 
-            if (m_edge == NONE)
-                m_insideCount = 0;
-
-            //compute the amount to move
-            int dx = 0;
-            int dy = 0;
-
-            if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK)
-                dx = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
-            else
-                dy = e.getWheelRotation() * WHEEL_SCROLL_AMOUNT;
-
-            //move left and right and test for wrap
-            int newX = (m_model.getX() + dx);
-            if (newX > (int)  m_model.getMaxWidth() - getWidth())
-                newX -= (int)  m_model.getMaxWidth();
-            if (newX < -getWidth())
-                newX += (int)  m_model.getMaxWidth();
-
-            //move up and down and test for edges
-            int newY = m_model.getY() + dy;
-            
-
-            //update the map
-            m_model.set(newX, newY);
-
+                setScale(value);
+                
+        	}	
         }
     };
 

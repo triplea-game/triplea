@@ -261,17 +261,7 @@ public class TripleAFrame extends JFrame
      */
     void setScale(double value)
     {
-        if(value < 15)
-            value = 15;
-        if(value > 100)
-            value = 100;
-        
-        double ratio = value/ (double) 100.0;
-        //we want the ratio to be a multiple of 1/256
-        //so that the tiles have integer widths and heights
-        ratio = ((int) (ratio * 256)) / ((double) 256);
-        
-        getMapPanel().setScale(ratio);
+        getMapPanel().setScale(value / (double) 100);
     }
     
     /**

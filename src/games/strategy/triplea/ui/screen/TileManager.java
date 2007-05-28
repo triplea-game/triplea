@@ -52,13 +52,11 @@ public class TileManager
     private final Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<UnitsDrawer>();
     
     private final UIContext m_uiContext;
-    private double m_scale = 1;
     
     
     public TileManager(UIContext context)
     {
         m_uiContext = context;
-        m_scale = context.getScale();
     }
 
     public List<Tile> getTiles(Rectangle2D bounds)
@@ -108,7 +106,7 @@ public class TileManager
 	        {
 	            for (int y = 0; (y) * TILE_SIZE < bounds.height; y++)
 	            {
-	                m_tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x,y, m_scale));
+	                m_tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x,y, m_uiContext.getScale()));
 	            }
 	        }
         }
@@ -520,7 +518,7 @@ public class TileManager
         //the base tiles are scaled to save memory
         //but we want to draw them unscaled here
         //so unscale them
-        if(m_scale != 1)
+        if(m_uiContext.getScale() != 1)
         {
             List<IDrawable> toAdd = new ArrayList<IDrawable>();
             Iterator<IDrawable> iter = drawablesSet.iterator();
@@ -658,12 +656,6 @@ public class TileManager
         m_territoryOverlays.remove(territory.getName());
         updateTerritory(territory, data, mapData);
     }
-
-    public void setScale(double scale)
-    {
-        m_scale = scale;
-    }
-
  
     
 }

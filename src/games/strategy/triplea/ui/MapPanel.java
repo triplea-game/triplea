@@ -884,12 +884,15 @@ public class MapPanel extends ImageScrollerLargeView
     }
 
     
-    public void setScale(double scale)
+    @Override
+    public void setScale(double newScale)
     {
-        m_uiContext.setScale(scale);
-        m_tileManager.setScale(scale);
-        recreateTiles(getData(), getUIContext());
-        super.setScale(scale);
+        super.setScale(newScale);
+        //setScale will check bounds, and normalize the scale correctly
+        double normalizedScale = m_scale;
+        
+        m_uiContext.setScale(normalizedScale);        
+        recreateTiles(getData(), m_uiContext);        
         repaint();
     }
 
