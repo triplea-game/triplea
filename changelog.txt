@@ -1,3 +1,5 @@
+* allow centering map on battles (ahmet)
+
 * alt mouse scroll zooms the map in and out (ahmet)
 
 * new unit images (lssah)

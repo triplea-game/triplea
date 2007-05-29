@@ -32,7 +32,9 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -42,10 +44,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -140,25 +143,36 @@ public class BattlePanel extends ActionPanel
             {
                 removeAll();
                 m_actionLabel.setText(id.getName() + " battle");
-                add(m_actionLabel);
+                
+                setLayout(new BorderLayout());
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridLayout(0, 1));
+                panel.add(m_actionLabel);
                 Iterator<Territory> iter = battles.iterator();
                 while (iter.hasNext())
                 {
-                    Territory next = iter.next();
-                    Action action = new FightBattleAction(next, false);
-                    add(new JButton(action));
+                    addBattleActions(panel, iter, false);
                 }
 
                 iter = bombing.iterator();
                 while (iter.hasNext())
                 {
-                    Territory next = iter.next();
-                    Action action = new FightBattleAction(next, true);
-                    add(new JButton(action));
+                    addBattleActions(panel, iter, true);
                 }
+                add(panel, BorderLayout.NORTH);
                 SwingUtilities.invokeLater(REFRESH);
 
         
+            }
+
+            private void addBattleActions(JPanel panel, Iterator<Territory> iter, boolean bomb)
+            {
+                Territory next = iter.next();
+                JPanel innerPanel = new JPanel();
+                innerPanel.setLayout(new BorderLayout());
+                innerPanel.add(new JButton(new FightBattleAction(next, bomb)), BorderLayout.CENTER);
+                innerPanel.add(new JButton(new CenterBattleAction(next)), BorderLayout.EAST);
+                panel.add(innerPanel);
             }
         
         });
@@ -476,6 +490,70 @@ public class BattlePanel extends ActionPanel
 
     }
 
+    Territory m_oldCenteredTerritory = null;
+    Timer m_CenterBattleActionTimer = null;
+
+    class CenterBattleAction extends AbstractAction
+    {
+        Territory m_territory;
+
+        CenterBattleAction(Territory battleSite)
+    	{
+			super("Center");
+    		m_territory = battleSite;
+    	}
+        
+		public void actionPerformed(ActionEvent e) 
+		{
+            if (m_CenterBattleActionTimer != null)
+                m_CenterBattleActionTimer.cancel();
+            
+			if (m_oldCenteredTerritory != null)
+				getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
+            
+            getMap().centerOn(m_territory);
+
+            m_CenterBattleActionTimer = new Timer();
+            m_CenterBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(m_territory, m_CenterBattleActionTimer), 150, 150);
+			m_oldCenteredTerritory = m_territory;
+		}
+    	
+        class MyTimerTask extends TimerTask
+        {
+            Territory m_territory;
+            Timer m_stopTimer;
+            int m_count = 0;
+            
+            MyTimerTask(Territory battleSite, Timer stopTimer)
+            {
+                m_territory = battleSite;     
+                m_stopTimer = stopTimer;
+            }
+            
+            @Override
+            public void run()
+            {
+                if (m_count == 5)
+                    m_stopTimer.cancel();
+                if ((m_count % 3) == 0)
+                {
+                    getMap().setTerritoryOverlayForBorder(m_territory, Color.white);
+                    getMap().paintImmediately(getMap().getBounds());
+                    //TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
+                    //TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
+                }
+                else
+                {
+                    getMap().clearTerritoryOverlay(m_territory);
+                    getMap().paintImmediately(getMap().getBounds());
+                    //TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
+                    //TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
+                }
+                m_count ++;
+            }
+            
+        }
+    }
     class FightBattleAction extends AbstractAction
     {
         Territory m_territory;
@@ -490,6 +568,8 @@ public class BattlePanel extends ActionPanel
 
         public void actionPerformed(ActionEvent actionEvent)
         {
+			if (m_oldCenteredTerritory != null)
+				getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
             m_fightBattleMessage = new FightBattleDetails(m_bomb, m_territory);
             release();
         }

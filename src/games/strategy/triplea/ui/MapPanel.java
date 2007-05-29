@@ -993,6 +993,11 @@ public class MapPanel extends ImageScrollerLargeView
         m_tileManager.setTerritoryOverlay(territory, color, alpha, m_data, m_uiContext.getMapData() );
     }
 
+    public void setTerritoryOverlayForBorder(Territory territory, Color color)
+    {
+        m_tileManager.setTerritoryOverlayForBorder(territory, color, m_data, m_uiContext.getMapData());
+    }
+    
     public void clearTerritoryOverlay(Territory territory)
     {
         m_tileManager.clearTerritoryOverlay(territory, m_data, m_uiContext.getMapData());

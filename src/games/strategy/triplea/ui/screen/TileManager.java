@@ -17,6 +17,7 @@ import games.strategy.engine.data.*;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.ui.*;
+import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
 import games.strategy.triplea.util.*;
 import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
@@ -40,10 +41,9 @@ public class TileManager
     private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
     public final static int TILE_SIZE = 256;
     private List<Tile> m_tiles = new ArrayList<Tile>();
-    private final Lock m_lock = new ReentrantLock();    
+    private final Lock m_lock = new ReentrantLock();
     
-    private Map<String, TerritoryOverLayDrawable> m_territoryOverlays = new HashMap<String, TerritoryOverLayDrawable>();
-    
+    private Map<String, IDrawable> m_territoryOverlays = new HashMap<String, IDrawable>();
     //maps territoryname - collection of drawables
     private final Map<String, Set<IDrawable>> m_territoryDrawables = new HashMap<String, Set<IDrawable>>();
     //maps territoryname - collection of tiles where the territory is drawn
@@ -215,26 +215,20 @@ public class TileManager
 
     public void updateTerritory(Territory territory, GameData data, MapData mapData)
     {
+        data.acquireReadLock();
         LockUtil.acquireLock(m_lock);
         try
         {
 	        s_logger.log(Level.FINER, "Updating " + territory.getName());
 	        clearTerritory(territory);
-            
-            data.acquireReadLock();
-            try
-            {
-                drawTerritory(territory, data, mapData);
-            }
-            finally
-            {
-                data.releaseReadLock();
-            }
+         
+            drawTerritory(territory, data, mapData);         
             
         }
         finally 
         {
             LockUtil.releaseLock(m_lock);
+            data.releaseReadLock();
         }
 
     }
@@ -565,7 +559,7 @@ public class TileManager
             }
 
             
-            TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(),  100);
+            TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(),  100, OP.FILL);
             told.draw(bounds, data, graphics, mapData, null, null);
         }
 
@@ -645,15 +639,47 @@ public class TileManager
     
     public void setTerritoryOverlay(Territory territory, Color color, int alpha,  GameData data, MapData mapData)
     {
-        TerritoryOverLayDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), alpha);
-        m_territoryOverlays.put(territory.getName(), drawable);
+        LockUtil.acquireLock(m_lock);
+        try
+        {
+            IDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), alpha, OP.DRAW);
+            m_territoryOverlays.put(territory.getName(), drawable);
+        }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
         updateTerritory(territory, data, mapData);
         
     }
     
+    public void setTerritoryOverlayForBorder(Territory territory, Color color,  GameData data, MapData mapData)
+    {        
+        LockUtil.acquireLock(m_lock);
+        try
+        {
+            IDrawable drawable = new TerritoryOverLayDrawable(color, territory.getName(), OP.DRAW);
+            m_territoryOverlays.put(territory.getName(), drawable);
+        }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
+        updateTerritory(territory, data, mapData);
+                        
+    }
+    
     public void clearTerritoryOverlay(Territory territory, GameData data, MapData mapData)
     {
-        m_territoryOverlays.remove(territory.getName());
+        LockUtil.acquireLock(m_lock);
+        try
+        {
+            m_territoryOverlays.remove(territory.getName());
+        }
+        finally 
+        {
+            LockUtil.releaseLock(m_lock);
+        }
         updateTerritory(territory, data, mapData);
     }
  

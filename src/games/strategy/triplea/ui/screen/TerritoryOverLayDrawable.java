@@ -10,24 +10,27 @@ import java.util.List;
 
 public class TerritoryOverLayDrawable implements IDrawable
 {
+    public static enum OP {FILL,DRAW};
     
     private final String m_territoryName;
     private final Color m_color;
+    private final OP m_op;
+
     
+    public TerritoryOverLayDrawable(Color color, String name, OP op)
+    {
+        m_color = color;
+        m_territoryName = name;
+        m_op = op;
+    }
     
-    public TerritoryOverLayDrawable(Color color, String name, int alpha)
+    public TerritoryOverLayDrawable(Color color, String name, int alpha, OP op)
     {
         m_color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         m_territoryName = name;
+        m_op = op;
     }
  
-
-    public void prepare()
-    {
-        
-    }
-
-    
     
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
@@ -50,8 +53,11 @@ public class TerritoryOverLayDrawable implements IDrawable
             polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
 
             polygon.translate(-bounds.x, -bounds.y);
-            
-            graphics.fillPolygon(polygon);
+
+            if(m_op == OP.FILL)
+                graphics.fillPolygon(polygon);
+            else
+                graphics.drawPolygon(polygon);
         }
         
     }
