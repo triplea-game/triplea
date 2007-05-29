@@ -1,20 +1,32 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.data.properties.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TestDelegateBridge;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.properties.BooleanProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
 
-import java.io.*;
-import java.util.Collection;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
-import org.xml.sax.SAXException;
-
 import junit.framework.TestCase;
+
+import org.xml.sax.SAXException;
 
 public class DiceRollTest extends TestCase
 {
