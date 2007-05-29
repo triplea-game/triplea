@@ -150,7 +150,19 @@ public class LockUtil
 class ErrorReporter {
     public void reportError(Lock from, Lock to) {
         System.err.println("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:"
-                + Thread.currentThread());
+                + getStackTrace());
+    }
+
+    private String getStackTrace()
+    {
+        StackTraceElement[] trace =  Thread.currentThread().getStackTrace();
+        StringBuilder builder = new StringBuilder();
+        for(StackTraceElement e : trace) 
+        {
+            builder.append(e.toString());
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 }
 
