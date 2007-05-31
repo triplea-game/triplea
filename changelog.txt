@@ -1,3 +1,5 @@
+* mark remote players as remote (ahmet)
+
 * allow multiple canals per sea zone (tekkyy)
 
 * allow centering map on battles (ahmet)
