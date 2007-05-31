@@ -778,7 +778,7 @@ public class TripleAFrame extends JFrame
         if(player != null)
             m_player.setText((playing(player)?"":"REMOTE: ") + player.getName());
         if (player != null && !player.isNull())
-            m_player.setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag(player)));
+            m_round.setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag(player)));
 
         //if the game control has passed to someone else
         //show the history
