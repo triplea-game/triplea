@@ -12,17 +12,21 @@ public class CanalAttachment extends DefaultAttachment
 
     public static Set<Territory> getAllCanalSeaZones(String canalName, GameData data)
     {
-        Set<Territory> rVal = new HashSet<Territory>();
+        Set<Territory> rVal = new HashSet<Territory>();       
         for(Territory t : data.getMap())
         {
-            CanalAttachment canal = get(t);
-            if(canal == null)
+            Set<CanalAttachment> canalAttachments = get(t);
+            if(canalAttachments.isEmpty())
                 continue;
             
-            
-            if(canal.getCanalName().equals(canalName))
+            Iterator<CanalAttachment> iter = canalAttachments.iterator();
+            while(iter.hasNext() )
             {
-                rVal.add(t);
+                CanalAttachment canalAttachment = iter.next();
+                if (canalAttachment.getCanalName().equals(canalName))
+                {
+                    rVal.add(t);
+                }
             }
         }
         
@@ -32,9 +36,22 @@ public class CanalAttachment extends DefaultAttachment
         return rVal;
     }
     
-    public static CanalAttachment get(Territory t)
+    public static Set<CanalAttachment> get(Territory t)
     {
-        return (CanalAttachment) t.getAttachment( Constants.CANAL_ATTATCHMENT_NAME);
+        Set<CanalAttachment> rVal = new HashSet<CanalAttachment>();
+        Map<String, IAttachment> map = t.getAttachments();
+        Iterator<String> iter = map.keySet().iterator();
+        while(iter.hasNext() )
+        {
+            IAttachment attachment = map.get(iter.next());
+            String name = attachment.getName();
+            if (name.startsWith(Constants.CANAL_ATTATCHMENT_PREFIX))
+            {
+                rVal.add((CanalAttachment)attachment);
+            }
+        }
+        return rVal;
+        
     }
     
     public void setCanalName(String name)

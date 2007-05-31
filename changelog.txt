@@ -1,3 +1,5 @@
+* allow multiple canals per sea zone (tekkyy)
+
 * allow centering map on battles (ahmet)
 
 * alt mouse scroll zooms the map in and out (ahmet)

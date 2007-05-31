@@ -399,25 +399,33 @@ public class MoveValidator
     
     for(Territory routeTerritory : territories)
     {   
-        CanalAttachment attachment = CanalAttachment.get(routeTerritory);
-        if(attachment == null)
+        Set<CanalAttachment> canalAttachments = CanalAttachment.get(routeTerritory);
+        if(canalAttachments.isEmpty())
             continue;
-        if(!territories.containsAll( CanalAttachment.getAllCanalSeaZones(attachment.getCanalName(), data) ))
-        {
-            continue;
-        }
         
-        
-        for(Territory borderTerritory : attachment.getLandTerritories())
+        Iterator<CanalAttachment> iter = canalAttachments.iterator();
+        while(iter.hasNext() )
         {
-            if (!data.getAllianceTracker().isAllied(player, borderTerritory.getOwner()))
+            CanalAttachment attachment = iter.next();
+            if(attachment == null)
+                continue;
+            if(!territories.containsAll( CanalAttachment.getAllCanalSeaZones(attachment.getCanalName(), data) ))
             {
-                  return "Must own " + borderTerritory.getName() + " to go through " + attachment.getCanalName();
+                continue;
             }
-            if(tracker.wasConquered(borderTerritory))
+        
+        
+            for(Territory borderTerritory : attachment.getLandTerritories())
             {
-                return "Cannot move through " + attachment.getCanalName() + " without owning " + borderTerritory.getName() + " for an entire turn";
-            }            
+                if (!data.getAllianceTracker().isAllied(player, borderTerritory.getOwner()))
+                {
+                    return "Must own " + borderTerritory.getName() + " to go through " + attachment.getCanalName();
+                }
+                if(tracker.wasConquered(borderTerritory))
+                {
+                    return "Cannot move through " + attachment.getCanalName() + " without owning " + borderTerritory.getName() + " for an entire turn";
+                }            
+            }
         }
         return null;
     }

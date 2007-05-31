@@ -391,10 +391,18 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
              {
                  public boolean match(Territory o)
                  {
-                     if(CanalAttachment.get(o) == null)
+                     Set<CanalAttachment> canalAttachments = CanalAttachment.get(o);
+                     if(canalAttachments.isEmpty())
                          return true;
-                     return Match.allMatch( CanalAttachment.get(o).getLandTerritories(), Matches.isTerritoryAllied(player, data));
                      
+                     Iterator<CanalAttachment> iter = canalAttachments.iterator();
+                     while(iter.hasNext() )
+                     {
+                         CanalAttachment canalAttachment = iter.next();                     
+                         if(!Match.allMatch( canalAttachment.getLandTerritories(), Matches.isTerritoryAllied(player, data)))
+                             return false;
+                     }
+                     return true;
                  }
              }
         );

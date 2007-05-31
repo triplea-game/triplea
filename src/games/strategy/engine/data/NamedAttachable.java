@@ -42,7 +42,12 @@ public class NamedAttachable extends DefaultNamed implements Attachable
 	{
 		return m_attatchments.get(key);
 	}
-	
+
+    public Map<String, IAttachment> getAttachments() 
+    {
+        return Collections.unmodifiableMap(m_attatchments);
+    }
+    
 	public void addAttachment(String key, IAttachment value) 
 	{
 		m_attatchments.put(key, value);

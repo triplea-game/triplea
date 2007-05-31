@@ -20,6 +20,8 @@
 
 package games.strategy.engine.data;
 
+import java.util.Map;
+
 /**
  *
  * @author  Sean Bridges
@@ -29,4 +31,5 @@ public interface Attachable
 {
 	public void addAttachment(String key, IAttachment value);
 	public IAttachment getAttachment(String key);
+    public Map<String, IAttachment> getAttachments();
 }
