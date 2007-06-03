@@ -1,3 +1,5 @@
+* show battle casualties in battle display (ahmet)
+
 * mark remote players as remote (ahmet)
 
 * allow multiple canals per sea zone (tekkyy)
