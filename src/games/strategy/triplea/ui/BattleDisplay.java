@@ -68,6 +68,12 @@ public class BattleDisplay extends JPanel
     private final CardLayout m_actionLayout = new CardLayout();
     private final JPanel m_messagePanel = new JPanel();
     private final MapPanel m_mapPanel;
+    private final JPanel m_causalitiesInstantPanelDefender = new JPanel();
+    private final JPanel m_causalitiesInstantPanelAttacker = new JPanel();
+    private final JLabel LABEL_NONE_ATTACKER = new JLabel("None");
+    private final JLabel LABEL_NONE_DEFENDER = new JLabel("None");
+    private final Map<UnitType, JLabel> m_UnitKillMapDefender = new HashMap<UnitType, JLabel>();
+    private final Map<UnitType, JLabel> m_UnitKillMapAttacker = new HashMap<UnitType, JLabel>();
 
     private final JLabel m_messageLabel = new JLabel();
 
@@ -144,12 +150,58 @@ public class BattleDisplay extends JPanel
 
     }
 
+    /**
+     * updates the panel content according to killed units for the player
+     * @param aKilledUnits list of units killed
+     * @param aPlayerID player kills belongs to
+     * @author ahmet pata
+     */
+    private void updateKilledUnits(Collection<Unit> aKilledUnits, PlayerID aPlayerID)
+    {
+        final Map<UnitType, JLabel> lKillMap;
+        final JPanel lCausalityPanel;
+        final JLabel lPlayerNoneLabel;
+        
+        if (aPlayerID.equals(m_defender))
+        {
+            lKillMap = m_UnitKillMapDefender;
+            lCausalityPanel = m_causalitiesInstantPanelDefender;
+            lPlayerNoneLabel = LABEL_NONE_DEFENDER;
+        }
+        else
+        {
+            lKillMap = m_UnitKillMapAttacker;
+            lCausalityPanel = m_causalitiesInstantPanelAttacker;
+            lPlayerNoneLabel = LABEL_NONE_ATTACKER;
+        }
+        
+        for(Unit aUnit : aKilledUnits)
+        {
+            lCausalityPanel.remove(lPlayerNoneLabel);
+            if (lKillMap.containsKey(aUnit.getType()))
+            {
+                JLabel label = lKillMap.get(aUnit.getType());
+                int count = Integer.parseInt(label.getText().substring(1));
+                count ++;
+                label.setText("x" + count);
+            }
+            else
+            {
+                JLabel label = new JLabel("x1");
+                label.setIcon(m_mapPanel.getUIContext().getUnitImageFactory().getIcon(aUnit.getType(), aPlayerID, m_data, false));
+                lKillMap.put(aUnit.getType(), label);
+                lCausalityPanel.add(label);
+            }
+        }
+    }
+
     public void casualtyNotification(String step, DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents)
     {
         setStep(step);
         m_casualties.setNotication(dice, player, killed, damaged, dependents);
         m_actionLayout.show(m_actionPanel, CASUALTIES_KEY);
 
+        updateKilledUnits(killed, player);
         if (player.equals(m_defender))
         {
             m_defenderModel.removeCasualties(killed);
@@ -632,6 +684,53 @@ public class BattleDisplay extends JPanel
         diceAndSteps.setLayout(new BorderLayout());
         diceAndSteps.add(m_steps, BorderLayout.WEST);
         diceAndSteps.add(m_actionPanel, BorderLayout.CENTER);
+        
+        m_causalitiesInstantPanelAttacker.setLayout(
+                new FlowLayout(FlowLayout.LEFT , 2, 2));
+        m_causalitiesInstantPanelAttacker.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        m_causalitiesInstantPanelAttacker.add(LABEL_NONE_ATTACKER);
+
+        m_causalitiesInstantPanelDefender.setLayout(
+                new FlowLayout(FlowLayout.LEFT , 2, 2));
+        m_causalitiesInstantPanelDefender.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        m_causalitiesInstantPanelDefender.add(LABEL_NONE_DEFENDER);
+
+        final JPanel lInstantCausalitiesPanel = new JPanel();
+        lInstantCausalitiesPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        lInstantCausalitiesPanel.setLayout(new GridBagLayout());
+
+        JLabel lCausalities = new JLabel("Causalities", JLabel.CENTER);
+        lCausalities.setFont(getPlayerComponent(m_attacker).getFont().deriveFont(Font.BOLD, 14));        
+        lInstantCausalitiesPanel.add(
+                lCausalities,
+                new GridBagConstraints(0, 0, 2, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 
+                new Insets(0, 0, 0, 0), 0, 0));
+        
+        JLabel lAttacker = new JLabel("Attacker: " + m_attacker.getName(), JLabel.CENTER);
+        lAttacker.setFont(getPlayerComponent(m_attacker).getFont().deriveFont(Font.PLAIN, 12));        
+        lInstantCausalitiesPanel.add(
+                lAttacker,
+                new GridBagConstraints(0, 1, 1, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 
+                        new Insets(0, 0, 0, 0), 0, 0));
+
+        JLabel lDefender = new JLabel("Defender: " + m_defender.getName(), JLabel.CENTER);
+        lDefender.setFont(getPlayerComponent(m_attacker).getFont().deriveFont(Font.PLAIN, 12));        
+        lInstantCausalitiesPanel.add(
+                lDefender,        
+                new GridBagConstraints(1, 1, 1, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 
+                        new Insets(0, 0, 0, 0), 0, 0));
+        
+        lInstantCausalitiesPanel.add(
+                m_causalitiesInstantPanelAttacker,
+                new GridBagConstraints(0, 2, 1, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 
+                        new Insets(0, 0, 0, 0), 0, 0));
+        
+        lInstantCausalitiesPanel.add(
+                m_causalitiesInstantPanelDefender,
+                new GridBagConstraints(1, 2, 1, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 
+                        new Insets(0, 0, 0, 0), 0, 0));
+        
+        diceAndSteps.add(lInstantCausalitiesPanel, BorderLayout.SOUTH);
 
         setLayout(new BorderLayout());
         add(north, BorderLayout.NORTH);
@@ -794,6 +893,7 @@ class BattleModel extends DefaultTableModel
         refresh();
     }
 
+    
     /**
      * refresh the model from m_units
      */
