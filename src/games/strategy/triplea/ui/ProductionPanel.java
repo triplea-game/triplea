@@ -128,10 +128,9 @@ public class ProductionPanel extends JPanel
         try
         {
             m_id = player;
-            Iterator iter = player.getProductionFrontier().getRules().iterator();
-            while (iter.hasNext())
+            
+            for(ProductionRule productionRule : player.getProductionFrontier())
             {
-                ProductionRule productionRule = (ProductionRule) iter.next();
                 Rule rule = new Rule(productionRule, player, m_uiContext);
                 int initialQuantity = initialPurchase.getInt(productionRule);
                 rule.setQuantity(initialQuantity);
