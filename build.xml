@@ -472,8 +472,7 @@
 			</classpath>
 
 			<formatter type="plain" />
-			<test name="games.strategy.triplea.TripleATest" />
-			<test name="games.strategy.StrategyGameTest" />
+			<test name="games.strategy.AllTests" />
 		</junit>
 	</target>
 
