@@ -51,6 +51,9 @@ public class ResourceList extends GameDataComponent
 		return m_resourceList.get(name);
 	}
 
-    
+    public List<Resource> getResources() 
+    {
+        return new ArrayList<Resource>(m_resourceList.values());
+    }
     
 }
