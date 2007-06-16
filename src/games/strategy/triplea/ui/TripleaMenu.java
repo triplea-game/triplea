@@ -41,6 +41,7 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
+import games.strategy.triplea.printgenerator.SetupFrame;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -62,8 +63,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -287,6 +290,7 @@ public class TripleaMenu extends JMenuBar
         addShowEnemyCasualties(menuGame);
         addShowDiceStats(menuGame);
         addExportStats(menuGame);
+        addExportSetupCharts(menuGame);
         addBattleCalculatorMenu(menuGame);
         
         
@@ -943,8 +947,46 @@ public class TripleaMenu extends JMenuBar
         		parentMenu.add(menuFileExit);
         }
     }
+    /**
+     * @param parentMenu
+     */
 
-    
+    @SuppressWarnings("serial")
+    private void addExportSetupCharts(JMenu parentMenu)
+    {
+        JMenuItem menuFileExport = new JMenuItem(new AbstractAction(
+                "Export Setup Charts...")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                final JFrame frame = new JFrame("Export Setup Files");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                GameData data = m_frame.getGame().getData();
+                GameData clonedGameData;
+                data.acquireReadLock();
+                try
+                {
+
+                    clonedGameData = GameDataUtils.cloneGameData(data);
+
+                } finally
+                {
+                    data.releaseReadLock();
+                }
+                JComponent newContentPane = new SetupFrame(clonedGameData);
+                newContentPane.setOpaque(true); // content panes must be opaque
+                frame.setContentPane(newContentPane);
+
+                // Display the window.
+                frame.pack();
+                frame.setLocationRelativeTo(m_frame);
+                frame.setVisible(true);
+                m_frame.getUIContext().addShutdownWindow(frame);
+            }
+        });
+        parentMenu.add(menuFileExport);
+    }
 
     /**
      * @param parent

@@ -1,3 +1,5 @@
+* add export game setup charts menu (gansito)
+
 * show battle casualties in battle display (ahmet)
 
 * mark remote players as remote (ahmet)
