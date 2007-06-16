@@ -1,3 +1,5 @@
+* move test classes to test directory (sgb)
+
 * add export game setup charts menu (gansito)
 
 * show battle casualties in battle display (ahmet)

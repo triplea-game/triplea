@@ -5,8 +5,8 @@
 
 	<property file=".ant.properties" />
 
+	<!-- this path does not have junit on it -->
 	<path id="full.path">
-		<pathelement path="lib\junit.jar" />
 		<pathelement path="lib\standalone-compiler.jar" />
 		<pathelement path="lib\looks-2.0.4.jar" />
 		<pathelement path="lib\MRJToolkitStubs.zip" />
@@ -16,6 +16,13 @@
 		<pathelement path="${classpath}" />
 		<pathelement path="classes/" />
 	</path>
+	
+	<path id="test.path">
+		<existing refid="full.path"></existing>
+		<pathelement path="classes/" />
+		<pathelement path="lib\junit.jar" />
+	</path>	
+	
 
 
 	<!-- init -->
@@ -32,6 +39,7 @@
 	<target name="clean" depends="init" description="Remove all release, class and saved game files">
 		<delete dir="release" />
 		<delete dir="classes" />
+        <delete dir="testclasses" />		
 		<delete dir="savedGames" />
 	</target>
 
@@ -54,6 +62,7 @@
 		<delete file="bin/triplea.jar" />
 
 		<mkdir dir="classes" />
+		<mkdir dir="testclasses" />
 		<copy todir="classes">
 			<fileset dir="data">
 				<include name="**/*.dtd" />
@@ -71,7 +80,6 @@
 
 		<!-- to check the correct java version, we need to compile the startup class so that it will run on older vms -->
 		<!-- delete the startup class, and recompile it -->
-
 		<delete>
 			<fileset dir="classes" includes="**/GameRunner.class">
 			</fileset>
@@ -79,6 +87,9 @@
 
 		<javac srcdir="src/" destdir="classes/" debug="true" deprecation="true" classpathref="full.path" target="1.2" source="1.2" />
 
+		<!-- compile test classes -->
+		<javac srcdir="test/" destdir="testclasses/" debug="true" deprecation="true" classpathref="test.path" target="1.5" />
+			
 	</target>
 
 
@@ -335,6 +346,10 @@
 			<zipfileset dir="src/" prefix="triplea_${triplea.version}/src/">
 				<include name="**/*.java" />
 			</zipfileset>
+			
+			<zipfileset dir="test/" prefix="triplea_${triplea.version}/test/">
+				<include name="**/*.java" />
+			</zipfileset>			
 
 			<zipfileset dir="junit/" prefix="triplea_${triplea.version}/junit/">
 				<include name="excluded.properties" />
@@ -469,6 +484,7 @@
 				<pathelement path="${classpath}" />
 				<pathelement path="lib/derby_10_1_2.jar" />
 				<pathelement path="classes/" />
+                <pathelement path="testclasses/" />				
 			</classpath>
 
 			<formatter type="plain" />
