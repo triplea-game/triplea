@@ -22,6 +22,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.ui.*;
 import games.strategy.util.IntegerMap;
 
@@ -150,8 +151,8 @@ public class ProductionPanel extends JPanel
         this.removeAll();
         this.setLayout(new GridBagLayout());
         int ipcs = getIPCs();
-        JLabel totalIPCs = new JLabel("You have " + ipcs + " " + StringUtil.plural("IPC", ipcs) + "  to spend");
-        add(totalIPCs,
+        JLabel legendLabel = new JLabel("Attack/Defense/Movement");
+        add(legendLabel,
                 new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 
         for (int x = 0; x < m_rules.size(); x++)
@@ -172,7 +173,10 @@ public class ProductionPanel extends JPanel
 
     private void setLeft(int left)
     {
-        m_left.setText("Left to spend:" + left);
+        int total = getIPCs();
+        int spent = total - left;
+        
+        m_left.setText("You have spent " + spent + " out of" + total +  " "  + StringUtil.plural("IPC", total)) ;
     }
 
     Action m_done_action = new AbstractAction("Done")
@@ -236,8 +240,7 @@ public class ProductionPanel extends JPanel
     class Rule extends JPanel
     {
         private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-        private int m_cost; 
-        private UnitType m_type;
+        private int m_cost;         
         private ProductionRule m_rule;
  
 
@@ -247,18 +250,25 @@ public class ProductionPanel extends JPanel
             setLayout(new GridBagLayout());
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
-            m_type = (UnitType) rule.getResults().keySet().iterator().next();
-            Icon icon = m_uiContext.getUnitImageFactory().getIcon(m_type, id, m_data, false);
+            UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
+            UnitAttachment attach= UnitAttachment.get(type);
+            int attack=attach.getAttack(id);
+            int movement=attach.getMovement(id);
+            int defense=attach.getDefense(id);
+            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
+            JLabel info=new JLabel(attack+"/"+defense+"/"+movement);
 
             int space = 8;
-            this.add(new JLabel(m_type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+            this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                     new Insets(2, 0, 0, 0), 0, 0));
             this.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
                     space), 0, 0));
+            this.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
+                    space), 0, 0));
 
-            this.add(m_text, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
+            this.add(m_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
                     space, space), 0, 0));
 
             m_text.addChangeListener(m_listener);
@@ -290,6 +300,7 @@ public class ProductionPanel extends JPanel
             m_text.setMax(max);
         }
     }
+
 
     private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
     {

@@ -1,3 +1,5 @@
+* add attack/defense/movement to production panel (gansito)
+
 * move test classes to test directory (sgb)
 
 * add export game setup charts menu (gansito)
