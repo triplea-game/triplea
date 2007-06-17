@@ -1,3 +1,17 @@
+/*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -25,21 +39,23 @@ import java.util.Map;
  */
 class CountryChart
 {
-    private static Collection<Territory> s_terrCollection;
-    private static GameData s_data;
-    private static Iterator<Territory> s_terrIterator;
-    private static Map<Territory, List<Map<UnitType, Integer>>> s_infoMap = new HashMap<Territory, List<Map<UnitType, Integer>>>();
+    private Collection<Territory> m_terrCollection;
+    private GameData m_data;
+    private Iterator<Territory> m_terrIterator;
+    private Map<Territory, List<Map<UnitType, Integer>>> m_infoMap = new HashMap<Territory, List<Map<UnitType, Integer>>>();
+    private PrintGenerationData m_printData;
 
-    protected static void saveToFile(PlayerID player, GameData data)
+    protected void saveToFile(PlayerID player, PrintGenerationData printData)
     {
-        s_data = data;
-        s_terrCollection = Match.getMatches(s_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-        s_terrIterator = s_terrCollection.iterator();
-        Iterator<UnitType> availableUnits = s_data.getUnitTypeList().iterator();
+        m_data = printData.getData();
+        m_printData=printData;
+        m_terrCollection = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+        m_terrIterator = m_terrCollection.iterator();
+        Iterator<UnitType> availableUnits = m_data.getUnitTypeList().iterator();
 
-        while (s_terrIterator.hasNext())
+        while (m_terrIterator.hasNext())
         {
-            Territory currentTerritory = s_terrIterator.next();
+            Territory currentTerritory = m_terrIterator.next();
             UnitCollection unitsHere = currentTerritory.getUnits();
             List<Map<UnitType, Integer>> unitPairs = new ArrayList<Map<UnitType, Integer>>();
             while (availableUnits.hasNext())
@@ -51,21 +67,21 @@ class CountryChart
                 innerMap.put(currentUnit, amountHere);
                 unitPairs.add(innerMap);
             }
-            s_infoMap.put(currentTerritory, unitPairs);
-            availableUnits = s_data.getUnitTypeList().iterator();
+            m_infoMap.put(currentTerritory, unitPairs);
+            availableUnits = m_data.getUnitTypeList().iterator();
         }
 
         FileWriter countryFileWriter = null;
         try
         {
 
-            File outFile = new File(PrintGenerationData.getOutDir(), player
+            File outFile = new File(m_printData.getOutDir(), player
                     .getName()
                     + ".csv");
             countryFileWriter = new FileWriter(outFile, true);
 
             // Print Title
-            int numUnits = s_data.getUnitTypeList().size();
+            int numUnits = m_data.getUnitTypeList().size();
             for (int i = 0; i < numUnits / 2 - 1 + numUnits % 2; i++)
             {
                 countryFileWriter.write(",");
@@ -79,7 +95,7 @@ class CountryChart
 
             // Print Unit Types
 
-            Iterator<UnitType> unitIterator = s_data.getUnitTypeList()
+            Iterator<UnitType> unitIterator = m_data.getUnitTypeList()
                     .iterator();
             countryFileWriter.write(",");
             while (unitIterator.hasNext())
@@ -92,12 +108,12 @@ class CountryChart
             // Print Territories and Info
 
              
-            s_terrIterator = Match.getMatches(s_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
-            while (s_terrIterator.hasNext())
+            m_terrIterator = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
+            while (m_terrIterator.hasNext())
             {
-                Territory currentTerritory = s_terrIterator.next();
+                Territory currentTerritory = m_terrIterator.next();
                 countryFileWriter.write(currentTerritory.getName());
-                List<Map<UnitType, Integer>> currentList = s_infoMap
+                List<Map<UnitType, Integer>> currentList = m_infoMap
                         .get(currentTerritory);
                 Iterator<Map<UnitType, Integer>> mapIterator = currentList
                         .iterator();

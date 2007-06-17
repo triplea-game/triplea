@@ -1,6 +1,17 @@
-/**
- * 
+/*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -22,20 +33,23 @@ import java.util.Map;
 public class IPCInfo
 {
 
-    private static GameData s_data;
-    private static Map<PlayerID, Map<Resource, Integer>> s_infoMap = new HashMap<PlayerID, Map<Resource,Integer>>();
-    private static Iterator<PlayerID> s_playerIterator;
+    private GameData m_data;
+    private Map<PlayerID, Map<Resource, Integer>> m_infoMap = new HashMap<PlayerID, Map<Resource,Integer>>();
+    private Iterator<PlayerID> m_playerIterator;
+    
+    private PrintGenerationData m_printData;
 
-    protected static void saveToFile(GameData data)
+    protected void saveToFile(PrintGenerationData printData)
     {
-        s_data = data;
+        m_data = printData.getData();
+        m_printData=printData;
 
-        s_playerIterator = s_data.getPlayerList().iterator();
+        m_playerIterator = m_data.getPlayerList().iterator();
 
-        while (s_playerIterator.hasNext())
+        while (m_playerIterator.hasNext())
         {
-            PlayerID currentPlayer = s_playerIterator.next();
-            Iterator<Resource> resourceIterator = s_data.getResourceList().getResources().iterator();
+            PlayerID currentPlayer = m_playerIterator.next();
+            Iterator<Resource> resourceIterator = m_data.getResourceList().getResources().iterator();
             Map<Resource, Integer> resourceMap = new HashMap<Resource, Integer>();
             while (resourceIterator.hasNext())
             {
@@ -44,17 +58,17 @@ public class IPCInfo
                         .getQuantity(currentResource);
                 resourceMap.put(currentResource, amountOfResource);
             }
-            s_infoMap.put(currentPlayer, resourceMap);
+            m_infoMap.put(currentPlayer, resourceMap);
         }
         
         FileWriter resourceWriter=null;
         try
         {
-            File outFile = new File(PrintGenerationData.getOutDir(), "General Information.csv");
+            File outFile = new File(m_printData.getOutDir(), "General Information.csv");
             resourceWriter = new FileWriter(outFile, true);
 
             //Print Title
-            int numResources=s_data.getResourceList().size();
+            int numResources=m_data.getResourceList().size();
             for(int i=0; i<numResources/2-1+numResources%2; i++)
             {
                 resourceWriter.write(",");
@@ -68,7 +82,7 @@ public class IPCInfo
             
             //Print Resources
             
-            Iterator<Resource> resourceIterator=s_data.getResourceList().getResources().iterator();
+            Iterator<Resource> resourceIterator=m_data.getResourceList().getResources().iterator();
             resourceWriter.write(",");
             while(resourceIterator.hasNext())
             {
@@ -80,12 +94,12 @@ public class IPCInfo
             
             //Print Player's and Resource Amount's
             
-            s_playerIterator=s_data.getPlayerList().iterator();
-            while(s_playerIterator.hasNext())
+            m_playerIterator=m_data.getPlayerList().iterator();
+            while(m_playerIterator.hasNext())
             {
-                PlayerID currentPlayer=s_playerIterator.next();
+                PlayerID currentPlayer=m_playerIterator.next();
                 resourceWriter.write(currentPlayer.getName());
-                Map<Resource, Integer> resourceMap=s_infoMap.get(currentPlayer);
+                Map<Resource, Integer> resourceMap=m_infoMap.get(currentPlayer);
                 Iterator<Resource> resIterator=resourceMap.keySet().iterator();
                 while(resIterator.hasNext())
                 {

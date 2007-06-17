@@ -1,3 +1,17 @@
+/*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -21,6 +35,8 @@ public class InitialSetup
     private Iterator<PlayerID> m_playerIterator;
     private Map<UnitType, UnitAttachment> m_unitInfoMap=new HashMap<UnitType, UnitAttachment>();
     private GameData m_data;
+    
+    private PrintGenerationData m_printData;
 
 
     protected InitialSetup()
@@ -32,10 +48,10 @@ public class InitialSetup
      * @param GameData data
      * @param boolean useOriginalState
      */
-    protected void run(GameData data, boolean useOriginalState)
+    protected void run(PrintGenerationData printData, boolean useOriginalState)
     {
-        m_data = data;
-        PrintGenerationData.setData(m_data);
+        m_data = printData.getData();
+        m_printData=printData;
         
         if (useOriginalState)
         {
@@ -51,21 +67,20 @@ public class InitialSetup
             m_unitInfoMap.put(currentType, currentTypeUnitAttachment);
         }
         
-        new UnitInformation().saveToFile(m_unitInfoMap);
+        new UnitInformation().saveToFile(m_printData, m_unitInfoMap);
         
         m_playerIterator=m_data.getPlayerList().iterator();
         while(m_playerIterator.hasNext())
         {
             PlayerID currentPlayer=m_playerIterator.next();
-            CountryChart.saveToFile(currentPlayer, m_data);
+            new CountryChart().saveToFile(currentPlayer, m_printData);
             
         }
-        IPCInfo.saveToFile(m_data);
+        new IPCInfo().saveToFile(m_printData);
         try
         {
-            PlayerOrder.saveToFile(m_data);
-            IPCChart chart=new IPCChart();
-            chart.saveToFile();
+            new PlayerOrder().saveToFile(m_printData);
+            new IPCChart(m_printData).saveToFile();
         } catch (IOException e)
         {
             e.printStackTrace();

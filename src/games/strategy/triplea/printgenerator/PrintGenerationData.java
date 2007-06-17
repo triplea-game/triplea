@@ -1,3 +1,17 @@
+/*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -7,58 +21,57 @@ import java.util.Map;
 
 public class PrintGenerationData
 {
-    private static File s_outDir;
-    private static Map<Integer, Integer> s_SameIPCMap;
-    private static GameData s_data;
-    
-
+    private File m_outDir;
+    private Map<Integer, Integer> m_SameIPCMap;
+    private GameData m_data;
+    /**
+     * General Constructor
+     */
+    protected PrintGenerationData()
+    {
+    }
     /**
      * @return the outDir
      */
-    protected static File getOutDir()
+    protected File getOutDir()
     {
-        return s_outDir;
+        return m_outDir;
     }
-
     /**
      * @param outDir the outDir to set
      */
-    protected static void setOutDir(File outDir)
+    protected void setOutDir(File outDir)
     {
-        s_outDir = outDir;
+        m_outDir = outDir;
     }
-
     /**
      * @return the sameIPCMap
      */
-    protected static Map<Integer, Integer> getSameIPCMap()
+    protected Map<Integer, Integer> getSameIPCMap()
     {
-        return s_SameIPCMap;
+        return m_SameIPCMap;
     }
-
     /**
      * @param sameIPCMap the sameIPCMap to set
      */
-    protected static void setSameIPCMap(Map<Integer, Integer> sameIPCMap)
+    protected void setSameIPCMap(Map<Integer, Integer> sameIPCMap)
     {
-        s_SameIPCMap = sameIPCMap;
+        m_SameIPCMap = sameIPCMap;
     }
-
     /**
      * @return the data
      */
-    protected static GameData getData()
+    protected GameData getData()
     {
-        return s_data;
+        return m_data;
     }
-
     /**
      * @param data the data to set
      */
-    protected static void setData(GameData data)
+    protected void setData(GameData data)
     {
-        s_data = data;
+        m_data = data;
     }
-
-
+    
+    
 }

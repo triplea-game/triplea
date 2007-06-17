@@ -1,6 +1,17 @@
-/**
- * 
+/*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -23,41 +34,43 @@ import java.util.Set;
  */
 public class PlayerOrder
 {
-    private static Iterator<GameStep> s_gameStepIterator;
-    private static GameData s_data;
-    private static List<PlayerID> s_playerSet = new ArrayList<PlayerID>();
+    private Iterator<GameStep> m_gameStepIterator;
+    private GameData m_data;
+    private List<PlayerID> m_playerSet = new ArrayList<PlayerID>();
+    private PrintGenerationData m_printData;
 
-    private static <E> Set<E> removeDups(Collection<E> c)
+    private <E> Set<E> removeDups(Collection<E> c)
     {
         return new LinkedHashSet<E>(c);
     }
 
-    protected static void saveToFile(GameData data) throws IOException
+    protected void saveToFile(PrintGenerationData printData) throws IOException
     {
-        s_data = data;
+        m_data = printData.getData();
+        m_printData=printData;
         
-        s_gameStepIterator = s_data.getSequence().iterator();
-        while (s_gameStepIterator.hasNext())
+        m_gameStepIterator = m_data.getSequence().iterator();
+        while (m_gameStepIterator.hasNext())
         {
-            GameStep currentStep = s_gameStepIterator.next();
+            GameStep currentStep = m_gameStepIterator.next();
             PlayerID currentPlayerID = currentStep.getPlayerID();
 
             if (currentPlayerID != null && !currentPlayerID.isNull())
             {
-                s_playerSet.add(currentPlayerID);
+                m_playerSet.add(currentPlayerID);
             }
 
         }
 
         FileWriter turnWriter = null;
-        PrintGenerationData.getOutDir().mkdir();
-        File outFile = new File(PrintGenerationData.getOutDir(),
+        m_printData.getOutDir().mkdir();
+        File outFile = new File(m_printData.getOutDir(),
                 "General Information.csv");
         turnWriter = new FileWriter(outFile, true);
 
         turnWriter.write("Turn Order\r\n");
 
-        Set<PlayerID> noDuplicates = removeDups(s_playerSet);
+        Set<PlayerID> noDuplicates = removeDups(m_playerSet);
 
         Iterator<PlayerID> playerIterator = noDuplicates.iterator();
         int count=1;

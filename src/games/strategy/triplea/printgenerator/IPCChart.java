@@ -1,6 +1,17 @@
-/**
- * 
+/*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -30,117 +41,115 @@ import javax.imageio.ImageIO;
  */
 class IPCChart
 {
-    private static GameData s_data;
-    private static Iterator<PlayerID> s_playerIterator;
-    private static IntegerMap<PlayerID> s_moneyMap;
-    private static int s_numPlayers;
-    private static PlayerID[] s_playerArray;
-    private static Integer[] s_moneyArray;
-    // private static Map<PlayerID, PlayerID> s_avoidMap = new HashMap<PlayerID,
-    // PlayerID>();
-    private static Map<Integer, Integer> s_avoidMap;
+    private GameData m_data;
+    private Iterator<PlayerID> m_playerIterator;
+    private IntegerMap<PlayerID> m_moneyMap;
+    private int m_numPlayers;
+    private PlayerID[] m_playerArray;
+    private Integer[] m_moneyArray;
+    private Map<Integer, Integer> m_avoidMap;
 
-    private static final int X_DIMENSION = 7;
-    private static final int Y_DIMENSION = 6;
-    private static final Font CHART_FONT = new Font("Serif", Font.PLAIN, 12);
-    private static BufferedImage s_ipcImage;
-    private static Graphics2D s_g2d;
+    private final int X_DIMENSION = 7;
+    private final int Y_DIMENSION = 6;
+    private final Font CHART_FONT = new Font("Serif", Font.PLAIN, 12);
+    private BufferedImage m_ipcImage;
+    private Graphics2D m_g2d;
 
-    private static File s_outDir;
+    private File m_outDir;
 
-    IPCChart()
+    IPCChart(PrintGenerationData printData)
     {
-        s_data = PrintGenerationData.getData();
-        s_playerIterator = s_data.getPlayerList().iterator();
-        s_moneyMap = new IntegerMap<PlayerID>();
-        s_numPlayers = s_data.getPlayerList().size();
-        s_playerArray = new PlayerID[s_numPlayers];
-        s_moneyArray = new Integer[s_numPlayers];
-        s_avoidMap = new HashMap<Integer, Integer>();
-        s_ipcImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
-        s_g2d=s_ipcImage.createGraphics();
-        s_outDir=PrintGenerationData.getOutDir();
+        m_data = printData.getData();
+        m_playerIterator = m_data.getPlayerList().iterator();
+        m_moneyMap = new IntegerMap<PlayerID>();
+        m_numPlayers = m_data.getPlayerList().size();
+        m_playerArray = new PlayerID[m_numPlayers];
+        m_moneyArray = new Integer[m_numPlayers];
+        m_avoidMap = new HashMap<Integer, Integer>();
+        m_ipcImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
+        m_g2d=m_ipcImage.createGraphics();
+        m_outDir=printData.getOutDir();
     }
 
-    private static void initializeMap()
+    private void initializeMap()
     {
         int count = 0;
-        while (s_playerIterator.hasNext())
+        while (m_playerIterator.hasNext())
         {
-            PlayerID currentPlayer = s_playerIterator.next();
-            s_moneyMap.put(currentPlayer, currentPlayer.getResources()
+            PlayerID currentPlayer = m_playerIterator.next();
+            m_moneyMap.put(currentPlayer, currentPlayer.getResources()
                     .getQuantity(Constants.IPCS));
 
-            s_playerArray[count] = currentPlayer;
-            s_moneyArray[count] = currentPlayer.getResources().getQuantity(
+            m_playerArray[count] = currentPlayer;
+            m_moneyArray[count] = currentPlayer.getResources().getQuantity(
                     Constants.IPCS);
             count++;
         }
     }
 
-    private static void initializeAvoidMap()
+    private void initializeAvoidMap()
     {
-        for (int i = 0; i < s_numPlayers - 1; i++)
+        for (int i = 0; i < m_numPlayers - 1; i++)
         {
-            for (int j = i + 1; j < s_numPlayers; j++)
+            for (int j = i + 1; j < m_numPlayers; j++)
             {
-                Integer firstPlayerMoney = s_moneyArray[i];
-                Integer secondPlayerMoney = s_moneyArray[j];
+                Integer firstPlayerMoney = m_moneyArray[i];
+                Integer secondPlayerMoney = m_moneyArray[j];
                 if (firstPlayerMoney == secondPlayerMoney)
                 {
                     // s_avoidMap.put(s_playerArray[i], s_playerArray[j]);
-                    s_avoidMap.put(i, j);
+                    m_avoidMap.put(i, j);
                 }
             }
         }
     }
 
-    private static void drawEllipseAndString(int x, int y, String string)
+    private void drawEllipseAndString(int x, int y, String string)
     {
-        s_g2d.setFont(CHART_FONT);
-        s_g2d.draw(new Ellipse2D.Double(5 + 87 * x, 5 + 87 * y, 72, 72));
-        final FontMetrics metrics = s_g2d.getFontMetrics();
+        m_g2d.setFont(CHART_FONT);
+        m_g2d.draw(new Ellipse2D.Double(5 + 87 * x, 5 + 87 * y, 72, 72));
+        final FontMetrics metrics = m_g2d.getFontMetrics();
         final int h = metrics.stringWidth(string) / 2;
         final int k = metrics.getHeight() / 2;
 
-        s_g2d.drawString(string, 42 + 87 * x - h, 39 + 87 * y + k);
+        m_g2d.drawString(string, 42 + 87 * x - h, 39 + 87 * y + k);
     }
 
     protected void saveToFile() throws IOException
     {
         initializeMap();
         initializeAvoidMap();
-        int numChartsNeeded = (int) Math.ceil(((double) s_moneyMap
+        int numChartsNeeded = (int) Math.ceil(((double) m_moneyMap
                 .totalValues())
                 / (X_DIMENSION * Y_DIMENSION));
-        for (int i = 0; i <= numChartsNeeded; i++)
+        for (int i = 0; i < numChartsNeeded; i++)
         {
-            s_g2d.setColor(Color.black);
+            m_g2d.setColor(Color.black);
             // Draw Country Names
-            for (int z = 0; z < s_playerArray.length; z++)
+            for (int z = 0; z < m_playerArray.length; z++)
             {
-                int valMod42 = s_moneyArray[z] % 42;
+                int valMod42 = m_moneyArray[z] % 42;
                 int valModXDim = valMod42 % X_DIMENSION;
                 int valFloorXDim = valMod42 / X_DIMENSION;
 
-                if (s_avoidMap.containsKey(z) && s_moneyArray[z] / 42 == i)
+                if (m_avoidMap.containsKey(z) && m_moneyArray[z] / 42 == i)
                 {
-                    FontMetrics metrics = s_g2d.getFontMetrics();
-                    int width = metrics.stringWidth(s_playerArray[z].getName()) / 2;
-                    s_g2d.drawString(s_playerArray[z].getName(), 42 + 87
+                    FontMetrics metrics = m_g2d.getFontMetrics();
+                    int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
+                    m_g2d.drawString(m_playerArray[z].getName(), 42 + 87
                             * valModXDim - width, 63 + 87 * valFloorXDim);
-                } else if (s_avoidMap.containsValue(z)
-                        && s_moneyArray[z] / 42 == i)
+                } else if (m_avoidMap.containsValue(z)
+                        && m_moneyArray[z] / 42 == i)
                 {
-                    FontMetrics metrics = s_g2d.getFontMetrics();
-                    int width = metrics.stringWidth(s_playerArray[z].getName()) / 2;
-                    s_g2d.drawString(s_playerArray[z].getName(), 42 + 87
+                    FontMetrics metrics = m_g2d.getFontMetrics();
+                    int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
+                    m_g2d.drawString(m_playerArray[z].getName(), 42 + 87
                             * valModXDim - width, 30 + 87 * valFloorXDim);
-                } else if (s_moneyArray[z] / 42 == i)
+                } else if (m_moneyArray[z] / 42 == i)
                 {
-                    FontMetrics metrics = s_g2d.getFontMetrics();
-                    int width = metrics.stringWidth(s_playerArray[z].getName()) / 2;
-                    s_g2d.drawString(s_playerArray[z].getName(), 42 + 87
+                    FontMetrics metrics = m_g2d.getFontMetrics();
+                    int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
+                    m_g2d.drawString(m_playerArray[z].getName(), 42 + 87
                             * valModXDim - width, 60 + 87 * valFloorXDim);
                 }
             }
@@ -160,14 +169,14 @@ class IPCChart
             // Write to file
             final int firstnum = X_DIMENSION * Y_DIMENSION * i;
             final int secondnum = X_DIMENSION * Y_DIMENSION * (i + 1) - 1;
-            final File outputfile = new File(s_outDir, "IPCchart" + firstnum
+            final File outputfile = new File(m_outDir, "IPCchart" + firstnum
                     + "-" + secondnum + ".png");
-            ImageIO.write(s_ipcImage, "png", outputfile);
+            ImageIO.write(m_ipcImage, "png", outputfile);
 
             final Color transparent = new Color(0, 0, 0, 0);
-            s_g2d.setColor(transparent);
-            s_g2d.setComposite(AlphaComposite.Src);
-            s_g2d.fill(new Rectangle2D.Float(0, 0, 600, 600));
+            m_g2d.setColor(transparent);
+            m_g2d.setComposite(AlphaComposite.Src);
+            m_g2d.fill(new Rectangle2D.Float(0, 0, 600, 600));
         }
     }
 

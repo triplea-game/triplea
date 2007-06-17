@@ -1,3 +1,17 @@
+/*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -17,28 +31,31 @@ import java.util.Map;
 
 class UnitInformation
 {
-    private  Map<UnitType, UnitAttachment> s_unitInfoMap;
-    private  Iterator<UnitType> s_unitTypeIterator;
-    private  GameData s_data = PrintGenerationData.getData();
-
-    private  String capitalizeFirst(String s)
+    private Map<UnitType, UnitAttachment> m_unitInfoMap;
+    private Iterator<UnitType> m_unitTypeIterator;
+    private GameData m_data;
+    private PrintGenerationData m_printData;
+    
+    private String capitalizeFirst(String s)
     {
         return (s.length() > 0) ? Character.toUpperCase(s.charAt(0))
                 + s.substring(1) : s;
     }
-
-    protected  void saveToFile(Map<UnitType, UnitAttachment> unitInfoMap)
+    
+    protected void saveToFile(PrintGenerationData printData, Map<UnitType, UnitAttachment> unitInfoMap)
     {
         FileWriter unitInformation = null;
-        s_unitInfoMap = unitInfoMap;
-        s_unitTypeIterator = s_unitInfoMap.keySet().iterator();
-        PrintGenerationData.getOutDir().mkdir();
+        m_printData=printData;
+        m_data=m_printData.getData();
+        m_unitInfoMap = unitInfoMap;
+        m_unitTypeIterator = m_unitInfoMap.keySet().iterator();
+        m_printData.getOutDir().mkdir();
         try
         {
-            File outFile = new File(PrintGenerationData.getOutDir(),
+            File outFile = new File(m_printData.getOutDir(),
                     "General Information.csv");
             unitInformation = new FileWriter(outFile);
-
+            
             for (int i = 0; i < 8; i++)
             {
                 unitInformation.write(",");
@@ -54,12 +71,12 @@ class UnitInformation
                             + ",Factory?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,Carrier Cost,"
                             + "Sea Unit?,Two Hit?,Transport Capacity,Carrier Capacity,Submarine?,Destroyer?");
             unitInformation.write("\r\n");
-            while (s_unitTypeIterator.hasNext())
+            while (m_unitTypeIterator.hasNext())
             {
-                UnitType currentType = s_unitTypeIterator.next();
-                UnitAttachment currentAttachment = s_unitInfoMap
+                UnitType currentType = m_unitTypeIterator.next();
+                UnitAttachment currentAttachment = m_unitInfoMap
                         .get(currentType);
-
+                
                 if (currentAttachment.isAA())
                 {
                     unitInformation.write(currentType.getName() + ",");
@@ -68,9 +85,9 @@ class UnitInformation
                     unitInformation
                             .write(capitalizeFirst(currentType.getName()) + ",");
                 }
-
+                
                 unitInformation.write(getCostInformation(currentType) + ",");
-
+                
                 unitInformation
                         .write(currentAttachment
                                 .getMovement(PlayerID.NULL_PLAYERID)
@@ -131,11 +148,11 @@ class UnitInformation
                                 + (currentAttachment.getIsDestroyer() == false ? "-"
                                         : "true"));
                 unitInformation.write("\r\n");
-
+                
             }
             unitInformation.write("\r\n");
             unitInformation.close();
-
+            
         } catch (FileNotFoundException e)
         {
             // TODO Auto-generated catch block
@@ -146,10 +163,10 @@ class UnitInformation
             e.printStackTrace();
         }
     }
-
-    private  int getCostInformation(UnitType type)
+    
+    private int getCostInformation(UnitType type)
     {
-        List<ProductionRule> productionRules = s_data
+        List<ProductionRule> productionRules = m_data
                 .getProductionFrontierList()
                 .getProductionFrontier("production").getRules();
         Iterator<ProductionRule> productionIterator = productionRules
@@ -162,7 +179,7 @@ class UnitInformation
             if (currentType.equals(type))
             {
                 int cost = currentRule.getCosts().getInt(
-                        s_data.getResourceList().getResource(Constants.IPCS));
+                        m_data.getResourceList().getResource(Constants.IPCS));
                 return cost;
             }
         }
