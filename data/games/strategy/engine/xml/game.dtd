@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, map, resourceList, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader, map, resourceList?, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -9,13 +9,24 @@
 	version CDATA #REQUIRED
 >
 
-<!-- javaClass must implement the IGameLoader interfaxce -->
+<!-- javaClass must implement the IGameLoader interface -->
 <!ELEMENT loader EMPTY>
 <!ATTLIST loader 
 	javaClass CDATA #REQUIRED
 >
 
-<!ELEMENT map (territory+, connection+) >
+<!ELEMENT map ((grid | territory)+ , connection*, remove-connection*)>
+	<!ELEMENT grid EMPTY>
+	<!ATTLIST grid
+		name CDATA #REQUIRED
+		type (square) #REQUIRED
+		x CDATA #REQUIRED
+		y CDATA #REQUIRED
+		horizontal-connections (explicit | implicit) 'explicit'
+		vertical-connections (explicit | implicit) 'explicit'
+		diagonal-connections (explicit | implicit) 'explicit'
+	>
+
 	<!ELEMENT territory EMPTY>
 	<!ATTLIST territory
 		name CDATA #REQUIRED
@@ -24,6 +35,12 @@
 	<!-- connections are two way -->
 	<!ELEMENT connection EMPTY>
 	<!ATTLIST connection
+		t1 CDATA #REQUIRED 
+		t2 CDATA #REQUIRED
+	>
+
+	<!ELEMENT remove-connection EMPTY>
+	<!ATTLIST remove-connection
 		t1 CDATA #REQUIRED 
 		t2 CDATA #REQUIRED
 	>

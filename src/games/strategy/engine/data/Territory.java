@@ -35,6 +35,9 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
   private PlayerID m_owner = PlayerID.NULL_PLAYERID;
   private final UnitCollection m_units;
 
+  // In a grid-based game, stores the coordinate of the Territory
+  int[] m_coordinate = null;
+  
   /** Creates new Territory */
   public Territory(String name, boolean water, GameData data)
   {
@@ -43,6 +46,19 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
     m_units = new UnitCollection(this, getData());
   }
 
+  /** Creates new Territory */
+  public Territory(String name, boolean water, GameData data, int... coordinate)
+  {
+    super(name, data);
+    m_water = water;
+    m_units = new UnitCollection(this, getData());
+    
+    if (data.getMap().isCoordinateValid(coordinate))
+        m_coordinate = coordinate;
+    else
+        throw new IllegalArgumentException("Invalid coordinate: " + coordinate[0] + "," + coordinate[1]);
+  }
+  
   public boolean isWater()
   {
     return m_water;
@@ -91,4 +107,43 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Seria
   {
     return UnitHolder.TERRITORY;
   }
+  
+  public boolean matchesCoordinates(int... coordinate) 
+  {
+      if (coordinate.length != m_coordinate.length)
+          return false;
+      else
+      {
+          for (int i=0; i<coordinate.length; i++)
+          {
+              if (coordinate[i] != m_coordinate[i])
+                  return false;
+          }          
+      }
+      
+      return true;
+  }
+  
+  public int getX() 
+  {
+      try {
+          return m_coordinate[0];
+      }
+      catch (ArrayIndexOutOfBoundsException e)
+      {
+          throw new RuntimeException("Territory " + this.getName() + " doesn't have a defined x coordinate");
+      }
+  }
+
+  public int getY() 
+  {
+      try {
+          return m_coordinate[1];
+      }
+      catch (ArrayIndexOutOfBoundsException e)
+      {
+          throw new RuntimeException("Territory " + this.getName() + " doesn't have a defined y coordinate");
+      }
+  }
+  
 }

@@ -77,7 +77,11 @@ public class GameParser
     parseInfo(getSingleChild("info", root));
     parseGameLoader(getSingleChild("loader", root));
     parseMap(getSingleChild("map", root));
-    parseResources(getSingleChild("resourceList", root));
+
+    Node resourceList = getSingleChild("resourceList", root, true);
+    if(resourceList != null)
+        parseResources(resourceList);
+    
     parseUnits(getSingleChild("unitList", root));
     parsePlayers(getSingleChild("playerList", root));
     parseGamePlay(getSingleChild("gamePlay", root));
@@ -315,6 +319,8 @@ public class GameParser
 
   private void parseMap(Node map) throws GameParseException
   {
+    List grids = getChildren("grid",map);
+    parseGrids(grids);
     //get the Territories
     List territories = getChildren("territory", map);
     parseTerritories(territories);
@@ -323,6 +329,122 @@ public class GameParser
 
   }
 
+  private void parseGrids(List grids) throws GameParseException
+  { 
+      GameMap map = data.getMap();      
+      
+      for(int i = 0; i < grids.size(); i++)
+      {
+        Element current = (Element) grids.get(i);
+ 
+        List<Node> waterNodes = getChildren("water",current);
+        Set<String> water = parseGridWater(waterNodes);
+        
+        String horizontalConnections = current.getAttribute("horizontal-connections");
+        boolean horizontalConnectionsImplict;
+        if (horizontalConnections.equals("implicit"))
+            horizontalConnectionsImplict = true;
+        else if (horizontalConnections.equals("explicit"))
+            horizontalConnectionsImplict = false;
+        else
+            throw new GameParseException("horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
+        
+        String verticalConnections = current.getAttribute("vertical-connections");
+        boolean verticalConnectionsImplict;
+        if (verticalConnections.equals("implicit"))
+            verticalConnectionsImplict = true;
+        else if (verticalConnections.equals("explicit"))
+            verticalConnectionsImplict = false;
+        else
+            throw new GameParseException("vertical-connections attribute must be either \"explicit\" or \"implicit\"");
+
+        
+        String diagonalConnections = current.getAttribute("diagonal-connections");
+        boolean diagonalConnectionsImplict;
+        if (diagonalConnections.equals("implicit"))
+            diagonalConnectionsImplict = true;
+        else if (diagonalConnections.equals("explicit"))
+            diagonalConnectionsImplict = false;
+        else
+            throw new GameParseException("diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
+
+        String name = current.getAttribute("name");
+        String xs = current.getAttribute("x");
+        String ys = current.getAttribute("y");
+        
+        int x_size = Integer.valueOf(xs);
+        int y_size;
+        if (ys != null)
+            y_size = Integer.valueOf(ys);
+        else
+            y_size = 0;
+        
+        map.setGridDimensions(x_size, y_size);
+
+        // Add territories
+        for (int y=0; y<y_size; y++) 
+        {   
+            for (int x=0; x<x_size; x++)
+            {   
+                boolean isWater; 
+                if (water.contains(x + "-" + y))
+                    isWater = true;
+                else
+                    isWater = false;
+                
+                Territory newTerritory = new Territory(name + "_" + x + "_" + y , isWater, data, x, y);
+                map.addTerritory(newTerritory);
+            }
+        }
+        
+        
+        // Add any implicit horizontal connections
+        if (horizontalConnectionsImplict)
+            for (int y=0; y<y_size; y++) 
+                for (int x=0; x<x_size-1; x++)
+                    map.addConnection(map.getTerritoryFromCoordinates(x,y), map.getTerritoryFromCoordinates(x+1,y));
+            
+        
+        // Add any implicit vertical connections
+        if (verticalConnectionsImplict)
+            for (int x=0; x<x_size; x++) 
+                for (int y=0; y<y_size-1; y++)
+                    map.addConnection(map.getTerritoryFromCoordinates(x,y), map.getTerritoryFromCoordinates(x,y+1));
+
+        
+        // Add any implicit acute diagonal connections
+        if (diagonalConnectionsImplict)
+            for (int y=0; y<y_size-1; y++) 
+                for (int x=0; x<x_size-1; x++)
+                    map.addConnection(map.getTerritoryFromCoordinates(x,y), map.getTerritoryFromCoordinates(x+1,y+1));
+
+        
+        // Add any implicit obtuse diagonal connections
+        if (diagonalConnectionsImplict)
+            for (int y=0; y<y_size-1; y++) 
+                for (int x=1; x<x_size; x++)
+                    map.addConnection(map.getTerritoryFromCoordinates(x,y), map.getTerritoryFromCoordinates(x-1,y+1));
+
+        
+      }      
+      
+  }
+  
+  private Set<String> parseGridWater(List<Node> waterNodes)
+  {
+      Set<String> set = new HashSet<String>();
+      
+      for (int i = 0; i< waterNodes.size(); i++) 
+      {
+          Element current = (Element) waterNodes.get(i);
+          int x = Integer.valueOf(current.getAttribute("x"));
+          int y = Integer.valueOf(current.getAttribute("y"));
+          set.add(x + "-" + y);
+      }
+      
+      return set;
+  }
+  
   private void parseTerritories(List territories)
   {
     GameMap map = data.getMap();

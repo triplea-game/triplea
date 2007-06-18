@@ -41,12 +41,70 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	//for fast lookup based on the string name of the territory
     private Map<String, Territory> m_territoryLookup = new HashMap<String,Territory>();
     
+    // nil if the map is not grid-based
+    //  otherwise, m_gridDimensions.length is the number of dimensions,
+    //  and each element is the size of a dimension
+    private int[] m_gridDimensions = null;
     
 	GameMap(GameData data)
 	{
 		super(data);
 	}
-
+       
+    public void setGridDimensions(int... gridDimensions)
+    {
+        m_gridDimensions = gridDimensions;
+    }
+    
+    public int getXDimension()
+    {
+        if (m_gridDimensions==null || m_gridDimensions.length < 1)
+            return 0;
+        else 
+            return m_gridDimensions[0];
+    }
+    
+    public int getYDimension()
+    {
+        if (m_gridDimensions==null || m_gridDimensions.length < 2)
+            return 0;
+        else 
+            return m_gridDimensions[1];
+    }    
+    
+    public Territory getTerritoryFromCoordinates(int... coordinate) 
+    {
+        if (m_gridDimensions==null)
+            return null;
+            
+        if (! isCoordinateValid(coordinate))
+            return null;
+            
+        int listIndex = coordinate[0];        
+        
+        for (int i=1; i<m_gridDimensions.length; i++)
+            listIndex += coordinate[i] * m_gridDimensions[i];
+        
+        
+        return ((ArrayList<Territory>) m_territories).get(listIndex);
+        
+    }
+    
+    
+    public boolean isCoordinateValid(int... coordinate) 
+    {
+        if (coordinate.length != m_gridDimensions.length)
+            return false;
+        
+        for (int i=0; i<m_gridDimensions.length; i++) 
+        {
+            if (coordinate[i] >= m_gridDimensions[i] || coordinate[i]<0)
+                return false;
+        }
+        
+        return true;
+    }
+    
     protected void addTerritory(Territory t1)
 	{
 		if(m_territories.contains(t1) )
