@@ -21,11 +21,13 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.CompositeMatchAnd;
 
 public class RevisedTest extends TestCase 
@@ -72,7 +74,7 @@ public class RevisedTest extends TestCase
         assertEquals(2, attachment.getDefense(japanese));
         assertEquals(2, attachment.getAttack(japanese));
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese);
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese, (IDisplay) new DummyDisplay());
         
         TechTracker.addAdvance(japanese, m_data, bridge, TechAdvance.SUPER_SUBS);
         
@@ -88,7 +90,7 @@ public class RevisedTest extends TestCase
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians);
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians, (IDisplay) new DummyDisplay());
 
         //we need to initialize the original owner
         InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
@@ -174,7 +176,7 @@ public class RevisedTest extends TestCase
         
         //new move delegate
         MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese);
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese, (IDisplay) new DummyDisplay());
         bridge.setStepName("CombatMove");
         moveDelegate.start(bridge, m_data);
 
@@ -227,7 +229,7 @@ public class RevisedTest extends TestCase
         
         battle.addAttack(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, british);
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
         TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
         
         //aa guns rolls 3, misses, bomber rolls 2 dice at 3

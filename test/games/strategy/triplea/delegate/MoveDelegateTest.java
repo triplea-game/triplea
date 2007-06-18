@@ -21,6 +21,8 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.IntegerMap;
 
 import java.util.*;
@@ -54,7 +56,7 @@ public class MoveDelegateTest extends DelegateTest
   public void setUp() throws Exception
   {
     super.setUp();
-    m_bridge = new TestDelegateBridge(m_data, british);
+    m_bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
     m_bridge.setStepName("BritishCombatMove");
     m_delegate = new MoveDelegate();
     m_delegate.initialize("MoveDelegate", "MoveDelegate");

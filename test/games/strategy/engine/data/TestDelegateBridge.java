@@ -21,6 +21,7 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryWriter;
@@ -30,7 +31,6 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
-import games.strategy.triplea.ui.display.DummyDisplay;
 
 import java.util.Properties;
 
@@ -48,16 +48,19 @@ public class TestDelegateBridge implements IDelegateBridge
     private PlayerID m_id;
     private String m_stepName = "no name specified";
 
+    private IChannelSubscribor m_dummyDisplay;
     private IRandomSource m_randomSource;
 
     private DelegateHistoryWriter m_historyWriter;
     private IRemote m_remote;
     
     /** Creates new TestDelegateBridge */
-    public TestDelegateBridge(GameData data, PlayerID id)
+    public TestDelegateBridge(GameData data, PlayerID id, IDisplay dummyDisplay)
     {
         m_data = data;
         m_id = id;
+        m_dummyDisplay = dummyDisplay;
+        
         History history = new History(m_data);
         HistoryWriter historyWriter = new HistoryWriter(history);
         historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
@@ -160,7 +163,7 @@ public class TestDelegateBridge implements IDelegateBridge
      */
     public IChannelSubscribor getDisplayChannelBroadcaster()
     {
-        return new DummyDisplay();
+    	return m_dummyDisplay;
     }
     
     public Properties getStepProperties()

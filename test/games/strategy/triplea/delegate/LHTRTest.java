@@ -5,11 +5,13 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.display.DummyDisplay;
 import junit.framework.TestCase;
 
 public class LHTRTest extends TestCase
@@ -52,7 +54,7 @@ public class LHTRTest extends TestCase
         
         PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
         
-        TestDelegateBridge bridge = new TestDelegateBridge( m_data, germans  );
+        TestDelegateBridge bridge = new TestDelegateBridge( m_data, germans, (IDisplay) new DummyDisplay());
                 
         bridge.setStepName("GermansNonCombatMove");
         delegate.start(bridge, m_data);
@@ -96,7 +98,7 @@ public class LHTRTest extends TestCase
         assertEquals(2, attachment.getDefense(japanese));
         assertEquals(2, attachment.getAttack(japanese));
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese);
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese, (IDisplay) new DummyDisplay());
         
         TechTracker.addAdvance(japanese, m_data, bridge, TechAdvance.SUPER_SUBS);
         
@@ -126,7 +128,7 @@ public class LHTRTest extends TestCase
         
         battle.addAttack(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, british);
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
         TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
         
         //aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
@@ -179,7 +181,7 @@ public class LHTRTest extends TestCase
         
         battle.addAttack(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, british);
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
         TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
         
         //aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2

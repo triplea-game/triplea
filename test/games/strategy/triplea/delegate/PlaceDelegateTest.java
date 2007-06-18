@@ -21,8 +21,10 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.IntegerMap;
 
 import java.util.*;
@@ -66,7 +68,7 @@ public class PlaceDelegateTest extends DelegateTest
 		super.setUp();
 		
 		
-		m_bridge = new TestDelegateBridge(m_data, british);
+		m_bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
 		m_delegate = new PlaceDelegate();
 		m_delegate.initialize("place");
 		m_delegate.start(m_bridge, m_data);
