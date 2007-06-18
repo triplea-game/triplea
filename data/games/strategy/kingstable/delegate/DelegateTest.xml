@@ -1,0 +1,128 @@
+<?xml version="1.0" ?>
+<!DOCTYPE game SYSTEM "game.dtd">
+
+<game>
+
+	<info name="delegateTest" version="1" />
+	
+	<loader javaClass="games.strategy.engine.xml.TestGameLoader"/>
+	
+	<map>
+		<grid name="gameboard" type="square" x="11" y="11" horizontal-connections="implicit" vertical-connections="implicit"/>
+	</map>
+	
+	
+	<playerList>
+		<player name="Black" optional="false"/>
+		<player name="White" optional="false"/>
+	</playerList>
+	
+	
+	<unitList>
+		<unit name="pawn"/>
+		<unit name="king"/>
+	</unitList>
+
+
+	<gamePlay>
+		<delegate name="init" javaClass="games.strategy.kingstable.delegate.InitializationDelegate" display="Initialize Game"/>
+		<delegate name="play" javaClass="games.strategy.kingstable.delegate.PlayDelegate" display="Play"/>
+		<delegate name="endTurn" javaClass="games.strategy.kingstable.delegate.EndTurnDelegate" display="Check for winner"/>
+		
+		<sequence>
+			<step name="gameInit" delegate="init" maxRunCount="1"/>
+			
+			<step name="blackPlay" delegate="play" player="Black"/>
+			<step name="blackEndTurn" delegate="endTurn" />
+
+			<step name="whitePlay" delegate="play" player="White"/>
+			<step name="whiteEndTurn" delegate="endTurn" />
+
+		</sequence>
+	</gamePlay>
+
+	<attatchmentList>
+		<attatchment name="territoryAttachment"  attatchTo="gameboard_5_5" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+			<option name="kingsSquare" value="true" />
+	    </attatchment>
+		<attatchment name="territoryAttachment"  attatchTo="gameboard_0_0" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+			<option name="kingsSquare" value="true" />
+			<option name="kingsExit" value="true" />
+	    </attatchment>
+	    <attatchment name="territoryAttachment"  attatchTo="gameboard_10_0" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+			<option name="kingsSquare" value="true" />
+			<option name="kingsExit" value="true" />
+	    </attatchment>
+	    <attatchment name="territoryAttachment"  attatchTo="gameboard_10_10" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+			<option name="kingsSquare" value="true" />
+			<option name="kingsExit" value="true" />
+	    </attatchment>
+	    <attatchment name="territoryAttachment"  attatchTo="gameboard_0_10" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+			<option name="kingsSquare" value="true" />
+			<option name="kingsExit" value="true" />
+	    </attatchment>	 
+	    
+	    <attatchment name="playerAttachment" attatchTo="White" javaClass="games.strategy.kingstable.attachments.PlayerAttachment" type="player">
+            <option name="needsKing" value="true"/>
+        </attatchment>   
+
+	</attatchmentList>
+
+	<initialize>
+		<unitInitialize>
+			<unitPlacement unitType="pawn" territory="gameboard_0_3" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_0_4" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_0_5" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_0_6" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_0_7" quantity="1" owner="Black" /> 
+
+			<unitPlacement unitType="pawn" territory="gameboard_10_3" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_10_4" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_10_5" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_10_6" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_10_7" quantity="1" owner="Black" /> 
+
+			<unitPlacement unitType="pawn" territory="gameboard_3_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_4_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_5_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_6_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_7_0" quantity="1" owner="Black" /> 
+
+			<unitPlacement unitType="pawn" territory="gameboard_3_10" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_4_10" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_5_10" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_6_10" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_7_10" quantity="1" owner="Black" /> 
+
+			<unitPlacement unitType="pawn" territory="gameboard_1_5" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_5_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_5_9" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="gameboard_9_5" quantity="1" owner="Black" />
+
+
+			<unitPlacement unitType="pawn" territory="gameboard_3_5" quantity="1" owner="White" />
+			
+			<unitPlacement unitType="pawn" territory="gameboard_4_4" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="gameboard_4_5" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="gameboard_4_6" quantity="1" owner="White" />
+			
+			<unitPlacement unitType="pawn" territory="gameboard_5_3" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="gameboard_5_4" quantity="1" owner="White" />
+			<unitPlacement unitType="king" territory="gameboard_5_5" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="gameboard_5_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="gameboard_5_7" quantity="1" owner="White" />
+
+			<unitPlacement unitType="pawn" territory="gameboard_6_4" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="gameboard_6_5" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="gameboard_6_6" quantity="1" owner="White" /> 
+			
+			<unitPlacement unitType="pawn" territory="gameboard_7_5" quantity="1" owner="White" />
+									
+		</unitInitialize>
+	</initialize>
+
+	<propertyList>
+		<property name="mapName" value="kings_table" editable="false" />		
+	</propertyList>
+	
+</game>

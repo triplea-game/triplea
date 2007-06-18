@@ -14,6 +14,7 @@
 
 package games.strategy;
 
+import games.strategy.kingstable.KingsTableTest;
 import games.strategy.triplea.TripleATest;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -28,8 +29,12 @@ public class AllTests extends TestCase
         
         //tests for the engine code
         suite.addTest(StrategyGameTest.suite());
+        
         //tests for a&a code
         suite.addTest(TripleATest.suite());
+        
+        //tests for King's Table code
+        suite.addTest(KingsTableTest.suite());
         
         return suite;
     }
