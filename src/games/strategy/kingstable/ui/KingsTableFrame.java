@@ -1,6 +1,19 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.kingstable.ui;
 
-//import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.data.GameData;
@@ -20,6 +33,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -27,6 +41,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ * @author Lane Schwartz
+ * @version $LastChangedDate$
+ */
 public class KingsTableFrame extends MainGameFrame
 {
     private GameData m_data;
@@ -37,10 +55,13 @@ public class KingsTableFrame extends MainGameFrame
     private JLabel m_error;
 
     private boolean m_gameOver;
+    
+    private CountDownLatch m_waiting;
 
     public KingsTableFrame(IGame game, Set<IGamePlayer> players)
     {
         m_gameOver = false;
+        m_waiting = null;
         
         m_game = game;
         m_data = game.getData();
@@ -109,10 +130,33 @@ public class KingsTableFrame extends MainGameFrame
     {
         m_mapPanel.performPlay(start,end,captured);
     }
+
     
-    public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge) 
+    /**
+     * Wait for a player to play.
+     * 
+     * @param player the player to wait on
+     * @param bridge the bridge for player
+     * @return PlayData representing a play, or <code>null</code> if the play was interrupted
+     */
+    public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge)
     {
-        return m_mapPanel.waitForPlay(player,bridge);
+    	PlayData play = null;
+
+    	try {
+    		while (play==null)
+    		{
+    			m_waiting = new CountDownLatch(1);
+
+    			play = m_mapPanel.waitForPlay(player,bridge,m_waiting);
+    		}
+    	}
+    	catch (InterruptedException e)
+    	{
+    		return null;
+    	}
+    	
+        return play;
     }
     
     public IGame getGame()
@@ -122,10 +166,25 @@ public class KingsTableFrame extends MainGameFrame
     
     public void leaveGame() 
     {
+    	// Make sure the user really wants to leave the game.
         int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
         if(rVal != JOptionPane.OK_OPTION)
             return;
         
+        // We need to let the MapPanel know that we're leaving the game.
+        //    Once the CountDownLatch has counted down to zero,
+        //    the MapPanel will stop listening for mouse clicks,
+        //    and its thread will be able to terminate.
+        if (m_waiting!=null)
+        {
+        	synchronized(m_waiting)
+        	{
+        		while (m_waiting.getCount() > 0)
+        			m_waiting.countDown();
+        	}
+        }
+        
+        // Exit the game.
         if(m_game instanceof ServerGame)
         {
             ((ServerGame) m_game).stopGame();
@@ -182,6 +241,11 @@ public class KingsTableFrame extends MainGameFrame
     public void setGameOver(boolean gameOver)
     {
         m_gameOver = gameOver;
+    }
+    
+    public boolean isGameOver()
+    {
+    	return m_gameOver;
     }
     
     public void notifyError(String error)

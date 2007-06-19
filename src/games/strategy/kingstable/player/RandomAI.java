@@ -21,8 +21,12 @@ import java.util.Collection;
 import java.util.Random;
 
 /**
+ * AI agent for King's Table.
+ * 
+ * Plays by attempting to move a random piece to a random square on the board.
  * 
  * @author Lane Schwartz
+ * @version $LastChangedDate$
  */
 public class RandomAI extends AbstractAI
 {

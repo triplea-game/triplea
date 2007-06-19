@@ -26,6 +26,7 @@ import games.strategy.kingstable.attachments.PlayerAttachment;
  * Responsible for initializing a game of King's Table.
  * 
  * @author Lane Schwartz
+ * @version $LastChangedDate$
  */
 public class InitializationDelegate extends BaseDelegate
 {

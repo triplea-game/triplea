@@ -39,6 +39,7 @@ import games.strategy.kingstable.ui.display.KingsTableDisplay;
  * Main class responsible for a Kings Table game.
  *
  * @author Lane Schwartz
+ * @version $LastChangedDate$
  */
 public class KingsTable implements IGameLoader
 {

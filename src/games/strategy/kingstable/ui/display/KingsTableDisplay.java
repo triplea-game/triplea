@@ -22,7 +22,7 @@ import games.strategy.kingstable.ui.KingsTableFrame;
 
 /**
  * @author Lane Schwartz
- *
+ * @version $LastChangedDate$
  */
 public class KingsTableDisplay implements IKingsTableDisplay
 {

@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.kingstable.ui;
 
 import games.strategy.common.image.UnitImageFactory;
@@ -19,10 +33,17 @@ import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+/**
+ * Custom component for displaying a King's Table gameboard and pieces.
+ * 
+ * @author Lane Schwartz
+ * @version $LastChangedDate$
+ */
 public class MapPanel extends JComponent implements MouseListener
 {
     private MapData m_mapData;
@@ -33,8 +54,12 @@ public class MapPanel extends JComponent implements MouseListener
     
     private Map<Territory, Image> m_images;
     
+    private CountDownLatch m_waiting;
+    
     public MapPanel(MapData mapData)
     {
+    	m_waiting = null;
+    	
         m_mapData = mapData;
         m_gameData = m_mapData.getGameData();
         
@@ -116,6 +141,9 @@ public class MapPanel extends JComponent implements MouseListener
     }
     
     
+    /**
+     * Draw the current map and pieces.
+     */
     protected void paintComponent(Graphics g) 
     {   
         g.setColor(Color.white);
@@ -157,39 +185,84 @@ public class MapPanel extends JComponent implements MouseListener
     public void mouseClicked(MouseEvent e) { }
     public void mouseEntered(MouseEvent e) { }
     public void mouseExited(MouseEvent e) { }
-    
+  
+    /**
+     * Process the mouse button being pressed.
+     */
     public void mousePressed(MouseEvent e) 
     { 
-        int x = e.getX();
-        int y = e.getY();
-        m_clickedAt = m_mapData.getTerritoryAt(x, y);
+    	// After this method has been called, 
+        //    the Territory corresponding to the cursor location when the mouse was pressed 
+        //    will be stored in the private member variable m_clickedAt.
+    	m_clickedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
     }
     
+    /**
+     * Process the mouse button being released.
+     */
     public void mouseReleased(MouseEvent e) 
     { 
-        int x = e.getX();
-        int y = e.getY();
-        m_releasedAt = m_mapData.getTerritoryAt(x, y);
+    	// After this method has been called, 
+        //    the Territory corresponding to the cursor location when the mouse was released 
+        //    will be stored in the private member variable m_releasedAt.
+    	m_releasedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
+
+    	// The waitForPlay method is waiting for mouse input.
+    	//    Let it know that we have processed mouse input.
+    	m_waiting.countDown();   	
     }
     
-    public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge) 
+    
+    /**
+     * Wait for a player to play.
+     * 
+     * @param player the player to wait on
+     * @param bridge the bridge for player
+     * @param waiting a <code>CountDownLatch</code> used to wait for user input - must be non-null and have and have <code>getCount()==1</code>
+     * @return PlayData representing a play, or <code>null</code> if the play started and stopped on the same <code>Territory</code>
+     * @throws InterruptedException if the play was interrupted
+     */
+    public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, CountDownLatch waiting) throws InterruptedException 
     {
-        Territory clickedAt = null;
-        Territory releasedAt = null;
-        
-        while (clickedAt == releasedAt)
-        {
-            while (m_clickedAt == null) {}
-            clickedAt = m_clickedAt;
+    	// Make sure we have a valid CountDownLatch.
+    	if (waiting==null || waiting.getCount()!=1)
+    		throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
+    		
+    	// The mouse listeners need access to the CountDownLatch, so store as a member variable.
+    	m_waiting = waiting;
 
-            while (m_releasedAt == null) {}
-            releasedAt = m_releasedAt;
+    	// Wait for a play or an attempt to leave the game
+    	m_waiting.await();
 
-            m_clickedAt = null;
-            m_releasedAt = null;
-        }
-        
-        return new PlayData(clickedAt, releasedAt);
+    	if (m_clickedAt==null || m_releasedAt==null)
+    	{	
+    		// If either m_clickedAt==null or m_releasedAt==null,
+    		//    the play is invalid and must have been interrupted.
+    		//    So, reset the member variables, and throw an exception.
+    		m_clickedAt = null;
+    		m_releasedAt = null;
+    		throw new InterruptedException("Interrupted while waiting for play.");
+    	}
+    	else if (m_clickedAt==m_releasedAt)
+    	{
+//    		 If m_clickedAt==m_releasedAt,
+    		//    the play started and stopped on the same Territory.
+    		//    This is a blatantly invalid play, but we can't reset the CountDownLatch here,
+    		//    so reset the member variables and return null.
+    		m_clickedAt = null;
+    		m_releasedAt = null;
+    		return null;
+    	}
+    	else
+    	{
+    		// We have a valid play!
+    		//    Reset the member variables, and return the play.
+    		PlayData play = new PlayData(m_clickedAt, m_releasedAt);
+    		m_clickedAt = null;
+    		m_releasedAt = null;
+    		return play;
+    	}
+
     }
 
 }

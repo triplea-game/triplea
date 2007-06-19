@@ -20,6 +20,7 @@ import games.strategy.common.player.AbstractBaseAI;
  * Abstract class for a King's Table AI agent.
  * 
  * @author Lane Schwartz
+ * @version $LastChangedDate$
  */
 public abstract class AbstractAI extends AbstractBaseAI implements IKingsTablePlayer
 {

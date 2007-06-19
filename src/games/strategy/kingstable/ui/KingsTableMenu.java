@@ -1,3 +1,17 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package games.strategy.kingstable.ui;
 
 import games.strategy.common.ui.BasicGameMenuBar;
@@ -11,6 +25,10 @@ import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
+/**
+ * @author Lane Schwartz
+ * @version $LastChangedDate$
+ */
 public class KingsTableMenu extends BasicGameMenuBar
 {
 
@@ -24,7 +42,8 @@ public class KingsTableMenu extends BasicGameMenuBar
     {
         addHowToPlayHelpMenu(helpMenu);
     }
-        
+    
+    
     
     /**
      * @param parentMenu
@@ -75,4 +94,26 @@ public class KingsTableMenu extends BasicGameMenuBar
     }
     
   
+    /*
+    protected void createGameSpecificMenus (JMenuBar menuBar) 
+    {
+        if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
+        {
+            JMenu menuGame = new JMenu("Game");
+            menuBar.add(menuGame);
+            
+            AbstractAction optionsAction = new AbstractAction("View Game Options...")
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), true);
+                    JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
+                }
+            };
+
+            menuGame.add(optionsAction);   
+        }
+    }
+*/
+    
 }

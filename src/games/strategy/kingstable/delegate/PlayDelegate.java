@@ -35,6 +35,7 @@ import games.strategy.kingstable.ui.display.IKingsTableDisplay;
  * Responsible for performing a move in a game of King's Table.
  * 
  * @author Lane Schwartz
+ * @version $LastChangedDate$
  */
 public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 {

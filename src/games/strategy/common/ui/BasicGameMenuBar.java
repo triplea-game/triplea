@@ -24,14 +24,20 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+
+import com.apple.eawt.Application;
+import com.apple.eawt.ApplicationAdapter;
+import com.apple.eawt.ApplicationEvent;
 
 public class BasicGameMenuBar extends JMenuBar
 {
@@ -179,7 +185,7 @@ public class BasicGameMenuBar extends JMenuBar
         
         addGameNotesMenu(helpMenu);
         addConsoleMenu(helpMenu);
-        helpMenu.addSeparator();
+        
         addAboutMenu(helpMenu);
     }
     
@@ -205,32 +211,48 @@ public class BasicGameMenuBar extends JMenuBar
      */
     protected void addAboutMenu(JMenu parentMenu)
     {
-        
-        parentMenu.add(new AbstractAction("About...")
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                String text = "<h2>"+ getData().getGameName()  + "</h2>"+
+		String text = "<h2>"+ getData().getGameName()  + "</h2>"+
 
-                "<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()+
-        "<br><b>Game:</b> "+getData().getGameName()+
-                "<br><b>Game Version:</b>" + getData().getGameVersion()+"</p>"+
-        "<p>For more information please visit,<br><br>"+
-                "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
+		"<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()+
+		"<br><b>Game:</b> "+getData().getGameName()+
+		"<br><b>Game Version:</b>" + getData().getGameVersion()+"</p>"+
+		"<p>For more information please visit,<br><br>"+
+		"<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
 
-                JEditorPane editorPane = new JEditorPane();
-                editorPane.setBorder(null);
-                editorPane.setBackground(getBackground());
-                editorPane.setEditable(false);
-                editorPane.setContentType("text/html");
-                editorPane.setText(text);
+		final JEditorPane editorPane = new JEditorPane();
+		editorPane.setBorder(null);
+		editorPane.setBackground(getBackground());
+		editorPane.setEditable(false);
+		editorPane.setContentType("text/html");
+		editorPane.setText(text);
 
-                JScrollPane scroll = new JScrollPane(editorPane);
-                scroll.setBorder(null);
+		JScrollPane scroll = new JScrollPane(editorPane);
+		scroll.setBorder(null);
+		
+    	if (System.getProperty("mrj.version") == null) { 
+    		parentMenu.addSeparator();
+    		
+    		parentMenu.add(new AbstractAction("About...")
+    		{
+    			public void actionPerformed(ActionEvent e)
+    			{
+    				JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
+    			}
+    		});
 
-                JOptionPane.showMessageDialog(m_frame, editorPane, "About", JOptionPane.PLAIN_MESSAGE);
-            }
-        });
+    	}
+    	else // On Mac OS X, put the About menu where Mac users expect it to be
+    	{	
+    		Application.getApplication().addApplicationListener(new ApplicationAdapter()
+    		{
+    			public void handleAbout(ApplicationEvent event)
+    			{
+    				event.setHandled(true); // otherwise the default About menu will still show appear
+
+    				JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
+    			}
+    		});
+    	}
         
     }
     

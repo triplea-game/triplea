@@ -22,7 +22,7 @@ import games.strategy.engine.display.IDisplay;
 
 /**
  * @author Lane Schwartz
- *
+ * @version $LastChangedDate$
  */
 public interface IKingsTableDisplay extends IDisplay
 {

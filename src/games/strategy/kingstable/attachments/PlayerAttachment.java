@@ -12,20 +12,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * PlayerAttatchment.java
- *
- * Created on August 29, 2005, 3:14 PM
- */
-
 package games.strategy.kingstable.attachments;
 
 import games.strategy.engine.data.DefaultAttachment;
 
 /**
  *
- * @author  Lane Schwartz
- * @version 1.0
+ * @author Lane Schwartz
+ * @version $LastChangedDate$
  */
 public class PlayerAttachment extends DefaultAttachment
 {

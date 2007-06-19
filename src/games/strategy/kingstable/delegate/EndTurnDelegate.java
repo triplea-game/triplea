@@ -29,6 +29,7 @@ import games.strategy.kingstable.ui.display.IKingsTableDisplay;
  * Responsible for checking for a winner in a game of King's Table.
  * 
  * @author Lane Schwartz
+ * @version $LastChangedDate$
  */
 public class EndTurnDelegate extends BaseDelegate
 {
