@@ -42,6 +42,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
+ * User interface for King's Table.
+ * 
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
@@ -58,6 +60,12 @@ public class KingsTableFrame extends MainGameFrame
     
     private CountDownLatch m_waiting;
 
+    /**
+     * Construct a new user interface for a King's Table game.
+     * 
+     * @param game
+     * @param players
+     */
     public KingsTableFrame(IGame game, Set<IGamePlayer> players)
     {
         m_gameOver = false;
@@ -98,32 +106,28 @@ public class KingsTableFrame extends MainGameFrame
 
         // Set up the menu bar and window title
         this.setJMenuBar(new KingsTableMenu(this));
-        //this.setJMenuBar(new BasicGameMenuBar(this));
         this.setTitle(m_game.getData().getGameName());
         
-        // If a user tries to close the window, we want to know that
-        this.addWindowListener(WINDOW_LISTENER);
+        // If a user tries to close this frame, treat it as if they have asked to leave the game
+        this.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                leaveGame();
+            }
+        });
         
         // Resize the window, then make it visible
         this.pack();
         this.setVisible(true);
     }
-    
-    
-    //  If a user tries to close the window, treat it as if they have asked to leave the game
-    private WindowListener WINDOW_LISTENER = new WindowAdapter()
-    {
-        public void windowClosing(WindowEvent e)
-        {
-            leaveGame();
-        }
-    };
+
     
     /**
      * Update the user interface based on a game play.
      * 
-     * @param start <code>Territory</code> where the moving piece began
-     * @param end <code>Territory</code> where the moving piece ended
+     * @param start <code>Territory</code> where the play began
+     * @param end <code>Territory</code> where the play ended
      * @param captured <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
      */
     public void performPlay(Territory start, Territory end, Collection<Territory> captured)
@@ -159,11 +163,20 @@ public class KingsTableFrame extends MainGameFrame
         return play;
     }
     
+    
+    /**
+     * Get the <code>IGame</code> for the current game.
+     * @return the <code>IGame</code> for the current game
+     */
     public IGame getGame()
     {
         return m_game;
     }
     
+    
+    /**
+     * Process a user request to leave the game.
+     */
     public void leaveGame() 
     {
     	// Make sure the user really wants to leave the game.
@@ -200,6 +213,12 @@ public class KingsTableFrame extends MainGameFrame
         }
     }
     
+    
+    /**
+     * Process a user request to stop the game.
+     * 
+     * This method is responsible for de-activating this frame.
+     */    
     public void stopGame()
     {        
 
@@ -221,12 +240,15 @@ public class KingsTableFrame extends MainGameFrame
         m_mapPanel = null;
 
         m_status = null;
-                
-        removeWindowListener(WINDOW_LISTENER);
-        WINDOW_LISTENER = null;
 
+        for (WindowListener l : this.getWindowListeners())
+        	this.removeWindowListener(l);
     }
    
+    
+    /**
+     * Process a user request to exit the program.
+     */
     public void shutdown()
     {   
         if (!m_gameOver)
@@ -238,21 +260,40 @@ public class KingsTableFrame extends MainGameFrame
         System.exit(0);
     }
     
-    public void setGameOver(boolean gameOver)
+    
+    /**
+     * Set the game over status for this frame to <code>true</code>.
+     */
+    public void setGameOver()
     {
-        m_gameOver = gameOver;
+        m_gameOver = true;
     }
     
+    
+    /**
+     * Determine whether the game is over.
+     * @return <code>true</code> if the game is over, <code>false</code> otherwise
+     */
     public boolean isGameOver()
     {
     	return m_gameOver;
     }
     
+    
+    /**
+     * Graphically notify the user of an error.
+     * @param error the error message to display
+     */
     public void notifyError(String error)
     {
         m_error.setText(error);
     }
     
+    
+    /**
+     * Graphically notify the user of the current game status.
+     * @param error the status message to display
+     */    
     public void setStatus(String status)
     {
         m_error.setText(" ");

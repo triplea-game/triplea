@@ -26,7 +26,23 @@ import games.strategy.engine.display.IDisplay;
  */
 public interface IKingsTableDisplay extends IDisplay
 {
+    /**
+     * Graphically notify the user of the current game status.
+     * @param error the status message to display
+     */ 
     public void setStatus(String status);
-    public void setGameOver(boolean gameOver);
+    
+    /**
+     * Set the game over status for this display to <code>true</code>.
+     */
+    public void setGameOver();
+    
+    /**
+     * Ask the user interface for this display to process a play and zero or more captures.
+     * 
+     * @param start <code>Territory</code> where the play began
+     * @param end <code>Territory</code> where the play ended
+     * @param captured <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
+     */
     public void performPlay(Territory start, Territory end, Collection<Territory> captured);
 }

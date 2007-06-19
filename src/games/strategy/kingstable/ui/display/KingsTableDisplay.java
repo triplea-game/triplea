@@ -21,6 +21,8 @@ import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.kingstable.ui.KingsTableFrame;
 
 /**
+ * Display for a King's Table game.
+ * 
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
@@ -28,15 +30,22 @@ public class KingsTableDisplay implements IKingsTableDisplay
 {
     private IDisplayBridge m_displayBridge;
     private final KingsTableFrame m_ui;
+
     
     /**
+     * Construct a new display for a King's Table game.
+     * 
+     * The display
      * @param ui
+     * @see games.strategy.engine.display.IDisplay
      */
     public KingsTableDisplay(final KingsTableFrame ui)
     {
         m_ui = ui;
     }
-    /* 
+    
+    
+    /** 
      * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
      */
     public void initialize(IDisplayBridge bridge)
@@ -46,25 +55,44 @@ public class KingsTableDisplay implements IKingsTableDisplay
         
     }
  
+    /**
+     * Process a user request to exit the program.
+     * 
+     * @see games.strategy.engine.display.IDisplay#shutdown()
+     */
     public void shutDown()
     {
         m_ui.stopGame();
     }
     
+    /**
+     * Graphically notify the user of the current game status.
+     * @param error the status message to display
+     */ 
     public void setStatus(String status) 
     {
         m_ui.setStatus(status);
     }
     
-    public void setGameOver(boolean gameOver)
+    /**
+     * Set the game over status for this display to <code>true</code>.
+     */
+    public void setGameOver()
     {
-        m_ui.setGameOver(gameOver);
+        m_ui.setGameOver();
     }
     
+    
+    /**
+     * Ask the user interface for this display to process a play and zero or more captures.
+     * 
+     * @param start <code>Territory</code> where the play began
+     * @param end <code>Territory</code> where the play ended
+     * @param captured <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
+     */
     public void performPlay(Territory start, Territory end, Collection<Territory> captured)
-    {   m_ui.performPlay(start,end,captured);
-        //m_ui.repaintGridSquare(start);
-        //m_ui.repaintGridSquare(end);
+    {   
+    	m_ui.performPlay(start,end,captured);
     }
 
 }

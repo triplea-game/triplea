@@ -60,7 +60,7 @@ public class EndTurnDelegate extends BaseDelegate
         //    The display object can send a message to all UIs.
         IKingsTableDisplay display = (IKingsTableDisplay) m_bridge.getDisplayChannelBroadcaster();
         display.setStatus(status);
-        display.setGameOver(true);
+        display.setGameOver();
     }
     
     
