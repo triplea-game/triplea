@@ -98,6 +98,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                     Territory other = m_data.getMap().getTerritoryFromCoordinates(endX,endY-2);
                     Unit unit = (Unit) above.getUnits().getUnits().toArray()[0];
                     
+                    /*
                     // Can the king be captured?
                     if (unit.getType().getName().equals("king"))
                     {
@@ -115,7 +116,31 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                         {    
                             captured.add(above);
                         }
-                    }
+                    }*/
+                    // Can the king be captured?
+                    if (unit.getType().getName().equals("king"))
+                    {
+                        Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
+                        Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
+
+                        if (other != null  &&  other_above != null  &&  other_below != null)                                 
+                        {    
+                            TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
+                            TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
+                            TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
+                            
+                            if (((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
+                            		((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
+                            		((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
+                            {
+                            	System.out.println(ta_other_below);
+                            	if (ta_other_below != null)
+                            		System.out.println(ta_other_below.isKingsSquare());
+
+                            	captured.add(above);
+                            }
+                        }
+                    }                     
                     // Can a pawn be captured?
                     else 
                     {
@@ -146,6 +171,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                     Territory other = m_data.getMap().getTerritoryFromCoordinates(endX,endY+2);
                     Unit unit = (Unit) below.getUnits().getUnits().toArray()[0];
                     
+                    /*
                     // Can the king be captured?
                     if (unit.getType().getName().equals("king"))
                     {
@@ -162,6 +188,30 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                         {
                             captured.add(below);
                         }                        
+                    } */
+                    // Can the king be captured?
+                    if (unit.getType().getName().equals("king"))
+                    {
+                        Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
+                        Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
+
+                        if (other != null  &&  other_above != null  &&  other_below != null)                                 
+                        {    
+                            TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
+                            TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
+                            TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
+                            
+                            if (((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
+                            		((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
+                            		((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
+                            {
+                            	System.out.println(ta_other_below);
+                            	if (ta_other_below != null)
+                            		System.out.println(ta_other_below.isKingsSquare());
+
+                            	captured.add(below);
+                            }
+                        }
                     } 
                     // Can a pawn be captured?
                     else 
@@ -193,6 +243,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                     Territory other = m_data.getMap().getTerritoryFromCoordinates(endX-2,endY);
                     Unit unit = (Unit) left.getUnits().getUnits().toArray()[0];
                     
+                    /*
                     // Can the king be captured?
                     if (unit.getType().getName().equals("king"))
                     {
@@ -208,6 +259,30 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                                 ((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
                         {    
                             captured.add(left);
+                        }
+                    } */
+                    // Can the king be captured?
+                    if (unit.getType().getName().equals("king"))
+                    {
+                        Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
+                        Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
+
+                        if (other != null  &&  other_above != null  &&  other_below != null)                                 
+                        {    
+                            TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
+                            TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
+                            TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
+                            
+                            if (((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
+                            		((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
+                            		((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
+                            {
+                            	System.out.println(ta_other_below);
+                            	if (ta_other_below != null)
+                            		System.out.println(ta_other_below.isKingsSquare());
+
+                            	captured.add(left);
+                            }
                         }
                     } 
                     // Can a pawn be captured?
@@ -246,19 +321,23 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                     {
                         Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
                         Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
-                        TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
-                        TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
-                        TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
-                        System.out.println(ta_other_below);
-                        if (ta_other_below != null)
-                            System.out.println(ta_other_below.isKingsSquare());
 
-                        if (other != null  &&  other_above != null  &&  other_below != null  &&  
-                                ((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
-                                ((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
-                                ((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))                            
+                        if (other != null  &&  other_above != null  &&  other_below != null)                                 
                         {    
-                            captured.add(right);
+                            TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
+                            TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
+                            TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
+                            
+                            if (((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
+                            		((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
+                            		((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
+                            {
+                            	System.out.println(ta_other_below);
+                            	if (ta_other_below != null)
+                            		System.out.println(ta_other_below.isKingsSquare());
+
+                            	captured.add(right);
+                            }
                         }
                     } 
                     // Can a pawn be captured?

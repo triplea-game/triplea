@@ -27,6 +27,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.kingstable.player.BetterAI;
 import games.strategy.kingstable.player.IKingsTablePlayer;
 import games.strategy.kingstable.player.KingsTablePlayer;
 import games.strategy.kingstable.player.RandomAI;
@@ -50,7 +51,8 @@ public class KingsTable implements IGameLoader
     
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-    
+    private static final String BETTER_COMPUTER_PLAYER_TYPE = "Better AI";
+        
     /**
      * @see IGameLoader.createPlayers(playerNames)
      */
@@ -72,6 +74,11 @@ public class KingsTable implements IGameLoader
                 RandomAI ai = new RandomAI(name);
                 players.add(ai);
             }
+            else if (type.equals(BETTER_COMPUTER_PLAYER_TYPE)) 
+            {
+                BetterAI ai = new BetterAI(name);
+                players.add(ai);
+            }
             else
             {
                 throw new IllegalStateException("Player type not recognized:" + type);
@@ -86,7 +93,7 @@ public class KingsTable implements IGameLoader
     public String[] getServerPlayerTypes()
     {
         return new String[]
-        {HUMAN_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
+        {HUMAN_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE, BETTER_COMPUTER_PLAYER_TYPE};
             
     }
 

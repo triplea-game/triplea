@@ -209,7 +209,8 @@ public class MapPanel extends JComponent implements MouseListener
 
     	// The waitForPlay method is waiting for mouse input.
     	//    Let it know that we have processed mouse input.
-    	m_waiting.countDown();   	
+    	if (m_waiting!=null)
+    		m_waiting.countDown();   	
     }
     
     
