@@ -1,11 +1,14 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.*;
 
 import javax.swing.*;
@@ -193,20 +196,69 @@ public class GameSelectorPanel extends JPanel implements Observer
     
     private void selectGameFile(boolean saved)
     {
-        JFileChooser fileChooser;
-        if(saved)
-            fileChooser = SaveGameFileChooser.getInstance();
+        // For some strange reason, 
+        //    the only way to get a Mac OS X native-style file dialog
+        //    is to use an AWT FileDialog instead of a Swing JDialog
+        if(GameRunner.isMac())
+        {
+            FileDialog fileDialog = new FileDialog(MainFrame.getInstance());
+            fileDialog.setMode(FileDialog.LOAD);
+            if (saved)
+            {
+                SaveGameFileChooser.ensureDefaultDirExists();
+                fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
+                fileDialog.setFilenameFilter(new FilenameFilter(){
+                   public boolean accept(File dir, String name)
+                   {    // the extension should be .tsvg, but find svg extensions as well
+                       return name.endsWith(".tsvg") || name.endsWith(".svg");
+                   }
+                });
+            }
+            else
+            {
+                fileDialog.setDirectory(NewGameFileChooser.DEFAULT_DIRECTORY.getPath());
+                fileDialog.setFilenameFilter(new FilenameFilter(){
+                    public boolean accept(File dir, String name)
+                    {   
+                        return name.endsWith(".xml") || name.endsWith(".txml");
+                    }
+                 });
+            }
+                        
+            fileDialog.setVisible(true);
+            
+            String fileName = fileDialog.getFile();
+            String dirName = fileDialog.getDirectory();
+            
+            if (fileName==null)
+                return;
+            else
+            {
+                File f = new File(dirName, fileName);
+                m_model.load(f, this);
+            }
+            
+        }
+        
+        // Non-Mac platforms should use the normal Swing JFileChooser
         else
-            fileChooser = NewGameFileChooser.getInstance();
+        {
+            JFileChooser fileChooser;
+            if(saved)
+                fileChooser = SaveGameFileChooser.getInstance();
+            else
+                fileChooser = NewGameFileChooser.getInstance();
+
+
+            int rVal = fileChooser.showOpenDialog(JOptionPane.getFrameForComponent(this));
+
+
+            if(rVal != JFileChooser.APPROVE_OPTION)
+                return;
+            
+            m_model.load(fileChooser.getSelectedFile(), this);
+        }
         
-        
-        int rVal = fileChooser.showOpenDialog(JOptionPane.getFrameForComponent(this));
-        
-        
-        if(rVal != JFileChooser.APPROVE_OPTION)
-            return;
-        
-        m_model.load(fileChooser.getSelectedFile(), this);
     }
     
     

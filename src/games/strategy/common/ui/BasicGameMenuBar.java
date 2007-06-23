@@ -17,9 +17,11 @@ import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.IServerMessenger;
 
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FilenameFilter;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -306,39 +308,75 @@ public class BasicGameMenuBar extends JMenuBar
      */
     protected void addSaveMenu(JMenu parent)
     {
-        // menuFileSave = new JMenuItem("Save", KeyEvent.VK_S);
         JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
         {
             public void actionPerformed(ActionEvent e)
-            {               
-                JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-
-                int rVal = fileChooser.showSaveDialog(m_frame);
-                if (rVal == JFileChooser.APPROVE_OPTION)
+            { 
+                // For some strange reason, 
+                //    the only way to get a Mac OS X native-style file dialog
+                //    is to use an AWT FileDialog instead of a Swing JDialog
+                if(GameRunner.isMac())
                 {
-                    File f = fileChooser.getSelectedFile();
-
-                    //A small warning so users will not over-write a file,
-                    // added by NeKromancer
-                    if (f.exists())
-                    {
-                        int choice = JOptionPane.showConfirmDialog(m_frame,
-                                "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
-                                JOptionPane.WARNING_MESSAGE);
-                        if (choice != JOptionPane.OK_OPTION)
-                        {
-                            return;
-                        }
-                    }//end if exists
-
-                    if (!f.getName().toLowerCase().endsWith(".tsvg"))
-                    {
-                        f = new File(f.getParent(), f.getName() + ".tsvg");
-                    }
-
+                    FileDialog fileDialog = new FileDialog(m_frame);
+                    fileDialog.setMode(FileDialog.SAVE);
+                    SaveGameFileChooser.ensureDefaultDirExists();
+                    fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
+                    fileDialog.setFilenameFilter(new FilenameFilter(){
+                       public boolean accept(File dir, String name)
+                       {    // the extension should be .tsvg, but find svg extensions as well
+                           return name.endsWith(".tsvg") || name.endsWith(".svg");
+                       }
+                    });
                     
-                    getGame().saveGame(f);                            
-                    JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+                    fileDialog.setVisible(true);
+                    
+                    
+                    String fileName = fileDialog.getFile();
+                    String dirName = fileDialog.getDirectory();
+                    
+                    if (fileName==null)
+                        return;
+                    else
+                    {
+                        if (!fileName.endsWith(".tsvg"))
+                            fileName += ".tsvg";
+                        File f = new File(dirName, fileName);
+                        getGame().saveGame(f);                            
+                        JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+                
+                // Non-Mac platforms should use the normal Swing JFileChooser
+                else
+                {
+                    JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+
+                    int rVal = fileChooser.showSaveDialog(m_frame);
+                    if (rVal == JFileChooser.APPROVE_OPTION)
+                    {
+                        File f = fileChooser.getSelectedFile();
+
+                        //A small warning so users will not over-write a file,
+                        // added by NeKromancer
+                        if (f.exists())
+                        {
+                            int choice = JOptionPane.showConfirmDialog(m_frame,
+                                    "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.WARNING_MESSAGE);
+                            if (choice != JOptionPane.OK_OPTION)
+                            {
+                                return;
+                            }
+                        }//end if exists
+
+                        if (!f.getName().toLowerCase().endsWith(".tsvg"))
+                        {
+                            f = new File(f.getParent(), f.getName() + ".tsvg");
+                            getGame().saveGame(f);                            
+                            JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                    
                 }
 
             }
