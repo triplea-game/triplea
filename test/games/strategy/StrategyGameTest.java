@@ -33,6 +33,7 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(games.strategy.util.IntegerMapTest.class);
 		suite.addTestSuite(games.strategy.util.MatchTest.class);
 		suite.addTestSuite(games.strategy.engine.xml.ParserTest.class);
+		suite.addTestSuite(games.strategy.engine.data.AllianceTrackerTest.class);
 		suite.addTestSuite(games.strategy.engine.data.MapTest.class);
 		suite.addTestSuite(games.strategy.engine.data.ChangeTest.class);
 		suite.addTestSuite(games.strategy.engine.data.SerializationTest.class);

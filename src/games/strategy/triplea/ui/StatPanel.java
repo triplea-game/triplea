@@ -141,7 +141,7 @@ public class StatPanel extends JPanel
      */
     public Collection<String> getAlliances()
     {
-        Iterator allAlliances = m_data.getAllianceTracker().getAliances().iterator();
+        Iterator allAlliances = m_data.getAllianceTracker().getAlliances().iterator();
         //order the alliances use a Tree Set
         Collection<String> rVal = new TreeSet<String>();
 
