@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Battleship Row" version="0.1.5"/>
+	<info name="Battleship Row" version="0.2"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -135,6 +135,11 @@
 	    <territory name="West Panama Sea Zone" water="true" />
 	    <territory name="West Spain Sea Zone" water="true" />
 	    <territory name="West US Sea Zone" water="true" />
+	    <territory name="Gulf of Mexico Sea Zone" water="true" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="West US" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="Mexico" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="East US Sea Zone" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="Carribean Sea Zone" />
 	    <connection t1="East Canada Sea Zone" t2="East Canada" />
 	    <connection t1="East Canada Sea Zone" t2="North Sea Zone" />
 	    <connection t1="West Spain Sea Zone" t2="East Canada Sea Zone" />

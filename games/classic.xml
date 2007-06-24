@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Classic" version="1.5"/>
+	<info name="Classic" version="1.6"/>
 	
 	<loader javaClass="games.strategy.triplea.TripleA"/>
 	
@@ -97,7 +97,6 @@
 	    <territory name="East Pacific Sea Zone" water="true" />
 	    <territory name="East US Sea Zone" water="true" />
 	    <territory name="French Indo China Sea Zone" water="true" />
-	    <territory name="Gulf of Mexico Sea Zone" water="true" />
 	    <territory name="Hawaii Sea Zone" water="true" />
 	    <territory name="Indian Ocean Sea Zone" water="true" />
 	    <territory name="Japan Sea Zone" water="true" />
@@ -136,6 +135,11 @@
 	    <territory name="West Panama Sea Zone" water="true" />
 	    <territory name="West Spain Sea Zone" water="true" />
 	    <territory name="West US Sea Zone" water="true" />
+	    <territory name="Gulf of Mexico Sea Zone" water="true" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="West US" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="Mexico" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="East US Sea Zone" />
+	    <connection t1="Gulf of Mexico Sea Zone" t2="Carribean Sea Zone" />
 	    <connection t1="East Canada Sea Zone" t2="East Canada" />
 	    <connection t1="East Canada Sea Zone" t2="North Sea Zone" />
 	    <connection t1="West Spain Sea Zone" t2="East Canada Sea Zone" />
@@ -144,9 +148,6 @@
 	    <connection t1="East Canada Sea Zone" t2="West Canada" />
 	    <connection t1="East Canada" t2="East US" />
 	    <connection t1="East US" t2="East US Sea Zone" />
-	    <connection t1="East US Sea Zone" t2="Gulf of Mexico Sea Zone" />
-	    <connection t1="Gulf of Mexico Sea Zone" t2="Carribean Sea Zone" />
-	    <connection t1="West US" t2="Gulf of Mexico Sea Zone" />
 	    <connection t1="Carribean Sea Zone" t2="East US Sea Zone" />
 	    <connection t1="Carribean Sea Zone" t2="North Atlantic Sea Zone" />
 	    <connection t1="Carribean Sea Zone" t2="North Brazil Sea Zone" />
