@@ -1,3 +1,5 @@
+* four if by sea turn order changed (straha, rodthegod)
+
 * add attack/defense/movement to production panel (gansito)
 
 * move test classes to test directory (sgb)
