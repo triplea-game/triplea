@@ -8,7 +8,7 @@
 
 
 
-	<info name="4 If By Sea" version="0.6"/>
+	<info name="4 If By Sea" version="0.7"/>
 
 	
 
@@ -944,7 +944,7 @@
 
 		<delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
 
-                <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+        <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
 
 		<delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
 
@@ -961,30 +961,30 @@
 		<sequence>
 
 			<step name="gameInitDelegate" delegate="initDelegate"/>
+			
+			
 
+			<step name="russianTech" delegate="tech" player="Russians"/>
 
+            <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
 
-			<step name="britishTech" delegate="tech" player="British"/>
+			<step name="russianPurchase" delegate="purchase" player="Russians"/>
 
-                        <step name="britishTechActivation" delegate="tech_activation" player="British"/>
+			<step name="russianCombatMove" delegate="move" player="Russians"/>
 
-			<step name="britishPurchase" delegate="purchase" player="British"/>
+			<step name="russianBattle" delegate="battle" player="Russians"/>
 
-			<step name="britishCombatMove" delegate="move" player="British"/>
+			<step name="russianNonCombatMove" delegate="move" player="Russians"/>
 
-			<step name="britishBattle" delegate="battle" player="British"/>
+			<step name="russianPlace" delegate="place" player="Russians"/>
 
-			<step name="britishNonCombatMove" delegate="move" player="British"/>
-
-			<step name="britishPlace" delegate="place" player="British"/>
-
-			<step name="britishEndTurn" delegate="endTurn" player="British"/>
+			<step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
 
 
 			<step name="japaneseTech" delegate="tech" player="Japanese"/>
 
-                        <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
+            <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
 
 			<step name="japanesePurchase" delegate="purchase" player="Japanese"/>
 
@@ -1002,7 +1002,7 @@
 
 			<step name="germanTech" delegate="tech" player="Germans"/>
 
-                        <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
+            <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
 
 			<step name="germanPurchase" delegate="purchase" player="Germans"/>
 
@@ -1017,22 +1017,22 @@
 			<step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
 
+			<step name="britishTech" delegate="tech" player="British"/>
 
-			<step name="russianTech" delegate="tech" player="Russians"/>
+            <step name="britishTechActivation" delegate="tech_activation" player="British"/>
 
-                        <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
+			<step name="britishPurchase" delegate="purchase" player="British"/>
 
-			<step name="russianPurchase" delegate="purchase" player="Russians"/>
+			<step name="britishCombatMove" delegate="move" player="British"/>
 
-			<step name="russianCombatMove" delegate="move" player="Russians"/>
+			<step name="britishBattle" delegate="battle" player="British"/>
 
-			<step name="russianBattle" delegate="battle" player="Russians"/>
+			<step name="britishNonCombatMove" delegate="move" player="British"/>
 
-			<step name="russianNonCombatMove" delegate="move" player="Russians"/>
+			<step name="britishPlace" delegate="place" player="British"/>
 
-			<step name="russianPlace" delegate="place" player="Russians"/>
+			<step name="britishEndTurn" delegate="endTurn" player="British"/>
 
-			<step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
 
 
