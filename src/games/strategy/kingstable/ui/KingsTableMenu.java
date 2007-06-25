@@ -29,7 +29,7 @@ import javax.swing.JScrollPane;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class KingsTableMenu extends BasicGameMenuBar
+public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 {
 
     public KingsTableMenu(KingsTableFrame frame) 

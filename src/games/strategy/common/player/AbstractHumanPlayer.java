@@ -21,9 +21,9 @@ import games.strategy.common.ui.MainGameFrame;
  * @author Lane Schwartz
  *
  */
-public abstract class AbstractHumanPlayer extends AbstractBasePlayer
+public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame> extends AbstractBasePlayer
 {
-    protected MainGameFrame m_ui;
+    protected CustomGameFrame m_ui;
     
     /** 
      * @param name - the name of the player.
@@ -35,7 +35,7 @@ public abstract class AbstractHumanPlayer extends AbstractBasePlayer
 
     public abstract void start(String stepName);
     
-    public void setFrame(MainGameFrame frame)
+    public final void setFrame(CustomGameFrame frame)
     {   
         m_ui = frame;
     }

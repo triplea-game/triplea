@@ -20,12 +20,12 @@
 
 package games.strategy.triplea;
 
+import games.strategy.common.player.AbstractHumanPlayer;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -60,54 +60,24 @@ import java.util.Map;
  * @author Sean Bridges
  * @version 1.0
  */
-public class TripleAPlayer implements IGamePlayer, ITripleaPlayer
+public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleaPlayer
 {
-    private final String m_name;
-
-    private PlayerID m_id;
-
-    private TripleAFrame m_ui;
-
-    private IPlayerBridge m_bridge;
-
     /** Creates new TripleAPlayer */
     public TripleAPlayer(String name)
     {
-        m_name = name;
-    }
-
-    public void setFrame(TripleAFrame frame)
-    {
-        m_ui = frame;
-    }
-
-    public String getName()
-    {
-        return m_name;
+        super(name);
     }
 
     public void reportError(String error)
     {
         m_ui.notifyError(error);
     }
-
     
     public void reportMessage(String message)
     {
         m_ui.notifyMessage(message);
     }
-    
-    public PlayerID getID()
-    {
-        return m_id;
-    }
-
-    public void initialize(IPlayerBridge bridge, PlayerID id)
-    {
-        m_bridge = bridge;
-        m_id = id;
-    }
-
+ 
     public void start(String name)
     {
         if (name.endsWith("Bid"))

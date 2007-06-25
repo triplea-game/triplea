@@ -39,11 +39,11 @@ import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 
-public class BasicGameMenuBar extends JMenuBar
+public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar
 {
-    protected final MainGameFrame m_frame;
+    protected final CustomGameFrame m_frame;
     
-    public BasicGameMenuBar(MainGameFrame frame) 
+    public BasicGameMenuBar(CustomGameFrame frame) 
     {
         m_frame = frame;
         createFileMenu(this);
@@ -339,6 +339,11 @@ public class BasicGameMenuBar extends JMenuBar
                         if (!fileName.endsWith(".tsvg"))
                             fileName += ".tsvg";
                         File f = new File(dirName, fileName);
+                        
+                        // If the user selects a filename that already exists,
+                        //    the AWT Dialog on Mac OS X will ask the user for confirmation
+                        //    so, we don't need to explicitly ask user if they want to overwrite the old file
+                        
                         getGame().saveGame(f);                            
                         JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
                     }

@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
@@ -55,7 +56,7 @@ import javax.swing.border.*;
  * 
  * Main frame for the triple a game
  */
-public class TripleAFrame extends JFrame
+public class TripleAFrame extends MainGameFrame //extends JFrame
 {
     private GameData m_data;
     private IGame m_game;
@@ -354,7 +355,7 @@ public class TripleAFrame extends JFrame
 
     }
     
-    void shutdown()
+    public void shutdown()
     {
         int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
         if(rVal != JOptionPane.OK_OPTION)
@@ -363,7 +364,7 @@ public class TripleAFrame extends JFrame
         System.exit(0);
     }
     
-    void leaveGame()
+    public void leaveGame()
     {
         int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit" , JOptionPane.YES_NO_OPTION);
         if(rVal != JOptionPane.OK_OPTION)

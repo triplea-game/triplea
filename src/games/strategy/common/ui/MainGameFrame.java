@@ -16,9 +16,7 @@ package games.strategy.common.ui;
 
 import javax.swing.JFrame;
 
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGame;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
 
 /**
  * 
@@ -40,6 +38,6 @@ public abstract class MainGameFrame extends JFrame
     public abstract void leaveGame();
     public abstract void shutdown();
     
-    public abstract IPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge);
+    //public abstract IPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge);
     public abstract void notifyError(String error);
 }

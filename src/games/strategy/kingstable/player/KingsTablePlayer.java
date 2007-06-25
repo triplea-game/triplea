@@ -25,7 +25,7 @@ import games.strategy.kingstable.ui.PlayData;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class KingsTablePlayer extends AbstractHumanPlayer implements IKingsTablePlayer
+public class KingsTablePlayer extends AbstractHumanPlayer<KingsTableFrame> implements IKingsTablePlayer
 {
 	
     public KingsTablePlayer(String name)
@@ -37,7 +37,8 @@ public class KingsTablePlayer extends AbstractHumanPlayer implements IKingsTable
     @Override
     public void start(String stepName)
     {
-    	if (m_ui!=null && ((KingsTableFrame)m_ui).isGameOver())
+    	//if (m_ui!=null && ((KingsTableFrame)m_ui).isGameOver())
+        if (m_ui!=null && m_ui.isGameOver())
     		return;
     	
         if (stepName.endsWith("Play"))
