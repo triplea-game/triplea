@@ -16,11 +16,8 @@ package games.puzzle.tictactoe.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.kingstable.attachments.PlayerAttachment;
 
 /**
  * Responsible for initializing a game of King's Table.

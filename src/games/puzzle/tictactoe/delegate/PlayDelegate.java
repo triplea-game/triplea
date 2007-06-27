@@ -16,7 +16,6 @@ package games.puzzle.tictactoe.delegate;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
@@ -28,7 +27,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-//import games.puzzles.tictactoe.attachments.TerritoryAttachment;
 import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 

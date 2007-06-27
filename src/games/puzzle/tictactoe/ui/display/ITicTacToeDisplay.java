@@ -15,8 +15,6 @@
 
 package games.puzzle.tictactoe.ui.display;
 
-import java.util.Collection;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplay;
 

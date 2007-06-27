@@ -22,7 +22,6 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.message.IRemote;
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 
@@ -120,7 +119,7 @@ public class EndTurnDelegate extends BaseDelegate
             if (grid[0][y] != null)
             {   
                 player = grid[0][y].getOwner();
-                if (player != null && player != PlayerID.NULL_PLAYERID) 
+                if (player != null && !player.equals(PlayerID.NULL_PLAYERID)) 
                 {
                     for (int x=0; x<boardWidth; x++) 
                     {
@@ -146,7 +145,7 @@ public class EndTurnDelegate extends BaseDelegate
             if (grid[x][0] != null)
             {   
                 player = grid[x][0].getOwner();
-                if (player != null && player != PlayerID.NULL_PLAYERID) 
+                if (player != null && !player.equals(PlayerID.NULL_PLAYERID)) 
                 {
                     for (int y=0; y<boardHeight; y++)  
                     {
@@ -168,7 +167,7 @@ public class EndTurnDelegate extends BaseDelegate
         
         // Check for diagonal win
         player = grid[0][0].getOwner();
-        if (player != null && player != PlayerID.NULL_PLAYERID) 
+        if (player != null && !player.equals(PlayerID.NULL_PLAYERID)) 
         {
             for (int x=0; x<boardWidth && x<boardHeight; x++) 
             {         
@@ -188,7 +187,7 @@ public class EndTurnDelegate extends BaseDelegate
 
         // Check for diagonal win
         player = grid[0][(boardWidth-1)].getOwner();
-        if (player != null && player != PlayerID.NULL_PLAYERID) 
+        if (player != null && !player.equals(PlayerID.NULL_PLAYERID))
         {
             for (int x=boardWidth-1; x>=0 && x<boardHeight; x--) 
             {          
@@ -212,7 +211,7 @@ public class EndTurnDelegate extends BaseDelegate
             for (int y=0; y<boardHeight; y++) 
             {   
                 player = grid[x][y].getOwner();
-                if (player == null || player == PlayerID.NULL_PLAYERID) 
+                if (player == null || player.equals(PlayerID.NULL_PLAYERID)) 
                 {
                     // Game is not over - no one has won
                     return null;

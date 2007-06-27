@@ -27,7 +27,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-//import games.puzzles.tictactoe.player.BetterAI;
+
 import games.puzzle.tictactoe.player.BetterAI;
 import games.puzzle.tictactoe.player.ITicTacToePlayer;
 import games.puzzle.tictactoe.player.RandomAI;
@@ -35,7 +35,6 @@ import games.puzzle.tictactoe.player.TicTacToePlayer;
 import games.puzzle.tictactoe.ui.TicTacToeFrame;
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 import games.puzzle.tictactoe.ui.display.TicTacToeDisplay;
-//import games.puzzles.tictactoe.player.RandomAI;
 
 
 /**
@@ -53,7 +52,9 @@ public class TicTacToe implements IGameLoader
     
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-    private static final String BETTER_COMPUTER_PLAYER_TYPE = "Better AI";
+    private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
+    private static final String ALPHABETA_COMPUTER_PLAYER_TYPE = "αβ AI";
+    
         
     /**
      * @see IGameLoader.createPlayers(playerNames)
@@ -76,9 +77,14 @@ public class TicTacToe implements IGameLoader
                 RandomAI ai = new RandomAI(name);
                 players.add(ai);
             }
-            else if (type.equals(BETTER_COMPUTER_PLAYER_TYPE)) 
+            else if (type.equals(MINIMAX_COMPUTER_PLAYER_TYPE)) 
             {
-                BetterAI ai = new BetterAI(name);
+                BetterAI ai = new BetterAI(name, BetterAI.Algorithm.MINIMAX);
+                players.add(ai);
+            }
+            else if (type.equals(ALPHABETA_COMPUTER_PLAYER_TYPE)) 
+            {
+                BetterAI ai = new BetterAI(name, BetterAI.Algorithm.ALPHABETA);
                 players.add(ai);
             }
             else
@@ -95,7 +101,7 @@ public class TicTacToe implements IGameLoader
     public String[] getServerPlayerTypes()
     {
         return new String[]
-        {HUMAN_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE, BETTER_COMPUTER_PLAYER_TYPE};
+        {HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
             
     }
 
