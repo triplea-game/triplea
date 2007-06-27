@@ -49,7 +49,6 @@ public class RandomAI extends AbstractAI
         
         Random generator = new Random();
         int trymeStart;
-        int trymeEnd;
         String error;
         
         // Get the play delegate
