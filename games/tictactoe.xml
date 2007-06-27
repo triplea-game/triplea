@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<!DOCTYPE game SYSTEM "game.dtd">
+
+<game>
+
+	<info name="Tic Tac Toe" version="0.1"/>
+	
+	<loader javaClass="games.puzzle.tictactoe.TicTacToe"/>
+	
+	<map>
+		<grid type="square" name="main_board" x="3" y="3"/>
+	</map>
+	
+	
+	<playerList>
+		<player name="X" optional="false"/>
+		<player name="O" optional="false"/>
+	</playerList>
+	
+	
+	<unitList>
+		<unit name="ticmark"/>
+	</unitList>
+
+
+	<gamePlay>
+		<delegate name="play" javaClass="games.puzzle.tictactoe.delegate.PlayDelegate" display="Play"/>
+		<delegate name="endTurn" javaClass="games.puzzle.tictactoe.delegate.EndTurnDelegate" display="Checking for a winner"/>
+				
+		<sequence>
+
+			<step name="xPlay" delegate="play" player="X"/>
+			<step name="xEndTurn" delegate="endTurn"/>
+
+			<step name="oPlay" delegate="play" player="O"/>
+			<step name="oEndTurn" delegate="endTurn"/>
+
+		</sequence>
+	</gamePlay>
+
+
+	<propertyList>
+		<property name="mapName" value="tictactoe" editable="false" />		
+	</propertyList>
+	
+</game>
