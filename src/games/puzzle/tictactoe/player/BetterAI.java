@@ -306,6 +306,11 @@ public class BetterAI extends AbstractAI {
             
 		}
         
+        public boolean cutoffTest()
+        {
+            return gameIsOver();
+        }
+        
         public String toString() 
         {
             String string = "";

@@ -40,6 +40,64 @@ public class AIAlgorithm
 
     }
     
+    
+
+    private static <Play> Pair<Float,Play> maxValue(GameState<Play> state, float alpha, float beta)
+    {
+        float value = Float.NEGATIVE_INFINITY;
+        Play bestMove = null;
+        
+        for (GameState<Play> s : state.successors())
+        {   Play a = s.getMove();
+            float minValue;
+            if (s.cutoffTest())
+                minValue = s.getUtility();
+            else
+                minValue = minValue(s, alpha, beta).getFirst();
+            if (minValue > value)
+            {
+                value = minValue;
+                bestMove = a;
+            }
+            if (value >= beta)
+                new Pair<Float,Play>(value,bestMove);
+            if (value > alpha)
+                alpha = value;
+        }
+        
+        return new Pair<Float,Play>(value,bestMove);
+    }
+    
+    
+    private static <Play> Pair<Float,Play> minValue(GameState<Play> state, float alpha, float beta)
+    {
+        float value = Float.POSITIVE_INFINITY;
+        Play bestMove = null;
+        
+        for (GameState<Play> s : state.successors())
+        {   Play a = s.getMove();
+            float maxValue;
+            if (s.cutoffTest())
+                maxValue = s.getUtility();
+            else
+                maxValue = maxValue(s, alpha, beta).getFirst();
+            if (maxValue < value)
+            {   
+                value = maxValue;
+                bestMove = a;
+            }
+            if (value <= alpha)
+                new Pair<Float,Play>(value,bestMove);
+            if (value < beta)
+                beta = value;
+        }
+        
+        return new Pair<Float,Play>(value,bestMove);
+    }
+    
+    
+    
+    
     /**
      * Find the optimal next play to perform from the given game state, 
      * using the minimax algorithm.
@@ -111,58 +169,6 @@ public class AIAlgorithm
     
     
     
-    private static <Play> Pair<Float,Play> maxValue(GameState<Play> state, float alpha, float beta)
-    {
-        float value = Float.NEGATIVE_INFINITY;
-        Play bestMove = null;
-        
-        for (GameState<Play> s : state.successors())
-        {   Play a = s.getMove();
-            float minValue;
-            if (s.gameIsOver())
-                minValue = s.getUtility();
-            else
-                minValue = minValue(s, alpha, beta).getFirst();
-            if (minValue > value)
-            {
-                value = minValue;
-                bestMove = a;
-            }
-            if (value >= beta)
-                new Pair<Float,Play>(value,bestMove);
-            if (value > alpha)
-                alpha = value;
-        }
-        
-        return new Pair<Float,Play>(value,bestMove);
-    }
-    
-    
-    private static <Play> Pair<Float,Play> minValue(GameState<Play> state, float alpha, float beta)
-    {
-        float value = Float.POSITIVE_INFINITY;
-        Play bestMove = null;
-        
-        for (GameState<Play> s : state.successors())
-        {   Play a = s.getMove();
-            float maxValue;
-            if (s.gameIsOver())
-                maxValue = s.getUtility();
-            else
-                maxValue = maxValue(s, alpha, beta).getFirst();
-            if (maxValue < value)
-            {   
-                value = maxValue;
-                bestMove = a;
-            }
-            if (value <= alpha)
-                new Pair<Float,Play>(value,bestMove);
-            if (value < beta)
-                beta = value;
-        }
-        
-        return new Pair<Float,Play>(value,bestMove);
-    }
     
 
     static class Pair<First,Second> {
