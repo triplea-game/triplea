@@ -64,8 +64,13 @@
 	    
 	    <attatchment name="playerAttachment" attatchTo="White" javaClass="games.strategy.kingstable.attachments.PlayerAttachment" type="player">
             <option name="needsKing" value="true"/>
-        </attatchment>   
-
+            <option name="αβSearchDepth" value="2"/>
+        </attatchment>
+           
+        <attatchment name="playerAttachment" attatchTo="Black" javaClass="games.strategy.kingstable.attachments.PlayerAttachment" type="player">
+            <option name="αβSearchDepth" value="2"/>
+        </attatchment>
+        
 	</attatchmentList>
 
 	<initialize>

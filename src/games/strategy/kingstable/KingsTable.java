@@ -51,7 +51,8 @@ public class KingsTable implements IGameLoader
     
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-    private static final String BETTER_COMPUTER_PLAYER_TYPE = "Better AI";
+    private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
+    private static final String ALPHABETA_COMPUTER_PLAYER_TYPE = "αβ AI";
         
     /**
      * @see IGameLoader.createPlayers(playerNames)
@@ -74,9 +75,14 @@ public class KingsTable implements IGameLoader
                 RandomAI ai = new RandomAI(name);
                 players.add(ai);
             }
-            else if (type.equals(BETTER_COMPUTER_PLAYER_TYPE)) 
+            else if (type.equals(MINIMAX_COMPUTER_PLAYER_TYPE)) 
             {
-                BetterAI ai = new BetterAI(name);
+                BetterAI ai = new BetterAI(name, BetterAI.Algorithm.MINIMAX);
+                players.add(ai);
+            }
+            else if (type.equals(ALPHABETA_COMPUTER_PLAYER_TYPE)) 
+            {
+                BetterAI ai = new BetterAI(name, BetterAI.Algorithm.ALPHABETA);
                 players.add(ai);
             }
             else
@@ -93,7 +99,7 @@ public class KingsTable implements IGameLoader
     public String[] getServerPlayerTypes()
     {
         return new String[]
-        {HUMAN_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE, BETTER_COMPUTER_PLAYER_TYPE};
+            {HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
             
     }
 
