@@ -18,10 +18,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 
 /**
- * Implementing class is responsible for performing a turn in a Kings Table game.
+ * Implementing class is responsible for performing a turn in a Tic Tac Toe game.
  *
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-19 13:39:15 -0500 (Tue, 19 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public interface IPlayDelegate extends IRemote
 {

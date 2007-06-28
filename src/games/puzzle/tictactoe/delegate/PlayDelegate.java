@@ -31,10 +31,10 @@ import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 
 /**
- * Responsible for performing a move in a game of King's Table.
+ * Responsible for performing a move in a game of Tic Tac Toe.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-21 13:34:11 -0500 (Thu, 21 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 {
@@ -51,10 +51,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     }
 
     /**
-     * Attempt to move a piece from the start <code>Territory</code> to the end <code>Territory</code>.
-     * 
-     * @param start <code>Territory</code> where the move should start
-     * @param end <code>Territory</code> where the move should end
+     * Attempt to play.
+     *  
+     * @param play <code>Territory</code> where the play should occur
      */
     public String play(Territory play)
     {   
@@ -69,10 +68,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 
     
     /**
-     * Check to see if moving a piece from the start <code>Territory</code> to the end <code>Territory</code> is a valid play.
+     * Check to see if a play is valid.
      * 
-     * @param start <code>Territory</code> where the move should start
-     * @param end <code>Territory</code> where the move should end
+     * @param play <code>Territory</code> where the play should occur
      */
     private String isValidPlay(Territory territory)
     {
@@ -84,10 +82,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
    
     
     /**
-     * Move a piece from the start <code>Territory</code> to the end <code>Territory</code>.
+     * Perform a play.
      * 
-     * @param start <code>Territory</code> where the move should start
-     * @param end <code>Territory</code> where the move should end
+     * @param play <code>Territory</code> where the play should occur
      */
     private void performPlay(Territory at, PlayerID player)
     {          

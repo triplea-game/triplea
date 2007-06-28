@@ -17,10 +17,10 @@ package games.puzzle.tictactoe.player;
 import games.strategy.engine.message.IRemote;
 
 /**
- * Empty interface which all King's Table player classes must implement.
+ * Empty interface which all Tic Tac Toe player classes must implement.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-19 13:39:15 -0500 (Tue, 19 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public interface ITicTacToePlayer extends IRemote
 {

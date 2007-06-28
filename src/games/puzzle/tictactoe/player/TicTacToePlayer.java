@@ -20,10 +20,10 @@ import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
 import games.puzzle.tictactoe.ui.TicTacToeFrame;
 
 /**
- * Represents a human player of King's Table.
+ * Represents a human player of Tic Tac Toe.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-25 07:45:36 -0500 (Mon, 25 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class TicTacToePlayer extends AbstractHumanPlayer<TicTacToeFrame> implements ITicTacToePlayer
 {

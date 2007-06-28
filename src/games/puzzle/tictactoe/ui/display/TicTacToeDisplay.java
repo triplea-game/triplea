@@ -19,10 +19,10 @@ import games.strategy.engine.display.IDisplayBridge;
 import games.puzzle.tictactoe.ui.TicTacToeFrame;
 
 /**
- * Display for a King's Table game.
+ * Display for a Tic Tac Toe game.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-19 15:01:50 -0500 (Tue, 19 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class TicTacToeDisplay implements ITicTacToeDisplay
 {

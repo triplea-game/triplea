@@ -20,7 +20,7 @@ import games.strategy.engine.display.IDisplay;
 
 /**
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-19 15:01:50 -0500 (Tue, 19 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public interface ITicTacToeDisplay extends IDisplay
 {

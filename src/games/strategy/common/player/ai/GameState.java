@@ -11,40 +11,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+package games.strategy.common.player.ai;
 
-package games.puzzle.tictactoe.player;
-
-import games.strategy.common.player.AbstractBaseAI;
+import java.util.Collection;
 
 /**
- * Abstract class for a Tic Tac Toe AI agent.
- * 
+ * Abstract class representing game state, for use by AI game algorithms.
+ *
+ * @param <Play> class capable of representing a game play
  * @author Lane Schwartz
  * @version $LastChangedDate$
+ * @see "Chapter 6 of Artificial Intelligence, 2nd ed. by Stuart Russell & Peter Norvig"
  */
-public abstract class AbstractAI extends AbstractBaseAI implements ITicTacToePlayer
+public abstract class GameState<Play>
 {
+    public abstract GameState getSuccessor(Play move);
 
-    public AbstractAI(String name)
-    {
-        super(name);
-    }
-         
-    protected abstract void play();
+    public abstract Play getMove();
 
-    
-    /**
-     * The given phase has started.  Parse the phase name and call the appropiate method.
-     */ 
-    public void start(String stepName)
-    {
-        if (stepName.endsWith("Play"))
-            play();
-    }
-    
-    public final Class<ITicTacToePlayer> getRemotePlayerType()
-    {
-        return ITicTacToePlayer.class;
-    }
+    public abstract Collection<GameState> successors();
+
+    public abstract float getUtility();
+
+    public abstract boolean gameIsOver();
     
 }

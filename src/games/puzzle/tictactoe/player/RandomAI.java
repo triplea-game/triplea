@@ -21,12 +21,12 @@ import java.util.Collection;
 import java.util.Random;
 
 /**
- * AI agent for King's Table.
+ * AI agent for Tic Tac Toe.
  * 
- * Plays by attempting to move a random piece to a random square on the board.
+ * Plays by attempting to play on a random square on the board.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-19 13:39:15 -0500 (Tue, 19 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class RandomAI extends AbstractAI
 {

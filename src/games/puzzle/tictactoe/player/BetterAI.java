@@ -14,6 +14,8 @@
 
 package games.puzzle.tictactoe.player;
 
+import games.strategy.common.player.ai.AIAlgorithm;
+import games.strategy.common.player.ai.GameState;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
@@ -24,6 +26,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+/**
+ * AI player for Tic Tac Toe.
+ * 
+ * Capable of playing using either the minimax algorithm or alpha-beta algorithm.
+ * 
+ * @author Lane Schwartz
+ * @version $LastChangedDate$
+ */
 public class BetterAI extends AbstractAI {
 
 	private int m_xDimension;
@@ -32,9 +42,12 @@ public class BetterAI extends AbstractAI {
     private PlayerID m_opponent;
     private PlayerID m_player;
     
+    /** Algorithms available for use in BetterAI */
     public enum Algorithm { MINIMAX, ALPHABETA }
-        
+    
+    // The algorithm to be used
     private final Algorithm algorithm;
+    
     
 	public BetterAI(String name, Algorithm algorithm)
     {
@@ -65,14 +78,13 @@ public class BetterAI extends AbstractAI {
     
 	protected void play() 
     {
-	    GameState initial_state = getInitialState();
-
-	    Move move;
+	    State initial_state = getInitialState();
+	    Play move;
         
         if (algorithm == Algorithm.MINIMAX)
-            move = minimaxSearch(initial_state);
+            move = AIAlgorithm.minimaxSearch(initial_state);
         else
-            move = alphaBetaSearch(initial_state);
+            move = AIAlgorithm.alphaBetaSearch(initial_state);
 
 	    IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
 	    Territory start = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getX(), move.getY());
@@ -81,163 +93,19 @@ public class BetterAI extends AbstractAI {
 	}
 
 	
-	private GameState getInitialState()
+	private State getInitialState()
 	{
-        return new GameState(m_bridge.getGameData().getMap().getTerritories());
+        return new State(m_bridge.getGameData().getMap().getTerritories());
 	}
 	
 
-    private Collection<GameState> successorStates(GameState state)
-    {
-        Collection<GameState> successors = new ArrayList<GameState>();
-
-        for (int x=0; x<m_xDimension; x++)
-        {
-            for (int y=0; y<m_yDimension; y++)
-            {
-                if (state.get(x, y).equals(PlayerID.NULL_PLAYERID))
-                {
-                    Move play = new Move(x,y);
-                    successors.add(new GameState(play,state));
-                }
-            }
-        }
-    
-        return successors;
-    }
-    
-    
-	private Move alphaBetaSearch(GameState state)
-	{
-	    Pair<Float,Move> m = maxValue(state, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
-	    //System.out.println("score of move is " + m.getFirst());
-	    return m.getSecond();
-
-	}
-	
-	private Move minimaxSearch(GameState state)
-    {
-        Pair<Float,Move> m = maxValue(state);
-        return m.getSecond();
-    }
-    
-    
-    private Pair<Float,Move> maxValue(GameState state)
-    {
-        float value = Float.NEGATIVE_INFINITY;
-        Move bestMove = null;
-
-        for (GameState s : successorStates(state))
-        {   
-            Move a = s.getMove();
-            
-            float minValue;
-            if (s.gameIsOver())
-                minValue = s.getUtility();
-            else
-                minValue = minValue(s).getFirst();
-            
-            
-            if (minValue > value)
-            {
-                value = minValue;
-                bestMove = a;
-            }
-        }
-        
-        return new Pair<Float,Move>(value,bestMove);
-    }
-    
-    
-
-    private Pair<Float,Move> minValue(GameState state)
-    {
-        float value = Float.POSITIVE_INFINITY;
-        Move bestMove = null;
-
-        for (GameState s : successorStates(state))
-        {   
-            Move a = s.getMove();
-            
-            float maxValue;
-            if (s.gameIsOver())
-                maxValue = s.getUtility();
-            else
-                maxValue = maxValue(s).getFirst();
-            
-            if (maxValue < value)
-            {   
-                value = maxValue;
-                bestMove = a;
-            }
-            
-        }
-        
-        return new Pair<Float,Move>(value,bestMove);
-    }
-    
-    
-    
-	private Pair<Float,Move> maxValue(GameState state, float alpha, float beta)
-	{
-		float value = Float.NEGATIVE_INFINITY;
-		Move bestMove = null;
-		
-        for (GameState s : successorStates(state))
-        {   Move a = s.getMove();
-			float minValue;
-            if (s.gameIsOver())
-                minValue = s.getUtility();
-            else
-                minValue = minValue(s, alpha, beta).getFirst();
-			if (minValue > value)
-			{
-				value = minValue;
-				bestMove = a;
-			}
-			if (value >= beta)
-				new Pair<Float,Move>(value,bestMove);
-			if (value > alpha)
-				alpha = value;
-		}
-		
-		return new Pair<Float,Move>(value,bestMove);
-	}
-	
-	
-	private Pair<Float,Move> minValue(GameState state, float alpha, float beta)
-	{
-		float value = Float.POSITIVE_INFINITY;
-		Move bestMove = null;
-		
-        for (GameState s : successorStates(state))
-        {   Move a = s.getMove();
-			float maxValue;
-            if (s.gameIsOver())
-                maxValue = s.getUtility();
-            else
-                maxValue = maxValue(s, alpha, beta).getFirst();
-			if (maxValue < value)
-			{	
-				value = maxValue;
-				bestMove = a;
-			}
-			if (value <= alpha)
-				new Pair<Float,Move>(value,bestMove);
-			if (value < beta)
-				beta = value;
-		}
-		
-		return new Pair<Float,Move>(value,bestMove);
-	}
-	
-	class GameState
+	class State extends GameState<Play>
 	{
 		private HashMap<Integer,PlayerID> squareOwner;
 		private int depth;
-        private Move m_move;
+        private Play m_move;
 	
-        public GameState(Collection<Territory> territories)
+        public State(Collection<Territory> territories)
         {
             depth=0;
             
@@ -250,7 +118,7 @@ public class BetterAI extends AbstractAI {
         }
         
         
-		public GameState(Move move, GameState parentState)
+		private State(Play move, State parentState)
 		{
 			depth = parentState.depth+1;
             m_move = move;
@@ -272,12 +140,36 @@ public class BetterAI extends AbstractAI {
             
 		}
         
-        public Move getMove()
+        public State getSuccessor(Play move)
+        {
+            return new State(move, this);            
+        }
+        
+        public Play getMove()
         {
             return m_move;
         }
+        
+        public Collection<GameState> successors()
+        {
+            Collection<GameState> successors = new ArrayList<GameState>();
+
+            for (int x=0; x<m_xDimension; x++)
+            {
+                for (int y=0; y<m_yDimension; y++)
+                {
+                    if (this.get(x, y).equals(PlayerID.NULL_PLAYERID))
+                    {
+                        Play play = new Play(x,y);
+                        successors.add(new State(play,this));
+                    }
+                }
+            }
+        
+            return successors;
+        }
 		
-		public PlayerID get(int x, int y)
+		private PlayerID get(int x, int y)
 		{
 			return squareOwner.get((m_xDimension*x + y));
 		}
@@ -437,11 +329,12 @@ public class BetterAI extends AbstractAI {
 		
 	}
     
-	class Move {
+	class Play 
+    {
         private int m_x;
         private int m_y;
 		
-		public Move(int x, int y)
+		public Play(int x, int y)
 		{
 			m_x = x;
             m_y = y;
@@ -452,19 +345,5 @@ public class BetterAI extends AbstractAI {
         
         public String toString() { return "(" + m_x + "," + m_y + ")";}
 		
-	}
-	
-	class Pair<First,Second> {
-		private First m_first;
-		private Second m_second;
-		
-		Pair(First first, Second second)
-		{
-			m_first = first;
-			m_second = second;
-		}
-		
-		First getFirst() { return m_first; }
-		Second getSecond() { return m_second; }
 	}
 }

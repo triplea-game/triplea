@@ -38,10 +38,10 @@ import games.puzzle.tictactoe.ui.display.TicTacToeDisplay;
 
 
 /**
- * Main class responsible for a Kings Table game.
+ * Main class responsible for a Tic Tac Toe game.
  *
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-21 13:34:11 -0500 (Thu, 21 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class TicTacToe implements IGameLoader
 {

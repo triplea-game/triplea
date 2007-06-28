@@ -27,7 +27,7 @@ import javax.swing.JScrollPane;
 
 /**
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-25 07:45:36 -0500 (Mon, 25 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class TicTacToeMenu extends BasicGameMenuBar<TicTacToeFrame>
 {

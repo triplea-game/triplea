@@ -26,10 +26,10 @@ import games.strategy.engine.message.IRemote;
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 
 /**
- * Responsible for checking for a winner in a game of King's Table.
+ * Responsible for checking for a winner in a game of Tic Tac Toe.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-19 15:01:50 -0500 (Tue, 19 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class EndTurnDelegate extends BaseDelegate
 {
