@@ -25,6 +25,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.kingstable.attachments.TerritoryAttachment;
@@ -39,13 +40,19 @@ import games.strategy.kingstable.ui.display.IKingsTableDisplay;
  */
 public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 {
+    
+    private Matches matches = null;
+
+    
     /**
      * Called before the delegate will run.
      */
     public void start(IDelegateBridge bridge, GameData gameData)
     {
         super.start(bridge, gameData);
-        
+
+        if (matches==null)
+            matches = new Matches(gameData);
         
         IKingsTableDisplay display = (IKingsTableDisplay) bridge.getDisplayChannelBroadcaster();
         display.setStatus(m_player.getName() + "'s turn");
@@ -88,276 +95,132 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
             int endX = end.getX();
             int endY = end.getY();
 
-            
             // Look above end for a potential capture
-            // This extra set of braces is for bug prevention - it makes sure that the scope of above stays within the braces
+            // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
             { 
-                Territory above = m_data.getMap().getTerritoryFromCoordinates(endX,endY-1);
-                if (above != null  &&  !above.getUnits().isEmpty()  && above.getOwner()!=m_player)
+                Territory possibleCapture = m_data.getMap().getTerritoryFromCoordinates(endX,endY-1);
+                if (matches.eligibleForCapture(possibleCapture, m_player))
                 {   
-                    Territory other = m_data.getMap().getTerritoryFromCoordinates(endX,endY-2);
-                    Unit unit = (Unit) above.getUnits().getUnits().toArray()[0];
+                    // Get the territory to the left of the possible capture
+                    Territory above = m_data.getMap().getTerritoryFromCoordinates(endX,endY-2);
                     
-                    /*
                     // Can the king be captured?
-                    if (unit.getType().getName().equals("king"))
-                    {
+                    if (matches.kingInSquare(possibleCapture))
+                    {   
+                        Territory left = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
+                        Territory right = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
 
-                        Territory other_left = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
-                        Territory other_right = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
-                        TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
-                        TerritoryAttachment ta_other_left = ((TerritoryAttachment)other_left.getAttachment("territoryAttachment"));
-                        TerritoryAttachment ta_other_right = ((TerritoryAttachment)other_right.getAttachment("territoryAttachment"));
-
-                        if (other != null  &&  other_left != null  &&  other_right != null  &&  
-                                ((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
-                                ((!other_left.getUnits().isEmpty()  &&  other_left.getOwner()==m_player)  ||  (ta_other_left!=null && ta_other_left.isKingsSquare()))  &&  
-                                ((!other_right.getUnits().isEmpty()  &&  other_right.getOwner()==m_player)  ||  (ta_other_right!=null && ta_other_right.isKingsSquare())))                           
-                        {    
-                            captured.add(above);
-                        }
-                    }*/
-                    // Can the king be captured?
-                    if (unit.getType().getName().equals("king"))
-                    {
-                        Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
-                        Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
-
-                        if (other != null  &&  other_above != null  &&  other_below != null)                                 
-                        {    
-                            TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
-                            TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
-                            TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
-                            
-                            if (((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
-                            		((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
-                            		((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
-                            {
-                            	System.out.println(ta_other_below);
-                            	if (ta_other_below != null)
-                            		System.out.println(ta_other_below.isKingsSquare());
-
-                            	captured.add(above);
-                            }
-                        }
+                        if (matches.eligibleParticipantsInKingCapture(m_player, above, left, right))
+                            captured.add(possibleCapture);
+                        else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, above))
+                            captured.add(possibleCapture);
+                        
                     }                     
                     // Can a pawn be captured?
-                    else 
+                    else if (matches.eligibleParticipantInPawnCapture(m_player, above))
                     {
-                        if (other != null)
-                        {
-                            if (!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)
-                            {
-                                captured.add(above); 
-                            }
-                            else 
-                            {
-                                TerritoryAttachment ta = (TerritoryAttachment) other.getAttachment("territoryAttachment");
-                                if (ta != null && ta.isKingsExit())
-                                    captured.add(above);
-                            }
-                        }
+                        System.out.println(possibleCapture.getName() + " is captured by " + above.getName() + " " + above.getOwner().getName());
+                        
+                        captured.add(possibleCapture);
                     }
+       
                 }                    
             }   
 
 
             // Look below end for a potential capture
-            // This extra set of braces is for bug prevention - it makes sure that the scope of below stays within the braces
-            {
-                Territory below = m_data.getMap().getTerritoryFromCoordinates(endX,endY+1);
-                if (below != null && below.getUnits().getUnitCount() > 0 && below.getOwner()!=m_player)
-                {
-                    Territory other = m_data.getMap().getTerritoryFromCoordinates(endX,endY+2);
-                    Unit unit = (Unit) below.getUnits().getUnits().toArray()[0];
+            // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
+            { 
+                Territory possibleCapture = m_data.getMap().getTerritoryFromCoordinates(endX,endY+1);
+                if (matches.eligibleForCapture(possibleCapture, m_player))
+                {   
+                    // Get the territory to the left of the possible capture
+                    Territory below = m_data.getMap().getTerritoryFromCoordinates(endX,endY+2);
                     
-                    /*
                     // Can the king be captured?
-                    if (unit.getType().getName().equals("king"))
-                    {
-                        Territory other_left = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
-                        Territory other_right = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
-                        TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
-                        TerritoryAttachment ta_other_left = ((TerritoryAttachment)other_left.getAttachment("territoryAttachment"));
-                        TerritoryAttachment ta_other_right = ((TerritoryAttachment)other_right.getAttachment("territoryAttachment"));
+                    if (matches.kingInSquare(possibleCapture))
+                    {   
+                        Territory left = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
+                        Territory right = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
 
-                        if (other != null  &&  other_left != null  &&  other_right != null  &&  
-                                ((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
-                                ((!other_left.getUnits().isEmpty()  &&  other_left.getOwner()==m_player)  ||  (ta_other_left!=null && ta_other_left.isKingsSquare()))  &&  
-                                ((!other_right.getUnits().isEmpty()  &&  other_right.getOwner()==m_player)  ||  (ta_other_right!=null && ta_other_right.isKingsSquare())))                            
-                        {
-                            captured.add(below);
-                        }                        
-                    } */
-                    // Can the king be captured?
-                    if (unit.getType().getName().equals("king"))
-                    {
-                        Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
-                        Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
-
-                        if (other != null  &&  other_above != null  &&  other_below != null)                                 
-                        {    
-                            TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
-                            TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
-                            TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
-                            
-                            if (((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
-                            		((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
-                            		((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
-                            {
-                            	System.out.println(ta_other_below);
-                            	if (ta_other_below != null)
-                            		System.out.println(ta_other_below.isKingsSquare());
-
-                            	captured.add(below);
-                            }
-                        }
-                    } 
+                        if (matches.eligibleParticipantsInKingCapture(m_player, below, left, right))
+                            captured.add(possibleCapture);
+                        else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, below))
+                            captured.add(possibleCapture);
+                        
+                    }                     
                     // Can a pawn be captured?
-                    else 
+                    else if (matches.eligibleParticipantInPawnCapture(m_player, below))
                     {
-                        if (other != null)
-                        {
-                            if (!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)
-                            {
-                                captured.add(below); 
-                            }
-                            else 
-                            {
-                                TerritoryAttachment ta = (TerritoryAttachment) other.getAttachment("territoryAttachment");
-                                if (ta != null && ta.isKingsExit())
-                                    captured.add(below);
-                            }
-                        }
+                        System.out.println(possibleCapture.getName() + " is captured by " + below.getName() + " " + below.getOwner().getName());
+                        
+                        captured.add(possibleCapture);
                     }
-                }
+       
+                }                    
             }
-
+            
             
             // Look left end for a potential capture
-            // This extra set of braces is for bug prevention - it makes sure that the scope of left stays within the braces            
-            {
-                Territory left = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY);
-                if (left != null && left.getUnits().getUnitCount() > 0 && left.getOwner()!=m_player)
-                {
-                    Territory other = m_data.getMap().getTerritoryFromCoordinates(endX-2,endY);
-                    Unit unit = (Unit) left.getUnits().getUnits().toArray()[0];
+            // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces            
+            { 
+                Territory possibleCapture = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY);
+                if (matches.eligibleForCapture(possibleCapture, m_player))
+                {   
+                    // Get the territory to the left of the possible capture
+                    Territory left = m_data.getMap().getTerritoryFromCoordinates(endX-2,endY);
                     
-                    /*
                     // Can the king be captured?
-                    if (unit.getType().getName().equals("king"))
-                    {
-                        Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
-                        Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
-                        TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
-                        TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
-                        TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
+                    if (matches.kingInSquare(possibleCapture))
+                    {   
+                        Territory above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
+                        Territory below = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
 
-                        if (other != null  &&  other_above != null  &&  other_below != null  &&  
-                                ((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
-                                ((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
-                                ((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
-                        {    
-                            captured.add(left);
-                        }
-                    } */
-                    // Can the king be captured?
-                    if (unit.getType().getName().equals("king"))
-                    {
-                        Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY-1);
-                        Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX-1,endY+1);
-
-                        if (other != null  &&  other_above != null  &&  other_below != null)                                 
-                        {    
-                            TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
-                            TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
-                            TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
-                            
-                            if (((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
-                            		((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
-                            		((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
-                            {
-                            	System.out.println(ta_other_below);
-                            	if (ta_other_below != null)
-                            		System.out.println(ta_other_below.isKingsSquare());
-
-                            	captured.add(left);
-                            }
-                        }
-                    } 
+                        if (matches.eligibleParticipantsInKingCapture(m_player, left, above, below))
+                            captured.add(possibleCapture);
+                        else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, left))
+                            captured.add(possibleCapture);
+                        
+                    }                     
                     // Can a pawn be captured?
-                    else 
-                    {
-                        if (other != null)
-                        {
-                            if (!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)
-                            {
-                                captured.add(left); 
-                            }
-                            else 
-                            {
-                                TerritoryAttachment ta = (TerritoryAttachment) other.getAttachment("territoryAttachment");
-                                if (ta != null && ta.isKingsExit())
-                                    captured.add(left);
-                            }
-                        }
+                    else if (matches.eligibleParticipantInPawnCapture(m_player, left))
+                    {   System.out.println(possibleCapture.getName() + " is captured by " + left.getName() + " " + left.getOwner().getName());
+                        captured.add(possibleCapture);
                     }
-
-                }            
+       
+                }                    
             }
-
+            
             
             // Look right end for a potential capture
-            // This extra set of braces is for bug prevention - it makes sure that the scope of right stays within the braces
-            {
-                Territory right = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY);
-                if (right != null && right.getUnits().getUnitCount() > 0 && right.getOwner()!=m_player)
-                {
-                    Territory other = m_data.getMap().getTerritoryFromCoordinates(endX+2,endY);
-                    Unit unit = (Unit) right.getUnits().getUnits().toArray()[0];
+            // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
+            { 
+                Territory possibleCapture = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY);
+                if (matches.eligibleForCapture(possibleCapture, m_player))
+                {   
+                    // Get the territory to the left of the possible capture
+                    Territory right = m_data.getMap().getTerritoryFromCoordinates(endX+2,endY);
                     
                     // Can the king be captured?
-                    if (unit.getType().getName().equals("king"))
-                    {
-                        Territory other_above = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
-                        Territory other_below = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
+                    if (matches.kingInSquare(possibleCapture))
+                    {   
+                        Territory above = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY-1);
+                        Territory below = m_data.getMap().getTerritoryFromCoordinates(endX+1,endY+1);
 
-                        if (other != null  &&  other_above != null  &&  other_below != null)                                 
-                        {    
-                            TerritoryAttachment ta_other = ((TerritoryAttachment)other.getAttachment("territoryAttachment"));
-                            TerritoryAttachment ta_other_above = ((TerritoryAttachment)other_above.getAttachment("territoryAttachment"));
-                            TerritoryAttachment ta_other_below = ((TerritoryAttachment)other_below.getAttachment("territoryAttachment"));
-                            
-                            if (((!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)  ||  (ta_other!=null && ta_other.isKingsSquare()))  && 
-                            		((!other_above.getUnits().isEmpty()  &&  other_above.getOwner()==m_player)  ||  (ta_other_above!=null && ta_other_above.isKingsSquare()))  &&  
-                            		((!other_below.getUnits().isEmpty()  &&  other_below.getOwner()==m_player)  ||  (ta_other_below!=null && ta_other_below.isKingsSquare())))
-                            {
-                            	System.out.println(ta_other_below);
-                            	if (ta_other_below != null)
-                            		System.out.println(ta_other_below.isKingsSquare());
-
-                            	captured.add(right);
-                            }
-                        }
-                    } 
+                        if (matches.eligibleParticipantsInKingCapture(m_player, right, above, below))
+                            captured.add(possibleCapture);
+                        else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, right))
+                            captured.add(possibleCapture);
+                        
+                    }                     
                     // Can a pawn be captured?
-                    else 
+                    else if (matches.eligibleParticipantInPawnCapture(m_player, right))
                     {
-                        if (other != null)
-                        {
-                            if (!other.getUnits().isEmpty()  &&  other.getOwner()==m_player)
-                            {
-                                captured.add(right); 
-                            } 
-                            else 
-                            {
-                                TerritoryAttachment ta = (TerritoryAttachment) other.getAttachment("territoryAttachment");
-                                if (ta != null && ta.isKingsExit())
-                                    captured.add(right);
-                            }
-                        }
+                        System.out.println(possibleCapture.getName() + " is captured by " + right.getName() + " " + right.getOwner().getName());
+                        
+                        captured.add(possibleCapture);
                     }
-                }  
+                }                    
             }
         }
         
@@ -394,7 +257,6 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
         //   and the intervening spaces must be empty
         if (startX == endX)
         {
-            //System.out.println("startY==" + startY + "\n" + "endY=="+endY);
             int y1,y2;
             if (startY < endY)
             {
@@ -405,13 +267,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                 y1 = endY + 1;
                 y2 = startY - 1;
             }
-            //System.out.println("y1==" + y1 + "\n" + "y2=="+y2);
-            for (int y=y1; y<=y2; y++) {
+
+            for (int y=y1; y<=y2; y++) 
+            {
                 Territory at = m_data.getMap().getTerritoryFromCoordinates(startX,y);
                 if (at.getUnits().size() > 0)
                     return "Pieces can only move through empty spaces.";
-                //else
-                  //  System.out.println(at.getName() + " is empty");
             }
             
         }
@@ -427,7 +288,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                 x1 = endX + 1;
                 x2 = startX - 1;
             }
-            //System.out.println("x1==" + x1 + "\n" + "x2=="+x2);
+            
             for (int x=x1; x<=x2; x++) {
                 Territory at = m_data.getMap().getTerritoryFromCoordinates(x,startY);
                 if (at.getUnits().size() > 0)
@@ -438,17 +299,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
             return "Pieces can only move in a straight line.";
         
         
-        
-        // Only the king can be on king's squares        
-        Unit unit = (Unit) start.getUnits().getUnits().toArray()[0];
-        if (! unit.getType().getName().equals("king"))
-        {   //System.out.println(unit.getType().getName());
-            TerritoryAttachment ta = (TerritoryAttachment) end.getAttachment("territoryAttachment");
-            //System.out.println(ta.getName());
-            if (ta != null && ta.isKingsSquare())
-                return "Only the king can go there";
+        // Only the king can move to king's squares  
+        if (! matches.kingInSquare(start) && matches.isKingsSquare(end))
+        {
+            return "Only the king can go there";
         }
-      
+        
         return null;
     }
    
@@ -505,5 +361,162 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
     {
         // This class implements IPlayDelegate, which inherits from IRemote.
         return IPlayDelegate.class;
+    }
+    
+    
+    /**
+     * Utility class providing matching methods for use in King's Table.
+     * 
+     * @author Lane Schwartz
+     */
+    private class Matches
+    {
+        private final boolean kingCanParticipateInCaptures;
+        private final boolean cornerSquaresCanBeUsedToCapturePawns;
+        private final boolean centerSquareCanBeUsedToCapturePawns;
+        private final boolean cornerSquaresCanBeUsedToCaptureTheKing;
+        private final boolean centerSquareCanBeUsedToCaptureTheKing;
+        private final boolean edgeOfBoardCanBeUsedToCaptureTheKing;
+        private final boolean kingCanBeCapturedLikeAPawn;   
+        
+        Matches(GameData gameData)
+        {
+            GameProperties properties = gameData.getProperties();
+            kingCanParticipateInCaptures = properties.get("King can participate in captures", true);
+            cornerSquaresCanBeUsedToCapturePawns = properties.get("Corner squares can be used to capture pawns", true);
+            centerSquareCanBeUsedToCapturePawns = properties.get("Center square can be used to capture pawns", false);
+            cornerSquaresCanBeUsedToCaptureTheKing = properties.get("Corner squares can be used to capture the king", false);
+            centerSquareCanBeUsedToCaptureTheKing= properties.get("Center square can be used to capture the king", true);
+            edgeOfBoardCanBeUsedToCaptureTheKing = properties.get("Edge of board can be used to capture the king", false);
+            kingCanBeCapturedLikeAPawn = properties.get("King can be captured like a pawn", false);
+            
+        }
+        
+        public boolean kingInSquare(Territory t) 
+        {   
+            if (t==null)
+            {
+                return false;
+            }
+            else 
+            {   Collection<Unit> units = t.getUnits().getUnits();
+                if (units.isEmpty())
+                    return false;
+                else
+                {
+                    Unit unit = (Unit) units.toArray()[0];
+                    if (unit.getType().getName().equals("king"))
+                        return true;
+                    else 
+                        return false;    
+                }
+            }                
+        }
+
+        public boolean isKingsExit(Territory t)
+        {
+            TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
+            if (ta==null)
+                return false;
+            else if (ta.isKingsExit())
+                return true;
+            else
+                return false;
+        }
+
+        public boolean isKingsSquare(Territory t)
+        {
+            TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
+            if (ta==null)
+                return false;
+            else if (ta.isKingsSquare())
+                return true;
+            else
+                return false;
+        }
+
+        public boolean eligibleParticipantInPawnCapture(PlayerID currentPlayer, Territory territory) 
+        {
+            //System.out.println("eligibleParticipantInPawnCapture" + currentPlayer.getName() + " " + territory.getName());
+            if (territory==null)
+            {
+                return false;
+            }
+            else 
+            {
+                if (territory.getOwner().equals(currentPlayer))
+                {
+                    if (territory.getUnits().isEmpty())
+                        return false;
+                    else if (! kingCanParticipateInCaptures && kingInSquare(territory))
+                        return false;
+                    else
+                        return true;
+                }
+                else
+                {
+                    if (cornerSquaresCanBeUsedToCapturePawns && isKingsExit(territory))
+                        return true;
+                    else if (centerSquareCanBeUsedToCapturePawns && isKingsSquare(territory))
+                        return true;
+                    else
+                        return false;
+                }
+            }
+        }
+
+
+        public boolean eligibleParticipantInKingCapture(PlayerID currentPlayer, Territory territory) 
+        {
+            if (territory==null)
+            {
+                if (edgeOfBoardCanBeUsedToCaptureTheKing)
+                    return true;
+                else
+                    return false;
+            }
+            else 
+            {
+                if (territory.getOwner().equals(currentPlayer))
+                {
+                    if (territory.getUnits().size() > 0)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                {
+                    if (cornerSquaresCanBeUsedToCaptureTheKing && isKingsExit(territory))
+                        return true;
+                    else if (centerSquareCanBeUsedToCaptureTheKing && isKingsSquare(territory))
+                        return true;
+                    else
+                        return false;
+                }
+            }
+        }
+
+        public boolean eligibleParticipantsInKingCapture(PlayerID currentPlayer, Territory... territories)
+        {
+            if (territories==null || territories.length==0)
+                return false;
+
+            for (Territory territory : territories)
+            {
+                if (! eligibleParticipantInKingCapture(currentPlayer, territory))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public boolean eligibleForCapture(Territory territory, PlayerID currentPlayer)
+        {
+            if (territory==null || territory.getUnits().isEmpty() || territory.getOwner().equals(currentPlayer))
+                return false;
+            else
+                return true;
+        }
+
     }
 }

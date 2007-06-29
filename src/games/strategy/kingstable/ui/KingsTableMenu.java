@@ -15,6 +15,7 @@
 package games.strategy.kingstable.ui;
 
 import games.strategy.common.ui.BasicGameMenuBar;
+import games.strategy.engine.data.properties.PropertiesUI;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -22,6 +23,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JEditorPane;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
@@ -38,12 +40,40 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
     }
     
     
+    protected void createGameSpecificMenus (JMenuBar menuBar) 
+    {
+        createGameMenu(menuBar);
+    }
+    
     protected void addGameSpecificHelpMenus(JMenu helpMenu)
     {
         addHowToPlayHelpMenu(helpMenu);
     }
     
-    
+    /**
+     * @param menuGame
+     */
+    private void createGameMenu(JMenuBar menuBar)
+    {
+        if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
+        {
+            JMenu menuGame = new JMenu("Game");
+            menuBar.add(menuGame);
+            
+            AbstractAction optionsAction = new AbstractAction("View Game Options...")
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), false);
+                    JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
+                }
+            };
+            
+
+            menuGame.add(optionsAction);
+
+        }
+    }
     
     /**
      * @param parentMenu

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -54,6 +55,14 @@ public class KingsTable implements IGameLoader
     private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
     private static final String ALPHABETA_COMPUTER_PLAYER_TYPE = "αβ AI";
         
+    public static boolean kingCanParticipateInCaptures;
+    public static boolean cornerSquaresCanBeUsedToCapturePawns;
+    public static boolean centerSquareCanBeUsedToCapturePawns;
+    public static boolean cornerSquaresCanBeUsedToCaptureTheKing;
+    public static boolean centerSquareCanBeUsedToCaptureTheKing;
+    public static boolean edgeOfBoardCanBeUsedToCaptureTheKing;
+    public static boolean kingCanBeCapturedLikeAPawn;
+    
     /**
      * @see IGameLoader.createPlayers(playerNames)
      */
@@ -116,8 +125,17 @@ public class KingsTable implements IGameLoader
     {
         try
         {
-            m_game = game;
 
+            m_game = game;
+            GameProperties properties = m_game.getData().getProperties();
+            kingCanParticipateInCaptures = properties.get("King can participate in captures", true);
+            cornerSquaresCanBeUsedToCapturePawns = properties.get("Corner squares can be used to capture pawns", true);
+            centerSquareCanBeUsedToCapturePawns = properties.get("Center square can be used to capture pawns", false);
+            cornerSquaresCanBeUsedToCaptureTheKing = properties.get("Corner squares can be used to capture the king", false);
+            centerSquareCanBeUsedToCaptureTheKing= properties.get("Center square can be used to capture the king", true);
+            edgeOfBoardCanBeUsedToCaptureTheKing = properties.get("Edge of board can be used to capture the king", false);
+            kingCanBeCapturedLikeAPawn = properties.get("King can be captured like a pawn", false);
+            
             SwingUtilities.invokeAndWait(new Runnable()
             {
                 public void run()
