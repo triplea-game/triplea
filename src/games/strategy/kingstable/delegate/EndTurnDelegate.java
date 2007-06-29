@@ -14,6 +14,8 @@
 
 package games.strategy.kingstable.delegate;
 
+import java.util.concurrent.CountDownLatch;
+
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -43,8 +45,14 @@ public class EndTurnDelegate extends BaseDelegate
         PlayerID winner = checkForWinner();
         if (winner != null)
         {
-            signalGameOver(winner.getName() + " wins!");
-            while(true){}
+            CountDownLatch waitToLeaveGame = new CountDownLatch(1);
+            signalGameOver(winner.getName() + " wins!", waitToLeaveGame);
+            
+            
+            try {
+                waitToLeaveGame.await();
+            } catch (InterruptedException e) {}
+            //while(true){}
         }
     }
 
@@ -54,13 +62,13 @@ public class EndTurnDelegate extends BaseDelegate
      * 
      * @param status the "game over" text to be displayed to each user.
      */
-    private void signalGameOver(String status)
+    private void signalGameOver(String status, CountDownLatch waiting)
     {
         // If the game is over, we need to be able to alert all UIs to that fact.
         //    The display object can send a message to all UIs.
         IKingsTableDisplay display = (IKingsTableDisplay) m_bridge.getDisplayChannelBroadcaster();
         display.setStatus(status);
-        display.setGameOver();
+        display.setGameOver(waiting);
     }
     
     

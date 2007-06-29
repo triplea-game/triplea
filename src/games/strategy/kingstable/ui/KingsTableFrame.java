@@ -264,9 +264,10 @@ public class KingsTableFrame extends MainGameFrame
     /**
      * Set the game over status for this frame to <code>true</code>.
      */
-    public void setGameOver()
+    public void setGameOver(CountDownLatch waiting)
     {
         m_gameOver = true;
+        m_waiting = waiting;
     }
     
     

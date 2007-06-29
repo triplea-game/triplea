@@ -18,6 +18,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 
 import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Dummy display for a King's Table game, for use in testing.
@@ -37,7 +38,7 @@ public class DummyDisplay implements IKingsTableDisplay {
 	/** 
      * @see games.strategy.engine.display.IKingsTableDisplay#setGameOver()
      */
-	public void setGameOver() {
+	public void setGameOver(CountDownLatch waiting) {
 
 	}
 

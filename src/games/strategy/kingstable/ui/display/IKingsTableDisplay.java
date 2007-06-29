@@ -16,6 +16,7 @@
 package games.strategy.kingstable.ui.display;
 
 import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplay;
@@ -35,7 +36,7 @@ public interface IKingsTableDisplay extends IDisplay
     /**
      * Set the game over status for this display to <code>true</code>.
      */
-    public void setGameOver();
+    public void setGameOver(CountDownLatch waiting);
     
     /**
      * Ask the user interface for this display to process a play and zero or more captures.
