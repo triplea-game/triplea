@@ -30,7 +30,7 @@ public class MainPanel extends JPanel implements Observer
     private boolean m_isChatShowing;
     
     public MainPanel(SetupPanelModel typePanelModel)
-    {
+    {   
         m_gameTypePanelModel = typePanelModel;
         m_gameSelectorModel = typePanelModel.getGameSelectorModel();
         createComponents();
@@ -41,8 +41,14 @@ public class MainPanel extends JPanel implements Observer
         {
             setGameSetupPanel(typePanelModel.getPanel());
         }
+
     }
 
+    JButton getDefaultButton()
+    {
+        return m_playButton;
+    }
+    
     private void createComponents()
     {
         m_playButton = new JButton("Play");

@@ -61,9 +61,9 @@ public class MainFrame extends JFrame
         
         m_setupPanelModel  = new SetupPanelModel(m_gameSelectorModel);
         m_setupPanelModel.showSelectType();
-        
-        getContentPane().add(new MainPanel(m_setupPanelModel), BorderLayout.CENTER);
-        
+        MainPanel mainPanel = new MainPanel(m_setupPanelModel);
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
+        getRootPane().setDefaultButton(mainPanel.getDefaultButton());
         pack();
 
         setLocationRelativeTo(null);
