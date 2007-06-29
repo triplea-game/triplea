@@ -76,7 +76,7 @@
 			</fileset>
 		</copy>
 
-		<javac srcdir="src/" destdir="classes/" debug="true" deprecation="true" classpathref="full.path" target="1.5" />
+		<javac srcdir="src/" destdir="classes/" debug="true" deprecation="true" classpathref="full.path" target="1.5" encoding="utf8" />
 
 		<!-- to check the correct java version, we need to compile the startup class so that it will run on older vms -->
 		<!-- delete the startup class, and recompile it -->
