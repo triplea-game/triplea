@@ -62,7 +62,7 @@ public class DelegateExecutionManager
         boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);
         if(!rVal)
         {
-            System.out.println(m_readWriteLock.getReadLockCount());
+            //System.out.println(m_readWriteLock.getReadLockCount());
         }
         else
         {
