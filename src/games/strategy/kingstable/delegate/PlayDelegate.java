@@ -119,8 +119,6 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                     // Can a pawn be captured?
                     else if (matches.eligibleParticipantInPawnCapture(m_player, above))
                     {
-                        System.out.println(possibleCapture.getName() + " is captured by " + above.getName() + " " + above.getOwner().getName());
-                        
                         captured.add(possibleCapture);
                     }
        
@@ -152,8 +150,6 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                     // Can a pawn be captured?
                     else if (matches.eligibleParticipantInPawnCapture(m_player, below))
                     {
-                        System.out.println(possibleCapture.getName() + " is captured by " + below.getName() + " " + below.getOwner().getName());
-                        
                         captured.add(possibleCapture);
                     }
        
@@ -184,7 +180,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                     }                     
                     // Can a pawn be captured?
                     else if (matches.eligibleParticipantInPawnCapture(m_player, left))
-                    {   System.out.println(possibleCapture.getName() + " is captured by " + left.getName() + " " + left.getOwner().getName());
+                    {   
                         captured.add(possibleCapture);
                     }
        
@@ -216,8 +212,6 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
                     // Can a pawn be captured?
                     else if (matches.eligibleParticipantInPawnCapture(m_player, right))
                     {
-                        System.out.println(possibleCapture.getName() + " is captured by " + right.getName() + " " + right.getOwner().getName());
-                        
                         captured.add(possibleCapture);
                     }
                 }                    
