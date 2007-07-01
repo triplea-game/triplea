@@ -25,7 +25,7 @@ public class PlayerAttachment extends DefaultAttachment
 {
 
     private boolean m_needsKing = false;
-    private int m_αβSearchDepth = 2;
+    private int m_AbSearchDepth = 2;
 
     /** Creates new PlayerAttachment */
     public PlayerAttachment()
@@ -42,14 +42,14 @@ public class PlayerAttachment extends DefaultAttachment
         return m_needsKing;
     }
 
-    public void setΑβSearchDepth(String value)
+    public void setAbSearchDepth(String value)
     {
-        m_αβSearchDepth = getInt(value);
+        m_AbSearchDepth = getInt(value);
     }
     
-    public int getΑβSearchDepth()
+    public int getAbSearchDepth()
     {
-        return m_αβSearchDepth;
+        return m_AbSearchDepth;
     }    
     
 }
