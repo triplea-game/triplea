@@ -15,6 +15,7 @@ package games.strategy.engine.message;
 
 import games.strategy.triplea.util.WrappedInvocationHandler;
 
+import java.io.Serializable;
 import java.lang.reflect.*;
 
 /**
@@ -48,6 +49,15 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler
     {
         if(super.shouldHandle(method, args))
             return super.handle(method, args);
+        
+        if(args != null) {
+            for(Object o : args) {
+                if(o != null && !(o instanceof Serializable)) {
+                    throw new IllegalArgumentException(o + " is not serializable, all remote method args must be serializable.  method:" + method);
+                }
+                
+            }
+        }
         
         RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(m_endPointName, method.getName(), args, method.getParameterTypes(), m_remoteType);
         if(m_ignoreResults)
