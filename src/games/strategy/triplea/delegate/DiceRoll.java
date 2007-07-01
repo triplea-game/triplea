@@ -263,16 +263,13 @@ public class DiceRoll implements Externalizable
                     if (defending)
                         //If it's Pacific_Edition and Japan's turn one, all but Chinese defend at a 1
                     {
+                        strength = ua.getDefense(current.getOwner());
                         if (bridge.getPlayerID().getData().getProperties().get(Constants.PACIFIC_EDITION, false)
                                 && bridge.getPlayerID().getData().getSequence().getRound() == 1 
                                 && bridge.getStepName().equals("japaneseBattle")
                                 && !player.getName().equals("Chinese"))
                         {
-                            strength = 1;
-                        }
-                        else
-                        {
-                            strength = ua.getDefense(current.getOwner());
+                            strength = Math.min(1, strength);
                         }
                     }
                     else
