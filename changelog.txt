@@ -1,4 +1,8 @@
-* four if by sea turn order changed (straha, rodthegod)
+
+
+* fix empty sea zone in gulf of mexico in classic,battleship_row,four_if_by_sea,and iron_blitz (Scarbrow)
+
+* four if by sea turn order changed (Scarbrow, rodthegod)
 
 * add attack/defense/movement to production panel (gansito)
 
