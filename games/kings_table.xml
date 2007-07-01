@@ -64,11 +64,11 @@
 	    
 	    <attatchment name="playerAttachment" attatchTo="White" javaClass="games.strategy.kingstable.attachments.PlayerAttachment" type="player">
             <option name="needsKing" value="true"/>
-            <option name="abSearchDepth" value="2"/>
+            <option name="alphaBetaSearchDepth" value="2"/>
         </attatchment>
            
         <attatchment name="playerAttachment" attatchTo="Black" javaClass="games.strategy.kingstable.attachments.PlayerAttachment" type="player">
-            <option name="abSearchDepth" value="2"/>
+            <option name="alphaBetaSearchDepth" value="2"/>
         </attatchment>
         
 	</attatchmentList>
@@ -127,7 +127,16 @@
 	</initialize>
 
 	<propertyList>
-		<property name="mapName" value="kings_table" editable="false" />		
+		<property name="mapName" value="kings_table" editable="false" />
+		<property name="King can participate in captures" value="true" editable="true"><boolean/></property>
+		<property name="Corner squares can be used to capture pawns" value="true" editable="true"><boolean/></property>
+		<property name="Center square can be used to capture pawns" value="false" editable="true"><boolean/></property>		
+		<property name="Corner squares can be used to capture the king" value="false" editable="true"><boolean/></property>
+		<property name="Center square can be used to capture the king" value="true" editable="true"><boolean/></property>				
+		<property name="Edge of board can be used to capture the king" value="false" editable="true"><boolean/></property>		
+		<property name="King can be captured like a pawn" value="false" editable="true"><boolean/></property>
+		
+				
 	</propertyList>
 	
 </game>

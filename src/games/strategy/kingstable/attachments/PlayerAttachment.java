@@ -42,12 +42,12 @@ public class PlayerAttachment extends DefaultAttachment
         return m_needsKing;
     }
 
-    public void setAbSearchDepth(String value)
+    public void setalphaBetaSearchDepth(String value)
     {
         m_AbSearchDepth = getInt(value);
     }
     
-    public int getAbSearchDepth()
+    public int getalphaBetaSearchDepth()
     {
         return m_AbSearchDepth;
     }    
