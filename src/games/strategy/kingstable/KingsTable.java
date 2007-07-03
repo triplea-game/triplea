@@ -52,8 +52,11 @@ public class KingsTable implements IGameLoader
     
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-    private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
     private static final String ALPHABETA_COMPUTER_PLAYER_TYPE = "αβ AI";
+
+    // Minimax technically "works" for King's Table, 
+    //    but the branching factor is so high that Minimax will run out of memory before it returns
+    //private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
         
     public static boolean kingCanParticipateInCaptures;
     public static boolean cornerSquaresCanBeUsedToCapturePawns;
@@ -84,11 +87,11 @@ public class KingsTable implements IGameLoader
                 RandomAI ai = new RandomAI(name);
                 players.add(ai);
             }
-            else if (type.equals(MINIMAX_COMPUTER_PLAYER_TYPE)) 
-            {
-                BetterAI ai = new BetterAI(name, BetterAI.Algorithm.MINIMAX);
-                players.add(ai);
-            }
+            //else if (type.equals(MINIMAX_COMPUTER_PLAYER_TYPE)) 
+            //{
+            //    BetterAI ai = new BetterAI(name, BetterAI.Algorithm.MINIMAX);
+            //    players.add(ai);
+            //}
             else if (type.equals(ALPHABETA_COMPUTER_PLAYER_TYPE)) 
             {
                 BetterAI ai = new BetterAI(name, BetterAI.Algorithm.ALPHABETA);
@@ -108,7 +111,8 @@ public class KingsTable implements IGameLoader
     public String[] getServerPlayerTypes()
     {
         return new String[]
-            {HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
+            {HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
+            //{HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
             
     }
 

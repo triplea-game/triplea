@@ -257,6 +257,8 @@ public class KingsTableFrame extends MainGameFrame
             if(rVal != JOptionPane.OK_OPTION)
                 return;
         }
+        
+        stopGame();
         System.exit(0);
     }
     
@@ -264,10 +266,10 @@ public class KingsTableFrame extends MainGameFrame
     /**
      * Set the game over status for this frame to <code>true</code>.
      */
-    public void setGameOver(CountDownLatch waiting)
+    public void setGameOver()//CountDownLatch waiting)
     {
         m_gameOver = true;
-        m_waiting = waiting;
+        //m_waiting = waiting;
     }
     
     

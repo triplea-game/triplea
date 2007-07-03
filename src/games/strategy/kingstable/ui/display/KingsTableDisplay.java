@@ -78,9 +78,9 @@ public class KingsTableDisplay implements IKingsTableDisplay
     /**
      * Set the game over status for this display to <code>true</code>.
      */
-    public void setGameOver(CountDownLatch waiting)
+    public void setGameOver()//(CountDownLatch waiting)
     {
-        m_ui.setGameOver(waiting);
+        m_ui.setGameOver();//waiting);
     }
     
     

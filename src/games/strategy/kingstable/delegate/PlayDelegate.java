@@ -26,6 +26,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.kingstable.attachments.TerritoryAttachment;
@@ -38,6 +39,7 @@ import games.strategy.kingstable.ui.display.IKingsTableDisplay;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
+@AutoSave(beforeStepStart=false,afterStepEnd=true)
 public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 {
     

@@ -67,7 +67,7 @@ public class BetterAI extends AbstractAI {
     	    if (pa.needsKing())
                 m_kingPlayer = true;
             
-            cutoffDepth = pa.getalphaBetaSearchDepth();
+            cutoffDepth = pa.getAlphaBetaSearchDepth();
         }	
     	else
     		m_kingPlayer = false;

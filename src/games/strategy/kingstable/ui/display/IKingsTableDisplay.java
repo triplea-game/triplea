@@ -36,7 +36,7 @@ public interface IKingsTableDisplay extends IDisplay
     /**
      * Set the game over status for this display to <code>true</code>.
      */
-    public void setGameOver(CountDownLatch waiting);
+    public void setGameOver();//CountDownLatch waiting);
     
     /**
      * Ask the user interface for this display to process a play and zero or more captures.

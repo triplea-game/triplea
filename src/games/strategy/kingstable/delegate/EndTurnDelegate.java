@@ -14,8 +14,6 @@
 
 package games.strategy.kingstable.delegate;
 
-import java.util.concurrent.CountDownLatch;
-
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -33,8 +31,10 @@ import games.strategy.kingstable.ui.display.IKingsTableDisplay;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class EndTurnDelegate extends BaseDelegate
+public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 {
+    //private boolean gameOver = false;
+    
     /**
      * Called before the delegate will run.
      */
@@ -45,30 +45,41 @@ public class EndTurnDelegate extends BaseDelegate
         PlayerID winner = checkForWinner();
         if (winner != null)
         {
-            CountDownLatch waitToLeaveGame = new CountDownLatch(1);
-            signalGameOver(winner.getName() + " wins!", waitToLeaveGame);
+            //CountDownLatch waitToLeaveGame = new CountDownLatch(1);
+            signalGameOver(winner.getName() + " wins!");//, waitToLeaveGame);
             
-            
+            bridge.stopGameSequence();
+            //gameOver = true;
+            /*
             try {
-                waitToLeaveGame.await();
+                
+                wait();
+                //waitToLeaveGame.await();
             } catch (InterruptedException e) {}
+            */
             //while(true){}
         }
     }
 
+    /*
+    public boolean isGameOver()
+    {
+        return gameOver;
+    }
+    */
     
     /**
      * Notify all players that the game is over.
      * 
      * @param status the "game over" text to be displayed to each user.
      */
-    private void signalGameOver(String status, CountDownLatch waiting)
+    private void signalGameOver(String status)//, CountDownLatch waiting)
     {
         // If the game is over, we need to be able to alert all UIs to that fact.
         //    The display object can send a message to all UIs.
         IKingsTableDisplay display = (IKingsTableDisplay) m_bridge.getDisplayChannelBroadcaster();
         display.setStatus(status);
-        display.setGameOver(waiting);
+        display.setGameOver();
     }
     
     
@@ -131,6 +142,7 @@ public class EndTurnDelegate extends BaseDelegate
     public Class<? extends IRemote> getRemoteType()
     {
         // This class does not implement the IRemote interface, so return null.
+        //return IEndTurnDelegate.class;
         return null;
     }
 }
