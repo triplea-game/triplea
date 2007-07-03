@@ -161,4 +161,10 @@ public class DefaultDelegateBridge implements IDelegateBridge
     {
         m_delegateExecutionManager.enterDelegateExecution();
     }
+
+    public void stopGameSequence()
+    {
+        ((ServerGame) m_game).stopGameSequence();
+        
+    }
 }

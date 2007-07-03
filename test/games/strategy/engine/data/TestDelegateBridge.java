@@ -186,4 +186,6 @@ public class TestDelegateBridge implements IDelegateBridge
     {
         m_remote = remote;
     }
+
+    public void stopGameSequence() {}
 }

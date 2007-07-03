@@ -39,6 +39,7 @@ import games.strategy.util.ListenerList;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 
 /**
@@ -76,6 +77,16 @@ public class ServerGame implements IGame
     private volatile boolean m_isGameOver = false;
     
     private InGameLobbyWatcher m_inGameLobbyWatcher;
+    
+    /**
+     * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.<p>
+     */
+    private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
+    
+    /**
+     * Has the delegate signalled that delegate execution should stop.
+     */
+    private volatile boolean m_delegateExecutionStopped = false;
     
     private IServerRemote m_serverRemote = new IServerRemote()
     {
@@ -264,8 +275,23 @@ public class ServerGame implements IGame
                 runStep(gameHasBeenSaved);
             }
             
-            while (!m_isGameOver)
-                runStep(false);
+            while (!m_isGameOver) {
+                if(m_delegateExecutionStopped) 
+                {
+                    //the delegate has told us to stop stepping through game steps
+                    try
+                    {
+                        //dont let this method return, as this method returning signals
+                        //that the game is over.
+                        m_delegateExecutionStoppedLatch.await();
+                    } catch (InterruptedException e) 
+                    {
+                        //ignore
+                    }
+                } else {
+                    runStep(false);
+                }
+            }
         }
         catch(GameOverException goe)
         {
@@ -283,8 +309,9 @@ public class ServerGame implements IGame
         if(m_isGameOver)
             return;
         
-        m_isGameOver = true;
+        m_isGameOver = true;        
         ErrorHandler.setGameOver(true);
+        m_delegateExecutionStoppedLatch.countDown();
         
         //block delegate execution to prevent outbound messages to the players
         //while we shut down.
@@ -730,6 +757,11 @@ public class ServerGame implements IGame
     public void setInGameLobbyWatcher(InGameLobbyWatcher inGameLobbyWatcher)
     {
         m_inGameLobbyWatcher = inGameLobbyWatcher;
+    }
+
+    public void stopGameSequence()
+    {
+       m_delegateExecutionStopped = true;
     }
     
 }

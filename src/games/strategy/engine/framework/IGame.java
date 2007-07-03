@@ -76,6 +76,12 @@ public interface IGame
    */
   public void removeDisplay(IDisplay display);
   
+  /**
+   * Is the game over.  Game over does not relate to the state of the game (eg check-mate in chess)
+   * but to the game being shut down and all players have left.<p>
+   * 
+   * 
+   */
   public boolean isGameOver();
   
   /**

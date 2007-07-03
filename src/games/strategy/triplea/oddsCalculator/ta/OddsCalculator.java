@@ -213,6 +213,8 @@ class DummyDelegateBridge implements IDelegateBridge
        
    }
 
+   public void stopGameSequence() {}
+
 };
 
 

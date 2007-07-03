@@ -75,25 +75,51 @@ public interface IDelegateBridge
     public void addChange(Change aChange);
 
     /**
-     * Delegates should not use random data that comes from any other source.
-     * 
-     * @param annotation -
-     *            a string used to describe the dice roll
-     * @see games.strategy.engine.random.IRandomSource
+     * equivalent to getRandom(max,1,annotation)[0] 
      */
     public int getRandom(int max, String annotation);
 
+    /**
+     * 
+     * Return a random value to be used by the delegate.<p>
+     * 
+     * Delegates should not use random data that comes from any other source.<p>
+     * 
+     * @param annotation -
+     *            a string used to describe the random event.<p>
+     */
     public int[] getRandom(int max, int count, String annotation);
 
     /**
-     *  
+     * return the delegate history writer for this game.<p>
+     * 
+     * The delegate history writer allows writing to the game history.<p>
      */
     public DelegateHistoryWriter getHistoryWriter();
     
+    /**
+     * Return an object that implements the IDisplay interface for the game.<p>
+     * 
+     * Methods called on this returned object will be invoked on all displays in the game, 
+     * including those on remote machines<p>
+     */
     public IChannelSubscribor getDisplayChannelBroadcaster();
     
+    /**
+     * 
+     * @return the propertie for this step.<p>
+     */
     public Properties getStepProperties();
     
+    
+    /**
+     * After this step finishes executing, the next delegate will not be called.<p>
+     * 
+     * This methd allows the delegate to signal that the game is over, but does not force the ui
+     * or the display to shutdown.<p>
+     *
+     */
+    public void stopGameSequence();
     
     public void leaveDelegateExecution();
     
