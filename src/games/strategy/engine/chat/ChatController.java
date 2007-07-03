@@ -137,15 +137,16 @@ public class ChatController implements IChatController
     
     protected void leaveChatInternal(INode node)
     {
+        long version;
         synchronized(m_mutex)
         {
             m_chatters.remove(node);
-            m_version++;
-            
-            getChatBroadcaster().speakerRemoved(node, m_version);
-            
-            s_logger.info("Chatter:" + node + " has left chat:" + m_chatName);
+            version = m_version++;
         }
+        
+        getChatBroadcaster().speakerRemoved(node, version);        
+        s_logger.info("Chatter:" + node + " has left chat:" + m_chatName);
+
     }
 
     
