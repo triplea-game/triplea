@@ -38,6 +38,9 @@ public class BetterAI extends AbstractAI {
     private PlayerID m_opponent;
     private PlayerID m_player;
     
+    private PlayerID m_attacker;
+    private PlayerID m_defender;
+    
     /** Algorithms available for use in BetterAI */
     public enum Algorithm { MINIMAX, ALPHABETA }
     
@@ -61,16 +64,18 @@ public class BetterAI extends AbstractAI {
     	m_xDimension = m_bridge.getGameData().getMap().getXDimension();
     	m_yDimension = m_bridge.getGameData().getMap().getYDimension();
 
-    	PlayerAttachment pa = (PlayerAttachment) m_id.getAttachment("playerAttachment");
-    	if (pa!=null)
-    	{
-    	    if (pa.needsKing())
-                m_kingPlayer = true;
-            
-            cutoffDepth = pa.getAlphaBetaSearchDepth();
-        }	
-    	else
-    		m_kingPlayer = false;
+        {
+            PlayerAttachment pa = (PlayerAttachment) m_id.getAttachment("playerAttachment");
+            if (pa!=null)
+            {
+                if (pa.needsKing())
+                    m_kingPlayer = true;
+
+                cutoffDepth = pa.getAlphaBetaSearchDepth();
+            }	
+            else
+                m_kingPlayer = false;
+        }
         
         m_player = m_id;
         m_opponent = null;
@@ -82,6 +87,21 @@ public class BetterAI extends AbstractAI {
                 break;
             }
         }
+        
+        m_attacker = null;
+        m_defender = null;
+        for (PlayerID player : m_bridge.getGameData().getPlayerList().getPlayers())
+        {
+            PlayerAttachment pa = (PlayerAttachment) player.getAttachment("playerAttachment");
+            
+            if (pa==null)
+                m_attacker = player;
+            else if (pa.needsKing())
+                m_defender = player;
+            else
+                m_attacker = player;
+        }
+        
     }
     
 	@Override
@@ -132,19 +152,13 @@ public class BetterAI extends AbstractAI {
 	}
 	public static int counter = 0;
 	
-	class State extends GameState<Move> //implements Iterable<PlayerID> 
+	class State extends GameState<Move>
 	{
-		
-		//private HashMap<Integer,GameSquare> square;
-		private HashMap<Integer,PlayerID> squareOwner;
-		//private int m_x;
-		//private int m_y;
+        private HashMap<Integer,PlayerID> squareOwner;
 		
 		private int m_kingX = -1;
 		private int m_kingY = -1;
 		
-		//private PlayerID m_currentPlayer;
-		//private PlayerID m_otherPlayer;
 		private int m_depth;
 		
         private final Move m_move;
@@ -177,63 +191,6 @@ public class BetterAI extends AbstractAI {
             }   
         }
         
-        /*
-		public State(PlayerID currentPlayer, PlayerID otherPlayer, int x, int y, Collection<Territory> territories)
-		{
-			depth=0;
-            m_move = null;
-			counter++;
-			m_x = x;
-			m_y = y;
-			m_currentPlayer = currentPlayer;//otherPlayer;
-			m_otherPlayer = otherPlayer;//currentPlayer;
-			
-			//square = new HashMap<Integer,GameSquare>(x*y);
-			squareOwner = new HashMap<Integer,PlayerID>(x*y);
-			//System.out.println(x*y);
-			
-			int countCurrentPlayerPieces = 0;
-			int countOtherPlayerPieces = 0;
-			int countBlankSquares = 0;
-			
-			for (Territory t : territories) 
-			{
-				//System.out.println("Adding " + (t.getX()*(x-1) + t.getY()));
-				//square.put((t.getX()*(x-1) + t.getY()), new GameSquare(t.getX(), t.getY(), t.getOwner()));
-				//squareOwner.put((t.getX()*(x-1) + t.getY()), t.getOwner());
-				squareOwner.put((t.getX()*x + t.getY()), t.getOwner());
-
-				if (!t.getUnits().isEmpty())
-				{
-					Unit unit = (Unit) t.getUnits().getUnits().toArray()[0];
-					if (unit.getType().getName().equals("king"))
-					{
-						m_kingX = t.getX();
-						m_kingY = t.getY();
-					}
-				}
-					
-			}
-			
-			for (PlayerID player : squareOwner.values())
-			{
-				if (player.equals(m_currentPlayer))
-					countCurrentPlayerPieces++;
-				else if (player.equals(m_otherPlayer))
-					countOtherPlayerPieces++;
-				else
-					countBlankSquares++;
-			}
-			
-			//System.out.println(countBlankSquares + " empty squares on the board.");
-			//System.out.println(m_otherPlayer.getName() + " has " + countOtherPlayerPieces + " pieces on the board.");
-			//System.out.println(m_currentPlayer.getName() + " has " + countCurrentPlayerPieces + " pieces on the board.");
-			
-		}
-        */
-		
-		//public boolean captureIsPossible = false;
-		
         public State getSuccessor(Move move)
         {
             return new State(move, this);            
@@ -296,9 +253,6 @@ public class BetterAI extends AbstractAI {
             // Now check for captures
             checkForCaptures(move.getEnd().getFirst(), move.getEnd().getSecond());
 			
-			
-			//m_currentPlayer = state.m_otherPlayer;
-			//m_otherPlayer = state.m_currentPlayer;
 		}
 		
         
@@ -306,8 +260,8 @@ public class BetterAI extends AbstractAI {
         {
             for (Entry<Integer,PlayerID> s : squareOwner.entrySet())
             {
-                int squareX = s.getKey() / m_xDimension;//(m_x-1);
-                int squareY = s.getKey() % m_xDimension;//(m_x-1);
+                int squareX = s.getKey() / m_xDimension;
+                int squareY = s.getKey() % m_xDimension;
                 PlayerID s_owner = s.getValue();
 
                 //PlayerID owner = s_owner;
@@ -465,7 +419,7 @@ public class BetterAI extends AbstractAI {
         
         public Collection<GameState> successors()
         {
-            PlayerID successorPlayer = m_otherPlayer;//m_playerPerformingMove;//m_otherPlayer;
+            PlayerID successorPlayer = m_otherPlayer;
             
             Collection<GameState> successors = new ArrayList<GameState>();
             int countCurrentPlayerPieces = 0;
@@ -487,11 +441,8 @@ public class BetterAI extends AbstractAI {
                     else
                         kingIsMoving = false;
                     
-                    //System.out.println(s_owner.getName() + " could move from (" + startX + "," + startY + ") key==" + start.getKey());
                     for (int x=startX-1; x>=0; x--)
                     {
-                        //if (x==0 && startY==0 && startX==2)
-                        //  System.out.println("Possible dest = (" + x + "," + startY + ")");
                         PlayerID destination = this.get(x, startY);
                         if (destination.equals(PlayerID.NULL_PLAYERID))
                         {   
@@ -500,12 +451,7 @@ public class BetterAI extends AbstractAI {
                                 Move move = new Move(new Pair<Integer,Integer>(startX,startY), new Pair<Integer,Integer>(x,startY));
                                 successors.add(new State(move,this));
                             }
-                            /*
-                            State newstate = new State(move,this);
-                            successors.add(newstate);
-                            if (startX==m_kingX && startY==m_kingY)
-                                System.out.println("King may be moving from (" + startX + "," + startY + ") to (" + newstate.m_kingX + "," + newstate.m_kingY + ") : utility of this would be " + newstate.getUtility());
-                        */
+                           
                         }
                         else
                             break;
@@ -513,7 +459,6 @@ public class BetterAI extends AbstractAI {
                     
                     for (int x=startX+1; x<m_xDimension; x++)
                     {
-                        //System.out.println("Possible dest = (" + x + "," + startY + ")");
                         PlayerID destination = this.get(x, startY);
                         if (destination.equals(PlayerID.NULL_PLAYERID))
                         {
@@ -529,7 +474,6 @@ public class BetterAI extends AbstractAI {
                     
                     for (int y=startY-1; y>=0; y--)
                     {
-                        //System.out.println("Possible dest = (" + startX + "," + y + ")");
                         PlayerID destination = this.get(startX, y);
                         if (destination.equals(PlayerID.NULL_PLAYERID))
                         {
@@ -541,21 +485,11 @@ public class BetterAI extends AbstractAI {
                         }
                         else
                             break;
-                        /*
-                        GameSquare destination = this.get(startX, y);
-                        if (destination.isEmpty())
-                        {
-                            Move move = new Move(start, destination);
-                            successors.add(new Pair<Move,GameState>(move, new GameState(move,state)));
-                        }
-                        else
-                            break;
-                         */
+                        
                     }
                     
                     for (int y=startY+1; y<m_yDimension; y++)
                     {
-                        //System.out.println("Possible dest = (" + startX + "," + y + ")");
                         PlayerID destination = this.get(startX, y);
                         if (destination.equals(PlayerID.NULL_PLAYERID))
                         {
@@ -567,44 +501,34 @@ public class BetterAI extends AbstractAI {
                         }
                         else
                             break;
-                        /*GameSquare destination = this.get(startX, y);
-                        if (destination.isEmpty())
-                        {
-                            Move move = new Move(start, destination);
-                            successors.add(new Pair<Move,GameState>(move, new GameState(move,state)));
-                        }
-                        else
-                            break;*/
+                       
                     }
                 }
                 
             }
             
-            //System.out.println(currentPlayer.getName() + " has " + countCurrentPlayerPieces + " pieces on the board.");
             return successors;
         }
         
         
 		public PlayerID get(int x, int y)
 		{
-			//System.out.println("trying " + ((m_x-1)*x + y));
-			//try 
-			//{
-				//return squareOwner.get(((m_x-1)*x + y));
 			return squareOwner.get((m_xDimension*x + y));
-			//} catch (IndexOutOfBoundsException e) 
-			//{
-			//	return null;
-			//}
 		}
 	
+        /*
+        private float getUtilityBasedOnMobility() 
+        {
+            
+        }
+        */
+        
 		public float getUtility()
 		{
 			// if the king has been captured...
 			if (m_kingX==-1 || m_kingY==-1)
 			{
-				//System.out.println("I see an endgame where black wins!");
-                if (m_kingPlayer)
+				if (m_kingPlayer)
                     return Integer.MIN_VALUE;
                 else
                     return Integer.MAX_VALUE;
@@ -614,8 +538,7 @@ public class BetterAI extends AbstractAI {
 			else if ((m_kingX==0 && (m_kingY==0 || m_kingY==m_yDimension-1)) ||
 					(m_kingX==m_xDimension-1 && (m_kingY==0 || m_kingY==m_yDimension-1)))
 			{
-				//System.out.println("I see an endgame where white wins!");
-                if (m_kingPlayer)
+				if (m_kingPlayer)
                     return Integer.MAX_VALUE;
                 else
                     return Integer.MIN_VALUE;
@@ -627,9 +550,9 @@ public class BetterAI extends AbstractAI {
 				float numPieces = 0;
 				float numOpponentPieces = 0;
 				
-				//int c = 0;
+                // Count the number of pieces that each player has on the board
 				for (PlayerID p : squareOwner.values())
-				{	//c++;
+				{	
 					if (!p.equals(PlayerID.NULL_PLAYERID))
 					{
 						if (p.equals(m_id))
@@ -638,39 +561,17 @@ public class BetterAI extends AbstractAI {
 							numOpponentPieces += 1.0;
 					}
 				}
-				//System.out.println("there are " + c + " squares, and " + numPieces + " and " + numOpponentPieces);
 				
+                
 				if (numPieces==0)
-				{
-                    return Integer.MIN_VALUE;
-                    /*
-					if (m_kingPlayer)
-						return Integer.MIN_VALUE;
-					else
-						return Integer.MAX_VALUE;
-					*/
-				}
+				    return Integer.MIN_VALUE;
 				
-				if (numOpponentPieces==0)
-				{
+                else if (numOpponentPieces==0)
                     return Integer.MAX_VALUE;
-                    /*
-					if (m_kingPlayer)
-						return Integer.MAX_VALUE;
-					else
-						return Integer.MIN_VALUE;
-                        */
-				}
 				
-                return numPieces / numOpponentPieces;
-                /*
-				if (m_kingPlayer)
-					//return numPieces;
-					return numPieces / numOpponentPieces;
-				else
-					//return numOpponentPieces;
-					return numOpponentPieces / numPieces;
-				*/
+                else
+                    return numPieces / numOpponentPieces;
+
 			}
 			
 			
@@ -689,10 +590,6 @@ public class BetterAI extends AbstractAI {
 		
 		public boolean cutoffTest()
 		{
-			/*if ((m_kingX==-1 || m_kingY==-1) ||
-					(m_kingX==0 && (m_kingY==0 || m_kingY==m_yDimension)) ||
-					(m_kingX==m_xDimension && (m_kingY==0 || m_kingY==m_yDimension)))
-				return true;*/
             if (gameIsOver())
                 return true;
 			else if (m_depth >= cutoffDepth)
@@ -706,27 +603,7 @@ public class BetterAI extends AbstractAI {
 			return squareOwner.values().iterator();
 		}
 	}
-	/*
-	class GameSquare {
-		private int m_x;
-		private int m_y;
-		private PlayerID m_owner;
-		
-		GameSquare(int x, int y, PlayerID owner)
-		{
-			m_x = x;
-			m_y = y;
-			m_owner = owner;
-		}
-		
-		int getX() { return m_x; }
-		int getY() { return m_y; }
-		PlayerID getOwner() { return m_owner; }
-		boolean isEmpty() { return m_owner.equals(PlayerID.NULL_PLAYERID); }
-		
-		public String toString() { return "(" + m_x + "," + m_y + ")";}
-	}
-	*/
+	
 	class Move {
 		private Pair<Integer,Integer> m_start;
 		private Pair<Integer,Integer> m_end;
@@ -740,26 +617,6 @@ public class BetterAI extends AbstractAI {
 		public Pair<Integer,Integer> getStart() { return m_start; }
 		public Pair<Integer,Integer> getEnd() { return m_end; }
 		
-		
-		/*
-		private int m_startX;
-		private int m_startY;
-		private int m_endX;
-		private int m_endY;
-		
-		Move(int startX, int startY, int endX, int endY)
-		{
-			m_startX = startX;
-			m_startY = startY;
-			m_endX = endX;
-			m_endY = endY;
-		}
-		
-		int getStartX() { return m_startX; }
-		int getStartY() { return m_startY; }
-		int getEndX() { return m_endX; }
-		int getEndY() { return m_endY; }
-		*/
 	}
 	
 	class Pair<First,Second> {

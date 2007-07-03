@@ -112,6 +112,8 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
         if (defender==null)
             throw new RuntimeException("Invalid game setup - no defender is specified. Reconfigure the game xml file so that one player has a playerAttachment with needsKing set to true.");
         
+        int numAttackerPieces = 0;
+        int numDefenderPieces = 0;
         
         for (Territory t : m_data.getMap().getTerritories()) 
         {   if (t.getUnits().isEmpty())
@@ -120,16 +122,24 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
             Unit unit = (Unit) t.getUnits().getUnits().toArray()[0];
             if (unit.getType().getName().equals("king"))
                     defenderHasKing = true;
+            if (unit.getOwner().equals(defender))
+                numDefenderPieces++;
+            else if (unit.getOwner().equals(attacker))
+                numAttackerPieces++;
             
             TerritoryAttachment ta = (TerritoryAttachment) t.getAttachment("territoryAttachment");
             //System.out.println(ta.getName());
-            if (ta != null && ta.isKingsExit() && !t.getUnits().isEmpty() && unit.getOwner()==defender)
+            if (ta != null && ta.isKingsExit() && !t.getUnits().isEmpty() && unit.getOwner().equals(defender))
                 return defender;
             
         }
         
-        if (! defenderHasKing)
+        if (! defenderHasKing  ||  numDefenderPieces==0)
             return attacker;
+        
+        if (numAttackerPieces==0)
+            return defender;
+        
             
         return null;
     }
