@@ -29,7 +29,7 @@ public class StrategyGameTest extends TestCase
 
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite();
+		TestSuite suite = new TestSuite(StrategyGameTest.class.getSimpleName());
 		suite.addTestSuite(games.strategy.util.IntegerMapTest.class);
 		suite.addTestSuite(games.strategy.util.MatchTest.class);
 		suite.addTestSuite(games.strategy.engine.xml.ParserTest.class);

@@ -28,7 +28,7 @@ public class KingsTableTest
 	
     public static Test suite()
     {
-        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(KingsTableTest.class.getSimpleName());
         suite.addTestSuite(PlayDelegateTest.class);
         
         return suite;

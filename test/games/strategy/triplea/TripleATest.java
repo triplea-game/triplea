@@ -11,7 +11,7 @@ public class TripleATest
 
     public static Test suite()
     {
-        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(TripleATest.class.getSimpleName());
         suite.addTestSuite(PlaceDelegateTest.class);
         suite.addTestSuite(MoveDelegateTest.class);
         suite.addTestSuite(MoveValidatorTest.class);

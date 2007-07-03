@@ -25,7 +25,7 @@ public class AllTests extends TestCase
 
     public static Test suite()
     {
-        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(AllTests.class.getSimpleName());
         
         //tests for the engine code
         suite.addTest(StrategyGameTest.suite());
