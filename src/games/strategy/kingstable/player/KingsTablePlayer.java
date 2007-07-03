@@ -39,13 +39,30 @@ public class KingsTablePlayer extends AbstractHumanPlayer<KingsTableFrame> imple
     {
     	//if (m_ui!=null && ((KingsTableFrame)m_ui).isGameOver())
         if (m_ui!=null && m_ui.isGameOver())
-    		return;
+            return;
+        /*{
+            CountDownLatch waitToLeaveGame = new CountDownLatch(1);
+            try {
+                
+                //wait();
+                waitToLeaveGame.await();
+            } catch (InterruptedException e) {}
+        }*/
+    		
     	
         if (stepName.endsWith("Play"))
             play();
         else
             throw new IllegalArgumentException("Unrecognized step stepName:" + stepName);
     }
+    
+    /*
+    private boolean gameOver()
+    {
+        IEndTurnDelegate endDel = (IEndTurnDelegate) m_bridge.getRemote();
+        return endDel.isGameOver();
+    }
+    */
     
     private void play() 
     {   
