@@ -26,7 +26,9 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.*;
+import games.strategy.engine.history.*;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -42,13 +44,18 @@ import games.strategy.util.IntegerMap;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
+import javax.imageio.*;
 
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.border.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.table.*;
 
 /**
  * 
@@ -912,6 +919,245 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         validate();
     }
 
+    public boolean saveScreenshot(final HistoryNode node, final File file)
+    {
+        // get current history node. if we are in history view, get the selected node.
+        final MapPanel mapPanel = getMapPanel();
+        boolean retval = true;
+        // get round/step/player from history tree
+        int round = 0;
+        String step = null;
+        PlayerID player = null;
+        Object[] pathFromRoot = node.getPath();
+        for (Object pathNode : pathFromRoot)
+        {
+            HistoryNode curNode = (HistoryNode)pathNode;
+            if(curNode instanceof Round)
+                round = ((Round)curNode).getRoundNo();
+            if(curNode instanceof Step)
+            {
+                player = ((Step)curNode).getPlayerID();
+                step = curNode.getTitle();
+            }
+        }
+
+        // print map panel to image
+        final BufferedImage mapImage = Util.createImage(mapPanel.getImageWidth(), mapPanel.getImageHeight(), false);
+        Graphics2D mapGraphics = mapImage.createGraphics();
+        mapPanel.print(mapGraphics);
+        // overlay title
+        Color title_color = m_uiContext.getMapData().getColorProperty("screenshot.title.color");
+        if(title_color == null)
+            title_color = Color.BLACK;
+        String s_title_x = m_uiContext.getMapData().getProperty("screenshot.title.x");
+        String s_title_y = m_uiContext.getMapData().getProperty("screenshot.title.y");
+        String s_title_size = m_uiContext.getMapData().getProperty("screenshot.title.font.size");
+        int title_x;
+        int title_y;
+        int title_size;
+        try
+        {
+            title_x = Integer.parseInt(s_title_x);
+            title_y = Integer.parseInt(s_title_y);
+            title_size = Integer.parseInt(s_title_size);
+        }
+        catch(NumberFormatException nfe)
+        {
+            // choose safe defaults
+            title_x = 15;
+            title_y = 15;
+            title_size = 15;
+        }
+        mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
+        mapGraphics.setColor(title_color);
+        mapGraphics.drawString("Round "+round+": "+player.getName()+" - "+step, title_x, title_y);
+        // overlay stats, if enabled
+        boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty("screenshot.stats.enabled");
+        if(stats_enabled)
+        {
+            // get screenshot properties from map data
+            Color stats_text_color = m_uiContext.getMapData().getColorProperty("screenshot.text.color");
+            if(stats_text_color == null)
+                stats_text_color = Color.BLACK;
+            Color stats_border_color = m_uiContext.getMapData().getColorProperty("screenshot.border.color");
+            if(stats_border_color == null)
+                stats_border_color = Color.WHITE;
+            String s_stats_x = m_uiContext.getMapData().getProperty("screenshot.stats.x");
+            String s_stats_y = m_uiContext.getMapData().getProperty("screenshot.stats.y");
+            int stats_x;
+            int stats_y;
+            try
+            {
+                stats_x = Integer.parseInt(s_stats_x);
+                stats_y = Integer.parseInt(s_stats_y);
+            }
+            catch(NumberFormatException nfe)
+            {
+                // choose reasonable defaults
+                stats_x = 120;
+                stats_y = 70;
+            }
+
+            // Fetch stats table and save current properties before modifying them
+            // NOTE: This is a bit of a hack, but creating a fresh JTable and
+            // populating it with statsPanel data seemed hard.  This was easier.
+            JTable table = m_statsPanel.getStatsTable();
+            javax.swing.table.TableCellRenderer oldRenderer = table.getDefaultRenderer(Object.class);
+            Font oldTableFont = table.getFont();
+            Font oldTableHeaderFont = table.getTableHeader().getFont();
+            Dimension oldTableSize = table.getSize();
+            Color oldTableFgColor = table.getForeground();
+            Color oldTableSelFgColor = table.getSelectionForeground();
+            int oldCol0Width = table.getColumnModel().getColumn(0).getPreferredWidth();
+            int oldCol2Width = table.getColumnModel().getColumn(2).getPreferredWidth();
+
+            // override some stats table properties for screenshot
+            table.setOpaque(false);
+            table.setFont(new Font("Ariel", Font.BOLD, 15));
+            table.setForeground(stats_text_color);
+            table.setSelectionForeground(table.getForeground());
+            table.setGridColor(stats_border_color);
+            table.getTableHeader().setFont(new Font("Ariel", Font.BOLD, 15));
+            table.getColumnModel().getColumn(0).setPreferredWidth(80);
+            table.getColumnModel().getColumn(2).setPreferredWidth(90);
+            table.setSize(table.getPreferredSize());
+            table.doLayout();
+
+            // initialize table/header dimensions
+            int tableWidth = table.getSize().width;
+            int tableHeight = table.getSize().height;
+            int hdrWidth = tableWidth; // use tableWidth not hdrWidth!
+            int hdrHeight = table.getTableHeader().getSize().height;
+            
+            // create image for capturing table header
+            BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
+            Graphics2D tblHdrGraphics = tblHdrImage.createGraphics();
+
+            // create image for capturing table
+            BufferedImage tblImage = Util.createImage(tableWidth, tableHeight, false);
+            Graphics2D tblGraphics = tblImage.createGraphics();
+            
+            // create image for table background
+            BufferedImage tblBgImage = mapImage.getSubimage(stats_x, stats_y + hdrHeight, tableWidth, tableHeight);
+            m_statsPanel.setStatsBgImage(tblBgImage);
+
+            // create a custom renderer that paints selected cells transparently
+            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+            {
+                setOpaque(false);
+            }
+            };
+
+            // set our custom renderer on the JTable
+            table.setDefaultRenderer(Object.class, renderer);
+
+            // print table and header to images and draw them on map
+            table.getTableHeader().print(tblHdrGraphics);
+            table.print(tblGraphics);
+            mapGraphics.drawImage(tblHdrImage, stats_x, stats_y, null);
+            mapGraphics.drawImage(tblImage, stats_x, stats_y + hdrHeight, null);
+
+            // Clean up objects.  There might be some overkill here, 
+            //  but there were memory leaks that are fixed by some/all of these.
+            tblHdrGraphics.dispose();
+            tblGraphics.dispose();
+            m_statsPanel.setStatsBgImage(null);
+            tblBgImage.flush();
+            tblHdrImage.flush();
+            tblImage.flush();
+
+            // restore table properties
+            table.setDefaultRenderer(Object.class, oldRenderer);
+            table.setOpaque(true);
+            table.setForeground(oldTableFgColor);
+            table.setSelectionForeground(oldTableSelFgColor);
+            table.setFont(oldTableFont);
+            table.getTableHeader().setFont(oldTableHeaderFont);
+            table.setSize(oldTableSize);
+            table.getColumnModel().getColumn(0).setPreferredWidth(oldCol0Width);
+            table.getColumnModel().getColumn(2).setPreferredWidth(oldCol2Width);
+            table.doLayout();
+        }
+
+        // save Image as .png
+        try
+        {
+            ImageIO.write(mapImage, "png", file);
+        } catch (Exception e2)
+        {
+            e2.printStackTrace();
+            JOptionPane.showMessageDialog(TripleAFrame.this, e2.getMessage(), "Error saving Screenshot", JOptionPane.OK_OPTION);
+            retval = false;
+        }
+        // Clean up objects.  There might be some overkill here, 
+        //  but there were memory leaks that are fixed by some/all of these.
+        mapGraphics.dispose();
+        mapImage.flush();
+
+        return retval;
+    }
+
+    public void saveScreenshot(final HistoryNode node)
+    {
+        FileFilter pngFilter = new FileFilter()
+        {
+            public boolean accept(File f)
+            {
+                if(f.isDirectory())
+                    return true;
+                else
+                    return f.getName().endsWith(".png");
+            }
+
+            public String getDescription()
+            {
+                return "Saved Screenshots, *.png";
+            }
+
+        };
+        JFileChooser fileChooser = new SaveGameFileChooser();
+        fileChooser.setFileFilter(pngFilter);
+        int rVal = fileChooser.showSaveDialog(this);
+        if (rVal == JFileChooser.APPROVE_OPTION)
+        {
+            File f = fileChooser.getSelectedFile();
+            // A small warning so users will not over-write a file,
+            if(f.exists())
+            {
+                int choice = JOptionPane.showConfirmDialog(this,
+                        "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+                if (choice != JOptionPane.OK_OPTION)
+                    return;
+            }
+            if(!f.getName().toLowerCase().endsWith(".png"))
+                f = new File(f.getParent(), f.getName() + ".png");
+            final File file = f;
+            Runnable t = new Runnable() {
+                public void run()
+                {
+                    if(saveScreenshot(node, file))
+                        JOptionPane.showMessageDialog(TripleAFrame.this, "Screenshot Saved", "Screenshot Saved", JOptionPane.INFORMATION_MESSAGE);
+                }
+            };
+            if (!SwingUtilities.isEventDispatchThread())
+            {
+                try
+                {
+                    SwingUtilities.invokeAndWait(t);
+                }
+                catch(Exception e2)
+                {
+                    e2.printStackTrace();
+                }
+            }
+            else
+            {
+                t.run();
+            }
+        }
+    }
+
     private void setWidgetActivation()
     {
         m_showHistoryAction.setEnabled(!m_inHistory);
@@ -937,6 +1183,16 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             showGame();
         }
     };
+
+    private AbstractAction m_saveScreenshotAction = new AbstractAction("Save Screenshot")
+    {
+            public void actionPerformed(ActionEvent e)
+            {
+                HistoryNode curNode = m_data.getHistory().getLastNode();
+                saveScreenshot(curNode);
+            }
+    };
+
 
     public Collection<Unit> moveFightersToCarrier(Collection<Unit> fighters, Territory where)
     {
@@ -996,6 +1252,11 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return m_showHistoryAction;
     }
     
+    Action getSaveScreenshotAction()
+    {
+        return m_saveScreenshotAction;
+    }
+
     public UIContext getUIContext()
     {
         return m_uiContext;

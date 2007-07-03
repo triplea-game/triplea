@@ -158,7 +158,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addExportStats(menuGame);
         addExportSetupCharts(menuGame);
         addBattleCalculatorMenu(menuGame);
-        
+        addSaveScreenshot(menuGame);
         
     }
     
@@ -275,6 +275,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         if (getGame() instanceof ClientGame)
             parentMenu.add(showVerifiedDice);
     }
+
+    /**
+     * @param parentMenu
+     */
+    private void addSaveScreenshot(JMenu parentMenu)
+    {
+        parentMenu.add(m_frame.getSaveScreenshotAction());
+    }
     
     /**
      * @param parentMenu
@@ -338,19 +346,19 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     }
     private void addShowUnits(JMenu parentMenu)
     {
-    	final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
-    	showUnitsBox.setSelected(true);
-    	showUnitsBox.addActionListener(new ActionListener()
-    	{
-    		public void actionPerformed(ActionEvent e)
-    		{
-    			boolean tfselected=showUnitsBox.isSelected();
-    			getUIContext().setShowUnits(tfselected);
-    			//games.strategy.triplea.ui.screen.TileManager.store(tfselected);
-    			m_frame.getMapPanel().resetMap();
-    		}
-    	});
-    	parentMenu.add(showUnitsBox);
+        final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
+        showUnitsBox.setSelected(true);
+        showUnitsBox.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                boolean tfselected=showUnitsBox.isSelected();
+                getUIContext().setShowUnits(tfselected);
+                //games.strategy.triplea.ui.screen.TileManager.store(tfselected);
+                m_frame.getMapPanel().resetMap();
+            }
+        });
+        parentMenu.add(showUnitsBox);
     }
 
     /**

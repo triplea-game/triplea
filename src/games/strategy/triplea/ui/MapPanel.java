@@ -677,8 +677,32 @@ public class MapPanel extends ImageScrollerLargeView
 
     };
 
-    
+    // this one is useful for screenshots
+    public void print(Graphics g)
+    {
+        super.print(g);
 
+        //make sure we use the same data for the entire print
+        final GameData gameData = m_data;
+        Rectangle bounds = new Rectangle(0, 0, getImageWidth(), getImageHeight());
+        Collection<Tile> tileList = m_tileManager.getTiles(bounds);
+        Iterator<Tile> tilesIter = tileList.iterator();
+        while (tilesIter.hasNext())
+        {
+            Tile tile = tilesIter.next();
+            LockUtil.acquireLock(tile.getLock());
+            try
+            {
+                Image img = tile.getImage(gameData, m_uiContext.getMapData());
+                if(img != null)
+                    g.drawImage(img, tile.getBounds().x - bounds.x, tile.getBounds().y - bounds.y, this);
+            }
+            finally 
+            {
+                LockUtil.releaseLock(tile.getLock());
+            }
+        }
+    }
         
     public void paint(Graphics g)
     {

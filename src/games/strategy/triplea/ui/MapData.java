@@ -284,7 +284,34 @@ public class MapData
         }
     }
 
-    
+    public boolean getBooleanProperty(String propertiesKey)
+    {
+        return Boolean.valueOf(m_mapProperties.getProperty(propertiesKey, "true")).booleanValue();
+    }
+
+    public Color getColorProperty(String propertiesKey)
+        throws IllegalStateException
+    {
+        String colorString;
+        if(m_mapProperties.getProperty(propertiesKey) != null)
+        {
+            colorString = m_mapProperties.getProperty(propertiesKey);
+            if(colorString.length() != 6)
+                throw new IllegalStateException("Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
+            try
+            {
+                Integer colorInt = Integer.decode("0x" +colorString);
+                Color color = new Color(colorInt.intValue());
+                return color;
+            }
+            catch(NumberFormatException nfe)
+            {
+                throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
+            }
+        }
+        return null;
+    }
+
     public Color getPlayerColor(String playerName)
     {
         //already loaded, just return
@@ -293,36 +320,37 @@ public class MapData
         
         //look in map.properties
         String propertiesKey = "color." + playerName;
-        if(m_mapProperties.getProperty(propertiesKey) != null)
+        Color color = null;
+        try
         {
-            String colorString = m_mapProperties.getProperty(propertiesKey);
-            if(colorString.length() != 6)
-            {
-                throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
-            }
-            try
-            {
-                Integer colorInt = Integer.decode("0x" +colorString);
-                Color color = new Color(colorInt.intValue());
-                m_playerColors.put(playerName, color);
-                return color;
-            }
-            catch(NumberFormatException nfe)
-            {
-                throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
-            }
+            color = getColorProperty(propertiesKey);
+        }
+        catch(Exception e)
+        {
+            throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
+        }
+        if(color == null)
+        {
+            System.out.println("No color defined for " + playerName + ".  Edit map.properties in the map folder to set it");
+            color = m_defaultColours.remove(0);
         }
         
         //dont crash, use one of our default colors
         //its ugly, but usable
-        System.out.println("No color defined for " + playerName + ".  Edit map.properties in the map folder to set it");
-        Color color = m_defaultColours.remove(0);
         m_playerColors.put(playerName, color);
         return color;
 
             
     }
-    
+
+    /**
+     * returns the named property, or null
+     */
+    public String getProperty(String propertiesKey)
+    {
+        return m_mapProperties.getProperty(propertiesKey);
+    }
+
     /**
      * returns the color for impassible territories
      */

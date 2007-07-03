@@ -32,6 +32,7 @@ import games.strategy.util.*;
 import java.awt.GridLayout;
 import java.util.*;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -45,6 +46,8 @@ public class StatPanel extends JPanel
     private final TechTableModel m_techModel;
     private IStat[] m_stats = new IStat[] {new IPCStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
     private GameData m_data;
+    private JTable m_statsTable;
+    private Image m_statsImage;
     
     //sort based on first step
     private final Comparator<PlayerID> m_playerOrderComparator = new Comparator<PlayerID>()
@@ -94,8 +97,17 @@ public class StatPanel extends JPanel
 
         m_dataModel = new StatTableModel();
         m_techModel = new TechTableModel();
+        m_statsImage = null;
+        m_statsTable = new JTable(m_dataModel) {
 
-        JTable table = new JTable(m_dataModel);
+            public void print(Graphics g)
+            {
+                if(m_statsImage != null)
+                    g.drawImage(m_statsImage, 0, 0, null, null);
+                super.print(g);
+            }
+        };
+        JTable table = m_statsTable;
         // Strangely, this is enabled by default
         table.getTableHeader().setReorderingAllowed(false);
 
@@ -133,6 +145,26 @@ public class StatPanel extends JPanel
         m_dataModel.gameDataChanged(null);
         m_techModel.gameDataChanged(null);
 
+    }
+
+    public void setStatsBgImage(Image image)
+    {
+        m_statsImage = image;
+    }
+
+    public StatTableModel getStatsModel()
+    {
+        return m_dataModel;
+    }
+
+    public JTable getStatsTable()
+    {
+        return m_statsTable;
+    }
+
+    public TableModel getTechModel()
+    {
+        return m_techModel;
     }
     
     /**
