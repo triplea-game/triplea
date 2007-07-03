@@ -38,7 +38,8 @@ public class DummyDisplay implements IKingsTableDisplay {
 	/** 
      * @see games.strategy.engine.display.IKingsTableDisplay#setGameOver()
      */
-	public void setGameOver(CountDownLatch waiting) {
+	public void setGameOver()//CountDownLatch waiting) {
+    {
 
 	}
 
