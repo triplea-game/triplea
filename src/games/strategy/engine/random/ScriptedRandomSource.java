@@ -52,6 +52,9 @@ public class ScriptedRandomSource implements IRandomSource
                System.getProperty(SCRIPTED_RANDOM_PROPERTY).trim().length() > 0 ;
     }
     
+    /**
+     * Create a scripted random source from the system property triplea.scriptedRandom.
+     */
     public ScriptedRandomSource()
     {
         String property = System.getProperty(SCRIPTED_RANDOM_PROPERTY, "1,2,3");
@@ -77,6 +80,11 @@ public class ScriptedRandomSource implements IRandomSource
         }
     }
     
+    /**
+     * Create a scripted random from the given numbers.  The scripted random will return
+     * the numbers supplied in order.  When the scripted source runs out of random numbers, it 
+     * starts returning elements from the beginning.
+     */
     public ScriptedRandomSource(int[] numbers)
     {
         m_numbers = numbers;
