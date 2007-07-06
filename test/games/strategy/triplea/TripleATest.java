@@ -18,6 +18,7 @@ public class TripleATest
         suite.addTestSuite(EmailValidatorTest.class);
         suite.addTestSuite(RevisedTest.class);
         suite.addTestSuite(LHTRTest.class);
+        suite.addTestSuite(PacificTest.class);
         suite.addTestSuite(DiceRollTest.class);
         suite.addTestSuite(AIUtilsTest.class);
         suite.addTestSuite(OddsCalculatorTest.class);
