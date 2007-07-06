@@ -803,7 +803,7 @@ Coded by Iron__Cross
             <option name="transportCost" value="3"/>
             <option name="canBlitz" value="true"/>
             <option name="attack" value="3"/>
-            <option name="defense" value="3"/>
+            <option name="defense" value="2"/>
         </attatchment>
         
         <attatchment name="unitAttatchment" attatchTo="fighter"

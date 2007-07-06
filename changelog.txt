@@ -1,3 +1,5 @@
+* japanese tanks defend at 2 in pacific (comradekev)
+
 * non jopanese units defend at 1 in first round of pacific (comradekev)
 
 * fix empty sea zone in gulf of mexico in classic,battleship_row,four_if_by_sea,and iron_blitz (Scarbrow)
