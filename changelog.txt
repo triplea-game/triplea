@@ -1,3 +1,5 @@
+* new vc image (zero pilot)
+
 * japanese tanks defend at 2 in pacific (comradekev)
 
 * non jopanese units defend at 1 in first round of pacific (comradekev)
