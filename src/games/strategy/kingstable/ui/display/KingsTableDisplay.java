@@ -14,12 +14,11 @@
 
 package games.strategy.kingstable.ui.display;
 
-import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.kingstable.ui.KingsTableFrame;
+
+import java.util.Collection;
 
 /**
  * Display for a King's Table game.

@@ -15,11 +15,10 @@
 
 package games.strategy.kingstable.ui.display;
 
-import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplay;
+
+import java.util.Collection;
 
 /**
  * @author Lane Schwartz

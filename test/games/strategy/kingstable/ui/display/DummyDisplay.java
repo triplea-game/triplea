@@ -18,7 +18,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 
 import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Dummy display for a King's Table game, for use in testing.

@@ -38,8 +38,8 @@ public class BetterAI extends AbstractAI {
     private PlayerID m_opponent;
     private PlayerID m_player;
     
-    private PlayerID m_attacker;
-    private PlayerID m_defender;
+    //private PlayerID m_attacker;
+    //private PlayerID m_defender;
     
     /** Algorithms available for use in BetterAI */
     public enum Algorithm { MINIMAX, ALPHABETA }
@@ -88,19 +88,19 @@ public class BetterAI extends AbstractAI {
             }
         }
         
-        m_attacker = null;
-        m_defender = null;
-        for (PlayerID player : m_bridge.getGameData().getPlayerList().getPlayers())
-        {
-            PlayerAttachment pa = (PlayerAttachment) player.getAttachment("playerAttachment");
-            
-            if (pa==null)
-                m_attacker = player;
-            else if (pa.needsKing())
-                m_defender = player;
-            else
-                m_attacker = player;
-        }
+//        m_attacker = null;
+//        m_defender = null;
+//        for (PlayerID player : m_bridge.getGameData().getPlayerList().getPlayers())
+//        {
+//            PlayerAttachment pa = (PlayerAttachment) player.getAttachment("playerAttachment");
+//            
+//            if (pa==null)
+//                m_attacker = player;
+//            else if (pa.needsKing())
+//                m_defender = player;
+//            else
+//                m_attacker = player;
+//        }
         
     }
     
