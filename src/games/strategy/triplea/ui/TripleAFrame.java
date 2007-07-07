@@ -1241,7 +1241,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         }
     };
 
-    private AbstractAction m_saveScreenshotAction = new AbstractAction("Save Screenshot")
+    private AbstractAction m_saveScreenshotAction = new AbstractAction("Save Screenshot...")
     {
             public void actionPerformed(ActionEvent e)
             {
