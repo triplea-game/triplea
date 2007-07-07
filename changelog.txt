@@ -1,4 +1,6 @@
-* in revised, remove connection between sz 25 and 43 (zero pilot)
+* new revised map (zero  pilot)
+
+* in revised, remove connection between 25 Sea Zone and 43 Sea Zone (zero pilot)
 
 * new vc image (zero pilot)
 

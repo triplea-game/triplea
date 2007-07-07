@@ -1,8 +1,0 @@
-Argentina (147,1463)
-Eastern Canada  (264,358)
-Germany (923,523)
-Mexico (3413,829)
-Norway (1075,92)
-Sweden (981,307)
-Venezuela (71,1107)
-Western United States (3320,561)
