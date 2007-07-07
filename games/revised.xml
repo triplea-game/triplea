@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Revised" version="1.3.1"/>
+        <info name="Revised" version="1.3.2"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -300,7 +300,6 @@
                 <connection t1="24 Sea Zone" t2="27 Sea Zone"/>
                 <connection t1="25 Sea Zone" t2="26 Sea Zone"/>
                 <connection t1="25 Sea Zone" t2="42 Sea Zone"/>
-                <connection t1="25 Sea Zone" t2="43 Sea Zone"/>
                 <connection t1="26 Sea Zone" t2="27 Sea Zone"/>
                 <connection t1="27 Sea Zone" t2="28 Sea Zone"/>
                 <connection t1="27 Sea Zone" t2="Union of South Africa"/>

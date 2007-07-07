@@ -1,3 +1,5 @@
+* in revised, remove connection between sz 25 and 43 (zero pilot)
+
 * new vc image (zero pilot)
 
 * japanese tanks defend at 2 in pacific (comradekev)
