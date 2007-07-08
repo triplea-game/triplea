@@ -1,3 +1,21 @@
+* bug fixes (tclayton):
+*  [ 1204024 ] Missing Sea Zone 
+*  [ 1640658 ] fighters in classic attacking on friendly carrier
+*  [ 1652870 ] each phase should begin with focus on tabs panel
+*  [ 1655181 ] clean up history log entries
+*  [ 1659713 ] Java Exception
+*  [ 1661095 ] MovePanel should dynamically select best units for route
+*  [ 1662464 ] null pointer exception when skipping move phase
+*  [ 1662938 ] shadow units don't appear in map overlap sections
+*  [ 1671750 ] improve logic for transport load order
+*  [ 1672743 ] exceptions thrown by delegates get mangled by proxy
+
+* feature [ 1746894 ] Save Screenshot feature (tclayton)
+
+* feature [ 1673208 ] show move validation warnings/errors when moving mouse (tclayton)
+
+* feature [ 1661088 ] code cleanup - implement MovePanel getMovableMatch() method (tclayton)
+
 * new revised map (zero  pilot)
 
 * in revised, remove connection between 25 Sea Zone and 43 Sea Zone (zero pilot)
