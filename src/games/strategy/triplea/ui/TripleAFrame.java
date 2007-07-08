@@ -998,8 +998,10 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             }
         }
 
+        double scale = m_uiContext.getScale();
+
         // print map panel to image
-        final BufferedImage mapImage = Util.createImage(mapPanel.getImageWidth(), mapPanel.getImageHeight(), false);
+        final BufferedImage mapImage = Util.createImage((int)(scale * mapPanel.getImageWidth()), (int)(scale * mapPanel.getImageHeight()), false);
         Graphics2D mapGraphics = mapImage.createGraphics();
         mapPanel.print(mapGraphics);
         // overlay title
@@ -1014,23 +1016,24 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         int title_size;
         try
         {
-            title_x = Integer.parseInt(s_title_x);
-            title_y = Integer.parseInt(s_title_y);
-            title_size = Integer.parseInt(s_title_size);
+            title_x = (int)(Integer.parseInt(s_title_x) * scale);
+            title_y = (int)(Integer.parseInt(s_title_y) * scale);
+            title_size = (int)(Integer.parseInt(s_title_size) * scale);
         }
         catch(NumberFormatException nfe)
         {
             // choose safe defaults
-            title_x = 15;
-            title_y = 15;
-            title_size = 15;
+            title_x = (int)(15 * scale);
+            title_y = (int)(15 * scale);
+            title_size = (int)(15 * scale);
         }
         mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
         mapGraphics.setColor(title_color);
         mapGraphics.drawString("Round "+round+": "+player.getName()+" - "+step, title_x, title_y);
         // overlay stats, if enabled
         boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty("screenshot.stats.enabled");
-        if(stats_enabled)
+        // TODO: scale stats panel for scaled maps; just disable it for now
+        if(stats_enabled && scale == 1)
         {
             // get screenshot properties from map data
             Color stats_text_color = m_uiContext.getMapData().getColorProperty("screenshot.text.color");
@@ -1085,7 +1088,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             int tableHeight = table.getSize().height;
             int hdrWidth = tableWidth; // use tableWidth not hdrWidth!
             int hdrHeight = table.getTableHeader().getSize().height;
-            
+
             // create image for capturing table header
             BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
             Graphics2D tblHdrGraphics = tblHdrImage.createGraphics();
