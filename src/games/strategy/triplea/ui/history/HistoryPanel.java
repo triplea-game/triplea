@@ -38,7 +38,11 @@ public class HistoryPanel extends JPanel
 
     private final HistoryDetailsPanel m_details;
 
-    public HistoryPanel(GameData data, HistoryDetailsPanel details, UIContext uiContext)
+    private HistoryNode m_currentPopupNode;
+
+    private JPopupMenu m_popup;
+
+    public HistoryPanel(GameData data, HistoryDetailsPanel details, JPopupMenu popup, UIContext uiContext)
     {
         m_data = data;
         m_details = details;
@@ -46,7 +50,24 @@ public class HistoryPanel extends JPanel
         setLayout(new BorderLayout());
 
         m_tree = new JTree(m_data.getHistory());
+        m_popup = popup;
+        m_tree.add(m_popup);
+        m_popup.addPopupMenuListener(new PopupMenuListener() {
 
+            public void popupMenuCanceled(PopupMenuEvent pme)
+            {
+                m_currentPopupNode = null;
+            }
+
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent pme)
+            {
+            }
+
+            public void popupMenuWillBecomeVisible(PopupMenuEvent pme)
+            {
+            }
+
+        });
         HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer(uiContext);
         renderer.setLeafIcon(null);
         renderer.setClosedIcon(null);
@@ -65,7 +86,7 @@ public class HistoryPanel extends JPanel
         m_data.getHistory().gotoNode(node);
         m_tree.expandPath(new TreePath(node.getPath()));
         m_tree.setSelectionPath(new TreePath(node.getPath()));
-
+        m_currentPopupNode = null;
         JButton previousButton = new JButton("<-Back");
         previousButton.addActionListener(new ActionListener()
         {
@@ -117,10 +138,35 @@ public class HistoryPanel extends JPanel
                 goToEnd();
             }
 
-        }
+        });
+        m_tree.addMouseListener(new MouseListener() {
 
-        );
+            public void mouseClicked(MouseEvent me)
+            {
+                if(SwingUtilities.isRightMouseButton(me))
+                {
+                    m_currentPopupNode = (HistoryNode)m_tree.getClosestPathForLocation(me.getX(), me.getY()).getLastPathComponent();
+                    m_popup.show(me.getComponent(), me.getX(), me.getY());
+                }
+            }
 
+            public void mouseEntered(MouseEvent me)
+            {
+            }
+
+            public void mouseExited(MouseEvent me)
+            {
+            }
+
+            public void mousePressed(MouseEvent me)
+            {
+            }
+
+            public void mouseReleased(MouseEvent me)
+            {
+            }
+
+        });
         m_tree.addTreeSelectionListener(new TreeSelectionListener()
         {
 
@@ -243,6 +289,23 @@ public class HistoryPanel extends JPanel
     {
         m_details.render(node);
         m_data.getHistory().gotoNode(node);
+    }
+
+    public HistoryNode getCurrentNode()
+    {
+        TreePath path = m_tree.getSelectionPath();
+        HistoryNode curNode = (HistoryNode)path.getLastPathComponent();
+        return curNode;
+    }
+
+    public HistoryNode getCurrentPopupNode()
+    {
+        return m_currentPopupNode;
+    }
+
+    public void clearCurrentPopupNode()
+    {
+        m_currentPopupNode = null;
     }
 
     public void goToEnd()

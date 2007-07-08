@@ -47,13 +47,19 @@ public class MyFormatter
 
     public static String unitsToTextNoOwner(Collection<Unit> units)
     {
+        return unitsToTextNoOwner(units, null);
+    }
+
+    public static String unitsToTextNoOwner(Collection units, PlayerID owner)
+    {
         Iterator<Unit> iter = units.iterator();
         IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 
         while (iter.hasNext())
         {
             Unit unit = (Unit) iter.next();
-            map.add(unit.getUnitType(), 1);
+            if(owner == null || owner.equals(unit.getOwner()))
+                map.add(unit.getUnitType(), 1);
         }
 
         StringBuilder buf = new StringBuilder();

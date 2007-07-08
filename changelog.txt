@@ -10,6 +10,8 @@
 *  [ 1671750 ] improve logic for transport load order
 *  [ 1672743 ] exceptions thrown by delegates get mangled by proxy
 
+* feature [ 1749993 ] new "History Log" feature (tclayton)
+
 * feature [ 1746894 ] Save Screenshot feature (tclayton)
 
 * feature [ 1673208 ] show move validation warnings/errors when moving mouse (tclayton)

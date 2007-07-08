@@ -54,6 +54,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
+import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
@@ -100,6 +101,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -865,6 +867,11 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     }
 
+    public HistoryPanel getHistoryPanel()
+    {
+        return m_historyTree;
+    }
+
     private void showHistory()
     {
         m_inHistory = true;
@@ -902,16 +909,45 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_tabsPanel.add("History", historyDetailPanel);
         m_tabsPanel.add("Stats", m_statsPanel);
         m_tabsPanel.add("Territory", m_details);
-        
 
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(false);
 
         m_historyPanel.removeAll();
         m_historyPanel.setLayout(new BorderLayout());
-
+        // create history tree context menu
+        // actions need to clear the history panel popup state when done
+        JPopupMenu popup = new JPopupMenu();
+        popup.add(new AbstractAction("Generate Summary Log")
+        {
+            public void actionPerformed(ActionEvent ae)
+            {
+                HistoryLog historyLog = new HistoryLog();
+                historyLog.print(m_historyTree.getCurrentPopupNode(), false);
+                m_historyTree.clearCurrentPopupNode();
+                historyLog.setVisible(true);
+            }
+        });
+        popup.add(new AbstractAction("Generate Detailed Log")
+        {
+            public void actionPerformed(ActionEvent ae)
+            {
+                HistoryLog historyLog = new HistoryLog();
+                historyLog.print(m_historyTree.getCurrentPopupNode(), true);
+                m_historyTree.clearCurrentPopupNode();
+                historyLog.setVisible(true);
+            }
+        });
+        popup.add(new AbstractAction("Save Screenshot")
+        {
+            public void actionPerformed(ActionEvent ae)
+            {
+                saveScreenshot(m_historyTree.getCurrentPopupNode());
+                m_historyTree.clearCurrentPopupNode();
+            }
+        });
         JSplitPane split = new JSplitPane();
-        m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel, m_uiContext);
+        m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel, popup, m_uiContext);
         split.setLeftComponent(m_historyTree);
         split.setRightComponent(m_mapAndChatPanel);
         split.setDividerLocation(150);
@@ -1248,7 +1284,11 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     {
             public void actionPerformed(ActionEvent e)
             {
-                HistoryNode curNode = m_data.getHistory().getLastNode();
+                HistoryNode curNode = null;
+                if(m_historyTree == null)
+                    curNode = m_data.getHistory().getLastNode();
+                else
+                    curNode = (HistoryNode)m_historyTree.getCurrentNode();
                 saveScreenshot(curNode);
             }
     };
