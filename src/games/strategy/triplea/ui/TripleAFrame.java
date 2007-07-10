@@ -76,6 +76,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -1040,6 +1041,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         final BufferedImage mapImage = Util.createImage((int)(scale * mapPanel.getImageWidth()), (int)(scale * mapPanel.getImageHeight()), false);
         Graphics2D mapGraphics = mapImage.createGraphics();
         mapPanel.print(mapGraphics);
+
         // overlay title
         Color title_color = m_uiContext.getMapData().getColorProperty("screenshot.title.color");
         if(title_color == null)
@@ -1054,22 +1056,27 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         {
             title_x = (int)(Integer.parseInt(s_title_x) * scale);
             title_y = (int)(Integer.parseInt(s_title_y) * scale);
-            title_size = (int)(Integer.parseInt(s_title_size) * scale);
+            title_size = Integer.parseInt(s_title_size);
         }
         catch(NumberFormatException nfe)
         {
             // choose safe defaults
             title_x = (int)(15 * scale);
             title_y = (int)(15 * scale);
-            title_size = (int)(15 * scale);
+            title_size = 15;
         }
+
+        // everything else should be scaled down onto map image
+        AffineTransform transform = new AffineTransform();
+        transform.scale(scale, scale);
+        mapGraphics.setTransform(transform);
+
         mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
         mapGraphics.setColor(title_color);
         mapGraphics.drawString("Round "+round+": "+player.getName()+" - "+step, title_x, title_y);
         // overlay stats, if enabled
         boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty("screenshot.stats.enabled");
-        // TODO: scale stats panel for scaled maps; just disable it for now
-        if(stats_enabled && scale == 1)
+        if(stats_enabled)
         {
             // get screenshot properties from map data
             Color stats_text_color = m_uiContext.getMapData().getColorProperty("screenshot.text.color");
@@ -1084,14 +1091,14 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             int stats_y;
             try
             {
-                stats_x = Integer.parseInt(s_stats_x);
-                stats_y = Integer.parseInt(s_stats_y);
+                stats_x = (int)(Integer.parseInt(s_stats_x) * scale);
+                stats_y = (int)(Integer.parseInt(s_stats_y) * scale);
             }
             catch(NumberFormatException nfe)
             {
                 // choose reasonable defaults
-                stats_x = 120;
-                stats_y = 70;
+                stats_x = (int)(120 * scale);
+                stats_y = (int)(70 * scale);
             }
 
             // Fetch stats table and save current properties before modifying them
@@ -1129,19 +1136,13 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
             Graphics2D tblHdrGraphics = tblHdrImage.createGraphics();
 
-            // create image for capturing table
-            BufferedImage tblImage = Util.createImage(tableWidth, tableHeight, false);
+            // create image for capturing table (support transparencies)
+            BufferedImage tblImage = Util.createImage(tableWidth, tableHeight, true);
             Graphics2D tblGraphics = tblImage.createGraphics();
             
-            // create image for table background
-            BufferedImage tblBgImage = mapImage.getSubimage(stats_x, stats_y + hdrHeight, tableWidth, tableHeight);
-            m_statsPanel.setStatsBgImage(tblBgImage);
-
             // create a custom renderer that paints selected cells transparently
             DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            {
-                setOpaque(false);
-            }
+                { setOpaque(false); }
             };
 
             // set our custom renderer on the JTable
@@ -1151,14 +1152,13 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             table.getTableHeader().print(tblHdrGraphics);
             table.print(tblGraphics);
             mapGraphics.drawImage(tblHdrImage, stats_x, stats_y, null);
-            mapGraphics.drawImage(tblImage, stats_x, stats_y + hdrHeight, null);
+            mapGraphics.drawImage(tblImage, stats_x, stats_y + (int)(hdrHeight * scale), null);
 
             // Clean up objects.  There might be some overkill here, 
             //  but there were memory leaks that are fixed by some/all of these.
             tblHdrGraphics.dispose();
             tblGraphics.dispose();
             m_statsPanel.setStatsBgImage(null);
-            tblBgImage.flush();
             tblHdrImage.flush();
             tblImage.flush();
 
