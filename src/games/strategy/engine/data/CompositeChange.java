@@ -78,8 +78,35 @@ public class CompositeChange extends Change
 		}
 	}
 
-  public List<Change> getChanges()
-  {
-    return new ArrayList<Change>(m_changes);
-  }
+    /**
+     * 
+     * @return true if this change is empty, or composed of empty changes
+     */
+    public boolean isEmpty() 
+    {        
+        for(Change c : m_changes) 
+        {
+            //non composite change
+            //we are not blank
+            if(!(c instanceof CompositeChange)) 
+            {
+                return false;
+            }
+            //we have a compostie chagne, is it blank
+            else if(!((CompositeChange) c).isEmpty() ) 
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public List<Change> getChanges()
+    {
+      return new ArrayList<Change>(m_changes);
+    }
+    
+    public String toString() {
+        return "CompositeChange <" + m_changes.toString() + ">";
+    }
 }

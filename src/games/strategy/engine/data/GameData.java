@@ -133,7 +133,7 @@ public class GameData implements java.io.Serializable
      * 
      * @return a collection of all units in the game
      */
-	UnitsList getUnits()
+	public UnitsList getUnits()
 	{
         ensureLockHeld();
 	    return m_unitsList;

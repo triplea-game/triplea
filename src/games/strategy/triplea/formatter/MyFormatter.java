@@ -50,7 +50,7 @@ public class MyFormatter
         return unitsToTextNoOwner(units, null);
     }
 
-    public static String unitsToTextNoOwner(Collection units, PlayerID owner)
+    public static String unitsToTextNoOwner(Collection<Unit> units, PlayerID owner)
     {
         Iterator<Unit> iter = units.iterator();
         IntegerMap<UnitType> map = new IntegerMap<UnitType>();

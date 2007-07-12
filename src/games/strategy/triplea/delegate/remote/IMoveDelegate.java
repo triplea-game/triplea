@@ -14,14 +14,18 @@
 
 package games.strategy.triplea.delegate.remote;
 
-import java.util.*;
-
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.UndoableMove;
-import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
-import games.strategy.util.IntegerMap;
+import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Remote interface for MoveDelegate
@@ -74,11 +78,6 @@ public interface IMoveDelegate extends IRemote
      */
     public MustMoveWithDetails getMustMoveWith(Territory start, Collection<Unit> units);
     
-    /**
-     * Get the available transport capacity for a list of transports. 
-     */
-    public IntegerMap<Unit> getAvailableCapacity(Collection<Unit> transports);
-
     /**
      * Get what air units must move before the end of the players turn
      * @return a list of Territories with air units that must move

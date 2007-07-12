@@ -15,15 +15,15 @@
 
 package games.strategy.engine.data;
 
-import java.lang.reflect.Method;
+import games.strategy.util.PropertyUtil;
 
 
 public class ChangeAttachmentChange extends Change
 {
   private final Attachable m_attatchedTo;
   private final String m_attatchmentName;
-  private final String m_newValue;
-  private String m_oldValue;
+  private final Object m_newValue;
+  private Object m_oldValue;
   private final String m_property;
 
   public Attachable getAttatchedTo()
@@ -36,7 +36,7 @@ public class ChangeAttachmentChange extends Change
     return m_attatchmentName;
   }
 
-  ChangeAttachmentChange(IAttachment attatchment, String newValue, String property)
+  ChangeAttachmentChange(IAttachment attatchment, Object newValue, String property)
   {
     if(attatchment == null)
         throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
@@ -47,18 +47,11 @@ public class ChangeAttachmentChange extends Change
     m_newValue = newValue;
     m_property = property;
 
-    try
-     {
-       Method getter = attatchment.getClass().getMethod("get" + capitalizeFirstLetter(property), new Class[0]);
-       m_oldValue = (String) getter.invoke(attatchment, new Object[0]);
-     }
-     catch(Exception e)
-     {
-       e.printStackTrace();
-     }
+    m_oldValue = PropertyUtil.get(property, attatchment);
+    
   }
 
-  public ChangeAttachmentChange(Attachable attatchTo, String attatchmentName, String newValue, String oldValue, String property)
+  public ChangeAttachmentChange(Attachable attatchTo, String attatchmentName, Object newValue, Object oldValue, String property)
   {
     m_attatchmentName = attatchmentName;
     m_attatchedTo = attatchTo;
@@ -69,29 +62,12 @@ public class ChangeAttachmentChange extends Change
   }
 
 
-  private String capitalizeFirstLetter(String aString)
-  {
-    char first = aString.charAt(0);
-    first = Character.toUpperCase(first);
-    return first + aString.substring(1);
-  }
-
-
   public void perform(GameData data)
   {
-    try
-    {
       IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
-      Method setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(m_property), new Class[]
-        {String.class});
-      setter.invoke(attachment, new Object[] {m_newValue});
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-    }
+      PropertyUtil.set(m_property, m_newValue, attachment);
   }
-
+  
 
   public Change invert()
   {

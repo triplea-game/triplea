@@ -169,12 +169,12 @@ public class DelegateTest extends TestCase
 
 	public void assertValid(String string)
 	{
-	    assertNull(string);
+	    assertNull(string,string);
 	}
 	
 	public void assertError(String string)
 	{
-	    assertNotNull(string);
+	    assertNotNull(string,string);
 	}
 	
 }

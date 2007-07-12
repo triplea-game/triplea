@@ -21,8 +21,16 @@ package games.strategy.engine.data;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.net.GUID;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.PropertyUtil;
 
-import java.util.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * All changes made to GameData should be made through changes produced here.
@@ -139,6 +147,11 @@ public class ChangeFactory
         return new ChangeAttachmentChange(attatchment, newValue, property);
     }
 
+    public static Change unitPropertyChange(Unit unit, Object newValue, String propertyName) 
+    {
+        return new UnitPropertyChange(unit,propertyName, newValue );
+    }
+    
     /** Creates new ChangeFactory. No need */
     private ChangeFactory()
     {
@@ -648,3 +661,70 @@ class ProductionFrontierChange extends Change
 
 }
 
+
+class UnitPropertyChange extends Change 
+{
+    private final Unit m_unit;
+    private String m_property;
+    private Object m_newValue;
+    private Object m_oldValue;
+    
+    public UnitPropertyChange(final Unit unit, final String property, final Object newValue)
+    {
+        m_unit = unit;
+        m_property = property.intern();
+        m_newValue = newValue;
+        m_oldValue = PropertyUtil.get(property, unit);        
+    }
+    
+    /**
+     * Use canonical objects to reduce memory use after serialization. 
+     */
+    private Object resolve(Object value) 
+    {
+        if(value instanceof Boolean) { 
+            return Boolean.valueOf(((Boolean) value).booleanValue());
+        } else if(value instanceof Integer) {
+            return Integer.valueOf(( (Integer) value).intValue());
+        }
+        return value;
+    }
+    
+    public UnitPropertyChange(final Unit unit, final String property, final Object newValue, final Object oldValue)
+    {
+        m_unit = unit;
+        //prevent multiple copies of the property names being held in the game
+        m_property = property.intern();
+        m_newValue = newValue;
+        m_oldValue = oldValue;
+    }
+
+    private void readObject(ObjectInputStream stream)
+        throws IOException, ClassNotFoundException
+    {
+        stream.defaultReadObject();
+        m_property = m_property.intern();
+        m_newValue = resolve(m_newValue);
+        m_oldValue = resolve(m_oldValue);
+    }
+    
+    @Override
+    public Change invert()
+    {
+        return new UnitPropertyChange(m_unit, m_property, m_oldValue, m_newValue);
+    }
+
+    @Override
+    protected void perform(GameData data)
+    {
+        PropertyUtil.set(m_property, m_newValue, m_unit);
+        
+    }
+    
+    public String toString() 
+    {
+        return "Property change, unit:" + m_unit + " property:" + m_property + " newValue:" + m_newValue + " oldValue:" + m_oldValue;
+    }
+    
+    
+}

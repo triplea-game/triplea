@@ -53,11 +53,11 @@ public class UndoableMove implements Serializable
     //list of countries we took over
     private Set<Territory> m_conquered = new HashSet<Territory>();
 
-    //maps unit -> transport, both of type Unit
-    private Map<Unit, Unit> m_loaded = new HashMap<Unit, Unit>();
+    //transports unloaded this move
+    private List<Unit> m_loaded = new ArrayList<Unit>();
 
-    //maps unit -> transport, both of type Unit
-    private Map<Unit, Unit> m_unloaded = new HashMap<Unit, Unit>();
+    //transports loaded by this move
+    private List<Unit> m_unloaded = new ArrayList<Unit>();;
 
     private final Route m_route;
     private final Collection<Unit> m_units;
@@ -135,12 +135,12 @@ public class UndoableMove implements Serializable
 
     public void load(Unit unit, Unit transport)
     {
-        m_loaded.put(unit, transport);
+        m_loaded.add(transport);
     }
 
     public void unload(Unit unit, Unit transport)
     {
-        m_unloaded.put(unit, transport);
+        m_unloaded.add(transport);
     }
 
     public void markEndMovement(IntegerMap<Unit> endMovement)
@@ -155,10 +155,8 @@ public class UndoableMove implements Serializable
 
     public void undo(IDelegateBridge bridge, IntegerMap<Unit> movement,
                      GameData data)
-    {
-        TransportTracker transportTracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+    {        
         BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-        
         
 
         bridge.getHistoryWriter().startEvent(bridge.getPlayerID().getName() +
@@ -169,28 +167,7 @@ public class UndoableMove implements Serializable
         bridge.addChange(m_undoChange.invert());
 
         movement.add(m_changedMovement);
-        if (m_loaded != null)
-        {
-            Iterator<Unit> loaded = m_loaded.keySet().iterator();
-            while (loaded.hasNext())
-            {
-                Unit unit = loaded.next();
-                Unit transport = (Unit) m_loaded.get(unit);
-                transportTracker.undoLoad(unit, transport, bridge.getPlayerID());
-
-            }
-        }
-
-        if (m_unloaded != null)
-        {
-            Iterator<Unit> unloaded = m_unloaded.keySet().iterator();
-            while (unloaded.hasNext())
-            {
-                Unit unit = unloaded.next();
-                Unit transport = (Unit) m_unloaded.get(unit);
-                transportTracker.undoUnload(unit, transport, bridge.getPlayerID());
-            }
-        }
+        
         battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data);
 
         //clean up dependencies
@@ -252,14 +229,14 @@ public class UndoableMove implements Serializable
             if( //if the other move has moves that depend on this
                 !Util.intersection(other.getUnits(), this.getUnits() ).isEmpty() ||
                 //if the other move has transports that we are loading
-                !Util.intersection(other.m_units, this.m_loaded.values()).isEmpty() ||
+                !Util.intersection(other.m_units, this.m_loaded).isEmpty() ||
                 //or we are moving through a previously conqueured territory
                 //we should be able to take this out later
                 //we need to add logic for this move to take over the same territories
                 //when the other move is undone
                 !Util.intersection(other.m_conquered, m_route.getTerritories()).isEmpty() ||
                 //or we are unloading transports that have moved in another turn 
-                !Util.intersection(other.m_units, this.m_unloaded.values()).isEmpty()
+                !Util.intersection(other.m_units, this.m_unloaded).isEmpty()
                )
             {
                 m_iDependOn.add(other);
@@ -270,7 +247,7 @@ public class UndoableMove implements Serializable
     
     public boolean wasTransportUnloaded(Unit transport)
     {
-        return m_unloaded.values().contains(transport);
+        return m_unloaded.contains(transport);
     }
 
 }

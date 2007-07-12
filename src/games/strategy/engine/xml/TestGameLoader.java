@@ -6,6 +6,8 @@
 
 package games.strategy.engine.xml;
 
+import games.strategy.engine.data.DefaultUnitFactory;
+import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
@@ -68,7 +70,11 @@ public class TestGameLoader implements IGameLoader
     }
 
     public void shutDown()
-    {}	
-	
+    {}
+    
+    public IUnitFactory getUnitFactory()
+    {
+        return new DefaultUnitFactory();
+    }
 	
 }

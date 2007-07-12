@@ -21,6 +21,11 @@
 
 package games.strategy.triplea;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
@@ -212,7 +217,18 @@ public class TripleA implements IGameLoader
     {
         return ITripleaPlayer.class;
     }
-    
+
+    public IUnitFactory getUnitFactory()
+    {
+       return new IUnitFactory() {
+
+        public Unit createUnit(UnitType type, PlayerID owner, GameData data)
+        {
+            return new TripleAUnit(type,owner,data);
+        } 
+           
+       };
+    }
     
     
 }

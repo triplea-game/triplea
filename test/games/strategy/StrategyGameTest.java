@@ -32,6 +32,8 @@ public class StrategyGameTest extends TestCase
 		TestSuite suite = new TestSuite(StrategyGameTest.class.getSimpleName());
 		suite.addTestSuite(games.strategy.util.IntegerMapTest.class);
 		suite.addTestSuite(games.strategy.util.MatchTest.class);
+		suite.addTestSuite(games.strategy.util.PropertyUtilTest.class);
+        
 		suite.addTestSuite(games.strategy.engine.xml.ParserTest.class);
 		suite.addTestSuite(games.strategy.engine.data.AllianceTrackerTest.class);
 		suite.addTestSuite(games.strategy.engine.data.MapTest.class);

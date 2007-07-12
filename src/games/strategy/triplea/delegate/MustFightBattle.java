@@ -31,6 +31,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -1252,17 +1253,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             // Put units back on their transports
             Iterator<Unit> transportsIter = transports.iterator();
+            
             while (transportsIter.hasNext())
             {
-
+                
                 Unit transport = transportsIter.next();
                 Collection unloaded = m_transportTracker.unloaded(transport);
                 Iterator unloadedIter = unloaded.iterator();
                 while (unloadedIter.hasNext())
                 {
-
                     Unit load = (Unit) unloadedIter.next();
-                    m_transportTracker.undoUnload(load, transport, m_attacker);
+                    Change loadChange =  m_transportTracker.loadTransportChange( (TripleAUnit) transport, load, m_attacker);
+                    change.add(loadChange);
                 }
             }
             change.add(ChangeFactory.moveUnits(dependent.getTerritory(),

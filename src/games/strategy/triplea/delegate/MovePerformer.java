@@ -14,6 +14,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;
@@ -270,7 +271,9 @@ public class MovePerformer implements Serializable
 
                 Unit load = units.next();
                 Unit transport = transporting.get(load);
-                m_moveDelegate.getTransportTracker().load(load, transport, m_currentMove, m_player);
+                Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
+                m_currentMove.addChange(change);
+                m_bridge.addChange(change);
             }
         }
     }

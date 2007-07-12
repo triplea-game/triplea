@@ -21,253 +21,236 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 
 import java.util.*;
 
-
 /**
- *
- * @author  Sean Bridges
+ * 
+ * @author Sean Bridges
  * @version 1.0
- *
- * Tracks which transports are carrying which units.  Also tracks the capacity
- * that has been unloaded.  To reset the unloaded call clearUnloadedCapacity().
+ * 
+ * Tracks which transports are carrying which units. Also tracks the capacity
+ * that has been unloaded. To reset the unloaded call clearUnloadedCapacity().
  */
 public class TransportTracker implements java.io.Serializable
 {
     // compatible with 0.9.0.2 saved games
     private static final long serialVersionUID = -8724881650087210929L;
+
+    public static int getCost(Collection units)
+    {
+        return MoveValidator.getTransportCost(units);
+    }
     
-	public static int getCost(Collection units)
-	{
-		return MoveValidator.getTransportCost(units);
-	}
+    private static void assertTransport(Unit u)
+    {
+        if(UnitAttachment.get(u.getType()).getTransportCapacity() == -1) 
+        {
+            throw new IllegalStateException("Not a transport:" + u);
+        }
+    }
 
-	private Map<Unit, Collection<Unit>> m_transporting = new HashMap<Unit, Collection<Unit>>(); //maps unit -> transporter
-	private Map<Unit, Unit> m_transportedBy = new HashMap<Unit, Unit>(); //maps transporter -> unit collection, inverse of m_transports
-	private Map<Unit, Collection<Unit>> m_unloaded = new HashMap<Unit, Collection<Unit>>();
-	private Map<Unit, ArrayList<Unit>> m_alliedLoadedThisTurn = new HashMap<Unit, ArrayList<Unit>>(); //maps unit->Collection of units
-                                                     //allied transports canot
+    /**
+     * Returns the collection of units that the given transport is transporting.
+     * Could be null.
+     */
+    public Collection<Unit> transporting(Unit transport)
+    {
+        return new ArrayList<Unit>(((TripleAUnit) transport).getTransporting());
+    }
 
-	/**
-	 * Returns the collection of units that the given transport is transporting.
-	 * Could be null.
-	 */
-	public Collection<Unit> transporting(Unit transport)
-	{
-		Collection<Unit> transporting = m_transporting.get(transport);
-		if(transporting == null)
-			return null;
-
-		return new ArrayList<Unit>(transporting);
-	}
-    
     public boolean isTransporting(Unit transport)
     {
-        Collection<Unit> transporting = m_transporting.get(transport);
-        if(transporting == null)
-            return false;
+        return !((TripleAUnit) transport).getTransporting().isEmpty();
+    }
 
-        return !transporting.isEmpty();
+    /**
+     * Returns the collection of units that the given transport has unloaded
+     * this turn. Could be empty.
+     */
+    public Collection<Unit> unloaded(Unit transport)
+    {
+        return ((TripleAUnit) transport).getUnloaded();
+    }
+
+    public Collection<Unit> transportingAndUnloaded(Unit transport)
+    {
+
+        Collection<Unit> rVal = transporting(transport);
+        if (rVal == null)
+            rVal = new ArrayList<Unit>();
+
+        rVal.addAll(unloaded(transport));
+        return rVal;
+    }
+
+    /**
+     * Returns a map of transport -> collection of transported units.
+     */
+    public Map<Unit, Collection<Unit>> transporting(Collection<Unit> units)
+    {
+        Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
+
+        for(Unit transported : units)
+        {
+            Unit transport = transportedBy(transported);
+            
+            Collection<Unit> transporting = null;
+            if(transport != null) 
+                transporting = transporting((TripleAUnit) transport);
+            if (transporting != null)
+            {
+                returnVal.put(transport, transporting);
+            }
+        }
+        return returnVal;
+    }
+
+    
+    /**
+     * Return the transport that holds the given unit. Could be null.
+     */
+    public Unit transportedBy(Unit unit)
+    {
+        return ((TripleAUnit) unit).getTransportedBy();
+    }    
+
+    
+    
+    
+//    
+//    
+//    
+//    
+//    
+//    /**
+//     * Undo the unload
+//     */
+//    public void undoUnload(Unit unit, Unit transport, PlayerID id)
+//    {
+//        loadTransport(transport, unit, id);
+//        Collection unload = m_unloaded.get(transport);
+//        unload.remove(unit);
+//    }
+//
+    public void unload(Unit unit, UndoableMove undoableMove)
+    {
         
+        TripleAUnit transport = (TripleAUnit) transportedBy(unit);
+        assertTransport(transport);
+        if(!transport.getTransporting().contains(unit)) 
+        {
+            throw new IllegalStateException("Not being carried, unit:" + unit + " transport:" + transport);
+        }
+        
+        CompositeChange change = new CompositeChange();
+        //clear the loaded by
+        change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY ) );
+        ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
+        newUnloaded.add(unit);
+        
+        
+        Collection<Unit> newCarrying;
+        if(transport.getTransporting().size() == 1) 
+        {
+            newCarrying = Collections.emptyList();
+        } else
+        {
+            newCarrying = new ArrayList<Unit>(transport.getTransporting());
+            newCarrying.remove(unit);
+        }
+        change.add(ChangeFactory.unitPropertyChange(transport, newCarrying, TripleAUnit.TRANSPORTING ) );
+        change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
+        
+        undoableMove.unload(unit, transport);
+        undoableMove.addChange(change);
+    }
+    
+  
+
+    public Change loadTransportChange(TripleAUnit transport, Unit unit, PlayerID id)
+    {
+        assertTransport(transport);   
+        CompositeChange change = new CompositeChange();
+        //clear the loaded by
+        change.add(ChangeFactory.unitPropertyChange(unit, transport, TripleAUnit.TRANSPORTED_BY ) );
+        
+        
+        Collection<Unit> newCarrying = new ArrayList<Unit>(transport.getTransporting());
+        if(newCarrying.contains(unit)) 
+        {
+            throw new IllegalStateException("Already carrying, transport:" + transport + " unt:" + unit);
+        }
+        newCarrying.add(unit);
+        
+        change.add(ChangeFactory.unitPropertyChange(transport, newCarrying, TripleAUnit.TRANSPORTING ) );
+        
+        change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, TripleAUnit.LOADED_THIS_TURN  ));
+        
+        return change;
+    }
+    
+    public int getAvailableCapacity(Unit unit)
+    {
+        UnitAttachment ua = UnitAttachment.get(unit.getType());
+        if (ua.getTransportCapacity() == -1)
+            return 0;
+        int capacity = ua.getTransportCapacity();
+        int used = getCost(transporting(unit));
+        int unloaded = getCost(unloaded(unit));
+        return capacity - used - unloaded;
     }
     
 
-  
-  /**
-   * Returns the collection of units that the given transport has unloaded this turn.
-   * Could be empty.
-   */
-    public Collection<Unit> unloaded(Unit transport)
-	{
-		Collection<Unit> unloaded = m_unloaded.get(transport);
-		if(unloaded == null)
-			return Collections.emptyList();
-	  // Copy data structure so that someone doesn't nuke it by mistake
-		return new ArrayList<Unit>(unloaded);
-	}
-
-	public Collection<Unit> transportingAndUnloaded(Unit transport)
-	{
-
-		Collection<Unit> rVal = transporting(transport);
-		if(rVal == null)
-			rVal = new ArrayList<Unit>();
-
-		rVal.addAll(unloaded(transport));
-		return rVal;
-	}
-
-	/**
-	 * Returns a map of transport -> collection of transported units.
-	 */
-
-	public Map<Unit, Collection<Unit>> transporting(Collection<Unit> units)
-	{
-		Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
-		Iterator<Unit> iter = units.iterator();
-		while(iter.hasNext())
-		{
-			Unit transported = iter.next();
-			Unit transport = transportedBy(transported);
-			Collection<Unit> transporting = transporting(transport);
-			if(transporting != null)
-			{
-				returnVal.put(transport, transporting);
-			}
-		}
-		return returnVal;
-	}
-    /**
-     * Undo the unload
-     */
-    public void undoUnload(Unit unit, Unit transport, PlayerID id)
+    public Change endOfRoundClearStateChange(GameData data)
     {
-        loadTransport(transport, unit, id);
-        Collection unload = m_unloaded.get(transport);
-        unload.remove(unit);
-    }
-
-	public void unload(Unit unit, UndoableMove undoableMove)
-	{
-		Unit transport = m_transportedBy.get(unit);
-		m_transportedBy.remove(unit);
-		unload(unit, transport);
-
-		Collection carrying = m_transporting.get(transport);
-		carrying.remove(unit);
-        undoableMove.unload(unit, transport);
-	}
-
-	private void unload(Unit unit, Unit transport)
-	{
-		Collection<Unit> unload = m_unloaded.get(transport);
-		if(unload == null)
-		{
-			unload = new ArrayList<Unit>();
-			m_unloaded.put(transport, unload);
-		}
-		unload.add(unit);
-	}
-
-
-    /**
-     * Undoes the load.  This is different from unload(...) which marks the unit as having been unloaded.
-     * Instead this makes it appear that the load never took place.
-     *
-     * @param unit Unit
-     * @param transport Unit
-     */
-    public void undoLoad(Unit unit, Unit transport, PlayerID id)
-    {
-       //an allied transport
-        if(!transport.getOwner().equals(id))
+        CompositeChange change = new CompositeChange();
+        for(Unit unit : data.getUnits().getUnits()) 
         {
-          Collection alliedLoaded = m_alliedLoadedThisTurn.get(transport);
-          alliedLoaded.remove(unit);
+            TripleAUnit taUnit = (TripleAUnit) unit;
+            if(!taUnit.getUnloaded().isEmpty()) 
+            {
+                change.add(ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, TripleAUnit.UNLOADED));
+            }
+            if(taUnit.getWasLoadedThisTurn()) 
+            {
+                change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.LOADED_THIS_TURN));
+            }
+                
         }
-
-        m_transportedBy.remove(transport);
-        Collection carrying = m_transporting.get(transport);
-        carrying.remove(unit);
+        return change;
     }
 
-	public void load(Unit unit, Unit transport, UndoableMove undoableMove, PlayerID id)
-	{
-		loadTransport(transport, unit, id);
-        if(undoableMove != null)
-            undoableMove.load(unit, transport);
-	}
-
-	private void loadTransport(Unit transport, Unit unit, PlayerID id)
-	{
-    m_transportedBy.put(unit, transport);
-		Collection<Unit> carrying = m_transporting.get(transport);
-		if(carrying == null)
-		{
-			carrying = new ArrayList<Unit>();
-			m_transporting.put(transport, carrying);
-		}
-
-		if(!carrying.contains(unit))
-			carrying.add(unit);
-
-    //an allied transport
-    if(!transport.getOwner().equals(id))
+    
+    public Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(Collection<Unit> units)
     {
-      if(!m_alliedLoadedThisTurn.containsKey(transport))
-      {
-        m_alliedLoadedThisTurn.put(transport, new ArrayList<Unit>());
-      }
-      Collection<Unit> units = m_alliedLoadedThisTurn.get(transport);
-      units.add(unit);
+       
+        
+        Collection<Unit> rVal = new ArrayList<Unit>();
+        
+        for(Unit  u : units)
+        {
+            //a unit loaded onto an allied transport
+            //canot be unloaded in the same turn, so
+            //if we check both wasLoadedThisTurn and 
+            //the transport that transports us, we can tell if
+            //we were loaded onto an allied transport
+            //if we are no longer being transported,
+            //then we must have been transported on our own transport
+            TripleAUnit taUnit = (TripleAUnit) u;
+            if(taUnit.getWasLoadedThisTurn() &&
+                taUnit.getTransportedBy() != null &&
+               //an allied transport if the owner of the transport is not the owner of the unit
+              !taUnit.getTransportedBy().getOwner().equals(taUnit.getOwner())
+            )
+            {
+                rVal.add(u);
+            }
+        }
+        
+        return rVal;
     }
-	}
-
-	/**
-	 * Return the transport that holds the given unit.
-	 * Could be null.
-	 */
-	public Unit transportedBy(Unit unit)
-	{
-		return m_transportedBy.get(unit);
-	}
-
-	public String toString()
-	{
-		StringBuilder buf = new StringBuilder();
-		buf.append("transporting:").append(m_transporting).append("\n");
-		buf.append("transportedBy:").append( m_transportedBy).append("\n");
-    buf.append("unloaded:").append(m_unloaded).append("\n");
-    buf.append("m_alliedLoadedThisTurn:").append(m_alliedLoadedThisTurn);
-		return buf.toString();
-	}
-
-	public int getAvailableCapacity(Unit unit)
-	{
-		UnitAttachment ua = UnitAttachment.get(unit.getType());
-		if(ua.getTransportCapacity() == -1)
-			return 0;
-		int capacity = ua.getTransportCapacity();
-		int used = getCost( m_transporting.get(unit));
-		int unloaded = getCost( unloaded(unit) );
-		return capacity - used - unloaded;
-	}
-
-	public void endOfRoundClearState()
-	{
-		m_unloaded.clear();
-    m_alliedLoadedThisTurn.clear();
-	}
-
-  public boolean wereAnyOfTheseLoadedOnAlliedTransportsThisTurn(Collection<Unit> units)
-  {
-    Iterator<Map.Entry<Unit,ArrayList<Unit>>> iter = m_alliedLoadedThisTurn.entrySet().iterator();
-    while (iter.hasNext())
-    {
-      ArrayList<Unit> loadedInAlliedTransports = iter.next().getValue();
-      if(!games.strategy.util.Util.intersection(units, loadedInAlliedTransports).isEmpty())
-        return true;
-    }
-    return false;
-  }
-
-  public Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(Collection<Unit> units)
-  {
-    Collection<Unit> retUnits = new ArrayList<Unit>();
-    Iterator<Map.Entry<Unit,ArrayList<Unit>>> iter = m_alliedLoadedThisTurn.entrySet().iterator();
-    while (iter.hasNext())
-    {
-      ArrayList<Unit> loadedInAlliedTransports = iter.next().getValue();
-      for (Unit unit : loadedInAlliedTransports)
-      {
-          if (units.contains(unit))
-              retUnits.add(unit);
-      }
-    }
-    return retUnits;
-  }
-
 
 }

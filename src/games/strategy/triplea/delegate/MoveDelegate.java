@@ -21,6 +21,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.util.*;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.*;
@@ -46,6 +47,7 @@ import java.util.*;
 public class MoveDelegate implements IDelegate, IMoveDelegate
 {
 
+    public static final String CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND = "Cannot load and unload an allied transport in the same round";
     private static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
     private static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
     private static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
@@ -110,6 +112,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             Collection transports = Match.getMatches(units, Matches.UnitIsTransport);
             Collection land = Match.getMatches(units, Matches.UnitIsLand);
             Iterator landIter = land.iterator();
+            
             while (landIter.hasNext())
             {
                 Unit toLoad = (Unit) landIter.next();
@@ -127,7 +130,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                     int capacity = m_transportTracker.getAvailableCapacity(transport);
                     if (capacity >= cost)
                     {
-                        m_transportTracker.load(toLoad, transport, null, m_player);
+                        m_bridge.addChange(m_transportTracker.loadTransportChange((TripleAUnit) transport, toLoad, m_player));                        
                         found = true;
                         break;
                     }
@@ -135,6 +138,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 if (!found)
                     throw new IllegalStateException("Cannot load all units");
             }
+            
         }
     }
 
@@ -957,7 +961,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 result.setErrorReturnResult("Unloading units must stop where they are unloaded");
 
             for (Unit unit : m_transportTracker.getUnitsLoadedOnAlliedTransportsThisTurn(units))
-                result.addDisallowedUnit("Cannot load and unload an allied transport in the same round",unit);
+                result.addDisallowedUnit(CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND,unit);
             
             Collection<Unit> transports = mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits()).values();
             for(Unit transport : transports)
@@ -1162,6 +1166,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 helper.fireRockets(m_bridge, m_data, m_bridge.getPlayerID());
             }
         }
+        CompositeChange change = new CompositeChange();
 
         //do at the end of the round
         //if we do it at the start of non combat, then
@@ -1169,11 +1174,15 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if (m_nonCombat)
         {
             m_alreadyMoved.clear();
-            m_transportTracker.endOfRoundClearState();
+            change.add(m_transportTracker.endOfRoundClearStateChange(m_data));
             m_ipcsLost.clear();
             m_submergedTracker.clear();
         }
 
+        if(!change.isEmpty()) 
+        {
+            m_bridge.addChange(change);
+        }
     }
 
     private void removeAirThatCantLand()
@@ -1467,15 +1476,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
         return rVal;
         
-    }
-
-    public IntegerMap<Unit> getAvailableCapacity(Collection<Unit> transports)
-    {
-        IntegerMap<Unit> rVal = new IntegerMap<Unit>();
-        for(Unit u : transports) {
-            rVal.put(u, m_transportTracker.getAvailableCapacity(u));
-        }
-        return rVal;
     }
 
 

@@ -378,4 +378,20 @@ public class ChangeTest extends TestCase
 		assertEquals( can.getProductionFrontier(), canProd);
 
 	}
+    
+    public void testBlank() 
+    {
+        CompositeChange compositeChange = new CompositeChange();
+        assertTrue(compositeChange.isEmpty());
+        
+        compositeChange.add(new CompositeChange());
+        assertTrue(compositeChange.isEmpty());
+        
+        Territory can = m_data.getMap().getTerritory("canada");
+        Collection<Unit> units = Collections.emptyList();        
+        compositeChange.add(ChangeFactory.removeUnits(can,units));
+        
+        assertFalse(compositeChange.isEmpty());
+        
+    }
 }

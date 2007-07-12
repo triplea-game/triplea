@@ -12,45 +12,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
 package games.strategy.engine.data;
 
-import java.util.*;
-import games.strategy.net.*;
+import java.io.Serializable;
 
-public class UnitsList implements java.io.Serializable
+public interface IUnitFactory extends Serializable
 {
-    //maps GUID -> Unit
-    //TODO - fix this, all units are never gcd
-    //note, weak hash maps are not serializable
-    private Map<GUID, Unit> m_allUnits;
-
-    Unit get(GUID id)
-    {
-      return m_allUnits.get(id);
-    }
-
-    public void put(Unit unit)
-    {
-      m_allUnits.put(unit.getID(), unit);
-    }
-
-    /*
-      * Gets all units currently in the game
-      */
-     public Collection<Unit> getUnits()
-     {
-       return Collections.unmodifiableCollection(m_allUnits.values());
-     }
-
-     public void refresh()
-     {
-         m_allUnits = new HashMap<GUID, Unit>();
-     }
-
-    UnitsList()
-    {
-        refresh();
-    }
-
+    Unit createUnit(UnitType type, PlayerID owner, GameData data);
 }

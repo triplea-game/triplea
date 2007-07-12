@@ -22,6 +22,8 @@ import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.data.DefaultUnitFactory;
+import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
@@ -204,5 +206,10 @@ public class KingsTable implements IGameLoader
     public Class<? extends IRemote> getRemotePlayerType()
     {
         return IKingsTablePlayer.class;
+    }
+
+    public IUnitFactory getUnitFactory()
+    {
+        return new DefaultUnitFactory();
     }
 }

@@ -1,24 +1,35 @@
 package games.strategy.triplea.ui.history;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.tree.*;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Renderable;
+import games.strategy.engine.history.Round;
+import games.strategy.engine.history.Step;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.dataObjects.MoveDescription;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.util.IntegerMap;
+
+import java.awt.BorderLayout;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import games.strategy.engine.data.*;
-import games.strategy.engine.history.*;
-
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.dataObjects.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
-import java.util.regex.*;
-import games.strategy.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 
 public class HistoryLog extends JFrame
@@ -109,6 +120,7 @@ public class HistoryLog extends JFrame
             System.err.println("No Step node found!");
     }
 
+    @SuppressWarnings("unchecked")
     public void print(HistoryNode printNode, boolean verbose)
     {
         PrintWriter logWriter = m_printWriter;
@@ -214,7 +226,7 @@ public class HistoryLog extends JFrame
                         }
                     } else if (details instanceof Collection)
                     {
-                        Collection objects = (Collection)details;
+                        Collection<Unit> objects = (Collection)details;
                         Iterator objIter = objects.iterator();
                         if(objIter.hasNext())
                         {

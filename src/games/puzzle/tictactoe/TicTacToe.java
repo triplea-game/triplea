@@ -22,6 +22,8 @@ import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.data.DefaultUnitFactory;
+import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -185,4 +187,10 @@ public class TicTacToe implements IGameLoader
     {
         return ITicTacToePlayer.class;
     }
+    
+    public IUnitFactory getUnitFactory()
+    {
+        return new DefaultUnitFactory();
+    }
+
 }

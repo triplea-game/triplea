@@ -42,13 +42,11 @@ public class Unit extends GameDataComponent implements Serializable
    * Creates new Unit.  Should use a call to UnitType.create() instead.
    * owner can be null
    */
-  protected Unit(UnitType type, PlayerID owner, GameData data, boolean isTemp)
+  protected Unit(UnitType type, PlayerID owner, GameData data)
   {
     super(data);
     init(type, owner);
     m_uid = new GUID();
-    if(!isTemp)
-        data.getUnits().put(this);
   }
   
   private void init(UnitType type, PlayerID owner)

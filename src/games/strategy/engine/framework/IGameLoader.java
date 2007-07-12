@@ -15,6 +15,7 @@
 
 package games.strategy.engine.framework;
 
+import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
 
@@ -73,6 +74,14 @@ public interface IGameLoader extends java.io.Serializable
   public Class<? extends IRemote> getRemotePlayerType();
 
   public void shutDown();
+
+  /**
+   * A game may use a subclass of Unit to allow associating data with a particular unit.  The
+   * game does this by specifying a IUnitFactory that should be used to create units.<p>
+   * 
+   * Games that do not want to subclasses of units should simply return a DefaultUnitFactory.<p>
+   */
+  public IUnitFactory getUnitFactory();
   
   
 }

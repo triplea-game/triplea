@@ -20,14 +20,24 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TestDelegateBridge;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.IntegerMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 /**
  *
  * @author  Sean Bridges
@@ -56,7 +66,10 @@ public class MoveDelegateTest extends DelegateTest
   public void setUp() throws Exception
   {
     super.setUp();
+    
+    
     m_bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+    
     m_bridge.setStepName("BritishCombatMove");
     m_delegate = new MoveDelegate();
     m_delegate.initialize("MoveDelegate", "MoveDelegate");
@@ -1274,19 +1287,6 @@ public class MoveDelegateTest extends DelegateTest
     assertEquals(route.getEnd(), russia);
   }
   
-  public void testTransportCapacity() 
-  {
-      IntegerMap<UnitType> map = new IntegerMap<UnitType>();
-      map = new IntegerMap<UnitType>();
-      map.put(transport, 10);
-       
-      Collection<Unit> transports = getUnits(map, northSea);
-     
-      IntegerMap<Unit> capcity = m_delegate.getAvailableCapacity(transports);
-      for(Unit u : capcity.keySet()) 
-      {
-          assertEquals(2, capcity.getInt(u));
-      }
-  }
+
 
 }

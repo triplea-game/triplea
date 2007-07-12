@@ -14,21 +14,38 @@
 
 package games.strategy.triplea.delegate;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.ChangePerformer;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TestDelegateBridge;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.CompositeMatchAnd;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.List;
+
+import junit.framework.TestCase;
 
 public class RevisedTest extends TestCase 
 {
@@ -157,6 +174,95 @@ public class RevisedTest extends TestCase
         assertNull(moveDelegate.move(russia.getUnits().getMatches(Matches.UnitIsAir), r) );
         //make sure they can't land, they can't because the territory was conquered
         assertEquals(1, moveDelegate.getTerritoriesWhereAirCantLand().size());
+        
+        
+    }
+    
+    public void testLoadUndo()
+    {
+        Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
+        Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
+        
+        UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, germans, (IDisplay) new DummyDisplay());
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        
+        Route eeToSz5 = new Route();
+        eeToSz5.setStart(eastEurope);
+        eeToSz5.add(sz5);
+
+        //load the transport in the baltic
+        List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
+        assertEquals(2, infantry.size());
+        
+        TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+        
+        String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+        assertNull(error,error);
+
+        
+        
+        //make sure it was laoded
+        assertTrue(transport.getTransporting().containsAll(infantry));
+        assertTrue(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
+        
+        //udo the move
+        moveDelegate.undoMove(0);
+        
+        //make sure that loaded is not set
+        assertTrue(transport.getTransporting().isEmpty());
+        assertFalse(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
+
+        
+    }
+    
+    public void testLoadUnloadAlliedTransport() 
+    {
+        //you cant load and unload an allied transport the same turn
+        
+        UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+        
+        Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
+        //add japanese infantry to eastern europe
+        PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
+        Change change = ChangeFactory.addUnits(eastEurope, infantryType.create(1, japanese));
+        new ChangePerformer(m_data).perform(change);
+        
+        
+        Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
+        
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, japanese, (IDisplay) new DummyDisplay());
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        
+        Route eeToSz5 = new Route();
+        eeToSz5.setStart(eastEurope);
+        eeToSz5.add(sz5);
+
+        //load the transport in the baltic
+        List<Unit> infantry = eastEurope.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsOfType(infantryType), Matches.unitIsOwnedBy(japanese)));
+        assertEquals(1, infantry.size());
+        
+        TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+        
+        String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+        assertNull(error,error);
+     
+        //try to unload
+        Route sz5ToEee = new Route();
+        sz5ToEee.setStart(sz5);
+        sz5ToEee.add(eastEurope);
+        
+        error = moveDelegate.move(infantry, sz5ToEee);
+        assertEquals(MoveDelegate.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, error);
         
         
     }
