@@ -135,7 +135,7 @@ public class TransportTracker implements java.io.Serializable
 //        unload.remove(unit);
 //    }
 //
-    public void unload(Unit unit, UndoableMove undoableMove)
+    public Change unloadTransportChange(TripleAUnit unit, Territory territory, PlayerID id)
     {
         
         TripleAUnit transport = (TripleAUnit) transportedBy(unit);
@@ -164,8 +164,7 @@ public class TransportTracker implements java.io.Serializable
         change.add(ChangeFactory.unitPropertyChange(transport, newCarrying, TripleAUnit.TRANSPORTING ) );
         change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
         
-        undoableMove.unload(unit, transport);
-        undoableMove.addChange(change);
+        return change;
     }
     
   
@@ -233,7 +232,7 @@ public class TransportTracker implements java.io.Serializable
         for(Unit  u : units)
         {
             //a unit loaded onto an allied transport
-            //canot be unloaded in the same turn, so
+            //cannot be unloaded in the same turn, so
             //if we check both wasLoadedThisTurn and 
             //the transport that transports us, we can tell if
             //we were loaded onto an allied transport

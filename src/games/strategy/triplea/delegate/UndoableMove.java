@@ -53,11 +53,11 @@ public class UndoableMove implements Serializable
     //list of countries we took over
     private Set<Territory> m_conquered = new HashSet<Territory>();
 
-    //transports unloaded this move
-    private List<Unit> m_loaded = new ArrayList<Unit>();
-
     //transports loaded by this move
-    private List<Unit> m_unloaded = new ArrayList<Unit>();;
+    private Set<Unit> m_loaded = new HashSet<Unit>();
+
+    //transports unloaded by this move
+    private Set<Unit> m_unloaded = new HashSet<Unit>();;
 
     private final Route m_route;
     private final Collection<Unit> m_units;
@@ -133,12 +133,12 @@ public class UndoableMove implements Serializable
         m_units = units;
     }
 
-    public void load(Unit unit, Unit transport)
+    public void load(Unit transport)
     {
         m_loaded.add(transport);
     }
 
-    public void unload(Unit unit, Unit transport)
+    public void unload(Unit transport)
     {
         m_unloaded.add(transport);
     }

@@ -257,7 +257,11 @@ public class MovePerformer implements Serializable
             while (unitIter.hasNext())
             {
                 Unit load = unitIter.next();
-                m_moveDelegate.getTransportTracker().unload(load, m_currentMove);
+                Unit transport = transporting.get(load);
+                Change change = m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) load, m_currentMove.getRoute().getEnd(), m_player);
+                m_currentMove.addChange(change);
+                m_currentMove.unload(transport);
+                m_bridge.addChange(change);
             }
         }
 
@@ -273,6 +277,7 @@ public class MovePerformer implements Serializable
                 Unit transport = transporting.get(load);
                 Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
                 m_currentMove.addChange(change);
+                m_currentMove.load(transport);
                 m_bridge.addChange(change);
             }
         }
