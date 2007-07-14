@@ -1584,17 +1584,18 @@ public class MovePanel extends ActionPanel
             }
             else if(me.isControlDown())
             {
-                m_selectedUnits.addAll(units);
+                m_selectedUnits.addAll(Match.getMatches(units, unitsToMoveMatch));
             }
             //add one
             else
             {
                 // best candidate unit for route is chosen dynamically later
                 // check for alt key - add 1/10 of total units (useful for splitting large armies)
-                int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(units.size() / 10)) : 1;
+                Collection<Unit> unitsToMove = Match.getMatches(units, unitsToMoveMatch);
+                int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(unitsToMove.size() / 10)) : 1;
                 int addCount = 0;
                 
-                for(Unit unit : units)
+                for(Unit unit : unitsToMove)
                 {
                     if(!m_selectedUnits.contains(unit))
                     {
@@ -1634,7 +1635,8 @@ public class MovePanel extends ActionPanel
             {
                 if(me.isControlDown())
                     m_selectedUnits.clear();
-                else {
+                else if (!unitsWithoutDependents.isEmpty())
+                {
                     // check for alt key - remove 1/10 of total units (useful for splitting large armies)
                     int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(unitsWithoutDependents.size() / 10)) : 1;
                     
