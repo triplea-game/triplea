@@ -167,7 +167,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
         Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
         int cost = rolls * Constants.TECH_ROLL_COST;
 
-        String transcriptText = m_bridge.getPlayerID().getName() + " spends "
+        String transcriptText = m_bridge.getPlayerID().getName() + " spend "
                 + cost + " on tech rolls";
         m_bridge.getHistoryWriter().startEvent(transcriptText);
 

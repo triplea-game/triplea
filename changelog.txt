@@ -1,6 +1,8 @@
 * bug fixes (tclayton):
 *  [ 1204024 ] Missing Sea Zone 
+*  [ 1510049 ] unloading troops bug
 *  [ 1640658 ] fighters in classic attacking on friendly carrier
+*  [ 1641051 ] Transport Unloading Bug
 *  [ 1652870 ] each phase should begin with focus on tabs panel
 *  [ 1655181 ] clean up history log entries
 *  [ 1659713 ] Java Exception
@@ -9,6 +11,8 @@
 *  [ 1662938 ] shadow units don't appear in map overlap sections
 *  [ 1671750 ] improve logic for transport load order
 *  [ 1672743 ] exceptions thrown by delegates get mangled by proxy
+*  [ 1696749 ] Unload problem from allied transport after undo
+*  [ 1753866 ] load and unload should have default selections
 
 * feature [ 1749993 ] new "History Log" feature (tclayton)
 

@@ -97,7 +97,11 @@ public class OddsCalculator
 
             
 
-            TransportTracker transportTracker = new TransportTracker();
+            // isFourthEdition flag is only relevant for tracking unloads
+            boolean isFourthEdition = false;
+            // assume we are in combat phase
+            boolean isNonCombat = false;
+            TransportTracker transportTracker = new TransportTracker(isFourthEdition, isNonCombat);
             DummyDelegateBridge bridge = new DummyDelegateBridge(m_attacker, m_data, m_keepOneAttackingLandUnit);
             MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker, transportTracker);
             battle.setHeadless(true);

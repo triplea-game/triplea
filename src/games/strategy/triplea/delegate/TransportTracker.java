@@ -52,6 +52,18 @@ public class TransportTracker implements java.io.Serializable
         }
     }
 
+    private boolean m_isFourthEdition = false;
+    private boolean m_isNonCombat = false;
+
+    /**
+     * Constructor.
+     */
+    public TransportTracker(boolean isFourthEdition, boolean isNonCombat)
+    {
+        m_isFourthEdition = isFourthEdition;
+        m_isNonCombat = isNonCombat;
+    }
+
     /**
      * Returns the collection of units that the given transport is transporting.
      * Could be null.
@@ -151,6 +163,9 @@ public class TransportTracker implements java.io.Serializable
         ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
         newUnloaded.add(unit);
         
+        change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
+        if (!m_isNonCombat)
+            change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
         
         Collection<Unit> newCarrying;
         if(transport.getTransporting().size() == 1) 
@@ -217,7 +232,14 @@ public class TransportTracker implements java.io.Serializable
             {
                 change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.LOADED_THIS_TURN));
             }
-                
+            if(taUnit.getUnloadedTo() != null) 
+            {
+                change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.UNLOADED_TO));
+            }
+            if(taUnit.getWasUnloadedInCombatPhase()) 
+            {
+                change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+            }
         }
         return change;
     }
@@ -250,6 +272,70 @@ public class TransportTracker implements java.io.Serializable
         }
         
         return rVal;
+    }
+
+    public boolean hasTransportUnloadedInPreviousPhase(Unit transport)
+    {
+        Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
+        if (unloaded.isEmpty())
+            return false;
+
+        // See if transport has unloaded anywhere yet
+        for (Unit u : unloaded)
+        {
+            TripleAUnit taUnit = (TripleAUnit) u;
+            // cannot unload in two different phases 
+            if (taUnit.getWasUnloadedInCombatPhase() == m_isNonCombat)
+                return true;
+        }
+        return false;
+    }
+
+    // In 4th edition and LHTR, a transport can never unload into 
+    // multiple territories in a given turn.
+    // In 2nd edition a transport can unload to multiple territories in 
+    // non-combat phase, provided they are both adjacent to the sea zone.
+    public boolean isTransportUnloadRestrictedToAnotherTerritory(Unit transport, Territory territory)
+    {
+        Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
+        if (unloaded.isEmpty())
+            return false;
+
+        // See if transport has unloaded anywhere yet
+        for (Unit u : unloaded)
+        {
+            TripleAUnit taUnit = (TripleAUnit) u;
+            if (m_isFourthEdition)
+            {
+                // cannot unload to two different territories
+                if (!taUnit.getUnloadedTo().equals(territory))
+                    return true;
+            }
+            else
+            {
+                // cannot unload to two different territories in combat phase
+                if (!m_isNonCombat 
+                    && !taUnit.getUnloadedTo().equals(territory))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    
+    // This method should be called after isTransportUnloadRestrictedToAnotherTerritory()
+    // returns false, in order to populate the error message.
+    // However, we only need to call this method to determine why we can't 
+    // unload an additional unit.  Since transports only hold up to two units,
+    // we only need to return one territory, not multiple territories.
+    public Territory getTerritoryTransportHasUnloadedTo(Unit transport)
+    {
+        Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
+        if(unloaded.isEmpty())
+            return null;
+
+        Iterator<Unit> iter = unloaded.iterator();
+        return ((TripleAUnit) iter.next()).getUnloadedTo();
     }
 
 }

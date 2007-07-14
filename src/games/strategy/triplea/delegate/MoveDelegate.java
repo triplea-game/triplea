@@ -59,7 +59,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     private PlayerID m_player;
     private boolean m_firstRun = true;
     private boolean m_nonCombat;
-    private TransportTracker m_transportTracker = new TransportTracker();
+    private TransportTracker m_transportTracker;
     private IntegerMap<Unit> m_alreadyMoved = new IntegerMap<Unit>();
     private IntegerMap<Territory> m_ipcsLost = new IntegerMap<Territory>();
     private SubmergedTracker m_submergedTracker = new SubmergedTracker();
@@ -95,6 +95,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     private void firstRun()
     {
         m_firstRun = false;
+        m_transportTracker = new TransportTracker(isFourEdition(), m_nonCombat);
         //check every territory
         Iterator allTerritories = m_data.getMap().getTerritories().iterator();
         while (allTerritories.hasNext())
@@ -590,11 +591,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             return result.setErrorReturnResult("No units");
         
         
-    	for (Unit unit : units)
-    	{
-    	    if (m_submergedTracker.isSubmerged(unit))
-    	        result.addDisallowedUnit("Cannot move submerged units", unit);
-    	}
+        for (Unit unit : units)
+        {
+            if (m_submergedTracker.isSubmerged(unit))
+                result.addDisallowedUnit("Cannot move submerged units", unit);
+        }
 
         //make sure all units are actually in the start territory
         if (!route.getStart().getUnits().containsAll(units))
@@ -618,12 +619,12 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         {
             moveTest = units;
         }
-	// check units individually
-	for (Unit unit : moveTest)
-	{
-	    if (!MoveValidator.hasEnoughMovement(unit, m_alreadyMoved, route.getLength()))
+        // check units individually
+        for (Unit unit : moveTest)
+        {
+            if (!MoveValidator.hasEnoughMovement(unit, m_alreadyMoved, route.getLength()))
                 result.addDisallowedUnit("Not all units have enough movement",unit);
-	}
+        }
 
         //if there is a neutral in the middle must stop unless all are air
         if (MoveValidator.hasNeutralBeforeEnd(route))
@@ -958,20 +959,28 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if (MoveValidator.isUnload(route))
         {
             if (route.getLength() > 1)
-                result.setErrorReturnResult("Unloading units must stop where they are unloaded");
+                return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
 
             for (Unit unit : m_transportTracker.getUnitsLoadedOnAlliedTransportsThisTurn(units))
                 result.addDisallowedUnit(CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND,unit);
-            
+
             Collection<Unit> transports = mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits()).values();
             for(Unit transport : transports)
             {
-                Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(transport);
-                if(alreadyUnloadedTo != null && ! alreadyUnloadedTo.equals(route.getEnd()))
+                // check whether transport has already unloaded
+                if (m_transportTracker.hasTransportUnloadedInPreviousPhase(transport))
+                {
+                    for (Unit unit : m_transportTracker.transporting(transport))
+                        result.addDisallowedUnit("Transport has already unloaded units in a previous phase", unit);
+                }
+                // check whether transport is restricted to another territory
+                else if (m_transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
+                {
+                    Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(transport);
                     for (Unit unit : m_transportTracker.transporting(transport))
                         result.addDisallowedUnit("Transport has already unloaded units to " + alreadyUnloadedTo.getName(), unit);
+                }
             }
-            
         }
 
         //if we are land make sure no water in route except for transport
@@ -986,7 +995,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         //make sure that the only the first or last territory is land
         //dont want situation where they go sea land sea
         if (MoveValidator.hasLand(route) && !(route.getStart().isWater() || route.getEnd().isWater()))
-            result.setErrorReturnResult("Invalid move, only start or end can be land when route has water.");
+            return result.setErrorReturnResult("Invalid move, only start or end can be land when route has water.");
 
         //simply because I dont want to handle it yet
         //checks are done at the start and end, dont want to worry about just
@@ -1022,7 +1031,37 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         if (MoveValidator.isLoad(route))
         {
+
+            if (route.getLength() != 1)
+                return result.setErrorReturnResult("Units cannot move before loading onto transports");
+
+            CompositeMatch<Unit> enemyNonSubmerged = new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_player, m_data), new InverseMatch<Unit>(Matches
+                    .unitIsSubmerged(m_data)));
+            if (route.getEnd().getUnits().someMatch(enemyNonSubmerged))
+                return result.setErrorReturnResult("Cannot load when enemy sea units are present");
+
             Map<Unit,Unit> unitsToTransports = mapTransports(route, land, transportsToLoad);
+
+            Iterator iter = units.iterator();
+            while (iter.hasNext())
+            {
+                Unit unit = (Unit) iter.next();
+                if (m_alreadyMoved.getInt(unit) != 0)
+                    result.addDisallowedUnit("Units cannot move before loading onto transports",unit);
+                Unit transport = unitsToTransports.get(unit);
+                if (transport == null)
+                    continue;
+                if (m_transportTracker.hasTransportUnloadedInPreviousPhase(transport))
+                {
+                    result.addDisallowedUnit("Transport has already unloaded units in a previous phase", unit);
+                }
+                else if (m_transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
+                {
+                    Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(transport);
+                    result.addDisallowedUnit("Transport has already unloaded units to " + alreadyUnloadedTo.getName(), unit);
+                }
+            }
+
             if (! unitsToTransports.keySet().containsAll(land))
             {
                 // some units didn't get mapped to a transport
@@ -1054,21 +1093,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 }
             }
 
-            if (route.getLength() != 1)
-                return result.setErrorReturnResult("Units cannot move before loading onto transports");
-
-            Iterator iter = units.iterator();
-            while (iter.hasNext())
-            {
-                Unit unit = (Unit) iter.next();
-                if (m_alreadyMoved.getInt(unit) != 0)
-                    result.addDisallowedUnit("Units cannot move before loading onto transports",unit);
-            }
-
-            CompositeMatch<Unit> enemyNonSubmerged = new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_player, m_data), new InverseMatch<Unit>(Matches
-                    .unitIsSubmerged(m_data)));
-            if (route.getEnd().getUnits().someMatch(enemyNonSubmerged))
-                return result.setErrorReturnResult("Cannot load when enemy sea units are present");
         }
 
         return result;

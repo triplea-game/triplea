@@ -20,6 +20,7 @@ import java.util.List;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 
@@ -27,9 +28,9 @@ import games.strategy.engine.data.UnitType;
 /**
  * Extended unit for triplea games.<p>
  * 
- * As with all game data components, changes made to this unit must be moade
+ * As with all game data components, changes made to this unit must be made
  * through a Change instance.  Calling setters on this directly will
- * not serialze the changes across the network.<p>
+ * not serialize the changes across the network.<p>
  * 
  * @author sgb
  */
@@ -40,6 +41,8 @@ public class TripleAUnit extends Unit
     public static final String TRANSPORTING = "transporting";
     public static final String UNLOADED = "unloaded";
     public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
+    public static final String UNLOADED_TO = "unloadedTo";
+    public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
     
     //the transport that is currently transporting us
     private Unit m_transportedBy = null;
@@ -49,7 +52,10 @@ public class TripleAUnit extends Unit
     private List<Unit> m_unloaded = Collections.emptyList();
     //was this unit loaded this turn?
     private Boolean m_wasLoadedThisTurn = Boolean.FALSE;
-    
+    //the territory this unit was unloaded to this turn
+    private Territory m_unloadedTo = null;
+    //was this unit unloaded in combat phase this turn?
+    private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE;
     
     public static TripleAUnit get(Unit u) 
     {
@@ -117,7 +123,12 @@ public class TripleAUnit extends Unit
         }
 
     }
-    
+
+    public boolean getWasLoadedThisTurn() 
+    {
+        return m_wasLoadedThisTurn.booleanValue();
+    }
+
     /**
      * private since this should only be called by UnitPropertyChange
      */
@@ -127,12 +138,33 @@ public class TripleAUnit extends Unit
         m_wasLoadedThisTurn = Boolean.valueOf(value.booleanValue());
     }
     
-    
-
-    public boolean getWasLoadedThisTurn() 
+    public Territory getUnloadedTo()
     {
-        return m_wasLoadedThisTurn.booleanValue();
+        return m_unloadedTo;
     }
-    
+
+    /**
+     * private since this should only be called by UnitPropertyChange
+     */
+    @SuppressWarnings("unused")
+    public void setUnloadedTo(Territory unloadedTo)
+    {
+        m_unloadedTo = unloadedTo;
+    }
+
+    public boolean getWasUnloadedInCombatPhase()
+    {
+        return m_wasUnloadedInCombatPhase.booleanValue();
+    }
+
+    /**
+     * private since this should only be called by UnitPropertyChange
+     */
+    @SuppressWarnings("unused")
+    public void setWasUnloadedInCombatPhase(Boolean value)
+    {
+        m_wasUnloadedInCombatPhase = Boolean.valueOf(value.booleanValue());
+    }
+
 
 }
