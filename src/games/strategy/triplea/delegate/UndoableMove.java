@@ -249,5 +249,15 @@ public class UndoableMove implements Serializable
     {
         return m_unloaded.contains(transport);
     }
+    
+    public boolean wasTransportLoaded(Unit transport) 
+    {
+        return m_loaded.contains(transport);
+    }
 
+    public String toString()
+    {
+        return "UndoableMove index;" + m_index + " description:" + m_description;
+    }
+    
 }

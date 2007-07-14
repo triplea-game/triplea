@@ -205,6 +205,9 @@ public class RevisedTest extends TestCase
         
         String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
         assertNull(error,error);
+        
+        //make sure the transport was loaded
+        assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
 
         
         
@@ -264,6 +267,133 @@ public class RevisedTest extends TestCase
         error = moveDelegate.move(infantry, sz5ToEee);
         assertEquals(MoveDelegate.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, error);
         
+        
+    }
+    
+    public void testUnloadMultipleTerritories()
+    {
+        //in revised a transport may only unload to 1 territory.
+        
+        Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
+        Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
+        
+        UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, germans, (IDisplay) new DummyDisplay());
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        
+        Route eeToSz5 = new Route();
+        eeToSz5.setStart(eastEurope);
+        eeToSz5.add(sz5);
+
+        //load the transport in the baltic
+        List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
+        assertEquals(2, infantry.size());
+        
+        TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+        
+        String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+        assertNull(error,error);
+
+        
+        
+        //unload one infantry to Norway
+        Territory norway = m_data.getMap().getTerritory("Norway");
+        Route sz5ToNorway = new Route();
+        sz5ToNorway.setStart(sz5);
+        sz5ToNorway.add(norway);
+        error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
+        assertNull(error,error);
+
+        //make sure the transport was unloaded
+        assertTrue(moveDelegate.getMovesMade().get(1).wasTransportUnloaded(transport));
+
+        
+        //try to unload the other infantry somewhere else, an error occurs
+        Route sz5ToEE = new Route();
+        sz5ToEE.setStart(sz5);
+        sz5ToEE.add(eastEurope);
+        
+        error = moveDelegate.move(infantry.subList(1, 2), sz5ToEE);
+        assertNotNull(error,error);
+        assertTrue(error.startsWith(MoveDelegate.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO));
+        
+        //end the round
+        moveDelegate.end();
+        bridge.setStepName("NonCombatMove");
+        moveDelegate.start(bridge, m_data);
+        moveDelegate.end();
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+        
+        //a new round, the move should work
+        moveDelegate.start(bridge, m_data);
+        error = moveDelegate.move(infantry.subList(1, 2), sz5ToEE);
+        assertNull(error);
+        
+    }
+    
+    public void testUnloadInPreviousPhase()
+    {
+        
+        //a transport may not unload in both combat and non combat
+        
+        Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
+        Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
+        
+        UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        TestDelegateBridge bridge = new TestDelegateBridge(m_data, germans, (IDisplay) new DummyDisplay());
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        
+        Route eeToSz5 = new Route();
+        eeToSz5.setStart(eastEurope);
+        eeToSz5.add(sz5);
+
+        //load the transport in the baltic
+        List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
+        assertEquals(2, infantry.size());
+        
+        TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+        
+        String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+        assertNull(error,error);
+
+        
+        
+        //unload one infantry to Norway
+        Territory norway = m_data.getMap().getTerritory("Norway");
+        Route sz5ToNorway = new Route();
+        sz5ToNorway.setStart(sz5);
+        sz5ToNorway.add(norway);
+        error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
+        assertNull(error,error);
+
+        assertTrue( ((TripleAUnit) infantry.get(0)).getWasUnloadedInCombatPhase());
+        
+        //start non combat
+        moveDelegate.end();
+        bridge.setStepName("germanNonCombatMove");
+        //the transport tracker relies on the step name
+        while(!m_data.getSequence().getStep().getName().equals("germanNonCombatMove")) {
+            m_data.getSequence().next();
+        }
+        moveDelegate.start(bridge, m_data);
+        
+        //try to unload the other infantry somewhere else, an error occurs
+        error = moveDelegate.move(infantry.subList(1, 2), sz5ToNorway);
+        assertNotNull(error,error);
+        assertTrue(error.startsWith(MoveDelegate.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE));
         
     }
     

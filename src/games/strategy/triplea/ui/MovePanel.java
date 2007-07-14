@@ -27,7 +27,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
@@ -41,10 +40,10 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
-import games.strategy.util.IntegerMap;
 
 import java.awt.Image;
 import java.awt.Point;
@@ -56,13 +55,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -149,7 +147,7 @@ public class MovePanel extends ActionPanel
         super.display(id);
         m_nonCombat = nonCombat;
 
-        m_transportTracker = new TransportTracker(isFourEdition(), nonCombat);
+        m_transportTracker = new TransportTracker();
         
         SwingUtilities.invokeLater(new Runnable()
         {
@@ -174,11 +172,6 @@ public class MovePanel extends ActionPanel
         
         });
         
-    }
-
-    private boolean isFourEdition()
-    {
-        return getData().getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
     private IMoveDelegate getDelegate()
@@ -796,7 +789,7 @@ public class MovePanel extends ActionPanel
           while (selectedIter.hasNext())
           {
               Unit selected = selectedIter.next();
-              Collection<Unit> transporting = (Collection) m_mustMoveWithDetails.getMustMoveWith().get(transport);
+              Collection<Unit> transporting = (Collection<Unit>) m_mustMoveWithDetails.getMustMoveWith().get(transport);
 
               for (Unit candidate : transporting)
               {

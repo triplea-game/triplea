@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 
@@ -34,11 +35,9 @@ import java.util.*;
  * Tracks which transports are carrying which units. Also tracks the capacity
  * that has been unloaded. To reset the unloaded call clearUnloadedCapacity().
  */
-public class TransportTracker implements java.io.Serializable
+public class TransportTracker
 {
-    // compatible with 0.9.0.2 saved games
-    private static final long serialVersionUID = -8724881650087210929L;
-
+    
     public static int getCost(Collection units)
     {
         return MoveValidator.getTransportCost(units);
@@ -52,16 +51,11 @@ public class TransportTracker implements java.io.Serializable
         }
     }
 
-    private boolean m_isFourthEdition = false;
-    private boolean m_isNonCombat = false;
-
     /**
      * Constructor.
      */
-    public TransportTracker(boolean isFourthEdition, boolean isNonCombat)
+    public TransportTracker()
     {
-        m_isFourthEdition = isFourthEdition;
-        m_isNonCombat = isNonCombat;
     }
 
     /**
@@ -130,7 +124,9 @@ public class TransportTracker implements java.io.Serializable
     }    
 
     
-    
+    private boolean isNonCombat(GameData data) {
+        return data.getSequence().getStep().getName().endsWith("NonCombatMove");
+    }
     
 //    
 //    
@@ -164,7 +160,7 @@ public class TransportTracker implements java.io.Serializable
         newUnloaded.add(unit);
         
         change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
-        if (!m_isNonCombat)
+        if (!isNonCombat(unit.getData()))
             change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
         
         Collection<Unit> newCarrying;
@@ -274,21 +270,25 @@ public class TransportTracker implements java.io.Serializable
         return rVal;
     }
 
+    
+    
     public boolean hasTransportUnloadedInPreviousPhase(Unit transport)
     {
         Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
-        if (unloaded.isEmpty())
-            return false;
 
         // See if transport has unloaded anywhere yet
         for (Unit u : unloaded)
         {
             TripleAUnit taUnit = (TripleAUnit) u;
             // cannot unload in two different phases 
-            if (taUnit.getWasUnloadedInCombatPhase() == m_isNonCombat)
+            if (isNonCombat(transport.getData()) && taUnit.getWasUnloadedInCombatPhase())
                 return true;
         }
         return false;
+    }
+    
+    private boolean isFourthEdition(GameData data)  {
+        return data.getProperties().get(Constants.FOURTH_EDITION, false);
     }
 
     // In 4th edition and LHTR, a transport can never unload into 
@@ -305,7 +305,7 @@ public class TransportTracker implements java.io.Serializable
         for (Unit u : unloaded)
         {
             TripleAUnit taUnit = (TripleAUnit) u;
-            if (m_isFourthEdition)
+            if (isFourthEdition(transport.getData()))
             {
                 // cannot unload to two different territories
                 if (!taUnit.getUnloadedTo().equals(territory))
@@ -314,7 +314,7 @@ public class TransportTracker implements java.io.Serializable
             else
             {
                 // cannot unload to two different territories in combat phase
-                if (!m_isNonCombat 
+                if (!isNonCombat(transport.getData()) 
                     && !taUnit.getUnloadedTo().equals(territory))
                     return true;
             }

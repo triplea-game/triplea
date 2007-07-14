@@ -47,6 +47,8 @@ import java.util.*;
 public class MoveDelegate implements IDelegate, IMoveDelegate
 {
 
+    public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE = "Transport has already unloaded units in a previous phase";
+    public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO = "Transport has already unloaded units to ";
     public static final String CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND = "Cannot load and unload an allied transport in the same round";
     private static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
     private static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
@@ -59,7 +61,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     private PlayerID m_player;
     private boolean m_firstRun = true;
     private boolean m_nonCombat;
-    private TransportTracker m_transportTracker;
+    private TransportTracker m_transportTracker = new TransportTracker();
     private IntegerMap<Unit> m_alreadyMoved = new IntegerMap<Unit>();
     private IntegerMap<Territory> m_ipcsLost = new IntegerMap<Territory>();
     private SubmergedTracker m_submergedTracker = new SubmergedTracker();
@@ -95,7 +97,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     private void firstRun()
     {
         m_firstRun = false;
-        m_transportTracker = new TransportTracker(isFourEdition(), m_nonCombat);
         //check every territory
         Iterator allTerritories = m_data.getMap().getTerritories().iterator();
         while (allTerritories.hasNext())
@@ -971,14 +972,14 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 if (m_transportTracker.hasTransportUnloadedInPreviousPhase(transport))
                 {
                     for (Unit unit : m_transportTracker.transporting(transport))
-                        result.addDisallowedUnit("Transport has already unloaded units in a previous phase", unit);
+                        result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
                 }
                 // check whether transport is restricted to another territory
                 else if (m_transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
                 {
                     Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(transport);
                     for (Unit unit : m_transportTracker.transporting(transport))
-                        result.addDisallowedUnit("Transport has already unloaded units to " + alreadyUnloadedTo.getName(), unit);
+                        result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
                 }
             }
         }
@@ -1053,12 +1054,12 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                     continue;
                 if (m_transportTracker.hasTransportUnloadedInPreviousPhase(transport))
                 {
-                    result.addDisallowedUnit("Transport has already unloaded units in a previous phase", unit);
+                    result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
                 }
                 else if (m_transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
                 {
                     Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(transport);
-                    result.addDisallowedUnit("Transport has already unloaded units to " + alreadyUnloadedTo.getName(), unit);
+                    result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
                 }
             }
 
@@ -1449,8 +1450,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         MoveState state = new MoveState();
         state.m_firstRun = m_firstRun;
-        state.m_nonCombat = m_nonCombat;
-        state.m_transportTracker = m_transportTracker;
+        state.m_nonCombat = m_nonCombat;        
         state.m_alreadyMoved = m_alreadyMoved;
         if (saveUndo)
             state.m_movesToUndo = m_movesToUndo;
@@ -1470,7 +1470,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         MoveState state = (MoveState) aState;
         m_firstRun = state.m_firstRun;
         m_nonCombat = state.m_nonCombat;
-        m_transportTracker = state.m_transportTracker;
+        m_transportTracker = new TransportTracker();
         m_alreadyMoved = state.m_alreadyMoved;
         //if the undo state wasnt saved, then dont load it
         //prevents overwriting undo state when we restore from an undo move
@@ -1512,7 +1512,6 @@ class MoveState implements Serializable
 {
     public boolean m_firstRun = true;
     public boolean m_nonCombat;
-    public TransportTracker m_transportTracker;
     public IntegerMap<Unit> m_alreadyMoved;
     public IntegerMap<Territory> m_ipcsLost;
     public List<UndoableMove> m_movesToUndo;
