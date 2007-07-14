@@ -1181,6 +1181,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         if(!change.isEmpty()) 
         {
+            // if no non-combat occurred, we may have cleanup left from combat
+            // that we need to spawn an event for
+            m_bridge.getHistoryWriter().startEvent("Cleaning up after movement phases");
             m_bridge.addChange(change);
         }
     }
@@ -1210,7 +1213,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     /**
      * Returns a map of unit -> transport. Unit must already be loaded in the
-     * transport, if the unit is in a transport not in transports then null will
+     * transport.  If no units are loaded in the transports then an empty Map will
      * be returned.
      */
     private Map<Unit, Unit> mapTransportsAlreadyLoaded(Collection<Unit> units, Collection<Unit> transports)
@@ -1238,7 +1241,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     /**
      * Returns a map of unit -> transport. Tries to find transports to load all
-     * units. If it cant suceed returns null.
+     * units. If it can't succeed returns an empty Map.
      *  
      */
     private Map<Unit, Unit> mapTransportsToLoad(Collection<Unit> units, Collection<Unit> transports)
