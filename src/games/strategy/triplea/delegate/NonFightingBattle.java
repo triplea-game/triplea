@@ -43,7 +43,6 @@ public class NonFightingBattle implements Battle
 	private PlayerID m_attacker;
 	private BattleTracker m_battleTracker;
 	private GameData m_data;
-	private TransportTracker m_transportTracker;
 	private boolean m_isOver = false; 
 
 	//dependent units
@@ -52,13 +51,12 @@ public class NonFightingBattle implements Battle
 	//then we lose the corresponding collection of units
 	private Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
 
-	public NonFightingBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, boolean neutral, GameData data, TransportTracker transportTracker)
+	public NonFightingBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, boolean neutral, GameData data)
 	{
 		m_battleTracker = battleTracker;
 		m_attacker = attacker;
 		m_battleSite = battleSite;
 		m_data = data;
-		m_transportTracker = transportTracker;
 	}
 
 	public void fight(IDelegateBridge bridge)
@@ -114,7 +112,7 @@ public class NonFightingBattle implements Battle
 
 	public void addAttack(Route route, Collection<Unit> units)
 	{
-		Map<Unit, Collection<Unit>> addedTransporting = m_transportTracker.transporting(units);
+		Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
 		Iterator<Unit> iter = addedTransporting.keySet().iterator();
 		while(iter.hasNext())
 		{

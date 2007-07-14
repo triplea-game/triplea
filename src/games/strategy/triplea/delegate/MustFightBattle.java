@@ -97,7 +97,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean m_over = false;
     private BattleTracker m_tracker;
 
-    private TransportTracker m_transportTracker;
+    
 
     private PlayerID m_defender;
     private PlayerID m_attacker;
@@ -125,16 +125,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private final ExecutionStack m_stack = new ExecutionStack();
     private List<String> m_stepStrings;
 
+    private TransportTracker getTransportTracker() 
+    {
+        return new TransportTracker();
+    }
+    
     public MustFightBattle(Territory battleSite, PlayerID attacker,
-            GameData data, BattleTracker tracker,
-            TransportTracker transportTracker)
+            GameData data, BattleTracker tracker)
     {
 
         m_data = data;
         m_tracker = tracker;
         m_battleSite = battleSite;
         m_attacker = attacker;
-        m_transportTracker = transportTracker;
+        
 
         m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(
                 Matches.enemyUnit(attacker, data)));
@@ -1258,12 +1262,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
             {
                 
                 Unit transport = transportsIter.next();
-                Collection unloaded = m_transportTracker.unloaded(transport);
+                Collection unloaded = getTransportTracker().unloaded(transport);
                 Iterator unloadedIter = unloaded.iterator();
                 while (unloadedIter.hasNext())
                 {
                     Unit load = (Unit) unloadedIter.next();
-                    Change loadChange =  m_transportTracker.loadTransportChange( (TripleAUnit) transport, load, m_attacker);
+                    Change loadChange =  getTransportTracker().loadTransportChange( (TripleAUnit) transport, load, m_attacker);
                     change.add(loadChange);
                 }
             }
@@ -2127,7 +2131,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private Map<Unit, Collection<Unit>> transporting(Collection<Unit> units)
     {
 
-        return m_transportTracker.transporting(units);
+        return getTransportTracker().transporting(units);
     }
 
     /**

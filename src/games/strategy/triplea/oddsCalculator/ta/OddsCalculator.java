@@ -23,7 +23,6 @@ import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
-import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -93,10 +92,8 @@ public class OddsCalculator
         
         for(int i =0; i < count; i++)
         {
-
-            TransportTracker transportTracker = new TransportTracker();
             DummyDelegateBridge bridge = new DummyDelegateBridge(m_attacker, m_data, m_keepOneAttackingLandUnit);
-            MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker, transportTracker);
+            MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
             battle.setHeadless(true);
             battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
             

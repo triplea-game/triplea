@@ -146,21 +146,21 @@ public class BattleTracker implements java.io.Serializable
 
     }
 
-    public void addBattle(Route route, Collection<Unit> units, TransportTracker tracker, boolean bombing, PlayerID id, GameData data,
+    public void addBattle(Route route, Collection<Unit> units, boolean bombing, PlayerID id, GameData data,
             IDelegateBridge bridge, UndoableMove changeTracker)
     {
         if (bombing)
             addBombingBattle(route, units, id, data);
         else
         {
-            addMustFightBattle(route, units, tracker, id, data);
+            addMustFightBattle(route, units, id, data);
             //battles resulting from
             //emerging subs cant be neutral or empty
             if (route.getLength() != 0)
             {
-                addNeutralBattle(route, units, tracker, id, data, bridge, changeTracker);
+                addNeutralBattle(route, units, id, data, bridge, changeTracker);
                 if(games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
-                    addEmptyBattle(route, units, tracker, id, data, bridge, changeTracker);
+                    addEmptyBattle(route, units, id, data, bridge, changeTracker);
             }
         }
     }
@@ -188,7 +188,7 @@ public class BattleTracker implements java.io.Serializable
     /**
      * No enemies, but not neutral.
      */
-    private void addEmptyBattle(Route route, Collection<Unit> units, TransportTracker tracker, final PlayerID id, final GameData data,
+    private void addEmptyBattle(Route route, Collection<Unit> units, final PlayerID id, final GameData data,
             IDelegateBridge bridge, UndoableMove changeTracker)
     {
         //find the territories that are considered blitz
@@ -243,7 +243,7 @@ public class BattleTracker implements java.io.Serializable
                 Battle nonFight = getPendingBattle(route.getEnd(), false);
                 if (nonFight == null)
                 {
-                    nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data, tracker);
+                    nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data);
                     m_pendingBattles.add(nonFight);
                 }
 
@@ -254,7 +254,7 @@ public class BattleTracker implements java.io.Serializable
 
     }
 
-    private void addNeutralBattle(Route route, Collection<Unit> units, TransportTracker tracker, PlayerID id, GameData data, IDelegateBridge bridge,
+    private void addNeutralBattle(Route route, Collection<Unit> units, PlayerID id, GameData data, IDelegateBridge bridge,
             UndoableMove changeTracker)
     {
         //TODO check for pre existing battles at the sight
@@ -289,7 +289,7 @@ public class BattleTracker implements java.io.Serializable
                 Battle nonFight = getPendingBattle(route.getEnd(), false);
                 if (nonFight == null)
                 {
-                    nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data, tracker);
+                    nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data);
                     m_pendingBattles.add(nonFight);
                 }
 
@@ -473,7 +473,7 @@ public class BattleTracker implements java.io.Serializable
         }
     }
 
-    private void addMustFightBattle(Route route, Collection<Unit> units, TransportTracker tracker, PlayerID id, GameData data)
+    private void addMustFightBattle(Route route, Collection<Unit> units, PlayerID id, GameData data)
     {
         //it is possible to add a battle with a route that is just
         //the start territory, ie the units did not move into the country
@@ -494,7 +494,7 @@ public class BattleTracker implements java.io.Serializable
         Battle battle = getPendingBattle(site, false);
         if (battle == null)
         {
-            battle = new MustFightBattle(site, id, data, this, tracker);
+            battle = new MustFightBattle(site, id, data, this);
             m_pendingBattles.add(battle);
         }
         battle.addAttack(route, units);

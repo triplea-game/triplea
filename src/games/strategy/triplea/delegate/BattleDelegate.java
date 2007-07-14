@@ -296,8 +296,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             if (!attackingUnits.isEmpty())
             {
                 route.setStart(territory);
-                m_battleTracker.addBattle(route, attackingUnits, DelegateFinder
-                        .moveDelegate(m_data).getTransportTracker(), false,
+                m_battleTracker.addBattle(route, attackingUnits, false,
                         m_bridge.getPlayerID(), m_data, m_bridge, null);
             }
         }

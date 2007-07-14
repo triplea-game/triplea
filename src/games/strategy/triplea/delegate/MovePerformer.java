@@ -167,7 +167,7 @@ public class MovePerformer implements Serializable
                         bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
                     }
 
-                    getBattleTracker().addBattle(route, arrivingUnits[0], m_moveDelegate.getTransportTracker(), bombing, id, m_data,
+                    getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data,
                             m_bridge, m_currentMove);
                 }
 

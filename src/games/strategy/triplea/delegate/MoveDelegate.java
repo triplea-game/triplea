@@ -61,7 +61,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     private PlayerID m_player;
     private boolean m_firstRun = true;
     private boolean m_nonCombat;
-    private TransportTracker m_transportTracker = new TransportTracker();
+    private final TransportTracker m_transportTracker = new TransportTracker();
     private IntegerMap<Unit> m_alreadyMoved = new IntegerMap<Unit>();
     private IntegerMap<Territory> m_ipcsLost = new IntegerMap<Territory>();
     private SubmergedTracker m_submergedTracker = new SubmergedTracker();
@@ -1470,7 +1470,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         MoveState state = (MoveState) aState;
         m_firstRun = state.m_firstRun;
         m_nonCombat = state.m_nonCombat;
-        m_transportTracker = new TransportTracker();
         m_alreadyMoved = state.m_alreadyMoved;
         //if the undo state wasnt saved, then dont load it
         //prevents overwriting undo state when we restore from an undo move
