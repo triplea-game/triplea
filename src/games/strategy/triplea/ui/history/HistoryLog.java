@@ -235,9 +235,9 @@ public class HistoryLog extends JFrame
                             {
                                 // purchase/place units - don't need details
                                 Unit unit = (Unit)obj;
-                                if(title.matches("\\w+ buys? .*"))
+                                if(title.matches("\\w+ buy .*"))
                                 {
-                                    logWriter.println(indent+title.replaceAll("buys", "buy"));
+                                    logWriter.println(indent+title);
                                 } else if (title.matches("\\w+ attack with .*"))
                                 {
                                     logWriter.println(indent+title);
@@ -311,9 +311,11 @@ public class HistoryLog extends JFrame
                     {
                         if (title.equals("Adding original owners"))
                         {
-                        } else if (title.matches("\\w+ collects? \\d+ ipcs.*"))
+                        } else if (title.equals("Cleaning up after movement phases"))
                         {
-                            logWriter.println(indent+title.replaceAll("collects", "collect"));
+                        } else if (title.matches("\\w+ collect \\d+ ipcs.*"))
+                        {
+                            logWriter.println(indent+title);
                         } else if (title.matches("\\w+ takes? .*? from \\w+"))
                         {
                             // British take Libya from Germans
@@ -323,9 +325,9 @@ public class HistoryLog extends JFrame
                                 moveList.add(str+"\n  "+indent+title.replaceAll(" takes ", " take "));
                             } else
                                 conquerStr += title.replaceAll("^\\w+ takes ", ", taking ");
-                        } else if (title.matches("\\w+ spends? \\d+ on tech rolls"))
+                        } else if (title.matches("\\w+ spend \\d+ on tech rolls"))
                         {
-                            logWriter.println(indent+title.replaceAll("spends","spend"));
+                            logWriter.println(indent+title);
                         } else if (title.startsWith("Rolls to resolve tech hits:"))
                         {
                         } else if (title.matches("\\w+ discover .*"))
