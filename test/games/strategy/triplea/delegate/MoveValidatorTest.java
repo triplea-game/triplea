@@ -21,11 +21,15 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Route;
-import games.strategy.util.IntegerMap;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 /**
  *
  * @author  Sean Bridges
@@ -57,13 +61,12 @@ public class MoveValidatorTest extends DelegateTest
 	
     public void testHasEnoughMovement()
 	{
-		IntegerMap alreadyMoved = new IntegerMap();
-		Collection units = bomber.create(3, british);
-		Object[] objs = units.toArray();
-		alreadyMoved.put(objs[0], 2);
-		alreadyMoved.put(objs[1], 1);
 		
-		assertTrue(MoveValidator.hasEnoughMovement(units, alreadyMoved, 2));
+		List<Unit> units = bomber.create(3, british);
+        TripleAUnit.get(units.get(0)).setAlreadyMoved(2);
+        TripleAUnit.get(units.get(1)).setAlreadyMoved(1);
+		
+		assertTrue(MoveValidator.hasEnoughMovement(units, 2));
 	}
 	
 	public void testHasWate()
@@ -85,17 +88,17 @@ public class MoveValidatorTest extends DelegateTest
 	
 	public void testNotEnoughMovement()
 	{
-		IntegerMap alreadyMoved = new IntegerMap();
+		
 		Collection units = bomber.create(3, british);
 		Object[] objs = units.toArray();
-		assertTrue(MoveValidator.hasEnoughMovement(units, alreadyMoved, 6));
-		assertTrue(!MoveValidator.hasEnoughMovement(units, alreadyMoved, 7));
+		assertTrue(MoveValidator.hasEnoughMovement(units, 6));
+		assertTrue(!MoveValidator.hasEnoughMovement(units, 7));
 		
-		alreadyMoved.put(objs[1], 1);
-		assertTrue(!MoveValidator.hasEnoughMovement(units, alreadyMoved, 6));
+        ((TripleAUnit) objs[1]).setAlreadyMoved(1);		
+		assertTrue(!MoveValidator.hasEnoughMovement(units, 6));
 		
-		alreadyMoved.put(objs[0], 2);
-		assertTrue(!MoveValidator.hasEnoughMovement(units, alreadyMoved, 5));
+        ((TripleAUnit) objs[1]).setAlreadyMoved(2);
+		assertTrue(!MoveValidator.hasEnoughMovement(units, 5));
 	}	
 	
 	public void testEnemyUnitsInPath()
@@ -167,19 +170,20 @@ public class MoveValidatorTest extends DelegateTest
 	
 	public void testGetLeastMovement()
 	{
-		IntegerMap already = new IntegerMap();
+		
 		Collection collection = bomber.create(1, british);
 		
-		assertEquals( MoveValidator.getLeastMovement(collection, already), 6);
+		assertEquals( MoveValidator.getLeastMovement(collection), 6);
 		
 		
 		Object[] objs = collection.toArray();
-		already.put(objs[0], 1);
+        ((TripleAUnit) objs[0]).setAlreadyMoved(1);
 		
-		assertEquals( MoveValidator.getLeastMovement(collection, already), 5);
+		
+		assertEquals( MoveValidator.getLeastMovement(collection), 5);
 		
 		collection.addAll(factory.create(2,british));
-		assertEquals( MoveValidator.getLeastMovement(collection, already), 0);			
+		assertEquals( MoveValidator.getLeastMovement(collection), 0);			
 	}
 		
 	public void testCanLand()

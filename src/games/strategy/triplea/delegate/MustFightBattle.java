@@ -225,7 +225,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_attackingUnits.isEmpty() && m_attackingWaitingToDie.isEmpty();
     }
 
-    public void addAttack(Route route, Collection<Unit> units)
+    public Change addAttackChange(Route route, Collection<Unit> units)
     {
         // Filter out allied units if fourth edition
         Match<Unit> ownedBy = Matches.unitIsOwnedBy(m_attacker);
@@ -268,7 +268,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //so restrict non air to remove land units
         if(m_battleSite.isWater())
             nonAir = Match.getMatches(nonAir, Matches.UnitIsNotLand);
-        DelegateFinder.moveDelegate(m_data).markNoMovement(nonAir);
+        
+        Change change = DelegateFinder.moveDelegate(m_data).markNoMovementChange(nonAir);
+        
 
         // transports
         Map<Unit, Collection<Unit>> dependencies = transporting(units);
@@ -279,6 +281,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         addDependentUnits(dependencies);
+        return change;
     }
 
     private void addDependentUnits(Map<Unit, Collection<Unit>> dependencies)
@@ -1196,7 +1199,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             //if attacker retreating non subs then its all over
             if (!defender && !subs && !planes)
             {
-                ensureAttackingAirCanRetreat();
+                ensureAttackingAirCanRetreat(bridge);
                 m_over = true;
             }
 
@@ -1311,8 +1314,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 + " Submerged";
 
         Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
-        DelegateFinder.moveDelegate(m_data).getSubmergedTracker().submerge(
-                submerging);
+        CompositeChange change = new CompositeChange();
+        for(Unit u : units) 
+        {
+            change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.SUBMERGED));
+        }
+        bridge.addChange(change);
 
         units.removeAll(submerging);
         if (units.isEmpty() || m_over)
@@ -1529,8 +1536,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Matches.UnitIsDestructible);
 
         //bombarding units cant move after bombarding
-        if(!m_headless)
-            DelegateFinder.moveDelegate(m_data).markNoMovement(bombard);
+        if(!m_headless) 
+        {
+            Change change =DelegateFinder.moveDelegate(m_data).markNoMovementChange(bombard);
+            bridge.addChange(change);
+        }
 
         //4th edition, bombardment casualties cant return fire
         boolean canReturnFire = !isFourthEdition();
@@ -1855,11 +1865,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
      * 0 movement get a 1 movement bonus to allow them to retreat.
      * 
      * This handles the case where fighters will die if they have 0 movement when they arrive
-     * in the attacking zone, but they arrived with a carrier which retreated
+     * in the attacking zone, but they arrived with a carrier which retreated 
      */
-    private void ensureAttackingAirCanRetreat()
+    private void ensureAttackingAirCanRetreat(IDelegateBridge bridge)
     {
-        final MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
+        MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
         
         CompositeMatch<Unit> canLandOnCarrier = new CompositeMatchAnd<Unit>();
         canLandOnCarrier.add(Matches.UnitIsAir);
@@ -1870,7 +1880,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         for(Unit unit : air)
         {
-            moveDelegate.ensureCanMoveOneSpace(unit);
+           
+            bridge.addChange(moveDelegate.ensureCanMoveOneSpaceChange(unit));
         }
         
     }
@@ -2051,7 +2062,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     // This will allow the marines with higher scores to get killed last
     public void sortAmphib(List<Unit> units, GameData data)
     {
-        final MoveDelegate moveDelegate = DelegateFinder.moveDelegate(data);
+        final Comparator<Unit> decreasingMovement = UnitComparator.getDecreasingMovementComparator();        
 
         Comparator<Unit> comparator = new Comparator<Unit>()
         {
@@ -2066,7 +2077,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                   if(ua.getIsMarine() && ua2.getIsMarine())
                       amphibComp = compareAccordingToAmphibious(u1, u2);
                   if(amphibComp == 0)
-                      return  moveDelegate.compareAccordingToMovementLeft(u1,u2);
+                      return  decreasingMovement.compare(u1,u2);
                   else
                       return amphibComp;
                   

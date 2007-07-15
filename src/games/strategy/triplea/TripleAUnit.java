@@ -23,6 +23,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attatchments.UnitAttachment;
 
 
 /**
@@ -43,6 +44,8 @@ public class TripleAUnit extends Unit
     public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
     public static final String UNLOADED_TO = "unloadedTo";
     public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
+    public static final String ALREADY_MOVED = "alreadyMoved";
+    public static final String SUBMERGED = "submerged";
     
     //the transport that is currently transporting us
     private Unit m_transportedBy = null;
@@ -56,6 +59,10 @@ public class TripleAUnit extends Unit
     private Territory m_unloadedTo = null;
     //was this unit unloaded in combat phase this turn?
     private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE;
+    //movement used this trun
+    private int m_alreadyMoved = 0;
+    //is this submarine submerged
+    private boolean m_submerged = false;
     
     public static TripleAUnit get(Unit u) 
     {
@@ -166,5 +173,30 @@ public class TripleAUnit extends Unit
         m_wasUnloadedInCombatPhase = Boolean.valueOf(value.booleanValue());
     }
 
+    public int getAlreadyMoved()
+    {
+        return m_alreadyMoved;
+    }
 
+    public void setAlreadyMoved(int alreadyMoved)
+    {
+        m_alreadyMoved = alreadyMoved;
+    }
+
+    public int getMovementLeft()
+    {   
+        int canMove = UnitAttachment.get(getType()).getMovement(getOwner());
+        return canMove - m_alreadyMoved;
+    }
+
+    public boolean getSubmerged()
+    {
+        return m_submerged;
+    }
+
+    public void setSubmerged(boolean submerged)
+    {
+        m_submerged = submerged;
+    }
+    
 }

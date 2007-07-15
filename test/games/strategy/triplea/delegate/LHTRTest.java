@@ -126,7 +126,7 @@ public class LHTRTest extends TestCase
         BattleTracker tracker = new BattleTracker();
         StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans,  tracker );
         
-        battle.addAttack(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+        battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 
         TestDelegateBridge bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
         TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);
@@ -179,7 +179,7 @@ public class LHTRTest extends TestCase
         BattleTracker tracker = new BattleTracker();
         StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans,  tracker );
         
-        battle.addAttack(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+        battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 
         TestDelegateBridge bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
         TechTracker.addAdvance(british, m_data, bridge, TechAdvance.HEAVY_BOMBER);

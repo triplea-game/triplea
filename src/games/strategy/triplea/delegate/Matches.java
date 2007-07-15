@@ -27,6 +27,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.CompositeMatch;
@@ -896,8 +897,8 @@ public class Matches
 	    {
 	        public boolean match(Unit u)
 	        {
-	            SubmergedTracker tracker = DelegateFinder.moveDelegate(data).getSubmergedTracker();
-	            return tracker.isSubmerged(u);
+	            
+	            return TripleAUnit.get(u).getSubmerged();
 	        }
 	    };
 	    

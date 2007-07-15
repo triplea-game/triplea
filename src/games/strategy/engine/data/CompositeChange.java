@@ -34,11 +34,10 @@ public class CompositeChange extends Change
 
 	private final List<Change> m_changes;
 
-    public CompositeChange(Change c1, Change c2)
+    public CompositeChange(Change... changes)
     {
         this();
-        add(c1);
-        add(c2);
+        add(changes);
     }
 
 	public CompositeChange()
@@ -51,9 +50,14 @@ public class CompositeChange extends Change
 		m_changes = new ArrayList<Change>(changes);
 	}
 
-	public void add(Change aChange)
+	public void add(Change...changes)
 	{
-		m_changes.add(aChange);
+        for(Change aChange : changes) 
+        {
+            if(!aChange.isEmpty())
+                m_changes.add(aChange);    
+        }
+		
 	}
 
 	public Change invert()
@@ -82,21 +86,13 @@ public class CompositeChange extends Change
      * 
      * @return true if this change is empty, or composed of empty changes
      */
+    @Override
     public boolean isEmpty() 
     {        
         for(Change c : m_changes) 
         {
-            //non composite change
-            //we are not blank
-            if(!(c instanceof CompositeChange)) 
-            {
+            if(!c.isEmpty())
                 return false;
-            }
-            //we have a compostie chagne, is it blank
-            else if(!((CompositeChange) c).isEmpty() ) 
-            {
-                return false;
-            }
         }
         return true;
     }

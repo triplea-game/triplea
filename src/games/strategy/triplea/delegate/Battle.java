@@ -37,7 +37,7 @@ interface Battle extends java.io.Serializable
     /**
      *  Add a bunch of attacking units to the battle.
      */
-    public void addAttack(Route route, Collection<Unit> units);
+    public Change addAttackChange(Route route, Collection<Unit> units);
     
 
     /**

@@ -48,6 +48,33 @@ import java.util.Map;
 public class ChangeFactory
 {
 
+    public static final Change EMPTY_CHANGE = new Change()
+    {
+    
+        @Override
+        protected void perform(GameData data)
+        {}
+    
+        @Override
+        public Change invert()
+        {
+            return this;
+        }
+        
+        //when de-serializing, always return the singleton
+        private Object readResolve() 
+        {
+            return ChangeFactory.EMPTY_CHANGE;
+        }
+        
+        @Override
+        public boolean isEmpty()
+        {
+            return true;
+        }
+    
+    };
+    
     public static Change changeOwner(Territory territory, PlayerID owner)
     {
 

@@ -62,9 +62,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     private boolean m_firstRun = true;
     private boolean m_nonCombat;
     private final TransportTracker m_transportTracker = new TransportTracker();
-    private IntegerMap<Unit> m_alreadyMoved = new IntegerMap<Unit>();
     private IntegerMap<Territory> m_ipcsLost = new IntegerMap<Territory>();
-    private SubmergedTracker m_submergedTracker = new SubmergedTracker();
+    
     
     //if we are in the process of doing a move
     //this instance will allow us to resume the move
@@ -214,7 +213,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if (!moveToUndo.getcanUndo())
             return moveToUndo.getReasonCantUndo();
 
-        moveToUndo.undo(m_bridge, m_alreadyMoved, m_data);
+        moveToUndo.undo(m_bridge, m_data);
         m_movesToUndo.remove(moveIndex);
         updateUndoableMoveIndexes();
 
@@ -232,31 +231,15 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     public MustMoveWithDetails getMustMoveWith(Territory start, Collection<Unit> units)
     {
-        return new MustMoveWithDetails(mustMoveWith(units, start), movementLeft(units));
+        return new MustMoveWithDetails(mustMoveWith(units, start));
     }
    
-
-    private IntegerMap<Unit> movementLeft(Collection<Unit> units)
-    {
-
-        IntegerMap<Unit> movement = new IntegerMap<Unit>();
-
-        Iterator<Unit> iter = units.iterator();
-        while (iter.hasNext())
-        {
-            Unit current = iter.next();
-            movement.put(current, MoveValidator.movementLeft(current, m_alreadyMoved));
-        }
-
-        return movement;
-    }
-
     private Map<Unit, Collection<Unit>> mustMoveWith(Collection<Unit> units, Territory start)
     {
 
         List<Unit> sortedUnits = new ArrayList<Unit>(units);
 
-        Collections.sort(sortedUnits, increasingMovement);
+        Collections.sort(sortedUnits, UnitComparator.getIncreasingMovementComparator());
 
         Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
         mapping.putAll(transportsMustMoveWith(sortedUnits));
@@ -405,7 +388,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
         
         //do the move
-        UndoableMove currentMove = new UndoableMove(m_data, m_alreadyMoved, units, route);
+        UndoableMove currentMove = new UndoableMove(m_data, units, route);
 
         String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);
@@ -424,7 +407,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     
     void updateUndoableMoves(UndoableMove currentMove)
     {
-        currentMove.markEndMovement(m_alreadyMoved);
         currentMove.initializeDependencies(m_movesToUndo);
         m_movesToUndo.add(currentMove);
         updateUndoableMoveIndexes();
@@ -594,7 +576,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         
         for (Unit unit : units)
         {
-            if (m_submergedTracker.isSubmerged(unit))
+            if(TripleAUnit.get(unit).getSubmerged())
                 result.addDisallowedUnit("Cannot move submerged units", unit);
         }
 
@@ -623,7 +605,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         // check units individually
         for (Unit unit : moveTest)
         {
-            if (!MoveValidator.hasEnoughMovement(unit, m_alreadyMoved, route.getLength()))
+            if (!MoveValidator.hasEnoughMovement(unit, route.getLength()))
                 result.addDisallowedUnit("Not all units have enough movement",unit);
         }
 
@@ -792,7 +774,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         //the fighters cant move farther than this
         //note that this doesnt take into account the movement used to move the
         //units along the route
-        int maxMovement = MoveValidator.getMaxMovement(units, m_alreadyMoved);
+        int maxMovement = MoveValidator.getMaxMovement(units);
         
         Match<Territory> canMoveThrough = new InverseMatch<Territory>(Matches.TerritoryIsImpassible);
         Match<Territory> notNeutral = new InverseMatch<Territory>(Matches.TerritoryIsNeutral);
@@ -841,8 +823,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         Iterator ownedAirIter = ownedAir.iterator();
         while (ownedAirIter.hasNext())
         {
-            Unit unit = (Unit) ownedAirIter.next();
-            int movement = MoveValidator.movementLeft(unit, m_alreadyMoved);
+            TripleAUnit unit = (TripleAUnit) ownedAirIter.next();
+            int movement = unit.getMovementLeft();
             
             if(units.contains(unit))
                 movement -= route.getLength();
@@ -1046,8 +1028,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             Iterator iter = units.iterator();
             while (iter.hasNext())
             {
-                Unit unit = (Unit) iter.next();
-                if (m_alreadyMoved.getInt(unit) != 0)
+                TripleAUnit unit = (TripleAUnit) iter.next();
+                if (unit.getAlreadyMoved() != 0)
                     result.addDisallowedUnit("Units cannot move before loading onto transports",unit);
                 Unit transport = unitsToTransports.get(unit);
                 if (transport == null)
@@ -1138,37 +1120,32 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     /**
      * Mark units as having no movement.
      */
-    public void markNoMovement(Collection units)
+    public Change markNoMovementChange(Collection<Unit> units)
     {
-
-        Iterator iter = units.iterator();
+        if(units.isEmpty()) 
+            return ChangeFactory.EMPTY_CHANGE;
+        
+        CompositeChange change = new CompositeChange();
+        Iterator<Unit> iter = units.iterator();
         while (iter.hasNext())
         {
-            Unit unit = (Unit) iter.next();
-            markNoMovement(unit);
+            change.add(markNoMovementChange(iter.next()));
         }
+        return change;
     }
 
-    /**
-     * Return whether unit has not moved.
-     */
-    public boolean hasNotMoved(Unit unit)
-    {
-        return m_alreadyMoved.getInt(unit) == 0;
-    }
     
-    public void ensureCanMoveOneSpace(Unit unit)
+    public Change ensureCanMoveOneSpaceChange(Unit unit)
     {
-        int alreadyMoved = m_alreadyMoved.getInt(unit);
+        int alreadyMoved = TripleAUnit.get(unit).getAlreadyMoved();
         int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
-        m_alreadyMoved.put(unit, Math.min(alreadyMoved, maxMovement - 1)  );
+        return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, maxMovement - 1), TripleAUnit.ALREADY_MOVED);
     }
 
-    private void markNoMovement(Unit unit)
-    {
-
+    private Change markNoMovementChange(Unit unit)
+    {        
         UnitAttachment ua = UnitAttachment.get(unit.getType());
-        m_alreadyMoved.put(unit, ua.getMovement(unit.getOwner()));
+        return ChangeFactory.unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED);
     }
 
     /**
@@ -1198,10 +1175,21 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         //we may do it in the middle of the round, while loading.
         if (m_nonCombat)
         {
-            m_alreadyMoved.clear();
+            for(Unit u : m_data.getUnits()) 
+            {
+                if(TripleAUnit.get(u).getAlreadyMoved() != 0 ) 
+                {
+                    change.add(ChangeFactory.unitPropertyChange(u,0, TripleAUnit.ALREADY_MOVED));
+                }
+                if(TripleAUnit.get(u).getSubmerged()) 
+                {
+                    change.add(ChangeFactory.unitPropertyChange(u,false, TripleAUnit.SUBMERGED));
+                }
+            }
+            
             change.add(m_transportTracker.endOfRoundClearStateChange(m_data));
             m_ipcsLost.clear();
-            m_submergedTracker.clear();
+                        
         }
 
         if(!change.isEmpty()) 
@@ -1328,44 +1316,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         return mapping;
     }
 
-    public int compareAccordingToMovementLeft(Unit u1, Unit u2)
-    {
-        return decreasingMovement.compare(u1,u2);
-    }
-    
-    Comparator<Unit> getDecreasingMovement()
-    {
-        return decreasingMovement;
-    }
-    
-    private Comparator<Unit> decreasingMovement = new Comparator<Unit>()
-    {
-
-        public int compare(Unit u1, Unit u2)
-        {
-            int left1 = MoveValidator.movementLeft(u1, m_alreadyMoved);
-            int left2 = MoveValidator.movementLeft(u2, m_alreadyMoved);
-
-            if (left1 == left2)
-                return 0;
-            if (left1 > left2)
-                return 1;
-            return -1;
-        }
-    };
-
-    private Comparator<Unit> increasingMovement = new Comparator<Unit>()
-    {
-
-        public int compare(Unit o1, Unit o2)
-        {
-
-            //reverse the order, clever huh
-            return decreasingMovement.compare(o2, o1);
-        }
-    };
-
-    
+     
 
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
@@ -1450,11 +1401,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         MoveState state = new MoveState();
         state.m_firstRun = m_firstRun;
-        state.m_nonCombat = m_nonCombat;        
-        state.m_alreadyMoved = m_alreadyMoved;
+        state.m_nonCombat = m_nonCombat;                
         if (saveUndo)
             state.m_movesToUndo = m_movesToUndo;
-        state.m_submergedTracker = m_submergedTracker;
         state.m_ipcsLost = m_ipcsLost;
         state.m_tempMovePerformer = this.m_tempMovePerformer;
         return state;
@@ -1470,39 +1419,14 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         MoveState state = (MoveState) aState;
         m_firstRun = state.m_firstRun;
         m_nonCombat = state.m_nonCombat;
-        m_alreadyMoved = state.m_alreadyMoved;
         //if the undo state wasnt saved, then dont load it
         //prevents overwriting undo state when we restore from an undo move
         if (state.m_movesToUndo != null)
             m_movesToUndo = state.m_movesToUndo;
-        m_submergedTracker = state.m_submergedTracker;
         m_ipcsLost = state.m_ipcsLost;
         m_tempMovePerformer = state.m_tempMovePerformer;
     }
 
-    public SubmergedTracker getSubmergedTracker()
-    {
-        return m_submergedTracker;
-    }
-
-    IntegerMap<Unit> getAlreadyMoved()
-    {
-        return m_alreadyMoved;
-    }
-
-    public List<Unit> getUnitsAlreadyMoved()
-    {
-        List<Unit> rVal = new ArrayList<Unit>();
-        for(Unit u : m_alreadyMoved.keySet())
-        {
-            if(m_alreadyMoved.getInt(u) > 0 )
-            {
-                rVal.add(u);
-            }
-        }
-        return rVal;
-        
-    }
 
 
 }
@@ -1514,7 +1438,6 @@ class MoveState implements Serializable
     public IntegerMap<Unit> m_alreadyMoved;
     public IntegerMap<Territory> m_ipcsLost;
     public List<UndoableMove> m_movesToUndo;
-    public SubmergedTracker m_submergedTracker;
     public MovePerformer m_tempMovePerformer;
 
 }

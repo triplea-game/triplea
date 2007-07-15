@@ -20,18 +20,33 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionFrontier;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.util.*;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
-import games.strategy.util.*;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -50,14 +65,12 @@ public class BattleCalculator
     //units with least movement
     public static void sortPreBattle(List<Unit> units, GameData data)
     {
-        final MoveDelegate moveDelegate = DelegateFinder.moveDelegate(data);
-        
         Comparator<Unit> comparator = new Comparator<Unit>()
         {
           public int compare(Unit u1, Unit u2)
           {            
               if(u1.getUnitType().equals(u2.getUnitType()))
-                  return  moveDelegate.compareAccordingToMovementLeft(u1,u2);
+                  return UnitComparator.getDecreasingMovementComparator().compare(u1, u2);
               
               return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
           }
@@ -318,7 +331,7 @@ public class BattleCalculator
      */
     private static boolean allTargetsOneTypeNotTwoHit(Collection<Unit> targets, Map<Unit, Collection<Unit>> dependents)
     {
-        Set categorized = UnitSeperator.categorize(targets, dependents, null);
+        Set categorized = UnitSeperator.categorize(targets, dependents, false);
         if (categorized.size() == 1)
         {
             UnitCategory unitCategory = (UnitCategory) categorized.iterator().next();

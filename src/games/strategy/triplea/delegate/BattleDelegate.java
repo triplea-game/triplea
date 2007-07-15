@@ -21,6 +21,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -231,8 +232,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     private Battle selectBombardingBattle(Unit u, Territory uTerritory,
             Collection<Battle> battles)
     {
-        boolean hasNotMoved = DelegateFinder.moveDelegate(m_data)
-                .hasNotMoved(u);
+        boolean hasNotMoved = TripleAUnit.get(u).getAlreadyMoved() == 0;
         // If only one battle to select from just return that battle
         if ((battles.size() == 1) && !hasNotMoved)
         {

@@ -87,7 +87,8 @@ public class DefaultDelegateBridge implements IDelegateBridge
 
     public void addChange(Change aChange)
     {
-        m_game.addChange(aChange);
+        if(!aChange.isEmpty())
+            m_game.addChange(aChange);
     }
 
 

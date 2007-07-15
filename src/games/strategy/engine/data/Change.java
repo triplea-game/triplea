@@ -47,5 +47,10 @@ public abstract class Change implements Serializable
 
 	protected abstract void perform(GameData data);
 	public abstract Change invert();
+    
+    public boolean isEmpty()
+    {
+        return false;
+    }
 
 }

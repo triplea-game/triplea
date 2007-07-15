@@ -18,6 +18,7 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.gamePlayer.*;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.baseAI.*;
 import games.strategy.triplea.delegate.*;
@@ -315,14 +316,14 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
        }
        
        final Collection<Unit> alreadyMoved = new HashSet<Unit>();
-       alreadyMoved.addAll(DelegateFinder.moveDelegate(data).getUnitsAlreadyMoved());
+       
        
        Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), new Match<Unit>()
         {
             @Override
             public boolean match(Unit o)
             {
-                return !alreadyMoved.contains(o);
+                return TripleAUnit.get(o).getAlreadyMoved() == 0;
             }
         
         }

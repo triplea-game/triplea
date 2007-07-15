@@ -172,7 +172,7 @@ public class MovePerformer implements Serializable
                 }
 
                 //mark movement
-                markMovement(units, route);
+                Change moveChange = markMovementChange(units, route);
                 
                 //TODO, put units in owned transports first
                 Map<Unit, Unit> transporting = m_moveDelegate.mapTransports(route, units, transportsToLoad);
@@ -182,7 +182,7 @@ public class MovePerformer implements Serializable
                 //actually move the units
                 Change remove = ChangeFactory.removeUnits(route.getStart(), units);
                 Change add = ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
-                CompositeChange change = new CompositeChange(add, remove);
+                CompositeChange change = new CompositeChange(moveChange, add, remove);
                 m_bridge.addChange(change);
 
                 m_currentMove.addChange(change);
@@ -204,15 +204,16 @@ public class MovePerformer implements Serializable
 
     }
     
-    private void markMovement(Collection<Unit> units, Route route)
+    private Change markMovementChange(Collection<Unit> units, Route route)
     {
-
+        CompositeChange change = new CompositeChange();
+        
         int moved = route.getLength();
         Iterator iter = units.iterator();
         while (iter.hasNext())
         {
-            Unit unit = (Unit) iter.next();
-            m_moveDelegate.getAlreadyMoved().add(unit, moved);
+            TripleAUnit unit = (TripleAUnit) iter.next();
+            change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
         }
 
         //if neutrals were taken over mark land units with 0 movement
@@ -225,9 +226,10 @@ public class MovePerformer implements Serializable
             while (iter.hasNext())
             {
                 Unit unit = (Unit) iter.next();
-                m_moveDelegate.markNoMovement(Collections.singleton(unit));
+                change.add(m_moveDelegate.markNoMovementChange(Collections.singleton(unit)));
             }
         }
+        return change;
     }
 
     /**
@@ -249,7 +251,9 @@ public class MovePerformer implements Serializable
             while (iter.hasNext())
             {
                 Unit unit = iter.next();
-                m_moveDelegate.markNoMovement(Collections.singleton(unit));
+                Change change =m_moveDelegate.markNoMovementChange(Collections.singleton(unit));
+                m_currentMove.addChange(change);                
+                m_bridge.addChange(change);
             }
 
             //unload the transports
@@ -310,7 +314,7 @@ public class MovePerformer implements Serializable
         }
         
         m_aaInMoveUtil.initialize(m_bridge, m_data);
-        Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, m_moveDelegate.getDecreasingMovement(), m_currentMove);
+        Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, UnitComparator.getDecreasingMovementComparator(), m_currentMove);
         m_aaInMoveUtil = null;
         return rVal;
     }

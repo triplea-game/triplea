@@ -16,9 +16,14 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.util.IntegerMap;
+import games.strategy.triplea.TripleAUnit;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Seperates a group of units into distinct categories.
@@ -35,7 +40,7 @@ public class UnitSeperator
 
   public static Set<UnitCategory> categorize(Collection<Unit> units)
   {
-    return categorize(units, null, null);
+    return categorize(units, null, false);
   }
 
 
@@ -50,7 +55,7 @@ public class UnitSeperator
    * @oaram - forceDamagedCategory - if true then we will ensure a category exists for damaged unit types even if it would be empty
    * @return a Collection of UnitCategories
    */
-  public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, IntegerMap<Unit> movement)
+  public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean sortOnMovement)
   {
     //somewhat odd, but we map UnitCategory->UnitCategory,
     //key and value are the same
@@ -63,8 +68,8 @@ public class UnitSeperator
     {
       Unit current = (Unit) iter.next();
       int unitMovement = -1;
-      if(movement != null)
-        unitMovement = movement.getInt(current);
+      if(sortOnMovement)
+        unitMovement = TripleAUnit.get(current).getMovementLeft();
       Collection<Unit> currentDependents = null;
       if(dependent != null)
       {

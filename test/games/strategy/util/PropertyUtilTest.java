@@ -35,4 +35,12 @@ public class PropertyUtilTest extends TestCase
         PropertyUtil.set("text", "changed", label);
         assertEquals("changed", PropertyUtil.get("text", label));
     }
+    
+    public void testSetInt()
+    {
+        
+        JLabel label = new JLabel();
+        PropertyUtil.set("IconTextGap",10, label);
+        PropertyUtil.get("IconTextGap",label);
+    }
 }

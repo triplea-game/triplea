@@ -106,14 +106,14 @@ public class StrategicBombingRaidBattle implements Battle
         m_units.removeAll(units);
     }
 
-    public void addAttack(Route route, Collection<Unit> units)
+    public Change addAttackChange(Route route, Collection<Unit> units)
     {
 
         if (!Match.allMatch(units, Matches.UnitIsStrategicBomber))
             throw new IllegalArgumentException("Non bombers added to strategic bombing raid:" + units);
 
         m_units.addAll(units);
-
+        return ChangeFactory.EMPTY_CHANGE;
     }
 
     

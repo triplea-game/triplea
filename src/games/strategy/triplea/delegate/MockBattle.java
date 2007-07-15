@@ -20,10 +20,9 @@ public class MockBattle implements Battle
         m_location = location;
     }
 
-    public void addAttack(Route route, Collection<Unit> units)
+    public Change addAttackChange(Route route, Collection<Unit> units)
     {
-        // TODO Auto-generated method stub
-
+        return ChangeFactory.EMPTY_CHANGE;
     }
 
     public boolean isBombingRun()

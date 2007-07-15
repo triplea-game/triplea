@@ -40,8 +40,6 @@ public class UndoableMove implements Serializable
     private CompositeChange m_undoChange = new CompositeChange();
     private String m_reasonCantUndo;
     private String m_description;
-    private IntegerMap<Unit> m_changedMovement;
-    private IntegerMap<Unit> m_startingMovement; //needed so we can calculate the change when done
 
     //this move is dependent on these moves
     //these moves cant be undone until this one has been
@@ -125,10 +123,8 @@ public class UndoableMove implements Serializable
         m_description = description;
     }
 
-    public UndoableMove(GameData data, IntegerMap<Unit> startMovement,
-                        Collection<Unit> units, Route route)
-    {
-        m_startingMovement = startMovement.copy();
+    public UndoableMove(GameData data, Collection<Unit> units, Route route)
+    {        
         m_route = route;
         m_units = units;
     }
@@ -143,18 +139,7 @@ public class UndoableMove implements Serializable
         m_unloaded.add(transport);
     }
 
-    public void markEndMovement(IntegerMap<Unit> endMovement)
-    {
-        //start - change
-        m_changedMovement = m_startingMovement.copy();
-        m_changedMovement.subtract(endMovement);
-        //we dont need this any more
-        m_startingMovement = null;
-
-    }
-
-    public void undo(IDelegateBridge bridge, IntegerMap<Unit> movement,
-                     GameData data)
+    public void undo(IDelegateBridge bridge, GameData data)
     {        
         BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
         
@@ -166,8 +151,6 @@ public class UndoableMove implements Serializable
         //undo any changes to the game data
         bridge.addChange(m_undoChange.invert());
 
-        movement.add(m_changedMovement);
-        
         battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), data);
 
         //clean up dependencies
@@ -197,12 +180,15 @@ public class UndoableMove implements Serializable
                     //moved in to attack it, but some of the units in the original 
                     //territory are moved out.  Undoing this last move, the route used to move
                     //into the battle zone will be null
-                    if(routeUnitUsedToMove != null)
-                        battleLand.addAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                    if(routeUnitUsedToMove != null) {
+                        Change change = battleLand.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit));
+                        bridge.addChange(change);
+                    }
                 }
                 if(battleAir != null && !battleAir.isOver())
                 {
-                    battleAir.addAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                    Change change = battleAir.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit));                    
+                    bridge.addChange(change);
                 }
             }
         }

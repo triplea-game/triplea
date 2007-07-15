@@ -16,9 +16,10 @@
 package games.strategy.engine.data;
 
 import java.util.*;
+
 import games.strategy.net.*;
 
-public class UnitsList implements java.io.Serializable
+public class UnitsList implements java.io.Serializable, Iterable<Unit>
 {
     //maps GUID -> Unit
     //TODO - fix this, all units are never gcd
@@ -51,6 +52,11 @@ public class UnitsList implements java.io.Serializable
     UnitsList()
     {
         refresh();
+    }
+
+    public Iterator<Unit> iterator()
+    {
+        return getUnits().iterator();
     }
 
 }

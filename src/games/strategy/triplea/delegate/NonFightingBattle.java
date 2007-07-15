@@ -110,7 +110,7 @@ public class NonFightingBattle implements Battle
         return !hasAttackingUnits();
     }
 
-	public void addAttack(Route route, Collection<Unit> units)
+	public Change addAttackChange(Route route, Collection<Unit> units)
 	{
 		Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
 		Iterator<Unit> iter = addedTransporting.keySet().iterator();
@@ -122,6 +122,7 @@ public class NonFightingBattle implements Battle
 			else
 				m_dependentUnits.put(unit, addedTransporting.get(unit));
 		}
+        return ChangeFactory.EMPTY_CHANGE;
 	}
 
 	public Territory getTerritory()

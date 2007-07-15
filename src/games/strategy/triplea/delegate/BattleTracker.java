@@ -153,7 +153,12 @@ public class BattleTracker implements java.io.Serializable
             addBombingBattle(route, units, id, data);
         else
         {
-            addMustFightBattle(route, units, id, data);
+            Change change = addMustFightBattleChange(route, units, id, data);
+            bridge.addChange(change);
+            if(changeTracker != null) 
+            {
+                changeTracker.addChange(change);
+            }
             //battles resulting from
             //emerging subs cant be neutral or empty
             if (route.getLength() != 0)
@@ -167,8 +172,6 @@ public class BattleTracker implements java.io.Serializable
 
     private void addBombingBattle(Route route, Collection<Unit> units, PlayerID attacker, GameData data)
     {
-        //TODO, resolve dependencies here
-
         Battle battle = getPendingBattle(route.getEnd(), true);
         if (battle == null)
         {
@@ -176,7 +179,12 @@ public class BattleTracker implements java.io.Serializable
             m_pendingBattles.add(battle);
         }
 
-        battle.addAttack(route, units);
+        Change change = battle.addAttackChange(route, units);
+        //when state is moved to the game data, this will change
+        if(!change.isEmpty()) 
+        {
+            throw new IllegalStateException("Non empty change");
+        }
 
         //dont let land battles in the same territory occur before bombing
         // battles
@@ -247,7 +255,12 @@ public class BattleTracker implements java.io.Serializable
                     m_pendingBattles.add(nonFight);
                 }
 
-                nonFight.addAttack(route, units);
+                Change change = nonFight.addAttackChange(route, units);
+                bridge.addChange(change);
+                if(changeTracker != null) 
+                {
+                    changeTracker.addChange(change);
+                }
                 addDependency(nonFight, precede);
             }
         }
@@ -293,7 +306,12 @@ public class BattleTracker implements java.io.Serializable
                     m_pendingBattles.add(nonFight);
                 }
 
-                nonFight.addAttack(route, units);
+                Change change = nonFight.addAttackChange(route, units);
+                bridge.addChange(change);
+                if(changeTracker != null) 
+                {
+                    changeTracker.addChange(change);
+                }
                 addDependency(nonFight, precede);
             }
         }
@@ -376,7 +394,11 @@ public class BattleTracker implements java.io.Serializable
         enemyNonCom.add(Matches.UnitIsAAOrFactory);
         enemyNonCom.add(Matches.enemyUnit(id, data));
         Collection nonCom = territory.getUnits().getMatches(enemyNonCom);
-        DelegateFinder.moveDelegate(data).markNoMovement(nonCom);
+        Change noMovementChange =DelegateFinder.moveDelegate(data).markNoMovementChange(nonCom);
+        bridge.addChange(noMovementChange);
+        if(changeTracker != null)
+            changeTracker.addChange(noMovementChange);
+         
 
         //non coms revert to their original owner if once allied
         //unless there capital is not owned
@@ -473,7 +495,7 @@ public class BattleTracker implements java.io.Serializable
         }
     }
 
-    private void addMustFightBattle(Route route, Collection<Unit> units, PlayerID id, GameData data)
+    private Change addMustFightBattleChange(Route route, Collection<Unit> units, PlayerID id, GameData data)
     {
         //it is possible to add a battle with a route that is just
         //the start territory, ie the units did not move into the country
@@ -485,11 +507,11 @@ public class BattleTracker implements java.io.Serializable
 
         //this will be taken care of by the non fighting battle
         if (!Matches.territoryHasEnemyUnits(id, data).match(site))
-            return;
+            return ChangeFactory.EMPTY_CHANGE;
 
         //if just a factory then no battle
         if (route.getEnd() != null && route.getEnd().getUnits().allMatch(Matches.UnitIsAAOrFactory))
-            return;
+            return ChangeFactory.EMPTY_CHANGE;
 
         Battle battle = getPendingBattle(site, false);
         if (battle == null)
@@ -497,7 +519,7 @@ public class BattleTracker implements java.io.Serializable
             battle = new MustFightBattle(site, id, data, this);
             m_pendingBattles.add(battle);
         }
-        battle.addAttack(route, units);
+        Change change = battle.addAttackChange(route, units);
 
         //make amphibious assaults dependent on possible naval invasions
 
@@ -513,6 +535,7 @@ public class BattleTracker implements java.io.Serializable
         Battle bombing = getPendingBattle(route.getEnd(), true);
         if (bombing != null)
             addDependency(battle, bombing);
+        return change;
     }
 
     private Battle getDependentAmphibiousAssault(Route route)

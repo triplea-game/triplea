@@ -26,6 +26,7 @@ import games.strategy.util.*;
 import games.strategy.engine.data.*;
 
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.*;
 
 /**
@@ -42,11 +43,11 @@ public class MoveValidator
      * to move.
      * @arg alreadyMoved maps Unit -> movement
      */
-    public static boolean hasEnoughMovement(Collection<Unit> units, IntegerMap<Unit> alreadyMoved, int length)
+    public static boolean hasEnoughMovement(Collection<Unit> units, int length)
     {
         for (Unit unit : units)
         {
-            if (!hasEnoughMovement(unit, alreadyMoved, length))
+            if (!hasEnoughMovement(unit, length))
                 return false;
         }
         return true;
@@ -57,9 +58,9 @@ public class MoveValidator
      * to move.
      * @arg alreadyMoved maps Unit -> movement
      */
-    public static boolean hasEnoughMovement(Unit unit, IntegerMap<Unit> alreadyMoved, int length)
+    public static boolean hasEnoughMovement(Unit unit, int length)
     {
-        int left = movementLeft(unit, alreadyMoved);
+        int left = TripleAUnit.get(unit).getMovementLeft();
         if(left == -1 || left < length)
             return false;
         return true;
@@ -330,7 +331,7 @@ public class MoveValidator
     }
 
 
-    public static int getMaxMovement(Collection<Unit> units, IntegerMap<Unit> alreadyMoved)
+    public static int getMaxMovement(Collection<Unit> units)
     {
         if(units.size() == 0)
             throw new IllegalArgumentException("no units");
@@ -339,14 +340,14 @@ public class MoveValidator
         while(iter.hasNext())
         {
             Unit unit = (Unit) iter.next();
-            int left = movementLeft(unit, alreadyMoved);
+            int left = TripleAUnit.get(unit).getMovementLeft();
             max = Math.max(left, max);
         }
         return max;
     }
 
     
-    public static int getLeastMovement(Collection<Unit> units, IntegerMap<Unit> alreadyMoved)
+    public static int getLeastMovement(Collection<Unit> units)
     {
         if(units.size() == 0)
             throw new IllegalArgumentException("no units");
@@ -355,20 +356,12 @@ public class MoveValidator
         while(iter.hasNext())
         {
             Unit unit = (Unit) iter.next();
-            int left = movementLeft(unit, alreadyMoved);
+            int left = TripleAUnit.get(unit).getMovementLeft();
             least = Math.min(left, least);
         }
         return least;
     }
 
-    public static int movementLeft(Unit unit, IntegerMap<Unit> alreadyMoved)
-    {
-
-        int already = alreadyMoved.getInt(unit);
-        int canMove = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
-        return canMove - already;
-
-    }
 
     public static int getTransportCapacityFree(Territory territory, PlayerID id, GameData data, TransportTracker tracker)
     {

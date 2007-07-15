@@ -199,7 +199,8 @@ public class RocketsFireHelper
             if(units.size() > 0)
             {
                 //only one fired
-                DelegateFinder.moveDelegate(data).markNoMovement( Collections.singleton(units.get(0)));
+                Change change = DelegateFinder.moveDelegate(data).markNoMovementChange( Collections.singleton(units.get(0)));
+                bridge.addChange(change);
             }
             else
             {

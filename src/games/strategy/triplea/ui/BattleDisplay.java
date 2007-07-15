@@ -1059,7 +1059,7 @@ class CasualtyNotificationPanel extends JPanel
             m_killed.add(new JLabel("Killed"));
         }
 
-        Iterator killedIter = UnitSeperator.categorize(killed, dependents, null).iterator();
+        Iterator killedIter = UnitSeperator.categorize(killed, dependents, false).iterator();
         categorizeUnits(killedIter, false);
 
         damaged.removeAll(killed);
@@ -1067,7 +1067,7 @@ class CasualtyNotificationPanel extends JPanel
         {
             m_damaged.add(new JLabel("Damaged"));
         }
-        Iterator damagedIter = UnitSeperator.categorize(damaged, dependents, null).iterator();
+        Iterator damagedIter = UnitSeperator.categorize(damaged, dependents, false).iterator();
         categorizeUnits(damagedIter, true);
 
         invalidate();
