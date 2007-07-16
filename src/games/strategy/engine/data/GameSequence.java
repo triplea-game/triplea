@@ -64,6 +64,12 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		m_steps.remove(index);
 	}
 
+    protected void removeAllSteps()
+    {
+        m_steps.clear();
+        m_round = 1;
+    }
+    
     public int getRound()
     {
       return m_round;

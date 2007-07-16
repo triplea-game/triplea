@@ -19,7 +19,7 @@
 	<!ELEMENT grid EMPTY>
 	<!ATTLIST grid
 		name CDATA #REQUIRED
-		type (square) #REQUIRED
+		type (square | points-and-lines) #REQUIRED
 		x CDATA #REQUIRED
 		y CDATA #REQUIRED
 		horizontal-connections (explicit | implicit) 'explicit'

@@ -320,8 +320,11 @@ public class ServerLauncher implements ILauncher
         //if we loose a connection to a player, shut down
         //the game (after saving) and go back to the main screen
         if(m_serverGame.getPlayerManager().isPlaying(node))
-        {
-            saveAndEndGame(node);
+        {   
+            if (m_serverGame.isGameSequenceRunning())
+                saveAndEndGame(node);
+            else
+                m_serverGame.stopGame();
             
             //if the game already exited do to a networking error 
             //we need to let them continue

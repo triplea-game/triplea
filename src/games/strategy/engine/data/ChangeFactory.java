@@ -174,6 +174,11 @@ public class ChangeFactory
         return new ChangeAttachmentChange(attatchment, newValue, property);
     }
 
+    public static Change changeGameSteps(GameSequence oldSequence, GameStep[] newSteps)
+    {
+        return new GameSequenceChange(oldSequence, newSteps);
+    }
+
     public static Change unitPropertyChange(Unit unit, Object newValue, String propertyName) 
     {
         return new UnitPropertyChange(unit,propertyName, newValue );
@@ -689,6 +694,49 @@ class ProductionFrontierChange extends Change
 }
 
 
+
+class GameSequenceChange extends Change
+{
+    private final GameStep[] m_oldSteps;
+    private final GameStep[] m_newSteps;
+    
+    GameSequenceChange(GameSequence oldSequence, GameStep[] newSteps)
+    {
+        ArrayList<GameStep> oldSteps = new ArrayList<GameStep>();
+        
+        for (GameStep step : oldSequence)
+        {
+            oldSteps.add(step);
+        }
+        
+        m_oldSteps = (GameStep[]) oldSteps.toArray();
+        m_newSteps = newSteps;
+    }
+    
+    private GameSequenceChange(GameStep[] oldSteps, GameStep[] newSteps)
+    {
+        m_oldSteps = oldSteps;
+        m_newSteps = newSteps;
+    } 
+    
+    protected void perform(GameData data)
+    {
+        GameSequence steps = data.getSequence();
+        steps.removeAllSteps();
+        
+        for (GameStep newStep : m_newSteps)
+        {
+            steps.addStep(newStep);
+        }
+    }
+    
+    public Change invert()
+    {
+        return new GameSequenceChange(m_newSteps, m_oldSteps);
+    }
+    
+}
+
 class UnitPropertyChange extends Change 
 {
     private final Unit m_unit;
@@ -755,3 +803,4 @@ class UnitPropertyChange extends Change
     
     
 }
+

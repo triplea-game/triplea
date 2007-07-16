@@ -764,6 +764,11 @@ public class ServerGame implements IGame
        m_delegateExecutionStopped = true;
     }
     
+    public boolean isGameSequenceRunning()
+    {
+        return !m_delegateExecutionStopped;
+    }
+    
 }
 
 interface IServerRemote extends IRemote 
