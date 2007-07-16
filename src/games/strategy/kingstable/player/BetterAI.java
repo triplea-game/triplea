@@ -278,7 +278,6 @@ public class BetterAI extends AbstractAI {
                                 // Can the king be captured?
                                 if (squareX==m_kingX && squareY==m_kingY)
                                 {   
-                                    System.out.println("Possible king capture with king at (" + squareX + "," + squareY + ")");
                                     PlayerID left = get(endX-1, endY+1);
                                     PlayerID right = get(endX+1, endY+1);
 
