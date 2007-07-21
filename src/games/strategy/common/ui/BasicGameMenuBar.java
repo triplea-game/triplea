@@ -226,22 +226,17 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		JScrollPane scroll = new JScrollPane(editorPane);
 		scroll.setBorder(null);
 		
-    	if (System.getProperty("mrj.version") == null) { 
-    		parentMenu.addSeparator();
-    		
-    		parentMenu.add(new AbstractAction("About...")
+    	
+    	parentMenu.addSeparator();
+    	
+    	parentMenu.add(new AbstractAction("About...")
+    	{
+    		public void actionPerformed(ActionEvent e)
     		{
-    			public void actionPerformed(ActionEvent e)
-    			{
-    				JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
-    			}
-    		});
+    			JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
+    		}
+    	});
 
-    	}
-    	else // On Mac OS X, put the About menu where Mac users expect it to be
-    	{	
-    		MacWrapper.addApplicationWrapper(m_frame, editorPane);
-    	}
         
     }
     
