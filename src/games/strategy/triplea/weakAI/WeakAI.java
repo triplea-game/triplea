@@ -877,11 +877,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         Route amphibRoute = getAmphibRoute(player);
         int transportCount =  countTransports(getPlayerBridge().getGameData(), player);
         
-        player.getProductionFrontier();
-        
-        
         Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
-        
 
         int leftToSpend = player.getResources().getQuantity(ipcs );
         
