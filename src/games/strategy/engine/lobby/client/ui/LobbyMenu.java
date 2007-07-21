@@ -46,10 +46,36 @@ public class LobbyMenu extends JMenuBar
         menuBar.add(settings);
         
         addSoundMenu(settings);
+        addChatTimeMenu(settings);
         
     }
 
     
+    /**
+     * @param parentMenu
+     */
+    private void addChatTimeMenu(JMenu parentMenu)
+    {
+        final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
+        
+        
+        chatTimeBox.addActionListener(new ActionListener()
+        {
+
+            public void actionPerformed(ActionEvent e)
+            {
+                m_frame.setShowChatTime(chatTimeBox.isSelected());
+                
+            }
+            
+        });
+        
+        
+        chatTimeBox.setSelected(true);
+        parentMenu.add(chatTimeBox);
+        
+    }
+
     private void addSoundMenu(JMenu parentMenu)
     {
         final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");

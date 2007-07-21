@@ -49,6 +49,7 @@ public class LobbyFrame extends JFrame
     
     private final LobbyClient m_client;
     
+    private final ChatMessagePanel m_chatMessagePanel;
     
     
     public LobbyFrame(LobbyClient client)
@@ -59,7 +60,9 @@ public class LobbyFrame extends JFrame
         setJMenuBar(new LobbyMenu(this));
         
         Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(), m_client.getRemoteMessenger());
-        ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat);
+        m_chatMessagePanel = new ChatMessagePanel(chat);
+        
+        m_chatMessagePanel.setShowTime(true);
         
         ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
         chatPlayers.addIgnoredPlayerName(LobbyServer.ADMIN_USERNAME);
@@ -81,11 +84,11 @@ public class LobbyFrame extends JFrame
         JSplitPane leftSplit = new JSplitPane( );
         leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
         leftSplit.setTopComponent(gamePanel);
-        leftSplit.setBottomComponent(chatMessagePanel);
+        leftSplit.setBottomComponent(m_chatMessagePanel);
         
         leftSplit.setResizeWeight(0.8);
         gamePanel.setPreferredSize(new Dimension(700,200 ));
-        chatMessagePanel.setPreferredSize(new Dimension(700,400 ));
+        m_chatMessagePanel.setPreferredSize(new Dimension(700,400 ));
         
         
         JSplitPane mainSplit = new JSplitPane();
@@ -207,6 +210,12 @@ public class LobbyFrame extends JFrame
     public LobbyClient getLobbyClient()
     {
         return m_client;
+    }
+    
+    void setShowChatTime(boolean showTime)
+    {
+        if (m_chatMessagePanel != null)
+            m_chatMessagePanel.setShowTime(showTime);
     }
     
     

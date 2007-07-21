@@ -1398,6 +1398,11 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     {
         return m_statsPanel;
     }
+    
+    void setShowChatTime(boolean showTime)
+    {
+        m_chatPanel.setShowChatTime(showTime);
+    }
 }
 
 

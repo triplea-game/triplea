@@ -22,12 +22,31 @@ import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.INode;
 import games.strategy.triplea.sound.SoundPath;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 
-import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BoundedRangeModel;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 /**
  * A Chat window.  
@@ -49,6 +68,9 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     private JButton m_setStatus;
     private Chat m_chat;
     
+    private boolean m_showTime=false;
+    
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
 
     private final SimpleAttributeSet bold = new SimpleAttributeSet();
     private final SimpleAttributeSet italic = new SimpleAttributeSet();
@@ -118,6 +140,11 @@ public class ChatMessagePanel extends JPanel implements IChatListener
     public Chat getChat()
     {
         return m_chat;
+    }
+    
+    public void setShowTime(boolean showTime)
+    {
+        m_showTime = showTime;
     }
 
     private void layoutComponents()
@@ -216,11 +243,12 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         final String message = trimMessage(originalMessage);
         try
         {
+            String time=simpleDateFormat.format(new Date());
             Document doc = m_text.getDocument();
             if(thirdperson)
-                doc.insertString(doc.getLength(), "*"+from, bold);
+                doc.insertString(doc.getLength(), (m_showTime ? "* "+time+" "+from : "* "+from), bold);
             else
-                doc.insertString(doc.getLength(), from+": ", bold);
+                doc.insertString(doc.getLength(), (m_showTime ? time +" "+ from+": " : from+": "), bold);
             doc.insertString(doc.getLength()," "+message + "\n", normal);
             
             //don't let the chat get too big

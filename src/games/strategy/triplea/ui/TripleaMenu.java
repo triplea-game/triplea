@@ -177,6 +177,27 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addShowUnits(menuView);
         addMapSkinsMenu(menuView);
         addShowMapDetails(menuView);
+        addChatTimeMenu(menuView);
+        
+    }
+    
+    private void addChatTimeMenu(JMenu parentMenu)
+    {
+        final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
+        
+        chatTimeBox.addActionListener(new ActionListener()
+        {
+
+            public void actionPerformed(ActionEvent e)
+            {
+                m_frame.setShowChatTime(chatTimeBox.isSelected());
+                
+            }
+            
+        });
+        
+        chatTimeBox.setSelected(false);
+        parentMenu.add(chatTimeBox);
         
     }
 

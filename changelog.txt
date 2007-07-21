@@ -1,3 +1,5 @@
+* show time in chat panel, default is to show chat time in lobby, but not in game (gansito)
+
 * bug fixes (tclayton):
 *  [ 1204024 ] Missing Sea Zone 
 *  [ 1510049 ] unloading troops bug

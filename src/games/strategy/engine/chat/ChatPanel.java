@@ -109,6 +109,11 @@ public class ChatPanel extends JPanel
         m_chatPlayerPanel.setPlayerRenderer(renderer);
         
     }
+    
+    public void setShowChatTime(boolean showTime)
+    {
+        m_chatMessagePanel.setShowTime(showTime);
+    }
 
 
   
