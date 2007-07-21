@@ -14,9 +14,6 @@
 
 package games.strategy.common.ui;
 
-import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
 
 
 /**
@@ -29,22 +26,38 @@ import com.apple.eawt.ApplicationEvent;
  * @author Lane Schwartz
  * @see http://developer.apple.com/samplecode/AppleJavaExtensions/index.html
  */
+@SuppressWarnings("deprecation")
 public class MacWrapper
 {
     private static MainGameFrame s_shutdownFrame;
-    private static Application application = new Application();     
-        
+//    private static Application application = new Application();     
+//        
+//    static
+//    {
+//        application.addApplicationListener(
+//                new ApplicationAdapter() {
+//                    public void handleQuit(ApplicationEvent event) 
+//                    {   
+//                        if(s_shutdownFrame != null)
+//                            s_shutdownFrame.shutdown();
+//                        else 
+//                            System.exit(0);   
+//                    }});
+//    }
+
+    
     static
     {
-        application.addApplicationListener(
-                new ApplicationAdapter() {
-                    public void handleQuit(ApplicationEvent event) 
-                    {   
-                        if(s_shutdownFrame != null)
-                            s_shutdownFrame.shutdown();
-                        else 
-                            System.exit(0);   
-                    }});
+        com.apple.mrj.MRJApplicationUtils.registerQuitHandler(new com.apple.mrj.MRJQuitHandler()
+        {
+           public void handleQuit()
+           {
+               if(s_shutdownFrame != null)
+                   s_shutdownFrame.shutdown();
+               else
+                   System.exit(0);
+           }
+        });
     }
     
     //keep this in its own class, otherwise we get a no class def error when 
