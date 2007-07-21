@@ -1,3 +1,5 @@
+Changes for 0.9.1
+
 * show time in chat panel, default is to show chat time in lobby, but not in game (gansito)
 
 * bug fixes (tclayton):
