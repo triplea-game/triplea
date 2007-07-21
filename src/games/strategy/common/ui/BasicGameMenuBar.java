@@ -35,9 +35,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
-import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
 
 public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar
 {
@@ -243,15 +240,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     	}
     	else // On Mac OS X, put the About menu where Mac users expect it to be
     	{	
-    		Application.getApplication().addApplicationListener(new ApplicationAdapter()
-    		{
-    			public void handleAbout(ApplicationEvent event)
-    			{
-    				event.setHandled(true); // otherwise the default About menu will still show appear
-
-    				JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
-    			}
-    		});
+    		MacWrapper.addApplicationWrapper(m_frame, editorPane);
     	}
         
     }

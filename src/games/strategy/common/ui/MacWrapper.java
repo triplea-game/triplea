@@ -14,6 +14,9 @@
 
 package games.strategy.common.ui;
 
+import javax.swing.JEditorPane;
+import javax.swing.JOptionPane;
+
 import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
@@ -59,5 +62,18 @@ public class MacWrapper
     public static void unregisterShutdownHandler()
     {
         s_shutdownFrame = null;       
+    }
+    
+    public static void addApplicationWrapper(final MainGameFrame frame, final JEditorPane editorPane) 
+    {
+        Application.getApplication().addApplicationListener(new ApplicationAdapter()
+        {
+            public void handleAbout(ApplicationEvent event)
+            {
+                event.setHandled(true); // otherwise the default About menu will still show appear
+    
+                JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
+            }
+        });
     }
 }
