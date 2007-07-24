@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.ui;
 
+import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
