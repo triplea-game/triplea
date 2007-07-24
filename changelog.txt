@@ -1,5 +1,13 @@
 Changes for 0.9.1
 
+* implemented minimax AI and alpha-beta AI; currently used in Tic Tac Toe and King's Table (dowobeha)
+
+* implemented new King's Table game and Tic Tac Toe game (dowobeha)
+
+* created common code package to minimize code duplication between different games (dowobeha)
+
+* enhanced game framework to allow easier implementation of new grid-based games (dowobeha)
+
 * show time in chat panel, default is to show chat time in lobby, but not in game (gansito)
 
 * bug fixes (tclayton):
