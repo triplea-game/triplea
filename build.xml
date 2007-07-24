@@ -9,7 +9,7 @@
 	<path id="full.path">
 		<pathelement path="lib\standalone-compiler.jar" />
 		<pathelement path="lib\looks-2.0.4.jar" />
-		<pathelement path="lib\MRJToolkitStubs.zip" />
+		<pathelement path="lib\AppleJavaExtensions.jar" />
 		<pathelement path="lib\commons-httpclient-3.0.1.jar" />
 		<pathelement path="lib\commons-logging-1.1.jar" />
 		<pathelement path="lib\commons-codec-1.3.jar" />
