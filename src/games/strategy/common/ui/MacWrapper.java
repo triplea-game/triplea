@@ -14,6 +14,9 @@
 
 package games.strategy.common.ui;
 
+import com.apple.eawt.Application;
+import com.apple.eawt.ApplicationAdapter;
+import com.apple.eawt.ApplicationEvent;
 
 
 /**
@@ -26,38 +29,22 @@ package games.strategy.common.ui;
  * @author Lane Schwartz
  * @see http://developer.apple.com/samplecode/AppleJavaExtensions/index.html
  */
-@SuppressWarnings("deprecation")
 public class MacWrapper
 {
     private static MainGameFrame s_shutdownFrame;
-//    private static Application application = new Application();     
-//        
-//    static
-//    {
-//        application.addApplicationListener(
-//                new ApplicationAdapter() {
-//                    public void handleQuit(ApplicationEvent event) 
-//                    {   
-//                        if(s_shutdownFrame != null)
-//                            s_shutdownFrame.shutdown();
-//                        else 
-//                            System.exit(0);   
-//                    }});
-//    }
-
-    
+    private static Application application = new Application();     
+        
     static
     {
-        com.apple.mrj.MRJApplicationUtils.registerQuitHandler(new com.apple.mrj.MRJQuitHandler()
-        {
-           public void handleQuit()
-           {
-               if(s_shutdownFrame != null)
-                   s_shutdownFrame.shutdown();
-               else
-                   System.exit(0);
-           }
-        });
+        application.addApplicationListener(
+                new ApplicationAdapter() {
+                    public void handleQuit(ApplicationEvent event) 
+                    {   
+                        if(s_shutdownFrame != null)
+                            s_shutdownFrame.shutdown();
+                        else 
+                            System.exit(0);   
+                    }});
     }
     
     //keep this in its own class, otherwise we get a no class def error when 
@@ -73,17 +60,4 @@ public class MacWrapper
     {
         s_shutdownFrame = null;       
     }
-    
-//    public static void addApplicationWrapper(final MainGameFrame frame, final JEditorPane editorPane) 
-//    {
-//        Application.getApplication().addApplicationListener(new ApplicationAdapter()
-//        {
-//            public void handleAbout(ApplicationEvent event)
-//            {
-//                event.setHandled(true); // otherwise the default About menu will still show appear
-//    
-//                JOptionPane.showMessageDialog(frame, editorPane, "About " + frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
-//            }
-//        });
-//    }
 }

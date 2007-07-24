@@ -35,6 +35,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
+import com.apple.eawt.Application;
+import com.apple.eawt.ApplicationAdapter;
+import com.apple.eawt.ApplicationEvent;
 
 public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar
 {
@@ -226,17 +229,30 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		JScrollPane scroll = new JScrollPane(editorPane);
 		scroll.setBorder(null);
 		
-    	
-    	parentMenu.addSeparator();
-    	
-    	parentMenu.add(new AbstractAction("About...")
-    	{
-    		public void actionPerformed(ActionEvent e)
+    	if (System.getProperty("mrj.version") == null) { 
+    		parentMenu.addSeparator();
+    		
+    		parentMenu.add(new AbstractAction("About...")
     		{
-    			JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
-    		}
-    	});
+    			public void actionPerformed(ActionEvent e)
+    			{
+    				JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
+    			}
+    		});
 
+    	}
+    	else // On Mac OS X, put the About menu where Mac users expect it to be
+    	{	
+    		Application.getApplication().addApplicationListener(new ApplicationAdapter()
+    		{
+    			public void handleAbout(ApplicationEvent event)
+    			{
+    				event.setHandled(true); // otherwise the default About menu will still show appear
+
+    				JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
+    			}
+    		});
+    	}
         
     }
     
