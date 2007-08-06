@@ -1602,10 +1602,14 @@ public class MovePanel extends ActionPanel
                 }
             }
 
-            Route route = getRoute(getFirstSelectedTerritory(), t);
-            updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
-            
-            updateRouteAndMouseShadowUnits(route);
+            if (!m_selectedUnits.isEmpty())
+            {
+                Route route = getRoute(getFirstSelectedTerritory(), t);
+                updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
+                updateRouteAndMouseShadowUnits(route);
+            }
+            else
+                setFirstSelectedTerritory(null);
         }
 
         private void deselectUnits(List<Unit> units, Territory t, MouseDetails me)
