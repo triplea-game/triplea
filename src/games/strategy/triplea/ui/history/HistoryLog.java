@@ -313,7 +313,7 @@ public class HistoryLog extends JFrame
                         {
                         } else if (title.equals("Cleaning up after movement phases"))
                         {
-                        } else if (title.matches("\\w+ collect \\d+ ipcs.*"))
+                        } else if (title.matches("\\w+ collect \\d+ ipcs?.*"))
                         {
                             logWriter.println(indent+title);
                         } else if (title.matches("\\w+ takes? .*? from \\w+"))

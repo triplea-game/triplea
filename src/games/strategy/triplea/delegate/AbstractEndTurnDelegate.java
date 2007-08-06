@@ -78,8 +78,8 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
         Collection territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
         int toAdd = getProduction(territories);
-        int ipcsTotal = player.getResources().getQuantity(ipcs) + toAdd;
-        String transcriptText = player.getName() + " collect " + toAdd + " ipcs; end with " + ipcsTotal + " ipcs total";
+        int total = player.getResources().getQuantity(ipcs) + toAdd;
+        String transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" ipc", toAdd)+"; end with " + total+ MyFormatter.pluralize(" ipc", total) + " total";
         aBridge.getHistoryWriter().startEvent(transcriptText);
 
         Change change = ChangeFactory.changeResourcesChange(player, ipcs, toAdd);

@@ -23,6 +23,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.util.IntegerMap;
+import games.strategy.triplea.formatter.MyFormatter;
 
 import java.awt.event.ActionEvent;
 
@@ -137,10 +138,7 @@ public class PurchasePanel extends ActionPanel
       else
       {
         m_buyButton.setText(CHANGE);
-        if(m_purchase.totalValues() == 1)
-          m_purchasedSoFar.setText("1 unit to be prooduced:");
-        else
-          m_purchasedSoFar.setText(m_purchase.totalValues() + " units to be produced:");
+        m_purchasedSoFar.setText(m_purchase.totalValues()+MyFormatter.pluralize(" unit", m_purchase.totalValues())+" to be produced:");
       }
     }
   };

@@ -157,7 +157,7 @@ public class MyFormatter
 
     public static String pluralize(String in, int quantity)
     {
-        if (quantity <= 1)
+        if (quantity == -1 || quantity == 1)
             return in;
         return pluralize(in);
     }
