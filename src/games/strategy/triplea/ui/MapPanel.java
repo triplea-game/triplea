@@ -549,7 +549,7 @@ public class MapPanel extends ImageScrollerLargeView
     }
     
 
-    public void updateCounties(Collection<Territory> countries)
+    public void updateCountries(Collection<Territory> countries)
     {
         m_tileManager.updateTerritories(countries, m_data, m_uiContext.getMapData());
         m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
@@ -591,7 +591,7 @@ public class MapPanel extends ImageScrollerLargeView
 
         public void unitsChanged(Territory territory)
         {
-            updateCounties(Collections.singleton(territory));
+            updateCountries(Collections.singleton(territory));
             SwingUtilities.invokeLater(new Runnable()
             {
             
@@ -607,7 +607,7 @@ public class MapPanel extends ImageScrollerLargeView
         public void ownerChanged(Territory territory)
         {
             m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
-            updateCounties(Collections.singleton(territory));
+            updateCountries(Collections.singleton(territory));
             SwingUtilities.invokeLater(new Runnable()
             {
             

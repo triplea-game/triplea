@@ -620,7 +620,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                     public void run()
                     {
                         yield();
-                        m_frame.getMapPanel().updateCounties(getData().getMap().getTerritories());
+                        m_frame.getMapPanel().updateCountries(getData().getMap().getTerritories());
 
                     }
                 };

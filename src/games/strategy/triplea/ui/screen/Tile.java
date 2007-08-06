@@ -183,7 +183,7 @@ public class Tile
         
     }
     
-    public void addDrawbles(Collection<IDrawable> drawables)
+    public void addDrawables(Collection<IDrawable> drawables)
     {
         LockUtil.acquireLock(m_lock);
         try

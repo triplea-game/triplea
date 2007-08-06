@@ -303,7 +303,7 @@ public class TileManager
         {
             Tile tile = tiles.next();
             drawnOn.add(tile);
-            tile.addDrawbles(drawing);
+            tile.addDrawables(drawing);
         }
         
         m_territoryDrawables.put(territory.getName(), drawing);
