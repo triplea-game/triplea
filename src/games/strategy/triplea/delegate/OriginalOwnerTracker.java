@@ -38,11 +38,6 @@ import games.strategy.triplea.TripleAUnit;
 public class OriginalOwnerTracker implements java.io.Serializable
 {
 
-	//maps object -> PlayerID
-	//weak since we dont want to prevent dead units
-	//from being gc'd
-	private Map<Object, PlayerID> m_originalOwner = new WeakHashMap<Object, PlayerID>();
-
     /** Creates new OriginalOwnerTracker */
     public OriginalOwnerTracker()
     {
@@ -55,7 +50,7 @@ public class OriginalOwnerTracker implements java.io.Serializable
 
     public void addOriginalOwner(Unit unit, PlayerID player)
     {
-        ((TripleAUnit)unit).setOriginalOwner(player);
+        TripleAUnit.get(unit).setOriginalOwner(player);
     }
 
     public void addOriginalOwner(Collection<Unit> units, PlayerID player)
@@ -66,7 +61,7 @@ public class OriginalOwnerTracker implements java.io.Serializable
 
     public PlayerID getOriginalOwner(Unit unit)
     {
-        return ((TripleAUnit)unit).getOriginalOwner();
+        return TripleAUnit.get(unit).getOriginalOwner();
     }
 
     public PlayerID getOriginalOwner(Territory t)
