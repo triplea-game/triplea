@@ -21,97 +21,112 @@ import java.util.*;
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.TripleAUnit;
 
 public class UnitCategory implements Comparable
 {
-   private final UnitType m_type;
-   //Collection of UnitOwners, the type of our dependents, not the dependents
-   private Collection<UnitOwner> m_dependents;
-   private final int m_movement; //movement of the units
-   private final PlayerID m_owner;
-   //the units in the category, may be duplicates.
-   private final List<Unit> m_units = new ArrayList<Unit>();
+    private final UnitType m_type;
+    //Collection of UnitOwners, the type of our dependents, not the dependents
+    private Collection<UnitOwner> m_dependents;
+    private final int m_movement; //movement of the units
+    private final PlayerID m_owner;
+    //the units in the category, may be duplicates.
+    private final List<Unit> m_units = new ArrayList<Unit>();
 
-   private boolean m_damaged = false;
+    private boolean m_damaged = false;
 
-   public UnitCategory(Unit unit, Collection<Unit> dependents, int movement)
-   {
-       this(unit, dependents, movement, false);
-   }
-   
-   public UnitCategory(UnitType type, PlayerID owner)
-   {
-       m_type = type;
-       m_dependents = Collections.emptyList();
-       m_movement = -1;
-       m_owner = owner;
-       
-   }
-   
+    public UnitCategory(Unit unit, boolean categorizeDependents, boolean categorizeMovement)
+    {
+        TripleAUnit taUnit = (TripleAUnit)unit;
+        m_type = taUnit.getType();
+        m_owner = taUnit.getOwner();
+        m_movement = categorizeMovement ? taUnit.getMovementLeft() : -1;
+        m_damaged = (taUnit.getHits() > 0);
+        if (categorizeDependents)
+            createDependents(taUnit.getDependents());
+        else
+            m_dependents = Collections.emptyList();
+    }
 
-   public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, boolean damaged)
-   {
-     m_type = unit.getType();
-     m_movement = movement;
-     m_owner = unit.getOwner();
-     m_damaged = damaged;
-     m_units.add(unit);
-     createDependents(dependents);
-   }
+    
+    public UnitCategory(Unit unit, Collection<Unit> dependents, int movement)
+    {
+        this(unit, dependents, movement, false);
+    }
+    
+    public UnitCategory(UnitType type, PlayerID owner)
+    {
+        m_type = type;
+        m_dependents = Collections.emptyList();
+        m_movement = -1;
+        m_owner = owner;
+    
+    }
+    
 
-   public boolean getDamaged()
-   {
-       return m_damaged;
-   }
+    public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, boolean damaged)
+    {
+        m_type = unit.getType();
+        m_movement = movement;
+        m_owner = unit.getOwner();
+        m_damaged = damaged;
+        m_units.add(unit);
+        createDependents(dependents);
+    }
 
-   public boolean isTwoHit()
-   {
-       return UnitAttachment.get(m_type).isTwoHit();
-   }
+    public boolean getDamaged()
+    {
+        return m_damaged;
+    }
 
-   private void createDependents(Collection<Unit> dependents)
-   {
-     m_dependents = new ArrayList<UnitOwner>();
+    public boolean isTwoHit()
+    {
+        return UnitAttachment.get(m_type).isTwoHit();
+    }
 
-     if(dependents == null)
-       return;
+    private void createDependents(Collection<Unit> dependents)
+    {
+        m_dependents = new ArrayList<UnitOwner>();
 
-     Iterator<Unit> iter = dependents.iterator();
+        if(dependents == null)
+            return;
 
-     while(iter.hasNext())
-     {
-       Unit current = iter.next();
-       m_dependents.add(new UnitOwner(current));
-     }
-   }
+        Iterator<Unit> iter = dependents.iterator();
+
+        while(iter.hasNext())
+        {
+            Unit current = iter.next();
+            m_dependents.add(new UnitOwner(current));
+        }
+    }
 
 
 
-   public boolean equals(Object o)
-   {
-       if (o == null)
-           return false;
-       if (! (o instanceof UnitCategory))
-           return false;
+    public boolean equals(Object o)
+    {
+        if (o == null)
+            return false;
+        if (! (o instanceof UnitCategory))
+            return false;
 
-       UnitCategory other = (UnitCategory) o;
+        UnitCategory other = (UnitCategory) o;
 
-       //equality of categories does not compare the number
-       //of units in the category, so dont compare on m_units
-       boolean equalsIgnoreDamaged = equalsIgnoreDamaged(other);
+        //equality of categories does not compare the number
+        //of units in the category, so dont compare on m_units
+        boolean equalsIgnoreDamaged = equalsIgnoreDamaged(other);
 
-       return equalsIgnoreDamaged &&
-           other.m_damaged == this.m_damaged;
-   }
+        return equalsIgnoreDamaged &&
+            other.m_damaged == this.m_damaged;
+    }
 
-   public boolean equalsIgnoreDamaged(UnitCategory other)
-   {
-       boolean equalsIgnoreDamaged =
-           other.m_type.equals(this.m_type) &&
-           other.m_movement == this.m_movement &&
-           other.m_owner.equals(this.m_owner) &&
-           Util.equals(this.m_dependents, other.m_dependents);
-       return equalsIgnoreDamaged;
+    public boolean equalsIgnoreDamaged(UnitCategory other)
+    {
+        boolean equalsIgnoreDamaged =
+            other.m_type.equals(this.m_type) &&
+            other.m_movement == this.m_movement &&
+            other.m_owner.equals(this.m_owner) &&
+            Util.equals(this.m_dependents, other.m_dependents);
+        return equalsIgnoreDamaged;
     }
 
     public boolean equalsIgnoreMovement(UnitCategory other)
@@ -122,88 +137,95 @@ public class UnitCategory implements Comparable
             other.m_damaged == this.m_damaged &&
             Util.equals(this.m_dependents, other.m_dependents);
         return equalsIgnoreMovement;
-   }
-
-   public int hashCode()
-   {
-     return m_type.hashCode() | m_owner.hashCode();
-   }
-
-   public String toString()
-   {
-     return "Entry type:" + m_type.getName() + " owner:" + m_owner + " dependenents:" + m_dependents;
-   }
-
-   /**
-    * Collection of UnitOwners, the type of our dependents, not the dependents
-    */
-   public Collection<UnitOwner> getDependents()
-   {
-     return m_dependents;
-   }
-
-   public List<Unit> getUnits()
-   {
-     return m_units;
-   }
-
-   public int getMovement()
-   {
-     return m_movement;
-   }
-
-   public PlayerID getOwner()
-   {
-     return m_owner;
-   }
-
-   public void addUnit(Unit unit)
-   {
-     m_units.add(unit);
-   }
-
-   void removeUnit(Unit unit)
-   {
-       m_units.remove(unit);
-   }
-
-   public UnitType getType()
-   {
-     return m_type;
-   }
+    }
 
 
-   public int compareTo(Object o)
-   {
-       if (o == null)
-           return -1;
+    public int hashCode()
+    {
+        return m_type.hashCode() | m_owner.hashCode();
+    }
 
-       UnitCategory other = (UnitCategory) o;
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Entry type:").append(m_type.getName())
+          .append(" owner:").append(m_owner.getName())
+          .append(" damaged:").append(m_damaged)
+          .append(" dependents:").append(m_dependents)
+          .append(" movement:").append(m_movement);
+        return sb.toString();
+    }
 
-       if (!other.m_owner.equals(this.m_owner))
-           return this.m_owner.getName().compareTo(other.m_owner.getName());
+    /**
+     * Collection of UnitOwners, the type of our dependents, not the dependents
+     */
+    public Collection<UnitOwner> getDependents()
+    {
+        return m_dependents;
+    }
 
-       int typeCompare = new UnitTypeComparator().compare(this.getType(),
-           other.getType());
-       if (typeCompare != 0)
-           return typeCompare;
+    public List<Unit> getUnits()
+    {
+        return m_units;
+    }
 
-       if (m_movement != other.m_movement)
-           return m_movement - other.m_movement;
+    public int getMovement()
+    {
+        return m_movement;
+    }
 
-       if (!Util.equals(this.m_dependents, other.m_dependents))
-       {
-           return m_dependents.toString().compareTo(other.m_dependents.
-               toString());
-       }
+    public PlayerID getOwner()
+    {
+        return m_owner;
+    }
 
-       if(this.m_damaged != other.m_damaged)
-       {
-           if(m_damaged)
-               return 1;
-           return -1;
-       }
+    public void addUnit(Unit unit)
+    {
+        m_units.add(unit);
+    }
 
-       return 0;
-   }
+    void removeUnit(Unit unit)
+    {
+        m_units.remove(unit);
+    }
+
+    public UnitType getType()
+    {
+        return m_type;
+    }
+
+
+    public int compareTo(Object o)
+    {
+        if (o == null)
+            return -1;
+
+        UnitCategory other = (UnitCategory) o;
+
+        if (!other.m_owner.equals(this.m_owner))
+            return this.m_owner.getName().compareTo(other.m_owner.getName());
+
+        int typeCompare = new UnitTypeComparator().compare(this.getType(),
+            other.getType());
+        if (typeCompare != 0)
+            return typeCompare;
+
+        if (m_movement != other.m_movement)
+            return m_movement - other.m_movement;
+
+        if (!Util.equals(this.m_dependents, other.m_dependents))
+        {
+            return m_dependents.toString().compareTo(other.m_dependents.
+                toString());
+        }
+
+        if(this.m_damaged != other.m_damaged)
+        {
+            if(m_damaged)
+                return 1;
+            return -1;
+        }
+
+        return 0;
+    }
 }

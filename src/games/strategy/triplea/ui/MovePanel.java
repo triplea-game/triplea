@@ -115,7 +115,7 @@ public class MovePanel extends ActionPanel
     // cache this so we can update it only when territory/units change
     private Collection<Unit> m_unitsThatCanMoveOnRoute;
 
-    private Collection<UnitType> m_unresolvedUnitTypes;
+    private Collection<UnitCategory> m_unresolvedUnitCategories;
 
     private Image m_currentCursorImage;
     private TransportTracker m_transportTracker = null;
@@ -130,7 +130,7 @@ public class MovePanel extends ActionPanel
         m_undoableMovesPanel = new UndoableMovesPanel(data, this);
         m_mouseCurrentTerritory = null;
         m_unitsThatCanMoveOnRoute = Collections.emptyList();
-        m_unresolvedUnitTypes = Collections.emptyList();
+        m_unresolvedUnitCategories = Collections.emptyList();
         m_currentCursorImage = null;
     }
 
@@ -329,7 +329,7 @@ public class MovePanel extends ActionPanel
             m_mouseCurrentTerritory = null;
             m_forced = null;
             m_selectedUnits.clear();
-            m_unresolvedUnitTypes = Collections.emptyList();
+            m_unresolvedUnitCategories = Collections.emptyList();
             m_frame.clearStatusMessage();
             getMap().showMouseCursor();
             m_currentCursorImage = null;
@@ -1128,7 +1128,7 @@ public class MovePanel extends ActionPanel
     
     private void updateUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)
     {
-        m_unresolvedUnitTypes = Collections.emptyList();
+        m_unresolvedUnitCategories = Collections.emptyList();
 
         if(route.getLength() == 0)
         {
@@ -1230,7 +1230,7 @@ public class MovePanel extends ActionPanel
                 {
                     // for unresolved units, paint a question mark over the unit type
                     warningMsg = result.getUnresolvedUnitWarning(0);
-                    m_unresolvedUnitTypes = result.getUnresolvedUnitTypes();
+                    m_unresolvedUnitCategories = result.getUnresolvedUnitCategories();
                 }
                 else if (result.hasDisallowedUnits())
                 {
@@ -1280,7 +1280,7 @@ public class MovePanel extends ActionPanel
             getMap().setMouseShadowUnits(null);
         else
         {
-            getMap().setMouseShadowUnits(m_unitsThatCanMoveOnRoute, m_unresolvedUnitTypes);
+            getMap().setMouseShadowUnits(m_unitsThatCanMoveOnRoute, m_unresolvedUnitCategories);
         }
     }
 
@@ -1714,23 +1714,22 @@ public class MovePanel extends ActionPanel
                 return;
             }
 
-            // keep a map of the max number of each eligible unitType that can be chosen
-            final IntegerMap<UnitType> maxMap = new IntegerMap<UnitType>();
+            // keep a map of the max number of each eligible category that can be chosen
+            final IntegerMap<UnitCategory> maxMap = new IntegerMap<UnitCategory>(units.size()+1, 1);
             for (Unit unit : units)
-                maxMap.add(unit.getType(), 1);
+                maxMap.add(new UnitCategory(unit, false, false), 1);
             // this match will make sure we can't select more units
-            // of a specific type then we had originally selected
-            Match<Collection<Unit>> unitTypeCountMatch = new Match<Collection<Unit>>()
+            // of a specific category then we had originally selected
+            Match<Collection<Unit>> unitCategoryCountMatch = new Match<Collection<Unit>>()
             {
-                public boolean match(Collection<Unit> units)
+                public boolean match(Collection<Unit> testUnits)
                 {
-                    IntegerMap<UnitType> currentMap = new IntegerMap<UnitType>();
-                    for (Unit unit : units)
-                        currentMap.add(unit.getType(), 1);
+                    IntegerMap<UnitCategory> currentMap = new IntegerMap<UnitCategory>(testUnits.size()+1, 1);
+                    for (Unit unit : testUnits)
+                        currentMap.add(new UnitCategory(unit, false, false), 1);
                     return maxMap.greaterThanOrEqualTo(currentMap);
                 }
             };
-            
     
             Collection<Unit> transports = null;
             if(MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
@@ -1742,13 +1741,13 @@ public class MovePanel extends ActionPanel
                   return;
               }
 
-              if (! m_unresolvedUnitTypes.isEmpty())
+              if (! m_unresolvedUnitCategories.isEmpty())
               {
                   Match<Unit> unresolvedUnitMatch = new Match<Unit>()
                   {
                       public boolean match(Unit u)
                       {
-                          return m_unresolvedUnitTypes.contains(u.getType());
+                          return m_unresolvedUnitCategories.contains(new UnitCategory(u, false, false));
                       }
                   };
 
@@ -1766,7 +1765,7 @@ public class MovePanel extends ActionPanel
 
                   // the match criteria for UnitChooser is a composite
                   CompositeMatch<Collection<Unit>> unitChooserMatch = new CompositeMatchAnd<Collection<Unit>>();
-                  unitChooserMatch.add(unitTypeCountMatch);
+                  unitChooserMatch.add(unitCategoryCountMatch);
                   unitChooserMatch.add(enoughTransportsMatch);
 
                   Collection<Unit> unresolvedUnits = Match.getMatches(units, unresolvedUnitMatch);
@@ -1810,7 +1809,7 @@ public class MovePanel extends ActionPanel
             }
             else
             {
-                allowSpecificUnitSelection(units, route, false, unitTypeCountMatch);
+                allowSpecificUnitSelection(units, route, false, unitCategoryCountMatch);
                 
                 if(units.isEmpty())
                 {

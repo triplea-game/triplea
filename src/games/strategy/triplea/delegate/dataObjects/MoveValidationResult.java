@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.util.UnitCategory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -135,12 +135,12 @@ public class MoveValidationResult implements Serializable
         return allUnresolvedUnits;
     }
 
-    public Collection<UnitType> getUnresolvedUnitTypes()
+    public Collection<UnitCategory> getUnresolvedUnitCategories()
     {
-        Set<UnitType> unresolvedUnitTypes = new HashSet<UnitType>();
+        Set<UnitCategory> unresolvedUnitCategories = new HashSet<UnitCategory>();
         for (Unit unit : getUnresolvedUnits())
-            unresolvedUnitTypes.add(unit.getType());
-        return unresolvedUnitTypes;
+            unresolvedUnitCategories.add(new UnitCategory(unit, false, false));
+        return unresolvedUnitCategories;
     }
 
     public Collection<Unit> getDisallowedUnits(String warning)

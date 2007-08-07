@@ -45,6 +45,7 @@ public class TripleAUnit extends Unit
     public static final String UNLOADED_TO = "unloadedTo";
     public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
     public static final String ALREADY_MOVED = "alreadyMoved";
+    public static final String MOVEMENT_LEFT = "movementLeft";
     public static final String SUBMERGED = "submerged";
     
     //the transport that is currently transporting us
@@ -199,4 +200,14 @@ public class TripleAUnit extends Unit
         m_submerged = submerged;
     }
     
+    public List<Unit> getDependents()
+    {
+        //TODO: add support for carriers as well
+        int size = m_transporting.size();
+        List<Unit> dependents = new ArrayList<Unit>(size);
+        for (Unit unit : m_transporting)
+            dependents.add(unit);
+        return dependents;
+    }
+
 }

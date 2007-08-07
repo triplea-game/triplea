@@ -949,7 +949,7 @@ public class MapPanel extends ImageScrollerLargeView
         setMouseShadowUnits(units, null);
     }
 
-    public void setMouseShadowUnits(Collection<Unit> units, Collection<UnitType> unresolvedTypes)
+    public void setMouseShadowUnits(Collection<Unit> units, Collection<UnitCategory> unresolvedCategories)
     {
         if(units == null || units.isEmpty())
         {
@@ -989,7 +989,7 @@ public class MapPanel extends ImageScrollerLargeView
                 UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
                         category.getOwner().getName(), place,category.getDamaged(), false, "", m_uiContext );
                 drawer.draw(bounds, m_data, g, m_uiContext.getMapData(), null, null);
-                if (unresolvedTypes != null && unresolvedTypes.contains(category.getType()))
+                if (unresolvedCategories != null && unresolvedCategories.contains(category))
                 {
                     Image helpImage = getHelpImage();
                     // position the icon in the lower-right corner of the unit
