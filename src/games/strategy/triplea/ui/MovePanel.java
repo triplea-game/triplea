@@ -388,28 +388,6 @@ public class MovePanel extends ActionPanel
     }
 
     /**
-     * Sort the specified units in preferred movement or unload order.
-     */
-    private Match<Unit> getIncapableTransportMatch(final Route route)
-    {
-        // we keep incapableTransports so that we can have a nice UI error shown
-        //  if these transports are selected, since it may not be obvious
-        Match<Unit> incapableMatch = new Match<Unit>() 
-        {
-            public boolean match(Unit transport)
-            {
-                if (getTransportTracker().hasTransportUnloadedInPreviousPhase(transport))
-                    return true;
-                if (getTransportTracker().isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
-                    return true;
-                return false;
-            }
-        };
-        return incapableMatch;
-    }
-
-
-    /**
      * Return the units that are to be unloaded for this route.
      * If needed will ask the user what transports to unload.
      * This is needed because the user needs to be able to select what transports to unload
