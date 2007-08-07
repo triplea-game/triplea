@@ -32,6 +32,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
@@ -344,217 +345,9 @@ public class MovePanel extends ActionPanel
 
 
     /**
-     * Return a Comparator that will order the specified transports in preferred load order.
-     */
-    private Comparator<Unit> getLoadableTransportsOrder(final List<Unit> transports, 
-                                                        final MustMoveWithDetails mustMoveWith, 
-                                                        final Route route, 
-                                                        final boolean noTies)
-    {
-        Comparator<Unit> loadableTransportsOrder = new Comparator<Unit>()
-        {
-            public int compare(Unit u1, Unit u2)
-            {
-                TripleAUnit t1 = TripleAUnit.get(u1);
-                TripleAUnit t2 = TripleAUnit.get(u2);
-
-                // check if transport is incapable due to game state
-                boolean isIncapable1 = getIncapableTransportMatch(route).match(t1);
-                boolean isIncapable2 = getIncapableTransportMatch(route).match(t2);
-                if (!isIncapable1 && isIncapable2)
-                    return -1;
-                if (isIncapable1 && !isIncapable2)
-                    return 1;
-
-                // use allied transports as a last resort
-                boolean isAlliedTrn1 = !t1.getOwner().equals(getCurrentPlayer());
-                boolean isAlliedTrn2 = !t2.getOwner().equals(getCurrentPlayer());
-                if (!isAlliedTrn1 && isAlliedTrn2)
-                    return -1;
-                if (isAlliedTrn1 && !isAlliedTrn2)
-                    return 1;
-
-                Collection transporting1 = (Collection) mustMoveWith.getMustMoveWith().get(t1);
-                Collection transporting2 = (Collection) mustMoveWith.getMustMoveWith().get(t2);
-                if (transporting1 == null)
-                    transporting1 = Collections.emptyList();
-                if (transporting2 == null)
-                    transporting2 = Collections.emptyList();
-
-                // sort by decreasing transport capacity
-                int cost1 = MoveValidator.getTransportCost(transporting1);
-                int cost2 = MoveValidator.getTransportCost(transporting2);
-                if (cost1 != cost2)
-                    return cost2 - cost1;
-
-                // sort by decreasing movement
-                int left1 =  t1.getMovementLeft();
-                int left2 = t1.getMovementLeft();
-                if (left1 != left2)
-                    return left2 - left1;                 
-
-                // if noTies is set, sort by hashcode so that result is deterministic
-                if (noTies)                 
-                    return t1.hashCode() - t2.hashCode();                 
-                else               
-                    return 0;                 
-            }
-        };
-        return loadableTransportsOrder;
-    }
-
-    /**
-     * Return a Comparator that will order the specified transports in preferred unload order.
-     */
-    private Comparator<Unit> getUnloadableTransportsOrder(final List<Unit> transports, 
-                                                          final MustMoveWithDetails mustMoveWith, 
-                                                          final Route route, 
-                                                          final boolean noTies)
-    {
-        Comparator<Unit> unloadableTransportsOrder = new Comparator<Unit>()
-        {
-            public int compare(Unit t1, Unit t2)
-            {
-                // check if transport is incapable due to game state
-                boolean isIncapable1 = getIncapableTransportMatch(route).match(t1);
-                boolean isIncapable2 = getIncapableTransportMatch(route).match(t2);
-                if (!isIncapable1 && isIncapable2)
-                    return -1;
-                if (isIncapable1 && !isIncapable2)
-                    return 1;
-
-                // prioritize allied transports
-                boolean isAlliedTrn1 = !t1.getOwner().equals(getCurrentPlayer());
-                boolean isAlliedTrn2 = !t2.getOwner().equals(getCurrentPlayer());
-                if (isAlliedTrn1 && !isAlliedTrn2)
-                    return -1;
-                if (!isAlliedTrn1 && isAlliedTrn2)
-                    return 1;
-
-                Collection transporting1 = (Collection) mustMoveWith.getMustMoveWith().get(t1);
-                Collection transporting2 = (Collection) mustMoveWith.getMustMoveWith().get(t2);
-                if (transporting1 == null)
-                    transporting1 = Collections.emptyList();
-                if (transporting2 == null)
-                    transporting2 = Collections.emptyList();
-
-                // sort by decreasing transport capacity
-                int cost1 = MoveValidator.getTransportCost(transporting1);
-                int cost2 = MoveValidator.getTransportCost(transporting2);
-                if (cost1 != cost2)
-                    return cost2 - cost1;
-
-                // sort by increasing movement
-                int left1 = TripleAUnit.get(t1).getMovementLeft();
-                int left2 = TripleAUnit.get(t2).getMovementLeft();
-                if (left1 != left2)
-                    return left1 - left2;                 
-
-                // if noTies is set, sort by hashcode so that result is deterministic
-                if (noTies)                 
-                    return t1.hashCode() - t2.hashCode();                 
-                else               
-                    return 0;                 
-            }
-        };
-        return unloadableTransportsOrder;
-    }
-
-    /**
-     * Return a Comparator that will order the specified units in preferred move order.
-     */
-    private Comparator<Unit> getMovableUnitsOrder(final List<Unit> units, 
-                                                  final MustMoveWithDetails mustMoveWith, 
-                                                  final Route route, 
-                                                  final boolean noTies)
-    {
-        Comparator<Unit> movableUnitsOrder = new Comparator<Unit>()
-        {
-            public int compare(Unit u1, Unit u2)
-            {
-                Collection transporting1 = (Collection) mustMoveWith.getMustMoveWith().get(u1);
-                Collection transporting2 = (Collection) mustMoveWith.getMustMoveWith().get(u2);
-                if (transporting1 == null)
-                    transporting1 = Collections.emptyList();
-                if (transporting2 == null)
-                    transporting2 = Collections.emptyList();
-
-                // prefer transports for which dependents are also selected
-                int hasDepends1 = units.containsAll(transporting1) ? 1 : 0;
-                int hasDepends2 = units.containsAll(transporting2) ? 1 : 0;
-                if (hasDepends1 != hasDepends2)
-                    return hasDepends1 - hasDepends2;
-
-                // sort by decreasing transport capacity (only valid for transports)
-                int cost1 = MoveValidator.getTransportCost(transporting1);
-                int cost2 = MoveValidator.getTransportCost(transporting2);
-                if (cost1 != cost2)
-                    return cost2 - cost1;
-
-                // sort by increasing movement normally,
-                // but by decreasing movement during loading
-                // (to filter out armour that has already moved)
-                int left1 = TripleAUnit.get(u1).getMovementLeft();
-                int left2 = TripleAUnit.get(u2).getMovementLeft();
-                if (left1 != left2)
-                {
-                    if (MoveValidator.isLoad(route))
-                        return left2 - left1;                 
-                    else
-                        return left1 - left2;                 
-                }
-
-                // if noTies is set, sort by hashcode so that result is deterministic
-                if (noTies)                 
-                    return u1.hashCode() - u2.hashCode();                 
-                else               
-                    return 0;                 
-            }
-        };
-        return movableUnitsOrder;
-    }
-
-
-    /**
-     * Return a Comparator that will order the specified units in preferred unload order.
-     * If needed it may also inspect the transport holding the units.
-     */
-    private Comparator<Unit> getUnloadableUnitsOrder(final List<Unit> units, 
-                                                     final MustMoveWithDetails mustMoveWith, 
-                                                     final Route route, 
-                                                     final boolean noTies)
-    {
-        Comparator<Unit> unloadableUnitsOrder = new Comparator<Unit>()
-        {
-            public int compare(Unit u1, Unit u2)
-            {
-                Unit t1 = getTransportTracker().transportedBy(u1);
-                Unit t2 = getTransportTracker().transportedBy(u2);
-                // check if unloadable units are in a transport
-                if (t1 != null && t2 == null)
-                    return -1;
-                if (t1 == null && t2 != null)
-                    return 1;
-
-                if (t1 != null && t2 != null)
-                {
-                    int compareTransports = getUnloadableTransportsOrder(units, mustMoveWith, route, false).compare(t1,t2);
-                    if (compareTransports != 0)
-                        return compareTransports;
-                }
-
-                // we are sorting air units, or no difference found yet
-                // if noTies is set, sort by hashcode so that result is deterministic
-                return getMovableUnitsOrder(units, mustMoveWith, route, noTies).compare(u1,u2);
-            }
-        };
-        return unloadableUnitsOrder;
-    }
-
-    /**
      * Sort the specified units in preferred movement or unload order.
      */
-    private void sortUnitsToMove(final List<Unit> units, final MustMoveWithDetails mustMoveWith, final Route route)
+    private void sortUnitsToMove(final List<Unit> units, final Route route)
     {
         if(units.isEmpty())
             return;
@@ -564,34 +357,34 @@ public class MovePanel extends ActionPanel
         if (MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
         {
 
-            Collections.sort(units,getUnloadableUnitsOrder(units, mustMoveWith, route, true));
+            Collections.sort(units, UnitComparator.getUnloadableUnitsComparator(units, route, getCurrentPlayer(), true));
         }
         else
         {
-            Collections.sort(units,getMovableUnitsOrder(units, mustMoveWith, route, true));
+            Collections.sort(units, UnitComparator.getMovableUnitsComparator(units, route, getCurrentPlayer(), true));
         }
     }
     
     /**
      * Sort the specified transports in preferred load order.
      */
-    private void sortTransportsToLoad(final List<Unit> transports, final MustMoveWithDetails mustMoveWith, final Route route)
+    private void sortTransportsToLoad(final List<Unit> transports, final Route route)
     {
         if(transports.isEmpty())
             return;
 
-        Collections.sort(transports,getLoadableTransportsOrder(transports, mustMoveWith, route, true));
+        Collections.sort(transports, UnitComparator.getLoadableTransportsComparator(transports, route, getCurrentPlayer(), true));
     }
     
     /**
      * Sort the specified transports in preferred unload order.
      */
-    private void sortTransportsToUnload(List<Unit> transports, MustMoveWithDetails mustMoveWith, Route route)
+    private void sortTransportsToUnload(List<Unit> transports, Route route)
     {
         if(transports.isEmpty())
             return;
         
-        Collections.sort(transports,getUnloadableTransportsOrder(transports, mustMoveWith, route, true));
+        Collections.sort(transports, UnitComparator.getUnloadableTransportsComparator(transports, route, getCurrentPlayer(), true));
     }
 
     /**
@@ -625,31 +418,16 @@ public class MovePanel extends ActionPanel
      */
     private Collection<Unit> getUnitsToUnload(final Route route, final Collection<Unit> unitsToUnload)
     {
-      List<Unit> candidateUnits = getFirstSelectedTerritory().getUnits().getMatches(getUnloadableMatch(route, unitsToUnload));
+      Collection<Unit> allUnits = getFirstSelectedTerritory().getUnits().getUnits();
+      List<Unit> candidateUnits = Match.getMatches(allUnits, getUnloadableMatch(route, unitsToUnload));
 
       if(unitsToUnload.size() == candidateUnits.size())
           return unitsToUnload;
 
-      List<Unit> candidateTransports = new ArrayList<Unit>();
+      List<Unit> candidateTransports = Match.getMatches(allUnits, Matches.unitIsTransportingSomeCategories(candidateUnits));
       
-      final Collection<UnitCategory> unitsToUnloadCategories = UnitSeperator.categorize(candidateUnits);
-
-      //get the transports with units that we own
-      //these transports can be unloaded
-      for (Unit transport : m_mustMoveWithDetails.getMustMoveWith().keySet())
-      {
-          Collection<Unit> transporting = m_mustMoveWithDetails.getMustMoveWith().get(transport);
-          if(transporting == null)
-              continue;
-
-          //are some of the transported units of the same type we want to unload?
-          if(!Util.someIntersect(UnitSeperator.categorize(transporting), unitsToUnloadCategories))
-              continue;
-        
-          candidateTransports.add(transport);
-      }
       // remove all incapable transports
-      Collection<Unit> incapableTransports = Match.getMatches(candidateTransports, getIncapableTransportMatch(route));
+      Collection<Unit> incapableTransports = Match.getMatches(candidateTransports, Matches.transportCannotUnload(route.getEnd()));
       candidateTransports.removeAll(incapableTransports);
 
       if(candidateTransports.size() == 0)
@@ -661,11 +439,11 @@ public class MovePanel extends ActionPanel
       
       //are the transports all of the same type
       //if they are, then don't ask
-      Collection<UnitCategory> categories = UnitSeperator.categorize(candidateTransports, m_mustMoveWithDetails.getMustMoveWith(), true );
+      Collection<UnitCategory> categories = UnitSeperator.categorize(candidateTransports, true, true );
       if(categories.size() == 1)
           return unitsToUnload;
       
-      sortTransportsToUnload(candidateTransports, m_mustMoveWithDetails, route);
+      sortTransportsToUnload(candidateTransports, route);
 
       // unitsToUnload are actually dependents, but need to select transports
       Map<Unit,Unit> unitsToTransports = getDelegate().mapTransports(route, unitsToUnload, candidateTransports);
@@ -682,33 +460,25 @@ public class MovePanel extends ActionPanel
               final IntegerMap<Unit> capacityMap = new IntegerMap<Unit>();
               for (Unit transport : sortedTransports)
               {
-                  Collection<Unit> transporting = m_mustMoveWithDetails.getMustMoveWith().get(transport);
+                  Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
                   capacityMap.add(transport, MoveValidator.getTransportCost(transporting));
               }
               boolean hasChanged = false;
-              Comparator<Unit> increasingCapacityOrder = new Comparator<Unit>()
-              {
-                  public int compare(Unit t1, Unit t2)
-                  {
-                      int cost1 = capacityMap.getInt(t1);
-                      int cost2 = capacityMap.getInt(t2);
-                      return cost1 - cost2;
-                  }
-              };
+              Comparator<Unit> increasingCapacityComparator = UnitComparator.getIncreasingCapacityComparator(sortedTransports);
 
               // This algorithm will ensure that it is actually possible to distribute 
               // the selected units amongst the current selection of chosen transports.
               do {
                   hasChanged = false;
                   // sort transports by increasing capacity
-                  Collections.sort(sortedTransports, increasingCapacityOrder);
+                  Collections.sort(sortedTransports, increasingCapacityComparator);
 
                   // try to remove one unit from each transport, in succession
                   Iterator<Unit> transportIter = sortedTransports.iterator();
                   while (transportIter.hasNext())
                   {
                       Unit transport = transportIter.next();
-                      Collection<Unit> transporting = m_mustMoveWithDetails.getMustMoveWith().get(transport);
+                      Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
 
                       if (transporting == null)
                           continue;
@@ -739,6 +509,7 @@ public class MovePanel extends ActionPanel
       };
 
       // choosing what transports to unload
+      // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
       UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, m_mustMoveWithDetails.getMustMoveWith(), true, m_bridge.getGameData(), false, getMap().getUIContext(), transportsToUnloadMatch);      
       chooser.setTitle("What transports do you want to unload");
             
@@ -756,31 +527,16 @@ public class MovePanel extends ActionPanel
       List<Unit> allUnitsInSelectedTransports = new ArrayList<Unit>();
       for (Unit transport : choosenTransports)
       {
-          Collection<Unit> transporting =  m_mustMoveWithDetails.getMustMoveWith().get(transport);
+          Collection<Unit> transporting =  TripleAUnit.get(transport).getTransporting();
           if(transporting != null)
               allUnitsInSelectedTransports.addAll(transporting);
       }
       allUnitsInSelectedTransports.retainAll(candidateUnits);
-      sortUnitsToMove(allUnitsInSelectedTransports, m_mustMoveWithDetails, route);
+      sortUnitsToMove(allUnitsInSelectedTransports, route);
 
       List<Unit> rVal = new ArrayList<Unit>();
-
-      // we need to sort transports in increasing capacity order
-      Comparator<Unit> increasingCapacityOrder = new Comparator<Unit>() 
-      {
-          public int compare (Unit t1, Unit t2)
-          {
-              Collection transporting1 = (Collection) m_mustMoveWithDetails.getMustMoveWith().get(t1);
-              Collection transporting2 = (Collection) m_mustMoveWithDetails.getMustMoveWith().get(t2);
-
-              // sort by increasing transport capacity
-              int cost1 = MoveValidator.getTransportCost(transporting1);
-              int cost2 = MoveValidator.getTransportCost(transporting2);
-              return cost1 - cost2;
-          }
-      };
       List<Unit> sortedTransports = new ArrayList<Unit>(choosenTransports);
-      Collections.sort(sortedTransports, increasingCapacityOrder);
+      Collections.sort(sortedTransports, UnitComparator.getIncreasingCapacityComparator(sortedTransports));
 
       Collection<Unit> selectedUnits = new ArrayList<Unit>(unitsToUnload);
 
@@ -792,7 +548,7 @@ public class MovePanel extends ActionPanel
           while (selectedIter.hasNext())
           {
               Unit selected = selectedIter.next();
-              Collection<Unit> transporting = (Collection<Unit>) m_mustMoveWithDetails.getMustMoveWith().get(transport);
+              Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
 
               for (Unit candidate : transporting)
               {
@@ -901,33 +657,27 @@ public class MovePanel extends ActionPanel
         
         if (!mustQueryUser)
         {
+            // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
             Set<UnitCategory> categories = UnitSeperator.categorize(candidateUnits, m_mustMoveWithDetails.getMustMoveWith(), true);
             
             for(UnitCategory category1 : categories)
             {
-                //we cant move these, dont bother to check
-                if(category1.getMovement() == 0)
-                    continue;
-                
+                // Don't need to check category.getMovement(), 
+                // since getMovableMatch has already sanitized our units
                 for(UnitCategory category2 : categories)
                 {
-                    //we cant move these, dont bother to check
-                    if(category2.getMovement() == 0)
-                        continue;
-                    
                     //if we find that two categories are compatable, and some units
                     //are selected from one category, but not the other
                     //then the user has to refine his selection
                     if(category1 != category2 &&
                        category1.getType() == category2.getType() &&
-                       !category1.equalsIgnoreMovement(category2)
-                       )
+                       !category1.equalsIgnoreMovement(category2))
                     {
                         //if we are moving all the units from both categories, then nothing to choose
                         if(units.containsAll(category1.getUnits()) &&
                            units.containsAll(category2.getUnits()))
                             continue;
-                        //if we are moving some of the units from either category, then we need to stop
+                        //if we are moving some of the units from either category, then we need to prompt
                         if(!Util.intersection(category1.getUnits(), units).isEmpty() ||
                            !Util.intersection(category2.getUnits(), units).isEmpty() )
                         {
@@ -955,7 +705,8 @@ public class MovePanel extends ActionPanel
             }
 
             // sort candidateUnits in preferred order
-            sortUnitsToMove(candidateUnits, m_mustMoveWithDetails, route);
+            sortUnitsToMove(candidateUnits, route);
+            // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
             UnitChooser chooser = new UnitChooser(candidateUnits, defaultSelections, m_mustMoveWithDetails.getMustMoveWith(),
                     true, m_bridge.getGameData(), false, getMap().getUIContext(), matchCriteria);
 
@@ -982,6 +733,7 @@ public class MovePanel extends ActionPanel
         List<Unit> unitsCopy = new ArrayList<Unit>(units);
         for(Unit unit : unitsCopy)
         {
+            // TODO: change to use TripleAUnit.getDependents() when carrier dependents are supported
             Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
             if(forced != null)
             {
@@ -1147,7 +899,7 @@ public class MovePanel extends ActionPanel
         List<Unit> bestUnits = new ArrayList<Unit>(units.size());
 
         // sort candidate units in preferred movement order
-        sortUnitsToMove(candidateUnits, m_mustMoveWithDetails, route);
+        sortUnitsToMove(candidateUnits, route);
 
         // loop through selected units and replace with best candidate where possible
         for (Unit unit: units)
@@ -1172,6 +924,7 @@ public class MovePanel extends ActionPanel
         Collection<Unit> forcedDependents = new ArrayList<Unit>();
         for(Unit unit : bestUnits)
         {
+            // TODO: change to use TripleAUnit.getDependents() when carrier dependents are supported
             Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
             if(forced != null)
             {
@@ -1326,7 +1079,7 @@ public class MovePanel extends ActionPanel
             return Collections.emptyList();
 
         // sort transports in preferred load order
-        sortTransportsToLoad(candidateTransports, endMustMoveWith, route);
+        sortTransportsToLoad(candidateTransports, route);
 
         List<Unit> availableUnits = new ArrayList<Unit>(unitsToLoad);
 
@@ -1359,7 +1112,7 @@ public class MovePanel extends ActionPanel
         // only allow incapable transports for updateUnitsThatCanMoveOnRoute
         //  so that we can have a nice UI error shown if these transports 
         //  are selected, since it may not be obvious
-        Collection<Unit> incapableTransports = Match.getMatches(capableTransports, getIncapableTransportMatch(route));
+        Collection<Unit> incapableTransports = Match.getMatches(capableTransports, Matches.transportCannotUnload(route.getEnd()));
         capableTransports.removeAll(incapableTransports);
 
         Match<Unit> alliedMatch = new Match<Unit>() 
@@ -1426,7 +1179,7 @@ public class MovePanel extends ActionPanel
                 return candidateTransports;
 
             //all the same type, dont ask unless we have more than 1 unit type
-            if(UnitSeperator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), true).size() == 1 
+            if(UnitSeperator.categorize(candidateTransports, true, true).size() == 1 
                && unitsToLoad.size() == 1     )
                 return candidateTransports;
           
@@ -1462,6 +1215,7 @@ public class MovePanel extends ActionPanel
             }
         };
 
+        // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
         UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, endMustMoveWith.getMustMoveWith(), true, m_bridge.getGameData(), false, getMap().getUIContext(), transportsToLoadMatch);
         chooser.setTitle("What transports do you want to load");
         int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
@@ -1538,7 +1292,6 @@ public class MovePanel extends ActionPanel
                     
                     String text = "Select units to move from " + t.getName();
                     
-                    //MustMoveWithDetails mustMoveWith = getDelegate().getMustMoveWith(t, unitsToMove);
                     UnitChooser chooser = new UnitChooser(unitsToMove, m_selectedUnits,
                             null, false 
                             ,getData(),  false, getMap().getUIContext() );
@@ -1625,6 +1378,7 @@ public class MovePanel extends ActionPanel
             List<Unit> unitsWithoutDependents = new ArrayList<Unit>(m_selectedUnits);
             for(Unit unit : m_selectedUnits)
             {
+                // TODO: change to use TripleAUnit.getDependents() when carrier dependents are supported
                 Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
                 if(forced != null)
                     unitsWithoutDependents.removeAll(forced);

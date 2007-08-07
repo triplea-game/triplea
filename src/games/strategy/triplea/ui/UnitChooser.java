@@ -23,6 +23,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.*;
 import games.strategy.util.*;
 import games.strategy.triplea.util.*;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.ui.*;
 import games.strategy.util.IntegerMap;
 
@@ -106,13 +107,36 @@ public class UnitChooser extends JPanel
     m_match = match;
     createEntries(units, dependent, categorizeMovement, defaultSelections);
     layoutEntries();
-    if (match != null)
-    {
-        m_autoSelectButton.setVisible(false);
-        m_selectNoneButton.setVisible(false);
-        checkMatches();
-    }
   }
+
+// TODO: Enable this constructor and call it from MovePanel 
+//   once TripleAUnit supports carrier dependents
+/*
+  public UnitChooser(Collection<Unit> units, 
+                     Collection<Unit> defaultSelections, 
+                     boolean categorizeDependents,
+                     boolean categorizeMovement, 
+                     GameData data, 
+                     boolean allowTwoHit, 
+                     UIContext uiContext, 
+                     Match<Collection<Unit>> match)
+  {
+    if (categorizeDependents)
+    {
+        m_dependents = new HashMap<Unit,Collection<Unit>>();
+        for (Unit unit: units)
+            m_dependents.put(unit, TripleAUnit.get(unit).getDependents());
+    }
+    else
+        m_dependents = null;
+    m_data = data;
+    m_allowTwoHit = allowTwoHit;
+    m_uiContext = uiContext;
+    m_match = match;
+    createEntries(units, m_dependents, categorizeMovement, defaultSelections);
+    layoutEntries();
+  }
+*/
 
   /**
    * Set the maximum number of units that we can choose.
@@ -297,6 +321,12 @@ public class UnitChooser extends JPanel
     yIndex++;
     add(m_leftToSelect, new GridBagConstraints(0,yIndex,5,2,0,0.5,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ));
 
+    if (m_match != null)
+    {
+        m_autoSelectButton.setVisible(false);
+        m_selectNoneButton.setVisible(false);
+        checkMatches();
+    }
 
 
   }
