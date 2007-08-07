@@ -13,7 +13,7 @@
  */
 
 /*
- * TerritoryAttatchment.java
+ * TerritoryAttachment.java
  *
  * Created on November 8, 2001, 3:08 PM
  */
@@ -55,92 +55,92 @@ public class TerritoryAttachment extends DefaultAttachment
     }
 
 
-	/**
-	 * Convenience method.
-	 */
-	public static TerritoryAttachment get(Territory t)
-	{
-		TerritoryAttachment rVal =  (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
-		if(rVal == null && !t.isWater())
-		    throw new IllegalStateException("No territory attatchment for:" + t.getName());
-		return rVal;
-	}
+    /**
+     * Convenience method.
+     */
+    public static TerritoryAttachment get(Territory t)
+    {
+        TerritoryAttachment rVal =  (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
+        if(rVal == null && !t.isWater())
+            throw new IllegalStateException("No territory attachment for:" + t.getName());
+        return rVal;
+    }
 
-	private String m_capital = null;
-	private boolean m_originalFactory = false;
-	private int m_production = 2;
-	private boolean m_isVictoryCity = false;
-	private boolean m_isImpassible = false;
-	private String m_originalOwner = null;
-	
+    private String m_capital = null;
+    private boolean m_originalFactory = false;
+    private int m_production = 2;
+    private boolean m_isVictoryCity = false;
+    private boolean m_isImpassible = false;
+    private PlayerID m_originalOwner = null;
+    
 
   /** Creates new TerritoryAttatchment */
   public TerritoryAttachment()
   {
   }
 
-	public void setIsImpassible(String value)
-	{
-		m_isImpassible = getBool(value);
-	}
+    public void setIsImpassible(String value)
+    {
+        m_isImpassible = getBool(value);
+    }
 
-	public boolean isImpassible()
-	{
-		return m_isImpassible;
-	}
+    public boolean isImpassible()
+    {
+        return m_isImpassible;
+    }
 
-	public void setCapital(String value)
-	{
-		m_capital = value;
-	}
+    public void setCapital(String value)
+    {
+        m_capital = value;
+    }
 
-	public boolean isCapital()
-	{
-		return m_capital != null;
-	}
+    public boolean isCapital()
+    {
+        return m_capital != null;
+    }
 
-	public String getCapital()
-	{
-		return m_capital;
-	}
+    public String getCapital()
+    {
+        return m_capital;
+    }
 
-	public void setVictoryCity(String value)
-	{
-		m_isVictoryCity = getBool(value);
-	}
+    public void setVictoryCity(String value)
+    {
+        m_isVictoryCity = getBool(value);
+    }
 
-	public boolean isVictoryCity()
-	{
-		return m_isVictoryCity;
-	}
-	
-	public void setOriginalFactory(String value)
-	{
-		m_originalFactory = getBool(value);
-	}
+    public boolean isVictoryCity()
+    {
+        return m_isVictoryCity;
+    }
+    
+    public void setOriginalFactory(String value)
+    {
+        m_originalFactory = getBool(value);
+    }
 
-	public boolean isOriginalFactory()
-	{
-		return m_originalFactory;
-	}
+    public boolean isOriginalFactory()
+    {
+        return m_originalFactory;
+    }
 
-	public void setProduction(String value)
-	{
-		m_production = getInt(value);
-	}
+    public void setProduction(String value)
+    {
+        m_production = getInt(value);
+    }
 
-	public int getProduction()
-	{
-		return m_production;
-	}
+    public int getProduction()
+    {
+        return m_production;
+    }
 
-	public void setOriginalOwner(String value)
-	{
-		m_originalOwner = value;
-	}
+    public void setOriginalOwner(PlayerID player)
+    {
+        m_originalOwner = player;
+    }
 
-	public String getOriginalOwner()
-	{
-		return m_originalOwner;
-	}
+    public PlayerID getOriginalOwner()
+    {
+        return m_originalOwner;
+    }
 }

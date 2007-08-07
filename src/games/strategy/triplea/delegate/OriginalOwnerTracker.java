@@ -23,6 +23,8 @@ package games.strategy.triplea.delegate;
 import java.io.*;
 import java.util.*;
 import games.strategy.engine.data.*;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.TripleAUnit;
 
 /**
  *
@@ -41,51 +43,47 @@ public class OriginalOwnerTracker implements java.io.Serializable
 	//from being gc'd
 	private Map<Object, PlayerID> m_originalOwner = new WeakHashMap<Object, PlayerID>();
 
-	/** Creates new OriginalOwnerTracker */
+    /** Creates new OriginalOwnerTracker */
     public OriginalOwnerTracker()
-	{
+    {
     }
 
-	public void addOriginalOwner(Object obj, PlayerID player)
-	{
-		m_originalOwner.put(obj, player);
-	}
-
-	public void addOriginalOwner(Collection objects, PlayerID player)
-	{
-		Iterator iter = objects.iterator();
-		while(iter.hasNext())
-		{
-			addOriginalOwner(iter.next(), player);
-		}
-	}
-
-	public PlayerID getOriginalOwner(Object obj)
-	{
-		return m_originalOwner.get(obj);
-	}
-
-	private void writeObject(ObjectOutputStream os) throws IOException
-	{
-		os.writeObject(new HashMap<Object, PlayerID>(m_originalOwner));
-	}
-
-	@SuppressWarnings("unchecked")
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-	{
-		m_originalOwner = new WeakHashMap<Object, PlayerID>((HashMap) in.readObject()  );
-	}
-
-    public Collection<Object> getOriginallyOwned(PlayerID player)
+    public void addOriginalOwner(Territory t, PlayerID player)
     {
-        Collection<Object> rVal = new ArrayList<Object>();
-        Iterator<Object> iter = m_originalOwner.keySet().iterator();
+        TerritoryAttachment.get(t).setOriginalOwner(player);
+    }
+
+    public void addOriginalOwner(Unit unit, PlayerID player)
+    {
+        ((TripleAUnit)unit).setOriginalOwner(player);
+    }
+
+    public void addOriginalOwner(Collection<Unit> units, PlayerID player)
+    {
+        for (Unit unit : units)
+            addOriginalOwner(unit, player);
+    }
+
+    public PlayerID getOriginalOwner(Unit unit)
+    {
+        return ((TripleAUnit)unit).getOriginalOwner();
+    }
+
+    public PlayerID getOriginalOwner(Territory t)
+    {
+        return TerritoryAttachment.get(t).getOriginalOwner();
+    }
+
+    public Collection<Territory> getOriginallyOwned(GameData data, PlayerID player)
+    {
+        Collection<Territory> rVal = new ArrayList<Territory>();
+        Iterator<Territory> iter = data.getMap().iterator();
         while (iter.hasNext())
         {
-            Object item = iter.next();
-            if(m_originalOwner.get(item).equals(player))
+            Territory t = iter.next();
+            if(getOriginalOwner(t).equals(player))
             {
-                rVal.add(item);
+                rVal.add(t);
             }
         }
         return rVal;

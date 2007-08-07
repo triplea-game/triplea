@@ -47,6 +47,7 @@ public class TripleAUnit extends Unit
     public static final String ALREADY_MOVED = "alreadyMoved";
     public static final String MOVEMENT_LEFT = "movementLeft";
     public static final String SUBMERGED = "submerged";
+    public static final String ORIGINAL_OWNER = "originalOwner";
     
     //the transport that is currently transporting us
     private Unit m_transportedBy = null;
@@ -64,6 +65,8 @@ public class TripleAUnit extends Unit
     private int m_alreadyMoved = 0;
     //is this submarine submerged
     private boolean m_submerged = false;
+    //original owner of this unit
+    private PlayerID m_originalOwner = null;
     
     public static TripleAUnit get(Unit u) 
     {
@@ -198,6 +201,16 @@ public class TripleAUnit extends Unit
     public void setSubmerged(boolean submerged)
     {
         m_submerged = submerged;
+    }
+
+    public PlayerID getOriginalOwner()
+    {
+        return m_originalOwner;
+    }
+
+    public void setOriginalOwner(PlayerID originalOwner)
+    {
+        m_originalOwner = originalOwner;
     }
     
     public List<Unit> getDependents()

@@ -35,6 +35,7 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.IntegerMap;
@@ -571,6 +572,7 @@ class ProductionStat extends AbstractStat
         {
             boolean isConvoyOrLand = false; 
             Territory place = (Territory) iter.next();
+            OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
             TerritoryAttachment ta = TerritoryAttachment.get(place);
 
             if(!place.isWater())
@@ -579,8 +581,8 @@ class ProductionStat extends AbstractStat
             } 
             else if(place.isWater() &&
                         ta != null &&
-                        data.getPlayerList().getPlayerID(ta.getOriginalOwner()) != PlayerID.NULL_PLAYERID &&
-                        data.getPlayerList().getPlayerID(ta.getOriginalOwner()) == player &&
+                        origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID &&
+                        origOwnerTracker.getOriginalOwner(place) == player &&
                         place.getOwner().equals(player))
             {
                 isConvoyOrLand = true; 

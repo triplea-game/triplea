@@ -169,7 +169,7 @@ public class ChangeFactory
         return new RemoveProductionRule(rule, frontier);
     }    
     
-    public static Change attachmentPropertyChange(IAttachment attatchment, String newValue, String property)
+    public static Change attachmentPropertyChange(IAttachment attatchment, Object newValue, String property)
     {
         return new ChangeAttachmentChange(attatchment, newValue, property);
     }

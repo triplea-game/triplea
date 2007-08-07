@@ -190,7 +190,7 @@ public class InitializationDelegate implements IDelegate
                 
                 if(territoryAttachment == null)
                     throw new IllegalStateException("No territory attachment for " + current);
-                changes.add(ChangeFactory.attachmentPropertyChange(territoryAttachment, current.getOwner().getName(), Constants.ORIGINAL_OWNER));
+                changes.add(ChangeFactory.attachmentPropertyChange(territoryAttachment, current.getOwner(), Constants.ORIGINAL_OWNER));
             }
         }
         aBridge.getHistoryWriter().startEvent("Adding original owners");

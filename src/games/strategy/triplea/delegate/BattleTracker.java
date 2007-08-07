@@ -324,7 +324,7 @@ public class BattleTracker implements java.io.Serializable
         OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 
         // If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers
-        // have more than just xports
+        // have more than just transports
         if(territory.isWater() && arrivingUnits != null)
         {
             int totalMatches = 0;
@@ -393,8 +393,8 @@ public class BattleTracker implements java.io.Serializable
         CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
         enemyNonCom.add(Matches.UnitIsAAOrFactory);
         enemyNonCom.add(Matches.enemyUnit(id, data));
-        Collection nonCom = territory.getUnits().getMatches(enemyNonCom);
-        Change noMovementChange =DelegateFinder.moveDelegate(data).markNoMovementChange(nonCom);
+        Collection<Unit> nonCom = territory.getUnits().getMatches(enemyNonCom);
+        Change noMovementChange = DelegateFinder.moveDelegate(data).markNoMovementChange(nonCom);
         bridge.addChange(noMovementChange);
         if(changeTracker != null)
             changeTracker.addChange(noMovementChange);
@@ -402,10 +402,8 @@ public class BattleTracker implements java.io.Serializable
 
         //non coms revert to their original owner if once allied
         //unless there capital is not owned
-        Iterator iter = nonCom.iterator();
-        while (iter.hasNext())
+        for (Unit currentUnit : nonCom)
         {
-            Unit currentUnit = (Unit) iter.next();
             PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);
             Territory originalOwnersCapitol = null;
             if(originalOwner != null)
@@ -464,18 +462,16 @@ public class BattleTracker implements java.io.Serializable
                 && data.getAllianceTracker().isAllied(terrOrigOwner, id))
         {
             //if it is give it back to the original owner
-            Collection<Object> originallyOwned = origOwnerTracker.getOriginallyOwned(terrOrigOwner);
+            Collection<Territory> originallyOwned = origOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
 
             CompositeMatch alliedOccupiedTerritories = new CompositeMatchAnd();
             alliedOccupiedTerritories.add(Matches.IsTerritory);
             alliedOccupiedTerritories.add(Matches.isTerritoryAllied(terrOrigOwner, data));
-            List friendlyTerritories = Match.getMatches(originallyOwned, alliedOccupiedTerritories);
+            List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, alliedOccupiedTerritories);
 
             //give back the factories as well.
-            Iterator terrIter = friendlyTerritories.iterator();
-            while (terrIter.hasNext())
+            for (Territory item : friendlyTerritories)
             {
-                Territory item = (Territory) terrIter.next();
                 if (item.getOwner() == terrOrigOwner)
                     continue;
                 Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
