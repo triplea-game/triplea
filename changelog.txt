@@ -1,3 +1,5 @@
+* Added support for "color" property, including color picker UI (dowobeha)
+
 Changes for 0.9.1
 
 * implemented minimax AI and alpha-beta AI; currently used in Tic Tac Toe and King's Table (dowobeha)

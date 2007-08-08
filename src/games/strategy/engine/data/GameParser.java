@@ -684,6 +684,13 @@ public class GameParser
             editableProperty = new NumberProperty(name, max, min, def);
 
         }
+        else if (childName.equals("color"))
+        {
+            // Parse the value as a hexidecimal number
+            int def = Integer.valueOf(defaultValue,16).intValue();
+            
+            editableProperty = new ColorProperty(name,def);
+        }
         else if(childName.equals("string"))
         {
             editableProperty = new StringProperty(name, defaultValue);
