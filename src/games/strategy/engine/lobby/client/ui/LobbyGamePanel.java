@@ -250,7 +250,17 @@ public class LobbyGamePanel extends JPanel
         commands.add(System.getProperty("java.class.path"));
         commands.add("-Xmx128m");
         
-        
+        //preserve noddraw to fix 1742775
+        String[] preservedSystemProperties = {"sun.java2d.noddraw"};
+        for(String key : preservedSystemProperties) {
+            if(System.getProperties().getProperty(key) != null) {
+                String value = System.getProperties().getProperty(key);
+                if(value.matches("[a-zA-Z0-9.]+")) {
+                    commands.add("-D" + key + "=" + value);    
+                }
+                
+            }
+        }
         
         if(GameRunner.isMac())
         {   

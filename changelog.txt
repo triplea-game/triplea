@@ -1,3 +1,5 @@
+* partial fix for bug [ 1742775 ] Operating system freeze on Windows 98 with Ati Graphics Card (sgb)
+
 * Added support for "color" property, including color picker UI (dowobeha)
 
 Changes for 0.9.1
