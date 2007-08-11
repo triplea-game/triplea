@@ -77,6 +77,19 @@ public class MessengerTest extends TestCase
         assertEquals(m_client1.getServerNode(), m_server.getLocalNode());
         assertEquals(m_client2.getServerNode(), m_server.getLocalNode());
         assertEquals(m_server.getServerNode(), m_server.getLocalNode());
+        
+        for(int i =0; i < 100; i++) {
+        	if(m_server.getNodes().size() != 3) {
+        		try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					throw new IllegalStateException(e);
+				}
+        	} else { 
+        		break;
+        	}
+        		
+        }
         assertEquals(m_server.getNodes().size() , 3);
 
 	}
