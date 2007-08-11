@@ -77,6 +77,7 @@ public class MessengerTest extends TestCase
         assertEquals(m_client1.getServerNode(), m_server.getLocalNode());
         assertEquals(m_client2.getServerNode(), m_server.getLocalNode());
         assertEquals(m_server.getServerNode(), m_server.getLocalNode());
+        assertEquals(m_server.getNodes().size() , 3);
 
 	}
     
@@ -438,7 +439,7 @@ public class MessengerTest extends TestCase
 
 class MessageListener implements IMessageListener
 {
-	private final List<Serializable> messages = Collections.synchronizedList(new ArrayList<Serializable>());
+	private final List<Serializable> messages = new ArrayList<Serializable>();
 	private final ArrayList<INode> senders = new ArrayList<INode>();
 	private final Object lock = new Object();
 
@@ -476,6 +477,9 @@ class MessageListener implements IMessageListener
 		{
 			if(messages.isEmpty())
 				waitForMessage();
+			
+			TestCase.assertFalse(messages.isEmpty());
+			
 			return messages.get(0);
 		}
 	}
