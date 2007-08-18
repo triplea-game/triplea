@@ -181,7 +181,7 @@ public class ChangeFactory
 
     public static Change unitPropertyChange(Unit unit, Object newValue, String propertyName) 
     {
-        return new UnitPropertyChange(unit,propertyName, newValue );
+        return new ObjectPropertyChange(unit,propertyName, newValue );
     }
     
     /** Creates new ChangeFactory. No need */
@@ -737,19 +737,19 @@ class GameSequenceChange extends Change
     
 }
 
-class UnitPropertyChange extends Change 
+class ObjectPropertyChange extends Change 
 {
-    private final Unit m_unit;
+    private final Object m_object;
     private String m_property;
     private Object m_newValue;
     private Object m_oldValue;
     
-    public UnitPropertyChange(final Unit unit, final String property, final Object newValue)
+    public ObjectPropertyChange(final Object object, final String property, final Object newValue)
     {
-        m_unit = unit;
+        m_object = object;
         m_property = property.intern();
         m_newValue = newValue;
-        m_oldValue = PropertyUtil.get(property, unit);        
+        m_oldValue = PropertyUtil.get(property, object);        
     }
     
     /**
@@ -765,9 +765,9 @@ class UnitPropertyChange extends Change
         return value;
     }
     
-    public UnitPropertyChange(final Unit unit, final String property, final Object newValue, final Object oldValue)
+    public ObjectPropertyChange(final Object object, final String property, final Object newValue, final Object oldValue)
     {
-        m_unit = unit;
+        m_object = object;
         //prevent multiple copies of the property names being held in the game
         m_property = property.intern();
         m_newValue = newValue;
@@ -786,19 +786,19 @@ class UnitPropertyChange extends Change
     @Override
     public Change invert()
     {
-        return new UnitPropertyChange(m_unit, m_property, m_oldValue, m_newValue);
+        return new ObjectPropertyChange(m_object, m_property, m_oldValue, m_newValue);
     }
 
     @Override
     protected void perform(GameData data)
     {
-        PropertyUtil.set(m_property, m_newValue, m_unit);
+        PropertyUtil.set(m_property, m_newValue, m_object);
         
     }
     
     public String toString() 
     {
-        return "Property change, unit:" + m_unit + " property:" + m_property + " newValue:" + m_newValue + " oldValue:" + m_oldValue;
+        return "Property change, unit:" + m_object + " property:" + m_property + " newValue:" + m_newValue + " oldValue:" + m_oldValue;
     }
     
     
