@@ -265,7 +265,7 @@ public class RevisedTest extends TestCase
         sz5ToEee.add(eastEurope);
         
         error = moveDelegate.move(infantry, sz5ToEee);
-        assertEquals(MoveDelegate.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, error);
+        assertEquals(MoveValidator.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, error);
         
         
     }
@@ -321,7 +321,7 @@ public class RevisedTest extends TestCase
         
         error = moveDelegate.move(infantry.subList(1, 2), sz5ToEE);
         assertNotNull(error,error);
-        assertTrue(error.startsWith(MoveDelegate.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO));
+        assertTrue(error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO));
         
         //end the round
         moveDelegate.end();
@@ -393,7 +393,7 @@ public class RevisedTest extends TestCase
         //try to unload the other infantry somewhere else, an error occurs
         error = moveDelegate.move(infantry.subList(1, 2), sz5ToNorway);
         assertNotNull(error,error);
-        assertTrue(error.startsWith(MoveDelegate.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE));
+        assertTrue(error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE));
         
     }
     
@@ -424,7 +424,7 @@ public class RevisedTest extends TestCase
         String error = moveDelegate.move(sz50.getUnits().getMatches(Matches.UnitIsAir), sz50To45);
         assertNull(error);
         
-        assertEquals(1, moveDelegate.getBattleTracker().getPendingBattleSites(false).size());
+        assertEquals(1, MoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
         
         
         //we should be able to move the sub out of the sz
@@ -437,7 +437,7 @@ public class RevisedTest extends TestCase
         //make sure no error
         assertNull(error);
         //make sure the battle is still there
-        assertEquals(1, moveDelegate.getBattleTracker().getPendingBattleSites(false).size());
+        assertEquals(1, MoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
         
         
         //we should be abe to undo the move of the sub
@@ -447,7 +447,7 @@ public class RevisedTest extends TestCase
         //undo the move of the fighter, should be no battles now
         error = moveDelegate.undoMove(0);
         assertNull(error);
-        assertEquals(0, moveDelegate.getBattleTracker().getPendingBattleSites(false).size());
+        assertEquals(0, MoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
     }
 
     

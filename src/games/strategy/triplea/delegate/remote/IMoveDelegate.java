@@ -52,11 +52,6 @@ public interface IMoveDelegate extends IRemote
      */
     public String move(Collection<Unit> units, Route route);
 
-
-    public MoveValidationResult validateMove(Collection<Unit> units, Route route, PlayerID player, Collection<Unit> transportsToLoad);
-
-    public Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad);
-
     /**
      * Get the moves already made 
      * @return a list of UndoableMoves
@@ -69,14 +64,6 @@ public interface IMoveDelegate extends IRemote
      * @return an error string if the move could not be undone, null otherwise
      */
     public String undoMove(int moveIndex);
-    
-    /**
-     * Given a starting territory and a collection of units, returns
-     * what units must move with the given units.
-     * All units in units are either carriers or transports.
-     * All units are owned by the player whose current turn it is.
-     */
-    public MustMoveWithDetails getMustMoveWith(Territory start, Collection<Unit> units);
     
     /**
      * Get what air units must move before the end of the players turn

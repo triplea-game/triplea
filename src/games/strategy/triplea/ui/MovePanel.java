@@ -30,8 +30,10 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
@@ -120,6 +122,7 @@ public class MovePanel extends ActionPanel
 
     private Image m_currentCursorImage;
     private TransportTracker m_transportTracker = null;
+    private List<UndoableMove> m_undoableMoves;
 
     /** Creates new MovePanel */
     public MovePanel(GameData data, MapPanel map, TripleAFrame frame)
@@ -132,6 +135,7 @@ public class MovePanel extends ActionPanel
         m_mouseCurrentTerritory = null;
         m_unitsThatCanMoveOnRoute = Collections.emptyList();
         m_unresolvedUnitCategories = Collections.emptyList();
+        m_undoableMoves = Collections.emptyList();
         m_currentCursorImage = null;
     }
 
@@ -183,7 +187,8 @@ public class MovePanel extends ActionPanel
     
     private void updateMoves()
     {
-        m_undoableMovesPanel.setMoves(getDelegate().getMovesMade());
+        m_undoableMoves = getDelegate().getMovesMade();
+        m_undoableMovesPanel.setMoves(m_undoableMoves);
     }
 
     public MoveDescription waitForMove(IPlayerBridge bridge)
@@ -424,7 +429,7 @@ public class MovePanel extends ActionPanel
       sortTransportsToUnload(candidateTransports, route);
 
       // unitsToUnload are actually dependents, but need to select transports
-      Map<Unit,Unit> unitsToTransports = getDelegate().mapTransports(route, unitsToUnload, candidateTransports);
+      Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, unitsToUnload, candidateTransports);
       Set<Unit> defaultSelections = new HashSet<Unit>(unitsToTransports.values());
 
       // match criteria to ensure that chosen transports will match selected units
@@ -488,7 +493,14 @@ public class MovePanel extends ActionPanel
 
       // choosing what transports to unload
       // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
-      UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, m_mustMoveWithDetails.getMustMoveWith(), true, m_bridge.getGameData(), false, getMap().getUIContext(), transportsToUnloadMatch);      
+      UnitChooser chooser = new UnitChooser(candidateTransports, 
+                                            defaultSelections, 
+                                            m_mustMoveWithDetails.getMustMoveWith(), 
+                                            /*categorizeMovement*/ true, 
+                                            m_bridge.getGameData(), 
+                                            /*allowTwoHit*/ false, 
+                                            getMap().getUIContext(), 
+                                            transportsToUnloadMatch);      
       chooser.setTitle("What transports do you want to unload");
             
       int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
@@ -675,7 +687,7 @@ public class MovePanel extends ActionPanel
             if (MoveValidator.isLoad(route))
             {
                 final Collection<Unit> transportsToLoad = new ArrayList<Unit>(getTransportsToLoad(route, units, false));
-                defaultSelections.addAll(getDelegate().mapTransports(route, units, transportsToLoad).keySet());
+                defaultSelections.addAll(MoveDelegate.mapTransports(route, units, transportsToLoad).keySet());
             }
             else
             {
@@ -917,7 +929,13 @@ public class MovePanel extends ActionPanel
         bestUnits.addAll(forcedDependents);
 
         // getTransportsToLoad causes prompting... need to suppress that here
-        MoveValidationResult result = getDelegate().validateMove(bestUnits,route,getCurrentPlayer(),getTransportsToLoad(route, bestUnits, true));
+        MoveValidationResult result = MoveValidator.validateMove(bestUnits,
+                                                                 route,
+                                                                 getCurrentPlayer(),
+                                                                 getTransportsToLoad(route, bestUnits, true),
+                                                                 m_nonCombat,
+                                                                 m_undoableMoves,
+                                                                 getData());
 
         // remove dependent units that we just added so they don't show up in shadow units
         bestUnits.removeAll(forcedDependents);
@@ -1025,10 +1043,9 @@ public class MovePanel extends ActionPanel
         if (!MoveValidator.isLoad(route))
             return Collections.emptyList();
 
-        //Match<Unit> alliedTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
         Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
 
-        MustMoveWithDetails endMustMoveWith = getDelegate().getMustMoveWith(route.getEnd(), endOwnedUnits);
+        MustMoveWithDetails endMustMoveWith = MoveDelegate.getMustMoveWith(route.getEnd(), endOwnedUnits, getData(), getCurrentPlayer());
       
         int minTransportCost = 5;
         for(Unit unit : unitsToLoad)
@@ -1104,7 +1121,7 @@ public class MovePanel extends ActionPanel
         capableTransports.removeAll(alliedTransports);
 
         // First, load capable transports
-        Map<Unit,Unit> unitsToCapableTransports = getDelegate().mapTransports(route, availableUnits, capableTransports);
+        Map<Unit,Unit> unitsToCapableTransports = MoveDelegate.mapTransports(route, availableUnits, capableTransports);
         for (Unit unit : unitsToCapableTransports.keySet())
         {
             Unit transport = unitsToCapableTransports.get(unit);
@@ -1115,7 +1132,7 @@ public class MovePanel extends ActionPanel
         availableUnits.removeAll(unitsToCapableTransports.keySet());
 
         // Next, load allied transports
-        Map<Unit,Unit> unitsToAlliedTransports = getDelegate().mapTransports(route, availableUnits, alliedTransports);
+        Map<Unit,Unit> unitsToAlliedTransports = MoveDelegate.mapTransports(route, availableUnits, alliedTransports);
         for (Unit unit : unitsToAlliedTransports.keySet())
         {
             Unit transport = unitsToAlliedTransports.get(unit);
@@ -1131,7 +1148,7 @@ public class MovePanel extends ActionPanel
         //  are selected, since it may not be obvious
         if (getSelectedEndpointTerritory() == null)
         {
-            Map<Unit,Unit> unitsToIncapableTransports = getDelegate().mapTransports(route, availableUnits, incapableTransports);
+            Map<Unit,Unit> unitsToIncapableTransports = MoveDelegate.mapTransports(route, availableUnits, incapableTransports);
             for (Unit unit : unitsToIncapableTransports.keySet())
             {
                 Unit transport = unitsToIncapableTransports.get(unit);
@@ -1194,7 +1211,15 @@ public class MovePanel extends ActionPanel
         };
 
         // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
-        UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, endMustMoveWith.getMustMoveWith(), true, m_bridge.getGameData(), false, getMap().getUIContext(), transportsToLoadMatch);
+        UnitChooser chooser = new UnitChooser(candidateTransports, 
+                                              defaultSelections, 
+                                              endMustMoveWith.getMustMoveWith(), 
+                                              /*categorizeMovement*/ true, 
+                                              m_bridge.getGameData(), 
+                                              /*allowTwoHit*/ false, 
+                                              getMap().getUIContext(), 
+                                              transportsToLoadMatch);
+
         chooser.setTitle("What transports do you want to load");
         int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                                                   chooser, "What transports do you want to load",
@@ -1270,9 +1295,13 @@ public class MovePanel extends ActionPanel
                     
                     String text = "Select units to move from " + t.getName();
                     
-                    UnitChooser chooser = new UnitChooser(unitsToMove, m_selectedUnits,
-                            null, false 
-                            ,getData(),  false, getMap().getUIContext() );
+                    UnitChooser chooser = new UnitChooser(unitsToMove,
+                                                          m_selectedUnits,
+                                                          /*mustMoveWith*/ null, 
+                                                          /*categorizeMovement*/ false,
+                                                          getData(), 
+                                                          /*allowTwoHit*/ false, 
+                                                          getMap().getUIContext() );
                                         
                     int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                             chooser, text,
@@ -1490,7 +1519,7 @@ public class MovePanel extends ActionPanel
                   {
                       public boolean match(Collection<Unit> units)
                       {
-                          Map<Unit,Unit> unitsToTransports = getDelegate().mapTransports(route, units, transportsToLoad);
+                          Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, units, transportsToLoad);
                           return unitsToTransports.keySet().containsAll(units);
                       }
                   };
@@ -1523,6 +1552,7 @@ public class MovePanel extends ActionPanel
             }
             else if(MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
             {
+                // get unloadable land units
                 CompositeMatch<Unit> unloadableMatch = getUnloadableMatch(route, units);
                 List<Unit> unloadableUnits = Match.getMatches(units,unloadableMatch);
                 Collection<Unit> unitsToUnload = new ArrayList<Unit>(getUnitsToUnload(route, unloadableUnits));
@@ -1658,7 +1688,10 @@ public class MovePanel extends ActionPanel
         }
         else
         {
-            m_mustMoveWithDetails = getDelegate().getMustMoveWith(firstSelectedTerritory, firstSelectedTerritory.getUnits().getUnits());
+            m_mustMoveWithDetails = MoveDelegate.getMustMoveWith(firstSelectedTerritory, 
+                                                                 firstSelectedTerritory.getUnits().getUnits(), 
+                                                                 getData(),
+                                                                 getCurrentPlayer());
         }
     }
 

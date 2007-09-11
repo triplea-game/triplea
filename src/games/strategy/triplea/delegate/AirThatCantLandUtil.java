@@ -48,7 +48,7 @@ public class AirThatCantLandUtil
         m_player = m_bridge.getPlayerID();
     }
 
-    public static boolean isLHTRCarrierProdcution(GameData data)
+    public static boolean isLHTRCarrierProduction(GameData data)
     {
         return data.getProperties().get(Constants.LHTR_CARRIER_PRODUCTION_RULES, false);
     }
@@ -72,7 +72,7 @@ public class AirThatCantLandUtil
         return cantLand;
     }
 
-    public void removeAirThatCantLand(boolean spareAirIsSeaZonesBesideFactories)
+    public void removeAirThatCantLand(boolean spareAirInSeaZonesBesideFactories)
     {
         Iterator<Territory> territories = getTerritoriesWhereAirCantLand().iterator();
         while (territories.hasNext())
@@ -84,7 +84,7 @@ public class AirThatCantLandUtil
             Collection<Unit> air = current.getUnits().getMatches(ownedAir);
 
             boolean hasNeighboringFriendlyFactory =  m_data.getMap().getNeighbors(current, Matches.territoryHasOwnedFactory(m_data, m_player)).size() > 0;
-            boolean skip = spareAirIsSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
+            boolean skip = spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
 
             if(!skip)
                 removeAirThatCantLand(current, air);

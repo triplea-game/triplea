@@ -595,7 +595,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     
     public boolean getOKToLetAirDie(PlayerID m_id, String message, boolean movePhase)
     {
-        boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProdcution(m_data);
+        boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProduction(m_data);
         int carrierCount = m_id.getUnits().getMatches(Matches.UnitIsCarrier).size();
         boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0; 
         

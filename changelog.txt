@@ -1,3 +1,8 @@
+* MoveDelegate cleanup (tclayton)
+*   move all validation methods to MoveValidator so they can be called on client side
+*   make helper functions in MoveDelegate static, so they can be called on client side
+*   fix a few spelling mistakes in symbol names
+
 * partial fix for bug [ 1742775 ] Operating system freeze on Windows 98 with Ati Graphics Card (sgb)
 
 * Added support for "color" property, including color picker UI (dowobeha)

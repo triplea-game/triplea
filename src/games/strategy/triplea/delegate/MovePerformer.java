@@ -95,7 +95,7 @@ public class MovePerformer implements Serializable
             {
                 //if we are moving out of a battle zone, mark it
                 //this can happen for air units moving out of a battle zone
-                Battle nonBombingBattle = m_moveDelegate.getBattleTracker().getPendingBattle(route.getStart(), false);
+                Battle nonBombingBattle = MoveDelegate.getBattleTracker(data).getPendingBattle(route.getStart(), false);
                 Battle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
                 if (nonBombingBattle != null || bombingBattle != null)
                 {
@@ -175,7 +175,7 @@ public class MovePerformer implements Serializable
                 Change moveChange = markMovementChange(units, route);
                 
                 //TODO, put units in owned transports first
-                Map<Unit, Unit> transporting = m_moveDelegate.mapTransports(route, units, transportsToLoad);
+                Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, units, transportsToLoad);
                 markTransportsMovement(transporting, route);
                 
                 

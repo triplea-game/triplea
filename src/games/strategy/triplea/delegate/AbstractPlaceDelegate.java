@@ -634,7 +634,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (!canProduceFightersOnCarriers())
             return;
         //lhtr rules dont allow this
-        if(AirThatCantLandUtil.isLHTRCarrierProdcution(getData()))
+        if(AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
             return;
         
         if (Match.noneMatch(units, Matches.UnitIsCarrier))
