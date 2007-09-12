@@ -1,3 +1,9 @@
+* New UnitAutoChooser feature (tclayton)
+*   create UnitAutoChooser class to translate chosen categories into possible unit solutions
+*   update MovePanel to use UnitAutoChooser for unit selection and route planning
+*   update UnitChooser to support UnitAutoChooser and solution browsing
+*   fix existing UnitChooser arrow icons and add left/right icons for solution browsing
+
 * MoveDelegate cleanup (tclayton)
 *   move all validation methods to MoveValidator so they can be called on client side
 *   make helper functions in MoveDelegate static, so they can be called on client side

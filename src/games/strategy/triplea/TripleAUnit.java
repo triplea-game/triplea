@@ -223,4 +223,12 @@ public class TripleAUnit extends Unit
         return dependents;
     }
 
+    public Unit getDependentOf()
+    {
+        if (m_transportedBy != null)
+            return m_transportedBy;
+        //TODO: add support for carriers as well
+        return null;
+    }
+    
 }

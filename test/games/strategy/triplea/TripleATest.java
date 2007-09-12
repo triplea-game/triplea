@@ -3,6 +3,7 @@ package games.strategy.triplea;
 import games.strategy.engine.random.EmailValidatorTest;
 import games.strategy.triplea.baseAI.AIUtilsTest;
 import games.strategy.triplea.delegate.*;
+import games.strategy.triplea.util.UnitAutoChooserTest;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorTest;
 import junit.framework.*;
 
@@ -23,6 +24,7 @@ public class TripleATest
         suite.addTestSuite(AIUtilsTest.class);
         suite.addTestSuite(OddsCalculatorTest.class);
         suite.addTestSuite(AirThatCantLandUtilTest.class);
+        suite.addTestSuite(UnitAutoChooserTest.class);
         return suite;
     }
 

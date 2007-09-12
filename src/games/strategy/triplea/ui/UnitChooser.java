@@ -41,6 +41,20 @@ import javax.swing.*;
  */
 public class UnitChooser extends JPanel
 {
+  private static boolean s_imagesLoaded;
+  private static Icon s_left;
+  private static Icon s_right;
+
+  private synchronized static void loadImages()
+  {
+      if (s_imagesLoaded)
+          return;
+
+      s_left = new ImageIcon(ScrollableTextField.class.getResource("images/left.gif"));
+      s_right = new ImageIcon(ScrollableTextField.class.getResource("images/right.gif"));
+
+      s_imagesLoaded = true;
+  }
 
   private List<ChooserEntry> m_entries = new ArrayList<ChooserEntry>();
   private final Map<Unit, Collection<Unit>> m_dependents;
@@ -52,7 +66,16 @@ public class UnitChooser extends JPanel
   private JButton m_autoSelectButton;
   private JButton m_selectNoneButton;
   private final UIContext m_uiContext;
+  private boolean m_categorizeMovement;
   private Match<Collection<Unit>> m_match;
+
+  private UnitAutoChooser m_unitAutoChooser;
+  private JButton m_solutionBrowseLeft;
+  private JButton m_solutionBrowseRight;
+  private JLabel m_solutionLabel;
+  private JLabel m_solutionTypeLabel;
+  private int m_previousSolution = -1;
+  private int m_currentSolution = -1;
   
   /** Creates new UnitChooser */ 
   public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, GameData data, UIContext context)
@@ -61,6 +84,8 @@ public class UnitChooser extends JPanel
     m_data = data;
     m_uiContext = context;
     m_match = null;
+    m_unitAutoChooser = null;
+    m_categorizeMovement = categorizeMovement;
     createEntries(units, dependent, categorizeMovement, Collections.<Unit>emptyList());
     layoutEntries();
     
@@ -68,9 +93,11 @@ public class UnitChooser extends JPanel
   public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, GameData data, UIContext context, Match<Collection<Unit>> match)
   {
     m_match = match;
+    m_unitAutoChooser = null;
     m_dependents = dependent;
     m_data = data;
     m_uiContext = context;
+    m_categorizeMovement = categorizeMovement;
     createEntries(units, dependent, categorizeMovement, Collections.<Unit>emptyList());
     layoutEntries();
     
@@ -94,6 +121,8 @@ public class UnitChooser extends JPanel
     m_allowTwoHit = allowTwoHit;
     m_uiContext = uiContext;
     m_match = null;
+    m_unitAutoChooser = null;
+    m_categorizeMovement = categorizeMovement;
     createEntries(units, dependent, categorizeMovement, defaultSelections);
     layoutEntries();
   }
@@ -105,6 +134,8 @@ public class UnitChooser extends JPanel
     m_allowTwoHit = allowTwoHit;
     m_uiContext = uiContext;
     m_match = match;
+    m_unitAutoChooser = null;
+    m_categorizeMovement = categorizeMovement;
     createEntries(units, dependent, categorizeMovement, defaultSelections);
     layoutEntries();
   }
@@ -133,10 +164,40 @@ public class UnitChooser extends JPanel
     m_allowTwoHit = allowTwoHit;
     m_uiContext = uiContext;
     m_match = match;
+    m_unitAutoChooser = null;
+    m_categorizeMovement = categorizeMovement;
     createEntries(units, m_dependents, categorizeMovement, defaultSelections);
     layoutEntries();
   }
 */
+  public UnitChooser(UnitAutoChooser unitAutoChooser,
+                     Map<Unit, Collection<Unit>> dependent, 
+                     boolean categorizeMovement, 
+                     GameData data, 
+                     boolean allowTwoHit, 
+                     UIContext uiContext,
+                     Match<Collection<Unit>> match)
+  {
+    m_unitAutoChooser = unitAutoChooser;
+    m_currentSolution = 0;
+    Collection<Unit> units = unitAutoChooser.getCandidateUnits(false);
+    Collection<Unit> defaultSelections = unitAutoChooser.getSolution(m_currentSolution, false);
+    m_dependents = dependent;
+    m_data = data;
+    m_allowTwoHit = allowTwoHit;
+    m_uiContext = uiContext;
+    m_match = match;
+    m_categorizeMovement = categorizeMovement;
+    createEntries(units, m_dependents, categorizeMovement, defaultSelections);
+    layoutEntries();
+    if (m_match != null)
+    {
+        m_autoSelectButton.setVisible(false);
+        m_selectNoneButton.setVisible(false);
+        checkMatches();
+    }
+  }
+
 
   /**
    * Set the maximum number of units that we can choose.
@@ -190,7 +251,7 @@ public class UnitChooser extends JPanel
   {
     Collection<Unit> allSelectedUnits = new ArrayList<Unit>();
     for (ChooserEntry entry : m_entries)
-        addToCollection(allSelectedUnits, entry, entry.getTotalHits(), true);
+        addToCollection(allSelectedUnits, entry, entry.getTotalHits(), false);
 
     // check match against each scroll button
     for (ChooserEntry entry : m_entries)
@@ -267,6 +328,7 @@ public class UnitChooser extends JPanel
   {
     this.setLayout(new GridBagLayout());
 
+    loadImages();
 
     m_title = new JTextArea("Choose units");
     m_title.setBackground(this.getBackground());
@@ -317,9 +379,49 @@ public class UnitChooser extends JPanel
       yIndex++;
     }
 
-    add(m_autoSelectButton, new GridBagConstraints(0,yIndex,7 ,1,0,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE,nullInsets, 0,0 )  );
-    yIndex++;
-    add(m_leftToSelect, new GridBagConstraints(0,yIndex,5,2,0,0.5,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ));
+    if (m_unitAutoChooser == null)
+    {
+        add(m_autoSelectButton, new GridBagConstraints(0,yIndex,7 ,1,0,0.5,GridBagConstraints.EAST, GridBagConstraints.NONE,nullInsets, 0,0 )  );
+        yIndex++;
+        add(m_leftToSelect, new GridBagConstraints(0,yIndex,5,2,0,0.5,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ));
+    }
+    else
+    {
+        m_solutionLabel = new JLabel("", JLabel.RIGHT);
+        m_solutionTypeLabel = new JLabel("", JLabel.RIGHT);
+        m_solutionBrowseLeft = new JButton(s_left);
+        m_solutionBrowseRight = new JButton(s_right);
+
+        add(m_solutionLabel, new GridBagConstraints(0,yIndex,3,1,1,0,GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,new Insets(0,0,0,4), 0,0 ));
+        add(m_solutionBrowseLeft, new GridBagConstraints(3,yIndex,1,2,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE,nullInsets, 0,0 ));
+        add(m_solutionBrowseRight, new GridBagConstraints(3,yIndex,1,2,0,0,GridBagConstraints.CENTER, GridBagConstraints.NONE,nullInsets, 0,0 ));
+        yIndex++;
+        add(m_solutionTypeLabel, new GridBagConstraints(0,yIndex,3,1,1,0,GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,new Insets(0,0,0,4), 0,0 ));
+
+        m_solutionBrowseLeft.addActionListener
+          (
+          new ActionListener()
+          {
+            public void actionPerformed(ActionEvent e)
+            {
+                m_currentSolution--;
+                updateSolutions();
+            }
+          }
+        );
+        m_solutionBrowseRight.addActionListener
+          (
+          new ActionListener()
+          {
+            public void actionPerformed(ActionEvent e)
+            {
+                m_currentSolution++;
+                updateSolutions();
+            }
+          }
+        );
+
+    }
 
     if (m_match != null)
     {
@@ -328,9 +430,69 @@ public class UnitChooser extends JPanel
         checkMatches();
     }
 
+    updateSolutions();
 
   }
 
+  private void updateSolutions()
+  {
+
+      if (m_unitAutoChooser == null)
+          return;
+
+      m_solutionBrowseLeft.setEnabled(m_currentSolution >= 0);
+
+      m_solutionBrowseRight.setEnabled((m_currentSolution + 1) < m_unitAutoChooser.solutionCount());
+
+      StringBuilder solutionSb = new StringBuilder("Solution ")
+                               .append(m_currentSolution + 1)
+                               .append(" of ")
+                               .append(m_unitAutoChooser.solutionCount());
+      if (m_currentSolution >= 0 && m_unitAutoChooser.foundCompleteSolution())
+      {
+          if (m_currentSolution < m_unitAutoChooser.exactSolutionCount())
+              m_solutionTypeLabel.setText("(exact solution "+(m_currentSolution+1)+" of "+m_unitAutoChooser.exactSolutionCount()+")");
+          else
+              m_solutionTypeLabel.setText("(greedy solution)");
+      }
+      else
+          m_solutionTypeLabel.setText("(incomplete solution)");
+
+      m_solutionLabel.setText(solutionSb.toString());
+
+      // if a complete solution is selected, update the UI to reflect it
+      if (m_currentSolution != -1)
+      {
+          selectNone();
+
+          Collection<Unit> defaultSelections = m_unitAutoChooser.getSolution(m_currentSolution, false);
+          Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, m_dependents, m_categorizeMovement);
+          IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
+
+          System.out.println("categoryMap: "+defaultValues);
+
+          for (ChooserEntry entry : m_entries)
+          {
+              System.out.println("  entry: " + entry.getCategory());
+              System.out.println("  value: " + defaultValues.getInt(entry.getCategory()));
+              for (int i=1; i <= defaultValues.getInt(entry.getCategory()); i++)
+              {
+                  entry.set(i);
+                  if (m_match != null)
+                      checkMatches();
+                  else
+                      updateLeft();
+              }
+          }
+      }
+      // if a complete solution is NOT selected, and we got here 
+      // via the Solution browser buttons, then deselect all.
+      else if (m_currentSolution != m_previousSolution)
+          selectNone();
+
+      // update state so we can tell how we got in here next time
+      m_previousSolution = m_currentSolution;
+  }
 
   public Collection<Unit> getSelected()
   {
@@ -448,6 +610,40 @@ public class UnitChooser extends JPanel
             checkMatches();
         else
             updateLeft();
+
+        // this condition ensures we weren't called from updateSolutions,
+        // to protect against unwanted recursion
+        if (m_unitAutoChooser != null 
+                && m_previousSolution == m_currentSolution)
+        {
+            // coming from incomplete solution... see if we found a solution 
+            if (m_currentSolution == -1)
+            {
+                Set<Unit> allSelectedUnits = new HashSet<Unit>();
+                for (ChooserEntry entry : m_entries)
+                    addToCollection(allSelectedUnits, entry, entry.getTotalHits(), true);
+                if (!allSelectedUnits.isEmpty())
+                {
+                    for (int i=0; i<m_unitAutoChooser.solutionCount(); i++)
+                    {
+                        if (m_unitAutoChooser.getSolution(i, true).equals(allSelectedUnits))
+                        {
+                            m_currentSolution = i;
+                            updateSolutions();
+                            break;
+                        }
+                    }
+                }
+            }
+            // coming from complete solution... set as incomplete
+            else
+            {
+                m_currentSolution = -1;
+                m_previousSolution = -1;
+                updateSolutions();
+            }
+        }
+
     }
   };
  
@@ -496,7 +692,7 @@ class ChooserEntry
           panel.add(new JLabel("mvt " + m_category.getMovement()),
                 new GridBagConstraints(1,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,4,0,4), 0,0 ) );
 
-       panel.add(new JLabel("x" + m_category.getUnits().size()),
+      panel.add(new JLabel("x" + m_category.getUnits().size()),
            new GridBagConstraints(2,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,nullInsets, 0,0 ) );
 
       m_hitText = new ScrollableTextField(0, m_category.getUnits().size());
@@ -514,8 +710,8 @@ class ChooserEntry
           m_secondHitLabel = new JLabel("x0");
 
           m_secondHitText = new ScrollableTextField(0, 0);
-	  m_secondHitText.setValue(m_defaultValueSecondHits);
-	  updateLeftToSelect();
+          m_secondHitText.setValue(m_defaultValueSecondHits);
+          updateLeftToSelect();
           panel.add(m_secondHitLabel,
                     new GridBagConstraints(5,yIndex,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(0,0,0,4), 0,0 ) );
 

@@ -220,6 +220,17 @@ public class UnitComparator
         {
             public int compare(Unit u1, Unit u2)
             {
+                // ensure units have enough movement
+                int left1 = TripleAUnit.get(u1).getMovementLeft();
+                int left2 = TripleAUnit.get(u2).getMovementLeft();
+                if (route != null)
+                {
+                if (left1 >= route.getLength() && left2 < route.getLength())
+                    return -1;
+                if (left1 < route.getLength() && left2 >= route.getLength())
+                    return 1;
+                }
+
                 Collection<Unit> transporting1 = TripleAUnit.get(u1).getTransporting();
                 Collection<Unit> transporting2 = TripleAUnit.get(u2).getTransporting();
                 if (transporting1 == null)
@@ -241,8 +252,6 @@ public class UnitComparator
                 // sort by increasing movement normally,
                 // but by decreasing movement during loading
                 // (to filter out armour that has already moved)
-                int left1 = TripleAUnit.get(u1).getMovementLeft();
-                int left2 = TripleAUnit.get(u2).getMovementLeft();
                 if (left1 != left2)
                 {
                     if (MoveValidator.isLoad(route))

@@ -12,7 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MoveValidationResult implements Serializable
+public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult>
 {
     private String m_error = null;
     private List<String> m_disallowedUnitWarnings;
@@ -194,9 +194,19 @@ public class MoveValidationResult implements Serializable
         return m_disallowedUnitWarnings.size() > 0;
     }
 
+    public int getDisallowedUnitCount()
+    {
+        return m_disallowedUnitWarnings.size();
+    }
+
     public boolean hasUnresolvedUnits()
     {
         return m_unresolvedUnitWarnings.size() > 0;
+    }
+
+    public int getUnresolvedUnitCount()
+    {
+        return m_unresolvedUnitWarnings.size();
     }
 
     public boolean isMoveValid()
@@ -222,4 +232,22 @@ public class MoveValidationResult implements Serializable
             for (Unit unit : oldResult.getUnresolvedUnits(warning))
                 if (disallowedUnits.contains(unit))
                     removeUnresolvedUnit(warning, unit);
-    } }
+    } 
+
+    public int compareTo(MoveValidationResult other)
+    {
+        if (!hasError() && other.hasError())
+            return -1;
+        if (hasError() && !other.hasError())
+            return 1;
+        if (getDisallowedUnitCount() < other.getDisallowedUnitCount())
+            return -1;
+        if (getDisallowedUnitCount() > other.getDisallowedUnitCount())
+            return 1;
+        if (getUnresolvedUnitCount() < other.getUnresolvedUnitCount())
+            return -1;
+        if (getUnresolvedUnitCount() > other.getUnresolvedUnitCount())
+            return 1;
+        return 0;
+    }
+}

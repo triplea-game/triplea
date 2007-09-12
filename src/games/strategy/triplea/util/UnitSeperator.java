@@ -21,6 +21,8 @@ import games.strategy.triplea.TripleAUnit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -51,17 +53,22 @@ public class UnitSeperator
      * Do this based on unit owner, and optionally dependent units and movement
      *
      * @param dependent - can be null
-     * @param categorizeMovement - can be null
-     * @oaram - forceDamagedCategory - if true then we will ensure a category exists for damaged unit types even if it would be empty
+     * @param categorizeMovement   - whether to categorize by movement
+     * @param - sort - if true then sort the categories in UnitCategory order
+     *               - if false, then leave categories in original order (based on units)
      * @return a Collection of UnitCategories
      */
-    public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement)
+    public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean sort)
     {
         //somewhat odd, but we map UnitCategory->UnitCategory,
         //key and value are the same
         //we do this to take advanatge of .equals() on objects that
         //are equal in a special way
-        HashMap<UnitCategory, UnitCategory> categories = new HashMap<UnitCategory, UnitCategory>();
+        HashMap<UnitCategory, UnitCategory> categories;
+        if (sort)
+            categories = new HashMap<UnitCategory, UnitCategory>();
+        else
+            categories = new LinkedHashMap<UnitCategory, UnitCategory>();
 
         for (Unit current : units)
         {
@@ -89,9 +96,28 @@ public class UnitSeperator
                 categories.put(entry, entry);
             }
         }
-        return new TreeSet<UnitCategory>( categories.keySet());
+
+        if (sort)
+            return new TreeSet<UnitCategory>( categories.keySet());
+        else
+            return new LinkedHashSet<UnitCategory>(categories.keySet());
     }
 
+    /**
+     * Legacy interface.
+     * Break the units into discrete categories.
+     *
+     * Do this based on unit owner, and optionally dependent units and movement
+     *
+     * @param dependent - can be null
+     * @param categorizeMovement   - whether to categorize by movement
+     * @return a Collection of UnitCategories
+     */
+    public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement)
+    {
+        // sort by default
+        return categorize(units, dependent, categorizeMovement, true);
+    }
 
     /**
      * Break the units into discrete categories.
@@ -100,19 +126,21 @@ public class UnitSeperator
      *
      * @param categorizeDependents - whether to categorize by dependents 
      * @param categorizeMovement   - whether to categorize by movement
+     * @param - sort - if true then sort the categories in UnitCategory order
+     *               - if false, then leave categories in original order (based on units)
      * @return a Collection of UnitCategories
      */
-    public static Set<UnitCategory> categorize(Collection<Unit> units, boolean categorizeDependents, boolean categorizeMovement)
+    public static Set<UnitCategory> categorize(Collection<Unit> units, boolean categorizeDependents, boolean categorizeMovement, boolean sort)
     {
         if (categorizeDependents)
         {
             Map<Unit,Collection<Unit>> dependents = new HashMap<Unit,Collection<Unit>>();
             for (Unit unit: units)
                 dependents.put(unit, TripleAUnit.get(unit).getDependents());
-            return categorize(units, dependents, categorizeMovement);
+            return categorize(units, dependents, categorizeMovement, sort);
         }
         else
-            return categorize(units, null, categorizeMovement);
+            return categorize(units, null, categorizeMovement, sort);
     }
 
 }

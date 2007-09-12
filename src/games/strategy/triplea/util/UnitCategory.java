@@ -139,6 +139,15 @@ public class UnitCategory implements Comparable
         return equalsIgnoreMovement;
     }
 
+    public boolean equalsIgnoreDependents(UnitCategory other)
+    {
+        boolean equalsIgnoreDependents =
+            other.m_type.equals(this.m_type) &&
+            other.m_owner.equals(this.m_owner) &&
+            other.m_movement == this.m_movement &&
+            other.m_damaged == this.m_damaged;
+        return equalsIgnoreDependents;
+    }
 
     public int hashCode()
     {

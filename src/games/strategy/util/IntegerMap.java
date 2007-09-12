@@ -189,6 +189,29 @@ public  class IntegerMap<T> implements Cloneable, Serializable
     }
 
     /**
+     * The equals method will only return true if both the keys and values
+     * match exactly. If a has entries that b doesn't have or vice versa,
+     * then a and b are not equal.
+     */
+    public boolean equals(Object o)
+    {
+        if (o == null || !(o instanceof IntegerMap))
+            return false;
+
+        IntegerMap<T> map = (IntegerMap<T>)o;
+        Iterator<T> iter = map.keySet().iterator();
+        if (!map.keySet().equals(keySet()))
+            return false;
+        while(iter.hasNext() )
+        {
+            T key = iter.next();
+            if( ! ( this.getInt(key) == map.getInt(key)))
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * True if all values are >= 0.
      */
     public boolean isPositive()

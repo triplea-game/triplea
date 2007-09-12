@@ -30,6 +30,12 @@ public class UnitOwner
     m_owner = unit.getOwner();
   }
 
+  public UnitOwner(UnitType type, PlayerID owner)
+  {
+    m_type = type;
+    m_owner = owner;
+  }
+
   public boolean equals(Object o)
   {
 
@@ -51,7 +57,7 @@ public class UnitOwner
 
   public String toString()
   {
-    return "Unit owner:" + m_owner + " type:" + m_type;
+    return "Unit owner:" + m_owner.getName() + " type:" + m_type.getName();
   }
 
   public UnitType getType()
