@@ -36,27 +36,33 @@ import games.strategy.engine.message.IRemote;
  *
  */
 public interface IPlayerBridge 
-{	
-	/**
-	 * Return the game data
-	 */
-	public GameData getGameData();
-	
-	/**
-	 * Get a remote reference to the current delegate, the type of the reference
-	 * is declared by the delegates getRemoteType() method
-	 */
-	public IRemote getRemote();
-	
-	/** 
-	 * Get the name of the current step being exectued.
-	 */
-	public String getStepName();
-	
-	/**
-	 * Get the properties for the current step.
-	 */
-	public Properties getStepProperties();
+{
+    /**
+     * Return the game data
+     */
+    public GameData getGameData();
+
+    /**
+     * Get a remote reference to the current delegate, the type of the reference
+     * is declared by the delegates getRemoteType() method
+     */
+    public IRemote getRemote();
+
+    /**
+     * Get a remote reference to the named delegate, the type of the reference
+     * is declared by the delegates getRemoteType() method
+     */
+    public IRemote getRemote(String name);
+
+    /** 
+     * Get the name of the current step being exectued.
+     */
+    public String getStepName();
+
+    /**
+     * Get the properties for the current step.
+     */
+    public Properties getStepProperties();
     
     /**
      * is the game over?

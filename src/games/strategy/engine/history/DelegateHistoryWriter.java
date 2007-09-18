@@ -24,7 +24,7 @@ import games.strategy.engine.message.IChannelMessenger;
 *  be used by the GameData
  */
 
-public class DelegateHistoryWriter
+public class DelegateHistoryWriter implements IDelegateHistoryWriter
 {
     private final IGameModifiedChannel m_channel;
 

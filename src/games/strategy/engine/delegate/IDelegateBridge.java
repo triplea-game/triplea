@@ -23,7 +23,7 @@ package games.strategy.engine.delegate;
 import java.util.Properties;
 
 import games.strategy.engine.data.*;
-import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.*;
 
 /**
@@ -95,7 +95,7 @@ public interface IDelegateBridge
      * 
      * The delegate history writer allows writing to the game history.<p>
      */
-    public DelegateHistoryWriter getHistoryWriter();
+    public IDelegateHistoryWriter getHistoryWriter();
     
     /**
      * Return an object that implements the IDisplay interface for the game.<p>

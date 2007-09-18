@@ -23,6 +23,7 @@ package games.strategy.engine.data;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryWriter;
 import games.strategy.engine.message.ChannelMessenger;
@@ -51,7 +52,7 @@ public class TestDelegateBridge implements IDelegateBridge
     private IChannelSubscribor m_dummyDisplay;
     private IRandomSource m_randomSource;
 
-    private DelegateHistoryWriter m_historyWriter;
+    private IDelegateHistoryWriter m_historyWriter;
     private IRemote m_remote;
     
     /** Creates new TestDelegateBridge */
@@ -136,7 +137,7 @@ public class TestDelegateBridge implements IDelegateBridge
         return m_stepName;
     }
 
-    public DelegateHistoryWriter getHistoryWriter()
+    public IDelegateHistoryWriter getHistoryWriter()
     {
         return m_historyWriter;
     }

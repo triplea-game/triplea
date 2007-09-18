@@ -27,6 +27,7 @@ import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.message.*;
 
@@ -100,6 +101,32 @@ public class DefaultPlayerBridge implements IPlayerBridge
             try
             {
                 IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
+                return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
+            }
+            finally 
+            {
+                m_game.getData().releaseReadLock();
+            }
+        }
+        catch(MessengerException me)
+        {
+            throw new GameOverException("Game Over");
+        }
+    }
+
+    public IRemote getRemote(String name)
+    {
+        if(m_game.isGameOver())
+            throw new GameOverException("Game Over");
+        try
+        {
+            m_game.getData().acquireReadLock();
+            try
+            {
+                IDelegate delegate = m_game.getData().getDelegateList().getDelegate(name);
+                if (!(delegate instanceof IPersistentDelegate))
+                    return null;
+
                 return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
             }
             finally 

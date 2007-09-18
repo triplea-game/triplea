@@ -19,7 +19,7 @@ import java.util.Properties;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.*;
-import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.*;
 import games.strategy.engine.random.*;
 
@@ -32,23 +32,21 @@ import games.strategy.engine.random.*;
 public class DefaultDelegateBridge implements IDelegateBridge
 {
 
-    private final GameStep m_step;
-    private final PlayerID m_player;
+    private final GameData m_data;
     private final IGame m_game;
-    private final DelegateHistoryWriter m_historyWriter;
+    private final IDelegateHistoryWriter m_historyWriter;
     private final RandomStats m_randomStats;
     private final DelegateExecutionManager m_delegateExecutionManager;
 
     private IRandomSource m_randomSource;
 
     /** Creates new DefaultDelegateBridge */
-    public DefaultDelegateBridge(GameData data, GameStep step, IGame game,
-            DelegateHistoryWriter historyWriter, RandomStats randomStats,
+    public DefaultDelegateBridge(GameData data, IGame game,
+            IDelegateHistoryWriter historyWriter, RandomStats randomStats,
             DelegateExecutionManager delegateExecutionManager)
     {
-        m_step = step;
+        m_data = data;
         m_game = game;
-        m_player = m_step.getPlayerID();
         m_historyWriter = historyWriter;
         m_randomStats = randomStats;
         m_delegateExecutionManager = delegateExecutionManager;
@@ -56,7 +54,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 
     public PlayerID getPlayerID()
     {
-        return m_player;
+        return m_data.getSequence().getStep().getPlayerID();
     }
 
     public void setRandomSource(IRandomSource randomSource)
@@ -97,12 +95,12 @@ public class DefaultDelegateBridge implements IDelegateBridge
      */
     public String getStepName()
     {
-        return m_step.getName();
+        return m_data.getSequence().getStep().getName();
     }
 
 
 
-    public DelegateHistoryWriter getHistoryWriter()
+    public IDelegateHistoryWriter getHistoryWriter()
     {
         return m_historyWriter;
     }
@@ -119,7 +117,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
      */
     public IRemote getRemote()
     {
-        return  getRemote(m_player);
+        return  getRemote(getPlayerID());
     }
 
     /*
@@ -150,7 +148,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
     
     public Properties getStepProperties()
     {
-        return m_step.getProperties();
+        return m_data.getSequence().getStep().getProperties();
     }
     
     public void leaveDelegateExecution()

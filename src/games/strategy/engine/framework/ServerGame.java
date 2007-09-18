@@ -270,6 +270,8 @@ public class ServerGame implements IGame
             if(!gameHasBeenSaved)
                 m_data.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
             
+            startPersistentDelegates();
+
             if(gameHasBeenSaved)
             {
                 runStep(gameHasBeenSaved);
@@ -371,10 +373,10 @@ public class ServerGame implements IGame
         m_data.getGameLoader().shutDown();        
     }
 
-	private void autoSave() 
+    private void autoSave() 
     {
         FileOutputStream out = null;
-		try
+        try
         {
             SaveGameFileChooser.ensureDefaultDirExists();
             File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME);
@@ -400,7 +402,7 @@ public class ServerGame implements IGame
                 e.printStackTrace();
             }
         }
-	}
+    }
 
     
     public void saveGame(File f)
@@ -470,7 +472,7 @@ public class ServerGame implements IGame
         if(m_isGameOver)
             return;
         
-    	startStep(stepIsRestoredFromSavedGame);
+        startStep(stepIsRestoredFromSavedGame);
 
         if(m_isGameOver)
             return;
@@ -502,43 +504,85 @@ public class ServerGame implements IGame
      * 
      * @return true if the step should autosave
      */
-	private boolean endStep() 
-	{
+    private boolean endStep() 
+    {
         m_delegateExecutionManager.enterDelegateExecution();
         try
         {
-		    getCurrentStep().getDelegate().end();
+            getCurrentStep().getDelegate().end();
         }
         finally
         {
             m_delegateExecutionManager.leaveDelegateExecution();
         }
         
-		getCurrentStep().incrementRunCount();    
+        getCurrentStep().incrementRunCount();    
         
-    	if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
-    	{
-    		if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).afterStepEnd())
-    			return true;
-    	}
+        if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
+        {
+            if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).afterStepEnd())
+                return true;
+        }
         return false;
-	}
+    }
 
-	private void startStep(boolean stepIsRestoredFromSavedGame) 
-	{
+    private void startPersistentDelegates()
+    {
+        Iterator delegateIter = m_data.getDelegateList().iterator();
+        while (delegateIter.hasNext())
+        {
+            IDelegate delegate = (IDelegate) delegateIter.next();
+            try 
+            {
+                Class<? extends IPersistentDelegate> remoteType = delegate.getRemoteType().asSubclass(IPersistentDelegate.class);
+                if(remoteType == null)
+                    continue;
+            }
+            catch (Exception e)
+            {
+                continue;
+            }
+            DefaultDelegateBridge bridge = new DefaultDelegateBridge(
+                    m_data, 
+                    this, 
+                    new DelegateHistoryWriter(m_channelMessenger),
+                    m_randomStats, m_delegateExecutionManager
+                    );
+            
+            if(m_delegateRandomSource == null)
+            {
+                m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource, new Class[] {IRandomSource.class});
+            }
+            
+            bridge.setRandomSource(m_delegateRandomSource);
+            
+            m_delegateExecutionManager.enterDelegateExecution();
+            try
+            {
+                delegate.start(bridge, m_data);
+            }
+            finally
+            {
+                m_delegateExecutionManager.leaveDelegateExecution();
+            }
+        }
+    }
+
+    private void startStep(boolean stepIsRestoredFromSavedGame) 
+    {
         //dont save if we just loaded
         if(!stepIsRestoredFromSavedGame)
         {
-    		if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
-        	{
-        		if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).beforeStepStart())
-        			autoSave();
-        	}
+            if (m_data.getSequence().getStep().getDelegate().getClass().isAnnotationPresent(AutoSave.class))
+            {
+                if(m_data.getSequence().getStep().getDelegate().getClass().getAnnotation(AutoSave.class).beforeStepStart())
+                    autoSave();
+            }
         }
         
         DefaultDelegateBridge bridge = new DefaultDelegateBridge(
                 m_data, 
-                getCurrentStep(), this, 
+                this, 
                 new DelegateHistoryWriter(m_channelMessenger),
                 m_randomStats, m_delegateExecutionManager
                 );
@@ -561,7 +605,7 @@ public class ServerGame implements IGame
         {
             m_delegateExecutionManager.leaveDelegateExecution();
         }
-	}
+    }
 
     private void waitForPlayerToFinishStep()
     {

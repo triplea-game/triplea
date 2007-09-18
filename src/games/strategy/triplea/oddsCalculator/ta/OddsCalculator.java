@@ -12,6 +12,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.PlainRandomSource;
@@ -184,7 +185,7 @@ class DummyDelegateBridge implements IDelegateBridge
        return m_attacker;
    }
 
-   public DelegateHistoryWriter getHistoryWriter()
+   public IDelegateHistoryWriter getHistoryWriter()
    {
        return m_writer;
    }

@@ -1,4 +1,6 @@
-* New UnitAutoChooser feature (tclayton)
+* add PersistentDelegate support and IDelegateHistoryWriter interface to engine (tclayton)
+
+* new UnitAutoChooser feature (tclayton)
 *   create UnitAutoChooser class to translate chosen categories into possible unit solutions
 *   update MovePanel to use UnitAutoChooser for unit selection and route planning
 *   update UnitChooser to support UnitAutoChooser and solution browsing
