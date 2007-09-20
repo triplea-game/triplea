@@ -225,12 +225,13 @@ private void addHistoryEvent(Collection<Unit> totalUnits, int ipcsRemaining)
   }
 
 
-	/* 
-	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-	 */
-	public Class<? extends IRemote> getRemoteType()
-	{
-	    return IPurchaseDelegate.class;
-	}
+    /* 
+     * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+     */
+    public Class<? extends IRemote> getRemoteType()
+    {
+        return IPurchaseDelegate.class;
+    }
+
 }
 

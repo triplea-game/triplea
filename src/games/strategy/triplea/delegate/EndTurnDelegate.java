@@ -40,17 +40,17 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 public class EndTurnDelegate extends AbstractEndTurnDelegate
 {
 
-	protected void checkForWinner(IDelegateBridge bridge)
-	{
-		//only notify once
-		if(m_gameOver)
-			return;
+    protected void checkForWinner(IDelegateBridge bridge)
+    {
+        //only notify once
+        if(m_gameOver)
+            return;
 
-		PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
-		PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
-		PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
-		PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
-		PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
+        PlayerID russians = m_data.getPlayerList().getPlayerID(Constants.RUSSIANS);
+        PlayerID germans = m_data.getPlayerList().getPlayerID(Constants.GERMANS);
+        PlayerID british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
+        PlayerID japanese = m_data.getPlayerList().getPlayerID(Constants.JAPANESE);
+        PlayerID americans = m_data.getPlayerList().getPlayerID(Constants.AMERICANS);
 
 
                 if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
@@ -66,39 +66,39 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
                     } 
                 } 
 
-		if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
-		    return;
+        if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+            return;
 
         
         if(germans == null || russians == null || british == null || japanese == null || americans == null)
             return;
         
-		// Quick check to see who still owns their own capital
-		boolean russia = TerritoryAttachment.getCapital(russians, m_data).getOwner().equals(russians);
-		boolean germany = TerritoryAttachment.getCapital(germans, m_data).getOwner().equals(germans);
-		boolean britain = TerritoryAttachment.getCapital(british, m_data).getOwner().equals(british);
-		boolean japan = TerritoryAttachment.getCapital(japanese, m_data).getOwner().equals(japanese);
-		boolean america = TerritoryAttachment.getCapital(americans, m_data).getOwner().equals(americans);
+        // Quick check to see who still owns their own capital
+        boolean russia = TerritoryAttachment.getCapital(russians, m_data).getOwner().equals(russians);
+        boolean germany = TerritoryAttachment.getCapital(germans, m_data).getOwner().equals(germans);
+        boolean britain = TerritoryAttachment.getCapital(british, m_data).getOwner().equals(british);
+        boolean japan = TerritoryAttachment.getCapital(japanese, m_data).getOwner().equals(japanese);
+        boolean america = TerritoryAttachment.getCapital(americans, m_data).getOwner().equals(americans);
 
 
-		int count = 0;
-		if (!russia) count++;
-		if (!britain) count++;
-		if (!america) count++;
+        int count = 0;
+        if (!russia) count++;
+        if (!britain) count++;
+        if (!america) count++;
 
-		if ( germany && japan && count >=2)
-		{
-			m_gameOver = true;
-			bridge.getHistoryWriter().startEvent("Axis achieve a military victory");
-		}
+        if ( germany && japan && count >=2)
+        {
+            m_gameOver = true;
+            bridge.getHistoryWriter().startEvent("Axis achieve a military victory");
+        }
 
-	 	if ( russia && !germany && britain && !japan && america)
-		{
-			m_gameOver = true;
-			bridge.getHistoryWriter().startEvent("Allies achieve a military victory");
-		}
+        if ( russia && !germany && britain && !japan && america)
+        {
+            m_gameOver = true;
+            bridge.getHistoryWriter().startEvent("Allies achieve a military victory");
+        }
 
-	}
+    }
 
     /**
      * Returns the state of the Delegate.

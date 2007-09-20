@@ -728,7 +728,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         m_placements.clear();
         
         //only for lhtr rules
-        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand(false);
+        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand(m_player, false);
     }
     
     /**
@@ -737,7 +737,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
      */
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand();
+        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);
     }
 
     /**

@@ -23,11 +23,14 @@ package games.strategy.triplea.ui;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
@@ -46,11 +49,13 @@ import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
+import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.sound.SoundPath;
@@ -94,9 +99,11 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -108,6 +115,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -115,6 +123,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -152,6 +162,9 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     private JPanel m_mapAndChatPanel;
     private ChatPanel m_chatPanel;
     private JSplitPane m_chatSplit;
+    private EditPanel m_editPanel;
+    private ButtonModel m_editModeButtonModel;
+    private IEditDelegate m_editDelegate = null;
 
     /** Creates new TripleAFrame */
     public TripleAFrame(IGame game, Set<IGamePlayer> players) throws IOException
@@ -172,6 +185,10 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_uiContext = new UIContext();
         m_uiContext.setDefaltMapDir(game.getData());
         m_uiContext.getMapData().verify(m_data);
+
+        // initialize m_editModeButtonModel before createMenuBar()
+        m_editModeButtonModel = new JToggleButton.ToggleButtonModel();
+        m_editModeButtonModel.setEnabled(false);
 
         createMenuBar();
         
@@ -273,13 +290,52 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
         m_details = new TerritoryDetailPanel(m_mapPanel, m_data, m_uiContext, this);
         m_tabsPanel.addTab("Territory", m_details);
-        
-    
+
+        m_editPanel = new EditPanel(m_data, m_mapPanel, this);
+
+        // Register a change listener
+        m_tabsPanel.addChangeListener(new ChangeListener() {
+            // This method is called whenever the selected tab changes
+            public void stateChanged(ChangeEvent evt) {
+                JTabbedPane pane = (JTabbedPane)evt.getSource();
+
+                // Get current tab
+                int sel = pane.getSelectedIndex();
+                if (sel == -1)
+                    return;
+
+                if (pane.getComponentAt(sel).equals(m_editPanel))
+                {
+                    m_actionButtons.getCurrent().setActive(false);
+                    m_editPanel.setActive(true);
+                }
+                else
+                {
+                    m_actionButtons.getCurrent().setActive(true);
+                    m_editPanel.setActive(false);
+                }
+            }
+        });
+
         m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize()
                 .getHeight()));
         gameCenterPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
 
         m_gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
+
+        // set up the edit mode overlay text
+        this.setGlassPane(new JComponent() {
+            protected void paintComponent(Graphics g) {
+                g.setFont(new Font("Ariel", Font.BOLD, 50));
+                g.setColor(new Color(255, 255, 255, 175));
+                Dimension size = m_mapPanel.getSize();
+                g.drawString("Edit Mode", (int)((size.getWidth() - 200) / 2), (int)((size.getHeight() - 100)/ 2));
+            }
+        });
+        // force a data change event to update the UI for edit mode
+        m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+
+        m_data.addDataChangeListener(m_dataChangeListener);
 
         game.addGameStepListener(m_stepListener);
         updateStep();
@@ -640,6 +696,18 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return choice == 0;
     }
 
+    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title)
+    {
+        DiceChooser chooser = new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals);
+        do {
+            JOptionPane.showMessageDialog(null,
+                                          chooser, title,
+                                          JOptionPane.PLAIN_MESSAGE);
+        } while (chooser.getDice() == null); 
+        return chooser.getDice();
+    }
+
+
     public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
     {
 
@@ -869,6 +937,26 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     }
 
+    GameDataChangeListener m_dataChangeListener = new GameDataChangeListener()
+    {
+        public void gameDataChanged(Change change)
+        {
+            boolean isEditMode = getEditMode();
+            m_editModeButtonModel.setSelected(isEditMode);
+            TripleAFrame.this.getGlassPane().setVisible(isEditMode);
+
+            if (isEditMode)
+            {
+                if (m_tabsPanel.indexOfComponent(m_editPanel) == -1)
+                    m_tabsPanel.addTab("Edit", m_editPanel);
+            }
+            else
+            {
+                m_tabsPanel.remove(m_editPanel);
+            }
+        }
+    };
+
     public HistoryPanel getHistoryPanel()
     {
         return m_historyTree;
@@ -904,6 +992,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_statsPanel.setGameData(clonedGameData);
         m_details.setGameData(clonedGameData);
         m_mapPanel.setGameData(clonedGameData);
+        m_data.removeDataChangeListener(m_dataChangeListener);
+        clonedGameData.addDataChangeListener(m_dataChangeListener);
 
         HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, m_mapPanel);
 
@@ -988,15 +1078,18 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_historyTree.goToEnd();
         m_historyTree = null;
 
+        m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
         m_statsPanel.setGameData(m_data);
         m_details.setGameData(m_data);
         m_mapPanel.setGameData(m_data);
+        m_data.addDataChangeListener(m_dataChangeListener);
 
         m_tabsPanel.removeAll();
         m_tabsPanel.add("Action", m_actionButtons);
         m_tabsPanel.add("Territory", m_details);
         m_tabsPanel.add("Stats", m_statsPanel);
-        
+        if (getEditMode())
+            m_tabsPanel.addTab("Edit", m_editPanel);
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(true);
 
@@ -1258,7 +1351,39 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     private void setWidgetActivation()
     {
         m_showHistoryAction.setEnabled(!m_inHistory);
+        m_editModeButtonModel.setEnabled(!m_inHistory);
         m_showGameAction.setEnabled(m_inHistory);
+    }
+
+    public void setEditDelegate(IEditDelegate editDelegate)
+    {
+        m_editDelegate = editDelegate;
+    }
+
+    public IEditDelegate getEditDelegate()
+    {
+        return m_editDelegate;
+    }
+
+    public ButtonModel getEditModeButtonModel()
+    {
+        return m_editModeButtonModel;
+    }
+
+    public boolean getEditMode()
+    {
+        boolean isEditMode = false;
+        // use GameData from mapPanel since it will follow current history node
+        m_mapPanel.getData().acquireReadLock();
+        try
+        {
+            isEditMode = EditDelegate.getEditMode(m_mapPanel.getData());
+        }
+        finally 
+        {
+            m_mapPanel.getData().releaseReadLock();
+        }
+        return isEditMode;
     }
 
     private AbstractAction m_showHistoryAction = new AbstractAction("Show history")

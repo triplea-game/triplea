@@ -27,6 +27,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -229,6 +230,8 @@ public class StrategicBombingRaidBattle implements Battle
         
         public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
         {
+            boolean isEditMode = EditDelegate.getEditMode(data);
+
             IExecutable roll = new IExecutable()
             {
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
@@ -274,7 +277,8 @@ public class StrategicBombingRaidBattle implements Battle
             stack.push(removeHits);
             stack.push(notifyCasualties);
             stack.push(calculateCasualties);
-            stack.push(roll);
+            if (!isEditMode)
+                stack.push(roll);
             
         }
 
@@ -298,10 +302,19 @@ public class StrategicBombingRaidBattle implements Battle
     private Collection<Unit> calculateCasualties(IDelegateBridge bridge, DiceRoll dice)
     {
         Collection<Unit> casualties = null;
-        if (isFourthEdition())
+        boolean isEditMode = EditDelegate.getEditMode(m_data);
+        if (isEditMode)
+        {
+            String text = "AA guns fire";
+            CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, 
+                    m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false);
+            return casualtySelection.getKilled();
+        }
+        else if (isFourthEdition())
         {
             casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice, bridge);
-        } else
+        }
+        else
         {
             casualties = new ArrayList<Unit>(dice.getHits());
             for (int i = 0; i < dice.getHits() && i < m_units.size(); i++)
@@ -402,16 +415,27 @@ public class StrategicBombingRaidBattle implements Battle
                 return;
             }
     
-            String annotation = m_attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in "
-                    + m_battleSite.getName();
-            m_dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
+            boolean isEditMode = EditDelegate.getEditMode(m_data);
+            if (isEditMode)
+            {
+                String annotation = m_attacker.getName() + " fixing dice to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in "
+                        + m_battleSite.getName();
+                ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
+                m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation);
+            }
+            else
+            {
+                String annotation = m_attacker.getName() + " rolling to allocate ipc cost in strategic bombing raid against " + m_defender.getName() + " in "
+                        + m_battleSite.getName();
+                m_dice = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
+            }
 
         }
         
         private void findCost(IDelegateBridge bridge)
         {
             //if no planes left after aa fires, this is possible
-            if(m_dice == null)
+            if(m_units.isEmpty())
             {
                 return;
             }

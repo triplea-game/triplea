@@ -436,4 +436,17 @@
 //        
 //    }
 //
+//    /* (non-Javadoc)
+//     * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
+//     */
+//    public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message)
+//    {
+//        int[] dice = new int[numRolls];
+//        for (int i=0; i<numRolls; i++)
+//        {
+//            dice[i] = (int)Math.ceil(Math.random() * 6);
+//        }
+//        return dice;
+//    }
+//
 //}

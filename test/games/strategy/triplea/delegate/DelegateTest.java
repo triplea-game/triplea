@@ -21,8 +21,10 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.ui.display.DummyDisplay;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -177,4 +179,11 @@ public class DelegateTest extends TestCase
 	    assertNotNull(string,string);
 	}
 	
+    protected ITestDelegateBridge getDelegateBridge(PlayerID player)
+    {
+        ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
+        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
+        return bridge2;
+    }
+    
 }

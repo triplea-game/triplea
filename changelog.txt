@@ -1,3 +1,5 @@
+* new "Edit Mode" feature (tclayton)
+
 * add PersistentDelegate support and IDelegateHistoryWriter interface to engine (tclayton)
 
 * new UnitAutoChooser feature (tclayton)

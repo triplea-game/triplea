@@ -2,6 +2,7 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
@@ -11,6 +12,7 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.TestTripleADelegateBridge;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.*;
 
@@ -164,10 +166,11 @@ public class UnitAutoChooserTest extends TestCase
         m_data = null;
     }
 
-    protected TestDelegateBridge getDelegateBridge(PlayerID player)
+    protected ITestDelegateBridge getDelegateBridge(PlayerID player)
     {
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
-        return bridge;
+        ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
+        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
+        return bridge2;
     }
     
     private void loadTransport(Unit trn, Unit u1)

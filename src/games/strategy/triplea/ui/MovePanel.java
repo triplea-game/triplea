@@ -29,6 +29,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.MoveValidator;
@@ -355,6 +356,14 @@ public class MovePanel extends ActionPanel
     private final AbstractAction CANCEL_MOVE_ACTION = new WeakAction("Cancel", cancelMove);
 
 
+    private PlayerID getUnitOwner(Collection<Unit> units)
+    {
+        if (EditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
+            return units.iterator().next().getOwner();
+        else
+            return getCurrentPlayer();
+    }
+
     /**
      * Sort the specified units in preferred movement or unload order.
      */
@@ -368,11 +377,11 @@ public class MovePanel extends ActionPanel
         if (MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
         {
 
-            Collections.sort(units, UnitComparator.getUnloadableUnitsComparator(units, route, getCurrentPlayer(), true));
+            Collections.sort(units, UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units), true));
         }
         else
         {
-            Collections.sort(units, UnitComparator.getMovableUnitsComparator(units, route, getCurrentPlayer(), true));
+            Collections.sort(units, UnitComparator.getMovableUnitsComparator(units, route, getUnitOwner(units), true));
         }
     }
     
@@ -384,7 +393,7 @@ public class MovePanel extends ActionPanel
         if(transports.isEmpty())
             return;
 
-        Collections.sort(transports, UnitComparator.getLoadableTransportsComparator(transports, route, getCurrentPlayer(), true));
+        Collections.sort(transports, UnitComparator.getLoadableTransportsComparator(transports, route, getUnitOwner(transports), true));
     }
     
     /**
@@ -395,7 +404,7 @@ public class MovePanel extends ActionPanel
         if(transports.isEmpty())
             return;
         
-        Collections.sort(transports, UnitComparator.getUnloadableTransportsComparator(transports, route, getCurrentPlayer(), true));
+        Collections.sort(transports, UnitComparator.getUnloadableTransportsComparator(transports, route, getUnitOwner(transports), true));
     }
 
     /**
@@ -549,6 +558,7 @@ public class MovePanel extends ActionPanel
               for (Unit candidate : transporting)
               {
                   if(selected.getType().equals(candidate.getType()) &&
+                     selected.getOwner().equals(candidate.getOwner()) &&
                      selected.getHits() == candidate.getHits())
                   {   
                       hasChanged = true;
@@ -571,6 +581,7 @@ public class MovePanel extends ActionPanel
           {
               Unit candidate = candidateIter.next();
               if(selected.getType().equals(candidate.getType()) &&
+                 selected.getOwner().equals(candidate.getOwner()) &&
                  selected.getHits() == candidate.getHits())
               {   
                   rVal.add(candidate);
@@ -595,7 +606,9 @@ public class MovePanel extends ActionPanel
     private CompositeMatch<Unit> getMovableMatch(final Route route, final Collection<Unit> units)
     {
         CompositeMatch<Unit> movable = new CompositeMatchAnd<Unit>();
-        movable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
+        if (!EditDelegate.getEditMode(getData()))
+            movable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
+
         movable.add(Matches.UnitIsNotFactory);
         if(!m_nonCombat)
             movable.add(new InverseMatch<Unit>( Matches.UnitIsAA));
@@ -605,6 +618,8 @@ public class MovePanel extends ActionPanel
             {
                 public boolean match(Unit u)
                 {
+                    if (EditDelegate.getEditMode(getData()))
+                        return true;
                     return TripleAUnit.get(u).getMovementLeft() >= route.getLength();
                 }
 
@@ -634,9 +649,16 @@ public class MovePanel extends ActionPanel
         }
         if (units != null && !units.isEmpty())
         {
+            // force all units to have the same owner in edit mode
+            PlayerID owner = getUnitOwner(units);
+            if (EditDelegate.getEditMode(getData()))
+                movable.add(Matches.unitIsOwnedBy(owner));
             CompositeMatch<Unit> rightUnitTypeMatch = new CompositeMatchOr<Unit>();
             for(Unit unit : units)
-                rightUnitTypeMatch.add(Matches.unitIsOfType(unit.getType()));
+            {
+                if (unit.getOwner().equals(owner))
+                    rightUnitTypeMatch.add(Matches.unitIsOfType(unit.getType()));
+            }
             movable.add(rightUnitTypeMatch);
         }
         return movable;
@@ -665,6 +687,8 @@ public class MovePanel extends ActionPanel
             {
                 public boolean match(Collection<Unit> c)
                 {
+                    if (EditDelegate.getEditMode(getData()))
+                        return true;
                     for (Unit u : c)
                         if (TripleAUnit.get(u).getMovementLeft() < route.getLength())
                             return false;
@@ -790,15 +814,19 @@ public class MovePanel extends ActionPanel
         //it must be in the route, so it shouldn't affect the route choice
         Match<Territory> territoryIsEnd = Matches.territoryIs(end);
 
+        // can't rely on current player being the unit owner in Edit Mode
+        // look at the units being moved to determine allies and enemies
+        PlayerID owner = getUnitOwner(m_selectedUnits);
+
         // No aa guns on route predicate
-        Match<Territory> noAA = new InverseMatch<Territory>(Matches.territoryHasEnemyAA(getCurrentPlayer(), getData()));
+        Match<Territory> noAA = new InverseMatch<Territory>(Matches.territoryHasEnemyAA(owner, getData()));
             
 
         // No neutral countries on route predicate
         Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
 
         //no enemy units on the route predicate
-        Match<Territory> noEnemy = new InverseMatch<Territory>(Matches.territoryHasEnemyUnits(getCurrentPlayer(), getData()));
+        Match<Territory> noEnemy = new InverseMatch<Territory>(Matches.territoryHasEnemyUnits(owner, getData()));
         
         
         //these are the conditions we would like the route to satisfy, starting
@@ -993,7 +1021,8 @@ public class MovePanel extends ActionPanel
 
         Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
 
-        MustMoveWithDetails endMustMoveWith = MoveDelegate.getMustMoveWith(route.getEnd(), endOwnedUnits, getData(), getCurrentPlayer());
+        final PlayerID unitOwner = getUnitOwner(unitsToLoad);
+        MustMoveWithDetails endMustMoveWith = MoveDelegate.getMustMoveWith(route.getEnd(), endOwnedUnits, getData(), unitOwner);
       
         int minTransportCost = 5;
         for(Unit unit : unitsToLoad)
@@ -1003,7 +1032,7 @@ public class MovePanel extends ActionPanel
       
         CompositeMatch<Unit> candidateTransportsMatch = new CompositeMatchAnd<Unit>();
         candidateTransportsMatch.add(Matches.UnitIsTransport);
-        candidateTransportsMatch.add(Matches.alliedUnit(getCurrentPlayer(), m_bridge.getGameData()));
+        candidateTransportsMatch.add(Matches.alliedUnit(unitOwner, m_bridge.getGameData()));
 
         final List<Unit> candidateTransports = Match.getMatches(endOwnedUnits, candidateTransportsMatch);
 
@@ -1062,7 +1091,7 @@ public class MovePanel extends ActionPanel
         {
             public boolean match(Unit transport)
             {
-                return (!transport.getOwner().equals(getCurrentPlayer()));
+                return (!transport.getOwner().equals(unitOwner));
             }
         };
         Collection<Unit> alliedTransports = Match.getMatches(capableTransports, alliedMatch);
@@ -1221,16 +1250,34 @@ public class MovePanel extends ActionPanel
         {
             
             //are any of the units ours, note - if no units selected thats still ok
-            for(Unit unit : units)
+            if (!EditDelegate.getEditMode(getData()) || !m_selectedUnits.isEmpty())
             {
-                if(!unit.getOwner().equals(getCurrentPlayer()))
+                for(Unit unit : units)
                 {
-                    return;
+                    if(!unit.getOwner().equals(getUnitOwner(m_selectedUnits)))
+                    {
+                        return;
+                    }
                 }
             }
             // basic match criteria only
             CompositeMatch<Unit> unitsToMoveMatch = getMovableMatch(null, null);
             
+
+            Match<Collection<Unit>> ownerMatch = new Match<Collection<Unit>>()
+            {
+                public boolean match(Collection<Unit> unitsToCheck)
+                {
+                    PlayerID owner = unitsToCheck.iterator().next().getOwner();
+                    for (Unit unit : unitsToCheck)
+                    {
+                        if (!owner.equals(unit.getOwner()))
+                            return false;
+                    }
+                    return true;
+                }
+            };
+
             if(units.isEmpty() && m_selectedUnits.isEmpty())
             {
                 if(!me.isShiftDown())
@@ -1243,13 +1290,31 @@ public class MovePanel extends ActionPanel
                     
                     String text = "Select units to move from " + t.getName();
                     
-                    UnitChooser chooser = new UnitChooser(unitsToMove,
-                                                          m_selectedUnits,
-                                                          /*mustMoveWith*/ null, 
-                                                          /*categorizeMovement*/ false,
-                                                          getData(), 
-                                                          /*allowTwoHit*/ false, 
-                                                          getMap().getUIContext() );
+                    UnitChooser chooser;
+
+                    if (EditDelegate.getEditMode(getData()) 
+                            && !Match.getMatches(unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove))).containsAll(unitsToMove))
+                    {
+                        // use matcher to prevent units of different owners being chosen                    
+                        chooser = new UnitChooser(unitsToMove, 
+                                                  m_selectedUnits,
+                                                  /*mustMoveWith*/ null, 
+                                                  /*categorizeMovement*/ false,
+                                                  getData(), 
+                                                  /*allowTwoHit*/ false, 
+                                                  getMap().getUIContext(),
+                                                  ownerMatch);
+                    }
+                    else
+                    {
+                        chooser = new UnitChooser(unitsToMove, 
+                                                  m_selectedUnits,
+                                                  /*mustMoveWith*/ null, 
+                                                  /*categorizeMovement*/ false,
+                                                  getData(), 
+                                                  /*allowTwoHit*/ false, 
+                                                  getMap().getUIContext());
+                    }
                                         
                     int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
                             chooser, text,
@@ -1283,7 +1348,22 @@ public class MovePanel extends ActionPanel
             //add all
             if(me.isShiftDown())
             {
-                CompositeMatch<Unit> ownedNotFactory = unitsToMoveMatch;
+                // prevent units of multiple owners from being chosen in edit mode
+                CompositeMatch<Unit> ownedNotFactory = new CompositeMatchAnd<Unit>();
+                if (!EditDelegate.getEditMode(getData()))
+                {
+                    ownedNotFactory.add(unitsToMoveMatch);
+                }
+                else if (!m_selectedUnits.isEmpty())
+                {
+                    ownedNotFactory.add(unitsToMoveMatch);
+                    ownedNotFactory.add(Matches.unitIsOwnedBy(getUnitOwner(m_selectedUnits)));
+                }
+                else
+                {
+                    ownedNotFactory.add(unitsToMoveMatch);
+                    ownedNotFactory.add(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits().getUnits())));
+                }
                 m_selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactory));
             }
             else if(me.isControlDown())
@@ -1580,7 +1660,7 @@ public class MovePanel extends ActionPanel
             if(!m_listening)
                 return;
             
-            boolean someOwned = Match.someMatch(units, Matches.unitIsOwnedBy(getCurrentPlayer()));
+            boolean someOwned = Match.someMatch(units, Matches.unitIsOwnedBy(getUnitOwner(m_selectedUnits)));
             boolean isCorrectTerritory = m_firstSelectedTerritory == null || m_firstSelectedTerritory == territory;
             if(someOwned && isCorrectTerritory)
                 getMap().setUnitHighlight(units, territory);

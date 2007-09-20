@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -47,7 +48,7 @@ public class MoveDelegateTest extends DelegateTest
 {
 
   MoveDelegate m_delegate;
-  TestDelegateBridge m_bridge;
+  ITestDelegateBridge m_bridge;
 
   /** Creates new PlaceDelegateTest */
   public MoveDelegateTest(String name)
@@ -68,7 +69,7 @@ public class MoveDelegateTest extends DelegateTest
     super.setUp();
     
     
-    m_bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+    m_bridge = super.getDelegateBridge(british);
     
     m_bridge.setStepName("BritishCombatMove");
     m_delegate = new MoveDelegate();

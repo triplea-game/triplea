@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
@@ -15,6 +16,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.ui.display.DummyDisplay;
 
 import java.io.BufferedInputStream;
@@ -42,6 +44,13 @@ public class DiceRollTest extends TestCase
         loadGame(gameName);
     }
 
+    private ITestDelegateBridge getDelegateBridge(PlayerID player)
+    {
+        ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
+        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
+        return bridge2;
+    }
+    
     private void loadGame(String gameName) throws FileNotFoundException, GameParseException, SAXException, IOException
     {
         File gameRoot  = GameRunner.getRootFolder();
@@ -77,7 +86,7 @@ public class DiceRollTest extends TestCase
         MockBattle battle = new MockBattle(westRussia);
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge = getDelegateBridge(russians);
      
         
         UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
@@ -114,7 +123,7 @@ public class DiceRollTest extends TestCase
         MockBattle battle = new MockBattle(westRussia);
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge = getDelegateBridge(russians);
      
         
         UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
@@ -150,7 +159,7 @@ public class DiceRollTest extends TestCase
         MockBattle battle = new MockBattle(westRussia);
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge = getDelegateBridge(russians);
      
         
         UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
@@ -173,7 +182,7 @@ public class DiceRollTest extends TestCase
         MockBattle battle = new MockBattle(westRussia);
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge = getDelegateBridge(russians);
      
         
         UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
@@ -234,7 +243,7 @@ public class DiceRollTest extends TestCase
         UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
         List<Unit> attackers = marine.create(1, americans);
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, americans, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge = getDelegateBridge(americans);
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
         
         MockBattle battle = new MockBattle(algeria);
@@ -256,7 +265,7 @@ public class DiceRollTest extends TestCase
         UnitType marine = m_data.getUnitTypeList().getUnitType("marine");
         List<Unit> attackers = marine.create(1, americans);
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, americans, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge = getDelegateBridge(americans);
         bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
         
         MockBattle battle = new MockBattle(algeria);
@@ -275,7 +284,7 @@ public class DiceRollTest extends TestCase
         
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge = getDelegateBridge(russians);
      
         
        
@@ -304,7 +313,7 @@ public class DiceRollTest extends TestCase
         
         PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
         
-        TestDelegateBridge bridge = new TestDelegateBridge(m_data, russians, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge bridge = getDelegateBridge(russians);
      
         
        
@@ -334,7 +343,7 @@ public class DiceRollTest extends TestCase
     {
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
-        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
         TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
@@ -352,7 +361,7 @@ public class DiceRollTest extends TestCase
     {
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
-        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
         TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
@@ -371,7 +380,7 @@ public class DiceRollTest extends TestCase
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
         m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true );
-        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
         
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
@@ -393,7 +402,7 @@ public class DiceRollTest extends TestCase
         
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
-        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
         TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
@@ -414,7 +423,7 @@ public class DiceRollTest extends TestCase
         
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
-        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
         TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
@@ -434,7 +443,7 @@ public class DiceRollTest extends TestCase
         
         PlayerID british = m_data.getPlayerList().getPlayerID("British");
         
-        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
         TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
         
         List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
@@ -463,7 +472,7 @@ public class DiceRollTest extends TestCase
         
         //hb, for revised 2 on attack, 1 on defence
 
-        TestDelegateBridge testDelegateBridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+        ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
         TechTracker.addAdvance(british, m_data, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
 
         assertEquals(2, BattleCalculator.getRolls(bombers, british, false) );

@@ -40,7 +40,7 @@ public class PlaceDelegateTest extends DelegateTest
 {
 		
 	protected PlaceDelegate m_delegate;
-	protected TestDelegateBridge m_bridge;
+	protected ITestDelegateBridge m_bridge;
 	
 	/** Creates new PlaceDelegateTest */
     public PlaceDelegateTest(String name) 
@@ -68,7 +68,7 @@ public class PlaceDelegateTest extends DelegateTest
 		super.setUp();
 		
 		
-		m_bridge = new TestDelegateBridge(m_data, british, (IDisplay) new DummyDisplay());
+		m_bridge = super.getDelegateBridge(british);
 		m_delegate = new PlaceDelegate();
 		m_delegate.initialize("place");
 		m_delegate.start(m_bridge, m_data);

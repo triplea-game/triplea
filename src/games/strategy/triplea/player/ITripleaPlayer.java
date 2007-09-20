@@ -47,6 +47,17 @@ public interface ITripleaPlayer extends IRemote
     public CasualtyDetails selectCasualties(
             Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents,  int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID     
     );
+
+    /**
+     * Select a fixed dice roll
+     * 
+     * @param numDice - the number of dice rolls
+     * @param hitAt - the lowest roll that constitutes a hit (0 for none)
+     * @param hitOnlyIfEquals - whether to count rolls greater than hitAt as hits
+     * @param title - the title for the DiceChooser
+     * @return the resulting dice array
+     */
+    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title);
     
     /**
      * Select the territory to bombard with the bombarding capable unit (eg battleship)
@@ -147,5 +158,7 @@ public interface ITripleaPlayer extends IRemote
     public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer);
     
     public void confirmOwnCasualties(GUID battleId, String message);
-    
+
+    public PlayerID getID();
+
 }

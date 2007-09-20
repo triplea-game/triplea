@@ -158,7 +158,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     {
         m_nonCombat = isNonCombat(aBridge);
 
-        m_bridge = aBridge;
+        m_bridge = new TripleADelegateBridge(aBridge, gameData);
         PlayerID player = aBridge.getPlayerID();
 
         m_data = gameData;
@@ -222,7 +222,14 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
     }
 
-    // This method is static so it can be called from the client side.
+    private PlayerID getUnitOwner(Collection<Unit> units)
+    {
+        if (EditDelegate.getEditMode(m_data) && !units.isEmpty())
+            return units.iterator().next().getOwner();
+        else
+            return m_player;
+    }
+
     public static MustMoveWithDetails getMustMoveWith(Territory start, Collection<Unit> units, GameData data, PlayerID player)
     {
         return new MustMoveWithDetails(mustMoveWith(units, start, data, player));
@@ -345,9 +352,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
     {
 
+        PlayerID player = getUnitOwner(units);
+
         MoveValidationResult result = MoveValidator.validateMove(units, 
                                                                  route, 
-                                                                 m_player, 
+                                                                 player, 
                                                                  transportsThatCanBeLoaded,
                                                                  m_nonCombat,
                                                                  m_movesToUndo,
@@ -398,7 +407,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         
         m_tempMovePerformer = new MovePerformer();
         m_tempMovePerformer.initialize(this, m_data, m_bridge);
-        m_tempMovePerformer.moveUnits(units, route, m_player, transportsThatCanBeLoaded, currentMove);
+        m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, currentMove);
         m_tempMovePerformer = null;
 
         return null;
@@ -529,8 +538,16 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     {
         boolean lhtrCarrierProd = AirThatCantLandUtil.isLHTRCarrierProduction(m_data);
         boolean hasProducedCarriers = m_player.getUnits().someMatch(Matches.UnitIsCarrier);
-        new AirThatCantLandUtil(m_data, m_bridge).removeAirThatCantLand(lhtrCarrierProd && hasProducedCarriers);
-        
+        AirThatCantLandUtil util = new AirThatCantLandUtil(m_data, m_bridge);
+        util.removeAirThatCantLand(m_player, lhtrCarrierProd && hasProducedCarriers);
+        // if edit mode has been on, we need to clean up after all players
+        Iterator<PlayerID> iter = m_data.getPlayerList().iterator();
+        while (iter.hasNext())
+        {
+            PlayerID player = iter.next();
+            if (!player.equals(m_player)) 
+                util.removeAirThatCantLand(player, false);
+        }
     }
 
     /**
@@ -646,7 +663,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
-        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand();
+        return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);
     }
 
  
@@ -748,8 +765,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         m_ipcsLost = state.m_ipcsLost;
         m_tempMovePerformer = state.m_tempMovePerformer;
     }
-
-
 
 }
 

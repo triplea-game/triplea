@@ -134,8 +134,9 @@ public class BattleCalculator
     public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
             GameData data, DiceRoll dice, boolean defending, GUID battleID, boolean headLess)
     {
-        int hits = dice.getHits();
-        if (hits == 0)
+        boolean isEditMode = (dice == null);
+        int hits = isEditMode ? 0 : dice.getHits();
+        if (!isEditMode && hits == 0)
             return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
 
         Map<Unit, Collection<Unit>> dependents;
@@ -149,7 +150,7 @@ public class BattleCalculator
         // Sets the appropriate flag in the select casualty message
         // such that user is prompted to continue since they did not
         // select the units themselves.
-        if (allTargetsOneTypeNotTwoHit(targets, dependents))
+        if (!isEditMode && allTargetsOneTypeNotTwoHit(targets, dependents))
         {
             List<Unit> killed = new ArrayList<Unit>();
             Iterator<Unit> iter = targets.iterator();
@@ -173,14 +174,14 @@ public class BattleCalculator
         else
             tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
         
-        CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, dice.getHits(), text, dice, player,
+        CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, hits, text, dice, player,
                 defaultCasualties, battleID);
 
         List killed = casualtySelection.getKilled();
         List damaged = casualtySelection.getDamaged();
 
         //check right number
-        if (!(killed.size() + damaged.size() == dice.getHits()))
+        if (!isEditMode && !(killed.size() + damaged.size() == hits))
         {
             tripleaPlayer.reportError("Wrong number of casualties selected");
             return selectCasualties(player, targets, bridge, text, data, dice, defending, battleID);

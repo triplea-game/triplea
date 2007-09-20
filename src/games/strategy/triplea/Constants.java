@@ -67,6 +67,7 @@ public interface Constants
   public static final String IPC_CAP = "Territory Turn Limit";
   public static final String KAMIKAZE = "Kamikaze Airplanes";
   public static final String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
+  public static final String EDIT_MODE = "EditMode";
   
   //by defaul this is 0, but for lhtr, it is 1
   public static final String SUPER_SUB_DEFENSE_BONUS = "Super Sub Defence Bonus";

@@ -16,6 +16,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
@@ -70,7 +71,7 @@ public class PacificTest extends TestCase
 
     Territory queensland;
 
-    TestDelegateBridge bridge;
+    ITestDelegateBridge bridge;
 
     @Override
     protected void setUp() throws Exception
@@ -111,7 +112,7 @@ public class PacificTest extends TestCase
 
         queensland = m_data.getMap().getTerritory("Queensland");
 
-        bridge = new TestDelegateBridge(m_data, americans, (IDisplay) new DummyDisplay());
+        bridge = getDelegateBridge(americans);
 
     }
 
@@ -119,6 +120,13 @@ public class PacificTest extends TestCase
     protected void tearDown() throws Exception
     {
         m_data = null;
+    }
+
+    protected ITestDelegateBridge getDelegateBridge(PlayerID player)
+    {
+        ITestDelegateBridge bridge1 = new TestDelegateBridge(m_data, player, (IDisplay) new DummyDisplay());
+        TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
+        return bridge2;
     }
 
     public void testNonJapanAttack()

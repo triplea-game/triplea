@@ -37,15 +37,12 @@ public class AirThatCantLandUtil
 {
     private final GameData m_data;
     private final IDelegateBridge m_bridge;
-    private final PlayerID m_player;
     
     
-    
-    public AirThatCantLandUtil(final GameData m_data, final IDelegateBridge m_bridge)
+    public AirThatCantLandUtil(final GameData data, final IDelegateBridge bridge)
     {
-        this.m_data = m_data;
-        this.m_bridge = m_bridge;
-        m_player = m_bridge.getPlayerID();
+        m_data = data;
+        m_bridge = bridge;
     }
 
     public static boolean isLHTRCarrierProduction(GameData data)
@@ -53,7 +50,7 @@ public class AirThatCantLandUtil
         return data.getProperties().get(Constants.LHTR_CARRIER_PRODUCTION_RULES, false);
     }
 
-    public Collection<Territory> getTerritoriesWhereAirCantLand()
+    public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player)
     {
         Collection<Territory> cantLand = new ArrayList<Territory>();
         Iterator territories = m_data.getMap().getTerritories().iterator();
@@ -62,9 +59,9 @@ public class AirThatCantLandUtil
             Territory current = (Territory) territories.next();
             CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
             ownedAir.add(Matches.UnitIsAir);
-            ownedAir.add(Matches.alliedUnit(m_player, m_data));
+            ownedAir.add(Matches.alliedUnit(player, m_data));
             Collection<Unit> air = current.getUnits().getMatches(ownedAir);
-            if (air.size() != 0 && !MoveValidator.canLand(air, current, m_player, m_data))
+            if (air.size() != 0 && !MoveValidator.canLand(air, current, player, m_data))
             {
                 cantLand.add(current);
             }
@@ -72,26 +69,26 @@ public class AirThatCantLandUtil
         return cantLand;
     }
 
-    public void removeAirThatCantLand(boolean spareAirInSeaZonesBesideFactories)
+    public void removeAirThatCantLand(PlayerID player, boolean spareAirInSeaZonesBesideFactories)
     {
-        Iterator<Territory> territories = getTerritoriesWhereAirCantLand().iterator();
+        Iterator<Territory> territories = getTerritoriesWhereAirCantLand(player).iterator();
         while (territories.hasNext())
         {
             Territory current = territories.next();
             CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
             ownedAir.add(Matches.UnitIsAir);
-            ownedAir.add(Matches.alliedUnit(m_player, m_data));
+            ownedAir.add(Matches.alliedUnit(player, m_data));
             Collection<Unit> air = current.getUnits().getMatches(ownedAir);
 
-            boolean hasNeighboringFriendlyFactory =  m_data.getMap().getNeighbors(current, Matches.territoryHasOwnedFactory(m_data, m_player)).size() > 0;
+            boolean hasNeighboringFriendlyFactory =  m_data.getMap().getNeighbors(current, Matches.territoryHasOwnedFactory(m_data, player)).size() > 0;
             boolean skip = spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
 
             if(!skip)
-                removeAirThatCantLand(current, air);
+                removeAirThatCantLand(player, current, air);
         }
     }
 
-    private void removeAirThatCantLand(Territory territory, Collection<Unit> airUnits)
+    private void removeAirThatCantLand(PlayerID player, Territory territory, Collection<Unit> airUnits)
     {
 
         Collection<Unit> toRemove = new ArrayList<Unit>(airUnits.size());
@@ -103,7 +100,7 @@ public class AirThatCantLandUtil
         //on water we may just no have enough carriers
         {
             //find the carrier capacity
-            Collection carriers = territory.getUnits().getMatches(Matches.alliedUnit(m_player, m_data));
+            Collection carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_data));
             int capacity = MoveValidator.carrierCapacity(carriers);
 
             Iterator iter = airUnits.iterator();

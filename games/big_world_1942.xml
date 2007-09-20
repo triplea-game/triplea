@@ -1239,6 +1239,7 @@
                 <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
                 <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+                <delegate name="edit" javaClass="games.strategy.triplea.delegate.EditDelegate" display="Edit"/>
 
                 <sequence>
                         <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>

@@ -580,12 +580,17 @@ public class BattleDisplay extends JPanel
             
             public void run()
             {
+                final boolean isEditMode = (dice == null);
 
-                m_actionLayout.show(m_actionPanel, DICE_KEY);
-                m_dicePanel.setDiceRoll(dice);
+                if (!isEditMode)
+                {
+                    m_actionLayout.show(m_actionPanel, DICE_KEY);
+                    m_dicePanel.setDiceRoll(dice);
+                }
 
-                boolean plural = count > 1;
-                final String btnText = hit.getName() + ", press space to select " + count + (plural ? " casualties" : " casualty");
+                boolean plural = isEditMode || (count > 1);
+                String countStr = isEditMode ? "" : "" + count;
+                final String btnText = hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
                 m_actionButton.setAction(new AbstractAction(btnText)
                 {
                     public void actionPerformed(ActionEvent e)
@@ -595,7 +600,10 @@ public class BattleDisplay extends JPanel
                         UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
 
                         chooser.setTitle(messageText);
-                        chooser.setMax(count);
+                        if (isEditMode)
+                            chooser.setMax(selectFrom.size());
+                        else
+                            chooser.setMax(count);
                         String[] options =
                         { "Ok", "Cancel" };
                         int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, hit.getName() + " select casualties",
@@ -605,9 +613,9 @@ public class BattleDisplay extends JPanel
                         List<Unit> killed = chooser.getSelected(false);
                         List<Unit> damaged = chooser.getSelectedFirstHit();
 
-                        if (killed.size() + damaged.size() != count)
+                        if (!isEditMode && (killed.size() + damaged.size() != count))
                         {
-                            JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties choosen", hit.getName()
+                            JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected", hit.getName()
                                     + " select casualties", JOptionPane.ERROR_MESSAGE);
                             return;
                         } else
@@ -1049,7 +1057,9 @@ class CasualtyNotificationPanel extends JPanel
     public void setNotication(DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents)
     {
 
-        m_dice.setDiceRoll(dice);
+        boolean isEditMode = (dice == null);
+        if (!isEditMode)
+            m_dice.setDiceRoll(dice);
 
         m_killed.removeAll();
         m_damaged.removeAll();

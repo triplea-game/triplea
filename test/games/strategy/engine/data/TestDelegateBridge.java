@@ -43,7 +43,7 @@ import java.util.Properties;
  * Not for actual use, suitable for testing. Never returns messages, but can get
  * random and implements changes immediately.
  */
-public class TestDelegateBridge implements IDelegateBridge
+public class TestDelegateBridge implements ITestDelegateBridge
 {
     private GameData m_data;
     private PlayerID m_id;

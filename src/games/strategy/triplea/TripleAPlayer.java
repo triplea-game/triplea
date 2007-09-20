@@ -41,6 +41,7 @@ import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.BattleDisplay;
@@ -50,10 +51,13 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 
+import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.swing.AbstractAction;
+import javax.swing.ButtonModel;
 
 /**
  * 
@@ -80,6 +84,18 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
  
     public void start(String name)
     {
+        boolean badStep = false;
+
+        try 
+        {
+            m_ui.setEditDelegate((IEditDelegate)m_bridge.getRemote("edit"));
+        }
+        catch (Exception e)
+        {
+        }
+        m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
+        m_ui.getEditModeButtonModel().setEnabled(true);
+
         if (name.endsWith("Bid"))
             purchase(true);
         else if (name.endsWith("Tech"))
@@ -97,9 +113,36 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         else if (name.endsWith("EndTurn"))
             {}//intentionally blank
         else
-            throw new IllegalArgumentException("Unrecognized step name:" + name);
+            badStep = true;
 
+        m_ui.getEditModeButtonModel().setEnabled(false);
+        m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
+        m_ui.setEditDelegate(null);
+        
+        if (badStep)
+            throw new IllegalArgumentException("Unrecognized step name:" + name);
     }
+    
+    private AbstractAction m_editModeAction = new AbstractAction()
+    {
+        public void actionPerformed(ActionEvent ae)
+        {
+            boolean editMode = ((ButtonModel)ae.getSource()).isSelected();
+            try 
+            {
+                // Set edit mode
+                // All GameDataChangeListeners will be notified upon success
+                IEditDelegate editDelegate = (IEditDelegate) m_bridge.getRemote("edit");
+                editDelegate.setEditMode(editMode);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                // toggle back to previous state since setEditMode failed
+                m_ui.getEditModeButtonModel().setSelected(!m_ui.getEditModeButtonModel().isSelected());
+            }
+        }
+    };
 
     private void tech()
     {
@@ -322,6 +365,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, List<Unit> defaultCasualties, GUID battleID)
     {
         return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice,hit, defaultCasualties, battleID);
+    }
+
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, int, boolean, java.lang.String)
+     */
+    public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title)
+    {
+        return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title);
     }
 
     /* 

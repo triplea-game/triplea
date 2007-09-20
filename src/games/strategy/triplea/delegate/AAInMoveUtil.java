@@ -138,12 +138,16 @@ class AAInMoveUtil implements Serializable
         if (Match.noneMatch(units, Matches.UnitIsAir))
             return Collections.emptyList();
 
+        // can't rely on m_player being the unit owner in Edit Mode
+        // look at the units being moved to determine allies and enemies
+        PlayerID ally = units.iterator().next().getOwner();
+
         //dont iteratate over the end
         //that will be a battle
         //and handled else where in this tangled mess
         CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
         hasAA.add(Matches.UnitIsAA);
-        hasAA.add(Matches.enemyUnit(m_player, m_data));
+        hasAA.add(Matches.enemyUnit(ally, m_data));
 
         List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 

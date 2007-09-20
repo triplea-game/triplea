@@ -144,6 +144,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         JMenu menuGame = new JMenu("Game");
         menuBar.add(menuGame);
 
+        addEditMode(menuGame);
         menuGame.add(m_frame.getShowGameAction());
         menuGame.add(m_frame.getShowHistoryAction());
         addShowVerifiedDice(menuGame);
@@ -201,6 +202,17 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         
     }
 
+    
+    /**
+     * @param parentMenu
+     */
+    private void addEditMode(JMenu parentMenu)
+    {
+        JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
+        editMode.setModel(m_frame.getEditModeButtonModel());
+
+        parentMenu.add(editMode);
+    }
     
     private void addZoomMenu(JMenu menuGame)
     {

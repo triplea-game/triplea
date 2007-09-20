@@ -91,6 +91,12 @@ public class ProductionPanel extends JPanel
 
     }
 
+    // this method can be accessed by subclasses
+    protected List<Rule> getRules()
+    {
+        return m_rules;
+    };
+
     private void initDialog(JFrame root)
     {
       
@@ -116,7 +122,8 @@ public class ProductionPanel extends JPanel
     }
 
     /** Creates new ProductionPanel */
-    private ProductionPanel(UIContext uiContext)
+    // the constructor can be accessed by subclasses
+    protected ProductionPanel(UIContext uiContext)
     {
         m_uiContext = uiContext;
         
@@ -150,7 +157,6 @@ public class ProductionPanel extends JPanel
         Insets nullInsets = new Insets(0, 0, 0, 0);
         this.removeAll();
         this.setLayout(new GridBagLayout());
-        int ipcs = getIPCs();
         JLabel legendLabel = new JLabel("Attack/Defense/Movement");
         add(legendLabel,
                 new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
@@ -164,14 +170,14 @@ public class ProductionPanel extends JPanel
         }
 
         add(m_left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
-        setLeft(ipcs);
         m_done = new JButton(m_done_action);
         add(m_done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,
                 0, 8, 0), 0, 0));
 
     }
 
-    private void setLeft(int left)
+    // This method can be overridden by subclasses
+    protected void setLeft(int left)
     {
         int total = getIPCs();
         int spent = total - left;
@@ -203,7 +209,8 @@ public class ProductionPanel extends JPanel
         return prod;
     }
 
-    private void calculateLimits()
+    // This method can be overridden by subclasses
+    protected void calculateLimits()
     {
         int ipcs = getIPCs();
         int spent = 0;

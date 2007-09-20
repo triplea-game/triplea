@@ -419,13 +419,18 @@ public class BattlePanel extends ActionPanel
     private CasualtyDetails getCasualtiesAA( Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
             PlayerID hit, List defaultCasualties)
     {
+        boolean isEditMode = (dice == null);
         UnitChooser chooser = new UnitChooser(selectFrom, dependents, getData(), false, getMap().getUIContext());
 
         chooser.setTitle(message);
-        chooser.setMax(count);
+        if (isEditMode)
+            chooser.setMax(selectFrom.size());
+        else
+            chooser.setMax(count);
 
         DicePanel dicePanel = new DicePanel(getMap().getUIContext());
-        dicePanel.setDiceRoll(dice);
+        if (!isEditMode)
+            dicePanel.setDiceRoll(dice);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());

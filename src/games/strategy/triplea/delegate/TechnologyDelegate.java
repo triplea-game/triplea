@@ -27,6 +27,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.Util;
 
 import java.io.Serializable;
@@ -71,7 +72,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-        m_bridge = aBridge;
+        m_bridge = new TripleADelegateBridge(aBridge, gameData);
         m_data = gameData;
         m_player = aBridge.getPlayerID();
     }
@@ -94,8 +95,16 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             return new TechResults("Not enough money to pay for that many tech rolls");
 
         chargeForTechRolls(techRolls);
-        int[] random = m_bridge.getRandom(Constants.MAX_DICE, techRolls,
-                m_player.getName() + " rolling for tech.");
+        String annotation = m_player.getName() + " rolling for tech.";
+        int[] random;
+        if (EditDelegate.getEditMode(m_data))
+        {
+            ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
+            random = tripleaPlayer.selectFixedDice(techRolls, Constants.MAX_DICE, true, annotation);
+
+        }
+        else
+            random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, annotation);
         int techHits = getTechHits(random);
 
         String directedTechInfo = isFourthEdition() ? " for "
@@ -199,9 +208,16 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
 
         Collection<TechAdvance> newAdvances = new ArrayList<TechAdvance>(hits);
 
-        int random[] = m_bridge.getRandom(Constants.MAX_DICE, hits, m_player
-                .getName()
-                + " rolling to see what tech advances are aquired");
+        String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
+        int[] random;
+        if (EditDelegate.getEditMode(m_data))
+        {
+            ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
+            random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation);
+
+        }
+        else
+            random = m_bridge.getRandom(Constants.MAX_DICE, hits, annotation);
         m_bridge.getHistoryWriter().startEvent(
                 "Rolls to resolve tech hits:" + MyFormatter.asDice(random));
         for (int i = 0; i < random.length; i++)

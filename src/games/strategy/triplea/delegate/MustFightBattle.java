@@ -543,9 +543,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     public List<String> determineStepStrings(boolean showFirstRun)
     {
-
+        boolean isEditMode = EditDelegate.getEditMode(m_data);
         List<String> steps = new ArrayList<String>();
-        if (showFirstRun)
+        if (!isEditMode && showFirstRun)
         {
             if (canFireAA())
             {
@@ -562,7 +562,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         //attacker subs
-        if (m_battleSite.isWater())
+        if (!isEditMode && m_battleSite.isWater())
         {
             if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
             {
@@ -572,7 +572,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
 
-        if (isFourthEdition() && m_battleSite.isWater())
+        if (!isEditMode && isFourthEdition() && m_battleSite.isWater())
         {
             if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             {
@@ -586,12 +586,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //attacker fire
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotSub))
         {
-            steps.add(m_attacker.getName() + ATTACKER_FIRES);
+            if (!isEditMode)
+                steps.add(m_attacker.getName() + ATTACKER_FIRES);
             steps.add(m_defender.getName() + DEFENDER_SELECT_CASUALTIES);
         }
 
         //defender subs, note this happens earlier for fourth edition
-        if (!isFourthEdition() && m_battleSite.isWater())
+        if (!isEditMode && !isFourthEdition() && m_battleSite.isWater())
         {
             if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             {
@@ -605,7 +606,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (Match.someMatch(m_defendingUnits, Matches.UnitIsNotSub))
         {
             //defender fire
-            steps.add(m_defender.getName() + DEFENDER_FIRES);
+            if (!isEditMode)
+                steps.add(m_defender.getName() + DEFENDER_FIRES);
             steps.add(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES);
         }
 
@@ -716,6 +718,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (m_over)
             return;
 
+        boolean isEditMode = EditDelegate.getEditMode(m_data);
+
         //the code here is a bit odd to read
         //basically, we need to break the code into seperate atomic pieces.
         //If there is a network error, or some other unfortunate event,
@@ -750,75 +754,98 @@ public class MustFightBattle implements Battle, BattleStepStrings
         final List<Unit> defendingSubs = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsSub);
 
-        steps.add(new IExecutable(){
-            // compatible with 0.9.0.2 saved games
-            private static final long serialVersionUID = 99991L;
+        if (!isEditMode)
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 99991L;
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-                attackSubs(bridge);
-            }
-            
-        });
-        
-        steps.add(new IExecutable(){
-            // compatible with 0.9.0.2 saved games
-            private static final long serialVersionUID = 99992L;
-
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-                if (isFourthEdition())
-                    defendSubs(bridge, defendingSubs);
-            }
-            
-        });
-        
-
-        steps.add(new IExecutable(){
-            // compatible with 0.9.0.2 saved games
-            private static final long serialVersionUID = 99993L;
-
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-                attackNonSubs(bridge);
-            }
-            
-        });
-
-
-        steps.add(new IExecutable(){
-            // compatible with 0.9.0.2 saved games
-            private static final long serialVersionUID = -4316269766293144179L;
-
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
-                if (!isFourthEdition())
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                    Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
-                            + m_defendingWaitingToDie.size());
-                    units.addAll(m_defendingUnits);
-                    units.addAll(m_defendingWaitingToDie);
-                    units = Match.getMatches(units, Matches.UnitIsSub);
+                    attackSubs(bridge);
+                }
+                
+            });
+        
+        if (!isEditMode)
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 99992L;
 
-                    defendSubs(bridge, units);
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    if (isFourthEdition())
+                        defendSubs(bridge, defendingSubs);
+                }
+                
+            });
+        
+
+        if (!isEditMode)
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 99993L;
+
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    attackNonSubs(bridge);
                 }
 
-            }
-            
-        });        
+            });
 
-        steps.add(new IExecutable(){
-            // compatible with 0.9.0.2 saved games
-            private static final long serialVersionUID = 1560702114917865290L;
 
-            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
-            {
+        if (!isEditMode)
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = -4316269766293144179L;
 
-                defendNonSubs(bridge);
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    if (!isFourthEdition())
+                    {
+                        Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
+                                + m_defendingWaitingToDie.size());
+                        units.addAll(m_defendingUnits);
+                        units.addAll(m_defendingWaitingToDie);
+                        units = Match.getMatches(units, Matches.UnitIsSub);
 
-            }
-            
-        });        
+                        defendSubs(bridge, units);
+                    }
+
+                }
+
+            });        
+
+        if (!isEditMode)
+            steps.add(new IExecutable(){
+                // compatible with 0.9.0.2 saved games
+                private static final long serialVersionUID = 1560702114917865290L;
+
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+
+                    defendNonSubs(bridge);
+
+                }
+
+            });
+
+        if (isEditMode)
+            steps.add(new IExecutable(){
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    attackAny(bridge);
+                }
+
+            });        
+
+        if (isEditMode)
+            steps.add(new IExecutable(){
+                public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                {
+                    defendAny(bridge);
+                }
+
+            });        
         
         //we must grab these here, when we clear waiting to die, we might remove
         //all the opposing destroyers, and this would change the canRetreatSubs rVal
@@ -1495,6 +1522,40 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 attacked, true, destroyersPresent, bridge, "Subs defend, ");
     }
 
+    private void attackAny(IDelegateBridge bridge)
+    {
+
+        if (m_defendingUnits.size() == 0)
+            return;
+        Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size()
+                + m_attackingWaitingToDie.size());
+        units.addAll(m_attackingUnits);
+        units.addAll(m_attackingWaitingToDie);
+
+        if (units.isEmpty())
+            return;
+
+        fire(m_defender.getName() + DEFENDER_SELECT_CASUALTIES, units,
+                m_defendingUnits, false, true, bridge, "Attackers fire,");
+    }
+
+    private void defendAny(IDelegateBridge bridge)
+    {
+
+        if (m_attackingUnits.size() == 0)
+            return;
+        Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
+                + m_defendingWaitingToDie.size());
+        units.addAll(m_defendingUnits);
+        units.addAll(m_defendingWaitingToDie);
+
+        if (units.isEmpty())
+            return;
+
+        fire(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES, units,
+                m_attackingUnits, true, true, bridge, "Defenders fire, ");
+    }
+
     private CasualtyDetails selectCasualties(String step,
             IDelegateBridge bridge, Collection<Unit> attackableUnits,
             boolean defender, String text, DiceRoll dice)
@@ -1672,8 +1733,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             {
                 m_casualties = BattleCalculator.fourthEditionAACasualties(attackable,
                         m_dice, bridge);
-               
-            } else
+            } 
+            else
             {
                 m_casualties = MustFightBattle.this.selectCasualties(SELECT_AA_CASUALTIES, bridge, attackable, false,
                         "AA guns fire,", m_dice).getKilled();
@@ -1897,7 +1958,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if(m_headless)
             return;
-        
+
         //not water, not relevant.
         if (!m_battleSite.isWater())
             return;
@@ -2210,11 +2271,8 @@ class Fire implements IExecutable
         m_isHeadless = headless;
         
         m_battleID = battle.getBattleID();
-    
-        
   
     }
-    
     
     private void rollDice(IDelegateBridge bridge, GameData data)
     {
@@ -2237,24 +2295,38 @@ class Fire implements IExecutable
     
     private void selectCasualties(IDelegateBridge bridge, GameData data)
     {
-        int hitCount = m_dice.getHits();
-        MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
-        
-        //they all die
-        if (hitCount >= MustFightBattle.getMaxHits(m_attackableUnits))
+        boolean isEditMode = EditDelegate.getEditMode(data);
+        if (isEditMode)
         {
-            m_killed = m_attackableUnits;
-            m_damaged = Collections.emptyList();
-            //everything died, so we need to confirm
-            m_confirmOwnCasualties = true;
-        } else
-        {     
             CasualtyDetails message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
-                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless);
+                    m_attackableUnits, bridge, m_text, data, null,!m_defending, m_battleID, m_isHeadless);
 
             m_killed = message.getKilled();
             m_damaged = message.getDamaged();
             m_confirmOwnCasualties = message.getAutoCalculated();
+        }
+        else
+        {
+            int hitCount = m_dice.getHits();
+
+            MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
+        
+            //they all die
+            if (hitCount >= MustFightBattle.getMaxHits(m_attackableUnits))
+            {
+                m_killed = m_attackableUnits;
+                m_damaged = Collections.emptyList();
+                //everything died, so we need to confirm
+                m_confirmOwnCasualties = true;
+            } else
+            {     
+                CasualtyDetails message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
+                        m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless);
+
+                m_killed = message.getKilled();
+                m_damaged = message.getDamaged();
+                m_confirmOwnCasualties = message.getAutoCalculated();
+            }
         }
     }
     
@@ -2317,6 +2389,7 @@ class Fire implements IExecutable
      */
     public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
     {
+        boolean isEditMode = EditDelegate.getEditMode(data);
         //add to the stack so we will execute,
         //we want to roll dice, select casualties, then notify in that order, so 
         //push onto the stack in reverse order
@@ -2361,7 +2434,8 @@ class Fire implements IExecutable
         
         stack.push(notifyCasualties);
         stack.push(selectCasualties);
-        stack.push(rollDice);
+        if (!isEditMode)
+            stack.push(rollDice);
         
         return;
         

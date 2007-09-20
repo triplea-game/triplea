@@ -66,7 +66,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
-        m_bridge = aBridge;
+        m_bridge = new TripleADelegateBridge(aBridge, gameData);
         m_data = gameData;
         //we may start multiple times due to loading after saving
         //only initialize once

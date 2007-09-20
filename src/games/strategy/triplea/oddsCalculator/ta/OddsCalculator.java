@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
+import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -93,7 +94,9 @@ public class OddsCalculator
         
         for(int i =0; i < count; i++)
         {
-            DummyDelegateBridge bridge = new DummyDelegateBridge(m_attacker, m_data, m_keepOneAttackingLandUnit);
+            final CompositeChange allChanges = new CompositeChange();
+            DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, m_keepOneAttackingLandUnit);
+            TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1, m_data);
             MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
             battle.setHeadless(true);
             battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
@@ -103,7 +106,7 @@ public class OddsCalculator
             rVal.addResult(new BattleResults(battle));
             
             //restore the game to its original state
-            new ChangePerformer(m_data).perform( bridge.getAllChanges().invert());
+            new ChangePerformer(m_data).perform( allChanges.invert());
             
             battleTracker.clear();
             
@@ -124,23 +127,19 @@ class DummyDelegateBridge implements IDelegateBridge
     private final DummyPlayer m_defendingPlayer;
     private final PlayerID m_attacker;
     private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
-    private final CompositeChange m_allChanges = new CompositeChange();
+    private final CompositeChange m_allChanges;
     private final GameData m_data;
     private final ChangePerformer m_changePerformer;
     
-    public DummyDelegateBridge(PlayerID attacker, GameData data, boolean attackerKeepOneLandUnit)
+    public DummyDelegateBridge(PlayerID attacker, GameData data, CompositeChange allChanges, boolean attackerKeepOneLandUnit)
     {
         m_attackingPlayer = new DummyPlayer("battle calc dummy", attackerKeepOneLandUnit);
         m_defendingPlayer = new DummyPlayer("battle calc dummy", false);
         
         m_data = data;
         m_attacker = attacker;
+        m_allChanges = allChanges;
         m_changePerformer = new ChangePerformer(m_data);
-    }
-
-    public Change getAllChanges()
-    {
-        return m_allChanges;
     }
     
    public void leaveDelegateExecution()
@@ -340,6 +339,19 @@ class DummyPlayer extends AbstractAI
     public boolean shouldBomberBomb(Territory territory)
     {
         throw new UnsupportedOperationException();
+    }
+
+    /* (non-Javadoc)
+     * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
+     */
+    public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message)
+    {
+        int[] dice = new int[numRolls];
+        for (int i=0; i<numRolls; i++)
+        {
+            dice[i] = (int)Math.ceil(Math.random() * 6);
+        }
+        return dice;
     }
     
 }

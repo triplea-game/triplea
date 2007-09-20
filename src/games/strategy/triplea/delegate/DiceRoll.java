@@ -21,6 +21,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.formatter.*;
 import games.strategy.util.Match;
 
@@ -44,6 +45,7 @@ public class DiceRoll implements Externalizable
         int hits = 0;
         int[] dice = new int[0];
         List<Die> sortedDice = new ArrayList<Die>();
+        boolean isEditMode = EditDelegate.getEditMode(data);
 
         if (data.getProperties().get(Constants.LOW_LUCK, false))
         {
@@ -54,7 +56,13 @@ public class DiceRoll implements Externalizable
             if (hitsFractional > 0)
             {
                 String annotation = "Roll AA guns in " + location.getName();
-                dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+                if (isEditMode)
+                {
+                    ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
+                    dice = player.selectFixedDice(1, 1, true, annotation);
+                }
+                else
+                    dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
                 boolean hit = hitsFractional > dice[0];
                 Die die = new Die(dice[0], 1, hit ? DieType.HIT : DieType.MISS);
                 
@@ -70,7 +78,13 @@ public class DiceRoll implements Externalizable
             
             // Normal rolling
             String annotation = "Roll AA guns in " + location.getName();
-            dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, annotation);
+            if (isEditMode)
+            {
+                ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
+                dice = player.selectFixedDice(numberOfAirUnits, 1, true, annotation);
+            }
+            else
+                dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, annotation);
             for (int i = 0; i < dice.length; i++)
             {
                 boolean hit = dice[i] == 0;
@@ -96,10 +110,10 @@ public class DiceRoll implements Externalizable
         // Decide whether to use low luck rules or normal rules.
         if (data.getProperties().get(Constants.LOW_LUCK, false))
         {
-            return rollDiceLowLuck(units, defending, player, bridge,  battle, annotation);
+            return rollDiceLowLuck(units, defending, player, bridge, data, battle, annotation);
         } else
         {
-            return rollDiceNormal(units, defending, player, bridge, battle, annotation);
+            return rollDiceNormal(units, defending, player, bridge, data, battle, annotation);
         }
     }
 
@@ -107,9 +121,9 @@ public class DiceRoll implements Externalizable
      * Roll dice for units using low luck rules. Low luck rules based on rules
      * in DAAK.
      */
-    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
+    private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
-        
+
 
         int rollCount = BattleCalculator.getRolls(units, player, defending);
         if (rollCount == 0)
@@ -167,7 +181,14 @@ public class DiceRoll implements Externalizable
         power = power % Constants.MAX_DICE;
         if (power != 0)
         {
-            random = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
+            boolean isEditMode = EditDelegate.getEditMode(data);
+            if (isEditMode)
+            {
+                ITripleaPlayer tripleAplayer = (ITripleaPlayer)bridge.getRemote();
+                random = tripleAplayer.selectFixedDice(1, power, false, annotation);
+            }
+            else
+                random = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
             boolean hit = power > random[0]; 
             if (hit)
             {
@@ -185,7 +206,7 @@ public class DiceRoll implements Externalizable
     /**
      * Roll dice for units per normal rules.
      */
-    private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
+    private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
     {
         
 
@@ -201,7 +222,16 @@ public class DiceRoll implements Externalizable
         if (!defending)
             artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
 
-        int[] random = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
+        int[] random;
+        boolean isEditMode = EditDelegate.getEditMode(data);
+        if (isEditMode)
+        {
+            ITripleaPlayer tripleAplayer = (ITripleaPlayer)bridge.getRemote();
+            random = tripleAplayer.selectFixedDice(rollCount, 0, true, annotation);
+        }
+        else
+            random = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
+
         List<Die> dice = new ArrayList<Die>();
         
         Iterator iter = units.iterator();
