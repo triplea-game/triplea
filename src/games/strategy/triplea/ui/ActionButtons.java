@@ -51,6 +51,7 @@ public class ActionButtons extends JPanel
 
     private TechPanel m_techPanel;
 
+    private EndTurnPanel m_endTurnPanel;
     private ActionPanel m_current;
 
     /** Creates new ActionPanel */
@@ -61,6 +62,7 @@ public class ActionButtons extends JPanel
         m_purchasePanel = new PurchasePanel(data, map);
         m_placePanel = new PlacePanel(data, map);
         m_techPanel = new TechPanel(data, map);
+        m_endTurnPanel = new EndTurnPanel(data, map);
         m_current = m_techPanel;
 
         setLayout(m_layout);
@@ -71,6 +73,7 @@ public class ActionButtons extends JPanel
         add(m_purchasePanel, m_purchasePanel.toString());
         add(m_placePanel, m_placePanel.toString());
         add(m_techPanel, m_techPanel.toString());
+        add(m_endTurnPanel, m_endTurnPanel.toString());
         
         
         //this should not be necceessary
@@ -93,12 +96,13 @@ public class ActionButtons extends JPanel
                m_purchasePanel.removeAll();
                m_placePanel.removeAll();
                m_techPanel.removeAll();
-               
+               m_endTurnPanel.removeAll();
                m_battlePanel = null;
                m_movePanel = null;
                m_purchasePanel = null;
                m_placePanel = null;
                m_techPanel = null;
+               m_endTurnPanel = null;
 
                
             }
@@ -188,6 +192,20 @@ public class ActionButtons extends JPanel
         });
      }
 
+    public void changeToEndTurn(PlayerID id)
+    {
+        m_current.setActive(false);
+        m_current = m_endTurnPanel;
+        m_endTurnPanel.display(id);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run()
+            {
+                m_layout.show(ActionButtons.this, m_endTurnPanel.toString());
+            }
+        });
+    }
+
     /**
      * Blocks until the user selects their purchase.
      * 
@@ -229,6 +247,16 @@ public class ActionButtons extends JPanel
     }
 
     /**
+     * Blocks until the user selects an end-of-turn action
+     * 
+     * @return null if no action was made.
+     */
+    public void waitForEndTurn(TripleAFrame frame, IPlayerBridge bridge)
+    {
+        m_endTurnPanel.waitForEndTurn(frame, bridge);
+    }
+
+    /**
      * Blocks until the user selects a battle to fight.
      */
     public FightBattleDetails waitForBattleSelection()
@@ -262,5 +290,9 @@ public class ActionButtons extends JPanel
     public TechPanel getTechPanel()
     {
         return m_techPanel;
+    }
+    public EndTurnPanel getEndTurnPanel()
+    {
+        return m_endTurnPanel;
     }
 }

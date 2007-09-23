@@ -631,6 +631,12 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return m_actionButtons.waitForPlace(bid, bridge);
     }
 
+    public void waitForEndTurn(final PlayerID player, IPlayerBridge bridge)
+    {
+        m_actionButtons.changeToEndTurn(player);
+        m_actionButtons.waitForEndTurn(this, bridge);
+    }
+
     public FightBattleDetails getBattle(final PlayerID player, final Collection<Territory> battles, final Collection<Territory> bombingRaids)
     {
         m_actionButtons.changeToBattle(player, battles, bombingRaids);

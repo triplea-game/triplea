@@ -111,7 +111,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         else if (name.endsWith("Place"))
             place(name.indexOf("Bid") != -1);
         else if (name.endsWith("EndTurn"))
-            {}//intentionally blank
+            endTurn();
         else
             badStep = true;
 
@@ -356,6 +356,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             if(error != null)
                 m_ui.notifyError(error);
         }
+    }
+
+    private void endTurn()
+    {
+        m_ui.waitForEndTurn(m_id, m_bridge);
     }
     
 

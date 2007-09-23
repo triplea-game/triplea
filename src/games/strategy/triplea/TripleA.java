@@ -29,6 +29,9 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
+import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
+import games.strategy.engine.pbem.IPBEMMessenger;
+import games.strategy.triplea.pbem.AxisAndAlliesDotOrgPBEMMessenger;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.randomAI.RandomAI;
 import games.strategy.triplea.sound.SoundPath;
@@ -106,10 +109,10 @@ public class TripleA implements IGameLoader
         try
         {
             
-	    /*
-	       Retreive the map name from xml file
-	       This is the key for triplea to find the maps
-	    */
+            /*
+               Retreive the map name from xml file
+               This is the key for triplea to find the maps
+            */
             m_game = game;
            // final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
@@ -202,6 +205,15 @@ public class TripleA implements IGameLoader
         return new String[]
         {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE};
             
+    }
+
+    public IPBEMMessenger[] getPBEMMessengers()
+    {
+        return new IPBEMMessenger[]
+        {
+            new AxisAndAlliesDotOrgPBEMMessenger(),
+            new AllYouCanUploadDotComPBEMMessenger()
+        };
     }
 
     /* 

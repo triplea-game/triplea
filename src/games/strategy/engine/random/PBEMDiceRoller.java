@@ -380,7 +380,7 @@ class HttpDiceRollerDialog extends JDialog
             //an error in networking
             catch (SocketException ex)
             {
-                appendText("Connection failuer:" + ex.getMessage() + "\n" + "Please ensure your internet connection is working, and try again.");
+                appendText("Connection failure:" + ex.getMessage() + "\n" + "Please ensure your Internet connection is working, and try again.");
                 notifyError();
             }
             catch(InvocationTargetException e) 
@@ -390,12 +390,13 @@ class HttpDiceRollerDialog extends JDialog
                 {
                     appendText("Text from dice server:\n" + text + "\n");
                 }
+                notifyError();
             }
             catch (IOException ex)
             {
                 try
                 {
-                    appendText("An eror has occured!\n");
+                    appendText("An error has occured!\n");
                     appendText("Possible reasons the error could have happened:\n");
                     appendText("  1: An invalid e-mail address\n");
                     appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
@@ -412,21 +413,29 @@ class HttpDiceRollerDialog extends JDialog
                     ex.printStackTrace(new PrintWriter(writer));
                     writer.close();
                     appendText(writer.toString());
-                    notifyError();
                 } catch (IOException ex1)
                 {
                     ex1.printStackTrace();
                 }
+                notifyError();
 
             }
         } else
         { //enter here for invalid e-mail
 
             appendText("There is an error in the e-mails you have entered\n");
+            if(!m_test)
+                appendText("and the game cannot proceed.\n");
             appendText("Please check the following:\n");
             appendText("  1: Do you have a valid e-mail syntax ? (ie. someone@someplace.com) ?\n");
             appendText("  2: Are both e-mail boxes filled out ?\n\n");
-            m_exitButton.setEnabled(true);
+            if(!m_test)
+            {
+                appendText("Click Exit, reload the autosave.tsvg game\n");
+                appendText("in the savedGames directory, and correct\n");
+                appendText("this problem in the PBEM Setup Panel.\n\n");
+            }
+            notifyError();
         }
 
     }//end of method

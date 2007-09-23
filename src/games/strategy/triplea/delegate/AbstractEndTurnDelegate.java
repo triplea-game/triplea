@@ -20,12 +20,23 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.*;
 
@@ -39,13 +50,18 @@ import java.util.*;
  *
  * At the end of the turn collect income.
  */
-public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Serializable
+public abstract class AbstractEndTurnDelegate
+    implements IDelegate, IAbstractEndTurnDelegate
 {
+    private IDelegateBridge m_bridge = null;
     private String m_name;
     private String m_displayName;
     protected GameData m_data;
 
     //we only want to notify once that the game is over
+    private boolean m_needToInitialize = true;
+    private boolean m_hasPostedTurnSummary = false;
+    private PBEMMessagePoster m_pbemMessagePoster;
     protected boolean m_gameOver = false;
 
     public void initialize(String name, String displayName)
@@ -65,7 +81,12 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
      */
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
+        m_bridge = aBridge;
         m_data = gameData;
+        m_pbemMessagePoster = new PBEMMessagePoster(m_data, m_bridge.getHistoryWriter());
+        if(!m_needToInitialize)
+            return;
+        m_hasPostedTurnSummary = false;
         PlayerID player = aBridge.getPlayerID();
 
         //cant collect unless you own your own capital
@@ -105,6 +126,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
         {
             repairBattleShips(aBridge);
         }
+        m_needToInitialize = false;
     }
 
 
@@ -157,6 +179,21 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
         return value;
     }
 
+    public void setHasPostedTurnSummary(boolean hasPostedTurnSummary)
+    {
+        m_hasPostedTurnSummary = hasPostedTurnSummary;
+    }
+
+    public boolean getHasPostedTurnSummary()
+    {
+        return m_hasPostedTurnSummary;
+    }
+
+    public PBEMMessagePoster getPBEMMessagePoster()
+    {
+        return m_pbemMessagePoster;
+    }
+
     public String getName()
     {
         return m_name;
@@ -172,6 +209,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
      */
     public void end()
     {
+        m_needToInitialize = true;
         DelegateFinder.battleDelegate(m_data).getBattleTracker().clear();
     }
 
@@ -180,7 +218,7 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
      */
     public Class<? extends IRemote> getRemoteType()
     {
-        return null;
+        return IAbstractEndTurnDelegate.class;
     }
     
     /**
@@ -188,15 +226,34 @@ public abstract class AbstractEndTurnDelegate implements IDelegate, java.io.Seri
      */
     public Serializable saveState()
     {
-        return null;
+        EndTurnState state = new EndTurnState();
+        state.m_needToInitialize = m_needToInitialize;
+        state.m_hasPostedTurnSummary = m_hasPostedTurnSummary;
+        return state;
     }
     
     /**
      * Loads the delegates state
      */
-    public void loadState(Serializable state)
-    {}
+    public void loadState(Serializable aState)
+    {
+        if(aState != null)
+        {
+            EndTurnState state = (EndTurnState)aState;
+            m_needToInitialize = state.m_needToInitialize;
+            m_hasPostedTurnSummary = state.m_hasPostedTurnSummary;
+        }
+    }
+}
 
+class EndTurnState
+    implements Serializable
+{
 
+    EndTurnState()
+    {
+    }
 
+    public boolean m_needToInitialize;
+    public boolean m_hasPostedTurnSummary;
 }

@@ -18,6 +18,7 @@ package games.strategy.engine.framework;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
+import games.strategy.engine.pbem.IPBEMMessenger;
 
 import java.util.*;
 
@@ -57,6 +58,12 @@ public interface IGameLoader extends java.io.Serializable
    */
   public void startGame(IGame game, Set<IGamePlayer> players) throws Exception;
   
+
+  /**
+   * Get PBEM messengers for Turn Summary notification
+   */
+  public IPBEMMessenger[] getPBEMMessengers();
+
   /**
    * Get the type of the display
    * @return an interface that extends IChannelSubscrobor

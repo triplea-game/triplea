@@ -30,6 +30,8 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
+import games.strategy.engine.pbem.IPBEMMessenger;
 import games.strategy.kingstable.player.BetterAI;
 import games.strategy.kingstable.player.IKingsTablePlayer;
 import games.strategy.kingstable.player.KingsTablePlayer;
@@ -195,6 +197,14 @@ public class KingsTable implements IGameLoader
         }
     }
     
+    public IPBEMMessenger[] getPBEMMessengers()
+    {
+        return new IPBEMMessenger[]
+        {
+            new AllYouCanUploadDotComPBEMMessenger()
+        };
+    }
+
     /** 
      * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
      */

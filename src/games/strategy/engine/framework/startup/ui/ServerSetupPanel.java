@@ -338,7 +338,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         
             public void actionPerformed(ActionEvent e)
             {
-                m_model.setLocalPlayerTyp(m_nameLabel.getText(), (String) m_type.getSelectedItem());
+                m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
         
             }
         

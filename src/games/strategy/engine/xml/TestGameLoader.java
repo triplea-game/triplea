@@ -11,6 +11,7 @@ import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.*;
+import games.strategy.engine.pbem.IPBEMMessenger;
 
 import java.util.*;
 
@@ -44,6 +45,13 @@ public class TestGameLoader implements IGameLoader
 	public void startGame(IGame game, Set<IGamePlayer> players)
 	{}
 	
+	/**
+	 * Get PBEM messengers for Turn Summary notification
+	 */
+	public IPBEMMessenger[] getPBEMMessengers()
+	{
+		return new IPBEMMessenger[0];
+	}
 	/**
 	 * Create the players.  Given a map of playerName -> type,
 	 * where type is one of the Strings returned by a get*PlayerType() method.

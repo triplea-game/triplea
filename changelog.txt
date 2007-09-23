@@ -1,3 +1,5 @@
+* new PBEM Turn Summary posting feature (tclayton)
+
 * new "Edit Mode" feature (tclayton)
 
 * add PersistentDelegate support and IDelegateHistoryWriter interface to engine (tclayton)

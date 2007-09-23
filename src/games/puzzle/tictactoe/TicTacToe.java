@@ -29,6 +29,8 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
+import games.strategy.engine.pbem.IPBEMMessenger;
 
 import games.puzzle.tictactoe.player.BetterAI;
 import games.puzzle.tictactoe.player.ITicTacToePlayer;
@@ -175,6 +177,14 @@ public class TicTacToe implements IGameLoader
         }
     }
     
+    public IPBEMMessenger[] getPBEMMessengers()
+    {
+        return new IPBEMMessenger[]
+        {
+            new AllYouCanUploadDotComPBEMMessenger()
+        };
+    }
+
     /** 
      * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
      */

@@ -107,7 +107,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         m_listener = listener;
     }
     
-    public void setLocalPlayerTyp(String player, String type)
+    public void setLocalPlayerType(String player, String type)
     {
         synchronized(this)
         {

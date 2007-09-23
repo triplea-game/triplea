@@ -25,7 +25,7 @@ public class MainPanel extends JPanel implements Observer
     private JPanel m_chatPanelHolder;
     private final SetupPanelModel m_gameTypePanelModel;
     
-    private final Dimension m_initialSize = new Dimension(625,450);
+    private final Dimension m_initialSize = new Dimension(625,550);
     //private final Dimension m_initialSizeWithChat = new Dimension(500,650);
     private boolean m_isChatShowing;
     

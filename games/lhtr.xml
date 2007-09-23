@@ -1608,7 +1608,7 @@
                         <boolean/>
                 </property>
 
-                <property name="LHTR Carrier productin rules" value="true" editable="false">
+                <property name="LHTR Carrier production rules" value="true" editable="false">
                         <boolean/>
                 </property>
                 
