@@ -21,8 +21,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.history.Event;
-import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -264,7 +262,6 @@ public class CommentPanel extends JPanel
                 continue;
             }
             else
-                //if ((node instanceof Event) || (node instanceof EventChild))
             {
                 String title = node.getTitle();
                 Matcher m = p.matcher(title);
@@ -398,11 +395,6 @@ public class CommentPanel extends JPanel
             m_nextMessage.setText("");
         }
     };
-    /*
-    } catch (InvalidMoveException ime) {
-        throw new MessengerException(ime.getMessage(), ime);
-    }
-    */
     
 }
 
