@@ -22,6 +22,10 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.history.Event;
+import games.strategy.engine.history.EventChild;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Step;
 import games.strategy.engine.message.IRemote;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -57,11 +61,19 @@ public class EditDelegate implements IDelegate, IEditDelegate
         return ((Boolean)editMode).booleanValue();
     }
 
-    private String checkEditMode()
+    private String checkPlayerID()
     {
         ITripleaPlayer remotePlayer = (ITripleaPlayer)m_bridge.getRemote();
         if (!m_bridge.getPlayerID().equals(remotePlayer.getID()))
             return "Edit actions can only be performed during players turn";
+        return null;
+    }
+
+    private String checkEditMode()
+    {
+        String result = checkPlayerID();
+        if (null != result)
+            return result;
         if (!getEditMode(m_data))
             return "Edit mode is not enabled";
         return null;
@@ -114,7 +126,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (!m_bridge.getPlayerID().equals(remotePlayer.getID()))
             return "Edit Mode can only be toggled during players turn";
 
-        m_bridge.getHistoryWriter().startEvent("Turning " + (editMode ? "on" : "off") + " Edit Mode");
+        logEvent("Turning " + (editMode ? "on" : "off") + " Edit Mode", null);
         m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, new Boolean(editMode), m_data));
         return null;
     }
@@ -133,8 +145,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (null != (result = EditValidator.validateRemoveUnits(m_data, territory, units)))
             return result;
 
-        m_bridge.getHistoryWriter().startEvent("Removing units owned by "+m_bridge.getPlayerID().getName()+" from "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units));
-        m_bridge.getHistoryWriter().setRenderingData(units);
+        logEvent("Removing units owned by "+m_bridge.getPlayerID().getName()+" from "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units), units);
         m_bridge.addChange(ChangeFactory.removeUnits(territory, units));
         return null;
     }
@@ -148,8 +159,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (null != (result = EditValidator.validateAddUnits(m_data, territory, units)))
             return result;
 
-        m_bridge.getHistoryWriter().startEvent("Adding units owned by "+m_bridge.getPlayerID().getName()+" to "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units));
-        m_bridge.getHistoryWriter().setRenderingData(units);
+        logEvent("Adding units owned by "+m_bridge.getPlayerID().getName()+" to "+territory.getName()+": "+MyFormatter.unitsToTextNoOwner(units), units);
         m_bridge.addChange(ChangeFactory.addUnits(territory, units));
         return null;
     }
@@ -164,8 +174,7 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (null != (result = EditValidator.validateChangeTerritoryOwner(m_data, territory, player)))
             return result;
     
-        m_bridge.getHistoryWriter().startEvent("Changing ownership of "+territory.getName()+" from "+territory.getOwner().getName()+" to "+player.getName());
-        m_bridge.getHistoryWriter().setRenderingData(territory);
+        logEvent("Changing ownership of "+territory.getName()+" from "+territory.getOwner().getName()+" to "+player.getName(), territory);
 
         if (m_data.getAllianceTracker().isAllied(territory.getOwner(), player))
         {
@@ -207,10 +216,59 @@ public class EditDelegate implements IDelegate, IEditDelegate
         if (newTotal < 0)
             return "New ipcs total is invalid";
 
-        m_bridge.getHistoryWriter().startEvent("Changing ipcs for "+player.getName()+" from "+oldTotal+" to "+newTotal);
+        logEvent("Changing ipcs for "+player.getName()+" from "+oldTotal+" to "+newTotal, null);
         m_bridge.addChange(ChangeFactory.changeResourcesChange(player, ipcs, (newTotal - oldTotal)));
        
         return null;
+    }
+
+    public String addComment(String message)
+    {
+
+        String result = null;
+        if (null != (result = checkPlayerID())) 
+            return result;
+
+        logEvent("COMMENT: " + message, null);
+        return null;
+    }
+
+    // We don't know the current context, so we need to figure 
+    // out whether it makes more sense to log a new event or a child.
+    // If any child events came before us, then we'll log a child event.
+    // Otherwise, we'll log a new event.
+    private void logEvent(String message, Object data)
+    {
+        // find last event node
+
+        boolean foundChild = false;
+        m_data.acquireReadLock();
+        try 
+        {
+            HistoryNode curNode = m_data.getHistory().getLastNode();
+            while (! (curNode instanceof Step) && ! (curNode instanceof Event))
+            {
+                if (curNode instanceof EventChild)
+                {
+                    foundChild = true;
+                    break;
+                }
+                curNode = (HistoryNode)curNode.getPreviousNode();
+            }
+        }
+        finally
+        {
+            m_data.releaseReadLock();
+        }
+
+        if (foundChild)
+            m_bridge.getHistoryWriter().addChildToEvent(message, data);
+        else
+        {
+            m_bridge.getHistoryWriter().startEvent(message);
+            m_bridge.getHistoryWriter().setRenderingData(data);
+        }
+
     }
 
     /*

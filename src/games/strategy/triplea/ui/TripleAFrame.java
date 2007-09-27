@@ -115,6 +115,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -161,10 +162,13 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     private UIContext m_uiContext;
     private JPanel m_mapAndChatPanel;
     private ChatPanel m_chatPanel;
+    private CommentPanel m_commentPanel;
     private JSplitPane m_chatSplit;
+    private JSplitPane m_commentSplit;
     private EditPanel m_editPanel;
     private ButtonModel m_editModeButtonModel;
-    private IEditDelegate m_editDelegate = null;
+    private ButtonModel m_showCommentLogButtonModel;
+    private IEditDelegate m_editDelegate;
 
     /** Creates new TripleAFrame */
     public TripleAFrame(IGame game, Set<IGamePlayer> players) throws IOException
@@ -189,6 +193,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         // initialize m_editModeButtonModel before createMenuBar()
         m_editModeButtonModel = new JToggleButton.ToggleButtonModel();
         m_editModeButtonModel.setEnabled(false);
+        m_showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
+        m_showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
 
         createMenuBar();
         
@@ -210,6 +216,20 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         
         m_mapAndChatPanel = new JPanel();
         m_mapAndChatPanel.setLayout(new BorderLayout());
+
+        m_commentPanel = new CommentPanel(this, m_data);	
+        m_commentSplit = new JSplitPane();
+        m_commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        m_commentSplit.setResizeWeight(0.5);
+        m_commentSplit.setTopComponent(m_commentPanel);
+        m_commentSplit.setBottomComponent(null);
+
+        m_chatSplit = new JSplitPane();
+        m_chatSplit.setTopComponent(m_mapPanel);
+        m_chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        m_chatSplit.setResizeWeight(0.95);
+        m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
+
         if(MainFrame.getInstance().getChat() != null)
         {
             m_chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
@@ -217,19 +237,14 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             
             Dimension chatPrefSize = new Dimension((int) m_chatPanel.getPreferredSize().getWidth(), 95);
             m_chatPanel.setPreferredSize(chatPrefSize);
-            
-            
-            m_chatSplit = new JSplitPane();
-            m_chatSplit.setTopComponent(m_mapPanel);
             m_chatSplit.setBottomComponent(m_chatPanel);
-            m_chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
-            m_chatSplit.setResizeWeight(0.95);
-                        
-            m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
+            
+            m_showCommentLogButtonModel.setSelected(false);
         }
         else
         {
-            m_mapAndChatPanel.add(m_mapPanel, BorderLayout.CENTER);
+            m_chatSplit.setBottomComponent(m_commentSplit);
+            m_showCommentLogButtonModel.setSelected(true);
         }
         
         m_gameMainPanel.setLayout(new BorderLayout());
@@ -451,6 +466,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_actionButtons = null;
         m_chatPanel = null;
         m_chatSplit = null;
+        m_commentSplit = null;
+        m_commentPanel = null;
         m_details = null;        
         m_gameMainPanel = null;
         m_stepListener = null;
@@ -471,6 +488,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         
         m_showGameAction = null;
         m_showHistoryAction = null;
+        m_showCommentLogAction = null;
         m_localPlayers = null;
         
         
@@ -1376,6 +1394,12 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return m_editModeButtonModel;
     }
 
+    public ButtonModel getShowCommentLogButtonModel()
+    {
+        return m_showCommentLogButtonModel;
+    }
+
+
     public boolean getEditMode()
     {
         boolean isEditMode = false;
@@ -1391,6 +1415,34 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         }
         return isEditMode;
     }
+
+    private AbstractAction m_showCommentLogAction = new AbstractAction()
+    {
+        public void actionPerformed(ActionEvent ae)
+        {
+            boolean showCommentLog = ((ButtonModel)ae.getSource()).isSelected();
+            if (showCommentLog)
+            {
+                if (m_chatPanel != null)
+                {
+                    m_chatSplit.setBottomComponent(m_commentSplit);
+                    m_commentSplit.setBottomComponent(m_chatPanel);
+                }
+                else
+                    m_chatSplit.setBottomComponent(m_commentPanel);
+            }
+            else
+            {
+                if (m_chatPanel != null)
+                {
+                    m_commentSplit.setBottomComponent(null);
+                    m_chatSplit.setBottomComponent(m_chatPanel);
+                }
+                else
+                    m_chatSplit.setBottomComponent(null);
+            }
+        }
+    };
 
     private AbstractAction m_showHistoryAction = new AbstractAction("Show history")
     {

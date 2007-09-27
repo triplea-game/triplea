@@ -179,6 +179,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addMapSkinsMenu(menuView);
         addShowMapDetails(menuView);
         addChatTimeMenu(menuView);
+        addShowCommentLog(menuView);
         
     }
     
@@ -298,7 +299,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
      */
     private void addShowVerifiedDice(JMenu parentMenu)
     {
-        Action showVerifiedDice = new AbstractAction("Show  Verified Dice..")
+        Action showVerifiedDice = new AbstractAction("Show Verified Dice..")
         {
             public void actionPerformed(ActionEvent e)
             {
@@ -315,6 +316,17 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     private void addSaveScreenshot(JMenu parentMenu)
     {
         parentMenu.add(m_frame.getSaveScreenshotAction());
+    }
+
+    /**
+     * @param parentMenu
+     */
+    private void addShowCommentLog(JMenu parentMenu)
+    {
+        JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
+        showCommentLog.setModel(m_frame.getShowCommentLogButtonModel());
+
+        parentMenu.add(showCommentLog);
     }
     
     /**

@@ -46,17 +46,26 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 
     public void startEvent(String eventName)
     {
-        m_bridge.getHistoryWriter().startEvent(getEventPrefix()+eventName); 
+        if (eventName.startsWith("COMMENT: "))
+            m_bridge.getHistoryWriter().startEvent(eventName); 
+        else
+            m_bridge.getHistoryWriter().startEvent(getEventPrefix()+eventName); 
     }
 
     public void addChildToEvent(String child)
     {
-        m_bridge.getHistoryWriter().addChildToEvent(getEventPrefix()+child, null); 
+        if (child.startsWith("COMMENT: "))
+            m_bridge.getHistoryWriter().addChildToEvent(child, null); 
+        else
+            m_bridge.getHistoryWriter().addChildToEvent(getEventPrefix()+child, null); 
     }
 
     public void addChildToEvent(String child, Object renderingData)
     {
-        m_bridge.getHistoryWriter().addChildToEvent(getEventPrefix()+child, renderingData); 
+        if (child.startsWith("COMMENT: "))
+            m_bridge.getHistoryWriter().addChildToEvent(child, renderingData); 
+        else
+            m_bridge.getHistoryWriter().addChildToEvent(getEventPrefix()+child, renderingData); 
     }
 
     /**

@@ -40,4 +40,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate
     public String changeTerritoryOwner(Territory t, PlayerID player);
 
     public String changeIPCs(PlayerID player, int ipcs);
+
+    public String addComment(String message);
 }
