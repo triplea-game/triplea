@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui.history;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -8,7 +9,9 @@ import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
@@ -62,25 +65,18 @@ public class HistoryLog extends JFrame
         return m_printWriter;
     }
 
-    public void setEditable(boolean editable)
-    {
-        //m_textArea.setEditable(editable);
-    }
-
-    // a hack, but it works.
-    public void setVisible(boolean visible)
-    {
-        if(visible)
-            m_textArea.setText(m_stringWriter.toString());
-        super.setVisible(visible);
-    }
-
     public String toString()
     {
         return m_stringWriter.toString();
     }
 
-    public void printTurn(HistoryNode printNode, boolean verbose)
+    public void clear()
+    {
+        m_stringWriter.getBuffer().delete(0, m_stringWriter.getBuffer().length());
+        m_textArea.setText("");
+    }
+
+    public void printFullTurn(HistoryNode printNode, boolean verbose)
     {
         HistoryNode curNode = printNode;
         Step stepNode = null;
@@ -114,16 +110,17 @@ public class HistoryLog extends JFrame
                     break;
             }
 
-            print(turnStartNode, verbose);
+            printRemainingTurn(turnStartNode, verbose);
         }
         else
             System.err.println("No Step node found!");
     }
 
     @SuppressWarnings("unchecked")
-    public void print(HistoryNode printNode, boolean verbose)
+    public void printRemainingTurn(HistoryNode printNode, boolean verbose)
     {
         PrintWriter logWriter = m_printWriter;
+
         String moreIndent = "    ";
         // print out the parent nodes
         DefaultMutableTreeNode curNode = (DefaultMutableTreeNode) printNode;
@@ -248,12 +245,12 @@ public class HistoryLog extends JFrame
                                 {
                                     if (!verbose)
                                         continue;
-                                    logWriter.println(moreIndent+title);
+                                    logWriter.println(indent+moreIndent+title);
                                 } else if (title.matches("\\d+ \\w+ owned by the .*? lost"))
                                 {
                                     if (!verbose)
                                         continue;
-                                    logWriter.println(moreIndent+title);
+                                    logWriter.println(indent+moreIndent+title);
                                 } else if (title.startsWith("Battle casualty summary:"))
                                 {
                                     //logWriter.println(indent+"CAS1: "+title);
@@ -382,5 +379,71 @@ public class HistoryLog extends JFrame
         } while((curNode instanceof Step) && ((Step)curNode).getPlayerID().equals(curPlayer));
 
         logWriter.println();
+
+        m_textArea.setText(m_stringWriter.toString());
+
+    }
+
+    public void printTerritorySummary(GameData data)
+    {
+        PrintWriter logWriter = m_printWriter;
+        Collection<Territory> territories;
+        PlayerID player;
+        // print all units in all territories, including "flags"
+        data.acquireReadLock();
+        try
+        {
+            player = data.getSequence().getStep().getPlayerID();
+            territories = data.getMap().getTerritories();
+        }
+        finally
+        {
+            data.releaseReadLock();
+        }
+        logWriter.println("Territory Summary for " + player.getName() + " : \n");
+        for (Territory t : territories)
+        {
+            List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+            // see if there's a flag
+            TerritoryAttachment ta = TerritoryAttachment.get(t);
+            boolean hasFlag = t.getOwner().equals(player) && !ta.getOriginalOwner().equals(player);
+            if (hasFlag || !ownedUnits.isEmpty())
+            {
+                logWriter.print("    " + t.getName() + " : ");
+                if (hasFlag)
+                    logWriter.print("1 flag, ");
+                if (!ownedUnits.isEmpty())
+                    logWriter.println(MyFormatter.unitsToTextNoOwner(ownedUnits));
+            }
+        }
+        logWriter.println();
+
+        m_textArea.setText(m_stringWriter.toString());
+    }
+
+    public void printProductionSummary(GameData data)
+    {
+        PrintWriter logWriter = m_printWriter;
+        Collection<PlayerID> players;
+        logWriter.println("Production Summary :\n");
+        data.acquireReadLock();
+        try
+        {
+            players = data.getPlayerList().getPlayers();
+        }
+        finally
+        {
+            data.releaseReadLock();
+        }
+
+        for (PlayerID player : players)
+        {
+            int ipcs = player.getResources().getQuantity(Constants.IPCS);
+            logWriter.println("    " + player.getName() + " : " + ipcs
+                              + MyFormatter.pluralize(" IPC", ipcs));
+        }
+        logWriter.println();
+
+        m_textArea.setText(m_stringWriter.toString());
     }
 }

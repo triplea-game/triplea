@@ -991,7 +991,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_inHistory = true;
         setWidgetActivation();
 
-        GameData clonedGameData; 
+        final GameData clonedGameData; 
         m_data.acquireReadLock();
         try
         {
@@ -1034,22 +1034,26 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         // create history tree context menu
         // actions need to clear the history panel popup state when done
         JPopupMenu popup = new JPopupMenu();
-        popup.add(new AbstractAction("Generate Summary Log")
+        popup.add(new AbstractAction("Show Summary Log")
         {
             public void actionPerformed(ActionEvent ae)
             {
                 HistoryLog historyLog = new HistoryLog();
-                historyLog.print(m_historyTree.getCurrentPopupNode(), false);
+                historyLog.printRemainingTurn(m_historyTree.getCurrentPopupNode(), false);
+                historyLog.printTerritorySummary(clonedGameData);
+                historyLog.printProductionSummary(clonedGameData);
                 m_historyTree.clearCurrentPopupNode();
                 historyLog.setVisible(true);
             }
         });
-        popup.add(new AbstractAction("Generate Detailed Log")
+        popup.add(new AbstractAction("Show Detailed Log")
         {
             public void actionPerformed(ActionEvent ae)
             {
                 HistoryLog historyLog = new HistoryLog();
-                historyLog.print(m_historyTree.getCurrentPopupNode(), true);
+                historyLog.printRemainingTurn(m_historyTree.getCurrentPopupNode(), true);
+                historyLog.printTerritorySummary(clonedGameData);
+                historyLog.printProductionSummary(clonedGameData);
                 m_historyTree.clearCurrentPopupNode();
                 historyLog.setVisible(true);
             }

@@ -47,22 +47,28 @@ public class EndTurnPanel extends ActionPanel
     private TripleAFrame m_frame;
     private HistoryLog m_historyLog;
     private JButton m_postButton;
-    private Action GetViewAction;
-    private Action GetPostAction;
-    private Action DontBother;
+    private JCheckBox m_includeTerritoryCheckbox;
+    private JCheckBox m_includeProductionCheckbox;
+    private JCheckBox m_showDetailsCheckbox;
+    private Action m_viewAction;
+    private Action m_postAction;
+    private Action m_includeTerritoryAction;
+    private Action m_includeProductionAction;
+    private Action m_showDetailsAction;
+    private Action m_doneAction;
 
     public EndTurnPanel(GameData data, MapPanel map)
     {
         super(data, map);
         m_actionLabel = new JLabel();
-        GetViewAction = new AbstractAction("View Turn Summary") {
+        m_viewAction = new AbstractAction("View Turn Summary") {
 
             public void actionPerformed(ActionEvent event)
             {
                 m_historyLog.setVisible(true);
             }
         };
-        GetPostAction = new AbstractAction("Post Turn Summary") {
+        m_postAction = new AbstractAction("Post Turn Summary") {
 
             public void actionPerformed(ActionEvent event)
             {
@@ -207,14 +213,37 @@ public class EndTurnPanel extends ActionPanel
             }
 
         };
-        DontBother = new AbstractAction("Done") {
+        m_includeTerritoryAction = new AbstractAction("Include territory summary") {
+
+            public void actionPerformed(ActionEvent event)
+            {
+                updateHistoryLog();
+            }
+        };
+        m_includeProductionAction = new AbstractAction("Include production summary") {
+
+            public void actionPerformed(ActionEvent event)
+            {
+                updateHistoryLog();
+            }
+        };
+        m_showDetailsAction = new AbstractAction("Show dice/battle details") {
+
+            public void actionPerformed(ActionEvent event)
+            {
+                updateHistoryLog();
+            }
+        };
+        m_doneAction = new AbstractAction("Done") {
 
             public void actionPerformed(ActionEvent event)
             {
                 release();
             }
-
         };
+        m_includeTerritoryCheckbox = new JCheckBox(m_includeTerritoryAction);
+        m_includeProductionCheckbox = new JCheckBox(m_includeProductionAction);
+        m_showDetailsCheckbox = new JCheckBox(m_showDetailsAction);
     }
 
     public void display(final PlayerID id)
@@ -227,10 +256,13 @@ public class EndTurnPanel extends ActionPanel
                 removeAll();
                 m_actionLabel.setText(id.getName() + " Turn Summary");
                 add(m_actionLabel);
-                add(new JButton(GetViewAction));
-                m_postButton = new JButton(GetPostAction);
+                add(m_includeTerritoryCheckbox);
+                add(m_includeProductionCheckbox);
+                add(m_showDetailsCheckbox);
+                add(new JButton(m_viewAction));
+                m_postButton = new JButton(m_postAction);
                 add(m_postButton);
-                add(new JButton(DontBother));
+                add(new JButton(m_doneAction));
             }
 
         });
@@ -239,6 +271,18 @@ public class EndTurnPanel extends ActionPanel
     public String toString()
     {
         return "EndTurnPanel";
+    }
+
+    private void updateHistoryLog()
+    {
+        m_historyLog.clear();
+        m_historyLog.printFullTurn(getData().getHistory().getLastNode(),
+                                   m_showDetailsCheckbox.isSelected());
+        if (m_includeTerritoryCheckbox.isSelected())
+            m_historyLog.printTerritorySummary(getData());
+        if (m_includeProductionCheckbox.isSelected())
+            m_historyLog.printProductionSummary(getData());
+        m_historyLog.requestFocus();
     }
 
     public void waitForEndTurn(TripleAFrame frame, IPlayerBridge bridge)
@@ -252,8 +296,7 @@ public class EndTurnPanel extends ActionPanel
         if(!m_poster.hasMessengers())
             return;
         m_historyLog = new HistoryLog();
-        m_historyLog.setEditable(true);
-        m_historyLog.printTurn(getData().getHistory().getLastNode(), false);
+        updateHistoryLog();
         final boolean hasPosted = delegate.getHasPostedTurnSummary();
         SwingUtilities.invokeLater(new Runnable() {
 
