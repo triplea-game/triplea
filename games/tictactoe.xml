@@ -13,6 +13,7 @@
 	
 	
 	<playerList>
+		<!-- In turn order -->
 		<player name="X" optional="false"/>
 		<player name="O" optional="false"/>
 	</playerList>

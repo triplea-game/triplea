@@ -1404,15 +1404,13 @@
         </resourceList>
 
         <playerList>
-                <!-- Central Powers -->
+                <!-- In turn order -->
                 <player name="Germans" optional="false"/>
-                <player name="Austrians" optional="false"/>
-                <player name="Ottomans" optional="false"/>
-
-                <!-- Allies -->
-                <player name="British" optional="false"/>
                 <player name="French" optional="false"/>
                 <player name="Russians" optional="false"/>
+                <player name="Austrians" optional="false"/>
+                <player name="Ottomans" optional="false"/>
+                <player name="British" optional="false"/>
                 <player name="Italians" optional="false"/>
                 <player name="Americans" optional="false"/>
 

@@ -1189,14 +1189,12 @@
         </resourceList>
 
         <playerList>
-                <!-- Axis -->
-                <player name="Japanese" optional="false"/>
-                <player name="Germans" optional="false"/>
-
-                <!-- Allies -->
-                <player name="British" optional="false"/>
-                <player name="Americans" optional="false"/>
+                <!-- In turn order -->
                 <player name="Russians" optional="false"/>
+                <player name="Germans" optional="false"/>
+                <player name="British" optional="false"/>
+                <player name="Japanese" optional="false"/>
+                <player name="Americans" optional="false"/>
                 <player name="Chinese" optional="false"/>
 
 

@@ -390,13 +390,11 @@
 
 	
 	<playerList>
-		<!-- axis -->
+		<!-- In turn order -->
 		<player name="Germans" optional="false"/>
-		<!-- allies -->
+		<player name="Russians" optional="false"/>
 		<player name="British" optional="false"/>
 		<player name="Americans" optional="false"/>
-		<player name="Russians" optional="false"/>
-		
 
 
 		<!-- alliances -->

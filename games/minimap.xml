@@ -89,11 +89,9 @@
         </resourceList>
 
         <playerList>
-                <!-- Axis -->
-                <player name="Italians" optional="false"/>
-
-                <!-- Allies -->
+                <!-- In turn order -->
                 <player name="Russians" optional="false"/>
+                <player name="Italians" optional="false"/>
 
                 <!-- Axis Alliances -->
                 <alliance player="Italians" alliance="Axis"/>

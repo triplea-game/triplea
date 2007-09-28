@@ -32,7 +32,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 {
 
 	//maps String playerName -> PlayerID
-	private final Map<String,PlayerID> m_players = new HashMap<String,PlayerID>();
+	private final Map<String,PlayerID> m_players = new LinkedHashMap<String,PlayerID>();
 	
 	/** Creates new PlayerCollection */
     public PlayerList(GameData data) 

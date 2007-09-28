@@ -421,13 +421,11 @@ Coded by Iron__Cross
     </resourceList>
     
     <playerList>
-        <!-- Axis -->
+        <!-- In turn order -->
         <player name="Japanese" optional="false"/>
-        
-        <!-- Allies -->
         <player name="British" optional="false"/>
-        <player name="Americans" optional="false"/>
         <player name="Chinese" optional="false"/>
+        <player name="Americans" optional="false"/>
         
         <!-- Axis Alliances -->
         <alliance player="Japanese" alliance="Axis"/>

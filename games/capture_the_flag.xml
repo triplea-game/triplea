@@ -109,10 +109,11 @@
 	<playerList>
 
 
-		<player name="Germans" optional="false"/>
-		<player name="Italians" optional="false"/>
-		<player name="Chinese" optional="false"/>
+		<!-- In turn order -->
 		<player name="Russians" optional="false"/>
+		<player name="Italians" optional="false"/>
+		<player name="Germans" optional="false"/>
+		<player name="Chinese" optional="false"/>
 		
 
 	</playerList>

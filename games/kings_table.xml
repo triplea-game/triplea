@@ -13,6 +13,7 @@
 	
 	
 	<playerList>
+		<!-- In turn order -->
 		<player name="Black" optional="false"/>
 		<player name="White" optional="false"/>
 	</playerList>

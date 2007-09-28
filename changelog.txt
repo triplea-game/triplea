@@ -1,3 +1,5 @@
+* fix game xml files and PlayerList class to preserve proper player ordering (tclayton)
+
 * new Comment Log feature for adding comments/trash talk to game history (tclayton)
 
 * new PBEM Turn Summary posting feature (tclayton)
