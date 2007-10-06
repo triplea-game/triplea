@@ -469,12 +469,8 @@ public class UnitChooser extends JPanel
           Collection defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, m_dependents, m_categorizeMovement);
           IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
 
-          System.out.println("categoryMap: "+defaultValues);
-
           for (ChooserEntry entry : m_entries)
           {
-              System.out.println("  entry: " + entry.getCategory());
-              System.out.println("  value: " + defaultValues.getInt(entry.getCategory()));
               for (int i=1; i <= defaultValues.getInt(entry.getCategory()); i++)
               {
                   entry.set(i);
