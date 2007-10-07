@@ -47,7 +47,7 @@ public class RemoteMethodCall implements Externalizable
     {}
     
     public RemoteMethodCall(final String remoteName, final String methodName,
-            final Object[] args, final Class[] argTypes, Class remoteInterface)
+            final Object[] args, final Class<?>[] argTypes, Class<?> remoteInterface)
     {
         if(argTypes == null)
             throw new IllegalArgumentException("ArgTypes are null");
@@ -104,14 +104,14 @@ public class RemoteMethodCall implements Externalizable
     /**
      * @return Returns the argTypes.
      */
-    public Class[] getArgTypes()
+    public Class<?>[] getArgTypes()
     {
         return stringsToClasses(m_argTypes, m_args);
     }
 
-    public static Class[] stringsToClasses(String[] strings, Object[] args)
+    public static Class<?>[] stringsToClasses(String[] strings, Object[] args)
     {
-        Class[] rVal = new Class[strings.length];
+        Class<?>[] rVal = new Class[strings.length];
         for (int i = 0; i < strings.length; i++)
         {
             try
@@ -163,7 +163,7 @@ public class RemoteMethodCall implements Externalizable
         return rVal;
     }
     
-    public static String[] classesToString(Class[] classes, Object[] args)
+    public static String[] classesToString(Class<?>[] classes, Object[] args)
     {
         //as an optimization, if args[i].getClass == classes[i] then leave classes[i] as null
         //this will reduce the amount of info we write over the network in the common
@@ -237,12 +237,12 @@ public class RemoteMethodCall implements Externalizable
      * informatin to determine the method without being told
      * what class we operate on.
      */
-    public void resolve(Class remoteType)
+    public void resolve(Class<?> remoteType)
     {
         if(m_methodName != null)
             return;
         
-        Tuple<String,Class[]> values = RemoteInterfaceHelper.getMethodInfo(m_methodNumber, remoteType);
+        Tuple<String,Class<?>[]> values = RemoteInterfaceHelper.getMethodInfo(m_methodNumber, remoteType);
         m_methodName = values.getFirst();
         m_argTypes = classesToString(values.getSecond(), m_args);
         

@@ -100,10 +100,10 @@ public class AirThatCantLandUtil
         //on water we may just no have enough carriers
         {
             //find the carrier capacity
-            Collection carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_data));
+            Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_data));
             int capacity = MoveValidator.carrierCapacity(carriers);
 
-            Iterator iter = airUnits.iterator();
+            Iterator<Unit> iter = airUnits.iterator();
             while (iter.hasNext())
             {
                 Unit unit = (Unit) iter.next();

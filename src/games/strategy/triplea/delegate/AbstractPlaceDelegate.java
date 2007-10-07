@@ -373,7 +373,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         //if its an original factory then unlimited production
         TerritoryAttachment ta = TerritoryAttachment.get(producer);
-        Collection factoryUnits = producer.getUnits().getMatches(
+        Collection<Unit> factoryUnits = producer.getUnits().getMatches(
                 Matches.UnitIsFactory);
         boolean originalFactory = ta.isOriginalFactory();
         boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player
@@ -551,7 +551,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return to;
 
         Territory neighborFactory = null;
-        Iterator iter = m_data.getMap().getNeighbors(to).iterator();
+        Iterator<Territory> iter = m_data.getMap().getNeighbors(to).iterator();
         while (iter.hasNext())
         {
             Territory current = (Territory) iter.next();
@@ -574,7 +574,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     private PlayerID getOriginalFactoryOwner(Territory territory)
     {
 
-        Collection factoryUnits = territory.getUnits().getMatches(
+        Collection<Unit> factoryUnits = territory.getUnits().getMatches(
                 Matches.UnitIsFactory);
         if (factoryUnits.size() == 0)
             throw new IllegalStateException("No factory in territory:"
@@ -648,8 +648,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (capacity <= 0)
             return;
 
-        Collection neighbors = m_data.getMap().getNeighbors(territory, 1);
-        Iterator iter = neighbors.iterator();
+        Collection<Territory> neighbors = m_data.getMap().getNeighbors(territory, 1);
+        Iterator<Territory> iter = neighbors.iterator();
         CompositeMatch<Unit> ownedFactories = new CompositeMatchAnd<Unit>(
                 Matches.UnitIsFactory, Matches.unitIsOwnedBy(player));
         CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(

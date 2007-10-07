@@ -36,7 +36,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
     }
 
     // Allow production of any number of units
-    protected String checkProduction(Territory to, Collection units,
+    protected String checkProduction(Territory to, Collection<Unit> units,
             PlayerID player)
     {
         return null;

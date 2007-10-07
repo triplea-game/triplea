@@ -97,7 +97,7 @@ public class DelegateExecutionManager
      * Objects on this method will decrement the thread lock count when called, and will
      * increment it again when execution is finished. 
      */
-    public Object createOutboundImplementation(final Object implementor, Class[] interfaces)
+    public Object createOutboundImplementation(final Object implementor, Class<?>[] interfaces)
     {
         
         assertGameNotOver();    
@@ -153,7 +153,7 @@ public class DelegateExecutionManager
      * Objects on this method will increment the thread lock count when called, and will
      * decrement it again when execution is finished. 
      */
-    public Object createInboundImplementation(final Object implementor, Class[] interfaces)
+    public Object createInboundImplementation(final Object implementor, Class<?>[] interfaces)
     {
         assertGameNotOver();
                 

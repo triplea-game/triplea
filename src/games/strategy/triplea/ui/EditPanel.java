@@ -22,36 +22,44 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.IGame;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.engine.history.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitAutoChooser;
-//import games.strategy.ui.ProgressWindow;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 
 public class EditPanel extends ActionPanel
 {
-    private IPlayerBridge m_bridge;
+    
     private TripleAFrame m_frame;
     private Action m_addUnitsAction;
     private Action m_delUnitsAction;
@@ -339,7 +347,7 @@ public class EditPanel extends ActionPanel
 
             if (!m_selectedUnits.isEmpty() && !(m_selectedTerritory == t))
             {
-                deselectUnits(new ArrayList(m_selectedUnits), t, md);
+                deselectUnits(new ArrayList<Unit>(m_selectedUnits), t, md);
                 m_selectedTerritory = null;
             }
 

@@ -143,7 +143,7 @@ public class AllianceTracker extends GameDataComponent
 		while(keys.hasNext())
 		{
 			PlayerID player = keys.next();
-			Collection alliances = m_alliances.get(player);
+			Collection<String> alliances = m_alliances.get(player);
 			if(alliances.contains(allianceName))
 				rVal.add(player);
 		}

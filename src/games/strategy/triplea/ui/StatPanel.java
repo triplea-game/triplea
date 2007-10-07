@@ -657,7 +657,7 @@ class TUVStat extends AbstractStat
         while (iter.hasNext())
         {
             Territory place = (Territory) iter.next();
-            Collection owned = place.getUnits().getMatches(unitIsOwnedBy);
+            Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
             rVal += BattleCalculator.getTUV(owned, costs);
         }
         return rVal;

@@ -19,19 +19,14 @@
 
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.*;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.ui.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
 import games.strategy.util.IntegerMap;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
+import java.util.Iterator;
 
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
+import javax.swing.JFrame;
 
 /**
  * 

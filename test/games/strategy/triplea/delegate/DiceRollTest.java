@@ -16,7 +16,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.ui.display.DummyDisplay;
 
 import java.io.BufferedInputStream;

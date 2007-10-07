@@ -201,7 +201,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     private boolean canAirLand(boolean movePhase)
     {
         
-        Collection airCantLand;
+        Collection<Territory> airCantLand;
         if(movePhase)
             airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
         else
@@ -213,7 +213,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         {
             StringBuilder buf = new StringBuilder(
                     "Air in following territories cant land:");
-            Iterator iter = airCantLand.iterator();
+            Iterator<Territory> iter = airCantLand.iterator();
             while (iter.hasNext())
             {
                 buf.append(((Territory) iter.next()).getName());
@@ -238,7 +238,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         m_bridge.getGameData().acquireReadLock();
         try
         {
-            Iterator territoryIter = m_bridge.getGameData().getMap()
+            Iterator<Territory> territoryIter = m_bridge.getGameData().getMap()
                     .getTerritories().iterator();
             while (territoryIter.hasNext())
             {
@@ -275,7 +275,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             m_bridge.getGameData().acquireReadLock();
             try
             {
-                Iterator prodRules = m_id.getProductionFrontier().getRules().iterator();
+                Iterator<ProductionRule> prodRules = m_id.getProductionFrontier().getRules().iterator();
                 while(prodRules.hasNext())
                 {
                     ProductionRule rule = (ProductionRule) prodRules.next();
@@ -422,7 +422,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
      */
-    public boolean confirmMoveInFaceOfAA(Collection aaFiringTerritories)
+    public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
     {
         String question = "AA guns will fire in " + MyFormatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
         return m_ui.getOK(question);

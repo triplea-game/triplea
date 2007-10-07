@@ -20,19 +20,41 @@
 
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.*;
-import games.strategy.util.*;
-import games.strategy.triplea.util.*;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.ui.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.util.UnitAutoChooser;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitOwner;
+import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.ui.ScrollableTextField;
+import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 /**
  *

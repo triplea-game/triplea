@@ -16,15 +16,23 @@ package games.strategy.triplea.ui;
 
 
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
 
 import java.awt.Dimension;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
-import javax.swing.*;
-import java.util.*;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 
 public class DiceChooser extends JPanel

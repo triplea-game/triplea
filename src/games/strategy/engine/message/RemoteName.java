@@ -9,14 +9,14 @@ package games.strategy.engine.message;
 public class RemoteName
 {
     private final String m_name;
-    private final Class m_class;
+    private final Class<?> m_class;
     
-    public RemoteName(final Class class1, final String name)
+    public RemoteName(final Class<?> class1, final String name)
     {
         this(name,class1);
     }
     
-    public RemoteName(final String name, final Class class1)
+    public RemoteName(final String name, final Class<?> class1)
     {
         if(!class1.isInterface())
             throw new IllegalArgumentException("Not an interface");
@@ -25,7 +25,7 @@ public class RemoteName
         m_class = class1;
     }
     
-    public Class getClazz()
+    public Class<?> getClazz()
     {
         return m_class;
     }

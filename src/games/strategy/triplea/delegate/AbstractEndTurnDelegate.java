@@ -30,18 +30,21 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.*;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  *
@@ -96,7 +99,7 @@ public abstract class AbstractEndTurnDelegate
 
         Resource ipcs = gameData.getResourceList().getResource(Constants.IPCS);
         //just collect resources
-        Collection territories = gameData.getMap().getTerritoriesOwnedBy(player);
+        Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
         int toAdd = getProduction(territories);
         int total = player.getResources().getQuantity(ipcs) + toAdd;
@@ -161,10 +164,10 @@ public abstract class AbstractEndTurnDelegate
     protected abstract void checkForWinner(IDelegateBridge bridge);
 
 
-    protected int getProduction(Collection territories)
+    protected int getProduction(Collection<Territory> territories)
     {
         int value = 0;
-        Iterator iter = territories.iterator();
+        Iterator<Territory> iter = territories.iterator();
         while(iter.hasNext() )
         {
             Territory current = (Territory) iter.next();

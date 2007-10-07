@@ -17,24 +17,17 @@ package games.strategy.triplea.ui;
  * Created on September 24, 2007
  */
 
-import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
-import games.strategy.triplea.ui.TripleAFrame;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +41,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -69,7 +61,7 @@ import javax.swing.text.StyleConstants;
  */
 public class CommentPanel extends JPanel
 {
-    private static final int MAX_LINES = 5000;
+    
     private JTextPane m_text;
     private JScrollPane m_scrollPane;
     private JTextField m_nextMessage;
@@ -241,7 +233,7 @@ public class CommentPanel extends JPanel
         String player = "";
         int round = 0;
         Icon icon = null;
-        String message;
+        
         while (nodeEnum.hasMoreElements())
         {
             HistoryNode node = (HistoryNode)nodeEnum.nextElement();
@@ -367,20 +359,6 @@ public class CommentPanel extends JPanel
         
         
     }
-
-    private String trimMessage(String originalMessage)
-    {
-        //dont allow messages that are too long
-        if(originalMessage.length() > 200)
-        {
-            return originalMessage.substring(0, 199) + "...";
-        }
-        else
-        {
-            return originalMessage;
-        }
-        
-    }
     
     private Action m_saveAction = new AbstractAction("Add Comment")
     {
@@ -395,6 +373,11 @@ public class CommentPanel extends JPanel
             m_nextMessage.setText("");
         }
     };
+
+    public void cleanUp()
+    {
+        cleanupKeyMap();        
+    }
     
 }
 

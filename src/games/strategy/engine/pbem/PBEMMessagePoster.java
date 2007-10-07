@@ -1,12 +1,21 @@
 package games.strategy.engine.pbem;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.imageio.ImageIO;
 
 
@@ -23,11 +32,11 @@ public class PBEMMessagePoster implements java.io.Serializable
     private IPBEMMessenger m_screenshotMessenger = null;
     private IPBEMMessenger m_saveGameMessenger = null;
 
-    private File m_screenshotFile = null;
+    
     private String m_screenshotFilename = null;
     private InputStream m_screenshotFileIn = null;
 
-    private File m_saveGameFile = null;
+    
     private String m_saveGameFilename = null;
     private InputStream m_saveGameFileIn = null;
 

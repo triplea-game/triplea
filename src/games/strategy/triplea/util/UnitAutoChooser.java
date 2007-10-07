@@ -22,16 +22,12 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -68,12 +64,6 @@ public class UnitAutoChooser
     // dependent itself matched a chosen unit category.
     private final Set<Unit> m_candidateUnits;
 
-    // m_chooserBoundaryMatch:
-    // Determined by solver and contains a match that returns true 
-    // if and only if the categorized passed-in units do not exceed 
-    // the chosen category counts of their respective categories.
-    // This is available for use with the UnitChooser.
-    private Match<Collection<Unit>> m_chooserBoundaryMatch;
 
     // m_bCategorizeMovement: 
     // Set to true through constructor if movement should be categorized.
@@ -182,7 +172,7 @@ public class UnitAutoChooser
 
         // preserve insertion order
         m_candidateUnits = new LinkedHashSet<Unit>(allUnits.size()+1, 1);
-        m_chooserBoundaryMatch = null;
+
 
         // some member variables for saving state
         m_selectedUnitSolutions = new ArrayList<Set<Unit>>(allUnits.size());

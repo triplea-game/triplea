@@ -32,9 +32,9 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler
     private final UnifiedMessenger m_messenger;
     private final String m_endPointName;
     private final boolean m_ignoreResults;
-    private final Class m_remoteType;
+    private final Class<?> m_remoteType;
       
-    public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults, Class remoteType)
+    public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults, Class<?> remoteType)
     {
         //equality and hash code are bassed on end point name
         super(endPointName);

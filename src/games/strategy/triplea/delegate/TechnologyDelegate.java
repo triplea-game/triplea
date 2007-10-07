@@ -268,6 +268,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
     /**
      * Loads the delegates state
      */
+    @SuppressWarnings("unchecked")
     public void loadState(Serializable state)
     {
         m_techs = (HashMap<PlayerID, Collection>) state;

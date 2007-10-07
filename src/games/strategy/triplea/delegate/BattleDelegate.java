@@ -104,7 +104,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             return "No pending battle in" + territory.getName();
 
         //are there battles that must occur first
-        Collection allMustPrecede = m_battleTracker.getDependentOn(battle);
+        Collection<Battle> allMustPrecede = m_battleTracker.getDependentOn(battle);
         if (!allMustPrecede.isEmpty())
         {
             Battle firstPrecede = (Battle) allMustPrecede.iterator().next();
@@ -173,7 +173,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                 battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
                 if (!battles.isEmpty())
                 {
-                    Iterator bombarding = t.getUnits().getMatches(
+                    Iterator<Unit> bombarding = t.getUnits().getMatches(
                             ownedAndCanBombard).iterator();
                     while (bombarding.hasNext())
                     {
@@ -208,7 +208,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             if(!(battle instanceof MustFightBattle))
                 continue;
             //bombarding can only occur in territories where 
-            Iterator bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
+            Iterator<Territory> bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
             while (bombardingTerritories.hasNext())
             {
                 Territory neighbor = (Territory) bombardingTerritories.next();

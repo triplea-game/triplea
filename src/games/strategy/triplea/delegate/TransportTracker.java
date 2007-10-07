@@ -38,7 +38,7 @@ import java.util.*;
 public class TransportTracker
 {
     
-    public static int getCost(Collection units)
+    public static int getCost(Collection<Unit> units)
     {
         return MoveValidator.getTransportCost(units);
     }

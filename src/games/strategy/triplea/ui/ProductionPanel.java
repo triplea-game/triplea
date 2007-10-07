@@ -182,7 +182,7 @@ public class ProductionPanel extends JPanel
         int total = getIPCs();
         int spent = total - left;
         
-        m_left.setText("You have spent " + spent + " out of " + total +  " "  + StringUtil.plural("IPC", total)) ;
+        m_left.setText("You have " + left + " " + StringUtil.plural("IPC", spent) + " left out of " + total +  " "  + StringUtil.plural("IPC", total)) ;
     }
 
     Action m_done_action = new AbstractAction("Done")

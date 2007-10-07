@@ -19,22 +19,9 @@
 
 package games.strategy.engine.data;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.history.DelegateHistoryWriter;
-import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.history.History;
-import games.strategy.engine.history.HistoryWriter;
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.DummyMessenger;
-import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
-
-import java.util.Properties;
 
 /**
  * 

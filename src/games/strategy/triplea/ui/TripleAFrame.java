@@ -103,7 +103,6 @@ import javax.swing.ButtonModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -115,7 +114,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -459,6 +457,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         if(m_data != null)
             m_data.clearAllListeners();
         m_data = null;
+        
+        m_commentPanel.cleanUp();
         
         MAP_SELECTION_LISTENER = null;
                 

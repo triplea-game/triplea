@@ -264,7 +264,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
     {
         URL url = null;
         URLConnection urlConn = null;
-        OutputStream out = null;
+        
         int code = 0;
         boolean gotNumReplies = false;
         boolean gotMsgNum = false;
@@ -360,7 +360,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
     {
         URL url = null;
         URLConnection urlConn = null;
-        OutputStream out = null;
+        
         int code = 0;
         boolean gotNumReplies = false;
         boolean gotSeqNum = false;
@@ -450,7 +450,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 
     private String getNextReplyUrl()
     {
-        int postNum = Integer.parseInt(m_numReplies) + 1;
+     
         return "http://"+m_host+"/forums/index.php?topic="+m_gameId+"."+getNextNumReplies()+"#msg"+m_msgNum;
     }
 
@@ -551,7 +551,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
             if(code == 200)
             {
                 // reporting an error
-                boolean failed = false;
+     
                 in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
                 line = "";
                 p1 = Pattern.compile(".*?<b>(The following error or errors occurred .*?)</b>.*");

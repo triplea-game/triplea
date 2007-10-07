@@ -25,7 +25,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -1542,10 +1541,6 @@ public class MovePanel extends ActionPanel
                   Collection<Unit> newUnits = new ArrayList<Unit>(units);
                   newUnits.removeAll(unresolvedUnits);
 
-                  // create new UnitAutoChooser with movement categorized
-                  UnitAutoChooser newAutoChooser = new UnitAutoChooser(candidateUnresolvedUnits,
-                                                                       unresolvedUnits,
-                                                                       true, true);
 
                   CompositeMatch<Collection<Unit>> unitChooserMatch = new CompositeMatchAnd<Collection<Unit>>(enoughTransportsMatch);
 

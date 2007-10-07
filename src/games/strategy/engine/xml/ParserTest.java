@@ -67,7 +67,7 @@ public class ParserTest extends TestCase
 	public void testTerritoriesCreated()
 	{
 		GameMap map = gameData.getMap();
-		Collection territories = map.getTerritories();
+		Collection<Territory> territories = map.getTerritories();
 		assertEquals(territories.size(), 3);
 	}
 	

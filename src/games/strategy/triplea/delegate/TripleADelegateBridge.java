@@ -14,17 +14,15 @@
 
 package games.strategy.triplea.delegate;
 
-import java.util.Properties;
-
-import games.strategy.engine.GameOverException;
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.message.*;
-import games.strategy.engine.random.*;
-import games.strategy.triplea.Constants;
+import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IRemote;
+
+import java.util.Properties;
 
 /**
  * 

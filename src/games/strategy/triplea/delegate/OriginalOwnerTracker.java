@@ -20,11 +20,16 @@
 
 package games.strategy.triplea.delegate;
 
-import java.io.*;
-import java.util.*;
-import games.strategy.engine.data.*;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  *

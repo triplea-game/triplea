@@ -147,7 +147,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
     
     private IRemote getRemoteThatChecksForGameOver(IRemote implementor)
     {
-        Class[] classes = implementor.getClass().getInterfaces();
+        Class<?>[] classes = implementor.getClass().getInterfaces();
         GameOverInvocationHandler goih = new GameOverInvocationHandler(implementor, m_game);
         
         return (IRemote)  Proxy.newProxyInstance(implementor.getClass().getClassLoader(), classes, goih);

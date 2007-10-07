@@ -18,20 +18,40 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.util.*;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.dataObjects.*;
+import games.strategy.triplea.delegate.dataObjects.MoveDescription;
+import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.util.*;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
+import games.strategy.util.Util;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -90,7 +110,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     {
         m_firstRun = false;
         //check every territory
-        Iterator allTerritories = m_data.getMap().getTerritories().iterator();
+        Iterator<Territory> allTerritories = m_data.getMap().getTerritories().iterator();
         while (allTerritories.hasNext())
         {
             Territory current = (Territory) allTerritories.next();
@@ -103,9 +123,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 continue;
 
             //map transports, try to fill
-            Collection transports = Match.getMatches(units, Matches.UnitIsTransport);
-            Collection land = Match.getMatches(units, Matches.UnitIsLand);
-            Iterator landIter = land.iterator();
+            Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
+            Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
+            Iterator<Unit> landIter = land.iterator();
             
             while (landIter.hasNext())
             {
@@ -327,7 +347,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         Collection<Unit> canCarry = new ArrayList<Unit>();
 
         int available = ua.getCarrierCapacity();
-        Iterator iter = selectFrom.iterator();
+        Iterator<Unit> iter = selectFrom.iterator();
         while (iter.hasNext())
         {
             Unit plane = (Unit) iter.next();
@@ -389,7 +409,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         // allow user to cancel move if aa guns will fire
         AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
         aaInMoveUtil.initialize(m_bridge, m_data);
-        Collection aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAAWillFire(route, units);
+        Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAAWillFire(route, units);
         if(!aaFiringTerritores.isEmpty())
         {
             if(!getRemotePlayer().confirmMoveInFaceOfAA(aaFiringTerritores))
@@ -441,11 +461,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     }
 
 
-    public static Collection getEmptyNeutral(Route route)
+    public static Collection<Territory> getEmptyNeutral(Route route)
     {
 
         Match<Territory> emptyNeutral = new CompositeMatchAnd<Territory>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutral);
-        Collection neutral = route.getMatches(emptyNeutral);
+        Collection<Territory> neutral = route.getMatches(emptyNeutral);
         return neutral;
     }
 
@@ -574,11 +594,11 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     {
 
         Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-        Collection canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+        Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
         TransportTracker transportTracker = new TransportTracker();
 
         Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
-        Iterator land = canBeTransported.iterator();
+        Iterator<Unit> land = canBeTransported.iterator();
         while (land.hasNext())
         {
             Unit currentTransported = (Unit) land.next();
@@ -625,7 +645,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
         IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
 
-        Iterator landIter = canBeTransported.iterator();
+        Iterator<Unit> landIter = canBeTransported.iterator();
         while (landIter.hasNext())
         {
             Unit land = (Unit) landIter.next();
@@ -638,7 +658,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             //we should put 1 infantry in each transport.
             //the algorithm below does not guarantee even distribution in all cases
             //but it solves most of the cases
-            Iterator transportIter = Util.shiftElementsToEnd(canTransport, transportIndex).iterator();
+            Iterator<Unit> transportIter = Util.shiftElementsToEnd(canTransport, transportIndex).iterator();
             while (transportIter.hasNext() && !loaded)
             {
                 transportIndex++;

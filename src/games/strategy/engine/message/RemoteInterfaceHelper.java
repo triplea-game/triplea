@@ -25,7 +25,7 @@ public class RemoteInterfaceHelper
     private static final Logger s_logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
     
 
-    public static int getNumber(String methodName, Class[] argTypes, Class remoteInterface)
+    public static int getNumber(String methodName, Class<?>[] argTypes, Class<?> remoteInterface)
     {
         Method[] methods = remoteInterface.getMethods();
         Arrays.sort(methods, methodComparator);
@@ -38,7 +38,7 @@ public class RemoteInterfaceHelper
         {
             if(methods[i].getName().equals(methodName))
             {
-                Class[] types = methods[i].getParameterTypes();
+                Class<?>[] types = methods[i].getParameterTypes();
                 //both null
                 if(types == argTypes)
                 {
@@ -63,7 +63,7 @@ public class RemoteInterfaceHelper
         throw new IllegalStateException("Method not found");
     }
     
-    public static Tuple<String, Class[]> getMethodInfo(int methodNumber, Class remoteInterface)
+    public static Tuple<String, Class<?>[]> getMethodInfo(int methodNumber, Class<?> remoteInterface)
     {
         Method[] methods = remoteInterface.getMethods();
         Arrays.sort(methods, methodComparator);
@@ -71,7 +71,7 @@ public class RemoteInterfaceHelper
          if(s_logger.isLoggable(Level.FINEST)) {
             s_logger.fine("Sorted methods:" + Arrays.asList(methods));
         } 
-        return new Tuple<String, Class[]>(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
+        return new Tuple<String, Class<?>[]>(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
     }
     
     
@@ -90,8 +90,8 @@ public class RemoteInterfaceHelper
                 return o1.getName().compareTo(o2.getName());
             
             
-            Class[] t1 = o1.getParameterTypes();
-            Class[] t2 = o2.getParameterTypes();
+            Class<?>[] t1 = o1.getParameterTypes();
+            Class<?>[] t2 = o2.getParameterTypes();
             
             //both null
             if(t1 == t2)

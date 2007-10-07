@@ -140,7 +140,7 @@ public class BattleTracker implements java.io.Serializable
         Iterator<HashSet<Battle>> iter = m_dependencies.values().iterator();
         while (iter.hasNext())
         {
-            Collection battles = iter.next();
+            Collection<Battle> battles = iter.next();
             battles.remove(battle);
         }
 
@@ -226,7 +226,7 @@ public class BattleTracker implements java.io.Serializable
         m_blitzed.addAll(blitzed);
         m_conquered.addAll(conquered);
 
-        Iterator iter = conquered.iterator();
+        Iterator<Territory> iter = conquered.iterator();
         while (iter.hasNext())
         {
             Territory current = (Territory) iter.next();
@@ -593,7 +593,7 @@ public class BattleTracker implements java.io.Serializable
         while (iter.hasNext())
         {
             Battle current = iter.next();
-            Collection currentBlockedBy = getDependentOn(current);
+            Collection<Battle> currentBlockedBy = getDependentOn(current);
             if (currentBlockedBy.contains(blocking))
                 allBlocked.add(current);
         }
@@ -611,7 +611,7 @@ public class BattleTracker implements java.io.Serializable
 
     private void removeDependency(Battle blocked, Battle blocking)
     {
-        Collection dependencies = m_dependencies.get(blocked);
+        Collection<Battle> dependencies = m_dependencies.get(blocked);
         dependencies.remove(blocking);
         if (dependencies.isEmpty())
         {

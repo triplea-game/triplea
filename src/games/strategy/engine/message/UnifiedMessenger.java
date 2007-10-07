@@ -521,12 +521,12 @@ class EndPoint
     private final Object m_implementorsMutext = new Object();
 
     private final String m_name;
-    private final Class m_remoteClass;
+    private final Class<?> m_remoteClass;
     private final List<Object> m_implementors = new ArrayList<Object>();
     private final boolean m_singleThreaded;
 
 
-    public EndPoint(final String name, final Class remoteClass, boolean singleThreaded)
+    public EndPoint(final String name, final Class<?> remoteClass, boolean singleThreaded)
     {
 
         m_name = name;
@@ -643,7 +643,7 @@ class EndPoint
         return m_name;
     }
 
-    public Class getRemoteClass()
+    public Class<?> getRemoteClass()
     {
         return m_remoteClass;
     }

@@ -14,18 +14,14 @@
 
 package games.strategy.triplea.delegate.remote;
 
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.UndoableMove;
-import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
-import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Remote interface for MoveDelegate

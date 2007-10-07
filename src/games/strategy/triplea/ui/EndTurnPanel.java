@@ -22,17 +22,27 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.*;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.engine.history.*;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Round;
 import games.strategy.engine.pbem.IPBEMMessenger;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.ProgressWindow;
+
 import java.awt.event.ActionEvent;
-import java.io.*;
-import javax.swing.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * 
@@ -72,11 +82,7 @@ public class EndTurnPanel extends ActionPanel
 
             public void actionPerformed(ActionEvent event)
             {
-                String ok = "Post";
-                String cancel = "Cancel";
-                String options[] = {
-                    ok, cancel
-                };
+                
                 String message = "";
                 final IPBEMMessenger screenshotMsgr = m_poster.getScreenshotMessenger();
                 final IPBEMMessenger saveGameMsgr = m_poster.getSaveGameMessenger();

@@ -23,17 +23,18 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.ui.Util;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.ImageIcon;
-import javax.swing.DefaultListCellRenderer;
 
 /**
  *
@@ -85,13 +86,7 @@ public class PlayerChooser extends JPanel
       add(new JScrollPane(m_list), BorderLayout.CENTER);
   }
 
-  private void setupListeners()
-  {
-  }
-
-  private void setWidgetActivation()
-  {
-  }
+ 
 
   public PlayerID getSelected()
   {
@@ -103,12 +98,12 @@ public class PlayerChooser extends JPanel
 
 class PlayerChooserRenderer extends DefaultListCellRenderer
 {
-    private final PlayerList m_players;
+    
     private final UIContext m_uiContext;
     
     PlayerChooserRenderer(PlayerList players, UIContext uiContext)
     {
-        m_players = players;
+        
         m_uiContext  = uiContext;
     }
 

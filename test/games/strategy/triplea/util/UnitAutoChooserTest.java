@@ -4,22 +4,32 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.TestTripleADelegateBridge;
 import games.strategy.triplea.ui.display.DummyDisplay;
-import games.strategy.util.*;
+import games.strategy.util.PropertyUtil;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 class TestUnit
 {
@@ -115,12 +125,9 @@ public class UnitAutoChooserTest extends TestCase
     private UnitType infantry;
     private UnitType armour;
     private UnitType transport;
-    private UnitType aaGun;
-    private UnitType fighter;
-    private UnitType carrier;
+
     private UnitType battleship;
 
-    private Territory sz8;
 
     public static Test suite()
     {
@@ -150,14 +157,10 @@ public class UnitAutoChooserTest extends TestCase
         }
 
         british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
-        sz8 = m_data.getMap().getTerritory("8 Sea Zone"); 
 
         armour = m_data.getUnitTypeList().getUnitType(Constants.ARMOUR_TYPE);
         infantry = m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE);
         transport = m_data.getUnitTypeList().getUnitType(Constants.TRANSPORT_TYPE);
-        aaGun = m_data.getUnitTypeList().getUnitType(Constants.AAGUN_TYPE);
-        fighter = m_data.getUnitTypeList().getUnitType(Constants.FIGHTER_TYPE);
-        carrier = m_data.getUnitTypeList().getUnitType(Constants.CARRIER_TYPE);
         battleship = m_data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
     }
 
@@ -194,7 +197,7 @@ public class UnitAutoChooserTest extends TestCase
         PropertyUtil.set(TripleAUnit.TRANSPORTING, transporting, (TripleAUnit)trn);
     }
 
-    private void setUnits(Collection c, Object ... objects)
+    private void setUnits(Collection<Unit> c, Unit ... objects)
     {
         c.clear();
         for(int i=0; i< objects.length; i++)
@@ -207,7 +210,7 @@ public class UnitAutoChooserTest extends TestCase
     {
         List<Unit> allUnits = new ArrayList<Unit>();
         List<Unit> chosenUnits = new ArrayList<Unit>();
-        List<Unit> expectedCandidateUnitsWithDependents = new ArrayList<Unit>();
+        
         List<Unit> expectedCandidateUnits               = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnitsWithDependents  = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnits                = new ArrayList<Unit>();
@@ -917,7 +920,7 @@ public class UnitAutoChooserTest extends TestCase
     {
         List<Unit> allUnits = new ArrayList<Unit>();
         List<Unit> chosenUnits = new ArrayList<Unit>();
-        List<Unit> expectedCandidateUnitsWithDependents = new ArrayList<Unit>();
+        
         List<Unit> expectedCandidateUnits               = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnitsWithDependents  = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnits                = new ArrayList<Unit>();
@@ -1218,7 +1221,7 @@ public class UnitAutoChooserTest extends TestCase
     {
         List<Unit> allUnits = new ArrayList<Unit>();
         List<Unit> chosenUnits = new ArrayList<Unit>();
-        List<Unit> expectedCandidateUnitsWithDependents = new ArrayList<Unit>();
+        
         List<Unit> expectedCandidateUnits               = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnitsWithDependents  = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnits                = new ArrayList<Unit>();

@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  */
 public class GameParser
 {
-    private static final Class[] SETTER_ARGS = {String.class};
+    private static final Class<?>[] SETTER_ARGS = {String.class};
 
     private GameData data;
 

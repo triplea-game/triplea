@@ -14,8 +14,6 @@
 
 package games.strategy.engine.history;
 
-import games.strategy.engine.framework.*;
-import games.strategy.engine.message.IChannelMessenger;
 
 /**
  * Has a subset of the historyWriters functionality.

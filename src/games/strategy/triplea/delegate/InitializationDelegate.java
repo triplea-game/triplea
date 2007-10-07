@@ -174,7 +174,7 @@ public class InitializationDelegate implements IDelegate
     private void initOriginalOwner(GameData data, IDelegateBridge aBridge)
     {
         OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
-        Iterator territories = data.getMap().iterator();
+        Iterator<Territory> territories = data.getMap().iterator();
 
         CompositeChange changes = new CompositeChange();
 
@@ -184,7 +184,7 @@ public class InitializationDelegate implements IDelegate
             if (!current.getOwner().isNull())
             {
                 origOwnerTracker.addOriginalOwner(current, current.getOwner());
-                Collection aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrFactory);
+                Collection<Unit> aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrFactory);
                 origOwnerTracker.addOriginalOwner(aaAndFactory, current.getOwner());
                 TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
                 

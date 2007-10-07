@@ -177,8 +177,8 @@ public class BattleCalculator
         CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, hits, text, dice, player,
                 defaultCasualties, battleID);
 
-        List killed = casualtySelection.getKilled();
-        List damaged = casualtySelection.getDamaged();
+        List<Unit> killed = casualtySelection.getKilled();
+        List<Unit> damaged = casualtySelection.getDamaged();
 
         //check right number
         if (!isEditMode && !(killed.size() + damaged.size() == hits))
@@ -200,7 +200,7 @@ public class BattleCalculator
         // Remove two hit bb's selecting them first for default casualties
         ArrayList<Unit> defaultCasualties = new ArrayList<Unit>();
         int numSelectedCasualties = 0;
-        Iterator targetsIter = targets.iterator();
+        Iterator<Unit> targetsIter = targets.iterator();
         while (targetsIter.hasNext())
         {
             // Stop if we have already selected as many hits as there are
@@ -209,7 +209,7 @@ public class BattleCalculator
             {
                 return defaultCasualties;
             }
-            Unit unit = (Unit) targetsIter.next();
+            Unit unit = targetsIter.next();
             UnitAttachment ua = UnitAttachment.get(unit.getType());
             if (ua.isTwoHit() && (unit.getHits() == 0))
             {
@@ -222,7 +222,7 @@ public class BattleCalculator
         List<Unit> sorted = new ArrayList<Unit>(targets);
         Collections.sort(sorted, new UnitBattleComparator(defending, player, costs));
         // Select units
-        Iterator sortedIter = sorted.iterator();
+        Iterator<Unit> sortedIter = sorted.iterator();
         while (sortedIter.hasNext())
         {
             // Stop if we have already selected as many hits as there are
@@ -231,7 +231,7 @@ public class BattleCalculator
             {
                 return defaultCasualties;
             }
-            Unit unit = (Unit) sortedIter.next();
+            Unit unit = sortedIter.next();
             defaultCasualties.add(unit);
             numSelectedCasualties++;
         }
@@ -239,16 +239,16 @@ public class BattleCalculator
         return defaultCasualties;
     }
 
-    private static Map<Unit, Collection<Unit>> getDependents(Collection targets, GameData data)
+    private static Map<Unit, Collection<Unit>> getDependents(Collection<Unit> targets, GameData data)
     {
         //jsut worry about transports
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 
         Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
-        Iterator iter = targets.iterator();
+        Iterator<Unit> iter = targets.iterator();
         while (iter.hasNext())
         {
-            Unit target = (Unit) iter.next();
+            Unit target = iter.next();
             dependents.put(target, tracker.transportingAndUnloaded(target));
         }
         return dependents;
@@ -271,10 +271,10 @@ public class BattleCalculator
         //any one will do then
         if(frontier == null)
             frontier = data.getProductionFrontierList().getProductionFrontier(data.getProductionFrontierList().getProductionFrontierNames().iterator().next().toString());
-        Iterator iter = frontier.getRules().iterator();
+        Iterator<ProductionRule> iter = frontier.getRules().iterator();
         while (iter.hasNext())
         {
-            ProductionRule rule = (ProductionRule) iter.next();
+            ProductionRule rule = iter.next();
             int cost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.IPCS));
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
             costs.put(type, cost);
@@ -291,10 +291,10 @@ public class BattleCalculator
      *            An integer map of unit types to costs.
      * @return the total unit value.
      */
-    public static int getTUV(Collection units, IntegerMap<UnitType> costs)
+    public static int getTUV(Collection<Unit> units, IntegerMap<UnitType> costs)
     {
         int tuv = 0;
-        Iterator unitsIter = units.iterator();
+        Iterator<Unit> unitsIter = units.iterator();
         while (unitsIter.hasNext())
         {
             Unit u = (Unit) unitsIter.next();
@@ -317,7 +317,7 @@ public class BattleCalculator
      */
     public static int getTUV(Collection<Unit> units, PlayerID player, IntegerMap<UnitType> costs, GameData data)
     {
-        Collection playerUnits = Match.getMatches(units, Matches.alliedUnit(player, data));
+        Collection<Unit> playerUnits = Match.getMatches(units, Matches.alliedUnit(player, data));
         return getTUV(playerUnits, costs);
     }
 
@@ -332,10 +332,10 @@ public class BattleCalculator
      */
     private static boolean allTargetsOneTypeNotTwoHit(Collection<Unit> targets, Map<Unit, Collection<Unit>> dependents)
     {
-        Set categorized = UnitSeperator.categorize(targets, dependents, false);
+        Set<UnitCategory> categorized = UnitSeperator.categorize(targets, dependents, false);
         if (categorized.size() == 1)
         {
-            UnitCategory unitCategory = (UnitCategory) categorized.iterator().next();
+            UnitCategory unitCategory =  categorized.iterator().next();
             if (!unitCategory.isTwoHit() || unitCategory.getDamaged())
             {
                 return true;
@@ -345,13 +345,13 @@ public class BattleCalculator
         return false;
     }
 
-    public static int getRolls(Collection units, PlayerID id, boolean defend)
+    public static int getRolls(Collection<Unit> units, PlayerID id, boolean defend)
     {
         int count = 0;
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
         while (iter.hasNext())
         {
-            Unit unit = (Unit) iter.next();
+            Unit unit = iter.next();
             count += getRolls(unit, id, defend);
         }
         return count;

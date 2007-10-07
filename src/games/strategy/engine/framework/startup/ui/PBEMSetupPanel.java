@@ -327,7 +327,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         // create a new message poster with no IDelegateHistoryWriter
         PBEMMessagePoster poster = new PBEMMessagePoster(gameData, null);
 
-        boolean postOk = poster.postTestData();
+        
 
         String screenshotRef = poster.getScreenshotRef();
         String saveGameRef = poster.getSaveGameRef();

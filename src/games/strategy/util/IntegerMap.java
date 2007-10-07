@@ -193,6 +193,7 @@ public  class IntegerMap<T> implements Cloneable, Serializable
      * match exactly. If a has entries that b doesn't have or vice versa,
      * then a and b are not equal.
      */
+    @SuppressWarnings("unchecked")
     public boolean equals(Object o)
     {
         if (o == null || !(o instanceof IntegerMap))

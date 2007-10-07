@@ -528,20 +528,14 @@ public class ServerGame implements IGame
 
     private void startPersistentDelegates()
     {
-        Iterator delegateIter = m_data.getDelegateList().iterator();
+        Iterator<IDelegate> delegateIter = m_data.getDelegateList().iterator();
         while (delegateIter.hasNext())
         {
-            IDelegate delegate = (IDelegate) delegateIter.next();
-            try 
-            {
-                Class<? extends IPersistentDelegate> remoteType = delegate.getRemoteType().asSubclass(IPersistentDelegate.class);
-                if(remoteType == null)
-                    continue;
-            }
-            catch (Exception e)
-            {
+            IDelegate delegate = delegateIter.next();
+            if(!(delegate instanceof IPersistentDelegate)) {
                 continue;
             }
+            
             DefaultDelegateBridge bridge = new DefaultDelegateBridge(
                     m_data, 
                     this, 

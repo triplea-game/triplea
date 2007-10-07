@@ -190,13 +190,13 @@ public class MoveValidator
         return false;
     }
 
-    public static int getTransportCost(Collection units)
+    public static int getTransportCost(Collection<Unit> units)
   {
     if(units == null)
       return 0;
 
     int cost = 0;
-    Iterator iter = units.iterator();
+    Iterator<Unit> iter = units.iterator();
     while (iter.hasNext())
     {
       Unit item = (Unit) iter.next();
@@ -223,10 +223,10 @@ public class MoveValidator
     }
 
 
-    public static int carrierCapacity(Collection units)
+    public static int carrierCapacity(Collection<Unit> units)
     {
         int sum = 0;
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
         while(iter.hasNext())
         {
             Unit unit = (Unit) iter.next();
@@ -239,10 +239,10 @@ public class MoveValidator
         return sum;
     }
 
-    public static int carrierCost(Collection units)
+    public static int carrierCost(Collection<Unit> units)
     {
         int sum = 0;
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
         while(iter.hasNext())
         {
             Unit unit = (Unit) iter.next();
@@ -349,7 +349,7 @@ public class MoveValidator
         if(units.size() == 0)
             throw new IllegalArgumentException("no units");
         int max = 0;
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
         while(iter.hasNext())
         {
             Unit unit = (Unit) iter.next();
@@ -365,7 +365,7 @@ public class MoveValidator
         if(units.size() == 0)
             throw new IllegalArgumentException("no units");
         int least = Integer.MAX_VALUE;
-        Iterator iter = units.iterator();
+        Iterator<Unit> iter = units.iterator();
         while(iter.hasNext())
         {
             Unit unit = (Unit) iter.next();
@@ -380,9 +380,9 @@ public class MoveValidator
     {
         Match<Unit> friendlyTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport,
                                                          Matches.alliedUnit(id, data));
-        Collection transports = territory.getUnits().getMatches(friendlyTransports);
+        Collection<Unit> transports = territory.getUnits().getMatches(friendlyTransports);
         int sum = 0;
-        Iterator iter = transports.iterator();
+        Iterator<Unit> iter = transports.iterator();
         while(iter.hasNext())
         {
             Unit transport = (Unit) iter.next();
@@ -832,7 +832,7 @@ public class MoveValidator
         
         //find out how much movement we have left  
         IntegerMap<Unit> movementLeft = new IntegerMap<Unit>();
-        Iterator ownedAirIter = ownedAir.iterator();
+        Iterator<Unit> ownedAirIter = ownedAir.iterator();
         while (ownedAirIter.hasNext())
         {
             TripleAUnit unit = (TripleAUnit) ownedAirIter.next();
@@ -846,7 +846,7 @@ public class MoveValidator
         
         //find the air units that cant make it to land
         Collection<Unit> airThatMustLandOnCarriers = new ArrayList<Unit>();
-        Iterator ownedAirIter2 = ownedAir.iterator();
+        Iterator<Unit> ownedAirIter2 = ownedAir.iterator();
         while (ownedAirIter2.hasNext())
         {
             Unit unit = (Unit) ownedAirIter2.next();
@@ -871,7 +871,7 @@ public class MoveValidator
         //now, find out where we can land on carriers
         IntegerMap<Integer> carrierCapacity = new IntegerMap<Integer>();
         
-        Iterator candidates = data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();
+        Iterator<Territory> candidates = data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();
         while (candidates.hasNext())
         {
             Territory territory = (Territory) candidates.next();
@@ -931,7 +931,7 @@ public class MoveValidator
     private static MoveValidationResult canCrossNeutralTerritory(GameData data, Route route, PlayerID player, MoveValidationResult result)
     {
         //neutrals we will overfly in the first place
-        Collection neutrals = MoveDelegate.getEmptyNeutral(route);
+        Collection<Territory> neutrals = MoveDelegate.getEmptyNeutral(route);
         int ipcs = player.getResources().getQuantity(Constants.IPCS);
 
         if (ipcs < getNeutralCharge(data, neutrals.size()))
@@ -1023,7 +1023,7 @@ public class MoveValidator
         if (route.getEnd().isWater() && route.getStart().isWater())
         {
             //make sure units and transports stick together
-            Iterator iter = units.iterator();
+            Iterator<Unit> iter = units.iterator();
             while (iter.hasNext())
             {
                 Unit unit = (Unit) iter.next();
@@ -1031,7 +1031,7 @@ public class MoveValidator
                 //make sure transports dont leave their units behind
                 if (ua.getTransportCapacity() != -1)
                 {
-                    Collection holding = transportTracker.transporting(unit);
+                    Collection<Unit> holding = transportTracker.transporting(unit);
                     if (holding != null && !units.containsAll(holding))
                         result.addDisallowedUnit("Transports cannot leave their units",unit);
                 }
@@ -1058,7 +1058,7 @@ public class MoveValidator
 
             Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
 
-            Iterator iter = units.iterator();
+            Iterator<Unit> iter = units.iterator();
             while (!isEditMode && iter.hasNext())
             {
                 TripleAUnit unit = (TripleAUnit) iter.next();
