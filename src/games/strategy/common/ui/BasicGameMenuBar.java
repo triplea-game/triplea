@@ -359,6 +359,11 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                     {
                         File f = fileChooser.getSelectedFile();
 
+                        if (!f.getName().toLowerCase().endsWith(".tsvg"))
+                        {
+                            f = new File(f.getParent(), f.getName() + ".tsvg");
+                        }
+                        
                         //A small warning so users will not over-write a file,
                         // added by NeKromancer
                         if (f.exists())
@@ -372,12 +377,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                             }
                         }//end if exists
 
-                        if (!f.getName().toLowerCase().endsWith(".tsvg"))
-                        {
-                            f = new File(f.getParent(), f.getName() + ".tsvg");
-                            getGame().saveGame(f);                            
-                            JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
-                        }
+                        getGame().saveGame(f);                            
+                        JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
                     }
                     
                 }
