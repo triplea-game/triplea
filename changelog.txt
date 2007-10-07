@@ -1,3 +1,5 @@
+* fix bug [ 1692668 ] AI UK loads US troops on UK turn
+
 * new Territory/Production summary options for Turn Summary (tclayton)
 
 * fix game xml files and PlayerList class to preserve proper player ordering (tclayton)
