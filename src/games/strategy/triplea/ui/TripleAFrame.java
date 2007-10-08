@@ -458,6 +458,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             m_data.clearAllListeners();
         m_data = null;
         
+        m_tabsPanel.removeAll();
+        
         m_commentPanel.cleanUp();
         
         MAP_SELECTION_LISTENER = null;
@@ -490,6 +492,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_showHistoryAction = null;
         m_showCommentLogAction = null;
         m_localPlayers = null;
+        m_editPanel = null;
         
         
         removeWindowListener(WINDOW_LISTENER);
