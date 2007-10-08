@@ -1097,7 +1097,7 @@ class CasualtyNotificationPanel extends JPanel
             while (iter.hasNext())
             {
                 UnitOwner owner = (UnitOwner) iter.next();
-                //we dont want to use the damaged icon for unuts that have just
+                //we don't want to use the damaged icon for units that have just
                 // been damaged
                 boolean useDamagedIcon = category.getDamaged() && !damaged;
                 unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, useDamagedIcon)));

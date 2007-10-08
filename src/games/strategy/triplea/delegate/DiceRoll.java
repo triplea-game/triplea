@@ -64,7 +64,7 @@ public class DiceRoll implements Externalizable
                 else
                     dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
                 boolean hit = hitsFractional > dice[0];
-                Die die = new Die(dice[0], 1, hit ? DieType.HIT : DieType.MISS);
+                Die die = new Die(dice[0], hitsFractional, hit ? DieType.HIT : DieType.MISS);
                 
                 sortedDice.add(die);
                 if (hit)
