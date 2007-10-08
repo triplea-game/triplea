@@ -26,9 +26,15 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
-import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -36,10 +42,18 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.util.*;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.InverseMatch;
+import games.strategy.util.Match;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -128,10 +142,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return m_placements.size();
     }
     
-    /**
-     * 
-     * only for testing. Shouldonly be called by unit tests
-     */
+
     void setProduced(Map<Territory, Collection<Unit>> produced)
     {
 
@@ -588,6 +599,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     private void performPlace(Collection<Unit> units, Territory at, PlayerID player)
     {
         
+        Map<Territory, Collection<Unit>> placedBeforeProduce = new HashMap<Territory, Collection<Unit>>(m_produced);
+        
         Collection<Unit> factoryAndAA = Match.getMatches(units,
                 Matches.UnitIsAAOrFactory);
         DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
@@ -609,7 +622,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         moveAirOntoNewCarriers(at, units, player, change);
         m_bridge.addChange(change);
-        m_placements.add(new UndoPlace(m_data, this, change));
+        m_placements.add(new UndoPlace(m_data, this, change, placedBeforeProduce));
 
         Territory producer = getProducer(at, player);
         Collection<Unit> produced = new ArrayList<Unit>();
@@ -743,11 +756,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     /**
      * Returns the state of the Delegate.
      */
-    public Serializable saveState()
+    public final Serializable saveState()
     {
 
         PlaceState state = new PlaceState();
         state.m_produced = m_produced;
+        state.m_placements = m_placements;
         return state;
     }
 
@@ -762,11 +776,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     /**
      * Loads the delegates state
      */
-    public void loadState(Serializable aState)
+    public final void loadState(Serializable aState)
     {
 
         PlaceState state = (PlaceState) aState;
         m_produced = state.m_produced;
+        m_placements = state.m_placements;
     }
 
     protected GameData getData()
@@ -774,67 +789,28 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         return m_data;
     }
+    
 }
 
-class UndoPlace
+class UndoPlace implements Serializable
 {
 
-    private CompositeChange m_change;
-
-    private byte[] m_data;
-
+    private final CompositeChange m_change;
+    private final Map<Territory, Collection<Unit>> m_produced;
+    
     public UndoPlace(GameData data, AbstractPlaceDelegate delegate,
-            CompositeChange change)
+            CompositeChange change, Map<Territory, Collection<Unit>> produced)
     {
-
         m_change = change;
-        try
-        {
-            //capture the save state of the move and save delegates
-            GameObjectStreamFactory factory = new GameObjectStreamFactory(data);
-
-            ByteArrayOutputStream sink = new ByteArrayOutputStream(2000);
-            ObjectOutputStream out = factory.create(sink);
-
-            out.writeObject(delegate.saveState());
-            out.flush();
-            out.close();
-
-            m_data = sink.toByteArray();
-        } catch (IOException ex)
-        {
-            ex.printStackTrace();
-            throw new IllegalStateException(ex.getMessage());
-        }
+        m_produced = new HashMap<Territory, Collection<Unit>>(produced);      
     }
 
     public void undo(GameData data, IDelegateBridge bridge,
             AbstractPlaceDelegate delegate)
     {
-
-        try
-        {
-            GameObjectStreamFactory factory = new GameObjectStreamFactory(data);
-            ObjectInputStream in = factory.create(new ByteArrayInputStream(
-                    m_data));
-            PlaceState placeState = (PlaceState) in.readObject();
-            delegate.loadState(placeState);
-
-            bridge.getHistoryWriter().startEvent(
-                    bridge.getPlayerID().getName()
-                            + " undoes his last placement.");
-
-            //undo any changes to the game data
-            bridge.addChange(m_change.invert());
-
-        } catch (ClassNotFoundException ex)
-        {
-            ex.printStackTrace();
-        } catch (IOException ex)
-        {
-            ex.printStackTrace();
-        }
-
+        //undo any changes to the game data
+        bridge.addChange(m_change.invert());
+        delegate.setProduced(new HashMap<Territory, Collection<Unit>>(m_produced));
     }
 
 }
@@ -843,4 +819,5 @@ class PlaceState implements Serializable
 {
 
     public Map<Territory, Collection<Unit>> m_produced;
+    public List<UndoPlace> m_placements;
 }

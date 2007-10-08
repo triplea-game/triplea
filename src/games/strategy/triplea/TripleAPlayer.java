@@ -336,8 +336,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 
     private void place(boolean bid)
     {
+        IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
         //nothing to place
-        if (m_id.getUnits().size() == 0)
+        //nothing placed
+        if (m_id.getUnits().size() == 0 && placeDel.getPlacementsMade() == 0)
             return;
         
         while(true)
@@ -351,7 +353,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                 else
                     continue;
             }
-            IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
+            
             String error = placeDel.placeUnits(data.getUnits(), data.getAt());
             if(error != null)
                 m_ui.notifyError(error);
