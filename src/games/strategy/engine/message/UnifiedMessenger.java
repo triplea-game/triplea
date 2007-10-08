@@ -224,7 +224,13 @@ public class UnifiedMessenger
         if(endPoint != null)
         {
             long number = endPoint.takeANumber();
-            endPoint.invokeLocal(call, number, getLocalNode());
+            List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, number, getLocalNode());
+            for(RemoteMethodCallResults r : results) {
+                if(r.getException() != null) {                    
+                    //don't swallow errors
+                    s_logger.log(Level.WARNING, r.getException().getMessage(), r.getException());
+                }
+            }
         }
         
     }
@@ -661,11 +667,8 @@ class EndPoint
             if (m_singleThreaded)
             {
                 waitTillCanBeRun(number);
-
-                return invokeMultiple(call, messageOriginator);
-
-            } else
-                return invokeMultiple(call,messageOriginator);
+            } 
+            return invokeMultiple(call,messageOriginator);
         } finally
         {
             releaseNumber();
