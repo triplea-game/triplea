@@ -116,10 +116,7 @@ public class TechPanel extends ActionPanel
         }
     }
 
-    private boolean isFourthEdition()
-    {
-        return getData().getProperties().get(Constants.FOURTH_EDITION, false);
-    }
+
 
     private Action GetTechRollsAction = new AbstractAction("Roll Tech...")
     {

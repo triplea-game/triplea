@@ -23,6 +23,7 @@ package games.strategy.triplea.ui;
 import java.util.concurrent.CountDownLatch;
 
 import games.strategy.engine.data.*;
+import games.strategy.triplea.Constants;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -55,6 +56,10 @@ public abstract class ActionPanel extends JPanel
         setBorder(new EmptyBorder(5, 5, 0, 0));
     }
 
+    public final boolean isFourthEdition()
+    {
+        return getData().getProperties().get(Constants.FOURTH_EDITION, false);
+    }
     
     /**
      * Waitfor another thread to call release.

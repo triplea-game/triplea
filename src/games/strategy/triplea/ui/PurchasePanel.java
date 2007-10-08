@@ -23,6 +23,9 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.*;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 
 import java.awt.event.ActionEvent;
@@ -145,6 +148,7 @@ public class PurchasePanel extends ActionPanel
 
   private Action DoneAction = new AbstractAction("Done")
   {
+    @SuppressWarnings("unchecked")
     public void actionPerformed(ActionEvent event)
     {
      
@@ -155,6 +159,33 @@ public class PurchasePanel extends ActionPanel
             if(rVal != JOptionPane.YES_OPTION)
             {
                 return;
+            }
+        }
+        
+        //give a warning if the 
+        //player tries to produce too much
+        if(isFourthEdition()) 
+        {
+            int totalProd = 0;
+            getData().acquireReadLock();
+            try
+            {
+                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
+                {
+                    totalProd += TerritoryAttachment.get(t).getProduction();
+                }
+            } finally
+            {
+                getData().releaseReadLock();
+            }
+            if(m_purchase.totalValues() > totalProd) 
+            {
+                int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
+                if(rVal != JOptionPane.YES_OPTION)
+                {
+                    return;
+                }
+                
             }
         }
         
