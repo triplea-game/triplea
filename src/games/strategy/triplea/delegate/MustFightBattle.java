@@ -1886,7 +1886,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         while (iter.hasNext())
         {
             Battle dependent = iter.next();
-            dependent.unitsLost(this, units, bridge);
+            dependent.unitsLostInPrecedingBattle(this, units, bridge);
         }
     }
 
@@ -2175,7 +2175,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_amphibiousLandAttackers;
     }
 
-    public void unitsLost(Battle battle, Collection<Unit> units,
+    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units,
             IDelegateBridge bridge)
     {
 

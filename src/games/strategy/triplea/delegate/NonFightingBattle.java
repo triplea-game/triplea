@@ -71,6 +71,11 @@ public class NonFightingBattle implements Battle
             m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, m_data, null, null);
             m_battleTracker.addToConquered(m_battleSite);
         }
+        end();
+    }
+
+    private void end()
+    {
         m_battleTracker.removeBattle(this);
         m_isOver = true;
     }
@@ -130,9 +135,10 @@ public class NonFightingBattle implements Battle
         return m_battleSite;
     }
 
-    public void unitsLost(Battle battle, Collection units, IDelegateBridge bridge)
+    public void unitsLostInPrecedingBattle(Battle battle, Collection units, IDelegateBridge bridge)
     {
         Collection<Unit> lost = getDependentUnits(units);
+        lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
         if(lost.size() != 0)
         {
             Change change = ChangeFactory.removeUnits(m_battleSite, lost);

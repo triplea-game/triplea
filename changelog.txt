@@ -1,3 +1,5 @@
+* partial fix for bug [ 1750148 ] Transport error unloading to enemy territory from hostile water (sgb)
+
 * fix bug [ 1753871 ] SaveGameFileChooser bug (sgb)
 
 * fix bug [ 1692668 ] AI UK loads US troops on UK turn (sgb)

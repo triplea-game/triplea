@@ -65,7 +65,7 @@ interface Battle extends java.io.Serializable
      * This is needed to remove dependent units who have been
      * lost in another battle.
      */
-    public void unitsLost(Battle battle, Collection<Unit> units, IDelegateBridge bridge);
+    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge);
 
     /**
      * Add a bombardment unit.

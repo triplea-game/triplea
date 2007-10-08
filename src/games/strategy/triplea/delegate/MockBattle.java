@@ -48,7 +48,7 @@ public class MockBattle implements Battle
         return false;
     }
 
-    public void unitsLost(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
+    public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
     {
         // TODO Auto-generated method stub
 

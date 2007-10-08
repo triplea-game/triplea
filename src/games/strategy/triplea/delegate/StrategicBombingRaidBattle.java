@@ -518,7 +518,7 @@ public class StrategicBombingRaidBattle implements Battle
         return true;
     }
 
-    public void unitsLost(Battle battle, Collection units, IDelegateBridge bridge)
+    public void unitsLostInPrecedingBattle(Battle battle, Collection units, IDelegateBridge bridge)
     {
 
         //should never happen

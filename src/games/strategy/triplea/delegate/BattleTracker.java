@@ -54,11 +54,11 @@ public class BattleTracker implements java.io.Serializable
     //blitzed territories
     private Set<Territory> m_blitzed = new HashSet<Territory>();
 
-    //territories where a battle occured
+    //territories where a battle occurred
     private Set<Territory> m_foughBattles = new HashSet<Territory>();
 
     //these territories have had battleships bombard during a naval invasion
-    //used to make sure that the same battleship doesnt bombard twice
+    //used to make sure that the same battleship doesn't bombard twice
     private Set<Territory> m_bombardedFromTerritories = new HashSet<Territory>();
 
     /**
