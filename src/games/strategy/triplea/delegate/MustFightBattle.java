@@ -18,6 +18,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -1764,6 +1765,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         //somone else will deal with this
                         cle.printStackTrace(System.out);
                     }
+                    catch(GameOverException e) 
+                    {
+                      //ignore
+                    }
                 }
             };
             Thread t = new Thread(r, "click to continue waiter");
@@ -1775,15 +1780,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
             } catch (InterruptedException e)
             {
               //ignore
-            }
+            } 
             finally
             {
                 bridge.enterDelegateExecution();
             }
-            
-            
-            
-            
         }
         
     }
