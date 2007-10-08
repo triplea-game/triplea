@@ -971,12 +971,16 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
             if (isEditMode)
             {
-                if (m_tabsPanel.indexOfComponent(m_editPanel) == -1)
+                if (m_tabsPanel.indexOfComponent(m_editPanel) == -1) 
+                {
                     m_tabsPanel.addTab("Edit", m_editPanel);
+                    m_tabsPanel.setSelectedComponent(m_editPanel);
+                }
             }
             else
             {
                 m_tabsPanel.remove(m_editPanel);
+                m_tabsPanel.setSelectedIndex(0);
             }
         }
     };
