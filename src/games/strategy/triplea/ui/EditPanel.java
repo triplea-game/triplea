@@ -602,11 +602,14 @@ public class EditPanel extends ActionPanel
                 // highlight territory
                 if (m_currentAction == m_changeTerritoryOwnerAction || m_currentAction == m_addUnitsAction)
                 {
-                    if (m_currentTerritory != null)
-                        getMap().clearTerritoryOverlay(m_currentTerritory);
-                    m_currentTerritory = territory;
-                    getMap().setTerritoryOverlay(m_currentTerritory, Color.WHITE, 200);
-                    getMap().repaint();
+                    if(m_currentTerritory != territory) 
+                    {
+                        if (m_currentTerritory != null)
+                            getMap().clearTerritoryOverlay(m_currentTerritory);
+                        m_currentTerritory = territory;
+                        getMap().setTerritoryOverlay(m_currentTerritory, Color.WHITE, 200);
+                        getMap().repaint();
+                    }
                 }
             }
             
