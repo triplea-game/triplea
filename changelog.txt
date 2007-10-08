@@ -1,8 +1,8 @@
-* fix bug [ 1563219 ] Possible to buy more units than can be placed (4th ed rules)
+* fix bug [ 1563219 ] Possible to buy more units than can be placed (4th ed rules) (sgb)
 
-* fix bug [ 1535135 ] loading save game bug
+* fix bug [ 1535135 ] loading save game bug (sgb)
 
-* fix bug [ 1718350 ] AA guns on LL fire once
+* fix bug [ 1718350 ] AA guns on LL fire once (sgb)
 
 * upgrade to looks 2.1.4 (sgb)
 
