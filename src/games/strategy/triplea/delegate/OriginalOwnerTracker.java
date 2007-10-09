@@ -81,7 +81,12 @@ public class OriginalOwnerTracker implements java.io.Serializable
         while (iter.hasNext())
         {
             Territory t = iter.next();
-            if(getOriginalOwner(t).equals(player))
+            PlayerID originalOwner = getOriginalOwner(t);
+            if(originalOwner == null) 
+            {
+                throw new IllegalStateException("No original owner for:" + originalOwner);
+            }
+            if(originalOwner.equals(player))
             {
                 rVal.add(t);
             }
