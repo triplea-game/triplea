@@ -47,7 +47,7 @@ public class IntTextField extends JTextField
 	public static void main(String[] args)
 	{
 		JFrame frame = new JFrame();
-		frame.addWindowListener(Util.EXIT_ON_CLOSE_WINDOW_LISTENER);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FlowLayout());
 		frame.getContentPane().add(new JLabel("no range"));
 		frame.getContentPane().add(new IntTextField());

@@ -20,10 +20,20 @@
 
 package games.strategy.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.geom.GeneralPath;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 
 
 
@@ -109,14 +119,6 @@ public class Util
     {
         return new Dimension(anImage.getWidth(obs), anImage.getHeight(obs));
     }
-
-    public static final WindowListener EXIT_ON_CLOSE_WINDOW_LISTENER = new WindowAdapter()
-    {
-        public void windowClosing(WindowEvent e)
-        {
-            System.exit(0);
-        }
-    };
 
     public static void center(Window w)
     {

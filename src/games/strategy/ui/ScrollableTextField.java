@@ -38,7 +38,7 @@ public class ScrollableTextField extends JPanel
   public static void main(String[] args)
   {
     JFrame frame = new JFrame();
-    frame.addWindowListener(Util.EXIT_ON_CLOSE_WINDOW_LISTENER);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.getContentPane().setLayout(new FlowLayout());
     frame.getContentPane().add(new JLabel("10 - 20"));
 
