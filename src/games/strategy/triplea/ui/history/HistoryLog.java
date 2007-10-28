@@ -12,6 +12,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
@@ -425,7 +426,7 @@ public class HistoryLog extends JFrame
     {
         PrintWriter logWriter = m_printWriter;
         Collection<PlayerID> players;
-        logWriter.println("Production Summary :\n");
+        logWriter.println("Production/IPCs Summary :\n");
         data.acquireReadLock();
         try
         {
@@ -439,11 +440,46 @@ public class HistoryLog extends JFrame
         for (PlayerID player : players)
         {
             int ipcs = player.getResources().getQuantity(Constants.IPCS);
-            logWriter.println("    " + player.getName() + " : " + ipcs
-                              + MyFormatter.pluralize(" IPC", ipcs));
+            int production = getProduction(player, data);
+            logWriter.println("    " + player.getName() + " : " + production + " / " + ipcs);
         }
         logWriter.println();
 
         m_textArea.setText(m_stringWriter.toString());
+    }
+    
+    // copied from StatPanel
+    private int getProduction(PlayerID player, GameData data)
+    {
+        int rVal = 0; 
+        Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+        while (iter.hasNext())
+        {
+            boolean isConvoyOrLand = false; 
+            Territory place = (Territory) iter.next();
+            OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
+            TerritoryAttachment ta = TerritoryAttachment.get(place);
+
+            if(!place.isWater())
+            {
+                isConvoyOrLand = true;
+            } 
+            else if(place.isWater() &&
+                        ta != null &&
+                        origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID &&
+                        origOwnerTracker.getOriginalOwner(place) == player &&
+                        place.getOwner().equals(player))
+            {
+                isConvoyOrLand = true; 
+            }
+            
+            if(place.getOwner().equals(player) && isConvoyOrLand)
+            {
+                if(ta != null)
+                    rVal += ta.getProduction(); 
+            }
+            
+        }
+        return rVal;
     }
 }
