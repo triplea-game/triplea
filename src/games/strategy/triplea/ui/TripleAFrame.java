@@ -621,27 +621,30 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     {
         m_actionButtons.changeToMove(player, nonCombat);
         // workaround for panel not receiving focus at beginning of n/c move phase
-        if (!SwingUtilities.isEventDispatchThread())
+        if (!getBattlePanel().getBattleFrame().isVisible())
         {
-            try
+            if (!SwingUtilities.isEventDispatchThread())
             {
-                SwingUtilities.invokeAndWait(new Runnable()
+                try
                 {
-                    public void run()
+                    SwingUtilities.invokeAndWait(new Runnable()
                     {
-                        requestFocusInWindow();
-                        transferFocus();
-                    }
-                });
-            } catch (Exception e)
+                        public void run()
+                        {
+                            requestFocusInWindow();
+                            transferFocus();
+                        }
+                    });
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                } 
+            }
+            else
             {
-                e.printStackTrace();
-            } 
-        }
-        else
-        {
-            requestFocusInWindow();
-            transferFocus();
+                requestFocusInWindow();
+                transferFocus();
+            }
         }
         return m_actionButtons.waitForMove(bridge);
     }

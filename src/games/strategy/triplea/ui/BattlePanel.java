@@ -266,6 +266,11 @@ public class BattlePanel extends ActionPanel
         return true;
     }
 
+    protected JFrame getBattleFrame()
+    {
+        return m_battleFrame;
+    }
+    
     public void listBattle(final GUID battleID, final List steps)
     {
         if (!SwingUtilities.isEventDispatchThread())
