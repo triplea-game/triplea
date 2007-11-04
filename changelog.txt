@@ -1,3 +1,5 @@
+* fix bug [ 1825576 ] Missing entry in four_if_by_sea.xml (sgb)
+
 * fix bug [ 1767304 ] Great War v.1.5 sz67 to sz57 bug (sgb)
 
 * fix bug [ 1563219 ] Possible to buy more units than can be placed (4th ed rules) (sgb)

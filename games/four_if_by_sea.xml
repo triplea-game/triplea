@@ -1297,6 +1297,8 @@
 
 			<frontierRules name="buyCarrierIndustrialTechnology"/>
 
+			<frontierRules name="buySubmarineIndustrialTechnology"/>
+
 			<frontierRules name="buyBattleshipIndustrialTechnology"/>
 
 			<frontierRules name="buyAAGunIndustrialTechnology"/>
