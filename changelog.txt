@@ -1,3 +1,5 @@
+* for installer with java, update embeded jre to 1.6 (sgb)
+
 * fix bug [ 1823400 ] Filename typo causes Exception to be thrown (sgb)
 
 * fix bug [ 1825576 ] Missing entry in four_if_by_sea.xml (sgb)
