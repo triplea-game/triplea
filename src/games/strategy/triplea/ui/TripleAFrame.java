@@ -193,7 +193,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_editModeButtonModel.setEnabled(false);
         m_showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
         m_showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
-
+        m_showCommentLogButtonModel.setSelected(false);
+        
         createMenuBar();
         
         ImageScrollModel model = new ImageScrollModel();
@@ -227,7 +228,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
         m_chatSplit.setResizeWeight(0.95);
         m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
-
+        
         if(MainFrame.getInstance().getChat() != null)
         {
             m_chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
@@ -236,13 +237,9 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             Dimension chatPrefSize = new Dimension((int) m_chatPanel.getPreferredSize().getWidth(), 95);
             m_chatPanel.setPreferredSize(chatPrefSize);
             m_chatSplit.setBottomComponent(m_chatPanel);
-            
-            m_showCommentLogButtonModel.setSelected(false);
-        }
-        else
+        } else 
         {
-            m_chatSplit.setBottomComponent(m_commentSplit);
-            m_showCommentLogButtonModel.setSelected(true);
+            m_chatSplit.setBottomComponent(null);
         }
         
         m_gameMainPanel.setLayout(new BorderLayout());
@@ -1431,30 +1428,39 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     }
 
     private AbstractAction m_showCommentLogAction = new AbstractAction()
-    {
+    {        
         public void actionPerformed(ActionEvent ae)
-        {
-            boolean showCommentLog = ((ButtonModel)ae.getSource()).isSelected();
-            if (showCommentLog)
+        {            
+            if (((ButtonModel)ae.getSource()).isSelected())
             {
-                if (m_chatPanel != null)
-                {
-                    m_chatSplit.setBottomComponent(m_commentSplit);
-                    m_commentSplit.setBottomComponent(m_chatPanel);
-                }
-                else
-                    m_chatSplit.setBottomComponent(m_commentPanel);
+                showCommentLog();
             }
             else
             {
-                if (m_chatPanel != null)
-                {
-                    m_commentSplit.setBottomComponent(null);
-                    m_chatSplit.setBottomComponent(m_chatPanel);
-                }
-                else
-                    m_chatSplit.setBottomComponent(null);
+                hideCommentLog();
             }
+        }
+
+        private void hideCommentLog()
+        {
+            if (m_chatPanel != null)
+            {
+                m_commentSplit.setBottomComponent(null);
+                m_chatSplit.setBottomComponent(m_chatPanel);
+            }
+            else
+                m_chatSplit.setBottomComponent(null);
+        }
+
+        private void showCommentLog()
+        {
+            if (m_chatPanel != null)
+            {
+                m_chatSplit.setBottomComponent(m_commentSplit);
+                m_commentSplit.setBottomComponent(m_chatPanel);
+            }
+            else
+                m_chatSplit.setBottomComponent(m_commentPanel);
         }
     };
 
