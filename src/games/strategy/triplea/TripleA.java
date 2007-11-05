@@ -125,7 +125,7 @@ public class TripleA implements IGameLoader
            // final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
 
-            if(game instanceof ServerGame && game.getData().getDelegateList().getDelegate("edit") == null) 
+            if(game.getData().getDelegateList().getDelegate("edit") == null) 
             {
                 
                 //an evil awful hack
@@ -135,7 +135,10 @@ public class TripleA implements IGameLoader
                 EditDelegate delegate = new EditDelegate();
                 delegate.initialize("edit", "edit");
                 m_game.getData().getDelegateList().addDelegate(delegate);
-                ((ServerGame) game).addDelegateMessenger(delegate);
+                if(game instanceof ServerGame) 
+                {
+                  ((ServerGame) game).addDelegateMessenger(delegate);
+                }
             }
 
                 SwingUtilities.invokeAndWait(new Runnable()
