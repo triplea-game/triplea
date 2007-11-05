@@ -135,7 +135,7 @@ public class GameData implements java.io.Serializable
      */
 	public UnitsList getUnits()
 	{
-        ensureLockHeld();
+        //ensureLockHeld();
 	    return m_unitsList;
 	}
 
@@ -144,7 +144,6 @@ public class GameData implements java.io.Serializable
      */
 	public PlayerList getPlayerList()
 	{
-        ensureLockHeld();
 		return m_playerList;
 	}
 
