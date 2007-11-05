@@ -31,7 +31,7 @@ import java.io.*;
  *
  *
  */
-public class DelegateList extends GameDataComponent
+public class DelegateList extends GameDataComponent implements Iterable<IDelegate>
 {
 	private Map<String, IDelegate> m_delegates = new HashMap<String, IDelegate>();
 

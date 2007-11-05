@@ -491,9 +491,6 @@ Coded by Iron__Cross
         <delegate name="bid"
             javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate"
             display="Bid Purchase"/>
-        <delegate name="edit"
-            javaClass="games.strategy.triplea.delegate.EditDelegate"
-            display="Edit"/>
         
         <sequence>
             <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>

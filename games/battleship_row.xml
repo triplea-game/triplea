@@ -494,7 +494,7 @@
 		<delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
 		<delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
 		<delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
-		<delegate name="edit" javaClass="games.strategy.triplea.delegate.EditDelegate" display="Edit"/>
+		
 		
 		<sequence>
 			<step name="gameInitDelegate" delegate="initDelegate"/>

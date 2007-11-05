@@ -22,27 +22,35 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.*;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.*;
+import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
 import games.strategy.engine.pbem.IPBEMMessenger;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.pbem.AxisAndAlliesDotOrgPBEMMessenger;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.randomAI.RandomAI;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.display.*;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.ui.display.TripleaDisplay;
 import games.strategy.triplea.weakAI.WeakAI;
 
 import java.awt.Frame;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
@@ -117,6 +125,18 @@ public class TripleA implements IGameLoader
            // final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
 
 
+            if(game instanceof ServerGame && game.getData().getDelegateList().getDelegate("edit") == null) 
+            {
+                
+                //an evil awful hack
+                //we don't want to change the game xml
+                //and invalidate mods so hack it
+                //and force the addition here
+                EditDelegate delegate = new EditDelegate();
+                delegate.initialize("edit", "edit");
+                m_game.getData().getDelegateList().addDelegate(delegate);
+                ((ServerGame) game).addDelegateMessenger(delegate);
+            }
 
                 SwingUtilities.invokeAndWait(new Runnable()
                 {

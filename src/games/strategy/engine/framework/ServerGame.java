@@ -208,22 +208,26 @@ public class ServerGame implements IGame
 
     private void setupDelegateMessaging(GameData data)
     {
-        Iterator delegateIter = data.getDelegateList().iterator();
-        while (delegateIter.hasNext())
+        for(IDelegate delegate : data.getDelegateList()) 
         {
-            IDelegate delegate = (IDelegate) delegateIter.next();
-            
-            Class<? extends IRemote> remoteType = delegate.getRemoteType();
-            //if its null then it shouldnt be added as an IRemote
-            if(remoteType == null)
-                continue;
-            
-            Object wrappedDelegate = m_delegateExecutionManager.createInboundImplementation(delegate, new Class[] {delegate.getRemoteType()});
-            RemoteName descriptor = getRemoteName(delegate);
-            m_remoteMessenger.registerRemote(wrappedDelegate, descriptor );
+            addDelegateMessenger(delegate);
         }
     }
     
+    public void addDelegateMessenger(IDelegate delegate)
+    {
+        Class<? extends IRemote> remoteType = delegate.getRemoteType();
+        //if its null then it shouldn't be added as an IRemote
+        if(remoteType == null)
+            return;
+        
+        Object wrappedDelegate = m_delegateExecutionManager.createInboundImplementation(delegate, new Class[] {delegate.getRemoteType()});
+        RemoteName descriptor = getRemoteName(delegate);
+        m_remoteMessenger.registerRemote(wrappedDelegate, descriptor );
+
+        
+    }
+
     public static RemoteName getRemoteName(IDelegate delegate)
     {
         return new RemoteName("games.strategy.engine.framework.ServerGame.DELEGATE_REMOTE." + delegate.getName(), delegate.getRemoteType());
