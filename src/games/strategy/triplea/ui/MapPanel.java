@@ -434,6 +434,8 @@ public class MapPanel extends ImageScrollerLargeView
 
     private MouseListener MOUSE_LISTENER = new MouseAdapter()
     {
+        
+        
         /**
          * Invoked when the mouse exits a component.
          */
@@ -446,8 +448,9 @@ public class MapPanel extends ImageScrollerLargeView
                 notifyMouseEnterUnit(Collections.<Unit>emptyList(), getTerritory(e.getX(),e.getY()), md );
             }
         }
-        
-        public void mouseReleased(MouseEvent e)
+
+        @Override
+        public void mouseClicked(MouseEvent e)
         {
             
             MouseDetails md = convert(e);
