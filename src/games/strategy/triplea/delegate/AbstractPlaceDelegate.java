@@ -601,10 +601,12 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         
         Map<Territory, Collection<Unit>> placedBeforeProduce = new HashMap<Territory, Collection<Unit>>(m_produced);
         
+        CompositeChange change = new CompositeChange();
+        
         Collection<Unit> factoryAndAA = Match.getMatches(units,
                 Matches.UnitIsAAOrFactory);
-        DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
-                .addOriginalOwner(factoryAndAA, m_player);
+        change.add(DelegateFinder.battleDelegate(m_data).getOriginalOwnerTracker()
+                .addOriginalOwnerChange(factoryAndAA, m_player));
 
         String transcriptText = MyFormatter.unitsToTextNoOwner(units)
                 + " placed in " + at.getName();
@@ -614,7 +616,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Change remove = ChangeFactory.removeUnits(player, units);
         Change place = ChangeFactory.addUnits(at, units);
 
-        CompositeChange change = new CompositeChange();
+        
         change.add(remove);
         change.add(place);
 
