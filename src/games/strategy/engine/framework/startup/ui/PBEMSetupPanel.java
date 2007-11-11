@@ -558,18 +558,24 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
     {
         if (m_gameSelectorModel.isSavedGame())
         {
+            if( data.getProperties().get( EMAIL_1_PROP_NAME) != null )
+            {
+                m_email1TextField.setText(data.getProperties().get(
+                        EMAIL_1_PROP_NAME).toString());
+            }
 
-            m_email1TextField.setText(data.getProperties().get(
-                    EMAIL_1_PROP_NAME).toString());
+            if( data.getProperties().get( EMAIL_2_PROP_NAME) != null )
+            {
+                m_email2TextField.setText(data.getProperties().get(
+                        EMAIL_2_PROP_NAME).toString());
+            }
 
-            m_email2TextField.setText(data.getProperties().get(
-                    EMAIL_2_PROP_NAME).toString());
-
-            m_gameIDTextField.setText(data.getProperties().get(
+            if( data.getProperties().get( EMAIL_ID_PROP_NAME) != null )
+            {
+                m_gameIDTextField.setText(data.getProperties().get(
                     EMAIL_ID_PROP_NAME).toString());
+            }
         }     
-
-        
     }    
     
     private void replaceOrAddComboBoxItem(JComboBox comboBox, Object customObj)

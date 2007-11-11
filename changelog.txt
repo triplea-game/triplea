@@ -1,3 +1,5 @@
+* patch [ 1827892 ] Fix NPE crash when loading PBEM game (rrowell)
+
 * for installer with java, update embeded jre to 1.6 (sgb)
 
 * fix bug [ 1823400 ] Filename typo causes Exception to be thrown (sgb)
