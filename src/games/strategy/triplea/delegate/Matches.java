@@ -673,11 +673,6 @@ public class Matches
         {
             public boolean match(Territory t)
             {
-/* -- remove for convoys
-                if(t.isWater())
-                    return false;
-*/
-
                 if(t.getOwner().equals(player))
                     return false;
                 return !data.getAllianceTracker().isAllied(player, t.getOwner());
@@ -685,17 +680,28 @@ public class Matches
         };
     }
 
+    public static Match<Territory> isTerritoryEnemyAndNotNuetralWater(final PlayerID player, final GameData data)
+    {
+        return new Match<Territory>()
+        {
+            public boolean match(Territory t)
+            {
+                if(t.getOwner().equals(player))
+                    return false;
+                if(t.isWater() && t.getOwner().isNull()) 
+                    return false;
+                return !data.getAllianceTracker().isAllied(player, t.getOwner());
+            }
+        };
+    }
+
+    
     public static Match<Territory> isTerritoryEnemyAndNotNeutral(final PlayerID player, final GameData data)
     {
         return new Match<Territory>()
         {
             public boolean match(Territory t)
             {
-/* -- remove for convoys
-                if(t.isWater())
-                    return false;
-*/
-
                 if(t.getOwner().equals(player))
                     return false;
                 if(t.getOwner().equals(PlayerID.NULL_PLAYERID))

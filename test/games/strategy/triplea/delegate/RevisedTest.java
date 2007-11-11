@@ -109,6 +109,42 @@ public class RevisedTest extends TestCase
         assertEquals(3, attachment.getAttack(japanese));
     }
     
+    public void testMoveThroughSubmergedSubs() 
+    {
+        PlayerID british = m_data.getPlayerList().getPlayerID("British");
+        
+        Territory sz1 = m_data.getMap().getTerritory("1 Sea Zone");
+        Territory sz7 = m_data.getMap().getTerritory("7 Sea Zone");
+        Territory sz8 = m_data.getMap().getTerritory("8 Sea Zone");
+        
+        
+        TripleAUnit sub = (TripleAUnit) sz8.getUnits().iterator().next();
+        sub.setSubmerged(true);
+        
+        //now move to attack it
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        
+        ITestDelegateBridge bridge = getDelegateBridge(british);
+        bridge.setStepName("NonCombatMove");
+        moveDelegate.start(bridge, m_data);
+        
+        //the transport can enter sz 8
+        //since the sub is submerged
+        Route m1 = new Route();
+        m1.setStart(sz1);
+        m1.add(sz8);
+        assertNull(moveDelegate.move(sz1.getUnits().getUnits(), m1));
+        
+        
+        //the transport can now leave sz8
+        Route m2 = new Route();
+        m2.setStart(sz8);
+        m2.add(sz7);
+        String error = moveDelegate.move(sz8.getUnits().getMatches(Matches.unitIsOwnedBy(british)), m2);
+        assertNull(error,error);
+
+    }
+    
     public void testRetreatBug()
     {
         

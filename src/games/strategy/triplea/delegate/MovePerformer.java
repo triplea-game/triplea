@@ -146,7 +146,7 @@ public class MovePerformer implements Serializable
                 //battles on (note water could have enemy but its
                 //not owned)
                 CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<Territory>();
-                mustFightThrough.add(Matches.isTerritoryEnemy(id, m_data));
+                mustFightThrough.add(Matches.isTerritoryEnemyAndNotNuetralWater(id, m_data));
                 mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, m_data));
 
                 Collection<Unit> moved = Util.intersection(units, (Collection<Unit>) arrivingUnits[0]);
