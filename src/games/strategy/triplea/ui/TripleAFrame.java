@@ -968,22 +968,25 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     {
         public void gameDataChanged(Change change)
         {
-            boolean isEditMode = getEditMode();
-            m_editModeButtonModel.setSelected(isEditMode);
-            TripleAFrame.this.getGlassPane().setVisible(isEditMode);
-
-            if (isEditMode)
+            if (getEditMode())
             {
                 if (m_tabsPanel.indexOfComponent(m_editPanel) == -1) 
                 {
                     m_tabsPanel.addTab("Edit", m_editPanel);
                     m_tabsPanel.setSelectedComponent(m_editPanel);
+                    m_editModeButtonModel.setSelected(true);
+                    TripleAFrame.this.getGlassPane().setVisible(true);
                 }
             }
             else
             {
-                m_tabsPanel.remove(m_editPanel);
-                m_tabsPanel.setSelectedIndex(0);
+                if (m_tabsPanel.indexOfComponent(m_editPanel) != -1) 
+                {
+                    m_tabsPanel.remove(m_editPanel);
+                    m_tabsPanel.setSelectedIndex(0);
+                    m_editModeButtonModel.setSelected(false);
+                    TripleAFrame.this.getGlassPane().setVisible(false);
+                }
             }
         }
     };
@@ -1141,8 +1144,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
         validate();
     }
-
-    public boolean saveScreenshot(final HistoryNode node, final File file)
+    
+     public boolean saveScreenshot(final HistoryNode node, final File file)
     {
         // get current history node. if we are in history view, get the selected node.
         final MapPanel mapPanel = getMapPanel();
