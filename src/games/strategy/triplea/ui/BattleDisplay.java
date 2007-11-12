@@ -703,7 +703,7 @@ public class BattleDisplay extends JPanel
         m_causalitiesInstantPanelDefender.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         m_causalitiesInstantPanelDefender.add(LABEL_NONE_DEFENDER);
 
-        final JPanel lInstantCausalitiesPanel = new JPanel();
+        JPanel lInstantCausalitiesPanel = new JPanel();
         lInstantCausalitiesPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         lInstantCausalitiesPanel.setLayout(new GridBagLayout());
 
@@ -714,19 +714,7 @@ public class BattleDisplay extends JPanel
                 new GridBagConstraints(0, 0, 2, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 
                 new Insets(0, 0, 0, 0), 0, 0));
         
-        JLabel lAttacker = new JLabel("Attacker: " + m_attacker.getName(), JLabel.CENTER);
-        lAttacker.setFont(getPlayerComponent(m_attacker).getFont().deriveFont(Font.PLAIN, 12));        
-        lInstantCausalitiesPanel.add(
-                lAttacker,
-                new GridBagConstraints(0, 1, 1, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 
-                        new Insets(0, 0, 0, 0), 0, 0));
-
-        JLabel lDefender = new JLabel("Defender: " + m_defender.getName(), JLabel.CENTER);
-        lDefender.setFont(getPlayerComponent(m_attacker).getFont().deriveFont(Font.PLAIN, 12));        
-        lInstantCausalitiesPanel.add(
-                lDefender,        
-                new GridBagConstraints(1, 1, 1, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 
-                        new Insets(0, 0, 0, 0), 0, 0));
+        
         
         lInstantCausalitiesPanel.add(
                 m_causalitiesInstantPanelAttacker,
