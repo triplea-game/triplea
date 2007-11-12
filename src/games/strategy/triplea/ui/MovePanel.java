@@ -1654,8 +1654,9 @@ public class MovePanel extends ActionPanel
         {
             if(!m_listening)
                 return;
-            
-            boolean someOwned = Match.someMatch(units, Matches.unitIsOwnedBy(getUnitOwner(m_selectedUnits)));
+            Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getUnitOwner(m_selectedUnits)),
+                                   Matches.UnitIsNotFactory);
+            boolean someOwned = Match.someMatch(units, match);
             boolean isCorrectTerritory = m_firstSelectedTerritory == null || m_firstSelectedTerritory == territory;
             if(someOwned && isCorrectTerritory)
                 getMap().setUnitHighlight(units, territory);
