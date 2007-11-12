@@ -196,7 +196,7 @@ public class GameSelectorModel extends Observable
         //load the previously saved value
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         
-        String defaultFileName = "classic.xml";
+        String defaultFileName = "revised.xml";
         String s= prefs.get(DEFAULT_FILE_NAME_PREF, defaultFileName);
         
         File defaultGame =  new File(NewGameFileChooser.DEFAULT_DIRECTORY, s);
