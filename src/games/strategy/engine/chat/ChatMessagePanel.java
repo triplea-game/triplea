@@ -222,8 +222,12 @@ public class ChatMessagePanel extends JPanel implements IChatListener
             {
                 addChatMessage(message, from, thirdperson);
              
-                BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
-                scrollModel.setValue(scrollModel.getMaximum());
+                SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
+                            scrollModel.setValue(scrollModel.getMaximum());            
+                        }
+                });
                 
                 ClipPlayer.getInstance().playClip(SoundPath.MESSAGE, SoundPath.class);                
             }
