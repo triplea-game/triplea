@@ -98,7 +98,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
         //find a land route to an enemy territory from our capitol
         Route invasionRoute = Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotNeutral(player, getPlayerBridge().getGameData()),
-                Matches.TerritoryIsLand, getPlayerBridge().getGameData());
+                new CompositeMatchAnd<Territory> (Matches.TerritoryIsLand,new InverseMatch<Territory>(Matches.TerritoryIsNeutral)), 
+                getPlayerBridge().getGameData());
         
         return invasionRoute == null;
     }
@@ -137,7 +138,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         transportsToLoad.clear();
         
         //do the rest of the moves
-        populateNonCombat(data, moveUnits, moveRoutes, player);    
+        populateNonCombat(data, moveUnits, moveRoutes, player);  
         populateNonCombatSea(true, data, moveUnits, moveRoutes, player);
         
         doMove(moveUnits, moveRoutes, null, moveDel);
@@ -180,8 +181,14 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
         //we want to move loaded transports before we try to fight our battles 
         populateNonCombatSea(false, data, moveUnits, moveRoutes, player);
-        doMove(moveUnits, moveRoutes, null, moveDel);
         
+        //find second amphib target
+        Route altRoute = getAlternativeAmphibRoute( player);
+        if(altRoute != null) {
+        	moveCombatSea( data, moveUnits, moveRoutes, player, altRoute, 1);
+        }
+        doMove(moveUnits, moveRoutes, null, moveDel);
+            
         moveUnits.clear();
         moveRoutes.clear();
         transportsToLoad.clear();
@@ -196,7 +203,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
     }
 
 
-    private void populateTransportLoad(boolean nonCombat, GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, List<Collection<Unit>> transportsToLoad, PlayerID player)
+    private void populateTransportLoad(boolean nonCombat, GameData data, 
+    		List<Collection<Unit>> moveUnits, List<Route> moveRoutes, List<Collection<Unit>> transportsToLoad, PlayerID player)
     {
         
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
@@ -276,6 +284,19 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
     }
 
+    private List<Unit> load2Transports( boolean reload, GameData data, List<Unit> transportsToLoad, Territory loadFrom, PlayerID player)
+    {
+        TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+    	List<Unit> units = new ArrayList<Unit>();
+        for(Unit transport : transportsToLoad)
+        {
+        	Collection<Unit> landunits = tracker.transporting(transport);
+        	for(Unit u : landunits) {
+        		units.add(u);
+        	}
+        }
+    	return units;
+    }
 
     private void doMove(List<Collection<Unit>> moveUnits, List<Route> moveRoutes, List<Collection<Unit>> transportsToLoad, IMoveDelegate moveDel)
     {        
@@ -304,11 +325,61 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         }
     }
 
+    private void moveCombatSea( final GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player, Route amphibRoute, int maxTrans)
+    {
+    	// TODO workaround - should check if amphibRoute is in moveRoutes
+		if (moveRoutes.size() == 2) {
+			moveRoutes.remove(1);
+			moveUnits.remove(1);
+		}
+		Territory firstSeaZoneOnAmphib = null;
+		Territory lastSeaZoneOnAmphib = null;
+		if (amphibRoute != null) {
+			firstSeaZoneOnAmphib = amphibRoute.getTerritories().get(0);
+			lastSeaZoneOnAmphib = amphibRoute.getTerritories().get(
+					amphibRoute.getLength() - 1);
+		}
+
+		Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches
+				.unitIsOwnedBy(player), HasntMoved, Transporting);
+		List<Unit> unitsToMove = new ArrayList<Unit>();
+		List<Unit> transports = firstSeaZoneOnAmphib.getUnits().getMatches(
+				ownedAndNotMoved);
+		
+		if(transports.size() <= maxTrans) 
+		{
+		    unitsToMove.addAll(transports);
+		} else {
+		    unitsToMove.addAll(transports.subList(0, maxTrans));
+		}
+		
+		List<Unit> landUnits = load2Transports(true, data, unitsToMove,
+				firstSeaZoneOnAmphib, player);
+		Route r = getMaxSeaRoute(data, firstSeaZoneOnAmphib,
+				lastSeaZoneOnAmphib, player);
+		moveRoutes.add(r);
+		unitsToMove.addAll(landUnits);
+		moveUnits.add(unitsToMove);
+    }
+ 
+    	
+    
+    /**
+	 * prepares moves for transports
+	 * 
+	 * @param nonCombat
+	 * @param data
+	 * @param moveUnits
+	 * @param moveRoutes
+	 * @param player
+	 * @param amphibRoute
+	 * @param maxTrans -
+	 *            if -1 unlimited
+	 */
     private void populateNonCombatSea(boolean nonCombat, final GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
     {
-        
        Route amphibRoute = getAmphibRoute(player);
-       
+        
        Territory firstSeaZoneOnAmphib = null;
        Territory lastSeaZoneOnAmphib = null;
        if(amphibRoute != null)
@@ -320,30 +391,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
        final Collection<Unit> alreadyMoved = new HashSet<Unit>();
        
        
-       Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), new Match<Unit>()
-        {
-            @Override
-            public boolean match(Unit o)
-            {
-                return TripleAUnit.get(o).getAlreadyMoved() == 0;
-            }
-        
-        }
-//       ,
-//        new Match<Unit>()
-//        {
-//            @Override
-//            public boolean match(Unit o)
-//            {
-//                return !DelegateFinder.moveDelegate(data).getTransportTracker().isTransporting(o);
-//            }
-//        
-//        }
-       );
-       
-       
-       
-       
+       Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), HasntMoved);
+             
        for(Territory t : data.getMap())
        {
            //move sea units to the capitol, unless they are loaded transports
@@ -355,6 +404,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                    //move along amphi route
                    if(lastSeaZoneOnAmphib != null)
                    {
+                	   // two move route to end
                        Route r = getMaxSeaRoute(data, t, lastSeaZoneOnAmphib, player);
                        
                        if(r != null && r.getLength() > 0)
@@ -387,9 +437,19 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 
     private Route getMaxSeaRoute(final GameData data, Territory start, Territory destination,final PlayerID player)
     {
-        Match<Territory> routeCond = new CompositeMatchAnd<Territory>(
+    	Match<Territory> routeCond = null;
+    	Set<CanalAttachment> canalAttachments = CanalAttachment.get(destination);
+    	if(! canalAttachments.isEmpty()) {
+    		routeCond = new CompositeMatchAnd<Territory>(
+                    Matches.TerritoryIsWater,
+                    Matches.territoryHasEnemyUnits(player, data).invert());
+    	} else {
+    		routeCond = new CompositeMatchAnd<Territory>(
                 Matches.TerritoryIsWater,
                 Matches.territoryHasEnemyUnits(player, data).invert(),
+                passableChannel(data, player));
+    	}
+        /*
                 new Match<Territory>()
              {
                  public boolean match(Territory o)
@@ -409,6 +469,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                  }
              }
         );
+        */
         Route r = data.getMap().getRoute(start, destination, routeCond);
         if(r == null)
             return null;
@@ -489,14 +550,38 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                         moveRoutes.add(data.getMap().getRoute(owned, enemy));
                     }
                 }
-            }
-            
-  
-            
+            }           
             
         }
     }
 
+    // searches for amphibious attack on empty territory
+    private Route getAlternativeAmphibRoute(final PlayerID player) {
+        if(!isAmphibAttack(player))
+            return null;
+        
+        final GameData data = getPlayerBridge().getGameData();
+        Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
+        
+        // should select all territories with loaded transports 
+        Match<Territory> transportOnSea = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasLandUnitsOwnedBy(player));
+        Route altRoute = null;
+        int length=Integer.MAX_VALUE;
+        for(Territory t : data.getMap())
+        {
+        	if(! transportOnSea.match(t)) continue;
+            CompositeMatchAnd<Unit> ownedTransports = new CompositeMatchAnd<Unit>(Matches.UnitCanTransport, Matches.unitIsOwnedBy(player),HasntMoved);
+            CompositeMatchAnd<Territory> enemyTerritory = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsLand,new InverseMatch<Territory>(Matches.TerritoryIsNeutral),Matches.TerritoryIsEmpty);
+        	int trans = t.getUnits().countMatches(ownedTransports);
+        	if(trans>0) {
+        		Route newRoute = Utils.findNearest(t, enemyTerritory, routeCondition, data);
+        		if(newRoute != null && length > newRoute.getLength()) {
+        			altRoute = newRoute;
+        		}
+        	}
+        }
+        return altRoute;
+	}
 
     private void populateNonCombat(GameData data, List<Collection<Unit>> moveUnits, List<Route> moveRoutes, PlayerID player)
     {
@@ -583,6 +668,10 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
             {
                 CompositeMatchAnd<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsImpassible.invert());
                 Route newRoute = Utils.findNearest(t, Matches.territoryHasEnemyLandUnits(player, data ), routeCondition, data);
+                // move to any enemy territory
+                if(newRoute==null){
+                	newRoute = Utils.findNearest(t, Matches.isTerritoryEnemy(player, data), routeCondition, data);
+                }
                 if(newRoute != null)
                 {
                     moveUnits.add(units);
@@ -865,6 +954,17 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         }
         return sum;
     }
+    
+    private int countLandUnits(GameData data, PlayerID player)
+    {
+        CompositeMatchAnd<Unit> ownedLandUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsOwnedBy(player));
+        int sum = 0;
+        for(Territory t : data.getMap())
+        {
+            sum += t.getUnits().countMatches(ownedLandUnit );
+        }
+        return sum;
+    }
 
     protected void purchase(boolean purcahseForBid, int ipcsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
     {
@@ -878,6 +978,11 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         boolean isAmphib = isAmphibAttack(player); 
         Route amphibRoute = getAmphibRoute(player);
         int transportCount =  countTransports(getPlayerBridge().getGameData(), player);
+        int landUnitCount = countLandUnits(getPlayerBridge().getGameData(), player);
+        int defUnitsAtAmpibRoute = 0;
+        if( isAmphib && amphibRoute != null)  {
+            defUnitsAtAmpibRoute = amphibRoute.getEnd().getUnits().getUnitCount(); 
+        }
         
         Resource ipcs = data.getResourceList().getResource(Constants.IPCS);
 
@@ -923,12 +1028,23 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
                 //give a preferene to cheap units, and to transports
                 //but dont go overboard with buying transports
                 int goodNumberOfTransports = 0;
+                boolean isTransport = transportCapacity > 0;
                 if(amphibRoute != null)
                 {
-                    goodNumberOfTransports = ((int) (amphibRoute.getTerritories().size() * 2.6)) + 1;
+                	// 25% transports - can be more if frontier is far away
+                    goodNumberOfTransports = (int) (landUnitCount /4);
+                    // boost for transport production
+                	if(isTransport && defUnitsAtAmpibRoute > goodNumberOfTransports
+                			&& landUnitCount > defUnitsAtAmpibRoute
+                			&& defUnitsAtAmpibRoute > transportCount) {
+                		int transports = (int) (leftToSpend / cost);
+                        leftToSpend-= cost*transports;
+                        purchase.add(rule, transports);
+                        continue;
+                	}
+                    //goodNumberOfTransports = ((int) (amphibRoute.getTerritories().size() * 2.6)) + 1;
                 }
                 
-                boolean isTransport = transportCapacity > 0;
                 boolean buyBecauseTransport = (Math.random() < 0.7 && transportCount < goodNumberOfTransports) || Math.random() < 0.10 ;
                 boolean dontBuyBecauseTooManyTransports = transportCount > 2 * goodNumberOfTransports;
                 
@@ -1129,4 +1245,42 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         return dice;
     }
 
+    // some additional matches
+    public static final Match<Unit> HasntMoved = new Match<Unit>()
+    {
+    	public boolean match(Unit o)
+        {
+            return TripleAUnit.get(o).getAlreadyMoved() == 0;
+        }
+    };
+    
+    public static final Match<Unit> Transporting = new Match<Unit>()
+    {
+    	public boolean match(Unit o)
+        {
+            return (TripleAUnit.get(o).getTransporting().size() > 0);
+        }
+    };
+
+    public static final Match<Territory> passableChannel(final GameData data, final PlayerID player)
+    {
+    	return new Match<Territory>()
+        {
+    		public boolean match(Territory o)
+    		{
+    			Set<CanalAttachment> canalAttachments = CanalAttachment.get(o);
+    			if(canalAttachments.isEmpty())
+    				return true;
+            
+    			Iterator<CanalAttachment> iter = canalAttachments.iterator();
+    			while(iter.hasNext() )
+    			{
+    				CanalAttachment canalAttachment = iter.next();                     
+    				if(!Match.allMatch( canalAttachment.getLandTerritories(), Matches.isTerritoryAllied(player, data)))
+    					return false;
+    			}
+    			return true;
+    		}
+        };
+    }
 }

@@ -1,3 +1,11 @@
+* WeakAi improvements (masch)
+*   fix in land route calculation (does not take neutrals into account)
+*   improvement in Non-combat move. Moves towards enemy territories even if there are no units.
+*   purchase 20% transports if player is amphibious. Can boost that - buy
+*   only transports if landing point is heavy armed e.g. UK or Japan
+*   Try to capture unprotected land in amphibious combat ( 1 transport on different route )
+*   Ignore channel feature for sea routes, if endpoint is on channel territory ( otherwise you cannot attack that)
+
 * patch [ 1827892 ] Fix NPE crash when loading PBEM game (rrowell)
 
 * for installer with java, update embeded jre to 1.6 (sgb)
