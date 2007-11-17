@@ -1095,7 +1095,7 @@ public class MoveValidator
                         if (ua.getTransportCost() != -1)
                         {
                             result.addDisallowedUnit("Not enough transports", unit);
-                        System.out.println("adding disallowed unit (Not enough transports): "+unit);
+                            //System.out.println("adding disallowed unit (Not enough transports): "+unit);
                         }
                     }
                 }
@@ -1109,7 +1109,7 @@ public class MoveValidator
                         if (ua.getTransportCost() != -1)
                         {
                             result.addUnresolvedUnit("Not enough transports", unit);
-                        System.out.println("adding unresolved unit (Not enough transports): "+unit);
+                            //System.out.println("adding unresolved unit (Not enough transports): "+unit);
                         }
                     }
                 }
