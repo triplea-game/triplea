@@ -216,30 +216,34 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_mapAndChatPanel = new JPanel();
         m_mapAndChatPanel.setLayout(new BorderLayout());
 
-        m_commentPanel = new CommentPanel(this, m_data);	
-        m_commentSplit = new JSplitPane();
-        m_commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
-        m_commentSplit.setResizeWeight(0.5);
-        m_commentSplit.setTopComponent(m_commentPanel);
-        m_commentSplit.setBottomComponent(null);
+        m_commentPanel = new CommentPanel(this, m_data);
 
         m_chatSplit = new JSplitPane();
-        m_chatSplit.setTopComponent(m_mapPanel);
         m_chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
         m_chatSplit.setResizeWeight(0.95);
-        m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
-        
         if(MainFrame.getInstance().getChat() != null)
         {
+            m_commentSplit = new JSplitPane();
+            m_commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+            m_commentSplit.setResizeWeight(0.5);
+            m_commentSplit.setTopComponent(m_commentPanel);
+            m_commentSplit.setBottomComponent(null);
+
             m_chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
             m_chatPanel.setPlayerRenderer(new PlayerChatRenderer(m_game, m_uiContext ));
             
             Dimension chatPrefSize = new Dimension((int) m_chatPanel.getPreferredSize().getWidth(), 95);
             m_chatPanel.setPreferredSize(chatPrefSize);
+            
+            
+            m_chatSplit.setTopComponent(m_mapPanel);
             m_chatSplit.setBottomComponent(m_chatPanel);
-        } else 
+                        
+            m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
+        }
+        else
         {
-            m_chatSplit.setBottomComponent(null);
+            m_mapAndChatPanel.add(m_mapPanel, BorderLayout.CENTER);
         }
         
         m_gameMainPanel.setLayout(new BorderLayout());
@@ -1450,20 +1454,34 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
             {
                 m_commentSplit.setBottomComponent(null);
                 m_chatSplit.setBottomComponent(m_chatPanel);
+                m_chatSplit.validate();
             }
             else
+            {
+                m_mapAndChatPanel.removeAll();
+                m_chatSplit.setTopComponent(null);
                 m_chatSplit.setBottomComponent(null);
+                m_mapAndChatPanel.add(m_mapPanel, BorderLayout.CENTER);
+                m_mapAndChatPanel.validate();
+            }
         }
 
         private void showCommentLog()
         {
             if (m_chatPanel != null)
             {
-                m_chatSplit.setBottomComponent(m_commentSplit);
                 m_commentSplit.setBottomComponent(m_chatPanel);
+                m_chatSplit.setBottomComponent(m_commentSplit);
+                m_chatSplit.validate();
             }
             else
+            {
+                m_mapAndChatPanel.removeAll();
+                m_chatSplit.setTopComponent(m_mapPanel);
                 m_chatSplit.setBottomComponent(m_commentPanel);
+                m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
+                m_mapAndChatPanel.validate();
+            }
         }
     };
 

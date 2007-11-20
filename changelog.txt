@@ -1,3 +1,5 @@
+* fix bug [ 1825841 ] comment mode split bar visible (tclayton)
+
 * WeakAi improvements (masch)
 *   fix in land route calculation (does not take neutrals into account)
 *   improvement in Non-combat move. Moves towards enemy territories even if there are no units.
