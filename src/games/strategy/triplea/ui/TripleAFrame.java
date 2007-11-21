@@ -1066,6 +1066,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_tabsPanel.add("History", historyDetailPanel);
         m_tabsPanel.add("Stats", m_statsPanel);
         m_tabsPanel.add("Territory", m_details);
+        if (getEditMode())
+            m_tabsPanel.add("Edit", m_editPanel);
 
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(false);
@@ -1155,8 +1157,10 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
         m_tabsPanel.removeAll();
         m_tabsPanel.add("Action", m_actionButtons);
-        m_tabsPanel.add("Territory", m_details);
         m_tabsPanel.add("Stats", m_statsPanel);
+        m_tabsPanel.add("Territory", m_details);
+        if (getEditMode())
+            m_tabsPanel.add("Edit", m_editPanel);
 
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(true);
@@ -1419,7 +1423,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     private void setWidgetActivation()
     {
         m_showHistoryAction.setEnabled(!m_inHistory);
-        m_editModeButtonModel.setEnabled(!m_inHistory);
+        m_editModeButtonModel.setEnabled(m_editDelegate != null);
         m_showGameAction.setEnabled(m_inHistory);
     }
 
@@ -1429,6 +1433,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_editDelegate = editDelegate;
         // force a data change event to update the UI for edit mode
         m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+        setWidgetActivation();
     }
 
     public IEditDelegate getEditDelegate()
