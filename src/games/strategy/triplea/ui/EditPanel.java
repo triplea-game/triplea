@@ -294,10 +294,21 @@ public class EditPanel extends ActionPanel
 
     private void setWidgetActivation()
     {
-        m_addUnitsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-        m_delUnitsAction.setEnabled(!m_selectedUnits.isEmpty());
-        m_changeTerritoryOwnerAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-        m_changeIPCsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+        if (m_frame.getEditDelegate() == null)
+        {
+            // current turn belongs to remote player or AI player
+            m_addUnitsAction.setEnabled(false);
+            m_delUnitsAction.setEnabled(false);
+            m_changeTerritoryOwnerAction.setEnabled(false);
+            m_changeIPCsAction.setEnabled(false);
+        }
+        else
+        {
+            m_addUnitsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+            m_delUnitsAction.setEnabled(!m_selectedUnits.isEmpty());
+            m_changeTerritoryOwnerAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+            m_changeIPCsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+        }
     }
 
     public String toString()
@@ -307,11 +318,20 @@ public class EditPanel extends ActionPanel
 
     public void setActive(boolean active)
     {
-        if (!m_active && active)
+        if (m_frame.getEditDelegate() == null)
+        {
+            // current turn belongs to remote player or AI player
+            getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);
+            getMap().removeUnitSelectionListener(UNIT_SELECTION_LISTENER);
+            getMap().removeMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+            setWidgetActivation();
+        }
+        else if (!m_active && active)
         {
             getMap().addMapSelectionListener(MAP_SELECTION_LISTENER);
             getMap().addUnitSelectionListener(UNIT_SELECTION_LISTENER);
             getMap().addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
+            setWidgetActivation();
         }
         else if (!active && m_active)
         {

@@ -1,3 +1,5 @@
+* fix bug [ 1825831 ] in multiplayer mode, all players can edit (tclayton)
+
 * fix bug [ 1825841 ] comment mode split bar visible (tclayton)
 
 * WeakAi improvements (masch)

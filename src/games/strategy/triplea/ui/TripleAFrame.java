@@ -972,28 +972,55 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
     {
         public void gameDataChanged(Change change)
         {
-            if (getEditMode())
+            try
             {
-                if (m_tabsPanel.indexOfComponent(m_editPanel) == -1) 
+                SwingUtilities.invokeLater(new Runnable()
                 {
-                    m_tabsPanel.addTab("Edit", m_editPanel);
-                    m_tabsPanel.setSelectedComponent(m_editPanel);
-                    m_editModeButtonModel.setSelected(true);
-                    TripleAFrame.this.getGlassPane().setVisible(true);
-                }
-            }
-            else
+                    public void run()
+                    {
+                        if (m_uiContext == null)
+                            return;
+
+                        if (getEditMode())
+                        {
+                            if (m_tabsPanel.indexOfComponent(m_editPanel) == -1) 
+                            {
+                                showEditMode();
+                            }
+                        }
+                        else
+                        {
+                            if (m_tabsPanel.indexOfComponent(m_editPanel) != -1) 
+                            {
+                                hideEditMode();
+                            }
+                        }
+                    }
+                });
+            } catch (Exception e)
             {
-                if (m_tabsPanel.indexOfComponent(m_editPanel) != -1) 
-                {
-                    m_tabsPanel.remove(m_editPanel);
-                    m_tabsPanel.setSelectedIndex(0);
-                    m_editModeButtonModel.setSelected(false);
-                    TripleAFrame.this.getGlassPane().setVisible(false);
-                }
-            }
+                e.printStackTrace();
+            } 
         }
     };
+
+    private void showEditMode()
+    {
+        m_tabsPanel.addTab("Edit", m_editPanel);
+        if (m_editDelegate != null)
+            m_tabsPanel.setSelectedComponent(m_editPanel);
+        m_editModeButtonModel.setSelected(true);
+        getGlassPane().setVisible(true);
+    }
+
+    private void hideEditMode()
+    {
+        if (m_tabsPanel.getSelectedComponent() == m_editPanel)
+            m_tabsPanel.setSelectedIndex(0);
+        m_tabsPanel.remove(m_editPanel);
+        m_editModeButtonModel.setSelected(false);
+        getGlassPane().setVisible(false);
+    }
 
     public HistoryPanel getHistoryPanel()
     {
@@ -1130,8 +1157,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_tabsPanel.add("Action", m_actionButtons);
         m_tabsPanel.add("Territory", m_details);
         m_tabsPanel.add("Stats", m_statsPanel);
-        if (getEditMode())
-            m_tabsPanel.addTab("Edit", m_editPanel);
+
         if (m_actionButtons.getCurrent() != null)
             m_actionButtons.getCurrent().setActive(true);
 
@@ -1149,7 +1175,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         validate();
     }
     
-     public boolean saveScreenshot(final HistoryNode node, final File file)
+    public boolean saveScreenshot(final HistoryNode node, final File file)
     {
         // get current history node. if we are in history view, get the selected node.
         final MapPanel mapPanel = getMapPanel();
@@ -1397,9 +1423,12 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         m_showGameAction.setEnabled(m_inHistory);
     }
 
+    // setEditDelegate is called by TripleAPlayer at the start and end of a turn
     public void setEditDelegate(IEditDelegate editDelegate)
     {
         m_editDelegate = editDelegate;
+        // force a data change event to update the UI for edit mode
+        m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     }
 
     public IEditDelegate getEditDelegate()
