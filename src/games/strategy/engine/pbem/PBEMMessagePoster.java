@@ -19,14 +19,13 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 
-public class PBEMMessagePoster implements java.io.Serializable
+public class PBEMMessagePoster
 {
     private static final String TURNSUMMARY_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.TURNSUMMARY_MSGR";
     private static final String SCREENSHOT_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.SCREENSHOT_MSGR";
     private static final String SAVEGAME_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.SAVEGAME_MSGR";
 
     private GameData m_gameData = null;
-    private IDelegateHistoryWriter m_historyWriter = null;
 
     private IPBEMMessenger m_turnSummaryMessenger = null;
     private IPBEMMessenger m_screenshotMessenger = null;
@@ -50,10 +49,9 @@ public class PBEMMessagePoster implements java.io.Serializable
     {
     }
 
-    public PBEMMessagePoster(GameData gameData, IDelegateHistoryWriter historyWriter)
+    public PBEMMessagePoster(GameData gameData)
     {
         m_gameData = gameData;
-        m_historyWriter = historyWriter;
         setTurnSummaryMessenger((IPBEMMessenger)gameData.getProperties().get(TURNSUMMARY_MSGR_PROP_NAME));
         setScreenshotMessenger((IPBEMMessenger)gameData.getProperties().get(SCREENSHOT_MSGR_PROP_NAME));
         setSaveGameMessenger((IPBEMMessenger)gameData.getProperties().get(SAVEGAME_MSGR_PROP_NAME));
@@ -210,10 +208,10 @@ public class PBEMMessagePoster implements java.io.Serializable
     public boolean postTestData()
     {
         setTestData();
-        return post();
+        return post(null);
     }
 
-    public boolean post()
+    public boolean post(IDelegateHistoryWriter historyWriter)
     {
         boolean retval = true;
         IPBEMScreenshotMessenger screenshotMsgr = getScreenshotMessenger();
@@ -248,26 +246,26 @@ public class PBEMMessagePoster implements java.io.Serializable
         // Re-fetch all refs and write history last. 
         // refs might not be set until all posts are done, 
         // and won't be set yet if there were posting errors
-        if(m_historyWriter != null)
+        if (historyWriter != null)
         {
-            m_historyWriter.startEvent("Post Turn Summary");
+            historyWriter.startEvent("Post Turn Summary");
             if(screenshotMsgr != null)
             {
                 m_screenshotRef = screenshotMsgr.getScreenshotRef();
                 if(m_screenshotRef != null)
-                    m_historyWriter.addChildToEvent("Screenshot: "+m_screenshotRef, null);
+                    historyWriter.addChildToEvent("Screenshot: "+m_screenshotRef, null);
             }
             if(saveGameMsgr != null)
             {
                 m_saveGameRef = saveGameMsgr.getSaveGameRef();
                 if(m_saveGameRef != null)
-                    m_historyWriter.addChildToEvent("Save Game: "+m_saveGameRef, null);
+                    historyWriter.addChildToEvent("Save Game: "+m_saveGameRef, null);
             }
             if(turnSummaryMsgr != null)
             {
                 m_turnSummaryRef = turnSummaryMsgr.getTurnSummaryRef();
                 if(m_turnSummaryRef != null)
-                    m_historyWriter.addChildToEvent("Turn Summary: "+m_turnSummaryRef, null);
+                    historyWriter.addChildToEvent("Turn Summary: "+m_turnSummaryRef, null);
             }
         }
 

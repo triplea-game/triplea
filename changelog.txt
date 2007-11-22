@@ -1,3 +1,8 @@
+* PBEM posting fixes and cleanup (tclayton)
+*   don't proxy PBEMMessagePoster, remove serialization (was broken in multi-player)
+*   fix EndTurnDelegate serialization
+*   only show Turn Summary Posting widgets if posting is enabled
+
 * fix bug [ 1825831 ] in multiplayer mode, all players can edit (tclayton)
 
 * fix bug [ 1825841 ] comment mode split bar visible (tclayton)

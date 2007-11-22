@@ -35,6 +35,7 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
@@ -64,7 +65,6 @@ public abstract class AbstractEndTurnDelegate
     //we only want to notify once that the game is over
     private boolean m_needToInitialize = true;
     private boolean m_hasPostedTurnSummary = false;
-    private PBEMMessagePoster m_pbemMessagePoster;
     protected boolean m_gameOver = false;
 
     public void initialize(String name, String displayName)
@@ -86,7 +86,6 @@ public abstract class AbstractEndTurnDelegate
     {
         m_bridge = aBridge;
         m_data = gameData;
-        m_pbemMessagePoster = new PBEMMessagePoster(m_data, m_bridge.getHistoryWriter());
         if(!m_needToInitialize)
             return;
         m_hasPostedTurnSummary = false;
@@ -192,9 +191,10 @@ public abstract class AbstractEndTurnDelegate
         return m_hasPostedTurnSummary;
     }
 
-    public PBEMMessagePoster getPBEMMessagePoster()
+    public boolean postTurnSummary(PBEMMessagePoster poster)
     {
-        return m_pbemMessagePoster;
+        m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter());
+        return m_hasPostedTurnSummary;
     }
 
     public String getName()

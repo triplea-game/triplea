@@ -24,7 +24,7 @@ public interface IAbstractEndTurnDelegate
     extends IRemote
 {
 
-    public PBEMMessagePoster getPBEMMessagePoster();
+    public boolean postTurnSummary(PBEMMessagePoster poster);
 
     public void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
 

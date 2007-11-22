@@ -170,7 +170,7 @@ public class EndTurnPanel extends ActionPanel
                                 m_poster.setTurnSummary(m_historyLog.toString());
                             try
                             {
-                                if(!m_poster.post())
+                                if(!delegate.postTurnSummary(m_poster))
                                     postOk = false;
                             }
                             catch(Exception e)
@@ -259,16 +259,8 @@ public class EndTurnPanel extends ActionPanel
 
             public void run()
             {
-                removeAll();
                 m_actionLabel.setText(id.getName() + " Turn Summary");
-                add(m_actionLabel);
-                add(m_includeTerritoryCheckbox);
-                add(m_includeProductionCheckbox);
-                add(m_showDetailsCheckbox);
-                add(new JButton(m_viewAction));
-                m_postButton = new JButton(m_postAction);
-                add(m_postButton);
-                add(new JButton(m_doneAction));
+                // defer componenet layout until waitForEndTurn()
             }
 
         });
@@ -297,22 +289,33 @@ public class EndTurnPanel extends ActionPanel
         m_bridge = bridge;
 
         // Nothing to do if there are no PBEM messengers
-        IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate)m_bridge.getRemote();
-        m_poster = delegate.getPBEMMessagePoster();
+        m_poster = new PBEMMessagePoster(getData());
         if(!m_poster.hasMessengers())
             return;
+
         m_historyLog = new HistoryLog();
         updateHistoryLog();
+        IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate)m_bridge.getRemote();
         final boolean hasPosted = delegate.getHasPostedTurnSummary();
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run()
             {
+                // only show widgets if there are PBEM messengers
+                removeAll();
+                add(m_actionLabel);
+                add(m_includeTerritoryCheckbox);
+                add(m_includeProductionCheckbox);
+                add(m_showDetailsCheckbox);
+                add(new JButton(m_viewAction));
+                m_postButton = new JButton(m_postAction);
                 m_postButton.setEnabled(!hasPosted);
+                add(m_postButton);
+                add(new JButton(m_doneAction));
+                validate();
             }
 
         });
         waitForRelease();
-        return;
     }
 }

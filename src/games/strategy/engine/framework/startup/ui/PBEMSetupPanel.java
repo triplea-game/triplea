@@ -325,7 +325,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         storePBEMMessengers(gameData);
 
         // create a new message poster with no IDelegateHistoryWriter
-        PBEMMessagePoster poster = new PBEMMessagePoster(gameData, null);
+        PBEMMessagePoster poster = new PBEMMessagePoster(gameData);
 
         
 
@@ -605,7 +605,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         // TODO: store username, and password fields in user data
 
         // Let a temporary poster do the loading 
-        PBEMMessagePoster poster = new PBEMMessagePoster(data, null);
+        PBEMMessagePoster poster = new PBEMMessagePoster(data);
 
         // We now have two instances of these messengers - deserialized instance and GameLoader instance.
         // Need to merge the two.
