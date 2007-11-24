@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.*;
 import games.strategy.triplea.ui.ErrorHandler;
 
@@ -25,7 +26,16 @@ public class MainPanel extends JPanel implements Observer
     private JPanel m_chatPanelHolder;
     private final SetupPanelModel m_gameTypePanelModel;
     
-    private final Dimension m_initialSize = new Dimension(625,550);
+    private static final Dimension m_initialSize;
+    
+    static {
+        if(GameRunner.isMac()) {
+            m_initialSize = new Dimension(685,620);       
+        } else {
+            m_initialSize = new Dimension(625,550);        
+        }
+    }
+     
     //private final Dimension m_initialSizeWithChat = new Dimension(500,650);
     private boolean m_isChatShowing;
     
