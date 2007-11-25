@@ -1,3 +1,5 @@
+* fix bug where if your capital fell, and you captured another players capital, you could buy units (sgb)
+
 * PBEM posting fixes and cleanup (tclayton)
 *   don't proxy PBEMMessagePoster, remove serialization (was broken in multi-player)
 *   fix EndTurnDelegate serialization

@@ -27,6 +27,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -268,9 +269,17 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         else if(m_id.getProductionFrontier() == null || m_id.getProductionFrontier().getRules().isEmpty())
         {
             return;
-        }
+        }         
         else
         {
+            //if my capital is captured, 
+            //I can't produce
+            //i may have ipcs if i capture someone else's
+            //capital
+            Territory capital = TerritoryAttachment.getCapital(m_id, m_bridge.getGameData());
+            if(capital != null && !capital.getOwner().equals(m_id))
+                return;
+            
             int minIPCsNeededToBuild = Integer.MAX_VALUE;
             m_bridge.getGameData().acquireReadLock();
             try
