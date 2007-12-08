@@ -20,8 +20,6 @@
 
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
