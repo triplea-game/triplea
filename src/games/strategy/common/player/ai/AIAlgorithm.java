@@ -60,7 +60,7 @@ public class AIAlgorithm
                 bestMove = a;
             }
             if (value >= beta)
-                new Pair<Float,Play>(value,bestMove);
+                return new Pair<Float,Play>(value,bestMove);
             if (value > alpha)
                 alpha = value;
         }
@@ -87,7 +87,7 @@ public class AIAlgorithm
                 bestMove = a;
             }
             if (value <= alpha)
-                new Pair<Float,Play>(value,bestMove);
+                return new Pair<Float,Play>(value,bestMove);
             if (value < beta)
                 beta = value;
         }

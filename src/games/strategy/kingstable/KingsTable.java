@@ -56,7 +56,7 @@ public class KingsTable implements IGameLoader
     
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-    private static final String ALPHABETA_COMPUTER_PLAYER_TYPE = "αβ AI";
+    private static final String ALPHABETA_COMPUTER_PLAYER_TYPE = "\u03B1\u03B2 AI";//"αβ AI";
 
     // Minimax technically "works" for King's Table, 
     //    but the branching factor is so high that Minimax will run out of memory before it returns
