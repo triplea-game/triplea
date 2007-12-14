@@ -31,7 +31,7 @@ public abstract class GameState<Play>
      * @param play a legal game play
      * @return the state which will result from performing the specified play
      */
-    public abstract GameState getSuccessor(Play play);
+    public abstract GameState<Play> getSuccessor(Play play);
 
     /**
      * Get the play which resulted in this state.
@@ -44,7 +44,7 @@ public abstract class GameState<Play>
      * 
      * @return <code>Collection</code> of successor states
      */
-    public abstract Collection<GameState> successors();
+    public abstract Collection<GameState<Play>> successors();
 
     /** 
      * Get the utility (or heuristic evaluation score) for this state.

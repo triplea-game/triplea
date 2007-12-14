@@ -150,9 +150,9 @@ public class BetterAI extends AbstractAI {
             return m_move;
         }
         
-        public Collection<GameState> successors()
+        public Collection<GameState<Play>> successors()
         {
-            Collection<GameState> successors = new ArrayList<GameState>();
+            Collection<GameState<Play>> successors = new ArrayList<GameState<Play>>();
 
             for (int x=0; x<m_xDimension; x++)
             {

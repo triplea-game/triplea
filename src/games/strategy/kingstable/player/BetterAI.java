@@ -416,11 +416,11 @@ public class BetterAI extends AbstractAI {
                 return false;
         }
         
-        public Collection<GameState> successors()
+        public Collection<GameState<Move>> successors()
         {
             PlayerID successorPlayer = m_otherPlayer;
             
-            Collection<GameState> successors = new ArrayList<GameState>();
+            Collection<GameState<Move>> successors = new ArrayList<GameState<Move>>();
             int countCurrentPlayerPieces = 0;
             for (Entry<Integer,PlayerID> start : this.squareOwner.entrySet())
             {
