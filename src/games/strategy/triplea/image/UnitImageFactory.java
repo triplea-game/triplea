@@ -220,15 +220,20 @@ public class UnitImageFactory
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
 
+    if(type.getName().equals(Constants.AAGUN_TYPE) && TechTracker.hasRocket(id)) 
+    {
+        name = new StringBuilder("rockets");
+    }
+    
     if (type.getName().equals(Constants.FIGHTER_TYPE))
     {
       if (TechTracker.hasLongRangeAir(id))
       {
-	name.append("_lr");
+        name.append("_lr");
       }
       if (TechTracker.hasJetFighter(id))
       {
-	name.append("_jp");
+	    name.append("_jp");
       }
     }
 
@@ -236,12 +241,12 @@ public class UnitImageFactory
     {
       if (TechTracker.hasLongRangeAir(id))
       {
-	name.append("_lr");
+        name.append("_lr");
       }
 
       if (TechTracker.hasHeavyBomber(id))
       {
-	name.append("_hb");
+        name.append("_hb");
       }
     }
 
@@ -249,7 +254,7 @@ public class UnitImageFactory
     {
       if (TechTracker.hasSuperSubs(id))
       {
-	name.append("_ss");
+        name.append("_ss");
       }
       if (TechTracker.hasRocket(id))
       {}
@@ -260,7 +265,7 @@ public class UnitImageFactory
 
       if (TechTracker.hasIndustrialTechnology(id))
       {
-	name.append("_it");
+          name.append("_it");
       }
     }
 

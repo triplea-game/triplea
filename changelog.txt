@@ -1,3 +1,7 @@
+* add japanese, british, russions rockets, australian, canadian, neutral puppet state marine and neutral cruiser unit images (zero pilot)
+
+* use rocket images when a player has rocket tech advance (sgb)
+
 Changes for 0.9.2
 
 * fix bug where if your capital fell, and you captured another players capital, you could buy units (sgb)
