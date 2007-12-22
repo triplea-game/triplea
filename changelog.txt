@@ -1,3 +1,5 @@
+* fix bug [ 1855427 ] submerged subs prevent air units from moving (sgb)
+
 * add japanese, british, russions rockets, australian, canadian, neutral puppet state marine and neutral cruiser unit images (zero pilot)
 
 * use rocket images when a player has rocket tech advance (sgb)

@@ -1343,7 +1343,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
         CompositeChange change = new CompositeChange();
-        for(Unit u : units) 
+        for(Unit u : submerging) 
         {
             change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.SUBMERGED));
         }
