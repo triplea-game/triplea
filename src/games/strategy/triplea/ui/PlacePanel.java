@@ -163,7 +163,7 @@ public class PlacePanel extends ActionPanel
                                 "You have not placed all your units yet.  Are you sure you want to end your turn?",
                                 "TripleA", JOptionPane.YES_NO_OPTION,
                                 JOptionPane.PLAIN_MESSAGE);
-                if (option == JOptionPane.NO_OPTION)
+                if (option != JOptionPane.YES_OPTION)
                     return;
             }
 

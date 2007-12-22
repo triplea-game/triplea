@@ -1,3 +1,5 @@
+* [ 1837246 ] deploy troops phase window behavior (sgb)
+
 * fix bug [ 1855427 ] submerged subs prevent air units from moving (sgb)
 
 * add japanese, british, russions rockets, australian, canadian, neutral puppet state marine and neutral cruiser unit images (zero pilot)
