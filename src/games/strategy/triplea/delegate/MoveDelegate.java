@@ -386,7 +386,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 
-        String numErrorsMsg = numProblems > 0 ? ("; "+ numProblems + " errors" + (numProblems==1 ? "" : "s") + " not shown") : "";
+        String numErrorsMsg = numProblems > 0 ? ("; "+ numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
 
         if (result.hasError())
             return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
