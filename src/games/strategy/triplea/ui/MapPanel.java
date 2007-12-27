@@ -71,6 +71,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -175,7 +176,7 @@ public class MapPanel extends ImageScrollerLargeView
             {
                 //super.deactivate
                 MapPanel.this.deactivate();
-                m_undrawnTiles.clear();
+                clearUndrawn();
                 m_backgroundDrawer.stop();
             }
         
@@ -185,7 +186,7 @@ public class MapPanel extends ImageScrollerLargeView
        
     }
     
-    public LinkedBlockingQueue<Tile> getUndrawnTiles()
+    LinkedBlockingQueue<Tile> getUndrawnTiles()
     {
         return m_undrawnTiles;
     }
@@ -581,8 +582,7 @@ public class MapPanel extends ImageScrollerLargeView
         
         m_data.addDataChangeListener(TECH_UPDATE_LISTENER);
         
-        //stop painting in the background
-        m_undrawnTiles.clear();
+        clearUndrawn();
         
         m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
 
@@ -793,11 +793,30 @@ public class MapPanel extends ImageScrollerLargeView
         updateUndrawnTiles(undrawnTiles, 767, false);
         
         
-        m_undrawnTiles.clear();
+        clearUndrawn();
         m_undrawnTiles.addAll(undrawnTiles);
         
         stopWatch.done();
         
+    }
+
+    private void clearUndrawn()
+    {
+        for(int i =0; i < 3; i++) 
+        {
+            try
+            {
+                //several bug reports indicate that 
+                //clear can throw an exception
+                //http://sourceforge.net/tracker/index.php?func=detail&aid=1832130&group_id=44492&atid=439737
+                //ignore
+                m_undrawnTiles.clear();
+                return;
+            } catch(Exception e)
+            {
+                e.printStackTrace(System.out);            
+            }    
+        }
     }
 
     boolean mapFitsOnScreen()
@@ -1186,7 +1205,7 @@ class BackgroundDrawer implements Runnable
         
         while(m_mapPanelRef.get() != null)
         {
-            LinkedBlockingQueue<Tile> undrawnTiles;
+            BlockingQueue<Tile> undrawnTiles;
             MapPanel panel = m_mapPanelRef.get();
             if(panel == null)
                 continue;
