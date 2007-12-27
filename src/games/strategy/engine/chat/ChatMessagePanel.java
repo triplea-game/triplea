@@ -59,6 +59,7 @@ import javax.swing.text.StyleConstants;
  */
 public class ChatMessagePanel extends JPanel implements IChatListener
 {
+    private ChatFloodControl floodControl = new ChatFloodControl();
     private static final int MAX_LINES = 5000;
     private JTextPane m_text;
     private JScrollPane m_scrollPane;
@@ -220,6 +221,14 @@ public class ChatMessagePanel extends JPanel implements IChatListener
         {
             public void run()
             {
+                if(!floodControl.allow(from, System.currentTimeMillis())) 
+                {
+                    if(from.equals(m_chat.getLocalNode().getName())) 
+                    {
+                        addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
+                    }
+                    return;
+                }
                 addChatMessage(message, from, thirdperson);
              
                 SwingUtilities.invokeLater(new Runnable() {
