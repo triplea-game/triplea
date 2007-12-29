@@ -1,3 +1,5 @@
+* disable chat time menu in non networked games (sgb)
+
 * add limited chat flood control (sgb)
 
 * [ 1837246 ] deploy troops phase window behavior (sgb)

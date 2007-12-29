@@ -20,6 +20,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -200,6 +201,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         
         chatTimeBox.setSelected(false);
         parentMenu.add(chatTimeBox);
+        
+        chatTimeBox.setEnabled(MainFrame.getInstance().getChat() != null);
         
     }
 
