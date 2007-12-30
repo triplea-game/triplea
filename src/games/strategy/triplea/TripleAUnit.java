@@ -14,16 +14,17 @@
 
 package games.strategy.triplea;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -37,9 +38,10 @@ import games.strategy.triplea.attatchments.UnitAttachment;
  */
 public class TripleAUnit extends Unit
 {
+    //compatable with 0.9.2
+    private static final long serialVersionUID = 8811372406957115036L;
     
-    public static final String TRANSPORTED_BY = "transportedBy";
-    public static final String TRANSPORTING = "transporting";
+    public static final String TRANSPORTED_BY = "transportedBy";    
     public static final String UNLOADED = "unloaded";
     public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
     public static final String UNLOADED_TO = "unloadedTo";
@@ -51,8 +53,8 @@ public class TripleAUnit extends Unit
     
     //the transport that is currently transporting us
     private Unit m_transportedBy = null;
-    //the units we are transporting
-    private List<Unit> m_transporting = Collections.emptyList();
+
+    
     //the units we have unloaded this turn
     private List<Unit> m_unloaded = Collections.emptyList();
     //was this unit loaded this turn?
@@ -61,7 +63,7 @@ public class TripleAUnit extends Unit
     private Territory m_unloadedTo = null;
     //was this unit unloaded in combat phase this turn?
     private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE;
-    //movement used this trun
+    //movement used this turn
     private int m_alreadyMoved = 0;
     //is this submarine submerged
     private boolean m_submerged = false;
@@ -91,26 +93,27 @@ public class TripleAUnit extends Unit
     {
         m_transportedBy = transportedBy;
     }
-
+     
     public List<Unit> getTransporting()
-    {
-        return Collections.unmodifiableList(m_transporting);
-    }
-
-    /**
-     * private since this should only be called by UnitPropertyChange 
-     */
-    @SuppressWarnings("unused")
-    private  void setTransporting(List<Unit> transporting)
-    {
-        if(transporting == null || transporting.isEmpty()) 
+    {        
+        //we don't store the units we are transporting
+        //rather we look at the transported by property of units
+        for(Territory t : getData().getMap()) 
         {
-            m_transporting = Collections.emptyList();
-        } 
-        else
-        {
-            m_transporting = new ArrayList<Unit>(transporting);
+            //find the territory this transport is in
+            if(t.getUnits().getUnits().contains(this)) 
+            {
+                return t.getUnits().getMatches(new Match<Unit>()
+                {                                 
+                    public boolean match(Unit o)
+                    {
+                        return TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this;
+                    }
+                });
+            }
         }
+        
+        return Collections.emptyList();
     }
 
     public List<Unit> getUnloaded()
@@ -213,12 +216,7 @@ public class TripleAUnit extends Unit
     
     public List<Unit> getDependents()
     {
-        //TODO: add support for carriers as well
-        int size = m_transporting.size();
-        List<Unit> dependents = new ArrayList<Unit>(size);
-        for (Unit unit : m_transporting)
-            dependents.add(unit);
-        return dependents;
+        return getTransporting();
     }
 
     public Unit getDependentOf()

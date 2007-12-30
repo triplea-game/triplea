@@ -1,9 +1,13 @@
 package games.strategy.triplea.util;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -20,7 +24,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -176,26 +182,44 @@ public class UnitAutoChooserTest extends TestCase
         return bridge2;
     }
     
-    private void loadTransport(Unit trn, Unit u1)
+    private void loadTransport(Unit trn, Unit... units)
     {
-        loadTransport(trn,u1,null);
+
+        //the transport determines which unit it is transporting by
+        //looking at the units in the same territory it is in
+        //so we must place the units in the same territory
+        Territory t = m_data.getMap().getTerritory("11 Sea Zone");
+        ensureIn(t, trn);
+
+        t.getUnits().getUnits();
+        List<Unit> transporting = new ArrayList<Unit>();
+        
+        for(Unit u : units) 
+        {
+            ensureIn(t, u);
+            transporting.add(u);
+            PropertyUtil.set(TripleAUnit.TRANSPORTED_BY, trn, (TripleAUnit)u);   
+        }      
+
+        
+        assertTrue(TripleAUnit.get(trn).getTransporting().size() == units.length);
+        assertTrue(TripleAUnit.get(trn).getTransporting().containsAll(Arrays.asList(units)));
+    }
+    
+
+    private void ensureIn(Territory t, Unit u) 
+    {
+        //make sure the given unit is in the given territory
+        if(t.getUnits().getUnits().contains(u)) 
+        {
+            return;
+        }
+
+        Change c = ChangeFactory.addUnits(t, Collections.singleton(u));
+        new ChangePerformer(m_data).perform(c);
     }
 
-    private void loadTransport(Unit trn, Unit u1, Unit u2)
-    {
-        List<Unit> transporting = new ArrayList<Unit>();
-        if (u1 != null)
-        {
-            transporting.add(u1);
-            PropertyUtil.set(TripleAUnit.TRANSPORTED_BY, trn, (TripleAUnit)u1);
-        }
-        if (u2 != null)
-        {
-            transporting.add(u2);
-            PropertyUtil.set(TripleAUnit.TRANSPORTED_BY, trn, (TripleAUnit)u2);
-        }
-        PropertyUtil.set(TripleAUnit.TRANSPORTING, transporting, (TripleAUnit)trn);
-    }
+
 
     private void setUnits(Collection<Unit> c, Unit ... objects)
     {

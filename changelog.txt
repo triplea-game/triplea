@@ -1,3 +1,5 @@
+* fix bug [ 1856656 ] IllegalState exception (sgb)
+
 * disable chat time menu in non networked games (sgb)
 
 * add limited chat flood control (sgb)

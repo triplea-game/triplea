@@ -172,7 +172,7 @@ public class TransportTracker
             newCarrying = new ArrayList<Unit>(transport.getTransporting());
             newCarrying.remove(unit);
         }
-        change.add(ChangeFactory.unitPropertyChange(transport, newCarrying, TripleAUnit.TRANSPORTING ) );
+        
         change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
         
         return change;
@@ -194,8 +194,7 @@ public class TransportTracker
             throw new IllegalStateException("Already carrying, transport:" + transport + " unt:" + unit);
         }
         newCarrying.add(unit);
-        
-        change.add(ChangeFactory.unitPropertyChange(transport, newCarrying, TripleAUnit.TRANSPORTING ) );
+                
         
         change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, TripleAUnit.LOADED_THIS_TURN  ));
         

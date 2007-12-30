@@ -269,6 +269,58 @@ public class RevisedTest extends TestCase
         
     }
     
+    
+    public void testLoadUndoInWrongOrder()
+    {
+        Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
+        Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
+        
+        UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        ITestDelegateBridge bridge = getDelegateBridge(germans);
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        
+        Route eeToSz5 = new Route();
+        eeToSz5.setStart(eastEurope);
+        eeToSz5.add(sz5);
+
+        //load the transport in the baltic
+        List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
+        assertEquals(2, infantry.size());
+        
+        TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+        
+        //load the transports
+        //in two moves
+        String error = moveDelegate.move(infantry.subList(0,1), eeToSz5, Collections.<Unit>singletonList(transport));
+        assertNull(error,error);
+        error = moveDelegate.move(infantry.subList(1,2), eeToSz5, Collections.<Unit>singletonList(transport));
+        assertNull(error,error);
+        
+        
+        //make sure the transport was loaded
+        assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
+        assertTrue(moveDelegate.getMovesMade().get(1).wasTransportLoaded(transport));
+        
+        
+        //udo the moves in reverse order
+        moveDelegate.undoMove(0);
+        moveDelegate.undoMove(0);
+        
+        
+        //make sure that loaded is not set
+        assertTrue(transport.getTransporting().isEmpty());
+        assertFalse(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
+
+        
+    }
+    
+    
     public void testLoadUnloadAlliedTransport() 
     {
         //you cant load and unload an allied transport the same turn
