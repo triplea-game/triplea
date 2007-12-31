@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, map, resourceList?, playerList, unitList, gamePlay, production?, attatchmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader, map, resourceList?, playerList, unitList?, gamePlay, production?, attatchmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -176,7 +176,7 @@
 		>
 		
 <!ELEMENT propertyList (property*)>
-	<!ELEMENT property (boolean?, string?, number?, color?, list?) >
+	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?) >
 	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->
 	<!ATTLIST property
 		name CDATA #REQUIRED
@@ -187,6 +187,9 @@
 		<!ATTLIST boolean
 		>
 		<!ELEMENT string EMPTY>
+		<!ATTLIST string
+		>
+		<!ELEMENT file EMPTY>
 		<!ATTLIST string
 		>
 		<!ELEMENT number EMPTY>

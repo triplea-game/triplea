@@ -82,11 +82,14 @@ public class GameParser
         if(resourceList != null)
             parseResources(resourceList);
 
-        parseUnits(getSingleChild("unitList", root));
         parsePlayers(getSingleChild("playerList", root));
         parseGamePlay(getSingleChild("gamePlay", root));
 
         //optional
+        Node unitList = getSingleChild("unitList", root, true);
+        if (unitList != null)
+            parseUnits(unitList);
+        
         Node production = getSingleChild("production", root, true);
         if(production != null)
             parseProduction(production);
@@ -639,6 +642,10 @@ public class GameParser
                     {
                         properties.set(property, Boolean.valueOf(value));
                     }
+                    else if (type.equals("file"))
+                    {
+                        properties.set(property, new File(value));
+                    }
                     else
                     {
                         properties.set(property,value);
@@ -666,6 +673,10 @@ public class GameParser
         if(childName.equals("boolean"))
         {
             editableProperty = new BooleanProperty(name, Boolean.valueOf(defaultValue).booleanValue());
+        }
+        else if (childName.equals("file"))
+        {
+            editableProperty = new FileProperty(name, defaultValue);
         }
         else if(childName.equals("list"))
         {

@@ -184,6 +184,11 @@ public class ChangeFactory
         return new ObjectPropertyChange(unit,propertyName, newValue );
     }
     
+    public static Change addAttachmentChange(IAttachment attachment, Attachable attachable, String name)
+    {
+        return new AddAttachmentChange(attachment, attachable, name);
+    }
+    
     /** Creates new ChangeFactory. No need */
     private ChangeFactory()
     {
@@ -600,25 +605,35 @@ class RemoveProductionRule extends Change
 class AddAttachmentChange extends Change
 {
     private final IAttachment m_attachment;
-    private String m_namedAttachable;
+    private final String m_originalAttachmentName;
+    private final Attachable m_originalAttachable;
+    
+    private final Attachable m_attachable;
+    private final String m_name;
    
-    public AddAttachmentChange(IAttachment attachment, String attachable)
+    public AddAttachmentChange(IAttachment attachment, Attachable attachable, String name)
     {
         m_attachment = attachment;
-        m_namedAttachable = attachable;
+        m_originalAttachmentName = attachment.getName();
+        m_originalAttachable = attachment.getAttatchedTo();
+        
+        m_attachable = attachable;
+        m_name = name;
     }
    
     @Override
     protected void perform(GameData data)
     {
-        // TODO Auto-generated method stub
-        
+        m_attachable.addAttachment(m_name, m_attachment);
+        m_attachment.setData(data);
+        m_attachment.setName(m_name);
+        m_attachment.setAttatchedTo(m_attachable);
     }
 
     @Override
     public Change invert()
     {
-        return new RemoveAttachmentChange(m_attachment, m_namedAttachable);
+        return new RemoveAttachmentChange(m_attachment, m_originalAttachable, m_originalAttachmentName);
     }
     
 }
@@ -626,25 +641,38 @@ class AddAttachmentChange extends Change
 class RemoveAttachmentChange extends Change
 {
     private final IAttachment m_attachment;
-    private String m_namedAttachable;
+    private final String m_originalAttachmentName;
+    private final Attachable m_originalAttachable;
     
-    public RemoveAttachmentChange(IAttachment attachment, String attachable)
+    private final Attachable m_attachable;
+    private final String m_name;
+    
+    public RemoveAttachmentChange(IAttachment attachment, Attachable attachable, String name)
     {
         m_attachment = attachment;
-        m_namedAttachable = attachable;
+        m_originalAttachmentName = attachment.getName();
+        m_originalAttachable = attachment.getAttatchedTo();
+        
+        m_attachable = attachable;
+        m_name = name;
     }
 
     @Override
     protected void perform(GameData data)
     {
-        // TODO Auto-generated method stub
+        Map<String, IAttachment> attachments = m_attachable.getAttachments();
+        attachments.remove(m_attachment);
         
+        m_attachment.setAttatchedTo(m_attachable);
+        m_attachment.setName(m_name);
+        if (m_attachable!=null)
+            m_attachable.addAttachment(m_name, m_attachment);
     }
 
     @Override
     public Change invert()
     {
-        return new AddAttachmentChange(m_attachment, m_namedAttachable);
+        return new AddAttachmentChange(m_attachment, m_originalAttachable, m_originalAttachmentName);
     }
 
     

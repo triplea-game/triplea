@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<!DOCTYPE game SYSTEM "game.dtd">
+
+<game>
+
+	<info name="8 puzzle" version="1.0"/>
+	
+	<loader javaClass="games.puzzle.slidingtiles.NPuzzle"/>
+	
+	<map>
+		<grid name="gameboard" type="square" x="3" y="3" horizontal-connections="implicit" vertical-connections="implicit"/>
+	</map>
+	
+	<playerList>
+		<!-- In turn order -->
+		<player name="Player" optional="false"/>
+	</playerList>
+
+	<gamePlay>
+		<delegate name="init" javaClass="games.puzzle.slidingtiles.delegate.InitializationDelegate" display="Initialize Game"/>
+		<delegate name="play" javaClass="games.puzzle.slidingtiles.delegate.PlayDelegate" display="Play"/>
+		<delegate name="endTurn" javaClass="games.puzzle.slidingtiles.delegate.EndTurnDelegate" display="Check for winner"/>
+		
+		<sequence>
+			<step name="gameInit" delegate="init" maxRunCount="1"/>
+			
+			<step name="gamePlay" delegate="play" player="Player"/>
+			<step name="gameEndTurn" delegate="endTurn" />
+
+		</sequence>
+	</gamePlay>
+
+	<propertyList>
+		<property name="mapName" value="8_puzzle" editable="false" />
+	    <property name="Difficulty Level" value="7" editable="true">
+        	<number min="0" max="10000"/>
+        </property>
+        <property name="Background" value="" editable="true"><file/></property>
+	</propertyList>
+		
+</game>
