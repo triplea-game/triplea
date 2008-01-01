@@ -20,6 +20,7 @@ import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.chat.IPlayerActionFactory;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.ModeratorController;
@@ -52,7 +53,7 @@ public class LobbyFrame extends JFrame
     private final ChatMessagePanel m_chatMessagePanel;
     
     
-    public LobbyFrame(LobbyClient client)
+    public LobbyFrame(LobbyClient client, LobbyServerProperties props)
     {
         super("TripleA Lobby");
         setIconImage(GameRunner.getGameIcon(this));
@@ -60,7 +61,9 @@ public class LobbyFrame extends JFrame
         setJMenuBar(new LobbyMenu(this));
         
         Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(), m_client.getRemoteMessenger());
+        
         m_chatMessagePanel = new ChatMessagePanel(chat);
+        showServerMessage(props);
         
         m_chatMessagePanel.setShowTime(true);
         
@@ -123,6 +126,14 @@ public class LobbyFrame extends JFrame
         });
         
         
+    }
+
+    private void showServerMessage(LobbyServerProperties props)
+    {
+        if(props.getServerMessage() != null && props.getServerMessage().length() > 0) 
+        {
+            m_chatMessagePanel.addMessage(props.getServerMessage(), "SERVER", false);
+        }
     }
     
     private List<Action> createAdminActions(final INode clickedOn)

@@ -1,6 +1,7 @@
 package games.strategy.engine.framework;
 
 import games.strategy.debug.Console;
+import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.triplea.ui.ErrorHandler;
 
@@ -36,6 +37,7 @@ public class GameRunner2
         Console.getConsole().displayStandardOutput();
 
         System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
+        System.setProperty("triplea.engine.version", EngineVersion.VERSION.toString());
         
         setupLookAndFeel();
 

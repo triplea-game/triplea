@@ -394,13 +394,19 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         if (result.hasDisallowedUnits())
             return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
 
+        boolean isKamikaze = false;
         // confirm kamikaze moves, and remove them from unresolved units
         if(m_data.getProperties().get(Constants.KAMIKAZE, false))
         {
             Collection<Unit> kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
-            if (kamikazeUnits.size() > 0 && getRemotePlayer().confirmMoveKamikaze())  
-                for (Unit unit : kamikazeUnits)
+            if (kamikazeUnits.size() > 0 && getRemotePlayer().confirmMoveKamikaze())
+            {
+                for (Unit unit : kamikazeUnits) 
+                {
                     result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
+                    isKamikaze = true;
+                }
+            }
         }
 
         if (result.hasUnresolvedUnits())
@@ -421,6 +427,10 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
         m_bridge.getHistoryWriter().startEvent(transcriptText);
+        if(isKamikaze)
+        {
+            m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move");
+        }
         MoveDescription description = new MoveDescription(units, route);
         m_bridge.getHistoryWriter().setRenderingData(description);
 

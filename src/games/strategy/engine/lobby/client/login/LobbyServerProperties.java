@@ -31,14 +31,16 @@ public class LobbyServerProperties
     private final String m_host;
     private final int m_port;
     private final String m_serverErrorMessage;
+    private final String m_serverMessage;
 
     private volatile boolean m_done;
     
-    public LobbyServerProperties(final String host, final int port, final String serverErrorMessage)
+    public LobbyServerProperties(final String host, final int port, final String serverErrorMessage, String serverMessage)
     {
         m_host = host;
         m_port = port;
         m_serverErrorMessage = serverErrorMessage;
+        m_serverMessage = serverMessage;
     }
 
     public boolean isDone()
@@ -102,6 +104,7 @@ public class LobbyServerProperties
         m_host = props.getProperty("HOST");
         m_port = Integer.parseInt(props.getProperty("PORT", "-1"));
         m_serverErrorMessage = props.getProperty("ERROR_MESSAGE", "");
+        m_serverMessage = props.getProperty("MESSAGE", "");
         m_done = true;
     }
     
@@ -142,6 +145,11 @@ public class LobbyServerProperties
         System.out.println(props.getHost());
         System.out.println(props.getPort());
         System.out.println(props.getServerErrorMessage());
+    }
+
+    public String getServerMessage()
+    {
+        return m_serverMessage;
     }
     
 }
