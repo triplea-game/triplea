@@ -79,6 +79,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
         return null;
     }
 
+    public void signalStatus(String status)
+    {
+        INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+        display.setStatus(status);
+    }
+    
     public static Territory getBlankNeighbor(GameMap map, Territory t)
     {
         for (Territory neighbor : map.getNeighbors(t))

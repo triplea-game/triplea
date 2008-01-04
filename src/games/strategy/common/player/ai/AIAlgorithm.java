@@ -14,6 +14,10 @@
 
 package games.strategy.common.player.ai;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
+
 /**
  * Utility class implementing AI game algorithms.
  *
@@ -25,6 +29,76 @@ package games.strategy.common.player.ai;
  */
 public class AIAlgorithm
 {
+    
+    public static <Play> Stack<Play> depthFirstSearch(GameState<Play> state, int maxDepth)
+    {
+       Stack<Play> stack = new Stack<Play>();
+       try {
+           if (state.gameIsOver())
+           {
+               //System.out.println("The given state is a solution!");
+               return stack;
+           }
+           else
+           {
+               //System.out.println("Starting with " + state);
+               Set<GameState<Play>> visitedStates = new HashSet<GameState<Play>>();
+               visitedStates.add(state);
+               return dfs(state, visitedStates, stack, 0, maxDepth);
+           }
+       } catch (StackOverflowError e) {
+           return null;
+       }
+    }
+
+    private static <Play> Stack<Play> dfs(GameState<Play> state, Set<GameState<Play>> visitedStates, Stack<Play> plays, int depth, int maxDepth)
+    {
+        
+        int playsSoFar = plays.size();
+        
+        if (depth < maxDepth)
+        {
+            int childCounter = -1;
+            
+            // Find all of the possible next states
+            for (GameState<Play> child : state.successors())
+            {
+                childCounter++;
+                
+                // Have we seen this child state before?
+                if (! visitedStates.contains(child))
+                {
+                    //System.out.println("Considering child " + child + " #"+childCounter + " at depth " + depth + " created by move " + child.getMove());
+                    
+                    // Mark that we've now seen this child state
+                    //System.out.println("We have now seen " + child + " at depth " + depth + " created by move " + child.getMove());
+                    visitedStates.add(child);
+
+                    // Is the child state a win state?
+                    if (child.gameIsOver()) 
+                    {
+                        //System.out.println("Success! at level " + depth + " " + child);
+                        plays.push(child.getMove());
+                        return plays;
+                    }
+                    else 
+                    {
+                        plays = dfs(child, visitedStates, plays, depth+1, maxDepth);
+                        if (plays.size() > playsSoFar)
+                        {
+                            //System.out.println("Pushing play at " + depth + " " + child);
+                            plays.push(child.getMove());
+                            return plays;
+                        }
+                    }
+                }
+               // else System.out.println("HAVE already seen " + child + " #"+childCounter + " now at depth " + depth+ " created by move " + child.getMove());
+               
+            }
+        }
+        return plays;
+    }
+    
     /**
      * Find the optimal next play to perform from the given game state, 
      * using the alpha-beta algorithm.

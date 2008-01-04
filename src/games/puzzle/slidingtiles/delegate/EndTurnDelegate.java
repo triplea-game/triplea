@@ -14,6 +14,8 @@
 
 package games.puzzle.slidingtiles.delegate;
 
+import java.util.concurrent.CountDownLatch;
+
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -31,6 +33,8 @@ import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
  */
 public class EndTurnDelegate extends BaseDelegate
 {
+    private CountDownLatch m_waiting;
+    
     /**
      * Called before the delegate will run.
      */
@@ -41,7 +45,16 @@ public class EndTurnDelegate extends BaseDelegate
         if (gameOver(gameData.getMap()))
         {
             signalGameOver("Board solved!");
+            
+            try
+            {
+                m_waiting = new CountDownLatch(1);
+                m_waiting.await();
+            } catch (InterruptedException e)
+            {
+            }
         }
+
     }
 
     public boolean gameOver(GameMap map) 
@@ -89,7 +102,11 @@ public class EndTurnDelegate extends BaseDelegate
      */
     public void end()
     {
-        
+        if (m_waiting==null)
+            return;
+        else
+            while (m_waiting.getCount() > 0)
+                m_waiting.countDown();
     }
     
     /**

@@ -131,7 +131,7 @@ public class NPuzzleFrame extends MainGameFrame
     public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge)
     {
         PlayData play = null;
-
+        //player.getName().endsWith("AI");
         try {
             while (play==null)
             {

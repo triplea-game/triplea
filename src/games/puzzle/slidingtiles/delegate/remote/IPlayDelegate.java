@@ -26,4 +26,6 @@ import games.strategy.engine.message.IRemote;
 public interface IPlayDelegate extends IRemote
 {
     public String play(Territory from, Territory to);
+    
+    public void signalStatus(String status);
 }

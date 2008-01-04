@@ -31,9 +31,12 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
 import games.strategy.engine.pbem.IPBEMMessenger;
 
+import games.puzzle.slidingtiles.player.BetterAI;
 import games.puzzle.slidingtiles.player.INPuzzlePlayer;
 import games.puzzle.slidingtiles.player.RandomAI;
 import games.puzzle.slidingtiles.player.NPuzzlePlayer;
+import games.puzzle.slidingtiles.player.BetterAI.Algorithm;
+import games.puzzle.slidingtiles.player.BetterAI.Heuristic;
 import games.puzzle.slidingtiles.ui.NPuzzleFrame;
 import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
 import games.puzzle.slidingtiles.ui.display.NPuzzleDisplay;
@@ -54,8 +57,7 @@ public class NPuzzle implements IGameLoader
     
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-    //private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
-    //private static final String ALPHABETA_COMPUTER_PLAYER_TYPE = "\u03B1\u03B2 AI";//"αβ AI";
+    private static final String DFS_COMPUTER_PLAYER_TYPE = "Depth First Search AI";
     
         
     /**
@@ -80,6 +82,11 @@ public class NPuzzle implements IGameLoader
                 RandomAI ai = new RandomAI(name);
                 players.add(ai);
             }
+            else if (type.equals(DFS_COMPUTER_PLAYER_TYPE))
+            {
+                BetterAI ai = new BetterAI(name, Algorithm.DFS, Heuristic.NUMBER_OF_MISPLACED_TILES);
+                players.add(ai);
+            }
             else
             {
                 throw new IllegalStateException("Player type not recognized:" + type);
@@ -94,7 +101,7 @@ public class NPuzzle implements IGameLoader
     public String[] getServerPlayerTypes()
     {
         return new String[]
-        {HUMAN_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
+        {HUMAN_PLAYER_TYPE, DFS_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
             
     }
 

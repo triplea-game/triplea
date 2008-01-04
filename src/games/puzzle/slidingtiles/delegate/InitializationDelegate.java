@@ -53,6 +53,9 @@ public class InitializationDelegate extends BaseDelegate
         
         Territory[][] board = new Territory[width][height];
         
+        INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+        display.setStatus("Shuffling tiles...");
+        
         m_bridge.getHistoryWriter().startEvent("Initializing board");
         
         CompositeChange initializingBoard = new CompositeChange();
@@ -68,7 +71,7 @@ public class InitializationDelegate extends BaseDelegate
 
         m_bridge.addChange(initializingBoard);
 
-        INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+        //INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
         display.initializeBoard();
         display.performPlay();  
         
@@ -107,6 +110,8 @@ public class InitializationDelegate extends BaseDelegate
             swap = null;
             
         }
+        
+        display.setStatus(" ");
         
         //m_bridge.addChange(randomizingBoard);
         //display.performPlay();  
