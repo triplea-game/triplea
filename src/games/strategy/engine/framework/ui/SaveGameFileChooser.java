@@ -98,7 +98,8 @@ public class SaveGameFileChooser extends JFileChooser
 				return true;
 
             //the extension should be .tsvg, but find svg extensions as well
-			return f.getName().endsWith(".tsvg") || f.getName().endsWith(".svg");
+			//also, macs download the file as tsvg.gz, so accept that as well
+			return f.getName().endsWith(".tsvg") || f.getName().endsWith(".svg") || f.getName().endsWith("tsvg.gz");
 		}
 
 		public String getDescription()

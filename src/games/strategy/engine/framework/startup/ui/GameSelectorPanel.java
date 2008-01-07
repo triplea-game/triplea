@@ -209,8 +209,10 @@ public class GameSelectorPanel extends JPanel implements Observer
                 fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
                 fileDialog.setFilenameFilter(new FilenameFilter(){
                    public boolean accept(File dir, String name)
-                   {    // the extension should be .tsvg, but find svg extensions as well
-                       return name.endsWith(".tsvg") || name.endsWith(".svg");
+                   {   
+                       // the extension should be .tsvg, but find svg extensions as well
+                       //also, macs download the file as tsvg.gz, so accept that as well
+                       return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
                    }
                 });
             }
