@@ -20,7 +20,7 @@ import games.strategy.engine.message.IRemote;
  * Empty interface which all N-Puzzle player classes must implement.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-27 19:20:21 -0500 (Wed, 27 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public interface INPuzzlePlayer extends IRemote
 {

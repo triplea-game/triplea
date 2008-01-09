@@ -32,7 +32,7 @@ import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
  * Responsible for performing a move in a game of n-puzzle.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-27 19:20:21 -0500 (Wed, 27 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 {

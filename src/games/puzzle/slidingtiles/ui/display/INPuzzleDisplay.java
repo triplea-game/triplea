@@ -19,7 +19,7 @@ import games.strategy.engine.display.IDisplay;
 
 /**
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-27 19:20:21 -0500 (Wed, 27 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public interface INPuzzleDisplay extends IDisplay
 {

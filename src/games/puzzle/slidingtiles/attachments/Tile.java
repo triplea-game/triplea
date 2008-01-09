@@ -18,7 +18,7 @@ import games.strategy.engine.data.DefaultAttachment;
 /**
  * Represents a sliding tile in a sliding tile game.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz 
  * @version $LastChangedDate$
  */
 public class Tile extends DefaultAttachment

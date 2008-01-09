@@ -35,7 +35,7 @@ import games.strategy.engine.message.IRemote;
  * Responsible for initializing an N-Puzzle game.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-19 13:39:15 -0500 (Tue, 19 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class InitializationDelegate extends BaseDelegate
 {
@@ -64,6 +64,7 @@ public class InitializationDelegate extends BaseDelegate
             for(int y=0; y<height; y++) {
                 board[x][y] = map.getTerritoryFromCoordinates(x, y);
                 Tile tile = new Tile(x + y*width);
+                //System.out.println("board["+x+"]["+y+"]=="+(x + y*width));
                 Change change = ChangeFactory.addAttachmentChange(tile, board[x][y], "tile");
                 initializingBoard.add(change);
             }

@@ -72,6 +72,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
             return m_gridDimensions[1];
     }    
     
+    //public Territory getTerritoryFromCoordinates(int xCoordinate, int yCoordinate) 
     public Territory getTerritoryFromCoordinates(int... coordinate) 
     {
         if (m_gridDimensions==null)
@@ -82,9 +83,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
             
         int listIndex = coordinate[0];        
         
-        for (int i=1; i<m_gridDimensions.length; i++)
-            listIndex += coordinate[i] * m_gridDimensions[i];
-        
+        int multiplier = 1;
+        for (int i=1; i<m_gridDimensions.length; i++) 
+        {
+            multiplier *= m_gridDimensions[i-1];
+            listIndex += coordinate[i] * multiplier; //m_gridDimensions[i];
+        }
         
         return ((ArrayList<Territory>) m_territories).get(listIndex);
         
@@ -336,9 +340,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	}
 
 	/**
-	 * Gauraunteed that frontier doesnt contain target.
+	 * Guaranteed that frontier doesn't contain target.
 	 * Territories on the frontier are not target.  They represent the extent of paths already searched.
-	 * Territores in searched have already been on the frontier.
+	 * Territories in searched have already been on the frontier.
 	 */
 	private int getDistance(int distance, Set<Territory> searched, Set<Territory> frontier, Territory target, Match<Territory> cond)
 	{
@@ -352,12 +356,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		{
 			Territory onFrontier = frontierIterator.next();
 
-			Set connections = m_connections.get(onFrontier);
+			Set<Territory> connections = m_connections.get(onFrontier);
 
-			Iterator connectionIterator = connections.iterator();
+			Iterator<Territory> connectionIterator = connections.iterator();
 			while(connectionIterator.hasNext() )
 			{
-				Territory nextFrontier = (Territory) connectionIterator.next();
+				Territory nextFrontier = connectionIterator.next();
 				if(cond.match(nextFrontier))
 					newFrontier.add(nextFrontier);
 			}

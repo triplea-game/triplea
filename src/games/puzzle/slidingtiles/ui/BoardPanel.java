@@ -42,7 +42,7 @@ import javax.swing.SwingUtilities;
  * Custom component for displaying a n-puzzle gameboard.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-27 19:20:21 -0500 (Wed, 27 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class BoardPanel extends JComponent implements MouseListener
 {

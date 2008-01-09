@@ -42,7 +42,7 @@ import javax.swing.JPanel;
 /**
  * Represents the puzzle board component.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz 
  * @version $LastChangedDate$
  */
 public class NPuzzleFrame extends MainGameFrame

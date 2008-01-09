@@ -19,7 +19,6 @@ import games.strategy.common.player.ai.GameState;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.puzzle.slidingtiles.attachments.Tile;
 import games.puzzle.slidingtiles.delegate.remote.IPlayDelegate;
@@ -85,7 +84,7 @@ public class BetterAI extends AbstractAI {
 	        {
 	            if (m_algorithm.equals(Algorithm.DFS))
 	            {  
-	                GameProperties properties = m_bridge.getGameData().getProperties();
+	                //GameProperties properties = m_bridge.getGameData().getProperties();
 	                int numberOfShuffles = 1;//Integer.valueOf((String) properties.get("Difficulty Level"));
 	                
 	                while (m_moves==null || m_moves.isEmpty())

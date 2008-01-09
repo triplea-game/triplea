@@ -46,7 +46,7 @@ import games.puzzle.slidingtiles.ui.display.NPuzzleDisplay;
  * Main class responsible for an n-puzzle game.
  *
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-12-14 08:51:35 -0600 (Fri, 14 Dec 2007) $
+ * @version $LastChangedDate$
  */
 public class NPuzzle implements IGameLoader
 {
@@ -58,7 +58,7 @@ public class NPuzzle implements IGameLoader
     private static final String HUMAN_PLAYER_TYPE = "Human";
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
     private static final String DFS_COMPUTER_PLAYER_TYPE = "Depth First Search AI";
-    
+     
         
     /**
      * @see IGameLoader.createPlayers(playerNames)

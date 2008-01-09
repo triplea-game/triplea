@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-27 19:20:21 -0500 (Wed, 27 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class BoardData
 {

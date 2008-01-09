@@ -30,7 +30,7 @@ import java.util.Random;
  * Plays by attempting to play on a random square on the board.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-27 19:20:21 -0500 (Wed, 27 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class RandomAI extends AbstractAI
 {

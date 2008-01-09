@@ -24,7 +24,7 @@ import games.strategy.engine.data.Territory;
  * which correspond to the piece to be moved, and the destination for the move.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2007-06-19 13:39:15 -0500 (Tue, 19 Jun 2007) $
+ * @version $LastChangedDate$
  */
 public class PlayData implements IPlayData
 {
