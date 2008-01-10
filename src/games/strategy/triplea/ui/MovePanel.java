@@ -108,6 +108,7 @@ public class MovePanel extends ActionPanel
     
     private Point m_mouseSelectedPoint;
     private Point m_mouseCurrentPoint;
+    private Point m_mouseLastUpdatePoint;
     
     //use a LinkedHashSet because we want to know the order
     private final Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
@@ -1391,6 +1392,7 @@ public class MovePanel extends ActionPanel
 
             if (!m_selectedUnits.isEmpty())
             {
+                m_mouseLastUpdatePoint = me.getMapPoint();
                 Route route = getRoute(getFirstSelectedTerritory(), t);
                 updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
                 updateRouteAndMouseShadowUnits(route);
@@ -1685,7 +1687,7 @@ public class MovePanel extends ActionPanel
                 Route route = getRoute(getFirstSelectedTerritory(), territory);
                 if (m_mouseCurrentTerritory == null 
                         || !m_mouseCurrentTerritory.equals(territory)
-                        || m_mouseCurrentPoint.equals(m_mouseSelectedPoint)) {
+                        || m_mouseCurrentPoint.equals(m_mouseLastUpdatePoint)) {
                     getData().acquireReadLock();
                     try
                     {
