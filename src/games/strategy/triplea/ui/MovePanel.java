@@ -1682,9 +1682,10 @@ public class MovePanel extends ActionPanel
             
             if (getFirstSelectedTerritory() != null && territory != null)
             {
-                m_mouseCurrentPoint= me.getMapPoint();
                 Route route = getRoute(getFirstSelectedTerritory(), territory);
-                if (m_mouseCurrentTerritory == null || !m_mouseCurrentTerritory.equals(territory)) {
+                if (m_mouseCurrentTerritory == null 
+                        || !m_mouseCurrentTerritory.equals(territory)
+                        || m_mouseCurrentPoint.equals(m_mouseSelectedPoint)) {
                     getData().acquireReadLock();
                     try
                     {
@@ -1697,6 +1698,7 @@ public class MovePanel extends ActionPanel
                     
                 }
 
+                m_mouseCurrentPoint= me.getMapPoint();
                 updateRouteAndMouseShadowUnits(route);
             }
             m_mouseCurrentTerritory = territory;

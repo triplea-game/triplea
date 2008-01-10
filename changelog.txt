@@ -1,3 +1,5 @@
+* fix bug [ 1856374 ] movement panel crash (claytont)
+
 * put engine version in system properties for debugging (sgb)
 
 * mark kamikaze moves as such in the history (sgb)
