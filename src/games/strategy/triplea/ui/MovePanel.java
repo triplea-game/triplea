@@ -1476,6 +1476,7 @@ public class MovePanel extends ActionPanel
             }
             else
             {
+                m_mouseLastUpdatePoint = me.getMapPoint();
                 updateUnitsThatCanMoveOnRoute(m_selectedUnits, getRoute(getFirstSelectedTerritory(), t));
                 updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), t));
             }
