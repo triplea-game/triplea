@@ -1,4 +1,6 @@
-* fix bug [ 1856374 ] movement panel crash (claytont)
+* fix bug [ 1855420 ] Unable to move fighters during non-combat movement (tclayton)
+
+* fix bug [ 1856374 ] movement panel crash (tclayton)
 
 * put engine version in system properties for debugging (sgb)
 

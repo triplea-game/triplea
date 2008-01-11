@@ -622,7 +622,7 @@ public class MoveValidator
             // check units individually
             for (Unit unit : moveTest)
             {
-            if (!MoveValidator.hasEnoughMovement(unit, route.getLength()))
+                if (!MoveValidator.hasEnoughMovement(unit, route.getLength()))
                     result.addDisallowedUnit("Not all units have enough movement",unit);
             }
 
@@ -1058,7 +1058,7 @@ public class MoveValidator
 
             Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
 
-            Iterator<Unit> iter = units.iterator();
+            Iterator<Unit> iter = land.iterator();
             while (!isEditMode && iter.hasNext())
             {
                 TripleAUnit unit = (TripleAUnit) iter.next();
