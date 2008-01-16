@@ -741,6 +741,7 @@
 		<!-- German IC -->
 		<attatchment name="territoryAttatchment" attatchTo="Germany" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"  type="territory">
                         <option name="production" value="6"/>
+						<option name="originalFactory" value="true" />
                         <option name="capital" value="Germans"/>        
         </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Eastern France" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
@@ -757,6 +758,7 @@
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Northern Italy" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="4" />
+			<option name="originalFactory" value="true" />
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Palestine" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
@@ -820,6 +822,7 @@
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Archangel" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
+			<option name="originalFactory" value="true" />
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Cyprus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />
@@ -841,6 +844,7 @@
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Canada" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="3" />
+		    <option name="originalFactory" value="true" />
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Belorussia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
@@ -866,6 +870,7 @@
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Stalingrad" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
+			<option name="originalFactory" value="true" />
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Greece" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
@@ -881,6 +886,7 @@
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Leningrad" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="1" />
+			<option name="originalFactory" value="true" />
 	    </attatchment>
 	    <attatchment name="territoryAttatchment"  attatchTo="Crete" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory" >
 		    <option name="production" value="0" />

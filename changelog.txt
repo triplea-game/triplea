@@ -1,4 +1,6 @@
-* fix bug [ 1746101 ] defending units in pacific show incorrectly in battle displa (comradekev)
+* fix [ 1867299 ] Initial industrial complexes have limited production (comradekev)
+
+* fix bug [ 1746101 ] defending units in pacific show incorrectly in battle display (comradekev)
 
 * change Load new game to Choose Game on startup screen. (sgb)
 
