@@ -36,6 +36,7 @@ public interface Constants
   public static final String JAPANESE = "Japanese";
   public static final String RUSSIANS = "Russians";
   public static final String ITALIANS = "Italians";
+  public static final String CHINESE = "Chinese";
 
   public static final String UNIT_ATTATCHMENT_NAME = "unitAttatchment";
   public static final String TECH_ATTATCHMENT_NAME = "techAttatchment";

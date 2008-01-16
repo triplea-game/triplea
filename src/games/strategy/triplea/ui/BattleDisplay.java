@@ -756,7 +756,7 @@ public class BattleDisplay extends JPanel
         };
  
         //press space to continue
-        String key = "battle.display.press.space.to.contineu";
+        String key = "battle.display.press.space.to.continue";
         getActionMap().put(key, continueAction);
         getInputMap( WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), key);
                 
@@ -921,7 +921,12 @@ class BattleModel extends DefaultTableModel
             if (m_attack)
                 strength = attatchment.getAttack(category.getOwner());
             else
+                //If it's Pacific_Edition and Japan's turn one, all but Chinese defend at a 1
+            {
                 strength = attatchment.getDefense(category.getOwner());
+                if( DiceRoll.isFirstTurnLimitedRoll(category.getOwner()))
+                    strength = Math.min(1, strength);
+            }
 
             int unitsToAdd = category.getUnits().size();
             int supportedUnitsToAdd = 0;

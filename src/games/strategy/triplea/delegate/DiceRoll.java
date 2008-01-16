@@ -294,10 +294,7 @@ public class DiceRoll implements Externalizable
                         //If it's Pacific_Edition and Japan's turn one, all but Chinese defend at a 1
                     {
                         strength = ua.getDefense(current.getOwner());
-                        if (bridge.getPlayerID().getData().getProperties().get(Constants.PACIFIC_EDITION, false)
-                                && bridge.getPlayerID().getData().getSequence().getRound() == 1 
-                                && bridge.getStepName().equals("japaneseBattle")
-                                && !player.getName().equals("Chinese"))
+                        if (isFirstTurnLimitedRoll(player))
                         {
                             strength = Math.min(1, strength);
                         }
@@ -331,6 +328,14 @@ public class DiceRoll implements Externalizable
         DiceRoll rVal = new DiceRoll(dice, hitCount);
         bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
         return rVal;
+    }
+    
+    public static boolean isFirstTurnLimitedRoll(PlayerID player) 
+    {
+        return player.getData().getProperties().get(Constants.PACIFIC_EDITION, false) 
+        && player.getData().getSequence().getRound() == 1 
+        && player.getData().getSequence().getStep().getName().equals("japaneseBattle") 
+        && !player.equals(player.getData().getPlayerList().getPlayerID(Constants.CHINESE));
     }
 
     /**
