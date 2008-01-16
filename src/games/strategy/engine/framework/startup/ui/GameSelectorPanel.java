@@ -91,7 +91,7 @@ public class GameSelectorPanel extends JPanel implements Observer
         m_roundText = new JLabel();
         m_fileNameText = new JLabel();
         
-        m_loadNewGame = new JButton("Load New Game...");
+        m_loadNewGame = new JButton("Choose Game...");
         m_loadSavedGame = new JButton("Load Saved Game...");
         m_gameOptions = new JButton("Game Options...");
     }

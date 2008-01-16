@@ -1,3 +1,5 @@
+* change Load new game to Choose Game on startup screen. (sgb)
+
 * fix bug [ 1855420 ] Unable to move fighters during non-combat movement (tclayton)
 
 * fix bug [ 1856374 ] movement panel crash (tclayton)
