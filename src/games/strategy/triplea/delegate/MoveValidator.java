@@ -29,6 +29,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 
@@ -1159,6 +1160,121 @@ public class MoveValidator
         }
         return null;
     }
+
+    public static MustMoveWithDetails getMustMoveWith(Territory start, Collection<Unit> units, GameData data, PlayerID player)
+    {
+        return new MustMoveWithDetails(mustMoveWith(units, start, data, player));
+    }
+   
+    private static Map<Unit, Collection<Unit>> mustMoveWith(Collection<Unit> units, Territory start, GameData data, PlayerID player)
+    {
+
+        List<Unit> sortedUnits = new ArrayList<Unit>(units);
+
+        Collections.sort(sortedUnits, UnitComparator.getIncreasingMovementComparator());
+
+        Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
+        mapping.putAll(transportsMustMoveWith(sortedUnits));
+        mapping.putAll(carrierMustMoveWith(sortedUnits, start, data, player));
+        return mapping;
+    }
+
+    private static Map<Unit, Collection<Unit>> transportsMustMoveWith(Collection<Unit> units)
+    {
+        TransportTracker transportTracker = new TransportTracker();
+        Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
+        //map transports
+        Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
+        Iterator<Unit> iter = transports.iterator();
+        while (iter.hasNext())
+        {
+            Unit transport = iter.next();
+            Collection<Unit> transporting = transportTracker.transporting(transport);
+            mustMoveWith.put(transport, transporting);
+        }
+        return mustMoveWith;
+    }
+
+    private static Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Territory start, GameData data, PlayerID player)
+    {
+        return carrierMustMoveWith(units, start.getUnits().getUnits(), data, player);
+    }
+
+    public static Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Collection<Unit> startUnits, GameData data, PlayerID player)
+    {
+
+        //we want to get all air units that are owned by our allies
+        //but not us that can land on a carrier
+        CompositeMatch<Unit> friendlyNotOwnedAir = new CompositeMatchAnd<Unit>();
+        friendlyNotOwnedAir.add(Matches.alliedUnit(player, data));
+        friendlyNotOwnedAir.addInverse(Matches.unitIsOwnedBy(player));
+        friendlyNotOwnedAir.add(Matches.UnitCanLandOnCarrier);
+
+        Collection<Unit> alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
+
+        if (alliedAir.isEmpty())
+            return Collections.emptyMap();
+
+        //remove air that can be carried by allied
+        CompositeMatch<Unit> friendlyNotOwnedCarrier = new CompositeMatchAnd<Unit>();
+        friendlyNotOwnedCarrier.add(Matches.UnitIsCarrier);
+        friendlyNotOwnedCarrier.add(Matches.alliedUnit(player, data));
+        friendlyNotOwnedCarrier.addInverse(Matches.unitIsOwnedBy(player));
+
+        Collection<Unit> alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
+
+        Iterator<Unit> alliedCarrierIter = alliedCarrier.iterator();
+        while (alliedCarrierIter.hasNext())
+        {
+            Unit carrier = alliedCarrierIter.next();
+            Collection<Unit> carrying = getCanCarry(carrier, alliedAir);
+            alliedAir.removeAll(carrying);
+        }
+
+        if (alliedAir.isEmpty())
+            return Collections.emptyMap();
+
+        Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
+        //get air that must be carried by our carriers
+        Collection<Unit> ownedCarrier = Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));
+
+        Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
+        while (ownedCarrierIter.hasNext())
+        {
+            Unit carrier = (Unit) ownedCarrierIter.next();
+            Collection<Unit> carrying = getCanCarry(carrier, alliedAir);
+            alliedAir.removeAll(carrying);
+
+            mapping.put(carrier, carrying);
+        }
+
+        return mapping;
+    }
+
+    private static Collection<Unit> getCanCarry(Unit carrier, Collection<Unit> selectFrom)
+    {
+
+        UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
+        Collection<Unit> canCarry = new ArrayList<Unit>();
+
+        int available = ua.getCarrierCapacity();
+        Iterator<Unit> iter = selectFrom.iterator();
+        while (iter.hasNext())
+        {
+            Unit plane = (Unit) iter.next();
+            UnitAttachment planeAttatchment = UnitAttachment.get(plane.getUnitType());
+            int cost = planeAttatchment.getCarrierCost();
+            if (available >= cost)
+            {
+                available -= cost;
+                canCarry.add(plane);
+            }
+            if (available == 0)
+                break;
+        }
+        return canCarry;
+    }
+
 
     /** Creates new MoveValidator */
     private MoveValidator()

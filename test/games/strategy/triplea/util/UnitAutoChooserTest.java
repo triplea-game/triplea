@@ -182,7 +182,8 @@ public class UnitAutoChooserTest extends TestCase
         return bridge2;
     }
     
-    private void loadTransport(Unit trn, Unit... units)
+    private void loadTransport(Map<Unit,Collection<Unit>> mustMoveWith, 
+                               Unit trn, Unit... units)
     {
 
         //the transport determines which unit it is transporting by
@@ -200,6 +201,7 @@ public class UnitAutoChooserTest extends TestCase
             transporting.add(u);
             PropertyUtil.set(TripleAUnit.TRANSPORTED_BY, trn, (TripleAUnit)u);   
         }      
+        mustMoveWith.put(trn,transporting);
 
         
         assertTrue(TripleAUnit.get(trn).getTransporting().size() == units.length);
@@ -239,6 +241,7 @@ public class UnitAutoChooserTest extends TestCase
         List<Unit> expectedSelectedUnitsWithDependents  = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnits                = new ArrayList<Unit>();
         UnitAutoChooser autoChooser = null;
+        Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
         boolean bImplicitDependents = true;
         boolean bCategorizeMovement = false;
 
@@ -247,23 +250,23 @@ public class UnitAutoChooserTest extends TestCase
         TripleAUnit t1 =  TestUnit.createUnit("t1",  transport, british);
         TripleAUnit a1 =  TestUnit.createUnit("a1",  armour, british);
         TripleAUnit i1 =  TestUnit.createUnit("i1",  infantry, british);
-        loadTransport(t1,a1,i1);
+        loadTransport(mustMoveWith,t1,a1,i1);
 
         TripleAUnit bb2 = TestUnit.createUnit("bb2", battleship, british);
         TripleAUnit t2 =  TestUnit.createUnit("t2",  transport, british);
         TripleAUnit a2 =  TestUnit.createUnit("a2",  armour, british);
         TripleAUnit i2 =  TestUnit.createUnit("i2",  infantry, british);
-        loadTransport(t2,a2,i2);
+        loadTransport(mustMoveWith,t2,a2,i2);
         // make this trn only have 1 movement left
         TripleAUnit.get(t2).setAlreadyMoved(1);
 
         TripleAUnit t3 =  TestUnit.createUnit("t3",  transport, british);
         TripleAUnit i3 =  TestUnit.createUnit("i3",  infantry, british);
-        loadTransport(t3,i3);
+        loadTransport(mustMoveWith,t3,i3);
 
         TripleAUnit t4 =  TestUnit.createUnit("t4",  transport, british);
         TripleAUnit a4 =  TestUnit.createUnit("a4",  armour, british);
-        loadTransport(t4,a4);
+        loadTransport(mustMoveWith,t4,a4);
 
         TripleAUnit t5 =  TestUnit.createUnit("t5",  transport, british);
 
@@ -272,7 +275,7 @@ public class UnitAutoChooserTest extends TestCase
         TripleAUnit t7 =  TestUnit.createUnit("t7",  transport, british);
         TripleAUnit i7 =  TestUnit.createUnit("i7",  infantry, british);
         TripleAUnit I7 =  TestUnit.createUnit("I7",  infantry, british);
-        loadTransport(t7,i7,I7);
+        loadTransport(mustMoveWith,t7,i7,I7);
 
         //
         // BEGIN TESTS
@@ -303,7 +306,7 @@ public class UnitAutoChooserTest extends TestCase
         
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1);
         setUnits(chosenUnits       ,t1,t5,a1,a4,i2,i3,bb1);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -349,7 +352,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,a2,i2,t5,a1,i3,t6);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(2, autoChooser.exactSolutionCount());
         assertEquals(4, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -411,7 +414,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits   ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits,bb2);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -452,7 +455,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,bb2,bb1);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -506,7 +509,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t2,t4,bb1,bb2);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(8, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -598,7 +601,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,a1,t2,a2);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(2, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -651,7 +654,7 @@ public class UnitAutoChooserTest extends TestCase
         
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,bb1,bb2);
         setUnits(chosenUnits       ,t4);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(3, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -711,7 +714,7 @@ public class UnitAutoChooserTest extends TestCase
 
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,bb1,bb2);
         setUnits(chosenUnits       ,t4);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(4, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -779,7 +782,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,t2,t3,t4,t5);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(4, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -858,7 +861,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,t7,i7,I7,bb1,bb2);
         setUnits(chosenUnits       ,t1,t4,i3);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(10, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -949,6 +952,7 @@ public class UnitAutoChooserTest extends TestCase
         List<Unit> expectedSelectedUnitsWithDependents  = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnits                = new ArrayList<Unit>();
         UnitAutoChooser autoChooser = null;
+        Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
         boolean bImplicitDependents = false;
         boolean bCategorizeMovement = false;
 
@@ -957,23 +961,23 @@ public class UnitAutoChooserTest extends TestCase
         TripleAUnit t1 =  TestUnit.createUnit("t1",  transport, british);
         TripleAUnit a1 =  TestUnit.createUnit("a1",  armour, british);
         TripleAUnit i1 =  TestUnit.createUnit("i1",  infantry, british);
-        loadTransport(t1,a1,i1);
+        loadTransport(mustMoveWith,t1,a1,i1);
 
         TripleAUnit bb2 = TestUnit.createUnit("bb2", battleship, british);
         TripleAUnit t2 =  TestUnit.createUnit("t2",  transport, british);
         TripleAUnit a2 =  TestUnit.createUnit("a2",  armour, british);
         TripleAUnit i2 =  TestUnit.createUnit("i2",  infantry, british);
-        loadTransport(t2,a2,i2);
+        loadTransport(mustMoveWith,t2,a2,i2);
         // make this trn only have 1 movement left
         TripleAUnit.get(t2).setAlreadyMoved(1);
 
         TripleAUnit t3 =  TestUnit.createUnit("t3",  transport, british);
         TripleAUnit i3 =  TestUnit.createUnit("i3",  infantry, british);
-        loadTransport(t3,i3);
+        loadTransport(mustMoveWith,t3,i3);
 
         TripleAUnit t4 =  TestUnit.createUnit("t4",  transport, british);
         TripleAUnit a4 =  TestUnit.createUnit("a4",  armour, british);
-        loadTransport(t4,a4);
+        loadTransport(mustMoveWith,t4,a4);
 
         TripleAUnit t5 =  TestUnit.createUnit("t5",  transport, british);
 
@@ -1008,7 +1012,7 @@ public class UnitAutoChooserTest extends TestCase
         //    1
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1);
         setUnits(chosenUnits       ,t1,t5,a1,a4,i2,i3,bb1);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1051,7 +1055,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,a2,i2,t5,i3,t6,a1);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(2, autoChooser.exactSolutionCount());
         assertEquals(2, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1099,7 +1103,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t2,t4,bb1,bb2);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1140,7 +1144,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,a1,t2,a2);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertFalse(autoChooser.foundCompleteSolution());
@@ -1180,7 +1184,7 @@ public class UnitAutoChooserTest extends TestCase
         //    1
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,bb1,bb2);
         setUnits(chosenUnits       ,t4);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1221,7 +1225,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,t2,t3,t4,t5);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertFalse(autoChooser.foundCompleteSolution());
@@ -1250,6 +1254,7 @@ public class UnitAutoChooserTest extends TestCase
         List<Unit> expectedSelectedUnitsWithDependents  = new ArrayList<Unit>();
         List<Unit> expectedSelectedUnits                = new ArrayList<Unit>();
         UnitAutoChooser autoChooser = null;
+        Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
         boolean bImplicitDependents = true;
         boolean bCategorizeMovement = true;
 
@@ -1258,23 +1263,23 @@ public class UnitAutoChooserTest extends TestCase
         TripleAUnit t1 =  TestUnit.createUnit("t1",  transport, british);
         TripleAUnit a1 =  TestUnit.createUnit("a1",  armour, british);
         TripleAUnit i1 =  TestUnit.createUnit("i1",  infantry, british);
-        loadTransport(t1,a1,i1);
+        loadTransport(mustMoveWith,t1,a1,i1);
 
         TripleAUnit bb2 = TestUnit.createUnit("bb2", battleship, british);
         TripleAUnit t2 =  TestUnit.createUnit("t2",  transport, british);
         TripleAUnit a2 =  TestUnit.createUnit("a2",  armour, british);
         TripleAUnit i2 =  TestUnit.createUnit("i2",  infantry, british);
-        loadTransport(t2,a2,i2);
+        loadTransport(mustMoveWith,t2,a2,i2);
         // make this trn only have 1 movement left
         TripleAUnit.get(t2).setAlreadyMoved(1);
 
         TripleAUnit t3 =  TestUnit.createUnit("t3",  transport, british);
         TripleAUnit i3 =  TestUnit.createUnit("i3",  infantry, british);
-        loadTransport(t3,i3);
+        loadTransport(mustMoveWith,t3,i3);
 
         TripleAUnit t4 =  TestUnit.createUnit("t4",  transport, british);
         TripleAUnit a4 =  TestUnit.createUnit("a4",  armour, british);
-        loadTransport(t4,a4);
+        loadTransport(mustMoveWith,t4,a4);
 
         TripleAUnit t5 =  TestUnit.createUnit("t5",  transport, british);
 
@@ -1283,7 +1288,7 @@ public class UnitAutoChooserTest extends TestCase
         TripleAUnit t7 =  TestUnit.createUnit("t7",  transport, british);
         TripleAUnit i7 =  TestUnit.createUnit("i7",  infantry, british);
         TripleAUnit I7 =  TestUnit.createUnit("I7",  infantry, british);
-        loadTransport(t7,i7,I7);
+        loadTransport(mustMoveWith,t7,i7,I7);
 
         //
         // BEGIN TESTS
@@ -1314,7 +1319,7 @@ public class UnitAutoChooserTest extends TestCase
         
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1);
         setUnits(chosenUnits       ,t1,t5,a1,a4,i2,i3,bb1);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1362,7 +1367,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,a2,i2,t5,a1,i3,t6);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(3, autoChooser.exactSolutionCount());
         assertEquals(5, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1431,7 +1436,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits   ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits,bb2);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1472,7 +1477,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,bb2,bb1);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(1, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1532,7 +1537,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t2,t4,bb1,bb2);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(11, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1647,7 +1652,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,a1,t2,a2);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(3, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1709,7 +1714,7 @@ public class UnitAutoChooserTest extends TestCase
         
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,bb1,bb2);
         setUnits(chosenUnits       ,t4);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(4, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1778,7 +1783,7 @@ public class UnitAutoChooserTest extends TestCase
 
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,bb1,bb2);
         setUnits(chosenUnits       ,t4);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(5, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1855,7 +1860,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,bb1,bb2);
         setUnits(chosenUnits       ,t1,t2,t3,t4,t5);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(0, autoChooser.exactSolutionCount());
         assertEquals(5, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());
@@ -1949,7 +1954,7 @@ public class UnitAutoChooserTest extends TestCase
            
         setUnits(allUnits          ,t1,a1,i1,t2,a2,i2,t3,i3,t4,a4,t5,t6,t7,i7,I7,bb1,bb2);
         setUnits(chosenUnits       ,t1,t4,i3);
-        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,bImplicitDependents,bCategorizeMovement);
+        autoChooser = new UnitAutoChooser(allUnits,chosenUnits,mustMoveWith,bImplicitDependents,bCategorizeMovement);
         assertEquals(1, autoChooser.exactSolutionCount());
         assertEquals(14, autoChooser.solutionCount());
         assertTrue(autoChooser.foundCompleteSolution());

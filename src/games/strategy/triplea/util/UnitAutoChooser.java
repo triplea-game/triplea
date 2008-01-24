@@ -76,6 +76,11 @@ public class UnitAutoChooser
     private final boolean m_bAllowImplicitDependents;
 
 
+    // m_dependentsMap: 
+    // Set to the Map of unit->dependents for all relevant units
+    private final Map<Unit, Collection<Unit>> m_dependentsMap;
+
+
     // SOLUTION LINGO:
     // There are three types of solutions the solver may find, in terms of the 
     // completedness of the solution:
@@ -154,6 +159,7 @@ public class UnitAutoChooser
 
     public UnitAutoChooser(final Collection<Unit> allUnits,
                            final Collection<Unit> chosenUnits,
+                           final Map<Unit, Collection<Unit>> dependentsMap,
                            boolean bAllowImplicitDependents,
                            boolean bCategorizeMovement)
                            
@@ -170,6 +176,11 @@ public class UnitAutoChooser
         m_bCategorizeMovement = bCategorizeMovement;
         m_bAllowImplicitDependents = bAllowImplicitDependents;
 
+        if (dependentsMap == null)
+            m_dependentsMap = Collections.emptyMap();
+        else
+            m_dependentsMap = dependentsMap;
+
         // preserve insertion order
         m_candidateUnits = new LinkedHashSet<Unit>(allUnits.size()+1, 1);
 
@@ -180,11 +191,11 @@ public class UnitAutoChooser
         // don't categorize dependents for allCategories 
         // if m_bCategorizeMovement is true then we use allCategoriesWithMovement as well (see below).
         // tell UnitSeperator not to sort the results since we want to preserve order
-        Set<UnitCategory> allCategories    = UnitSeperator.categorize(m_allUnits, true, false, false);
+        Set<UnitCategory> allCategories    = UnitSeperator.categorize(m_allUnits, m_dependentsMap, false, false);
 
         // don't categorize dependents for chosenCategories
         // tell UnitSeperator not to sort the results since we want to preserve order
-        Set<UnitCategory> chosenCategories = UnitSeperator.categorize(m_chosenUnits, false, false, false);
+        Set<UnitCategory> chosenCategories = UnitSeperator.categorize(m_chosenUnits, null, false, false);
 
         // store occurrence count for chosen categories
         m_chosenCategoryCounts = new IntegerMap<UnitCategory>(chosenCategories.size()+1, 1);
@@ -205,7 +216,7 @@ public class UnitAutoChooser
         // do the bulk of the category-related work to find our solutions in terms of categories
         if (m_bCategorizeMovement)
         {
-            Set<UnitCategory> allCategoriesWithMovement = UnitSeperator.categorize(m_allUnits, true, true, false);
+            Set<UnitCategory> allCategoriesWithMovement = UnitSeperator.categorize(m_allUnits, m_dependentsMap, true, false);
             solveCandidateCompositeCategories(allCategories, allCategoriesWithMovement, chosenCategories);
         }
         else
@@ -225,8 +236,13 @@ public class UnitAutoChooser
         {
             candidateUnits.add(unit);
             if (selectDependents)
-                for (Unit dependent : TripleAUnit.get(unit).getDependents())
+            {
+                Collection<Unit> dependents = m_dependentsMap.get(unit);
+                if (dependents == null)
+                    dependents = Collections.emptyList();
+                for (Unit dependent : dependents)
                     candidateUnits.add(dependent);
+            }
         }
         return candidateUnits;
     }
@@ -275,13 +291,18 @@ public class UnitAutoChooser
         List<Unit> dependentUnits = new ArrayList<Unit>(m_allUnits.size());
         selectedUnits.addAll(m_selectedUnitSolutions.get(solutionIndex));
         for (Unit unit : selectedUnits)
-            for (Unit dependent : TripleAUnit.get(unit).getDependents())
+        {
+            Collection<Unit> dependents = m_dependentsMap.get(unit);
+            if (dependents == null)
+                dependents = Collections.emptyList();
+            for (Unit dependent : dependents)
                 dependentUnits.add(dependent);
+        }
 
         if (!selectImplicitDependents)
         {
             // add only the dependent units that were in chosen units
-            Set<UnitCategory> dependentCategories = UnitSeperator.categorize(dependentUnits, true, false, false);
+            Set<UnitCategory> dependentCategories = UnitSeperator.categorize(dependentUnits, m_dependentsMap, false, false);
             IntegerMap<UnitCategory> usedCategoryCounts = new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size()+1, 1);
             for (UnitCategory chosenCategory : m_chosenCategoryCounts.keySet())
             {
@@ -356,7 +377,10 @@ public class UnitAutoChooser
 
                             usedCategoryCounts.add(chosenCategory, 1);
                             compositeCategoryUnits.add(unit);
-                            for (Unit dependent : TripleAUnit.get(unit).getDependents())
+                            Collection<Unit> dependents = m_dependentsMap.get(unit);
+                            if (dependents == null)
+                                dependents = Collections.emptyList();
+                            for (Unit dependent : dependents)
                             {
                                 UnitCategory dependentCategory = new UnitCategory(dependent.getType(), dependent.getOwner());
                                 usedCategoryCounts.add(dependentCategory, 1);
@@ -390,14 +414,18 @@ public class UnitAutoChooser
                         if (compositeCategoryUnits.contains(unit))
                             continue;
                         // don't add dependents to candidate units
-                        if (TripleAUnit.get(unit).getDependentOf() == null)
-                            m_candidateUnits.add(unit);
+                        // but there will be dependents in this loop anyway
+                        m_candidateUnits.add(unit);
+
                         if ((m_chosenCategoryCounts.getInt(chosenCategory) - usedCategoryCounts.getInt(chosenCategory)) > 0)
                         {
                             usedCategoryCounts.add(chosenCategory, 1);
                             //System.out.println("adding unit "+unit);
                             compositeCategoryUnits.add(unit);
-                            for (Unit dependent : TripleAUnit.get(unit).getDependents())
+                            Collection<Unit> dependents = m_dependentsMap.get(unit);
+                            if (dependents == null)
+                                dependents = Collections.emptyList();
+                            for (Unit dependent : dependents)
                             {
                                 UnitCategory dependentCategory = new UnitCategory(dependent.getType(), dependent.getOwner());
                                 usedCategoryCounts.add(dependentCategory, 1);
@@ -434,8 +462,8 @@ public class UnitAutoChooser
                 for (Unit unit : category.getUnits())
                 {
                     // don't add dependents to candidate units
-                    if (TripleAUnit.get(unit).getDependentOf() == null)
-                        m_candidateUnits.add(unit);
+                    // but there will be dependents in this loop anyway
+                    m_candidateUnits.add(unit);
                     if ((m_chosenCategoryCounts.getInt(chosenCategory) - usedCategoryCounts.getInt(chosenCategory)) > 0)
                     {
                         usedCategoryCounts.add(chosenCategory, 1);

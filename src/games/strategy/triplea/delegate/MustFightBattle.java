@@ -278,7 +278,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         // If fourth edition, allied air on our carriers are also dependents
         if (isFourthEdition())
         {
-            dependencies.putAll(MoveDelegate.carrierMustMoveWith(units, units, m_data, m_attacker));
+            dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
         }
 
         addDependentUnits(dependencies);

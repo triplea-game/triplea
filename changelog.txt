@@ -1,3 +1,5 @@
+* fix bug [ 1862922 ] foreign planes on carrier (tclayton)
+
 * fix [ 1867299 ] Initial industrial complexes have limited production (comradekev)
 
 * fix bug [ 1746101 ] defending units in pacific show incorrectly in battle display (comradekev)

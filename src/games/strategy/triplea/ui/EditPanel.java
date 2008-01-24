@@ -107,7 +107,15 @@ public class EditPanel extends ActionPanel
 
                 String chooserText = "Remove units from " + m_selectedTerritory + ":";
 
-                UnitAutoChooser autoChooser = new UnitAutoChooser(allUnits, m_selectedUnits, true, false);
+                MustMoveWithDetails mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, 
+                                                                                        allUnits,
+                                                                                        getData(),
+                                                                                        getCurrentPlayer());
+
+                UnitAutoChooser autoChooser = new UnitAutoChooser(allUnits, 
+                                                                  m_selectedUnits, 
+                                                                  mustMoveWithDetails.getMustMoveWith(),
+                                                                  true, false);
 
                 Collection<Unit> bestUnits;
 
@@ -120,13 +128,8 @@ public class EditPanel extends ActionPanel
                     // create new UnitAutoChooser with movement categorized
                     UnitAutoChooser newAutoChooser = new UnitAutoChooser(autoChooser.getCandidateUnits(true),
                                                                          autoChooser.getChosenUnits(),
+                                                                         mustMoveWithDetails.getMustMoveWith(),
                                                                          true, true);
-
-                    // TODO: remove mustMoveWith in favour of categorizeDependents boolean
-                    MustMoveWithDetails mustMoveWithDetails = MoveDelegate.getMustMoveWith(m_selectedTerritory, 
-                                                                                           m_selectedTerritory.getUnits().getUnits(), 
-                                                                                           getData(),
-                                                                                           getCurrentPlayer());
 
                     UnitChooser chooser = new UnitChooser(newAutoChooser,
                                                           mustMoveWithDetails.getMustMoveWith(), 

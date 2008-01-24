@@ -118,28 +118,4 @@ public class UnitSeperator
         return categorize(units, dependent, categorizeMovement, true);
     }
 
-    /**
-     * Break the units into discrete categories.
-     *
-     * Do this based on unit owner, and optionally dependent units and movement
-     *
-     * @param categorizeDependents - whether to categorize by dependents 
-     * @param categorizeMovement   - whether to categorize by movement
-     * @param - sort - if true then sort the categories in UnitCategory order
-     *               - if false, then leave categories in original order (based on units)
-     * @return a Collection of UnitCategories
-     */
-    public static Set<UnitCategory> categorize(Collection<Unit> units, boolean categorizeDependents, boolean categorizeMovement, boolean sort)
-    {
-        if (categorizeDependents)
-        {
-            Map<Unit,Collection<Unit>> dependents = new HashMap<Unit,Collection<Unit>>();
-            for (Unit unit: units)
-                dependents.put(unit, TripleAUnit.get(unit).getDependents());
-            return categorize(units, dependents, categorizeMovement, sort);
-        }
-        else
-            return categorize(units, null, categorizeMovement, sort);
-    }
-
 }

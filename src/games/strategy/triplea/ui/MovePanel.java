@@ -437,7 +437,9 @@ public class MovePanel extends ActionPanel
       
       //are the transports all of the same type
       //if they are, then don't ask
-      Collection<UnitCategory> categories = UnitSeperator.categorize(candidateTransports, true, true, false);
+      Collection<UnitCategory> categories = UnitSeperator.categorize(candidateTransports, 
+                                                                     m_mustMoveWithDetails.getMustMoveWith(), 
+                                                                     true, false);
       if(categories.size() == 1)
           return unitsToUnload;
       
@@ -507,7 +509,6 @@ public class MovePanel extends ActionPanel
       };
 
       // choosing what transports to unload
-      // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
       UnitChooser chooser = new UnitChooser(candidateTransports, 
                                             defaultSelections, 
                                             m_mustMoveWithDetails.getMustMoveWith(), 
@@ -700,10 +701,10 @@ public class MovePanel extends ActionPanel
             // create new UnitAutoChooser with movement categorized
             UnitAutoChooser newAutoChooser = new UnitAutoChooser(autoChooser.getCandidateUnits(true),
                                                                  autoChooser.getChosenUnits(),
+                                                                 m_mustMoveWithDetails.getMustMoveWith(),
                                                                  true, true);
 
 
-            // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
             UnitChooser chooser = new UnitChooser(newAutoChooser, 
                                                   m_mustMoveWithDetails.getMustMoveWith(), 
                                                   /*categorizeMovement*/ true,
@@ -884,7 +885,10 @@ public class MovePanel extends ActionPanel
         sortUnitsToMove(movableUnits, route);
 
         // create a new UnitAutoChooser to find movable solutions
-        m_unitAutoChooser = new UnitAutoChooser(movableUnits, units, true, false);
+        m_unitAutoChooser = new UnitAutoChooser(movableUnits, 
+                                                units, 
+                                                m_mustMoveWithDetails.getMustMoveWith(),
+                                                true, false);
         Set<Unit> bestUnits = null;
 
         // sort results in Comparable<MoveValidationResult> order
@@ -1022,7 +1026,7 @@ public class MovePanel extends ActionPanel
         Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
 
         final PlayerID unitOwner = getUnitOwner(unitsToLoad);
-        MustMoveWithDetails endMustMoveWith = MoveDelegate.getMustMoveWith(route.getEnd(), endOwnedUnits, getData(), unitOwner);
+        MustMoveWithDetails endMustMoveWith = MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, getData(), unitOwner);
       
         int minTransportCost = 5;
         for(Unit unit : unitsToLoad)
@@ -1151,7 +1155,7 @@ public class MovePanel extends ActionPanel
                 return candidateTransports;
 
             //all the same type, dont ask unless we have more than 1 unit type
-            if(UnitSeperator.categorize(candidateTransports, true, true, false).size() == 1 
+            if(UnitSeperator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), true, false).size() == 1 
                && unitsToLoad.size() == 1     )
                 return candidateTransports;
           
@@ -1187,7 +1191,6 @@ public class MovePanel extends ActionPanel
             }
         };
 
-        // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
         UnitChooser chooser = new UnitChooser(candidateTransports, 
                                               defaultSelections, 
                                               endMustMoveWith.getMustMoveWith(), 
@@ -1414,7 +1417,6 @@ public class MovePanel extends ActionPanel
             List<Unit> unitsWithoutDependents = new ArrayList<Unit>(m_selectedUnits);
             for(Unit unit : m_selectedUnits)
             {
-                // TODO: change to use TripleAUnit.getDependents() when carrier dependents are supported
                 Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
                 if(forced != null)
                     unitsWithoutDependents.removeAll(forced);
@@ -1558,7 +1560,6 @@ public class MovePanel extends ActionPanel
                       defaultSelections.add(unit);
                   }
                   
-                  // TODO: stop using mustMoveWith once carrier dependents are supported in TripleAUnit
                   UnitChooser chooser = new UnitChooser(candidateUnresolvedUnits,
                                                         defaultSelections,
                                                         m_mustMoveWithDetails.getMustMoveWith(), 
@@ -1624,7 +1625,10 @@ public class MovePanel extends ActionPanel
                 if (m_selectedUnits.size() == units.size())
                     autoChooser = m_unitAutoChooser;
                 else
-                    autoChooser = new UnitAutoChooser(m_unitAutoChooser.getCandidateUnits(false), units, true, false);
+                    autoChooser = new UnitAutoChooser(m_unitAutoChooser.getCandidateUnits(false), 
+                                                      units, 
+                                                      m_mustMoveWithDetails.getMustMoveWith(),
+                                                      true, false);
 
                 units.clear();
                 units.addAll(allowSpecificUnitSelection(autoChooser, route));
@@ -1747,7 +1751,7 @@ public class MovePanel extends ActionPanel
         }
         else
         {
-            m_mustMoveWithDetails = MoveDelegate.getMustMoveWith(firstSelectedTerritory, 
+            m_mustMoveWithDetails = MoveValidator.getMustMoveWith(firstSelectedTerritory, 
                                                                  firstSelectedTerritory.getUnits().getUnits(), 
                                                                  getData(),
                                                                  getCurrentPlayer());
