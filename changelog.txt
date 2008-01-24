@@ -1,3 +1,5 @@
+* fix bug [ 1878700 ] edit mode: remove unit bug (tclayton)
+
 * fix bug [ 1875092 ] Missing "No place for unit to land" warning (tclayton)
 
 * fix bug [ 1862922 ] foreign planes on carrier (tclayton)

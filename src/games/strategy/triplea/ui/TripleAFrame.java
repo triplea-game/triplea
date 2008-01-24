@@ -320,8 +320,17 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
                 if (pane.getComponentAt(sel).equals(m_editPanel))
                 {
+                    PlayerID player = null;
+                    m_data.acquireReadLock();
+                    try
+                    {
+                        player = m_data.getSequence().getStep().getPlayerID();
+                    } finally
+                    {
+                        m_data.releaseReadLock();
+                    }  
                     m_actionButtons.getCurrent().setActive(false);
-                    m_editPanel.setActive(true);
+                    m_editPanel.display(player);
                 }
                 else
                 {
