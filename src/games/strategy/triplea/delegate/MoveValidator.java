@@ -1303,6 +1303,85 @@ public class MoveValidator
         return canCarry;
     }
 
+    /**
+     * Get the route ignoring forced territories
+     */
+    @SuppressWarnings("unchecked")
+    public static Route getBestRoute(Territory start, Territory end, GameData data, PlayerID player)
+    {
+        // No neutral countries on route predicate
+        Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
+
+        //ignore the end territory in our tests
+        //it must be in the route, so it shouldn't affect the route choice
+        Match<Territory> territoryIsEnd = Matches.territoryIs(end);
+
+        Route defaultRoute;
+        if (isFourEdition(data))
+            defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(noNeutral, territoryIsEnd));
+        else
+            defaultRoute = data.getMap().getRoute(start, end);
+
+        if (defaultRoute == null)
+            throw new IllegalStateException("No route between:" + start +
+                                            " and " + end);
+
+        //if the start and end are in water, try and get a water route
+        //dont force a water route, since planes may be moving
+        if (start.isWater() && end.isWater())
+        {
+            Route waterRoute = data.getMap().getRoute(start, end,
+                Matches.TerritoryIsWater);
+            if (waterRoute != null &&
+                waterRoute.getLength() == defaultRoute.getLength())
+                return waterRoute;
+        }
+
+        // No aa guns on route predicate
+        Match<Territory> noAA = new InverseMatch<Territory>(Matches.territoryHasEnemyAA(player, data));
+
+        //no enemy units on the route predicate
+        Match<Territory> noEnemy = new InverseMatch<Territory>(Matches.territoryHasEnemyUnits(player, data));
+        
+        
+        //these are the conditions we would like the route to satisfy, starting
+        //with the most important
+        List<Match<Territory>> tests = new ArrayList( Arrays.asList(
+                //best if no enemy and no neutral
+                new CompositeMatchOr<Territory>(noEnemy, noNeutral),
+                //we will be satisfied if no aa and no neutral
+                new CompositeMatchOr<Territory>(noAA, noNeutral),
+                //single matches
+                noEnemy, noAA, noNeutral));
+        
+        
+        //remove matches that already pass
+        //ignore the end
+        for(Iterator<Match<Territory>> iter = tests.iterator(); iter.hasNext(); ) {
+            Match<Territory> current = iter.next();
+            if(defaultRoute.allMatch(new CompositeMatchOr(current, territoryIsEnd))) {
+                iter.remove();
+            }
+        }
+        
+        
+        for(Match<Territory> t : tests) {            
+            Match<Territory> testMatch = null;
+            if (isFourEdition(data))
+                testMatch = new CompositeMatchAnd<Territory>(t, noNeutral);
+            else
+                testMatch = t;
+
+            Route testRoute = data.getMap().getRoute(start, end, new CompositeMatchOr<Territory>(testMatch, territoryIsEnd));
+            
+            if(testRoute != null && testRoute.getLength() == defaultRoute.getLength())
+                return testRoute;
+        }
+            
+        
+        
+        return defaultRoute;
+    }
 
     /** Creates new MoveValidator */
     private MoveValidator()
