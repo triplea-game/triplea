@@ -661,17 +661,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         {
             m_email2Label.setForeground(Color.BLACK);
         }
-        if(m_gameIDTextField.getText().trim().equals(""))
-        {
-            m_gameIDLabel.setForeground(Color.RED);
-            canTestEmail = false;
-            canTestPost = false;
-            canViewPost = false;
-            canStart = false;
-        } else
-        {
-            m_gameIDLabel.setForeground(Color.BLACK);
-        }
 
         //verify PBEM messenger fields
 
@@ -738,6 +727,21 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
             && saveGameMsgr instanceof NullPBEMMessenger)
         {
             canTestPost = false;
+            m_gameIDLabel.setForeground(Color.BLACK);
+        }
+        else
+        {
+            // if posting, require game id
+            if(m_gameIDTextField.getText().trim().equals(""))
+            {
+                m_gameIDLabel.setForeground(Color.RED);
+                canTestPost = false;
+                canViewPost = false;
+                canStart = false;
+            } else
+            {
+                m_gameIDLabel.setForeground(Color.BLACK);
+            }
         }
         if(!turnSummaryMsgr.getCanViewPosted())
             canViewPost = false;
