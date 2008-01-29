@@ -22,6 +22,7 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -68,6 +69,12 @@ public class UnitAutoChooser
     // m_bCategorizeMovement: 
     // Set to true through constructor if movement should be categorized.
     private final boolean m_bCategorizeMovement;
+
+    // m_bCategorizeTrnMovement: 
+    // Set to true through constructor if transport movement should be categorized
+    // when m_bCategorizeMovment is false.
+    // If m_bCategorizeMovement is true then this setting is ignored.
+    private final boolean m_bCategorizeTrnMovement;
 
     // m_bAllowImplicitDependents: 
     // Set to true through constructor if chosenUnits is not required
@@ -164,6 +171,16 @@ public class UnitAutoChooser
                            boolean bCategorizeMovement)
                            
     {
+        this(allUnits, chosenUnits, dependentsMap, bAllowImplicitDependents, bCategorizeMovement, false);
+    }
+
+    public UnitAutoChooser(final Collection<Unit> allUnits,
+                           final Collection<Unit> chosenUnits,
+                           final Map<Unit, Collection<Unit>> dependentsMap,
+                           boolean bAllowImplicitDependents,
+                           boolean bCategorizeMovement,
+                           boolean bCategorizeTrnMovement)
+    {
         if (allUnits == null)
             m_allUnits = Collections.emptyList();
         else
@@ -173,7 +190,11 @@ public class UnitAutoChooser
         else
             m_chosenUnits = chosenUnits;
 
+        //System.out.println("allUnits: "+m_allUnits);
+        //System.out.println("chosenUnits: "+m_chosenUnits);
+
         m_bCategorizeMovement = bCategorizeMovement;
+        m_bCategorizeTrnMovement = bCategorizeTrnMovement;
         m_bAllowImplicitDependents = bAllowImplicitDependents;
 
         if (dependentsMap == null)
@@ -188,14 +209,14 @@ public class UnitAutoChooser
         // some member variables for saving state
         m_selectedUnitSolutions = new ArrayList<Set<Unit>>(allUnits.size());
 
-        // don't categorize dependents for allCategories 
+        // categorize dependents for allCategories 
         // if m_bCategorizeMovement is true then we use allCategoriesWithMovement as well (see below).
         // tell UnitSeperator not to sort the results since we want to preserve order
-        Set<UnitCategory> allCategories    = UnitSeperator.categorize(m_allUnits, m_dependentsMap, false, false);
+        Set<UnitCategory> allCategories    = UnitSeperator.categorize(m_allUnits, m_dependentsMap, /*ctgzMvmt*/ false, /*sort*/ false);
 
         // don't categorize dependents for chosenCategories
         // tell UnitSeperator not to sort the results since we want to preserve order
-        Set<UnitCategory> chosenCategories = UnitSeperator.categorize(m_chosenUnits, null, false, false);
+        Set<UnitCategory> chosenCategories = UnitSeperator.categorize(m_chosenUnits, null, /*ctgzMvmt*/ false, /*sort*/ false);
 
         // store occurrence count for chosen categories
         m_chosenCategoryCounts = new IntegerMap<UnitCategory>(chosenCategories.size()+1, 1);
@@ -216,7 +237,12 @@ public class UnitAutoChooser
         // do the bulk of the category-related work to find our solutions in terms of categories
         if (m_bCategorizeMovement)
         {
-            Set<UnitCategory> allCategoriesWithMovement = UnitSeperator.categorize(m_allUnits, m_dependentsMap, true, false);
+            Set<UnitCategory> allCategoriesWithMovement = UnitSeperator.categorize(m_allUnits, m_dependentsMap, /*ctgzMvmt*/ true, /*sort*/ false);
+            solveCandidateCompositeCategories(allCategories, allCategoriesWithMovement, chosenCategories);
+        }
+        else if (m_bCategorizeTrnMovement)
+        {
+            Set<UnitCategory> allCategoriesWithMovement = UnitSeperator.categorize(m_allUnits, m_dependentsMap, /*ctgzMvmt*/ false, /*ctgzTrnMvmt*/ true, /*sort*/ false);
             solveCandidateCompositeCategories(allCategories, allCategoriesWithMovement, chosenCategories);
         }
         else
@@ -302,7 +328,7 @@ public class UnitAutoChooser
         if (!selectImplicitDependents)
         {
             // add only the dependent units that were in chosen units
-            Set<UnitCategory> dependentCategories = UnitSeperator.categorize(dependentUnits, m_dependentsMap, false, false);
+            Set<UnitCategory> dependentCategories = UnitSeperator.categorize(dependentUnits, m_dependentsMap, /*ctgzMvmt*/ false, /*sort*/ false);
             IntegerMap<UnitCategory> usedCategoryCounts = new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size()+1, 1);
             for (UnitCategory chosenCategory : m_chosenCategoryCounts.keySet())
             {
@@ -342,7 +368,7 @@ public class UnitAutoChooser
             {
                 IntegerMap<UnitCategory> currentMap = new IntegerMap<UnitCategory>(units.size()+1, 1);
                 for (Unit unit : units)
-                    currentMap.add(new UnitCategory(unit, false, m_bCategorizeMovement), 1);
+                    currentMap.add(new UnitCategory(unit, false, false), 1);
                 return m_chosenCategoryCounts.greaterThanOrEqualTo(currentMap);
             }
         };
@@ -414,7 +440,7 @@ public class UnitAutoChooser
                         if (compositeCategoryUnits.contains(unit))
                             continue;
                         // don't add dependents to candidate units
-                        // but there will be dependents in this loop anyway
+                        // but there will be no dependents in this loop anyway
                         m_candidateUnits.add(unit);
 
                         if ((m_chosenCategoryCounts.getInt(chosenCategory) - usedCategoryCounts.getInt(chosenCategory)) > 0)
@@ -462,7 +488,7 @@ public class UnitAutoChooser
                 for (Unit unit : category.getUnits())
                 {
                     // don't add dependents to candidate units
-                    // but there will be dependents in this loop anyway
+                    // but there will be no dependents in this loop anyway
                     m_candidateUnits.add(unit);
                     if ((m_chosenCategoryCounts.getInt(chosenCategory) - usedCategoryCounts.getInt(chosenCategory)) > 0)
                     {
@@ -561,7 +587,8 @@ public class UnitAutoChooser
         // movement categorized for comparisons with chosen categories.
         for (UnitCategory categoryWithMovement : allCategories)
         {
-            if (m_bCategorizeMovement)
+            if (m_bCategorizeMovement
+                || (m_bCategorizeTrnMovement && Match.someMatch(categoryWithMovement.getUnits(), Matches.UnitIsTransport)))
             {
                 for (UnitCategory categoryNoMovement : allCategoriesNoMovement)
                 {
@@ -692,7 +719,7 @@ public class UnitAutoChooser
         }
 
         // expand the Set of candidate categories with dependents into a list for easy linear processing
-        // preserve original order from m_candidaateCategories
+        // preserve original order from m_candidateCategories
         List<UnitCategory> candidateCategoriesWithDependentsList = new ArrayList<UnitCategory>(candidateCategoryCountWithDependents);
         for (UnitCategory category : m_candidateCategories)
         {

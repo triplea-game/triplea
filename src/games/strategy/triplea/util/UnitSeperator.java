@@ -17,6 +17,7 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.Matches;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,6 +46,10 @@ public class UnitSeperator
     }
 
 
+    public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean sort)
+    {
+        return categorize(units, dependent, categorizeMovement, /*ctgzTrnMovement*/ false, sort);
+    }
 
     /**
      * Break the units into discrete categories.
@@ -53,11 +58,16 @@ public class UnitSeperator
      *
      * @param dependent - can be null
      * @param categorizeMovement   - whether to categorize by movement
+     * @param categorizeTrnMovement   - whether to categorize transports by movement
      * @param - sort - if true then sort the categories in UnitCategory order
      *               - if false, then leave categories in original order (based on units)
      * @return a Collection of UnitCategories
      */
-    public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean sort)
+    public static Set<UnitCategory> categorize(Collection<Unit> units, 
+                                               Map<Unit, Collection<Unit>> dependent, 
+                                               boolean categorizeMovement, 
+                                               boolean categorizeTrnMovement,
+                                               boolean sort)
     {
         //somewhat odd, but we map UnitCategory->UnitCategory,
         //key and value are the same
@@ -72,8 +82,9 @@ public class UnitSeperator
         for (Unit current : units)
         {
             int unitMovement = -1;
-            if(categorizeMovement)
+            if(categorizeMovement || (categorizeTrnMovement && Matches.UnitIsTransport.match(current)))
                 unitMovement = TripleAUnit.get(current).getMovementLeft();
+
             Collection<Unit> currentDependents = null;
             if(dependent != null)
             {

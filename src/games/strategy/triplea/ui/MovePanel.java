@@ -674,17 +674,55 @@ public class MovePanel extends ActionPanel
     {
         List<Unit> units = new ArrayList<Unit>();
 
-        if (autoChooser.solutionCount() == 1)
+        // NOTE: The UnitAutoChooser solution set may contain solutions at the end that aren't really valid.
+        //       For instance, units matching the selected categories that don't have enough movement
+        //       will still show up in a solution at the end of a solution set.
+        //       This "feature" enables the mouse-overs to show the warning/error messages during route selection.
+        //       However, when selecting a valid solution from the solution set, we don't want to
+        //       let the user choose an invalid solution, so we need to weed-out those solutions.
+        // XXX:  This weeding out currently only supports solutions that are invalid due to not-enough-movement-left.
+        //       Other invalid solutions can still be selected, and the appopriate movement error will pop-up after clicking Ok.
+        // TODO: A nicer alternative would be to add a feature to the UnitChooser that shows a warning/error icon
+        //       over the icons of the invalid units, and shows the warning/error message on mouse-over of the icon.
+        //       The UnitChooser could use the MoveValidationResults directly, and support all types of invalid solutions.
+
+        final Match<Unit> enoughMovementMatch = new Match<Unit>()
         {
-            units.addAll(autoChooser.getSolution(0, true));
+            public boolean match(Unit u)
+            {
+                return TripleAUnit.get(u).getMovementLeft() >= route.getLength();
+            }
+        };
+
+        Collection<Unit> candidateUnits = autoChooser.getCandidateUnits(true);
+        if (!EditDelegate.getEditMode(getData()))
+        {
+            // need to do enoughMovementMatch against only the non-dependent candidateUnits
+            Collection<Unit> candidateUnitsNoDeps = autoChooser.getCandidateUnits(false);
+            Collection<Unit> matchingUnitsNoDeps = Match.getMatches(candidateUnitsNoDeps, enoughMovementMatch);
+            candidateUnitsNoDeps.removeAll(matchingUnitsNoDeps);
+            candidateUnits.removeAll(candidateUnitsNoDeps);
+        }
+
+        // create new UnitAutoChooser with movement categorized
+        UnitAutoChooser newAutoChooser = new UnitAutoChooser(candidateUnits,
+                                                             autoChooser.getChosenUnits(),
+                                                             m_mustMoveWithDetails.getMustMoveWith(),
+                                                             true, true, true);
+        if (newAutoChooser.solutionCount() == 1)
+        {
+            units.addAll(newAutoChooser.getSolution(0, true));
         }
         else
         {
             // multiple solutions or no single exact solution found
             
-            Match<Collection<Unit>> unitCategoryCountMatch = autoChooser.getChooserBoundaryMatch();
+            Match<Collection<Unit>> unitCategoryCountMatch = newAutoChooser.getChooserBoundaryMatch();
             CompositeMatch<Collection<Unit>> unitChooserMatch = new CompositeMatchAnd<Collection<Unit>>(unitCategoryCountMatch);
-            Match<Collection<Unit>> enoughMovementMatch = new Match<Collection<Unit>>()
+/* 
+            // TODO: replace this match criteria with UnitChooser enhancements to show solution warnings/errors in UnitChooser.
+
+            Match<Collection<Unit>> enoughMovementSolutionMatch = new Match<Collection<Unit>>()
             {
                 public boolean match(Collection<Unit> c)
                 {
@@ -696,13 +734,8 @@ public class MovePanel extends ActionPanel
                     return true;
                 }
             };
-            unitChooserMatch.add(enoughMovementMatch);
-
-            // create new UnitAutoChooser with movement categorized
-            UnitAutoChooser newAutoChooser = new UnitAutoChooser(autoChooser.getCandidateUnits(true),
-                                                                 autoChooser.getChosenUnits(),
-                                                                 m_mustMoveWithDetails.getMustMoveWith(),
-                                                                 true, true);
+            unitChooserMatch.add(enoughMovementSolutionMatch);
+*/
 
 
             UnitChooser chooser = new UnitChooser(newAutoChooser, 
@@ -826,7 +859,7 @@ public class MovePanel extends ActionPanel
         m_unitAutoChooser = new UnitAutoChooser(movableUnits, 
                                                 units, 
                                                 m_mustMoveWithDetails.getMustMoveWith(),
-                                                true, false);
+                                                true, false, true);
         Set<Unit> bestUnits = null;
 
         // sort results in Comparable<MoveValidationResult> order
@@ -1566,7 +1599,7 @@ public class MovePanel extends ActionPanel
                     autoChooser = new UnitAutoChooser(m_unitAutoChooser.getCandidateUnits(false), 
                                                       units, 
                                                       m_mustMoveWithDetails.getMustMoveWith(),
-                                                      true, false);
+                                                      true, false, true);
 
                 units.clear();
                 units.addAll(allowSpecificUnitSelection(autoChooser, route));

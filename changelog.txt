@@ -1,3 +1,5 @@
+* fix bug [ 1860285 ] solutions chooser offers no solutions (tclayton)
+
 * fix bug [ 1851498 ] id should not be required in pbem games (tclayton)
 
 * fix bug [ 1668015 ] disallow neutral territories in route in revised (tclayton)
