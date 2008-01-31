@@ -44,6 +44,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
     private transient String m_password = null;
     private transient String m_cookies = null;
     private transient String m_referer = null;
+    private transient String m_phpsessid = null;
     private transient String m_sesc = null;
     private transient String m_numReplies = null;
     private transient String m_msgNum = null;
@@ -153,7 +154,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
         URLConnection urlConn = null;
         OutputStream out = null;
         int code = 0;
-        boolean gotSesc = false;
+        boolean gotPhpsessid = false;
         // set up connection
         try
         {
@@ -210,20 +211,15 @@ public class AxisAndAlliesDotOrgPBEMMessenger
                 }
                 if(code == 200)
                 {
-                    // fetch sesc
-                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-                    String line = "";
-                    Pattern p_sesc = Pattern.compile(".*?;sesc=(\\w+)\".*");
-                    while ((line = in.readLine()) != null)
+                    // fetch PHPSESSID
+                    String refreshHdr = urlConn.getHeaderField("Refresh");
+                    Pattern p_phpsessid = Pattern.compile(".*?\\?PHPSESSID=(\\w+).*");
+                    Matcher match_phpsessid = p_phpsessid.matcher(refreshHdr);
+                    if(match_phpsessid.matches())
                     {
-                        Matcher match_sesc = p_sesc.matcher(line);
-                        if(!match_sesc.matches())
-                            continue;
-                        m_sesc = match_sesc.group(1);
-                        gotSesc = true;
-                        break;
+                        m_phpsessid = match_phpsessid.group(1);
+                        gotPhpsessid= true;
                     }
-                    in.close();
                     urlConn = null;
                     continue;
                 }
@@ -239,9 +235,9 @@ public class AxisAndAlliesDotOrgPBEMMessenger
             return false;
         }
 
-        if(!gotSesc)
+        if(!gotPhpsessid)
         {
-            m_turnSummaryRef = "Error: sesc not found after login. ";
+            m_turnSummaryRef = "Error: PHPSESSID not found after login. ";
             return false;
         }
         if(m_cookies == null)
@@ -316,25 +312,31 @@ public class AxisAndAlliesDotOrgPBEMMessenger
             Pattern p_attachId = Pattern.compile(".*?action=dlattach;topic="+m_gameId+".0;attach=(\\d+)\">.*");
             while ((line = in.readLine()) != null)
             {
-                Matcher match_numReplies = p_numReplies.matcher(line);
-                if(match_numReplies.matches())
+                if (!gotNumReplies)
                 {
-                    m_numReplies = match_numReplies.group(1);
-                    gotNumReplies = true;
-                } else
+                    Matcher match_numReplies = p_numReplies.matcher(line);
+                    if(match_numReplies.matches())
+                    {
+                        m_numReplies = match_numReplies.group(1);
+                        gotNumReplies = true;
+                        continue;
+                    }
+                }
+                if (!gotMsgNum)
                 {
                     Matcher match_msgNum = p_msgNum.matcher(line);
                     if(match_msgNum.matches())
                     {
                         m_msgNum = match_msgNum.group(1);
                         gotMsgNum = true;
-                    } else
-                    {
-                        Matcher match_attachId = p_attachId.matcher(line);
-                        if(match_attachId.matches())
-                            m_attachId = match_attachId.group(1);
-                    }
+                        continue;
+                    } 
                 }
+
+                // must match every line... always take the last attachId
+                Matcher match_attachId = p_attachId.matcher(line);
+                if(match_attachId.matches())
+                    m_attachId = match_attachId.group(1);
             }
             in.close();
         }
@@ -364,6 +366,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
         int code = 0;
         boolean gotNumReplies = false;
         boolean gotSeqNum = false;
+        boolean gotSesc = false;
         try
         {
             url = new URL("http://"+m_host+"/forums/index.php?action=post;topic="+m_gameId+".0;num_replies="+m_numReplies);
@@ -373,7 +376,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
             e.printStackTrace();
         }
 
-	try {
+        try {
             urlConn = url.openConnection();
             ((HttpURLConnection)urlConn).setRequestMethod("GET");
             ((HttpURLConnection)urlConn).setInstanceFollowRedirects(false);
@@ -405,20 +408,38 @@ public class AxisAndAlliesDotOrgPBEMMessenger
             Pattern p_numReplies = Pattern.compile(".*?<input type=\"hidden\" name=\"num_replies\" value=\"(\\d+)\" />.*");
             // parse seqnum
             Pattern p_seqNum = Pattern.compile(".*?<input type=\"hidden\" name=\"seqnum\" value=\"(\\d+)\" />.*");
+            // parse sesc/sc
+            Pattern p_sesc = Pattern.compile(".*?<input type=\"hidden\" name=\"sc\" value=\"(\\w+)\" />.*");
             while ((line = in.readLine()) != null)
             {
-                Matcher match_numReplies = p_numReplies.matcher(line);
-                if(match_numReplies.matches())
+                if (!gotNumReplies)
                 {
-                    m_numReplies = match_numReplies.group(1);
-                    gotNumReplies = true;
-                } else
+                    Matcher match_numReplies = p_numReplies.matcher(line);
+                    if(match_numReplies.matches())
+                    {
+                        m_numReplies = match_numReplies.group(1);
+                        gotNumReplies = true;
+                        continue;
+                    } 
+                }
+                if (!gotSeqNum)
                 {
                     Matcher match_seqNum = p_seqNum.matcher(line);
                     if(match_seqNum.matches())
                     {
                         m_seqNum = match_seqNum.group(1);
                         gotSeqNum = true;
+                        continue;
+                    }
+                }
+                if (!gotSesc)
+                {
+                    Matcher match_sesc = p_sesc.matcher(line);
+                    if(match_sesc.matches())
+                    {
+                        m_sesc = match_sesc.group(1);
+                        gotSesc = true;
+                        continue;
                     }
                 }
             }
@@ -430,13 +451,15 @@ public class AxisAndAlliesDotOrgPBEMMessenger
             return false;
         }
 
-        if(!gotNumReplies || !gotSeqNum)
+        if(!gotNumReplies || !gotSeqNum || !gotSesc)
         {
             m_turnSummaryRef = "Error: ";
             if(!gotNumReplies)
                 m_turnSummaryRef += "No num_replies found in A&A.org post form. ";
             if(!gotSeqNum)
                 m_turnSummaryRef += "No seqnum found in A&A.org post form. ";
+            if(!gotSesc)
+                m_turnSummaryRef += "No sc found in A&A.org post form. ";
             return false;
         }
         return true;

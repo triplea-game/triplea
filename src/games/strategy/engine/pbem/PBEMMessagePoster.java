@@ -15,11 +15,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
 
-public class PBEMMessagePoster
+public class PBEMMessagePoster implements Serializable
 {
     private static final String TURNSUMMARY_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.TURNSUMMARY_MSGR";
     private static final String SCREENSHOT_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.SCREENSHOT_MSGR";
