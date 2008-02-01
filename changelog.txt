@@ -1,3 +1,5 @@
+* more PBEM posting fixes (tclayton)
+
 * re-add screenshot overlay settings to map.properties in revised (tclayton)
 
 * fix bug [ 1860285 ] solutions chooser offers no solutions (tclayton)

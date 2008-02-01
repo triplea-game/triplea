@@ -226,7 +226,9 @@ public class PBEMMessagePoster implements Serializable
                 else
                     retval = false;
         }
-        catch(Exception e) { }
+        catch(Exception e) { 
+            e.printStackTrace();
+        }
         try
         {
             if(saveGameMsgr != null)
@@ -235,7 +237,9 @@ public class PBEMMessagePoster implements Serializable
                 else
                     retval = false;
         }
-        catch(Exception e) { }
+        catch(Exception e) { 
+            e.printStackTrace();
+        }
         // screenshot/save game refs might be null here, if same IPBEMMessenger object is used for turnSummaryMsgr
         // pass them as-is, but re-fetch them below
         try
@@ -243,31 +247,32 @@ public class PBEMMessagePoster implements Serializable
             if(turnSummaryMsgr != null && !turnSummaryMsgr.postTurnSummary(m_turnSummary, m_screenshotRef, m_saveGameRef))
                 retval = false;
         }
-        catch(Exception e) { }
+        catch(Exception e) { 
+            e.printStackTrace();
+        }
         // Re-fetch all refs and write history last. 
         // refs might not be set until all posts are done, 
         // and won't be set yet if there were posting errors
         if (historyWriter != null)
-        {
             historyWriter.startEvent("Post Turn Summary");
-            if(screenshotMsgr != null)
-            {
-                m_screenshotRef = screenshotMsgr.getScreenshotRef();
-                if(m_screenshotRef != null)
-                    historyWriter.addChildToEvent("Screenshot: "+m_screenshotRef, null);
-            }
-            if(saveGameMsgr != null)
-            {
-                m_saveGameRef = saveGameMsgr.getSaveGameRef();
-                if(m_saveGameRef != null)
-                    historyWriter.addChildToEvent("Save Game: "+m_saveGameRef, null);
-            }
-            if(turnSummaryMsgr != null)
-            {
-                m_turnSummaryRef = turnSummaryMsgr.getTurnSummaryRef();
-                if(m_turnSummaryRef != null)
-                    historyWriter.addChildToEvent("Turn Summary: "+m_turnSummaryRef, null);
-            }
+
+        if(screenshotMsgr != null)
+        {
+            m_screenshotRef = screenshotMsgr.getScreenshotRef();
+            if(m_screenshotRef != null && historyWriter != null)
+                historyWriter.addChildToEvent("Screenshot: "+m_screenshotRef, null);
+        }
+        if(saveGameMsgr != null)
+        {
+            m_saveGameRef = saveGameMsgr.getSaveGameRef();
+            if(m_saveGameRef != null && historyWriter != null)
+                historyWriter.addChildToEvent("Save Game: "+m_saveGameRef, null);
+        }
+        if(turnSummaryMsgr != null)
+        {
+            m_turnSummaryRef = turnSummaryMsgr.getTurnSummaryRef();
+            if(m_turnSummaryRef != null && historyWriter != null)
+                historyWriter.addChildToEvent("Turn Summary: "+m_turnSummaryRef, null);
         }
 
         // finally, close input streams
@@ -276,13 +281,17 @@ public class PBEMMessagePoster implements Serializable
             if(m_screenshotFileIn != null)
                 m_screenshotFileIn.close();
         }
-        catch(Exception e) { }
+        catch(Exception e) { 
+            e.printStackTrace();
+        }
         try
         {
             if(m_saveGameFileIn != null)
                 m_saveGameFileIn.close();
         }
-        catch(Exception e) { }
+        catch(Exception e) { 
+            e.printStackTrace();
+        }
         return retval;
     }
 
