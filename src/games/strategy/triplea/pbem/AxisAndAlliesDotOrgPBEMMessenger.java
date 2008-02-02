@@ -44,7 +44,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
     private transient String m_password = null;
     private transient String m_cookies = null;
     private transient String m_referer = null;
-    private transient String m_phpsessid = null;
+    
     private transient String m_sesc = null;
     private transient String m_numReplies = null;
     private transient String m_msgNum = null;
@@ -217,7 +217,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
                     Matcher match_phpsessid = p_phpsessid.matcher(refreshHdr);
                     if(match_phpsessid.matches())
                     {
-                        m_phpsessid = match_phpsessid.group(1);
+                        //m_phpsessid = match_phpsessid.group(1);
                         gotPhpsessid= true;
                     }
                     urlConn = null;

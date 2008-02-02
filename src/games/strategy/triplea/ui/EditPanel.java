@@ -26,7 +26,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;

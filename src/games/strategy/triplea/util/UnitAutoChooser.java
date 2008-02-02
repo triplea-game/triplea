@@ -21,7 +21,6 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
