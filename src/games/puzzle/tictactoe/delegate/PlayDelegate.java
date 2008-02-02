@@ -46,7 +46,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
         super.start(bridge, gameData);
         
         
-        ITicTacToeDisplay display = (ITicTacToeDisplay) bridge.getDisplayChannelBroadcaster();
+        ITicTacToeDisplay display = (ITicTacToeDisplay) bridge.getDisplayChannelBroadcaster();        
         display.setStatus(m_player.getName() + "'s turn");
     }
 

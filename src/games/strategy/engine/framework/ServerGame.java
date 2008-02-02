@@ -20,6 +20,7 @@
 
 package games.strategy.engine.framework;
 
+import games.strategy.debug.Console;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.*;
 import games.strategy.engine.data.events.GameStepListener;
@@ -323,8 +324,10 @@ public class ServerGame implements IGame
         //while we shut down.
         try
         {
-            if(!m_delegateExecutionManager.blockDelegateExecution(4000))
+            if(!m_delegateExecutionManager.blockDelegateExecution(4000)) {
+               Console.getConsole().dumpStacks();
                System.exit(0);
+            }
         } catch (InterruptedException e)
         {
             e.printStackTrace();

@@ -15,10 +15,12 @@
 package games.puzzle.tictactoe.ui;
 
 import games.strategy.common.image.UnitImageFactory;
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 
 import java.awt.Color;
@@ -34,7 +36,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 
 /**
  * Custom component for displaying a Tic Tac Toe gameboard and pieces.
@@ -67,14 +68,32 @@ public class MapPanel extends JComponent implements MouseListener
         this.setSize(mapDimension);
 
         m_images = new HashMap<Territory, Image>();
-        for (Territory at : m_mapData.getPolygons().keySet())
-        {
-            updateImage(at);
-        }
+        updateAllImages();
         
         this.addMouseListener(this);
         
         this.setOpaque(true);
+        
+        m_gameData.addDataChangeListener(new GameDataChangeListener()
+        {
+        
+            public void gameDataChanged(Change change)
+            {
+                updateAllImages();
+        
+            }
+        
+        });
+    }
+
+
+    private void updateAllImages()
+    {
+        for (Territory at : m_mapData.getPolygons().keySet())
+        {
+            updateImage(at);
+        }
+        repaint();
     }
     
     
@@ -98,16 +117,7 @@ public class MapPanel extends JComponent implements MouseListener
      */
     protected void performPlay(Territory at)
     {   
-        updateImage(at);
-            
-        // Ask Swing to repaint this panel when it's convenient
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            public void run()
-            {
-                repaint();
-            }
-        });
+
     }
     
     /**

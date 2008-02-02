@@ -145,6 +145,20 @@ public class TicTacToeFrame extends MainGameFrame
      */
     public Territory waitForPlay(final PlayerID player, final IPlayerBridge bridge)
     {
+        if(m_gameOver) 
+        {
+            m_waiting = new CountDownLatch(1);
+            try
+            {
+                m_waiting.await();
+            } catch (InterruptedException e)
+            {
+                //ignore
+            }
+            return null;
+            
+        }
+        
     	Territory play = null;
 
     	try {
@@ -199,7 +213,7 @@ public class TicTacToeFrame extends MainGameFrame
         			m_waiting.countDown();
         	}
         }
-        System.out.println("here");
+        
         // Exit the game.
         if(m_game instanceof ServerGame)
         {
@@ -270,10 +284,6 @@ public class TicTacToeFrame extends MainGameFrame
     public void setGameOver()
     {
         m_gameOver = true;
-       /* if(m_game instanceof ServerGame)
-        {
-            ((ServerGame) m_game).stopGame();
-        }*/
     }
     
     

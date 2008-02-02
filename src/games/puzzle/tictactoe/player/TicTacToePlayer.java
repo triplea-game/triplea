@@ -37,10 +37,6 @@ public class TicTacToePlayer extends AbstractHumanPlayer<TicTacToeFrame> impleme
     @Override
     public void start(String stepName)
     {
-    	//if (m_ui!=null && ((TicTacToeFrame)m_ui).isGameOver())
-        if (m_ui!=null && m_ui.isGameOver())
-    		return;
-    	
         if (stepName.endsWith("Play"))
             play();
         else

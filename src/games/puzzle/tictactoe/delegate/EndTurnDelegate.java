@@ -14,8 +14,7 @@
 
 package games.puzzle.tictactoe.delegate;
 
-import java.util.concurrent.CountDownLatch;
-
+import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -23,7 +22,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 
 /**
  * Responsible for checking for a winner in a game of Tic Tac Toe.
@@ -33,8 +31,6 @@ import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
  */
 public class EndTurnDelegate extends BaseDelegate
 {
-    private CountDownLatch m_waiting;
-    
     /**
      * Called before the delegate will run.
      */
@@ -49,19 +45,6 @@ public class EndTurnDelegate extends BaseDelegate
                 signalGameOver("Cat's game!");
             else
                 signalGameOver(winner.getName() + " wins!");
-            
-            
-            m_waiting = new CountDownLatch(1);
-            
-            try 
-            {
-                m_waiting.await();
-            }
-            catch(InterruptedException e)
-            {}
-            
-            System.out.println("got here");
-            //while(true){}
         }
     }
 
@@ -70,13 +53,7 @@ public class EndTurnDelegate extends BaseDelegate
      */
     public void end()
     {
-        if (m_waiting==null)
-            return;
-        else
-            while (m_waiting.getCount() > 0)
-                m_waiting.countDown();
         
-        System.out.println("done got here");
     }
     
     /**

@@ -69,7 +69,8 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
      */ 
     public void setStatus(String status) 
     {
-        m_ui.setStatus(status);
+        if(!m_ui.isGameOver())
+            m_ui.setStatus(status);
     }
     
     /**
