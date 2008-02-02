@@ -63,7 +63,9 @@ public class MainFrame extends JFrame
         m_setupPanelModel.showSelectType();
         MainPanel mainPanel = new MainPanel(m_setupPanelModel);
         getContentPane().add(mainPanel, BorderLayout.CENTER);
-        getRootPane().setDefaultButton(mainPanel.getDefaultButton());
+        //this is a good idea, but in networked play pressing enter should
+        //send a new message
+        //getRootPane().setDefaultButton(mainPanel.getDefaultButton());
         pack();
 
         setLocationRelativeTo(null);
