@@ -161,6 +161,9 @@ public class PacificTest extends TestCase
     {
 
         bridge.setStepName("japaneseBattle");
+        while(!m_data.getSequence().getStep().getName().equals("japaneseBattle")) {
+            m_data.getSequence().next();
+        }
 
         // >>> After patch normal to-hits will miss <<<
 
