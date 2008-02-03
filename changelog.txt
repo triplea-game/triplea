@@ -1,3 +1,5 @@
+Changes for 0.9.3
+
 * fix [ 1870424 ] can't leave tic tac toe game after the game is over, also fix tic tac toe networked mode (sgb)
 
 * disable main button on startup screen, as it overrides send message send (sgb)
