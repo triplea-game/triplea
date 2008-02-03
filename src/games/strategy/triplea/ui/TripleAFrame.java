@@ -1431,9 +1431,15 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
     private void setWidgetActivation()
     {
-        m_showHistoryAction.setEnabled(!m_inHistory);
-        m_editModeButtonModel.setEnabled(m_editDelegate != null);
-        m_showGameAction.setEnabled(m_inHistory);
+        if(m_showHistoryAction != null) {
+            m_showHistoryAction.setEnabled(!m_inHistory);
+        }
+        if(m_editModeButtonModel != null) {
+            m_editModeButtonModel.setEnabled(m_editDelegate != null);
+        }
+        if(m_showGameAction != null) {
+            m_showGameAction.setEnabled(m_inHistory);
+        }
     }
 
     // setEditDelegate is called by TripleAPlayer at the start and end of a turn
