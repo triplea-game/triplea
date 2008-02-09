@@ -39,7 +39,7 @@
 	<target name="clean" depends="init" description="Remove all release, class and saved game files">
 		<delete dir="release" />
 		<delete dir="classes" />
-        <delete dir="testclasses" />		
+		<delete dir="testclasses" />		
 		<delete dir="savedGames" />
 	</target>
 
@@ -90,6 +90,10 @@
 		<!-- compile test classes -->
 		<javac srcdir="test/" destdir="testclasses/" debug="true" deprecation="true" classpathref="test.path" target="1.5" />
 			
+	</target>
+
+	<target name="run" depends="compile" description="Run Triplea">
+		<java classpathref="full.path" spawn="true" classname="games.strategy.engine.framework.GameRunner" fork="true"/>
 	</target>
 
 
