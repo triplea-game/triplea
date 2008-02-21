@@ -1,3 +1,5 @@
+* improved game notes button (sgb)
+
 * fix null pointer when attacking neutral countries (sgb)
 
 * add ant run command for running from command line (sgb)

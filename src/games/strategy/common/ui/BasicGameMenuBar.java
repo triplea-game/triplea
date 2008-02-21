@@ -17,23 +17,34 @@ import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.IServerMessenger;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.FilenameFilter;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
@@ -273,14 +284,70 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                 public void actionPerformed(ActionEvent e)
                 {
 
-                    JEditorPane editorPane = new JEditorPane();
-                    editorPane.setEditable(false);
-                    editorPane.setContentType("text/html");
-                    editorPane.setText(notes);
+                    SwingUtilities.invokeLater(new Runnable()
+                    {
+                    
+                        public void run()
+                        {
+                            JEditorPane editorPane = new JEditorPane();
+                            editorPane.setEditable(false);
+                            editorPane.setContentType("text/html");
+                            editorPane.setText(notes);
 
-                    JScrollPane scroll = new JScrollPane(editorPane);
+                            final JScrollPane scroll = new JScrollPane(editorPane);
+                            final JDialog dialog = new JDialog(m_frame);
+                            dialog.setModal(true);
+                            dialog.add(scroll, BorderLayout.CENTER);
+                            JPanel buttons = new JPanel();
+                            
+                            final JButton button = new JButton(new AbstractAction("OK")
+                            {
+                                public void actionPerformed(ActionEvent e)
+                                {
+                                    dialog.setVisible(false);
+                                }
+                            
+                            });
+                            buttons.add(button);
+                            dialog.getRootPane().setDefaultButton(button);
+                            dialog.add(buttons, BorderLayout.SOUTH);
+                            dialog.pack();
+                            
+                            if(dialog.getWidth() < 300) {
+                                dialog.setSize(300, dialog.getHeight());
+                            }
+                            if(dialog.getHeight() < 300) {
+                                dialog.setSize(dialog.getWidth(), 300);
+                            }
+                            
+                            if(dialog.getWidth() > 500) {
+                                dialog.setSize(500, dialog.getHeight());
+                            }
+                            if(dialog.getHeight() > 500) {
+                                dialog.setSize(dialog.getWidth(), 500);
+                            }
+                            
+                            dialog.setLocationRelativeTo(m_frame);
+                            
+                            dialog.addWindowListener(new WindowAdapter()
+                            {                            
+                                @Override
+                                public void windowOpened(WindowEvent e)
+                                {
+                                    scroll.getVerticalScrollBar().getModel().setValue(0);
+                                    scroll.getHorizontalScrollBar().getModel().setValue(0);
+                                    button.requestFocus();
+                                }
+                            });
 
-                    JOptionPane.showMessageDialog(m_frame, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
+                            dialog.setVisible(true);
+                        }
+                    
+                    });
+                    
+  
+
+                    //JOptionPane.showMessageDialog(m_frame, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
                 }
             });
 
