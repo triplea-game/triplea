@@ -332,6 +332,10 @@ public class DiceRoll implements Externalizable
     
     public static boolean isFirstTurnLimitedRoll(PlayerID player) 
     {
+        if(player.isNull()) {
+            return false;
+        }
+        
         return player.getData().getProperties().get(Constants.PACIFIC_EDITION, false) 
         && player.getData().getSequence().getRound() == 1 
         && player.getData().getSequence().getStep().getName().equals("japaneseBattle") 
