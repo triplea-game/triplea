@@ -1,3 +1,5 @@
+* fix null pointer when ai plays in capture the flag (sgb)
+
 * improved game notes button (sgb)
 
 * fix null pointer when attacking neutral countries (sgb)

@@ -81,12 +81,16 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         
         Route withNoEnemy = Utils.findNearest(ourCapitol, endMatch, routeCond,
                 getPlayerBridge().getGameData());
-        if(withNoEnemy != null)
+        if(withNoEnemy != null && withNoEnemy.getLength() > 0)
             return withNoEnemy;
 
         //this will fail if our capitol is not next to water, c'est la vie.
-        return  Utils.findNearest(ourCapitol, endMatch, Matches.TerritoryIsWater,
+        Route route =  Utils.findNearest(ourCapitol, endMatch, Matches.TerritoryIsWater,
                 getPlayerBridge().getGameData());
+        if(route != null && route.getLength() == 0) {
+            return null;
+        }
+        return route;
     }
     
     private boolean isAmphibAttack(PlayerID player)
@@ -980,7 +984,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
         int transportCount =  countTransports(getPlayerBridge().getGameData(), player);
         int landUnitCount = countLandUnits(getPlayerBridge().getGameData(), player);
         int defUnitsAtAmpibRoute = 0;
-        if( isAmphib && amphibRoute != null)  {
+        if( isAmphib && amphibRoute != null) {
             defUnitsAtAmpibRoute = amphibRoute.getEnd().getUnits().getUnitCount(); 
         }
         
