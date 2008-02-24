@@ -75,7 +75,7 @@ public class UnitsDrawer implements IDrawable
     public Tuple<Territory,List<Unit>> getUnits(GameData data)
     {
         //note - it may be the case where the territory is being changed as a result
-        //to a mouse click, and the map units havent updated yet, so the unit count
+        //to a mouse click, and the map units haven't updated yet, so the unit count
         //from the territory wont match the units in m_count
         
         Territory t = data.getMap().getTerritory(m_territoryName);

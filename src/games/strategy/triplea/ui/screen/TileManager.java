@@ -592,7 +592,8 @@ public class TileManager
         {
             for(UnitsDrawer drawer : m_allUnitDrawables)
             {
-                if(units.containsAll( drawer.getUnits(data).getSecond() ))
+                List<Unit> drawerUnits = drawer.getUnits(data).getSecond();
+                if(!drawerUnits.isEmpty() && units.containsAll( drawerUnits ))
                 {
                     Point placementPoint = drawer.getPlacementPoint();
                     return new Rectangle(placementPoint.x, placementPoint.y, m_uiContext.getUnitImageFactory().getUnitImageWidth(),  m_uiContext.getUnitImageFactory().getUnitImageHeight() );

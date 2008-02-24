@@ -1,7 +1,5 @@
 package games.strategy.common.ui;
 
-import games.strategy.common.ui.MacWrapper;
-import games.strategy.common.ui.PlayersPanel;
 import games.strategy.debug.Console;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner;
@@ -18,15 +16,11 @@ import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.IServerMessenger;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.FilenameFilter;
 
@@ -341,6 +335,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                             });
 
                             dialog.setVisible(true);
+                            dialog.dispose();
                         }
                     
                     });
