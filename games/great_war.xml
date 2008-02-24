@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="1.5"/>
+        <info name="The Great War" version="1.6"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -2792,7 +2792,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="US Declares War" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="4"/>
+                        <option name="production" value="10"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Persia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -3686,8 +3686,8 @@
                         <!-- Americans  Unit Placements -->
                         <unitPlacement unitType="factory" territory="United States" quantity="1" owner="Americans"/>
 				<unitPlacement unitType="cavalry" territory="United States" quantity="2" owner="Americans"/>
-				<unitPlacement unitType="artillery" territory="United States" quantity="2" owner="Americans"/>
-				<unitPlacement unitType="infantry" territory="United States" quantity="10" owner="Americans"/>
+				<unitPlacement unitType="artillery" territory="United States" quantity="5" owner="Americans"/>
+				<unitPlacement unitType="infantry" territory="United States" quantity="7" owner="Americans"/>
                         <unitPlacement unitType="cruiser" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="destroyer" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
                         <unitPlacement unitType="submarine" territory="SZ 1 Atlantic Ocean" quantity="1" owner="Americans"/>
@@ -3990,7 +3990,7 @@
                         <unitPlacement unitType="infantry" territory="Albania" quantity="2"/>
 
                         <unitPlacement unitType="factory" territory="US Declares War" quantity="1"/>
-			<unitPlacement unitType="infantry" territory="US Declares War" quantity="1"/>
+			<unitPlacement unitType="infantry" territory="US Declares War" quantity="10"/>
 
                 </unitInitialize>
 

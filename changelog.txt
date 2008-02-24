@@ -1,3 +1,5 @@
+* update great war to version 1.6 (Jason Clark)
+
 * fix null pointer when ai plays in capture the flag (sgb)
 
 * improved game notes button (sgb)
