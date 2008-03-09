@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="1.6"/>
+        <info name="The Great War" version="2.0"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -342,7 +342,7 @@
 		<territory name="Norway"/>
 		<territory name="Denmark"/>
 		<territory name="Sweden"/>
-
+		<territory name="Northern Alps"/>
 
                 <!-- Territory Connections -->
 
@@ -703,27 +703,25 @@
                 <connection t1="SZ 80 Solomon Sea" t2="SZ 81 Bismarck Sea"/>
                 <connection t1="SZ 80 Solomon Sea" t2="SZ 84 Caroline Islands"/>
                 <connection t1="SZ 80 Solomon Sea" t2="SZ 85 Marshall Islands"/>
-		    <connection t1="SZ 80 Solomon Sea" t2="German S. Pacific"/>
+		<connection t1="SZ 80 Solomon Sea" t2="German S. Pacific"/>
 
                 <connection t1="SZ 81 Bismarck Sea" t2="SZ 82 Coral Sea"/>
                 <connection t1="SZ 81 Bismarck Sea" t2="SZ 83 Mariana Islands"/>
-                <connection t1="SZ 81 Bismarck Sea" t2="SZ 84 Caroline Islands"/>
-		    <connection t1="SZ 81 Bismarck Sea" t2="German S. Pacific"/>
+		<connection t1="SZ 81 Bismarck Sea" t2="German S. Pacific"/>
 
                 <connection t1="SZ 82 Coral Sea" t2="SZ 83 Mariana Islands"/>
                 <connection t1="SZ 82 Coral Sea" t2="SZ 92 South China Sea"/>
-                <connection t1="SZ 82 Coral Sea" t2="SZ 93 Sulu Sea"/>
                 <connection t1="SZ 82 Coral Sea" t2="SZ 94 Arafura Sea"/>
                 <connection t1="SZ 82 Coral Sea" t2="ANZAC"/>
 
                 <connection t1="SZ 83 Mariana Islands" t2="SZ 84 Caroline Islands"/>
                 <connection t1="SZ 83 Mariana Islands" t2="SZ 90 Yellow Sea"/>
                 <connection t1="SZ 83 Mariana Islands" t2="SZ 92 South China Sea"/>
-		    <connection t1="SZ 83 Mariana Islands" t2="German S. Pacific"/>
+		<connection t1="SZ 83 Mariana Islands" t2="German S. Pacific"/>
 
                 <connection t1="SZ 84 Caroline Islands" t2="SZ 85 Marshall Islands"/>
                 <connection t1="SZ 84 Caroline Islands" t2="SZ 89 Sea of Japan"/>
-		    <connection t1="SZ 84 Caroline Islands" t2="German S. Pacific"/>
+		<connection t1="SZ 84 Caroline Islands" t2="German S. Pacific"/>
 
                 <connection t1="SZ 85 Marshall Islands" t2="SZ 86 Pacific Ocean"/>
                 <connection t1="SZ 85 Marshall Islands" t2="SZ 88 Bering Sea"/>
@@ -883,6 +881,7 @@
 
                 <connection t1="Ardennes Forest" t2="Saar"/>
                 <connection t1="Ardennes Forest" t2="Luxembourg"/>
+		<connection t1="Ardennes Forest" t2="Liege"/>
 
                 <connection t1="Picardy" t2="Normandy"/>
                 <connection t1="Picardy" t2="Oise"/>
@@ -1192,8 +1191,7 @@
                 <connection t1="Bavaria" t2="Munich"/>
 
                 <connection t1="Munich" t2="Austria"/>
-                <connection t1="Munich" t2="Carinthia"/>
-                <connection t1="Munich" t2="Tyrol"/>
+                <connection t1="Munich" t2="Northern Alps"/>
                 <connection t1="Munich" t2="Switzerland"/>
 
                 <connection t1="Bulgaria" t2="Romania"/>
@@ -1229,9 +1227,11 @@
                 <connection t1="Tripoli" t2="Cyrenaica"/>
 
                 <connection t1="Tyrol" t2="Carinthia"/>
+                <connection t1="Tyrol" t2="Northern Alps"/>
 
                 <connection t1="Carinthia" t2="Austria"/>
                 <connection t1="Carinthia" t2="Istria"/>
+                <connection t1="Carinthia" t2="Northern Alps"/>
 
                 <connection t1="Austria" t2="Bohemia"/>
                 <connection t1="Austria" t2="Carpathia"/>
@@ -1239,6 +1239,7 @@
                 <connection t1="Austria" t2="Hungary"/>
                 <connection t1="Austria" t2="Croatia-Dalmatia"/>
                 <connection t1="Austria" t2="Istria"/>
+                <connection t1="Austria" t2="Northern Alps"/>
 
                 <connection t1="Bohemia" t2="Galicia"/>
                 <connection t1="Bohemia" t2="Carpathia"/>
@@ -1338,6 +1339,12 @@
                 <connection t1="Ukraine" t2="Crimea"/>
                 <connection t1="Ukraine" t2="Romania"/>
 
+		<connection t1="Romania" t2= "Bulgaria"/>
+		<connection t1="Romania" t2= "Belgrade"/>
+		<connection t1="Romania" t2= "Galicia"/>
+		<connection t1="Romania" t2= "Transylvania"/>
+	
+
                 <connection t1="Crimea" t2="Astrakhan"/>
 
                 <connection t1="Astrakhan" t2="Kyrgyz"/>
@@ -1396,6 +1403,9 @@
                 <connection t1="Hejaz" t2="Arabian Desert"/>
 
                 <connection t1="Norway" t2="Sweden"/>
+
+                <connection t1="Northern Alps" t2="Switzerland"/>
+
 
         </map>
 
@@ -1609,12 +1619,12 @@
                 </productionRule>
 
                 <productionRule name="buyCruiser">
-                        <cost resource="IPCs" quantity="10" />
+                        <cost resource="IPCs" quantity="9" />
                         <result resourceOrUnit="cruiser" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBattlecruiser">
-                        <cost resource="IPCs" quantity="14" />
+                        <cost resource="IPCs" quantity="12" />
                         <result resourceOrUnit="battlecruiser" quantity="1"/>
                 </productionRule>
 
@@ -1928,7 +1938,7 @@
                          <option name="isSea" value="true"/>
                          <option name="attack" value="4"/>
                          <option name="defense" value="4"/>
-                         <option name="canBombard" value="true"/>
+                         <option name="canBombard" value="false"/>
                          <option name="isTwoHit" value="false"/>
                     </attatchment>
 
@@ -2482,7 +2492,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Saxony" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="2"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Berlin" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2507,7 +2517,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Wurttemburg" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="2"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Bavaria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2515,7 +2525,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Munich" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="2"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Bulgaria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2845,6 +2855,11 @@
 			<option name="isImpassible" value="true"/>
                     </attatchment>
 
+                    <attatchment name="territoryAttatchment" attatchTo="Northern Alps" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="0"/>
+			<option name="isImpassible" value="true"/>
+                    </attatchment>
+
 			<!-- Water Attachments -->
 
                     <attatchment name="territoryAttatchment" attatchTo="SZ 6 Atlantic Ocean" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2914,8 +2929,21 @@
                     <attatchment name="territoryAttatchment" attatchTo="SZ 29 Norwegian Sea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                     </attatchment>
+		
+			
+		    <attatchment name="territoryAttatchment" attatchTo="SZ 33 Baltic Sea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
 
-                    <attatchment name="territoryAttatchment" attatchTo="SZ 40 North Atlantic" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+		    <attatchment name="territoryAttatchment" attatchTo="SZ 32 Baltic Sea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>	
+
+		    <attatchment name="territoryAttatchment" attatchTo="SZ 35 Helgoland Bight" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+		    <attatchment name="territoryAttatchment" attatchTo="SZ 40 North Atlantic" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                     </attatchment>
 
@@ -3244,6 +3272,12 @@
             		<territoryOwner territory="Tsingtao" owner="Germans"/>
             		<territoryOwner territory="German S. Pacific" owner="Germans"/>
 
+			<!-- Germans Owned Convoy Zones -->
+			<territoryOwner territory="SZ 33 Baltic Sea" owner="Germans"/>
+			<territoryOwner territory="SZ 32 Baltic Sea" owner="Germans"/>
+			<territoryOwner territory="SZ 35 Helgoland Bight" owner="Germans"/>
+
+
 			<!-- Austrians Owned Territory -->
             		<territoryOwner territory="Tyrol" owner="Austrians"/>
             		<territoryOwner territory="Carinthia" owner="Austrians"/>
@@ -3355,7 +3389,7 @@
 
                         <unitPlacement unitType="battleship" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
                         <unitPlacement unitType="cruiser" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 64 Sea of Crete" quantity="2" owner="British"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 64 Sea of Crete" quantity="3" owner="British"/>
                         <unitPlacement unitType="submarine" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
                         <unitPlacement unitType="transport" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
 
@@ -3403,16 +3437,16 @@
 				<unitPlacement unitType="destroyer" territory="SZ 3 Atlantic Ocean" quantity="1" owner="British"/>
                         <unitPlacement unitType="transport" territory="SZ 3 Atlantic Ocean" quantity="2" owner="British"/>
 				
-				<unitPlacement unitType="infantry" territory="Japan" quantity="2" owner="British"/>
+				<unitPlacement unitType="infantry" territory="Japan" quantity="3" owner="British"/>
 				<unitPlacement unitType="artillery" territory="Japan" quantity="1" owner="British"/>
 				<unitPlacement unitType="factory" territory="Japan" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="battleship" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
                         <unitPlacement unitType="battlecruiser" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
                         <unitPlacement unitType="cruiser" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
-				<unitPlacement unitType="destroyer" territory="SZ 89 Sea of Japan" quantity="2" owner="British"/>
+				<unitPlacement unitType="destroyer" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
                         <unitPlacement unitType="submarine" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
-				<unitPlacement unitType="transport" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
+				<unitPlacement unitType="transport" territory="SZ 89 Sea of Japan" quantity="2" owner="British"/>
 
                         <unitPlacement unitType="infantry" territory="Port Harcourt" quantity="2" owner="British"/>
 
@@ -3699,9 +3733,9 @@
                         <unitPlacement unitType="fighter" territory="Hanover" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="zeppelin" territory="Hanover" quantity="2" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Saxony" quantity="3" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Saxony" quantity="5" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="Saxony" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="artillery" territory="Saxony" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Saxony" quantity="2" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Pomerania" quantity="3" owner="Germans"/>
 
@@ -3726,7 +3760,7 @@
 
                         <unitPlacement unitType="infantry" territory="Wurttemburg" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Bavaria" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Bavaria" quantity="3" owner="Germans"/>
 				<unitPlacement unitType="cavalry" territory="Bavaria" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Munich" quantity="1" owner="Germans"/>
@@ -3749,10 +3783,9 @@
 
                         <unitPlacement unitType="infantry" territory="Tanga" quantity="2" owner="Germans"/>
 
-			<unitPlacement unitType="infantry" territory="Tsingtao" quantity="1" owner="Germans"/>
 			<unitPlacement unitType="factory" territory="Tsingtao" quantity="1" owner="Germans"/>
 
-			<unitPlacement unitType="infantry" territory="German S. Pacific" quantity="2" owner="Germans"/>
+			<unitPlacement unitType="infantry" territory="German S. Pacific" quantity="1" owner="Germans"/>
 			<unitPlacement unitType="factory" territory="German S. Pacific" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Dar es Salaam" quantity="1" owner="Germans"/>
@@ -3814,8 +3847,8 @@
 				<unitPlacement unitType="battlecruiser" territory="SZ 78 Easter Island" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="cruiser" territory="SZ 84 Caroline Islands" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 84 Caroline Islands" quantity="1" owner="Germans"/>
-				<unitPlacement unitType="submarine" territory="SZ 84 Caroline Islands" quantity="3" owner="Germans"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 84 Caroline Islands" quantity="2" owner="Germans"/>
+				<unitPlacement unitType="submarine" territory="SZ 84 Caroline Islands" quantity="2" owner="Germans"/>
 
                         <unitPlacement unitType="cruiser" territory="SZ 86 Pacific Ocean" quantity="1" owner="Germans"/>
 
@@ -4120,7 +4153,7 @@
 		 artillery:  2, 2, 1, 4 (special: enhances infantry + cavalry)&lt;br&gt;  fighter:    3, 3, 3, 8&lt;br&gt;  zeppelin:  1, 1, 6, 10 (special: SBR)&lt;br&gt;  
 		 transport:  0, 1, 2, 12 (special: can carry 1 infantry + 1 other ground unit)&lt;br&gt;  submarine:  2, 2, 2, 7 (special: submerge, sneak attack)&lt;br&gt;  destroyer: 
 		  2, 2, 2, 6&lt;br&gt;  cruiser:    3, 3, 2, 10&lt;br&gt;  battlecruiser:  4, 4, 2, 14&lt;br&gt;  battleship: 4, 4, 18 (special: 2 hits [same turn] to destroy, 
-		  can shore bombard)&lt;br&gt;&lt;br&gt;=== Map Information ===&lt;br&gt;This map is based on a unique projection developed specifically for the Great War
+		  can NOT shore bombard!)&lt;br&gt;&lt;br&gt;=== Map Information ===&lt;br&gt;This map is based on a unique projection developed specifically for the Great War
 		   variant and is designed to take full advantage of the&lt;br&gt;map scaling feature in TripleA.  Our desire to highlight the Western Front,
 		    while still giving the game a truly world-wide scope,&lt;br&gt;required that we make some abstractions to the map.  These include several game 
 		    boxes which connect to the major areas of conflict around&lt;br&gt;Europe, Africa and the Middle East. &lt;br&gt;&lt;br&gt; For complete rules and information, refer to 

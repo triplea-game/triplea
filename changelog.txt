@@ -1,6 +1,6 @@
-* fix highlight unit drawing bug (sgb)
+update great war to version 2.0 (Jason Clark)
 
-* update great war to version 1.6 (Jason Clark)
+* fix highlight unit drawing bug (sgb)
 
 * fix null pointer when ai plays in capture the flag (sgb)
 

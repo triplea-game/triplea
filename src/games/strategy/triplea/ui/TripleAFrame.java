@@ -572,7 +572,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
         void refresh()
         {
-            StringBuilder buf = new StringBuilder();
+            StringBuilder buf = new StringBuilder(" ");
             buf.append(in == null ? "none" : in.getName());
             if (in != null)
             {
