@@ -270,6 +270,63 @@ public class RevisedTest extends TestCase
     }
     
     
+    public void testLoadDependencies()
+    {
+     
+        Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");
+        Territory eastEurope = m_data.getMap().getTerritory("Eastern Europe");
+        Territory norway = m_data.getMap().getTerritory("Norway");
+        
+        UnitType infantryType = m_data.getUnitTypeList().getUnitType("infantry");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+
+        MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        ITestDelegateBridge bridge = getDelegateBridge(germans);
+        bridge.setStepName("CombatMove");
+        moveDelegate.start(bridge, m_data);
+
+        
+        Route eeToSz5 = new Route();
+        eeToSz5.setStart(eastEurope);
+        eeToSz5.add(sz5);
+
+        //load the transport in the baltic
+        List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
+        assertEquals(2, infantry.size());
+        
+        TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+        
+        //load the transport
+        String error = moveDelegate.move(infantry, eeToSz5, Collections.<Unit>singletonList(transport));
+        assertNull(error,error);
+        
+        
+        Route sz5ToNorway = new Route();
+        sz5ToNorway.setStart(sz5);
+        sz5ToNorway.add(norway);
+
+        //move the infantry in two steps
+        error = moveDelegate.move(infantry.subList(0,1), sz5ToNorway);
+        assertNull(error);
+        error = moveDelegate.move(infantry.subList(1,2), sz5ToNorway);
+        assertNull(error);
+        
+        assertEquals(3, moveDelegate.getMovesMade().size());
+                 
+        //the first unload
+        UndoableMove move2 = moveDelegate.getMovesMade().get(1);
+        
+        //the second unload must be done first
+        assertFalse(move2.getcanUndo());
+        
+        error = moveDelegate.undoMove(2);
+        assertNull(error);
+        
+        //we can now be undone
+        assertTrue(move2.getcanUndo());
+    }
+    
     public void testLoadUndoInWrongOrder()
     {
         Territory sz5 = m_data.getMap().getTerritory("5 Sea Zone");

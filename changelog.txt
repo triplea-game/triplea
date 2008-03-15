@@ -1,4 +1,6 @@
-update great war to version 2.0 (Jason Clark)
+* fixed bug [ 1910221 ] Undone Movement Null Pointer (sgb)
+
+* update great war to version 2.0 (Jason Clark)
 
 * fix highlight unit drawing bug (sgb)
 
