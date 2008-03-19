@@ -1,3 +1,7 @@
+* In europe incomplete, changed the transport cost of artilery to 2, so 2 may be transported (comradekev)
+
+* fixed byg[ 1896778 ] In Pacific game cannot move between sea zone 37 and Kiangsi (comradekev)
+
 * fixed bug [ 1910221 ] Undone Movement Null Pointer (sgb)
 
 * update great war to version 2.0 (Jason Clark)
