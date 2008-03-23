@@ -135,6 +135,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     {
         createViewMenu(menuBar);
         createGameMenu(menuBar);
+        createExportMenu(menuBar);
     }
     
     /**
@@ -157,13 +158,21 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addGameOptionsMenu(menuGame);
         addShowEnemyCasualties(menuGame);
         addShowDiceStats(menuGame);
-        addExportStats(menuGame);
-        addExportSetupCharts(menuGame);
         addBattleCalculatorMenu(menuGame);
-        addSaveScreenshot(menuGame);
         
     }
     
+    
+    private void createExportMenu(JMenuBar menuBar)
+    {
+        JMenu menuGame = new JMenu("Export");
+        menuBar.add(menuGame);
+
+        addExportStats(menuGame);
+        addExportSetupCharts(menuGame);        
+        addSaveScreenshot(menuGame);
+        
+    }
     
 
     /**

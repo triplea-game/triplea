@@ -1248,7 +1248,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
         mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
         mapGraphics.setColor(title_color);
-        mapGraphics.drawString("Round "+round+": "+player.getName()+" - "+step, title_x, title_y);
+        mapGraphics.drawString("Round "+round+": "+ player == null ? player.getName() : ""  +" - "+step, title_x, title_y);
         // overlay stats, if enabled
         boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty("screenshot.stats.enabled");
         if(stats_enabled)
@@ -1554,7 +1554,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         }
     };
 
-    private AbstractAction m_saveScreenshotAction = new AbstractAction("Save Screenshot...")
+    private AbstractAction m_saveScreenshotAction = new AbstractAction("Export Screenshot...")
     {
             public void actionPerformed(ActionEvent e)
             {

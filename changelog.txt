@@ -1,3 +1,7 @@
+* reorganize menus slightly, add export menu (sgb)
+
+* turn antialiasing on for map drawing, makes scaling look better on windows (sgb)
+
 * fix spelling mistakes in revised (zero pilot)
 
 * updated revies map (zero pilot)

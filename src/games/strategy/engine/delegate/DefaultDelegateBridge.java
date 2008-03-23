@@ -14,14 +14,21 @@
 
 package games.strategy.engine.delegate;
 
-import java.util.Properties;
-
 import games.strategy.engine.GameOverException;
-import games.strategy.engine.data.*;
-import games.strategy.engine.framework.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.message.*;
-import games.strategy.engine.random.*;
+import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.MessengerException;
+import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.RandomStats;
+
+import java.util.Properties;
 
 /**
  * 
@@ -85,6 +92,12 @@ public class DefaultDelegateBridge implements IDelegateBridge
 
     public void addChange(Change aChange)
     {
+        if(aChange instanceof CompositeChange) {
+            CompositeChange c = (CompositeChange) aChange;
+            if(c.getChanges().size() == 1) {
+                addChange(c.getChanges().get(0));
+            }
+        }
         if(!aChange.isEmpty())
             m_game.addChange(aChange);
     }
