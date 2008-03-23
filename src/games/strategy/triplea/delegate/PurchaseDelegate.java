@@ -20,16 +20,27 @@
 
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.delegate.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  *
@@ -108,8 +119,6 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     Iterator<NamedAttachable> iter = results.keySet().iterator();
     Collection<Unit> totalUnits = new ArrayList<Unit>();
     CompositeChange changes = new CompositeChange();
-    Resource ipcs = getData().getResourceList().getResource(Constants.IPCS);
-    int ipcsRemaining = m_player.getResources().getQuantity(ipcs);
 
     // add changes for added resources
     //  and find all added units
@@ -140,38 +149,30 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
     }
 
     // add changes for spent resources
-    Iterator<Resource> costsIter = costs.keySet().iterator();
-    while(costsIter.hasNext() )
-    {
-      Resource resource = costsIter.next();
-      int quantity = costs.getInt(resource);
-      ipcsRemaining -= quantity;
-      Change change = ChangeFactory.changeResourcesChange(m_player, resource, -quantity);
-      changes.add(change);
-    }
+    String remaining = removeFromPlayer(m_player, costs, changes);
 
-    addHistoryEvent(totalUnits, ipcsRemaining);
-
+    addHistoryEvent(totalUnits,  remaining);  
     
     // commit changes
     m_bridge.addChange(changes);
+
       
 
     return null;
   }
 
 
-private void addHistoryEvent(Collection<Unit> totalUnits, int ipcsRemaining)
-{
+  private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText)
+  {
     // add history event
     String transcriptText;
     if(!totalUnits.isEmpty())
-      transcriptText = m_player.getName() + " buy " + MyFormatter.unitsToTextNoOwner(totalUnits)+"; "+ipcsRemaining+" ipcs remaining";
+      transcriptText = m_player.getName() + " buy " + MyFormatter.unitsToTextNoOwner(totalUnits)+"; "+ remainingText;
     else
-      transcriptText = m_player.getName() + " buy nothing; "+ipcsRemaining+" ipcs remaining";
+      transcriptText = m_player.getName() + " buy nothing; "+ remainingText;
     m_bridge.getHistoryWriter().startEvent(transcriptText);
     m_bridge.getHistoryWriter().setRenderingData(totalUnits);
-}
+  }
 
   private IntegerMap<Resource> getCosts(IntegerMap<ProductionRule> productionRules)
   {
@@ -231,6 +232,23 @@ private void addHistoryEvent(Collection<Unit> totalUnits, int ipcsRemaining)
     public Class<? extends IRemote> getRemoteType()
     {
         return IPurchaseDelegate.class;
+    }
+
+
+    protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> costs, CompositeChange changes)
+    {
+        Iterator<Resource> costsIter = costs.keySet().iterator();
+        while(costsIter.hasNext() )
+        {
+          Resource resource = costsIter.next();
+          int quantity = costs.getInt(resource);
+          
+          Change change = ChangeFactory.changeResourcesChange(m_player, resource, -quantity);
+          changes.add(change);
+          
+          return m_player.getResources().getQuantity(resource) -  quantity + " ipcs remaining"; 
+        }
+        return "";
     }
 
 }

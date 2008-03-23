@@ -1,3 +1,9 @@
+* fix bug 1890628 freeze in triplea 0.9.3 (sgb)
+
+* fix bug 1905413 can't move units with a warning (sgb)
+
+* fix bid (all bid ipcs were being added to the player) (sgb)
+
 * In europe incomplete, changed the transport cost of artilery to 2, so 2 may be transported (comradekev)
 
 * fixed byg[ 1896778 ] In Pacific game cannot move between sea zone 37 and Kiangsi (comradekev)

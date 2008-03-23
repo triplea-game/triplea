@@ -967,11 +967,6 @@ public class MapPanel extends ImageScrollerLargeView
     
     public void setMouseShadowUnits(Collection<Unit> units)
     {
-        setMouseShadowUnits(units, null);
-    }
-
-    public void setMouseShadowUnits(Collection<Unit> units, Collection<UnitCategory> unresolvedCategories)
-    {
         if(units == null || units.isEmpty())
         {
             m_mouseShadowImage = null;
@@ -1010,16 +1005,7 @@ public class MapPanel extends ImageScrollerLargeView
                 UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), 
                         category.getOwner().getName(), place,category.getDamaged(), false, "", m_uiContext );
                 drawer.draw(bounds, m_data, g, m_uiContext.getMapData(), null, null);
-                if (unresolvedCategories != null && unresolvedCategories.contains(category))
-                {
-                    Image helpImage = getHelpImage();
-                    // position the icon in the lower-right corner of the unit
-                    int unresolvedX = (int)place.getX() + icon_width - helpImage.getWidth(this);
-                    int unresolvedY = (int)place.getY() + UnitImageFactory.UNIT_ICON_HEIGHT - helpImage.getHeight(this); 
-                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f) );
-                    g.drawImage(helpImage, unresolvedX, unresolvedY, null);
-                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f) );
-                }
+               
                 i++;
             }
         }

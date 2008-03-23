@@ -250,4 +250,9 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
             return 1;
         return 0;
     }
+    
+    public String toString() {
+        return "Move Validation Results, error:" + m_error + " isValid():" + isMoveValid();
+
+    }
 }

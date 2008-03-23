@@ -29,7 +29,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.UnitAutoChooser;
+
 import games.strategy.util.IntegerMap;
 
 import java.awt.Color;
@@ -111,46 +111,25 @@ public class EditPanel extends ActionPanel
                                                                                         getData(),
                                                                                         getCurrentPlayer());
 
-                UnitAutoChooser autoChooser = new UnitAutoChooser(allUnits, 
-                                                                  m_selectedUnits, 
-                                                                  mustMoveWithDetails.getMustMoveWith(),
-                                                                  true, false);
+                UnitChooser chooser = new UnitChooser(allUnits,
+                                                      mustMoveWithDetails.getMustMoveWith(),                                                            
+                                                      getData(), 
+                                                      /*allowTwoHit=*/ false, 
+                                                      getMap().getUIContext());
 
-                Collection<Unit> bestUnits;
-
-                if (autoChooser.solutionCount() == 1)
+                int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                                                chooser, chooserText,
+                                                JOptionPane.OK_CANCEL_OPTION,
+                                                JOptionPane.PLAIN_MESSAGE, null, null, null);
+                
+                if(option != JOptionPane.OK_OPTION)
                 {
-                    bestUnits = autoChooser.getSolution(0, true);
+                    CANCEL_EDIT_ACTION.actionPerformed(null);
+                    return;
                 }
-                else
-                {
-                    // create new UnitAutoChooser with movement categorized
-                    UnitAutoChooser newAutoChooser = new UnitAutoChooser(autoChooser.getCandidateUnits(true),
-                                                                         autoChooser.getChosenUnits(),
-                                                                         mustMoveWithDetails.getMustMoveWith(),
-                                                                         true, true);
 
-                    UnitChooser chooser = new UnitChooser(newAutoChooser,
-                                                          mustMoveWithDetails.getMustMoveWith(), 
-                                                          /*categorizeMovement=*/ true, 
-                                                          getData(), 
-                                                          /*allowTwoHit=*/ false, 
-                                                          getMap().getUIContext(),
-                                                          autoChooser.getChooserBoundaryMatch());
-
-                    int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                                                    chooser, chooserText,
-                                                    JOptionPane.OK_CANCEL_OPTION,
-                                                    JOptionPane.PLAIN_MESSAGE, null, null, null);
-                    
-                    if(option != JOptionPane.OK_OPTION)
-                    {
-                        CANCEL_EDIT_ACTION.actionPerformed(null);
-                        return;
-                    }
-
-                    bestUnits = chooser.getSelected(/*selectDependents=*/true);
-                }
+                Collection<Unit> bestUnits = chooser.getSelected(/*selectDependents=*/true);
+            
 
                 String result = m_frame.getEditDelegate().removeUnits(m_selectedTerritory, bestUnits);
                 if (result != null)

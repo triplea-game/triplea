@@ -42,8 +42,10 @@ import java.util.Stack;
  * @author: Tony Clayton
  * @version: 1.0
  */
-
-public class UnitAutoChooser
+//TODO - the move computation explodes when multiple transports are selected
+//https://sourceforge.net/tracker/index.php?func=detail&aid=1890628&group_id=44492&atid=439737
+//for now this class is not to be used
+class UnitAutoChooser
 {
     // m_allUnits: 
     // Set through the constructor and contains all available units for 

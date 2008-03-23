@@ -25,6 +25,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -39,7 +40,6 @@ import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.triplea.util.UnitAutoChooser;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
@@ -65,7 +65,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -112,19 +111,16 @@ public class MovePanel extends ActionPanel
     //use a LinkedHashSet because we want to know the order
     private final Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
 
-    private UnitAutoChooser m_unitAutoChooser = null;
-    
-    private TreeMap<MoveValidationResult, Integer> m_unitsThatCanMoveResultMap = null;
 
     //the must move with details for the currently selected territory
-    //note this is kep in sync because we do not modify m_selectedTerritory directly
+    //note this is kept in sync because we do not modify m_selectedTerritory directly
     //instead we only do so through the private setter
     private MustMoveWithDetails m_mustMoveWithDetails = null;
 
     // cache this so we can update it only when territory/units change
     private List<Unit> m_unitsThatCanMoveOnRoute;
 
-    private Collection<UnitCategory> m_unresolvedUnitCategories;
+    
 
     private Image m_currentCursorImage;
     private TransportTracker m_transportTracker = null;
@@ -140,7 +136,7 @@ public class MovePanel extends ActionPanel
         m_undoableMovesPanel = new UndoableMovesPanel(data, this);
         m_mouseCurrentTerritory = null;
         m_unitsThatCanMoveOnRoute = Collections.emptyList();
-        m_unresolvedUnitCategories = Collections.emptyList();
+
         m_undoableMoves = Collections.emptyList();
         m_currentCursorImage = null;
     }
@@ -341,7 +337,7 @@ public class MovePanel extends ActionPanel
             m_mouseCurrentTerritory = null;
             m_forced = null;
             m_selectedUnits.clear();
-            m_unresolvedUnitCategories = Collections.emptyList();
+
             m_frame.clearStatusMessage();
             getMap().showMouseCursor();
             m_currentCursorImage = null;
@@ -664,104 +660,7 @@ public class MovePanel extends ActionPanel
         return movable;
     }
     
-    /**
-     * Allow the user to select specific units, if for example some units
-     * have different movement
-     * Units are sorted in preferred order, so units represents the default selections.
-     */
-    private Collection<Unit> allowSpecificUnitSelection(UnitAutoChooser autoChooser, final Route route)
-    {
-        List<Unit> units = new ArrayList<Unit>();
-
-        // NOTE: The UnitAutoChooser solution set may contain solutions at the end that aren't really valid.
-        //       For instance, units matching the selected categories that don't have enough movement
-        //       will still show up in a solution at the end of a solution set.
-        //       This "feature" enables the mouse-overs to show the warning/error messages during route selection.
-        //       However, when selecting a valid solution from the solution set, we don't want to
-        //       let the user choose an invalid solution, so we need to weed-out those solutions.
-        // XXX:  This weeding out currently only supports solutions that are invalid due to not-enough-movement-left.
-        //       Other invalid solutions can still be selected, and the appopriate movement error will pop-up after clicking Ok.
-        // TODO: A nicer alternative would be to add a feature to the UnitChooser that shows a warning/error icon
-        //       over the icons of the invalid units, and shows the warning/error message on mouse-over of the icon.
-        //       The UnitChooser could use the MoveValidationResults directly, and support all types of invalid solutions.
-
-        final Match<Unit> enoughMovementMatch = new Match<Unit>()
-        {
-            public boolean match(Unit u)
-            {
-                return TripleAUnit.get(u).getMovementLeft() >= route.getLength();
-            }
-        };
-
-        Collection<Unit> candidateUnits = autoChooser.getCandidateUnits(true);
-        if (!EditDelegate.getEditMode(getData()))
-        {
-            // need to do enoughMovementMatch against only the non-dependent candidateUnits
-            Collection<Unit> candidateUnitsNoDeps = autoChooser.getCandidateUnits(false);
-            Collection<Unit> matchingUnitsNoDeps = Match.getMatches(candidateUnitsNoDeps, enoughMovementMatch);
-            candidateUnitsNoDeps.removeAll(matchingUnitsNoDeps);
-            candidateUnits.removeAll(candidateUnitsNoDeps);
-        }
-
-        // create new UnitAutoChooser with movement categorized
-        UnitAutoChooser newAutoChooser = new UnitAutoChooser(candidateUnits,
-                                                             autoChooser.getChosenUnits(),
-                                                             m_mustMoveWithDetails.getMustMoveWith(),
-                                                             true, true, true);
-        if (newAutoChooser.solutionCount() == 1)
-        {
-            units.addAll(newAutoChooser.getSolution(0, true));
-        }
-        else
-        {
-            // multiple solutions or no single exact solution found
-            
-            Match<Collection<Unit>> unitCategoryCountMatch = newAutoChooser.getChooserBoundaryMatch();
-            CompositeMatch<Collection<Unit>> unitChooserMatch = new CompositeMatchAnd<Collection<Unit>>(unitCategoryCountMatch);
-/* 
-            // TODO: replace this match criteria with UnitChooser enhancements to show solution warnings/errors in UnitChooser.
-
-            Match<Collection<Unit>> enoughMovementSolutionMatch = new Match<Collection<Unit>>()
-            {
-                public boolean match(Collection<Unit> c)
-                {
-                    if (EditDelegate.getEditMode(getData()))
-                        return true;
-                    for (Unit u : c)
-                        if (TripleAUnit.get(u).getMovementLeft() < route.getLength())
-                            return false;
-                    return true;
-                }
-            };
-            unitChooserMatch.add(enoughMovementSolutionMatch);
-*/
-
-
-            UnitChooser chooser = new UnitChooser(newAutoChooser, 
-                                                  m_mustMoveWithDetails.getMustMoveWith(), 
-                                                  /*categorizeMovement*/ true,
-                                                  m_bridge.getGameData(), 
-                                                  /*allowTwoHit*/ false, 
-                                                  getMap().getUIContext(), 
-                                                  unitChooserMatch);
-
-            String text = "Move from " + getFirstSelectedTerritory();
-            int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                                            chooser, text,
-                                            JOptionPane.OK_CANCEL_OPTION,
-                                            JOptionPane.PLAIN_MESSAGE, null, null, null);
-            
-            if(option != JOptionPane.OK_OPTION)
-            {
-                return units;
-            }
-            
-            
-            units.addAll(chooser.getSelected(true));
-        }
-
-        return units;
-    }
+  
 
     private Route getRoute(Territory start, Territory end)
     {
@@ -836,7 +735,7 @@ public class MovePanel extends ActionPanel
     
     private void updateUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)
     {
-        m_unresolvedUnitCategories = Collections.emptyList();
+        
 
         if(route.getLength() == 0)
         {
@@ -850,123 +749,75 @@ public class MovePanel extends ActionPanel
         getMap().hideMouseCursor();
 
         // get movable units at the start of the route using basic match criteria
-        List<Unit> movableUnits = getFirstSelectedTerritory().getUnits().getMatches(getMovableMatch(null, null));
+        List<Unit> movableUnits = getFirstSelectedTerritory().getUnits().getMatches(getMovableMatch(route, null));
         // sort candidate units in preferred movement order
         sortUnitsToMove(movableUnits, route);
 
-        // create a new UnitAutoChooser to find movable solutions
-        m_unitAutoChooser = new UnitAutoChooser(movableUnits, 
-                                                units, 
-                                                m_mustMoveWithDetails.getMustMoveWith(),
-                                                true, false, true);
-        Set<Unit> bestUnits = null;
-
-        // sort results in Comparable<MoveValidationResult> order
-        m_unitsThatCanMoveResultMap = new TreeMap<MoveValidationResult, Integer>();
-
-
-        MoveValidationResult result;
-
-        int startIndex, maxCount;
-
-        startIndex = 0;
-        maxCount = m_unitAutoChooser.solutionCount();
-        for (int i=startIndex; i < maxCount; i++)
-        {
-            bestUnits = m_unitAutoChooser.getSolution(i, true);
-            // getTransportsToLoad causes prompting normally. Suppress that here.
-            result = MoveValidator.validateMove(bestUnits,
-                                                route,
-                                                getCurrentPlayer(),
-                                                getTransportsToLoad(route, bestUnits, true),
-                                                m_nonCombat,
-                                                m_undoableMoves,
-                                                getData());
-            m_unitsThatCanMoveResultMap.put(result, Integer.valueOf(i));
+        
+        Collection<Unit> transportsToLoad = Collections.emptyList();
+        if(MoveValidator.isLoad(route)) {
+            transportsToLoad = route.getEnd().getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), getData())));
         }
-        // choose best result
-        result = m_unitsThatCanMoveResultMap.firstKey();
-        int bestSolutionIndex = m_unitsThatCanMoveResultMap.get(result).intValue();
-        // remove dependent units that we just added so they don't show up in shadow units
-        bestUnits = m_unitAutoChooser.getSolution(bestSolutionIndex, false);
+        
+        List<Unit> best = new ArrayList<Unit>(units);
+        
+        sortUnitsToMove(best, route);
+        Collections.reverse(best);
+        
+        List<Unit> bestWithDependents = addMustMoveWith(best);
+        
+        
+        MoveValidationResult allResults = MoveValidator.validateMove( bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, m_undoableMoves, getData());
+        MoveValidationResult lastResults = allResults;
+        
+        if(!allResults.isMoveValid()) {
+            
+            while(!best.isEmpty() && !lastResults.isMoveValid()) {
+                best = best.subList(1, best.size());
+                bestWithDependents = addMustMoveWith(best);
+                lastResults = MoveValidator.validateMove(best, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, m_undoableMoves, getData());    
+            }
+        }
 
-        List<Unit> resultUnits = new ArrayList<Unit>(bestUnits.size());
-
-        if (result.isMoveValid())
+        if (allResults.isMoveValid())
         {
             // valid move
             m_frame.clearStatusMessage();
-            m_currentCursorImage = null;
-            resultUnits.addAll(bestUnits);
+            m_currentCursorImage = null;            
         }
-        else
-        {
-            String errorMsg = null;
-            String warningMsg = null;
-            StringBuilder statusMsg = new StringBuilder(100);
-
-            // invalid move
-            if (result.hasError())
-            {
-                // a show stopper
-                errorMsg = result.getError();
+        else  
+        { 
+            String message = allResults.getError();
+            if(message == null) {
+                message = allResults.getDisallowedUnitWarning(0);
+            } if(message == null) {
+                message = allResults.getUnresolvedUnitWarning(0);
             }
-            else
-            {
-                if (result.getDisallowedUnitWarnings().size() == 0
-                        && result.getUnresolvedUnitWarnings().size() == 0)
-                    throw new IllegalStateException("Uninitialized MoveValidationResult object!");
-
-                // no show stoppers, but some units had problems 
-
-                resultUnits.addAll(bestUnits);
-                resultUnits.removeAll(result.getDisallowedUnits());
-
-                // remove any units from unresolved list that are also in disallowed list
-                result.removeAnyUnresolvedUnitsThatAreDisallowed();
-
-                if (result.hasUnresolvedUnits())
-                {
-                    // for unresolved units, paint a question mark over the unit type
-                    warningMsg = result.getUnresolvedUnitWarning(0);
-                    m_unresolvedUnitCategories = result.getUnresolvedUnitCategories();
-                }
-                else if (result.hasDisallowedUnits())
-                {
-                    // if disallowed units, but no unresolved units, then just remove the disallowed units
-                    if (resultUnits.isEmpty())
-                    {
-                        // no units left; show an error
-                        errorMsg = result.getDisallowedUnitWarning(0);
-                    }
-                    else
-                    {
-                        // some units are left; show a warning 
-                        warningMsg = result.getDisallowedUnitWarning(0);
-                    }
-                }
-            }
-
-            int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
-
-            String numWarningsMsg = numProblems > 0 ? ("; "+ numProblems + " other warning" + (numProblems==1 ? "" : "s") + " not shown") : "";
-            if (errorMsg != null)
-            {
-                statusMsg.append(errorMsg).append(numWarningsMsg);
-                m_frame.setStatusErrorMessage(statusMsg.toString());
+            
+            if(!lastResults.isMoveValid()) 
+            {                
+                m_frame.setStatusErrorMessage(message);
                 m_currentCursorImage = getMap().getErrorImage();
             }
-            else if (warningMsg != null)
-            {
-                statusMsg.append(warningMsg).append(numWarningsMsg);
-                m_frame.setStatusWarningMessage(statusMsg.toString());
+            else
+            {            
+                m_frame.setStatusWarningMessage(message);
                 m_currentCursorImage = getMap().getWarningImage();
             }
         }
 
-        m_selectedUnits.clear();
-        m_selectedUnits.addAll(bestUnits);
-        m_unitsThatCanMoveOnRoute = resultUnits;
+        m_unitsThatCanMoveOnRoute = new ArrayList<Unit>(bestWithDependents);
+    }
+
+    private List<Unit> addMustMoveWith(List<Unit> best)
+    {
+        List<Unit> bestWithDependents = new ArrayList<Unit>(best);
+        for(Unit u : best) {
+            if(m_mustMoveWithDetails.getMustMoveWith().containsKey(u)) {
+                bestWithDependents.addAll(m_mustMoveWithDetails.getMustMoveWith().get(u));   
+            }
+        }
+        return bestWithDependents;
     }
 
     /**
@@ -979,7 +830,7 @@ public class MovePanel extends ActionPanel
             getMap().setMouseShadowUnits(null);
         else
         {
-            getMap().setMouseShadowUnits(m_unitsThatCanMoveOnRoute, m_unresolvedUnitCategories);
+            getMap().setMouseShadowUnits(m_unitsThatCanMoveOnRoute);
         }
     }
 
@@ -1466,6 +1317,17 @@ public class MovePanel extends ActionPanel
                                  getFirstSelectedTerritory()));
         }
         
+        private CompositeMatch<Unit> getUnloadableMatch()
+        {
+            //are we unloading everything? if we are then we dont need to select the transports
+              CompositeMatch<Unit> unloadable = new CompositeMatchAnd<Unit>();
+              unloadable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
+              unloadable.add(Matches.UnitIsLand);
+              if(m_nonCombat)
+                  unloadable.add(new InverseMatch<Unit>(Matches.UnitIsAA));
+            return unloadable;
+        }
+        
         private void selectEndPoint(Territory territory)
         {
             final Route route = getRoute(getFirstSelectedTerritory(), territory);
@@ -1486,130 +1348,52 @@ public class MovePanel extends ActionPanel
                   CANCEL_MOVE_ACTION.actionPerformed(null);
                   return;
               }
-
-              if (! m_unresolvedUnitCategories.isEmpty())
-              {
-                  Match<Unit> unresolvedUnitMatch = new Match<Unit>()
-                  {
-                      public boolean match(Unit u)
-                      {
-                          return m_unresolvedUnitCategories.contains(new UnitCategory(u, false, false));
-                      }
-                  };
-
-                  final Collection<Unit> transportsToLoad = new ArrayList<Unit>(transports);
-                  // this match will make sure we have enough transports
-                  // to load the chosen units
-                  Match<Collection<Unit>> enoughTransportsMatch = new Match<Collection<Unit>>()
-                  {
-                      public boolean match(Collection<Unit> units)
-                      {
-                          Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, units, transportsToLoad);
-                          return unitsToTransports.keySet().containsAll(units);
-                      }
-                  };
-
-                  List<Unit> candidateUnits = m_unitAutoChooser.getCandidateUnits(false);
-                  List<Unit> candidateUnresolvedUnits = Match.getMatches(candidateUnits, unresolvedUnitMatch);
-                  List<Unit> unresolvedUnits = Match.getMatches(units, unresolvedUnitMatch);
-
-                  Collection<Unit> newUnits = new ArrayList<Unit>(units);
-                  newUnits.removeAll(unresolvedUnits);
-
-
-                  CompositeMatch<Collection<Unit>> unitChooserMatch = new CompositeMatchAnd<Collection<Unit>>(enoughTransportsMatch);
-
-                  // make sure that default selections are legal
-                  Collection<Unit> defaultSelections = new ArrayList<Unit>();
-                  for (Unit unit : unresolvedUnits)
-                  {
-                      Collection<Unit> newSelections = new ArrayList<Unit>(defaultSelections);
-                      newSelections.add(unit);
-                      if (!unitChooserMatch.match(newSelections))
-                          break;
-                      defaultSelections.add(unit);
-                  }
-                  
-                  UnitChooser chooser = new UnitChooser(candidateUnresolvedUnits,
-                                                        defaultSelections,
-                                                        m_mustMoveWithDetails.getMustMoveWith(), 
-                                                        /*categorizeMovement*/ true,
-                                                        getData(), 
-                                                        /*allowTwoHit*/ false, 
-                                                        getMap().getUIContext(), 
-                                                        unitChooserMatch);
-
-                  String text = "Load from " + getFirstSelectedTerritory();
-                  int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                                                  chooser, text,
-                                                  JOptionPane.OK_CANCEL_OPTION,
-                                                  JOptionPane.PLAIN_MESSAGE, null, null, null);
-                  
-                  if(option != JOptionPane.OK_OPTION)
-                  {
-                      CANCEL_MOVE_ACTION.actionPerformed(null);
-                      return;
-                  }
-              
-                  Collection<Unit> chosenUnits = chooser.getSelected(true);
-                  if (chosenUnits.isEmpty())
-                  {
-                      CANCEL_MOVE_ACTION.actionPerformed(null);
-                      return;
-                  }
-                  
-                  newUnits.addAll(chosenUnits);
-                  units.retainAll(newUnits);
-
-                  if (units.isEmpty())
-                  {
-                      CANCEL_MOVE_ACTION.actionPerformed(null);
-                      return;
-                  }
-              }
-
             }
             else if(MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
             {
-                // get unloadable land units
-                CompositeMatch<Unit> unloadableMatch = getUnloadableMatch(route, units);
-                List<Unit> unloadableUnits = Match.getMatches(units,unloadableMatch);
-                Collection<Unit> unitsToUnload = new ArrayList<Unit>(getUnitsToUnload(route, unloadableUnits));
-                // add air units too
-                unitsToUnload.addAll(Match.getMatches(units, new InverseMatch<Unit>(Matches.UnitIsLand)));
-                if(unitsToUnload.isEmpty())
+                List<Unit> unloadAble = Match.getMatches(m_selectedUnits,getUnloadableMatch());
+                
+                Collection<Unit> canMove = new ArrayList<Unit>(getUnitsToUnload(route, unloadAble));
+                canMove.addAll(Match.getMatches(m_selectedUnits, new InverseMatch<Unit>(getUnloadableMatch())));
+                if(canMove.isEmpty())
                 {
                     CANCEL_MOVE_ACTION.actionPerformed(null);
                     return; 
                 }
                 else
                 {
-                    units.clear();
-                    units.addAll(unitsToUnload);
+                    m_selectedUnits.clear();
+                    m_selectedUnits.addAll(canMove);
                 }
-            }
-            else
+            } else 
             {
-                // re-run auto chooser if disallowed units have been filtered
-                UnitAutoChooser autoChooser = null;
-                if (m_selectedUnits.size() == units.size())
-                    autoChooser = m_unitAutoChooser;
-                else
-                    autoChooser = new UnitAutoChooser(m_unitAutoChooser.getCandidateUnits(false), 
-                                                      units, 
-                                                      m_mustMoveWithDetails.getMustMoveWith(),
-                                                      true, false, true);
+                // keep a map of the max number of each eligible unitType that can be chosen
+                final IntegerMap<UnitType> maxMap = new IntegerMap<UnitType>();
+                for (Unit unit : units)
+                    maxMap.add(unit.getType(), 1);
+                // this match will make sure we can't select more units
+                // of a specific type then we had originally selected
 
-                units.clear();
-                units.addAll(allowSpecificUnitSelection(autoChooser, route));
+                Match<Collection<Unit>> unitTypeCountMatch = new Match<Collection<Unit>>()
+                {
+                    public boolean match(Collection<Unit> units)
+                    {
+                        IntegerMap<UnitType> currentMap = new IntegerMap<UnitType>();
+                        for (Unit unit : units)
+                            currentMap.add(unit.getType(), 1);
+                        return maxMap.greaterThanOrEqualTo(currentMap);
+                    }
+                };
+                
+                allowSpecificUnitSelection(units, route, false, unitTypeCountMatch);
                 
                 if(units.isEmpty())
                 {
                     CANCEL_MOVE_ACTION.actionPerformed(null);
                     return;
-                }
-                
+                }                        
             }
+            
 
             MoveDescription message = new MoveDescription(units, route, transports);
             m_moveMessage = message;
@@ -1623,6 +1407,114 @@ public class MovePanel extends ActionPanel
     
     };
     
+    
+    /**
+     * Allow the user to select specific units, if for example some units
+     * have different movement
+     * Units are sorted in preferred order, so units represents the default selections.
+     */
+    private boolean allowSpecificUnitSelection(Collection<Unit> units, final Route route, boolean mustQueryUser, Match<Collection<Unit>> matchCriteria)
+    {
+        List<Unit> candidateUnits = getFirstSelectedTerritory().getUnits().getMatches(getMovableMatch(route, units));
+        
+        if (!mustQueryUser)
+        {
+            Set<UnitCategory> categories = UnitSeperator.categorize(candidateUnits, m_mustMoveWithDetails.getMustMoveWith(), true);
+            
+            for(UnitCategory category1 : categories)
+            {
+                //we cant move these, dont bother to check
+                if(category1.getMovement() == 0)
+                    continue;
+                
+                for(UnitCategory category2 : categories)
+                {
+                    //we cant move these, dont bother to check
+                    if(category2.getMovement() == 0)
+                        continue;
+                    
+                    //if we find that two categories are compatable, and some units
+                    //are selected from one category, but not the other
+                    //then the user has to refine his selection
+                    if(category1 != category2 &&
+                       category1.getType() == category2.getType() &&
+                       !category1.equals(category2)
+                       )
+                    {
+                        //if we are moving all the units from both categories, then nothing to choose
+                        if(units.containsAll(category1.getUnits()) &&
+                           units.containsAll(category2.getUnits()))
+                            continue;
+                        //if we are moving some of the units from either category, then we need to stop
+                        if(!Util.intersection(category1.getUnits(), units).isEmpty() ||
+                           !Util.intersection(category2.getUnits(), units).isEmpty() )
+                        {
+                            mustQueryUser = true;
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+        if(mustQueryUser)
+        {
+
+            List<Unit> defaultSelections = new ArrayList<Unit>(units.size());
+
+            if (MoveValidator.isLoad(route))
+            {
+                final Collection<Unit> transportsToLoad = new ArrayList<Unit>(getTransportsToLoad(route, units, false));
+                defaultSelections.addAll(MoveDelegate.mapTransports(route, units, transportsToLoad).keySet());
+            }
+            else
+            {
+                defaultSelections.addAll(units);
+            }
+
+            // sort candidateUnits in preferred order
+            sortUnitsToMove(candidateUnits, route);
+            UnitChooser chooser = new UnitChooser(candidateUnits, defaultSelections, m_mustMoveWithDetails.getMustMoveWith(),
+                    true, m_bridge.getGameData(), false, getMap().getUIContext(), matchCriteria);
+
+            
+            
+            String text = "Select units to move from " + getFirstSelectedTerritory() + ".";
+            int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                                            chooser, text,
+                                            JOptionPane.OK_CANCEL_OPTION,
+                                            JOptionPane.PLAIN_MESSAGE, null, null, null);
+            
+            if(option != JOptionPane.OK_OPTION)
+            {
+                units.clear();
+                return false;
+            }
+            
+            
+            units.clear();
+            units.addAll(chooser.getSelected(false));
+        }
+
+        // add the dependent units
+        List<Unit> unitsCopy = new ArrayList<Unit>(units);
+        for(Unit unit : unitsCopy)
+        {
+            Collection<Unit> forced = m_mustMoveWithDetails.getMustMoveWith().get(unit);
+            if(forced != null)
+            {
+                // add dependent if necessary 
+                for (Unit dependent : forced)
+                {
+                    if (unitsCopy.indexOf(dependent) == -1)
+                        units.add(dependent);
+                }
+            }
+        }
+
+        return true;
+    }
+
     
     private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
     {

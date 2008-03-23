@@ -178,7 +178,7 @@ public class PurchasePanel extends ActionPanel
             {
                 getData().releaseReadLock();
             }
-            if(m_purchase.totalValues() > totalProd) 
+            if(!m_bid &&  m_purchase.totalValues() > totalProd) 
             {
                 int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
                 if(rVal != JOptionPane.YES_OPTION)
