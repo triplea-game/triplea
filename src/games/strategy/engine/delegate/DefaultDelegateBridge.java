@@ -96,6 +96,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
             CompositeChange c = (CompositeChange) aChange;
             if(c.getChanges().size() == 1) {
                 addChange(c.getChanges().get(0));
+                return;
             }
         }
         if(!aChange.isEmpty())

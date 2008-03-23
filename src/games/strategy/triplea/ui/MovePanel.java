@@ -806,6 +806,11 @@ public class MovePanel extends ActionPanel
             }
         }
 
+        if(m_unitsThatCanMoveOnRoute.size() != new HashSet<Unit>(m_unitsThatCanMoveOnRoute).size()) {
+            CANCEL_MOVE_ACTION.actionPerformed(null);
+            return;
+        }
+        
         m_unitsThatCanMoveOnRoute = new ArrayList<Unit>(bestWithDependents);
     }
 
@@ -814,7 +819,14 @@ public class MovePanel extends ActionPanel
         List<Unit> bestWithDependents = new ArrayList<Unit>(best);
         for(Unit u : best) {
             if(m_mustMoveWithDetails.getMustMoveWith().containsKey(u)) {
-                bestWithDependents.addAll(m_mustMoveWithDetails.getMustMoveWith().get(u));   
+                Collection<Unit> mustMoveWith = m_mustMoveWithDetails.getMustMoveWith().get(u);
+                for(Unit  m : mustMoveWith) {
+                    if(!bestWithDependents.contains(m)) {
+                        bestWithDependents.addAll(mustMoveWith);
+                    }
+                }
+                    
+                   
             }
         }
         return bestWithDependents;

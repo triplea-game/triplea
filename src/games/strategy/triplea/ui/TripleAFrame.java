@@ -46,7 +46,6 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.sound.ClipPlayer;
-import games.strategy.thread.LockUtil;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
