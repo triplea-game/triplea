@@ -4,7 +4,7 @@
 
 * fix spelling mistakes in revised (zero pilot)
 
-* updated revies map (zero pilot)
+* updated revized map (zero pilot)
 
 * fix bug 1890628 freeze in triplea 0.9.3 (sgb)
 

@@ -46,6 +46,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.sound.ClipPlayer;
+import games.strategy.thread.LockUtil;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
@@ -1215,7 +1216,15 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         // print map panel to image
         final BufferedImage mapImage = Util.createImage((int)(scale * mapPanel.getImageWidth()), (int)(scale * mapPanel.getImageHeight()), false);
         Graphics2D mapGraphics = mapImage.createGraphics();
-        mapPanel.print(mapGraphics);
+        GameData data = mapPanel.getData();
+        data.acquireReadLock(); 
+        try 
+        {
+            mapPanel.print(mapGraphics);
+        } finally 
+        {
+            data.releaseReadLock();
+        }
 
         // overlay title
         Color title_color = m_uiContext.getMapData().getColorProperty("screenshot.title.color");
@@ -1248,7 +1257,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
 
         mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
         mapGraphics.setColor(title_color);
-        mapGraphics.drawString("Round "+round+": "+ player == null ? player.getName() : ""  +" - "+step, title_x, title_y);
+        mapGraphics.drawString("Round "+round+": "+ (player != null ? player.getName() : "")  +" - "+step, title_x, title_y);
         // overlay stats, if enabled
         boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty("screenshot.stats.enabled");
         if(stats_enabled)
@@ -1392,6 +1401,8 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         if (rVal == JFileChooser.APPROVE_OPTION)
         {
             File f = fileChooser.getSelectedFile();
+            if(!f.getName().toLowerCase().endsWith(".png"))
+                f = new File(f.getParent(), f.getName() + ".png");
             // A small warning so users will not over-write a file,
             if(f.exists())
             {
@@ -1401,8 +1412,7 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
                 if (choice != JOptionPane.OK_OPTION)
                     return;
             }
-            if(!f.getName().toLowerCase().endsWith(".png"))
-                f = new File(f.getParent(), f.getName() + ".png");
+
             final File file = f;
             Runnable t = new Runnable() {
                 public void run()
