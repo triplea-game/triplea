@@ -1,3 +1,7 @@
+* fix spelling mistakes in revised (zero pilot)
+
+* updated revies map (zero pilot)
+
 * fix bug 1890628 freeze in triplea 0.9.3 (sgb)
 
 * fix bug 1905413 can't move units with a warning (sgb)

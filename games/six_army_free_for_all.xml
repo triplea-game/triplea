@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Six Army Free For All" version="2.0"/>
+        <info name="Six Army Free For All" version="2.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -44,7 +44,7 @@
                 <territory name="Yakut S.S.R."/>
                 <territory name="Hawaiian Islands"/>
                 <territory name="East Indies"/>
-                <territory name="Saudia Arabia"/>
+                <territory name="Saudi Arabia"/>
                 <territory name="Switzerland"/>
                 <territory name="Norway"/>
                 <territory name="French Indochina"/>
@@ -172,7 +172,7 @@
                 <connection t1="25 Sea Zone" t2="Argentina"/>
                 <connection t1="27 Sea Zone" t2="Angola"/>
                 <connection t1="33 Sea Zone" t2="Mozambique"/>
-                <connection t1="34 Sea Zone" t2="Saudia Arabia"/>
+                <connection t1="34 Sea Zone" t2="Saudi Arabia"/>
                 <connection t1="Panama" t2="Venezuela"/>
                 <connection t1="Venezuela" t2="Brazil"/>
                 <connection t1="Venezuela" t2="Peru"/>
@@ -199,7 +199,7 @@
                 <connection t1="Persia" t2="Afghanistan"/>
                 <connection t1="Persia" t2="Turkey"/>
                 <connection t1="Trans-Jordan" t2="Turkey"/>
-                <connection t1="Trans-Jordan" t2="Saudia Arabia"/>
+                <connection t1="Trans-Jordan" t2="Saudi Arabia"/>
                 <connection t1="Anglo Egypt" t2="Sahara"/>
                 <connection t1="Libya" t2="Sahara"/>
                 <connection t1="Algeria" t2="Sahara"/>
@@ -1107,7 +1107,7 @@
                         <option name="production" value="3"/>
                   </attatchment>
                 
-                  <attatchment name="territoryAttatchment" attatchTo="Saudia Arabia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                  <attatchment name="territoryAttatchment" attatchTo="Saudi Arabia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                   </attatchment>
                 
@@ -1394,7 +1394,7 @@
 
 			<unitPlacement unitType="infantry" territory="Turkey" quantity="5"/>
 
-			<unitPlacement unitType="infantry" territory="Saudia Arabia" quantity="5"/>
+			<unitPlacement unitType="infantry" territory="Saudi Arabia" quantity="5"/>
 
 			<unitPlacement unitType="infantry" territory="West Indies" quantity="5"/>
 
