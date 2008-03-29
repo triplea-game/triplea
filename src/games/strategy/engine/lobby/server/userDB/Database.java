@@ -15,6 +15,7 @@
 package games.strategy.engine.lobby.server.userDB;
 
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 
 import java.io.File;
 import java.sql.CallableStatement;
@@ -71,7 +72,13 @@ public class Database
 
     private static File getDBRoot()
     {
-        File root = GameRunner.getRootFolder();
+        File root;
+        if(System.getProperties().containsKey(ServerLauncher.SERVER_ROOT_DIR_PROPERTY)) {        
+            root = new File(System.getProperties().getProperty(ServerLauncher.SERVER_ROOT_DIR_PROPERTY));
+        } else {
+            root = GameRunner.getRootFolder();    
+        }
+        
         if(!root.exists())
         {
             throw new IllegalStateException("Root dir does not exist");

@@ -201,6 +201,89 @@
 
 	</target>
 
+	<target name="macServerApp" depends="init,clean,compile,zip" description="create a mac os x application">
+		
+		<property name="dmg.file" value="release/triplea_${triplea.version}_server.dmg"></property>
+		<property name="app.file" value="release/TripleaServer.app"></property>
+		
+
+		<exec executable="hdiutil">
+			<arg line="detach /Volumes/TripleA" />
+		</exec>
+
+		<mkdir dir="${app.file}" />
+		<mkdir dir="${app.file}/Contents" />
+		<mkdir dir="${app.file}/Contents/MacOS" />
+		<mkdir dir="${app.file}/Contents/Resources/" />
+		<mkdir dir="${app.file}/Contents/Resources/Java" />
+
+		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${app.file}/Contents/MacOS/" />
+
+		<exec executable="chmod">
+			<arg line="755 ${app.file}/Contents/MacOS/JavaApplicationStub" />
+		</exec>
+
+		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"></copy>
+		<copy file="lib/derby_10_1_2.jar" todir="${app.file}/Contents/Resources/Java/"></copy>
+
+		
+		<copy file="ServerInfo.plist" tofile="${app.file}/Contents/Info.plist" />
+		
+		<echo message="APPL????" file="${app.file}/Contents/PkgInfo" />
+
+		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
+
+
+		<exec executable="cp">
+			<arg line="-r icons ${app.file}/Contents/Resources/" />
+		</exec>
+		
+		<exec executable="/Developer/Tools/SetFile">
+			<arg line="-a B ${app.file}" />
+		</exec>
+
+		<unzip src="icons/Icon.zip" dest="${app.file}/" encoding="MacRoman" />
+
+		<echo message="making dmg"/>
+		<exec executable="hdiutil">
+			<arg line="create -size 30m -fs HFS+ -volname TripleA ${dmg.file}" />
+		</exec>
+
+
+		<exec executable="hdiutil">
+			<arg line="attach ${dmg.file}" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r ${app.file} /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r doc /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="readme.html /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="license/gpl.txt /Volumes/TripleA/COPYING" />
+		</exec>
+
+		<exec executable="hdiutil">
+			<arg line="detach /Volumes/TripleA" />
+		</exec>
+		
+		<!-- compress the dmg file -->
+		<move file="${dmg.file}" tofile="temp.dmg"> </move>
+		<exec executable="hdiutil">
+			<arg line="convert temp.dmg -o ${dmg.file} -format UDBZ "/>
+ 		</exec>
+		<delete file="temp.dmg"></delete>
+
+	</target>
+	
+
 	<!-- zip -->
 	<target name="zip" depends="init,compile" description="create a zip file for end users">
 		<mkdir dir="release" />

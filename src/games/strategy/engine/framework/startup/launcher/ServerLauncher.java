@@ -41,6 +41,8 @@ public class ServerLauncher implements ILauncher
 {
 
     private static final Logger s_logger = Logger.getLogger(ServerLauncher.class.getName());    
+
+    public static final String SERVER_ROOT_DIR_PROPERTY = "triplea.server.root.dir";
     
     private final int m_clientCount;
     private final IRemoteMessenger m_remoteMessenger;
