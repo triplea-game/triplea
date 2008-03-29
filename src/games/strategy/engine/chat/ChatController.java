@@ -141,7 +141,8 @@ public class ChatController implements IChatController
         synchronized(m_mutex)
         {
             m_chatters.remove(node);
-            version = m_version++;
+            m_version++;
+            version = m_version;
         }
         
         getChatBroadcaster().speakerRemoved(node, version);        

@@ -342,7 +342,7 @@ public class Chat
             
             synchronized(m_mutex)
             {
-                if(to.equals(m_messengers.getChannelMessenger().getLocalNode()))
+                if(to.equals(m_messengers.getChannelMessenger().getLocalNode().getName()))
                 {
                     for(IChatListener listener: m_listeners)
                     {

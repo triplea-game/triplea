@@ -138,10 +138,17 @@ public class NIOSocket implements IErrorReporter
         {
             
             Socket s = channel.socket();
-            s.shutdownInput();
-            s.shutdownOutput();
-            s.close();
+            if(!s.isInputShutdown()) {
+                s.shutdownInput();    
+            }
+            if(!s.isOutputShutdown()) {
+                s.shutdownOutput();
+            }
+            if(!s.isClosed()) {
+                s.close();    
+            }            
             channel.close();
+            
         } catch (IOException e1)
         {
            s_logger.log(Level.FINE, "error closing channel", e1);
