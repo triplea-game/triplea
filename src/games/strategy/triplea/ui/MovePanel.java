@@ -747,12 +747,6 @@ public class MovePanel extends ActionPanel
         }
 
         getMap().hideMouseCursor();
-
-        // get movable units at the start of the route using basic match criteria
-        List<Unit> movableUnits = getFirstSelectedTerritory().getUnits().getMatches(getMovableMatch(route, null));
-        // sort candidate units in preferred movement order
-        sortUnitsToMove(movableUnits, route);
-
         
         Collection<Unit> transportsToLoad = Collections.emptyList();
         if(MoveValidator.isLoad(route)) {
@@ -774,8 +768,8 @@ public class MovePanel extends ActionPanel
             
             while(!best.isEmpty() && !lastResults.isMoveValid()) {
                 best = best.subList(1, best.size());
-                bestWithDependents = addMustMoveWith(best);
-                lastResults = MoveValidator.validateMove(best, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, m_undoableMoves, getData());    
+                bestWithDependents = addMustMoveWith(best);                
+                lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, m_undoableMoves, getData());    
             }
         }
 
