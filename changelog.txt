@@ -1,3 +1,5 @@
+* simplify right click map dragging (sgb)
+
 * reorganize menus slightly, add export menu (sgb)
 
 * turn antialiasing on for map drawing, makes scaling look better on windows (sgb)

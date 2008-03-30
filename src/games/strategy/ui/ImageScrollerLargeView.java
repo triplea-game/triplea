@@ -333,21 +333,12 @@ public class ImageScrollerLargeView extends JComponent
     };
 
     /**
-     * this is used to detect dragscrolling
+     * this is used to detect drag scrolling
      */
     private MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter()
     {
-        private long m_LastUpdate = 0; //time since the last update
-        private long MIN_UPDATE_DELAY = 10; //the fastest we allow it to update
-
         public void mouseDragged(MouseEvent e)
         {
-            //this is to make sure we don't update too soon
-            long now = System.currentTimeMillis();
-            if (now < m_LastUpdate + MIN_UPDATE_DELAY)
-                return;
-
-            m_LastUpdate = now;
 
             //the right button must be the one down
             if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
@@ -358,15 +349,12 @@ public class ImageScrollerLargeView extends JComponent
                 int x = e.getX();
                 int y = e.getY();
 
-                int height = getHeight();
-                int width = getWidth();
-
                 if (m_edge == NONE)
                     m_insideCount = 0;
 
                 //compute the amount to move
-                int dx = -(m_drag_scrolling_lastx - x) * ((int)  m_model.getMaxWidth()- width) / width;
-                int dy = -(m_drag_scrolling_lasty - y) * ((int)  m_model.getMaxHeight() - height) / height;
+                int dx = (m_drag_scrolling_lastx - x);
+                int dy = (m_drag_scrolling_lasty - y);
 
                 //move left and right and test for wrap
                 int newX = (m_model.getX() + dx);
