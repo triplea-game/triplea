@@ -1205,7 +1205,8 @@ public class MovePanel extends ActionPanel
             {
                 // best candidate unit for route is chosen dynamically later
                 // check for alt key - add 1/10 of total units (useful for splitting large armies)
-                Collection<Unit> unitsToMove = Match.getMatches(units, unitsToMoveMatch);
+                List<Unit> unitsToMove = Match.getMatches(units, unitsToMoveMatch);
+                Collections.sort(unitsToMove, UnitComparator.getIncreasingMovementComparator());
                 int iterCount = (me.isAltDown()) ? (int)Math.max(1, Math.floor(unitsToMove.size() / 10)) : 1;
                 int addCount = 0;
                 
