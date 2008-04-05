@@ -8,6 +8,8 @@ import java.util.logging.FileHandler;
 
 public class RotatingLogFileHandler extends FileHandler
 {
+    
+    private static final String logFile;
     static
     {
         File rootDir = new File(System.getProperty(ServerLauncher.SERVER_ROOT_DIR_PROPERTY, "."));
@@ -18,12 +20,16 @@ public class RotatingLogFileHandler extends FileHandler
         File logDir = new File(rootDir, "logs");
         if(!logDir.exists())
             logDir.mkdir();
+        
+        logFile = new File(logDir,"server-log%g.txt").getAbsolutePath();
+        System.out.print("logging to :" + logFile);
+        
     }
     
 
     public RotatingLogFileHandler() throws IOException, SecurityException
     {
-        super("logs/server-log%g.txt", 20 * 1000 * 1000, 10, true);
+        super(logFile, 20 * 1000 * 1000, 10, true);
         setFormatter(new TALogFormatter());
     }
 
