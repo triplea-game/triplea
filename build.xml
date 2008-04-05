@@ -474,6 +474,7 @@
 				<include name="launch4j.config.xml" />
 				<include name="launch4j_embedded_jre.config.xml" />
 				<include name="Info.plist" />
+				<include name="ServerInfo.plist" />
 			</zipfileset>
 
 			<zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">

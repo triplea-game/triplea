@@ -1,3 +1,5 @@
+Changes for 0.9.4
+
 * simplify right click map dragging (sgb)
 
 * reorganize menus slightly, add export menu (sgb)
