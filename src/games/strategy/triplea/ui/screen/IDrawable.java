@@ -553,13 +553,15 @@ class LandTerritoryDrawable implements IDrawable
             territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
         }
 
-        List polys = mapData.getPolygons(territory);
-
-        Iterator iter2 = polys.iterator();
-        while (iter2.hasNext())
+        List<Polygon> polys = mapData.getPolygons(territory);
+        
+        Object oldAAValue = graphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        //at 100% scale, this makes the lines look worse
+        if(!(scaled == unscaled))
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        for(Polygon polygon : polys)
         {
-            Polygon polygon = (Polygon) iter2.next();
-
             // if we dont have to draw, dont
             if (!polygon.intersects(bounds) && !polygon.contains(bounds))
                 continue;
@@ -573,7 +575,7 @@ class LandTerritoryDrawable implements IDrawable
             graphics.setColor(Color.BLACK);
             graphics.drawPolygon(polygon);
         }
-
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAAValue);
     }
 
     public int getLevel()

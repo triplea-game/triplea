@@ -99,9 +99,6 @@ public class Tile
             if(m_isDirty)
             {
                 Graphics2D g = (Graphics2D) image.getGraphics();
-                //NOTE - this setting doesn't seem to have an effect with mac os x and java 1.5
-                //but the difference is noticealbe on windows
-                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
                 draw(g, data, mapData);
                 g.dispose();
