@@ -1,3 +1,5 @@
+* remove uneeded base tiles, this fixes the white space near algeria (sgb)
+
 Changes for 0.9.4.1
 
 * fix bad anti aliasing effects when scaled at 100% (sgb)
