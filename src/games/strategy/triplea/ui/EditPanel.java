@@ -29,8 +29,9 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,32 +106,69 @@ public class EditPanel extends ActionPanel
                 List<Unit> allUnits = new ArrayList<Unit>(m_selectedTerritory.getUnits().getUnits());
                 sortUnitsToRemove(allUnits, m_selectedTerritory);
 
-                String chooserText = "Remove units from " + m_selectedTerritory + ":";
-
                 MustMoveWithDetails mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, 
-                                                                                        allUnits,
-                                                                                        getData(),
-                                                                                        getCurrentPlayer());
+                        allUnits,
+                        getData(),
+                        getCurrentPlayer());
 
-                UnitChooser chooser = new UnitChooser(allUnits,
-                                                      mustMoveWithDetails.getMustMoveWith(),                                                            
-                                                      getData(), 
-                                                      /*allowTwoHit=*/ false, 
-                                                      getMap().getUIContext());
 
-                int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                                                chooser, chooserText,
-                                                JOptionPane.OK_CANCEL_OPTION,
-                                                JOptionPane.PLAIN_MESSAGE, null, null, null);
                 
-                if(option != JOptionPane.OK_OPTION)
-                {
-                    CANCEL_EDIT_ACTION.actionPerformed(null);
-                    return;
+                boolean mustChoose = false;
+                if(m_selectedUnits.containsAll(allUnits)) {
+                    mustChoose = false;
+                } else  {
+                    
+                    //if the unit choice is ambiguous then ask the user to clarify which units to remove
+                    //an ambiguous selection would be if the user selects 1 of 2 tanks, but
+                    //the tanks have different movement.
+                    
+                    final Set<UnitType> selectedUnitTypes = new HashSet<UnitType>();
+                    for(Unit u : m_selectedUnits) {
+                        selectedUnitTypes.add(u.getType());
+                    }
+                    List<Unit> allOfCorrectType = Match.getMatches(allUnits, new Match<Unit>()
+                    {
+                    
+                        @Override
+                        public boolean match(Unit o)
+                        {
+                            return selectedUnitTypes.contains(o.getType());
+                        }
+                    });
+                    
+                    int allCategories = UnitSeperator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true,true).size();
+                    int selectedCategories = UnitSeperator.categorize(m_selectedUnits, mustMoveWithDetails.getMustMoveWith(), true,true).size();
+
+                    mustChoose = (allCategories != selectedCategories);                     
                 }
 
-                Collection<Unit> bestUnits = chooser.getSelected(/*selectDependents=*/true);
-            
+                Collection<Unit> bestUnits;
+                if(mustChoose) {
+                    
+                    String chooserText = "Remove units from " + m_selectedTerritory + ":";
+    
+                    UnitChooser chooser = new UnitChooser(allUnits,m_selectedUnits,
+                                                          mustMoveWithDetails.getMustMoveWith(),  true,                                                          
+                                                          getData(), 
+                                                          /*allowTwoHit=*/ false, 
+                                                          getMap().getUIContext());
+    
+                    int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                                                    chooser, chooserText,
+                                                    JOptionPane.OK_CANCEL_OPTION,
+                                                    JOptionPane.PLAIN_MESSAGE, null, null, null);
+                    
+                    if(option != JOptionPane.OK_OPTION)
+                    {
+                        CANCEL_EDIT_ACTION.actionPerformed(null);
+                        return;
+                    }
+    
+                    bestUnits = chooser.getSelected(true);
+                } else {
+                    bestUnits = new ArrayList<Unit>(m_selectedUnits);
+                }
+                 
 
                 String result = m_frame.getEditDelegate().removeUnits(m_selectedTerritory, bestUnits);
                 if (result != null)

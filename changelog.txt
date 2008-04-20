@@ -1,3 +1,7 @@
+Changes for 0.9.4.2
+
+* in edit mode, don't always ask the user to choose the units to remove (sgb).
+
 * add game id, to be used in future pbem server (sgb)
 
 * remove uneeded base tiles, this fixes the white space near algeria (sgb)
