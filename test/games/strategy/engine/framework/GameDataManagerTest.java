@@ -16,6 +16,9 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -52,9 +55,16 @@ public class GameDataManagerTest extends TestCase
 
   }
 
- public void testNone()
+ public void testLoadStoreKeepsGamUUID() throws IOException
  {
-
+     GameData data = new GameData();
+     GameDataManager m = new GameDataManager();
+     ByteArrayOutputStream sink = new ByteArrayOutputStream();
+     m.saveGame(sink, data);
+     
+     GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray())); 
+     assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
+     
  }
 
 }

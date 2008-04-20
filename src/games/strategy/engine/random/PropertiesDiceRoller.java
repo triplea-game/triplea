@@ -15,6 +15,8 @@
 package games.strategy.engine.random;
 
 
+import games.strategy.engine.EngineVersion;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
@@ -53,7 +55,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
     }
 
     
-    public String postRequest(String player1, String player2, int max, int numDice, String text, String gameID) throws IOException
+    public String postRequest(String player1, String player2, int max, int numDice, String text, String gameID, String gameUUID) throws IOException
     {
         if(gameID.trim().length() == 0)
             gameID = "TripleA";
@@ -76,8 +78,12 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
           new NameValuePair("send", "true"),          
         };
         
-        //get around firewalls
-        post.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+        post.setRequestHeader("User-Agent", "triplea/" + EngineVersion.VERSION);
+        
+        //this is to allow a dice server to allow the user to request the emails for the game
+        //rather than sending out email for each roll
+        post.setRequestHeader("X-Triplea-Game-UUID", gameUUID);
+        
         
         post.setRequestBody(data);
        

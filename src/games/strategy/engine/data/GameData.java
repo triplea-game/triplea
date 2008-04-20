@@ -69,6 +69,8 @@ import games.strategy.engine.history.*;
  */
 public class GameData implements java.io.Serializable
 {
+    public static final String GAME_UUID = "GAME_UUID";
+    
     private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
 
     private volatile transient boolean m_forceInSwingEventThread = false;
@@ -99,6 +101,7 @@ public class GameData implements java.io.Serializable
 	public GameData()
 	{
 		m_delegateList = new DelegateList(this);
+		m_properties.set(GAME_UUID, UUID.randomUUID().toString());
 	}
 
     /**

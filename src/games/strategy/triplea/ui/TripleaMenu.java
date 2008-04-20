@@ -33,6 +33,9 @@ import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -64,6 +67,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -190,9 +194,32 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addShowMapDetails(menuView);
         addChatTimeMenu(menuView);
         addShowCommentLog(menuView);
+        addShowGameUuid(menuView);
         
     }
     
+    private void addShowGameUuid(JMenu menuView)
+    {
+        menuView.add(new AbstractAction("Game UUID...")
+        {        
+            public void actionPerformed(ActionEvent e)
+            {
+                String id = (String) getData().getProperties().get(GameData.GAME_UUID);
+                JTextField text = new JTextField();
+                text.setText(id);   
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridBagLayout());
+                panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
+                panel.add(text, new GridBagConstraints(0,1,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0));
+                
+                
+                JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel, "Game UUID", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
+                       
+            }        
+        });
+        
+    }
+
     private void addChatTimeMenu(JMenu parentMenu)
     {
         final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");

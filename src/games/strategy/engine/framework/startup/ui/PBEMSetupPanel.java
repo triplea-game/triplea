@@ -302,7 +302,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
     
     void testEmail()
     {
-        PBEMDiceRoller random = new PBEMDiceRoller(m_email1TextField.getText(), m_email2TextField.getText(), getGameID(), getDiceServer());
+        PBEMDiceRoller random = new PBEMDiceRoller(m_email1TextField.getText(), m_email2TextField.getText(), getGameID(), getDiceServer(), null);
         random.test();
     }
 
@@ -804,8 +804,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
     @Override
     public ILauncher getLauncher()
     {
-        PBEMDiceRoller randomSource = new PBEMDiceRoller(getEmail1(), getEmail2(), getGameID(), getDiceServer());
-        
+        String gameUUID = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
+        PBEMDiceRoller randomSource = new PBEMDiceRoller(getEmail1(), getEmail2(), getGameID(), getDiceServer(), gameUUID);        
         
         Map<String,String> playerTypes = new HashMap<String,String>();
         

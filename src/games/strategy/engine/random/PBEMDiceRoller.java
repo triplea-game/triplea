@@ -37,6 +37,7 @@ public class PBEMDiceRoller implements IRandomSource
     private final String m_player1Email;
     private final String m_player2Email;
     private final String m_gameID;
+    private final String m_gameUUID;
     private final IRemoteDiceServer m_remoteDiceServer;
 
     private static Frame s_focusWindow;
@@ -52,12 +53,13 @@ public class PBEMDiceRoller implements IRandomSource
 	s_focusWindow = w;	    
     }    
     
-    public PBEMDiceRoller(String player1Email, String player2Email, String gameID, IRemoteDiceServer diceServer)
+    public PBEMDiceRoller(String player1Email, String player2Email, String gameID, IRemoteDiceServer diceServer, String gameUUID)
     {
         m_player1Email = player1Email;
         m_player2Email = player2Email;
         m_gameID = gameID;
         m_remoteDiceServer = diceServer;
+        m_gameUUID = gameUUID;
     }
 
     /**
@@ -65,7 +67,7 @@ public class PBEMDiceRoller implements IRandomSource
      */
     public void test()
     {
-        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer);
+        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, "test-roll");
         dialog.setTest();
 
         dialog.roll();
@@ -78,7 +80,7 @@ public class PBEMDiceRoller implements IRandomSource
     public int[] getRandom(final int max, final int count, final String annotation)
     {
         
-        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer);
+        HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, m_gameUUID);
         dialog.roll();
         return dialog.getDiceRoll();
     }
@@ -147,6 +149,7 @@ class HttpDiceRollerDialog extends JDialog
     private final String m_email2;
     private final String m_gameID;
     private final IRemoteDiceServer m_diceServer;
+    private final String m_gameUUID;
 
     private Object m_lock;
 
@@ -155,7 +158,7 @@ class HttpDiceRollerDialog extends JDialog
     private JPanel m_buttons = new JPanel();
     private final Window m_owner;
     
-    public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2, String gameID, IRemoteDiceServer diceServer)
+    public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2, String gameID, IRemoteDiceServer diceServer, String gameUUID)
     {
         super(owner, "Dice roller", true);
         m_owner = owner;
@@ -166,6 +169,7 @@ class HttpDiceRollerDialog extends JDialog
         m_email2 = email2;
         m_gameID = gameID;
         m_diceServer = diceServer;
+        m_gameUUID = gameID;
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         m_exitButton.addActionListener(new ActionListener()
@@ -361,7 +365,7 @@ class HttpDiceRollerDialog extends JDialog
             String text = null;
             try
             {
-                text = m_diceServer.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID);
+                text = m_diceServer.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID, m_gameUUID);
 
                 if (text.length() == 0)
                 {
