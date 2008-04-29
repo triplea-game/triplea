@@ -1,6 +1,10 @@
+* add dice server courtesy of Ash at tripleawarclub.org (sgb)
+
+* remove non existent irony dice server (sgb)
+
 Changes for 0.9.4.2
 
-* in edit mode, don't always ask the user to choose the units to remove (sgb).
+* in edit mode, don't always ask the user to choose the units to remove (sgb)
 
 * add game id, to be used in future pbem server (sgb)
 
@@ -32,7 +36,7 @@ Changes for 0.9.4
 
 * In europe incomplete, changed the transport cost of artilery to 2, so 2 may be transported (comradekev)
 
-* fixed byg[ 1896778 ] In Pacific game cannot move between sea zone 37 and Kiangsi (comradekev)
+* fixed bug[ 1896778 ] In Pacific game cannot move between sea zone 37 and Kiangsi (comradekev)
 
 * fixed bug [ 1910221 ] Undone Movement Null Pointer (sgb)
 
