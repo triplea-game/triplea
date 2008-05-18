@@ -174,7 +174,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 
         m_text = new JTextPane();
         m_text.setEditable(false);
-        m_text.setFocusable(false);
+      
 
         m_nextMessage = new JTextField(10);
         //when enter is pressed, send the message

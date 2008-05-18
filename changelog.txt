@@ -1,3 +1,5 @@
+* allow selection of text on chat panel (sgb)
+
 * add dice server courtesy of Ash at tripleawarclub.org (sgb)
 
 * remove non existent irony dice server (sgb)
