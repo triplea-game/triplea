@@ -1063,16 +1063,24 @@ public class MovePanel extends ActionPanel
             boolean noSelectedTerritory = (m_firstSelectedTerritory == null);
             boolean isFirstSelectedTerritory = (m_firstSelectedTerritory == t);
 
-            //de select units            
-            if(rightMouse && !noSelectedTerritory)
-                deselectUnits(units, t, me);
-            //select units            
-            else if(!rightMouse && ( noSelectedTerritory || isFirstSelectedTerritory))
-                selectUnitsToMove(units, t, me);
-            else if(!rightMouse && me.isControlDown() && !isFirstSelectedTerritory)
-                selectWayPoint(t);
-            else if(!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory)
-                selectEndPoint(t);
+ 
+            //select units 
+            final GameData data = getData();
+            data.acquireReadLock();
+            try
+            {
+                //de select units            
+                if(rightMouse && !noSelectedTerritory)
+                    deselectUnits(units, t, me);
+                else if(!rightMouse && ( noSelectedTerritory || isFirstSelectedTerritory))
+                    selectUnitsToMove(units, t, me);
+                else if(!rightMouse && me.isControlDown() && !isFirstSelectedTerritory)
+                    selectWayPoint(t);
+                else if(!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory)
+                    selectEndPoint(t);
+            } finally {
+                data.releaseReadLock();
+            }
             
         }
 

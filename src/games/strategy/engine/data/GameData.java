@@ -128,7 +128,7 @@ public class GameData implements java.io.Serializable
         if(!LockUtil.isLockHeld(m_readWriteLock.readLock()) &&
            !LockUtil.isLockHeld(m_readWriteLock.writeLock())        
         ) {
-            new Exception("Lock not held").printStackTrace();
+            new Exception("Lock not held").printStackTrace(System.out);
         }
     }
     
