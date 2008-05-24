@@ -1,10 +1,10 @@
+* add tdice dice servers (sgb)
+
 * lock warnings don't show error dialog (sgb)
 
 * fix bug [ 1962058 ] fighter move in non combat (sgb)
 
 * allow selection of text on chat panel (sgb)
-
-* add dice server courtesy of Ash at tripleawarclub.org (sgb)
 
 * remove non existent irony dice server (sgb)
 

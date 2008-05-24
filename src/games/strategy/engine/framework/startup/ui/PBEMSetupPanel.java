@@ -2,7 +2,8 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.launcher.*;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.pbem.IPBEMMessenger;
 import games.strategy.engine.pbem.IPBEMSaveGameMessenger;
@@ -10,18 +11,40 @@ import games.strategy.engine.pbem.IPBEMScreenshotMessenger;
 import games.strategy.engine.pbem.IPBEMTurnSummaryMessenger;
 import games.strategy.engine.pbem.NullPBEMMessenger;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.engine.random.*;
+import games.strategy.engine.random.IRemoteDiceServer;
+import games.strategy.engine.random.PBEMDiceRoller;
+import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.Util;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Properties;
 
-import javax.swing.*;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
@@ -33,7 +56,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
     private static final String EMAIL_2_PROP_NAME = "games.strategy.engine.framework.ui.PBEMStartup.EMAIL1";
     private static final String EMAIL_ID_PROP_NAME = "games.strategy.engine.framework.ui.PBEMStartup.ID";    
 
-    private GridBagLayout m_gridBagLayout1 = new GridBagLayout();
+    
     private JTextField m_email1TextField = new JTextField();
     private JTextField m_email2TextField = new JTextField();
     private JTextField m_gameIDTextField = new JTextField();
@@ -63,13 +86,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
     private JLabel m_saveGameMsgrLabel = new JLabel("Post Save Game File:");
     private JLabel m_saveGameMsgrLoginLabel = new JLabel("Login:");
     private JLabel m_saveGameMsgrPasswordLabel = new JLabel("Password:");
+    private final JPanel m_topPanel = new JPanel();
     
     private Map<Object,Document> usernameMap = new HashMap<Object,Document>();
     private Map<Object,Document> passwordMap = new HashMap<Object,Document>();
 
     private final GameSelectorModel m_gameSelectorModel;
-    
-    
 
     public PBEMSetupPanel(GameSelectorModel model)
     {
@@ -213,27 +235,14 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 
     private void layoutComponents()
     {
-        this.setLayout(m_gridBagLayout1);
+        this.setLayout(new GridBagLayout());
     
-        this.add(m_instructionsText, new GridBagConstraints(0, 0, 5, 1, 0.0, 0.2, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5,
-                5, 5), 0, 0));
         
+        layoutTopPanel();
         
-        this.add(m_email1TextField, new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
-                0, 5), 0, 0));
-        //this.add(m_email1Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20,
-        this.add(m_email1Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, new Insets(0, 20,
-                0, 5), 0, 0));
+        this.add(m_topPanel, new GridBagConstraints(0, 0, 4, 2, 1.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0,
+                0, 0), 0, 0));
         
-        this.add(m_email2TextField, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
-                0, 5), 0, 0));
-        this.add(m_email2Label, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0,
-                5), 0, 0));
-
-        this.add(m_gameIDTextField, new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
-                0, 5), 0, 0));
-        this.add(m_gameIDLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0,
-                5), 0, 0));
         GridBagConstraints labelConstraint = new GridBagConstraints();
         labelConstraint.anchor=GridBagConstraints.EAST;
         labelConstraint.insets = new Insets(5, 0, 0, 0);
@@ -293,6 +302,62 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 
         this.add(m_testPostButton, new GridBagConstraints(2, 6, 1, 1, 0.2, 0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE,
                 new Insets(0, 5, 0, 5), 0, 0));        
+    }
+
+    private void layoutTopPanel()
+    {
+        m_topPanel.removeAll();
+
+        m_topPanel.setLayout(new GridBagLayout());
+        if(sendsEmail()) 
+        {
+            
+            m_topPanel.add(m_instructionsText, new GridBagConstraints(0, 0, 5, 1, 0.0, 0.2, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5,
+                    5, 5), 0, 0));
+            
+            
+            m_topPanel.add(m_email1TextField, new GridBagConstraints(1, 2, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
+                    0, 5), 0, 0));
+            //this.add(m_email1Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20,
+            m_topPanel.add(m_email1Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, new Insets(0, 20,
+                    0, 5), 0, 0));
+            
+            m_topPanel.add(m_email2TextField, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
+                    0, 5), 0, 0));
+            m_topPanel.add(m_email2Label, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0,
+                    5), 0, 0));
+    
+            m_topPanel.add(m_gameIDTextField, new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0,
+                    0, 5), 0, 0));
+            m_topPanel.add(m_gameIDLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0,
+                    5), 0, 0));
+        } else 
+        {
+            
+            String text = ((PropertiesDiceRoller) getDiceServer()).getWebText();
+            if(text == null) 
+                text = "The author of the properties file should set web.text property";
+            
+            JTextArea webText = new JTextArea();
+            webText.setEditable(false);
+            webText.setText("PBEM Properties");
+            webText.setLineWrap(true);
+            webText.setWrapStyleWord(true);
+            webText.setText(text);
+            webText.setBackground(getBackground());
+            
+            
+            m_topPanel.add(webText, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.2, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 20, 0,
+                    20), 0, 0));
+            m_topPanel.add(new JPanel(), new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.NONE, new Insets(0, 0, 0,
+                    0), 0, 0));
+        }
+        revalidate();
+    }
+
+    private boolean sendsEmail()
+    {
+        return ((PropertiesDiceRoller) getDiceServer()).sendsEmail();
     }
     
     private IRemoteDiceServer getDiceServer()
@@ -509,6 +574,17 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         m_screenshotMsgrPassword.getDocument().addDocumentListener(docListener);
         m_saveGameMsgrLogin.getDocument().addDocumentListener(docListener);
         m_saveGameMsgrPassword.getDocument().addDocumentListener(docListener);
+        
+        m_diceServers.addActionListener(new ActionListener()
+        {
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                setWidgetActivation();    
+                notifyObservers();
+            }
+        
+        });
     }
 
     private String getGameID()
@@ -618,7 +694,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 
     private void setWidgetActivation()
     {
-
+        layoutTopPanel();
     }
     
     
@@ -642,24 +718,27 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 
         // verify the emails 
 
-        if (m_email1TextField.getText().trim().equals("") ||
-            !Util.isMailValid(m_email1TextField.getText()))
+        if(sendsEmail()) 
         {
-            m_email1Label.setForeground(Color.RED);
-            canTestEmail = false;
-            canStart = false;
-        } else
-        {
-            m_email1Label.setForeground(Color.BLACK);
-        }
-        if(!Util.isMailValid(m_email2TextField.getText()))
-        {
-            m_email2Label.setForeground(Color.RED);
-            canTestEmail = false;
-            canStart = false;
-        } else
-        {
-            m_email2Label.setForeground(Color.BLACK);
+            if (m_email1TextField.getText().trim().equals("") ||
+                !Util.isMailValid(m_email1TextField.getText()))
+            {
+                m_email1Label.setForeground(Color.RED);
+                canTestEmail = false;
+                canStart = false;
+            } else
+            {
+                m_email1Label.setForeground(Color.BLACK);
+            }
+            if(!Util.isMailValid(m_email2TextField.getText()))
+            {
+                m_email2Label.setForeground(Color.RED);
+                canTestEmail = false;
+                canStart = false;
+            } else
+            {
+                m_email2Label.setForeground(Color.BLACK);
+            }
         }
 
         //verify PBEM messenger fields
@@ -748,6 +827,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
         m_testDiceyButton.setEnabled(canTestEmail);
         m_testPostButton.setEnabled(canTestPost);
         m_viewPostButton.setEnabled(canViewPost);
+        
         return canStart && (m_gameSelectorModel.getGameData() != null);
     }
     

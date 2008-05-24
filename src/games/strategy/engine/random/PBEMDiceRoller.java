@@ -345,102 +345,76 @@ class HttpDiceRollerDialog extends JDialog
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("Wrong thread");
 
-        boolean validMail = false;
 
-        //check the email formats are valid
-        validMail = Util.isMailValid(m_email1) && Util.isMailValid(m_email2);
-        //make sure the to isnt empty
-        validMail &= m_email1.trim().length() > 0;
-        
 
-        if (validMail)
+        while (!isVisible())
+            Thread.yield();
+
+        appendText(m_annotation + "\n");
+        appendText("Contacting  " + m_diceServer.getName() + "\n");
+
+        String text = null;
+        try
         {
+            text = m_diceServer.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID, m_gameUUID);
 
-            while (!isVisible())
-                Thread.yield();
-
-            appendText(m_annotation + "\n");
-            appendText("Contacting  " + m_diceServer.getName() + "\n");
-
-            String text = null;
-            try
+            if (text.length() == 0)
             {
-                text = m_diceServer.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID, m_gameUUID);
-
-                if (text.length() == 0)
-                {
-                    appendText("Nothing could be read from dice server\n");
-                    appendText("Please check your firewall settings");
-                    notifyError();
-                }
-
-                if (!m_test)
-                    appendText("Contacted :" + text + "\n");
-                m_diceRoll = m_diceServer.getDice(text, m_count);
-                appendText("Success!");
-                if (!m_test)
-                    closeAndReturn();
-            }
-            //an error in networking
-            catch (SocketException ex)
-            {
-                appendText("Connection failure:" + ex.getMessage() + "\n" + "Please ensure your Internet connection is working, and try again.");
+                appendText("Nothing could be read from dice server\n");
+                appendText("Please check your firewall settings");
                 notifyError();
             }
-            catch(InvocationTargetException e) 
+
+            if (!m_test)
+                appendText("Contacted :" + text + "\n");
+            m_diceRoll = m_diceServer.getDice(text, m_count);
+            appendText("Success!");
+            if (!m_test)
+                closeAndReturn();
+        }
+        //an error in networking
+        catch (SocketException ex)
+        {
+            appendText("Connection failure:" + ex.getMessage() + "\n" + "Please ensure your Internet connection is working, and try again.");
+            notifyError();
+        }
+        catch(InvocationTargetException e) 
+        {
+            appendText("\nError:" + e.getMessage() + "\n\n");
+            if (text != null)
             {
-                appendText("\nError:" + e.getMessage() + "\n\n");
+                appendText("Text from dice server:\n" + text + "\n");
+            }
+            notifyError();
+        }
+        catch (IOException ex)
+        {
+            try
+            {
+                appendText("An error has occured!\n");
+                appendText("Possible reasons the error could have happened:\n");
+                appendText("  1: An invalid e-mail address\n");
+                appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
+                appendText("  3: The e-mail address does not exist\n");
+                appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
+                appendText("     Visit http://tripleadev.org  for extra help\n");
+
                 if (text != null)
                 {
                     appendText("Text from dice server:\n" + text + "\n");
                 }
-                notifyError();
-            }
-            catch (IOException ex)
+
+                StringWriter writer = new StringWriter();
+                ex.printStackTrace(new PrintWriter(writer));
+                writer.close();
+                appendText(writer.toString());
+            } catch (IOException ex1)
             {
-                try
-                {
-                    appendText("An error has occured!\n");
-                    appendText("Possible reasons the error could have happened:\n");
-                    appendText("  1: An invalid e-mail address\n");
-                    appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
-                    appendText("  3: The e-mail address does not exist\n");
-                    appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
-                    appendText("     Visit http://tripleadev.org  for extra help\n");
-
-                    if (text != null)
-                    {
-                        appendText("Text from dice server:\n" + text + "\n");
-                    }
-
-                    StringWriter writer = new StringWriter();
-                    ex.printStackTrace(new PrintWriter(writer));
-                    writer.close();
-                    appendText(writer.toString());
-                } catch (IOException ex1)
-                {
-                    ex1.printStackTrace();
-                }
-                notifyError();
-
-            }
-        } else
-        { //enter here for invalid e-mail
-
-            appendText("There is an error in the e-mails you have entered\n");
-            if(!m_test)
-                appendText("and the game cannot proceed.\n");
-            appendText("Please check the following:\n");
-            appendText("  1: Do you have a valid e-mail syntax ? (ie. someone@someplace.com) ?\n");
-            appendText("  2: Are both e-mail boxes filled out ?\n\n");
-            if(!m_test)
-            {
-                appendText("Click Exit, reload the autosave.tsvg game\n");
-                appendText("in the savedGames directory, and correct\n");
-                appendText("this problem in the PBEM Setup Panel.\n\n");
+                ex1.printStackTrace();
             }
             notifyError();
-        }
+        
+        } 
 
     }//end of method
 }

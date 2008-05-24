@@ -54,6 +54,14 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
         return getName();
     }
 
+    public boolean sendsEmail() 
+    {       
+        String property = m_props.getProperty("send.email");
+        if(property == null) {
+            return true;
+        }
+        return Boolean.valueOf(property);          
+    }
     
     public String postRequest(String player1, String player2, int max, int numDice, String text, String gameID, String gameUUID) throws IOException
     {
@@ -106,6 +114,11 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
         {
             post.releaseConnection();
         }
+    }
+    
+    public String getWebText() 
+    {
+        return m_props.getProperty("web.text");
     }
 
     
