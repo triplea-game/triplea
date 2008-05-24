@@ -169,7 +169,7 @@ class HttpDiceRollerDialog extends JDialog
         m_email2 = email2;
         m_gameID = gameID;
         m_diceServer = diceServer;
-        m_gameUUID = gameID;
+        m_gameUUID = gameUUID;
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         m_exitButton.addActionListener(new ActionListener()

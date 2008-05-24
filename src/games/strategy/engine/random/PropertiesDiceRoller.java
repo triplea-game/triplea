@@ -90,11 +90,16 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
         HttpClient client = new HttpClient();
         try
         {
-            client.getHostConfiguration().setHost(m_props.getProperty("host"));
+            String host = m_props.getProperty("host");
+            int port = 80;
+            if(m_props.getProperty("port") != null) {
+                port = Integer.parseInt( m_props.getProperty("port"));
+            }            
+            client.getHostConfiguration().setHost(host, port);
             client.executeMethod(post);
             
             String result = post.getResponseBodyAsString();
-            System.out.println(post.getStatusCode());
+           
             return result;
         }
         finally
@@ -118,7 +123,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
         if(errorStartString != null && errorStartString.length() > 0 && errorEndString != null && errorEndString.length() > 0) 
         {
             int startIndex = string.indexOf(errorStartString);
-            if(startIndex > 0)
+            if(startIndex >= 0)
             {
                 int endIndex = string.indexOf(errorEndString, (startIndex + errorStartString.length()));
                 if(endIndex > 0)
