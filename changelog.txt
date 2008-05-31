@@ -1,3 +1,5 @@
+Changes for 1.0
+
 * add tdice dice servers (sgb)
 
 * lock warnings don't show error dialog (sgb)
