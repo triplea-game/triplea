@@ -88,12 +88,17 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
         {
             m_gameOver = true;
             bridge.getHistoryWriter().startEvent("Axis achieve a military victory");
+            //TODO We might want to find a more elegant way to end the game ala the TIC-TAC-TOE example
+            //Added this to end the game on victory conditions
+            bridge.stopGameSequence();
         }
 
         if ( russia && !germany && britain && !japan && america)
         {
             m_gameOver = true;
             bridge.getHistoryWriter().startEvent("Allies achieve a military victory");
+            //Added this to end the game on victory conditions
+            bridge.stopGameSequence();
         }
 
     }

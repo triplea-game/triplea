@@ -351,7 +351,7 @@ public class BattleTracker implements java.io.Serializable
             if (changeTracker != null)
                 changeTracker.addChange(neutralFee);
             bridge.getHistoryWriter().addChildToEvent(
-                    id.getName() + " looses " + -ipcCharge + " " + MyFormatter.pluralize("IPC", -ipcCharge) + " for violating " + territory.getName()
+                    id.getName() + " loses " + -ipcCharge + " " + MyFormatter.pluralize("IPC", -ipcCharge) + " for violating " + territory.getName()
                             + "s neutrality");
         }
 

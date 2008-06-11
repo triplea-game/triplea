@@ -16,6 +16,7 @@
  * TransportTracker.java
  *
  * Created on November 21, 2001, 3:51 PM
+ * @version $LastChangedDate$
  */
 
 package games.strategy.triplea.delegate;
@@ -197,10 +198,24 @@ public class TransportTracker
                 
         
         change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, TripleAUnit.LOADED_THIS_TURN  ));
-        
+        //If the transport was in combat, flag it as being loaded AFTER combat
+        if (transport.getWasInCombat())
+        {
+            change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.LOADED_AFTER_COMBAT  ));        	
+        }
+
         return change;
     }
     
+    public Change combatTransportChange(TripleAUnit transport, PlayerID id)
+    {
+        assertTransport(transport);   
+        CompositeChange change = new CompositeChange();        
+        change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.WAS_IN_COMBAT  ));
+
+        return change;
+    }
+
     public int getAvailableCapacity(Unit unit)
     {
         UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -234,6 +249,10 @@ public class TransportTracker
             if(taUnit.getWasUnloadedInCombatPhase()) 
             {
                 change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+            }            
+            if(taUnit.getWasInCombat()) 
+            {
+                change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.WAS_IN_COMBAT));
             }
         }
         return change;
@@ -335,6 +354,16 @@ public class TransportTracker
 
         Iterator<Unit> iter = unloaded.iterator();
         return ((TripleAUnit) iter.next()).getUnloadedTo();
+    }
+
+    //Kev
+    // If a transport has been in combat, it cannot load AND unload in non-combat
+    public boolean isTransportUnloadRestrictedInNonCombat(Unit transport)
+    {        
+    	TripleAUnit taUnit = (TripleAUnit) transport; 
+	    if (isNonCombat(transport.getData()) && taUnit.getWasInCombat() && taUnit.getWasLoadedAfterCombat())
+        	return true;
+        return false;
     }
 
 }

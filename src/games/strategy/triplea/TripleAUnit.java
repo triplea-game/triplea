@@ -35,6 +35,7 @@ import java.util.List;
  * not serialize the changes across the network.<p>
  * 
  * @author sgb
+ * @version $LastChangedDate: 2008-06-10 12:09:22 -0600 (Thu, 14 Feb 2008) $
  */
 public class TripleAUnit extends Unit
 {
@@ -50,6 +51,8 @@ public class TripleAUnit extends Unit
     public static final String MOVEMENT_LEFT = "movementLeft";
     public static final String SUBMERGED = "submerged";
     public static final String ORIGINAL_OWNER = "originalOwner";
+    public static final String WAS_IN_COMBAT = "wasInCombat";
+    public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
     
     //the transport that is currently transporting us
     private Unit m_transportedBy = null;
@@ -69,6 +72,9 @@ public class TripleAUnit extends Unit
     private boolean m_submerged = false;
     //original owner of this unit
     private PlayerID m_originalOwner = null;
+    //Was this unit in combat
+    private boolean m_wasInCombat = false;
+    private boolean m_wasLoadedAfterCombat = false;
     
     public static TripleAUnit get(Unit u) 
     {
@@ -212,6 +218,32 @@ public class TripleAUnit extends Unit
     public void setOriginalOwner(PlayerID originalOwner)
     {
         m_originalOwner = originalOwner;
+    }
+        
+    public boolean getWasInCombat()
+    {
+        return m_wasInCombat;
+    }
+
+    /**
+     * private since this should only be called by UnitPropertyChange
+     */
+    public void setWasInCombat(Boolean value)
+    {
+        m_wasInCombat = Boolean.valueOf(value.booleanValue());
+    }
+
+    public boolean getWasLoadedAfterCombat()
+    {
+        return m_wasLoadedAfterCombat;
+    }
+
+    /**
+     * private since this should only be called by UnitPropertyChange
+     */
+    public void setWasLoadedAfterCombat(Boolean value)
+    {
+        m_wasLoadedAfterCombat = Boolean.valueOf(value.booleanValue());
     }
     
     public List<Unit> getDependents()

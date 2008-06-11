@@ -14,6 +14,7 @@
  * Battle.java
  *
  * Created on November 15, 2001, 12:39 PM
+ * @version $LastChangedDate$
  */
 
 package games.strategy.triplea.delegate;
@@ -485,6 +486,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
                            +MyFormatter.unitsToTextNoOwner(attackingUnits)
                            +delim;
             allAttackingUnits.addAll(attackingUnits);
+            
+            //If any attacking transports are in the battle, set their status to later restrict load/unload
+            if (current.equals(m_attacker))
+            {   
+            	CompositeChange change = new CompositeChange();
+            	Collection<Unit> transports = Match.getMatches(attackingUnits, Matches.UnitCanTransport);
+            	Iterator <Unit> attackTranIter = transports.iterator();
+                        
+            	while (attackTranIter.hasNext())
+            		{
+            			change.add(ChangeFactory.unitPropertyChange(attackTranIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
+            		}
+            	bridge.addChange(change);
+            }
         }
         // write attacking units to history
         if (m_attackingUnits.size() > 0)

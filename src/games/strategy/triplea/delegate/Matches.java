@@ -16,6 +16,7 @@
  * Matches.java
  *
  * Created on November 8, 2001, 4:29 PM
+ * @version $LastChangedDate$
  */
 
 package games.strategy.triplea.delegate;
@@ -902,6 +903,8 @@ public class Matches
                 if (transportTracker.hasTransportUnloadedInPreviousPhase(transport))
                     return true;
                 if (transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, territory))
+                    return true;
+                if (transportTracker.isTransportUnloadRestrictedInNonCombat(transport))
                     return true;
                 return false;
             }

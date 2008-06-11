@@ -78,6 +78,9 @@ public class EndRoundDelegate implements IDelegate
 		{
 			m_gameOver = true;
 			aBridge.getHistoryWriter().startEvent("Axis achieve economic victory");
+	        //TODO We might want to find a more elegant way to end the game ala the TIC-TAC-TOE example
+            //Added this to end the game on victory conditions
+            aBridge.stopGameSequence();
 		}
 
 		// Uncomment this to add allied economic victory when/if optional rules are implemented
@@ -91,6 +94,8 @@ public class EndRoundDelegate implements IDelegate
 		{
 			m_gameOver = true;
 			aBridge.getTranscript().write("Allies achieve economic victory", TranscriptMessage.PRIORITY_CHANNEL);
+            //Added this to end the game on victory conditions
+            aBridge.stopGameSequence();
 		}
 		*/
 	}

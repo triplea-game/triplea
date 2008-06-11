@@ -16,6 +16,7 @@
  * MoveValidator.java
  *
  * Created on November 9, 2001, 4:05 PM
+ * @version $LastChangedDate$
  */
 
 package games.strategy.triplea.delegate;
@@ -48,6 +49,7 @@ public class MoveValidator
     public static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
     public static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
     public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
+    public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
 
     /**
      * Tests the given collection of units to see if they have the movement neccessary
@@ -1012,6 +1014,9 @@ public class MoveValidator
             Collection<Unit> transports = MoveDelegate.mapTransports(route, units, null).values();
             for(Unit transport : transports)
             {
+                //TODO This is very sensitive to the order of the transport collection.  The users may 
+            	//need to modify the order in which they perform their actions.
+            	
                 // check whether transport has already unloaded
                 if (transportTracker.hasTransportUnloadedInPreviousPhase(transport))
                 {
@@ -1024,6 +1029,12 @@ public class MoveValidator
                     Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
                     for (Unit unit : transportTracker.transporting(transport))
                         result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
+                }
+                // Check if the transport has already loaded after being in combat
+                else if (transportTracker.isTransportUnloadRestrictedInNonCombat(transport))
+                {
+                	for (Unit unit : transportTracker.transporting(transport))
+                	result.addDisallowedUnit(TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT, unit);
                 }
             }
         }
