@@ -59,7 +59,7 @@ public class AirThatCantLandUtil
             Territory current = (Territory) territories.next();
             CompositeMatch<Unit> ownedAir = new CompositeMatchAnd<Unit>();
             ownedAir.add(Matches.UnitIsAir);
-            ownedAir.add(Matches.alliedUnit(player, m_data));
+            ownedAir.add(Matches.unitIsOwnedBy(player));
             Collection<Unit> air = current.getUnits().getMatches(ownedAir);
             if (air.size() != 0 && !MoveValidator.canLand(air, current, player, m_data))
             {

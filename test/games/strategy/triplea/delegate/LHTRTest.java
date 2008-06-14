@@ -1,18 +1,37 @@
 package games.strategy.triplea.delegate;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.ChangePerformer;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TestDelegateBridge;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.random.*;
+import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 public class LHTRTest extends TestCase
@@ -54,6 +73,75 @@ public class LHTRTest extends TestCase
         TestTripleADelegateBridge bridge2 = new TestTripleADelegateBridge(bridge1, m_data);
         return bridge2;
     }
+    
+    public void testFightersCanLandOnNewPlacedCarrier() 
+    {
+        MoveDelegate delegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        delegate.initialize("MoveDelegate", "MoveDelegate");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        
+        ITestDelegateBridge bridge = getDelegateBridge(germans);
+                
+        bridge.setStepName("GermansNonCombatMove");
+        delegate.start(bridge, m_data);
+        
+        Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
+        Territory easternEurope = m_data.getMap().getTerritory("Eastern Europe");
+        
+        UnitType carrirType = m_data.getUnitTypeList().getUnitType("carrier");
+        
+        //move a fighter to the baltic
+        Route route = new Route();
+        route.setStart(easternEurope);
+        route.add(baltic);
+        UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+        delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
+        
+        //add a carrier to be produced in germany
+        TripleAUnit carrier = new TripleAUnit(carrirType, germans, m_data);
+        new ChangePerformer(m_data).perform(ChangeFactory.addUnits(germans, Collections.singleton((Unit)carrier)));
+        
+        //end the move phase
+        delegate.end();
+        
+        //make sure the fighter is still there
+        //in lhtr fighters can hover, and carriers placed beneath them
+        assertTrue(baltic.getUnits().someMatch(Matches.unitIsOfType(fighterType)));
+        
+    }
+    
+    public void testFightersDestroyedWhenNoPendingCarriers() 
+    {
+        MoveDelegate delegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
+        delegate.initialize("MoveDelegate", "MoveDelegate");
+        
+        PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+        
+        ITestDelegateBridge bridge = getDelegateBridge(germans);
+                
+        bridge.setStepName("GermansNonCombatMove");
+        delegate.start(bridge, m_data);
+        
+        Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
+        Territory easternEurope = m_data.getMap().getTerritory("Eastern Europe");
+        
+        
+        //move a fighter to the baltic
+        Route route = new Route();
+        route.setStart(easternEurope);
+        route.add(baltic);
+        UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
+        delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
+        
+        //end the move phase
+        delegate.end();
+        
+        //there is no pending carrier to be placed
+        //the fighter cannot hover
+        assertFalse(baltic.getUnits().someMatch(Matches.unitIsOfType(fighterType)));
+        
+    }    
 
     public void testAAGunsDontFireNonCombat()
     {

@@ -1,3 +1,5 @@
+Fix bug  [1988219] lhtr fighters cant land on new carriers (sgb)
+
 Changes for 1.0
 
 * add tdice dice servers (sgb)
