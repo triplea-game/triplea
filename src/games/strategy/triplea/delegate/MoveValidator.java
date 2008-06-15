@@ -424,8 +424,16 @@ public class MoveValidator
                                                     GameData data)
     {
 
+
         MoveValidationResult result = new MoveValidationResult();
 
+        //this should never happen
+        if(new HashSet<Unit>(units).size() != units.size()) {
+            result.setError("Not all units unique, units:" + units + " unique:" + new HashSet<Unit>(units));
+            return result;
+        }
+        
+        
         if (isNonCombat)
         {
             if (validateNonCombat(data, units, route, player, result).getError() != null)

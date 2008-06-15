@@ -1,4 +1,6 @@
-Fix bug  [1988219] lhtr fighters cant land on new carriers (sgb)
+* Fix bug where selecting unit and transports and moving to a sea zone may move a transported unit more than once (sgb)
+
+* Fix bug  [1988219] lhtr fighters cant land on new carriers (sgb)
 
 Changes for 1.0
 

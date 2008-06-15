@@ -679,7 +679,7 @@ public class MovePanel extends ActionPanel
     }
 
     /**
-     * Get the route inculding the territories that we are forced to move through.
+     * Get the route including the territories that we are forced to move through.
      */
     private Route getRouteForced(Territory start, Territory end)
     {
@@ -754,6 +754,12 @@ public class MovePanel extends ActionPanel
         }
         
         List<Unit> best = new ArrayList<Unit>(units);
+        //if the player selects a land unit and other units
+        //when the 
+        //only consider the non land units
+        if(route.getStart().isWater() && route.getEnd() != null && route.getEnd().isWater() && !MoveValidator.isLoad(route)) {
+            best = Match.getMatches(best, new InverseMatch<Unit>(Matches.UnitIsLand));
+        }
         
         sortUnitsToMove(best, route);
         Collections.reverse(best);

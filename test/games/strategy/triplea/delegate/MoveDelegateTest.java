@@ -33,6 +33,7 @@ import games.strategy.util.IntegerMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -86,6 +87,18 @@ public class MoveDelegateTest extends DelegateTest
     return rVal;
   }
 
+  
+  public void testNotUnique() 
+  {
+      Route route = new Route();
+      route.setStart(egypt);
+      route.add(eastAfrica);
+      List<Unit> units = armour.create(1, british);
+      units.addAll(units);
+      
+      String results = m_delegate.move(units, route);
+      assertError(results);
+  }
 
   public void testNotEnoughUnits()
   {
