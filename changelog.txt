@@ -1,3 +1,5 @@
+Changes for 1.0.0.2
+
 * Fix dice click problem, reopen bug [ 1673719 ]  right-click-drag should not deselect unit upon release (sgb)
 
 * Fix bug where selecting unit and transports and moving to a sea zone may move a transported unit more than once (sgb)
