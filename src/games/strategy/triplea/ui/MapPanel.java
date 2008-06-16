@@ -451,7 +451,10 @@ public class MapPanel extends ImageScrollerLargeView
         }
 
         @Override
-        public void mouseClicked(MouseEvent e)
+        //this can't be mouseClicked, since 
+        //a lot of people complain that clicking doesn't work 
+        //well
+        public void mouseReleased(MouseEvent e)
         {
             
             MouseDetails md = convert(e);
