@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="2.0"/>
+        <info name="The Great War" version="2.1"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -3714,7 +3714,7 @@
                         <unitPlacement unitType="destroyer" territory="SZ 57 Ionian Sea" quantity="2" owner="Italians"/>
 				<unitPlacement unitType="cruiser" territory="SZ 57 Ionian Sea" quantity="1" owner="Italians"/>
 
-                        <unitPlacement unitType="transport" territory="SZ 58 Adriatic Sea" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="submarine" territory="SZ 58 Adriatic Sea" quantity="1" owner="Italians"/>
 
 
                         <!-- Americans  Unit Placements -->
