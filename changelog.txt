@@ -1,4 +1,4 @@
-* update great war to 2.1 (Jason Clark)
+* update great war to 2.2 (Jason Clark)
 
 Changes for 1.0.0.2
 

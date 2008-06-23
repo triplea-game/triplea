@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="2.1"/>
+        <info name="The Great War" version="2.2"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -3334,6 +3334,7 @@
                         <unitPlacement unitType="infantry" territory="London" quantity="5" owner="British"/>
                         <unitPlacement unitType="artillery" territory="London" quantity="1" owner="British"/>
 				<unitPlacement unitType="cavalry" territory="London" quantity="1" owner="British"/>                     
+				<unitPlacement unitType="aaGun" territory="London" quantity="1" owner="British"/>
 
 				<unitPlacement unitType="battleship" territory="SZ 22 Atlantic Ocean" quantity="1" owner="British"/>
 				<unitPlacement unitType="cruiser" territory="SZ 22 Atlantic Ocean" quantity="1" owner="British"/>
@@ -3499,6 +3500,7 @@
                         <unitPlacement unitType="infantry" territory="Paris" quantity="4" owner="French"/>
                         <unitPlacement unitType="artillery" territory="Paris" quantity="2" owner="French"/>
                         <unitPlacement unitType="fighter" territory="Paris" quantity="1" owner="French"/>
+                        <unitPlacement unitType="aaGun" territory="Paris" quantity="1" owner="French"/>
 
                         <unitPlacement unitType="factory" territory="Orleans" quantity="1" owner="French"/>
                         <unitPlacement unitType="infantry" territory="Orleans" quantity="1" owner="French"/>
@@ -3625,6 +3627,7 @@
                         <unitPlacement unitType="cavalry" territory="Petrograd" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Petrograd" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Petrograd" quantity="1" owner="Russians"/>
+				<unitPlacement unitType="aaGun" territory="Petrograd" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Finland" quantity="3" owner="Russians"/>
 				<unitPlacement unitType="cavalry" territory="Finland" quantity="3" owner="Russians"/>
@@ -3691,6 +3694,7 @@
                         <unitPlacement unitType="infantry" territory="Rome" quantity="1" owner="Italians"/>
 				<unitPlacement unitType="fighter" territory="Rome" quantity="1" owner="Italians"/>
 				<unitPlacement unitType="cavalry" territory="Rome" quantity="2" owner="Italians"/>
+				<unitPlacement unitType="aaGun" territory="Rome" quantity="1" owner="Italians"/>
 
                         <unitPlacement unitType="infantry" territory="Apulia" quantity="1" owner="Italians"/>
 
@@ -3745,6 +3749,7 @@
                         <unitPlacement unitType="artillery" territory="Berlin" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Berlin" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="zeppelin" territory="Berlin" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="aaGun" territory="Berlin" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="East Prussia" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="infantry" territory="East Prussia" quantity="4" owner="Germans"/>
@@ -3872,6 +3877,7 @@
                         <unitPlacement unitType="infantry" territory="Vimy" quantity="3" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Vimy" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Vimy" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="factory" territory="Vimy" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Escaut River" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Escaut River" quantity="1" owner="Germans"/>
@@ -3889,6 +3895,7 @@
                         <unitPlacement unitType="infantry" territory="Brussels" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Brussels" quantity="1" owner="Germans"/>
 			  	<unitPlacement unitType="fighter" territory="Brussels" quantity="1" owner="Germans"/>
+			  	<unitPlacement unitType="factory" territory="Brussels" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Namur" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Namur" quantity="1" owner="Germans"/>
@@ -3950,13 +3957,14 @@
                         <unitPlacement unitType="cavalry" territory="Vienna" quantity="1" owner="Austrians"/>
                         <unitPlacement unitType="artillery" territory="Vienna" quantity="1" owner="Austrians"/>
 				<unitPlacement unitType="fighter" territory="Vienna" quantity="2" owner="Austrians"/>
+				<unitPlacement unitType="aaGun" territory="Vienna" quantity="1" owner="Austrians"/>
 
                         <unitPlacement unitType="infantry" territory="Bohemia" quantity="2" owner="Austrians"/>
                         <unitPlacement unitType="cavalry" territory="Bohemia" quantity="1" owner="Austrians"/>
 
                         <unitPlacement unitType="factory" territory="Hungary" quantity="1" owner="Austrians"/>
                         <unitPlacement unitType="infantry" territory="Hungary" quantity="4" owner="Austrians"/>
-			<unitPlacement unitType="artillery" territory="Hungary" quantity="1" owner="Austrians"/>
+			      <unitPlacement unitType="artillery" territory="Hungary" quantity="1" owner="Austrians"/>
                         <unitPlacement unitType="cavalry" territory="Hungary" quantity="1" owner="Austrians"/>
 
                         <unitPlacement unitType="infantry" territory="Carpathia" quantity="5" owner="Austrians"/>
@@ -3992,6 +4000,7 @@
                         <unitPlacement unitType="infantry" territory="Istanbul" quantity="4" owner="Ottomans"/>
                         <unitPlacement unitType="artillery" territory="Istanbul" quantity="1" owner="Ottomans"/>
 				<unitPlacement unitType="fighter" territory="Istanbul" quantity="2" owner="Ottomans"/>
+				<unitPlacement unitType="aaGun" territory="Istanbul" quantity="1" owner="Ottomans"/>
 
                         <unitPlacement unitType="infantry" territory="Anatolia" quantity="1" owner="Ottomans"/>
 
