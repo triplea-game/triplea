@@ -128,6 +128,16 @@ public class Matches
 
     public static final Match<Unit> UnitIsNotSub = new InverseMatch<Unit>(UnitIsSub);
 
+    public static final Match<Unit> UnitCanMove = new Match<Unit>()
+    {
+        public boolean match(Unit u)
+        {
+            
+            return UnitAttachment.get(u.getType()).getMovement(u.getOwner()) > 0;
+        }
+    };
+    
+    
     public static final Match<Unit> UnitIsDestroyer = new Match<Unit>()
     {
         public boolean match(Unit unit)
@@ -950,6 +960,8 @@ public class Matches
         
     }
     
+
+        
     public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
 
     /** Creates new Matches */

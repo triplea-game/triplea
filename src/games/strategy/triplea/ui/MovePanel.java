@@ -605,7 +605,7 @@ public class MovePanel extends ActionPanel
         if (!EditDelegate.getEditMode(getData()))
             movable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
 
-        movable.add(Matches.UnitIsNotFactory);
+        movable.add(Matches.UnitCanMove);
         if(!m_nonCombat)
             movable.add(new InverseMatch<Unit>( Matches.UnitIsAA));
         if(route != null)

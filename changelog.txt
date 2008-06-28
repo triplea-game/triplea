@@ -1,3 +1,5 @@
+* allow factories with non 0 movement to move (sgb)
+
 * update great war to 2.2 (Jason Clark)
 
 Changes for 1.0.0.2
