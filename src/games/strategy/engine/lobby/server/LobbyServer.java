@@ -124,7 +124,7 @@ public class LobbyServer
             //initialize the databse
             Database.getConnection().close();
             
-            System.out.println("Lobby started");
+            s_logger.info("Lobby started");
             
             LobbyAdminConsole console = new LobbyAdminConsole(server);
             console.setSize(800,700);
@@ -132,7 +132,7 @@ public class LobbyServer
             console.setVisible(true);
         } catch (Exception ex)
         {
-            System.out.println(ex.toString());
+            s_logger.log(Level.SEVERE,  ex.toString(), ex);
         }
     }
     
