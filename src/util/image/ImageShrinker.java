@@ -17,10 +17,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-import javax.imageio.ImageIO;
+import javax.imageio.*;
+import javax.imageio.plugins.jpeg.*;
+import javax.imageio.metadata.*;
+import javax.imageio.stream.*;
 import javax.swing.JOptionPane;
-
-import com.sun.image.codec.jpeg.*;
 
 /**
  * 
@@ -58,17 +59,20 @@ public class ImageShrinker
         graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         graphics2D.drawImage(baseImg, 0, 0, thumbWidth, thumbHeight, null);
-        // save thumbnail image to OUTFILE
-        BufferedOutputStream out = new BufferedOutputStream(new
-          FileOutputStream("smallMap.jpeg"));
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-        JPEGEncodeParam param = encoder.
-          getDefaultJPEGEncodeParam(thumbImage);
         
-        param.setQuality(1, false);
-        encoder.setJPEGEncodeParam(param);
-        encoder.encode(thumbImage);
-        out.close(); 
+        // save thumbnail image to OUTFILE
+        
+        FileImageOutputStream out = new FileImageOutputStream(new File("smallMap.jpeg"));
+        ImageWriter encoder = (ImageWriter)ImageIO.getImageWritersByFormatName("JPEG").next();
+        JPEGImageWriteParam param = new JPEGImageWriteParam(null);
+        
+        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        param.setCompressionQuality((float)1.0);
+        
+        encoder.setOutput(out);
+        encoder.write((IIOMetadata) null, new IIOImage(thumbImage,null,null), param);
+        
+        out.close();
         System.out.println("Done.");
         System.exit(0);
 

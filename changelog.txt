@@ -1,3 +1,5 @@
+* fix [ 2015235 ] Compilation error under OpenJDK (karrde712)
+
 * allow factories with non 0 movement to move (sgb)
 
 * update great war to 2.2 (Jason Clark)
