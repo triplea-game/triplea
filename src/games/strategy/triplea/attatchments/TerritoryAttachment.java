@@ -72,7 +72,12 @@ public class TerritoryAttachment extends DefaultAttachment
     private boolean m_isVictoryCity = false;
     private boolean m_isImpassible = false;
     private PlayerID m_originalOwner = null;
-    
+    private boolean m_isConvoyRoute = false;
+    private boolean m_changeUnitOwners = false;
+    private String m_convoyAttached = null;
+    private boolean m_navalBase = false;
+    private boolean m_airBase = false;
+    private boolean m_kamikazeZone = false;    
 
   /** Creates new TerritoryAttatchment */
   public TerritoryAttachment()
@@ -142,5 +147,65 @@ public class TerritoryAttachment extends DefaultAttachment
     public PlayerID getOriginalOwner()
     {
         return m_originalOwner;
+    }
+    
+    public void setConvoyRoute(String value)
+    {
+        m_isConvoyRoute = getBool(value);
+    }
+    
+    public boolean isConvoyRoute()
+    {
+        return m_isConvoyRoute;
+    }
+    
+    public void setChangeUnitOwners(String value)
+    {
+        m_changeUnitOwners = getBool(value);
+    }
+    
+    public boolean getChangeUnitOwners()
+    {
+        return m_changeUnitOwners;
+    }
+    
+    public void setConvoyAttached(String value)
+    {
+        m_convoyAttached = value;
+    }
+
+    public String getConvoyAttached()
+    {
+        return m_convoyAttached;
+    }
+       
+    public void setNavalBase(String value)
+    {
+    	m_navalBase = getBool(value);
+    }
+    
+    public boolean isNavalBase()
+    {
+    	return m_navalBase;
+    }
+    
+    public void setAirBase(String value)
+    {
+    	m_airBase = getBool(value);
+    }
+    
+    public boolean isAirBase()
+    {
+    	return m_airBase;
+    }
+        
+    public boolean isKamikazeZone()
+    {
+    	return m_kamikazeZone;
+    }
+    
+    public void setKamikazeZone(String value)
+    {
+    	m_kamikazeZone = getBool(value);
     }
 }

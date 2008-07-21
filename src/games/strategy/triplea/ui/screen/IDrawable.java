@@ -109,14 +109,34 @@ class TerritoryNameDrawable implements IDrawable
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
         Territory territory = data.getMap().getTerritory(m_territoryName);
+        TerritoryAttachment ta = TerritoryAttachment.get(territory);
+       
+        boolean drawComments = false;
+        String commentText = null;
 
         if (territory.isWater())
-            return;
+        {
+        	//return;
+        	if ( ta != null && ta.isConvoyRoute())
+        	{
+        		drawComments = true;
+        		commentText = ta.getConvoyAttached() + " Convoy Route";
+        	}
+        	
+        	if (ta != null && ta.getProduction() > 0)
+        	{
+        		drawComments = true;
+        		commentText = ta.getOriginalOwner().getName() + " Convoy Center";
+        	}
+        	else
+        	{
+        		return;
+        	}
+        }
 
         Rectangle territoryBounds = mapData.getBoundingRect(territory);
         graphics.setFont(MapImage.MAP_FONT);
 
-        TerritoryAttachment ta = TerritoryAttachment.get(territory);
         graphics.setColor(Color.black);
         FontMetrics fm = graphics.getFontMetrics();
         int x;
@@ -143,7 +163,14 @@ class TerritoryNameDrawable implements IDrawable
         }
 
         if(mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(m_territoryName))
-            graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
+        	if (drawComments)
+        	{
+        		graphics.drawString(commentText, x - bounds.x, y - bounds.y);
+        	}
+        	else
+        	{
+                graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
+        	}
 
         // draw the ipcs.
         if (ta.getProduction() > 0)
@@ -270,7 +297,8 @@ class CapitolMarkerDrawable implements IDrawable
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
-        Image img = m_uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
+        // Changed to get normal (not large) flag
+        Image img = m_uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(m_player));
         Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
 
         graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
@@ -330,9 +358,7 @@ abstract class MapTileDrawable implements IDrawable
             graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
 
     }
-    
-    
-    
+        
 
 }
 
@@ -422,71 +448,61 @@ class BaseMapDrawable extends MapTileDrawable
     
 }
 
+// Rewritten class to use country markers rather than shading for Convoy Centers/Routes.
 class ConvoyZoneDrawable implements IDrawable
 {
-    private final String m_territoryName;
-
-    public ConvoyZoneDrawable(final String territoryName)
+    private final String m_player;
+    private final String m_location;
+    private final UIContext m_uiContext;
+    
+    public ConvoyZoneDrawable(final PlayerID player, final Territory location, UIContext uiContext)
     {
-        m_territoryName = territoryName;
+        super();
+        m_player = player.getName();
+        m_location = location.getName();
+        m_uiContext = uiContext;
     }
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
-
-        Territory territory = data.getMap().getTerritory(m_territoryName);
-        Color territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
-        territoryColor = new Color(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), 185);
-        
-        //must be a power of 2
-        int size = 32;
-        BufferedImage pattern = Util.createImage(size,size,true);
-        Graphics2D pg = pattern.createGraphics();
-        try
-        {
-            pg.setColor(territoryColor);
-            pg.setStroke(new BasicStroke((float)  (size / 6.0)));
-            pg.drawLine(0,0,size ,size );
-            pg.drawLine(size + 0,0,size + size ,size );
-            pg.drawLine(-size + 0,0,-size + size ,size );
-            
-        }
-        finally
-        {
-            pg.dispose();    
-        }
-        
-        
-        List polys = mapData.getPolygons(territory);
-
-        Iterator iter2 = polys.iterator();
-        while (iter2.hasNext())
-        {
-            Polygon polygon = (Polygon) iter2.next();
-
-            // if we dont have to draw, dont
-            if (!polygon.intersects(bounds) && !polygon.contains(bounds))
-                continue;
-
-            // use a copy since we will move the polygon
-            polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-
-            polygon.translate(-bounds.x, -bounds.y);
-            
-            TexturePaint tp = new TexturePaint(pattern, new Rectangle2D.Double(0,0,size,size));
-            
-            graphics.setPaint(tp);
-            
-            graphics.fillPolygon(polygon);
-        }
-
+        Image img = m_uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(m_player));
+        Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
+        graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
     }
 
     public int getLevel()
     {
-        return CONVOY_LEVEL;
+        return CAPITOL_MARKER_LEVEL;
     }
 
+}
+
+//Class to use 'Faded' country markers for Kamikaze Zones.
+class KamikazeZoneDrawable implements IDrawable
+{
+ private final String m_player;
+ private final String m_location;
+ private final UIContext m_uiContext;
+ 
+ public KamikazeZoneDrawable(final PlayerID player, final Territory location, UIContext uiContext)
+ {
+     super();
+     m_player = player.getName();
+     m_location = location.getName();
+     m_uiContext = uiContext;
+ }
+
+ public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+ {
+     Image img = m_uiContext.getFlagImageFactory().getFadedFlag(data.getPlayerList().getPlayerID(m_player));
+     Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(m_location));
+     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
+ }
+
+ public int getLevel()
+ {
+     return CAPITOL_MARKER_LEVEL;
+ }
 }
 
 class SeaZoneOutlineDrawable implements IDrawable

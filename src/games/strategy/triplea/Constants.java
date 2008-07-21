@@ -60,6 +60,7 @@ public interface Constants
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
   public static final String FOURTH_EDITION = "4th Edition";
   public static final String PACIFIC_EDITION = "Pacific Edition";
+  public static final String EUROPE_EDITION = "Europe Edition";
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
   public static final String TWO_HIT = "isTwoHit";
   public static final String ORIGINAL_OWNER = "originalOwner";

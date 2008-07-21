@@ -915,23 +915,29 @@ class BattleModel extends DefaultTableModel
             UnitCategory category = (UnitCategory) categoriesIter.next();
 
             int strength;
-
-            UnitAttachment attatchment = UnitAttachment.get(category.getType());
+            UnitAttachment attachment = UnitAttachment.get(category.getType());
 
             if (m_attack)
-                strength = attatchment.getAttack(category.getOwner());
+            {
+                strength = attachment.getAttack(category.getOwner());
+                // Increase attack value if it's an assaulting marine
+                if (DiceRoll.isAmphibiousMarine(attachment, m_data))
+                	++strength;
+	        } 
             else
                 //If it's Pacific_Edition and Japan's turn one, all but Chinese defend at a 1
             {
-                strength = attatchment.getDefense(category.getOwner());
+                strength = attachment.getDefense(category.getOwner());
                 if( DiceRoll.isFirstTurnLimitedRoll(category.getOwner()))
                     strength = Math.min(1, strength);
             }
 
             int unitsToAdd = category.getUnits().size();
             int supportedUnitsToAdd = 0;
+            
+            //Note it's statistically irrelevant whether we support the Infantry or Marines
             //factor in artillery support
-            if (attatchment.isArtillerySupportable() && m_attack)
+            if (attachment.isArtillerySupportable() && m_attack)
             {
                 supportedUnitsToAdd = Math.min(artillerySupportAvailable, unitsToAdd);
                 artillerySupportAvailable -= supportedUnitsToAdd;
@@ -941,7 +947,7 @@ class BattleModel extends DefaultTableModel
                 columns[strength].add(new TableData(category.getOwner(), unitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
             if (supportedUnitsToAdd > 0)
                 columns[strength + 1].add(new TableData(category.getOwner(), supportedUnitsToAdd, category.getType(), m_data, category.getDamaged(), m_uiContext));
-        }
+        } //while
 
         //find the number of rows
         //this will be the size of the largest column

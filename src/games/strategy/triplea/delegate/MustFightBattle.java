@@ -560,6 +560,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public List<String> determineStepStrings(boolean showFirstRun)
     {
         boolean isEditMode = EditDelegate.getEditMode(m_data);
+        boolean attackingSubsAlreadyFired = false;
+        boolean defendingSubsAlreadyFired = false;
         List<String> steps = new ArrayList<String>();
         if (!isEditMode && showFirstRun)
         {
@@ -577,29 +579,39 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
 
-        //attacker subs
-        if (!isEditMode && m_battleSite.isWater())
+        //attacker subs sneak attack
+        //Attacking subs have no sneak attack if Destroyers are present
+        if (!isEditMode && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
         {
             if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
             {
-                steps.add(ATTACKER_SUBS_FIRE);
-                steps.add(DEFENDER_SELECT_SUB_CASUALTIES);
+            	steps.add(m_attacker.getName() + ATTACKER_SUBS_FIRE);
+                steps.add(m_defender.getName() + DEFENDER_SELECT_SUB_CASUALTIES);
                 steps.add(DEFENDER_REMOVE_SUB_CASUALTIES);
+                attackingSubsAlreadyFired = true;
             }
         }
-
-        if (!isEditMode && isFourthEdition() && m_battleSite.isWater())
+        
+        //defender subs sneak attack        
+        //Defending subs have no sneak attack in Pacific/Europe Editions or if Destroyers are present
+        if (!isEditMode && m_battleSite.isWater() && isFourthEdition() && !isPacificEdition() && !isEuropeEdition() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
         {
             if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             {
-                steps.add(m_defender.getName() + DEFENDER_FIRES_SUBS);
-                steps
-                        .add(m_attacker.getName()
-                                + ATTACKER_SELECT_SUB_CASUALTIES);
+                steps.add(m_defender.getName() + ATTACKER_SUBS_FIRE);
+                steps.add(m_attacker.getName() + DEFENDER_SELECT_SUB_CASUALTIES);
+                steps.add(DEFENDER_REMOVE_SUB_CASUALTIES);
+                defendingSubsAlreadyFired = true;
             }
         }
 
-        //attacker fire
+        //attacker fire        
+        if (!attackingSubsAlreadyFired && m_battleSite.isWater() && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
+        {
+        	steps.add(m_attacker.getName() + DEFENDER_FIRES_SUBS);
+        	steps.add(m_defender.getName() + ATTACKER_SELECT_SUB_CASUALTIES);
+        }
+        
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotSub))
         {
             if (!isEditMode)
@@ -607,21 +619,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
             steps.add(m_defender.getName() + DEFENDER_SELECT_CASUALTIES);
         }
 
+        //defender fire
         //defender subs, note this happens earlier for fourth edition
-        if (!isEditMode && !isFourthEdition() && m_battleSite.isWater())
+        if (!defendingSubsAlreadyFired && m_battleSite.isWater() && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
         {
-            if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
-            {
-                steps.add(m_defender.getName() + DEFENDER_FIRES_SUBS);
-                steps
-                        .add(m_attacker.getName()
-                                + ATTACKER_SELECT_SUB_CASUALTIES);
-            }
+        	steps.add(m_defender.getName() + DEFENDER_FIRES_SUBS);
+        	steps.add(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES);
         }
 
         if (Match.someMatch(m_defendingUnits, Matches.UnitIsNotSub))
         {
-            //defender fire
             if (!isEditMode)
                 steps.add(m_defender.getName() + DEFENDER_FIRES);
             steps.add(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES);
@@ -651,7 +658,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
 
             } else
-            //not water
             {
                 if (canAttackerRetreatSubs())
                 {
@@ -1636,6 +1642,22 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean isFourthEdition()
     {
         return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+    }
+    
+    /**
+     * @return
+     */
+    private boolean isPacificEdition()
+    {
+        return m_data.getProperties().get(Constants.PACIFIC_EDITION, false);
+    }
+    
+    /**
+     * @return
+     */
+    private boolean isEuropeEdition()
+    {
+        return m_data.getProperties().get(Constants.EUROPE_EDITION, false);
     }
 
     /**

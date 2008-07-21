@@ -570,28 +570,45 @@ class ProductionStat extends AbstractStat
         Iterator iter = data.getMap().getTerritories().iterator();
         while (iter.hasNext())
         {
-            boolean isConvoyOrLand = false; 
+            boolean isOwnedConvoyOrLand = false; 
             Territory place = (Territory) iter.next();
             OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
             TerritoryAttachment ta = TerritoryAttachment.get(place);
-
-            if(!place.isWater())
-            {
-                isConvoyOrLand = true;
-            } 
-            else if(place.isWater() &&
-                        ta != null &&
-                        origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID &&
-                        origOwnerTracker.getOriginalOwner(place) == player &&
-                        place.getOwner().equals(player))
-            {
-                isConvoyOrLand = true; 
-            }
-            
-            if(place.getOwner().equals(player) && isConvoyOrLand)
-            {
-                if(ta != null)
-                    rVal += ta.getProduction(); 
+          
+            /* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
+            if(ta != null)
+            {	
+                //if it's water, it is a Convoy Center
+                if (place.isWater())
+                    {
+                		//Can't get IPCs for capturing a CC, only original owner can get them.
+                    	if (origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID && origOwnerTracker.getOriginalOwner(place) == player)
+                    		isOwnedConvoyOrLand = true;
+                    }
+                    else
+                    {
+                        //if it's a convoy route
+                        if (TerritoryAttachment.get(place).isConvoyRoute())
+                        {
+                            //Determine if both parts of the convoy route are owned by the attacker or allies
+                            boolean ownedConvoyRoute =  data.getMap().getNeighbors(place, Matches.territoryHasConvoyOwnedBy(player, data, place)).size() > 0;
+                            if(ownedConvoyRoute)
+                                isOwnedConvoyOrLand = true;                        
+                        }
+                        //it's a regular land territory
+                        else
+                        {
+                            isOwnedConvoyOrLand = true;
+                        }
+                        
+             //       }                    
+                }
+                
+                /*add 'em all up*/
+                if(place.getOwner().equals(player) && isOwnedConvoyOrLand)
+                {
+                    rVal += ta.getProduction();
+                }
             }
             
         }

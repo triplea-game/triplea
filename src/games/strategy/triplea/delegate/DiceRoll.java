@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.formatter.*;
 import games.strategy.util.Match;
+import games.strategy.triplea.TripleAUnit;
 
 /**
  * Used to store information about a dice roll.
@@ -313,6 +314,8 @@ public class DiceRoll implements Externalizable
                             if(landUnits.contains(current))
                                 ++strength;
                         } 
+                        if (ua.getIsDestroyer() && battle.isAmphibious())
+                        	strength--;
                     }
     
                     boolean hit = strength > random[diceIndex];
@@ -341,6 +344,40 @@ public class DiceRoll implements Externalizable
         && player.getData().getSequence().getStep().getName().equals("japaneseBattle") 
         && !player.equals(player.getData().getPlayerList().getPlayerID(Constants.CHINESE));
     }
+    
+    public static boolean isAmphibious(Collection<Unit> m_units)
+    {
+    	Iterator<Unit> unitIter = m_units.iterator();    	
+    	while (unitIter.hasNext())
+    	{
+    		TripleAUnit checkedUnit = (TripleAUnit) unitIter.next();    		
+    		if (checkedUnit.getWasAmphibious())
+    		{
+    			return true;
+    		}
+    	}
+    	return false;    	
+    }
+    
+    //Determine if it's an assaulting Marine so the attach value can be increased
+    public static boolean isAmphibiousMarine(UnitAttachment ua, GameData data)
+    {
+    	BattleTracker bt = new BattleTracker();
+     	bt = DelegateFinder.battleDelegate(data).getBattleTracker();
+    
+    	Collection<Territory> m_pendingBattles = bt.getPendingBattleSites(false);
+     	Iterator<Territory> territories = m_pendingBattles.iterator();
+    
+    	while (territories.hasNext())
+    	{
+    		Territory terr = (Territory) territories.next();
+    		Battle battle = bt.getPendingBattle(terr, false);
+         	if ( battle != null && battle.isAmphibious() && ua.getIsMarine())
+         		return true;
+    		}
+    		return false;
+    	}
+
 
     /**
      * @param units

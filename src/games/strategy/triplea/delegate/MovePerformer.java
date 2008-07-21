@@ -15,6 +15,8 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.*;
@@ -209,10 +211,28 @@ public class MovePerformer implements Serializable
         CompositeChange change = new CompositeChange();
         
         int moved = route.getLength();
+
+        Territory routeStart = (Territory) route.getStart();
+		TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);        	
+        Territory routeEnd = (Territory) route.getEnd();
+		TerritoryAttachment taRouteEnd = TerritoryAttachment.get(routeEnd);
+
         Iterator iter = units.iterator();
         while (iter.hasNext())
         {
             TripleAUnit unit = (TripleAUnit) iter.next();
+
+            UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if (ua.isAir())
+            {            	
+            	if(taRouteStart != null && taRouteStart.isAirBase() && m_data.getAllianceTracker().isAllied(route.getStart().getOwner(), unit.getOwner()))            		
+            		moved --;
+            
+            	if(taRouteEnd != null && taRouteEnd.isAirBase() && m_data.getAllianceTracker().isAllied(route.getEnd().getOwner(), unit.getOwner()))
+            		moved --;
+            }
+    		// End Kev
+                        
             change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
         }
 

@@ -28,6 +28,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;
@@ -632,6 +633,38 @@ public class MoveDelegateTest extends DelegateTest
     String results = m_delegate.move( getUnits(map, route.getStart()), route);
     assertValid(results);
     
+  }
+
+  public void testTransportCantLoadUnloadAfterBattle()
+  {	  
+	  m_bridge = super.getDelegateBridge(russians);
+	  m_bridge.setStepName("RussianCombatMove");
+
+      westEurope.setOwner(russians);
+	    
+	  //Attacking force
+	  List<Unit> attackTrns = transport.create(1, russians);	  
+	  List<Unit> attackList = bomber.create(2, russians);
+	  attackList.addAll(attackTrns);
+      	  	  
+      m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1 }));
+      
+      DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, m_bridge, m_data, new MockBattle(balticSeaZone), "");
+      assertEquals(2, roll.getHits());
+      
+      m_bridge.setStepName("RussianNonCombatMove");
+      
+      //Test the move	 
+      Collection<Unit> moveInf = infantry.create(2, russians);
+      
+      Route route = new Route();
+      route.setStart(karelia);
+      route.add(balticSeaZone);
+      route.add(westEurope);      
+
+      //Once loaded, shouldnt be able to unload
+      String results = m_delegate.move(moveInf, route);
+      assertError(results);
   }
 
   public void testUnloadedCantMove()

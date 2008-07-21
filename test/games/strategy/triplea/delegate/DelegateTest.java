@@ -43,6 +43,7 @@ public class DelegateTest extends TestCase
 	
 	protected PlayerID british;
 	protected PlayerID japanese;
+	protected PlayerID russians;
 	
 	protected Territory northSea;
 	protected Territory uk;
@@ -81,6 +82,9 @@ public class DelegateTest extends TestCase
 	protected Territory spain;
 	protected Territory gibraltar;
 	protected Territory russia;
+	protected Territory balticSeaZone;
+	protected Territory karelia;
+	protected Territory westEurope;
 	
 	protected UnitType armour;
 	protected UnitType infantry;
@@ -116,7 +120,9 @@ public class DelegateTest extends TestCase
 		british = m_data.getPlayerList().getPlayerID("British");
 		british.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());
 		japanese = m_data.getPlayerList().getPlayerID("Japanese");
-		japanese.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());		
+		japanese.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());	
+		russians = m_data.getPlayerList().getPlayerID("Russians");
+		russians.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());	
 		
 		northSea = m_data.getMap().getTerritory("North Sea Zone");
 		blackSea = m_data.getMap().getTerritory("Black Sea Zone");
@@ -155,6 +161,9 @@ public class DelegateTest extends TestCase
 		russia = m_data.getMap().getTerritory("Russia");
 		spain= m_data.getMap().getTerritory("Spain");
 		gibraltar = m_data.getMap().getTerritory("Gibraltar");
+		balticSeaZone = m_data.getMap().getTerritory("Baltic Sea Zone");
+		karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
+		westEurope = m_data.getMap().getTerritory("West Europe");
 		
 		armour = m_data.getUnitTypeList().getUnitType("armour");
 		infantry = m_data.getUnitTypeList().getUnitType("infantry");

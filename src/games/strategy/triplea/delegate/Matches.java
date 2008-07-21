@@ -430,9 +430,7 @@ public class Matches
             UnitAttachment ua = UnitAttachment.get(type);
             return ua.isArtillerySupportable();
         }
-    };
-
-    
+    };   
 
     public static final Match<Territory> TerritoryIsWater = new Match<Territory>()
     {
@@ -464,8 +462,38 @@ public class Matches
             return t.getUnits().size() == 0;
         }
     };
+      
+    public static Match<Territory> territoryHasConvoyRoute(final Territory current)
+    {
+    	return new Match<Territory>()
+        {
+        	public boolean match(Territory terr)
+            {
+            	return TerritoryAttachment.get(terr).isConvoyRoute();
+            }
+        };
+    }
 
-    
+    public static Match<Territory> territoryHasConvoyOwnedBy (final PlayerID player, final GameData data, final Territory origTerr)
+    {
+    	return new Match<Territory>()
+    	{
+        	public boolean match(Territory t)
+            {
+            	TerritoryAttachment ta = TerritoryAttachment.get(t);
+                /*If the neighboring territory is a convoy route and matches the current territory's convoy route 
+                *(territories may touch more than 1 route)*/
+                if (ta != null && ta.isConvoyRoute() && ta.getConvoyAttached().equals(origTerr.getName()))
+                {
+                	//And see if it's owned by an ally.
+                    if(data.getAllianceTracker().isAllied(t.getOwner(), player))
+                    	return true;
+                	}
+                return false;
+        	}
+    	};
+    }
+
     public static Match<Territory> territoryHasOwnedFactory(final GameData data, final PlayerID player)
     {
         return new Match<Territory>()

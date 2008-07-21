@@ -65,5 +65,11 @@ public class FlagIconImageFactory extends ImageFactory
         return getImage(key, true);
     }
 
+    public Image getFadedFlag(PlayerID id)
+    {
+        String key = PREFIX + id.getName() +  "_fade.gif";
+        return getImage(key, true);
+    }
+
     
 }

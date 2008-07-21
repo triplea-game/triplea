@@ -56,6 +56,17 @@ public class MoveValidator
      * to move.
      * @arg alreadyMoved maps Unit -> movement
      */
+    
+    public static boolean hasEnoughMovement(Collection<Unit> units, Route route)
+    {
+        for (Unit unit : units)
+        {
+            if (!hasEnoughMovement(unit, route))
+                return false;
+        }
+        return true;
+    }
+    
     public static boolean hasEnoughMovement(Collection<Unit> units, int length)
     {
         for (Unit unit : units)
@@ -70,10 +81,59 @@ public class MoveValidator
      * Tests the given unit to see if it has the movement neccessary
      * to move.
      * @arg alreadyMoved maps Unit -> movement
-     */
+     */  
+    public static boolean hasEnoughMovement(Unit unit, Route route)
+    {
+        int left = TripleAUnit.get(unit).getMovementLeft();  
+        UnitAttachment ua = UnitAttachment.get(unit.getType());
+        
+    	TerritoryAttachment taStart = TerritoryAttachment.get(route.getStart());
+    	TerritoryAttachment taEnd = TerritoryAttachment.get(route.getEnd());
+        if(ua.isAir())
+        {
+        	if (taStart != null && taStart.isAirBase())
+            	left++;
+            
+            if (taEnd != null && taEnd.isAirBase())
+            	left++;
+        }
+        
+        if(ua.isSea() && unit.getData().getSequence().getStep().getDisplayName().equals("Non Combat Move"))
+        {        	
+        	//If a zone adjacent to the starting and ending sea zones are allied navalbases, increase the range.
+        	//TODO Still need to be able to handle stops on the way (history to get route.getStart() 
+            Iterator <Territory> startNeighborIter = unit.getData().getMap().getNeighbors(route.getStart(), 1).iterator();            
+            while (startNeighborIter.hasNext())
+            {
+            	Territory terrNext = (Territory) startNeighborIter.next();
+            	TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
+            	if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getAllianceTracker().isAllied(terrNext.getOwner(), unit.getOwner()))
+            	{
+            		Iterator <Territory> endNeighborIter = unit.getData().getMap().getNeighbors(route.getEnd(), 1).iterator();            
+                    while (endNeighborIter.hasNext())
+                    {
+                    	Territory terrEnd = (Territory) endNeighborIter.next();
+                    	TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
+                    	if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getAllianceTracker().isAllied(terrEnd.getOwner(), unit.getOwner()))
+                    	{
+                    		left++;
+                    		break;
+                    	}
+                    }
+            	}
+            }
+        }        
+        
+        if(left == -1 || left < route.getLength())
+            return false;
+        return true;
+    }
+
     public static boolean hasEnoughMovement(Unit unit, int length)
     {
-        int left = TripleAUnit.get(unit).getMovementLeft();
+        int left = TripleAUnit.get(unit).getMovementLeft(); 
+        
+        //Be sure to try to check for air/naval bases if only passing length
         if(left == -1 || left < length)
             return false;
         return true;
@@ -177,9 +237,6 @@ public class MoveValidator
     {
         return !route.getStart().isWater() && route.getEnd().isWater();
     }
-
-
-
 
     public static boolean hasNeutralBeforeEnd(Route route)
     {
@@ -630,10 +687,10 @@ public class MoveValidator
             {
                 moveTest = units;
             }
-            // check units individually
+            // check units individually           
             for (Unit unit : moveTest)
             {
-                if (!MoveValidator.hasEnoughMovement(unit, route.getLength()))
+                if (!MoveValidator.hasEnoughMovement(unit, route))
                     result.addDisallowedUnit("Not all units have enough movement",unit);
             }
 
@@ -798,6 +855,17 @@ public class MoveValidator
         //note that this doesnt take into account the movement used to move the
         //units along the route
         int maxMovement = MoveValidator.getMaxMovement(units);
+
+        //If it's flying to/from an allied airbase, increase the range
+        TerritoryAttachment taStart = TerritoryAttachment.get(route.getStart());
+        TerritoryAttachment taEnd = TerritoryAttachment.get(route.getEnd());
+       
+        if (taStart != null && taStart.isAirBase() && data.getAllianceTracker().isAllied(route.getStart().getOwner(), player))
+        	maxMovement++;
+
+        if (taEnd != null && taEnd.isAirBase() && data.getAllianceTracker().isAllied(route.getEnd().getOwner(), player))
+        	maxMovement++;
+
         
         Match<Territory> canMoveThrough = new InverseMatch<Territory>(Matches.TerritoryIsImpassible);
         Match<Territory> notNeutral = new InverseMatch<Territory>(Matches.TerritoryIsNeutral);
@@ -852,6 +920,22 @@ public class MoveValidator
             if(units.contains(unit))
                 movement -= route.getLength();
             
+            //If the unit started at an airbase, or is within max range of an airbase, increase the range.
+            if (taStart != null && taStart.isAirBase() && data.getAllianceTracker().isAllied(route.getStart().getOwner(), unit.getOwner()))
+            	movement++;            
+
+            //If the route.getEnd or a neighboring zone within the max remaining fuel is an allied airbase, increase the range.
+            Iterator <Territory> neighboriter = data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();            
+            while (neighboriter.hasNext())
+            {
+            	Territory terrNext = (Territory) neighboriter.next();
+            	TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
+            	if ((taEnd != null && taEnd.isAirBase() && data.getAllianceTracker().isAllied(route.getEnd().getOwner(), unit.getOwner())) || (taNeighbor != null && taNeighbor.isAirBase()) && data.getAllianceTracker().isAllied(terrNext.getOwner(), unit.getOwner()))
+            	{
+            		movement++;
+            		break;
+            	}
+            }       
             movementLeft.put(unit, movement);
         }
         

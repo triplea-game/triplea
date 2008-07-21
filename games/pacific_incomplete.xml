@@ -1,12 +1,11 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <!-- 
 Note.  This game system still in alpha stage. 
 Lots of more code to still add in Java as well!
 
-Missing Convoy Routes, Zone, Airports, NavalPorts, and Chinese movements,
+Missing Combined American/Chinese turn, kamikazes, special strategic bombing
 not to mention India/Australia max IPC system.
 
 Coded by Iron__Cross
@@ -283,6 +282,7 @@ Coded by Iron__Cross
         <connection t1="24 Sea Zone" t2="25 Sea Zone"/>
         <connection t1="24 Sea Zone" t2="36 Sea Zone"/>
         <connection t1="24 Sea Zone" t2="35 Sea Zone"/>
+        <connection t1="25 Sea Zone" t2="26 Sea Zone"/>
         <connection t1="25 Sea Zone" t2="34 Sea Zone"/>
         <connection t1="25 Sea Zone" t2="35 Sea Zone"/>
         <connection t1="26 Sea Zone" t2="27 Sea Zone"/>
@@ -425,6 +425,9 @@ Coded by Iron__Cross
         <!-- In turn order -->
         <player name="Japanese" optional="false"/>
         <player name="British" optional="false"/>
+        <!-- Added Australians -->
+        <player name="Australians" optional="false"/>  
+        <player name="Commonwealth" optional="false"/>  
         <player name="Chinese" optional="false"/>
         <player name="Americans" optional="false"/>
         
@@ -433,6 +436,9 @@ Coded by Iron__Cross
         
         <!-- Allies Alliances -->
         <alliance player="British" alliance="Allies"/>
+        <!-- Added Australians -->
+        <alliance player="Australians" alliance="Allies"/>   
+        <alliance player="Commonwealth" alliance="Allies"/>       
         <alliance player="Americans" alliance="Allies"/>
         <alliance player="Chinese" alliance="Allies"/>
         
@@ -492,6 +498,10 @@ Coded by Iron__Cross
         <delegate name="bid"
             javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate"
             display="Bid Purchase"/>
+<!-- Kev -->
+        <delegate name="giveIPCs"
+            javaClass="games.strategy.triplea.delegate.GiveIPCsDelegate"
+            display="Give IPCs"/>            
         
         <sequence>
             <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
@@ -501,6 +511,12 @@ Coded by Iron__Cross
             <step name="britishBid" delegate="bid" player="British"
                 maxRunCount="1"/>
             <step name="britishBidPlace" delegate="placeBid" player="British"
+                maxRunCount="1"/>
+            
+            <!-- Added Australians-->            
+            <step name="australianBid" delegate="bid" player="Australians"
+                maxRunCount="1"/>
+            <step name="australianBidPlace" delegate="placeBid" player="Australians"
                 maxRunCount="1"/>
             
             <step name="japaneseBid" delegate="bid" player="Japanese"
@@ -535,14 +551,22 @@ Coded by Iron__Cross
             
             <!--                        <step name="britishTech" delegate="tech" player="British"/>-->
             <step name="britishPurchase" delegate="purchase" player="British"/>
+			<!-- Added Australians -->
+            <step name="australianPurchase" delegate="purchase" player="Australians"/>           
             <step name="britishCombatMove" delegate="move" player="British"/>
             <step name="britishBattle" delegate="battle" player="British"/>
             <step name="britishNonCombatMove" delegate="move" player="British"
                 display="Non Combat Move"/>
             <step name="britishPlace" delegate="place" player="British"/>
+            <!-- Added Australians -->
+            <step name="australianPlace" delegate="place" player="Australians"/>           
             <step name="britishEndTurn" delegate="endTurn" player="British"/>
+            <step name="australianEndTurn" delegate="endTurn" player="Australians"/>
+            <!--Kev Added Commonwealth end turn 
+            <step name="commonwealthGiveIPCs" delegate="giveIPCs" player="Commonwealth"/>
+            -->
             
-            <!-- Chines Game Sequence -->
+            <!-- Chinese Game Sequence -->
             
             
             <!--                        <step name="chineseTech" delegate="tech" player="Chinese"/>-->
@@ -747,19 +771,23 @@ Coded by Iron__Cross
         </productionFrontier>
         
         <playerProduction player="British" frontier="production"/>
+        <!-- Added Australians (set ownership of units to Brits?)-->
+        <playerProduction player="Australians" frontier="production"/>        
         <playerProduction player="Japanese" frontier="production"/>
         <playerProduction player="Chinese" frontier="production"/>
         <playerProduction player="Americans" frontier="productionAmericans"/>
         
     </production>
     
+		<!-- In order to accomodate Japanese DDs being able to transport a single Inf, 
+        the transportCost of all land units will differ from other versions of A&A. -->    
     <attatchmentList>
         
         <attatchment name="unitAttatchment" attatchTo="marine"
             javaClass="games.strategy.triplea.attatchments.UnitAttachment"
             type="unitType">
             <option name="movement" value="1"/>
-            <option name="transportCost" value="2"/>
+            <option name="transportCost" value="3"/>
             <option name="attack" value="1"/>
             <option name="defense" value="2"/>
             <option name="isMarine" value="true"/>
@@ -770,7 +798,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.UnitAttachment"
             type="unitType">
             <option name="movement" value="1"/>
-            <option name="transportCost" value="2"/>
+            <option name="transportCost" value="3"/>
             <option name="attack" value="1"/>
             <option name="defense" value="2"/>
             <option name="artillerySupportable" value="true"/>
@@ -789,7 +817,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.UnitAttachment"
             type="unitType">
             <option name="movement" value="1"/>
-            <option name="transportCost" value="3"/>
+            <option name="transportCost" value="4"/>
             <option name="attack" value="2"/>
             <option name="defense" value="2"/>
             <option name="artillery" value="true"/>
@@ -799,7 +827,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.UnitAttachment"
             type="unitType">
             <option name="movement" value="2"/>
-            <option name="transportCost" value="3"/>
+            <option name="transportCost" value="6"/>
             <option name="canBlitz" value="true"/>
             <option name="attack" value="3"/>
             <option name="defense" value="2"/>
@@ -830,7 +858,7 @@ Coded by Iron__Cross
             type="unitType">
             <option name="movement" value="2"/>
             <option name="isSea" value="true"/>
-            <option name="transportCapacity" value="5"/>
+            <option name="transportCapacity" value="8"/>
             <option name="attack" value="0"/>
             <option name="defense" value="1"/>
         </attatchment>
@@ -851,8 +879,10 @@ Coded by Iron__Cross
             type="unitType">
             <option name="movement" value="2"/>
             <option name="isSea" value="true"/>
+            <option name="transportCapacity" value="3"/>            
             <option name="attack" value="3"/>
             <option name="defense" value="3"/>
+            <option name="canBombard" value="true"/>
             <option name="isDestroyer" value="true"/>
         </attatchment>
         
@@ -900,44 +930,63 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="5"/>
+            <option name="originalFactory" value="true"/>
             <option name="capital" value="Japanese"/>
+            <option name="navalBase" value="true"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="United States"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="55"/>
+            <option name="originalFactory" value="true"/>
             <option name="capital" value="Americans"/>
+            <option name="navalBase" value="true"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Midway"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="navalBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Hawaiian"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="2"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="9 Sea Zone"/>
+            <option name="navalBase" value="true"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="New Zealand"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="1"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="13 Sea Zone"/>    
+            <option name="navalBase" value="true"/>       
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="New South Wales"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
+            <option name="originalFactory" value="true"/>
             <option name="production" value="5"/>
+            <!-- Added Australian capital-->
+            <option name="capital" value="Australians"/>
+            <option name="changeUnitOwners" value="true"/>
+            <option name="navalBase" value="true"/>      
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Queensland"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
-            <option name="production" value="2"/>
+            <option name="production" value="2"/>         
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="South Australia"
@@ -950,6 +999,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="1"/>
+            <option name="navalBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Western Australia"
@@ -968,61 +1018,82 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="1"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Celebes"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="1"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="39 Sea Zone"/>   
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Ryukyu"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
-            <option name="production" value="1"/>
+            <option name="production" value="1"/>     
+            <option name="airBase" value="true"/>    
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Philippines"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
+            <option name="ConvoyRoute" value="true"/>  
+            <option name="ConvoyAttached" value="38 Sea Zone"/> 
+            <option name="navalBase" value="true"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Java"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="4"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="43 Sea Zone"/>  
+            <option name="navalBase" value="true"/>          
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Borneo"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="44 Sea Zone"/>            
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Sumatra"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="47 Sea Zone"/>            
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Malaya"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="4"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="46 Sea Zone"/>  
+            <option name="navalBase" value="true"/>          
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Siam"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
-            <option name="production" value="2"/>
+            <option name="production" value="2"/>      
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="French Indo-China"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
+            <option name="ConvoyRoute" value="true"/>  
+            <option name="ConvoyAttached" value="45 Sea Zone"/>
         </attatchment>
+        
         <attatchment name="territoryAttatchment" attatchTo="Burma"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
@@ -1033,19 +1104,24 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="5"/>
+            <option name="originalFactory" value="true"/>
             <option name="capital" value="British"/>
+            <option name="navalBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Hong Kong"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="2"/>
+            <option name="navalBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Shantung"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="37 Sea Zone"/>            
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Manchuria"
@@ -1058,6 +1134,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="2"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="36 Sea Zone"/>  
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Szechwan"
@@ -1071,12 +1149,15 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="navalBase" value="true"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Papua"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="navalBase" value="true"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Himalayas"
@@ -1123,6 +1204,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="navalBase" value="true"/>
         </attatchment>
         <attatchment name="territoryAttatchment" attatchTo="Hopei"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
@@ -1139,12 +1221,6 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-        </attatchment>
-        
-        <attatchment name="territoryAttatchment" attatchTo="Queensland"
-            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
-            type="territory">
-            <option name="production" value="2"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Kiangsi"
@@ -1176,11 +1252,13 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         <attatchment name="territoryAttatchment" attatchTo="Samoa"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="navalBase" value="true"/>
         </attatchment>
         <attatchment name="territoryAttatchment" attatchTo="Johnston"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
@@ -1201,6 +1279,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         <attatchment name="territoryAttatchment" attatchTo="Hainan"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
@@ -1218,6 +1297,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="navalBase" value="true"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         <attatchment name="territoryAttatchment" attatchTo="Palau"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
@@ -1233,6 +1314,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
+            <option name="airBase" value="true"/>
         </attatchment>
         <attatchment name="territoryAttatchment" attatchTo="Wake"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
@@ -1272,12 +1354,170 @@ Coded by Iron__Cross
             <option name="production" value="10"/>
         </attatchment>
         
+        <!-- Add Japanese Convoy Route attachments -->        
+        <attatchment name="territoryAttatchment" attatchTo="36 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Korea"/>
+            <option name="kamikazeZone" value="true"/>
+        </attatchment>        
+        
+        <attatchment name="territoryAttatchment" attatchTo="37 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Shantung"/>
+            <option name="kamikazeZone" value="true"/>
+        </attatchment>        
+        
+        <attatchment name="territoryAttatchment" attatchTo="45 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="French Indo-China"/>
+        </attatchment>
+        
+        <!-- Add Japanese Kamikaze Zone attachments -->        
+        <attatchment name="territoryAttatchment" attatchTo="23 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="kamikazeZone" value="true"/>
+        </attatchment>
+        
+        <attatchment name="territoryAttatchment" attatchTo="24 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="kamikazeZone" value="true"/>
+        </attatchment>
+        
+        <attatchment name="territoryAttatchment" attatchTo="25 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="kamikazeZone" value="true"/>
+        </attatchment>
+        
+        <attatchment name="territoryAttatchment" attatchTo="35 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="kamikazeZone" value="true"/>
+        </attatchment>
+        
+   <!--     <attatchment name="territoryAttatchment" attatchTo="36 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="kamikazeZone" value="true"/>
+        </attatchment> -->
+        
+   <!--     <attatchment name="territoryAttatchment" attatchTo="37 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="kamikazeZone" value="true"/>
+        </attatchment> -->
+        
+         <!-- Add Australian Convoy Route attachments -->         
+        <attatchment name="territoryAttatchment" attatchTo="47 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Sumatra"/>
+        </attatchment>      
+          
+        <attatchment name="territoryAttatchment" attatchTo="43 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Java"/>
+        </attatchment>        
+        
+        <attatchment name="territoryAttatchment" attatchTo="39 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Celebes"/>
+        </attatchment>       
+         
+        <attatchment name="territoryAttatchment" attatchTo="13 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="New Zealand"/>
+        </attatchment>
+        
+         <!-- Add British Convoy Route attachments -->         
+        <attatchment name="territoryAttatchment" attatchTo="46 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Malaya"/>
+        </attatchment>        
+        
+        <attatchment name="territoryAttatchment" attatchTo="44 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Borneo"/>
+        </attatchment>
+        
+        <!-- Add American Convoy Route attachments -->         
+        <attatchment name="territoryAttatchment" attatchTo="38 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Philippines"/>
+        </attatchment>        
+        
+        <attatchment name="territoryAttatchment" attatchTo="9 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="ConvoyRoute" value="true"/>
+            <option name="ConvoyAttached" value="Hawaiian"/>
+        </attatchment>
+        
+        <attatchment name="territoryAttatchment" attatchTo="30 Sea Zone"
+            javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
+            type="territory">
+            <option name="production" value="0"/>
+            <option name="changeUnitOwners" value="true"/>
+        </attatchment>        
+        
         <attatchment name="playerAttatchment" attatchTo="Japanese"
             javaClass="games.strategy.triplea.attatchments.PlayerAttachment"
             type="player">
             <option name="vps" value="0"/>
             <option name="captureVps" value="0"/>
         </attatchment>
+        
+        <!-- Add attachments to allow for unit takeover-->   
+        <attatchment name="playerAttatchment" attatchTo="British"
+            javaClass="games.strategy.triplea.attatchments.PlayerAttachment"
+            type="player">
+            <option name="takeOverUnits" value="true"/>
+        </attatchment>
+        
+        <attatchment name="playerAttatchment" attatchTo="Australians"
+            javaClass="games.strategy.triplea.attatchments.PlayerAttachment"
+            type="player">
+            <option name="giveOverUnits" value="true"/>
+        </attatchment>        
+        
     </attatchmentList>
     
     <initialize>
@@ -1287,9 +1527,6 @@ Coded by Iron__Cross
             <territoryOwner territory="Japan" owner="Japanese"/>
             <territoryOwner territory="French Indo-China" owner="Japanese"/>
             <territoryOwner territory="Siam" owner="Japanese"/>
-            <territoryOwner territory="Manchuria" owner="Japanese"/>
-            <territoryOwner territory="Shantung" owner="Japanese"/>
-            <territoryOwner territory="Korea" owner="Japanese"/>
             <territoryOwner territory="Ryukyu" owner="Japanese"/>
             <territoryOwner territory="Bonin" owner="Japanese"/>
             <territoryOwner territory="Hainan" owner="Japanese"/>
@@ -1299,6 +1536,25 @@ Coded by Iron__Cross
             <territoryOwner territory="Marshall" owner="Japanese"/>
             <territoryOwner territory="Caroline" owner="Japanese"/>
             
+            <!-- These are Chinese territories occupied by Japan at game start 
+        		  (This would affect Chinese production if they were captured- code needed)-->
+            <territoryOwner territory="Shantung" owner="Japanese"/>
+            <territoryOwner territory="Manchuria" owner="Japanese"/>
+            <territoryOwner territory="Korea" owner="Japanese"/>
+            
+        	<!-- Add Japanese Convoy Routes here-->        
+            <territoryOwner territory="36 Sea Zone" owner="Japanese"/>
+            <territoryOwner territory="37 Sea Zone" owner="Japanese"/>
+            <territoryOwner territory="45 Sea Zone" owner="Japanese"/>    
+            
+        	<!-- Add Japanese Kamikaze Zones here-->        
+            <territoryOwner territory="23 Sea Zone" owner="Japanese"/>
+            <territoryOwner territory="24 Sea Zone" owner="Japanese"/>
+            <territoryOwner territory="25 Sea Zone" owner="Japanese"/> 
+            <territoryOwner territory="35 Sea Zone" owner="Japanese"/> 
+            <territoryOwner territory="36 Sea Zone" owner="Japanese"/> 
+            <territoryOwner territory="37 Sea Zone" owner="Japanese"/>          
+            
             <!-- British Owned Territories -->
             
             <territoryOwner territory="India" owner="British"/>
@@ -1307,33 +1563,49 @@ Coded by Iron__Cross
             <territoryOwner territory="Malaya" owner="British"/>
             <territoryOwner territory="Hong Kong" owner="British"/>
             <territoryOwner territory="Borneo" owner="British"/>
-            <territoryOwner territory="Western Australia" owner="British"/>
-            <territoryOwner territory="Northern Territory" owner="British"/>
-            <territoryOwner territory="South Australia" owner="British"/>
-            <territoryOwner territory="Queensland" owner="British"/>
-            <territoryOwner territory="New South Wales" owner="British"/>
-            <territoryOwner territory="Papua" owner="British"/>
-            <territoryOwner territory="New Zealand" owner="British"/>
-            <territoryOwner territory="New Britain" owner="British"/>
-            <territoryOwner territory="Canada" owner="British"/>
-            <territoryOwner territory="Line" owner="British"/>
-            <territoryOwner territory="Samoa" owner="British"/>
-            <territoryOwner territory="Fiji" owner="British"/>
-            <territoryOwner territory="New Hebrides" owner="British"/>
-            <territoryOwner territory="Solomon" owner="British"/>
-            <territoryOwner territory="Gilbert" owner="British"/>
             
-            <!-- British owned convoy routes -->
-            <territoryOwner territory="52 Sea Zone" owner="British"/>
-            <territoryOwner territory="49 Sea Zone" owner="British"/>
-            <territoryOwner territory="15 Sea Zone" owner="British"/>
+            <!-- Australian Owned Territories (moved Johnston Is. from American to Australian)-->
+
+            <territoryOwner territory="Western Australia" owner="Australians"/>
+            <territoryOwner territory="Northern Territory" owner="Australians"/>
+            <territoryOwner territory="South Australia" owner="Australians"/>
+            <territoryOwner territory="Queensland" owner="Australians"/>
+            <territoryOwner territory="New South Wales" owner="Australians"/>
+            <territoryOwner territory="Papua" owner="Australians"/>
+            <territoryOwner territory="New Zealand" owner="Australians"/>
+            <territoryOwner territory="New Britain" owner="Australians"/>
+            <territoryOwner territory="Canada" owner="Australians"/>
+            <territoryOwner territory="Line" owner="Australians"/>
+            <territoryOwner territory="Samoa" owner="Australians"/>
+            <territoryOwner territory="Fiji" owner="Australians"/>
+            <territoryOwner territory="New Hebrides" owner="Australians"/>
+            <territoryOwner territory="Solomon" owner="Australians"/>
+            <territoryOwner territory="Gilbert" owner="Australians"/>
+   			<territoryOwner territory="Johnston" owner="Australians"/>          
             
-            <!-- Purple territories -->
-            <territoryOwner territory="Dutch New Guinea" owner="British"/>
-            <territoryOwner territory="New Guinea" owner="British"/>
-            <territoryOwner territory="Celebes" owner="British"/>
-            <territoryOwner territory="Java" owner="British"/>
-            <territoryOwner territory="Sumatra" owner="British"/>
+            <!-- Commonwealth owned convoy centers -->
+            <!-- Code Needed to determine how to add this functionality -->
+            <territoryOwner territory="52 Sea Zone" owner="Commonwealth"/>
+            <territoryOwner territory="49 Sea Zone" owner="Commonwealth"/>
+            <territoryOwner territory="15 Sea Zone" owner="Commonwealth"/>
+            
+            <!-- Add Australian Convoy Routes here-->
+            <territoryOwner territory="47 Sea Zone" owner="Australians"/>
+            <territoryOwner territory="43 Sea Zone" owner="Australians"/>
+            <territoryOwner territory="39 Sea Zone" owner="Australians"/>
+            <territoryOwner territory="13 Sea Zone" owner="Australians"/>
+             
+        	<!-- Add British Convoy Routes here-->
+            <territoryOwner territory="46 Sea Zone" owner="British"/>
+            <territoryOwner territory="44 Sea Zone" owner="British"/>
+            
+            <!-- Purple territories (Australian)-->
+            <!-- Changed them to Australian-->
+            <territoryOwner territory="Dutch New Guinea" owner="Australians"/>
+            <territoryOwner territory="New Guinea" owner="Australians"/>
+            <territoryOwner territory="Celebes" owner="Australians"/>
+            <territoryOwner territory="Java" owner="Australians"/>
+            <territoryOwner territory="Sumatra" owner="Australians"/>
             
             <!-- Chinese Owned Territories -->
             <territoryOwner territory="Tsinghai" owner="Chinese"/>
@@ -1353,17 +1625,19 @@ Coded by Iron__Cross
             <territoryOwner territory="United States" owner="Americans"/>
             <territoryOwner territory="Hawaiian" owner="Americans"/>
             <territoryOwner territory="Philippines" owner="Americans"/>
-            
-            <!-- Blue owned Territories -->
             <territoryOwner territory="Wake" owner="Americans"/>
             <territoryOwner territory="Midway" owner="Americans"/>
             <territoryOwner territory="Aleutian" owner="Americans"/>
             <territoryOwner territory="Johnston" owner="Americans"/>
-            <territoryOwner territory="Guam" owner="Americans"/>
-            
-            <!-- Blue owned convoy routes -->
+            <territoryOwner territory="Guam" owner="Americans"/> 
+                        
+            <!-- American owned convoy centers -->
             <territoryOwner territory="3 Sea Zone" owner="Americans"/>
             <territoryOwner territory="6 Sea Zone" owner="Americans"/>
+            
+            <!-- Add American Convoy Route here-->
+            <territoryOwner territory="38 Sea Zone" owner="Americans"/>
+            <territoryOwner territory="9 Sea Zone" owner="Americans"/>
             
         </ownerInitialize>
         
@@ -1385,6 +1659,7 @@ Coded by Iron__Cross
                 owner="British"/>
             <unitPlacement unitType="infantry" territory="Queensland" quantity="2"
                 owner="British"/>
+			<!-- Changed to Australian ownership-->
             <unitPlacement unitType="infantry" territory="New South Wales"
                 quantity="2" owner="British"/>
             <unitPlacement unitType="infantry" territory="Western Australia"
@@ -1492,10 +1767,12 @@ Coded by Iron__Cross
                 owner="Japanese"/>
             <unitPlacement unitType="infantry" territory="Caroline" quantity="4"
                 owner="Japanese"/>
+            <!-- TODO Revised rules state 2 inf in FIC-->
             <unitPlacement unitType="infantry" territory="French Indo-China"
                 quantity="4" owner="Japanese"/>
             <unitPlacement unitType="infantry" territory="Marshall" quantity="2"
                 owner="Japanese"/>
+            <!-- TODO Revised rules state 6 inf in Hai-->
             <unitPlacement unitType="infantry" territory="Hainan" quantity="4"
                 owner="Japanese"/>
             <unitPlacement unitType="infantry" territory="Bonin" quantity="2"
@@ -1528,6 +1805,7 @@ Coded by Iron__Cross
                 owner="Japanese"/>
             <unitPlacement unitType="fighter" territory="Formosa" quantity="2"
                 owner="Japanese"/>
+            <!-- TODO Revised rules state 0 ftr in Mar-->
             <unitPlacement unitType="fighter" territory="Mariana" quantity="1"
                 owner="Japanese"/>
             <unitPlacement unitType="fighter" territory="Caroline" quantity="2"
@@ -1585,6 +1863,7 @@ Coded by Iron__Cross
                 quantity="1" owner="Japanese"/>
             <unitPlacement unitType="transport" territory="36 Sea Zone"
                 quantity="3" owner="Japanese"/>
+            <!-- TODO Revised rules state 1 trn in SZ37-->
             <unitPlacement unitType="transport" territory="37 Sea Zone"
                 quantity="2" owner="Japanese"/>
             <unitPlacement unitType="transport" territory="45 Sea Zone"
@@ -1592,6 +1871,7 @@ Coded by Iron__Cross
             
             <unitPlacement unitType="submarine" territory="18 Sea Zone"
                 quantity="1" owner="Japanese"/>
+            <!-- TODO Revised rules state sub in SZ20 moves to SZ22-->
             <unitPlacement unitType="submarine" territory="20 Sea Zone"
                 quantity="1" owner="Japanese"/>
             <unitPlacement unitType="submarine" territory="26 Sea Zone"
@@ -1717,7 +1997,10 @@ Coded by Iron__Cross
         
         <resourceInitialize>
             <resourceGiven player="Japanese" resource="IPCs" quantity="19"/>
-            <resourceGiven player="British" resource="IPCs" quantity="35"/>
+            <resourceGiven player="British" resource="IPCs" quantity="15"/>
+            <!-- Added Australians & Commonwealth-->
+            <resourceGiven player="Australians" resource="IPCs" quantity="20"/>  
+            <resourceGiven player="Commonwealth" resource="IPCs" quantity="20"/>                    
             <resourceGiven player="Chinese" resource="IPCs" quantity="0"/>
             <resourceGiven player="Americans" resource="IPCs" quantity="75"/>
         </resourceInitialize>
@@ -1782,6 +2065,11 @@ Coded by Iron__Cross
             <number min="0" max="1000"/>
         </property>
         
+        <!-- Added Australians-->        
+        <property name="Australians bid" value="0" editable="true">
+            <number min="0" max="1000"/>
+        </property>        
+        
         <!-- Low Luck -->
         <property name="Low Luck" value="false" editable="true">
             <boolean/>
@@ -1793,22 +2081,29 @@ Coded by Iron__Cross
         
         <!-- notes appear in the notes menu in the main screen, format as html -->
         <property name="notes"
-            value="&lt;h1&gt; Axis and Allies Pacific &lt;/h1&gt;&lt;br&gt;&lt;br&gt;
-				This current implementation of Axis and Allies Pacific is still in alpha phase &lt;br&gt;
-				and has many features still to be supported as listed: &lt;br&gt;&lt;br&gt; 
+            value="Axis and Allies Pacific 
+				This current implementation of Axis and Allies Pacific is still in alpha phase 
+				and has many features still to be supported as listed:  
 
-				- CAP &lt;br&gt;
-				- Airports/Seaports &lt;br&gt;
-				- Convoy Centers &lt;br&gt;
-				- (implemented except for submerged sub at begin of round) Convoy Zones &lt;br&gt;
+				- CAP 
+				- (implemented) Airports/Seaports 
+				- (implemented) Convoy Centers  
+				- (implemented) Convoy Routes 
 				- (implemented) Chinese purchase mechanics 
 				- (implemented) Marines 
-				- Chinese and USA same turn order (done on seperate turns for now) &lt;br&gt;
-				- Seperate income for India and Australia (UK under one power for now) &lt;br&gt;
-				- Special stratbombing rules (regular strat bombing rules applied) &lt;br&gt;
+				- Chinese and USA same turn order (done on seperate turns for now) 
+				- (implemented) Seperate income for India and Australia 
+				- Commonwealth Convoy Center IPC distribution
+				- Special stratbombing rules (regular strat bombing rules applied) 
 				- (implemented) Japanese Victory Points
+				- (implemented) Japanese special turn one attack
+				- (implemented) Japanese DDs can transport a single Inf
+				- (implemented) Special sub rules
+				- Japanese Kamikazes
+				- Burma Road
 				
-				Credits: Triple_Elk (base-line), iron__cross (integration)"/>
+				
+				Credits: Triple_Elk (base-line), iron__cross (integration), ComradeKev (special rules implementations)"/>
         
     </propertyList>
 </game>

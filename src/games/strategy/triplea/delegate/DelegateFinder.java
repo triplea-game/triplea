@@ -56,5 +56,13 @@ public class DelegateFinder
 			throw new IllegalStateException("Tech delegate not found");
 		return (TechnologyDelegate) delegate;
 	}
+
+	public static final GiveIPCsDelegate giveIPCsDelegate(GameData data)
+	{
+		IDelegate delegate =  data.getDelegateList().getDelegate("giveIPCs");
+		if(delegate == null)
+			throw new IllegalStateException("giveIPCs delegate not found");
+		return (GiveIPCsDelegate) delegate;
+	}
 	
 }

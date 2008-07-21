@@ -333,12 +333,42 @@ public class BattleTracker implements java.io.Serializable
             TerritoryAttachment ta = TerritoryAttachment.get(territory);
             if(ta == null)
                 return;
-
-            // Check if only transports and submerged subs
-            totalMatches = arrivingUnits.size() - Match.countMatches(arrivingUnits, Matches.unitCanAttack(id));
-            totalMatches += Match.countMatches(arrivingUnits, Matches.unitIsSubmerged(data));
-            if(totalMatches >= arrivingUnits.size())
-                return;
+            
+            //Total Attacking Sea units = all units - land units - air units - transports - submerged subs
+            totalMatches= arrivingUnits.size() - Match.countMatches(arrivingUnits, Matches.UnitIsLand) - 
+                Match.countMatches(arrivingUnits, Matches.UnitIsAir) -
+                Match.countMatches(arrivingUnits, Matches.UnitIsTransport) -
+                Match.countMatches(arrivingUnits, Matches.unitIsSubmerged(data)) +
+                Match.countMatches(arrivingUnits, Matches.UnitIsDestroyer);
+            if (totalMatches == 0)
+                 return;
+        }
+        
+        // If it was a Convoy Route- check ownership of the associated neighboring territory and set message
+        if(TerritoryAttachment.get(territory).isConvoyRoute())
+        {   
+            //Determine if both parts of the convoy route are owned by the attacker or allies
+            boolean ownedConvoyRoute =  data.getMap().getNeighbors(territory, Matches.territoryHasConvoyOwnedBy(id, data, territory)).size() > 0;
+            int ipcCharge = TerritoryAttachment.get(territory).getProduction();
+            Territory valuedTerritory = data.getMap().getTerritory(territory.getName());
+                        
+            //If the captured territory is water, get the associated land territory for reporting.
+            if (territory.isWater())
+            {
+                valuedTerritory = data.getMap().getTerritory(TerritoryAttachment.get(territory).getConvoyAttached());
+                ipcCharge = TerritoryAttachment.get(valuedTerritory).getProduction();
+            }
+            
+            if(ownedConvoyRoute)
+            {                
+                bridge.getHistoryWriter().addChildToEvent(
+                        valuedTerritory.getOwner() + " gain " + ipcCharge + " production for liberating the convoy route in " + territory.getName());
+            }
+            else
+            {
+                bridge.getHistoryWriter().addChildToEvent(
+                        valuedTerritory.getOwner() + " lose " + ipcCharge + " production due to the capture of the convoy route in " + territory.getName());
+            }
         }
 
         //if neutral
@@ -401,7 +431,7 @@ public class BattleTracker implements java.io.Serializable
          
 
         //non coms revert to their original owner if once allied
-        //unless there capital is not owned
+        //unless their capital is not owned
         for (Unit currentUnit : nonCom)
         {
             PlayerID originalOwner = origOwnerTracker.getOriginalOwner(currentUnit);

@@ -162,7 +162,10 @@ public class TransportTracker
         
         change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
         if (!isNonCombat(unit.getData()))
+        {
             change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+            change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
+        }
         
         Collection<Unit> newCarrying;
         if(transport.getTransporting().size() == 1) 
@@ -219,7 +222,8 @@ public class TransportTracker
     public int getAvailableCapacity(Unit unit)
     {
         UnitAttachment ua = UnitAttachment.get(unit.getType());
-        if (ua.getTransportCapacity() == -1)
+        //Check if there are transports available, also check for destroyer capacity (Tokyo Express)
+        if (ua.getTransportCapacity() == -1 || (unit.getData().getProperties().get(Constants.PACIFIC_EDITION, false) && ua.getIsDestroyer() && !unit.getOwner().getName().equals("Japanese")))
             return 0;
         int capacity = ua.getTransportCapacity();
         int used = getCost(transporting(unit));
@@ -356,7 +360,6 @@ public class TransportTracker
         return ((TripleAUnit) iter.next()).getUnloadedTo();
     }
 
-    //Kev
     // If a transport has been in combat, it cannot load AND unload in non-combat
     public boolean isTransportUnloadRestrictedInNonCombat(Unit transport)
     {        

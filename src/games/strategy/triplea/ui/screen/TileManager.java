@@ -277,9 +277,25 @@ public class TileManager
             drawing.add(new LandTerritoryDrawable(territory.getName()));
         else 
         {
-            // draw a convoy overlay
             if(TerritoryAttachment.get(territory) != null)
-                drawing.add(new ConvoyZoneDrawable(territory.getName()));
+            {
+            	//Kamikaze Zones
+            	if(TerritoryAttachment.get(territory).isKamikazeZone())
+            	{
+            		drawing.add(new KamikazeZoneDrawable(territory.getOwner(),territory, m_uiContext));            		
+            	}            	
+            	//Convoy Routes
+            	if(TerritoryAttachment.get(territory).isConvoyRoute())
+            	{
+            		drawing.add(new ConvoyZoneDrawable(territory.getOwner(),territory, m_uiContext));            		
+            	}            	
+            	//Convoy Centers
+            	if(TerritoryAttachment.get(territory).getProduction() > 0)
+            	{
+            		drawing.add(new ConvoyZoneDrawable(territory.getOwner(),territory, m_uiContext));
+            	}
+            }
+                
             drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
         } 
         

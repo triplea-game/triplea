@@ -53,6 +53,7 @@ public class TripleAUnit extends Unit
     public static final String ORIGINAL_OWNER = "originalOwner";
     public static final String WAS_IN_COMBAT = "wasInCombat";
     public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
+    public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
     
     //the transport that is currently transporting us
     private Unit m_transportedBy = null;
@@ -75,6 +76,7 @@ public class TripleAUnit extends Unit
     //Was this unit in combat
     private boolean m_wasInCombat = false;
     private boolean m_wasLoadedAfterCombat = false;
+    private boolean m_wasAmphibious = false;
     
     public static TripleAUnit get(Unit u) 
     {
@@ -257,6 +259,19 @@ public class TripleAUnit extends Unit
             return m_transportedBy;
         //TODO: add support for carriers as well
         return null;
+    }
+    
+    public boolean getWasAmphibious()
+    {
+        return m_wasAmphibious;
+    }
+
+    /**
+     * private since this should only be called by UnitPropertyChange
+     */
+    private void setWasAmphibious(Boolean value)
+    {
+        m_wasAmphibious = Boolean.valueOf(value.booleanValue());
     }
     
 }

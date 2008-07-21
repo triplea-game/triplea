@@ -1,3 +1,27 @@
+Changes for 1.0.0.4
+
+* Fix bug [ 1830015 ] transport load/unload after being in combat (comradekev)
+
+* Add Convoy Centers & Convoy Routes, as well as labels (comradekev)
+
+* Add Tokyo Express - Ability for DDs to carry one inf in Pacific (comradekev)
+
+* Fix amphib marines combat display  (comradekev)
+
+* Add name_place.txt for pacific to clean up territory name placement (comradekev)
+
+* Add Australian player purchases (units transferred to British control for combined play after buy) (ComradeKev)
+
+* Add Australian capital and territories (ComradeKev)
+
+* Add Commonwealth Convoy Center cash distribution (ComradeKev)- PENDING
+
+* Add Naval and Air bases (ComradeKev)
+
+* Add Kamikazi zones (ComradeKev) - PENDING
+
+Changes for 1.0.0.3
+
 * fix [ 2015235 ] Compilation error under OpenJDK (karrde712)
 
 * allow factories with non 0 movement to move (sgb)
