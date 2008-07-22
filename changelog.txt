@@ -1,24 +1,26 @@
-Changes for 1.0.0.4
+Changes for 1.0.1.0
 
-* Fix bug [ 1830015 ] transport load/unload after being in combat (comradekev)
+* Fix bug [ 1830015 ] transport load/unload after being in combat (ComradeKev)
 
-* Add Convoy Centers & Convoy Routes, as well as labels (comradekev)
+* Add Convoy Centers & Convoy Routes, as well as labels (ComradeKev)
 
-* Add Tokyo Express - Ability for DDs to carry one inf in Pacific (comradekev)
+* Add Tokyo Express - Ability for DDs to carry one inf in Pacific (ComradeKev)
 
-* Fix amphib marines combat display  (comradekev)
+* Fix amphib marines combat display  (ComradeKev)
 
-* Add name_place.txt for pacific to clean up territory name placement (comradekev)
+* Add name_place.txt for pacific to clean up territory name placement (ComradeKev)
 
 * Add Australian player purchases (units transferred to British control for combined play after buy) (ComradeKev)
 
 * Add Australian capital and territories (ComradeKev)
 
-* Add Commonwealth Convoy Center cash distribution (ComradeKev)- PENDING
+* Add partial support for Commonwealth Convoy Center cash distribution (ComradeKev)
 
 * Add Naval and Air bases (ComradeKev)
 
-* Add Kamikazi zones (ComradeKev) - PENDING
+* Add partial support for Kamikazi zones (ComradeKev)
+
+* Fix lhtr strategic bombing (dav eagle2)
 
 Changes for 1.0.0.3
 
