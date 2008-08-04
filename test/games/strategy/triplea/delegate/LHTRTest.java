@@ -252,7 +252,8 @@ public class LHTRTest extends TestCase
         int ipcsAfterRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.IPCS));
         
         //largets dice is 4, so damage is 1 + 4 = 5
-        assertEquals(ipcsBeforeRaid - 5, ipcsAfterRaid);
+        //Changed to match StrategicBombingRaidBattle changes (removed the +1)
+        assertEquals(ipcsBeforeRaid - 4, ipcsAfterRaid);
         
         
     }
@@ -306,7 +307,8 @@ public class LHTRTest extends TestCase
         
         //largets dice is 4, so damage is 1 + 4 = 5
         //bomber 2 hits at 2, so damage is 3 
-        assertEquals(ipcsBeforeRaid - 8, ipcsAfterRaid);
+        //Changed to match StrategicBombingRaidBattle changes (removed the +1)
+        assertEquals(ipcsBeforeRaid - 6, ipcsAfterRaid);
         
         
     }
