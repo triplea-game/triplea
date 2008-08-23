@@ -22,9 +22,9 @@ Changes for 1.0.1.0
 
 * Fix lhtr strategic bombing (dav eagle2)
 
-Changes for 1.0.0.3
-
 * fix [ 2015235 ] Compilation error under OpenJDK (karrde712)
+
+Changes for 1.0.0.3
 
 * allow factories with non 0 movement to move (sgb)
 
