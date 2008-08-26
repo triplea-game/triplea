@@ -1,0 +1,5 @@
+New South Wales  (1522,1820)
+India  (95,537)
+Szechwan  (380,320)
+Japan  (1181,118)
+United States  (2854,255)
