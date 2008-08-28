@@ -1,3 +1,9 @@
+* allow lobby server to run in headless mode  (sgb)
+
+* fix lobby.properties. If a lobby.properties file is in the root TripleA directory, use that to connect to the lobby (sgb)
+
+* reduce lobby backup frequency to 7 days (sgb) 
+
 Changes for 1.0.1.0
 
 * Fix bug [ 1830015 ] transport load/unload after being in combat (ComradeKev)

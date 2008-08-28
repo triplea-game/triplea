@@ -237,7 +237,7 @@ public class Database
             s_isDbSetup = true;
         }
         
-        //we want to backup the database every 24 hours
+        //we want to backup the database on occassion
         Thread backupThread = new Thread(new Runnable()
         {
             public void run()
@@ -245,10 +245,10 @@ public class Database
                 while(true)
                 {
                     
-                    //wait 2 days
+                    //wait 7 days
                     try
                     {
-                        Thread.sleep(2 * 24 * 60 * 60 * 1000);
+                        Thread.sleep(7 * 24 * 60 * 60 * 1000);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();

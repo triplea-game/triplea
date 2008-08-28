@@ -16,6 +16,7 @@ package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
+import games.strategy.engine.lobby.server.headless.HeadlessLobbyConsole;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.ui.LobbyAdminConsole;
 import games.strategy.engine.lobby.server.userDB.Database;
@@ -26,6 +27,8 @@ import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.Version;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -39,6 +42,15 @@ import java.util.logging.Logger;
  */
 public class LobbyServer
 {
+    
+    //System properties for the lobby
+    //what port should the lobby use
+    private static final String PORT = "triplea.lobby.port";
+    //should the lobby start a ui, set to true to enable
+    private static final String UI = "triplea.lobby.ui";
+    //should the lobby take commands from stdin, 
+    //set to true to enable
+    private static final String CONSOLE = "triplea.lobby.console";
     
     public static final String ADMIN_USERNAME = "Admin";
     private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
@@ -111,13 +123,14 @@ public class LobbyServer
         
         try
         {
+            //grab these before we override them with the loggers
+            InputStream in = System.in;
+            PrintStream out = System.out;
+            
             setUpLogging();
             
-            int port;
-            if(args.length == 1)
-                port =Integer.parseInt(args[0]);
-            else
-                port = 3303;
+            int port = Integer.parseInt(System.getProperty(PORT, "3303"));
+            
             
             LobbyServer server = new LobbyServer( port);
 
@@ -126,14 +139,33 @@ public class LobbyServer
             
             s_logger.info("Lobby started");
             
-            LobbyAdminConsole console = new LobbyAdminConsole(server);
-            console.setSize(800,700);
-            console.setLocationRelativeTo(null);
-            console.setVisible(true);
+            if(Boolean.parseBoolean(System.getProperty(UI, "false"))) {
+                startUI(server);    
+            }
+            if(Boolean.parseBoolean(System.getProperty(CONSOLE, "false"))) {
+                startConsole(server, in, out);    
+            }  
+            
         } catch (Exception ex)
         {
             s_logger.log(Level.SEVERE,  ex.toString(), ex);
         }
+    }
+
+    private static void startConsole(LobbyServer server, InputStream in, PrintStream out)
+    {
+        System.out.println("starting console");
+        new HeadlessLobbyConsole(server, in, out).start();
+        
+    }
+
+    private static void startUI(LobbyServer server)
+    {
+        System.out.println("starting ui");
+        LobbyAdminConsole console = new LobbyAdminConsole(server);
+        console.setSize(800,700);
+        console.setLocationRelativeTo(null);
+        console.setVisible(true);
     }
     
     public IServerMessenger getMessenger()

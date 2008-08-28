@@ -32,6 +32,11 @@ import java.util.logging.Logger;
 
 import javax.swing.*;
 
+/**
+ * GUI for the lobby.
+ * 
+ * @author Sean Bridges
+ */
 public class LobbyAdminConsole extends JFrame
 {
     private static final Logger s_logger = Logger.getLogger(LobbyAdminConsole.class.getName());

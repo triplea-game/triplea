@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -136,6 +137,54 @@ public class MetaSetupPanel extends SetupPanel
 
     private void connectToLobby()
     {
+        LobbyServerProperties props = getLobbyServerProperties();
+        if(props == null)
+        {
+            props = new LobbyServerProperties(null, -1, "Server Lookup failed, try again later", null);
+        }
+        
+        //for development, ignore what we read,
+        //connect instead to localhost
+        if(System.getProperties().getProperty("triplea.lobby.debug") != null)
+        {
+            props = new LobbyServerProperties("127.0.0.1", 3304, "", "the server says");
+        }
+        
+        LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props);
+        
+        LobbyClient client = login.login();
+        if(client == null)
+            return;
+        
+        
+        LobbyFrame lobbyFrame = new LobbyFrame(client,props);
+        
+        
+        
+        MainFrame.getInstance().setVisible(false);
+        MainFrame.getInstance().dispose();
+
+        lobbyFrame.setVisible(true);
+        
+        
+    }
+
+    private LobbyServerProperties getLobbyServerProperties()
+    {
+        //try to look up an override
+        File f = new File(GameRunner.getRootFolder(), "lobby.properties");
+        if(f.exists()) {
+            Properties props = new Properties();
+            try
+            {
+                FileInputStream fis = new FileInputStream(f);
+                props.load(fis);
+                return new LobbyServerProperties(props);
+            } catch(IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        
         final URL serverPropsURL;
         try
         {
@@ -209,83 +258,22 @@ public class MetaSetupPanel extends SetupPanel
         BackgroundTaskRunner.runInBackground(this, "Looking Up Server", r);
         
         LobbyServerProperties props = ref.get();
-        if(props == null)
-        {
-            props = new LobbyServerProperties(null, -1, "Server Lookup failed, try again later", null);
-        }
-        
-        //for development, ignore what we read,
-        //connect instead to localhost
-        if(System.getProperties().getProperty("triplea.lobby.debug") != null)
-        {
-            props = new LobbyServerProperties("127.0.0.1", 3303, "", "the server says");
-        }
-        
-        LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this), props);
-        
-        LobbyClient client = login.login();
-        if(client == null)
-            return;
-        
-        
-        LobbyFrame lobbyFrame = new LobbyFrame(client,props);
-        
-        
-        
-        MainFrame.getInstance().setVisible(false);
-        MainFrame.getInstance().dispose();
-
-        lobbyFrame.setVisible(true);
-        
-        
+        return props;
     }
 
     /**
      * Get the url which we use to lookup the lobby server.
      * 
-     * we look first for a file called lobby.properties, with a key server
-     * then we look for a system property triplea.lobby.server.lookup.url
-     * finally we default to looking on sourceforge, with a version dependent url
+     * we look for a system property triplea.lobby.server.lookup.url, if that is not defined
+     * we default to looking on sourceforge, with a version dependent url
      */
     private URL getServerLookupURL() throws MalformedURLException
-    {
-        //step 1, check for a file
-        File f = new File(GameRunner.getRootFolder(), "lobby.properties");
-        if(f.exists() && f.canRead()) {
-            java.util.Properties props = new java.util.Properties();
-            FileInputStream in = null;
-            try
-            {
-                in = new FileInputStream(f);
-                props.load(in);
-                if(props.containsKey("server"))
-                    return new URL(props.getProperty("server"));
-                
-            } catch(IOException ioe) 
-            {
-                ioe.printStackTrace();
-            }
-            finally
-            {
-              try
-              {
-                if(in != null)
-                    in.close();
-              } catch (IOException e)
-              {
-                  //ignore, we just want to close
-              }  
-            }
-            
-            
-        }
-        
-        
+    {       
         //step 2 check for a system property
         //step 3 default
         final URL serverPropsURL;
         String defaultURL = "http://triplea.sourceforge.net/lobby/server_" + EngineVersion.VERSION.toString() +  ".properties" ;
-        serverPropsURL =new URL(System.getProperties().getProperty("triplea.lobby.server.lookup.url", defaultURL));
+        serverPropsURL = new URL(System.getProperties().getProperty("triplea.lobby.server.lookup.url", defaultURL));
         return serverPropsURL;
     }
 

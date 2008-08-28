@@ -54,7 +54,20 @@ public class LobbyServerProperties
      */
     public LobbyServerProperties(URL url)
     {
+        this(getProperties(url));
+    }
+    
+    public LobbyServerProperties(Properties props)
+    {       
+        m_host = props.getProperty("HOST");
+        m_port = Integer.parseInt(props.getProperty("PORT", "-1"));
+        m_serverErrorMessage = props.getProperty("ERROR_MESSAGE", "");
+        m_serverMessage = props.getProperty("MESSAGE", "");
+        m_done = true;
+    }
 
+    private static Properties getProperties(URL url)
+    {
         Properties props = new Properties();
         HttpClient client = new HttpClient();
         client.getHostConfiguration().setHost(url.getHost());
@@ -80,32 +93,7 @@ public class LobbyServerProperties
         {
             method.releaseConnection();
         }
-        
-//        Properties props = new Properties();
-//        
-//        try
-//        {
-//            InputStream input = url.openStream();
-//                    
-//            try
-//            {
-//                props.load(input);
-//            } finally
-//            {
-//                input.close();
-//            }            
-//        }
-//        catch(IOException ioe)
-//        {
-//            s_logger.log(Level.WARNING, ioe.getMessage(), ioe );
-//            props.put("ERROR_MESSAGE", ioe.getMessage());
-//        }
-                
-        m_host = props.getProperty("HOST");
-        m_port = Integer.parseInt(props.getProperty("PORT", "-1"));
-        m_serverErrorMessage = props.getProperty("ERROR_MESSAGE", "");
-        m_serverMessage = props.getProperty("MESSAGE", "");
-        m_done = true;
+        return props;
     }
     
     public String getHost()

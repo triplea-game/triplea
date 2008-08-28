@@ -81,7 +81,7 @@ public class DBExplorerPanel extends JPanel
         });
     }
     
-    private boolean isNotQuery(String sql)
+    public static boolean isNotQuery(String sql)
     {
         
         sql = sql.toUpperCase().trim();

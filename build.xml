@@ -373,6 +373,29 @@
 			
 		</zip>
 	</target>
+	
+	<!-- zip -->
+	<target name="zipServer" depends="zip">
+		<zip zipfile="release/triplea_${triplea.version}_server.zip" compress="true">
+
+			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
+				<include name="gpl.txt" />
+			</zipfileset>
+			
+			<zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
+				<include name="**/derby*.jar" />
+			</zipfileset>
+			
+			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
+				<include name="**/*.jar" />
+			</zipfileset>
+
+			<zipfileset dir="." prefix="triplea_${triplea.version}" filemode="755">
+				<include name="run-server.sh"/>
+			</zipfileset>
+		</zip>			
+			
+	</target>
 
 	<!-- must be done after a ant zip has been executed (we dont depend since ant zip 
          takes a while.  NSIS must be installed, and makensis must be on the path
@@ -544,24 +567,7 @@
 		</javadoc>
 	</target>
 	
-	<target name="zipServer" depends="zip">
-		<zip zipfile="release/triplea_${triplea.version}_server.zip" compress="true">
 
-
-			<zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
-				<include name="**/derby*.jar" />
-			</zipfileset>
-			
-			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
-				<include name="**/*.jar" />
-			</zipfileset>
-
-			<zipfileset dir="." prefix="triplea_${triplea.version}" filemode="744">
-				<include name="run-server.sh"/>
-			</zipfileset>
-		</zip>			
-			
-	</target>
 		
 	
 	<!-- test -->

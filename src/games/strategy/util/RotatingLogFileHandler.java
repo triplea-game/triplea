@@ -8,7 +8,8 @@ import java.util.logging.FileHandler;
 
 public class RotatingLogFileHandler extends FileHandler
 {
-    
+    private static final String LOG_FILE_SIZE_PROP = "triplea.log.file.size";
+    private static final String DEFAULT_SIZE = 2 * 1000 * 1000 + "";
     private static final String logFile;
     static
     {
@@ -29,7 +30,7 @@ public class RotatingLogFileHandler extends FileHandler
 
     public RotatingLogFileHandler() throws IOException, SecurityException
     {
-        super(logFile, 20 * 1000 * 1000, 10, true);
+        super(logFile, Integer.parseInt(System.getProperty(LOG_FILE_SIZE_PROP, DEFAULT_SIZE)), 10, true);
         setFormatter(new TALogFormatter());
     }
 
