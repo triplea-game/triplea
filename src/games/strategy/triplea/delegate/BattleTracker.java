@@ -488,7 +488,8 @@ public class BattleTracker implements java.io.Serializable
         }
 
         //is this territory our capitol or a capitol of our ally
-        if (terrOrigOwner != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
+        //Also check to make sure playerAttachment even HAS a capital to fix abend  
+        if (terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
                 && data.getAllianceTracker().isAllied(terrOrigOwner, id))
         {
             //if it is give it back to the original owner
