@@ -1,9 +1,9 @@
 
 Changes for 1.0.1.1
 
-* Replace code for using the Large flags for Capital markers and tweak their placements in Pacific
+* Replace code for using the Large flags for Capital markers and tweak their placements in Pacific (ComradeKev)
 
-* Fix abend when capturing Commonwealth Convoy Center (player with no capital)
+* Fix abend when capturing Commonwealth Convoy Center (player with no capital) (ComradeKev)
 
 * allow lobby server to run in headless mode  (sgb)
 
