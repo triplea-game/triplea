@@ -1,3 +1,4 @@
+* update great war map (Jason Clark)
 
 Changes for 1.0.1.1
 

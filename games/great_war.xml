@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="2.2"/>
+        <info name="The Great War" version="2.22"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -1594,7 +1594,7 @@
                 </productionRule>
 
                 <productionRule name="buyZeppelin">
-                        <cost resource="IPCs" quantity="10" />
+                        <cost resource="IPCs" quantity="15" />
                         <result resourceOrUnit="zeppelin" quantity="1"/>
                 </productionRule>
 
@@ -3860,13 +3860,15 @@
                         <unitPlacement unitType="cruiser" territory="SZ 91 East China Sea" quantity="1" owner="Germans"/>
 				<unitPlacement unitType="battlecruiser" territory="SZ 91 East China Sea" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Passchendaele" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="artillery" territory="Passchendaele" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Passchendaele" quantity="2" owner="Germans"/>       
+                        <unitPlacement unitType="artillery" territory="Passchendaele" quantity="1" owner="Germans"/> 
+                        <unitPlacement unitType="factory" territory="Passchendaele" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Lys River" quantity="1" owner="Germans"/>
+
+                        <unitPlacement unitType="infantry" territory="Lys River" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Lys River" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Ghent" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Ghent" quantity="3" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Antwerp" quantity="3" owner="Germans"/>
 
@@ -3879,18 +3881,18 @@
                         <unitPlacement unitType="fighter" territory="Vimy" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="factory" territory="Vimy" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Escaut River" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Escaut River" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Escaut River" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Cambrai" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Cambrai" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Cambrai" quantity="1" owner="Germans"/>
-			<unitPlacement unitType="factory" territory="Cambrai" quantity="1" owner="Germans"/>
+				<unitPlacement unitType="factory" territory="Cambrai" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Guise" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Guise" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Sambre River" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Sambre River" quantity="2" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Brussels" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Brussels" quantity="1" owner="Germans"/>
