@@ -1,12 +1,7 @@
-<<<<<<< .mine
 * Change BattleStepStrings names to match text for clarity (ComradeKev)
 
 * fix null pointer that leads to potential lobby crash (sgb)
 
-=======
-* fix null pointer that leads to potential lobby crash (sgb)
-
->>>>>>> .r2120
 * update great war map (Jason Clark)
 
 Changes for 1.0.1.1
