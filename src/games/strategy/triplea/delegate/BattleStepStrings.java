@@ -34,18 +34,16 @@ public interface BattleStepStrings
   final static String NAVAL_BOMBARDMENT = "Naval bombardment";
   final static String SELECT_NAVAL_BOMBARDMENT_CASUALTIES = "Select naval bombardment casualties";
 
-  final static String ATTACKER_SUBS_FIRE = "Subs sneak attack";
-  final static String DEFENDER_SELECT_SUB_CASUALTIES = "Select sneak attack casualties";
-  final static String DEFENDER_REMOVE_SUB_CASUALTIES = "Remove sneak attack casualties";
+  final static String SUBS_SNEAK_ATTACK = "Subs sneak attack";
+  final static String SELECT_SNEAK_ATTACK_CASUALTIES = "Select sneak attack casualties";
+  final static String REMOVE_SNEAK_ATTACK_CASUALTIES = "Remove sneak attack casualties";
 
-  final static String ATTACKER_FIRES = " fire";
-  final static String DEFENDER_SELECT_CASUALTIES = " select casualties";
+  final static String FIRE = " fire";
 
-  final static String DEFENDER_FIRES_SUBS = " subs fire";
-  final static String ATTACKER_SELECT_SUB_CASUALTIES = " select sub casualties";
+  final static String SUBS_FIRE = " subs fire";
+  final static String SELECT_SUB_CASUALTIES = " select sub casualties";
 
-  final static String DEFENDER_FIRES = " fire";
-  final static String ATTACKER_SELECT_CASUALTIES = " select casualties";
+  final static String SELECT_CASUALTIES = " select casualties";
 
   final static String REMOVE_CASUALTIES = "Remove casualties";
   final static String SUBS_WITHDRAW = " withdraw subs?";

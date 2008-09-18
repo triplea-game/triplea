@@ -585,9 +585,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
             {
-            	steps.add(m_attacker.getName() + ATTACKER_SUBS_FIRE);
-                steps.add(m_defender.getName() + DEFENDER_SELECT_SUB_CASUALTIES);
-                steps.add(DEFENDER_REMOVE_SUB_CASUALTIES);
+            	steps.add(m_attacker.getName() + SUBS_SNEAK_ATTACK);
+                steps.add(m_defender.getName() + SELECT_SNEAK_ATTACK_CASUALTIES);
+                steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
                 attackingSubsAlreadyFired = true;
             }
         }
@@ -598,9 +598,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             {
-                steps.add(m_defender.getName() + ATTACKER_SUBS_FIRE);
-                steps.add(m_attacker.getName() + DEFENDER_SELECT_SUB_CASUALTIES);
-                steps.add(DEFENDER_REMOVE_SUB_CASUALTIES);
+                steps.add(m_defender.getName() + SUBS_SNEAK_ATTACK);
+                steps.add(m_attacker.getName() + SELECT_SNEAK_ATTACK_CASUALTIES);
+                steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
                 defendingSubsAlreadyFired = true;
             }
         }
@@ -608,30 +608,30 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //attacker fire        
         if (!attackingSubsAlreadyFired && m_battleSite.isWater() && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
         {
-        	steps.add(m_attacker.getName() + DEFENDER_FIRES_SUBS);
-        	steps.add(m_defender.getName() + ATTACKER_SELECT_SUB_CASUALTIES);
+        	steps.add(m_attacker.getName() + SUBS_FIRE);
+        	steps.add(m_defender.getName() + SELECT_SUB_CASUALTIES);
         }
         
         if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotSub))
         {
             if (!isEditMode)
-                steps.add(m_attacker.getName() + ATTACKER_FIRES);
-            steps.add(m_defender.getName() + DEFENDER_SELECT_CASUALTIES);
+                steps.add(m_attacker.getName() + FIRE);
+            steps.add(m_defender.getName() + SELECT_CASUALTIES);
         }
 
         //defender fire
         //defender subs, note this happens earlier for fourth edition
         if (!defendingSubsAlreadyFired && m_battleSite.isWater() && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
         {
-        	steps.add(m_defender.getName() + DEFENDER_FIRES_SUBS);
-        	steps.add(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES);
+        	steps.add(m_defender.getName() + SUBS_FIRE);
+        	steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
         }
 
         if (Match.someMatch(m_defendingUnits, Matches.UnitIsNotSub))
         {
             if (!isEditMode)
-                steps.add(m_defender.getName() + DEFENDER_FIRES);
-            steps.add(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES);
+                steps.add(m_defender.getName() + FIRE);
+            steps.add(m_attacker.getName() + SELECT_CASUALTIES);
         }
 
         //remove casualties
@@ -1485,7 +1485,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (units.isEmpty())
             return;
 
-        fire(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES, units,
+        fire(m_attacker.getName() + SELECT_CASUALTIES, units,
                 m_attackingUnits, true, true, bridge, "Defenders fire, ");
     }
 
@@ -1505,7 +1505,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (ownedUnits.isEmpty())
             return;
 
-        fire(m_defender.getName() + DEFENDER_SELECT_CASUALTIES, ownedUnits,
+        fire(m_defender.getName() + SELECT_CASUALTIES, ownedUnits,
                 m_defendingUnits, false, true, bridge, "Attackers fire,");
     }
 
@@ -1521,7 +1521,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //if there are destroyers in the attacked units, we can return fire.
         boolean destroyersPresent = Match.someMatch(attacked,
                 Matches.UnitIsDestroyer);
-        fire(DEFENDER_SELECT_SUB_CASUALTIES, firing, attacked, false,
+        fire(SELECT_SNEAK_ATTACK_CASUALTIES, firing, attacked, false,
                 destroyersPresent, bridge, "Subs fire,");
     }
 
@@ -1540,7 +1540,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         boolean destroyersPresent = Match.someMatch(attacked,
                 Matches.UnitIsDestroyer);
-        fire(m_attacker.getName() + ATTACKER_SELECT_SUB_CASUALTIES, units,
+        fire(m_attacker.getName() + SELECT_SUB_CASUALTIES, units,
                 attacked, true, destroyersPresent, bridge, "Subs defend, ");
     }
 
@@ -1557,7 +1557,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (units.isEmpty())
             return;
 
-        fire(m_defender.getName() + DEFENDER_SELECT_CASUALTIES, units,
+        fire(m_defender.getName() + SELECT_CASUALTIES, units,
                 m_defendingUnits, false, true, bridge, "Attackers fire,");
     }
 
@@ -1574,7 +1574,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (units.isEmpty())
             return;
 
-        fire(m_attacker.getName() + ATTACKER_SELECT_CASUALTIES, units,
+        fire(m_attacker.getName() + SELECT_CASUALTIES, units,
                 m_attackingUnits, true, true, bridge, "Defenders fire, ");
     }
 
