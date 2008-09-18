@@ -415,6 +415,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
                         try
                         {
                             socketChannel = serverSocketChannel.accept();
+                            if(socketChannel == null) {
+                                continue;
+                            }
                             socketChannel.configureBlocking(false);
                             socketChannel.socket().setKeepAlive(true);
                         } catch (IOException e)
