@@ -444,10 +444,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
         }
         
-        //System.out.print(m_attackingUnits);
-        
-        //System.out.print(m_defendingUnits);
-
         //push on stack in opposite order of execution
         pushFightLoopOnStack(bridge);
         pushFightStartOnStack();
@@ -1091,12 +1087,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         return canAttackerRetreat() || canSubsSubmerge();
     }
-    //Kev added this
+    
+    //Added for test case calls
     void externalRetreat(Collection<Unit> retreaters, Territory retreatTo, Boolean defender, IDelegateBridge bridge)
     {
     	m_over = true;
     	retreatUnits(retreaters, retreatTo, defender, bridge);
-    	//attackerRetreat(bridge);
     }
 
     private void attackerRetreat(IDelegateBridge bridge)
@@ -1298,7 +1294,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             IDelegateBridge bridge, Territory retreatTo, Collection<Battle> dependentBattles)
     {
         CompositeChange change = new CompositeChange();
-        //Collection<Battle> dependents = m_tracker.getBlocked(this);
         Iterator<Battle> iter = dependentBattles.iterator();
         while (iter.hasNext())
         {
@@ -1369,7 +1364,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
         /** @todo Does this need to happen with planes retreating too? */
-        //DelegateFinder.moveDelegate(m_data).getSubmergedTracker().submerge(retreating);
         units.removeAll(retreating);
         if (units.isEmpty() || m_over)
         {
@@ -1639,8 +1633,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 m_attackingWaitingToDie.addAll(killed);
         } else
 
-            //remove immediately
-            //remove(killed, bridge);
+            //remove immediately            
         	remove(killed, bridge, m_battleSite);
 
         //remove from the active fighting
@@ -1956,19 +1949,16 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (killed.size() == 0)
             return;
 
-        //get the transported units
-        //if (m_battleSite.isWater())
+        //get the transported units        
         if (battleSite.isWater())
         {            
             Collection<Unit> dependent = getDependentUnits(killed);
             killed.addAll(dependent);
         }
         
-        //Change killedChange = ChangeFactory.removeUnits(m_battleSite, killed);
         Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
         m_killed.addAll(killed);
 
-        //String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + m_battleSite.getName();
         String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText, killed);
 
@@ -2016,7 +2006,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Unit> units = new ArrayList<Unit>();
         units.addAll(m_attackingWaitingToDie);
         units.addAll(m_defendingWaitingToDie);
-        //remove(units, bridge);
         remove(units, bridge, m_battleSite);
         m_defendingWaitingToDie.clear();
         m_attackingWaitingToDie.clear();
@@ -2312,7 +2301,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         m_attackingUnits.removeAll(lost);
-        //remove(lost, bridge);
         remove(lost, bridge, m_battleSite);
 
         if (m_attackingUnits.isEmpty())
@@ -2542,7 +2530,7 @@ class Fire implements IExecutable
                 
                 if (m_damaged != null)
                     m_battle.markDamaged(m_damaged, bridge);
-//kev
+
                 m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
         
             }
