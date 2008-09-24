@@ -438,10 +438,16 @@
 	</resourceList>
 	<playerList>
 		<player name="Japanese" optional="false"/>
+		<player name="Germans" optional="false"/>
 		<player name="British" optional="false"/>
-		<player name="Americans" optional="false"/><player name="Russians" optional="false"></player>
+		<player name="Americans" optional="false"/>
+		<player name="Russians" optional="false"></player>
 		<alliance player="Americans" alliance="imperial"/>
-		<alliance player="British" alliance="imperial"/><alliance player="Russians" alliance="imperial"></alliance>
+		<alliance player="British" alliance="imperial"/>
+		<alliance player="Russians" alliance="imperial"/>
+		
+		<alliance player="Germans" alliance="Axis"/>
+		<alliance player="Japanese" alliance="Axis"/>
 	</playerList>
 	<unitList>
 		<unit name="infantry"/>
@@ -1240,11 +1246,22 @@
 			<!-- indian ocean-->
 			<unitPlacement unitType="transport" territory="Indian Ocean Sea Zone" quantity="2" owner="British"/>			
 
+			<!-- near Britain-->
 			<unitPlacement unitType="factory" territory="United Kingdom" quantity="1" owner="British"/>
 			<unitPlacement unitType="aaGun" territory="United Kingdom" quantity="1" owner="British"/>
 			<unitPlacement unitType="transport" territory="North Sea Zone" quantity="2" owner="British"/>
 			<unitPlacement unitType="battleship" territory="North Sea Zone" quantity="1" owner="British" />
-			<unitPlacement unitType="factory" territory="West Canada" quantity="1" owner="British"/>			
+			<unitPlacement unitType="infantry" territory="North Sea Zone" quantity="4" owner="British" />
+			<unitPlacement unitType="factory" territory="West Canada" quantity="1" owner="British"/>
+			
+			<!-- baltic sea-->
+			<unitPlacement unitType="submarine" territory="Baltic Sea Zone" quantity="1" owner="Germans"/>
+			<unitPlacement unitType="transport" territory="Baltic Sea Zone" quantity="1" owner="Germans"/>
+			
+			<!-- findland norway-->
+			<unitPlacement unitType="armour" territory="Finland Norway" quantity="1" owner="Germans" /> 
+			<unitPlacement unitType="infantry" territory="Finland Norway" quantity="3" owner="Germans" /> 
+			<unitPlacement unitType="fighter" territory="Finland Norway" quantity="1" owner="Germans" /> 
 			    
 			<!-- redSea-->
 			<unitPlacement unitType="transport" territory="Red Sea Zone" quantity="2" owner="British"/>			

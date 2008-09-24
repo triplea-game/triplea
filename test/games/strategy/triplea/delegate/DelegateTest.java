@@ -44,6 +44,7 @@ public class DelegateTest extends TestCase
 	protected PlayerID british;
 	protected PlayerID japanese;
 	protected PlayerID russians;
+	protected PlayerID germans;
 	
 	protected Territory northSea;
 	protected Territory uk;
@@ -85,10 +86,12 @@ public class DelegateTest extends TestCase
 	protected Territory balticSeaZone;
 	protected Territory karelia;
 	protected Territory westEurope;
+	protected Territory finlandNorway;
 	
 	protected UnitType armour;
 	protected UnitType infantry;
 	protected UnitType transport;
+	protected UnitType submarine;
 	protected UnitType factory;
 	protected UnitType aaGun;
 	protected UnitType fighter;
@@ -123,6 +126,8 @@ public class DelegateTest extends TestCase
 		japanese.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());	
 		russians = m_data.getPlayerList().getPlayerID("Russians");
 		russians.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());	
+		germans = m_data.getPlayerList().getPlayerID("Germans");
+		germans.addAttachment(Constants.TECH_ATTATCHMENT_NAME, new TechAttachment());	
 		
 		northSea = m_data.getMap().getTerritory("North Sea Zone");
 		blackSea = m_data.getMap().getTerritory("Black Sea Zone");
@@ -164,10 +169,12 @@ public class DelegateTest extends TestCase
 		balticSeaZone = m_data.getMap().getTerritory("Baltic Sea Zone");
 		karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
 		westEurope = m_data.getMap().getTerritory("West Europe");
+		finlandNorway = m_data.getMap().getTerritory("Finland Norway");
 		
 		armour = m_data.getUnitTypeList().getUnitType("armour");
 		infantry = m_data.getUnitTypeList().getUnitType("infantry");
 		transport = m_data.getUnitTypeList().getUnitType("transport");
+		submarine = m_data.getUnitTypeList().getUnitType("submarine");
 		factory = m_data.getUnitTypeList().getUnitType("factory");
 		aaGun = m_data.getUnitTypeList().getUnitType("aaGun");
 		fighter = m_data.getUnitTypeList().getUnitType("fighter");

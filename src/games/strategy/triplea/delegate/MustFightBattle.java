@@ -423,8 +423,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         // Add dependent defending units to dependent unit map
-        Map<Unit, Collection<Unit>> dependencies = transporting(m_defendingUnits);
-        addDependentUnits(dependencies);
+        Map<Unit, Collection<Unit>> defender_dependencies = transporting(m_defendingUnits);
+        addDependentUnits(defender_dependencies);
 
         //list the steps
         m_stepStrings = determineStepStrings(true);
@@ -1091,6 +1091,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         return canAttackerRetreat() || canSubsSubmerge();
     }
+    //Kev added this
+    void externalRetreat(Collection<Unit> retreaters, Territory retreatTo, Boolean defender, IDelegateBridge bridge)
+    {
+    	m_over = true;
+    	retreatUnits(retreaters, retreatTo, defender, bridge);
+    	//attackerRetreat(bridge);
+    }
 
     private void attackerRetreat(IDelegateBridge bridge)
     {
@@ -1288,11 +1295,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
 
     private Change retreatFromDependents(Collection<Unit> units,
-            IDelegateBridge bridge, Territory retreatTo)
+            IDelegateBridge bridge, Territory retreatTo, Collection<Battle> dependentBattles)
     {
         CompositeChange change = new CompositeChange();
-        Collection<Battle> dependents = m_tracker.getBlocked(this);
-        Iterator<Battle> iter = dependents.iterator();
+        //Collection<Battle> dependents = m_tracker.getBlocked(this);
+        Iterator<Battle> iter = dependentBattles.iterator();
         while (iter.hasNext())
         {
             Battle dependent = iter.next();
@@ -1304,30 +1311,55 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
             dependent.removeAttack(route, retreatedUnits);
 
-            Collection<Unit> transports = Match.getMatches(units,
-                    Matches.UnitCanTransport);
-
-            // Put units back on their transports
-            Iterator<Unit> transportsIter = transports.iterator();
+            reLoadTransports(units, change);
             
-            while (transportsIter.hasNext())
-            {
-                
-                Unit transport = transportsIter.next();
-                Collection unloaded = getTransportTracker().unloaded(transport);
-                Iterator unloadedIter = unloaded.iterator();
-                while (unloadedIter.hasNext())
-                {
-                    Unit load = (Unit) unloadedIter.next();
-                    Change loadChange =  getTransportTracker().loadTransportChange( (TripleAUnit) transport, load, m_attacker);
-                    change.add(loadChange);
-                }
-            }
             change.add(ChangeFactory.moveUnits(dependent.getTerritory(),
                     retreatTo, retreatedUnits));
         }
         return change;
     }
+    
+	//Retreat landed units from allied territory when their transport retreats
+    private Change retreatFromNonCombat(Collection<Unit> units, IDelegateBridge bridge, Territory retreatTo)
+    {
+        CompositeChange change = new CompositeChange();
+
+    	Collection<Unit> retreated = getDependents(units,m_data);
+    	Territory retreatedFrom = null;
+    	
+        Iterator<Unit> iter = units.iterator();
+        while (iter.hasNext())
+        {
+            Unit unit = iter.next();
+            retreatedFrom = getTransportTracker().getTerritoryTransportHasUnloadedTo(unit);
+            
+            reLoadTransports(units, change);
+            
+            change.add(ChangeFactory.moveUnits(retreatedFrom, retreatTo, retreated));
+        }
+        return change;
+    } 
+    
+	private void reLoadTransports(Collection<Unit> units, CompositeChange change) {
+		Collection<Unit> transports = Match.getMatches(units,
+		        Matches.UnitCanTransport);
+
+		// Put units back on their transports
+		Iterator<Unit> transportsIter = transports.iterator();
+		
+		while (transportsIter.hasNext())
+		{
+		    Unit transport = transportsIter.next();
+		    Collection unloaded = getTransportTracker().unloaded(transport);
+		    Iterator unloadedIter = unloaded.iterator();
+		    while (unloadedIter.hasNext())
+		    {
+		        Unit load = (Unit) unloadedIter.next();
+		        Change loadChange =  getTransportTracker().loadTransportChange( (TripleAUnit) transport, load, m_attacker);
+		        change.add(loadChange);
+		    }
+		}
+	}
 
     private void retreatPlanes(Collection<Unit> retreating, boolean defender,
             IDelegateBridge bridge)
@@ -1391,8 +1423,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void retreatUnits(Collection<Unit> retreating, Territory to,
             boolean defender, IDelegateBridge bridge)
     {
-
         retreating.addAll(getDependentUnits(retreating));
+    	
         //our own air units dont retreat with land units
         Match<Unit> notMyAir = new CompositeMatchOr<Unit>(Matches.UnitIsNotAir,
                 new InverseMatch<Unit>(Matches.unitIsOwnedBy(m_attacker)));
@@ -1412,7 +1444,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if (m_over)
         {
-            change.add(retreatFromDependents(retreating, bridge, to));
+            Collection<Battle> dependentBattles = m_tracker.getBlocked(this);
+            //If there are no dependent battles, check landings in allied territories
+            if(dependentBattles.isEmpty())
+                change.add(retreatFromNonCombat(retreating, bridge, to));
+            //Else retreat the units from combat when their transport retreats
+            else            	
+            	change.add(retreatFromDependents(retreating, bridge, to, dependentBattles));
         }
 
         bridge.addChange(change);
@@ -1602,7 +1640,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         } else
 
             //remove immediately
-            remove(killed, bridge);
+            //remove(killed, bridge);
+        	remove(killed, bridge, m_battleSite);
 
         //remove from the active fighting
         if (defender)
@@ -1867,12 +1906,30 @@ public class MustFightBattle implements Battle, BattleStepStrings
         Collection<Unit> dependents = new ArrayList<Unit>();
         while (iter.hasNext())
         {
-            Collection<Unit> depending = m_dependentUnits.get(iter
-                    .next());
+        	Unit currentUnit = iter.next();
+        	
+            Collection<Unit> depending = m_dependentUnits.get(currentUnit);
             if (depending != null)
             {
                 dependents.addAll(depending);
             }
+        }
+        return dependents;
+    }
+    
+    //Figure out what units a transport is transported and has unloaded
+    public Collection<Unit>  getDependents(Collection<Unit> targets, GameData data)
+    {
+        //just worry about transports
+        TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+
+        Collection<Unit> dependents = new ArrayList<Unit>();
+        
+        Iterator<Unit> iter = targets.iterator();
+        while (iter.hasNext())
+        {
+            Unit target = iter.next();
+            dependents.addAll(tracker.transportingAndUnloaded(target));
         }
         return dependents;
     }
@@ -1893,33 +1950,41 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     }
 
-    private void remove(Collection<Unit> killed, IDelegateBridge bridge)
+    //private void remove(Collection<Unit> killed, IDelegateBridge bridge)
+    private void remove(Collection<Unit> killed, IDelegateBridge bridge, Territory battleSite)
     {
         if (killed.size() == 0)
             return;
 
         //get the transported units
-        if (m_battleSite.isWater())
-        {
+        //if (m_battleSite.isWater())
+        if (battleSite.isWater())
+        {            
             Collection<Unit> dependent = getDependentUnits(killed);
             killed.addAll(dependent);
         }
-        Change killedChange = ChangeFactory.removeUnits(m_battleSite, killed);
+        
+        //Change killedChange = ChangeFactory.removeUnits(m_battleSite, killed);
+        Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
         m_killed.addAll(killed);
 
-        String transcriptText = MyFormatter.unitsToText(killed) + " lost in "
-                + m_battleSite.getName();
+        //String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + m_battleSite.getName();
+        String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
         bridge.getHistoryWriter().addChildToEvent(transcriptText, killed);
 
         bridge.addChange(killedChange);
-        removeFromDependents(killed, bridge);
-
+     
+        Collection<Battle> dependentBattles = m_tracker.getBlocked(this);
+      //If there are NO dependent battles, check for unloads in allied territories 
+        if (dependentBattles.isEmpty())        
+            removeFromNonCombatLandings(killed, bridge);
+        // otherwise remove them and the units involved   
+        else
+            removeFromDependents(killed, bridge, dependentBattles);
     }
 
-    private void removeFromDependents(Collection<Unit> units, IDelegateBridge bridge)
+    private void removeFromDependents(Collection<Unit> units, IDelegateBridge bridge, Collection<Battle> dependents)
     {
-
-        Collection<Battle> dependents = m_tracker.getBlocked(this);
         Iterator<Battle> iter = dependents.iterator();
         while (iter.hasNext())
         {
@@ -1928,13 +1993,31 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
     }
 
+	//Remove landed units from allied territory when their transport sinks
+    private void removeFromNonCombatLandings(Collection<Unit> units, IDelegateBridge bridge)
+    {
+    	Collection<Unit> lost = getDependents(units, m_data);
+    	Territory landedTerritory = null;
+    	
+    	Iterator<Unit> Iter = units.iterator();
+    	while (Iter.hasNext())
+    	{
+    		Unit unit = Iter.next();
+    		landedTerritory = getTransportTracker().getTerritoryTransportHasUnloadedTo(unit);
+    	}
+    	                
+        m_attackingUnits.removeAll(lost);
+        remove(lost, bridge, landedTerritory);
+    }
+    
     private void clearWaitingToDie(IDelegateBridge bridge)
     {
 
         Collection<Unit> units = new ArrayList<Unit>();
         units.addAll(m_attackingWaitingToDie);
         units.addAll(m_defendingWaitingToDie);
-        remove(units, bridge);
+        //remove(units, bridge);
+        remove(units, bridge, m_battleSite);
         m_defendingWaitingToDie.clear();
         m_attackingWaitingToDie.clear();
     }
@@ -2229,7 +2312,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         m_attackingUnits.removeAll(lost);
-        remove(lost, bridge);
+        //remove(lost, bridge);
+        remove(lost, bridge, m_battleSite);
 
         if (m_attackingUnits.isEmpty())
             m_tracker.removeBattle(this);
@@ -2257,12 +2341,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_round;
     }
 }
-
-
-
-
-
-
 
 
 
@@ -2464,7 +2542,7 @@ class Fire implements IExecutable
                 
                 if (m_damaged != null)
                     m_battle.markDamaged(m_damaged, bridge);
-
+//kev
                 m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
         
             }
