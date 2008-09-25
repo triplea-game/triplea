@@ -1319,7 +1319,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     {
         CompositeChange change = new CompositeChange();
 
-    	Collection<Unit> retreated = getDependents(units,m_data);
+    	Collection<Unit> retreated = getTransportDependents(units,m_data);
     	Territory retreatedFrom = null;
     	
         Iterator<Unit> iter = units.iterator();
@@ -1911,20 +1911,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
     
     //Figure out what units a transport is transported and has unloaded
-    public Collection<Unit>  getDependents(Collection<Unit> targets, GameData data)
+    public Collection<Unit>  getTransportDependents(Collection<Unit> targets, GameData data)
     {
-        //just worry about transports
-        TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
-
         Collection<Unit> dependents = new ArrayList<Unit>();
-        
-        Iterator<Unit> iter = targets.iterator();
-        while (iter.hasNext())
-        {
-            Unit target = iter.next();
-            dependents.addAll(tracker.transportingAndUnloaded(target));
-        }
-        return dependents;
+    	 if (Match.someMatch(targets, Matches.UnitCanTransport))
+    	 {    		 
+	        //just worry about transports
+	        TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+	
+	        
+	        Iterator<Unit> iter = targets.iterator();
+	        while (iter.hasNext())
+	        {
+	            Unit target = iter.next();
+	            dependents.addAll(tracker.transportingAndUnloaded(target));
+	        }
+    	 }
+    	 return dependents;
     }
 
     void markDamaged(Collection<Unit> damaged, IDelegateBridge bridge)
@@ -1986,7 +1989,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 	//Remove landed units from allied territory when their transport sinks
     private void removeFromNonCombatLandings(Collection<Unit> units, IDelegateBridge bridge)
     {
-    	Collection<Unit> lost = getDependents(units, m_data);
+    	Collection<Unit> lost = getTransportDependents(units, m_data);
     	Territory landedTerritory = null;
     	
     	Iterator<Unit> Iter = units.iterator();

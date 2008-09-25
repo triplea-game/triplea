@@ -231,7 +231,6 @@ public class MovePerformer implements Serializable
             	if(taRouteEnd != null && taRouteEnd.isAirBase() && m_data.getAllianceTracker().isAllied(route.getEnd().getOwner(), unit.getOwner()))
             		moved --;
             }
-    		// End Kev
                         
             change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
         }
