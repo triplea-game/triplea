@@ -1320,18 +1320,21 @@ public class MustFightBattle implements Battle, BattleStepStrings
         CompositeChange change = new CompositeChange();
 
     	Collection<Unit> retreated = getTransportDependents(units,m_data);
-    	Territory retreatedFrom = null;
-    	
-        Iterator<Unit> iter = units.iterator();
-        while (iter.hasNext())
-        {
-            Unit unit = iter.next();
-            retreatedFrom = getTransportTracker().getTerritoryTransportHasUnloadedTo(unit);
-            
-            reLoadTransports(units, change);
-            
-            change.add(ChangeFactory.moveUnits(retreatedFrom, retreatTo, retreated));
-        }
+    	if(!retreated.isEmpty())
+    	{    		
+	    	Territory retreatedFrom = null;
+	    	
+	        Iterator<Unit> iter = units.iterator();
+	        while (iter.hasNext())
+	        {
+	            Unit unit = iter.next();
+	            retreatedFrom = getTransportTracker().getTerritoryTransportHasUnloadedTo(unit);
+	            
+	            reLoadTransports(units, change);
+	            
+	            change.add(ChangeFactory.moveUnits(retreatedFrom, retreatTo, retreated));
+	        }
+    	}
         return change;
     } 
     
@@ -2110,13 +2113,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
         CompositeMatch<Territory> alliedLandTerritories = new CompositeMatchAnd<Territory>(
                 Matches.TerritoryIsLand, Matches.isTerritoryAllied(m_defender,
                         m_data));
-        Collection<Territory> canLandHere = Match.getMatches(neighbors,
-                alliedLandTerritories);
+        Collection<Territory> canLandHere = Match.getMatches(neighbors, alliedLandTerritories);
+
 
         // If fourth edition we need an adjacent land, while classic requires
         // an island inside the seazone.
         if (isFourthEdition() && canLandHere.size() > 0)
         {
+        	//Kev code for more planes than carrier capacity
             Territory territory = null;
             if (canLandHere.size() > 1)
             {
