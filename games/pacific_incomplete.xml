@@ -248,6 +248,7 @@ Coded by Iron__Cross
         <connection t1="10 Sea Zone" t2="16 Sea Zone"/>
         <connection t1="11 Sea Zone" t2="12 Sea Zone"/>
         <connection t1="11 Sea Zone" t2="14 Sea Zone"/>
+        <connection t1="11 Sea Zone" t2="Samoa"/>
         <connection t1="12 Sea Zone" t2="13 Sea Zone"/>
         <connection t1="12 Sea Zone" t2="14 Sea Zone"/>
         <connection t1="13 Sea Zone" t2="14 Sea Zone"/>
@@ -255,6 +256,8 @@ Coded by Iron__Cross
         <connection t1="14 Sea Zone" t2="15 Sea Zone"/>
         <connection t1="14 Sea Zone" t2="29 Sea Zone"/>
         <connection t1="14 Sea Zone" t2="28 Sea Zone"/>
+        <connection t1="14 Sea Zone" t2="New Hebrides"/>
+        <connection t1="14 Sea Zone" t2="Fiji"/>
         <connection t1="15 Sea Zone" t2="16 Sea Zone"/>
         <connection t1="15 Sea Zone" t2="28 Sea Zone"/>
         <connection t1="15 Sea Zone" t2="27 Sea Zone"/>
@@ -368,7 +371,7 @@ Coded by Iron__Cross
         <connection t1="Midway" t2="20 Sea Zone"/>
         <connection t1="Hawaiian" t2="9 Sea Zone"/>
         <connection t1="Johnston" t2="10 Sea Zone"/>
-        <connection t1="Line" t2="4 Sea Zone"/>
+        <connection t1="Line" t2="3 Sea Zone"/>
 		<connection t1="New Zealand" t2="13 Sea Zone"/>
         
         <!-- Shoreline Line connections -->

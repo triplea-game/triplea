@@ -1,4 +1,6 @@
 Changes for 1.0.1.2
+* Fix territory connections in Pacific (ComradeKev)
+
 * Fix bug [1809209] transport retreat/die after unload leaves unloaded units in place (ComradeKev)
 
 * Change BattleStepStrings names to match text for clarity (ComradeKev)

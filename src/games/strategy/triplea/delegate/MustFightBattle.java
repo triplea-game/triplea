@@ -2115,12 +2115,35 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         m_data));
         Collection<Territory> canLandHere = Match.getMatches(neighbors, alliedLandTerritories);
 
-
+        //Kev add checks for neighboring carriers-- check rules variants for specifics        
+        CompositeMatch<Territory> neighboringSeaZonesWithAlliedUnits = new CompositeMatchAnd<Territory>(
+                Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(m_attacker, m_data));
+        Collection<Territory> areSeaNeighbors = Match.getMatches(neighbors,neighboringSeaZonesWithAlliedUnits);
+        
+        
+        CompositeMatch<Unit> alliedCarrier = new CompositeMatchAnd<Unit>();
+        alliedCarrier.add(Matches.UnitIsCarrier);
+        alliedCarrier.add(Matches.alliedUnit(m_defender, m_data));
+        
+        Iterator<Territory> neighborSeaZoneIter = areSeaNeighbors.iterator();
+        while (neighborSeaZoneIter.hasNext())
+        {
+        	Territory currentTerritory = neighborSeaZoneIter.next();        	
+            Collection<Unit> alliedCarriers = currentTerritory.getUnits().getMatches(alliedCarrier);
+            
+            int alliedCarrierCapacity = MoveValidator.carrierCapacity(alliedCarriers);
+            if (alliedCarrierCapacity >= 1)
+            {
+            	canLandHere.add(currentTerritory);
+            }            
+        }
+        //End Kev
+        
+        
         // If fourth edition we need an adjacent land, while classic requires
         // an island inside the seazone.
         if (isFourthEdition() && canLandHere.size() > 0)
-        {
-        	//Kev code for more planes than carrier capacity
+        {        	
             Territory territory = null;
             if (canLandHere.size() > 1)
             {
