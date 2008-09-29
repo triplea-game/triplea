@@ -1,4 +1,6 @@
 Changes for 1.0.1.2
+* Add ability to manually select AA casualties via "Choose AA Casualties" game property. (President Douchebag)
+  
 * Fix bug [ 1668008 ] Fighter ability to move one space to land when CV is sunk (ComradeKev)
 
 * Fix territory connections in Pacific (ComradeKev)

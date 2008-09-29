@@ -1670,7 +1670,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
     }
-
+    
+    /**
+     * @return
+     */
+    private boolean isChooseAA()
+	{
+		return m_data.getProperties().get(Constants.CHOOSE_AA, false);
+	}
+    
     /**
      * @return
      */
@@ -1802,7 +1810,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             // if 4th edition choose casualties randomnly
             // we can do that by removing planes at positions in the list where
             // there was a corresponding hit in the dice roll.
-            if (isFourthEdition())
+            //if (isFourthEdition())
+            if (isFourthEdition() && !isChooseAA())
             {
                 m_casualties = BattleCalculator.fourthEditionAACasualties(attackable,
                         m_dice, bridge);

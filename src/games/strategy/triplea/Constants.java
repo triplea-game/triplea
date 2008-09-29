@@ -59,6 +59,7 @@ public interface Constants
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
   public static final String FOURTH_EDITION = "4th Edition";
+  public static final String CHOOSE_AA = "Choose AA Casualties";
   public static final String PACIFIC_EDITION = "Pacific Edition";
   public static final String EUROPE_EDITION = "Europe Edition";
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";

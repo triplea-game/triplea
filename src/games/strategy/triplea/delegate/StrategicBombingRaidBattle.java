@@ -284,8 +284,14 @@ public class StrategicBombingRaidBattle implements Battle
 
     }
     
-
-
+    /**
+     * @return
+     */
+    private boolean isChooseAA()
+	{
+		return m_data.getProperties().get(Constants.CHOOSE_AA, false);
+	}	
+    
     /**
      * @return
      */
@@ -310,7 +316,8 @@ public class StrategicBombingRaidBattle implements Battle
                     m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false);
             return casualtySelection.getKilled();
         }
-        else if (isFourthEdition())
+        //else if (isFourthEdition())        	
+    	else if (isFourthEdition() && !isChooseAA())
         {
             casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice, bridge);
         }
