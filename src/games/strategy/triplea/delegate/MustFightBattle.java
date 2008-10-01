@@ -98,6 +98,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean m_amphibious = false;
     private boolean m_over = false;
     private BattleTracker m_tracker;
+    private Collection<Unit> m_defendingAir = new ArrayList<Unit>();
 
     
 
@@ -2090,22 +2091,24 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         CompositeMatch<Unit> alliedDefendingAir = new CompositeMatchAnd<Unit>(
                 Matches.UnitIsAir, Matches.isUnitAllied(m_defender, m_data));
-        Collection<Unit> defendingAir = Match.getMatches(m_defendingUnits,
+        m_defendingAir  = Match.getMatches(m_defendingUnits,
                 alliedDefendingAir);
-        //ne defending air
-        if (defendingAir.isEmpty())
+        
+        //no planes, exit
+        if (m_defendingAir.isEmpty())
             return;
 
-        int carrierCost = MoveValidator.carrierCost(defendingAir);
+        int carrierCost = MoveValidator.carrierCost(m_defendingAir);
         int carrierCapacity = MoveValidator.carrierCapacity(m_defendingUnits);
 
+        //all planes can land, exit
         if (carrierCapacity >= carrierCost)
             return;
 
         //find out what we must remove
         //remove all the air that can land on carriers from defendingAir
         carrierCost = 0;
-        Iterator<Unit> defendingAirIter = new ArrayList<Unit>(defendingAir).iterator();
+        Iterator<Unit> defendingAirIter = new ArrayList<Unit>(m_defendingAir).iterator();
         while (defendingAirIter.hasNext() && carrierCapacity >= carrierCost)
         {
             Unit currentUnit = defendingAirIter.next();
@@ -2113,20 +2116,23 @@ public class MustFightBattle implements Battle, BattleStepStrings
                     .getCarrierCost();
             if (carrierCapacity >= carrierCost)
             {
-                defendingAir.remove(currentUnit);
+            	m_defendingAir.remove(currentUnit);
             }
         }
 
-        // Get land territories where air can land
+        // Get all land territories where there are no pending battles 
         Set<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite);
         CompositeMatch<Territory> alliedLandTerritories = new CompositeMatchAnd<Territory>(
-                Matches.TerritoryIsLand, Matches.isTerritoryAllied(m_defender,
-                        m_data));
+                Matches.TerritoryIsLand, Matches.isTerritoryAllied(m_defender,m_data), 
+                Matches.territoryHasNoEnemyUnits(m_defender, m_data));
+        // Get those that are neighbors
         Collection<Territory> canLandHere = Match.getMatches(neighbors, alliedLandTerritories);
 
-        //Kev Check for neighboring carriers        
+        // Get all sea territories where there are allies and no pending battles
         CompositeMatch<Territory> neighboringSeaZonesWithAlliedUnits = new CompositeMatchAnd<Territory>(
-                Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(m_attacker, m_data));
+                Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(m_attacker, m_data),
+                Matches.territoryHasNoEnemyUnits(m_defender, m_data));
+        // Get those that are neighbors
         Collection<Territory> areSeaNeighbors = Match.getMatches(neighbors,neighboringSeaZonesWithAlliedUnits);
         
         //Set up match criteria for allied carriers
@@ -2144,14 +2150,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
         while (neighborSeaZoneIter.hasNext())
         {
         	Territory currentTerritory = neighborSeaZoneIter.next();
-            //get the total capacity of the carriers
+        	
+            //get the capacity of the carriers and cost of fighters
             Collection<Unit> alliedCarriers = currentTerritory.getUnits().getMatches(alliedCarrier);
             Collection<Unit> alliedPlanes = currentTerritory.getUnits().getMatches(alliedPlane);
             int alliedCarrierCapacity = MoveValidator.carrierCapacity(alliedCarriers);
             int alliedPlaneCost = MoveValidator.carrierCost(alliedPlanes);
-            //check if there is free capacity
+            //if there is free capacity, add the territory to landing possibilities
             if (alliedCarrierCapacity - alliedPlaneCost >= 1)
-            {
+            {                
             	canLandHere.add(currentTerritory);
             }            
         }        
@@ -2159,40 +2166,44 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (isFourthEdition())
 		{
         	Territory territory = null;
-        	while (canLandHere.size() > 1)
+        	while (canLandHere.size() > 1 && m_defendingAir.size() > 0)
         	{
         		territory = getRemote(m_defender, bridge).selectTerritoryForAirToLand(canLandHere);
-        		//Get the capacity of the carriers in the selected zone
-        		Collection<Unit> alliedCarriersSelected = territory.getUnits().getMatches(alliedCarrier);
-                Collection<Unit> alliedPlanesSelected = territory.getUnits().getMatches(alliedPlane);
-        		int alliedCarrierCapacitySelected = MoveValidator.carrierCapacity(alliedCarriersSelected);
-                int alliedPlaneCostSelected = MoveValidator.carrierCost(alliedPlanesSelected);
-
-            	//Find the available capacity of the carriers in that territory
-                int territoryCapacity = alliedCarrierCapacitySelected - alliedPlaneCostSelected;
         		
-        		//move that number of planes from the battlezone
-        		Collection<Unit> movingAir = Match.getNMatches(defendingAir,territoryCapacity,alliedDefendingAir);        		
-            	moveDefendingAirToLanding(bridge, movingAir, territory);
-                
-                //remove the territory from those available
-                canLandHere.remove(territory);
-                //remove the planes that landed
-                Iterator<Unit> movingAirIter = movingAir.iterator();
-                while (movingAirIter.hasNext())
-                {
-                    Unit currentUnit = movingAirIter.next();
-                    defendingAir.remove(currentUnit);
-                }
+        		//added for test script
+        		if (territory == null)
+        		{
+        			territory = canLandHere.iterator().next();
+        		}
+        		
+        		if (territory.isWater())
+        		{
+        			landPlanesOnCarriers(bridge, alliedDefendingAir, m_defendingAir, canLandHere, alliedCarrier, alliedPlane, territory);
+        		}
+        		else
+        		{
+        			moveAirAndLand(bridge, m_defendingAir, territory);
+        			return;
+        		}
+    			//remove the territory from those available
+    			canLandHere.remove(territory);
         	}
         	
         	//Land in the last remaining territory
-        	if(canLandHere.size() > 0)
-        	{
-        		//Kev need to check carrier capacity?  also need to check the battlezone to be sure those that could land, did.
-        		territory = canLandHere.iterator().next();        		
-            	moveDefendingAirToLanding(bridge, defendingAir, territory);
-        		return;
+        	if(canLandHere.size() > 0 && m_defendingAir.size() > 0)
+        	{	
+        		territory = canLandHere.iterator().next();     
+        		
+        		if (territory.isWater())
+        		{
+        			landPlanesOnCarriers(bridge, alliedDefendingAir, m_defendingAir, canLandHere, alliedCarrier, alliedPlane, territory);                    
+        		}
+        		else
+        		{
+                	moveAirAndLand(bridge, m_defendingAir, territory);
+            		return;	
+        		}
+        		
         	}        	
 		}  
         else if (canLandHere.size() > 0) 
@@ -2206,54 +2217,47 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 //only one neighbor, its an island.
                 if (m_data.getMap().getNeighbors(currentTerritory).size() == 1)
                 {
-                    moveDefendingAirToLanding(bridge, defendingAir, currentTerritory);
+                    moveAirAndLand(bridge, m_defendingAir, currentTerritory);
                     return;
                 }
             }            
-        }
-    	//End Kev
+        }        
         
-/*        // If fourth edition we need an adjacent land, while classic requires
-        // an island inside the seazone.
-        if (isFourthEdition() && canLandHere.size() > 0)
-        {        	
-            Territory territory = null;
-            if (canLandHere.size() > 1)
-            {
-                territory = getRemote(m_defender, bridge).selectTerritoryForAirToLand(canLandHere);
-            } else
-            {
-                territory = canLandHere.iterator().next();
-            }
-            moveDefendingAirToLanding(bridge, defendingAir, territory);
-            return;
-        } else if (canLandHere.size() > 0)
-        {   // 2nd edition
-            //now defending air has what cant stay, is there a place we can go?
-            //check for an island in this sea zone
-            Iterator<Territory> neighborsIter = canLandHere.iterator();
-            while (neighborsIter.hasNext())
-            {
-                Territory currentTerritory = neighborsIter.next();
-                //only one neighbor, its an island.
-                if (m_data.getMap().getNeighbors(currentTerritory).size() == 1)
-                {
-                    moveDefendingAirToLanding(bridge, defendingAir, currentTerritory);
-                    return;
-                }
-            }
-        }*/
-
-        //no where to go, they must die
-        bridge.getHistoryWriter().addChildToEvent(
-                MyFormatter.unitsToText(defendingAir)
-                        + " could not land and were killed", defendingAir);
-        Change change = ChangeFactory.removeUnits(m_battleSite, defendingAir);
-        bridge.addChange(change);
+        if (m_defendingAir.size() > 0)
+        {	        	
+	        //no where to go, they must die
+	        bridge.getHistoryWriter().addChildToEvent(
+	                MyFormatter.unitsToText(m_defendingAir)
+	                        + " could not land and were killed", m_defendingAir);
+	        Change change = ChangeFactory.removeUnits(m_battleSite, m_defendingAir);
+	        bridge.addChange(change);
+        }
     }
 
-    //Kev refactored this
-	private void moveDefendingAirToLanding(IDelegateBridge bridge,
+    //Refactored this method
+	private void landPlanesOnCarriers(IDelegateBridge bridge,
+			CompositeMatch<Unit> alliedDefendingAir,
+			Collection<Unit> defendingAir, Collection<Territory> canLandHere,
+			CompositeMatch<Unit> alliedCarrier,
+			CompositeMatch<Unit> alliedPlane, Territory territory) {
+		//Get the capacity of the carriers in the selected zone
+		Collection<Unit> alliedCarriersSelected = territory.getUnits().getMatches(alliedCarrier);
+		Collection<Unit> alliedPlanesSelected = territory.getUnits().getMatches(alliedPlane);
+		int alliedCarrierCapacitySelected = MoveValidator.carrierCapacity(alliedCarriersSelected);
+		int alliedPlaneCostSelected = MoveValidator.carrierCost(alliedPlanesSelected);
+
+		//Find the available capacity of the carriers in that territory
+		int territoryCapacity = alliedCarrierCapacitySelected - alliedPlaneCostSelected;
+		if (territoryCapacity>0)
+		{					
+			//move that number of planes from the battlezone
+			Collection<Unit> movingAir = Match.getNMatches(defendingAir,territoryCapacity,alliedDefendingAir);        		
+			moveAirAndLand(bridge, movingAir, territory);			
+		}
+	}
+
+    //Refactored this method
+	private void moveAirAndLand(IDelegateBridge bridge,
 			Collection<Unit> defendingAir, Territory territory) {
 		bridge.getHistoryWriter().addChildToEvent(
 		        MyFormatter.unitsToText(defendingAir) + " forced to land in "
@@ -2261,6 +2265,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 		Change change = ChangeFactory.moveUnits(m_battleSite, territory,
 		        defendingAir);
 		bridge.addChange(change);
+		
+		//remove those that landed in case it was a carrier
+		m_defendingAir.removeAll(defendingAir);
 	}
     
     GUID getBattleID()

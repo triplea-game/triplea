@@ -1115,7 +1115,6 @@ public class MoveDelegateTest extends DelegateTest
   
   public void testReloadTransportAfterRetreatAmphibious()
   {	
-
 	m_bridge = super.getDelegateBridge(british);
 	m_bridge.setStepName("BritishCombatMove");
 	  
