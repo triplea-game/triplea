@@ -31,9 +31,13 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.*;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
+import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-
+//Kev
+import games.strategy.engine.delegate.IDelegateBridge;
 /**
  *
  * @author  Sean Bridges
@@ -999,10 +1003,22 @@ public class MoveValidator
             carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);
             
         }
-        
+        	
         Collection<Unit> unitsAtEnd = route.getEnd().getUnits().getMatches(Matches.alliedUnit(player, data));
         unitsAtEnd.addAll(units);
-            
+
+    	//Check to see if there are carriers to be placed
+        Collection<Unit> placeUnits = player.getUnits().getUnits();
+        CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+        placeUnits = Match.getMatches(placeUnits, unitIsSeaOrCanLandOnCarrier);        
+        boolean lhtrCarrierProdRules = AirThatCantLandUtil.isLHTRCarrierProduction(data);
+        boolean hasProducedCarriers = player.getUnits().someMatch(Matches.UnitIsCarrier);
+        if (lhtrCarrierProdRules && hasProducedCarriers)
+        {
+        	placeUnits = Match.getMatches(placeUnits, Matches.UnitIsCarrier);
+        	unitsAtEnd.addAll(placeUnits);
+        }        
+        
         // check carrierMustMoveWith, and reserve carrier capacity for allied planes as required
         Collection<Unit> ownedCarrier = Match.getMatches(route.getEnd().getUnits().getUnits(), 
                                                          new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));

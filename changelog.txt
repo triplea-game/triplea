@@ -1,4 +1,6 @@
 Changes for 1.0.1.2
+* Fix bug [ 2005292 ] LHTR planes not able to land on produced carriers.
+
 * Add ability to manually select AA casualties via "Choose AA Casualties" game property. (President Douchebag)
   
 * Fix bugs [ 1668008 & 1683940 ] Fighter ability to move one space to land when CV is sunk (ComradeKev)
