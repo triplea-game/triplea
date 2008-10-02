@@ -1297,7 +1297,6 @@ public class MoveDelegateTest extends DelegateTest
     List<Unit> retreatingSeaUnits = new ArrayList<Unit>();
     retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
 
-    //Kev check these two
     //Get the attacking land units that will retreat and their number
     List<Unit> retreatingLandUnits = new ArrayList<Unit>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, m_data)));
@@ -1371,7 +1370,6 @@ public class MoveDelegateTest extends DelegateTest
     List<Unit> retreatingSeaUnits = new ArrayList<Unit>();
     retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, m_data)));
 
-    //Kev check these two
     //Get the attacking land units that will retreat and their number
     List<Unit> retreatingLandUnits = new ArrayList<Unit>();
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, m_data)));

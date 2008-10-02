@@ -36,8 +36,6 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-//Kev
-import games.strategy.engine.delegate.IDelegateBridge;
 /**
  *
  * @author  Sean Bridges
