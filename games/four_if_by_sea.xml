@@ -2517,10 +2517,6 @@
 
 		<property name="neutralCharge" value="0"/>
 
-		<!-- Use 4th Edition Rules -->
-		<property name="4th Edition" value="true" editable="false">
-                        <boolean/>
-                </property>
 
 		<property name="maxFactoriesPerTerritory" value="20"/>
 
