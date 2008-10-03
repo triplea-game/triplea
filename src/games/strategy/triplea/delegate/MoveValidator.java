@@ -738,6 +738,28 @@ public class MoveValidator
                         result.addDisallowedUnit("Not all units can blitz",unit);
                 }
 
+                //Kev
+                // No neutral countries on route predicate
+                Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
+                //ignore the end territory in our tests
+                Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
+                //See if there are neutrals in the path                    	
+                if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr(noNeutral, territoryIsEnd)) == null)
+                	return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
+	                                    
+            }
+            else 
+            {    //check aircraft
+            	if (!isNonCombat && Match.someMatch(units, Matches.UnitIsAir) && route.getLength() >= 1)
+            	{
+            		// No neutral countries on route predicate
+                    Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
+                    //ignore the end territory in our tests                    
+                    Match<Territory> territoryIsEnd = Matches.territoryIs(route.getEnd());
+                    //See if there are neutrals in the path    
+            		if (data.getMap().getRoute(route.getStart(), route.getEnd(), new CompositeMatchOr(noNeutral, territoryIsEnd)) == null)
+            			return result.setErrorReturnResult("Air units cannot fly over neutral territories");	
+            	}
             }
 
             //make sure no conquered territories on route
@@ -1440,8 +1462,7 @@ public class MoveValidator
             defaultRoute = data.getMap().getRoute(start, end);
 
         if (defaultRoute == null)
-            throw new IllegalStateException("No route between:" + start +
-                                            " and " + end);
+        	defaultRoute = data.getMap().getRoute(start, end);
 
         //if the start and end are in water, try and get a water route
         //dont force a water route, since planes may be moving

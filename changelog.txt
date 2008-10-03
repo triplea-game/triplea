@@ -1,5 +1,7 @@
 Changes for 1.0.1.2
-* Fix bug [ 2005292 ] LHTR planes not able to land on produced carriers.
+* Fix thrown exception with 4th edition neutral blitz/flyover. (Comradekev)
+
+* Fix bug [ 2005292 ] LHTR planes not able to land on produced carriers. (ComradeKev)
 
 * Add ability to manually select AA casualties via "Choose AA Casualties" game property. (President Douchebag)
   
