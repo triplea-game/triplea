@@ -1512,13 +1512,13 @@ Coded by Iron__Cross
         <attatchment name="playerAttatchment" attatchTo="British"
             javaClass="games.strategy.triplea.attatchments.PlayerAttachment"
             type="player">
-            <option name="takeOverUnits" value="true"/>
+            <option name="takeUnitControl" value="true"/>
         </attatchment>
         
         <attatchment name="playerAttatchment" attatchTo="Australians"
             javaClass="games.strategy.triplea.attatchments.PlayerAttachment"
             type="player">
-            <option name="giveOverUnits" value="true"/>
+            <option name="giveUnitControl" value="true"/>
         </attatchment>        
         
     </attatchmentList>

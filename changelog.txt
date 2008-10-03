@@ -1,4 +1,6 @@
 Changes for 1.0.1.2
+* Re-create code to change ownership of units so British/Australians can play on same turn in pacific
+
 * Fix thrown exception with 4th edition neutral blitz/flyover. (Comradekev)
 
 * Fix bug [ 2005292 ] LHTR planes not able to land on produced carriers. (ComradeKev)

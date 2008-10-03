@@ -108,18 +108,14 @@ public abstract class AbstractEndTurnDelegate
         aBridge.addChange(change);
 
 
-        if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
-        {
-            PlayerAttachment pa = PlayerAttachment.get(player);
-                    
-            if(pa != null)
-            {
-                Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
-                Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
-                CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
-                aBridge.addChange(ccVP);
-            }
-        } 
+        PlayerAttachment pa = PlayerAttachment.get(player);
+        if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false) && pa != null)
+        {      
+            Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
+            Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
+            CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
+            aBridge.addChange(ccVP);
+        }
 
         checkForWinner(aBridge);
 
@@ -128,6 +124,11 @@ public abstract class AbstractEndTurnDelegate
             repairBattleShips(aBridge);
         }
         m_needToInitialize = false;
+        //Kev
+        if(pa != null && pa.getGiveUnitControl())
+        {
+        	changeUnitOwnership(aBridge, gameData);
+        }
     }
 
 
@@ -158,6 +159,45 @@ public abstract class AbstractEndTurnDelegate
 
     }
 
+
+	private void changeUnitOwnership(IDelegateBridge aBridge, GameData gameData)
+	{
+		PlayerID Player = aBridge.getPlayerID();
+		PlayerID newOwner = null;
+		
+		//get the list of players
+		Collection<PlayerID> players = gameData.getPlayerList().getPlayers();
+		Iterator<PlayerID> playerIter = players.iterator();
+		
+		//Find the player who will take control of the units
+		while (playerIter.hasNext())
+		{
+			PlayerID currPlayer = (PlayerID) playerIter.next();
+			 PlayerAttachment pa = PlayerAttachment.get(currPlayer);
+			if (pa != null && pa.getTakeUnitControl())
+			{
+				newOwner = currPlayer;
+				break;
+			}
+		}
+		
+		Collection<Territory> territories = gameData.getMap().getTerritories();
+		Iterator<Territory> terrIter = territories.iterator();
+		while (terrIter.hasNext())
+		{
+			Territory currTerritory = (Territory) terrIter.next();
+            TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTATCHMENT_NAME);
+            //if ownership should change in this territory
+            if(ta != null && ta.getChangeUnitOwners())
+            {
+            	//PlayerOwnerChange
+            	Collection<Unit> units = currTerritory.getUnits().getMatches(Matches.unitOwnedBy(Player));
+            	Change changeOwner = ChangeFactory.changeOwner(units, newOwner, currTerritory);
+            	aBridge.getHistoryWriter().addChildToEvent(changeOwner.toString());
+            	aBridge.addChange(changeOwner);
+            }
+		}
+	}
 
     protected abstract void checkForWinner(IDelegateBridge bridge);
 

@@ -41,8 +41,8 @@ public class PlayerAttachment extends DefaultAttachment
 
     private int m_vps = 0;
     private int m_captureVps = 0; // need to store some data during a turn
-    private boolean m_takeOverUnits = false;
-    private boolean m_giveOverUnits = false;
+    private boolean m_takeUnitControl = false;
+    private boolean m_giveUnitControl = false;
     
     /** Creates new PlayerAttatchment */
     public PlayerAttachment()
@@ -69,23 +69,23 @@ public class PlayerAttachment extends DefaultAttachment
         return "" + m_captureVps;
     }
     
-    public void setTakeOverUnits(String value)
+    public void setTakeUnitControl(String value)
     {
-        m_takeOverUnits = getBool(value);
+        m_takeUnitControl = getBool(value);
     }
 
-    public boolean getTakeOverUnits()
+    public boolean getTakeUnitControl()
     {
-        return m_takeOverUnits;
+        return m_takeUnitControl;
     } 
     
-    public void setGiveOverUnits(String value)
+    public void setGiveUnitControl(String value)
     {
-        m_giveOverUnits = getBool(value);
+    	m_giveUnitControl = getBool(value);
     }
 
-    public boolean getGiveOverUnits()
+    public boolean getGiveUnitControl()
     {
-        return m_giveOverUnits;
+        return m_giveUnitControl;
     }
 }
