@@ -21,9 +21,16 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
 import java.util.*;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import games.strategy.engine.data.*;
 
 /**
@@ -51,6 +58,10 @@ public class TerritoryAttachment extends DefaultAttachment
                     return current;
             }
         }
+        //Added check for optional players- no error thrown for them
+        if(player.getOptional())
+        	return null;
+        
         throw new IllegalStateException("Capital not found for:" + player);
     }
 

@@ -99,7 +99,10 @@ public class Utils
         for(PlayerID player : data.getPlayerList())
         {
             Territory capitol = TerritoryAttachment.getCapital(player, data);
-            
+            //optional players will return null- set them to false
+            if (capitol == null)
+            	return false;
+                        	
             if(data.getAllianceTracker().isAllied(us, capitol.getOwner()))
                 continue;
             

@@ -430,7 +430,7 @@ Coded by Iron__Cross
         <player name="British" optional="false"/>
         <!-- Added Australians -->
         <player name="Australians" optional="false"/>  
-        <player name="Commonwealth" optional="false"/>  
+        <player name="Commonwealth" optional="true"/>  
         <player name="Chinese" optional="false"/>
         <player name="Americans" optional="false"/>
         
