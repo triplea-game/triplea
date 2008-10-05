@@ -1,4 +1,6 @@
 Changes for 1.0.1.2
+* Fix territory connections in Pacific
+
 * Fix bug where hasLandRouteToEnemyOwnedCapitol causes abend for players with no Capital.  Returns none for 'optional' players
 
 * Re-create code to change ownership of units so British/Australians can play on same turn in pacific

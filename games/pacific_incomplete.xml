@@ -386,7 +386,6 @@ Coded by Iron__Cross
         
         <!-- Guinea -->
         <connection t1="New Guinea" t2="27 Sea Zone"/>
-        <connection t1="New Guinea" t2="33 Sea Zone"/>
         <connection t1="Papua" t2="28 Sea Zone"/>
         
         <!-- Japan -->
