@@ -116,19 +116,23 @@ class TerritoryNameDrawable implements IDrawable
 
         if (territory.isWater())
         {
-        	//return;
-        	if ( ta != null && ta.isConvoyRoute())
+        	if (ta == null)
+        	return;
+        	
+        	if (ta.isConvoyRoute())
         	{
         		drawComments = true;
         		commentText = ta.getConvoyAttached() + " Convoy Route";
         	}
-        	
-        	if (ta != null && ta.getProduction() > 0)
+
+        	//Check to ensure there's an original owner to fix abend
+        	if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)   		
         	{
         		drawComments = true;
         		commentText = ta.getOriginalOwner().getName() + " Convoy Center";
         	}
-        	else
+        	
+        	if (drawComments == false)
         	{
         		return;
         	}
@@ -494,7 +498,9 @@ class KamikazeZoneDrawable implements IDrawable
 
  public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
  {
-     Image img = m_uiContext.getFlagImageFactory().getFadedFlag(data.getPlayerList().getPlayerID(m_player));
+	 //Change so only original owner gets the kamikazi zone marker
+	 Territory terr = data.getMap().getTerritory(m_location);     
+	 Image img = m_uiContext.getFlagImageFactory().getFadedFlag(data.getPlayerList().getPlayerID(TerritoryAttachment.get(terr).getOriginalOwner().getName()));
      Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(m_location));
      graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
  }

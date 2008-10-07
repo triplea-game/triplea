@@ -24,6 +24,7 @@ import games.strategy.engine.data.properties.*;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.util.Version;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -589,6 +590,7 @@ public class GameParser
         {
             Element current = (Element) playerElements.get(i);
             String name = current.getAttribute("name");
+            //Kev
             //It appears the commented line ALWAYS returns false regardless of the value of current.getAttribute("optional")
             //boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));
             boolean isOptional = current.getAttribute("optional").equals("true");
@@ -1020,6 +1022,9 @@ public class GameParser
             Territory territory = getTerritory(current, "territory", true);
             PlayerID owner = getPlayerID(current, "owner", true);
             territory.setOwner(owner);
+            //Set the original owner on startup.
+            TerritoryAttachment ta = TerritoryAttachment.get(territory);            
+            ta.setOriginalOwner(owner);
         }
     }
 

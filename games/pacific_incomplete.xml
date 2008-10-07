@@ -1585,7 +1585,7 @@ Coded by Iron__Cross
             <territoryOwner territory="Gilbert" owner="Australians"/>
    			<territoryOwner territory="Johnston" owner="Australians"/>          
             
-            <!-- Commonwealth owned convoy centers -->
+            <!-- Commonwealth owned Convoy Centers -->
             <!-- Code Needed to determine how to add this functionality -->
             <territoryOwner territory="52 Sea Zone" owner="Commonwealth"/>
             <territoryOwner territory="49 Sea Zone" owner="Commonwealth"/>
@@ -1633,7 +1633,7 @@ Coded by Iron__Cross
             <territoryOwner territory="Johnston" owner="Americans"/>
             <territoryOwner territory="Guam" owner="Americans"/> 
                         
-            <!-- American owned convoy centers -->
+            <!-- American owned Convoy Centers -->
             <territoryOwner territory="3 Sea Zone" owner="Americans"/>
             <territoryOwner territory="6 Sea Zone" owner="Americans"/>
             
@@ -1646,7 +1646,6 @@ Coded by Iron__Cross
         <unitInitialize>
             
             <!-- British Land Placements -->
-            
             <unitPlacement unitType="infantry" territory="India" quantity="6"
                 owner="British"/>
             <unitPlacement unitType="infantry" territory="Borneo" quantity="1"
