@@ -422,7 +422,11 @@ public class PlacementPicker extends JFrame
         if(!rightMouse && !ctrlDown)
         {
             m_currentCountry    = findTerritoryName(point);
-            m_currentPlacements = new ArrayList<Point>( m_placements.get(m_currentCountry));
+            //If there isn't an existing array, create one
+            if(m_placements == null || m_placements.get(m_currentCountry) == null)
+            	m_currentPlacements = new ArrayList<Point>();
+            else
+            	m_currentPlacements = new ArrayList<Point>( m_placements.get(m_currentCountry));
 
             JOptionPane.showMessageDialog(this, m_currentCountry);
         }
@@ -432,17 +436,25 @@ public class PlacementPicker extends JFrame
         }
         else if (rightMouse && ctrlDown)
         {
-            m_placements.put(m_currentCountry, m_currentPlacements);
+        	//If there isn't an existing hashmap, create one
+        	if(m_placements == null)
+        	{        		
+        		m_placements = new HashMap<String, List<Point>>();
+        	}
+        	else
+        	{
+                m_placements.put(m_currentCountry, m_currentPlacements);        		
+        	}
             m_currentPlacements = new ArrayList<Point>();
             System.out.println("done:" + m_currentCountry);
         }
         else if (rightMouse)
         {
             if(!m_currentPlacements.isEmpty())
-	    {
+            {
                 m_currentPlacements.remove(m_currentPlacements.size() -1);
             }
-	}
+        }
 
         repaint();
     }

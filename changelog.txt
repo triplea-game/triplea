@@ -1,9 +1,11 @@
 Changes for 1.0.1.3
-*Fix abend when there are no original owners in a territory
+*Fix abend when there are no original owners in a territory (ComradeKev)
 
-*Change so only original owner gets the faded kamikazi zone marker
+*Change so only original owner gets the faded kamikazi zone marker (ComradeKev)
 
-*Fix display of Convoy Route text
+*Fix display of Convoy Route text (ComradeKev)
+
+*Fix PlacementPicker abends (ComradeKev)
 
 Changes for 1.0.1.2
 * Fix territory connections in Pacific
