@@ -1,11 +1,13 @@
 Changes for 1.0.1.3
-*Fix abend when there are no original owners in a territory (ComradeKev)
+* Fix abend when there are no original owners in a territory (ComradeKev)
 
-*Change so only original owner gets the faded kamikazi zone marker (ComradeKev)
+* Change so only original owner gets the faded kamikazi zone marker (ComradeKev)
 
-*Fix display of Convoy Route text (ComradeKev)
+* Fix display of Convoy Route text (ComradeKev)
 
-*Fix PlacementPicker abends (ComradeKev)
+* Fix PlacementPicker abends (ComradeKev)
+
+* Fix Null Pointer [ 1068223 ] for non-required files in AutoPlacementFinder app (ComradeKev)
 
 Changes for 1.0.1.2
 * Fix territory connections in Pacific

@@ -141,7 +141,7 @@ public class MapData
 	
             m_place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
             m_polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
-            m_centers = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CENTERS_FILE));
+            m_centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
             m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
             m_capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
             m_ipcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + IPC_PLACE_FILE));

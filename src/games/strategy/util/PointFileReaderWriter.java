@@ -75,6 +75,35 @@ public class PointFileReaderWriter
 	}
 
 
+	/**
+	 * Returns a map of the form String -> Point.
+	 */
+    public static Map<String, Point> readOneToOneCenters(InputStream stream) throws IOException
+	{	    
+		Map<String, Point> mapping = new HashMap<String, Point>();
+		LineNumberReader reader = null;
+		try
+		{
+			reader = new LineNumberReader(new InputStreamReader(stream));
+
+			String current = reader.readLine();
+			while(current != null)
+			{
+				if(current.trim().length() != 0)
+				{
+					readSingle(current, mapping);
+				}
+				current = reader.readLine();
+			}
+		} finally
+		{
+			if(reader != null)
+				reader.close();
+		}
+		return mapping;
+	}
+
+
 	private static void readSingle(String aLine, Map<String, Point> mapping) throws IOException
 	{
 		StringTokenizer tokens = new StringTokenizer(aLine, "", false);
@@ -180,6 +209,10 @@ public class PointFileReaderWriter
 		LineNumberReader reader = null;
 		try
 		{
+			//Check to see if there's null input
+			if (stream == null)
+				return Collections.emptyMap();
+			
 			reader = new LineNumberReader(new InputStreamReader(stream));
 
 			String current = reader.readLine();
