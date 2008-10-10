@@ -9,6 +9,8 @@ Changes for 1.0.1.3
 
 * Fix Null Pointer [ 1068223 ] for non-required files in AutoPlacementFinder app (ComradeKev)
 
+* Fix bug [ 1937303 ] casualty window shows all casualties as defending nation (ComradeKev)
+
 Changes for 1.0.1.2
 * Fix territory connections in Pacific
 

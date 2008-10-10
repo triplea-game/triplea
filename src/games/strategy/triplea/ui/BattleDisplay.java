@@ -74,9 +74,10 @@ public class BattleDisplay extends JPanel
     private final JLabel LABEL_NONE_DEFENDER = new JLabel("None");
     private final Map<UnitType, JLabel> m_UnitKillMapDefender = new HashMap<UnitType, JLabel>();
     private final Map<UnitType, JLabel> m_UnitKillMapAttacker = new HashMap<UnitType, JLabel>();
+    private UIContext m_uiContext;
 
     private final JLabel m_messageLabel = new JLabel();
-
+    
     private Action m_nullAction = new AbstractAction(" "){
     
         public void actionPerformed(ActionEvent e)
@@ -92,6 +93,7 @@ public class BattleDisplay extends JPanel
         m_attacker = attacker;
         m_location = territory;
         m_mapPanel = mapPanel;
+
         m_data = data;
         m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
 
@@ -99,6 +101,7 @@ public class BattleDisplay extends JPanel
         m_defenderModel.refresh();
         m_attackerModel = new BattleModel(m_data, attackingUnits, true, m_mapPanel.getUIContext());
         m_attackerModel.refresh();
+        m_uiContext = mapPanel.getUIContext(); 
 
         initLayout();
     }
@@ -174,24 +177,29 @@ public class BattleDisplay extends JPanel
             lCausalityPanel = m_causalitiesInstantPanelAttacker;
             lPlayerNoneLabel = LABEL_NONE_ATTACKER;
         }
-        
-        for(Unit aUnit : aKilledUnits)
+
+        if (!aKilledUnits.isEmpty())
         {
-            lCausalityPanel.remove(lPlayerNoneLabel);
-            if (lKillMap.containsKey(aUnit.getType()))
+        	JLabel label = new JLabel("x1");
+        }
+        
+        Iterator killedIter = UnitSeperator.categorize(aKilledUnits, null, false).iterator();
+        
+        while (killedIter.hasNext())
+        {
+            UnitCategory category = (UnitCategory) killedIter.next();
+            JPanel panel = new JPanel();
+            JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false));
+            panel.add(unit);
+            
+            Iterator iter = category.getDependents().iterator();
+            while (iter.hasNext())
             {
-                JLabel label = lKillMap.get(aUnit.getType());
-                int count = Integer.parseInt(label.getText().substring(1));
-                count ++;
-                label.setText("x" + count);
+                UnitOwner owner = (UnitOwner) iter.next();
+                unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false)));
             }
-            else
-            {
-                JLabel label = new JLabel("x1");
-                label.setIcon(m_mapPanel.getUIContext().getUnitImageFactory().getIcon(aUnit.getType(), aPlayerID, m_data, false));
-                lKillMap.put(aUnit.getType(), label);
-                lCausalityPanel.add(label);
-            }
+            panel.add(new JLabel("x " + category.getUnits().size()));
+            lCausalityPanel.add(panel);            
         }
     }
 
@@ -569,7 +577,7 @@ public class BattleDisplay extends JPanel
             final DiceRoll dice, final PlayerID hit, final List<Unit> defaultCasualties)
     {
         if (SwingUtilities.isEventDispatchThread())
-            throw new IllegalStateException("This method should not be run in teh event dispatch thread");
+            throw new IllegalStateException("This method should not be run in the event dispatch thread");
 
         final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<CasualtyDetails>();
         final CountDownLatch continueLatch = new CountDownLatch(1);
@@ -1067,7 +1075,7 @@ class CasualtyNotificationPanel extends JPanel
         {
             m_killed.add(new JLabel("Killed"));
         }
-
+        
         Iterator killedIter = UnitSeperator.categorize(killed, dependents, false).iterator();
         categorizeUnits(killedIter, false);
 
