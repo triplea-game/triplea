@@ -79,6 +79,7 @@ public abstract class TechAdvance implements java.io.Serializable
         s_4thEditionAdvances.add(ROCKETS);
         s_4thEditionAdvances.add(DESTROYER_BOMBARD);
         s_4thEditionAdvances.add(HEAVY_BOMBER);
+		s_4thEditionAdvances.add(INDUSTRIAL_TECHNOLOGY);
 
         s_4thEditionAdvances = Collections.unmodifiableList(s_4thEditionAdvances);
 

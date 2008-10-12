@@ -11,6 +11,8 @@ Changes for 1.0.1.3
 
 * Fix bug [ 1937303 ] casualty window shows all casualties as defending nation (ComradeKev)
 
+* Fix bug [ 2066114 ] Industrial Tech advancement crashes stats tab in 4th edition games (President Douchebag)
+
 Changes for 1.0.1.2
 * Fix territory connections in Pacific
 
