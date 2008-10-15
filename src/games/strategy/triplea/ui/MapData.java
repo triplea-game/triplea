@@ -447,6 +447,10 @@ public class MapData
 
     public Point getCenter(String terr)
     {
+    	if(m_centers.get(terr) == null)
+    	{
+    		throw new IllegalStateException("Missing " + CENTERS_FILE + " data for " + terr);
+    	}
         return new Point(m_centers.get(terr));
     }
 

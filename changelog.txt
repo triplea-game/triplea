@@ -13,6 +13,8 @@ Changes for 1.0.1.3
 
 * Fix bug [ 2066114 ] Industrial Tech advancement crashes stats tab in 4th edition games (President Douchebag)
 
+* Add code to identify offending territory in AutoPlacementFinder exceptions for centers.txt (ComradeKev)
+
 Changes for 1.0.1.2
 * Fix territory connections in Pacific
 
