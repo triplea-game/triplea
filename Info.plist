@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
-<plist version="0.9">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
 <dict>
-	<key>CFBundleName</key>
-	<string>TripleA</string>
-	<key>CFBundleVersion</key>
-	<string>10.2</string>
 	<key>CFBundleAllowMixedLocalizations</key>
 	<string>true</string>
-	<key>CFBundleExecutable</key>
-	<string>JavaApplicationStub</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>JavaApplicationStub</string>
+	<key>CFBundleGetInfoString</key>
+	<string>TripleA</string>
+	<key>CFBundleIconFile</key>
+	<string>icon.icns</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>TripleA</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleGetInfoString</key>
-	<string>TripleA</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleIconFile</key>
-	<string>icon.icns</string>
+	<key>CFBundleVersion</key>
+	<string>10.2</string>
 	<key>Java</key>
 	<dict>
-		<key>VMOptions</key>
-		<string>-Dapple.laf.useScreenMenuBar=true</string>
-		<key>MainClass</key>
-		<string>games.strategy.engine.framework.GameRunner</string>
+		<key>ClassPath</key>
+		<array>
+			<string>$JAVAROOT/triplea.jar</string>
+		</array>
 		<key>JVMVersion</key>
 		<string>1.5</string>
-		<key>ClassPath</key>
-			<array>
-			<string>$JAVAROOT/triplea.jar</string>
-			</array>
+		<key>MainClass</key>
+		<string>games.strategy.engine.framework.GameRunner</string>
+		<key>VMOptions</key>
+		<string>-Dapple.laf.useScreenMenuBar=true -Xmx196m </string>
 	</dict>
 </dict>
 </plist>

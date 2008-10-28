@@ -1,4 +1,7 @@
 Changes for 1.0.1.3
+
+* Set max memory for mac release (sgb)
+
 * Fix abend when there are no original owners in a territory (ComradeKev)
 
 * Change so only original owner gets the faded kamikazi zone marker (ComradeKev)
