@@ -16,6 +16,7 @@
  * Parser.java
  *
  * Created on October 12, 2001, 12:55 PM
+ * Kev look here for initialization
  */
 
 package games.strategy.engine.data;
@@ -590,7 +591,7 @@ public class GameParser
         {
             Element current = (Element) playerElements.get(i);
             String name = current.getAttribute("name");
-            //Kev
+            
             //It appears the commented line ALWAYS returns false regardless of the value of current.getAttribute("optional")
             //boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));
             boolean isOptional = current.getAttribute("optional").equals("true");

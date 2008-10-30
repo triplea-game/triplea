@@ -13,12 +13,17 @@ package games.strategy.triplea.image;
  */
 
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.BlendComposite.BlendingMode;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.lang.ref.*;
 import java.net.URL;
@@ -29,6 +34,17 @@ import java.util.prefs.*;
 
 import javax.imageio.ImageIO;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
+import java.awt.CompositeContext;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
+
+
 public final class TileImageFactory
 {
     private final Object m_mutex = new Object();
@@ -36,6 +52,14 @@ public final class TileImageFactory
     // one instance in the application
     private final static String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief";
     private static boolean s_showReliefImages = true;
+    private final static String SHOW_MAP_BLENDS_PREFERENCE = "ShowBlends";
+    private static boolean s_showMapBlends = false;
+    private final static String SHOW_MAP_BLEND_MODE = "BlendMode";
+    private static String s_showMapBlendMode = "normal";
+    private final static String SHOW_MAP_BLEND_ALPHA = "BlendAlpha";
+    private static float s_showMapBlendAlpha = 1.0f;
+    private Composite composite = AlphaComposite.Src;
+    private static GraphicsConfiguration configuration = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 
     private static final Logger s_logger = Logger.getLogger(TileImageFactory.class.getName());
     
@@ -48,11 +72,29 @@ public final class TileImageFactory
     {
         Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
         s_showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, false);
+        s_showMapBlends = prefs.getBoolean(SHOW_MAP_BLENDS_PREFERENCE, false);
+        s_showMapBlendMode = prefs.get(SHOW_MAP_BLEND_MODE, "normal");
+        s_showMapBlendAlpha = prefs.getFloat(SHOW_MAP_BLEND_ALPHA, 1.0f);
     }
 
     public static boolean getShowReliefImages()
     {
         return s_showReliefImages;
+    }
+    
+    public static boolean getShowMapBlends()
+    {
+        return s_showMapBlends;
+    }
+    
+    public static String getShowMapBlendMode()
+    {
+        return s_showMapBlendMode.toUpperCase();
+    }
+    
+    public static float getShowMapBlendAlpha()
+    {
+        return s_showMapBlendAlpha;
     }
 
     public void setScale(double newScale)
@@ -62,10 +104,10 @@ public final class TileImageFactory
         synchronized(m_mutex)
         {
             m_scale = newScale;
-            m_imageCache.clear();
+            getM_imageCache().clear();
         }
     }
-    
+
     public static void setShowReliefImages(boolean aBool)
     {
         s_showReliefImages = aBool;
@@ -79,7 +121,49 @@ public final class TileImageFactory
             ex.printStackTrace();
         }
     }
-
+    
+    public static void setShowMapBlends(boolean aBool)
+    {
+    	s_showMapBlends = aBool;
+        Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
+        prefs.putBoolean(SHOW_MAP_BLENDS_PREFERENCE, s_showMapBlends);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+   
+    public static void setShowMapBlendMode(String aString)
+    {
+    	s_showMapBlendMode = aString;
+        Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
+        prefs.put(SHOW_MAP_BLEND_MODE, s_showMapBlendMode);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+   
+    public static void setShowMapBlendAlpha(float aFloat)
+    {
+    	s_showMapBlendAlpha = aFloat;
+        Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
+        prefs.putFloat(SHOW_MAP_BLEND_ALPHA, s_showMapBlendAlpha);
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+   
     private ResourceLoader m_resourceLoader;
 
     public void setMapDir(ResourceLoader loader)
@@ -89,13 +173,13 @@ public final class TileImageFactory
         {
             //we manually want to clear each ref to allow the soft reference to
             // be removed
-            Iterator<ImageRef> values = m_imageCache.values().iterator();
+            Iterator<ImageRef> values = getM_imageCache().values().iterator();
             while (values.hasNext())
             {
                 ImageRef imageRef = values.next();
                 imageRef.clear();
             }
-            m_imageCache.clear();
+            getM_imageCache().clear();
         }
     }
 
@@ -110,9 +194,9 @@ public final class TileImageFactory
      */
     private Image isImageLoaded(String fileName)
     {
-        if (m_imageCache.get(fileName) == null)
+        if (getM_imageCache().get(fileName) == null)
             return null;
-        return m_imageCache.get(fileName).getImage();
+        return getM_imageCache().get(fileName).getImage();
     }
 
     public Image getBaseTile(int x, int y)
@@ -165,13 +249,13 @@ public final class TileImageFactory
         return getImage(fileName, transparent);
     }
 
-    public Image getReliefTile(int x, int y)
+    public Image getReliefTile(int a, int b)
     {
-        String fileName = getReliefTileImageName(x, y);
+        String fileName = getReliefTileImageName(a, b);
+        
         return getImage(fileName, true);
     }
 
-    
     public Image getUnscaledUncachedReliefTile(int x, int y)
     {
         String fileName = getReliefTileImageName(x, y);
@@ -182,8 +266,6 @@ public final class TileImageFactory
         
         return loadImage(url, fileName, true,false,false);
     }
-
-
     
     /**
      * @param x
@@ -203,48 +285,158 @@ public final class TileImageFactory
      */
     private Image loadImage(URL imageLocation, String fileName, boolean transparent, boolean cache, boolean scale)
     {
-        synchronized (m_mutex)
         {
 		    Image image;
-		    try
+		   if (s_showMapBlends && s_showReliefImages && transparent)
 		    {
-		        Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading image:" + imageLocation);
-               
-                BufferedImage fromFile = ImageIO.read(imageLocation);
-                loadingImages.done();
-                
-                Stopwatch copyingImage = new Stopwatch(s_logger, Level.FINE, "Copying image:" + imageLocation);
-                //if we dont copy, drawing the tile to the screen takes significantly longer
-                //has something to do with the colour model and type of the images
-                //some images can be copeid quickly to the screen
-                //this step is a significant bottle neck in the image drawing process
-                //we should try to find a way to avoid it, and load the 
-                //png directly as the right type
-                image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
-                Graphics2D g = (Graphics2D) image.getGraphics();
-                if(scale && m_scale != 1.0)
-                {
-                    AffineTransform transform = new AffineTransform();
-                    transform.scale(m_scale, m_scale);
-                    g.setTransform(transform);
-                }
-                
-                g.drawImage(fromFile, 0,0, null);
-                g.dispose();
-                fromFile.flush();
-                copyingImage.done();
-		        
-		    } catch (IOException e)
-		    {
-		        throw new IllegalStateException(e.getMessage());
+			   //MapPanel.setScale();
+	            BufferedImage fromFile = null;
+	        	BufferedImage toFile = null;
+	               	            
+	          //The relief tile
+	        	String fromFileName = fileName.replace("baseTiles", "reliefTiles");
+	        	URL urlFrom = m_resourceLoader.getResource(fromFileName);	        			
+	        	//The base tile
+	        	String toFileName = fileName.replace("reliefTiles", "baseTiles");
+	        	URL urlDest = m_resourceLoader.getResource(toFileName);
+
+	        	//Get buffered images        	
+	        	try{
+	        		Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading images:" + urlFrom + " and " + urlDest);
+	        		if (urlFrom != null)
+	        		fromFile = loadCompatibleImage(urlFrom) ;
+
+	        		if (urlDest != null)
+	        		toFile = loadCompatibleImage(urlDest);
+	        		loadingImages.done();
+	        	} catch (IOException e) {
+	                e.printStackTrace();
+	            }	            	
+	        	
+
+	        	//This does the blend
+	        	float alpha = getShowMapBlendAlpha();
+	            int overX = 0;
+	            int overY = 0;
+	            
+	            //Kev uncomment for implementation
+	            /*if (fromFile == null)
+	            {
+	            	throw new IllegalStateException("The relief tile" + fromFileName + " cannot be null.");
+	            }
+	            if (toFile == null)
+	            {
+	            	throw new IllegalStateException("The base tile" + toFileName + " cannot be null.");
+	            }*/
+	        	
+	        	/*reversing the to/from files leaves white underlays visible*/
+	        	if(fromFile != null)
+	        	{
+		        	Graphics2D g2 = fromFile.createGraphics();	
+		        	
+	        		if(scale && m_scale != 1.0)
+	                {
+	                    AffineTransform transform = new AffineTransform();
+	                    transform.scale(m_scale, m_scale);
+	                    g2.setTransform(transform);
+	                }
+		        	
+	        		g2.drawImage(fromFile, overX, overY, null);
+	        		
+	        		//gets the blending mode from the map.properties file (sometimes)
+	        		BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
+	        		BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
+	        		
+	        		//g2.setComposite(BlendComposite.Overlay.derive(alpha));
+		            g2.setComposite(blendComposite);
+		            g2.drawImage(toFile, overX, overY, null);		                
+		            
+		            ImageRef ref = new ImageRef(fromFile);
+		            if(cache)
+		            	getM_imageCache().put(fileName, ref);
+	
+	                return fromFile;	
+	        	}
+	        	else
+	        	{
+	        		ImageRef ref = new ImageRef(toFile);
+		            if(cache)
+		            	getM_imageCache().put(fileName, ref);	
+	        		return toFile;
+	        	} 	        	
 		    }
-		    
-            ImageRef ref = new ImageRef(image);
-            if(cache)
-                m_imageCache.put(fileName, ref);
-            return image;
+		   else
+		    {		    
+			    try
+			    {
+			        Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading image:" + imageLocation);
+	               
+	                BufferedImage fromFile = ImageIO.read(imageLocation);
+	                loadingImages.done();
+	                
+	                Stopwatch copyingImage = new Stopwatch(s_logger, Level.FINE, "Copying image:" + imageLocation);
+	                //if we dont copy, drawing the tile to the screen takes significantly longer
+	                //has something to do with the colour model and type of the images
+	                //some images can be copeid quickly to the screen
+	                //this step is a significant bottle neck in the image drawing process
+	                //we should try to find a way to avoid it, and load the 
+	                //png directly as the right type
+	                image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
+	                Graphics2D g = (Graphics2D) image.getGraphics();
+	                if(scale && m_scale != 1.0)
+	                {
+	                    AffineTransform transform = new AffineTransform();
+	                    transform.scale(m_scale, m_scale);
+	                    g.setTransform(transform);
+	                }
+	                
+	                g.drawImage(fromFile, 0,0, null);
+	                g.dispose();
+	                fromFile.flush();
+	                copyingImage.done();
+			        
+			    } catch (IOException e)
+			    {
+			        throw new IllegalStateException(e.getMessage());
+			    }
+			    
+	            ImageRef ref = new ImageRef(image);
+	            if(cache)
+	                getM_imageCache().put(fileName, ref);
+	            return image;	
+		    }    		    
         }
     }
+    public Composite getComposite() {
+        return this.composite;
+    }
+    
+    public static BufferedImage loadCompatibleImage(URL resource) throws IOException {
+        BufferedImage image = ImageIO.read(resource);
+
+        return toCompatibleImage(image);
+    }
+    
+    public static BufferedImage toCompatibleImage(BufferedImage image) {
+        BufferedImage compatibleImage = configuration.createCompatibleImage(image.getWidth(),
+                image.getHeight(), Transparency.TRANSLUCENT);
+        Graphics g = compatibleImage.getGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        return compatibleImage;
+    }
+    
+    public static BufferedImage createCompatibleImage(int width, int height) {
+        return configuration.createCompatibleImage(width, height);
+    }
+
+	public void setM_imageCache(HashMap<String, ImageRef> m_imageCache) {
+		this.m_imageCache = m_imageCache;
+	}
+
+	public HashMap<String, ImageRef> getM_imageCache() {
+		return m_imageCache;
+	}
     
     //a failed experiment
     //to load a png directly as an argb image
@@ -286,7 +478,8 @@ public final class TileImageFactory
     
     
 
-}//end class TerritoryImageFactory
+}
+//end class TerritoryImageFactory
 
 /**
  * We keep a soft reference to the image to allow it to be garbage collected.
@@ -350,6 +543,226 @@ class ImageRef
         m_image.enqueue();
         m_image.clear();
     }
+    
 }
 
+/**
+ * This class handles the various types of blends for base/relief tiles
+ * 
+ * @author Kevin Comcowich
+ */
+
+class BlendComposite implements Composite {
+    public enum BlendingMode {
+        NORMAL,        
+        OVERLAY, 
+        MULTIPLY,
+        DIFFERENCE,
+        LINEAR_LIGHT
+    }
+
+    public static final BlendComposite Normal = new BlendComposite(BlendingMode.NORMAL);
+    public static final BlendComposite Overlay = new BlendComposite(BlendingMode.OVERLAY);
+    public static final BlendComposite Multiply = new BlendComposite(BlendingMode.MULTIPLY);
+    public static final BlendComposite Difference = new BlendComposite(BlendingMode.DIFFERENCE);
+    public static final BlendComposite Linear_Light = new BlendComposite(BlendingMode.LINEAR_LIGHT);
+
+    private float alpha;
+    private BlendingMode mode;
+    
+    BlendComposite(BlendingMode mode) {
+        this(mode, 1.0f);
+    }
+
+	private BlendComposite(BlendingMode mode, float alpha) {
+        this.mode = mode;
+        setAlpha(alpha);
+    }
+
+    public static BlendComposite getInstance(BlendingMode mode) {
+        return new BlendComposite(mode);
+    }
+
+    public static BlendComposite getInstance(BlendingMode mode, float alpha) {
+        return new BlendComposite(mode, alpha);
+    }
+
+    public BlendComposite derive(BlendingMode mode) {
+        return this.mode == mode ? this : new BlendComposite(mode, getAlpha());
+    }
+
+    public BlendComposite derive(float alpha) {
+        return this.alpha == alpha ? this : new BlendComposite(getMode(), alpha);
+    }
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public BlendingMode getMode() {
+        return mode;
+    }
+    
+    private void setAlpha(float alpha) {
+        if (alpha < 0.0f || alpha > 1.0f) {
+            throw new IllegalArgumentException("alpha must be comprised between 0.0f and 1.0f");
+        }
+
+        this.alpha = alpha;
+    }
+
+
+
+    public CompositeContext createContext(ColorModel srcColorModel,
+                                          ColorModel dstColorModel,
+                                          RenderingHints hints) {
+        return new BlendingContext(this);
+    }
+
+    private static final class BlendingContext implements CompositeContext {
+        private final Blender blender;
+        private final BlendComposite composite;
+
+        private BlendingContext(BlendComposite composite) {
+            this.composite = composite;
+            this.blender = Blender.getBlenderFor(composite);
+        }
+
+        public void dispose() {
+        }
+
+        public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
+            if (src.getSampleModel().getDataType() != DataBuffer.TYPE_INT ||
+                dstIn.getSampleModel().getDataType() != DataBuffer.TYPE_INT ||
+                dstOut.getSampleModel().getDataType() != DataBuffer.TYPE_INT) {
+                throw new IllegalStateException("Source and destination must store pixels as INT.");
+            }
+            
+            int width = Math.min(src.getWidth(), dstIn.getWidth());
+            int height = Math.min(src.getHeight(), dstIn.getHeight());
+
+            float alpha = composite.getAlpha();
+
+            int[] srcPixel = new int[4];
+            int[] dstPixel = new int[4];
+            int[] srcPixels = new int[width];
+            int[] dstPixels = new int[width];
+
+            for (int y = 0; y < height; y++) {
+                src.getDataElements(0, y, width, 1, srcPixels);
+                dstIn.getDataElements(0, y, width, 1, dstPixels);
+                for (int x = 0; x < width; x++) {
+                    // pixels are stored as INT_ARGB
+                    // our arrays are [R, G, B, A]
+                    int pixel = srcPixels[x];
+                    srcPixel[0] = (pixel >> 16) & 0xFF;
+                    srcPixel[1] = (pixel >>  8) & 0xFF;
+                    srcPixel[2] = (pixel      ) & 0xFF;
+                    srcPixel[3] = (pixel >> 24) & 0xFF;
+
+                    pixel = dstPixels[x];
+                    dstPixel[0] = (pixel >> 16) & 0xFF;
+                    dstPixel[1] = (pixel >>  8) & 0xFF;
+                    dstPixel[2] = (pixel      ) & 0xFF;
+                    dstPixel[3] = (pixel >> 24) & 0xFF;
+
+                    int[] result = blender.blend(srcPixel, dstPixel);
+
+                    // mixes the result with the opacity
+                    dstPixels[x] = ((int) (dstPixel[3] + (result[3] - dstPixel[3]) * alpha) & 0xFF) << 24 |
+                                   ((int) (dstPixel[0] + (result[0] - dstPixel[0]) * alpha) & 0xFF) << 16 |
+                                   ((int) (dstPixel[1] + (result[1] - dstPixel[1]) * alpha) & 0xFF) <<  8 |
+                                    (int) (dstPixel[2] + (result[2] - dstPixel[2]) * alpha) & 0xFF;
+                }
+                dstOut.setDataElements(0, y, width, 1, dstPixels);
+            }
+        }
+    }
+
+    static abstract class Blender {
+        public abstract int[] blend(int[] src, int[] dst);
+
+        public static Blender getBlenderFor(BlendComposite composite) {
+            switch (composite.getMode()) {
+                case NORMAL:
+                    return new Blender() {
+                        @Override
+                        public int[] blend(int[] src, int[] dst) {
+                            return src;
+                        }
+                    };
+                case OVERLAY:
+                	/*	if (Base > ½) R = 1 - (1-2×(Base-½)) × (1-Blend) 
+						if (Base <= ½) R = (2×Base) × Blend
+					Version from code has:
+					  	if (Base > ½) R = 1 - (1-Base) × (1-Blend) x 2 */
+                    return new Blender() {
+                        @Override
+                        public int[] blend(int[] src, int[] dst) {
+                        	return new int[] {
+                            		dst[0] < 128 ? dst[0] * src[0] >> 7 :
+                                        255 - ((255 - dst[0]) * (255 - src[0]) >> 7),
+                                    dst[1] < 128 ? dst[1] * src[1] >> 7 :
+                                        255 - ((255 - dst[1]) * (255 - src[1]) >> 7),
+                                    dst[2] < 128 ? dst[2] * src[2] >> 7 :
+                                        255 - ((255 - dst[2]) * (255 - src[2]) >> 7),
+                                    Math.min(255, src[3] + dst[3])
+                            };
+                        }
+                    };
+                    /*		dst[0] < 128 ? dst[0] * src[0] >> 7 :
+                                		255 - (255 - (2 * (dst[0] - 128)) * (255 - src[0])),
+                            		dst[1] < 128 ? dst[1] * src[1] >> 7 :
+                            			255 - (255 - (2 * (dst[1] - 128)) * (255 - src[1])),
+                            		dst[2] < 128 ? dst[2] * src[2] >> 7 :
+                            			255 - (255 - (2 * (dst[2] - 128)) * (255 - src[2])),
+                            		Math.min(255, src[3] + dst[3])
+                    */
+                    
+                case LINEAR_LIGHT:
+                	/*	if (Blend > ½) R = Base + 2×(Blend-½)
+						if (Blend <= ½) R = Base + 2×Blend - 1 */
+                    return new Blender() {
+                        @Override
+                        public int[] blend(int[] src, int[] dst) {
+                            return new int[] {
+                            		dst[0] < 128 ? dst[0] + src[0] >> 7 - 255 :
+                                        dst[0] + (src[0] - 128) >> 7,
+                                    dst[1] < 128 ? dst[1] + src[1] >> 7 - 255 :
+                                    	dst[1] + (src[1] - 128) >> 7,
+                                    dst[2] < 128 ? dst[2] + src[2] >> 7 - 255 :
+                                    	dst[2] + (src[2] - 128) >> 7,
+                                Math.min(255, src[3] + dst[3])
+                            };
+                        }
+                    };
+                case MULTIPLY:
+                    return new Blender() {
+                        @Override
+                        public int[] blend(int[] src, int[] dst) {
+                            return new int[] {
+                                (src[0] * dst[0]) >> 8,
+                                (src[1] * dst[1]) >> 8,
+                                (src[2] * dst[2]) >> 8,
+                                Math.min(255, src[3] + dst[3])
+                            };
+                        }
+                    };
+                case DIFFERENCE:
+                    return new Blender() {
+                        @Override
+                        public int[] blend(int[] src, int[] dst) {
+                            return new int[] {
+                                Math.abs(dst[0] - src[0]),
+                                Math.abs(dst[1] - src[1]),
+                                Math.abs(dst[2] - src[2]),
+                                Math.min(255, src[3] + dst[3])
+                            };
+                        }
+                    };                    
+            }
+            throw new IllegalArgumentException("Blender not implement for " + composite.getMode().name());
+        }
+    }
+}    
 

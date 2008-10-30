@@ -738,7 +738,6 @@ public class MoveValidator
                         result.addDisallowedUnit("Not all units can blitz",unit);
                 }
 
-                //Kev
                 // No neutral countries on route predicate
                 Match<Territory> noNeutral = new InverseMatch<Territory>(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral));
                 //ignore the end territory in our tests

@@ -124,7 +124,7 @@ public abstract class AbstractEndTurnDelegate
             repairBattleShips(aBridge);
         }
         m_needToInitialize = false;
-        //Kev
+
         if(pa != null && pa.getGiveUnitControl())
         {
         	changeUnitOwnership(aBridge, gameData);

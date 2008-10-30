@@ -18,6 +18,11 @@ Changes for 1.0.1.3
 
 * Add code to identify offending territory in AutoPlacementFinder exceptions for centers.txt (ComradeKev)
 
+* Add code to allow Relief Map Blending (Overlay & Linear_Light) via map.properties settings includes 3 parameters (ComradeKev) 
+	map.mapBlends=true
+	map.mapBlendMode=Linear_Light
+	map.mapBlendAlpha=0.5f
+	
 Changes for 1.0.1.2
 * Fix territory connections in Pacific
 

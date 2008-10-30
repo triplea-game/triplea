@@ -1659,6 +1659,13 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         {
             TileImageFactory.setShowReliefImages(true);
         }
+        /*//Kev
+        if(m_uiContext.getMapData().getHasMapBlends())
+        {
+            TileImageFactory.setShowMapBlends(true);
+            TileImageFactory.setShowMapBlendMode(m_uiContext.getMapData().getMapBlendMode());
+            TileImageFactory.setShowMapBlendAlpha(m_uiContext.getMapData().getMapBlendAlpha());
+        }*/
         
         m_mapPanel.setGameData(m_data);
 

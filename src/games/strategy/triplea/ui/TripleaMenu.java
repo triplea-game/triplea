@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
@@ -81,6 +82,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 {
     private JCheckBoxMenuItem showMapDetails; 
+    private JCheckBoxMenuItem showMapBlends; 
     
     TripleaMenu(TripleAFrame frame)
     {   
@@ -92,7 +94,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     {
         return m_frame.getUIContext();
     }
-    
     
     protected void addGameSpecificHelpMenus(JMenu helpMenu) 
     {
@@ -192,6 +193,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         addShowUnits(menuView);
         addMapSkinsMenu(menuView);
         addShowMapDetails(menuView);
+        addShowMapBlends(menuView);
         addChatTimeMenu(menuView);
         addShowCommentLog(menuView);
         addShowGameUuid(menuView);
@@ -660,7 +662,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
         showMapDetails.setEnabled(getUIContext().getMapData().getHasRelief());
    }
    
-
     /**
      * @param menuGame
      */
@@ -697,6 +698,46 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     /**
      * @param menuGame
      */
+    private void addShowMapBlends(JMenu menuGame)
+    {
+    	showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
+
+        showMapBlends.setSelected(TileImageFactory.getShowMapBlends());
+
+        showMapBlends.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if(TileImageFactory.getShowMapBlends() == showMapBlends.isSelected())
+                {
+                    return;
+                }
+
+                TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
+                TileImageFactory.setShowMapBlendMode(m_frame.getUIContext().getMapData().getMapBlendMode());
+                TileImageFactory.setShowMapBlendAlpha(m_frame.getUIContext().getMapData().getMapBlendAlpha());
+                Thread t = new Thread("Triplea : Show map Blends thread")
+                {
+                    public void run()
+                    {
+                    	m_frame.setScale(m_frame.getUIContext().getScale() * 100);
+                        
+                        yield();                        
+                        m_frame.getMapPanel().updateCountries(getData().getMap().getTerritories());
+
+                    }
+                };
+                t.start();
+
+            }
+        });
+        menuGame.add(showMapBlends);
+    }
+
+
+    /**
+     * @param menuGame
+     */
     private void addMapSkinsMenu(JMenu menuGame)
     {
         // beagles Mapskin code
@@ -724,8 +765,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
             mapMenuItem.addActionListener(new ActionListener()
                     {
                         public void actionPerformed(ActionEvent e)
-                        {
-                            
+                        {                            
                                 try
                                 {
                                     m_frame.updateMap(skins.get(key));
@@ -738,7 +778,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                                 {
                                     se.printStackTrace();
                                     JOptionPane.showMessageDialog(m_frame, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
-                                }
+                                }                                
 
                             }//else
 

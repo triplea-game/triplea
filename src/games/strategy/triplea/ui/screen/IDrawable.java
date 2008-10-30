@@ -42,6 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  * @author Sean Bridges
@@ -323,7 +325,7 @@ abstract class MapTileDrawable implements IDrawable
     protected final int m_y;
     protected final UIContext m_uiContext;
     protected boolean m_unscaled;
-
+    
     public MapTileDrawable(final int x, final int y, UIContext context)
     {
         m_x = x;
@@ -338,7 +340,6 @@ abstract class MapTileDrawable implements IDrawable
 
     public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
     {
-
         Image img = getImage();
 
         if (img == null)
@@ -351,6 +352,7 @@ abstract class MapTileDrawable implements IDrawable
             graphics.setTransform(unscaled);
         
         Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing tile images");
+       
         graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y, null);
         drawStopWatch.done();
 
@@ -360,9 +362,7 @@ abstract class MapTileDrawable implements IDrawable
             graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
         else
             graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
-
-    }
-        
+    }        
 
 }
 

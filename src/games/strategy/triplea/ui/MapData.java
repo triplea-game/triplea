@@ -37,6 +37,10 @@ public class MapData
 {
     private static final String DEFAULT_UNIT_SCALE_PROPERTY = "units.scale";
     private static final String HAS_RELIEF_IMAGES = "map.hasRelief";
+    private static final String HAS_MAP_BLENDS = "map.mapBlends";
+    private static final String MAP_BLEND_MODE = "map.mapBlendMode";
+    private static final String MAP_BLEND_ALPHA = "map.mapBlendAlpha";
+        
     private static final String SHOW_CAPITOL_MARKERS = "map.showCapitolMarkers";
     private static final String SHOW_TERRITORY_NAMES = "map.showTerritoryNames";
     
@@ -243,6 +247,21 @@ public class MapData
     {
         return Boolean.valueOf(m_mapProperties.getProperty(HAS_RELIEF_IMAGES, "true")).booleanValue();
     }
+ 
+    public boolean getHasMapBlends()
+    {
+        return Boolean.valueOf(m_mapProperties.getProperty(HAS_MAP_BLENDS, "false")).booleanValue();
+    } 
+
+    public String getMapBlendMode()
+    {
+        return String.valueOf(m_mapProperties.getProperty(MAP_BLEND_MODE, "normal")).toString();
+    } 
+
+    public float getMapBlendAlpha()
+    {
+        return Float.valueOf(m_mapProperties.getProperty(MAP_BLEND_ALPHA, "1.0f"));
+    } 
 
     public boolean drawCapitolMarkers()
     {
