@@ -320,14 +320,14 @@ public final class TileImageFactory
 	            int overY = 0;
 	            
 	            //Kev uncomment for implementation
-	            /*if (fromFile == null)
+	            if (fromFile == null)
 	            {
-	            	throw new IllegalStateException("The relief tile" + fromFileName + " cannot be null.");
+	            	throw new IllegalStateException("The relief tile " + fromFileName + " cannot be null.");
 	            }
 	            if (toFile == null)
 	            {
-	            	throw new IllegalStateException("The base tile" + toFileName + " cannot be null.");
-	            }*/
+	            	throw new IllegalStateException("The base tile " + toFileName + " cannot be null.");
+	            }
 	        	
 	        	/*reversing the to/from files leaves white underlays visible*/
 	        	if(fromFile != null)

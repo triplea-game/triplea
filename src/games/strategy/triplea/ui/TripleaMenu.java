@@ -779,7 +779,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                                     se.printStackTrace();
                                     JOptionPane.showMessageDialog(m_frame, se.getMessage(), "Error Changing Map Skin2", JOptionPane.OK_OPTION);
                                 }                                
-
+                                
                             }//else
 
                         }//actionPerformed

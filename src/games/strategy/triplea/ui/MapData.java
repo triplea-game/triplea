@@ -260,7 +260,7 @@ public class MapData
 
     public float getMapBlendAlpha()
     {
-        return Float.valueOf(m_mapProperties.getProperty(MAP_BLEND_ALPHA, "1.0f"));
+        return Float.valueOf(m_mapProperties.getProperty(MAP_BLEND_ALPHA, "0.5f"));
     } 
 
     public boolean drawCapitolMarkers()

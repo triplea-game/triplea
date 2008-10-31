@@ -570,7 +570,6 @@ public class MapPanel extends ImageScrollerLargeView
         
         });
     }
-    
     public void setGameData(GameData data)
     {
         //clean up any old listeners
