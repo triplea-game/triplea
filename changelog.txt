@@ -1,3 +1,5 @@
+* When executing sql in headless lobby, show error messages on the console (sgb)
+
 Changes for 1.0.1.3
 
 * Update Great War map to remove small country markers (Jason Clark)

@@ -202,6 +202,7 @@ public class HeadlessLobbyConsole
         catch(SQLException sqle)
         {
             sqle.printStackTrace();
+            out.println(sqle.getMessage());
         }
         finally
         {
