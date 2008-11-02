@@ -17,23 +17,6 @@ import games.strategy.triplea.image.BlendComposite.BlendingMode;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.io.IOException;
-import java.lang.ref.*;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.*;
-import java.util.prefs.*;
-
-import javax.imageio.ImageIO;
-
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.CompositeContext;
@@ -41,8 +24,29 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+
+import javax.imageio.ImageIO;
 
 
 public final class TileImageFactory
@@ -552,7 +556,7 @@ class ImageRef
  * @author Kevin Comcowich
  */
 
-class BlendComposite implements Composite {
+class BlendComposite implements java.awt.Composite {
     public enum BlendingMode {
         NORMAL,        
         OVERLAY, 
@@ -692,10 +696,10 @@ class BlendComposite implements Composite {
                         }
                     };
                 case OVERLAY:
-                	/*	if (Base > ½) R = 1 - (1-2×(Base-½)) × (1-Blend) 
-						if (Base <= ½) R = (2×Base) × Blend
+                	/*	if (Base > pi) R = 1 - (1-2?(Base-pi)) ? (1-Blend) 
+						if (Base <= pi) R = (2?Base) pi Blend
 					Version from code has:
-					  	if (Base > ½) R = 1 - (1-Base) × (1-Blend) x 2 */
+					  	if (Base > pi) R = 1 - (1-Base) ? (1-Blend) x 2 */
                     return new Blender() {
                         @Override
                         public int[] blend(int[] src, int[] dst) {
@@ -720,8 +724,8 @@ class BlendComposite implements Composite {
                     */
                     
                 case LINEAR_LIGHT:
-                	/*	if (Blend > ½) R = Base + 2×(Blend-½)
-						if (Blend <= ½) R = Base + 2×Blend - 1 */
+                	/*	if (Blend > pi) R = Base + 2?(Blend-pi)
+						if (Blend <= pi) R = Base + 2?Blend - 1 */
                     return new Blender() {
                         @Override
                         public int[] blend(int[] src, int[] dst) {
