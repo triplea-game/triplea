@@ -25,8 +25,6 @@ import games.strategy.engine.data.properties.*;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.util.Version;
-//Kev added
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
 
 import java.io.*;
@@ -657,9 +655,6 @@ public class GameParser
                     {
                         properties.set(property,value);
                     }
-
-
-
                 }
             }
         }

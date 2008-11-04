@@ -18,6 +18,7 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Composite;
 import java.awt.CompositeContext;
 import java.awt.Graphics;
@@ -206,6 +207,10 @@ public final class TileImageFactory
     public Image getBaseTile(int x, int y)
     {
         String fileName = getBaseTileImageName(x, y);
+
+        if(m_resourceLoader.getResource(fileName) == null)
+        	return null;
+        
         return getImage(fileName, false);
     }
     
@@ -244,9 +249,13 @@ public final class TileImageFactory
             if (rVal != null)
                 return rVal;
 
+            //This is null if there is no image
             URL url = m_resourceLoader.getResource(fileName);
-            if (url == null)
-                return null;
+            /*if (url == null)
+            	return null;*/
+            //return null if url is null and (not blending or relief or transparent)
+            if((!s_showMapBlends || !s_showReliefImages || !transparent) && url == null)
+            	return null;
 
             loadImage(url, fileName, transparent, true, true);
         }
@@ -284,133 +293,170 @@ public final class TileImageFactory
     }
 
     /**
+     * @param input
+     * @return compatibleImage
+     * This method produces a blank white tile for use in blending.
+     */
+    private static BufferedImage makeMissingBaseTile(BufferedImage input, Color baseColor)
+    {    	
+    	BufferedImage compatibleImage = configuration.createCompatibleImage(input.getWidth(null),input.getHeight(null), Transparency.TRANSLUCENT);
+    	Graphics2D g2 = compatibleImage.createGraphics();
+    	g2.fillRect(0, 0, input.getWidth(null), input.getHeight(null));
+    	g2.drawImage(compatibleImage, 0, 0, null);
+    	g2.dispose();
+    	return compatibleImage;
+    }
+       
+    /**
      * @param imageLocation
      * @return
      */
     private Image loadImage(URL imageLocation, String fileName, boolean transparent, boolean cache, boolean scale)
-    {
-        {
-		    Image image;
-		   if (s_showMapBlends && s_showReliefImages && transparent)
-		    {
-			   //MapPanel.setScale();
-	            BufferedImage fromFile = null;
-	        	BufferedImage toFile = null;
-	               	            
-	          //The relief tile
-	        	String fromFileName = fileName.replace("baseTiles", "reliefTiles");
-	        	URL urlFrom = m_resourceLoader.getResource(fromFileName);	        			
-	        	//The base tile
-	        	String toFileName = fileName.replace("reliefTiles", "baseTiles");
-	        	URL urlDest = m_resourceLoader.getResource(toFileName);
-
-	        	//Get buffered images        	
-	        	try{
-	        		Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading images:" + urlFrom + " and " + urlDest);
-	        		if (urlFrom != null)
-	        		fromFile = loadCompatibleImage(urlFrom) ;
-
-	        		if (urlDest != null)
-	        		toFile = loadCompatibleImage(urlDest);
-	        		loadingImages.done();
-	        	} catch (IOException e) {
-	                e.printStackTrace();
-	            }	            	
-	        	
-
-	        	//This does the blend
-	        	float alpha = getShowMapBlendAlpha();
-	            int overX = 0;
-	            int overY = 0;
-	            
-	            //Kev uncomment for implementation
-	            if (fromFile == null)
-	            {
-	            	throw new IllegalStateException("The relief tile " + fromFileName + " cannot be null.");
-	            }
-	            if (toFile == null)
-	            {
-	            	throw new IllegalStateException("The base tile " + toFileName + " cannot be null.");
-	            }
-	        	
-	        	/*reversing the to/from files leaves white underlays visible*/
-	        	if(fromFile != null)
-	        	{
-		        	Graphics2D g2 = fromFile.createGraphics();	
-		        	
-	        		if(scale && m_scale != 1.0)
-	                {
-	                    AffineTransform transform = new AffineTransform();
-	                    transform.scale(m_scale, m_scale);
-	                    g2.setTransform(transform);
-	                }
-		        	
-	        		g2.drawImage(fromFile, overX, overY, null);
-	        		
-	        		//gets the blending mode from the map.properties file (sometimes)
-	        		BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
-	        		BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
-	        		
-	        		//g2.setComposite(BlendComposite.Overlay.derive(alpha));
-		            g2.setComposite(blendComposite);
-		            g2.drawImage(toFile, overX, overY, null);		                
-		            
-		            ImageRef ref = new ImageRef(fromFile);
-		            if(cache)
-		            	getM_imageCache().put(fileName, ref);
-	
-	                return fromFile;	
-	        	}
-	        	else
-	        	{
-	        		ImageRef ref = new ImageRef(toFile);
-		            if(cache)
-		            	getM_imageCache().put(fileName, ref);	
-	        		return toFile;
-	        	} 	        	
-		    }
-		   else
-		    {		    
-			    try
-			    {
-			        Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading image:" + imageLocation);
-	               
-	                BufferedImage fromFile = ImageIO.read(imageLocation);
-	                loadingImages.done();
-	                
-	                Stopwatch copyingImage = new Stopwatch(s_logger, Level.FINE, "Copying image:" + imageLocation);
-	                //if we dont copy, drawing the tile to the screen takes significantly longer
-	                //has something to do with the colour model and type of the images
-	                //some images can be copeid quickly to the screen
-	                //this step is a significant bottle neck in the image drawing process
-	                //we should try to find a way to avoid it, and load the 
-	                //png directly as the right type
-	                image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
-	                Graphics2D g = (Graphics2D) image.getGraphics();
-	                if(scale && m_scale != 1.0)
-	                {
-	                    AffineTransform transform = new AffineTransform();
-	                    transform.scale(m_scale, m_scale);
-	                    g.setTransform(transform);
-	                }
-	                
-	                g.drawImage(fromFile, 0,0, null);
-	                g.dispose();
-	                fromFile.flush();
-	                copyingImage.done();
-			        
-			    } catch (IOException e)
-			    {
-			        throw new IllegalStateException(e.getMessage());
-			    }
-			    
-	            ImageRef ref = new ImageRef(image);
-	            if(cache)
-	                getM_imageCache().put(fileName, ref);
-	            return image;	
-		    }    		    
-        }
+    {    	
+    	if (s_showMapBlends && s_showReliefImages && transparent)
+	    {
+	    	return loadBlendedImage(imageLocation, fileName, transparent,cache, scale); 	        	
+	    }
+	    else 
+	    {	    	
+	    	return loadUnblendedImage(imageLocation, fileName, transparent,cache, scale);	
+	    }       	    
     }
+
+	private Image loadBlendedImage(URL imageLocation, String fileName, boolean transparent, boolean cache, boolean scale) {
+				
+		    BufferedImage reliefFile = null;
+			BufferedImage baseFile = null;
+		       	            
+		  //The relief tile
+			String reliefFileName = fileName.replace("baseTiles", "reliefTiles");
+			URL urlrelief = m_resourceLoader.getResource(reliefFileName);	        			
+			//The base tile
+			String baseFileName = fileName.replace("reliefTiles", "baseTiles");
+			URL urlBase = m_resourceLoader.getResource(baseFileName);
+			//blank relief tile
+			String blankReliefFileName = "reliefTiles/blank_relief.png";
+			URL urlBlankRelief = m_resourceLoader.getResource(blankReliefFileName);
+			
+			/*if(imageLocation.equals(urlBase) && !transparent)
+				return loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);*/
+
+			//Get buffered images        	
+			try{
+				Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading images:" + urlrelief + " and " + urlBase);
+				if (urlrelief != null)
+					reliefFile = loadCompatibleImage(urlrelief) ;
+
+				if (urlBase != null)
+					baseFile = loadCompatibleImage(urlBase);
+				loadingImages.done();
+			} catch (IOException e) {
+		        e.printStackTrace();
+		    }	
+			/*
+			if(imageLocation.equals(urlBase) && !transparent && reliefFile != null)
+				return loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);*/
+
+			//This does the blend
+			float alpha = getShowMapBlendAlpha();
+		    int overX = 0;
+		    int overY = 0;
+		    		    		    
+		    if (reliefFile == null)
+		    {		    	
+				try{
+					reliefFile = loadCompatibleImage(urlBlankRelief);
+				} catch (IOException e) {
+			        e.printStackTrace();
+			    }
+		    }
+				            
+		    //This fixes the blank land territories
+		    if (baseFile == null)
+		    {
+		    	Color baseColor = null;
+		    	baseColor = Color.white;
+		    	baseFile = makeMissingBaseTile(reliefFile, baseColor);
+		    }
+			
+			/*reversing the to/from files leaves white underlays visible*/
+			if(reliefFile != null)
+			{
+		    	Graphics2D g2 = reliefFile.createGraphics();	
+		    	
+				if(scale && m_scale != 1.0)
+		        {
+		            AffineTransform transform = new AffineTransform();
+		            transform.scale(m_scale, m_scale);
+		            g2.setTransform(transform);
+		        }
+		    	
+				g2.drawImage(reliefFile, overX, overY, null);
+				
+				//gets the blending mode from the map.properties file (sometimes)
+				BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
+				BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
+				
+				//g2.setComposite(BlendComposite.Overlay.derive(alpha));
+		        g2.setComposite(blendComposite);
+		        g2.drawImage(baseFile, overX, overY, null);		                
+		        
+		        ImageRef ref = new ImageRef(reliefFile);
+		        if(cache)
+		        	getM_imageCache().put(fileName, ref);
+
+		        return reliefFile;	
+			}
+			else
+			{
+				ImageRef ref = new ImageRef(baseFile);
+		        if(cache)
+		        	getM_imageCache().put(fileName, ref);	
+				return baseFile;
+			}
+	}
+
+	private Image loadUnblendedImage(URL imageLocation, String fileName, boolean transparent, boolean cache, boolean scale) {
+		Image image;
+		try
+		{
+		    Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading image:" + imageLocation);
+		   
+		    BufferedImage fromFile = ImageIO.read(imageLocation);
+		    loadingImages.done();
+		    
+		    Stopwatch copyingImage = new Stopwatch(s_logger, Level.FINE, "Copying image:" + imageLocation);
+		    //if we dont copy, drawing the tile to the screen takes significantly longer
+		    //has something to do with the colour model and type of the images
+		    //some images can be copeid quickly to the screen
+		    //this step is a significant bottle neck in the image drawing process
+		    //we should try to find a way to avoid it, and load the 
+		    //png directly as the right type
+		   
+		    image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
+		    Graphics2D g = (Graphics2D) image.getGraphics();
+		    if(scale && m_scale != 1.0)
+		    {
+		        AffineTransform transform = new AffineTransform();
+		        transform.scale(m_scale, m_scale);
+		        g.setTransform(transform);
+		    }
+		    
+		    g.drawImage(fromFile, 0,0, null);
+		    g.dispose();
+		    fromFile.flush();
+		    copyingImage.done();
+		    
+		} catch (IOException e)
+		{
+		    throw new IllegalStateException(e.getMessage());
+		}
+		
+		ImageRef ref = new ImageRef(image);
+		if(cache)
+		    getM_imageCache().put(fileName, ref);
+		return image;
+	}
     public Composite getComposite() {
         return this.composite;
     }
