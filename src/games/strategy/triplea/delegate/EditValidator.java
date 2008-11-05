@@ -23,6 +23,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.Collection;
@@ -89,7 +90,37 @@ public class EditValidator
         if (territory.isWater())
         {
             if (!Match.allMatch(units, Matches.UnitIsSea))
-                return "Can't add land units to water";
+            {
+            	if(Match.allMatch(units, Matches.UnitIsLand))
+            	{           		
+	            	//Set up matches
+	            	TransportTracker transportTracker = new TransportTracker();
+	            	Match<Unit> friendlyTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport,Matches.alliedUnit(player, data));
+	            	Match<Unit> friendlyLandUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsLand,Matches.alliedUnit(player, data));
+	            	//Determine transport capacity
+	                int transportCapacityTotal = MoveValidator.getTransportCapacityFree(territory, player, data, transportTracker);
+	                int transportCost = MoveValidator.getTransportCost(territory.getUnits().getMatches(friendlyLandUnits)) + MoveValidator.getTransportCost(units);
+	                //Get any transports in the sea zone
+	            	Collection<Unit> transports = territory.getUnits().getMatches(friendlyTransports);
+	            	
+	            	if(transports.size() == 0 || transportCapacityTotal - transportCost < 0)
+	            		return "Can't add land units to water";
+            	}
+            	if (Match.allMatch(units, Matches.UnitIsAir))
+            	{
+            		//Set up matches
+	            	Match<Unit> friendlyCarriers = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier,Matches.alliedUnit(player, data));
+	            	Match<Unit> friendlyAirUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir,Matches.alliedUnit(player, data));
+	            	//Determine transport capacity
+	                int carrierCapacityTotal = MoveValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers));
+	                int carrierCost = MoveValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits)) + MoveValidator.carrierCost(units);
+	                //Get any transports in the sea zone
+	            	Collection<Unit> carriers = territory.getUnits().getMatches(friendlyCarriers);
+	            	
+	            	if(carriers.size() == 0 || carrierCapacityTotal - carrierCost < 0)
+	            		return "Can't add land units to water";
+            	}
+            }
         }
         else
         {
