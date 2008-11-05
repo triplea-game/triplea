@@ -953,7 +953,8 @@ public class MoveValidator
             {
             	Territory terrNext = (Territory) neighboriter.next();
             	TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
-            	if ((taEnd != null && taEnd.isAirBase() && data.getAllianceTracker().isAllied(route.getEnd().getOwner(), unit.getOwner())) || (taNeighbor != null && taNeighbor.isAirBase()) && data.getAllianceTracker().isAllied(terrNext.getOwner(), unit.getOwner()))
+            	if ((taEnd != null && taEnd.isAirBase() && data.getAllianceTracker().isAllied(route.getEnd().getOwner(), unit.getOwner())) || 
+            			(taNeighbor != null && taNeighbor.isAirBase()) && data.getAllianceTracker().isAllied(terrNext.getOwner(), unit.getOwner()))
             	{
             		movement++;
             		break;
@@ -976,7 +977,7 @@ public class MoveValidator
         if(airThatMustLandOnCarriers.isEmpty())
             return result;
         
-        //not everything can land on a carrier
+        //not everything can land on a carrier (i.e. bombers)
         Match<Unit> cantLandMatch = new InverseMatch<Unit>(Matches.UnitCanLandOnCarrier);
         for (Unit unit : Match.getMatches(airThatMustLandOnCarriers, cantLandMatch))
         {
@@ -988,8 +989,12 @@ public class MoveValidator
         
         //now, find out where we can land on carriers
         IntegerMap<Integer> carrierCapacity = new IntegerMap<Integer>();
+      
+        //If it's > the fighter's max moves, add in the potential movement for owned carriers
+        //must be owned carriers if they're going to move
+        	int maxMoveIncludingCarrier = maxMovement +2;
         
-        Iterator<Territory> candidates = data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();
+        Iterator<Territory> candidates = data.getMap().getNeighbors(route.getEnd(), maxMoveIncludingCarrier).iterator();
         while (candidates.hasNext())
         {
             Territory territory = (Territory) candidates.next();
@@ -1000,10 +1005,11 @@ public class MoveValidator
             
             //we dont want to count units that moved with us
             Collection<Unit> unitsAtLocation = territory.getUnits().getMatches(Matches.alliedUnit(player, data));
+            Collection<Unit> ownedUnitsAtLocation = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
             unitsAtLocation.removeAll(units);
             
             //how much spare capacity do they have?
-            int extraCapacity = MoveValidator.carrierCapacity(unitsAtLocation) - MoveValidator.carrierCost(unitsAtLocation);
+            int extraCapacity = MoveValidator.carrierCapacity(unitsAtLocation) - MoveValidator.carrierCost(ownedUnitsAtLocation);
             extraCapacity = Math.max(0, extraCapacity);
             
             // check carrierMustMoveWith, and reserve carrier capacity for allied planes as required
@@ -1019,8 +1025,16 @@ public class MoveValidator
                     continue;
                 alliedMustMoveCost += MoveValidator.carrierCost(mustMovePlanes);
             }
-            carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost);
-            
+          
+            //If the territory is within the maxMovement
+            if (route.getLength() < maxMovement)
+            	carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - MoveValidator.carrierCost(units));
+            else 
+            {            	
+            	//Can move OWNED carriers to get them.
+            	if(ownedCarrier.size()>0  && MoveValidator.carrierCapacity(ownedCarrier) - mustMoveWith.size() - route.getEnd().getUnits().size() >0)
+            		carrierCapacity.put(distance, carrierCapacity.getInt(distance) + extraCapacity - alliedMustMoveCost - route.getEnd().getUnits().size());
+            }
         }
         	
         Collection<Unit> unitsAtEnd = route.getEnd().getUnits().getMatches(Matches.alliedUnit(player, data));
@@ -1054,7 +1068,7 @@ public class MoveValidator
 
         carrierCapacity.put(new Integer(0), MoveValidator.carrierCapacity(unitsAtEnd) - alliedMustMoveCost);
 
-        
+         
         for (Unit unit : Match.getMatches(airThatMustLandOnCarriers, Matches.UnitCanLandOnCarrier))
         {
             int carrierCost = UnitAttachment.get(unit.getType()).getCarrierCost();
@@ -1070,10 +1084,18 @@ public class MoveValidator
                     break;
                 }
 
+                //Check carriers that are within 'i' zones
                 Integer current = new Integer(i);
                 if(carrierCapacity.getInt(current) >= carrierCost && carrierCost != -1 )
                 {
                     carrierCapacity.put(current,carrierCapacity.getInt(current) - carrierCost);
+                    break;
+                }
+                //Check carriers that could potentially move to within 'i' zones
+                Integer potentialWithNonComMove = new Integer(i) + 2;
+                if(carrierCapacity.getInt(potentialWithNonComMove) >= carrierCost && carrierCost != -1 )
+                {
+                    carrierCapacity.put(potentialWithNonComMove,carrierCapacity.getInt(potentialWithNonComMove) - carrierCost);
                     break;
                 }
             }

@@ -1,5 +1,7 @@
 Changes for 1.0.1.4
 
+* Fix bug [ 1228661 ] Fighters can't move to combat unless carrier moves in range (ComradeKev)
+
 * Fix bug [ 1951595 ] edit mode, fgt and inf placement in sz (ComradeKev)
 
 * Tweak blending code to account for missing base/relief tiles (ComradeKev)
