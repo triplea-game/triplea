@@ -1,5 +1,7 @@
 Changes for 1.0.1.4
 
+* Add blank_relief.png to various maps to fix exceptions and fix misspellings in POS *.txt files (ComradeKev)
+
 * Fix bug [ 2153973 ] BattleCalc during EDIT hangs the game (ComradeKev)
 
 * Fix bug [ 1228661 ] Fighters can't move to combat unless carrier moves in range (ComradeKev)
