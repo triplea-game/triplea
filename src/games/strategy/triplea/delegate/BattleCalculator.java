@@ -134,8 +134,8 @@ public class BattleCalculator
     public static CasualtyDetails selectCasualties(String step, PlayerID player, Collection<Unit> targets, IDelegateBridge bridge, String text,
             GameData data, DiceRoll dice, boolean defending, GUID battleID, boolean headLess)
     {
-        boolean isEditMode = (dice == null);
-        int hits = isEditMode ? 0 : dice.getHits();
+    	boolean isEditMode = EditDelegate.getEditMode(data);
+    	int hits = dice.getHits();
         if (!isEditMode && hits == 0)
             return new CasualtyDetails(Collections.<Unit>emptyList(), Collections.<Unit>emptyList(), true);
 

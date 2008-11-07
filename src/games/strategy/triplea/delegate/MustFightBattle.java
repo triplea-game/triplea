@@ -2513,7 +2513,7 @@ class Fire implements IExecutable
         if (isEditMode)
         {
             CasualtyDetails message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, 
-                    m_attackableUnits, bridge, m_text, data, null,!m_defending, m_battleID, m_isHeadless);
+                    m_attackableUnits, bridge, m_text, data, m_dice,!m_defending, m_battleID, m_isHeadless);
 
             m_killed = message.getKilled();
             m_damaged = message.getDamaged();
@@ -2648,8 +2648,7 @@ class Fire implements IExecutable
         
         stack.push(notifyCasualties);
         stack.push(selectCasualties);
-        if (!isEditMode)
-            stack.push(rollDice);
+        stack.push(rollDice);
         
         return;
         
