@@ -58,7 +58,17 @@ public abstract class ActionPanel extends JPanel
 
     public final boolean isFourthEdition()
     {
-        return getData().getProperties().get(Constants.FOURTH_EDITION, false);
+        return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    }
+    
+    public final boolean isRestrictedPurchase()
+    {
+        return games.strategy.triplea.Properties.getRestrictedPurchase(m_data);
+    }
+    
+    public final boolean isSelectableTechRoll()
+    {
+        return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);
     }
     
     /**

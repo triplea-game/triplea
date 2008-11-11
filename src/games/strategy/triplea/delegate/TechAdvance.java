@@ -48,9 +48,9 @@ public abstract class TechAdvance implements java.io.Serializable
 
     public static List<TechAdvance> getTechAdvances(GameData data)
     {
-        boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
+        boolean isFourthEdition = games.strategy.triplea.Properties.getFourthEdition(data);
         
-        if(fourthEdition)
+        if(isFourthEdition)
             return s_4thEditionAdvances;
         else
             return s_3rdEditionAdvances;

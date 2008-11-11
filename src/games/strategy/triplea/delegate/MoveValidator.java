@@ -79,6 +79,7 @@ public class MoveValidator
         return true;
     }
 
+    
     /**
      * Tests the given unit to see if it has the movement neccessary
      * to move.
@@ -211,10 +212,9 @@ public class MoveValidator
         
         CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
         blitzableUnits.add(Matches.alliedUnit(player, data));
-        boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
         //4th edition, cant blitz through factories and aa guns
         //2nd edition you can 
-        if(!fourthEdition)
+        if(!isFourthEdition(data) || IsBlitzThroughFactoriesAndAA(data))
         {
             blitzableUnits.add(Matches.UnitIsAAOrFactory);
         }
@@ -459,9 +459,14 @@ public class MoveValidator
         return Match.someMatch(units, notAirOrSea);
     }
 
-    private static boolean isFourEdition(GameData data)
+    private static boolean isFourthEdition(GameData data)
     {
-        return data.getProperties().get(Constants.FOURTH_EDITION, false);
+        return games.strategy.triplea.Properties.getFourthEdition(data);
+    }
+
+    private static boolean IsBlitzThroughFactoriesAndAA(GameData data)
+    {
+        return games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAA(data);
     }
 
     private static int getNeutralCharge(GameData data, Route route)
@@ -805,9 +810,9 @@ public class MoveValidator
                 }
             }
         }
-
+//COMCOWICH
         //only allow aa into a land territory if one already present.
-        if (!isFourEdition(data) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
+        if (!isFourthEdition(data) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
                 && !route.getEnd().isWater())
         {
             for (Unit unit : Match.getMatches(units, Matches.UnitIsAA))
@@ -1477,7 +1482,7 @@ public class MoveValidator
         Match<Territory> territoryIsEnd = Matches.territoryIs(end);
 
         Route defaultRoute;
-        if (isFourEdition(data))
+        if (isFourthEdition(data))
             defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchOr(noNeutral, territoryIsEnd));
         else
             defaultRoute = data.getMap().getRoute(start, end);
@@ -1526,7 +1531,7 @@ public class MoveValidator
         
         for(Match<Territory> t : tests) {            
             Match<Territory> testMatch = null;
-            if (isFourEdition(data))
+            if (isFourthEdition(data))
                 testMatch = new CompositeMatchAnd<Territory>(t, noNeutral);
             else
                 testMatch = t;

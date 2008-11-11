@@ -168,7 +168,7 @@ public class StrategicBombingRaidBattle implements Battle
 
                 bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("ipc", m_bombingRaidCost));
 
-                if(isPacificEdition())
+                if(isPacificEdition() || isSBRVictoryPoints())
                 {
                     if(m_defender.getName().equals(Constants.JAPANESE)) 
                     {
@@ -297,12 +297,37 @@ public class StrategicBombingRaidBattle implements Battle
      */
     private boolean isFourthEdition()
     {
-        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
 
+    private boolean isRandomAACasualties()
+    {
+    	return games.strategy.triplea.Properties.getRandomAACasualties(m_data);
+    }
+
+    private boolean isLimitSBRDamageToProduction()
+    {
+    	return games.strategy.triplea.Properties.getLimitSBRDamageToProduction(m_data);
+    }
+
+	private boolean isLimitSBRDamagePerTurn(GameData data)
+	{
+    	return games.strategy.triplea.Properties.getLimitSBRDamagePerTurn(data);
+	}
+	
+	private boolean isIPCCap(GameData data)
+	{
+    	return games.strategy.triplea.Properties.getIPCCap(data);
+	}
+	
+    private boolean isSBRVictoryPoints()
+    {
+        return games.strategy.triplea.Properties.getSBRVictoryPoint(m_data);
+    }
+    
     private boolean isPacificEdition()
     {
-        return m_data.getProperties().get(Constants.PACIFIC_EDITION, false);
+        return games.strategy.triplea.Properties.getPacificEdition(m_data);
     }
 
     private Collection<Unit> calculateCasualties(IDelegateBridge bridge, DiceRoll dice)
@@ -315,9 +340,8 @@ public class StrategicBombingRaidBattle implements Battle
             CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, 
                     m_units, bridge, text, m_data, /*dice*/ null,/*defending*/ false, m_battleID, /*headless*/ false);
             return casualtySelection.getKilled();
-        }
-        //else if (isFourthEdition())        	
-    	else if (isFourthEdition() && !isChooseAA())
+        }     	
+    	else if ((isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
         {
             casualties = BattleCalculator.fourthEditionAACasualties(m_units, dice, bridge);
         }
@@ -448,13 +472,13 @@ public class StrategicBombingRaidBattle implements Battle
             }
             
             int cost = 0;
-            boolean fourthEdition = m_data.getProperties().get(Constants.FOURTH_EDITION, false);
             boolean lhtrHeavyBombers = m_data.getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
             
             int production = TerritoryAttachment.get(m_battleSite).getProduction();
 
             Iterator<Unit> iter = m_units.iterator();
             int index = 0;
+            Boolean limitDamage = isFourthEdition() || isLimitSBRDamageToProduction();
 
             while (iter.hasNext())
             {
@@ -489,14 +513,14 @@ public class StrategicBombingRaidBattle implements Battle
                 }
                 
 
-                if (fourthEdition)
+                if (limitDamage)
                     cost += Math.min(costThisUnit, production);
                 else
                     cost += costThisUnit;
             }
 
             // Limit ipcs lost if we would like to cap ipcs lost at territory value
-            if (m_data.getProperties().get(Constants.IPC_CAP, false))
+            if (isIPCCap(m_data) || isLimitSBRDamagePerTurn(m_data))
             {
                 int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(m_battleSite);
                 int limit = Math.max(0, production - alreadyLost);

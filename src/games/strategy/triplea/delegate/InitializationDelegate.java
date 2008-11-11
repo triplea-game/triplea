@@ -121,9 +121,8 @@ public class InitializationDelegate implements IDelegate
      */
     private void initDestroyerArtillery(GameData data, IDelegateBridge aBridge)
     {
-        boolean fourthEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
         boolean addArtilleryAndDestroyers = data.getProperties().get(Constants.USE_DESTROYERS_AND_ARTILLERY, false);
-        if (!fourthEdition && addArtilleryAndDestroyers)
+        if (!isFourthEdition(data) && addArtilleryAndDestroyers)
         {
             CompositeChange change = new CompositeChange();
             ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
@@ -146,6 +145,10 @@ public class InitializationDelegate implements IDelegate
         }
     }
 
+    private boolean isFourthEdition(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getFourthEdition(data);
+    }
     /**
      * @param data
      * @param aBridge

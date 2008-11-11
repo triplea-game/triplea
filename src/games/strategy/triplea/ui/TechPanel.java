@@ -123,7 +123,7 @@ public class TechPanel extends ActionPanel
         public void actionPerformed(ActionEvent event)
         {
             TechAdvance advance = null;
-            if (isFourthEdition())
+            if (isFourthEdition() || isSelectableTechRoll())
             {
                 List<TechAdvance> available = getAvailableTechs();
                 if (available.isEmpty())

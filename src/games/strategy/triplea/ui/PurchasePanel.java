@@ -165,7 +165,7 @@ public class PurchasePanel extends ActionPanel
         //give a warning if the 
         //player tries to produce too much
       //Kev check here for factory max bug/feature request
-        if(isFourthEdition()) 
+        if(isFourthEdition() || isRestrictedPurchase()) 
         {
             int totalProd = 0;
             getData().acquireReadLock();

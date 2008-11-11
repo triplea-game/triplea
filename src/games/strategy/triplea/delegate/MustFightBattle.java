@@ -278,7 +278,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         // transports
         Map<Unit, Collection<Unit>> dependencies = transporting(units);
         // If fourth edition, allied air on our carriers are also dependents
-        if (isFourthEdition())
+        if (isFourthEdition() || isAlliedAirDependents())
         {
             dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
         }
@@ -591,7 +591,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
         //defender subs sneak attack        
         //Defending subs have no sneak attack in Pacific/Europe Editions or if Destroyers are present
-        if (!isEditMode && m_battleSite.isWater() && isFourthEdition() && !isPacificEdition() && !isEuropeEdition() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
+        if (!isEditMode && m_battleSite.isWater() && (isFourthEdition() || isDefendingSubsSneakAttack()) && !isPacificEdition() && !isEuropeEdition() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
         {
             if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
             {
@@ -792,7 +792,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                    if (isFourthEdition())
+                    if (isFourthEdition() || isDefendingSubsSneakAttack())
                         defendSubs(bridge, defendingSubs);
                 }
                 
@@ -819,7 +819,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
                 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                 {
-                    if (!isFourthEdition())
+                    if (!isFourthEdition() && !isDefendingSubsSneakAttack())
                     {
                         Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
                                 + m_defendingWaitingToDie.size());
@@ -1017,7 +1017,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean canAttackerRetreatPlanes()
     {
-        return isFourthEdition() && m_amphibious
+        return (isFourthEdition() || isAttackerRetreatPlanes()) && m_amphibious
                 && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
     }
 
@@ -1662,7 +1662,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
 
         //4th edition, bombardment casualties cant return fire
-        boolean canReturnFire = !isFourthEdition();
+        boolean canReturnFire = (!isFourthEdition() && isNavalBombardCasualtiesReturnFire());
 
         if (bombard.size() > 0 && attacked.size() > 0)
         {
@@ -1685,7 +1685,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean isFourthEdition()
     {
-        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
     
     /**
@@ -1704,6 +1704,55 @@ public class MustFightBattle implements Battle, BattleStepStrings
         return m_data.getProperties().get(Constants.EUROPE_EDITION, false);
     }
 
+    /**
+     * @return
+     */
+    private boolean isAlliedAirDependents()
+    {
+    	return games.strategy.triplea.Properties.getAlliedAirDependents(m_data);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isDefendingSubsSneakAttack()
+    {
+    	return games.strategy.triplea.Properties.getDefendingSubsSneakAttack(m_data);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isAttackerRetreatPlanes()
+    {
+    	return games.strategy.triplea.Properties.getAttackerRetreatPlanes(m_data);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isNavalBombardCasualtiesReturnFire()
+    {
+    	return games.strategy.triplea.Properties.getNavalBombardCasualtiesReturnFire(m_data);
+    }
+    
+
+    /**
+     * @return
+     */
+    private boolean isRandomAACasualties()
+    {
+    	return games.strategy.triplea.Properties.getRandomAACasualties(m_data);
+    }
+    
+    /**
+     * @return
+     */
+    private boolean isSurvivingAirMoveToLand()
+    {
+    	return games.strategy.triplea.Properties.getSurvivingAirMoveToLand(m_data);
+    }
+    
     /**
      * Return the territories where there are amphibious attacks.
      */
@@ -1811,8 +1860,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             // if 4th edition choose casualties randomnly
             // we can do that by removing planes at positions in the list where
             // there was a corresponding hit in the dice roll.
-            //if (isFourthEdition())
-            if (isFourthEdition() && !isChooseAA())
+            if ((isFourthEdition() || isRandomAACasualties()) && !isChooseAA())
             {
                 m_casualties = BattleCalculator.fourthEditionAACasualties(attackable,
                         m_dice, bridge);
@@ -2163,7 +2211,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }            
         }        
         
-        if (isFourthEdition())
+        if (isFourthEdition() || isSurvivingAirMoveToLand())
 		{
         	Territory territory = null;
         	while (canLandHere.size() > 1 && m_defendingAir.size() > 0)

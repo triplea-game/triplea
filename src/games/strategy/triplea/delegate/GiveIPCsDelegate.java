@@ -67,7 +67,7 @@ public class GiveIPCsDelegate implements IDelegate
 
 		m_data = gameData;
 
-		if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+		if(isFourthEdition())
 		    return;
 	}
 
@@ -81,6 +81,10 @@ public class GiveIPCsDelegate implements IDelegate
 		return m_displayName;
 	}
 	
+	private boolean isFourthEdition()
+    {
+    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    }
 	/**
 	 * Called before the delegate will stop running.
 	 */

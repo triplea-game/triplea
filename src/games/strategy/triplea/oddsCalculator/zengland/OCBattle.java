@@ -109,7 +109,12 @@ public class OCBattle {
 	public float getLossPercent() {
 		return lossPercent;
 	}
-
+	
+	private boolean isFourthEdition(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getFourthEdition(data);
+    }
+	
 	public OCBattle(Vector<UnitGroup> attackers, Vector<UnitGroup> defenders, int rounds, boolean preserveLand, boolean aaPresent, boolean landBattle, boolean rollAntiAirSep, boolean isAmphib, Vector<String> ool) {
 		super();
 		setAttackers(attackers);
@@ -141,7 +146,7 @@ public class OCBattle {
 	//	Vector terOOL = null;
 			// get OOL from game data
 		
-		terrRollAntiAirSep = m_data.getProperties().get(games.strategy.triplea.Constants.FOURTH_EDITION, false);
+		terrRollAntiAirSep = isFourthEdition(m_data);
 		
       Set units = UnitSeperator.categorize(territory.getUnits().getUnits());
       Iterator iter = units.iterator();
@@ -211,7 +216,7 @@ public class OCBattle {
        			maxHp = 2;
        		else
        			maxHp = 1;
-       		blocksNoRetHit = ua.getIsDestroyer() && m_data.getProperties().get(games.strategy.triplea.Constants.FOURTH_EDITION, false);
+       		blocksNoRetHit = ua.getIsDestroyer() && isFourthEdition(m_data);
        		boostsInfAtt = ua.isArtillery();
        		boostAmphib = ua.getIsMarine();
        	  }

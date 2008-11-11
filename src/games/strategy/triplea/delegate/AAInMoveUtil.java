@@ -61,9 +61,9 @@ class AAInMoveUtil implements Serializable
 		return m_data.getProperties().get(Constants.CHOOSE_AA, false);
 	}
     	
-    private boolean isFourEdition()
+    private boolean isFourthEdition()
     {
-        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+        return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
     
     private boolean isAlwaysONAAEnabled()
@@ -248,8 +248,8 @@ class AAInMoveUtil implements Serializable
         String text = "Select " + dice.getHits() + " casualties from aa fire in " + territory.getName();
         // If fourth edition, select casualties randomnly
         Collection<Unit> casualties = null;
-        //if (isFourEdition())
-        if (isFourEdition() && !isChooseAA())
+
+        if (isFourthEdition() && !isChooseAA())
         {
             casualties = BattleCalculator.fourthEditionAACasualties(units, dice, m_bridge);
         } else

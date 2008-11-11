@@ -487,10 +487,9 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return null;
     }
 
-    protected boolean isFourthEdition()
+    protected boolean isFourthEdition()    
     {
-
-        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+        return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
 
     private boolean wasConquered(Territory t)

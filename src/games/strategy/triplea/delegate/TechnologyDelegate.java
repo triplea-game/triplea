@@ -84,10 +84,15 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
 
     private boolean isFourthEdition()
     {
-        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+        return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
 
-    
+
+    private boolean isSelectableTechRoll()
+    {
+        return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);
+    }
+
     public TechResults rollTech(int techRolls, TechAdvance techToRollFor)
     {
         boolean canPay = checkEnoughMoney(techRolls);
@@ -107,7 +112,8 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
             random = m_bridge.getRandom(Constants.MAX_DICE, techRolls, annotation);
         int techHits = getTechHits(random);
 
-        String directedTechInfo = isFourthEdition() ? " for "
+        boolean selectableTech = isSelectableTechRoll() || isFourthEdition();
+        String directedTechInfo = selectableTech ? " for "
                 + techToRollFor : "";
         m_bridge.getHistoryWriter().startEvent(
                 m_player.getName()
@@ -119,7 +125,7 @@ public class TechnologyDelegate implements IDelegate, ITechDelegate
                 new DiceRoll(random, techHits, 5, true));
 
         Collection<TechAdvance> advances;
-        if (isFourthEdition())
+        if (selectableTech)
         {
             if (techHits > 0)
                 advances = Collections.singletonList(techToRollFor);

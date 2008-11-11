@@ -333,13 +333,13 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
             return;
 
        
-        GameData g = m_bridge.getGameData();
+        GameData data = m_bridge.getGameData();
 
-        Territory capital =  TerritoryAttachment.getCapital(m_id, g);
+        Territory capital =  TerritoryAttachment.getCapital(m_id, data);
 
         Collection<Unit> toPlace;
         
-        if(m_bridge.getGameData().getProperties().get(Constants.FOURTH_EDITION, false))
+        if(games.strategy.triplea.Properties.getFourthEdition(data) || games.strategy.triplea.Properties.getRestrictedPurchase(data))
         {
                ArrayList<Unit> list = new ArrayList<Unit>(toPlace = m_id.getUnits().getUnits());
                

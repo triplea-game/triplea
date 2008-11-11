@@ -59,6 +59,28 @@ public interface Constants
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
   public static final String FOURTH_EDITION = "4th Edition";
+  //Comco
+  /*
+   * These are the individual rules from 4th Edition
+   */
+  public static final String RESTRICTED_PURCHASE = "Restricted Purchase";
+  public static final String SELECTABLE_TECH_ROLL = "Selectable Tech Roll";
+  public static final String TRANSPORT_RESTRICTED_UNLOAD = "Transport Restricted Unload";
+  public static final String RANDOM_AA_CASUALTIES = "Random AA Casualties";
+  public static final String LIMIT_SBR_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
+  public static final String LIMIT_ROCKET_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
+  public static final String SBR_VICTORY_POINTS = "SBR Victory Points";
+  public static final String ONE_ROCKET_ATTACK_PER_FACTORY = "One Rocket Attack Per Factory";
+  public static final String LIMIT_SBR_DAMAGE_PER_TURN = "Limit SBR Damage Per Turn";
+  public static final String LIMIT_ROCKET_DAMAGE_PER_TURN = "Limit Rocket Damage Per Turn";
+  public static final String ALLIED_AIR_DEPENDENTS = "Allied Air Dependents";
+  public static final String DEFENDING_SUBS_SNEAK_ATTACK = "Defending Subs Sneak Attack";
+  public static final String ATTACKER_RETREAT_PLANES = "Attacker Retreat Planes";
+  public static final String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE = "Naval Bombard Casualties Return Fire";
+  public static final String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
+  public static final String BLITZ_THROUGH_FACTORIES_AND_AA = "Blitz Through Factories And AA";
+  public static final String KEVIN = "Kevin";
+  //Comco
   public static final String CHOOSE_AA = "Choose AA Casualties";
   public static final String PACIFIC_EDITION = "Pacific Edition";
   public static final String EUROPE_EDITION = "Europe Edition";

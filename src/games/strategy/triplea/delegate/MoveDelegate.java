@@ -339,9 +339,9 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         return DelegateFinder.battleDelegate(data).getBattleTracker();
     }
 
-    private boolean isFourEdition()
+    private boolean isFourthEdition()
     {
-        return m_data.getProperties().get(Constants.FOURTH_EDITION, false);
+    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
 
     private ITripleaPlayer getRemotePlayer()
@@ -407,7 +407,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         //fourth edition, fires at end of combat move
         //3rd edition, fires at end of non combat move
-        if ((m_nonCombat && !isFourEdition()) || (!m_nonCombat && isFourEdition()))
+        if ((m_nonCombat && !isFourthEdition()) || (!m_nonCombat && isFourthEdition()))
         {
             if (TechTracker.hasRocket(m_bridge.getPlayerID()))
             {

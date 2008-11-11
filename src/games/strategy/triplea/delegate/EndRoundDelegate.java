@@ -68,7 +68,7 @@ public class EndRoundDelegate implements IDelegate
 
 		m_data = gameData;
 
-		if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+		if(isFourthEdition())
 		    return;
 		
 		int gProd = getProduction( m_data.getPlayerList().getPlayerID(Constants.GERMANS));
@@ -100,6 +100,11 @@ public class EndRoundDelegate implements IDelegate
 		*/
 	}
 
+	private boolean isFourthEdition()
+    {
+    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    }
+	
 	public String getName()
 	{
 		return m_name;

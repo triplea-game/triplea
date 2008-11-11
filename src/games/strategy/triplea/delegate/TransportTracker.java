@@ -310,7 +310,11 @@ public class TransportTracker
     }
     
     private boolean isFourthEdition(GameData data)  {
-        return data.getProperties().get(Constants.FOURTH_EDITION, false);
+        return games.strategy.triplea.Properties.getFourthEdition(data);
+    }
+
+    private boolean isRestrictedTransportUnload(GameData data)  {
+        return games.strategy.triplea.Properties.getFourthEdition(data);
     }
 
     // In 4th edition and LHTR, a transport can never unload into 
@@ -324,10 +328,11 @@ public class TransportTracker
             return false;
 
         // See if transport has unloaded anywhere yet
+        GameData data = transport.getData();
         for (Unit u : unloaded)
         {
             TripleAUnit taUnit = (TripleAUnit) u;
-            if (isFourthEdition(transport.getData()))
+            if (isFourthEdition(data) || isRestrictedTransportUnload(data))
             {
                 // cannot unload to two different territories
                 if (!taUnit.getUnloadedTo().equals(territory))

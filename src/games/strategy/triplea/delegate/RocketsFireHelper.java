@@ -27,6 +27,31 @@ import java.util.*;
 public class RocketsFireHelper
 {
 
+	private boolean isFourthEdition(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getFourthEdition(data);
+    }
+	
+	private boolean isOneRocketAttackPerFactory(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getOneRocketAttackPerFactory(data);
+    }
+	
+	private boolean isIPCCap(GameData data)
+	{
+    	return games.strategy.triplea.Properties.getIPCCap(data);
+	}
+	
+	private boolean isLimitRocketDamagePerTurn(GameData data)
+	{
+    	return games.strategy.triplea.Properties.getLimitRocketDamagePerTurn(data);
+	}
+
+	private boolean isLimitRocketDamageToProduction(GameData data)
+	{
+    	return games.strategy.triplea.Properties.getLimitRocketDamageToProduction(data);
+	}
+	
     public RocketsFireHelper()
     {
 
@@ -35,8 +60,6 @@ public class RocketsFireHelper
     public void fireRockets(IDelegateBridge bridge, GameData data, PlayerID player)
     {
 
-        boolean is4thEdition = data.getProperties().get(Constants.FOURTH_EDITION, false);
-
         Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
         if (rocketTerritories.isEmpty())
         {
@@ -44,7 +67,7 @@ public class RocketsFireHelper
             return;
         }
 
-        if (is4thEdition)
+        if (isFourthEdition(data) || isOneRocketAttackPerFactory(data))
             fire4thEdition(data, player, rocketTerritories, bridge);
         else
             fire3rdEdition(data, player, rocketTerritories, bridge);
@@ -157,12 +180,12 @@ public class RocketsFireHelper
 
         //in fourth edtion, limit rocket attack cost to
         //production value of factory.
-        if (data.getProperties().get(Constants.FOURTH_EDITION, false))
+        if (isFourthEdition(data) || isLimitRocketDamageToProduction(data))
         {
             int territoryProduction = TerritoryAttachment.get(attackedTerritory).getProduction();
             // If we are limiting total ipcs lost then take that into
             // account
-            if (data.getProperties().get(Constants.IPC_CAP, false))
+            if (isIPCCap(data) || isLimitRocketDamagePerTurn(data))
             {
                 int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
                 territoryProduction -= alreadyLost;

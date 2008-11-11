@@ -64,7 +64,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
                     } 
                 } 
 
-        if(m_data.getProperties().get(Constants.FOURTH_EDITION, false))
+        if(isFourthEdition())
             return;
 
         
@@ -101,5 +101,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
             bridge.stopGameSequence();
         }
 
+    }
+    
+    private boolean isFourthEdition()
+    {
+    	return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }
 }
