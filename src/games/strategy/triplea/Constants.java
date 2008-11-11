@@ -79,6 +79,26 @@ public interface Constants
   public static final String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE = "Naval Bombard Casualties Return Fire";
   public static final String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
   public static final String BLITZ_THROUGH_FACTORIES_AND_AA = "Blitz Through Factories And AA";
+  public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";
+  public static final String TRANSPORT_CONTROL_SEA_ZONE = "Transport Control Sea Zone";
+  public static final String CHINA_PRODUCTION_PER_TWO_TERRITORIES_RESTRICTED = "China Production Per Two Territories Restricted";
+  public static final String CHINA_PRODUCTION_PER_TERRITORY_RESTRICTED = "China Production Per Territory Restricted";
+  public static final String CHINA_MOVEMENT_RESTRICTED = "China Movement Restricted";
+  public static final String TRANSPORT_CASUALTIES_RESTRICTED = "Transport Casualties Restricted";
+  public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
+  public static final String SUB_RETREAT_BEFORE_BATTLE = "getSubRetreatBeforeBattle";
+  public static final String SUB_RETREAT_DD_RESTRICTED = "Sub Retreat DD Restricted";
+  public static final String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
+  public static final String AA_ATTACKED_TERRITORY_RESTRICTED = "AA Attacked Territory Restricted";
+  public static final String NATIONAL_OBJECTIVES = "National Objectives";
+  public static final String UNESCORTED_TRANSPORT_DIES = "Unescorted Transport Dies";
+  public static final String CONTINUOUS_RESEARCH = "Continuous Research";
+  public static final String ANNIVERSARY_EDITION_LAND_PRODUCTION = "Anniversary Edition Land Production";
+  public static final String ANNIVERSARY_EDITION_AIR_NAVAL = "Anniversary Edition Air Naval";
+  public static final String KEVIN = "Kevin";
+  public static final String KEVIN = "Kevin";
+  public static final String KEVIN = "Kevin";
+  public static final String KEVIN = "Kevin";
   public static final String KEVIN = "Kevin";
   //Comco
   public static final String CHOOSE_AA = "Choose AA Casualties";

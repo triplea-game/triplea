@@ -73,6 +73,35 @@ public class TechTracker implements java.io.Serializable
     {
       rVal.add(TechAdvance.DESTROYER_BOMBARD);
     }
+    if(attatchment.hasImprovedArtillerySupport())
+    {
+      rVal.add(TechAdvance.IMPROVED_ARTILLERY_SUPPORT);
+    }
+    if(attatchment.hasParatroopers())
+    {
+      rVal.add(TechAdvance.PARATROOPERS);
+    }
+    if(attatchment.hasIncreasedFactoryProduction())
+    {
+      rVal.add(TechAdvance.INCREASED_FACTORY_PRODUCTION);
+    }
+    if(attatchment.hasWarBonds())
+    {
+      rVal.add(TechAdvance.WAR_BONDS);
+    }
+    if(attatchment.hasMechanizedInfantry())
+    {
+      rVal.add(TechAdvance.MECHANIZED_INFANTRY);
+    }
+    if(attatchment.hasAARadar())
+    {
+      rVal.add(TechAdvance.AA_RADAR);
+    }
+    if(attatchment.hasShipyards())
+    {
+      rVal.add(TechAdvance.SHIPYARDS);
+    }
+
 
 
     return rVal;
@@ -117,5 +146,46 @@ public class TechTracker implements java.io.Serializable
   public static boolean hasIndustrialTechnology(PlayerID player)
   {
     return TechAttachment.get(player).hasIndustrialTechnology();
+  }
+
+  //Comco not really sure about these
+  public static boolean hasDestroyerBombard(PlayerID player)
+  {
+    return TechAttachment.get(player).hasDestroyerBombard();
+  }
+
+  public static boolean hasImprovedArtillerySupport(PlayerID player)
+  {
+    return TechAttachment.get(player).hasImprovedArtillerySupport();
+  }
+
+  public static boolean hasParatroopers(PlayerID player)
+  {
+    return TechAttachment.get(player).hasParatroopers();
+  }
+
+  public static boolean hasIncreasedFactoryProduction(PlayerID player)
+  {
+    return TechAttachment.get(player).hasIncreasedFactoryProduction();
+  }
+
+  public static boolean hasWarBonds(PlayerID player)
+  {
+    return TechAttachment.get(player).hasWarBonds();
+  }
+
+  public static boolean hasMechanizedInfantry(PlayerID player)
+  {
+    return TechAttachment.get(player).hasMechanizedInfantry();
+  }
+
+  public static boolean hasAARadar(PlayerID player)
+  {
+    return TechAttachment.get(player).hasAARadar();
+  }
+
+  public static boolean hasShipyards(PlayerID player)
+  {
+    return TechAttachment.get(player).hasShipyards();
   }
 }

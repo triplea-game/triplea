@@ -167,7 +167,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     private boolean canSubsSubmerge()
     {
-
         return m_data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
     }
 

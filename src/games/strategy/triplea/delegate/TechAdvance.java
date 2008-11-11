@@ -37,6 +37,8 @@ public abstract class TechAdvance implements java.io.Serializable
 {
     private static List<TechAdvance> s_3rdEditionAdvances;
     private static List<TechAdvance> s_4thEditionAdvances;
+    private static List<TechAdvance> s_AnnivEditionAdvancesLandProduction;
+    private static List<TechAdvance> s_AnnivEditionAdvancesAirNaval;
 
     public static final TechAdvance JET_POWER = new JetPowerAdvance();
     public static final TechAdvance SUPER_SUBS = new SuperSubsAdvance();
@@ -45,34 +47,50 @@ public abstract class TechAdvance implements java.io.Serializable
     public static final TechAdvance INDUSTRIAL_TECHNOLOGY = new IndustrialTechnologyAdvance();
     public static final TechAdvance HEAVY_BOMBER = new HeavyBomberAdvance();
     public static final TechAdvance DESTROYER_BOMBARD = new DestroyerBombardTechAdvance();
+    public static final TechAdvance IMPROVED_ARTILLERY_SUPPORT = new ImprovedArtillerySupport();
+    public static final TechAdvance PARATROOPERS = new Paratroopers();
+    public static final TechAdvance INCREASED_FACTORY_PRODUCTION = new IncreasedFactoryProduction();
+    public static final TechAdvance WAR_BONDS = new WarBonds();
+    public static final TechAdvance MECHANIZED_INFANTRY = new MechanizedInfantry();
+    public static final TechAdvance AA_RADAR = new AARadar();
+    public static final TechAdvance SHIPYARDS = new Shipyards();
 
     public static List<TechAdvance> getTechAdvances(GameData data)
     {
         boolean isFourthEdition = games.strategy.triplea.Properties.getFourthEdition(data);
+        boolean isAnniversaryEditionLandProduction = games.strategy.triplea.Properties.getAnniversaryEditionLandProduction(data);
+        boolean isAnniversaryEditionAirNaval = games.strategy.triplea.Properties.getAnniversaryEditionAirNaval(data);
+
         
         if(isFourthEdition)
             return s_4thEditionAdvances;
+        else if(isAnniversaryEditionLandProduction)
+            return s_AnnivEditionAdvancesLandProduction;
+        else if(isAnniversaryEditionAirNaval)
+            return s_AnnivEditionAdvancesAirNaval;
         else
-            return s_3rdEditionAdvances;
+            return s_3rdEditionAdvances;       
     }
 
     //initialize the advances, note s_advances is made unmodifiable
     static
     {
+    	/*
+    	 * 3rd Edition Tech
+    	 */
         s_3rdEditionAdvances = new ArrayList<TechAdvance>();
-
         s_3rdEditionAdvances.add(JET_POWER);
         s_3rdEditionAdvances.add(SUPER_SUBS);
         s_3rdEditionAdvances.add(LONG_RANGE_AIRCRAFT);
         s_3rdEditionAdvances.add(ROCKETS);
         s_3rdEditionAdvances.add(INDUSTRIAL_TECHNOLOGY);
         s_3rdEditionAdvances.add(HEAVY_BOMBER);
-
         s_3rdEditionAdvances = Collections.unmodifiableList(s_3rdEditionAdvances);
         
-
+    	/*
+    	 * 4th Edition Tech
+    	 */
         s_4thEditionAdvances = new ArrayList<TechAdvance>();
-
         s_4thEditionAdvances.add(JET_POWER);
         s_4thEditionAdvances.add(SUPER_SUBS);
         s_4thEditionAdvances.add(LONG_RANGE_AIRCRAFT);
@@ -80,10 +98,33 @@ public abstract class TechAdvance implements java.io.Serializable
         s_4thEditionAdvances.add(DESTROYER_BOMBARD);
         s_4thEditionAdvances.add(HEAVY_BOMBER);
 		s_4thEditionAdvances.add(INDUSTRIAL_TECHNOLOGY);
-
         s_4thEditionAdvances = Collections.unmodifiableList(s_4thEditionAdvances);
-
         
+    	/*
+    	 * Anniversary Edition Land/Production Tech
+    	 */
+        s_AnnivEditionAdvancesLandProduction = new ArrayList<TechAdvance>();
+        s_AnnivEditionAdvancesLandProduction.add(JET_POWER);
+        s_AnnivEditionAdvancesLandProduction.add(SUPER_SUBS);
+        s_AnnivEditionAdvancesLandProduction.add(LONG_RANGE_AIRCRAFT);
+        s_AnnivEditionAdvancesLandProduction.add(ROCKETS);
+        s_AnnivEditionAdvancesLandProduction.add(DESTROYER_BOMBARD);
+        s_AnnivEditionAdvancesLandProduction.add(HEAVY_BOMBER);
+        s_AnnivEditionAdvancesLandProduction.add(INDUSTRIAL_TECHNOLOGY);
+        s_AnnivEditionAdvancesLandProduction = Collections.unmodifiableList(s_AnnivEditionAdvancesLandProduction);
+
+    	/*
+    	 * Anniversary Edition Air/Naval Tech
+    	 */
+        s_AnnivEditionAdvancesAirNaval = new ArrayList<TechAdvance>();
+        s_AnnivEditionAdvancesAirNaval.add(JET_POWER);
+        s_AnnivEditionAdvancesAirNaval.add(SUPER_SUBS);
+        s_AnnivEditionAdvancesAirNaval.add(LONG_RANGE_AIRCRAFT);
+        s_AnnivEditionAdvancesAirNaval.add(ROCKETS);
+        s_AnnivEditionAdvancesAirNaval.add(DESTROYER_BOMBARD);
+        s_AnnivEditionAdvancesAirNaval.add(HEAVY_BOMBER);
+        s_AnnivEditionAdvancesAirNaval.add(INDUSTRIAL_TECHNOLOGY);
+        s_AnnivEditionAdvancesAirNaval = Collections.unmodifiableList(s_AnnivEditionAdvancesAirNaval);
         
     }
 
@@ -263,6 +304,147 @@ class LongRangeAircraftAdvance extends TechAdvance
     public String getProperty()
     {
         return "longRangeAir";
+    }
+
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    {
+    }
+}
+
+//comco
+/*
+ * Artillery can support multiple infantry
+ */
+class ImprovedArtillerySupport extends TechAdvance
+{
+    public String getName()
+    {
+        return "Improved Artillery Support";
+    }
+
+    public String getProperty()
+    {
+        return "improvedArtillerySupport";
+    }
+
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    {
+    }
+}
+
+/*
+ * Support paratroops
+ */
+class Paratroopers extends TechAdvance
+{
+    public String getName()
+    {
+        return "Paratroopers";
+    }
+
+    public String getProperty()
+    {
+        return "paratroopers";
+    }
+
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    {
+    }
+}
+
+/*
+ * Increased Factory Production
+ */
+class IncreasedFactoryProduction extends TechAdvance
+{
+    public String getName()
+    {
+        return "Increased Factory Production";
+    }
+
+    public String getProperty()
+    {
+        return "increasedFactoryProduction";
+    }
+
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    {
+    }
+}
+
+/*
+ * War Bonds
+ */
+class WarBonds extends TechAdvance
+{
+    public String getName()
+    {
+        return "War Bonds";
+    }
+
+    public String getProperty()
+    {
+        return "warBonds";
+    }
+
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    {
+    }
+}
+
+/*
+ * Mechanized Infantry
+ */
+class MechanizedInfantry extends TechAdvance
+{
+    public String getName()
+    {
+        return "Mechanized Infantry";
+    }
+
+    public String getProperty()
+    {
+        return "mechanizedInfantry";
+    }
+
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    {
+    }
+}
+
+/*
+ * AA Radar
+ */
+class AARadar extends TechAdvance
+{
+    public String getName()
+    {
+        return "AA Radar";
+    }
+
+    public String getProperty()
+    {
+        return "aARADAR";
+    }
+
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    {
+    }
+}
+
+/*
+ * Shipyards
+ */
+class Shipyards extends TechAdvance
+{
+    public String getName()
+    {
+        return "Shipyards";
+    }
+
+    public String getProperty()
+    {
+        return "shipyards";
     }
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)

@@ -81,7 +81,37 @@ public class Properties implements Constants
   {
 	  try
 	    {
-	      return ( (Boolean) data.getProperties().get(FOURTH_EDITION) ).booleanValue();
+	      return ( (Boolean) data.getProperties().get(PACIFIC_EDITION) ).booleanValue();
+	    }
+	    catch(Exception e)
+	    {
+	      return false;
+	    }
+  }
+  
+  /*
+   * Anniversary Edition Land & Production
+   */
+  public static boolean getAnniversaryEditionLandProduction(GameData data)
+  {
+	  try
+	    {
+	      return ( (Boolean) data.getProperties().get(ANNIVERSARY_EDITION_LAND_PRODUCTION) ).booleanValue();
+	    }
+	    catch(Exception e)
+	    {
+	      return false;
+	    }
+  }
+  
+  /*
+   * Anniversary Edition Air & Naval
+   */
+  public static boolean getAnniversaryEditionAirNaval(GameData data)
+  {
+	  try
+	    {
+	      return ( (Boolean) data.getProperties().get(ANNIVERSARY_EDITION_AIR_NAVAL) ).booleanValue();
 	    }
 	    catch(Exception e)
 	    {
@@ -344,6 +374,215 @@ public class Properties implements Constants
 	    }
   }
   
+  /*
+   * Subs restricted from controling sea zones
+   */
+    public static boolean getSubControlSeaZoneRestricted(GameData data)
+    {
+      try
+      {
+        return ( (Boolean) data.getProperties().get(SUB_CONTROL_SEA_ZONE_RESTRICTED) ).booleanValue();
+      }
+      catch(Exception e)
+      {
+        return false;
+      }
+    }
+
+    /*
+     * Can Transports control sea zones
+     */
+      public static boolean getTransportControlSeaZone(GameData data)
+      {
+        try
+        {
+          return ( (Boolean) data.getProperties().get(TRANSPORT_CONTROL_SEA_ZONE) ).booleanValue();
+        }
+        catch(Exception e)
+        {
+          return false;
+        }
+      }
+
+      /*
+       * China restricted to 1 inf per 2 owned territories
+       */
+        public static boolean getChinaProductionPerTwoTerritoriesRestricted(GameData data)
+        {
+          try
+          {
+            return ( (Boolean) data.getProperties().get(CHINA_PRODUCTION_PER_TWO_TERRITORIES_RESTRICTED) ).booleanValue();
+          }
+          catch(Exception e)
+          {
+            return false;
+          }
+        }
+
+        /*
+         * China restricted to 1 inf per 1 owned territories
+         */
+          public static boolean getChinaProductionPerTerritoryRestricted(GameData data)
+          {
+            try
+            {
+              return ( (Boolean) data.getProperties().get(CHINA_PRODUCTION_PER_TERRITORY_RESTRICTED) ).booleanValue();
+            }
+            catch(Exception e)
+            {
+              return false;
+            }
+          }
+
+          /*
+           * China restricted movement
+           */
+            public static boolean getChinaMovementRestricted(GameData data)
+            {
+              try
+              {
+                return ( (Boolean) data.getProperties().get(CHINA_MOVEMENT_RESTRICTED) ).booleanValue();
+              }
+              catch(Exception e)
+              {
+                return false;
+              }
+            }
+
+            /*
+             * Transports restricted from being taken as casualties
+             */
+              public static boolean getTransportCasualtiesRestricted(GameData data)
+              {
+                try
+                {
+                  return ( (Boolean) data.getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED) ).booleanValue();
+                }
+                catch(Exception e)
+                {
+                  return false;
+                }
+              }
+
+              /*
+               * Transports die if not escorted
+               */
+                public static boolean getUnescortedTransportDies(GameData data)
+                {
+                  try
+                  {
+                    return ( (Boolean) data.getProperties().get(UNESCORTED_TRANSPORT_DIES) ).booleanValue();
+                  }
+                  catch(Exception e)
+                  {
+                    return false;
+                  }
+                }
+
+              /*
+               * Air restricted from attacking subs unless DD present
+               */
+                public static boolean getAirAttackSubRestricted(GameData data)
+                {
+                  try
+                  {
+                    return ( (Boolean) data.getProperties().get(AIR_ATTACK_SUB_RESTRICTED) ).booleanValue();
+                  }
+                  catch(Exception e)
+                  {
+                    return false;
+                  }
+                }
+
+                /*
+                 * Sub retreat before battle
+                 */
+                  public static boolean getSubRetreatBeforeBattle(GameData data)
+                  {
+                    try
+                    {
+                      return ( (Boolean) data.getProperties().get(SUB_RETREAT_BEFORE_BATTLE) ).booleanValue();
+                    }
+                    catch(Exception e)
+                    {
+                      return false;
+                    }
+                  }
+
+                  /*
+                   * Sub retreat restricted by DD
+                   */
+                    public static boolean getSubRetreatDDRestricted(GameData data)
+                    {
+                      try
+                      {
+                        return ( (Boolean) data.getProperties().get(SUB_RETREAT_DD_RESTRICTED) ).booleanValue();
+                      }
+                      catch(Exception e)
+                      {
+                        return false;
+                      }
+                    }
+
+                    /*
+                     * Shore Bombard per Ground Unit Restricted
+                     */
+                      public static boolean getShoreBombardPerGroundUnitRestricted(GameData data)
+                      {
+                        try
+                        {
+                          return ( (Boolean) data.getProperties().get(SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED) ).booleanValue();
+                        }
+                        catch(Exception e)
+                        {
+                          return false;
+                        }
+                      }
+
+                      /*
+                       * AA Attacked Territory Only
+                       */
+                        public static boolean getAAAttackedTerritoryRestricted(GameData data)
+                        {
+                          try
+                          {
+                            return ( (Boolean) data.getProperties().get(AA_ATTACKED_TERRITORY_RESTRICTED) ).booleanValue();
+                          }
+                          catch(Exception e)
+                          {
+                            return false;
+                          }
+                        }
+
+                        /*
+                         * NATIONAL OBJECTIVES USED
+                         */
+                          public static boolean getNationalObjectives(GameData data)
+                          {
+                            try
+                            {
+                              return ( (Boolean) data.getProperties().get(NATIONAL_OBJECTIVES) ).booleanValue();
+                            }
+                            catch(Exception e)
+                            {
+                              return false;
+                            }
+                          }
+
+                          /*
+                           * Continuous Research
+                           */
+                            public static boolean getContinuousResearch(GameData data)
+                            {
+                              try
+                              {
+                                return ( (Boolean) data.getProperties().get(CONTINUOUS_RESEARCH) ).booleanValue();
+                              }
+                              catch(Exception e)
+                              {
+                                return false;
+                              }
+                            }
   private Properties()
   {
   }

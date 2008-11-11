@@ -21,6 +21,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
@@ -136,6 +137,14 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     }
 
     /**
+     * @return
+     */
+    private boolean isShoreBombardPerGroundUnitRestricted(GameData data)
+    {
+        return games.strategy.triplea.Properties.getShoreBombardPerGroundUnitRestricted(data);
+    }
+    
+    /**
      * Called before the delegate will stop running.
      */
     public void end()
@@ -155,15 +164,18 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
 
     /**
      * Add bombardment units to battles.
-     */
+     */    
     private void addBombardmentSources()
     {
         PlayerID attacker = m_bridge.getPlayerID();
         Match<Unit> ownedAndCanBombard = new CompositeMatchAnd<Unit>(Matches
                 .unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
+        Match<Unit> ownedLandUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsOwnedBy(attacker));
         
         Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
         Iterator<Territory> territories = adjBombardment.keySet().iterator();
+        //comco
+        Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
         while (territories.hasNext())
         {
             Territory t = territories.next();
@@ -173,14 +185,18 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                 battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
                 if (!battles.isEmpty())
                 {
-                    Iterator<Unit> bombarding = t.getUnits().getMatches(
-                            ownedAndCanBombard).iterator();
+                	Collection<Unit> landUnits = t.getUnits().getMatches(ownedLandUnit);
+                	int landUnitsSize = landUnits.size();
+                    Iterator<Unit> bombarding = t.getUnits().getMatches(ownedAndCanBombard).iterator();
                     while (bombarding.hasNext())
                     {
                         Unit u = (Unit) bombarding.next();
                         Battle battle = selectBombardingBattle(u, t, battles);
+                        int battleBombardSize = t.getUnits().getMatches(ownedAndCanBombard).size();
                         if (battle != null)
                         {
+                        	if (bombardRestricted && battleBombardSize > landUnitsSize)
+                        		continue;
                             battle.addBombardingUnit(u);
                         }
                     }

@@ -42,6 +42,13 @@ public class TechAttachment extends DefaultAttachment
   private boolean m_industrialTechnology;
   private boolean m_superSub;
   private boolean m_destroyerBombard;
+  private boolean m_improvedArtillerySupport;
+  private boolean m_paratroopers;
+  private boolean m_increasedFactoryProduction;
+  private boolean m_warBonds;
+  private boolean m_mechanizedInfantry;
+  private boolean m_aARadar;
+  private boolean m_shipyards;
   
   public void setHeavyBomber(String s)
   {
@@ -79,6 +86,41 @@ public class TechAttachment extends DefaultAttachment
     m_superSub = getBool(s);
   }
 
+  public void setImprovedArtillerySupport(String s)
+  {
+    m_improvedArtillerySupport = getBool(s);
+  }
+
+  public void setParatroopers(String s)
+  {
+    m_paratroopers = getBool(s);
+  }
+
+  public void setIncreasedFactoryProduction(String s)
+  {
+    m_increasedFactoryProduction = getBool(s);
+  }
+
+  public void setWarBonds(String s)
+  {
+    m_warBonds = getBool(s);
+  }
+
+  public void setMechanizedInfantry(String s)
+  {
+    m_mechanizedInfantry = getBool(s);
+  }
+
+  public void setAARadar(String s)
+  {
+    m_aARadar = getBool(s);
+  }
+
+  public void setShipyards(String s)
+  {
+    m_shipyards = getBool(s);
+  }
+
   public String getHeavyBomber()
   {
     return "" + m_heavyBomber;
@@ -112,6 +154,41 @@ public class TechAttachment extends DefaultAttachment
   public String getDestroyerBombard()
   {
       return "" + m_destroyerBombard;
+  }
+
+  public String getImprovedArtillerySupport()
+  {
+      return "" + m_improvedArtillerySupport;
+  }
+
+  public String getParatroopers()
+  {
+      return "" + m_paratroopers;
+  }
+
+  public String getIncreasedFactoryProduction()
+  {
+      return "" + m_increasedFactoryProduction;
+  }
+
+  public String getWarBonds()
+  {
+      return "" + m_warBonds;
+  }
+
+  public String getMechanizedInfantry()
+  {
+      return "" + m_mechanizedInfantry;
+  }
+
+  public String getAARadar()
+  {
+      return "" + m_aARadar;
+  }
+
+  public String getShipyards()
+  {
+      return "" + m_shipyards;
   }
 
   public TechAttachment()
@@ -152,6 +229,42 @@ public class TechAttachment extends DefaultAttachment
   {
       return m_destroyerBombard;
   }
+  
+  public boolean hasImprovedArtillerySupport()
+  {
+      return m_improvedArtillerySupport;
+  }
+  
+  public boolean hasParatroopers()
+  {
+      return m_paratroopers;
+  }
+  
+  public boolean hasIncreasedFactoryProduction()
+  {
+      return m_increasedFactoryProduction;
+  }
+  
+  public boolean hasWarBonds()
+  {
+      return m_warBonds;
+  }
+  
+  public boolean hasMechanizedInfantry()
+  {
+      return m_mechanizedInfantry;
+  }
+  
+  public boolean hasAARadar()
+  {
+      return m_aARadar;
+  }
+  
+  public boolean hasShipyards()
+  {
+      return m_shipyards;
+  }
+  
   
 
 }
