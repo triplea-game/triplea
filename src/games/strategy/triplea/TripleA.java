@@ -44,7 +44,7 @@ import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 import games.strategy.triplea.weakAI.WeakAI;
 //Kev
-import games.strategy.triplea.nextAI.NextAI;
+//import games.strategy.triplea.nextAI.NextAI;
 
 import java.awt.Frame;
 import java.io.IOException;
@@ -95,10 +95,10 @@ public class TripleA implements IGameLoader
                 players.add(new WeakAI(name));
             }
             //Kev
-            else if (type.equals(NEXT_COMPUTER_PLAYER_TYPE))
+            /*else if (type.equals(NEXT_COMPUTER_PLAYER_TYPE))
             {
                 players.add(new NextAI(name));
-            }
+            }*/
             else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
             {
                 TripleAPlayer player = new TripleAPlayer(name);

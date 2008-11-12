@@ -95,11 +95,11 @@ public interface Constants
   public static final String CONTINUOUS_RESEARCH = "Continuous Research";
   public static final String ANNIVERSARY_EDITION_LAND_PRODUCTION = "Anniversary Edition Land Production";
   public static final String ANNIVERSARY_EDITION_AIR_NAVAL = "Anniversary Edition Air Naval";
+  public static final String AIR_BASE = "airBase";
+  /*public static final String KEVIN = "Kevin";
   public static final String KEVIN = "Kevin";
   public static final String KEVIN = "Kevin";
-  public static final String KEVIN = "Kevin";
-  public static final String KEVIN = "Kevin";
-  public static final String KEVIN = "Kevin";
+  public static final String KEVIN = "Kevin";*/
   //Comco
   public static final String CHOOSE_AA = "Choose AA Casualties";
   public static final String PACIFIC_EDITION = "Pacific Edition";

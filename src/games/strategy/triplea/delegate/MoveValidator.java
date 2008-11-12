@@ -94,7 +94,7 @@ public class MoveValidator
     	TerritoryAttachment taEnd = TerritoryAttachment.get(route.getEnd());
         if(ua.isAir())
         {
-        	if (taStart != null && taStart.isAirBase())
+        	if (taStart != null && taStart.isAirBase())        	
             	left++;
             
             if (taEnd != null && taEnd.isAirBase())
@@ -1012,6 +1012,9 @@ public class MoveValidator
             Collection<Unit> unitsAtLocation = territory.getUnits().getMatches(Matches.alliedUnit(player, data));
             Collection<Unit> ownedUnitsAtLocation = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
             unitsAtLocation.removeAll(units);
+ 
+            if(unitsAtLocation.isEmpty())
+            	continue;
             
             //how much spare capacity do they have?
             int extraCapacity = MoveValidator.carrierCapacity(unitsAtLocation) - MoveValidator.carrierCost(ownedUnitsAtLocation);

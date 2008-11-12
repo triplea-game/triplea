@@ -26,6 +26,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -68,6 +69,11 @@ public class EndRoundDelegate implements IDelegate
 
 		m_data = gameData;
 
+		if (isNationalObjectives())
+		{
+			deterineNationalObjectives(m_data);
+		}
+		
 		if(isFourthEdition())
 		    return;
 		
@@ -97,12 +103,22 @@ public class EndRoundDelegate implements IDelegate
             //Added this to end the game on victory conditions
             aBridge.stopGameSequence();
 		}
-		*/
+		*/		
 	}
 
 	private boolean isFourthEdition()
     {
     	return games.strategy.triplea.Properties.getFourthEdition(m_data);
+    }	
+	
+	private boolean isNationalObjectives()
+    {
+    	return games.strategy.triplea.Properties.getNationalObjectives(m_data);
+    }
+
+	private boolean isAnniversaryEditionLandProduction()
+    {
+    	return games.strategy.triplea.Properties.getAnniversaryEditionLandProduction(m_data);
     }
 	
 	public String getName()
@@ -166,5 +182,35 @@ public class EndRoundDelegate implements IDelegate
         return null;
     }
 
-
+    //Comco new method
+    private void deterineNationalObjectives(GameData data)
+    {
+    	if(isAnniversaryEditionLandProduction())
+    	{
+    		PlayerList players = data.getPlayerList();
+    		Iterator<PlayerID> playersIter = players.iterator();
+    		
+    		while (playersIter.hasNext())
+    		{
+    			PlayerID player = playersIter.next();
+    			if (player.equals(players.getPlayerID(Constants.RUSSIANS)))
+    			{
+    				Collection <Territory> territories = data.getMap().getTerritories();
+    				Iterator <Territory> territoriesIter = territories.iterator();
+    				
+/* 					~Allied control of Archangelsk + no UK or US units on Soviet-controlled territories= 5 IPCs
+    				~Allied control of at least three of the following: Norway, Finland, Poland,
+						Bulgaria/Romania, Czechoslovakia/Hungary and/or Balkans= 10 IPCs.
+*/
+    			}
+    			/*else if (player.equals(players.getPlayerID(Constants.ITALIANS)))
+    			{
+    				
+    			}*/
+    			
+    		}
+    		
+    	}
+    }
+    
 }

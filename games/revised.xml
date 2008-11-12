@@ -1622,8 +1622,44 @@
                 <property name="neutralCharge" value="9999999"/>
                 
                 <property name="maxFactoriesPerTerritory" value="1"/>
+                
+                <property name="National Objectives" value="true" editable="true">
+                	<boolean/>
+                </property>
 
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="revised" editable="false"/>
-        </propertyList>
+                
+<!-- Comco National Objectives -->
+                <property name="Objective" player="Russians" 
+                	<key name="bonus" value="5"/>
+                	<key name="count" value = "2"/>
+               		<key name="unitExclusion" value="true" editable="false">
+               			<boolean/>
+               		</key
+                	<key name="territories">
+                		<list>
+                			<item value="Archangel"/>
+                			<item value="Norway"/>
+               			</list>
+               		</key>
+                </property>
+                
+                <property name="Objective" player="Russians" 
+                	<key name="bonus" value="10"/>
+                	<key name="count" value = "3"/>
+                	<key name="territories">
+               			<list>
+               				<item value="Norway"/>
+               				<item value="Caucasus"/>
+               				<item value="Novosibirsk"/>
+               				<item value="Yakut S.S.R."/>
+               				<item value="Soviet Far East"/>
+               				<item value="Buryatia S.S.R."/>
+               			</list>
+               		</key>
+                </property>
+                
+                
+        </propertyList>        
 </game>

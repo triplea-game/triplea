@@ -27,6 +27,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.util.Version;
 import games.strategy.triplea.attatchments.*;
 
+import java.awt.Polygon;
 import java.io.*;
 import java.lang.reflect.*;
 import java.net.URL;
@@ -106,7 +107,7 @@ public class GameParser
 
         Node properties = getSingleChild("propertyList", root, true);
         if(properties != null)
-            pareseProperties(properties);
+            parseProperties(properties);
 
         return data;
     }
@@ -334,6 +335,57 @@ public class GameParser
 
     }
 
+    //Comco add new XML section here for Natl. Objectives
+    private void parseObjective(Element property) throws GameParseException
+    {
+/*             	
+        Territory territory = getTerritory(current, "territory", true);
+        UnitType type = getUnitType(current, "unitType", true);
+        
+        territory.getUnits().addAllUnits(type.create(quantity, owner));
+*/   	    	
+    	//what type
+        List<Node> children = getNonTextNodes(property);
+        Map<Unit, Unit> objective = new HashMap<Unit, Unit>();
+        //objective = new HashMap<PlayerID, Territory>();
+        //<PlayerID, Int, Int, Boolean, Collection<Territory>>();
+        
+        for (int i = 0; i< children.size(); i++)
+        {
+        	Element current = (Element) children.get(i);
+        	
+        	String playerString = current.getAttribute("player");
+        	PlayerID player;
+        	
+        	if(playerString == null || playerString.trim().length() == 0)
+        		player = PlayerID.NULL_PLAYERID;
+        	else
+        		player = getPlayerID(current, "player", true);
+        	
+        	int bonus = Integer.parseInt(current.getAttribute("bonus"));
+        	int count = Integer.parseInt(current.getAttribute("count"));
+        	Boolean excludeUnits = current.getAttribute("unitExclusion").trim().equalsIgnoreCase("true");
+        	
+        	List<Node> children2 = getNonTextNodes(current);
+            String type = ((Element) children2.get(0)).getNodeName();
+            if(type.equals("territories"))
+            {
+            	Collection<Territory> territories = null;
+            	
+            	for (int j = 0; i< children.size(); i++)
+                {
+            		Element current2 = (Element) children2.get(j);
+            		territories.add(getTerritory(current2, "item", true));
+            		//Territory t1 = getTerritory(current, "t1", true);
+                }
+            }
+         
+        	
+        	
+        	
+        }
+    }
+    
     private void parseGrids(List grids) throws GameParseException
     { 
         GameMap map = data.getMap();      
@@ -621,7 +673,7 @@ public class GameParser
         parseSequence(getSingleChild("sequence", root));
     }
 
-    private void pareseProperties(Node root) throws GameParseException
+    private void parseProperties(Node root) throws GameParseException
     {
         GameProperties properties = data.getProperties();
         Iterator children = getChildren("property", root).iterator();
@@ -632,9 +684,12 @@ public class GameParser
             String editable = current.getAttribute("editable");
             String property = current.getAttribute("name");
             String value = current.getAttribute("value");
+            String player = current.getAttribute("player");
 
             if(editable != null && editable.equalsIgnoreCase("true"))
                 parseEditableProperty(current, property, value);
+            else if(property == "Objective")
+            	parseObjective(current);
             else
             {
                 List children2 = getNonTextNodes(current);
