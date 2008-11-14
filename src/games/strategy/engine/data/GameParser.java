@@ -335,55 +335,154 @@ public class GameParser
 
     }
 
-    //Comco add new XML section here for Natl. Objectives
-    private void parseObjective(Element property) throws GameParseException
+    //Comco Called to parse the Objective property
+    private void parseNationalObjective(Element property) throws GameParseException
     {
-/*             	
-        Territory territory = getTerritory(current, "territory", true);
-        UnitType type = getUnitType(current, "unitType", true);
+    	//get Objective details
+    	String playerString = property.getAttribute("player");
+    	PlayerID player = getPlayerID(property, "player", true);  
+    	int objectiveValue = Integer.parseInt(property.getAttribute("value"));
+    	//See if there's a required number to be met, else set to -1 for ALL
+    	int requiredKeyCount;
+    	try
+    	{
+    		requiredKeyCount = Integer.parseInt(property.getAttribute("count"));
+    	}
+    	catch (Exception e)
+        {
+    		requiredKeyCount = -1;
+        }
+    	
+    	//initialize the flag to tell if the objective been met
+    	boolean objectiveMet = false;
         
-        territory.getUnits().addAllUnits(type.create(quantity, owner));
-*/   	    	
-    	//what type
-        List<Node> children = getNonTextNodes(property);
-        Map<Unit, Unit> objective = new HashMap<Unit, Unit>();
-        //objective = new HashMap<PlayerID, Territory>();
-        //<PlayerID, Int, Int, Boolean, Collection<Territory>>();
-        
+    	//get children (keys)
+    	List<Node> children = getNonTextNodes(property);
+        Vector objList = new Vector();        
+
+        objList.add(player);
+        objList.add(objectiveValue);
+        objList.add(requiredKeyCount);
+    	
         for (int i = 0; i< children.size(); i++)
         {
-        	Element current = (Element) children.get(i);
+        	Element key = (Element) children.get(i);
         	
-        	String playerString = current.getAttribute("player");
-        	PlayerID player;
+        	//get the elements of the key
+        	//controlled/original are for unit exclusions- on all controlled or original territories
+        	//count is for the number of listed territorries that must be owned
+        	String keyName = key.getAttribute("name");
+        	String type = key.getAttribute("type");
+        	Boolean controlled = key.getAttribute("controlled").trim().equalsIgnoreCase("true");
+        	Boolean original = key.getAttribute("original").trim().equalsIgnoreCase("true");
         	
-        	if(playerString == null || playerString.trim().length() == 0)
-        		player = PlayerID.NULL_PLAYERID;
-        	else
-        		player = getPlayerID(current, "player", true);
-        	
-        	int bonus = Integer.parseInt(current.getAttribute("bonus"));
-        	int count = Integer.parseInt(current.getAttribute("count"));
-        	Boolean excludeUnits = current.getAttribute("unitExclusion").trim().equalsIgnoreCase("true");
-        	
-        	List<Node> children2 = getNonTextNodes(current);
-            String type = ((Element) children2.get(0)).getNodeName();
-            if(type.equals("territories"))
+        	//See if there's a required number to be met, else set to -1 for ALL
+        	int requiredItemCount;
+        	try
+        	{
+        		requiredItemCount = Integer.parseInt(key.getAttribute("count"));
+        	}
+        	catch (Exception e)
             {
-            	Collection<Territory> territories = null;
+        		requiredItemCount = -1;
+            }
+        	
+        	Boolean requiredKey = key.getAttribute("required").trim().equalsIgnoreCase("true");
+
+        	Collection<Territory> territories = new ArrayList<Territory>();
+        	
+            if(keyName.equals("territoryOwner"))
+            {
+            	Node keyList = getSingleChild("keyList", key);
+            	List<Node> children2 = getNonTextNodes(keyList);
             	
-            	for (int j = 0; i< children.size(); i++)
+            	for (int j = 0; j< children2.size(); j++)
                 {
-            		Element current2 = (Element) children2.get(j);
-            		territories.add(getTerritory(current2, "item", true));
-            		//Territory t1 = getTerritory(current, "t1", true);
+            		Element item = (Element) children2.get(j);
+            		Territory territory = getTerritory(item, "value", true);
+            		territories.add(territory);
                 }
             }
-         
-        	
-        	
-        	
-        }
+            
+            if(keyName.equals("unitExclusion"))
+            {	
+            	List<Node> children2 = getNonTextNodes(key);
+            	
+            	for (int j = 0; j< children2.size(); j++)
+                {
+            		Element territory = (Element) children2.get(j);
+            		territories.add(getTerritory(territory, "item", true));
+                }
+            }
+
+            //Create objective of key details
+            Vector keyList = new Vector();
+            keyList.add(keyName);
+            keyList.add(territories);
+            keyList.add(requiredItemCount);
+            keyList.add(requiredKey);
+            keyList.add(type);
+            keyList.add(controlled);
+            keyList.add(original);
+            //Add the key details to the objective
+            objList.add(keyList);
+	
+        }        
+
+        //create the attatchment   
+        //comco
+    	NationalObjective natOb = new NationalObjective(property.getNodeName(), player, objList, data);
+    	
+    	String name = property.getAttribute("name");
+        Attachable attatchable = findAttatchment(property, playerString);
+    	
+        attatchable.addAttachment(name, attatchment);
+        attatchment.setAttatchedTo(attatchable);
+        
+    	IAttachment attach = player.getAttachment(playerString);
+    	NationalObjective.setAttachedTo(attach);
+    	
+/*      //create the attatchment
+    	Object obj = new NationalObjective(property.getAttribute("name"), player, objList, data);
+    	
+        //String className = "games.strategy.engine.data.NationalObjective(null, null, null, null)";
+        //Object obj = getInstance(className);
+        if(!(obj instanceof IAttachment))
+            throw new IllegalStateException(" does not implement Attatchable");
+
+        IAttachment attachment = (IAttachment) obj;
+        attachment.setData(data);
+        
+        //Comco
+        List values = getChildren("Objective", property);
+        setValues(attachment, values);
+        attachment.validate();
+        
+        //find the attatchable
+        String type = property.getAttribute("Objective");
+        Attachable attatchable = findAttatchment(property, type);
+        
+      //attatch
+        String name = property.getAttribute("name");
+        attatchable.addAttachment(name, attachment);
+        attachment.setAttatchedTo(attatchable);
+        attachment.setName(name);
+*/        
+        
+        //create the attatchment        
+    	//NationalObjective natOb = new NationalObjective(property.getNodeName(), player, objList, data);
+    	
+    	/*IAttachment attachment = natOb.getAttachment(playerString);
+    	
+    	//IAttachment attachment = (IAttachment) natOb;
+        attachment.setData(data);
+        player.addAttachment(playerString, attachment);*/
+    }
+    
+    //Comco add new XML section here for Various abstract restrictions
+    private void parseRestriction(Element property) throws GameParseException
+    {
+
     }
     
     private void parseGrids(List grids) throws GameParseException
@@ -688,8 +787,10 @@ public class GameParser
 
             if(editable != null && editable.equalsIgnoreCase("true"))
                 parseEditableProperty(current, property, value);
-            else if(property == "Objective")
-            	parseObjective(current);
+            else if(property.equals("NationalObjective"))
+            	parseNationalObjective(current);
+            else if(property.equals("Restriction"))
+            	parseRestriction(current);
             else
             {
                 List children2 = getNonTextNodes(current);

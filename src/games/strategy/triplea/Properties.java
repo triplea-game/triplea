@@ -122,11 +122,11 @@ public class Properties implements Constants
 	 /*
 	  * Restrict the number of units that can be placed at a factory.
 	  */
-	 public static boolean getRestrictedPurchase(GameData data)
+	 public static boolean getPlacementRestrictedByFactory(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(RESTRICTED_PURCHASE) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(PLACEMENT_RESTRICTED_BY_FACTORY) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
@@ -152,11 +152,11 @@ public class Properties implements Constants
 	 /*
 	  * Are transports restricted from unloading in multiple territories in a turn
 	  */
-	 public static boolean getTransportRestrictedUnload(GameData data)
+	 public static boolean getTransportUnloadRestricted(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(TRANSPORT_RESTRICTED_UNLOAD) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(TRANSPORT_UNLOAD_RESTRICTED) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
@@ -270,13 +270,13 @@ public class Properties implements Constants
 	 }
 
 	 /*
-	  * Allow one rocket attack per defending factory
+	  * Allow x rocket attack(s) per defending factory
 	  */
-	 public static boolean getOneRocketAttackPerFactory(GameData data)
+	 public static boolean getRocketAttackPerFactoryRestricted(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(ONE_ROCKET_ATTACK_PER_FACTORY) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(ROCKET_ATTACK_PER_FACTORY_RESTRICTED) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
@@ -346,13 +346,13 @@ public class Properties implements Constants
 	 }
 
 	 /*
-	  * Naval Bombard casualties return fire
+	  * Naval Bombard casualties restricted from return fire 
 	  */
-	 public static boolean getNavalBombardCasualtiesReturnFire(GameData data)
+	 public static boolean getNavalBombardCasualtiesReturnFireRestricted(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
@@ -361,13 +361,13 @@ public class Properties implements Constants
 	 }
 
 	 /*
-	  * Naval Bombard casualties return fire
+	  * Restricted from blitz through territories with factories/AA 
 	  */
-	 public static boolean getBlitzThroughFactoriesAndAA(GameData data)
+	 public static boolean getBlitzThroughFactoriesAndAARestricted(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(BLITZ_THROUGH_FACTORIES_AND_AA) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
@@ -405,14 +405,14 @@ public class Properties implements Constants
 		 }
 	 }
 
-	 /* 
-	  * China restricted to 1 inf per 2 owned territories
+	 /*
+	  * Production restricted to 1 unit (type x) per y owned territories
 	  */
-	 public static boolean getChinaProductionPerTwoTerritoriesRestricted(GameData data)
+	 public static boolean getProductionPerXTerritoryRestricted(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(CHINA_PRODUCTION_PER_TWO_TERRITORIES_RESTRICTED) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(PRODUCTION_PER_X_TERRITORIES_RESTRICTED) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
@@ -421,28 +421,13 @@ public class Properties implements Constants
 	 }
 
 	 /*
-	  * China restricted to 1 inf per 1 owned territories
+	  * Movement restricted to ONLY listed territories
 	  */
-	 public static boolean getChinaProductionPerTerritoryRestricted(GameData data)
+	 public static boolean getMovementByTerritoryRestricted(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(CHINA_PRODUCTION_PER_TERRITORY_RESTRICTED) ).booleanValue();
-		 }
-		 catch(Exception e)
-		 {
-			 return false;
-		 }
-	 }
-
-	 /*
-	  * China restricted movement
-	  */
-	 public static boolean getChinaMovementRestricted(GameData data)
-	 {
-		 try
-		 {
-			 return ( (Boolean) data.getProperties().get(CHINA_MOVEMENT_RESTRICTED) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(MOVEMENT_BY_TERRITORY_RESTRICTED) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
@@ -541,13 +526,13 @@ public class Properties implements Constants
 	 }
 
 	 /*
-	  * AA Attacked Territory Only
+	  * AA restricted to Attacked Territory Only
 	  */
-	 public static boolean getAAAttackedTerritoryRestricted(GameData data)
+	 public static boolean getAATerritoryRestricted(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(AA_ATTACKED_TERRITORY_RESTRICTED) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(AA_TERRITORY_RESTRICTED) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {

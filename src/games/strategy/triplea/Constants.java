@@ -61,41 +61,39 @@ public interface Constants
   public static final String FOURTH_EDITION = "4th Edition";
   //Comco
   /*
-   * These are the individual rules from 4th Edition
+   * These are the individual rules from 4th Edition (All default to FALSE)
    */
-  public static final String RESTRICTED_PURCHASE = "Restricted Purchase";
+  public static final String PLACEMENT_RESTRICTED_BY_FACTORY = "Placement Restricted By Factory";
   public static final String SELECTABLE_TECH_ROLL = "Selectable Tech Roll";
-  public static final String TRANSPORT_RESTRICTED_UNLOAD = "Transport Restricted Unload";
+  public static final String TRANSPORT_UNLOAD_RESTRICTED = "Transport Restricted Unload";
   public static final String RANDOM_AA_CASUALTIES = "Random AA Casualties";
   public static final String LIMIT_SBR_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
   public static final String LIMIT_ROCKET_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
   public static final String SBR_VICTORY_POINTS = "SBR Victory Points";
-  public static final String ONE_ROCKET_ATTACK_PER_FACTORY = "One Rocket Attack Per Factory";
+  public static final String ROCKET_ATTACK_PER_FACTORY_RESTRICTED = "Rocket Attack Per Factory Restricted";
   public static final String LIMIT_SBR_DAMAGE_PER_TURN = "Limit SBR Damage Per Turn";
   public static final String LIMIT_ROCKET_DAMAGE_PER_TURN = "Limit Rocket Damage Per Turn";
   public static final String ALLIED_AIR_DEPENDENTS = "Allied Air Dependents";
   public static final String DEFENDING_SUBS_SNEAK_ATTACK = "Defending Subs Sneak Attack";
   public static final String ATTACKER_RETREAT_PLANES = "Attacker Retreat Planes";
-  public static final String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE = "Naval Bombard Casualties Return Fire";
+  public static final String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED = "Naval Bombard Casualties Return Fire Restricted";
   public static final String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
-  public static final String BLITZ_THROUGH_FACTORIES_AND_AA = "Blitz Through Factories And AA";
+  public static final String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";
   public static final String TRANSPORT_CONTROL_SEA_ZONE = "Transport Control Sea Zone";
-  public static final String CHINA_PRODUCTION_PER_TWO_TERRITORIES_RESTRICTED = "China Production Per Two Territories Restricted";
-  public static final String CHINA_PRODUCTION_PER_TERRITORY_RESTRICTED = "China Production Per Territory Restricted";
-  public static final String CHINA_MOVEMENT_RESTRICTED = "China Movement Restricted";
+  public static final String PRODUCTION_PER_X_TERRITORIES_RESTRICTED = "Production Per Territory Restricted";
+  public static final String MOVEMENT_BY_TERRITORY_RESTRICTED = "Movement By Territory Restricted";
   public static final String TRANSPORT_CASUALTIES_RESTRICTED = "Transport Casualties Restricted";
   public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
-  public static final String SUB_RETREAT_BEFORE_BATTLE = "getSubRetreatBeforeBattle";
+  public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle";
   public static final String SUB_RETREAT_DD_RESTRICTED = "Sub Retreat DD Restricted";
   public static final String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
-  public static final String AA_ATTACKED_TERRITORY_RESTRICTED = "AA Attacked Territory Restricted";
+  public static final String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
   public static final String NATIONAL_OBJECTIVES = "National Objectives";
   public static final String UNESCORTED_TRANSPORT_DIES = "Unescorted Transport Dies";
   public static final String CONTINUOUS_RESEARCH = "Continuous Research";
   public static final String ANNIVERSARY_EDITION_LAND_PRODUCTION = "Anniversary Edition Land Production";
   public static final String ANNIVERSARY_EDITION_AIR_NAVAL = "Anniversary Edition Air Naval";
-  public static final String AIR_BASE = "airBase";
   /*public static final String KEVIN = "Kevin";
   public static final String KEVIN = "Kevin";
   public static final String KEVIN = "Kevin";

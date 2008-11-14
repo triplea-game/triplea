@@ -339,7 +339,7 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
 
         Collection<Unit> toPlace;
         
-        if(games.strategy.triplea.Properties.getFourthEdition(data) || games.strategy.triplea.Properties.getRestrictedPurchase(data))
+        if(games.strategy.triplea.Properties.getFourthEdition(data) || games.strategy.triplea.Properties.getPlacementRestrictedByFactory(data))
         {
                ArrayList<Unit> list = new ArrayList<Unit>(toPlace = m_id.getUnits().getUnits());
                

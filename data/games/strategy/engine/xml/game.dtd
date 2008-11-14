@@ -176,12 +176,13 @@
 		>
 		
 <!ELEMENT propertyList (property*)>
-	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?) >
+	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?, key*) >
 	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->
 	<!ATTLIST property
 		name CDATA #REQUIRED
 		value CDATA #REQUIRED
 		editable (true | false) "false"
+		player CDATA ""
 	>
 		<!ELEMENT boolean EMPTY>
 		<!ATTLIST boolean
@@ -208,4 +209,35 @@
 		<!ATTLIST list
 			values CDATA #REQUIRED
 		>
+		
+		<!-- Comco -->
+		<!ELEMENT key (keyList*)>
+		<!ATTLIST key
+			value CDATA ""
+			name CDATA #REQUIRED
+			count CDATA ""
+			type CDATA ""
+			controlled (true | false) "false"
+			original (true | false) "false"
+			required (true | false) "false"
+		>			
+			<!ELEMENT keyList (item*)>			
+				<!ELEMENT item EMPTY>
+				<!ATTLIST item
+				value CDATA #REQUIRED
+				>
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
 

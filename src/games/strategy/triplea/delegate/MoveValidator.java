@@ -466,7 +466,7 @@ public class MoveValidator
 
     private static boolean IsBlitzThroughFactoriesAndAA(GameData data)
     {
-        return games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAA(data);
+        return games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data);
     }
 
     private static int getNeutralCharge(GameData data, Route route)

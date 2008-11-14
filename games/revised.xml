@@ -1630,35 +1630,77 @@
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="revised" editable="false"/>
                 
+                
+                
 <!-- Comco National Objectives -->
-                <property name="Objective" player="Russians" 
-                	<key name="bonus" value="5"/>
-                	<key name="count" value = "2"/>
-               		<key name="unitExclusion" value="true" editable="false">
-               			<boolean/>
-               		</key
-                	<key name="territories">
-                		<list>
+                <property name="NationalObjective" player="Russians" value="5"> 
+               		<key name="unitExclusion" type="Allied" controlled="true" original="false"/>
+                	<key name="territoryOwner" count="2">
+                		<keyList>
                 			<item value="Archangel"/>
                 			<item value="Norway"/>
-               			</list>
+               			</keyList>
                		</key>
                 </property>
                 
-                <property name="Objective" player="Russians" 
-                	<key name="bonus" value="10"/>
-                	<key name="count" value = "3"/>
-                	<key name="territories">
-               			<list>
+                <property name="NationalObjective" player="Russians"  value="10">
+                	<key name="territoryOwner" count="3">
+               			<keyList>
                				<item value="Norway"/>
                				<item value="Caucasus"/>
                				<item value="Novosibirsk"/>
                				<item value="Yakut S.S.R."/>
                				<item value="Soviet Far East"/>
                				<item value="Buryatia S.S.R."/>
-               			</list>
+               			</keyList>
+               		</key>
+               		<key name="unitExclusion" type="Enemy" controlled="false" original="false">
+               			<keyList>
+               				<item value="4 Sea Zone"/>
+               				<item value="3 Sea Zone"/>
+               			</keyList>               				
                		</key>
                 </property>
+                
+                
+                
+                
+                
+                
+                <property name="Restriction" value="Movement By Territory Restricted" player="Americans">
+                	<key name="territories">
+               			<keyList>
+               				<item value="Eastern United States"/>
+               				<item value="Western United States"/>
+               				<item value="Central United States"/>
+               				<item value="Midway"/>
+               				<item value="Hawaiian Islands"/>
+               				<item value="China"/>
+               				<item value="Sinkiang"/>
+               				<item value="Mexico"/>
+               				<item value="Brazil"/>
+               				<item value="Alaska"/>
+               				<item value="West Indies"/>
+               				<item value="Panama"/>
+               				<item value="Greenland"/>
+               				<item value="Kwantung"/>
+               				<item value="French Indochina"/>
+               				<item value="Manchuria"/>
+               			</keyList>
+               		</key>
+                </property>                
+                
+                <property name="Restriction" value="Production Per X Territories Restricted" player="Americans">
+                	<key name="count" value="2"/>
+                	<key name="unitType">
+               			<keyList>
+               				<item value="Infantry"/>
+               			</keyList>
+               		</key>
+                </property>
+                
+                
+
                 
                 
         </propertyList>        

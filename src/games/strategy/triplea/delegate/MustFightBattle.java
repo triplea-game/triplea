@@ -1732,7 +1732,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private boolean isNavalBombardCasualtiesReturnFire()
     {
-    	return games.strategy.triplea.Properties.getNavalBombardCasualtiesReturnFire(m_data);
+    	return games.strategy.triplea.Properties.getNavalBombardCasualtiesReturnFireRestricted(m_data);
     }
     
 

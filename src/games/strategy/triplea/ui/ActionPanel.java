@@ -63,7 +63,7 @@ public abstract class ActionPanel extends JPanel
     
     public final boolean isRestrictedPurchase()
     {
-        return games.strategy.triplea.Properties.getRestrictedPurchase(m_data);
+        return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);
     }
     
     public final boolean isSelectableTechRoll()
