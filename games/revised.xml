@@ -1308,8 +1308,8 @@
                   
                            
                 
-<!-- Comco National Objectives 		Not sure about the type yet   exclusion types = controlled, original, all, or list-->  
-                <attatchment name="objectiveAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.objectiveAttachment" type="territory">
+<!-- Comco National Objectives 	-->  
+                <attatchment name="objectiveAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/> 
                 	<option name="alliedExclusion" value="controlled"/>  
                 	<option name="territoryOwner" value="2">     
@@ -1320,7 +1320,7 @@
                		</option>
                 </attatchment>
                 
-                <attatchment name="NationalObjective" attatchTo="Russians"   javaClass="games.strategy.triplea.attatchments.objectiveAttachment" type="territory">
+                <attatchment name="NationalObjective" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="10"/>
                 	<option name="territoryOwner" value="3">
                			<itemList>
@@ -1345,8 +1345,8 @@
                 
                 
                 <!-- movement restricted to listed territories -->
-                <attatchment name="movementRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="territory">
-                	<option name="territories">
+                <attatchment name="movementRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="territories" value="list">
                			<itemList>
                				<item value="Eastern United States"/>
                				<item value="Western United States"/>
@@ -1368,20 +1368,14 @@
                		</option>
                 </attatchment>                
                 <!-- production restricted to 1 per x owned territories -->
-                <attatchment name="productionRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="territory">
+                <attatchment name="productionRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="perOwnedTerritories" value="2"/>
-                	<option name="allowedUnitType">
-               			<itemList>
-               				<item value="Infantry"/>
-               			</itemList>
-               		</option>
+                	<option name="allowedUnitType" value="Infantry"/>
                 </attatchment>
                 
+<!-- Comco end National Objectives -->
                 
-
                 
-                  
-                  
                   
         </attatchmentList>
         

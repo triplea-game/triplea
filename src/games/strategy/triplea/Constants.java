@@ -41,6 +41,8 @@ public interface Constants
   public static final String UNIT_ATTATCHMENT_NAME = "unitAttatchment";
   public static final String TECH_ATTATCHMENT_NAME = "techAttatchment";
   public static final String TERRITORY_ATTATCHMENT_NAME = "territoryAttatchment";
+  public static final String RULES_ATTATCHMENT_NAME = "rulesAttatchment";
+  public static final String RULES_OBJECTIVE_PREFIX = "objectiveAttatchment";
   public static final String PLAYER_ATTATCHMENT_NAME = "playerAttatchment";
   public static final String CANAL_ATTATCHMENT_PREFIX = "canalAttatchment";
   public static final String IPCS = "IPCs";

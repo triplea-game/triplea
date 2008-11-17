@@ -97,9 +97,9 @@ public class GameParser
         if(production != null)
             parseProduction(production);
 
-        Node attatchmentList = getSingleChild("attatchmentList", root, true);
-        if(attatchmentList != null)
-            parseAttatchments(attatchmentList);
+        Node attachmentList = getSingleChild("attatchmentList", root, true);
+        if(attachmentList != null)
+            parseAttachments(attachmentList);
 
         Node initialization = getSingleChild("initialize", root, true);
         if(initialization != null)
@@ -335,124 +335,6 @@ public class GameParser
 
     }
 
-    //Comco Called to parse the Objective property
-    private void parseNationalObjective(Element property) throws GameParseException
-    {
-    	//get Objective details
-    	String playerString = property.getAttribute("player");
-    	PlayerID player = getPlayerID(property, "player", true);  
-    	int objectiveValue = Integer.parseInt(property.getAttribute("value"));
-    	//See if there's a required number to be met, else set to -1 for ALL
-    	int requiredKeyCount;
-    	try
-    	{
-    		requiredKeyCount = Integer.parseInt(property.getAttribute("count"));
-    	}
-    	catch (Exception e)
-        {
-    		requiredKeyCount = -1;
-        }
-    	
-    	//initialize the flag to tell if the objective been met
-    	boolean objectiveMet = false;
-        
-    	//get children (keys)
-    	List<Node> children = getNonTextNodes(property);
-        Vector objList = new Vector();        
-
-        objList.add(player);
-        objList.add(objectiveValue);
-        objList.add(requiredKeyCount);
-    	
-        for (int i = 0; i< children.size(); i++)
-        {
-        	Element key = (Element) children.get(i);
-        	
-        	//get the elements of the key
-        	//controlled/original are for unit exclusions- on all controlled or original territories
-        	//count is for the number of listed territorries that must be owned
-        	String keyName = key.getAttribute("name");
-        	String type = key.getAttribute("type");
-        	Boolean controlled = key.getAttribute("controlled").trim().equalsIgnoreCase("true");
-        	Boolean original = key.getAttribute("original").trim().equalsIgnoreCase("true");
-        	
-        	//See if there's a required number to be met, else set to -1 for ALL
-        	int requiredItemCount;
-        	try
-        	{
-        		requiredItemCount = Integer.parseInt(key.getAttribute("count"));
-        	}
-        	catch (Exception e)
-            {
-        		requiredItemCount = -1;
-            }
-        	
-        	Boolean requiredKey = key.getAttribute("required").trim().equalsIgnoreCase("true");
-
-        	Collection<Territory> territories = new ArrayList<Territory>();
-        	
-            if(keyName.equals("territoryOwner"))
-            {
-            	Node keyList = getSingleChild("keyList", key);
-            	List<Node> children2 = getNonTextNodes(keyList);
-            	
-            	for (int j = 0; j< children2.size(); j++)
-                {
-            		Element item = (Element) children2.get(j);
-            		Territory territory = getTerritory(item, "value", true);
-            		territories.add(territory);
-                }
-            }
-            
-            if(keyName.equals("unitExclusion"))
-            {	
-            	List<Node> children2 = getNonTextNodes(key);
-            	
-            	for (int j = 0; j< children2.size(); j++)
-                {
-            		Element territory = (Element) children2.get(j);
-            		territories.add(getTerritory(territory, "item", true));
-                }
-            }
-
-            //Create objective of key details
-            Vector keyList = new Vector();
-            keyList.add(keyName);
-            keyList.add(territories);
-            keyList.add(requiredItemCount);
-            keyList.add(requiredKey);
-            keyList.add(type);
-            keyList.add(controlled);
-            keyList.add(original);
-            //Add the key details to the objective
-            objList.add(keyList);
-	
-        }        
-
-        //create the attatchment   
-        //comco
-    	NationalObjective natOb = new NationalObjective(property.getNodeName(), player, objList, data);
-    	
-    	String name = property.getAttribute("name");
-        Attachable attatchable = findAttatchment(property, "player");
-        
-        IAttachment attatchment = (IAttachment) natOb;
-        attatchment.setData(data);
-        
-        attatchable.addAttachment(name, attatchment);
-        attatchment.setAttatchedTo(attatchable);
-        
-    	IAttachment attach = player.getAttachment(playerString);
-    	//NationalObjective.setAttachedTo(attach);
-    	
-    }
-    
-    //Comco add new XML section here for Various abstract restrictions
-    private void parseRestriction(Element property) throws GameParseException
-    {
-
-    }
-    
     private void parseGrids(List grids) throws GameParseException
     { 
         GameMap map = data.getMap();      
@@ -755,10 +637,6 @@ public class GameParser
 
             if(editable != null && editable.equalsIgnoreCase("true"))
                 parseEditableProperty(current, property, value);
-            else if(property.equals("NationalObjective"))
-            	parseNationalObjective(current);
-            else if(property.equals("Restriction"))
-            	parseRestriction(current);
             else
             {
                 List children2 = getNonTextNodes(current);
@@ -1011,7 +889,7 @@ public class GameParser
         }
     }
 
-    private void parseAttatchments(Node root) throws GameParseException
+    private void parseAttachments(Node root) throws GameParseException
     {
         List elements = getChildren("attatchment", root);
 
@@ -1019,32 +897,32 @@ public class GameParser
         {
             Element current = (Element) elements.get(i);
 
-            //create the attatchment
+            //create the attachment
             String className = current.getAttribute("javaClass");
             Object obj = getInstance(className);
             if(!(obj instanceof IAttachment))
-                throw new IllegalStateException(className + " does not implement Attatchable");
+                throw new IllegalStateException(className + " does not implement Attachable");
 
-            IAttachment attatchment = (IAttachment) obj;
-            attatchment.setData(data);
+            IAttachment attachment = (IAttachment) obj;
+            attachment.setData(data);
             //set the values
             List values = getChildren("option", current);
-            setValues(attatchment, values);
-            attatchment.validate();
+            setValues(attachment, values);
+            attachment.validate();
 
-            //find the attatchable
+            //find the attachable
             String type = current.getAttribute("type");
-            Attachable attatchable = findAttatchment(current, type);
+            Attachable attachable = findAttachment(current, type);
 
-            //attatch
+            //attach
             String name = current.getAttribute("name");
-            attatchable.addAttachment(name, attatchment);
-            attatchment.setAttatchedTo(attatchable);
-            attatchment.setName(name);
+            attachable.addAttachment(name, attachment);
+            attachment.setAttatchedTo(attachable);
+            attachment.setName(name);
         }
     }
 
-    private Attachable findAttatchment(Element element, String type) throws GameParseException
+    private Attachable findAttachment(Element element, String type) throws GameParseException
     {
         Attachable returnVal;
         final String name = "attatchTo";
@@ -1092,7 +970,7 @@ public class GameParser
                 setter = obj.getClass().getMethod( "set" + capitalizeFirstLetter(name), SETTER_ARGS);
             } catch(NoSuchMethodException nsme)
             {
-                throw new GameParseException("No setter for attatchment option. Setter:" + name + " Class:" + obj.getClass().getName());
+                throw new GameParseException("No setter for attachment option. Setter:" + name + " Class:" + obj.getClass().getName());
             }
 
             //find the value

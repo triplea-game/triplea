@@ -24,10 +24,15 @@ import games.strategy.engine.data.*;
 import games.strategy.engine.delegate.*;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -71,7 +76,7 @@ public class EndRoundDelegate implements IDelegate
 
 		if (isNationalObjectives())
 		{
-			deterineNationalObjectives(m_data);
+			determineNationalObjectives(m_data);
 		}
 		
 		if(isFourthEdition())
@@ -183,34 +188,77 @@ public class EndRoundDelegate implements IDelegate
     }
 
     //Comco new method
-    private void deterineNationalObjectives(GameData data)
+    private void determineNationalObjectives(GameData data)
     {
-    	if(isAnniversaryEditionLandProduction())
+    	PlayerID player = data.getSequence().getStep().getPlayerID();
+    	
+    	//See if the player has National Objectives
+    	Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
+        Map<String, IAttachment> map = player.getAttachments();
+        Iterator<String> objsIter = map.keySet().iterator();
+        while(objsIter.hasNext() )
+        {
+            IAttachment attachment = map.get(objsIter.next());
+            String name = attachment.getName();
+            if (name.startsWith(Constants.RULES_OBJECTIVE_PREFIX))
+            {
+            	natObjs.add((RulesAttachment)attachment);
+            }
+        }
+        
+        //Check whether any National Objectives are met
+    	Iterator<RulesAttachment> rulesIter = natObjs.iterator();
+    	while(rulesIter.hasNext())
     	{
-    		PlayerList players = data.getPlayerList();
-    		Iterator<PlayerID> playersIter = players.iterator();
+    		RulesAttachment rule = rulesIter.next();
+    		boolean satisfied = false;
     		
-    		while (playersIter.hasNext())
+    		//Check for allied unit exclusions
+    		if(rule.getAlliedExclusion() != null)
     		{
-    			PlayerID player = playersIter.next();
-    			if (player.equals(players.getPlayerID(Constants.RUSSIANS)))
+    			if(rule.getAlliedExclusion() == "controlled")
     			{
-    				Collection <Territory> territories = data.getMap().getTerritories();
-    				Iterator <Territory> territoriesIter = territories.iterator();
-    				
-/* 					~Allied control of Archangelsk + no UK or US units on Soviet-controlled territories= 5 IPCs
-    				~Allied control of at least three of the following: Norway, Finland, Poland,
-						Bulgaria/Romania, Czechoslovakia/Hungary and/or Balkans= 10 IPCs.
-*/
+    				Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
+    				Iterator<Territory> ownedTerrIter = ownedTerrs.iterator();
+    				//Go through the owned territories and see if there are any allied units
+    				while (ownedTerrIter.hasNext())
+    				{
+    					Territory terr = ownedTerrIter.next();
+    					
+    				}
     			}
-    			/*else if (player.equals(players.getPlayerID(Constants.ITALIANS)))
-    			{
-    				
-    			}*/
+
+    			if(rule.getAlliedExclusion() == "original")
+    			{    				
+    			}
     			
+    			if(rule.getAlliedExclusion() == "all")
+    			{    				
+    			}
+    			
+    			if(rule.getAlliedExclusion() == "list")
+    			{    				
+    			}
+    		}
+
+    		//Check for enemy unit exclusions
+    		if(rule.getEnemyExclusion() != null)
+    		{    			
+    		}
+
+    		//Check for Territory Ownership rules
+    		if(rule.getTerritoryOwner() != -1)
+    		{    			
     		}
     		
-    	}
-    }
+    		
+    		//If all are satisfied add the IPCs for this objective
+    		if (satisfied)
+    		{
+    		}
+    		
+    		
+    	} //end while        	
+    } //end determineNationalObjectives
     
 }
