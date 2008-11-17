@@ -434,49 +434,17 @@ public class GameParser
     	NationalObjective natOb = new NationalObjective(property.getNodeName(), player, objList, data);
     	
     	String name = property.getAttribute("name");
-        Attachable attatchable = findAttatchment(property, playerString);
-    	
+        Attachable attatchable = findAttatchment(property, "player");
+        
+        IAttachment attatchment = (IAttachment) natOb;
+        attatchment.setData(data);
+        
         attatchable.addAttachment(name, attatchment);
         attatchment.setAttatchedTo(attatchable);
         
     	IAttachment attach = player.getAttachment(playerString);
-    	NationalObjective.setAttachedTo(attach);
+    	//NationalObjective.setAttachedTo(attach);
     	
-/*      //create the attatchment
-    	Object obj = new NationalObjective(property.getAttribute("name"), player, objList, data);
-    	
-        //String className = "games.strategy.engine.data.NationalObjective(null, null, null, null)";
-        //Object obj = getInstance(className);
-        if(!(obj instanceof IAttachment))
-            throw new IllegalStateException(" does not implement Attatchable");
-
-        IAttachment attachment = (IAttachment) obj;
-        attachment.setData(data);
-        
-        //Comco
-        List values = getChildren("Objective", property);
-        setValues(attachment, values);
-        attachment.validate();
-        
-        //find the attatchable
-        String type = property.getAttribute("Objective");
-        Attachable attatchable = findAttatchment(property, type);
-        
-      //attatch
-        String name = property.getAttribute("name");
-        attatchable.addAttachment(name, attachment);
-        attachment.setAttatchedTo(attatchable);
-        attachment.setName(name);
-*/        
-        
-        //create the attatchment        
-    	//NationalObjective natOb = new NationalObjective(property.getNodeName(), player, objList, data);
-    	
-    	/*IAttachment attachment = natOb.getAttachment(playerString);
-    	
-    	//IAttachment attachment = (IAttachment) natOb;
-        attachment.setData(data);
-        player.addAttachment(playerString, attachment);*/
     }
     
     //Comco add new XML section here for Various abstract restrictions

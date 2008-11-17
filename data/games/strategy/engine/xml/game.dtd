@@ -131,18 +131,29 @@
 	
 <!-- attatchments must implement Attatchment -->
 <!ELEMENT attatchmentList (attatchment+) >
-	<!ELEMENT attatchment (option+)>
+	<!ELEMENT attatchment (option+) >
 	<!ATTLIST attatchment 
 		name CDATA #REQUIRED
 		attatchTo CDATA #REQUIRED
 		javaClass CDATA #REQUIRED
 		type (unitType | territory | resource | player)  "unitType"
 	>
-		<!ELEMENT option EMPTY> 
+	<!-- comco	<!ELEMENT option EMPTY> --> 
+		<!ELEMENT option (itemList*) > 
 		<!ATTLIST option
 			name CDATA #REQUIRED
 			value CDATA #REQUIRED
 		>
+		<!-- Comco added this-->
+			<!ELEMENT itemList (item*) >
+			<!ATTLIST itemList >
+				<!ELEMENT item EMPTY>
+				<!ATTLIST item
+					value CDATA #REQUIRED
+				>
+			
+			
+		
 
 <!ELEMENT initialize (ownerInitialize?, unitInitialize?, resourceInitialize?) >
 	<!ELEMENT ownerInitialize (territoryOwner+) >
@@ -176,7 +187,7 @@
 		>
 		
 <!ELEMENT propertyList (property*)>
-	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?, key*) >
+	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?) >
 	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->
 	<!ATTLIST property
 		name CDATA #REQUIRED
@@ -209,35 +220,3 @@
 		<!ATTLIST list
 			values CDATA #REQUIRED
 		>
-		
-		<!-- Comco -->
-		<!ELEMENT key (keyList*)>
-		<!ATTLIST key
-			value CDATA ""
-			name CDATA #REQUIRED
-			count CDATA ""
-			type CDATA ""
-			controlled (true | false) "false"
-			original (true | false) "false"
-			required (true | false) "false"
-		>			
-			<!ELEMENT keyList (item*)>			
-				<!ELEMENT item EMPTY>
-				<!ATTLIST item
-				value CDATA #REQUIRED
-				>
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
