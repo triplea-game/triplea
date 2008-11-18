@@ -909,7 +909,10 @@ public class GameParser
             attachment.setData(data);
             //set the values
             List values = getChildren("option", current);
-
+            if (obj instanceof RulesAttachment || obj instanceof CanalAttachment)
+            {
+            	String kev = "kev";
+            }
             setValues(attachment, values);
             attachment.validate();
             
@@ -980,34 +983,43 @@ public class GameParser
             String value = current.getAttribute("value");
             
             //COMCO
-            List<String> itemValues = new ArrayList<String>();
-            itemValues.add(value);
             if (obj instanceof RulesAttachment)
             {
-            	//See if there's an itemList
-            	List itemList = getChildren("itemList", current);
-            	for (int j = 0; j < itemList.size(); j++)
-            	{
-kev
-	                Element iListCurr = (Element) itemList.get(j);
-	                //See if there are any items
-	                List items = getChildren("item", iListCurr);
-	                for (int k = 0; k < items.size(); k++)
-	                {
-	                	Element itemCurr = (Element) items.get(k);
-		                //find the value
-		                String itemValue = itemCurr.getAttribute("value");
-		                itemValues.add(itemValue);
-	                }	                
-            	} 
+            	String kev = "here";
             }
-              
+            	
+            
+            String count = current.getAttribute("count");
+
+            String itemValues = new String();
+            
+            if(count.length() > 0)    
+            	itemValues = count + ":";
+            
+            itemValues = itemValues + value;
+            /*if (obj instanceof RulesAttachment)
+            {
+            	//See if there's a list of items
+	                List items = getChildren("item", current);
+	                for (int j = 0; j < items.size(); j++)
+	                {
+	                	Element itemCurr = (Element) items.get(j);
+		                //find the name & value
+		                String itemName = itemCurr.getAttribute("name");
+		                //itemValues.add(itemName);
+		                itemValues = itemValues + ", " + itemName;
+		                String itemValue = itemCurr.getAttribute("value");
+		                //itemValues.add(itemValue);
+		                itemValues = itemValues + ", " + itemValue;
+	                }	         
+            }*/              
             //ComcoEnd
             
             //invoke
             try
             {            	
-                Object[] args = {value};
+                Object[] args = {itemValues};
+                /*Object[] args = {value};*/
                 setter.invoke(obj, args );
             	
             } catch(IllegalAccessException iae)

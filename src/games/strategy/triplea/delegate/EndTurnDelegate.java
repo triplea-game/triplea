@@ -190,12 +190,29 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		}
 
     		//Check for Territory Ownership rules
-    		if(rule.getTerritoryOwner() != -1 && satisfied == true)
+    		if(rule.getAlliedOwnershipTerritoryCount() != -1 && satisfied == true)
     		{
-    			kev
-    			String ownedTerrs = rule.getTerritories();
-    			int kev = rule.getTerritoryOwner();
-    			kev = rule.hashCode();
+    			Collection<Territory> listedTerrs = rule.getLandTerritories();
+    			
+    			int numberNeeded = rule.getAlliedOwnershipTerritoryCount();
+    			int numberMet = 0;
+    			
+    			Iterator<Territory> listedTerrIter = listedTerrs.iterator();
+    			while(listedTerrIter.hasNext())
+    			{
+    				Territory listedTerr = listedTerrIter.next();
+    				//if the territory owner is an ally
+    				if (data.getAllianceTracker().isAllied(listedTerr.getOwner(), player))
+    				{
+    					numberMet += 1;
+    					if(numberMet >= numberNeeded)
+    					{
+    						satisfied = true;
+    						break;
+    					}
+    				}    				
+    				satisfied = false;
+    			}
     		}
     		
     		

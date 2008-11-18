@@ -21,10 +21,15 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
+
+import java.io.File;
 import java.util.*;
 
 import org.w3c.dom.Document;
@@ -32,6 +37,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import games.strategy.engine.data.*;
+import games.strategy.engine.framework.GameRunner;
 
 /**
  *
@@ -40,33 +46,7 @@ import games.strategy.engine.data.*;
  */
 public class RulesAttachment extends DefaultAttachment
 {
-
-/*    public static Territory getCapital(PlayerID player, GameData data)
-    {
-        Iterator iter = data.getMap().getRules().iterator();
-        while(iter.hasNext())
-        {
-        	Rule current = (Rule) iter.next();
-            RulesAttachment ta = RulesAttachment.get(current);
-            if(ta != null && ta.getCapital() != null)
-            {
-                PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
-                if(whoseCapital == null)
-                    throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
-
-                if(player.equals(whoseCapital))
-                    return current;
-            }
-        }
-        //Added check for optional players- no error thrown for them
-        if(player.getOptional())
-        	return null;
-        
-        throw new IllegalStateException("Capital not found for:" + player);
-    }*/
-
-
-    /**
+	/**
      * Convenience method.
      */
     public static RulesAttachment get(Rule r)
@@ -82,7 +62,8 @@ public class RulesAttachment extends DefaultAttachment
     private int m_objectiveValue = 0;
     private String m_alliedExclusion = null;
     private String m_enemyExclusion = null;
-    private int m_territoryOwner = -1;
+    private int m_alliedOwnershipTerritoryCount = -1;
+    private String[] m_alliedOwnershipTerritories;
     private String m_territories = null;
     private int m_perOwnedTerritories = -1;
     private String m_allowedUnitType = null;
@@ -123,6 +104,17 @@ public class RulesAttachment extends DefaultAttachment
       return m_alliedExclusion;
   }
   
+//exclusion types = controlled, original, all, or list
+  public void setAlliedOwnershipTerritories(String value)
+  {
+	  m_alliedOwnershipTerritories = value.split(":");
+  }
+
+  public String[] getAlliedOwnershipTerritories()
+  {
+      return m_alliedOwnershipTerritories;
+  }
+  
   //exclusion types = controlled, original, all, or list
   public void setEnemyExclusion(String value)
   {
@@ -133,18 +125,18 @@ public class RulesAttachment extends DefaultAttachment
   {
       return m_enemyExclusion;
   }
-
-  public void setTerritoryOwner(String value)
+  
+  public void setAlliedOwnershipTerritoryCount(String value)
   {
-      m_territoryOwner = getInt(value);
+	  m_alliedOwnershipTerritoryCount = getInt(value);
   }
 
-  public int getTerritoryOwner()
+  public int getAlliedOwnershipTerritoryCount()
   {
-      return m_territoryOwner;
+      return m_alliedOwnershipTerritoryCount;
   }
   
-  public void setTerritories(String value)
+/*  public void setTerritories(String value)
   {
 	  m_territories = value;
   }
@@ -152,7 +144,7 @@ public class RulesAttachment extends DefaultAttachment
   public String getTerritories()
   {
       return m_territories;
-  }
+  }*/
 
   public void setPerOwnedTerritories(String value)
   {
@@ -174,4 +166,110 @@ public class RulesAttachment extends DefaultAttachment
       return m_allowedUnitType;
   }
 
+  
+
+  /**
+   * Called after the attatchment is created.
+   */
+  public void validate() throws GameParseException
+  {
+      if(m_objectiveValue == 0 || ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && m_alliedExclusion == null && m_enemyExclusion == null))
+          throw new IllegalStateException("ObjectiveAttachment error for:" + m_ruleOwner + " not all variables set");
+      getLandTerritories();
+  }
+  
+  //Validate that all listed territories actually exist
+  public Collection<Territory> getLandTerritories()    
+  {
+      List<Territory> rVal = new ArrayList<Territory>();
+      
+      for(String name : m_alliedOwnershipTerritories)
+      {
+    	  try
+    	  {
+    		  int temp = getInt(name);
+    		  setAlliedOwnershipTerritoryCount(name);
+    		  continue;
+    	  }
+    	  catch(Exception e)
+    	  {    		  
+    	  }
+          Territory territory = getData().getMap().getTerritory(name);
+          if(territory == null)
+              throw new IllegalStateException("No territory called:" + territory); 
+          rVal.add(territory);
+      }        
+      return rVal;
+  }
+  
+  /*
+  //The input to this contains a count and a list of matched pairs of strings
+  public void setTerritoryRequirements(String value)
+  {	  
+	  String[] itemValues = stringToArray(value);
+	  m_territoryRequirementsCount = getInt(itemValues[0]);
+	  
+	  for(int i =1; i < itemValues.length; i++)
+      {
+          String current = new String(itemValues[i]);
+          i++;
+          String next = new String(itemValues[i]);
+          
+          m_territoryRequirementsName = current;
+          m_territoryRequirementsValue = next;
+      }
+	 
+  }*/
+  
+  /*public static Set<Territory> getAllListedTerritories(String territoryRequirements, GameData data)
+  {
+      Set<Territory> rVal = new HashSet<Territory>();       
+      for(Territory t : data.getMap())
+      {
+          Set<RulesAttachment> ruleAttachments = get(t);
+          if(ruleAttachments.isEmpty())
+              continue;
+          
+          Iterator<RulesAttachment> iter = ruleAttachments.iterator();
+          while(iter.hasNext() )
+          {
+        	  RulesAttachment ruleAttachment = iter.next();
+              if (ruleAttachment.getRuleName().equals(canalName))
+              {
+                  rVal.add(t);
+              }
+          }
+      }
+	return rVal;
+  }
+  
+  public static Set<RulesAttachment> get(Territory t)
+  {
+      Set<RulesAttachment> rVal = new HashSet<RulesAttachment>();
+      Map<String, IAttachment> map = t.getAttachments();
+      Iterator<String> iter = map.keySet().iterator();
+      while(iter.hasNext() )
+      {
+          IAttachment attachment = map.get(iter.next());
+          String name = attachment.getName();
+          if (name.startsWith(Constants.RULES_OBJECTIVE_PREFIX))
+          {
+              rVal.add((RulesAttachment)attachment);
+          }
+      }
+      return rVal;
+      
+  }
+  
+  
+  public static String [] stringToArray(String str) {
+	    StringTokenizer t = new StringTokenizer(str, ",");
+	    String [] array = new String[t.countTokens()];
+
+	    for(int i=0; t.hasMoreTokens(); ++i) {
+	      array[i] = t.nextToken();
+	    }
+	    return(array);
+	  }
+*/
 }

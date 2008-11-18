@@ -138,21 +138,13 @@
 		javaClass CDATA #REQUIRED
 		type (unitType | territory | resource | player)  "unitType"
 	>
-	<!-- comco	<!ELEMENT option EMPTY> --> 
-		<!ELEMENT option (itemList*) > 
+	<!-- comco	--> 
+		<!ELEMENT option EMPTY > 
 		<!ATTLIST option
 			name CDATA #REQUIRED
 			value CDATA #REQUIRED
+			count CDATA ""
 		>
-		<!-- Comco added this-->
-			<!ELEMENT itemList (item*) >
-			<!ATTLIST itemList >
-				<!ELEMENT item EMPTY>
-				<!ATTLIST item
-					value CDATA #REQUIRED
-				>
-			
-			
 		
 
 <!ELEMENT initialize (ownerInitialize?, unitInitialize?, resourceInitialize?) >

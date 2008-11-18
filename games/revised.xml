@@ -1309,27 +1309,22 @@
                            
                 
 <!-- Comco National Objectives 	-->  
-                <attatchment name="NationalObjective" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <attatchment name="objectiveAttachment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/> 
                 	<option name="alliedExclusion" value="controlled"/>  
-                	<option name="territoryOwner" value="2">     
-                		<itemList>
-                			<item value="Archangel"/>
-                			<item value="Norway"/>
-               			</itemList>
-               		</option>
+                	<option name="alliedOwnershipTerritories" value="Archangel:Norway" count="2"/>     
                 </attatchment>
-<!--       COMCO         
-                <attatchment name="NationalObjective" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+<!--  COMCO         
+                <attatchment name="objectiveAttachment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="10"/>
-                	<option name="territoryOwner" value="3">
+                	<option name="territoryRequirements" value="3">
                			<itemList>
-               				<item value="Norway"/>
-               				<item value="Caucasus"/>
-               				<item value="Novosibirsk"/>
-               				<item value="Yakut S.S.R."/>
-               				<item value="Soviet Far East"/>
-               				<item value="Buryatia S.S.R."/>
+               				<item name="alliedOwnership" value="Norway"/>
+               				<item name="alliedOwnership" value="Caucasus"/>
+               				<item name="alliedOwnership" value="Novosibirsk"/>
+               				<item name="alliedOwnership" value="Yakut S.S.R."/>
+               				<item name="alliedOwnership" value="Soviet Far East"/>
+               				<item name="alliedOwnership" value="Buryatia S.S.R."/>
                			</itemList>
                		</option>
                		<option name="enemyExclusion" value="list">
@@ -1338,13 +1333,12 @@
                				<item value="3 Sea Zone"/>
                			</itemList>               				
                		</option>
-                </attatchment>
- 	-->                
-                
-                
+                </attatchment>         
+-->                  
                 
                 
                 <!-- movement restricted to listed territories -->
+<!--  COMCO
                 <attatchment name="movementRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="territories" value="list">
                			<itemList>
@@ -1366,16 +1360,18 @@
                				<item value="Manchuria"/>
                			</itemList>
                		</option>
-                </attatchment>                
+                </attatchment>    
+-->            
                 <!-- production restricted to 1 per x owned territories -->
+<!--  COMCO
                 <attatchment name="productionRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="perOwnedTerritories" value="2"/>
                 	<option name="allowedUnitType" value="Infantry"/>
                 </attatchment>
-                
-<!-- Comco end National Objectives -->
-                
-                
+-->
+
+<!-- Comco end National Objectives -->    
+       
                   
         </attatchmentList>
         
