@@ -20,11 +20,26 @@
 
 package games.strategy.triplea.delegate;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 /**
@@ -64,6 +79,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
                     } 
                 } 
 
+        		if (isNationalObjectives())
+        		{
+        			determineNationalObjectives(m_data);
+        		}
+        		
         if(isFourthEdition())
             return;
 
@@ -103,6 +123,102 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 
     }
     
+    //Comco new method
+    private void determineNationalObjectives(GameData data)
+    {
+    	PlayerID player = data.getSequence().getStep().getPlayerID();
+    	String m_resource=null;
+    	
+    	//See if the player has National Objectives
+    	Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
+        Map<String, IAttachment> map = player.getAttachments();
+        Iterator<String> objsIter = map.keySet().iterator();
+        while(objsIter.hasNext() )
+        {
+            IAttachment attachment = map.get(objsIter.next());
+            String name = attachment.getName();
+            if (name.startsWith(Constants.RULES_OBJECTIVE_PREFIX))
+            {
+            	natObjs.add((RulesAttachment)attachment);
+            }
+        }
+        
+        //Check whether any National Objectives are met
+    	Iterator<RulesAttachment> rulesIter = natObjs.iterator();
+    	while(rulesIter.hasNext())
+    	{
+    		RulesAttachment rule = rulesIter.next();
+    		boolean satisfied = true;
+    		
+    		//Check for allied unit exclusions
+    		if(rule.getAlliedExclusion() != null)
+    		{
+    			if(rule.getAlliedExclusion().equals("controlled"))
+    			{
+    				Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
+    				Iterator<Territory> ownedTerrIter = ownedTerrs.iterator();
+    				//Go through the owned territories and see if there are any allied units
+    				while (ownedTerrIter.hasNext())
+    				{
+    					Territory terr = ownedTerrIter.next();
+    					
+    					if(terr.getUnits().getPlayersWithUnits().size()>1)
+    					{
+    						satisfied = false;
+    						break;
+    					}
+    					
+    				}
+    			}
+
+    			if(rule.getAlliedExclusion() == "original")
+    			{    				
+    			}
+    			
+    			if(rule.getAlliedExclusion() == "all")
+    			{    				
+    			}
+    			
+    			if(rule.getAlliedExclusion() == "list")
+    			{    				
+    			}
+    		}
+
+    		//Check for enemy unit exclusions
+    		if(rule.getEnemyExclusion() != null && satisfied == true)
+    		{    			
+    		}
+
+    		//Check for Territory Ownership rules
+    		if(rule.getTerritoryOwner() != -1 && satisfied == true)
+    		{
+    			kev
+    			String ownedTerrs = rule.getTerritories();
+    			int kev = rule.getTerritoryOwner();
+    			kev = rule.hashCode();
+    		}
+    		
+    		
+    		//If all are satisfied add the IPCs for this objective
+    		if (satisfied)
+    		{
+    			//Also log a message
+    			player.getResources().addResource(data.getResourceList().getResource(Constants.IPCS), rule.getObjectiveValue());
+    		}
+    	} //end while        	
+    } //end determineNationalObjectives
+    
+	private boolean isNationalObjectives()
+    {
+    	return games.strategy.triplea.Properties.getNationalObjectives(m_data);
+    }
+
+	private boolean isAnniversaryEditionLandProduction()
+    {
+    	return games.strategy.triplea.Properties.getAnniversaryEditionLandProduction(m_data);
+    }
+	
+
     private boolean isFourthEdition()
     {
     	return games.strategy.triplea.Properties.getFourthEdition(m_data);

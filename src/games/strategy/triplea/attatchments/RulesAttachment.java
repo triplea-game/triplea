@@ -159,7 +159,7 @@ public class RulesAttachment extends DefaultAttachment
       m_perOwnedTerritories = getInt(value);
   }
 
-  public int setPerOwnedTerritories()
+  public int getPerOwnedTerritories()
   {
       return m_perOwnedTerritories;
   }

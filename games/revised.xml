@@ -1309,7 +1309,7 @@
                            
                 
 <!-- Comco National Objectives 	-->  
-                <attatchment name="objectiveAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <attatchment name="NationalObjective" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/> 
                 	<option name="alliedExclusion" value="controlled"/>  
                 	<option name="territoryOwner" value="2">     
@@ -1319,7 +1319,7 @@
                			</itemList>
                		</option>
                 </attatchment>
-                
+<!--       COMCO         
                 <attatchment name="NationalObjective" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="10"/>
                 	<option name="territoryOwner" value="3">
@@ -1339,7 +1339,7 @@
                			</itemList>               				
                		</option>
                 </attatchment>
-                
+ 	-->                
                 
                 
                 

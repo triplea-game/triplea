@@ -74,11 +74,6 @@ public class EndRoundDelegate implements IDelegate
 
 		m_data = gameData;
 
-		if (isNationalObjectives())
-		{
-			determineNationalObjectives(m_data);
-		}
-		
 		if(isFourthEdition())
 		    return;
 		
@@ -115,17 +110,7 @@ public class EndRoundDelegate implements IDelegate
     {
     	return games.strategy.triplea.Properties.getFourthEdition(m_data);
     }	
-	
-	private boolean isNationalObjectives()
-    {
-    	return games.strategy.triplea.Properties.getNationalObjectives(m_data);
-    }
 
-	private boolean isAnniversaryEditionLandProduction()
-    {
-    	return games.strategy.triplea.Properties.getAnniversaryEditionLandProduction(m_data);
-    }
-	
 	public String getName()
 	{
 		return m_name;
@@ -187,78 +172,6 @@ public class EndRoundDelegate implements IDelegate
         return null;
     }
 
-    //Comco new method
-    private void determineNationalObjectives(GameData data)
-    {
-    	PlayerID player = data.getSequence().getStep().getPlayerID();
-    	
-    	//See if the player has National Objectives
-    	Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
-        Map<String, IAttachment> map = player.getAttachments();
-        Iterator<String> objsIter = map.keySet().iterator();
-        while(objsIter.hasNext() )
-        {
-            IAttachment attachment = map.get(objsIter.next());
-            String name = attachment.getName();
-            if (name.startsWith(Constants.RULES_OBJECTIVE_PREFIX))
-            {
-            	natObjs.add((RulesAttachment)attachment);
-            }
-        }
-        
-        //Check whether any National Objectives are met
-    	Iterator<RulesAttachment> rulesIter = natObjs.iterator();
-    	while(rulesIter.hasNext())
-    	{
-    		RulesAttachment rule = rulesIter.next();
-    		boolean satisfied = false;
-    		
-    		//Check for allied unit exclusions
-    		if(rule.getAlliedExclusion() != null)
-    		{
-    			if(rule.getAlliedExclusion() == "controlled")
-    			{
-    				Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
-    				Iterator<Territory> ownedTerrIter = ownedTerrs.iterator();
-    				//Go through the owned territories and see if there are any allied units
-    				while (ownedTerrIter.hasNext())
-    				{
-    					Territory terr = ownedTerrIter.next();
-    					
-    				}
-    			}
 
-    			if(rule.getAlliedExclusion() == "original")
-    			{    				
-    			}
-    			
-    			if(rule.getAlliedExclusion() == "all")
-    			{    				
-    			}
-    			
-    			if(rule.getAlliedExclusion() == "list")
-    			{    				
-    			}
-    		}
-
-    		//Check for enemy unit exclusions
-    		if(rule.getEnemyExclusion() != null)
-    		{    			
-    		}
-
-    		//Check for Territory Ownership rules
-    		if(rule.getTerritoryOwner() != -1)
-    		{    			
-    		}
-    		
-    		
-    		//If all are satisfied add the IPCs for this objective
-    		if (satisfied)
-    		{
-    		}
-    		
-    		
-    	} //end while        	
-    } //end determineNationalObjectives
     
 }

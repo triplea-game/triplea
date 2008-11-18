@@ -25,7 +25,9 @@ import games.strategy.engine.data.properties.*;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.util.Version;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.*;
+import games.strategy.triplea.delegate.MustFightBattle;
 
 import java.awt.Polygon;
 import java.io.*;
@@ -907,9 +909,10 @@ public class GameParser
             attachment.setData(data);
             //set the values
             List values = getChildren("option", current);
+
             setValues(attachment, values);
             attachment.validate();
-
+            
             //find the attachable
             String type = current.getAttribute("type");
             Attachable attachable = findAttachment(current, type);
@@ -975,12 +978,38 @@ public class GameParser
 
             //find the value
             String value = current.getAttribute("value");
-
+            
+            //COMCO
+            List<String> itemValues = new ArrayList<String>();
+            itemValues.add(value);
+            if (obj instanceof RulesAttachment)
+            {
+            	//See if there's an itemList
+            	List itemList = getChildren("itemList", current);
+            	for (int j = 0; j < itemList.size(); j++)
+            	{
+kev
+	                Element iListCurr = (Element) itemList.get(j);
+	                //See if there are any items
+	                List items = getChildren("item", iListCurr);
+	                for (int k = 0; k < items.size(); k++)
+	                {
+	                	Element itemCurr = (Element) items.get(k);
+		                //find the value
+		                String itemValue = itemCurr.getAttribute("value");
+		                itemValues.add(itemValue);
+	                }	                
+            	} 
+            }
+              
+            //ComcoEnd
+            
             //invoke
             try
-            {
+            {            	
                 Object[] args = {value};
                 setter.invoke(obj, args );
+            	
             } catch(IllegalAccessException iae)
             {
                 throw new GameParseException("Setter not public. Setter:" + name + " Class:" + obj.getClass().getName());
