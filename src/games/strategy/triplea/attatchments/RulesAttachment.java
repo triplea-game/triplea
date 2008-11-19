@@ -111,41 +111,7 @@ public class RulesAttachment extends DefaultAttachment
 
   //exclusion types = controlled, original, all, or list
   public void setAlliedExclusionTerritories(String value)
-  {
-	  Kev there's no owner set here yet... move the collections to the EndTurnDelegate.determineNationalObjectives method
-	  if (value.equals("controlled"))
-	  {
-		  String terrs = new String();
-		  Collection<Territory> ownedTerrs = getData().getMap().getTerritoriesOwnedBy(getRuleOwner());
-		  for (Territory item : ownedTerrs)
-			  terrs = terrs + ":" + item;
-		  
-		  value = terrs;
-	  }
-	  else if (value.equals("original"))
-	  {
-		  String terrs = new String();
-		  OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
-		  Collection<Territory> originalTerrs = origOwnerTracker.getOriginallyOwned(getData(), getRuleOwner());
-		  
-		  for (Territory item : originalTerrs)
-			  terrs = terrs + ":" + item;
-		  
-		  value = terrs;
-	  }
-	  else if (value.equals("all"))
-	  {
-		  String terrs = new String();
-		  Collection<Territory> allTerrs = getData().getMap().getTerritoriesOwnedBy(getRuleOwner());
-		  OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
-		  allTerrs.addAll(origOwnerTracker.getOriginallyOwned(getData(), getRuleOwner()));		  
-
-		  for (Territory item : allTerrs)
-			  terrs = terrs + ":" + item;
-		  
-		  value = terrs;
-	  }  
-	
+  {	
 	  m_alliedExcludedTerritories = value.split(":");
   }
 
@@ -156,19 +122,7 @@ public class RulesAttachment extends DefaultAttachment
   
   //exclusion types = original or list
   public void setEnemyExclusionTerritories(String value)
-  {
-	  if (value.equals("original"))
-	  {
-		  String terrs = new String();
-		  OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
-		  Collection<Territory> originalTerrs = origOwnerTracker.getOriginallyOwned(getData(), getRuleOwner());
-		  
-		  for (Territory item : originalTerrs)
-			  terrs = terrs + ":" + item;
-		  
-		  value = terrs;
-	  }
-	
+  {	
 	  m_enemyExcludedTerritories = value.split(":");
   }
 
@@ -214,9 +168,19 @@ public class RulesAttachment extends DefaultAttachment
    */
   public void validate() throws GameParseException
   {
-      if(m_objectiveValue == 0 || ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && m_alliedExclusion == null && m_enemyExclusion == null))
+      if(m_objectiveValue == 0 || ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && 
+    		  (m_enemyExcludedTerritories == null || m_enemyExcludedTerritories.length == 0) && (m_alliedExcludedTerritories == null || m_alliedExcludedTerritories.length == 0) &&
+    		  m_alliedExclusion == null && m_enemyExclusion == null))
           throw new IllegalStateException("ObjectiveAttachment error for:" + m_ruleOwner + " not all variables set");
-      getListedTerritories(m_alliedOwnershipTerritories);
+      
+      if(m_alliedOwnershipTerritories != null && (!m_alliedOwnershipTerritories.equals("controlled") && !m_alliedOwnershipTerritories.equals("original") && !m_alliedOwnershipTerritories.equals("all")))
+    	  getListedTerritories(m_alliedOwnershipTerritories);
+
+      if(m_enemyExcludedTerritories != null && (!m_enemyExcludedTerritories.equals("controlled") && !m_enemyExcludedTerritories.equals("original") && !m_enemyExcludedTerritories.equals("all")))
+    	  getListedTerritories(m_enemyExcludedTerritories);
+
+      if(m_alliedExcludedTerritories != null && (!getAlliedExclusionTerritories().equals("controlled") && !m_alliedExcludedTerritories.equals("original") && !m_alliedExcludedTerritories.equals("all")))
+    	  getListedTerritories(m_alliedExcludedTerritories);      
   }
   
   //Validate that all listed territories actually exist
@@ -226,6 +190,7 @@ public class RulesAttachment extends DefaultAttachment
       
       for(String name : list)
       {
+    	  //See if the first entry contains the number of territories needed to meet the criteria
     	  try
     	  {
     		  int temp = getInt(name);
@@ -235,9 +200,16 @@ public class RulesAttachment extends DefaultAttachment
     	  catch(Exception e)
     	  {    		  
     	  }
+    	  
+    	  //Skip looking for the territory if the original list contains one of the 'group' commands
+    	  if(name.equals("controlled") || name.equals("original") || name.equals("all"))
+    		  break;
+    		  //continue;
+    	  
+    	  //Validate all territories exist
           Territory territory = getData().getMap().getTerritory(name);
           if(territory == null)
-              throw new IllegalStateException("No territory called:" + territory); 
+              throw new IllegalStateException("No territory called:" + name); 
           rVal.add(territory);
       }        
       return rVal;

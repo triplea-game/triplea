@@ -909,10 +909,7 @@ public class GameParser
             attachment.setData(data);
             //set the values
             List values = getChildren("option", current);
-            if (obj instanceof RulesAttachment)
-            {
-            	String kev = "kev";
-            }
+            
             setValues(attachment, values);
             attachment.validate();
             
@@ -921,10 +918,19 @@ public class GameParser
             Attachable attachable = findAttachment(current, type);
 
             //attach
+            if (obj instanceof RulesAttachment)
+            {
+            	Map<String, IAttachment> map = attachable.getAttachments();
+            }
             String name = current.getAttribute("name");
             attachable.addAttachment(name, attachment);
             attachment.setAttatchedTo(attachable);
             attachment.setName(name);
+            
+            if (obj instanceof RulesAttachment)
+            {
+            	Map<String, IAttachment> map = attachable.getAttachments();
+            }
         }
     }
 

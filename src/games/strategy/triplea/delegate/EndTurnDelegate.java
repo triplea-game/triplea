@@ -35,6 +35,7 @@ import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -43,6 +44,7 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
 /**
  *
@@ -129,7 +131,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     private void determineNationalObjectives(GameData data)
     {
     	PlayerID player = data.getSequence().getStep().getPlayerID();
-    	String m_resource=null;
     	
     	//See if the player has National Objectives
     	Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
@@ -151,62 +152,194 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     	{
     		RulesAttachment rule = rulesIter.next();
     		boolean satisfied = true;
-    		
+
+    		//
     		//Check for allied unit exclusions
+    		//
     		if(rule.getAlliedExclusionTerritories() != null)
     		{
-    			satisfied = checkUnitExclusions(satisfied, rule.getListedTerritories(rule.getAlliedExclusionTerritories()));
+    			//Get the listed territories
+    			String[] terrs = rule.getAlliedExclusionTerritories();
+    			String value = new String();    			
+    			
+	    		//If there's only 1, it might be a 'group' (original, controlled, all)
+    			if(terrs.length == 1)
+    			{    				
+	    			for(String name : terrs)
+	    			{
+	    				if(name.equals("original"))
+	    				{	//get all originally owned territories
+	    					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+	        				Collection<Territory> originalTerrs = origOwnerTracker.getOriginallyOwned(data, player);
+	        				//Colon delimit the collection as it would exist in the XML
+	        				for (Territory item : originalTerrs)
+	      					  	value = value + ":" + item;
+	        				//Remove the leading colon
+	        				value = value.replaceFirst(":", "");
+	    				}
+	    				else if (name.equals("controlled"))
+	        			{
+	        				Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
+	        				
+	        				  for (Territory item : ownedTerrs)
+	        					  value = value + ":" + item;
+	        				  //Remove the leading colon
+	        				  value = value.replaceFirst(":", "");
+	        			}
+	    				else if (name.equals("all"))
+	        			{
+	        				Collection<Territory> allTerrs = data.getMap().getTerritoriesOwnedBy(player);
+	        				OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+	        				allTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player));
+	        				
+	        				for (Territory item : allTerrs)
+	      					  value = value + ":" + item;
+	        				//Remove the leading colon
+	        				value = value.replaceFirst(":", "");
+	        			}
+	    				else
+	    				{	//The list just contained 1 territory
+	    					value = name;
+	    				}
+	    			}
+    			}
+    			else
+    			{
+    				//Get the list of territories	
+    				Collection<Territory> listedTerrs = rule.getListedTerritories(terrs);
+    				//Colon delimit the collection as it exists in the XML
+    				for (Territory item : listedTerrs)
+  					  value = value + ":" + item;
+    			}
+
+    			//create the String list from the XML/gathered territories
+    			terrs = value.split(":");
+    			satisfied = checkUnitExclusions(satisfied, rule.getListedTerritories(terrs), "allied", player);    			
     		}
 
+    		//
     		//Check for enemy unit exclusions
-    		//TODO Transports and Subs don't count-- perhaps list types to exclude 
+    		//TODO Transports and Subs don't count-- perhaps list types to exclude  
+    		//   		
     		if(rule.getEnemyExclusionTerritories() != null && satisfied == true)
     		{
-    			//Check for enemy units in all LISTED territories
-				//Collection<Territory> listedTerrs = rule.getEnemyExclusionTerritories();	
-				Collection<Territory> listedTerrs = rule.getListedTerritories(rule.getEnemyExclusionTerritories());	
+    			//Get the listed territories
+    			String[] terrs = rule.getEnemyExclusionTerritories();
+    			String value = new String();    			
+    			
+	    		//If there's only 1, it might be a 'group'  (original)
+    			if(terrs.length == 1)
+    			{    				
+	    			for(String name : terrs)
+	    			{
+	    				if(name.equals("original"))
+	    				{	//get all originally owned territories
+	    					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+	        				Collection<Territory> originalTerrs = origOwnerTracker.getOriginallyOwned(data, player);
+	        				//Colon delimit the collection as it would exist in the XML
+	        				for (Territory item : originalTerrs)
+	      					  	value = value + ":" + item;
+	        				//Remove the leading colon
+	        				value = value.replaceFirst(":", "");
+	    				}
+	    				else
+	    				{	//The list just contained 1 territory
+	    					value = name;
+	    				}
+	    			}
+    			}
+    			else
+    			{
+    				//Get the list of territories	
+    				Collection<Territory> listedTerrs = rule.getListedTerritories(terrs);
+    				//Colon delimit the collection as it exists in the XML
+    				for (Territory item : listedTerrs)
+  					  value = value + ":" + item;
+    			}
 
-				Iterator<Territory> TerrIter = listedTerrs.iterator();
-				//Go through the listed territories and see if there are any enemy units
-				while (TerrIter.hasNext())
-				{
-					Territory terr = TerrIter.next();
-					if(Matches.territoryHasEnemyUnits(player, data).match(terr))
-					{
-						satisfied = false;
-						break;
-					}    					
-				}
+    			//create the String list from the XML/gathered territories
+    			terrs = value.split(":");
+    			satisfied = checkUnitExclusions(satisfied, rule.getListedTerritories(terrs), "enemy", player);
     		}
 
+    		//
     		//Check for Territory Ownership rules
+    		//
     		if(rule.getAlliedOwnershipTerritoryCount() != -1 && satisfied == true)
     		{
-    			Collection<Territory> listedTerrs = rule.getListedTerritories(rule.getAlliedOwnershipTerritories());
+    			//Get the listed territories
+    			String[] terrs = rule.getAlliedOwnershipTerritories();
+    			String value = new String();    			
     			
-    			int numberNeeded = rule.getAlliedOwnershipTerritoryCount();
-    			int numberMet = 0;
-    			
-    			Iterator<Territory> listedTerrIter = listedTerrs.iterator();
-    			while(listedTerrIter.hasNext())
-    			{
-    				Territory listedTerr = listedTerrIter.next();
-    				//if the territory owner is an ally
-    				if (data.getAllianceTracker().isAllied(listedTerr.getOwner(), player))
-    				{
-    					numberMet += 1;
-    					if(numberMet >= numberNeeded)
-    					{
-    						satisfied = true;
-    						break;
-    					}
-    				}    				
-    				satisfied = false;
+	    		//If there's only 1, it might be a 'group' (original)
+    			if(terrs.length == 1)
+    			{    				
+	    			for(String name : terrs)
+	    			{
+	    				if(name.equals("original"))
+	    				{	//TODO Spin through allied players and get all their originally owned terrs.
+	    					Collection<PlayerID> players = data.getPlayerList().getPlayers();
+	    					Iterator<PlayerID> playersIter = players.iterator();
+	    					while(playersIter.hasNext())
+	    					{
+	    						PlayerID currPlayer = playersIter.next();
+	    						if (data.getAllianceTracker().isAllied(currPlayer, player))
+	    						{
+	    							//get all originally owned territories
+	    	    					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+	    	        				Collection<Territory> originalAlliedTerrs = origOwnerTracker.getOriginallyOwned(data, currPlayer);
+	    	        				//Colon delimit the collection as it would exist in the XML
+	    	        				for (Territory item : originalAlliedTerrs)
+	    	      					  	value = value + ":" + item;
+	    	        				//Remove the leading colon
+	    	        				value = value.replaceFirst(":", "");
+	    						}
+	    					}	    					
+	    				}
+	    				else if(name.equals("enemy"))
+	    				{	//TODO Spin through enemy players and get all their originally owned terrs.
+	    					Collection<PlayerID> players = data.getPlayerList().getPlayers();
+	    					Iterator<PlayerID> playersIter = players.iterator();
+	    					while(playersIter.hasNext())
+	    					{
+	    						PlayerID currPlayer = playersIter.next();
+	    						if (!data.getAllianceTracker().isAllied(currPlayer, player))
+	    						{
+	    							//get all originally owned territories
+	    	    					OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+	    	        				Collection<Territory> originalEnemyTerrs = origOwnerTracker.getOriginallyOwned(data, currPlayer);
+	    	        				//Colon delimit the collection as it would exist in the XML
+	    	        				for (Territory item : originalEnemyTerrs)
+	    	      					  	value = value + ":" + item;
+	    	        				//Remove the leading colon
+	    	        				value = value.replaceFirst(":", "");
+	    						}
+	    					}	    					
+	    				}
+	    				else
+	    				{	//The list just contained 1 territory
+	    					value = name;
+	    				}
+	    			}	    			
     			}
+    			else
+    			{
+    				//Get the list of territories	
+    				Collection<Territory> listedTerrs = rule.getListedTerritories(terrs);
+    				//Colon delimit the collection as it exists in the XML
+    				for (Territory item : listedTerrs)
+  					  value = value + ":" + item;
+    			}
+
+    			//create the String list from the XML/gathered territories
+    			terrs = value.split(":");
+    			
+    			satisfied = checkAlliedOwnership(satisfied, rule.getListedTerritories(terrs), rule.getAlliedOwnershipTerritoryCount(), player);			
     		}
     		
-    		
+    		//
     		//If all are satisfied add the IPCs for this objective
+    		//
     		if (satisfied)
     		{
     			//Also log a message
@@ -215,20 +348,70 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     	} //end while        	
     } //end determineNationalObjectives
 
-	private boolean checkUnitExclusions(boolean satisfied, Collection<Territory> Territories) 
+    
+    /**
+     * Checks for allied ownership of the collection of territories.  Once the needed number threshold is reached, the satisfied flag is set
+     * to true and returned
+     */
+	private boolean checkAlliedOwnership(boolean satisfied, Collection<Territory> listedTerrs, int numberNeeded, PlayerID player) 
+	{		
+		int numberMet = 0;
+		
+		Iterator<Territory> listedTerrIter = listedTerrs.iterator();
+		    			
+		while(listedTerrIter.hasNext())
+		{
+			Territory listedTerr = listedTerrIter.next();
+			//if the territory owner is an ally
+			if (!m_data.getAllianceTracker().isAllied(listedTerr.getOwner(), player))
+			{
+				numberMet += 1;
+				if(numberMet >= numberNeeded)
+				{
+					satisfied = true;
+					break;
+				}
+			}    				
+			satisfied = false;
+		}
+		return satisfied;
+	}
+
+    /**
+     * Checks for the collection of territories to see if they have units onwned by the exclType alliance.  
+     * It doesn't yet threshold the data
+     */
+	private boolean checkUnitExclusions(boolean satisfied, Collection<Territory> Territories, String exclType, PlayerID player) 
 	{
+		//TODO check the threshold number
 		Iterator<Territory> ownedTerrIter = Territories.iterator();
-		//Go through the owned territories and see if there are any allied units
+		//Go through the owned territories and see if there are any units owned by allied/enemy based on exclType
 		while (ownedTerrIter.hasNext())
 		{
+			//get all the units in the territory
 			Territory terr = ownedTerrIter.next();
+			Collection<Unit> allUnits =  terr.getUnits().getUnits();
 			
-			if(terr.getUnits().getPlayersWithUnits().size()>1)
-			{
-				satisfied = false;
-				break;
-			}    					
-		}
+			if (exclType == "allied")
+			{	//any allied units in the territory
+				Collection<Unit> playerUnits = Match.getMatches(allUnits, Matches.alliedUnit(player, m_data));
+				if (playerUnits.size() > 0)
+				{
+					satisfied = false;
+					break;
+				}
+			}
+			else 
+			{	//any enemy units in the territory
+				Collection<Unit> playerUnits = Match.getMatches(allUnits, Matches.enemyUnit(player, m_data));
+				if (playerUnits.size() > 0)
+				{
+					//TODO check the sub/trn rule (they don't count)
+					satisfied = false;
+					break;
+				}
+			}
+		}		
 		return satisfied;
 	}
     
