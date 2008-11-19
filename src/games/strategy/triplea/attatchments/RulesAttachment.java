@@ -28,6 +28,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.OriginalOwnerTracker;
 
 import java.io.File;
 import java.util.*;
@@ -35,6 +37,8 @@ import java.util.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import com.sun.xml.internal.fastinfoset.util.StringArray;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.GameRunner;
@@ -56,15 +60,17 @@ public class RulesAttachment extends DefaultAttachment
             throw new IllegalStateException("No rule attachment for:" + r.getName());
         return rVal;
     }
-
-
+    
     private PlayerID m_ruleOwner = null;
     private int m_objectiveValue = 0;
     private String m_alliedExclusion = null;
     private String m_enemyExclusion = null;
     private int m_alliedOwnershipTerritoryCount = -1;
+    //Territory lists
     private String[] m_alliedOwnershipTerritories;
-    private String m_territories = null;
+    private String[] m_alliedExcludedTerritories;
+    private String[] m_enemyExcludedTerritories;
+    
     private int m_perOwnedTerritories = -1;
     private String m_allowedUnitType = null;
     
@@ -93,18 +99,6 @@ public class RulesAttachment extends DefaultAttachment
       return m_objectiveValue;
   }
   
-  //exclusion types = controlled, original, all, or list
-  public void setAlliedExclusion(String value)
-  {
-      m_alliedExclusion = value;
-  }
-
-  public String getAlliedExclusion()
-  {
-      return m_alliedExclusion;
-  }
-  
-//exclusion types = controlled, original, all, or list
   public void setAlliedOwnershipTerritories(String value)
   {
 	  m_alliedOwnershipTerritories = value.split(":");
@@ -114,16 +108,73 @@ public class RulesAttachment extends DefaultAttachment
   {
       return m_alliedOwnershipTerritories;
   }
-  
+
   //exclusion types = controlled, original, all, or list
-  public void setEnemyExclusion(String value)
+  public void setAlliedExclusionTerritories(String value)
   {
-      m_enemyExclusion = value;
+	  Kev there's no owner set here yet... move the collections to the EndTurnDelegate.determineNationalObjectives method
+	  if (value.equals("controlled"))
+	  {
+		  String terrs = new String();
+		  Collection<Territory> ownedTerrs = getData().getMap().getTerritoriesOwnedBy(getRuleOwner());
+		  for (Territory item : ownedTerrs)
+			  terrs = terrs + ":" + item;
+		  
+		  value = terrs;
+	  }
+	  else if (value.equals("original"))
+	  {
+		  String terrs = new String();
+		  OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
+		  Collection<Territory> originalTerrs = origOwnerTracker.getOriginallyOwned(getData(), getRuleOwner());
+		  
+		  for (Territory item : originalTerrs)
+			  terrs = terrs + ":" + item;
+		  
+		  value = terrs;
+	  }
+	  else if (value.equals("all"))
+	  {
+		  String terrs = new String();
+		  Collection<Territory> allTerrs = getData().getMap().getTerritoriesOwnedBy(getRuleOwner());
+		  OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
+		  allTerrs.addAll(origOwnerTracker.getOriginallyOwned(getData(), getRuleOwner()));		  
+
+		  for (Territory item : allTerrs)
+			  terrs = terrs + ":" + item;
+		  
+		  value = terrs;
+	  }  
+	
+	  m_alliedExcludedTerritories = value.split(":");
   }
 
-  public String getEnemyExclusion()
+  public String[]  getAlliedExclusionTerritories()
   {
-      return m_enemyExclusion;
+      return m_alliedExcludedTerritories;
+  }
+  
+  //exclusion types = original or list
+  public void setEnemyExclusionTerritories(String value)
+  {
+	  if (value.equals("original"))
+	  {
+		  String terrs = new String();
+		  OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
+		  Collection<Territory> originalTerrs = origOwnerTracker.getOriginallyOwned(getData(), getRuleOwner());
+		  
+		  for (Territory item : originalTerrs)
+			  terrs = terrs + ":" + item;
+		  
+		  value = terrs;
+	  }
+	
+	  m_enemyExcludedTerritories = value.split(":");
+  }
+
+  public String[]  getEnemyExclusionTerritories()
+  {
+      return m_enemyExcludedTerritories;
   }
   
   public void setAlliedOwnershipTerritoryCount(String value)
@@ -136,16 +187,6 @@ public class RulesAttachment extends DefaultAttachment
       return m_alliedOwnershipTerritoryCount;
   }
   
-/*  public void setTerritories(String value)
-  {
-	  m_territories = value;
-  }
-
-  public String getTerritories()
-  {
-      return m_territories;
-  }*/
-
   public void setPerOwnedTerritories(String value)
   {
       m_perOwnedTerritories = getInt(value);
@@ -175,15 +216,15 @@ public class RulesAttachment extends DefaultAttachment
   {
       if(m_objectiveValue == 0 || ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && m_alliedExclusion == null && m_enemyExclusion == null))
           throw new IllegalStateException("ObjectiveAttachment error for:" + m_ruleOwner + " not all variables set");
-      getLandTerritories();
+      getListedTerritories(m_alliedOwnershipTerritories);
   }
   
   //Validate that all listed territories actually exist
-  public Collection<Territory> getLandTerritories()    
+  public Collection<Territory> getListedTerritories(String[] list)    
   {
       List<Territory> rVal = new ArrayList<Territory>();
       
-      for(String name : m_alliedOwnershipTerritories)
+      for(String name : list)
       {
     	  try
     	  {
@@ -202,47 +243,12 @@ public class RulesAttachment extends DefaultAttachment
       return rVal;
   }
   
+  
+  
+  
+  
+  //May need this for rules
   /*
-  //The input to this contains a count and a list of matched pairs of strings
-  public void setTerritoryRequirements(String value)
-  {	  
-	  String[] itemValues = stringToArray(value);
-	  m_territoryRequirementsCount = getInt(itemValues[0]);
-	  
-	  for(int i =1; i < itemValues.length; i++)
-      {
-          String current = new String(itemValues[i]);
-          i++;
-          String next = new String(itemValues[i]);
-          
-          m_territoryRequirementsName = current;
-          m_territoryRequirementsValue = next;
-      }
-	 
-  }*/
-  
-  /*public static Set<Territory> getAllListedTerritories(String territoryRequirements, GameData data)
-  {
-      Set<Territory> rVal = new HashSet<Territory>();       
-      for(Territory t : data.getMap())
-      {
-          Set<RulesAttachment> ruleAttachments = get(t);
-          if(ruleAttachments.isEmpty())
-              continue;
-          
-          Iterator<RulesAttachment> iter = ruleAttachments.iterator();
-          while(iter.hasNext() )
-          {
-        	  RulesAttachment ruleAttachment = iter.next();
-              if (ruleAttachment.getRuleName().equals(canalName))
-              {
-                  rVal.add(t);
-              }
-          }
-      }
-	return rVal;
-  }
-  
   public static Set<RulesAttachment> get(Territory t)
   {
       Set<RulesAttachment> rVal = new HashSet<RulesAttachment>();

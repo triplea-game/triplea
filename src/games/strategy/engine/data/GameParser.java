@@ -909,7 +909,7 @@ public class GameParser
             attachment.setData(data);
             //set the values
             List values = getChildren("option", current);
-            if (obj instanceof RulesAttachment || obj instanceof CanalAttachment)
+            if (obj instanceof RulesAttachment)
             {
             	String kev = "kev";
             }
@@ -996,30 +996,13 @@ public class GameParser
             if(count.length() > 0)    
             	itemValues = count + ":";
             
-            itemValues = itemValues + value;
-            /*if (obj instanceof RulesAttachment)
-            {
-            	//See if there's a list of items
-	                List items = getChildren("item", current);
-	                for (int j = 0; j < items.size(); j++)
-	                {
-	                	Element itemCurr = (Element) items.get(j);
-		                //find the name & value
-		                String itemName = itemCurr.getAttribute("name");
-		                //itemValues.add(itemName);
-		                itemValues = itemValues + ", " + itemName;
-		                String itemValue = itemCurr.getAttribute("value");
-		                //itemValues.add(itemValue);
-		                itemValues = itemValues + ", " + itemValue;
-	                }	         
-            }*/              
+            itemValues = itemValues + value;            
             //ComcoEnd
             
             //invoke
             try
             {            	
                 Object[] args = {itemValues};
-                /*Object[] args = {value};*/
                 setter.invoke(obj, args );
             	
             } catch(IllegalAccessException iae)

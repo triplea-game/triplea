@@ -41,6 +41,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
 
 /**
  *
@@ -151,48 +153,36 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		boolean satisfied = true;
     		
     		//Check for allied unit exclusions
-    		if(rule.getAlliedExclusion() != null)
+    		if(rule.getAlliedExclusionTerritories() != null)
     		{
-    			if(rule.getAlliedExclusion().equals("controlled"))
-    			{
-    				Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
-    				Iterator<Territory> ownedTerrIter = ownedTerrs.iterator();
-    				//Go through the owned territories and see if there are any allied units
-    				while (ownedTerrIter.hasNext())
-    				{
-    					Territory terr = ownedTerrIter.next();
-    					
-    					if(terr.getUnits().getPlayersWithUnits().size()>1)
-    					{
-    						satisfied = false;
-    						break;
-    					}
-    					
-    				}
-    			}
-
-    			if(rule.getAlliedExclusion() == "original")
-    			{    				
-    			}
-    			
-    			if(rule.getAlliedExclusion() == "all")
-    			{    				
-    			}
-    			
-    			if(rule.getAlliedExclusion() == "list")
-    			{    				
-    			}
+    			satisfied = checkUnitExclusions(satisfied, rule.getListedTerritories(rule.getAlliedExclusionTerritories()));
     		}
 
     		//Check for enemy unit exclusions
-    		if(rule.getEnemyExclusion() != null && satisfied == true)
-    		{    			
+    		//TODO Transports and Subs don't count-- perhaps list types to exclude 
+    		if(rule.getEnemyExclusionTerritories() != null && satisfied == true)
+    		{
+    			//Check for enemy units in all LISTED territories
+				//Collection<Territory> listedTerrs = rule.getEnemyExclusionTerritories();	
+				Collection<Territory> listedTerrs = rule.getListedTerritories(rule.getEnemyExclusionTerritories());	
+
+				Iterator<Territory> TerrIter = listedTerrs.iterator();
+				//Go through the listed territories and see if there are any enemy units
+				while (TerrIter.hasNext())
+				{
+					Territory terr = TerrIter.next();
+					if(Matches.territoryHasEnemyUnits(player, data).match(terr))
+					{
+						satisfied = false;
+						break;
+					}    					
+				}
     		}
 
     		//Check for Territory Ownership rules
     		if(rule.getAlliedOwnershipTerritoryCount() != -1 && satisfied == true)
     		{
-    			Collection<Territory> listedTerrs = rule.getLandTerritories();
+    			Collection<Territory> listedTerrs = rule.getListedTerritories(rule.getAlliedOwnershipTerritories());
     			
     			int numberNeeded = rule.getAlliedOwnershipTerritoryCount();
     			int numberMet = 0;
@@ -224,6 +214,23 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     		}
     	} //end while        	
     } //end determineNationalObjectives
+
+	private boolean checkUnitExclusions(boolean satisfied, Collection<Territory> Territories) 
+	{
+		Iterator<Territory> ownedTerrIter = Territories.iterator();
+		//Go through the owned territories and see if there are any allied units
+		while (ownedTerrIter.hasNext())
+		{
+			Territory terr = ownedTerrIter.next();
+			
+			if(terr.getUnits().getPlayersWithUnits().size()>1)
+			{
+				satisfied = false;
+				break;
+			}    					
+		}
+		return satisfied;
+	}
     
 	private boolean isNationalObjectives()
     {

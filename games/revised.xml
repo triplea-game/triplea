@@ -1304,37 +1304,27 @@
 				    	<option name="canalName" value="Panama Canal"/>
 				    	<option name="landTerritories" value="Panama"/>
 				    </attatchment>
-                  
-                  
-                           
-                
-<!-- Comco National Objectives 	-->  
+         
+
+
+<!--  COMCO -->
                 <attatchment name="objectiveAttachment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/> 
-                	<option name="alliedExclusion" value="controlled"/>  
+                	<option name="alliedExclusionTerritories" value="controlled"/>  
                 	<option name="alliedOwnershipTerritories" value="Archangel:Norway" count="2"/>     
                 </attatchment>
-<!--  COMCO         
+         
                 <attatchment name="objectiveAttachment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="10"/>
-                	<option name="territoryRequirements" value="3">
-               			<itemList>
-               				<item name="alliedOwnership" value="Norway"/>
-               				<item name="alliedOwnership" value="Caucasus"/>
-               				<item name="alliedOwnership" value="Novosibirsk"/>
-               				<item name="alliedOwnership" value="Yakut S.S.R."/>
-               				<item name="alliedOwnership" value="Soviet Far East"/>
-               				<item name="alliedOwnership" value="Buryatia S.S.R."/>
-               			</itemList>
-               		</option>
-               		<option name="enemyExclusion" value="list">
-               			<itemList>
-               				<item value="4 Sea Zone"/>
-               				<item value="3 Sea Zone"/>
-               			</itemList>               				
-               		</option>
+                	<option name="alliedExclusionTerritories" value="original"/>
+                	<option name="alliedOwnershipTerritories" value="Norway:Caucasus:Novosibirsk:Yakut S.S.R.:Soviet Far East:Buryatia S.S.R." count="3"/>
+               		<option name="enemyExclusionTerritories" value="4 Sea Zone:3 Sea Zone" count="2"/>
                 </attatchment>         
--->                  
+                
+                <attatchment name="objectiveAttachment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+               		<option name="enemyExclusionTerritories" value="original"/>
+                </attatchment> 
                 
                 
                 <!-- movement restricted to listed territories -->
