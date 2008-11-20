@@ -1318,7 +1318,7 @@
                 	<option name="objectiveValue" value="10"/>
                 	<option name="alliedExclusionTerritories" value="original"/>
                 	<option name="alliedOwnershipTerritories" value="Norway:Caucasus:Novosibirsk:Yakut S.S.R.:Soviet Far East:Buryatia S.S.R." count="3"/>
-               		<option name="enemyExclusionTerritories" value="4 Sea Zone:3 Sea Zone" count="2"/>
+               		<option name="enemyExclusionTerritories" value="4 Sea Zone:3 Sea Zone" count="1"/>
                 </attatchment>         
                 
                 <attatchment name="objectiveAttachment3" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">

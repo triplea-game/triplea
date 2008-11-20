@@ -65,7 +65,7 @@ public class RulesAttachment extends DefaultAttachment
     private int m_objectiveValue = 0;
     private String m_alliedExclusion = null;
     private String m_enemyExclusion = null;
-    private int m_alliedOwnershipTerritoryCount = -1;
+    private int m_territoryCount = -1;
     //Territory lists
     private String[] m_alliedOwnershipTerritories;
     private String[] m_alliedExcludedTerritories;
@@ -131,14 +131,14 @@ public class RulesAttachment extends DefaultAttachment
       return m_enemyExcludedTerritories;
   }
   
-  public void setAlliedOwnershipTerritoryCount(String value)
+  public void setTerritoryCount(String value)
   {
-	  m_alliedOwnershipTerritoryCount = getInt(value);
+	  m_territoryCount = getInt(value);
   }
 
-  public int getAlliedOwnershipTerritoryCount()
+  public int getTerritoryCount()
   {
-      return m_alliedOwnershipTerritoryCount;
+      return m_territoryCount;
   }
   
   public void setPerOwnedTerritories(String value)
@@ -194,8 +194,8 @@ public class RulesAttachment extends DefaultAttachment
     	  try
     	  {
     		  int temp = getInt(name);
-    		  setAlliedOwnershipTerritoryCount(name);
-    		  continue;
+    		  setTerritoryCount(name);
+    		  continue;    		  
     	  }
     	  catch(Exception e)
     	  {    		  

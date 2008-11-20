@@ -61,8 +61,8 @@ public interface Constants
   public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_EACH_TURN = "Battleships repair at end of round";
   public static final String FOURTH_EDITION = "4th Edition";
-  //Comco
-  /*
+
+  /**
    * These are the individual rules from 4th Edition (All default to FALSE)
    */
   public static final String PLACEMENT_RESTRICTED_BY_FACTORY = "Placement Restricted By Factory";
@@ -96,11 +96,10 @@ public interface Constants
   public static final String CONTINUOUS_RESEARCH = "Continuous Research";
   public static final String ANNIVERSARY_EDITION_LAND_PRODUCTION = "Anniversary Edition Land Production";
   public static final String ANNIVERSARY_EDITION_AIR_NAVAL = "Anniversary Edition Air Naval";
-  /*public static final String KEVIN = "Kevin";
-  public static final String KEVIN = "Kevin";
-  public static final String KEVIN = "Kevin";
-  public static final String KEVIN = "Kevin";*/
-  //Comco
+  /**
+   * End individual 4th Edition rules (All default to FALSE)
+   */
+
   public static final String CHOOSE_AA = "Choose AA Casualties";
   public static final String PACIFIC_EDITION = "Pacific Edition";
   public static final String EUROPE_EDITION = "Europe Edition";

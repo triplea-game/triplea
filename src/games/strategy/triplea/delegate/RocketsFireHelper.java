@@ -34,7 +34,6 @@ public class RocketsFireHelper
 	
 	private boolean isOneRocketAttackPerFactory(GameData data)
     {
-		//Comco get the number of rockets allowed
     	return games.strategy.triplea.Properties.getRocketAttackPerFactoryRestricted(data);
     }
 	

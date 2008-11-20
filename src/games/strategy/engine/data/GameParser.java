@@ -986,15 +986,7 @@ public class GameParser
             }
 
             //find the value
-            String value = current.getAttribute("value");
-            
-            //COMCO
-            if (obj instanceof RulesAttachment)
-            {
-            	String kev = "here";
-            }
-            	
-            
+            String value = current.getAttribute("value");            
             String count = current.getAttribute("count");
 
             String itemValues = new String();
@@ -1002,8 +994,7 @@ public class GameParser
             if(count.length() > 0)    
             	itemValues = count + ":";
             
-            itemValues = itemValues + value;            
-            //ComcoEnd
+            itemValues = itemValues + value;   
             
             //invoke
             try

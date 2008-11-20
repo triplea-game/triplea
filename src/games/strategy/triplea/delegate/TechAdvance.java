@@ -311,7 +311,9 @@ class LongRangeAircraftAdvance extends TechAdvance
     }
 }
 
-//comco
+/**
+ * Beginning of AA 50 rules
+ */
 /*
  * Artillery can support multiple infantry
  */
@@ -451,3 +453,6 @@ class Shipyards extends TechAdvance
     {
     }
 }
+/**
+ * End of AA 50 rules
+ */

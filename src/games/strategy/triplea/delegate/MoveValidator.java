@@ -810,7 +810,7 @@ public class MoveValidator
                 }
             }
         }
-//COMCOWICH
+//COMCOWICH This is a bug in 4th ed rules.... should allow multiple AA in a territory in 4th ed.
         //only allow aa into a land territory if one already present.
         if (!isFourthEdition(data) && Match.someMatch(units, Matches.UnitIsAA) && route.getEnd().getUnits().someMatch(Matches.UnitIsAA)
                 && !route.getEnd().isWater())
