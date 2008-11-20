@@ -333,13 +333,21 @@ public class BattleTracker implements java.io.Serializable
             TerritoryAttachment ta = TerritoryAttachment.get(territory);
             if(ta == null)
                 return;
-            
-            //Total Attacking Sea units = all units - land units - air units - transports - submerged subs
+
+            //Total Attacking Sea units = all units - land units - air units - submerged subs
+            //Also subtract transports & subs (if they can't control sea zones)
             totalMatches= arrivingUnits.size() - Match.countMatches(arrivingUnits, Matches.UnitIsLand) - 
                 Match.countMatches(arrivingUnits, Matches.UnitIsAir) -
-                Match.countMatches(arrivingUnits, Matches.UnitIsTransport) -
-                Match.countMatches(arrivingUnits, Matches.unitIsSubmerged(data)) +
-                Match.countMatches(arrivingUnits, Matches.UnitIsDestroyer);
+                Match.countMatches(arrivingUnits, Matches.unitIsSubmerged(data));
+
+            //If transports are restricted from controlling sea zones, subtract them
+            if(!games.strategy.triplea.Properties.getTransportControlSeaZone(data))
+            	totalMatches -= Match.countMatches(arrivingUnits, Matches.UnitTypeIsTransport);
+            
+            //If subs are restricted from controlling sea zones, subtract them
+            if(games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data))
+            	totalMatches -= Match.countMatches(arrivingUnits, Matches.UnitIsSub);
+            
             if (totalMatches == 0)
                  return;
         }

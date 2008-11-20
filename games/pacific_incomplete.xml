@@ -863,6 +863,7 @@ Coded by Iron__Cross
             <option name="transportCapacity" value="8"/>
             <option name="attack" value="0"/>
             <option name="defense" value="1"/>
+			<option name="isTransport" value="true"/>
         </attatchment>
         
         <attatchment name="unitAttatchment" attatchTo="battleship"
@@ -2106,5 +2107,9 @@ Coded by Iron__Cross
 				
 				Credits: Triple_Elk (base-line), iron__cross (integration), ComradeKev (special rules implementations)"/>
         
+        <!--COMCO rules testing-->                
+                <property name="Sub Control Sea Zone Restricted" value="true" editable="true">
+                	<boolean/>
+                </property>
     </propertyList>
 </game>

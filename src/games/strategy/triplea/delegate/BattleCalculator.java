@@ -241,7 +241,7 @@ public class BattleCalculator
 
     private static Map<Unit, Collection<Unit>> getDependents(Collection<Unit> targets, GameData data)
     {
-        //jsut worry about transports
+        //just worry about transports
         TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 
         Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();

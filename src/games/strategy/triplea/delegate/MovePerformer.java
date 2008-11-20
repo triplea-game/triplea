@@ -177,6 +177,7 @@ public class MovePerformer implements Serializable
                 Change moveChange = markMovementChange(units, route);
                 
                 //TODO, put units in owned transports first
+                //TODO COMCO- should look into this while I'm at it
                 Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, units, transportsToLoad);
                 markTransportsMovement(transporting, route);
                 

@@ -44,6 +44,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isAir = false;
   private boolean m_isSea = false;
   private boolean m_isAA = false;
+  private boolean m_isTransport = false;
   private boolean m_isFactory = false;
   private boolean m_canBlitz = false;
   private boolean m_isSub = false;
@@ -164,6 +165,16 @@ public class UnitAttachment extends DefaultAttachment
   public boolean isAA()
   {
     return m_isAA;
+  }
+
+  public void setIsTransport(String s)
+  {
+    m_isTransport = getBool(s);
+  }
+
+  public boolean isTransport()
+  {
+    return m_isTransport;
   }
 
   public void setIsFactory(String s)

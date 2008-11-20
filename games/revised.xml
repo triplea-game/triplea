@@ -887,6 +887,7 @@
                          <option name="transportCapacity" value="5"/>   
                          <option name="attack" value="0"/>
                          <option name="defense" value="1"/>
+                         <option name="isTransport" value="true"/>
                     </attatchment>
             
                     <attatchment name="unitAttatchment" attatchTo="battleship" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -1327,40 +1328,32 @@
                 </attatchment> 
                 
                 
-                <!-- movement restricted to listed territories -->
+                <!-- movement restricted to listed territories  (list, original, all && [dis]allowed && maybe something to [dis]allow enemy/allied terr groups (all, original, controlled)    -->
 <!--  COMCO
                 <attatchment name="movementRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="territories" value="list">
-               			<itemList>
-               				<item value="Eastern United States"/>
-               				<item value="Western United States"/>
-               				<item value="Central United States"/>
-               				<item value="Midway"/>
-               				<item value="Hawaiian Islands"/>
-               				<item value="China"/>
-               				<item value="Sinkiang"/>
-               				<item value="Mexico"/>
-               				<item value="Brazil"/>
-               				<item value="Alaska"/>
-               				<item value="West Indies"/>
-               				<item value="Panama"/>
-               				<item value="Greenland"/>
-               				<item value="Kwantung"/>
-               				<item value="French Indochina"/>
-               				<item value="Manchuria"/>
-               			</itemList>
-               		</option>
-                </attatchment>    
+                	<option name="movementRestrictionTerritories" value="Eastern United States:Western United States:Central United States:Midway:Hawaiian Islands:China:Sinkiang:Mexico:Brazil:Alaska:West Indies:Panama:Greenland:Kwantung:French Indochina:Manchuria"/>
+                	<option name="restrictionType" value="allowed"
+                </attatchment>                
+                
+                <attatchment name="movementRestriction" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="movementRestrictionTerritories" value="original"/>
+                	<option name="restrictionType" value="allowed"
+                </attatchment>                   
+                
+                <attatchment name="movementRestriction" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="movementRestrictionTerritories" value="Caucasus"/>
+                	<option name="restrictionType" value="disallowed"
+                </attatchment>  
 -->            
                 <!-- production restricted to 1 per x owned territories -->
 <!--  COMCO
                 <attatchment name="productionRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="perOwnedTerritories" value="2"/>
-                	<option name="allowedUnitType" value="Infantry"/>
+                	<option name="allowedUnitTypes" value="infantry:armor"/>
                 </attatchment>
 -->
 
-<!-- Comco end National Objectives -->    
+<!-- Comco end National Objectives & rules-->    
        
                   
         </attatchmentList>
@@ -1679,14 +1672,19 @@
 
                 <property name="neutralCharge" value="9999999"/>
                 
-                <property name="maxFactoriesPerTerritory" value="1"/>
-                
-                <property name="National Objectives" value="true" editable="true">
-                	<boolean/>
-                </property>
+                <property name="maxFactoriesPerTerritory" value="1"/>                
 
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="revised" editable="false"/>
+                
+                <!--COMCO rules testing-->
+                <property name="National Objectives" value="true" editable="true">
+                	<boolean/>
+                </property>
+                
+                <property name="Sub Control Sea Zone Restricted" value="true" editable="true">
+                	<boolean/>
+                </property>
                                 
         </propertyList>        
 </game>

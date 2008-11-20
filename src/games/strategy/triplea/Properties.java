@@ -408,7 +408,7 @@ public class Properties implements Constants
 	 /*
 	  * Production restricted to 1 unit (type x) per y owned territories
 	  */
-	 public static boolean getProductionPerXTerritoryRestricted(GameData data)
+	 public static boolean getProductionPerXTerritoriesRestricted(GameData data)
 	 {
 		 try
 		 {
@@ -421,7 +421,37 @@ public class Properties implements Constants
 	 }
 
 	 /*
-	  * Movement restricted to ONLY listed territories
+	  * Can units be placed in any owned territory
+	  */
+	 public static boolean getPlaceInAnyTerritory(GameData data)
+	 {
+		 try
+		 {
+			 return ( (Boolean) data.getProperties().get(PLACE_IN_ANY_TERRITORY) ).booleanValue();
+		 }
+		 catch(Exception e)
+		 {
+			 return false;
+		 }
+	 }
+
+	 /*
+	  * Limit the number of units that can be in a territory
+	  */
+	 public static boolean getNumberofUnitsPerTerritoryRestricted(GameData data)
+	 {
+		 try
+		 {
+			 return ( (Boolean) data.getProperties().get(NUMBER_OF_UNITS_PER_TERRITORY_RESTRICTED) ).booleanValue();
+		 }
+		 catch(Exception e)
+		 {
+			 return false;
+		 }
+	 }
+
+	 /*
+	  * Movement restricted for territories
 	  */
 	 public static boolean getMovementByTerritoryRestricted(GameData data)
 	 {

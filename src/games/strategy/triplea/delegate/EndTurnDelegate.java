@@ -154,7 +154,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     	while(rulesIter.hasNext())
     	{
     		RulesAttachment rule = rulesIter.next();
-    		boolean satisfied = true;
+    		boolean objectiveMet = true;
 
     		//
     		//Check for allied unit exclusions
@@ -185,7 +185,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	        			{
 	        				Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
 	        				rule.setTerritoryCount(String.valueOf(ownedTerrs.size()));
-	        				
+	        				//Colon delimit the collection as it would exist in the XML	        				
 	        				  for (Territory item : ownedTerrs)
 	        					  value = value + ":" + item;
 	        				  //Remove the leading colon
@@ -197,7 +197,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	        				OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 	        				allTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player));
 	        				rule.setTerritoryCount(String.valueOf(allTerrs.size()));
-	        				
+	        				//Colon delimit the collection as it would exist in the XML	        				
 	        				for (Territory item : allTerrs)
 	      					  value = value + ":" + item;
 	        				//Remove the leading colon
@@ -222,14 +222,14 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 
     			//create the String list from the XML/gathered territories
     			terrs = value.split(":");
-    			satisfied = checkUnitExclusions(satisfied, rule.getListedTerritories(terrs), "allied", rule.getTerritoryCount(), player);    			
+    			objectiveMet = checkUnitExclusions(objectiveMet, rule.getListedTerritories(terrs), "allied", rule.getTerritoryCount(), player);    			
     		}
 
     		//
     		//Check for enemy unit exclusions
     		//TODO Transports and Subs don't count-- perhaps list types to exclude  
     		//   		
-    		if(rule.getEnemyExclusionTerritories() != null && satisfied == true)
+    		if(rule.getEnemyExclusionTerritories() != null && objectiveMet == true)
     		{
     			//Get the listed territories
     			String[] terrs = rule.getEnemyExclusionTerritories();
@@ -270,13 +270,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 
     			//create the String list from the XML/gathered territories
     			terrs = value.split(":");
-    			satisfied = checkUnitExclusions(satisfied, rule.getListedTerritories(terrs), "enemy", rule.getTerritoryCount(), player);
+    			objectiveMet = checkUnitExclusions(objectiveMet, rule.getListedTerritories(terrs), "enemy", rule.getTerritoryCount(), player);
     		}
 
     		//
     		//Check for Territory Ownership rules
     		//
-    		if(rule.getAlliedOwnershipTerritories() != null && satisfied == true)
+    		if(rule.getAlliedOwnershipTerritories() != null && objectiveMet == true)
     		{
     			//Get the listed territories
     			String[] terrs = rule.getAlliedOwnershipTerritories();
@@ -288,7 +288,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	    			for(String name : terrs)
 	    			{
 	    				if(name.equals("original"))
-	    				{	//TODO Spin through allied players and get all their originally owned terrs.
+	    				{	
 	    					Collection<PlayerID> players = data.getPlayerList().getPlayers();
 	    					Iterator<PlayerID> playersIter = players.iterator();
 	    					while(playersIter.hasNext())
@@ -349,13 +349,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     			//create the String list from the XML/gathered territories
     			terrs = value.split(":");
     			
-    			satisfied = checkAlliedOwnership(satisfied, rule.getListedTerritories(terrs), rule.getTerritoryCount(), player);			
+    			objectiveMet = checkAlliedOwnership(objectiveMet, rule.getListedTerritories(terrs), rule.getTerritoryCount(), player);			
     		}
     		
     		//
     		//If all are satisfied add the IPCs for this objective
     		//
-    		if (satisfied)
+    		if (objectiveMet)
     		{
     			//Also log a message
     			player.getResources().addResource(data.getResourceList().getResource(Constants.IPCS), rule.getObjectiveValue());
@@ -398,7 +398,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
      */
 	private boolean checkUnitExclusions(boolean satisfied, Collection<Territory> Territories, String exclType, int numberNeeded, PlayerID player) 
 	{
-		//TODO check the threshold number
 		int numberMet = 0;
 		satisfied = false;
 		
@@ -412,8 +411,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			
 			if (exclType == "allied")
 			{	//any allied units in the territory
-				//return data.getAllianceTracker().isAllied(player, unit.getOwner());
-				//allUnits.removeAll(Match.getMatches(allUnits, Matches.isUnitAllied(player, m_data)));
 				allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedBy(player)));
 				Collection<Unit> playerUnits = Match.getMatches(allUnits, Matches.alliedUnit(player, m_data));
 				if (playerUnits.size() < 1)
@@ -448,12 +445,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
     {
     	return games.strategy.triplea.Properties.getNationalObjectives(m_data);
     }
-
-	private boolean isAnniversaryEditionLandProduction()
-    {
-    	return games.strategy.triplea.Properties.getAnniversaryEditionLandProduction(m_data);
-    }
-	
 
     private boolean isFourthEdition()
     {

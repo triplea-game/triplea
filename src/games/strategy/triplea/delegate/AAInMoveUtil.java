@@ -166,6 +166,7 @@ class AAInMoveUtil implements Serializable
             Territory current = route.at(i);
 
             //aa guns in transports shouldnt be able to fire
+            //TODO COMCO- Chance to add rule to support air suppression naval units here
             if (current.getUnits().someMatch(hasAA) && !current.isWater())
             {
                 territoriesWhereAAWillFire.add(current);

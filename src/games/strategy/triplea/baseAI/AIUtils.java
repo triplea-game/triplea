@@ -135,6 +135,7 @@ public class AIUtils
                 
                 if(attacking)
                 {
+                    //TODO COMCO- might be worthy to kill undefended trns with AA50 rules in effect
                     //a unit with attack of 0 isnt worth much
                     //we dont want transports to try and gang up on subs
                     if(unitAttatchment.getAttack(u.getOwner()) == 0)
