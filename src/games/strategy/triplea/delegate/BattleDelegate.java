@@ -145,6 +145,14 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
     }
     
     /**
+     * @return
+     */
+    private boolean isTransportCasualtiesRestricted(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
+    }
+    
+    /**
      * Called before the delegate will stop running.
      */
     public void end()
@@ -301,6 +309,13 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             Territory territory = (Territory) territories.next();
 
             List<Unit> attackingUnits = territory.getUnits().getMatches(ownedUnit);
+            
+          //TODO Comco, may need to add transports back in :  Currently has transports we remove them, but any dependents remain
+            if(isTransportCasualtiesRestricted(m_data))
+            {
+            	//attackingUnits = Match.getMatches(attackingUnits, Matches.UnitTypeIsNotTransport);
+            }
+            
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
             Route route = new Route();
 

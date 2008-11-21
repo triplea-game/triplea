@@ -165,7 +165,9 @@ public class Matches
             UnitAttachment ua = UnitAttachment.get(unit.getType());
             return ua.isTransport();
         }
-    };
+    };    
+
+    public static final Match<Unit> UnitTypeIsNotTransport = new InverseMatch<Unit>(UnitTypeIsTransport);
     
     public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
     {

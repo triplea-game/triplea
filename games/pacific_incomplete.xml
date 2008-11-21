@@ -2111,5 +2111,9 @@ Coded by Iron__Cross
                 <property name="Sub Control Sea Zone Restricted" value="true" editable="true">
                 	<boolean/>
                 </property>
+                
+                <property name="Transport Casualties Restricted" value="true" editable="true">
+                	<boolean/>
+                </property>
     </propertyList>
 </game>

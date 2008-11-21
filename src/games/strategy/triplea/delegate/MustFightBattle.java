@@ -477,10 +477,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             else
                 delim = "";
             Collection<Unit> attackingUnits = Match.getMatches(m_attackingUnits, Matches.unitIsOwnedBy(current));
-    
-            //If transports are restricted from being taken as casualties, subtract them
-            if(!isTransportCasualtiesRestricted())
-            	attackingUnits.removeAll(Match.getMatches(attackingUnits, Matches.UnitTypeIsTransport));
             
             String verb = current.equals(m_attacker) ? "attack" : "loiter and taunt";
             transcriptText += current.getName()+" "+verb+" with "
@@ -530,10 +526,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             else
                 delim = "";
             defendingUnits = Match.getMatches(m_defendingUnits, Matches.unitIsOwnedBy(current));
-            
-            //If transports are restricted from being taken as casualties, subtract them
-            if(!isTransportCasualtiesRestricted())
-            	defendingUnits.removeAll(Match.getMatches(defendingUnits, Matches.UnitTypeIsTransport));
             
             transcriptText += current.getName()+" defend with "
                            +MyFormatter.unitsToTextNoOwner(defendingUnits)
@@ -1206,10 +1198,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
             return;
         
         Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
-        //TODO Comco, may need to add transports back in 
+        
         if(isTransportCasualtiesRestricted())
-        {
-        	units.addAll(units.
+        {        		
+        	CompositeMatch<Unit> ownedTransportsInTerritory = new CompositeMatchAnd<Unit>();
+        	ownedTransportsInTerritory.add(Matches.UnitTypeIsTransport);
+        	
+        	if (defender)
+        		ownedTransportsInTerritory.add(Matches.unitIsOwnedBy(m_defender));
+        	else
+            	ownedTransportsInTerritory.add(Matches.unitIsOwnedBy(m_attacker));
+        	
+        	Collection <Unit> ownedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), ownedTransportsInTerritory);
+        	units.addAll(ownedTransports);
         }
         
         if (subs)
@@ -1526,15 +1527,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
     
     private void defendNonSubs(IDelegateBridge bridge)
     {
-
-        //TODO COMCO- probably code here to exclude transports
         if (m_attackingUnits.size() == 0)
             return;
         Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
                 + m_defendingWaitingToDie.size());
         units.addAll(m_defendingUnits);
         units.addAll(m_defendingWaitingToDie);
-        units = Match.getMatches(units, Matches.UnitIsNotSub);
+        units = Match.getMatches(units, Matches.UnitIsNotSub);        
 
         if (units.isEmpty())
             return;
@@ -1548,14 +1547,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if (m_defendingUnits.size() == 0)
             return;
-        //TODO COMCO- probably code here to exclude trns
+
         Collection<Unit> units = Match.getMatches(m_attackingUnits,
                 Matches.UnitIsNotSub);
         units.addAll(Match.getMatches(m_attackingWaitingToDie,
                 Matches.UnitIsNotSub));
         // Only attacker can fire, allies can't.
         Collection<Unit> ownedUnits = Match.getMatches(units,
-                Matches.unitIsOwnedBy(m_attacker));
+                Matches.unitIsOwnedBy(m_attacker));        
 
         if (ownedUnits.isEmpty())
             return;
@@ -1566,8 +1565,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void attackSubs(IDelegateBridge bridge)
     {
-
-        //TODO COMCO- probably code here to exclude trns
         Collection<Unit> firing = Match.getMatches(m_attackingUnits,
                 Matches.UnitIsSub);
         if (firing.isEmpty())
@@ -1589,7 +1586,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (units.isEmpty())
             return;
 
-        //TODO COMCO- probably code here to exclude trns
         Collection<Unit> attacked = Match.getMatches(m_attackingUnits,
                 Matches.UnitIsNotAir);
         if (attacked.isEmpty())
@@ -1603,10 +1599,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void attackAny(IDelegateBridge bridge)
     {
-
         if (m_defendingUnits.size() == 0)
             return;
-        //TODO COMCO- probably code here to exclude trns
+
         Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size()
                 + m_attackingWaitingToDie.size());
         units.addAll(m_attackingUnits);
@@ -1624,12 +1619,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         if (m_attackingUnits.size() == 0)
             return;
-        //TODO COMCO- probably code here to exclude trns
+
         Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
                 + m_defendingWaitingToDie.size());
         units.addAll(m_defendingUnits);
         units.addAll(m_defendingWaitingToDie);
-
+        
         if (units.isEmpty())
             return;
 
@@ -1672,7 +1667,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void fireNavalBombardment(IDelegateBridge bridge)
     {
-
         //TODO COMCO- check within the method for the bombarding limitations
         Collection<Unit> bombard = getBombardingUnits();
         Collection<Unit> attacked = Match.getMatches(m_defendingUnits,
@@ -1775,6 +1769,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean isSurvivingAirMoveToLand()
     {
     	return games.strategy.triplea.Properties.getSurvivingAirMoveToLand(m_data);
+    }
+    
+    /**
+     * @return
+     */
+    private boolean isTransportCasualtiesRestricted()
+    {
+    	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);
     }
     
     /**
@@ -1960,12 +1962,22 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private List<Unit> removeNonCombatants(Collection<Unit> units)
     {
-
+    	//List<Unit> unitList = new ArrayList<Unit>();
         CompositeMatch<Unit> combat = new CompositeMatchAnd<Unit>();
         combat.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
 
         if (m_battleSite.isWater())
+        {
             combat.add(new InverseMatch<Unit>(Matches.UnitIsLand));
+
+          //Comco If only transports, just return them- handle their abiltiy to attack/defend elsewhere
+        	if (Match.countMatches(units,combat) == Match.countMatches(units, Matches.UnitTypeIsTransport))
+        		return Match.getMatches(units, combat);
+        	
+            //Exclude transports if they can't be taken as casualties
+        	if(isTransportCasualtiesRestricted())
+        		combat.add(new InverseMatch<Unit>(Matches.UnitTypeIsTransport));
+        }
 
         return Match.getMatches(units, combat);
 
@@ -1973,7 +1985,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     private void removeNonCombatants()
     {
-
         m_defendingUnits = removeNonCombatants(m_defendingUnits);
         m_attackingUnits = removeNonCombatants(m_attackingUnits);
     }
@@ -2510,12 +2521,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     public int getBattleRound()
     {
         return m_round;
-    }
-    
-    private boolean isTransportCasualtiesRestricted()
-    {
-    	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);
-    }
+    }    
 }
 
 
