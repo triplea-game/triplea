@@ -576,6 +576,17 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 steps.add(SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
             }
         }
+        
+        //TODO COMCO- add step here to automatically kill unescorted trns
+        if (!isEditMode && m_battleSite.isWater() && isTransportCasualtiesRestricted())
+        	if(Match.allMatch(m_attackingUnits, Matches.UnitTypeIsTransport) && Match.allMatch(m_defendingUnits, Matches.UnitTypeIsTransport))
+        	{   
+        		//continue some how;
+        		String Comco = "comco";
+        	}
+        		//continue some how;
+        
+        		
 
         //TODO COMCO- Code here to retreat subs BEFORE any battle
         //attacker subs sneak attack
@@ -1774,6 +1785,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     /**
      * @return
      */
+    //TODO comco marker for trn restriction
     private boolean isTransportCasualtiesRestricted()
     {
     	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);

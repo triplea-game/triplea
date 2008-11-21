@@ -862,7 +862,7 @@ Coded by Iron__Cross
             <option name="isSea" value="true"/>
             <option name="transportCapacity" value="8"/>
             <option name="attack" value="0"/>
-            <option name="defense" value="1"/>
+            <option name="defense" value="0"/>
 			<option name="isTransport" value="true"/>
         </attatchment>
         
