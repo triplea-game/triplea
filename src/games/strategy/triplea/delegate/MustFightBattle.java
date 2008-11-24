@@ -581,21 +581,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //TODO COMCO- add step here to automatically kill unescorted trns
         if (!isEditMode && m_battleSite.isWater() && isUnescortedTransportDies())
         { 
-        		//Get all attacking transports in the territory
-                CompositeMatch<Unit> matchAttack = new CompositeMatchAnd<Unit>(); 
-                matchAttack.add(Matches.UnitTypeIsTransport);
-                matchAttack.add(Matches.isUnitAllied(m_attacker, m_data));
-                
-                final List<Unit> attackingTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAttack);
-                checkUndefendedTransports(bridge, attackingTransports, m_attacker);
+            //Check for undefended attacking transports in the territory
+                checkUndefendedTransports(bridge, m_attacker);
 
-                //Get all defending transports in the territory
-                CompositeMatch<Unit> matchDefend = new CompositeMatchAnd<Unit>(); 
-                matchDefend.add(Matches.UnitTypeIsTransport);
-                matchDefend.add(Matches.isUnitAllied(m_defender, m_data));
-                
-                final List<Unit> defendingTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchDefend);
-                checkUndefendedTransports(bridge, defendingTransports, m_defender);
+                //Check for undefended defending transports in the territory
+                checkUndefendedTransports(bridge, m_defender);
         }
         
         		
@@ -803,14 +793,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (!isEditMode && isUnescortedTransportDies())
         	steps.add(new IExecutable(){
         		private static final long serialVersionUID = 99990L;
-        		
-        		final List<Unit> defendingTransports = Match.getMatches(m_defendingUnits, Matches.UnitTypeIsTransport);
-                final List<Unit> attackingTransports = Match.getMatches(m_attackingUnits, Matches.UnitTypeIsTransport);
                 
         		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                  {
-        			 checkUndefendedTransports(bridge, defendingTransports, m_defender);
-        			 checkUndefendedTransports(bridge, attackingTransports, m_attacker);        			
+        			 checkUndefendedTransports(bridge, m_defender);
+        			 checkUndefendedTransports(bridge, m_attacker);        			
                  }
         	});
         
@@ -939,17 +926,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 {
                 	if(isUnescortedTransportDies())
                 	{
-                		//Get all allied, sea & air units in the territory
-                        CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>(); 
-                        match.add(Matches.isUnitAllied(m_attacker, m_data));
-                        match.add(Matches.UnitTypeIsTransport);
-                        
-                        final List<Unit> attackingTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), match);
-                        checkUndefendedTransports(bridge, attackingTransports, m_attacker);
+                    	//If there are undefended attacking transports, determine if they automatically die
+                        checkUndefendedTransports(bridge, m_attacker);
                 	}
 
                 	if(isUnescortedTransportDies() && m_defendingUnits.size() == 0)
                 	{
+                    	//If there are undefended attacking AND defending transports, set a stalemate
                         endBattle(bridge);
                         nobodyWins(bridge);                		
                 	}
@@ -963,13 +946,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 {
                 	if(isUnescortedTransportDies())
                 	{
-                		//Get all allied, sea & air units in the territory
-                        CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>(); 
-                        match.add(Matches.isUnitAllied(m_defender, m_data));
-                        match.add(Matches.UnitTypeIsTransport);
-                        
-                        final List<Unit> defendingTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), match);
-                        checkUndefendedTransports(bridge, defendingTransports, m_defender);
+                    	//If there are undefended attacking transports, determine if they automatically die
+                        checkUndefendedTransports(bridge, m_defender);
                 	}
 
                 	if(m_attackingUnits.size() == 0)
@@ -1610,10 +1588,18 @@ public class MustFightBattle implements Battle, BattleStepStrings
      * @param player
      * @param defender
      */
-    private void checkUndefendedTransports(IDelegateBridge bridge, Collection<Unit> alliedTransports, PlayerID player)
+    private void checkUndefendedTransports(IDelegateBridge bridge, PlayerID player)
     {
+    	//Get all attacking transports in the territory
+        CompositeMatch<Unit> matchOwned = new CompositeMatchAnd<Unit>(); 
+        matchOwned.add(Matches.UnitTypeIsTransport);
+        matchOwned.add(Matches.isUnitAllied(player, m_data));
+    	
+        List<Unit> ownedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchOwned);
+    	
+    	
     	//If no transports, just return
-        if (alliedTransports.isEmpty())
+        if (ownedTransports.isEmpty())
             return;
 
         //Get all allied, sea & air units in the territory
@@ -1624,7 +1610,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	Collection<Unit> alliedUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), match);
 
         //If transports are unescorted, check opposing forces to see if the Trns die automatically
-        if(alliedTransports.size() == alliedUnits.size())     
+        if(ownedTransports.size() == alliedUnits.size())     
         {
         	//Get all the enemy SEA and AIR units in the territory
         	Collection<Unit> enemyUnits = new ArrayList<Unit>();
@@ -1636,19 +1622,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	//Remove trns from the battle display
         	if (player.equals(m_defender))
         	{
-        		m_defendingUnits.removeAll(alliedTransports);
+        		m_defendingUnits.removeAll(ownedTransports);
         		enemyUnitsMatch.add(Matches.unitIsOwnedBy(m_attacker));            	
         	}
         	else
         	{
-        		m_attackingUnits.removeAll(alliedTransports);
+        		m_attackingUnits.removeAll(ownedTransports);
         		enemyUnitsMatch.add(Matches.unitIsOwnedBy(m_defender));        		          	
         	}   
 
     		//If there are opposing forces with attack power, kill the transports
             enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);  
         	if (enemyUnits.size() > 0)
-    			remove(alliedTransports, bridge, m_battleSite);        	
+    			remove(ownedTransports, bridge, m_battleSite);        	
         }
     }
 
