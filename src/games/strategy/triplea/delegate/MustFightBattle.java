@@ -238,7 +238,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         m_attackingFrom.add(attackingFrom);
 
-        m_attackingUnits.addAll(attackingUnits);
+        m_attackingUnits.addAll(attackingUnits); //KEVY!
 
         if (m_attackingFromMap.get(attackingFrom) == null)
         {
@@ -427,7 +427,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         addDependentUnits(defender_dependencies);
 
         //list the steps
-        //Kevy m_stepStrings = determineStepStrings(true);
         m_stepStrings = determineStepStrings(true, bridge);
 
         ITripleaDisplay display = getDisplay(bridge);
@@ -581,11 +580,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //TODO COMCO- add step here to automatically kill unescorted trns
         if (!isEditMode && m_battleSite.isWater() && isUnescortedTransportDies())
         { 
+        	steps.add(REMOVE_UNESCORTED_TRANSPORTS);
             //Check for undefended attacking transports in the territory
-                checkUndefendedTransports(bridge, m_attacker);
+        	checkUndefendedTransports(bridge, m_attacker); //KEVY on battle start
 
-                //Check for undefended defending transports in the territory
-                checkUndefendedTransports(bridge, m_defender);
+            //Check for undefended defending transports in the territory
+        	checkUndefendedTransports(bridge, m_defender);
         }
         
         		
@@ -593,7 +593,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         //TODO COMCO- Code here to retreat subs BEFORE any battle
         //attacker subs sneak attack
         //Attacking subs have no sneak attack if Destroyers are present
-        if (!isEditMode && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
+        if (!isEditMode && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer)) //KEVY add step name
         {
             if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
             {
@@ -933,6 +933,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 	if(isUnescortedTransportDies() && m_defendingUnits.size() == 0)
                 	{
                     	//If there are undefended attacking AND defending transports, set a stalemate
+                		//TODO comco perhaps check if there are any defending trns before declaring stalemate
                         endBattle(bridge);
                         nobodyWins(bridge);                		
                 	}
@@ -950,6 +951,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         checkUndefendedTransports(bridge, m_defender);
                 	}
 
+            		//TODO comco perhaps check if there are any defending trns before declaring stalemate
                 	if(m_attackingUnits.size() == 0)
                 	{
                         endBattle(bridge);
@@ -1033,7 +1035,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
             {
                 if (!m_over)
                 {
-                    //Kevy m_stepStrings = determineStepStrings(false);
                     m_stepStrings = determineStepStrings(false, bridge);
                     ITripleaDisplay display = getDisplay(bridge);
                     display.listBattleSteps(m_battleID, m_stepStrings);
@@ -1591,15 +1592,15 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private void checkUndefendedTransports(IDelegateBridge bridge, PlayerID player)
     {
     	//Get all attacking transports in the territory
-        CompositeMatch<Unit> matchOwned = new CompositeMatchAnd<Unit>(); 
-        matchOwned.add(Matches.UnitTypeIsTransport);
-        matchOwned.add(Matches.isUnitAllied(player, m_data));
+        CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<Unit>(); 
+        matchAllied.add(Matches.UnitTypeIsTransport);
+        matchAllied.add(Matches.isUnitAllied(player, m_data));
     	
-        List<Unit> ownedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchOwned);
+        List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
     	
     	
     	//If no transports, just return
-        if (ownedTransports.isEmpty())
+        if (alliedTransports.isEmpty())
             return;
 
         //Get all allied, sea & air units in the territory
@@ -1610,7 +1611,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
     	Collection<Unit> alliedUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), match);
 
         //If transports are unescorted, check opposing forces to see if the Trns die automatically
-        if(ownedTransports.size() == alliedUnits.size())     
+    	//TODO comco check allMatch for this
+        if(alliedTransports.size() == alliedUnits.size())     
         {
         	//Get all the enemy SEA and AIR units in the territory
         	Collection<Unit> enemyUnits = new ArrayList<Unit>();
@@ -1622,19 +1624,19 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	//Remove trns from the battle display
         	if (player.equals(m_defender))
         	{
-        		m_defendingUnits.removeAll(ownedTransports);
+        		m_defendingUnits.removeAll(alliedTransports);
         		enemyUnitsMatch.add(Matches.unitIsOwnedBy(m_attacker));            	
         	}
         	else
         	{
-        		m_attackingUnits.removeAll(ownedTransports);
+        		m_attackingUnits.removeAll(alliedTransports);
         		enemyUnitsMatch.add(Matches.unitIsOwnedBy(m_defender));        		          	
         	}   
 
     		//If there are opposing forces with attack power, kill the transports
             enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);  
         	if (enemyUnits.size() > 0)
-    			remove(ownedTransports, bridge, m_battleSite);        	
+    			remove(alliedTransports, bridge, m_battleSite);        	
         }
     }
 
@@ -2092,10 +2094,8 @@ public class MustFightBattle implements Battle, BattleStepStrings
             combat.add(new InverseMatch<Unit>(Matches.UnitIsLand));
             //If Trns are restricted from being taken as casualties
         	if(isTransportCasualtiesRestricted())
-        	{	//If all the sea units are transports, just return them
-        		if (Match.countMatches(units,combat) == Match.countMatches(units, Matches.UnitTypeIsTransport))
-            		return Match.getMatches(units, combat);
-        		else	//else remove the transports
+        	{	//If there are more than just tranports, remove the transports
+        		if (Match.countMatches(units,combat) != Match.countMatches(units, Matches.UnitTypeIsTransport))
         			combat.add(new InverseMatch<Unit>(Matches.UnitTypeIsTransport));
         	}
         }
