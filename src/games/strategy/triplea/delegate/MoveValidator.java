@@ -52,6 +52,7 @@ public class MoveValidator
     public static final String TOO_POOR_TO_VIOLATE_NEUTRALITY = "Not enough money to pay for violating neutrality";
     public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
+    public static final String UNESCORTED_TRANSPORTS_WILL_DIE_IN_COMBAT = "Unescorted transports will die in combat";
 
     /**
      * Tests the given collection of units to see if they have the movement neccessary
@@ -463,7 +464,15 @@ public class MoveValidator
     {
         return games.strategy.triplea.Properties.getFourthEdition(data);
     }
-
+    
+    /**
+     * @return
+     */
+    private static boolean isUnescortedTransportDies(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getUnescortedTransportDies(data);
+    }
+    
     private static boolean IsBlitzThroughFactoriesAndAA(GameData data)
     {
         return games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data);
@@ -509,6 +518,9 @@ public class MoveValidator
                 return result;
         }
 
+        /*if (validateTransportsOnlyEnteringCombat(data, units, route, player, result).getError() != null)
+            return result;*/
+        
         if (validateNonEnemyUnitsOnPath(data, units, route, player, result).getError() != null)
             return result;
 
@@ -630,6 +642,39 @@ public class MoveValidator
         return result;
     }
 
+    /*comco delete this
+     * private static MoveValidationResult validateTransportsOnlyEnteringCombat(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
+    {
+        if (getEditMode(data))
+            return result;
+        //Are unescorted transports allowed in battle                
+        if(isUnescortedTransportDies(data))
+        {
+        	CompositeMatch<Unit> nonDependentsMatch = new CompositeMatchAnd<Unit>();
+            nonDependentsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
+            nonDependentsMatch.add(new InverseMatch<Unit>(Matches.UnitIsLand));
+            //get a list of all non-dependents
+            List<Unit> ownedNonDependents = Match.getMatches(units, nonDependentsMatch);
+            
+            if (ownedNonDependents.size() == 0)
+            	return result;
+            
+            //are they ALL transports
+            if(Match.allMatch(ownedNonDependents, Matches.UnitTypeIsTransport))
+            {	//Are there enemy combat units at the destination
+            	if (route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, data)))
+            							
+                    for (Unit unit : Match.getMatches(ownedNonDependents, Matches.UnitTypeIsTransport))
+                    {
+                    	result.addUnresolvedUnit(UNESCORTED_TRANSPORTS_WILL_DIE_IN_COMBAT, unit);
+                    }
+                    return result;
+            }
+        }
+        return result;	
+    }*/
+
+
     private static MoveValidationResult validateNonEnemyUnitsOnPath(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
     {
         if (getEditMode(data))
@@ -657,6 +702,7 @@ public class MoveValidator
         return result.setErrorReturnResult("Enemy units on path");
     }
 
+    
     private static MoveValidationResult validateBasic(boolean isNonCombat, GameData data, Collection<Unit> units, Route route, PlayerID player, Collection<Unit> transportsToLoad, MoveValidationResult result)
     {
         boolean isEditMode = getEditMode(data);
@@ -991,6 +1037,30 @@ public class MoveValidator
             else
                 result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
         }
+        
+        
+        if(isUnescortedTransportDies(data))
+        {
+        	CompositeMatch<Unit> ownedTransportsMatch = new CompositeMatchAnd<Unit>();
+        	ownedTransportsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
+        	ownedTransportsMatch.add(new InverseMatch<Unit>(Matches.UnitIsLand));
+        	ownedTransportsMatch.add(new InverseMatch<Unit>(Matches.UnitTypeIsTransport));
+            //get a list of all non-dependents
+            List<Unit> ownedTransports = Match.getMatches(units, ownedTransportsMatch);
+            
+            if(ownedTransports.size()>0)
+            {	//Are there enemies there
+            	if(route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, data)))
+            	{
+            		for (Unit unit : ownedTransports)
+                    {
+                    	result.addUnresolvedUnit(UNESCORTED_TRANSPORTS_WILL_DIE_IN_COMBAT, unit);
+                    }	
+            	}
+            }            
+        }
+        
+        
         
         //now, find out where we can land on carriers
         IntegerMap<Integer> carrierCapacity = new IntegerMap<Integer>();

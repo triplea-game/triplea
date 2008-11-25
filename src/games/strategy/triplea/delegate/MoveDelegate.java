@@ -278,6 +278,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
 
         boolean isKamikaze = false;
+        boolean isHariKari = false;
         // confirm kamikaze moves, and remove them from unresolved units
         if(m_data.getProperties().get(Constants.KAMIKAZE, false))
         {
@@ -291,6 +292,21 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 }
             }
         }
+        
+        // confirm HariKari moves, and remove them from unresolved units
+        if(m_data.getProperties().get(Constants.HARI_KARI, false))
+        {
+            Collection<Unit> hariKariUnits = result.getUnresolvedUnits(MoveValidator.UNESCORTED_TRANSPORTS_WILL_DIE_IN_COMBAT);
+            if (hariKariUnits.size() > 0 && getRemotePlayer().confirmMoveHariKari())
+            {
+                for (Unit unit : hariKariUnits) 
+                {
+                    result.removeUnresolvedUnit(MoveValidator.UNESCORTED_TRANSPORTS_WILL_DIE_IN_COMBAT, unit);
+                    isHariKari = true;
+                }
+            }
+        }        
+        
 
         if (result.hasUnresolvedUnits())
             return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();

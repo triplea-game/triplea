@@ -577,14 +577,12 @@ public class MustFightBattle implements Battle, BattleStepStrings
             }
         }
         
-        //TODO COMCO- add step here to automatically kill unescorted trns
+        // See if there any unescorted trns
         if (!isEditMode && m_battleSite.isWater() && isUnescortedTransportDies())
         { 
         	steps.add(REMOVE_UNESCORTED_TRANSPORTS);
             //Check for undefended attacking transports in the territory
         	checkUndefendedTransports(bridge, m_attacker); //KEVY on battle start
-
-            //Check for undefended defending transports in the territory
         	checkUndefendedTransports(bridge, m_defender);
         }
         
@@ -788,6 +786,9 @@ public class MustFightBattle implements Battle, BattleStepStrings
         final List<Unit> defendingSubs = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsSub);
         
+        //remove trns from combat display
+        if(isTransportCasualtiesRestricted())
+        	removeNonCombatants();
         
       //TODO Remove undefended trns
         if (!isEditMode && isUnescortedTransportDies())

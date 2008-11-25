@@ -137,6 +137,12 @@ public interface ITripleaPlayer extends IRemote
     public boolean confirmMoveKamikaze();
 
     /**
+     * The attempted move will kill some units
+     * 
+     */
+    public boolean confirmMoveHariKari();
+
+    /**
      * 
      * Ask the player if he wishes to retreat.
      * 

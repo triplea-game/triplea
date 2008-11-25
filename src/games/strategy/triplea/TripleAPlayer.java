@@ -446,6 +446,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         return m_ui.getOK(question);
     }
 
+    public boolean confirmMoveHariKari()
+    {
+        String question = "All units in destination territory will automatically die, do you still want to move?";
+        return m_ui.getOK(question);
+    }
+
     /* (non-Javadoc)
      * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
      */

@@ -220,6 +220,11 @@ public abstract class AbstractAI implements ITripleaPlayer
         return false;
     }
 
+    public boolean confirmMoveHariKari()
+    {
+        return false;
+    }
+
     
     /*****************************************
      * The following methods are more for the ui, and the 

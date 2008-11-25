@@ -481,6 +481,13 @@ public class RandomAI implements IGamePlayer, ITripleaPlayer
     {
         return false;
     }
+    /* 
+     * @see games.strategy.triplea.player.ITripleaPlayer#confirm(java.util.Collection)
+     */
+    public boolean confirmMoveHariKari()
+    {
+        return false;
+    }
 
     /* 
      * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)

@@ -121,6 +121,7 @@ public interface Constants
   public static final String LOW_LUCK = "Low Luck";
   public static final String IPC_CAP = "Territory Turn Limit";
   public static final String KAMIKAZE = "Kamikaze Airplanes";
+  public static final String HARI_KARI = "Hari-Kari Units";
   public static final String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
   public static final String EDIT_MODE = "EditMode";
   
