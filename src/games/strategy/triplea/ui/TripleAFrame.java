@@ -710,6 +710,17 @@ public class TripleAFrame extends MainGameFrame //extends JFrame
         return choice == 1;
     }
 
+    public boolean getOKToLetUnitsDie(PlayerID m_id, String message, boolean movePhase)
+    {                
+        String ok = movePhase ?  "Kill Units" : "Kill Units";
+        String cancel = movePhase ? "Keep Moving" : "Change Placement";
+        String[] options =
+        { cancel, ok };
+        int choice = JOptionPane.showOptionDialog(this, message, "Units cannot fight", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                options, cancel);
+        return choice == 1;
+    }
+
     public boolean getOK(String message)
     {
         int choice = JOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION);

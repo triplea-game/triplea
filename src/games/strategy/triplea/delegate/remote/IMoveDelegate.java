@@ -66,6 +66,11 @@ public interface IMoveDelegate extends IRemote
      * @return a list of Territories with air units that must move
      */
     public Collection<Territory> getTerritoriesWhereAirCantLand();
-    
+
+    /**
+     * Get what units must have combat ability
+     * @return a list of Territories with units that can't fight
+     */
+    public Collection<Territory> getTerritoriesWhereUnitsCantFight();
     
 }

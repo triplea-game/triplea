@@ -1622,6 +1622,11 @@
                 <property name="Territory Turn Limit" value="false" editable="true">
                         <boolean/>
                 </property>
+                
+		<!-- Choose AA -->        
+                <property name="Choose AA Casualties" value="true" editable="true">
+                        <boolean/>
+                </property>
 
 		<!-- Low Luck -->
                 <property name="Low Luck" value="false" editable="true">

@@ -278,7 +278,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
 
         boolean isKamikaze = false;
-        boolean isHariKari = false;
+        //boolean isHariKari = false;
         // confirm kamikaze moves, and remove them from unresolved units
         if(m_data.getProperties().get(Constants.KAMIKAZE, false))
         {
@@ -294,18 +294,18 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
         
         // confirm HariKari moves, and remove them from unresolved units
-        if(m_data.getProperties().get(Constants.HARI_KARI, false))
+        /*if(m_data.getProperties().get(Constants.HARI_KARI, false))
         {
-            Collection<Unit> hariKariUnits = result.getUnresolvedUnits(MoveValidator.UNESCORTED_TRANSPORTS_WILL_DIE_IN_COMBAT);
+            Collection<Unit> hariKariUnits = result.getUnresolvedUnits(MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT);
             if (hariKariUnits.size() > 0 && getRemotePlayer().confirmMoveHariKari())
             {
                 for (Unit unit : hariKariUnits) 
                 {
-                    result.removeUnresolvedUnit(MoveValidator.UNESCORTED_TRANSPORTS_WILL_DIE_IN_COMBAT, unit);
+                    result.removeUnresolvedUnit(MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
                     isHariKari = true;
                 }
             }
-        }        
+        }        */
         
 
         if (result.hasUnresolvedUnits())
@@ -330,6 +330,10 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         {
             m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move");
         }
+        /*if(isHariKari)
+        {
+            m_bridge.getHistoryWriter().addChildToEvent("This was a Hari-Kari move");
+        }*/
         MoveDescription description = new MoveDescription(units, route);
         m_bridge.getHistoryWriter().setRenderingData(description);
 
@@ -418,6 +422,8 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
         if (m_nonCombat)
             removeAirThatCantLand();
+        else
+        	removeUnitsThatCantFight();
         m_movesToUndo.clear();
 
         //fourth edition, fires at end of combat move
@@ -479,6 +485,20 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         }
     }
 
+    private void removeUnitsThatCantFight()
+    {
+    	kev remove the pending battles here
+        UnitsThatCantFightUtil util = new UnitsThatCantFightUtil(m_data, m_bridge);
+        util.removeUnitsThatCantFight(m_player);
+        // if edit mode has been on, we need to clean up after all players
+        Iterator<PlayerID> iter = m_data.getPlayerList().iterator();
+        while (iter.hasNext())
+        {
+            PlayerID player = iter.next();
+            if (!player.equals(m_player)) 
+                util.removeUnitsThatCantFight(player);
+        }
+    }
     /**
      * returns a map of unit -> transport. returns null if no mapping can be
      * done either because there is not sufficient transport capacity or because
@@ -593,6 +613,12 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     public Collection<Territory> getTerritoriesWhereAirCantLand()
     {
         return new AirThatCantLandUtil(m_data, m_bridge).getTerritoriesWhereAirCantLand(m_player);
+    }
+
+
+    public Collection<Territory> getTerritoriesWhereUnitsCantFight()
+    {
+        return new UnitsThatCantFightUtil(m_data, m_bridge).getTerritoriesWhereUnitsCantFight(m_player);
     }
 
  

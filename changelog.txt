@@ -1,4 +1,7 @@
 Changes for 1.0.1.5
+* Add full TripleA 50 support (ComradeKev)
+
+* Add Choose AA Casualties property (value=true) to Revised.xml (President Douchebag)
 
 * Break up Fourth Edition rules into individual rules (while keeping overall Fourth Edition setting) (ComradeKev)
 

@@ -188,6 +188,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
                 if(!canAirLand(true))
                     move(nonCombat);
             }
+            else
+            {       	
+            	if(canUnitsFight())
+            		move(nonCombat);
+            }
             return;
         }
 
@@ -226,6 +231,30 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         }
     }
     
+    private boolean canUnitsFight()
+    {        
+        Collection<Territory> unitsCantFight;
+        
+        unitsCantFight = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereUnitsCantFight();
+        
+        
+        if (unitsCantFight.isEmpty())
+            return false;
+        else
+        {
+            StringBuilder buf = new StringBuilder(
+                    "Units in the following territories will die:");
+            Iterator<Territory> iter = unitsCantFight.iterator();
+            while (iter.hasNext())
+            {
+                buf.append(((Territory) iter.next()).getName());
+                buf.append(" ");
+            }
+            if (m_ui.getOKToLetUnitsDie(m_id, buf.toString(), true))
+                return false;
+            return true;
+        }
+    }
     private boolean hasUnitsThatCanMove(boolean nonCom)
     {
         CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();

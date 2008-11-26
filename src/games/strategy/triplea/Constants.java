@@ -104,6 +104,7 @@ public interface Constants
   public static final String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
   public static final String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
   public static final String UNESCORTED_TRANSPORT_DIES = "Unescorted Transport Dies";
+  public static final String HARI_KARI_UNITS = "Hari-Kari Units";
   public static final String CONTINUOUS_RESEARCH = "Continuous Research";
   public static final String ANNIVERSARY_EDITION_LAND_PRODUCTION = "Anniversary Edition Land Production";
   public static final String ANNIVERSARY_EDITION_AIR_NAVAL = "Anniversary Edition Air Naval";

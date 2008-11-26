@@ -2124,5 +2124,9 @@ Coded by Iron__Cross
                 	<boolean/>
                 </property>
                 
+				<property name="Kamikaze Airplanes" value="true" editable="true">
+                	<boolean/>
+                </property>
+                
     </propertyList>
 </game>

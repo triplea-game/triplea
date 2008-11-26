@@ -494,7 +494,21 @@ public class Properties implements Constants
 			 return false;
 		 }
 	 }
-
+	
+	 /*
+	  * Transports die if not escorted
+	  */
+	 public static boolean  getHariKariUnits(GameData data)
+	 {
+		 try
+		 {
+			 return ( (Boolean) data.getProperties().get(HARI_KARI_UNITS) ).booleanValue();
+		 }
+		 catch(Exception e)
+		 {
+			 return false;
+		 }
+	 }
 	 /*
 	  * Air restricted from attacking subs unless DD present
 	  */
