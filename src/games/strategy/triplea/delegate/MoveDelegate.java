@@ -487,7 +487,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     private void removeUnitsThatCantFight()
     {
-    	kev remove the pending battles here
+    	//kev remove the pending battles here
         UnitsThatCantFightUtil util = new UnitsThatCantFightUtil(m_data, m_bridge);
         util.removeUnitsThatCantFight(m_player);
         // if edit mode has been on, we need to clean up after all players

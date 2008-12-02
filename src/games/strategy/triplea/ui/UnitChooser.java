@@ -124,7 +124,7 @@ public class UnitChooser extends JPanel
   public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext, boolean transportCasualtyRestricted)
   {
 	  //TODO COMCO perhaps here's where to restrict TRNs
-	  kev
+	  //kev
       this(units, defaultSelections, dependent, false, data, allowTwoHit, uiContext);
   }
   
