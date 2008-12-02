@@ -35,6 +35,8 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.triplea.weakAI.WeakAI;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -150,6 +152,19 @@ public class BattleCalculator
         // Sets the appropriate flag in the select casualty message
         // such that user is prompted to continue since they did not
         // select the units themselves.
+        
+        //TODO COMCO- if isTransportCasualtiesRestricted & ONLY DEFENDING TRNS left, just kill them all 
+        if(defending && isTransportCasualtiesRestricted(data) && allTargetsTransports(data, targets))
+        {
+        	List<Unit> killed = new ArrayList<Unit>();
+            Iterator<Unit> iter = targets.iterator();
+            for (int i = 0; i < hits; i++)
+            {
+                killed.add(iter.next());
+            }
+            return new CasualtyDetails(killed, Collections.<Unit>emptyList(), true);
+        }
+        
         if (!isEditMode && allTargetsOneTypeNotTwoHit(targets, dependents))
         {
             List<Unit> killed = new ArrayList<Unit>();
@@ -377,6 +392,34 @@ public class BattleCalculator
 
     }
 
+    /**
+     * @return
+     */
+    private static boolean isTransportCasualtiesRestricted(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
+    }
+    /**
+     * Checks if all the units are transports
+     * @param bridge
+     * @param player
+     */
+    private static boolean allTargetsTransports(GameData data, Collection<Unit> targets)
+    {
+    	//Get all transports        
+        List<Unit> allTransports = Match.getMatches(targets, Matches.UnitTypeIsTransport);    	
+    	
+    	//If no transports, just return
+        if (allTransports.isEmpty())
+            return false;
+
+        //Are the transports unescorted
+        if(allTransports.size() == targets.size())
+        	return true;
+    
+        return false;
+    }
+    
     //nothing but static
     private BattleCalculator()
     {

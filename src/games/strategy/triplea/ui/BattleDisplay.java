@@ -605,6 +605,8 @@ public class BattleDisplay extends JPanel
                     {
 
                         String messageText = message + " " + btnText + ".";
+                        //TODO COMCO perhaps here's where to restrict TRNs
+                        kev
                         UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
 
                         chooser.setTitle(messageText);
@@ -614,6 +616,7 @@ public class BattleDisplay extends JPanel
                             chooser.setMax(count);
                         String[] options =
                         { "Ok", "Cancel" };
+
                         int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, hit.getName() + " select casualties",
                                 JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
                         if (option != 0)

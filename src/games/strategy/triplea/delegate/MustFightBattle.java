@@ -578,7 +578,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         }
         
         // See if there any unescorted trns
-        if (!isEditMode && m_battleSite.isWater() && isUnescortedTransportDies())
+       /* if (!isEditMode && m_battleSite.isWater() && isUnescortedTransportDies())
         { 
         	steps.add(REMOVE_UNESCORTED_TRANSPORTS);
             //Check for undefended attacking transports in the territory
@@ -586,7 +586,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	checkUndefendedTransports(bridge, m_defender);
         }
         
-        		
+        		*/
 
         //TODO COMCO- Code here to retreat subs BEFORE any battle
         //attacker subs sneak attack
@@ -790,7 +790,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if(isTransportCasualtiesRestricted())
         	removeNonCombatants();
         
-      //TODO Remove undefended trns
+/*      //TODO COMCO Remove undefended trns
         if (!isEditMode && isUnescortedTransportDies())
         	steps.add(new IExecutable(){
         		private static final long serialVersionUID = 99990L;
@@ -801,7 +801,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         			 checkUndefendedTransports(bridge, m_attacker);        			
                  }
         	});
-        
+        */
 
         if (!isEditMode)
             steps.add(new IExecutable(){
@@ -925,7 +925,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
             	
                 if (m_attackingUnits.size() == 0)
                 {
-                	if(isUnescortedTransportDies())
+                	/*if(isUnescortedTransportDies())
                 	{
                     	//If there are undefended attacking transports, determine if they automatically die
                         checkUndefendedTransports(bridge, m_attacker);
@@ -939,14 +939,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         nobodyWins(bridge);                		
                 	}
                 	else
-                	{
+                	{*/
                 		endBattle(bridge);
                 		defenderWins(bridge);
-                	}
+                	//}
                     
                 } else if (m_defendingUnits.size() == 0)
                 {
-                	if(isUnescortedTransportDies())
+                	/*if(isUnescortedTransportDies())
                 	{
                     	//If there are undefended attacking transports, determine if they automatically die
                         checkUndefendedTransports(bridge, m_defender);
@@ -959,10 +959,10 @@ public class MustFightBattle implements Battle, BattleStepStrings
                         nobodyWins(bridge);                		
                 	}
                 	else
-                	{                		
+                	{                		*/
                 		endBattle(bridge);
                 		attackerWins(bridge);
-                	}
+                	//}
                 }
 
             }
@@ -1897,14 +1897,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
     }
 
     /**
-     * @return
-     */
-    private boolean isUnescortedTransportDies()
-    {
-    	return games.strategy.triplea.Properties.getUnescortedTransportDies(m_data);
-    }
-    
-    /**
      * Return the territories where there are amphibious attacks.
      */
     public Collection<Territory> getAmphibiousAttackTerritories()
@@ -2094,11 +2086,13 @@ public class MustFightBattle implements Battle, BattleStepStrings
         {
             combat.add(new InverseMatch<Unit>(Matches.UnitIsLand));
             //If Trns are restricted from being taken as casualties
-        	if(isTransportCasualtiesRestricted())
+            //COMCO remove this
+            
+        	/*if(isTransportCasualtiesRestricted())
         	{	//If there are more than just tranports, remove the transports
         		if (Match.countMatches(units,combat) != Match.countMatches(units, Matches.UnitTypeIsTransport))
         			combat.add(new InverseMatch<Unit>(Matches.UnitTypeIsTransport));
-        	}
+        	}*/
         }
 
         return Match.getMatches(units, combat);
