@@ -480,23 +480,40 @@ public class Properties implements Constants
 		 }
 	 }
 
+
 	 /*
-	  * Transports die if not escorted
+	  * Transports do not restrict movement of other units
 	  */
-	 public static boolean getUnescortedTransportDies(GameData data)
+	 public static boolean getIgnoreTransportInMovement(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(UNESCORTED_TRANSPORT_DIES) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(IGNORE_TRANSPORT_IN_MOVEMENT) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
 			 return false;
 		 }
 	 }
-	
+
 	 /*
-	  * Transports die if not escorted
+	  * Subs do not restrict movement of other units
+	  */
+	 public static boolean getIgnoreSubInMovement(GameData data)
+	 {
+		 try
+		 {
+			 return ( (Boolean) data.getProperties().get(IGNORE_SUB_IN_MOVEMENT) ).booleanValue();
+		 }
+		 catch(Exception e)
+		 {
+			 return false;
+		 }
+	 }
+
+	 
+	 /*
+	  * May units with 0 attack power enter combat
 	  */
 	 public static boolean  getHariKariUnits(GameData data)
 	 {
@@ -509,6 +526,7 @@ public class Properties implements Constants
 			 return false;
 		 }
 	 }
+	 
 	 /*
 	  * Air restricted from attacking subs unless DD present
 	  */

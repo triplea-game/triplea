@@ -81,6 +81,7 @@ public interface Constants
   public static final String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED = "Naval Bombard Casualties Return Fire Restricted";
   public static final String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
   public static final String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
+  public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
   /**
    * End individual 4th Edition rules (All default to FALSE)
    */
@@ -90,24 +91,24 @@ public interface Constants
    * These are the individual rules for TripleA 50th Edition (All default to FALSE)
    */
   public static final String NATIONAL_OBJECTIVES = "National Objectives";
-  public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";
-  
+  public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";  
   public static final String TRANSPORT_CONTROL_SEA_ZONE = "Transport Control Sea Zone";
   public static final String PRODUCTION_PER_X_TERRITORIES_RESTRICTED = "Production Per Territory Restricted";
   public static final String PLACE_IN_ANY_TERRITORY = "Place in Any Territory";
   public static final String NUMBER_OF_UNITS_PER_TERRITORY_RESTRICTED = "Number of Units Per Territory Restricted";  
   public static final String MOVEMENT_BY_TERRITORY_RESTRICTED = "Movement By Territory Restricted";
   public static final String TRANSPORT_CASUALTIES_RESTRICTED = "Transport Casualties Restricted";
-  public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
-  public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle";
-  public static final String SUB_RETREAT_DD_RESTRICTED = "Sub Retreat DD Restricted";
+  public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle"; // may be SUBMERSIBLE_SUBS below
+  public static final String SUB_RETREAT_DD_RESTRICTED = "Sub Retreat DD Restricted"; // may not be needed
   public static final String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
   public static final String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
-  public static final String UNESCORTED_TRANSPORT_DIES = "Unescorted Transport Dies";
+  public static final String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
+  public static final String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";  
   public static final String HARI_KARI_UNITS = "Hari-Kari Units";
   public static final String CONTINUOUS_RESEARCH = "Continuous Research";
   public static final String ANNIVERSARY_EDITION_LAND_PRODUCTION = "Anniversary Edition Land Production";
   public static final String ANNIVERSARY_EDITION_AIR_NAVAL = "Anniversary Edition Air Naval";
+  public static final String HARI_KARI = "Hari-Kari Units";
   /**
    * End individual rules for TripleA 50th Edition (All default to FALSE)
    */
@@ -122,7 +123,6 @@ public interface Constants
   public static final String LOW_LUCK = "Low Luck";
   public static final String IPC_CAP = "Territory Turn Limit";
   public static final String KAMIKAZE = "Kamikaze Airplanes";
-  public static final String HARI_KARI = "Hari-Kari Units";
   public static final String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
   public static final String EDIT_MODE = "EditMode";
   

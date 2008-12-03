@@ -2128,5 +2128,13 @@ Coded by Iron__Cross
                 	<boolean/>
                 </property>
                 
+                <property name="Ignore Transport In Movement" value="true" editable="true">
+                	<boolean/>
+                </property>
+                
+                <property name="Ignore Sub In Movement" value="true" editable="true">
+                	<boolean/>
+                </property>
+                
     </propertyList>
 </game>

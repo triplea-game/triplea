@@ -167,6 +167,42 @@ public class MoveValidator
         return true;
     }
 
+
+    /**
+     * Checks that there only transports and/or subs on the route except possibly at the end.
+     * AA and factory dont count as enemy.
+     */
+    public static boolean onlyTransportsOnPath(Route route, PlayerID player, GameData data)
+    {
+        CompositeMatch<Unit> transportOrSub = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitTypeIsTransport, Matches.alliedUnit(player, data));
+        
+        for(int i = 0; i < route.getLength() - 1; i++)
+        {
+            Territory current = route.at(i);
+            if(!current.getUnits().allMatch( transportOrSub))
+                return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Checks that there only transports and/or subs on the route except possibly at the end.
+     * AA and factory dont count as enemy.
+     */
+    public static boolean onlySubsOnPath(Route route, PlayerID player, GameData data)
+    {
+        CompositeMatch<Unit> transportOrSub = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+        
+        for(int i = 0; i < route.getLength() - 1; i++)
+        {
+            Territory current = route.at(i);
+            if(!current.getUnits().allMatch( transportOrSub))
+                return false;
+        }
+        return true;
+    }
+
     public static boolean enemyDestroyerOnPath(Route route, PlayerID player, GameData data)
     {
         Match<Unit> enemyDestroyer = new CompositeMatchAnd<Unit>(Matches.UnitIsDestroyer, Matches.enemyUnit(player, data));
@@ -619,10 +655,34 @@ public class MoveValidator
         battle.add(Matches.isTerritoryEnemyAndNotNeutral(player, data));
 
         if (battle.match(route.getEnd()))
-            return result.setErrorReturnResult("Cannot advance units to battle in non combat");
+        {
+        	//COMCO added the if
+        	if(isSubControlSeaZoneRestricted(data))
+        		return result;
+        	else
+        		return result.setErrorReturnResult("Cannot advance units to battle in non combat");
+        }
+        
+        //COMCO added this    
+        if (isSubmersibleSubsAllowed(data) && Match.allMatch(units, Matches.UnitIsSub))
+        {
+            //this is ok unless there are destroyer on the path
+            if (MoveValidator.enemyDestroyerOnPath(route, player, data))
+                return result.setErrorReturnResult("Cannot move submarines under destroyers");
+            else
+                return result;
+        }
+             
 
         if (route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, data)))
         {
+        	//Comco added this
+            if (isIgnoreTransportInMovement(data) && MoveValidator.onlyTransportsOnPath(route, player, data))
+            	return result;	
+          //Comco added this
+            if (isIgnoreSubInMovement(data) && MoveValidator.onlySubsOnPath(route, player, data))
+            	return result;	
+            
             CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<Unit>();
             friendlyOrSubmerged.add(Matches.alliedUnit(player, data));
             friendlyOrSubmerged.add(Matches.unitIsSubmerged(data));
@@ -680,6 +740,7 @@ public class MoveValidator
     			if(isHariKariUnits(data))
     				continue;
     			else
+    				//TODO COMCO even ESCORTED units wouldn't be able to enter combat
     				result.addDisallowedUnit(UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
             }	
     	}
@@ -701,9 +762,7 @@ public class MoveValidator
         if (Match.allMatch(units, Matches.UnitIsAir))
             return result;
 
-        boolean submersibleSubsAllowed = data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
-
-        if (submersibleSubsAllowed && Match.allMatch(units, Matches.UnitIsSub))
+        if (isSubmersibleSubsAllowed(data) && Match.allMatch(units, Matches.UnitIsSub))
         {
             //this is ok unless there are destroyer on the path
             if (MoveValidator.enemyDestroyerOnPath(route, player, data))
@@ -711,6 +770,13 @@ public class MoveValidator
             else
                 return result;
         }
+       
+        if (isIgnoreTransportInMovement(data) && MoveValidator.onlyTransportsOnPath(route, player, data))
+        	return result;	
+
+        if (isIgnoreSubInMovement(data) && MoveValidator.onlySubsOnPath(route, player, data))
+        	return result;	
+               
 
         return result.setErrorReturnResult("Enemy units on path");
     }
@@ -1607,6 +1673,39 @@ public class MoveValidator
         
         
         return defaultRoute;
+    }
+    
+    /**
+     * @return
+     */
+    private static boolean isSubmersibleSubsAllowed(GameData data)
+    {
+    	return data.getProperties().get(Constants.SUBMERSIBLE_SUBS, false);
+    }
+
+    /**
+     * @return
+     */
+    private static boolean isIgnoreTransportInMovement(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
+    }
+
+    /**
+     * @return
+     */
+    private static boolean isIgnoreSubInMovement(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
+    }
+
+
+    /**
+     * @return
+     */
+    private static boolean isSubControlSeaZoneRestricted(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data);
     }
 
     /** Creates new MoveValidator */

@@ -607,8 +607,9 @@ public class BattleDisplay extends JPanel
                         String messageText = message + " " + btnText + ".";
                         //TODO COMCO perhaps here's where to restrict TRNs
                         //kev
-                        //UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
-                        UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext(),isTransportCasualtiesRestricted(m_data));
+                      //UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext(),isTransportCasualtiesRestricted(m_data));
+                        UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
+                        
 
                         chooser.setTitle(messageText);
                         if (isEditMode)
@@ -854,10 +855,10 @@ public class BattleDisplay extends JPanel
     /**
      * @return
      */
-    private static boolean isTransportCasualtiesRestricted(GameData data)
+   /* private static boolean isTransportCasualtiesRestricted(GameData data)
     {
     	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
-    }
+    }*/
 
 }
 
