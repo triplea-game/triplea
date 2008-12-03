@@ -31,6 +31,8 @@ import games.strategy.util.*;
 import java.io.Serializable;
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 /**
  * @author Sean Bridges
  * @version 1.0
@@ -286,16 +288,17 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         //we want to match all sea zones with our units and enemy units
         CompositeMatch<Territory> seaWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
         seaWithOwnAndEnemy.add(Matches.TerritoryIsWater);
-        seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(m_bridge
-                .getPlayerID()));
-        seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(m_bridge
-                .getPlayerID(), m_data));
+        seaWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(m_bridge.getPlayerID()));
+        seaWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(m_bridge.getPlayerID(), m_data));
 
-        Iterator territories = Match.getMatches(
-                m_data.getMap().getTerritories(), seaWithOwnAndEnemy)
-                .iterator();
+        //COMCO can we ignore transport only forces
+        boolean ignoreTransports = isIgnoreTransportInMovement(m_data);
+        boolean ignoreSubs = isIgnoreSubInMovement(m_data);
+        
+        Iterator territories = Match.getMatches(m_data.getMap().getTerritories(), seaWithOwnAndEnemy).iterator();
 
         Match<Unit> ownedUnit = Matches.unitIsOwnedBy(m_bridge.getPlayerID());
+        Match<Unit> enemyUnit =  Matches.enemyUnit(m_bridge.getPlayerID(), m_data);
         while (territories.hasNext())
         {
             Territory territory = (Territory) territories.next();
@@ -303,18 +306,37 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             List<Unit> attackingUnits = territory.getUnits().getMatches(ownedUnit);
                         
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
+          //COMCO Ignore transport on transport battles if they can be ignored
+            if (ignoreTransports)
+            {
+                List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
+            	boolean allOwnedTransports = Match.allMatch(attackingUnits, Matches.UnitTypeIsTransport);
+            	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitTypeIsTransport);
+            	if (allOwnedTransports && allEnemyTransports)
+            		continue;
+            }
+            
+            //Query to attack subs
+            if (ignoreSubs) 
+            {
+                List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
+                if (Match.allMatch(enemyUnits, Matches.UnitIsSub) && !getAttackSubs(territory))
+        		{
+                	m_battleTracker.removeBattle(m_currentBattle);
+        		}
+            	
+            }
+            
             Route route = new Route();
 
             if (battle != null)
             {
-                attackingUnits.removeAll(((MustFightBattle) battle)
-                        .getAttackingUnits());
+                attackingUnits.removeAll(((MustFightBattle) battle).getAttackingUnits());
             }
             if (!attackingUnits.isEmpty())
             {
                 route.setStart(territory);
-                m_battleTracker.addBattle(route, attackingUnits, false,
-                        m_bridge.getPlayerID(), m_data, m_bridge, null);
+                m_battleTracker.addBattle(route, attackingUnits, false, m_bridge.getPlayerID(), m_data, m_bridge, null);
             }
         }
 
@@ -345,6 +367,31 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         m_needToInitialize = state.m_needToInitialize;
         m_currentBattle = state.m_currentBattle;
     }
+
+    /**
+     * @return
+     */
+    private static boolean isIgnoreTransportInMovement(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
+    }
+    
+    /**
+     * @return
+     */
+    private static boolean isIgnoreSubInMovement(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
+    }
+    
+    
+    public boolean getAttackSubs(final Territory terr) 
+	{		
+		int choice = JOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION);
+		
+		return choice == 0;
+	}
+    
 
     /*
      * (non-Javadoc)

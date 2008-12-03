@@ -19,10 +19,16 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.MovePanel;
+import games.strategy.triplea.ui.TechResultsDisplay;
 import games.strategy.util.*;
 
 import java.io.Serializable;
 import java.util.*;
+
+import javax.swing.JOptionPane;
+import javax.swing.JComponent.*;
 
 public class MovePerformer implements Serializable
 {
@@ -156,6 +162,7 @@ public class MovePerformer implements Serializable
                 if (route.someMatch(mustFightThrough) && arrivingUnits[0].size() != 0)
                 {
                     boolean bombing = false;
+                    boolean ignoreBattle = false;
                     //could it be a bombuing raid
                     boolean allCanBomb = Match.allMatch(units, Matches.UnitIsStrategicBomber);
 
@@ -163,14 +170,36 @@ public class MovePerformer implements Serializable
                     enemyFactory.add(Matches.UnitIsFactory);
                     enemyFactory.add(Matches.enemyUnit(id, m_data));
                     boolean targetToBomb = route.getEnd().getUnits().someMatch(enemyFactory);
+                    
+                    Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, m_data));
 
                     if (allCanBomb && targetToBomb)
                     {
                         bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
                     }
-
-                    getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data,
-                            m_bridge, m_currentMove);
+                    //Ignore Trn on Trn forces.
+                    if(isIgnoreTransportInMovement(data))
+                    {                    	
+                    	boolean allOwnedTransports = Match.allMatch(units, Matches.UnitTypeIsTransport);
+                    	boolean allEnemyTransports = Match.allMatch(enemyUnits, Matches.UnitTypeIsTransport);
+                    	//If everybody is a transport, don't create a battle
+                    	if(allOwnedTransports && allEnemyTransports)
+                    		ignoreBattle=true;
+                    }
+                    
+                    //Query to attack subs
+                    if(isIgnoreSubInMovement(data) && Match.allMatch(enemyUnits, Matches.UnitIsSub))
+                	{
+                		//if(!getAttackSubs(route))
+                		{
+                			//ignoreBattle=true;
+                		}
+                	}
+                    
+                    if(!ignoreBattle)
+                    {
+                    	getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_data, m_bridge, m_currentMove);
+                    }
                 }
 
                 //mark movement
@@ -196,7 +225,7 @@ public class MovePerformer implements Serializable
                 m_moveDelegate.updateUndoableMoves(m_currentMove);
                 
             }
-        
+
         };
         
         m_executionStack.push(postAAFire);
@@ -321,6 +350,18 @@ public class MovePerformer implements Serializable
         return false;
     }
 
+
+	public boolean getAttackSubs(final Route route) 
+	{
+		String message = "Attack subs in " + route.getEnd();
+		String bomb = "Attack";
+		String normal = "Remain";
+		String[] choices =
+		{ bomb, normal };
+		int choice = JOptionPane.showConfirmDialog(null, "Attack submarines?", "Attack", JOptionPane.YES_NO_OPTION);
+		
+		return choice == 0;
+	}
     
 
     /**
@@ -337,6 +378,22 @@ public class MovePerformer implements Serializable
         Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, UnitComparator.getDecreasingMovementComparator(), m_currentMove);
         m_aaInMoveUtil = null;
         return rVal;
+    }
+    
+    /**
+     * @return
+     */
+    private static boolean isIgnoreTransportInMovement(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
+    }
+
+    /**
+     * @return
+     */
+    private static boolean isIgnoreSubInMovement(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
     }
     
 }

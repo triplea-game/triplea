@@ -709,6 +709,12 @@ public class MoveValidator
     	if (getEditMode(data))
             return result;
     	
+    	if(isHariKariUnits(data))
+    		return result;
+    	//Are there any escorting units
+    	if (Match.countMatches(units, Matches.unitCanAttack(player))>0)
+    		return result;
+    	
     	CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
     	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
     	ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
@@ -737,11 +743,10 @@ public class MoveValidator
     	{
     		for (Unit unit : ownedUnits)
             {
-    			if(isHariKariUnits(data))
+    			 /*if(isHariKariUnits(data))
     				continue;
-    			else
-    				//TODO COMCO even ESCORTED units wouldn't be able to enter combat
-    				result.addDisallowedUnit(UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
+    			else*/
+				result.addDisallowedUnit(UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
             }	
     	}
     	

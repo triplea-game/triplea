@@ -2122,7 +2122,7 @@ Coded by Iron__Cross
 				
 				<property name="Hari-Kari Units" value="true" editable="true">
                 	<boolean/>
-                </property>
+                </property> 
                 
 				<property name="Kamikaze Airplanes" value="true" editable="true">
                 	<boolean/>
