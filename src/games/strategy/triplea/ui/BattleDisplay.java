@@ -605,9 +605,6 @@ public class BattleDisplay extends JPanel
                     {
 
                         String messageText = message + " " + btnText + ".";
-                        //TODO COMCO perhaps here's where to restrict TRNs
-                        //kev
-                      //UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext(),isTransportCasualtiesRestricted(m_data));
                         UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
                         
 

@@ -167,38 +167,28 @@ public class MoveValidator
         return true;
     }
 
-
     /**
-     * Checks that there only transports and/or subs on the route except possibly at the end.
+     * Checks that there only transports, subs and/or allies on the route except at the end.
      * AA and factory dont count as enemy.
      */
-    public static boolean onlyTransportsOnPath(Route route, PlayerID player, GameData data)
+    //TODO COMCO need to revisit this for AA
+    public static boolean onlyIgnoredUnitsOnPath(Route route, PlayerID player, GameData data)
     {
-        CompositeMatch<Unit> transportOrSub = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitTypeIsTransport, Matches.alliedUnit(player, data));
-        
+    	CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitTypeIsTransport, Matches.alliedUnit(player, data));
+    	CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitTypeIsTransport, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+    	boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
+    	boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
+    	
         for(int i = 0; i < route.getLength() - 1; i++)
         {
             Territory current = route.at(i);
-            if(!current.getUnits().allMatch( transportOrSub))
+            if(getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(transportOrSubOnly))            	
                 return false;
-        }
-        return true;
-    }
-
-
-    /**
-     * Checks that there only transports and/or subs on the route except possibly at the end.
-     * AA and factory dont count as enemy.
-     */
-    public static boolean onlySubsOnPath(Route route, PlayerID player, GameData data)
-    {
-        CompositeMatch<Unit> transportOrSub = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsSub, Matches.alliedUnit(player, data));
-        
-        for(int i = 0; i < route.getLength() - 1; i++)
-        {
-            Territory current = route.at(i);
-            if(!current.getUnits().allMatch( transportOrSub))
-                return false;
+            if(getIgnoreTransportInMovement && !getIgnoreSubInMovement && !current.getUnits().allMatch(transportOnly))
+            	return false;
+            if(!getIgnoreTransportInMovement && getIgnoreSubInMovement && !current.getUnits().allMatch(subOnly))
+            	return false;
         }
         return true;
     }
@@ -656,8 +646,10 @@ public class MoveValidator
 
         if (battle.match(route.getEnd()))
         {
-        	//COMCO added the if
-        	if(isSubControlSeaZoneRestricted(data))
+        	//If subs and transports can't control sea zones, it's OK to move there
+        	if(isSubControlSeaZoneRestricted(data) && Match.allMatch(units, Matches.UnitIsSub))
+        		return result;
+        	else if(!isTransportControlSeaZone(data) && Match.allMatch(units, Matches.UnitTypeIsTransport))
         		return result;
         	else
         		return result.setErrorReturnResult("Cannot advance units to battle in non combat");
@@ -676,12 +668,8 @@ public class MoveValidator
 
         if (route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, data)))
         {
-        	//Comco added this
-            if (isIgnoreTransportInMovement(data) && MoveValidator.onlyTransportsOnPath(route, player, data))
-            	return result;	
-          //Comco added this
-            if (isIgnoreSubInMovement(data) && MoveValidator.onlySubsOnPath(route, player, data))
-            	return result;	
+        	if(onlyIgnoredUnitsOnPath(route, player, data))
+        		return result;
             
             CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<Unit>();
             friendlyOrSubmerged.add(Matches.alliedUnit(player, data));
@@ -775,14 +763,10 @@ public class MoveValidator
             else
                 return result;
         }
-       
-        if (isIgnoreTransportInMovement(data) && MoveValidator.onlyTransportsOnPath(route, player, data))
-        	return result;	
 
-        if (isIgnoreSubInMovement(data) && MoveValidator.onlySubsOnPath(route, player, data))
-        	return result;	
-               
-
+        if (onlyIgnoredUnitsOnPath(route, player, data))
+        	return result;
+      
         return result.setErrorReturnResult("Enemy units on path");
     }
 
@@ -1704,13 +1688,20 @@ public class MoveValidator
     	return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
     }
 
-
     /**
      * @return
      */
     private static boolean isSubControlSeaZoneRestricted(GameData data)
     {
     	return games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data);
+    }
+
+    /**
+     * @return
+     */
+    private static boolean isTransportControlSeaZone(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getTransportControlSeaZone(data);
     }
 
     /** Creates new MoveValidator */

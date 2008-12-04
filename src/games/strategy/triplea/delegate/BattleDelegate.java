@@ -306,7 +306,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             List<Unit> attackingUnits = territory.getUnits().getMatches(ownedUnit);
                         
             Battle battle = m_battleTracker.getPendingBattle(territory, false);
-          //COMCO Ignore transport on transport battles if they can be ignored
+            //Ignore transport on transport battles if they can be ignored
             if (ignoreTransports)
             {
                 List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
@@ -321,8 +321,8 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
             {
                 List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
                 if (Match.allMatch(enemyUnits, Matches.UnitIsSub) && !getAttackSubs(territory))
-        		{
-                	m_battleTracker.removeBattle(m_currentBattle);
+        		{                	
+                	m_battleTracker.removeBattle(m_battleTracker.getPendingBattle(territory, false));
         		}
             	
             }

@@ -554,7 +554,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     }
 
-
+kev look here to modify step strings for air on subs- also casualties and battledelegate
     public List<String> determineStepStrings(boolean showFirstRun, IDelegateBridge bridge)
     {
         boolean isEditMode = EditDelegate.getEditMode(m_data);

@@ -2135,6 +2135,9 @@ Coded by Iron__Cross
                 <property name="Ignore Sub In Movement" value="true" editable="true">
                 	<boolean/>
                 </property>
-                
+
+                <property name="Air Attack Sub Restricted" value="true" editable="true">
+                	<boolean/>
+                </property>
     </propertyList>
 </game>
