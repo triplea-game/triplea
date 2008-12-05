@@ -554,7 +554,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
     }
 
-kev look here to modify step strings for air on subs- also casualties and battledelegate
     public List<String> determineStepStrings(boolean showFirstRun, IDelegateBridge bridge)
     {
         boolean isEditMode = EditDelegate.getEditMode(m_data);
@@ -582,12 +581,18 @@ kev look here to modify step strings for air on subs- also casualties and battle
         { 
         	steps.add(REMOVE_UNESCORTED_TRANSPORTS);
         }        
-        		
+
+        // Air only Units can't attack subs without Destroyers present
+        if (!isEditMode && m_battleSite.isWater() && isAirAttackSubRestricted())
+        { 
+        	if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+        	steps.add(REMOVE_AIR_ONLY_ATTACKING_SUBS);
+        }
 
         //TODO - Code here to retreat subs BEFORE firing unless there are DDs
         //attacker subs sneak attack
         //Attacking subs have no sneak attack if Destroyers are present
-        if (!isEditMode && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer)) //KEVY add step name
+        if (!isEditMode && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer)) 
         {
             if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
             {
@@ -782,15 +787,26 @@ kev look here to modify step strings for air on subs- also casualties and battle
         final List<Unit> defendingSubs = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsSub);
         
-      //TODO COMCO Remove undefended trns
+      //Remove undefended trns
         if (!isEditMode && isTransportCasualtiesRestricted())
         	steps.add(new IExecutable(){
-        		private static final long serialVersionUID = 99990L;
+        		private static final long serialVersionUID = 99989L;
                 
         		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
                  {
         			 checkUndefendedTransports(bridge, m_defender);
         			 checkUndefendedTransports(bridge, m_attacker);        			
+                 }
+        	});
+        //TODO COMCO
+        //Remove Air only on Subs
+        if (!isEditMode && isAirAttackSubRestricted())
+        	steps.add(new IExecutable(){
+        		private static final long serialVersionUID = 99990L;
+                
+        		 public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+                 {
+        			 checkAirOnlyOnSubs(bridge);     			
                  }
         	});
         
@@ -1619,6 +1635,41 @@ kev look here to modify step strings for air on subs- also casualties and battle
         }
     }
 
+    /**
+     * Check for Air on Subs only and submerge subs
+     * @param bridge
+     * @param player
+     * @param defender
+     */
+    private void checkAirOnlyOnSubs(IDelegateBridge bridge)
+    {
+    	//TODO COMCO check for subs and trns
+	    //if All attackers are AIR submerge any defending subs
+	    if(Match.allMatch(m_attackingUnits, Matches.UnitIsAir) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+	    {
+	    	//Get all defending subs (including allies) in the territory
+	        CompositeMatch<Unit> matchDefendingSubs = new CompositeMatchAnd<Unit>(); 
+	        matchDefendingSubs.add(Matches.UnitIsSub);
+	        matchDefendingSubs.add(Matches.isUnitAllied(m_defender, m_data));	    	
+	        List<Unit> defendingSubs = Match.getMatches(m_battleSite.getUnits().getUnits(), matchDefendingSubs);
+	        	        
+	    	//submerge defending subs
+	        submergeUnits(defendingSubs, true, bridge);
+	      //getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, m_defender);
+	        
+	    }  //checking defending air on attacking subs
+	    else if (Match.allMatch(m_defendingUnits, Matches.UnitIsAir) && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
+	    {
+	    	//Get all attacking subs in the territory
+	        CompositeMatch<Unit> matchAttackingSubs = new CompositeMatchAnd<Unit>(); 
+	        matchAttackingSubs.add(Matches.UnitIsSub);
+	        matchAttackingSubs.add(Matches.isUnitAllied(m_attacker, m_data));	    	
+	        List<Unit> attackingSubs = Match.getMatches(m_attackingUnits, matchAttackingSubs);
+
+	    	//submerge attacking subs	        
+	        submergeUnits(attackingSubs, false, bridge);
+	    }
+    }
     private void defendNonSubs(IDelegateBridge bridge)
     {
         if (m_attackingUnits.size() == 0)
@@ -1664,6 +1715,8 @@ kev look here to modify step strings for air on subs- also casualties and battle
                 Matches.UnitIsSub);
         if (firing.isEmpty())
             return;
+        //TODO COMCO look here for ideas on how to limit air on sub casualties
+        kev
         Collection<Unit> attacked = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsNotAir);
         //if there are destroyers in the attacked units, we can return fire.
@@ -1697,6 +1750,7 @@ kev look here to modify step strings for air on subs- also casualties and battle
         if (m_defendingUnits.size() == 0)
             return;
 
+        //TODO COMCO look here for ideas on how to limit air on sub casualties
         Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size()
                 + m_attackingWaitingToDie.size());
         units.addAll(m_attackingUnits);
@@ -1865,7 +1919,14 @@ kev look here to modify step strings for air on subs- also casualties and battle
     {
     	return games.strategy.triplea.Properties.getSurvivingAirMoveToLand(m_data);
     }
-    
+
+    /**
+     * @return
+     */
+    private boolean isAirAttackSubRestricted()
+    {
+    	return games.strategy.triplea.Properties.getAirAttackSubRestricted(m_data);
+    }
     /**
      * @return
      */
@@ -1873,7 +1934,7 @@ kev look here to modify step strings for air on subs- also casualties and battle
     {
     	return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);
     }
-
+    
     /**
      * Return the territories where there are amphibious attacks.
      */
