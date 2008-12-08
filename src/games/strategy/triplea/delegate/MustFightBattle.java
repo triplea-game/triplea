@@ -582,6 +582,20 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	steps.add(REMOVE_UNESCORTED_TRANSPORTS);
         }        
 
+        //Check if defending subs can submerge before battle
+        if (isSubRetreatBeforeBattle())
+        {
+        	if(!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+        		steps.add(m_defender.getName() + SUBS_SUBMERGE);
+        }
+
+        //Check if attack subs can submerge before battle
+        if (isSubRetreatBeforeBattle())
+        {
+        	if(!Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
+        		steps.add(m_attacker.getName() + SUBS_SUBMERGE);
+        }
+        
         // Air only Units can't attack subs without Destroyers present
         if (!isEditMode && m_battleSite.isWater() && isAirAttackSubRestricted())
         { 
@@ -589,7 +603,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         	steps.add(REMOVE_AIR_ONLY_ATTACKING_SUBS);
         }
 
-        //TODO - Code here to retreat subs BEFORE firing unless there are DDs
         //attacker subs sneak attack
         //Attacking subs have no sneak attack if Destroyers are present
         if (!isEditMode && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer)) 
@@ -812,7 +825,34 @@ public class MustFightBattle implements Battle, BattleStepStrings
         			 checkUndefendedTransports(bridge, m_attacker);        			
                  }
         	});
-        //TODO COMCO
+
+        
+        steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 6775880082912594489L;
+
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                
+                if(!m_over && isSubRetreatBeforeBattle())
+                    defenderRetreatSubs(bridge);
+            }
+        });  
+
+        
+        steps.add(new IExecutable(){
+            // compatible with 0.9.0.2 saved games
+            private static final long serialVersionUID = 6775880082912594489L;
+
+            public void execute(ExecutionStack stack, IDelegateBridge bridge, GameData data)
+            {
+                
+                if(!m_over && isSubRetreatBeforeBattle())
+                    attackerRetreatSubs(bridge);
+            }
+        });  
+        
+        
         //Remove Air only on Subs
         if (!isEditMode && isAirAttackSubRestricted())
         	steps.add(new IExecutable(){
@@ -2027,6 +2067,14 @@ public class MustFightBattle implements Battle, BattleStepStrings
     private boolean isAirAttackSubRestricted()
     {
     	return games.strategy.triplea.Properties.getAirAttackSubRestricted(m_data);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isSubRetreatBeforeBattle()
+    {
+    	return games.strategy.triplea.Properties.getSubRetreatBeforeBattle(m_data);
     }
     
     /**
