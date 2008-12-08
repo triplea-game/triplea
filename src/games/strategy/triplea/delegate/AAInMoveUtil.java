@@ -75,6 +75,11 @@ class AAInMoveUtil implements Serializable
     {
         return m_data.getProperties().get(Constants.ALWAYS_ON_AA_PROPERTY, false);
     }
+
+    private boolean isAATerritoryRestricted()
+    {
+    	return games.strategy.triplea.Properties.getAATerritoryRestricted(m_data);
+    }
     
     private ITripleaPlayer getRemotePlayer(PlayerID id)
     {
@@ -110,6 +115,7 @@ class AAInMoveUtil implements Serializable
         List<IExecutable> executables = new ArrayList<IExecutable>();
         
         Iterator iter = getTerritoriesWhereAAWillFire(route, units).iterator();
+        
         while (iter.hasNext())
         {
             final Territory location = (Territory) iter.next();
@@ -160,6 +166,13 @@ class AAInMoveUtil implements Serializable
         hasAA.add(Matches.enemyUnit(ally, m_data));
 
         List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
+
+        //Just the last territory will have AA firing.
+        if(isAATerritoryRestricted())
+        {
+        	territoriesWhereAAWillFire.add(route.getEnd());
+        	return territoriesWhereAAWillFire;
+        }
 
         for (int i = 0; i < route.getLength() - 1; i++)
         {
