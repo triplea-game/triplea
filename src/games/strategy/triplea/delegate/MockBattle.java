@@ -12,6 +12,7 @@ public class MockBattle implements Battle
     private final Territory m_location;
     
     private Collection<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
+    private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
 
     private boolean m_isAmphibious;
     
@@ -92,11 +93,22 @@ public class MockBattle implements Battle
     {
         return m_amphibiousLandAttackers;
     }
-    
+
     public void setAmphibiousLandAttackers(Collection<Unit> units) 
     {
         m_amphibiousLandAttackers = new ArrayList<Unit>(units);
     }
+
+    public Collection<Unit> getBombardingUnits()
+    {
+        return m_bombardingUnits;
+    }
+    
+    public void setBombardingUnits(Collection<Unit> units)
+    {
+        m_bombardingUnits = new ArrayList<Unit>(units);
+    }
+    
 
     public int getBattleRound()
     {

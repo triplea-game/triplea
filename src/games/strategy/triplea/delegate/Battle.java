@@ -97,6 +97,11 @@ interface Battle extends java.io.Serializable
      * Return units which are actually assaulting amphibiously
      */
     public Collection<Unit> getAmphibiousLandAttackers();
+    
+    /**
+     * Return units which are actually bombarding
+     */
+    public Collection<Unit> getBombardingUnits();
 
     public int getBattleRound();
 }

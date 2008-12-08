@@ -172,11 +172,10 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         PlayerID attacker = m_bridge.getPlayerID();
         Match<Unit> ownedAndCanBombard = new CompositeMatchAnd<Unit>(Matches
                 .unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
-        Match<Unit> ownedLandUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsOwnedBy(attacker));
         
         Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
         Iterator<Territory> territories = adjBombardment.keySet().iterator();
-        //comco
+        
         Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
         while (territories.hasNext())
         {
@@ -187,17 +186,15 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                 battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
                 if (!battles.isEmpty())
                 {
-                	Collection<Unit> landUnits = t.getUnits().getMatches(ownedLandUnit);
-                	int landUnitsSize = landUnits.size();
                     Iterator<Unit> bombarding = t.getUnits().getMatches(ownedAndCanBombard).iterator();
                     while (bombarding.hasNext())
                     {
                         Unit u = (Unit) bombarding.next();
                         Battle battle = selectBombardingBattle(u, t, battles);
-                        int battleBombardSize = t.getUnits().getMatches(ownedAndCanBombard).size();
                         if (battle != null)
                         {
-                        	if (bombardRestricted && battleBombardSize > landUnitsSize)
+                        	if (bombardRestricted && battle.getBombardingUnits().size() >= battle.getAmphibiousLandAttackers().size())
+                        		TODO COMCO add a message
                         		continue;
                             battle.addBombardingUnit(u);
                         }

@@ -2139,5 +2139,11 @@ Coded by Iron__Cross
                 <property name="Air Attack Sub Restricted" value="true" editable="true">
                 	<boolean/>
                 </property>
+
+                <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="true">
+                	<boolean/>
+                </property>
+                
+                
     </propertyList>
 </game>

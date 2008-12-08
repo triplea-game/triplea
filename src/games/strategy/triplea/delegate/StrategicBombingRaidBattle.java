@@ -610,6 +610,11 @@ public class StrategicBombingRaidBattle implements Battle
     {
         return new ArrayList<Unit>();
     }
+
+    public Collection<Unit> getBombardingUnits()
+    {
+        return new ArrayList<Unit>();
+    }
     
     public int getBattleRound()
     {
