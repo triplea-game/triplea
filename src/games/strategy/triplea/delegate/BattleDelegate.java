@@ -176,7 +176,7 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
         Iterator<Territory> territories = adjBombardment.keySet().iterator();
         
-        Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
+        //Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
         while (territories.hasNext())
         {
             Territory t = territories.next();
@@ -193,9 +193,9 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
                         Battle battle = selectBombardingBattle(u, t, battles);
                         if (battle != null)
                         {
-                        	if (bombardRestricted && battle.getBombardingUnits().size() >= battle.getAmphibiousLandAttackers().size())
-                        		TODO COMCO add a message
-                        		continue;
+                    		//TODO COMCO add a message
+                        	/*if (bombardRestricted && battle.getBombardingUnits().size() >= battle.getAmphibiousLandAttackers().size())
+                        		continue;*/
                             battle.addBombardingUnit(u);
                         }
                     }
@@ -246,10 +246,13 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
      */
     private Battle selectBombardingBattle(Unit u, Territory uTerritory,
             Collection<Battle> battles)
-    {
-        boolean hasNotMoved = TripleAUnit.get(u).getAlreadyMoved() == 0;
+    {    	
+    	Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(m_data);
         // If only one battle to select from just return that battle
-        if ((battles.size() == 1) && !hasNotMoved)
+        //TODO comco- Removed the limitation to have not moved
+    	//boolean hasNotMoved = TripleAUnit.get(u).getAlreadyMoved() == 0;
+        //if ((battles.size() == 1) && !hasNotMoved)
+        if ((battles.size() == 1))
         {
             return battles.iterator().next();
         }
@@ -260,13 +263,23 @@ public class BattleDelegate implements IDelegate, IBattleDelegate
         while (battlesIter.hasNext())
         {
             Battle battle = battlesIter.next();
-            territories.add(battle.getTerritory());
+            //If Restricted & # of bombarding units => landing units, don't add territory to list to bombard
+            if(bombardRestricted)
+            {
+            	if(battle.getBombardingUnits().size() < battle.getAmphibiousLandAttackers().size())
+            		territories.add(battle.getTerritory());
+            }
+            else
+            {
+            	territories.add(battle.getTerritory());
+            }
+            
             battleTerritories.put(battle.getTerritory(), battle);
         }
 
         ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
-        Territory bombardingTerritory =  remotePlayer.selectBombardingTerritory(u, uTerritory, territories, hasNotMoved);
-        
+        Territory bombardingTerritory =  remotePlayer.selectBombardingTerritory(u, uTerritory, territories, true);
+                
         if (bombardingTerritory != null)
         {
             return battleTerritories.get(bombardingTerritory);
