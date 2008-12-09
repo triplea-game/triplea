@@ -499,6 +499,15 @@ public class MoveValidator
     {
     	return games.strategy.triplea.Properties.getHariKariUnits(data);
     }
+
+    /**
+     * @return
+     */
+    private static boolean isMovementByTerritoryRestricted(GameData data)
+    {
+    	return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
+    }
+    
     
     private static boolean IsBlitzThroughFactoriesAndAA(GameData data)
     {
@@ -533,6 +542,10 @@ public class MoveValidator
             return result;
         }
         
+        if (validateMovementRestrictedByTerritory(data, units, route, player, result).getError() != null)
+        {
+        	return result;
+        }
         
         if (isNonCombat)
         {
@@ -691,7 +704,7 @@ public class MoveValidator
         return result;
     }
     
-    //COMCO added to handle non-combat units moving into harm's way
+    //Added to handle non-combat units moving into harm's way
     private static MoveValidationResult validateNonCombatUnitsEnteringCombat(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
     {
     	if (getEditMode(data))
@@ -741,7 +754,36 @@ public class MoveValidator
         return result;
         
     }
+    
 
+    //Added to handle restriction of movement to listed territories
+    private static MoveValidationResult validateMovementRestrictedByTerritory(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
+    {
+    	if (getEditMode(data))
+            return result;
+    	
+    	if(!isMovementByTerritoryRestricted(data))
+    		return result;
+    	
+    	RulesAttachment attachment = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+    	if(attachment == null || attachment.getMovementRestrictionTerritories() == null)
+    		return result;
+    	
+    	Collection<Territory> allowedTerrs = attachment.getListedTerritories(attachment.getMovementRestrictionTerritories());
+    	List<Territory> routeTerrs = route.getTerritories();
+    	Iterator<Territory> iter = routeTerrs.iterator();
+    	
+    	while (iter.hasNext())
+    	{
+    		Territory nextTerr = iter.next();
+    		if(!allowedTerrs.contains(nextTerr))
+    			return result.setErrorReturnResult("Cannot move outside restricted territories");
+    	}   	
+    	
+    	return result;        
+    }
+    
+    
     private static MoveValidationResult validateNonEnemyUnitsOnPath(GameData data, Collection<Unit> units, Route route, PlayerID player, MoveValidationResult result)
     {
         if (getEditMode(data))

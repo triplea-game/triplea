@@ -1684,10 +1684,11 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (alliedTransports.isEmpty())
             return;
 
-        //Get all ALLIED, sea & air units in the territory
+        //Get all ALLIED, sea & air units in the territory (that are NOT submerged)
         CompositeMatch<Unit> alliedUnitsMatch = new CompositeMatchAnd<Unit>(); 
         alliedUnitsMatch.add(Matches.isUnitAllied(player, m_data));
-        alliedUnitsMatch.add(Matches.UnitIsNotLand);        
+        alliedUnitsMatch.add(Matches.UnitIsNotLand);     
+        alliedUnitsMatch.add(new InverseMatch<Unit>( Matches.unitIsSubmerged(m_data)));
     	Collection<Unit> alliedUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), alliedUnitsMatch);
 
         //If transports are unescorted, check opposing forces to see if the Trns die automatically

@@ -50,6 +50,11 @@ import games.strategy.engine.framework.GameRunner;
 public class RulesAttachment extends DefaultAttachment
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7301965634079412516L;
+
+	/**
      * Convenience method.
      */
     public static RulesAttachment get(Rule r)
@@ -69,9 +74,11 @@ public class RulesAttachment extends DefaultAttachment
     private String[] m_alliedOwnershipTerritories;
     private String[] m_alliedExcludedTerritories;
     private String[] m_enemyExcludedTerritories;
-    
+    private String[] m_movementRestrictionTerritories;
+        
     private int m_perOwnedTerritories = -1;
     private String m_allowedUnitType = null;
+    private String m_restrictionType = null;
     
   /** Creates new RulesAttachment */
   public RulesAttachment()
@@ -160,16 +167,36 @@ public class RulesAttachment extends DefaultAttachment
       return m_allowedUnitType;
   }
 
+  public void setMovementRestrictionTerritories(String value)
+  {
+	  m_movementRestrictionTerritories = value.split(":");
+  }
   
+  public String[]  getMovementRestrictionTerritories()
+  {
+      return m_movementRestrictionTerritories;
+  }
+  
+  public void setRestrictionType(String value)
+  {
+	  m_restrictionType = value;
+  }
+
+  public String getRestrictionType()
+  {
+      return m_restrictionType;
+  }
+
 
   /**
    * Called after the attatchment is created.
    */
   public void validate() throws GameParseException
   {
-      if(m_objectiveValue == 0 || ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && 
+      if(m_objectiveValue == 0 && ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && 
     		  (m_enemyExcludedTerritories == null || m_enemyExcludedTerritories.length == 0) && (m_alliedExcludedTerritories == null || m_alliedExcludedTerritories.length == 0) &&
-    		  m_alliedExclusion == null && m_enemyExclusion == null))
+    		  m_alliedExclusion == null && m_enemyExclusion == null) && (m_movementRestrictionTerritories == null || m_movementRestrictionTerritories.length == 0) &&
+    		  (m_restrictionType == null) )
           throw new IllegalStateException("ObjectiveAttachment error for:" + m_ruleOwner + " not all variables set");
       
       if(m_alliedOwnershipTerritories != null && (!m_alliedOwnershipTerritories.equals("controlled") && !m_alliedOwnershipTerritories.equals("original") && !m_alliedOwnershipTerritories.equals("all")))
@@ -178,8 +205,11 @@ public class RulesAttachment extends DefaultAttachment
       if(m_enemyExcludedTerritories != null && (!m_enemyExcludedTerritories.equals("controlled") && !m_enemyExcludedTerritories.equals("original") && !m_enemyExcludedTerritories.equals("all")))
     	  getListedTerritories(m_enemyExcludedTerritories);
 
-      if(m_alliedExcludedTerritories != null && (!getAlliedExclusionTerritories().equals("controlled") && !m_alliedExcludedTerritories.equals("original") && !m_alliedExcludedTerritories.equals("all")))
-    	  getListedTerritories(m_alliedExcludedTerritories);      
+      if(m_alliedExcludedTerritories != null && (!m_alliedExcludedTerritories.equals("controlled") && !m_alliedExcludedTerritories.equals("original") && !m_alliedExcludedTerritories.equals("all")))
+    	  getListedTerritories(m_alliedExcludedTerritories);
+      
+      if(m_movementRestrictionTerritories != null && (!m_movementRestrictionTerritories.equals("controlled") && !m_movementRestrictionTerritories.equals("original") && !m_movementRestrictionTerritories.equals("all")))
+    	  getListedTerritories(m_movementRestrictionTerritories);
   }
   
   //Validate that all listed territories actually exist
@@ -192,6 +222,7 @@ public class RulesAttachment extends DefaultAttachment
     	  //See if the first entry contains the number of territories needed to meet the criteria
     	  try
     	  {
+    		  //Leave the temp field- it checks if there's a number by failing the TRY
     		  int temp = getInt(name);
     		  setTerritoryCount(name);
     		  continue;    		  

@@ -1328,21 +1328,21 @@
                 </attatchment> 
                 
                 
-                <!-- movement restricted to listed territories  (list, original, all && [dis]allowed && maybe something to [dis]allow enemy/allied terr groups (all, original, controlled)    -->
+<!-- movement restricted to listed territories  (list, original, all && [dis]allowed && maybe something to [dis]allow enemy/allied terr groups (all, original, controlled)    -->
 <!--  COMCO
                 <attatchment name="movementRestriction" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="movementRestrictionTerritories" value="Eastern United States:Western United States:Central United States:Midway:Hawaiian Islands:China:Sinkiang:Mexico:Brazil:Alaska:West Indies:Panama:Greenland:Kwantung:French Indochina:Manchuria"/>
-                	<option name="restrictionType" value="allowed"
+                	<option name="restrictionType" value="allowed"/>
                 </attatchment>                
                 
                 <attatchment name="movementRestriction" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="movementRestrictionTerritories" value="original"/>
-                	<option name="restrictionType" value="allowed"
+                	<option name="restrictionType" value="allowed"/>
                 </attatchment>                   
                 
                 <attatchment name="movementRestriction" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="movementRestrictionTerritories" value="Caucasus"/>
-                	<option name="restrictionType" value="disallowed"
+                	<option name="restrictionType" value="disallowed"/>
                 </attatchment>  
 -->            
                 <!-- production restricted to 1 per x owned territories -->

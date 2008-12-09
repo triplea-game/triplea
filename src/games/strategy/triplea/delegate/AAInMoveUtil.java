@@ -167,11 +167,15 @@ class AAInMoveUtil implements Serializable
 
         List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 
-        //Just the last territory will have AA firing.
+        //If AA restricted, just the last territory will have AA firing.
         if(isAATerritoryRestricted())
         {
-        	territoriesWhereAAWillFire.add(route.getEnd());
-        	return territoriesWhereAAWillFire;
+        	Territory endRoute = route.getEnd();
+        	if (!endRoute.isWater() && endRoute.getUnits().someMatch(hasAA))
+        	{        		
+	        	territoriesWhereAAWillFire.add(route.getEnd());
+	        	return territoriesWhereAAWillFire;
+        	}
         }
 
         for (int i = 0; i < route.getLength() - 1; i++)
