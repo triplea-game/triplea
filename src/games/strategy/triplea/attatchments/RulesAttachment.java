@@ -38,7 +38,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.sun.xml.internal.fastinfoset.util.StringArray;
 
 import games.strategy.engine.data.*;
 import games.strategy.engine.framework.GameRunner;
