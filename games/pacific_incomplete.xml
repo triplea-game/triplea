@@ -2080,6 +2080,10 @@ Coded by Iron__Cross
         <!-- Map Name: also used for map utils when asked -->
         <property name="mapName" value="pacific" editable="false"/>
         
+		<property name="Production Per Valued Territory Restricted" value="true" editable="true">
+        	<boolean/>
+        </property>
+                
         
         <!-- notes appear in the notes menu in the main screen, format as html -->
         <property name="notes"
@@ -2147,7 +2151,7 @@ Coded by Iron__Cross
                 <property name="AA Territory Restricted" value="true" editable="true">
                 	<boolean/>
                 </property>
-                
+
                 
     </propertyList>
 </game>

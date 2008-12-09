@@ -251,7 +251,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         {
             return "Cannot place these units in " + to;
         }
-
+//TODO COmco incorporate this into a rule (place_only_in_capital_restricted)
         // can only place chinese units in pacific edition on capitol
         if(m_data.getProperties().get(Constants.PACIFIC_EDITION, false))
             if(TerritoryAttachment.getCapital(player, m_data) != to && player.getName().equals("Chinese"))
@@ -283,6 +283,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     private Collection<Unit> getUnitsToBePlaced(Territory to, Collection<Unit> units,
             PlayerID player)
     {
+    	//TODO Comco unit placement rule for Chinese goes here
         if (to.isWater())
         {
             return getUnitsToBePlacedSea(to, units, player);
@@ -637,7 +638,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     {
         return (ITripleaPlayer) m_bridge.getRemote();
     }
-
+//TODO Comco here's the spot for special air placement rules
     private void moveAirOntoNewCarriers(Territory territory, Collection<Unit> units,
             PlayerID player, CompositeChange placeChange)
     {

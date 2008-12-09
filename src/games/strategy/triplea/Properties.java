@@ -89,6 +89,21 @@ public class Properties implements Constants
 		 }
 	 }
 
+		/*
+		 * Anniversary Edition
+		 */
+		 public static boolean getAnniversaryEdition(GameData data)
+		 {
+			 try
+			 {
+				 return ( (Boolean) data.getProperties().get(ANNIVERSARY_EDITION) ).booleanValue();
+			 }
+			 catch(Exception e)
+			 {
+				 return false;
+			 }
+		 }
+
 	 /*
 	  * Anniversary Edition Land & Production
 	  */
@@ -421,6 +436,20 @@ public class Properties implements Constants
 	 }
 
 	 /*
+	  * roduction restricted to 1 unit per owned territory with an IPC value
+	  */
+	 public static boolean getProductionPerValuedTerritoryRestricted(GameData data)
+	 {
+		 try
+		 {
+			 return ( (Boolean) data.getProperties().get(PRODUCTION_PER_VALUED_TERRITORY_RESTRICTED) ).booleanValue();
+		 }
+		 catch(Exception e)
+		 {
+			 return false;
+		 }
+	 }
+	 /*
 	  * Can units be placed in any owned territory
 	  */
 	 public static boolean getPlaceInAnyTerritory(GameData data)
@@ -438,18 +467,18 @@ public class Properties implements Constants
 	 /*
 	  * Limit the number of units that can be in a territory
 	  */
-	 public static boolean getNumberofUnitsPerTerritoryRestricted(GameData data)
+	 public static boolean getUnitPlacementPerTerritoryRestricted(GameData data)
 	 {
 		 try
 		 {
-			 return ( (Boolean) data.getProperties().get(NUMBER_OF_UNITS_PER_TERRITORY_RESTRICTED) ).booleanValue();
+			 return ( (Boolean) data.getProperties().get(UNIT_PLACEMENT_PER_TERRITORY_RESTRICTED) ).booleanValue();
 		 }
 		 catch(Exception e)
 		 {
 			 return false;
 		 }
 	 }
-
+	 
 	 /*
 	  * Movement restricted for territories
 	  */

@@ -668,7 +668,7 @@ public class MoveValidator
         		return result.setErrorReturnResult("Cannot advance units to battle in non combat");
         }
         
-        //COMCO added this    
+        //Subs can't travel under DDs    
         if (isSubmersibleSubsAllowed(data) && Match.allMatch(units, Matches.UnitIsSub))
         {
             //this is ok unless there are destroyer on the path

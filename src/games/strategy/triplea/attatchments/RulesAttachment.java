@@ -77,6 +77,7 @@ public class RulesAttachment extends DefaultAttachment
     private String[] m_movementRestrictionTerritories;
         
     private int m_perOwnedTerritories = -1;
+    private int m_productionPerTerritory = -1;
     private String m_allowedUnitType = null;
     private String m_restrictionType = null;
     
@@ -187,18 +188,28 @@ public class RulesAttachment extends DefaultAttachment
       return m_restrictionType;
   }
 
+  public void setProductionPerXTerritories(String value)
+  {
+	  m_productionPerTerritory = getInt(value);
+  }
 
+  public int getProductionPerXTerritories()
+  {
+      return m_productionPerTerritory;
+  }
+
+  
   /**
    * Called after the attatchment is created.
    */
   public void validate() throws GameParseException
   {
-      if(m_objectiveValue == 0 && ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && 
+/*      if(m_objectiveValue == 0 && ((m_alliedOwnershipTerritories == null || m_alliedOwnershipTerritories.length == 0) && 
     		  (m_enemyExcludedTerritories == null || m_enemyExcludedTerritories.length == 0) && (m_alliedExcludedTerritories == null || m_alliedExcludedTerritories.length == 0) &&
     		  m_alliedExclusion == null && m_enemyExclusion == null) && (m_movementRestrictionTerritories == null || m_movementRestrictionTerritories.length == 0) &&
     		  (m_restrictionType == null) )
           throw new IllegalStateException("ObjectiveAttachment error for:" + m_ruleOwner + " not all variables set");
-      
+*/      
       if(m_alliedOwnershipTerritories != null && (!m_alliedOwnershipTerritories.equals("controlled") && !m_alliedOwnershipTerritories.equals("original") && !m_alliedOwnershipTerritories.equals("all")))
     	  getListedTerritories(m_alliedOwnershipTerritories);
 

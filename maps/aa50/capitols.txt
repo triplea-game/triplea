@@ -1,0 +1,6 @@
+Germany (1068,361)
+Russia (1594,260)
+Japan (2672,593)
+United Kingdom (787,168)
+Italy (1000,615)
+Eastern United States (207,402)

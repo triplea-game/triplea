@@ -28,6 +28,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 import java.util.Collection;
@@ -45,15 +46,18 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
     String unitTypeToProduce = Constants.INFANTRY_TYPE;
     private GameData m_data;
 
+    private boolean isPacific = isPacificEdition();
+    private boolean isAnniversaryEdition = isAnniversaryEdition();
+
     public void start(IDelegateBridge aBridge, GameData gameData)
     {
         super.start(aBridge, gameData);
         m_data = gameData;
 
         PlayerID player = aBridge.getPlayerID();
-        Collection territories = gameData.getMap().getTerritoriesOwnedBy(player);
+        Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
-        if(isPacificEdition())
+        if(isPacific || isAnniversaryEdition)
             unitTypeToProduce = Constants.CHINESE_INFANTRY_TYPE;
 
         int nUnitsToProduce = getProductionUnits(territories, player);
@@ -71,33 +75,44 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
     }
 
     // this is based off of chinese rules in pacific, they may vary in other games?
-    private int getProductionUnits(Collection territories, PlayerID player)
+    private int getProductionUnits(Collection<Territory> territories, PlayerID player)
     {
-        int unitCount = 0;
-        
-
-        boolean isPacific = isPacificEdition();
-        
         // All territories should be owned by the same player, our PlayerID
-        Iterator territoryIter = territories.iterator();
-        for(int i = 0; (territoryIter.hasNext()); ++i)
+        int unitCount = 0;
+
+        if (isProductionPerValuedTerritoryRestricted())
         {
-            Territory current = (Territory) territoryIter.next();
+	        Iterator<Territory> territoryIter = territories.iterator();
+	        for(int i = 0; (territoryIter.hasNext()); ++i)
+	        {
+	            Territory current = (Territory) territoryIter.next();
 
-            TerritoryAttachment ta = TerritoryAttachment.get(current);
-            if(ta.getProduction() > 0)
-                ++unitCount;
-
-           
-        } 
-
-        if(isPacific)
-            unitCount += getBurmaRoad(player);
+	            TerritoryAttachment ta = TerritoryAttachment.get(current);
+	            if(ta.getProduction() > 0)
+	                ++unitCount;
+	        }
+	        
+	        if(isPacific)
+	            unitCount += getBurmaRoad(player);
+        }
         
-
+        if(isProductionPerXTerritoriesRestricted())
+        {
+        	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        	if(ra != null)
+        	{
+        		int prodPerXTerrs = ra.getProductionPerXTerritories();
+        		if (prodPerXTerrs > 0)
+        		{
+            		int terrCount = territories.size();
+            		unitCount = terrCount/prodPerXTerrs;    		        
+        		}
+        	}
+        }
+        
         return unitCount;
     }
-
+//TODO COMCO incorporate this into a National Objective
     private int getBurmaRoad(PlayerID player)
     {
         int burmaRoadCount = 0; // only for pacific - should equal 4 for extra inf
@@ -117,6 +132,33 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
 
     private boolean isPacificEdition()
     {
-        return m_data.getProperties().get(Constants.PACIFIC_EDITION, false);
+    	return games.strategy.triplea.Properties.getPacificEdition(m_data);
     }
+
+    private boolean isAnniversaryEdition()
+    {
+    	return games.strategy.triplea.Properties.getAnniversaryEdition(m_data);
+    }
+
+    private boolean isProductionPerValuedTerritoryRestricted()
+    {
+    	return games.strategy.triplea.Properties.getProductionPerValuedTerritoryRestricted(m_data);
+    }
+
+    private boolean isProductionPerXTerritoriesRestricted()
+    {
+    	return games.strategy.triplea.Properties.getProductionPerXTerritoriesRestricted(m_data);
+    }
+
+    private boolean isPlaceInAnyTerritory()
+    {
+    	return games.strategy.triplea.Properties.getPlaceInAnyTerritory(m_data);
+    }
+
+    private boolean isUnitPlacementPerTerritoryRestricted()
+    {
+    	return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(m_data);
+    }
+    
+    
 }

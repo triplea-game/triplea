@@ -1564,6 +1564,7 @@
 				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="movementRestrictionTerritories" value="Chinghai:Ningxia:Sikang:Yunnan:Hupeh:Fukien:Suiyuan:Manchuria:Kiangsu:Kwangtung"/>
                 	<option name="restrictionType" value="allowed"/>
+                	<option name="productionPerXTerritories" value="2"/>
                 </attatchment>
                 
         </attatchmentList>
@@ -1976,9 +1977,23 @@
                 	<boolean/>
                 </property>
                 
+<!--COMCO rulesAttatchment rules testing-->                 
                 <property name="Movement By Territory Restricted" value="true" editable="true">
                 	<boolean/>
                 </property>
+                
+                <property name="Production Per X Territories Restricted" value="true" editable="true">
+                	<boolean/>
+                </property>                
+                
+                <property name="Unit Placement Per Territory Restricted" value="true" editable="true">
+                	<boolean/>
+                </property>               
+                
+                <property name="Place in Any Territory" value="true" editable="true">
+                	<boolean/>
+                </property>
+                
                 
 <!--COMCO rules testing END -->                     
 

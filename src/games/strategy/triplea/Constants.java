@@ -93,9 +93,9 @@ public interface Constants
   public static final String NATIONAL_OBJECTIVES = "National Objectives";
   public static final String SUB_CONTROL_SEA_ZONE_RESTRICTED = "Sub Control Sea Zone Restricted";  
   public static final String TRANSPORT_CONTROL_SEA_ZONE = "Transport Control Sea Zone";
-  public static final String PRODUCTION_PER_X_TERRITORIES_RESTRICTED = "Production Per Territory Restricted";
+  public static final String PRODUCTION_PER_X_TERRITORIES_RESTRICTED = "Production Per X Territories Restricted";
   public static final String PLACE_IN_ANY_TERRITORY = "Place in Any Territory";
-  public static final String NUMBER_OF_UNITS_PER_TERRITORY_RESTRICTED = "Number of Units Per Territory Restricted";  
+  public static final String UNIT_PLACEMENT_PER_TERRITORY_RESTRICTED = "Unit Placement Per Territory Restricted";  
   public static final String MOVEMENT_BY_TERRITORY_RESTRICTED = "Movement By Territory Restricted";
   public static final String TRANSPORT_CASUALTIES_RESTRICTED = "Transport Casualties Restricted";
   public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle"; // may be SUBMERSIBLE_SUBS below
@@ -113,8 +113,10 @@ public interface Constants
    * End individual rules for TripleA 50th Edition (All default to FALSE)
    */
 
+  public static final String PRODUCTION_PER_VALUED_TERRITORY_RESTRICTED = "Production Per Valued Territory Restricted";
   public static final String CHOOSE_AA = "Choose AA Casualties";
   public static final String PACIFIC_EDITION = "Pacific Edition";
+  public static final String ANNIVERSARY_EDITION = "Anniversary Edition";  
   public static final String EUROPE_EDITION = "Europe Edition";
   public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
   public static final String TWO_HIT = "isTwoHit";
