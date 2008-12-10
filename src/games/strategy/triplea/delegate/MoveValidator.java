@@ -765,20 +765,32 @@ public class MoveValidator
     	if(!isMovementByTerritoryRestricted(data))
     		return result;
     	
-    	RulesAttachment attachment = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
-    	if(attachment == null || attachment.getMovementRestrictionTerritories() == null)
+    	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+    	if(ra == null || ra.getMovementRestrictionTerritories() == null)
     		return result;
-    	
-    	Collection<Territory> allowedTerrs = attachment.getListedTerritories(attachment.getMovementRestrictionTerritories());
+    	    	
+    	String movementRestrictionType = ra.getMovementRestrictionType();
+    	Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories());
     	List<Territory> routeTerrs = route.getTerritories();
     	Iterator<Territory> iter = routeTerrs.iterator();
-    	
-    	while (iter.hasNext())
-    	{
-    		Territory nextTerr = iter.next();
-    		if(!allowedTerrs.contains(nextTerr))
-    			return result.setErrorReturnResult("Cannot move outside restricted territories");
-    	}   	
+    	if (movementRestrictionType.equals("allowed"))
+    	{	    	
+	    	while (iter.hasNext())
+	    	{
+	    		Territory nextTerr = iter.next();
+	    		if(!listedTerritories.contains(nextTerr))
+	    			return result.setErrorReturnResult("Cannot move outside restricted territories");
+	    	}   	
+    	}
+    	else if(movementRestrictionType.equals("disallowed"))
+    	{	    	
+	    	while (iter.hasNext())
+	    	{
+	    		Territory nextTerr = iter.next();
+	    		if(listedTerritories.contains(nextTerr))
+	    			return result.setErrorReturnResult("Cannot move to restricted territories");
+	    	}   	    		
+    	}
     	
     	return result;        
     }

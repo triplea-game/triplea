@@ -478,8 +478,13 @@ public class BattleTracker implements java.io.Serializable
         //is this an allied territory
         //revert to original owner if it is, unless they done own there
         // captital
-        kev
-        PlayerID terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
+        PlayerID terrOrigOwner;
+        
+        if(isOccupiedTerritories(data))
+        	terrOrigOwner = ta.getOccupiedTerrOf(); 
+        else
+        	terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
+        
         PlayerID newOwner;
         if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id)
                 && TerritoryAttachment.getCapital(terrOrigOwner, data).getOwner().equals(terrOrigOwner))
@@ -692,6 +697,11 @@ public class BattleTracker implements java.io.Serializable
         return data.getProperties().get(Constants.PACIFIC_EDITION, false);
     }
 
+    private boolean isOccupiedTerritories(GameData data)
+    {
+        return games.strategy.triplea.Properties.getOccupiedTerritories(data);
+    }
+    
     public void clear()
     {
         m_bombardedFromTerritories.clear();

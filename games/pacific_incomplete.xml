@@ -1124,13 +1124,15 @@ Coded by Iron__Cross
             type="territory">
             <option name="production" value="3"/>
             <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="37 Sea Zone"/>            
+            <option name="ConvoyAttached" value="37 Sea Zone"/>
+			<option name="occupiedTerrOf" value="Chinese"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Manchuria"
             javaClass="games.strategy.triplea.attatchments.TerritoryAttachment"
             type="territory">
             <option name="production" value="2"/>
+			<option name="occupiedTerrOf" value="Chinese"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Korea"
@@ -1138,7 +1140,8 @@ Coded by Iron__Cross
             type="territory">
             <option name="production" value="2"/>
             <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="36 Sea Zone"/>  
+            <option name="ConvoyAttached" value="36 Sea Zone"/>
+			<option name="occupiedTerrOf" value="Chinese"/>
         </attatchment>
         
         <attatchment name="territoryAttatchment" attatchTo="Szechwan"
@@ -1539,8 +1542,7 @@ Coded by Iron__Cross
             <territoryOwner territory="Marshall" owner="Japanese"/>
             <territoryOwner territory="Caroline" owner="Japanese"/>
             
-            <!-- These are Chinese territories occupied by Japan at game start 
-        		  (This would affect Chinese production if they were captured- code needed)-->
+            <!-- These are Chinese territories occupied by Japan at game start -->
             <territoryOwner territory="Shantung" owner="Japanese"/>
             <territoryOwner territory="Manchuria" owner="Japanese"/>
             <territoryOwner territory="Korea" owner="Japanese"/>
@@ -2080,9 +2082,14 @@ Coded by Iron__Cross
         <!-- Map Name: also used for map utils when asked -->
         <property name="mapName" value="pacific" editable="false"/>
         
-		<property name="Production Per Valued Territory Restricted" value="true" editable="true">
+		<property name="Production Per Valued Territory Restricted" value="true" editable="false">
         	<boolean/>
         </property>
+
+		<property name="Occupied Territories" value="true" editable="false">
+        	<boolean/>
+		</property>
+                
                 
         
         <!-- notes appear in the notes menu in the main screen, format as html -->
@@ -2110,48 +2117,5 @@ Coded by Iron__Cross
 				
 				
 				Credits: Triple_Elk (base-line), iron__cross (integration), ComradeKev (special rules implementations)"/>
-        
-        <!--COMCO rules testing-->                
-                <property name="Sub Control Sea Zone Restricted" value="true" editable="true">
-                	<boolean/>
-                </property>
-                
-                <property name="Transport Casualties Restricted" value="true" editable="true">
-                	<boolean/>
-                </property>
-                
-                <property name="Unescorted Transport Dies" value="true" editable="true">
-                	<boolean/>
-                </property>
-				
-				<property name="Hari-Kari Units" value="true" editable="true">
-                	<boolean/>
-                </property> 
-                
-				<property name="Kamikaze Airplanes" value="true" editable="true">
-                	<boolean/>
-                </property>
-                
-                <property name="Ignore Transport In Movement" value="true" editable="true">
-                	<boolean/>
-                </property>
-                
-                <property name="Ignore Sub In Movement" value="true" editable="true">
-                	<boolean/>
-                </property>
-
-                <property name="Air Attack Sub Restricted" value="true" editable="true">
-                	<boolean/>
-                </property>
-
-                <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="true">
-                	<boolean/>
-                </property>
-
-                <property name="AA Territory Restricted" value="true" editable="true">
-                	<boolean/>
-                </property>
-
-                
     </propertyList>
 </game>

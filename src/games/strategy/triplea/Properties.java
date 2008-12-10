@@ -555,6 +555,21 @@ public class Properties implements Constants
 			 return false;
 		 }
 	 }
+
+	 /*
+	  * Are any territories originally occupied by enemies
+	  */
+	 public static boolean  getOccupiedTerritories(GameData data)
+	 {
+		 try
+		 {
+			 return ( (Boolean) data.getProperties().get(OCCUPIED_TERRITORIES) ).booleanValue();
+		 }
+		 catch(Exception e)
+		 {
+			 return false;
+		 }
+	 }
 	 
 	 /*
 	  * Air restricted from attacking subs unless DD present

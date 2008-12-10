@@ -75,13 +75,15 @@ public class RulesAttachment extends DefaultAttachment
     private String[] m_alliedExcludedTerritories;
     private String[] m_enemyExcludedTerritories;
     private String[] m_movementRestrictionTerritories;
+    
+    private boolean m_placementAnyTerritory = false;
         
     private int m_perOwnedTerritories = -1;
     private int m_productionPerTerritory = -1;
     private int m_placementPerTerritory = -1;
     
     private String m_allowedUnitType = null;
-    private String m_restrictionType = null;
+    private String m_movementRestrictionType = null;
     
   /** Creates new RulesAttachment */
   public RulesAttachment()
@@ -180,14 +182,14 @@ public class RulesAttachment extends DefaultAttachment
       return m_movementRestrictionTerritories;
   }
   
-  public void setRestrictionType(String value)
+  public void setMovementRestrictionType(String value)
   {
-	  m_restrictionType = value;
+	  m_movementRestrictionType = value;
   }
 
-  public String getRestrictionType()
+  public String getMovementRestrictionType()
   {
-      return m_restrictionType;
+      return m_movementRestrictionType;
   }
 
   public void setProductionPerXTerritories(String value)
@@ -208,6 +210,16 @@ public class RulesAttachment extends DefaultAttachment
   public int getPlacementPerTerritory()
   {
       return m_placementPerTerritory;
+  }
+
+  public void setPlacementAnyTerritory(String value)
+  {
+	  m_placementAnyTerritory = getBool(value);
+  }
+
+  public boolean getPlacementAnyTerritory()
+  {
+      return m_placementAnyTerritory;
   }
 
 
@@ -273,35 +285,4 @@ public class RulesAttachment extends DefaultAttachment
   
   
   
-  //May need this for rules
-  /*
-  public static Set<RulesAttachment> get(Territory t)
-  {
-      Set<RulesAttachment> rVal = new HashSet<RulesAttachment>();
-      Map<String, IAttachment> map = t.getAttachments();
-      Iterator<String> iter = map.keySet().iterator();
-      while(iter.hasNext() )
-      {
-          IAttachment attachment = map.get(iter.next());
-          String name = attachment.getName();
-          if (name.startsWith(Constants.RULES_OBJECTIVE_PREFIX))
-          {
-              rVal.add((RulesAttachment)attachment);
-          }
-      }
-      return rVal;
-      
-  }
-  
-  
-  public static String [] stringToArray(String str) {
-	    StringTokenizer t = new StringTokenizer(str, ",");
-	    String [] array = new String[t.countTokens()];
-
-	    for(int i=0; t.hasMoreTokens(); ++i) {
-	      array[i] = t.nextToken();
-	    }
-	    return(array);
-	  }
-*/
 }

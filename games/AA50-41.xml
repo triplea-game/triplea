@@ -1565,8 +1565,9 @@
                 
 				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="movementRestrictionTerritories" value="Chinghai:Ningxia:Sikang:Yunnan:Hupeh:Fukien:Suiyuan:Manchuria:Kiangsu:Kwangtung"/>
-                	<option name="restrictionType" value="allowed"/>
+                	<option name="movementRestrictionType" value="allowed"/>
                 	<option name="productionPerXTerritories" value="2"/>
+                	<option name="placementAnyTerritory" value="true"/>
                 	<option name="placementPerTerritory" value="3"/>
                 </attatchment>
                 
@@ -1861,12 +1862,7 @@
                 </resourceInitialize>
         </initialize>
 
-        <propertyList>
-                <!-- Use 4hth Edition Rules -->
-                <property name="4th Edition" value="true" editable="false">
-                        <boolean/>
-                </property>
-                
+        <propertyList>                
 				<!-- Use Submersible Subs-->
                 <property name="Submersible Subs" value="true" editable="false">
                         <boolean/>
@@ -1887,7 +1883,7 @@
                         <boolean/>
                 </property>
                 
-				<!-- Always on AA-->
+				<!-- Always on AA  COMCO?-->
                 <property name="Always on AA" value="true" editable="true">
                         <boolean/>
                 </property>
@@ -1940,47 +1936,55 @@
                 
                 
 <!--COMCO rules testing-->                
-                <property name="Sub Control Sea Zone Restricted" value="true" editable="true">
+                <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-                <property name="Transport Casualties Restricted" value="true" editable="true">
+                <property name="Transport Casualties Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
-                
-                <property name="Unescorted Transport Dies" value="true" editable="true">
-                	<boolean/>
-                </property>
-				
-				<property name="Hari-Kari Units" value="true" editable="true">
+
+				<property name="Hari-Kari Units" value="true" editable="false">
                 	<boolean/>
                 </property> 
                 
-				<property name="Kamikaze Airplanes" value="true" editable="true">
+				<property name="Kamikaze Airplanes" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-                <property name="Ignore Transport In Movement" value="true" editable="true">
+                <property name="Ignore Transport In Movement" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-                <property name="Ignore Sub In Movement" value="true" editable="true">
+                <property name="Ignore Sub In Movement" value="true" editable="false">
                 	<boolean/>
                 </property>
 
-                <property name="Air Attack Sub Restricted" value="true" editable="true">
+                <property name="Air Attack Sub Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
 
-                <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="true">
+                <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
 
-                <property name="AA Territory Restricted" value="true" editable="true">
+                <property name="AA Territory Restricted" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+                <property name="Occupied Territories" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+                <property name="Unescorted Transport Dies" value="true" editable="false">
+                	<boolean/>
+                </property>
+
+                <property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
                 	<boolean/>
                 </property>
                 
-<!--COMCO rulesAttatchment rules testing-->                 
+<!-- These require an associated value in the attachments section above-->                 
                 <property name="Movement By Territory Restricted" value="true" editable="true">
                 	<boolean/>
                 </property>
@@ -1991,8 +1995,8 @@
                 
                 <property name="Unit Placement Per Territory Restricted" value="true" editable="true">
                 	<boolean/>
-                </property>               
-                
+                </property>
+                <!-- COMCO need to specify only Chinese may do this -->
                 <property name="Place in Any Territory" value="true" editable="true">
                 	<boolean/>
                 </property>

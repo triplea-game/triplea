@@ -176,7 +176,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             return new PlaceableUnits(error);
 
         Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, m_player);
-        int maxUnits = getMaxUnitsToBePlaced(to, m_player);
+        int maxUnits = getMaxUnitsToBePlaced(units, to, m_player);
         return new PlaceableUnits(placeableUnits, maxUnits);
     }
 
@@ -284,7 +284,6 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     private Collection<Unit> getUnitsToBePlaced(Territory to, Collection<Unit> units,
             PlayerID player)
     {
-    	//TODO Comco unit placement rule for Chinese goes here
         if (to.isWater())
         {
             return getUnitsToBePlacedSea(to, units, player);
@@ -330,19 +329,17 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     {
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
 
-        if (hasFactory(to) || isPlaceInAnyTerritory())
+        if (hasFactory(to) || isPlayerAllowedToPlaceAnywhere(player))
         {
             //make sure only 1 AA in territory for classic
             if (isFourthEdition())
             {
-                placeableUnits
-                        .addAll(Match.getMatches(units, Matches.UnitIsAA));
+                placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAA));
             } else
             {
                 //allow 1 AA to be placed if none already exists
                 if (!to.getUnits().someMatch(Matches.UnitIsAA))
-                    placeableUnits.addAll(Match.getNMatches(units, 1,
-                            Matches.UnitIsAA));
+                    placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsAA));
             }
 
             CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
@@ -380,7 +377,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     }
 
     // Returns -1 if can place unlimited units
-    protected int getMaxUnitsToBePlaced(Territory to, PlayerID player)
+    protected int getMaxUnitsToBePlaced(Collection<Unit> units, Territory to, PlayerID player)
     {
         Territory producer = getProducer(to, player);
 
@@ -398,15 +395,21 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (isUnitPlacementPerTerritoryRestricted())
         {
         	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
-        	if(ra != null)
+        	if(ra != null && ra.getPlacementPerTerritory() > 0)
         	{
         		int allowedPlacement = ra.getPlacementPerTerritory();
-        		if (to.getUnits().size() >= allowedPlacement)
+        		int unitsInTerritory = to.getUnits().size();
+        		
+        		if (unitsInTerritory >= allowedPlacement)
         			return 0;
         		
-        		return allowedPlacement - to.getUnits().size();
+        		if(allowedPlacement - unitsInTerritory >= units.size())
+        			return units.size();
+        		
+        		return allowedPlacement - unitsInTerritory;
         	}        		
         } 
+        //TODO COMCO SBR rules may apply below
         //a factory can produce the same number of units as the number of ipcs
         // the territroy generates each turn
         int unitCount = getAlreadyProduced(producer).size();
@@ -449,7 +452,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (wasConquered(producer))
             return producer.getName() + " was conquered this turn and cannot produce till next turn";
                    
-        if(isPlaceInAnyTerritory())
+        if(isPlayerAllowedToPlaceAnywhere(player))
         	return null;
 
         //make sure there is a factory
@@ -495,7 +498,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
                    
         }
 
-        int maxUnitsToBePlaced = getMaxUnitsToBePlaced(to, player);
+        int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player);
         if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size()))
             return "Cannot place " + units.size()
                     + " more units in " + producer.getName();
@@ -792,7 +795,20 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         state.m_placements = m_placements;
         return state;
     }
-
+    
+    private boolean isPlayerAllowedToPlaceAnywhere(PlayerID player)
+    {
+    	if(isPlaceInAnyTerritory())
+    	{
+    		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        	if(ra != null && ra.getPlacementAnyTerritory())
+        	{
+        		return true;
+        	}      
+    	}
+    
+    	return false;
+    }
     /*
      * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
      */

@@ -109,6 +109,7 @@ public interface Constants
   public static final String ANNIVERSARY_EDITION_LAND_PRODUCTION = "Anniversary Edition Land Production";
   public static final String ANNIVERSARY_EDITION_AIR_NAVAL = "Anniversary Edition Air Naval";
   public static final String HARI_KARI = "Hari-Kari Units";
+  public static final String OCCUPIED_TERRITORIES = "Occupied Territories";
   /**
    * End individual rules for TripleA 50th Edition (All default to FALSE)
    */

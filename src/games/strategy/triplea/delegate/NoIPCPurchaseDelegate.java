@@ -150,15 +150,4 @@ public class NoIPCPurchaseDelegate extends PurchaseDelegate
     	return games.strategy.triplea.Properties.getProductionPerXTerritoriesRestricted(m_data);
     }
 
-    private boolean isPlaceInAnyTerritory()
-    {
-    	return games.strategy.triplea.Properties.getPlaceInAnyTerritory(m_data);
-    }
-
-    private boolean isUnitPlacementPerTerritoryRestricted()
-    {
-    	return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(m_data);
-    }
-    
-    
 }
