@@ -44,7 +44,7 @@ public class PlayerAttachment extends DefaultAttachment
     private boolean m_takeUnitControl = false;
     private boolean m_giveUnitControl = false;
     
-    /** Creates new PlayerAttatchment */
+    /** Creates new PlayerAttachment */
     public PlayerAttachment()
     {
     }

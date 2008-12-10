@@ -78,6 +78,8 @@ public class RulesAttachment extends DefaultAttachment
         
     private int m_perOwnedTerritories = -1;
     private int m_productionPerTerritory = -1;
+    private int m_placementPerTerritory = -1;
+    
     private String m_allowedUnitType = null;
     private String m_restrictionType = null;
     
@@ -197,6 +199,17 @@ public class RulesAttachment extends DefaultAttachment
   {
       return m_productionPerTerritory;
   }
+
+  public void setPlacementPerTerritory(String value)
+  {
+	  m_placementPerTerritory = getInt(value);
+  }
+
+  public int getPlacementPerTerritory()
+  {
+      return m_placementPerTerritory;
+  }
+
 
   
   /**

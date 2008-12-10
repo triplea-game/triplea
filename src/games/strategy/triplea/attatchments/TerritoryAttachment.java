@@ -65,7 +65,6 @@ public class TerritoryAttachment extends DefaultAttachment
         throw new IllegalStateException("Capital not found for:" + player);
     }
 
-
     /**
      * Convenience method.
      */
@@ -83,6 +82,7 @@ public class TerritoryAttachment extends DefaultAttachment
     private boolean m_isVictoryCity = false;
     private boolean m_isImpassible = false;
     private PlayerID m_originalOwner = null;
+    private PlayerID m_occupiedTerrOf = null;    
     private boolean m_isConvoyRoute = false;
     private boolean m_changeUnitOwners = false;
     private String m_convoyAttached = null;
@@ -150,6 +150,17 @@ public class TerritoryAttachment extends DefaultAttachment
         return m_production;
     }
 
+    public void setOccupiedTerrOf(String value)
+    {
+    	if (value != null)
+    		m_occupiedTerrOf = getData().getPlayerList().getPlayerID(value);
+    }
+
+    public PlayerID getOccupiedTerrOf()
+    {
+        return m_occupiedTerrOf;
+    }
+    
     public void setOriginalOwner(PlayerID player)
     {
         m_originalOwner = player;

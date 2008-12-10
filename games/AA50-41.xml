@@ -1322,7 +1322,8 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Kiangsu" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="true"/>						
+                        <option name="occupiedTerrOf" value="Chinese"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Kwangtung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1336,6 +1337,7 @@
 					
 					<attatchment name="territoryAttatchment" attatchTo="Manchuria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
+                        <option name="occupiedTerrOf" value="Chinese"/>
                     </attatchment>
 					
 					<attatchment name="territoryAttatchment" attatchTo="Mexico" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1565,6 +1567,7 @@
                 	<option name="movementRestrictionTerritories" value="Chinghai:Ningxia:Sikang:Yunnan:Hupeh:Fukien:Suiyuan:Manchuria:Kiangsu:Kwangtung"/>
                 	<option name="restrictionType" value="allowed"/>
                 	<option name="productionPerXTerritories" value="2"/>
+                	<option name="placementPerTerritory" value="3"/>
                 </attatchment>
                 
         </attatchmentList>

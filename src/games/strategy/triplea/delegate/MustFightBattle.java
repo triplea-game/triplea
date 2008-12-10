@@ -1759,7 +1759,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         units.addAll(m_defendingWaitingToDie);
         units = Match.getMatches(units, Matches.UnitIsNotSub);
       //if restricted, remove aircraft from attackers
-        if (isAirAttackSubRestricted() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
+        if (isAirAttackSubRestricted() && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
         {
         	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }
@@ -1826,7 +1826,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         units.addAll(Match.getMatches(m_attackingWaitingToDie,
                 Matches.UnitIsNotSub));
         //if restricted, remove aircraft from attackers
-        if (isAirAttackSubRestricted() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
+        if (isAirAttackSubRestricted() && m_battleSite.isWater() && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
         {
         	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }
@@ -1887,7 +1887,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         units.addAll(m_attackingUnits);
         units.addAll(m_attackingWaitingToDie);
         //if restricted, remove aircraft from attackers
-        if (isAirAttackSubRestricted()&& !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
+        if (isAirAttackSubRestricted() && m_battleSite.isWater()  && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
         {
         	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }
@@ -1910,7 +1910,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         units.addAll(m_defendingUnits);
         units.addAll(m_defendingWaitingToDie);
         //if restricted, remove aircraft from attackers
-        if (isAirAttackSubRestricted()&& !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
+        if (isAirAttackSubRestricted() && m_battleSite.isWater() && !Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
         {
         	units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
         }

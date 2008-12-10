@@ -474,10 +474,11 @@ public class BattleTracker implements java.io.Serializable
                     changeTracker.addChange(capture);
             }
         }
-
+//TODO COMCO check for original owner flag here (addOriginalOwnerChange on init) then ta.getOccupiedTerrOf()
         //is this an allied territory
         //revert to original owner if it is, unless they done own there
         // captital
+        kev
         PlayerID terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
         PlayerID newOwner;
         if (terrOrigOwner != null && data.getAllianceTracker().isAllied(terrOrigOwner, id)

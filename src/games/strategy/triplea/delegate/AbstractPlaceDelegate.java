@@ -37,6 +37,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -329,7 +330,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
     {
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
 
-        if (hasFactory(to))
+        if (hasFactory(to) || isPlaceInAnyTerritory())
         {
             //make sure only 1 AA in territory for classic
             if (isFourthEdition())
@@ -394,6 +395,18 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (originalFactory && playerIsOriginalOwner)
             return -1;
 
+        if (isUnitPlacementPerTerritoryRestricted())
+        {
+        	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
+        	if(ra != null)
+        	{
+        		int allowedPlacement = ra.getPlacementPerTerritory();
+        		if (to.getUnits().size() >= allowedPlacement)
+        			return 0;
+        		
+        		return allowedPlacement - to.getUnits().size();
+        	}        		
+        } 
         //a factory can produce the same number of units as the number of ipcs
         // the territroy generates each turn
         int unitCount = getAlreadyProduced(producer).size();
@@ -436,6 +449,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         if (wasConquered(producer))
             return producer.getName() + " was conquered this turn and cannot produce till next turn";
                    
+        if(isPlaceInAnyTerritory())
+        	return null;
 
         //make sure there is a factory
         if (!hasFactory(producer))
@@ -501,6 +516,17 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return tracker.wasConquered(t);
     }
 
+    protected boolean isPlaceInAnyTerritory()    
+    {
+        return games.strategy.triplea.Properties.getPlaceInAnyTerritory(m_data);
+    }
+
+    protected boolean isUnitPlacementPerTerritoryRestricted()    
+    {
+        return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(m_data);
+    }
+
+    
     /**
      * Returns the better producer of the two territories, either of which can
      * be null.

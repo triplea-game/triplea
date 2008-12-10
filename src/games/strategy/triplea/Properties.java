@@ -462,7 +462,7 @@ public class Properties implements Constants
 		 {
 			 return false;
 		 }
-	 }
+	 } 
 
 	 /*
 	  * Limit the number of units that can be in a territory
