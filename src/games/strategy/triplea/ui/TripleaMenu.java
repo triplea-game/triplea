@@ -701,8 +701,18 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
     private void addShowMapBlends(JMenu menuGame)
     {
     	showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
-
-        showMapBlends.setSelected(TileImageFactory.getShowMapBlends());
+    	
+    	if(getUIContext().getMapData().getHasRelief() && showMapDetails.isEnabled() && showMapDetails.isSelected())
+    	{
+    		showMapBlends.setEnabled(true);
+    		showMapBlends.setSelected(TileImageFactory.getShowMapBlends());
+    	}
+    	else
+    	{
+    		showMapBlends.setSelected(false);
+    		showMapBlends.setEnabled(false);
+    	}
+                
 
         showMapBlends.addActionListener(new ActionListener()
         {
@@ -712,7 +722,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
                 {
                     return;
                 }
-
+                                
                 TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
                 TileImageFactory.setShowMapBlendMode(m_frame.getUIContext().getMapData().getMapBlendMode());
                 TileImageFactory.setShowMapBlendAlpha(m_frame.getUIContext().getMapData().getMapBlendAlpha());

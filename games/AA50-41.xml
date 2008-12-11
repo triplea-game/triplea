@@ -1561,8 +1561,102 @@
 			    	<option name="landTerritories" value="Panama"/>
 			    </attatchment>
                 
-<!-- COMCO National Objectives and Restrictions -->
+<!-- COMCO National Objectives -->
+	<!-- German Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>   
+                	<option name="alliedOwnershipTerritories" value="France:Northwestern Europe:Germany:Poland:Czechoslovakia Hungary:Bulgaria Romania" count="6"/> 
+                </attatchment>
+         
+                <attatchment name="objectiveAttachment2" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Baltic States:East Poland:Belorussia:Eastern Ukraine:Ukraine" count="3"/>
+                </attatchment>         
                 
+                <attatchment name="objectiveAttachment3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Karelia S.S.R.:Caucasus" count="1"/>
+                </attatchment>
+                
+	<!-- Russian Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Archangel" count="1"/>
+                	<option name="alliedExclusionTerritories" value="controlled"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment2" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="10"/>
+                	<option name="alliedOwnershipTerritories" value="Norway:Finland:Poland:Bulgaria Romania:Czechoslovakia Hungary:Balkans" count="3"/>
+                </attatchment>
+                
+	<!-- Japanese Objectives -->         
+                <attatchment name="objectiveAttachment1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Manchuria:Kiangsu:French Indo-China Thailand" count="3"/>
+                </attatchment>
+                                
+                <attatchment name="objectiveAttachment2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Kwangtung:East Indies:Borneo:Philippine Islands:New Guinea:Solomon Islands" count="4"/>
+                </attatchment>
+                                
+                <attatchment name="objectiveAttachment3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Hawaiian Islands:Australia:India" count="1"/>
+                </attatchment>
+                
+	<!-- British Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Caroline Islands:French Indo-China Thailand:Formosa:Iwo Jima:Japan:Kiangsu:Manchuria:Okinawa" count="1"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Eastern Canada:Western Canada:Gibraltar:Egypt:Australia:Union of South Africa" count="6"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment3" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="France:Balkans" count="1"/>
+                </attatchment>
+                
+	<!-- Italian Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Egypt:Trans-Jordan:France:Gibraltar" count="3"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment2" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Italy:Balkans:Morocco Algeria:Libya" count="4"/>
+                	<option name="enemyExclusionTerritories" value="13 Sea Zone:14 Sea Zone:15 Sea Zone" count="3"/>
+                </attatchment>
+                
+	<!-- American Objectives -->
+                <attatchment name="objectiveAttachment1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="France" count="1"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Philippine Islands" count="1"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Western United States:Eastern United States:Central United States" count="3"/>
+                </attatchment>
+                
+                <attatchment name="objectiveAttachment4" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Midway:Wake Island:Hawaiian Islands:Solomon Islands" count="3"/>
+                </attatchment>
+                
+<!--  Rules Restrictions -->
+	<!-- Chinese Rules -->
 				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="movementRestrictionTerritories" value="Chinghai:Ningxia:Sikang:Yunnan:Hupeh:Fukien:Suiyuan:Manchuria:Kiangsu:Kwangtung"/>
                 	<option name="movementRestrictionType" value="allowed"/>

@@ -64,26 +64,31 @@ public class RulesAttachment extends DefaultAttachment
             throw new IllegalStateException("No rule attachment for:" + r.getName());
         return rVal;
     }
-    
+    //Players
     private PlayerID m_ruleOwner = null;
-    private int m_objectiveValue = 0;
+    
+    //Strings
     private String m_alliedExclusion = null;
     private String m_enemyExclusion = null;
-    private int m_territoryCount = -1;
+    private String m_allowedUnitType = null;
+    private String m_movementRestrictionType = null;
+    
     //Territory lists
     private String[] m_alliedOwnershipTerritories;
     private String[] m_alliedExcludedTerritories;
     private String[] m_enemyExcludedTerritories;
     private String[] m_movementRestrictionTerritories;
     
+    //booleans
     private boolean m_placementAnyTerritory = false;
-        
+
+    //Integers
+    private int m_territoryCount = -1;
+    private int m_objectiveValue = 0;
     private int m_perOwnedTerritories = -1;
     private int m_productionPerTerritory = -1;
     private int m_placementPerTerritory = -1;
     
-    private String m_allowedUnitType = null;
-    private String m_movementRestrictionType = null;
     
   /** Creates new RulesAttachment */
   public RulesAttachment()
@@ -258,7 +263,7 @@ public class RulesAttachment extends DefaultAttachment
     	  //See if the first entry contains the number of territories needed to meet the criteria
     	  try
     	  {
-    		  //Leave the temp field- it checks if there's a number by failing the TRY
+    		  //Leave the temp field- it checks if the list just starts with a territory by failing the TRY
     		  int temp = getInt(name);
     		  setTerritoryCount(name);
     		  continue;    		  
@@ -270,7 +275,6 @@ public class RulesAttachment extends DefaultAttachment
     	  //Skip looking for the territory if the original list contains one of the 'group' commands
     	  if(name.equals("controlled") || name.equals("original") || name.equals("all"))
     		  break;
-    		  //continue;
     	  
     	  //Validate all territories exist
           Territory territory = getData().getMap().getTerritory(name);

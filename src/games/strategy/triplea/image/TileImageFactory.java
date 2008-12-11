@@ -89,7 +89,7 @@ public final class TileImageFactory
     
     public static boolean getShowMapBlends()
     {
-        return s_showMapBlends;
+    	return s_showMapBlends;
     }
     
     public static String getShowMapBlendMode()
