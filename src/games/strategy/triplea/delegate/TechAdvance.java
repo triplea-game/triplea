@@ -47,13 +47,13 @@ public abstract class TechAdvance implements java.io.Serializable
     public static final TechAdvance INDUSTRIAL_TECHNOLOGY = new IndustrialTechnologyAdvance();
     public static final TechAdvance HEAVY_BOMBER = new HeavyBomberAdvance();
     public static final TechAdvance DESTROYER_BOMBARD = new DestroyerBombardTechAdvance();
-    public static final TechAdvance IMPROVED_ARTILLERY_SUPPORT = new ImprovedArtillerySupport();
-    public static final TechAdvance PARATROOPERS = new Paratroopers();
-    public static final TechAdvance INCREASED_FACTORY_PRODUCTION = new IncreasedFactoryProduction();
-    public static final TechAdvance WAR_BONDS = new WarBonds();
-    public static final TechAdvance MECHANIZED_INFANTRY = new MechanizedInfantry();
-    public static final TechAdvance AA_RADAR = new AARadar();
-    public static final TechAdvance SHIPYARDS = new Shipyards();
+    public static final TechAdvance IMPROVED_ARTILLERY_SUPPORT = new ImprovedArtillerySupportAdvance();
+    public static final TechAdvance PARATROOPERS = new ParatroopersAdvance();
+    public static final TechAdvance INCREASED_FACTORY_PRODUCTION = new IncreasedFactoryProductionAdvance();
+    public static final TechAdvance WAR_BONDS = new WarBondsAdvance();
+    public static final TechAdvance MECHANIZED_INFANTRY = new MechanizedInfantryAdvance();
+    public static final TechAdvance AA_RADAR = new AARadarAdvance();
+    public static final TechAdvance IMPROVED_SHIPYARDS = new ImprovedShipyardsAdvance();
 
     public static List<TechAdvance> getTechAdvances(GameData data)
     {
@@ -104,26 +104,24 @@ public abstract class TechAdvance implements java.io.Serializable
     	 * Anniversary Edition Land/Production Tech
     	 */
         s_AnnivEditionAdvancesLandProduction = new ArrayList<TechAdvance>();
-        s_AnnivEditionAdvancesLandProduction.add(JET_POWER);
-        s_AnnivEditionAdvancesLandProduction.add(SUPER_SUBS);
-        s_AnnivEditionAdvancesLandProduction.add(LONG_RANGE_AIRCRAFT);
+        s_AnnivEditionAdvancesLandProduction.add(IMPROVED_ARTILLERY_SUPPORT);
         s_AnnivEditionAdvancesLandProduction.add(ROCKETS);
-        s_AnnivEditionAdvancesLandProduction.add(DESTROYER_BOMBARD);
-        s_AnnivEditionAdvancesLandProduction.add(HEAVY_BOMBER);
-        s_AnnivEditionAdvancesLandProduction.add(INDUSTRIAL_TECHNOLOGY);
+        s_AnnivEditionAdvancesLandProduction.add(PARATROOPERS);
+        s_AnnivEditionAdvancesLandProduction.add(INCREASED_FACTORY_PRODUCTION);
+        s_AnnivEditionAdvancesLandProduction.add(WAR_BONDS);
+        s_AnnivEditionAdvancesLandProduction.add(MECHANIZED_INFANTRY);
         s_AnnivEditionAdvancesLandProduction = Collections.unmodifiableList(s_AnnivEditionAdvancesLandProduction);
 
     	/*
     	 * Anniversary Edition Air/Naval Tech
     	 */
         s_AnnivEditionAdvancesAirNaval = new ArrayList<TechAdvance>();
-        s_AnnivEditionAdvancesAirNaval.add(JET_POWER);
         s_AnnivEditionAdvancesAirNaval.add(SUPER_SUBS);
+        s_AnnivEditionAdvancesAirNaval.add(JET_POWER);
+        s_AnnivEditionAdvancesAirNaval.add(IMPROVED_SHIPYARDS);
+        s_AnnivEditionAdvancesAirNaval.add(AA_RADAR);
         s_AnnivEditionAdvancesAirNaval.add(LONG_RANGE_AIRCRAFT);
-        s_AnnivEditionAdvancesAirNaval.add(ROCKETS);
-        s_AnnivEditionAdvancesAirNaval.add(DESTROYER_BOMBARD);
         s_AnnivEditionAdvancesAirNaval.add(HEAVY_BOMBER);
-        s_AnnivEditionAdvancesAirNaval.add(INDUSTRIAL_TECHNOLOGY);
         s_AnnivEditionAdvancesAirNaval = Collections.unmodifiableList(s_AnnivEditionAdvancesAirNaval);
         
     }
@@ -317,7 +315,7 @@ class LongRangeAircraftAdvance extends TechAdvance
 /*
  * Artillery can support multiple infantry
  */
-class ImprovedArtillerySupport extends TechAdvance
+class ImprovedArtillerySupportAdvance extends TechAdvance
 {
     public String getName()
     {
@@ -337,7 +335,7 @@ class ImprovedArtillerySupport extends TechAdvance
 /*
  * Support paratroops
  */
-class Paratroopers extends TechAdvance
+class ParatroopersAdvance extends TechAdvance
 {
     public String getName()
     {
@@ -357,7 +355,7 @@ class Paratroopers extends TechAdvance
 /*
  * Increased Factory Production
  */
-class IncreasedFactoryProduction extends TechAdvance
+class IncreasedFactoryProductionAdvance extends TechAdvance
 {
     public String getName()
     {
@@ -377,7 +375,7 @@ class IncreasedFactoryProduction extends TechAdvance
 /*
  * War Bonds
  */
-class WarBonds extends TechAdvance
+class WarBondsAdvance extends TechAdvance
 {
     public String getName()
     {
@@ -397,7 +395,7 @@ class WarBonds extends TechAdvance
 /*
  * Mechanized Infantry
  */
-class MechanizedInfantry extends TechAdvance
+class MechanizedInfantryAdvance extends TechAdvance
 {
     public String getName()
     {
@@ -417,7 +415,7 @@ class MechanizedInfantry extends TechAdvance
 /*
  * AA Radar
  */
-class AARadar extends TechAdvance
+class AARadarAdvance extends TechAdvance
 {
     public String getName()
     {
@@ -435,9 +433,9 @@ class AARadar extends TechAdvance
 }
 
 /*
- * Shipyards
+ * ImprovedShipyards
  */
-class Shipyards extends TechAdvance
+class ImprovedShipyardsAdvance extends TechAdvance
 {
     public String getName()
     {
