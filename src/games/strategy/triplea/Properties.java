@@ -632,6 +632,21 @@ public class Properties implements Constants
 	 }
 
 	 /*
+	  * Shore Bombard decreases number of units that can be produced at a factory
+	  */
+	 public static boolean getSBRAffectsUnitProduction(GameData data)
+	 {
+		 try
+		 {
+			 return ( (Boolean) data.getProperties().get(SBR_AFFECTS_UNIT_PRODUCTION) ).booleanValue();
+		 }
+		 catch(Exception e)
+		 {
+			 return false;
+		 }
+	 }
+	 
+	 /*
 	  * AA restricted to Attacked Territory Only
 	  */
 	 public static boolean getAATerritoryRestricted(GameData data)

@@ -99,7 +99,7 @@ public class TechTracker implements java.io.Serializable
     }
     if(attatchment.hasShipyards())
     {
-      rVal.add(TechAdvance.SHIPYARDS);
+      rVal.add(TechAdvance.IMPROVED_SHIPYARDS);
     }
 
 

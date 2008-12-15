@@ -33,14 +33,22 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.util.IntegerMap;
 
+import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -108,6 +116,50 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
    */
   public String purchase(IntegerMap<ProductionRule> productionRules)
   {
+	  //TODO Comco perhaps purchase here.
+	  /*m_actionButton.setAction(new AbstractAction(btnText)
+      {
+          public void actionPerformed(ActionEvent e)
+          {
+
+              String messageText = message + " " + btnText + ".";
+              UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
+              
+
+              chooser.setTitle(messageText);
+              if (isEditMode)
+                  chooser.setMax(selectFrom.size());
+              else
+                  chooser.setMax(count);
+              String[] options =
+              { "Ok", "Cancel" };
+//TODO COMCO here's where the panel pops up
+              int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, hit.getName() + " select casualties",
+                      JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+              if (option != 0)
+                  return;
+              List<Unit> killed = chooser.getSelected(false);
+              List<Unit> damaged = chooser.getSelectedFirstHit();
+
+              if (!isEditMode && (killed.size() + damaged.size() != count))
+              {
+                  JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected", hit.getName()
+                          + " select casualties", JOptionPane.ERROR_MESSAGE);
+                  return;
+              } else
+              {
+                  CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
+                  casualtyDetails.set(response);
+                  
+                  m_dicePanel.clear();
+                  m_actionButton.setEnabled(false);
+                  m_actionButton.setAction(m_nullAction);
+
+                  continueLatch.countDown();
+              }
+          }
+      });*/
+	  
     IntegerMap<Resource> costs = getCosts(productionRules);
     IntegerMap<NamedAttachable> results = getResults(productionRules);
 

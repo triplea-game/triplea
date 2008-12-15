@@ -153,7 +153,6 @@ public class BattleCalculator
         // such that user is prompted to continue since they did not
         // select the units themselves.
         
-        //TODO COMCO- if isTransportCasualtiesRestricted & ONLY DEFENDING TRNS left, just kill them all 
         if(defending && isTransportCasualtiesRestricted(data) && allTargetsTransports(data, targets))
         {
         	List<Unit> killed = new ArrayList<Unit>();

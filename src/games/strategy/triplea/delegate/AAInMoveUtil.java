@@ -154,6 +154,12 @@ class AAInMoveUtil implements Serializable
         if (Match.noneMatch(units, Matches.UnitIsAir))
             return Collections.emptyList();
 
+        //If AA restricted, just the attacked will have AA firing.
+        if(isAATerritoryRestricted())
+        {
+        	return Collections.emptyList();
+        }
+
         // can't rely on m_player being the unit owner in Edit Mode
         // look at the units being moved to determine allies and enemies
         PlayerID ally = units.iterator().next().getOwner();
@@ -166,17 +172,6 @@ class AAInMoveUtil implements Serializable
         hasAA.add(Matches.enemyUnit(ally, m_data));
 
         List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
-
-        //If AA restricted, just the last territory will have AA firing.
-        if(isAATerritoryRestricted())
-        {
-        	Territory endRoute = route.getEnd();
-        	if (!endRoute.isWater() && endRoute.getUnits().someMatch(hasAA))
-        	{        		
-	        	territoriesWhereAAWillFire.add(route.getEnd());
-	        	return territoriesWhereAAWillFire;
-        	}
-        }
 
         for (int i = 0; i < route.getLength() - 1; i++)
         {

@@ -101,6 +101,7 @@ public interface Constants
   public static final String SUB_RETREAT_BEFORE_BATTLE = "Sub Retreat Before Battle"; // may be SUBMERSIBLE_SUBS below
   public static final String SUB_RETREAT_DD_RESTRICTED = "Sub Retreat DD Restricted"; // may not be needed
   public static final String SHORE_BOMBARD_PER_GROUND_UNIT_RESTRICTED = "Shore Bombard Per Ground Unit Restricted";
+  public static final String SBR_AFFECTS_UNIT_PRODUCTION = "SBR Affects Unit Production";
   public static final String AA_TERRITORY_RESTRICTED = "AA Territory Restricted";
   public static final String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
   public static final String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";  

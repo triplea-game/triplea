@@ -1848,7 +1848,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
         if (firing.isEmpty())
             return;
         //TODO COMCO look here for ideas on how to limit air on sub casualties
-        //kevy
         Collection<Unit> attacked = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsNotAir);
         //if there are destroyers in the attacked units, we can return fire.

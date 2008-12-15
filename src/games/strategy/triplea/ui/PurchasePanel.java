@@ -131,6 +131,8 @@ public class PurchasePanel extends ActionPanel
   {
     public void actionPerformed(ActionEvent e)
     {
+    	//TODO COMCO here's where the purchase panel pops up!
+    	kev
       m_purchase = ProductionPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase,getMap().getUIContext());
       m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, getCurrentPlayer(), getData());
       if(m_purchase.totalValues() == 0)
@@ -165,16 +167,26 @@ public class PurchasePanel extends ActionPanel
         //give a warning if the 
         //player tries to produce too much
       //Kev check here for factory max bug/feature request
-        if(isFourthEdition() || isRestrictedPurchase()) 
+        if(isFourthEdition() || isRestrictedPurchase() || isSBRAffectsUnitProduction()) 
         {
             int totalProd = 0;
             getData().acquireReadLock();
             try
             {
-                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
-                {
-                    totalProd += TerritoryAttachment.get(t).getProduction();
-                }
+            	if(isSBRAffectsUnitProduction())
+            	{
+            		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
+                    {
+                        totalProd += TerritoryAttachment.get(t).getUnitProduction();
+                    }
+            	}
+            	else
+            	{            		
+	                for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
+	                {
+	                    totalProd += TerritoryAttachment.get(t).getProduction();
+	                }
+            	}
             } finally
             {
                 getData().releaseReadLock();

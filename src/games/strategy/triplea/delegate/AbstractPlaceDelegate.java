@@ -326,7 +326,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
     protected Collection<Unit> getUnitsToBePlacedLand(Territory to, Collection<Unit> units,
             PlayerID player)
-    {
+    {    	
         Collection<Unit> placeableUnits = new ArrayList<Unit>();
 
         if (hasFactory(to) || isPlayerAllowedToPlaceAnywhere(player))
@@ -385,13 +385,14 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         TerritoryAttachment ta = TerritoryAttachment.get(producer);
         Collection<Unit> factoryUnits = producer.getUnits().getMatches(
                 Matches.UnitIsFactory);
+        boolean limitSBRDamageToUnitProd = isSBRAffectsUnitProduction();
         boolean originalFactory = ta.isOriginalFactory();
         boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player
                 .equals(getOriginalFactoryOwner(producer)) : false;
 
-        if (originalFactory && playerIsOriginalOwner)
+        if (originalFactory && playerIsOriginalOwner && !limitSBRDamageToUnitProd)
             return -1;
-
+    	
         if (isUnitPlacementPerTerritoryRestricted())
         {
         	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
@@ -409,14 +410,20 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		return allowedPlacement - unitsInTerritory;
         	}        		
         } 
-        //TODO COMCO SBR rules may apply below
         //a factory can produce the same number of units as the number of ipcs
         // the territroy generates each turn
         int unitCount = getAlreadyProduced(producer).size();
-        int production = getProduction(producer);
-        if (production == 0)
-            production = 1; //if it has a factory then it can produce at least
-        // 1
+        int production = 0;
+        
+        if(limitSBRDamageToUnitProd)
+        	production = Math.max(0, ta.getUnitProduction());
+        else
+        {
+        	production = getProduction(producer);
+        
+        	if (production == 0)
+        		production = 1; //if it has a factory then it can produce at least        
+        }
         return production - unitCount;
     }
 
@@ -524,6 +531,11 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return games.strategy.triplea.Properties.getPlaceInAnyTerritory(m_data);
     }
 
+    protected boolean isSBRAffectsUnitProduction()    
+    {
+        return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
+    }
+    
     protected boolean isUnitPlacementPerTerritoryRestricted()    
     {
         return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(m_data);

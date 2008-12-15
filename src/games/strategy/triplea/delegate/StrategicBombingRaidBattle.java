@@ -18,6 +18,7 @@
 
 package games.strategy.triplea.delegate;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -166,7 +167,10 @@ public class StrategicBombingRaidBattle implements Battle
                 
                 m_tracker.removeBattle(StrategicBombingRaidBattle.this);
 
-                bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("ipc", m_bombingRaidCost));
+                if(isSBRAffectsUnitProduction())
+                	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + " production in " + m_battleSite.getName());
+                else
+                	bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + MyFormatter.pluralize("ipc", m_bombingRaidCost));
 
                 if(isPacificEdition() || isSBRVictoryPoints())
                 {
@@ -291,6 +295,14 @@ public class StrategicBombingRaidBattle implements Battle
 	{
 		return m_data.getProperties().get(Constants.CHOOSE_AA, false);
 	}	
+
+    /**
+     * @return
+     */
+    private boolean isSBRAffectsUnitProduction()
+	{
+    	return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
+	}	
     
     /**
      * @return
@@ -390,8 +402,7 @@ public class StrategicBombingRaidBattle implements Battle
         {
             bridge.enterDelegateExecution();
         }
-        
-        
+                
     }
     
     private void removeAAHits(IDelegateBridge bridge, DiceRoll dice, Collection<Unit> casualties)
@@ -471,10 +482,11 @@ public class StrategicBombingRaidBattle implements Battle
                 return;
             }
             
+            TerritoryAttachment ta = TerritoryAttachment.get(m_battleSite);
             int cost = 0;
             boolean lhtrHeavyBombers = m_data.getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
             
-            int production = TerritoryAttachment.get(m_battleSite).getProduction();
+            int production = ta.getProduction();
 
             Iterator<Unit> iter = m_units.iterator();
             int index = 0;
@@ -519,27 +531,49 @@ public class StrategicBombingRaidBattle implements Battle
                     cost += costThisUnit;
             }
 
-            // Limit ipcs lost if we would like to cap ipcs lost at territory value
-            if (isIPCCap(m_data) || isLimitSBRDamagePerTurn(m_data))
+            if(isSBRAffectsUnitProduction())
             {
+            	//get current production
+                int unitProduction = ta.getUnitProduction();                
+            	//Detemine the min that can be taken as losses
                 int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(m_battleSite);
-                int limit = Math.max(0, production - alreadyLost);
-                cost = Math.min(cost, limit);
+                
+        		int limit = Math.max(0, production + unitProduction - alreadyLost);
+        		cost = Math.min(cost, limit);
+        		
+        		getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
+
+                int toRemove = Math.max(cost, unitProduction);
+
+            	// Record ipcs lost
+            	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, toRemove);
+            	Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - toRemove)).toString(), "unitProduction");
+            	bridge.addChange(change);
             }
+            else
+            {
+            	// Limit ipcs lost if we would like to cap ipcs lost at territory value
+            	if (isIPCCap(m_data) || isLimitSBRDamagePerTurn(m_data))
+            	{
+            		int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(m_battleSite);
+            		int limit = Math.max(0, production - alreadyLost);
+            		cost = Math.min(cost, limit);
+            	}
 
-            getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
+            	getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
 
-            //get resources
-            Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
-            int have = m_defender.getResources().getQuantity(ipcs);
-            int toRemove = Math.min(cost, have);
+            	//get resources
+            	Resource ipcs = m_data.getResourceList().getResource(Constants.IPCS);
+            	int have = m_defender.getResources().getQuantity(ipcs);
+            	int toRemove = Math.min(cost, have);
 
-            // Record ipcs lost
-            DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, toRemove);
+            	// Record ipcs lost
+            	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, toRemove);
 
-            Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
-            bridge.addChange(change);
-
+            	Change change = ChangeFactory.changeResourcesChange(m_defender, ipcs, -toRemove);
+            	bridge.addChange(change);
+            }
+            
             m_bombingRaidCost = cost;
                
         }   

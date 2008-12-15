@@ -66,6 +66,11 @@ public abstract class ActionPanel extends JPanel
         return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);
     }
     
+    public final boolean isSBRAffectsUnitProduction()
+    {
+        return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
+    }
+    
     public final boolean isSelectableTechRoll()
     {
         return games.strategy.triplea.Properties.getSelectableTechRoll(m_data);

@@ -615,7 +615,7 @@ public class BattleDisplay extends JPanel
                             chooser.setMax(count);
                         String[] options =
                         { "Ok", "Cancel" };
-
+//TODO COMCO here's where the panel pops up
                         int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, hit.getName() + " select casualties",
                                 JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
                         if (option != 0)
