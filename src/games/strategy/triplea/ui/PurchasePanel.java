@@ -150,8 +150,7 @@ public class PurchasePanel extends ActionPanel
     		
     		if(bombedTerrs.size() > 0)
     		{
-    			kev
-    			m_repair = EditProductionPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), getMap().getUIContext());
+    			m_repair = RepairPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), getMap().getUIContext());
     			//m_repairPanel.setUnitsFromProductionRuleMap(m_repair, getCurrentPlayer(), getData());
     		}
     	}

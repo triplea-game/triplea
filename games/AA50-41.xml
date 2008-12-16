@@ -877,6 +877,25 @@
                         <cost resource="IPCs" quantity="4" />
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
+                
+               <!-- Repair rules -->                
+                <productionRule name="repairFactory">
+                        <cost resource="IPCs" quantity="1" />
+                        <result resourceOrUnit="damagedFactory" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="repairFactoryIndustrialTechnology">
+                        <cost resource="IPCs" quantity="1" />
+                        <result resourceOrUnit="damagedFactory" quantity="2"/>
+                </productionRule>
+                
+                <productionFrontier name="repair">
+                	<frontierRules name="repairFactory"/>     
+                </productionFrontier>
+                
+                <productionFrontier name="repairIndustrialTechnology">
+                	<frontierRules name="repairFactoryIndustrialTechnology"/>     
+                </productionFrontier>
 
                 <productionFrontier name="production">
                         <frontierRules name="buyInfantry"/>
