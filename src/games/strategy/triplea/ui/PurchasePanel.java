@@ -29,6 +29,8 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.*;
 
@@ -42,8 +44,10 @@ public class PurchasePanel extends ActionPanel
 
   private JLabel actionLabel = new JLabel();
   private IntegerMap<ProductionRule> m_purchase;
+  private IntegerMap<ProductionRule> m_repair;  
   private boolean m_bid;
   private SimpleUnitPanel m_unitsPanel;
+  private SimpleUnitPanel m_repairPanel;  
   private JLabel m_purchasedSoFar = new JLabel();
   private JButton m_buyButton;
 
@@ -132,19 +136,37 @@ public class PurchasePanel extends ActionPanel
     public void actionPerformed(ActionEvent e)
     {
     	//TODO COMCO here's where the purchase panel pops up!
-    	kev
-      m_purchase = ProductionPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase,getMap().getUIContext());
-      m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, getCurrentPlayer(), getData());
-      if(m_purchase.totalValues() == 0)
-      {
-        m_purchasedSoFar.setText("");
-        m_buyButton.setText(BUY);
-      }
-      else
-      {
-        m_buyButton.setText(CHANGE);
-        m_purchasedSoFar.setText(m_purchase.totalValues()+MyFormatter.pluralize(" unit", m_purchase.totalValues())+" to be produced:");
-      }
+    	if(isSBRAffectsUnitProduction())
+    	{
+    		Collection<Territory> bombedTerrs = new ArrayList<Territory>();
+    		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
+                {
+    				TerritoryAttachment ta = TerritoryAttachment.get(t);
+    				if(ta.getProduction() != ta.getUnitProduction())
+    				{
+    					bombedTerrs.add(t);
+    				}
+                }
+    		
+    		if(bombedTerrs.size() > 0)
+    		{
+    			kev
+    			m_repair = EditProductionPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), getMap().getUIContext());
+    			//m_repairPanel.setUnitsFromProductionRuleMap(m_repair, getCurrentPlayer(), getData());
+    		}
+    	}
+    	m_purchase = ProductionPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase,getMap().getUIContext());
+    	m_unitsPanel.setUnitsFromProductionRuleMap(m_purchase, getCurrentPlayer(), getData());
+    	if(m_purchase.totalValues() == 0)
+    	{
+    		m_purchasedSoFar.setText("");
+    		m_buyButton.setText(BUY);
+    	}
+    	else
+    	{
+    		m_buyButton.setText(CHANGE);
+    		m_purchasedSoFar.setText(m_purchase.totalValues()+MyFormatter.pluralize(" unit", m_purchase.totalValues())+" to be produced:");
+    	}
     }
   };
 
@@ -207,7 +229,7 @@ public class PurchasePanel extends ActionPanel
      
     }
   };
-
+  
   public String toString()
   {
     return "PurchasePanel";

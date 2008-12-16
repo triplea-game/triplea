@@ -116,49 +116,7 @@ public class PurchaseDelegate implements IDelegate, IPurchaseDelegate
    */
   public String purchase(IntegerMap<ProductionRule> productionRules)
   {
-	  //TODO Comco perhaps purchase here.
-	  /*m_actionButton.setAction(new AbstractAction(btnText)
-      {
-          public void actionPerformed(ActionEvent e)
-          {
-
-              String messageText = message + " " + btnText + ".";
-              UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
-              
-
-              chooser.setTitle(messageText);
-              if (isEditMode)
-                  chooser.setMax(selectFrom.size());
-              else
-                  chooser.setMax(count);
-              String[] options =
-              { "Ok", "Cancel" };
-//TODO COMCO here's where the panel pops up
-              int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, hit.getName() + " select casualties",
-                      JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-              if (option != 0)
-                  return;
-              List<Unit> killed = chooser.getSelected(false);
-              List<Unit> damaged = chooser.getSelectedFirstHit();
-
-              if (!isEditMode && (killed.size() + damaged.size() != count))
-              {
-                  JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected", hit.getName()
-                          + " select casualties", JOptionPane.ERROR_MESSAGE);
-                  return;
-              } else
-              {
-                  CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
-                  casualtyDetails.set(response);
-                  
-                  m_dicePanel.clear();
-                  m_actionButton.setEnabled(false);
-                  m_actionButton.setAction(m_nullAction);
-
-                  continueLatch.countDown();
-              }
-          }
-      });*/
+	  //TODO COMCO maybe some purchase code here.
 	  
     IntegerMap<Resource> costs = getCosts(productionRules);
     IntegerMap<NamedAttachable> results = getResults(productionRules);

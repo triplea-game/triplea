@@ -126,8 +126,6 @@ public class ProductionPanel extends JPanel
     protected ProductionPanel(UIContext uiContext)
     {
         m_uiContext = uiContext;
-        
-      
     }
 
     private void initRules(PlayerID player, GameData data, IntegerMap<ProductionRule> initialPurchase)
