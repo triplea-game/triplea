@@ -154,6 +154,19 @@ public class GameParser
     }
 
     /**
+     * If mustfind is true and cannot find the productionRule an exception will be thrown.
+     */
+    private RepairRule getRepairRule(Element element, String attribute, boolean mustFind) throws GameParseException
+    {
+        String name = element.getAttribute(attribute);
+        RepairRule repairRule = data.getRepairRuleList().getRepairRule(name);
+        if(repairRule == null && mustFind)
+            throw new GameParseException("Could not find production rule. name:" + name);
+
+        return repairRule;
+    }
+
+    /**
      * If mustfind is true and cannot find the territory an exception will be thrown.
      */
     private Territory getTerritory(Element element, String attribute, boolean mustFind) throws GameParseException
@@ -803,6 +816,7 @@ public class GameParser
     {
         parseProductionRules( getChildren("productionRule", root));
         parseProductionFrontiers( getChildren("productionFrontier", root));
+        parseRepairFrontiers( getChildren("repairFrontier", root));
         parsePlayerProduction( getChildren("playerProduction", root));
     }
 
@@ -870,6 +884,21 @@ public class GameParser
         }
     }
 
+
+    private void parseRepairFrontiers(List elements) throws GameParseException
+    {
+    	RepairFrontierList frontiers = data.getRepairFrontierList();
+
+        for( int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+            String name = current.getAttribute("name");
+            RepairFrontier frontier = new RepairFrontier(name, data);
+            parseRepairFrontierRules( getChildren("frontierRules", current), frontier);
+            frontiers.addRepairFrontier(frontier);
+        }
+    }
+    
     private void parsePlayerProduction(List elements) throws GameParseException
     {
         for(int i = 0; i < elements.size(); i++)
@@ -887,6 +916,16 @@ public class GameParser
         {
             Element current = (Element) elements.get(i);
             ProductionRule rule = getProductionRule(current, "name", true);
+            frontier.addRule(rule);
+        }
+    }
+
+    private void parseRepairFrontierRules(List elements, RepairFrontier frontier) throws GameParseException
+    {
+        for(int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+            RepairRule rule = getRepairRule(current, "name", true);
             frontier.addRule(rule);
         }
     }

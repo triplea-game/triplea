@@ -879,23 +879,23 @@
                 </productionRule>
                 
                <!-- Repair rules -->                
-                <productionRule name="repairFactory">
+                <repairRule name="repairFactory">
                         <cost resource="IPCs" quantity="1" />
-                        <result resourceOrUnit="damagedFactory" quantity="1"/>
-                </productionRule>
+                        <result resourceOrUnit="factory" quantity="1"/>
+                </repairRule>
                 
-                <productionRule name="repairFactoryIndustrialTechnology">
+                <repairRule name="repairFactoryIndustrialTechnology">
                         <cost resource="IPCs" quantity="1" />
-                        <result resourceOrUnit="damagedFactory" quantity="2"/>
-                </productionRule>
+                        <result resourceOrUnit="factory" quantity="2"/>
+                </repairRule>
                 
-                <productionFrontier name="repair">
-                	<frontierRules name="repairFactory"/>     
-                </productionFrontier>
+                <repairFrontier name="repair">
+                	<repairRules name="repairFactory"/>
+                </repairFrontier>
                 
-                <productionFrontier name="repairIndustrialTechnology">
-                	<frontierRules name="repairFactoryIndustrialTechnology"/>     
-                </productionFrontier>
+                <repairFrontier name="repairIndustrialTechnology">
+                	<repairRules name="repairFactoryIndustrialTechnology"/>
+                </repairFrontier>
 
                 <productionFrontier name="production">
                         <frontierRules name="buyInfantry"/>

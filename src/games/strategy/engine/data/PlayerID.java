@@ -33,6 +33,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	private final UnitCollection m_unitsHeld;
 	private final ResourceCollection m_resources;
 	private ProductionFrontier m_productionFrontier;
+	private RepairFrontier m_repairFrontier;
 
 	/** Creates new Player */
     public PlayerID(String name, boolean optional, GameData data)
@@ -66,6 +67,16 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	public ProductionFrontier getProductionFrontier()
 	{
 		return m_productionFrontier;
+	}
+
+	public void setRepairFrontier(RepairFrontier frontier)
+	{
+		m_repairFrontier = frontier;
+	}
+
+	public RepairFrontier getRepairFrontier()
+	{
+		return m_repairFrontier;
 	}
 
 	public void notifyChanged()

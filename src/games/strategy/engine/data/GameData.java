@@ -87,6 +87,8 @@ public class GameData implements java.io.Serializable
 	private final PlayerList m_playerList = new PlayerList(this);
 	private final ProductionFrontierList m_productionFrontierList = new ProductionFrontierList(this);
 	private final ProductionRuleList m_productionRuleList = new ProductionRuleList(this);
+	private final RepairFrontierList m_repairFrontierList = new RepairFrontierList(this);	
+	private final RepairRuleList m_repairRuleList = new RepairRuleList(this);
 	private final ResourceList m_resourceList = new ResourceList(this);
 	private final GameSequence m_sequence = new GameSequence(this);
 	private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
@@ -177,6 +179,24 @@ public class GameData implements java.io.Serializable
 		return m_productionRuleList;
 	}
 
+    /**
+     * Get the list of production Frontiers for this game.
+     */
+	public RepairFrontierList getRepairFrontierList()
+	{
+        ensureLockHeld();
+		return m_repairFrontierList;
+	}
+
+    /**
+     * Get the list of Production Rules for the game.
+     */
+	public RepairRuleList getRepairRuleList()
+	{
+        ensureLockHeld();
+		return m_repairRuleList;
+	}
+	
     /**
      * Get the Alliance Tracker for the game.
      */
