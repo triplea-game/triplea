@@ -44,7 +44,7 @@ public class PurchasePanel extends ActionPanel
 
   private JLabel actionLabel = new JLabel();
   private IntegerMap<ProductionRule> m_purchase;
-  private IntegerMap<ProductionRule> m_repair;  
+  private IntegerMap<RepairRule> m_repair;  
   private boolean m_bid;
   private SimpleUnitPanel m_unitsPanel;
   private SimpleUnitPanel m_repairPanel;  

@@ -937,6 +937,13 @@
 				<playerProduction player="Chinese" frontier="production"/>
                 <playerProduction player="Americans" frontier="production"/>
                 
+                <playerRepair player="Germans" frontier="repair"/>
+				<playerRepair player="Russians" frontier="repair"/>
+				<playerRepair player="Japanese" frontier="repair"/>
+				<playerRepair player="British" frontier="repair"/>
+                <playerRepair player="Italians" frontier="repair"/>
+				<playerRepair player="Chinese" frontier="repair"/>
+                <playerRepair player="Americans" frontier="repair"/>
                 
                 
         </production> 

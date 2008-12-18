@@ -13,7 +13,7 @@
  */
 
 /*
- * EditProductionPanel.java
+ * RepairPanel.java
  *
  */
 
@@ -21,8 +21,14 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.triplea.ui.ProductionPanel.Rule;
+import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.UnitAttachment;
+//import games.strategy.triplea.ui.ProductionPanel.Rule;
+import games.strategy.triplea.ui.RepairPanel.Rule;
+import games.strategy.ui.ScrollableTextField;
+import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
 
 import java.awt.GridBagConstraints;
@@ -36,12 +42,16 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 
 /**
  * 
@@ -49,7 +59,7 @@ import javax.swing.KeyStroke;
  * 
  *  
  */
-public class RepairPanel extends ProductionPanel
+public class RepairPanel extends JPanel
 {
     private GameData m_data;
     private PlayerID m_id;
@@ -61,15 +71,15 @@ public class RepairPanel extends ProductionPanel
     private JButton m_done;
     private JLabel m_left = new JLabel();
 
-    public static IntegerMap<ProductionRule> getProduction(PlayerID id, JFrame parent, GameData data, UIContext context)
+    public static IntegerMap<RepairRule> getProduction(PlayerID id, JFrame parent, GameData data, UIContext context)
     {
-        return new RepairPanel(context).show(id, parent, data, false, new IntegerMap<ProductionRule>());
+        return new RepairPanel(context).show(id, parent, data, false, new IntegerMap<RepairRule>());
     }
 
     /**
      * Shows the production panel, and returns a map of selected rules.
      */
-    public IntegerMap<ProductionRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<ProductionRule> initialPurchase)
+    public IntegerMap<RepairRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<RepairRule> initialPurchase)
     {
         if (!(parent == m_owner))
             m_dialog = null;
@@ -94,17 +104,17 @@ public class RepairPanel extends ProductionPanel
 
     }
 
-    private void initRules(PlayerID player, GameData data, IntegerMap<ProductionRule> initialPurchase)
+    private void initRules(PlayerID player, GameData data, IntegerMap<RepairRule> initialPurchase)
     {
         m_data.acquireReadLock();
         try
         {
             m_id = player;
-            kev
-            for(ProductionRule productionRule : player.getRepairFrontier())
+            
+            for(RepairRule repairRule : player.getRepairFrontier())
             {
-                Rule rule = new Rule(productionRule, player, m_uiContext);
-            	int initialQuantity = initialPurchase.getInt(productionRule);
+                Rule rule = new Rule(repairRule, player, m_uiContext);
+            	int initialQuantity = initialPurchase.getInt(repairRule);
             	rule.setQuantity(initialQuantity);
             	m_rules.add(rule);
             }
@@ -139,6 +149,12 @@ public class RepairPanel extends ProductionPanel
         m_dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
     }
 
+    // this method can be accessed by subclasses
+    protected List<Rule> getRules()
+    {
+        return m_rules;
+    };
+
     private void initLayout(PlayerID id)
     {
         Insets nullInsets = new Insets(0, 0, 0, 0);
@@ -162,10 +178,18 @@ public class RepairPanel extends ProductionPanel
                 0, 8, 0), 0, 0));
 
     }
-
-    private IntegerMap<ProductionRule> getProduction()
+    
+    Action m_done_action = new AbstractAction("Done")
     {
-        IntegerMap<ProductionRule> prod = new IntegerMap<ProductionRule>();
+        public void actionPerformed(ActionEvent e)
+        {
+            m_dialog.setVisible(false);
+        }
+    };
+
+    private IntegerMap<RepairRule> getProduction()
+    {
+        IntegerMap<RepairRule> prod = new IntegerMap<RepairRule>();
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
         {
@@ -173,7 +197,7 @@ public class RepairPanel extends ProductionPanel
             int quantity = rule.getQuantity();
             if (quantity != 0)
             {
-                prod.put(rule.getProductionRule(), quantity);
+                prod.put(rule.getRepairRule(), quantity);
             }
         }
         return prod;
@@ -182,8 +206,7 @@ public class RepairPanel extends ProductionPanel
     /** Creates new RepairPanel */
     private RepairPanel(UIContext uiContext)
     {
-        //m_uiContext = uiContext;
-        super(uiContext);
+        m_uiContext = uiContext;
     }
 
     protected void setLeft(int left)
@@ -200,6 +223,76 @@ public class RepairPanel extends ProductionPanel
             current.setMax(99);
         }
     }
+    class Rule extends JPanel
+    {
+        private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
+        private int m_cost;         
+        private RepairRule m_rule;
 
+
+        Rule(RepairRule rule, PlayerID id, UIContext uiContext)
+        {
+            
+            setLayout(new GridBagLayout());
+            m_rule = rule;
+            m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
+            UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
+            UnitAttachment attach= UnitAttachment.get(type);
+            int attack=attach.getAttack(id);
+            int movement=attach.getMovement(id);
+            int defense=attach.getDefense(id);
+            Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false);
+            String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
+            JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
+            JLabel info=new JLabel(attack+"/"+defense+"/"+movement);
+
+            int space = 8;
+            this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                    new Insets(2, 0, 0, 0), 0, 0));
+            this.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
+                    space), 0, 0));
+            this.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
+                    space), 0, 0));
+
+            this.add(m_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
+                    space, space), 0, 0));
+
+            m_text.addChangeListener(m_listener);
+            setBorder(new EtchedBorder());
+        }
+
+        int getCost()
+        {
+            return m_cost;
+        }
+
+        int getQuantity()
+        {
+            return m_text.getValue();
+        }
+
+        void setQuantity(int quantity)
+        {
+            m_text.setValue(quantity);
+        }
+
+        RepairRule getRepairRule()
+        {
+            return m_rule;
+        }
+
+        void setMax(int max)
+        {
+            m_text.setMax(max);
+        }
+        
+    }
+
+    private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
+    {
+        public void changedValue(ScrollableTextField stf)
+        {
+            calculateLimits();
+        }
+    };
 }
-

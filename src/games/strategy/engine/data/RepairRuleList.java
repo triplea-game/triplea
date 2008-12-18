@@ -36,7 +36,7 @@ public class RepairRuleList extends GameDataComponent
 		super(data);
     }
 	
-	protected void addRepairRuleRule(RepairRule pf)
+	protected void addRepairRule(RepairRule pf)
 	{
 		m_repairRules.put(pf.getName(), pf);
 	}

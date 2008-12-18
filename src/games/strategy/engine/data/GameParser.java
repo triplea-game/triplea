@@ -97,7 +97,7 @@ public class GameParser
         
         Node production = getSingleChild("production", root, true);
         if(production != null)
-            parseProduction(production);
+            parseProduction(production);     
 
         Node attachmentList = getSingleChild("attatchmentList", root, true);
         if(attachmentList != null)
@@ -231,6 +231,19 @@ public class GameParser
         return productionFrontier;
     }
 
+    /**
+     * If mustfind is true and cannot find the productionRule an exception will be thrown.
+     */
+    private RepairFrontier getRepairFrontier(Element element, String attribute, boolean mustFind) throws GameParseException
+    {
+        String name = element.getAttribute(attribute);
+        RepairFrontier repairFrontier = data.getRepairFrontierList().getRepairFrontier(name);
+        if(repairFrontier == null && mustFind)
+            throw new GameParseException("Could not find production frontier. name:" + name);
+
+        return repairFrontier;
+    }
+    
     /**
      * Loads an instance of the given class.
      * Assumes a zero argument constructor.
@@ -816,10 +829,13 @@ public class GameParser
     {
         parseProductionRules( getChildren("productionRule", root));
         parseProductionFrontiers( getChildren("productionFrontier", root));
-        parseRepairFrontiers( getChildren("repairFrontier", root));
         parsePlayerProduction( getChildren("playerProduction", root));
+        
+    	parseRepairRules( getChildren("repairRule", root));
+    	parseRepairFrontiers( getChildren("repairFrontier", root));
+    	parsePlayerRepair( getChildren("playerRepair", root));
     }
-
+    
     private void parseProductionRules(List elements) throws GameParseException
     {
         for(int i = 0; i < elements.size(); i++)
@@ -833,7 +849,21 @@ public class GameParser
             data.getProductionRuleList().addProductionRule(rule);
         }
     }
+    
+    private void parseRepairRules(List elements) throws GameParseException
+    {
+        for(int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
 
+            String name = current.getAttribute("name");
+            RepairRule rule = new RepairRule(name, data);
+            parseRepairCosts(rule, getChildren("cost", current));
+            parseRepairResults(rule, getChildren("result", current));
+            data.getRepairRuleList().addRepairRule(rule);
+        }
+    }
+    
     private void parseCosts(ProductionRule rule, List elements) throws GameParseException
     {
         if(elements.size() == 0)
@@ -848,7 +878,22 @@ public class GameParser
             rule.addCost(resource, quantity);
         }
     }
+    
+    private void parseRepairCosts(RepairRule rule, List elements) throws GameParseException
+    {
+        if(elements.size() == 0)
+            throw new GameParseException("no costs  for rule:" + rule.getName());
 
+        for(int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+
+            Resource resource = getResource(current, "resource", true);
+            int quantity = Integer.parseInt(current.getAttribute("quantity"));
+            rule.addCost(resource, quantity);
+        }
+    }
+    
     private void parseResults(ProductionRule rule, List elements) throws GameParseException
     {
         if(elements.size() == 0)
@@ -869,7 +914,28 @@ public class GameParser
             rule.addResult(result, quantity);
         }
     }
+    
+    private void parseRepairResults(RepairRule rule, List elements) throws GameParseException
+    {
+        if(elements.size() == 0)
+            throw new GameParseException("no results  for rule:" + rule.getName());
 
+        for(int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+
+            //must find either a resource or a unit with the given name
+            NamedAttachable result = null;
+            result = getResource(current, "resourceOrUnit", false);
+            if(result == null)
+                result = getUnitType(current, "resourceOrUnit", false);
+            if(result == null)
+                throw new GameParseException("Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
+            int quantity = Integer.parseInt(current.getAttribute("quantity"));
+            rule.addResult(result, quantity);
+        }
+    }
+    
     private void parseProductionFrontiers(List elements) throws GameParseException
     {
         ProductionFrontierList frontiers = data.getProductionFrontierList();
@@ -894,7 +960,7 @@ public class GameParser
             Element current = (Element) elements.get(i);
             String name = current.getAttribute("name");
             RepairFrontier frontier = new RepairFrontier(name, data);
-            parseRepairFrontierRules( getChildren("frontierRules", current), frontier);
+            parseRepairFrontierRules( getChildren("repairRules", current), frontier);
             frontiers.addRepairFrontier(frontier);
         }
     }
@@ -906,7 +972,18 @@ public class GameParser
             Element current = (Element) elements.get(i);
             PlayerID player = getPlayerID(current, "player", true);
             ProductionFrontier frontier = getProductionFrontier(current, "frontier", true);
-            player.setProductionFrontier(frontier);
+            player.setProductionFrontier(frontier);            
+        }
+    }
+
+    private void parsePlayerRepair(List elements) throws GameParseException
+    {
+        for(int i = 0; i < elements.size(); i++)
+        {
+            Element current = (Element) elements.get(i);
+            PlayerID player = getPlayerID(current, "player", true);
+           	RepairFrontier repairFrontier = getRepairFrontier(current, "frontier", true);
+           	player.setRepairFrontier(repairFrontier);
         }
     }
 
