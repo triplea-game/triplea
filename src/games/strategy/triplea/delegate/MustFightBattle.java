@@ -888,7 +888,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
                 
             });
-        //TODO Comco added
+
         if (!isEditMode)
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
@@ -936,7 +936,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 }
 
             });        
-//TODO Comco added
+
         if (!isEditMode)
             steps.add(new IExecutable(){
                 // compatible with 0.9.0.2 saved games
@@ -1722,7 +1722,6 @@ public class MustFightBattle implements Battle, BattleStepStrings
      */
     private void checkAirOnlyOnSubs(IDelegateBridge bridge)
     {
-    	//TODO COMCO check for subs and trns
 	    //if All attackers are AIR submerge any defending subs
 	    if(Match.allMatch(m_attackingUnits, Matches.UnitIsAir) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
 	    {
@@ -1847,7 +1846,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
                 Matches.UnitIsSub);
         if (firing.isEmpty())
             return;
-        //TODO COMCO look here for ideas on how to limit air on sub casualties
+
         Collection<Unit> attacked = Match.getMatches(m_defendingUnits,
                 Matches.UnitIsNotAir);
         //if there are destroyers in the attacked units, we can return fire.
@@ -2928,7 +2927,7 @@ class Fire implements IExecutable
             	CasualtyDetails message;
         		//Get all transports in the territory    
                 int countTransports = Match.countMatches(m_attackableUnits, Matches.UnitTypeIsTransport);
-            	//TODO COMCO need to check for air on subs
+
               //If there are transports and they are restricted, look to remove them from the casualty selection
              	if(countTransports > 0 && isTransportCasualtiesRestricted(data))
             	{

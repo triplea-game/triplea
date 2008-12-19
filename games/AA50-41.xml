@@ -624,6 +624,7 @@
                 <unit name="carrier"/>
                 <unit name="submarine"/>
                 <unit name="factory"/>
+                <unit name="factory_hit"/>
                 <unit name="aaGun"/>
                 <unit name="artillery"/>
                 <unit name="destroyer"/>
@@ -881,12 +882,12 @@
                <!-- Repair rules -->                
                 <repairRule name="repairFactory">
                         <cost resource="IPCs" quantity="1" />
-                        <result resourceOrUnit="factory" quantity="1"/>
+                        <result resourceOrUnit="factory_hit" quantity="1"/>
                 </repairRule>
                 
                 <repairRule name="repairFactoryIndustrialTechnology">
                         <cost resource="IPCs" quantity="1" />
-                        <result resourceOrUnit="factory" quantity="2"/>
+                        <result resourceOrUnit="factory_hit" quantity="2"/>
                 </repairRule>
                 
                 <repairFrontier name="repair">
@@ -1121,6 +1122,10 @@
 
                 <!-- Factory -->
                 <attatchment name="unitAttatchment" attatchTo="factory" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="isFactory" value="true"/>   
+                </attatchment>
+                
+                <attatchment name="unitAttatchment" attatchTo="factory_hit" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isFactory" value="true"/>   
                 </attatchment>
             

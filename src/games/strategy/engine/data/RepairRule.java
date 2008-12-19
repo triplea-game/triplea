@@ -32,6 +32,7 @@ public class RepairRule extends DefaultNamed implements Serializable
 {
 	private IntegerMap<Resource> m_cost = new IntegerMap<Resource>();
 	private IntegerMap<NamedAttachable> m_results = new IntegerMap<NamedAttachable>();
+	private String m_Terr = new String();
 	
 	/** Creates new RepairRule */
     public RepairRule(String name, GameData data) 
@@ -58,6 +59,16 @@ public class RepairRule extends DefaultNamed implements Serializable
 	public IntegerMap<Resource> getCosts()
 	{
 		return m_cost.copy();
+	}	
+
+	public String getTerr()
+	{
+		return m_Terr;
+	}
+
+	public void setTerr(String value)
+	{
+		m_Terr = value;
 	}
 	
 	public IntegerMap<NamedAttachable> getResults()

@@ -42,6 +42,7 @@ public class IntTextField extends JTextField
 
 	private int m_max = Integer.MAX_VALUE;
 	private int m_min = Integer.MIN_VALUE;
+	private String m_terr = null;
 	private ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<IntTextFieldChangeListener>();
 	
 	public static void main(String[] args)
@@ -127,7 +128,7 @@ public class IntTextField extends JTextField
 			
 		}
 	}
-	
+
 	public void setMax(int max)
 	{
 		if(max < m_min)
@@ -140,6 +141,11 @@ public class IntTextField extends JTextField
 			setText(String.valueOf(max));
 			
 		}
+	}
+
+	public void setTerr(String terr)
+	{	
+		m_terr = terr;	
 	}
 	
 	public void setMin(int min)
@@ -159,6 +165,11 @@ public class IntTextField extends JTextField
 	public int getMax()
 	{
 		return m_max;
+	}
+	
+	public String getTerr()
+	{
+		return m_terr;
 	}
 	
 	public int getMin()

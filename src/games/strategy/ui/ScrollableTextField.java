@@ -152,6 +152,11 @@ public class ScrollableTextField extends JPanel
     m_text.setMax(max);
     setWidgetActivation();
   }
+
+  public void setTerr(String terr)
+  {
+    m_text.setTerr(terr);
+  }
   
   public void setShowMaxAndMin(boolean aBool)
   {
@@ -162,6 +167,11 @@ public class ScrollableTextField extends JPanel
   public int getMax()
   {
     return m_text.getMax();
+  }
+
+  public String getTerr()
+  {
+    return m_text.getTerr();
   }
 
   public void setMin(int min)

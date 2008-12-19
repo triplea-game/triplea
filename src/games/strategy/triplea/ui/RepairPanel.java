@@ -22,14 +22,18 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-//import games.strategy.triplea.ui.ProductionPanel.Rule;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.RepairPanel.Rule;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,6 +41,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -110,13 +115,27 @@ public class RepairPanel extends JPanel
         try
         {
             m_id = player;
-            
+            Collection<Territory> factoryTerrs = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(data, player));
+                       
             for(RepairRule repairRule : player.getRepairFrontier())
             {
-                Rule rule = new Rule(repairRule, player, m_uiContext);
-            	int initialQuantity = initialPurchase.getInt(repairRule);
-            	rule.setQuantity(initialQuantity);
-            	m_rules.add(rule);
+            	//TODO COMCO perhaps another loop here for territory
+            	for(Territory terr : factoryTerrs)
+            	{
+                    TerritoryAttachment ta = TerritoryAttachment.get(terr);
+                    int unitProduction = Math.max(0, ta.getUnitProduction());
+                    int IPCProduction = ta.getProduction();
+                    
+                    if(unitProduction < IPCProduction)
+                    {
+                        Rule rule = new Rule(repairRule, player, m_uiContext, terr);
+                    	int initialQuantity = initialPurchase.getInt(repairRule);
+                    	rule.setQuantity(initialQuantity);
+                    	rule.setMax(IPCProduction - unitProduction);
+                    	rule.setTerr(terr.getName().toString());
+                    	m_rules.add(rule);
+                    }            		
+            	}
             }
         }
         finally 
@@ -160,7 +179,7 @@ public class RepairPanel extends JPanel
         Insets nullInsets = new Insets(0, 0, 0, 0);
         this.removeAll();
         this.setLayout(new GridBagLayout());
-        JLabel legendLabel = new JLabel("Attack/Defense/Movement");
+        JLabel legendLabel = new JLabel("Repair Units");
         add(legendLabel,
                 new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 
@@ -189,6 +208,7 @@ public class RepairPanel extends JPanel
 
     private IntegerMap<RepairRule> getProduction()
     {
+    	kev
         IntegerMap<RepairRule> prod = new IntegerMap<RepairRule>();
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
@@ -220,7 +240,12 @@ public class RepairPanel extends JPanel
         while (iter.hasNext())
         {
             Rule current = iter.next();
-            current.setMax(99);
+            //int currMax = current.getMax();
+            //int currSize = current.getQuantity();
+            Territory terr = m_data.getMap().getTerritory(current.getTerr());
+            TerritoryAttachment ta = TerritoryAttachment.get(terr);
+            int maxProd = ta.getProduction();
+            current.setMax(maxProd);
         }
     }
     class Rule extends JPanel
@@ -230,21 +255,17 @@ public class RepairPanel extends JPanel
         private RepairRule m_rule;
 
 
-        Rule(RepairRule rule, PlayerID id, UIContext uiContext)
+        Rule(RepairRule rule, PlayerID id, UIContext uiContext, Territory repairLocation)
         {
             
             setLayout(new GridBagLayout());
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
-            UnitAttachment attach= UnitAttachment.get(type);
-            int attack=attach.getAttack(id);
-            int movement=attach.getMovement(id);
-            int defense=attach.getDefense(id);
             Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
-            JLabel info=new JLabel(attack+"/"+defense+"/"+movement);
+            JLabel info=new JLabel(repairLocation.getName().toString());
 
             int space = 8;
             this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
@@ -281,9 +302,24 @@ public class RepairPanel extends JPanel
             return m_rule;
         }
 
+        int getMax()
+        {
+            return m_text.getMax();
+        }
+        
         void setMax(int max)
         {
             m_text.setMax(max);
+        }
+
+        String getTerr()
+        {
+            return m_text.getTerr();
+        }
+        
+        void setTerr(String terr)
+        {
+            m_text.setTerr(terr);
         }
         
     }
