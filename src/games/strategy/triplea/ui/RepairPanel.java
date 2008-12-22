@@ -119,7 +119,6 @@ public class RepairPanel extends JPanel
                        
             for(RepairRule repairRule : player.getRepairFrontier())
             {
-            	//TODO COMCO perhaps another loop here for territory
             	for(Territory terr : factoryTerrs)
             	{
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
@@ -132,6 +131,8 @@ public class RepairPanel extends JPanel
                     	int initialQuantity = initialPurchase.getInt(repairRule);
                     	rule.setQuantity(initialQuantity);
                     	rule.setMax(IPCProduction - unitProduction);
+                    	//This allows it to be returned, but we only get 1
+                    	//repairRule.setTerr(terr.getName().toString());
                     	rule.setTerr(terr.getName().toString());
                     	m_rules.add(rule);
                     }            		
@@ -208,7 +209,6 @@ public class RepairPanel extends JPanel
 
     private IntegerMap<RepairRule> getProduction()
     {
-    	kev
         IntegerMap<RepairRule> prod = new IntegerMap<RepairRule>();
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
@@ -240,11 +240,9 @@ public class RepairPanel extends JPanel
         while (iter.hasNext())
         {
             Rule current = iter.next();
-            //int currMax = current.getMax();
-            //int currSize = current.getQuantity();
             Territory terr = m_data.getMap().getTerritory(current.getTerr());
             TerritoryAttachment ta = TerritoryAttachment.get(terr);
-            int maxProd = ta.getProduction();
+            int maxProd = ta.getProduction() - ta.getUnitProduction();
             current.setMax(maxProd);
         }
     }
@@ -253,6 +251,7 @@ public class RepairPanel extends JPanel
         private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
         private int m_cost;         
         private RepairRule m_rule;
+        private String m_terr;
 
 
         Rule(RepairRule rule, PlayerID id, UIContext uiContext, Territory repairLocation)
@@ -261,6 +260,7 @@ public class RepairPanel extends JPanel
             setLayout(new GridBagLayout());
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
+            //m_terr = rule.getTerr();
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
             Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;

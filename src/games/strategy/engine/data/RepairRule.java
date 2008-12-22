@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author  Sean Bridges
+ * @author  Kevin Comcowich
  */
 public class RepairRule extends DefaultNamed implements Serializable
 {

@@ -27,10 +27,13 @@ import games.strategy.util.Match;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.ui.RepairPanel.Rule;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -151,7 +154,25 @@ public class PurchasePanel extends ActionPanel
     		if(bombedTerrs.size() > 0)
     		{
     			m_repair = RepairPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), getMap().getUIContext());
-    			//m_repairPanel.setUnitsFromProductionRuleMap(m_repair, getCurrentPlayer(), getData());
+kev
+    		    //List<Rule> rules = new ArrayList<Rule>();
+    			int size = m_repair.keySet().size();
+    			Iterator<RepairRule> iter = m_repair.keySet().iterator();
+    			    			
+    	        while (iter.hasNext())
+    	        {
+    	        	RepairRule current = iter.next();    	        	
+    	        	int quantity = m_repair.getInt(current);
+    	        	
+    	        	if(quantity > 0)
+    	        	{
+        	            Territory terr = getData().getMap().getTerritory(current.getTerr());
+        	            TerritoryAttachment ta = TerritoryAttachment.get(terr);
+        	            int currUnitProd = ta.getUnitProduction();
+        	            String newUnitProd = String.valueOf(currUnitProd += quantity);
+        	            ta.setUnitProduction(newUnitProd);    	        		
+    	        	}
+    	        }
     		}
     	}
     	m_purchase = ProductionPanel.getProduction(getCurrentPlayer(), (JFrame) getTopLevelAncestor(), getData(), m_bid, m_purchase,getMap().getUIContext());
