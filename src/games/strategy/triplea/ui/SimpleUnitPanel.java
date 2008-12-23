@@ -104,4 +104,17 @@ public class SimpleUnitPanel extends JPanel
           return utc.compare(u1, u2);
       }
   };
+
+  Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>()
+  {
+      UnitTypeComparator utc = new UnitTypeComparator();
+
+      public int compare(RepairRule o1, RepairRule o2)
+      {
+          UnitType u1 = (UnitType)  o1.getResults().keySet().iterator().next();
+          UnitType u2 = (UnitType)  o2.getResults().keySet().iterator().next();
+          return utc.compare(u1, u2);
+      }
+  };
+  
 }

@@ -21,6 +21,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -76,15 +77,15 @@ public class RepairPanel extends JPanel
     private JButton m_done;
     private JLabel m_left = new JLabel();
 
-    public static IntegerMap<RepairRule> getProduction(PlayerID id, JFrame parent, GameData data, UIContext context)
+    public static IntegerMap<Rule> getProduction(PlayerID id, JFrame parent, GameData data, IntegerMap<Rule> m_repair, UIContext context)
     {
-        return new RepairPanel(context).show(id, parent, data, false, new IntegerMap<RepairRule>());
+        return new RepairPanel(context).show(id, parent, data, false, m_repair);
     }
 
     /**
      * Shows the production panel, and returns a map of selected rules.
      */
-    public IntegerMap<RepairRule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<RepairRule> initialPurchase)
+    public IntegerMap<Rule> show(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<Rule> m_repair)
     {
         if (!(parent == m_owner))
             m_dialog = null;
@@ -94,7 +95,7 @@ public class RepairPanel extends JPanel
 
         this.m_bid = bid;
         this.m_data = data;
-        this.initRules(id, data, initialPurchase);
+        this.initRules(id, data, m_repair);
         this.initLayout(id);
         this.calculateLimits();
 
@@ -109,7 +110,7 @@ public class RepairPanel extends JPanel
 
     }
 
-    private void initRules(PlayerID player, GameData data, IntegerMap<RepairRule> initialPurchase)
+    private void initRules(PlayerID player, GameData data, IntegerMap<Rule> m_repair)
     {
         m_data.acquireReadLock();
         try
@@ -117,7 +118,7 @@ public class RepairPanel extends JPanel
             m_id = player;
             Collection<Territory> factoryTerrs = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedFactory(data, player));
                        
-            for(RepairRule repairRule : player.getRepairFrontier())
+            for(RepairRule rRule : player.getRepairFrontier())
             {
             	for(Territory terr : factoryTerrs)
             	{
@@ -127,13 +128,12 @@ public class RepairPanel extends JPanel
                     
                     if(unitProduction < IPCProduction)
                     {
-                        Rule rule = new Rule(repairRule, player, m_uiContext, terr);
-                    	int initialQuantity = initialPurchase.getInt(repairRule);
+                        Rule rule = new Rule(rRule, player, m_uiContext, terr);
+                        int initialQuantity = m_repair.getInt(rule);
                     	rule.setQuantity(initialQuantity);
                     	rule.setMax(IPCProduction - unitProduction);
-                    	//This allows it to be returned, but we only get 1
-                    	//repairRule.setTerr(terr.getName().toString());
                     	rule.setTerr(terr.getName().toString());
+                    	rule.setName(terr.getName().toString());
                     	m_rules.add(rule);
                     }            		
             	}
@@ -207,17 +207,17 @@ public class RepairPanel extends JPanel
         }
     };
 
-    private IntegerMap<RepairRule> getProduction()
+    private IntegerMap<Rule> getProduction()
     {
-        IntegerMap<RepairRule> prod = new IntegerMap<RepairRule>();
+        IntegerMap<Rule> prod = new IntegerMap<Rule>();
         Iterator<Rule> iter = m_rules.iterator();
         while (iter.hasNext())
         {
             Rule rule = iter.next();
             int quantity = rule.getQuantity();
             if (quantity != 0)
-            {
-                prod.put(rule.getRepairRule(), quantity);
+            {//Kev perhaps append terr name.
+                prod.put(rule, quantity);
             }
         }
         return prod;
@@ -260,7 +260,7 @@ public class RepairPanel extends JPanel
             setLayout(new GridBagLayout());
             m_rule = rule;
             m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
-            //m_terr = rule.getTerr();
+
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
             Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
@@ -314,12 +314,12 @@ public class RepairPanel extends JPanel
 
         String getTerr()
         {
-            return m_text.getTerr();
+            return m_terr;
         }
         
         void setTerr(String terr)
         {
-            m_text.setTerr(terr);
+            m_terr = terr;
         }
         
     }
