@@ -100,7 +100,7 @@
 			>
 		
 
-<!ELEMENT production (productionRule+, productionFrontier+, playerProduction+)>
+<!ELEMENT production (productionRule+, repairRule+, repairFrontier+, productionFrontier+, playerProduction+, playerRepair+)>
 	<!ELEMENT productionRule (cost+ , result+)>
 	<!ATTLIST productionRule 
 		name ID #REQUIRED
@@ -115,6 +115,21 @@
 			resourceOrUnit IDREF #REQUIRED
 			quantity CDATA #REQUIRED
 		>
+		
+	<!ELEMENT repairRule (cost+ , result+)>
+	<!ATTLIST repairRule 
+		name ID #REQUIRED
+	>
+	
+	<!ELEMENT repairFrontier (repairRules+)>
+	<!ATTLIST repairFrontier
+		name ID #REQUIRED
+	>
+		<!ELEMENT repairRules EMPTY>
+		<!ATTLIST repairRules 
+			name IDREF #REQUIRED
+		>
+	
 	<!ELEMENT productionFrontier (frontierRules+)>
 	<!ATTLIST productionFrontier
 		name ID #REQUIRED
@@ -129,6 +144,12 @@
 	    frontier IDREF #REQUIRED
 	>
 	
+	<!ELEMENT playerRepair EMPTY>
+	<!ATTLIST playerRepair
+	    player IDREF #REQUIRED
+	    frontier IDREF #REQUIRED
+	>
+	
 <!-- attatchments must implement Attatchment -->
 <!ELEMENT attatchmentList (attatchment+) >
 	<!ELEMENT attatchment (option+) >
@@ -138,7 +159,6 @@
 		javaClass CDATA #REQUIRED
 		type (unitType | territory | resource | player)  "unitType"
 	>
-	<!-- comco	--> 
 		<!ELEMENT option EMPTY > 
 		<!ATTLIST option
 			name CDATA #REQUIRED
