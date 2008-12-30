@@ -51,7 +51,6 @@ public class DiceRoll implements Externalizable
         boolean isEditMode = EditDelegate.getEditMode(data);
         ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
         
-      //Kev  player.getID()
         int hitAt = 0;
         if(isAARadar(location.getOwner()))
             hitAt = 1;
@@ -228,7 +227,7 @@ public class DiceRoll implements Externalizable
         {
             artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
 
-            //Kev If ImprovedArtillery, double number of units to support
+            //If ImprovedArtillery, double number of units to support
             if(isImprovedArtillerySupport(player))
                 artillerySupportAvailable *= 2;
         }

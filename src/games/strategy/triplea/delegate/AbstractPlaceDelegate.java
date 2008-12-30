@@ -350,7 +350,7 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
             placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));
 
         }
-//Kev check here for factory max bug/feature request
+//TODO COMCO check here for factory max bug/feature request
         //Were any factories built
         if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
         {

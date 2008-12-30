@@ -216,7 +216,8 @@ public class RepairPanel extends JPanel
             Rule rule = iter.next();
             int quantity = rule.getQuantity();
             if (quantity != 0)
-            {//Kev perhaps append terr name.
+            {
+                //TODO COMCO perhaps append terr name.
                 prod.put(rule, quantity);
             }
         }

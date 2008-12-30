@@ -69,7 +69,7 @@ public class TripleA implements IGameLoader
     private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
     private static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy AI";
     //Kev
-    private static final String NEXT_COMPUTER_PLAYER_TYPE = "Next AI";
+    //private static final String NEXT_COMPUTER_PLAYER_TYPE = "Next AI";
 
     
     private transient TripleaDisplay m_display;
@@ -235,10 +235,10 @@ public class TripleA implements IGameLoader
     {
         
         return new String[]
-        //{HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE};
-                          //Kev
-                          {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, NEXT_COMPUTER_PLAYER_TYPE};                          
-            
+        {
+            HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE};
+            //Kev
+            //{HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, NEXT_COMPUTER_PLAYER_TYPE};
     }
 
     public IPBEMMessenger[] getPBEMMessengers()

@@ -61,21 +61,6 @@ public class UnitsThatCantFightUtil
         	//see if there are any enemy combat units
             Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
             
-            //TODO COMCO does this delete them from the display
-            /*if (nonCombatUnits.size() != 0)
-            {
-            //Match for enemy combat units
-            	CompositeMatch<Unit> enemyUnitsMatch = new CompositeMatchAnd<Unit>();
-            	enemyUnitsMatch.add(Matches.enemyUnit(player, m_data));
-            	enemyUnitsMatch.add(Matches.unitCanAttack(player));
-            //kev look here.... current is not what is expected.
-             //&& current.getUnits().someMatch(enemyUnitsMatch))
-        	
-        		Collection<Unit> enemyUnits = current.getUnits().getMatches(enemyUnitsMatch);
-        		boolean kev = current.getUnits().someMatch(enemyUnitsMatch);
-        		if (kev)           
-            		cantFight.add(current);
-            }*/
         }
         return cantFight;
     }
