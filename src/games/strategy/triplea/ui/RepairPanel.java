@@ -61,7 +61,7 @@ import javax.swing.border.EtchedBorder;
 
 /**
  * 
- * @author Tony Clayton
+ * @author Kevin Comcowich
  * 
  *  
  */
@@ -125,7 +125,7 @@ public class RepairPanel extends JPanel
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
                     int unitProduction = Math.max(0, ta.getUnitProduction());
                     int IPCProduction = ta.getProduction();
-                    
+                    //TODO COMCO add in the extra 2 for advanced industrial tech
                     if(unitProduction < IPCProduction)
                     {
                         Rule rule = new Rule(rRule, player, m_uiContext, terr);

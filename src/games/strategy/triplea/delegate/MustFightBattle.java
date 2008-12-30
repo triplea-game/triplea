@@ -144,7 +144,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
         
 
         m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(
-                Matches.enemyUnit(attacker, data))); //KEVY!
+                Matches.enemyUnit(attacker, data)));
         m_defender = findDefender(battleSite);
     }
 
@@ -238,7 +238,7 @@ public class MustFightBattle implements Battle, BattleStepStrings
 
         m_attackingFrom.add(attackingFrom);
 
-        m_attackingUnits.addAll(attackingUnits); //KEVY!
+        m_attackingUnits.addAll(attackingUnits);
 
         if (m_attackingFromMap.get(attackingFrom) == null)
         {

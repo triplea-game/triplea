@@ -421,7 +421,7 @@ public class Properties implements Constants
 	 }
 
 	 /*
-	  * Production restricted to 1 unit (type x) per y owned territories
+	  * Production restricted to 1 unit per X owned territories
 	  */
 	 public static boolean getProductionPerXTerritoriesRestricted(GameData data)
 	 {
@@ -436,7 +436,7 @@ public class Properties implements Constants
 	 }
 
 	 /*
-	  * roduction restricted to 1 unit per owned territory with an IPC value
+	  * Production restricted to 1 unit per owned territory with an IPC value
 	  */
 	 public static boolean getProductionPerValuedTerritoryRestricted(GameData data)
 	 {

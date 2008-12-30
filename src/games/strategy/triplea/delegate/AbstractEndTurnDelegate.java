@@ -34,6 +34,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -100,6 +101,19 @@ public abstract class AbstractEndTurnDelegate
         Collection<Territory> territories = gameData.getMap().getTerritoriesOwnedBy(player);
 
         int toAdd = getProduction(territories);
+        //Add the War Bond dialog
+        if(isWarBonds(player))
+        {
+            int[] randomRoll;
+            String annotation = player + " Roll to resolve War Bonds:";
+            
+            randomRoll = aBridge.getRandom(Constants.MAX_DICE, 1, annotation);
+
+            m_bridge.getHistoryWriter().startEvent("Roll to resolve War Bonds:" + MyFormatter.asDice(randomRoll));
+            
+            toAdd += randomRoll[0]+1;
+        }
+        
         int total = player.getResources().getQuantity(ipcs) + toAdd;
         String transcriptText = player.getName() + " collect " + toAdd + MyFormatter.pluralize(" ipc", toAdd)+"; end with " + total+ MyFormatter.pluralize(" ipc", total) + " total";
         aBridge.getHistoryWriter().startEvent(transcriptText);
@@ -218,6 +232,15 @@ public abstract class AbstractEndTurnDelegate
                 value += attatchment.getProduction();
         }
         return value;
+    }
+
+    private boolean isWarBonds(PlayerID player)
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        if(ta != null)
+            return ta.hasWarBonds();
+        
+        return false;
     }
 
     public void setHasPostedTurnSummary(boolean hasPostedTurnSummary)

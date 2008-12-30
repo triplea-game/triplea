@@ -1996,7 +1996,13 @@
                 </resourceInitialize>
         </initialize>
 
-        <propertyList>                
+        <propertyList>                        
+
+                <!-- Use Anniversary Edition Rules -->
+				<property name="Anniversary Edition" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
 				<!-- Use Submersible Subs-->
                 <property name="Submersible Subs" value="true" editable="false">
                         <boolean/>

@@ -38,6 +38,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -350,12 +351,13 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
 
         }
 //Kev check here for factory max bug/feature request
-        //make sure only max Factories
+        //Were any factories built
         if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
         {
             //if its an original factory then unlimited production
             TerritoryAttachment ta = TerritoryAttachment.get(to);
 
+            //TODO COMCO extract rule from 4th ed into individual rule
             //4th edition, you cant place factories in territories with no
             // production
             if (!(isFourthEdition() && ta.getProduction() == 0))
@@ -386,13 +388,16 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         Collection<Unit> factoryUnits = producer.getUnits().getMatches(
                 Matches.UnitIsFactory);
         boolean limitSBRDamageToUnitProd = isSBRAffectsUnitProduction();
+        boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
         boolean originalFactory = ta.isOriginalFactory();
         boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player
                 .equals(getOriginalFactoryOwner(producer)) : false;
 
-        if (originalFactory && playerIsOriginalOwner && !limitSBRDamageToUnitProd)
+        //if (originalFactory && playerIsOriginalOwner && !limitSBRDamageToUnitProd)
+        if (originalFactory && playerIsOriginalOwner && !placementRestrictedByFactory)
             return -1;
-    	
+        
+    	//Restricts the ABSOLUTE number of units in a territory
         if (isUnitPlacementPerTerritoryRestricted())
         {
         	RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTATCHMENT_NAME);
@@ -409,7 +414,8 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         		
         		return allowedPlacement - unitsInTerritory;
         	}        		
-        } 
+        }
+        
         //a factory can produce the same number of units as the number of ipcs
         // the territroy generates each turn
         int unitCount = getAlreadyProduced(producer).size();
@@ -424,6 +430,10 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         	if (production == 0)
         		production = 1; //if it has a factory then it can produce at least        
         }
+        
+        if(isIncreasedFactoryProduction(player))
+            production += 2;
+        
         return production - unitCount;
     }
 
@@ -526,20 +536,32 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         return tracker.wasConquered(t);
     }
 
-    protected boolean isPlaceInAnyTerritory()    
+    private boolean isPlaceInAnyTerritory()    
     {
         return games.strategy.triplea.Properties.getPlaceInAnyTerritory(m_data);
     }
 
-    protected boolean isSBRAffectsUnitProduction()    
+    private boolean isSBRAffectsUnitProduction()    
     {
         return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
     }
+
+    private boolean isPlacementRestrictedByFactory()    
+    {
+        return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);
+    }
     
-    protected boolean isUnitPlacementPerTerritoryRestricted()    
+    private boolean isUnitPlacementPerTerritoryRestricted()    
     {
         return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(m_data);
     }
+
+    private boolean isIncreasedFactoryProduction(PlayerID player)    
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasIncreasedFactoryProduction();
+    }
+    
 
     
     /**

@@ -17,6 +17,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.*;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -884,6 +885,7 @@ class BattleModel extends DefaultTableModel
     private boolean m_attack;
     private Collection<Unit> m_units;
 
+    
     BattleModel(GameData data, Collection<Unit> units, boolean attack, UIContext uiContext)
     {
 
@@ -922,8 +924,8 @@ class BattleModel extends DefaultTableModel
             columns[i] = new ArrayList();
         }
 
-        //how many artillery units do we have
-        int artillerySupportAvailable = Match.countMatches(m_units, Matches.UnitIsArtillery);
+        //Determine if artillery support is available and how much
+        int artillerySupportAvailable = getArtillerySupportAvailable(m_units);
 
         Collection unitCategories = UnitSeperator.categorize(m_units);
 
@@ -1001,6 +1003,37 @@ class BattleModel extends DefaultTableModel
         return false;
     }
 
+    /**
+     * TODO: Determine if artillery support is available and how much
+     * @param units
+     * @param defending
+     * @param player
+     * @return
+     */
+    private static int getArtillerySupportAvailable(Collection<Unit> units)
+    {
+        int artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
+        
+        Iterator <Unit> unitsIter = units.iterator();
+        if(unitsIter.hasNext())
+        {
+            Unit aUnit = unitsIter.next();
+            PlayerID player = aUnit.getOwner();
+
+            //If ImprovedArtillery, double number of units to support
+            if(isImprovedArtillerySupport(player))
+                artillerySupportAvailable *= 2;
+        }
+        
+        return artillerySupportAvailable;
+    }
+
+
+    private static boolean isImprovedArtillerySupport(PlayerID player)
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasImprovedArtillerySupport();     
+    }
 }
 
 class Renderer implements TableCellRenderer

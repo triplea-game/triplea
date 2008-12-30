@@ -17,6 +17,8 @@ package games.strategy.triplea.delegate;
 import java.io.*;
 import java.util.*;
 import games.strategy.engine.data.*;
+import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -47,7 +49,13 @@ public class DiceRoll implements Externalizable
         int[] dice = new int[0];
         List<Die> sortedDice = new ArrayList<Die>();
         boolean isEditMode = EditDelegate.getEditMode(data);
-
+        ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
+        
+      //Kev  player.getID()
+        int hitAt = 0;
+        if(isAARadar(location.getOwner()))
+            hitAt = 1;
+        
         if (data.getProperties().get(Constants.LOW_LUCK, false))
         {
             // Low luck rolling
@@ -59,8 +67,9 @@ public class DiceRoll implements Externalizable
                 String annotation = "Roll AA guns in " + location.getName();
                 if (isEditMode)
                 {
-                    ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
-                    dice = player.selectFixedDice(1, 1, true, annotation);
+                    //ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
+                    
+                    dice = player.selectFixedDice(1, hitAt+1, true, annotation);
                 }
                 else
                     dice = bridge.getRandom(Constants.MAX_DICE, 1, annotation);
@@ -81,15 +90,18 @@ public class DiceRoll implements Externalizable
             String annotation = "Roll AA guns in " + location.getName();
             if (isEditMode)
             {
-                ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
-                dice = player.selectFixedDice(numberOfAirUnits, 1, true, annotation);
+                //ITripleaPlayer player = (ITripleaPlayer)bridge.getRemote();
+                
+                dice = player.selectFixedDice(numberOfAirUnits, hitAt+1, true, annotation);
             }
             else
+            {
                 dice = bridge.getRandom(Constants.MAX_DICE, numberOfAirUnits, annotation);
+            }
             for (int i = 0; i < dice.length; i++)
             {
-                boolean hit = dice[i] == 0;
-                sortedDice.add(new Die(dice[i], 1, hit ? DieType.HIT : DieType.MISS));
+                boolean hit = dice[i] <= hitAt;
+                sortedDice.add(new Die(dice[i], hitAt+1, hit ? DieType.HIT : DieType.MISS));
                 if (hit)
                     hits++;
             }
@@ -132,9 +144,7 @@ public class DiceRoll implements Externalizable
             return new DiceRoll(new ArrayList<Die>(0), 0);
         }
 
-        int artillerySupportAvailable = 0;
-        if (!defending)
-            artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
+        int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
 
         Iterator iter = units.iterator();
 
@@ -205,6 +215,28 @@ public class DiceRoll implements Externalizable
     }
 
     /**
+     * TODO: Determine if artillery support is available and how much
+     * @param units
+     * @param defending
+     * @param player
+     * @return
+     */
+    private static int getArtillerySupportAvailable(List<Unit> units, boolean defending, PlayerID player)
+    {
+        int artillerySupportAvailable = 0;
+        if (!defending)
+        {
+            artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
+
+            //Kev If ImprovedArtillery, double number of units to support
+            if(isImprovedArtillerySupport(player))
+                artillerySupportAvailable *= 2;
+        }
+        
+        return artillerySupportAvailable;
+    }
+
+    /**
      * Roll dice for units per normal rules.
      */
     private static DiceRoll rollDiceNormal(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
@@ -219,9 +251,7 @@ public class DiceRoll implements Externalizable
             return new DiceRoll(new ArrayList<Die>(), 0);
         }
 
-        int artillerySupportAvailable = 0;
-        if (!defending)
-            artillerySupportAvailable = Match.countMatches(units, Matches.UnitIsArtillery);
+        int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
 
         int[] random;
         boolean isEditMode = EditDelegate.getEditMode(data);
@@ -374,10 +404,21 @@ public class DiceRoll implements Externalizable
     		Battle battle = bt.getPendingBattle(terr, false);
          	if ( battle != null && battle.isAmphibious() && ua.getIsMarine())
          		return true;
-    		}
-    		return false;
     	}
+    		return false;
+    }
 
+    private static boolean isImprovedArtillerySupport(PlayerID player)
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasImprovedArtillerySupport();     
+    }
+
+    private static boolean isAARadar(PlayerID player)
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasAARadar();     
+    }
 
     /**
      * @param units
@@ -483,6 +524,5 @@ public class DiceRoll implements Externalizable
         
         m_hits = in.readInt();
         
-    }
-
+    }    
 }

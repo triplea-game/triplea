@@ -24,7 +24,7 @@ import java.util.*;
 
 /**
  *
- * @author  Sean Bridges
+ * @author  Kevin Comcowich
  * @version 1.0
  */
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
