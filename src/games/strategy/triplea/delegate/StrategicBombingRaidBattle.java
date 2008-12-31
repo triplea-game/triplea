@@ -538,16 +538,14 @@ public class StrategicBombingRaidBattle implements Battle
             	//Detemine the min that can be taken as losses
                 int alreadyLost = DelegateFinder.moveDelegate(m_data).ipcsAlreadyLost(m_battleSite);
                 
-        		int limit = Math.max(0, production + unitProduction - alreadyLost);
-        		cost = Math.min(cost, limit);
+                int limit = 2 * production  - alreadyLost;
+                cost = Math.min(cost, limit);
         		
         		getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
 
-                int toRemove = Math.max(cost, unitProduction);
-
             	// Record ipcs lost
-            	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, toRemove);
-            	Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - toRemove)).toString(), "unitProduction");
+            	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, cost);
+            	Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             	bridge.addChange(change);
             }
             else

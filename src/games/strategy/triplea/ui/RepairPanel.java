@@ -27,6 +27,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -123,9 +124,15 @@ public class RepairPanel extends JPanel
             	for(Territory terr : factoryTerrs)
             	{
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
-                    int unitProduction = Math.max(0, ta.getUnitProduction());
+                    //int unitProduction = Math.max(0, ta.getUnitProduction());
+                    int unitProduction = ta.getUnitProduction();
                     int IPCProduction = ta.getProduction();
-                    //TODO COMCO add in the extra 2 for advanced industrial tech
+                    /*int repairCost = 1;
+                    
+                    if(isIncreasedFactoryProduction(player))
+                        repairCost = 1/2;*/
+                    
+                    //TODO COMCO add in the extra 2 for advanced industrial tech and handle 1/2 price repairs
                     if(unitProduction < IPCProduction)
                     {
                         Rule rule = new Rule(rRule, player, m_uiContext, terr);
@@ -224,6 +231,12 @@ public class RepairPanel extends JPanel
         return prod;
     }
 
+    private boolean isIncreasedFactoryProduction(PlayerID player)    
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasIncreasedFactoryProduction();
+    }
+    
     /** Creates new RepairPanel */
     private RepairPanel(UIContext uiContext)
     {

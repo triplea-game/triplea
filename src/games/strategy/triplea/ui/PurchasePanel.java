@@ -141,7 +141,7 @@ public class PurchasePanel extends ActionPanel
         PlayerID player = getCurrentPlayer();
         GameData data = getData();
         
-    	//TODO COMCO here's where the purchase panel pops up!
+    	//Check if any factories need to be repaired
     	if(isSBRAffectsUnitProduction())
     	{
     		Collection<Territory> bombedTerrs = new ArrayList<Territory>();

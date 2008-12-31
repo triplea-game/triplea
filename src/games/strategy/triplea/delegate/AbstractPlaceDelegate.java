@@ -420,19 +420,40 @@ public abstract class AbstractPlaceDelegate implements IDelegate, IAbstractPlace
         // the territroy generates each turn
         int unitCount = getAlreadyProduced(producer).size();
         int production = 0;
+        int territoryValue = getProduction(producer);
         
         if(limitSBRDamageToUnitProd)
+        {
+        	/*
         	production = Math.max(0, ta.getUnitProduction());
+        	if(production == 0 && getProduction(producer) > 0)
+        	    production = 1;
+        	else if (isIncreasedFactoryProduction(player)) //increase possible production
+                production += 2;
+
+            ta.setUnitProduction(String.valueOf(production));  
+            */
+            
+            production = ta.getUnitProduction();
+            //If there's NO factory, allow placement of the factory and set the initial unitProduction
+            if(production == 0 && producer.getUnits().getMatches(Matches.UnitIsFactory).size() == 0)
+            //&& territoryValue > 0
+            {
+                production = 1;
+
+                if(isIncreasedFactoryProduction(player))
+                    ta.setUnitProduction(String.valueOf(territoryValue + 2));
+                else
+                    ta.setUnitProduction(String.valueOf(territoryValue));
+            }           
+        }
         else
         {
-        	production = getProduction(producer);
+        	production = territoryValue;
         
         	if (production == 0)
         		production = 1; //if it has a factory then it can produce at least        
         }
-        
-        if(isIncreasedFactoryProduction(player))
-            production += 2;
         
         return production - unitCount;
     }
