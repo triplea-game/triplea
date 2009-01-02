@@ -53,6 +53,7 @@ public class MoveValidator
     public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
     public static final String UNESCORTED_UNITS_WILL_DIE_IN_COMBAT = "Unescorted units will die in combat";
+    private static int m_mechanizedSupportAvail = 0;
 
     
     /**
@@ -63,12 +64,25 @@ public class MoveValidator
     
     public static boolean hasEnoughMovement(Collection<Unit> units, Route route)
     {
+        getMechanizedSupportAvail(route);
+        
         for (Unit unit : units)
         {
             if (!hasEnoughMovement(unit, route))
                 return false;
         }
         return true;
+    }
+
+    /**
+     * TODO: Method description.
+     * @param route
+     */
+    private static void getMechanizedSupportAvail(Route route)
+    {
+        PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
+        Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
+        m_mechanizedSupportAvail = getMechanizedSupportAvailable(ownedUnits , player);
     }
     
     public static boolean hasEnoughMovement(Collection<Unit> units, int length)
@@ -89,6 +103,8 @@ public class MoveValidator
      */  
     public static boolean hasEnoughMovement(Unit unit, Route route)
     {
+        getMechanizedSupportAvail(route);
+     
         int left = TripleAUnit.get(unit).getMovementLeft();  
         UnitAttachment ua = UnitAttachment.get(unit.getType());
         
@@ -127,8 +143,17 @@ public class MoveValidator
                     }
             	}
             }
-        }        
+        }
         
+        if (isMechanizedInfantry(unit.getOwner()) && !ua.isAir() && !ua.isSea() && !ua.isAA() && !ua.isArtillery() && !ua.isArmour())
+        {   
+            if(m_mechanizedSupportAvail > 0)
+            {
+                left++;
+                m_mechanizedSupportAvail -= 1;
+            }
+        }
+            
         if(left == -1 || left < route.getLength())
             return false;
         return true;
@@ -253,6 +278,25 @@ public class MoveValidator
         return true;
     }
     
+
+    /**
+     * TODO: Determine if artillery support is available and how much
+     * @param units
+     * @param defending
+     * @param player
+     * @return
+     */
+    private static int getMechanizedSupportAvailable(Collection<Unit> units, PlayerID player)
+    {
+        int mechanizedSupportAvailable = Match.countMatches(units, Matches.UnitIsArmour);        
+        return mechanizedSupportAvailable;
+    }
+    
+    private static boolean isMechanizedInfantry(PlayerID player)    
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasMechanizedInfantry();
+    }
     
 
 

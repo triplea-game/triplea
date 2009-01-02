@@ -31,7 +31,15 @@ public class RocketsFireHelper
     {
     	return games.strategy.triplea.Properties.getFourthEdition(data);
     }
-	
+
+    /**
+     * @return
+     */
+    private boolean isSBRAffectsUnitProduction(GameData data)
+    {
+        return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
+    }   
+    
 	private boolean isOneRocketAttackPerFactory(GameData data)
     {
     	return games.strategy.triplea.Properties.getRocketAttackPerFactoryRestricted(data);
@@ -177,14 +185,30 @@ public class RocketsFireHelper
 
         //account for 0 base
         cost++;
-
-        //in fourth edtion, limit rocket attack cost to
-        //production value of factory.
-        if (isFourthEdition(data) || isLimitRocketDamageToProduction(data))
+        
+        TerritoryAttachment ta = TerritoryAttachment.get(attackedTerritory);
+        int territoryProduction = ta.getProduction();
+        boolean SBRAffectsUnitProd = isSBRAffectsUnitProduction(data);
+        
+        if(SBRAffectsUnitProd)
         {
-            int territoryProduction = TerritoryAttachment.get(attackedTerritory).getProduction();
-            // If we are limiting total ipcs lost then take that into
-            // account
+            //get current production
+            int unitProduction = ta.getUnitProduction();                
+            //Detemine the min that can be taken as losses
+            int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
+            
+            int limit = 2 * territoryProduction  - alreadyLost;
+            cost = Math.min(cost, limit);
+
+            // Record production lost
+            DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
+            Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
+            bridge.addChange(change);
+        }
+        //in fourth edtion, limit rocket attack cost to production value of factory.
+        else if (isFourthEdition(data) || isLimitRocketDamageToProduction(data))
+        {
+            // If we are limiting total ipcs lost then take that into account
             if (isIPCCap(data) || isLimitRocketDamagePerTurn(data))
             {
                 int alreadyLost = DelegateFinder.moveDelegate(data).ipcsAlreadyLost(attackedTerritory);
@@ -197,7 +221,7 @@ public class RocketsFireHelper
                 cost = territoryProduction;
             }
         }
-
+        
         // Trying to remove more IPCs than the victim has is A Bad Thing[tm]
         int availForRemoval = attacked.getResources().getQuantity(ipcs);
         if (cost > availForRemoval)
@@ -205,15 +229,19 @@ public class RocketsFireHelper
 
         // Record the ipcs lost
         DelegateFinder.moveDelegate(data).ipcsLost(attackedTerritory, cost);
-
-        getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
+       
+        if(SBRAffectsUnitProd)
+            getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
+        else
+        {
+            getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
       
-        String transcriptText = attacked.getName() + " lost " + cost + " ipcs to rocket attack by " + player.getName();
-        bridge.getHistoryWriter().startEvent(transcriptText);
+            String transcriptText = attacked.getName() + " lost " + cost + " ipcs to rocket attack by " + player.getName();
+            bridge.getHistoryWriter().startEvent(transcriptText);
 
-        Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, ipcs, -cost);
-        bridge.addChange(rocketCharge);
-        
+            Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, ipcs, -cost);
+            bridge.addChange(rocketCharge);
+        }
         //this is null in 3rd edition
         if(attackFrom != null)
         {

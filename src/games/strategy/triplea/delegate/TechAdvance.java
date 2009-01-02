@@ -117,18 +117,6 @@ public abstract class TechAdvance implements java.io.Serializable
         s_AnnivEditionAdvances.add(LONG_RANGE_AIRCRAFT);
         s_AnnivEditionAdvances.add(HEAVY_BOMBER);
         s_AnnivEditionAdvances = Collections.unmodifiableList(s_AnnivEditionAdvances);
-
-    	/*
-    	 * Anniversary Edition Air/Naval Tech
-    	 */
-        /*s_AnnivEditionAdvancesAirNaval = new ArrayList<TechAdvance>();
-        s_AnnivEditionAdvancesAirNaval.add(SUPER_SUBS);
-        s_AnnivEditionAdvancesAirNaval.add(JET_POWER);
-        s_AnnivEditionAdvancesAirNaval.add(IMPROVED_SHIPYARDS);
-        s_AnnivEditionAdvancesAirNaval.add(AA_RADAR);
-        s_AnnivEditionAdvancesAirNaval.add(LONG_RANGE_AIRCRAFT);
-        s_AnnivEditionAdvancesAirNaval.add(HEAVY_BOMBER);
-        s_AnnivEditionAdvancesAirNaval = Collections.unmodifiableList(s_AnnivEditionAdvancesAirNaval);*/
         
     }
 

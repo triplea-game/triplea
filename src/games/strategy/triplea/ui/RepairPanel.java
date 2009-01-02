@@ -32,6 +32,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.RepairPanel.Rule;
+import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
@@ -124,14 +125,9 @@ public class RepairPanel extends JPanel
             	for(Territory terr : factoryTerrs)
             	{
                     TerritoryAttachment ta = TerritoryAttachment.get(terr);
-                    //int unitProduction = Math.max(0, ta.getUnitProduction());
                     int unitProduction = ta.getUnitProduction();
                     int IPCProduction = ta.getProduction();
-                    /*int repairCost = 1;
-                    
-                    if(isIncreasedFactoryProduction(player))
-                        repairCost = 1/2;*/
-                    
+                                        
                     //TODO COMCO add in the extra 2 for advanced industrial tech and handle 1/2 price repairs
                     if(unitProduction < IPCProduction)
                     {
@@ -246,24 +242,47 @@ public class RepairPanel extends JPanel
     protected void setLeft(int left)
     {
         // no limits, so do nothing here
+        int total = getIPCs();
+        int spent = total - left;
+        
+        m_left.setText("You have " + left + " " + StringUtil.plural("IPC", spent) + " left out of " + total +  " "  + StringUtil.plural("IPC", total)) ;
     }
 
     protected void calculateLimits()
     {
+        int ipcs = getIPCs();
+        float spent = 0;
+        
         Iterator<Rule> iter = getRules().iterator();
         while (iter.hasNext())
         {
             Rule current = iter.next();
+            spent += current.getQuantity() * current.getCost();
             Territory terr = m_data.getMap().getTerritory(current.getTerr());
             TerritoryAttachment ta = TerritoryAttachment.get(terr);
             int maxProd = ta.getProduction() - ta.getUnitProduction();
             current.setMax(maxProd);
         }
+        
+        int leftToSpend = (int) (ipcs - spent);
+        setLeft(leftToSpend);     
     }
+    
+
+    private int getIPCs()
+    {
+        if (m_bid)
+        {
+            String propertyName = m_id.getName() + " bid";
+            return Integer.parseInt(m_data.getProperties().get(propertyName).toString());
+        } else
+            return m_id.getResources().getQuantity(Constants.IPCS);
+    }
+        
     class Rule extends JPanel
     {
         private ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-        private int m_cost;         
+        private float m_cost;         
         private RepairRule m_rule;
         private String m_terr;
 
@@ -273,13 +292,23 @@ public class RepairPanel extends JPanel
             
             setLayout(new GridBagLayout());
             m_rule = rule;
-            m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
+            m_cost = (float) rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.IPCS));
+            
+            if(isIncreasedFactoryProduction(id))
+                m_cost /= 2;
 
             UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
             Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, false);
             String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
             JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
             JLabel info=new JLabel(repairLocation.getName().toString());
+            
+            int prod = TerritoryAttachment.get(repairLocation).getProduction();
+            int unitProd = TerritoryAttachment.get(repairLocation).getUnitProduction();
+            //int toRepair = Math.min(prod, prod - unitProd);
+            int toRepair = prod - unitProd;
+            
+            JLabel remaining=new JLabel("Production left to repair: " + toRepair);
 
             int space = 8;
             this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
@@ -288,15 +317,20 @@ public class RepairPanel extends JPanel
                     space), 0, 0));
             this.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
                     space), 0, 0));
+            this.add(remaining, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space,
+                space), 0, 0));
 
-            this.add(m_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
+            this.add(m_text, new GridBagConstraints(0, 4, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
                     space, space), 0, 0));
+            /*this.add(m_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space,
+                space, space), 0, 0));*/
 
+            
             m_text.addChangeListener(m_listener);
             setBorder(new EtchedBorder());
         }
 
-        int getCost()
+        float getCost()
         {
             return m_cost;
         }

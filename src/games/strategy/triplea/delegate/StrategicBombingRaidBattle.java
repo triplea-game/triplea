@@ -543,7 +543,7 @@ public class StrategicBombingRaidBattle implements Battle
         		
         		getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
 
-            	// Record ipcs lost
+            	// Record production lost
             	DelegateFinder.moveDelegate(m_data).ipcsLost(m_battleSite, cost);
             	Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
             	bridge.addChange(change);

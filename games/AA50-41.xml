@@ -815,27 +815,27 @@
 
                 <!-- Advanced Industrial Production -->
                 <productionRule name="buyInfantryIndustrialTechnology">
-                        <cost resource="IPCs" quantity="2" />
+                        <cost resource="IPCs" quantity="3" />
                         <result resourceOrUnit="infantry" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyArtilleryIndustrialTechnology">
-                        <cost resource="IPCs" quantity="3" />
+                        <cost resource="IPCs" quantity="4" />
                         <result resourceOrUnit="artillery" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyArmourIndustrialTechnology">
-                        <cost resource="IPCs" quantity="4" />
+                        <cost resource="IPCs" quantity="5" />
                         <result resourceOrUnit="armour" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyFighterIndustrialTechnology">
-                        <cost resource="IPCs" quantity="9" />
+                        <cost resource="IPCs" quantity="10" />
                         <result resourceOrUnit="fighter" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBomberIndustrialTechnology">
-                        <cost resource="IPCs" quantity="11" />
+                        <cost resource="IPCs" quantity="12" />
                         <result resourceOrUnit="bomber" quantity="1"/>
                 </productionRule>
                 
@@ -845,7 +845,7 @@
                 </productionRule>
                 
                 <productionRule name="buyCarrierIndustrialTechnology">
-                        <cost resource="IPCs" quantity="13" />
+                        <cost resource="IPCs" quantity="11" />
                         <result resourceOrUnit="carrier" quantity="1"/>
                 </productionRule>
                 
@@ -855,12 +855,12 @@
                 </productionRule>
 				
 				<productionRule name="buyCruiserIndustrialTechnology">
-                        <cost resource="IPCs" quantity="11" />
+                        <cost resource="IPCs" quantity="10" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBattleshipIndustrialTechnology">
-                        <cost resource="IPCs" quantity="19" />
+                        <cost resource="IPCs" quantity="17" />
                         <result resourceOrUnit="battleship" quantity="1"/>
                 </productionRule>
                 
@@ -870,12 +870,12 @@
                 </productionRule>
                 
                 <productionRule name="buyFactoryIndustrialTechnology">
-                        <cost resource="IPCs" quantity="14" />
+                        <cost resource="IPCs" quantity="15" />
                         <result resourceOrUnit="factory" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyAAGunIndustrialTechnology">
-                        <cost resource="IPCs" quantity="4" />
+                        <cost resource="IPCs" quantity="6" />
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
                 
@@ -1041,6 +1041,7 @@
                          <option name="movement" value="2"/>
                          <option name="transportCost" value="3"/>
                          <option name="canBlitz" value="true"/>
+                         <option name="isArmour" value="true"/>
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
 

@@ -24,6 +24,8 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.*;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -219,9 +221,15 @@ public class PurchasePanel extends ActionPanel
             {
             	if(isSBRAffectsUnitProduction())
             	{
+            	    int addedProd = 0;
+            	    PlayerID player = getCurrentPlayer();
+            	    if(isIncreasedFactoryProduction(player))
+            	        addedProd = 2;
+            	    
             		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedFactory(getData(), getCurrentPlayer()))) 
                     {
-                        totalProd += TerritoryAttachment.get(t).getUnitProduction();
+            		    int terrProd = TerritoryAttachment.get(t).getUnitProduction();
+            		    totalProd += Math.max(0, terrProd + addedProd);
                     }
             	}
             	else
@@ -236,7 +244,7 @@ public class PurchasePanel extends ActionPanel
                 getData().releaseReadLock();
             }
             if(!m_bid &&  m_purchase.totalValues() > totalProd) 
-            {
+            {                
                 int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent( PurchasePanel.this), "You have purchased more than you can place, continue with purchase?", "End Purchase", JOptionPane.YES_NO_OPTION);
                 if(rVal != JOptionPane.YES_OPTION)
                 {
@@ -251,6 +259,12 @@ public class PurchasePanel extends ActionPanel
      
     }
   };
+
+  private boolean isIncreasedFactoryProduction(PlayerID player)    
+  {
+      TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+      return ta.hasIncreasedFactoryProduction();
+  }
   
   public String toString()
   {
