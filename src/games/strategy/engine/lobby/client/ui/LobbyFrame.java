@@ -68,7 +68,7 @@ public class LobbyFrame extends JFrame
         m_chatMessagePanel.setShowTime(true);
         
         ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
-        chatPlayers.addIgnoredPlayerName(LobbyServer.ADMIN_USERNAME);
+        chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);
         chatPlayers.setChat(chat);
         chatPlayers.setPreferredSize(new Dimension(200,600 ));
         chatPlayers.addActionFactory(new IPlayerActionFactory()

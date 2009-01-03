@@ -55,6 +55,7 @@ public class Chat
     private List<Runnable> m_queuedInitMessages = new ArrayList<Runnable>();
     private List<ChatMessage> m_chatHistory = new ArrayList<ChatMessage>();
     private final StatusManager m_statusManager;
+    private final ChatIgnoreList m_ignoreList = new ChatIgnoreList();
 
     /** Creates a new instance of Chat */
     public Chat(String chatName, Messengers messengers)
@@ -204,6 +205,22 @@ public class Chat
             }
         }
     }
+    
+    public void setIgnored(INode node, boolean isIgnored)
+    {
+        if(isIgnored)
+        {
+            m_ignoreList.add(node.getName());
+        } else
+        {
+            m_ignoreList.remove(node.getName());
+        }
+    }
+    
+    public boolean isIgnored(INode node)
+    {
+        return m_ignoreList.shouldIgnore(node.getName());
+    }
 
    public INode getLocalNode()
    {
@@ -229,10 +246,15 @@ public class Chat
                 throw new IllegalStateException("The node:" + senderNode + " sent a message as the server!");
         }
         
+
         
         public void chatOccured(String message)
         {
             INode from = MessageContext.getSender();
+            if(isIgnored(from))
+            {
+                return;
+            }
             synchronized(m_mutex)
             {
                 m_chatHistory.add(new ChatMessage(message, from.getName(), false ));
@@ -252,6 +274,10 @@ public class Chat
         public void meMessageOccured(String message)
         {
             INode from = MessageContext.getSender();
+            if(isIgnored(from))
+            {
+                return;
+            }
             synchronized(m_mutex)
             {
                 m_chatHistory.add(new ChatMessage(message, from.getName(), true));
@@ -339,7 +365,10 @@ public class Chat
         public void slapOccured(String to)
         {
             INode from = MessageContext.getSender();
-            
+            if(isIgnored(from))
+            {
+                return;
+            }
             synchronized(m_mutex)
             {
                 if(to.equals(m_messengers.getChannelMessenger().getLocalNode().getName()))

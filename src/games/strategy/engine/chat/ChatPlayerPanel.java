@@ -14,19 +14,59 @@ package games.strategy.engine.chat;
 
 import games.strategy.net.INode;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-import javax.swing.*;
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 
 public class ChatPlayerPanel extends JPanel implements IChatListener
 {
+	private static final Icon s_ignoreIcon;
+	static
+	{
+		URL ignore = ChatPlayerPanel.class.getResource("ignore.png");
+		if(ignore == null) {
+			throw new IllegalStateException("Could not find ignore icon");
+		}
+		Image img;
+		try {
+			img = ImageIO.read(ignore);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+		s_ignoreIcon = new ImageIcon(img);
+	}
+	
     private JList m_players;
     private DefaultListModel m_listModel;
     private Chat m_chat;
-    public Set<String> m_ignoredPlayers = new HashSet<String>();
+    public Set<String> m_hiddenPlayers = new HashSet<String>();
     
     private IStatusListener m_statusListener;
     
@@ -57,9 +97,9 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         setChat(chat);
     }
 
-    public void addIgnoredPlayerName(String name)
+    public void addHiddenPlayerName(String name)
     {
-        m_ignoredPlayers.add(name);
+        m_hiddenPlayers.add(name);
     }
     
     public void setChat(Chat chat)
@@ -95,10 +135,20 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         
         m_players.setCellRenderer(new ListCellRenderer()
         {
+        	
+        	
+        	
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
             {
                 INode node = (INode) value;
-                return m_setCellRenderer.getListCellRendererComponent(list, getDisplayString(node), index, isSelected, cellHasFocus);
+                DefaultListCellRenderer renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, getDisplayString(node), index, isSelected, cellHasFocus);
+                
+            
+                if(m_chat.isIgnored(node)) 
+                {                
+                	renderer.setIcon(s_ignoreIcon);
+                } 
+                return renderer;
             }
             
         });
@@ -140,9 +190,20 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         {
             public List<Action> mouseOnPlayer(final INode clickedOn)
             {
-                //you cant slap yourself
+                //you can't slap or ignore yourself
                 if(clickedOn.equals(m_chat.getLocalNode()))
                         return Collections.emptyList();
+                
+                
+                final boolean isIgnored = m_chat.isIgnored(clickedOn);
+                Action ignore = new AbstractAction(isIgnored ?  "Stop Ignoring" : "Ignore")
+                {
+                    public void actionPerformed(ActionEvent event)
+                	{
+                	    m_chat.setIgnored(clickedOn, !isIgnored);
+                	    repaint();
+                    }
+                };
                 
                 
                 Action slap = new AbstractAction("Slap " + clickedOn.getName())
@@ -152,7 +213,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
                        m_chat.sendSlap(clickedOn.getName());
                     }
                 };
-                return Collections.singletonList(slap);
+                
+                return Arrays.asList(slap,ignore);
             }
         });
     }
@@ -208,7 +270,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
     }
     
     /**
-     * @arg players - a collection of Strings representing player names.
+     * @param players - a collection of Strings representing player names.
      */
     public synchronized void updatePlayerList(final Collection<INode> players)
     {
@@ -217,14 +279,13 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
         {
             public void run()
             {
-
                 m_listModel.clear();
 
                 Iterator<INode> iter = players.iterator();
                 while (iter.hasNext())
                 {
                     INode name = iter.next();
-                    if(!m_ignoredPlayers.contains(name.getName()))
+                    if(!m_hiddenPlayers.contains(name.getName()))
                         m_listModel.addElement(name);
                 }
             }
