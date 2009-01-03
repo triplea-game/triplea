@@ -1,6 +1,8 @@
 package games.strategy;
 
 
+import games.strategy.engine.chat.ChatIgnoreListTest;
+import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPanelTest;
 import games.strategy.engine.chat.ChatTest;
 import games.strategy.engine.chat.StatusTest;
@@ -53,6 +55,7 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(VersionTest.class);
 		suite.addTestSuite(EndPointTest.class);
         suite.addTestSuite(ChatPanelTest.class);
+        suite.addTestSuite(ChatIgnoreListTest.class);
         suite.addTestSuite(ChatTest.class);
         suite.addTestSuite(StatusTest.class);
         
