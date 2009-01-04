@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="4th Ed. Pact of Steel" version="2.1.1"/>
+        <info name="Pact of Steel" version="2.1.1"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 

@@ -1691,5 +1691,10 @@
                 	<boolean/>
                 </property>
                                 
+				<property name="notes">
+		        	<value><![CDATA[        	
+		        	The revised version of A&A (also known as 3rd edition) released in 2004
+		        	]]></value>        	       
+        		</property>	
         </propertyList>        
 </game>

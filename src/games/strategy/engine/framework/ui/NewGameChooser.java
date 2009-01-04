@@ -3,6 +3,7 @@ package games.strategy.engine.framework.ui;
 import games.strategy.engine.data.GameData;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -89,8 +90,9 @@ public class NewGameChooser extends JDialog {
 		listScroll.setViewportView(m_gameList);
 		mainSplit.setLeftComponent(listScroll);
 		mainSplit.setRightComponent(m_infoPanel);
+
+		listScroll.setMinimumSize(new Dimension(150,0));
 		
-				
 		JPanel buttonsPanel = new JPanel();		
 		add(buttonsPanel, BorderLayout.SOUTH);
 		

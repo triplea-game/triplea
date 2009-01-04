@@ -1485,7 +1485,12 @@
 		<property name="maxFactoriesPerTerritory" value="1"/>
 
 		<property name="mapName" value="classic" editable="false" />
-		
+
+        <property name="notes">
+        	<value><![CDATA[        	
+        	The orignal board game.
+        	]]></value>        	       
+        </property>		
 	</propertyList>
 	
 </game>

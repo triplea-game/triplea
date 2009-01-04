@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="8 puzzle" version="1.0"/>
+	<info name="eight puzzle" version="1.0"/>
 	
 	<loader javaClass="games.puzzle.slidingtiles.NPuzzle"/>
 	
@@ -36,6 +36,13 @@
         	<number min="0" max="10000"/>
         </property>
         <property name="Background" value="" editable="true"><file/></property>
+        
+        <property name="notes">
+        	<value><![CDATA[        	
+        	A 3x3 n puzzle game.
+        	]]></value>        	       
+        </property>
+        
 	</propertyList>
 		
 </game>

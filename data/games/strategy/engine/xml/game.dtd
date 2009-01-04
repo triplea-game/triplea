@@ -199,14 +199,16 @@
 		>
 		
 <!ELEMENT propertyList (property*)>
-	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?) >
+	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?, value?) >
 	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->
 	<!ATTLIST property
+		value CDATA ""
 		name CDATA #REQUIRED
-		value CDATA #REQUIRED
 		editable (true | false) "false"
 		player CDATA ""
 	>
+		<!ELEMENT value (#PCDATA)>
+	
 		<!ELEMENT boolean EMPTY>
 		<!ATTLIST boolean
 		>

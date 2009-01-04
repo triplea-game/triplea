@@ -8,7 +8,7 @@
 
 
 
-	<info name="4 If By Sea" version="0.8"/>
+	<info name="Four If By Sea" version="0.8"/>
 
 	
 
@@ -2528,7 +2528,7 @@
 
 		<!-- notes appear in the notes menu in the main screen, format as html -->
 
-		<property name="notes" value="The same as triplea except that : &lt;br&gt; neutrals defend themselves &lt;br&gt; no neutral fee &lt;br&gt; each non original factory can produce 5 units, but you can have multiple factories in a territory"/>
+		<property name="notes" value="The same as classic except that : &lt;br&gt; neutrals defend themselves &lt;br&gt; no neutral fee &lt;br&gt; each non original factory can produce 5 units, but you can have multiple factories in a territory"/>
 
 	</propertyList>
 

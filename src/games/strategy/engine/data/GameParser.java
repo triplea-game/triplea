@@ -21,23 +21,44 @@
 
 package games.strategy.engine.data;
 
-import games.strategy.engine.data.properties.*;
+import games.strategy.engine.data.properties.BooleanProperty;
+import games.strategy.engine.data.properties.ColorProperty;
+import games.strategy.engine.data.properties.FileProperty;
+import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.data.properties.ListProperty;
+import games.strategy.engine.data.properties.NumberProperty;
+import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.Version;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.*;
-import games.strategy.triplea.delegate.MustFightBattle;
 
-import java.awt.Polygon;
-import java.io.*;
-import java.lang.reflect.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -317,6 +338,21 @@ public class GameParser
         return found;
     }
 
+    private List<Node> getNonTextNodesIgnoring(Node node, String ignore)
+    {
+        List<Node> rVal = getNonTextNodes(node);
+        Iterator iter = rVal.iterator();
+        while(iter.hasNext()) {
+            Element current = (Element) iter.next();
+            if(current.getTagName().equals(ignore)) {
+                iter.remove();
+            }
+        }
+        return rVal;
+
+    }
+
+    
     private List<Node> getNonTextNodes(Node node)
     {
         ArrayList<Node> found = new ArrayList<Node>();
@@ -661,13 +697,23 @@ public class GameParser
             String editable = current.getAttribute("editable");
             String property = current.getAttribute("name");
             String value = current.getAttribute("value");
-            String player = current.getAttribute("player");
+            if(value == null || value.length() == 0) {
+                List<Node> valueChildren =  getChildren("value", current);
+                if(!valueChildren.isEmpty()) 
+                {                
+                    Element valueNode = (Element) valueChildren.get(0);
+                    if(valueNode!= null) {
+                        value = valueNode.getTextContent();
+                    }
+                }
+            }
+            
 
             if(editable != null && editable.equalsIgnoreCase("true"))
                 parseEditableProperty(current, property, value);
             else
             {
-                List children2 = getNonTextNodes(current);
+                List children2 = getNonTextNodesIgnoring(current, "value");
                 if(children2.size() == 0)
                     properties.set(property,value);
                 else

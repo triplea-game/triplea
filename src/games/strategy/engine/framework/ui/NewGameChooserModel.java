@@ -58,7 +58,7 @@ public class NewGameChooserModel extends DefaultListModel
         
             public int compare(NewGameChooserEntry o1, NewGameChooserEntry o2)
             {
-                return o1.getGameData().getGameName().compareTo(o2.getGameData().getGameName());
+                return o1.getGameData().getGameName().toLowerCase().compareTo(o2.getGameData().getGameName().toLowerCase());
             }
         
         });
