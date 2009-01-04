@@ -2,10 +2,10 @@ package games.strategy;
 
 
 import games.strategy.engine.chat.ChatIgnoreListTest;
-import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPanelTest;
 import games.strategy.engine.chat.ChatTest;
 import games.strategy.engine.chat.StatusTest;
+import games.strategy.engine.framework.ui.NewGameChooserModelTest;
 import games.strategy.engine.lobby.server.ModeratorControllerTest;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidatorTest;
 import games.strategy.engine.lobby.server.userDB.BadWordControllerTest;
@@ -68,7 +68,7 @@ public class StrategyGameTest extends TestCase
         
         suite.addTestSuite(RemoteInterfaceHelperTest.class);
         
-        
+        suite.addTestSuite(NewGameChooserModelTest.class);
 
 		return suite;
 	}

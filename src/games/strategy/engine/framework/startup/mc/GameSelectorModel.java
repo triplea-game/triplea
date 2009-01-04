@@ -14,13 +14,18 @@
 
 package games.strategy.engine.framework.startup.mc;
 
-import games.strategy.engine.data.*;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.startup.ui.NewGameFileChooser;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParser;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ui.NewGameChooserEntry;
+import games.strategy.engine.framework.ui.NewGameChooserModel;
 
 import java.awt.Component;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Observable;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
@@ -29,7 +34,7 @@ public class GameSelectorModel extends Observable
 {
     
     public static final File DEFAULT_DIRECTORY = new File(GameRunner.getRootFolder(),  "/games");
-    private static final String DEFAULT_FILE_NAME_PREF = "DefaultFileName";
+    private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName";
     
     private GameData m_data;
     private String m_gameName;
@@ -42,6 +47,22 @@ public class GameSelectorModel extends Observable
     public GameSelectorModel()
     {
         setGameData(null);
+    }
+    
+    public void load(NewGameChooserEntry entry)
+    {
+        m_fileName = entry.getLocation();
+        setGameData(entry.getGameData());
+        
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        prefs.put(DEFAULT_GAME_NAME_PREF, entry.getGameData().getGameName());
+        try
+        {
+            prefs.flush();
+        } catch (BackingStoreException e)
+        {
+            //ignore
+        }
     }
     
     public void load(File file, Component ui)
@@ -67,13 +88,6 @@ public class GameSelectorModel extends Observable
             if(file.getName().toLowerCase().endsWith("xml"))
             {
                 newData= (new GameParser()).parse(new FileInputStream(file));
-                
-                
-                Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-                String s=file.getName();
-                prefs.put(DEFAULT_FILE_NAME_PREF, s);
-            
-                
             }
             //the extension should be tsvg, but 
             //try to load it as a saved game whatever the extension
@@ -196,18 +210,31 @@ public class GameSelectorModel extends Observable
         //load the previously saved value
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         
-        String defaultFileName = "revised.xml";
-        String s= prefs.get(DEFAULT_FILE_NAME_PREF, defaultFileName);
+        String defaultGameName = "revised";
+        String s = prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName);
         
-        File defaultGame =  new File(NewGameFileChooser.DEFAULT_DIRECTORY, s);
-        if(!defaultGame.exists())
-            defaultGame = new File(NewGameFileChooser.DEFAULT_DIRECTORY, defaultFileName);
         
-        if(!defaultGame.exists())
+        NewGameChooserModel model = new NewGameChooserModel();
+        NewGameChooserEntry selectedGame = model.findByName(s);
+        
+        if(selectedGame == null) 
+        {
+            selectedGame = model.findByName(defaultGameName);
+        }
+        if(selectedGame == null && model.size() > 0)
+        {
+            selectedGame = model.get(0);
+        }
+        if(selectedGame == null) 
+        {
             return;
+        }        
         
-        load(defaultGame, ui);
+        
+        load(selectedGame);
     }
+
+  
     
 
 }

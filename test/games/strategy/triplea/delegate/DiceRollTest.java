@@ -1,8 +1,6 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -12,24 +10,15 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.ui.display.DummyDisplay;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
-
-import org.xml.sax.SAXException;
 
 public class DiceRollTest extends TestCase
 {
@@ -38,9 +27,8 @@ public class DiceRollTest extends TestCase
 
     @Override
     protected void setUp() throws Exception
-    {
-        String gameName = "revised.xml";
-        loadGame(gameName);
+    {        
+        m_data = LoadGameUtil.loadGame("revised", "lhtr.xml");
     }
 
     private ITestDelegateBridge getDelegateBridge(PlayerID player)
@@ -50,26 +38,7 @@ public class DiceRollTest extends TestCase
         return bridge2;
     }
     
-    private void loadGame(String gameName) throws FileNotFoundException, GameParseException, SAXException, IOException
-    {
-        File gameRoot  = GameRunner.getRootFolder();
-        File gamesFolder = new File(gameRoot, "games");
-        File gameFile = new File(gamesFolder, gameName);
-        
-        if(!gameFile.exists())
-            throw new IllegalStateException("game does not exist");
-        
-        InputStream input = new BufferedInputStream(new FileInputStream(gameFile));
-        
-        try
-        {
-            m_data = (new GameParser()).parse(input);
-        }
-        finally
-        {
-            input.close();    
-        }
-    }
+    
 
     @Override
     protected void tearDown() throws Exception
@@ -234,7 +203,7 @@ public class DiceRollTest extends TestCase
 
     public void testMarineAttackPlus1() throws Exception 
     {
-        loadGame("iron_blitz.xml");
+        m_data = LoadGameUtil.loadGame("classic", "iron_blitz.xml");
         
         Territory algeria = m_data.getMap().getTerritory("Algeria");
         PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
@@ -256,7 +225,7 @@ public class DiceRollTest extends TestCase
 
     public void testMarineAttacNormalIfNotAmphibious() throws Exception 
     {
-        loadGame("iron_blitz.xml");
+        m_data = LoadGameUtil.loadGame("classic", "iron_blitz.xml");
         
         Territory algeria = m_data.getMap().getTerritory("Algeria");
         PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");

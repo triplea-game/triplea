@@ -1,5 +1,11 @@
 Changes for 1.0.1.5
 
+* Mods can now be installed without unzipping anything.  Simply create a zip file with contents that look like any of the folder in maps. (sgb) 
+
+* Add new Game chooser dialog that shows games notes. (sgb)
+
+* Move xml files from games folder to /maps/<mapName>/games.  For example, revised.xml is now in maps/revised/games (sgb)
+
 * Add chat ignore feature, thanks to Tango for the icon - http://tango.freedesktop.org/Tango_Icon_Library (sgb)
 
 * Add full TripleA 50 support (ComradeKev)

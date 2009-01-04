@@ -18,7 +18,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -27,7 +26,6 @@ import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
@@ -36,10 +34,6 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.CompositeMatchAnd;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -56,23 +50,7 @@ public class RevisedTest extends TestCase
     @Override
     protected void setUp() throws Exception
     {
-        File gameRoot  = GameRunner.getRootFolder();
-        File gamesFolder = new File(gameRoot, "games");
-        File lhtr = new File(gamesFolder, "revised.xml");
-        
-        if(!lhtr.exists())
-            throw new IllegalStateException("revised does not exist");
-        
-        InputStream input = new BufferedInputStream(new FileInputStream(lhtr));
-        
-        try
-        {
-            m_data = (new GameParser()).parse(input);
-        }
-        finally
-        {
-            input.close();    
-        }
+        m_data = LoadGameUtil.loadGame("revised", "revised.xml");
     }
 
     @Override

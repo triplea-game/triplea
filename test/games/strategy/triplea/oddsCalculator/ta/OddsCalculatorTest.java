@@ -6,6 +6,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.triplea.delegate.LoadGameUtil;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -25,23 +26,7 @@ public class OddsCalculatorTest extends TestCase
     @Override
     protected void setUp() throws Exception
     {
-        File gameRoot  = GameRunner.getRootFolder();
-        File gamesFolder = new File(gameRoot, "games");
-        File lhtr = new File(gamesFolder, "revised.xml");
-        
-        if(!lhtr.exists())
-            throw new IllegalStateException("revised does not exist");
-        
-        InputStream input = new BufferedInputStream(new FileInputStream(lhtr));
-        
-        try
-        {
-            m_data = (new GameParser()).parse(input);
-        }
-        finally
-        {
-            input.close();    
-        }
+        m_data = LoadGameUtil.loadGame("revised", "revised.xml");
     }
 
     @Override

@@ -3,36 +3,21 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
-import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.DummyDisplay;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -40,36 +25,20 @@ public class AirThatCantLandUtilTest extends TestCase
 {
     private GameData m_data;
     private PlayerID m_americans;
-    private PlayerID m_japanese;
+    
     private UnitType m_fighter;
-    private UnitType m_carrier;
-    private UnitType m_sub;
+    
     
     @Override
     protected void setUp() throws Exception
     {
-        File gameRoot  = GameRunner.getRootFolder();
-        File gamesFolder = new File(gameRoot, "games");
-        File lhtr = new File(gamesFolder, "revised.xml");
+        m_data = LoadGameUtil.loadGame("revised", "revised.xml");
         
-        if(!lhtr.exists())
-            throw new IllegalStateException("revised does not exist");
+        m_americans = m_data.getPlayerList().getPlayerID("Americans");
+    
+        m_fighter = m_data.getUnitTypeList().getUnitType("fighter");
+    
         
-        InputStream input = new BufferedInputStream(new FileInputStream(lhtr));
-        
-        try
-        {
-            m_data = (new GameParser()).parse(input);
-            m_americans = m_data.getPlayerList().getPlayerID("Americans");
-            m_japanese = m_data.getPlayerList().getPlayerID("Japanese");
-            m_fighter = m_data.getUnitTypeList().getUnitType("fighter");
-            m_carrier = m_data.getUnitTypeList().getUnitType("carrier");
-            m_sub = m_data.getUnitTypeList().getUnitType("submarine");
-        }
-        finally
-        {
-            input.close();    
-        }
     }
 
     private ITestDelegateBridge getDelegateBridge(PlayerID player)

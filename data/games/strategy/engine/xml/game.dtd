@@ -76,7 +76,7 @@
 <!ELEMENT gamePlay (delegate+, sequence)>
 	<!ELEMENT delegate EMPTY>
 	<!-- javaClass must implement Delegate
-		 1 instance created per delegate declaraction, ie 1 instance per name -->
+		 1 instance created per delegate declaration, ie 1 instance per name -->
 	<!ATTLIST delegate
 		name ID #REQUIRED
 		javaClass CDATA #REQUIRED
@@ -100,7 +100,7 @@
 			>
 		
 
-<!ELEMENT production (productionRule+, repairRule+, repairFrontier+, productionFrontier+, playerProduction+, playerRepair+)>
+<!ELEMENT production (productionRule+, repairRule*, repairFrontier*, productionFrontier+, playerProduction+, playerRepair*)>
 	<!ELEMENT productionRule (cost+ , result+)>
 	<!ATTLIST productionRule 
 		name ID #REQUIRED
