@@ -15,7 +15,6 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -24,15 +23,10 @@ import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.IntegerMap;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -98,22 +92,9 @@ public class PacificTest extends DelegateTest
     {
     	super.setUp();
     	
-        File gameRoot = GameRunner.getRootFolder();
-        File gamesFolder = new File(gameRoot, "games");
-        File pacific = new File(gamesFolder, "pacific_incomplete.xml");
-
-        if (!pacific.exists())
-            throw new IllegalStateException("pacific game does not exist");
-
-        InputStream input = new BufferedInputStream(new FileInputStream(pacific));
-
-        try
-        {
-            m_data = (new GameParser()).parse(input);
-        } finally
-        {
-            input.close();
-        }
+    	
+    	m_data = LoadGameUtil.loadGame("pacific", "pacific_incomplete.xml");
+        
         //Define units
         infantry = m_data.getUnitTypeList().getUnitType("infantry");
         armor = m_data.getUnitTypeList().getUnitType("armour");
