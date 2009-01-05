@@ -259,7 +259,7 @@ public class UnitImageFactory
       if (TechTracker.hasRocket(id))
       {}
     }
-
+//TODO COMCO add new icon types here
     if (type.getName().equals(Constants.FACTORY_TYPE))
     {
 

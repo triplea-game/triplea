@@ -191,7 +191,7 @@ class HeavyBomberAdvance extends TechAdvance
 }
 
 
-
+//TODO COMCO repeat for Enhanced Shipyards?
 class IndustrialTechnologyAdvance extends TechAdvance
 {
     public String getName()
@@ -429,6 +429,23 @@ class AARadarAdvance extends TechAdvance
 /*
  * ImprovedShipyards
  */
+/*class ImprovedShipyardsAdvance extends TechAdvance
+{
+    public String getName()
+    {
+        return "Shipyards";
+    }
+
+    public String getProperty()
+    {
+        return "shipyards";
+    }
+
+    public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
+    {
+    }
+}*/
+
 class ImprovedShipyardsAdvance extends TechAdvance
 {
     public String getName()
@@ -443,6 +460,24 @@ class ImprovedShipyardsAdvance extends TechAdvance
 
     public void perform(PlayerID id, IDelegateBridge bridge, GameData data)
     {
+        ProductionFrontier current = id.getProductionFrontier();
+        //they already have it
+        if(current.getName().endsWith("Shipyards"))
+            return;
+        
+        String industrialTechName = current.getName() + "Shipyards";
+        
+        ProductionFrontier advancedTech = data.getProductionFrontierList().getProductionFrontier(industrialTechName);
+        
+        //it doesnt exist, dont crash
+        if(advancedTech == null)
+        {
+            Logger.getLogger(TechAdvance.class.getName()).log(Level.WARNING, "No tech named:" + industrialTechName + " not adding tech");
+            return;
+        }
+        
+        Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
+        bridge.addChange(prodChange);
     }
 }
 /**

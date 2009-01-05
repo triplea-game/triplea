@@ -64,7 +64,9 @@ public class InitializationDelegate implements IDelegate
     protected void init(GameData data, IDelegateBridge aBridge)
     {
         initDestroyerArtillery(data, aBridge);
-
+        
+        initShipyards(data, aBridge);
+        
         initTwoHitBattleship(data, aBridge);
 
         initOriginalOwner(data, aBridge);
@@ -135,7 +137,7 @@ public class InitializationDelegate implements IDelegate
             ProductionRule artilleryIT = data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
             ProductionRule destroyerIT = data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
             ProductionFrontier frontierIT = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
-
+            
             change.add(ChangeFactory.addProductionRule(artilleryIT, frontierIT));
             change.add(ChangeFactory.addProductionRule(destroyerIT, frontierIT));
 
@@ -143,6 +145,36 @@ public class InitializationDelegate implements IDelegate
             aBridge.addChange(change);
 
         }
+        
+    }
+
+  //TODO COMCO adding shipyards may need to add special/normal prices for regular units
+        /**
+         * @param data
+         * @param aBridge
+         */
+    private void initShipyards(GameData data, IDelegateBridge aBridge)
+    {
+        
+       /* CompositeChange change = new CompositeChange();
+        ProductionFrontier frontierShipyards = data.getProductionFrontierList().getProductionFrontier("productionShipyards");
+
+        ProductionRule transportShipyards = data.getProductionRuleList().getProductionRule("buyTransportShipyards");
+        ProductionRule submarineShipyards = data.getProductionRuleList().getProductionRule("buySubmarineShipyards");
+        ProductionRule carrierShipyards = data.getProductionRuleList().getProductionRule("buyCarrierShipyards");
+        ProductionRule destroyerShipyards = data.getProductionRuleList().getProductionRule("buyDestroyerShipyards");
+        ProductionRule cruiserShipyards = data.getProductionRuleList().getProductionRule("buyCruiserShipyards");
+        ProductionRule battleshipShipyards = data.getProductionRuleList().getProductionRule("buyBattleshipShipyards");
+
+        change.add(ChangeFactory.addProductionRule(transportShipyards, frontierShipyards));
+        change.add(ChangeFactory.addProductionRule(submarineShipyards, frontierShipyards));
+        change.add(ChangeFactory.addProductionRule(carrierShipyards, frontierShipyards));
+        change.add(ChangeFactory.addProductionRule(destroyerShipyards, frontierShipyards));
+        change.add(ChangeFactory.addProductionRule(cruiserShipyards, frontierShipyards));
+        change.add(ChangeFactory.addProductionRule(battleshipShipyards, frontierShipyards));
+
+        aBridge.getHistoryWriter().startEvent("Adding shipyard production rules");
+        aBridge.addChange(change);*/
     }
 
     private boolean isFourthEdition(GameData data)

@@ -813,7 +813,10 @@
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
 
+
+
                 <!-- Advanced Industrial Production -->
+                
                 <productionRule name="buyInfantryIndustrialTechnology">
                         <cost resource="IPCs" quantity="3" />
                         <result resourceOrUnit="infantry" quantity="1"/>
@@ -879,6 +882,40 @@
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
                 
+                
+                
+                <!-- SHIPYARD PRICES -->
+                
+                <productionRule name="buyTransportShipyards">
+                        <cost resource="IPCs" quantity="6" />
+                        <result resourceOrUnit="transport" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyCarrierShipyards">
+                        <cost resource="IPCs" quantity="11" />
+                        <result resourceOrUnit="carrier" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyDestroyerShipyards">
+                        <cost resource="IPCs" quantity="7" />
+                        <result resourceOrUnit="destroyer" quantity="1"/>
+                </productionRule>
+				
+				<productionRule name="buyCruiserShipyards">
+                        <cost resource="IPCs" quantity="10" />
+                        <result resourceOrUnit="destroyer" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyBattleshipShipyards">
+                        <cost resource="IPCs" quantity="17" />
+                        <result resourceOrUnit="battleship" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buySubmarineShipyards">
+                        <cost resource="IPCs" quantity="5" />
+                        <result resourceOrUnit="submarine" quantity="1"/>
+                </productionRule>
+                
                <!-- Repair rules -->                
                 <repairRule name="repairFactory">
                         <cost resource="IPCs" quantity="1" />
@@ -929,7 +966,16 @@
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
                         <frontierRules name="buyFactoryIndustrialTechnology"/>        
                 </productionFrontier>
-
+                
+                <productionFrontier name="productionShipyards">
+                        <frontierRules name="buyTransportShipyards"/>
+                        <frontierRules name="buySubmarineShipyards"/>
+                        <frontierRules name="buyCarrierShipyards"/>
+                        <frontierRules name="buyDestroyerShipyards"/>
+						<frontierRules name="buyCruiserShipyards"/>
+                        <frontierRules name="buyBattleshipShipyards"/>   
+                </productionFrontier>
+                
                 <playerProduction player="Germans" frontier="production"/>
 				<playerProduction player="Russians" frontier="production"/>
 				<playerProduction player="Japanese" frontier="production"/>

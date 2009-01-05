@@ -29,7 +29,7 @@ import java.util.*;
  */
 public class RepairFrontierList extends GameDataComponent
 {
-	private final Map<String, RepairFrontier> m_productionFrontiers = new HashMap<String, RepairFrontier>();
+	private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<String, RepairFrontier>();
 	
     public RepairFrontierList(GameData data) 
 	{
@@ -38,21 +38,21 @@ public class RepairFrontierList extends GameDataComponent
 	
 	protected void addRepairFrontier(RepairFrontier pf)
 	{
-		m_productionFrontiers.put(pf.getName(), pf);
+	    m_repairFrontiers.put(pf.getName(), pf);
 	}
 	
 	public int size()
 	{
-		return m_productionFrontiers.size();
+		return m_repairFrontiers.size();
 	}
 	
 	public RepairFrontier getRepairFrontier(String name)
 	{
-		return m_productionFrontiers.get(name);
+		return m_repairFrontiers.get(name);
 	}
 	
 	public Set<String> getRepairFrontierNames()
 	{
-	    return m_productionFrontiers.keySet();
+	    return m_repairFrontiers.keySet();
 	}
 }
