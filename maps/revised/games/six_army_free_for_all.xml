@@ -1544,15 +1544,23 @@
                 <property name="mapName" value="revised" editable="false"/>
 
 		<!-- notes appear in the notes menu in the main screen, format as html -->
+				<property name="notes">
+					<value>
+					<![CDATA[  
+		<h1>Six Army Free For All</h1>
+		A scenario built for a game with no alliances, with China added to the Asian theatre.
+		<br> only UK, USA, and Japan get starting units in this scenario (2 transports).						
+		<br> a few rules are found below...
+		<br> #1.no attacking a capital on turn 1 of any kind is allowed, not even strategic bombing.
+		<br> #2.no more than five units may be placed in each territory during your bid placement phase, with the exception of placement into your capital, or placing a navy.
+		<br> #3.all naval units MUST be placed in a seazone adjacent to an industrial complex that you own (you may place units in seazones next to bid-purchased industrial complexes.
+		<br> house rules are subject to the host of the game's approval. 
+		<br> have fun! (remember to place your bids in a balanced fashion...diplomacy sometimes fails!
 
-		<property name="notes" value="== Six Army Free For All == &lt;br&gt;A scenario built for a game with no alliances, with China added to the Asian theatre.
-		&lt;br&gt; only UK, USA, and Japan get starting units in this scenario (2 transports).						
-		&lt;br&gt; a few rules are found below...
-		&lt;br&gt; #1.no attacking a capital on turn 1 of any kind is allowed, not even strategic bombing.
-		&lt;br&gt; #2.no more than five units may be placed in each territory during your bid placement phase, with the exception of placement into your capital, or placing a navy.
-		&lt;br&gt; #3.all naval units MUST be placed in a seazone adjacent to an industrial complex that you own (you may place units in seazones next to bid-purchased industrial complexes.
-		&lt;br&gt; house rules are subject to the host of the game's approval. 
-		&lt;br&gt; have fun! (remember to place your bids in a balanced fashion...diplomacy sometimes fails!"/>
+					
+					]]>	
+					</value>
+				</property>
 
         </propertyList>
 </game>

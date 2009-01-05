@@ -1754,23 +1754,31 @@
                 <property name="mapName" value="pact_of_steel" editable="false"/>
 				
 				<!-- notes appear in the notes menu in the main screen, format as html -->
-		
-				<property name="notes" value="&lt;h1&gt;PACT OF STEEL &lt;/h1&gt; &lt;br&gt; &lt;br&gt;
-				&lt;b&gt; Created by: Black Elk, Madmat, Beagle and Cousin Joe &lt;/b&gt; &lt;br&gt; 
-				Pact of Steel is an original TripleA module developed as a variant of the 4th edition Axis and Allies rule-set. &lt;br&gt; 
-				Our initial goal was to incorporate Italy as the 6th major power in the game, and along the way to correct some &lt;br&gt;
-				of the imbalances we saw in standard 4th edition. The module represents a hypothetical WW2 scenario, which tries &lt;br&gt;
-				to reproduce what the war might have been like in 1942 had Mussolini been more successful in his early Mediterranean &lt;br&gt;
-				campaigns. The game functions under a 15 VC set up with Major Victory at 11 VCs captured (the new VCs are Stalingrad, &lt;br&gt;
-				Sydney and Honolulu.) I think the module is an excellent example of what users can accomplish with tripleA's custom &lt;br&gt;
-				editing tools. A few months ago Pact of Steel was just an interesting 'what-if' scenario, but thanks to the efforts &lt;br&gt;
-				of the tripleA community we now have an actual game to play. I hope everyone enjoys it. &lt;br&gt; &lt;br&gt; &lt;i&gt;
-				Thanks again thanks to all the Devs and playtesters who helped get this project together: &lt;br&gt;
-				 DMA02 (Nekro), Iron Cross, Aibrahim, SGB, KC1189, Zero Pilot, Tactics, Underdog and the whole crew. &lt;br&gt; 
-				 You guys all rock! &lt;br&gt; &lt;br&gt;
-				 -Triplelk
-				 "/>
+				<property name="notes">
+					<value>
+					<![CDATA[  
+						<h1>PACT OF STEEL </h1> 
+						<br>
+						<b> Created by: Black Elk, Madmat, Beagle and Cousin Joe </b> <br>
+						<br> 
+						Pact of Steel is an original TripleA module developed as a variant of the 4th edition Axis and Allies rule-set. <br> 
+						Our initial goal was to incorporate Italy as the 6th major power in the game, and along the way to correct some <br>
+						of the imbalances we saw in standard 4th edition. The module represents a hypothetical WW2 scenario, which tries <br>
+						to reproduce what the war might have been like in 1942 had Mussolini been more successful in his early Mediterranean <br>
+						campaigns. The game functions under a 15 VC set up with Major Victory at 11 VCs captured (the new VCs are Stalingrad, <br>
+						Sydney and Honolulu.) I think the module is an excellent example of what users can accomplish with tripleA's custom <br>
+						editing tools. A few months ago Pact of Steel was just an interesting 'what-if' scenario, but thanks to the efforts <br>
+						of the tripleA community we now have an actual game to play. I hope everyone enjoys it. <br> <br> <i>
+						Thanks again thanks to all the Devs and playtesters who helped get this project together: <br>
+						 DMA02 (Nekro), Iron Cross, Aibrahim, SGB, KC1189, Zero Pilot, Tactics, Underdog and the whole crew. <br> 
+						 You guys all rock! <br> <br>
+						 -Triplelk
 
+					]]>	
+					</value>
+				</property>
+		
+			
 
 
         </propertyList>

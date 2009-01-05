@@ -1498,21 +1498,28 @@
 		<property name="mapName" value="classic" editable="false" />
 
 		<!-- notes appear in the notes menu in the main screen, format as html -->
-		<property name="notes" value="&lt;H1&gt;		Iron Blitz &lt;/H1&gt; &lt;br&gt; &lt;br&gt;
+				<property name="notes">
+					<value>
+					<![CDATA[  		
+					<H1>		Iron Blitz </H1> 
 
-		After long wait, our first Iron Blitz mod has been released.  Thanks to new contributions to &lt;br&gt;
-		the triplea team effort.  This mod was created to exactly mimick the first and only Iron Blitz &lt;br&gt;
-		Axis and Allies expansion pack released by Hasbro. &lt;br&gt; &lt;br&gt; 
-
-		The IB expansion was exactly the same game as the original game, but it added destroyers and marines.   &lt;br&gt; 
-	    &lt;H3&gt; Destroyers &lt;/H3&gt;attack and defend at 2, and cost 8 ipcs. &lt;br&gt; 
-		&lt;H3&gt; Marines &lt;/H3&gt;attack at 1 (2 during amphibious assaults), defend at 2, and cost 4 ipcs. &lt;br&gt; &lt;br&gt;
-		
-		Note:  In the original hasbro release the marines were valued at 5 ipcs, but we have enhanced it closer &lt;br&gt;
-		to those values listed in the Pacific release.  It is much more balanced (for obvious reasons?).
-		&lt;br&gt; &lt;br&gt; &lt;i&gt; 
+						A classic mod which mimick the first and only Iron Blitz <br>
+						Axis and Allies expansion pack released by Hasbro. <br> <br> 
 				
-		Credits: Special thanks to Adam, which this mod would not have been released without... "/>
+						The IB expansion was exactly the same game as the original game, but it added destroyers and marines.   <br> 
+					    <H3> Destroyers </H3>attack and defend at 2, and cost 8 ipcs. <br> 
+						<H3> Marines </H3>attack at 1 (2 during amphibious assaults), defend at 2, and cost 4 ipcs. <br> <br>
+						
+						Note:  In the original hasbro release the marines were valued at 5 ipcs, but we have enhanced it closer <br>
+						to those values listed in the Pacific release.  It is much more balanced (for obvious reasons?).
+						<br> <br> <i> 
+								
+						Credits: Special thanks to Adam, which this mod would not have been released without... 
+					]]>	
+					</value>
+				</property>					
+		
+	
 	</propertyList>
 	
 </game>

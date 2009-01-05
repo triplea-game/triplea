@@ -1497,20 +1497,29 @@
 
 		<property name="mapName" value="europe" editable="false"/>
 		
-		<!-- notes appear in the notes menu in the main screen, format as html -->
-		<property name="notes" value="&lt;H1&gt;		+ Axis and Allies Europe + &lt;/H1&gt; &lt;br&gt; &lt;br&gt;
-		This current mod reflects the Axis and Allies Europe edition.   &lt;br&gt; &lt;br&gt; 
+		<property name="notes">
+			<value>
+			<![CDATA[
+			<H1>		Europe - Alpha</H1>
+		This current mod reflects the A&A Europe edition.   <br> <br> 
 
-		ATTENTION:: As of 0.25, Convoy Centers are now working!		&lt;br&gt; &lt;br&gt; 
+		ATTENTION:: As of 0.25, Convoy Centers are now working!		<br> <br> 
 		
-		There are a few elements still to be added however, for example, the middle east territories &lt;br&gt;
-		are counted as regular UK territories as their special rules are also not yet currently implemented. &lt;br&gt; 
-		Strategic bombing for now behaves exactly as regular Axis and Allies strategic bombing.  Also &lt;br&gt;
-		there is no extra Russia bonus of commandeering allied units and converting them to Russian owned &lt;br&gt;
-		at this time.  All units created by a nation will stay under ownership by that nation throughout &lt;br&gt;
-		the entire game. &lt;br&gt; &lt;br&gt; &lt;i&gt; 
+		There are a few elements still to be added however, for example, the middle east territories <br>
+		are counted as regular UK territories as their special rules are also not yet currently implemented. <br> 
+		Strategic bombing for now behaves exactly as regular Axis and Allies strategic bombing.  Also <br>
+		there is no extra Russia bonus of commandeering allied units and converting them to Russian owned <br>
+		at this time.  All units created by a nation will stay under ownership by that nation throughout <br>
+		the entire game. <br> <br> <i> 
 				
-		Credits: Triple_Elk (base-line), iron__cross (integration), Adam (convoy center code), and the rest of the team..."/>
+		Credits: Triple_Elk (base-line), iron__cross (integration), Adam (convoy center code), and the rest of the team...
+
+			  
+			]]>	
+			</value>
+		</property>
+
+		
 	</propertyList>
 	
 </game>

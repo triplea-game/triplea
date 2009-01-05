@@ -2528,8 +2528,22 @@
 
 		<!-- notes appear in the notes menu in the main screen, format as html -->
 
-		<property name="notes" value="The same as classic except that : &lt;br&gt; neutrals defend themselves &lt;br&gt; no neutral fee &lt;br&gt; each non original factory can produce 5 units, but you can have multiple factories in a territory"/>
-
+				<property name="notes">
+					<value>
+					<![CDATA[  
+						<h1>Four if by sea</h1>
+						
+						A classic mod where :
+						<ul>
+							<li>Neutrals can defend themselves</li>
+							<li>There is no neutral fee</li>
+							<li>Each factory can produce 5 units, but there can be multiple factories per territory</li>
+							<li></li>
+						</ul>
+					]]>	
+					</value>
+				</property>
+		
 	</propertyList>
 
 </game>

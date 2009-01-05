@@ -1692,8 +1692,9 @@
                 </property>
                                 
 				<property name="notes">
-		        	<value><![CDATA[        	
-		        	The revised version of A&A (also known as 3rd edition) released in 2004
+		        	<value><![CDATA[       
+		        	<h1>Revised</h1> 	
+		        	The revised version of A&A (also known as 3rd edition) released in 2004.
 		        	]]></value>        	       
         		</property>	
         </propertyList>        

@@ -2093,29 +2093,42 @@ Coded by Iron__Cross
                 
         
         <!-- notes appear in the notes menu in the main screen, format as html -->
-        <property name="notes"
-            value="Axis and Allies Pacific 
+ 		
+		<property name="notes">
+			<value>
+			<![CDATA[  
+
+            <h1>Pacific Alpha</h1> 
 				This current implementation of Axis and Allies Pacific is still in alpha phase 
 				and has many features still to be supported as listed:  
+				<ul>
+					<li> CAP </li>
+					<li> (implemented) Airports/Seaports </li>
+					<li> (implemented) Convoy Centers  </li>
+					<li> (implemented) Convoy Routes </li>
+					<li> (implemented) Chinese purchase mechanics </li>
+					<li> (implemented) Marines </li>
+					<li> Chinese and USA same turn order (done on seperate turns for now) </li>
+					<li> (implemented) Seperate income for India and Australia </li>
+					<li> Commonwealth Convoy Center IPC distribution</li>
+					<li> Special stratbombing rules (regular strat bombing rules applied) </li>
+					<li> (implemented) Japanese Victory Points</li>
+					<li> (implemented) Japanese special turn one attack</li>
+					<li> (implemented) Japanese DDs can transport a single Inf</li>
+					<li> (implemented) Special sub rules</li>
+					<li> Japanese Kamikazes</li>
+					<li> Burma Road</li>
 
-				- CAP 
-				- (implemented) Airports/Seaports 
-				- (implemented) Convoy Centers  
-				- (implemented) Convoy Routes 
-				- (implemented) Chinese purchase mechanics 
-				- (implemented) Marines 
-				- Chinese and USA same turn order (done on seperate turns for now) 
-				- (implemented) Seperate income for India and Australia 
-				- Commonwealth Convoy Center IPC distribution
-				- Special stratbombing rules (regular strat bombing rules applied) 
-				- (implemented) Japanese Victory Points
-				- (implemented) Japanese special turn one attack
-				- (implemented) Japanese DDs can transport a single Inf
-				- (implemented) Special sub rules
-				- Japanese Kamikazes
-				- Burma Road
+
+				</ul>
 				
 				
-				Credits: Triple_Elk (base-line), iron__cross (integration), ComradeKev (special rules implementations)"/>
+				Credits: Triple_Elk (base-line), iron__cross (integration), ComradeKev (special rules implementations)
+				
+				
+									]]>	
+					</value>
+				</property>
+				
     </propertyList>
 </game>

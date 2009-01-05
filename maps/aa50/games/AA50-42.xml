@@ -2002,16 +2002,20 @@
 				
 				<!-- notes appear in the notes menu in the main screen, format as html -->
 		
-				<property name="notes" value="&lt;h1&gt;AA50-42&lt;/h1&gt;
-				1942 Starting Set-Up &lt;br&gt; 
-				&lt;br&gt;
-				&lt;br&gt;
-				&lt;br&gt;
-				&lt;br&gt;
-				Credits:
-				&lt;br&gt;
-				Triplelk Jason Clark - baseline &lt;br&gt;
-				Zero Pilot Mike McCaughey - integration"/>
+				<property name="notes">
+					<value>
+					<![CDATA[  
+						<h1>AA50-42</h1>
+						1942 Starting Set-Up <br> 
+						
+						Credits:
+						<br>
+						Triplelk Jason Clark - baseline <br>
+						Zero Pilot Mike McCaughey - integration
+					]]>	
+					</value>
+				</property>
+				
 
         </propertyList>
 </game>

@@ -42,6 +42,13 @@
 
 	<propertyList>
 		<property name="mapName" value="tictactoe" editable="false" />		
+		
+		<property name="notes">
+        	<value><![CDATA[   
+        	<h1>Tic Tac Toe</h1>     	
+        	The classic Tic Tac Toe game
+        	]]></value>        	       
+        </property>
 	</propertyList>
 	
 </game>

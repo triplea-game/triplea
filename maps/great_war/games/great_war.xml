@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="The Great War" version="2.22"/>
+        <info name="Great War" version="2.22"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -4152,25 +4152,35 @@
                 <property name="mapName" value="great_war" editable="false"/>
 
 		<!-- notes appear in the notes menu in the main screen, format as html -->
+				<property name="notes">
+					<value>
+					<![CDATA[  
+		<h1>The Great War: World War I</h1>  
+		The Western Front has bogged down into trench<br>warfare.  In the East, titanic armies fight across the vast expanses.  While elsewhere, 
+		smaller battles are being waged for control of<br>Africa and the Middle East.  On the high seas, great armadas clash with one another, 
+		seeking dominance over key shipping lanes and the open ocean.<br><br>Uses standard TripleA '4th edition' rules. Right now, techs 
+		are deactivated.<br>
+		<h2>Allied Powers</h2>British Empire (Capital: London)<br>France (Capital: Paris)<br>Russian 
+		Empire (Capital: Petrograd)<br>Italy (Capital: Rome)<br>United States (Capital: United States)
+		<h2>Central Powers</h2>
+		German
+		 Empire (Capital: Berlin)<br>Austria-Hungary (Capital: Vienna)<br>Ottoman Empire (Capital: Istanbul)<br>
+		 <h2>Unit definitions (attack, defend, movement, cost) </h2>  infantry:   1, 2, 1, 3 (special: artillery enhances attack to 2)<br>  cavalry: 
+		  1, 1, 2, 4 (special: blitz, artillery enhances attack to 2)<br>  
+		 artillery:  2, 2, 1, 4 (special: enhances infantry + cavalry)<br>  fighter:    3, 3, 3, 8<br>  zeppelin:  1, 1, 6, 10 (special: SBR)<br>  
+		 transport:  0, 1, 2, 12 (special: can carry 1 infantry + 1 other ground unit)<br>  submarine:  2, 2, 2, 7 (special: submerge, sneak attack)<br>  destroyer: 
+		  2, 2, 2, 6<br>  cruiser:    3, 3, 2, 10<br>  battlecruiser:  4, 4, 2, 14<br>  battleship: 4, 4, 18 (special: 2 hits [same turn] to destroy, 
+		  can NOT shore bombard!)<br
+		  <h2>Map Information</h2>This map is based on a unique projection developed specifically for the Great War
+		   variant and is designed to take full advantage of the<br>map scaling feature in TripleA.  Our desire to highlight the Western Front,
+		    while still giving the game a truly world-wide scope,<br>required that we make some abstractions to the map.  These include several game 
+		    boxes which connect to the major areas of conflict around<br>Europe, Africa and the Middle East. <br><br> For complete rules and information, refer to 
+		    the development page http://tripleadev.org/index.php?showtopic=1110
 
-		<property name="notes" value="== The Great War: World War I == &lt;br&gt;  
-		The Western Front has bogged down into trench&lt;br&gt;warfare.  In the East, titanic armies fight across the vast expanses.  While elsewhere, 
-		smaller battles are being waged for control of&lt;br&gt;Africa and the Middle East.  On the high seas, great armadas clash with one another, 
-		seeking dominance over key shipping lanes and the open ocean.&lt;br&gt;&lt;br&gt;Uses standard TripleA '4th edition' rules. Right now, techs 
-		are deactivated.&lt;br&gt;&lt;br&gt;=== Allied Powers === &lt;br&gt;British Empire (Capital: London)&lt;br&gt;France (Capital: Paris)&lt;br&gt;Russian 
-		Empire (Capital: Petrograd)&lt;br&gt;Italy (Capital: Rome)&lt;br&gt;United States (Capital: United States)&lt;br&gt;=== Central Powers ===&lt;br&gt;German
-		 Empire (Capital: Berlin)&lt;br&gt;Austria-Hungary (Capital: Vienna)&lt;br&gt;Ottoman Empire (Capital: Istanbul)&lt;br&gt;&lt;br&gt;=== Unit definitions 
-		 (attack, defend, movement, cost) === &lt;br&gt;  infantry:   1, 2, 1, 3 (special: artillery enhances attack to 2)&lt;br&gt;  cavalry:  1, 1, 2, 4 (special: blitz, artillery enhances attack to 2)&lt;br&gt;  
-		 artillery:  2, 2, 1, 4 (special: enhances infantry + cavalry)&lt;br&gt;  fighter:    3, 3, 3, 8&lt;br&gt;  zeppelin:  1, 1, 6, 10 (special: SBR)&lt;br&gt;  
-		 transport:  0, 1, 2, 12 (special: can carry 1 infantry + 1 other ground unit)&lt;br&gt;  submarine:  2, 2, 2, 7 (special: submerge, sneak attack)&lt;br&gt;  destroyer: 
-		  2, 2, 2, 6&lt;br&gt;  cruiser:    3, 3, 2, 10&lt;br&gt;  battlecruiser:  4, 4, 2, 14&lt;br&gt;  battleship: 4, 4, 18 (special: 2 hits [same turn] to destroy, 
-		  can NOT shore bombard!)&lt;br&gt;&lt;br&gt;=== Map Information ===&lt;br&gt;This map is based on a unique projection developed specifically for the Great War
-		   variant and is designed to take full advantage of the&lt;br&gt;map scaling feature in TripleA.  Our desire to highlight the Western Front,
-		    while still giving the game a truly world-wide scope,&lt;br&gt;required that we make some abstractions to the map.  These include several game 
-		    boxes which connect to the major areas of conflict around&lt;br&gt;Europe, Africa and the Middle East. &lt;br&gt;&lt;br&gt; For complete rules and information, refer to 
-		    the development page http://tripleadev.org/index.php?showtopic=1110"/>
-
-
+					
+					]]>	
+					</value>
+				</property>
 
         </propertyList>
 

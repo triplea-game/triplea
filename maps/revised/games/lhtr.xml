@@ -1634,5 +1634,12 @@
 
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="revised" editable="false"/>
+                
+                <property name="notes">
+	        	<value><![CDATA[   
+		        	<h1>LHTR</h1>     	
+		        	A revised mod that follows the popular LHTR rules.
+	        	]]></value>        	       
+        		</property>
         </propertyList>
 </game>

@@ -3043,11 +3043,46 @@
                 <property name="Low Luck" value="false" editable="true">
                         <boolean/>
                 </property>
+ 				
+ 				<property name="mapName" value="big_world" editable="false"/>
 
-                <!-- Map Name: also used for map utils when asked -->
-                <property name="mapName" value="big_world" editable="false"/>
-		<!-- notes appear in the notes menu in the main screen, format as html -->
-		<property name="notes" value="== Big World: 1942 (v2.01.06) == &lt;br&gt;A scenario loosely based on the year 1942 of the global conflict of 1939-1945. In Europe, Germany has Leningrad besieged, &lt;br&gt;stands at the gates of Moscow and the verge of defeat at Stalingrad (Dec 1942). In the Pacific, Japan has expanded &lt;br&gt;explosively but faces the turning point at Midway (May 1942). &lt;br&gt;&lt;br&gt;Standard TripleA '4th edition' + 'LHTR' bomber rules apply. However, there are also variant rules to consider.&lt;br&gt;Also 'LHTR' delayed tech activation is applied.&lt;br&gt;&lt;br&gt;=== Capitols === &lt;br&gt;The capitols of the world powers are as follows: &lt;br&gt;  Russia - Moscow &lt;br&gt;  Germany - Eastern Germany &lt;br&gt;  Britain - England &lt;br&gt;  China - Western Sinkiang &lt;br&gt;  Japan - Southern Japan &lt;br&gt;  USA - Northeastern United States &lt;br&gt;&lt;br&gt;=== Unit definitions === &lt;br&gt;Units have been revised in an effort to bring better balance to the naval cost structure. This &lt;br&gt;includes the addition of a Cruiser unit, and downgrading of the Destroyer. Please note that with this&lt;br&gt;change the Destroyer Bombard tech should be replaced with a Cruiser Bombard tech, but as of this &lt;br&gt;writing (2005-05-01) the required code changes have not been made. &lt;br&gt;&lt;br&gt;Unit definitions (attack, defend, IPC cost)&lt;br&gt;  infantry:   1, 2, 3 (special: artillery enhances attack to 2)&lt;br&gt;  artillery:  2, 2, 4 (special: enhances infantry)&lt;br&gt;  armour:     3, 3, 5&lt;br&gt;  fighter:    3, 4, 10&lt;br&gt;  bomber:     4, 1, 14 (special: SBR)&lt;br&gt;  submarine:  2, 2, 8 (special: submerge, sneak attack)&lt;br&gt;  destroyer:  2, 2, 8 (special: ASW [subs cannot submerge, no sneak attack])&lt;br&gt;  cruiser:    3, 3, 10&lt;br&gt;  carrier:    1, 1, 14 (special: 2 fighters may land on a carrier)&lt;br&gt;  battleship: 4, 4, 22 (special: 2 hits [same turn] to destroy, can shore bombard)&lt;br&gt;"/>
+				<property name="notes">
+					<value>
+					<![CDATA[  
+					                <!-- Map Name: also used for map utils when asked -->
+               
+				<h1>Big World: 1942</h1>
+				A scenario loosely based on the year 1942 of the global conflict of 1939-1945. In Europe, 
+				Germany has Leningrad besieged, <br>stands at the gates of Moscow and the verge of defeat 
+				at Stalingrad (Dec 1942). In the Pacific, Japan has expanded <br>explosively but faces the 
+				turning point at Midway (May 1942). 
+				
+				<br><br>
+				Standard TripleA '4th edition' + 'LHTR' bomber rules apply. 
+				However, there are also variant rules to consider.<br>Also 'LHTR' 
+				delayed tech activation is applied.<br>
+				<h2>Capitols</h2>
+				The capitols of the world powers are as follows: <br>  Russia - Moscow <br>  Germany - Eastern Germany <br> 
+				 Britain - England <br>  China - Western Sinkiang <br>  Japan - Southern Japan <br> 
+				  USA - Northeastern United States <br>
+				  
+				  <h2>Unit definitions</h2>Units have been revised in an 
+				  effort to bring better balance to the naval cost structure. This
+				   <br>includes the addition of a Cruiser unit, and downgrading of the Destroyer.
+				    Please note that with this change the Destroyer Bombard tech should be 
+				    replaced with a Cruiser Bombard tech, but as of this writing (2005-05-01)
+				     the required code changes have not been made. <br><br>Unit definitions (attack, defend, IPC cost)<br> 
+				      infantry:   1, 2, 3 (special: artillery enhances attack to 2)<br>  artillery:  2, 2, 4
+				       (special: enhances infantry)<br>  armour:     3, 3, 5<br>  fighter:    3, 4, 10<br>  
+				       bomber:     4, 1, 14 (special: SBR)<br>  submarine:  2, 2, 8 (special: submerge, sneak attack)<br> 
+				        destroyer:  2, 2, 8 (special: ASW [subs cannot submerge, no sneak attack])<br>  cruiser:   
+				         3, 3, 10<br>  carrier:    1, 1, 14 (special: 2 fighters may land on a carrier)<br>  battleship:
+				          4, 4, 22 (special: 2 hits [same turn] to destroy, can shore bombard)<br>
+				
+					]]>	
+					</value>
+				</property>
+
 
 
         </propertyList>

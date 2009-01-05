@@ -136,6 +136,15 @@
 		<property name="Center square can be used to capture the king" value="true" editable="true"><boolean/></property>				
 		<property name="Edge of board can be used to capture the king" value="false" editable="true"><boolean/></property>		
 		<property name="King can be captured like a pawn" value="false" editable="true"><boolean/></property>
+		<property name="notes">
+			<value>
+			<![CDATA[
+			<h1>Kings Table</h1>
+			See  http://en.wikipedia.org/wiki/Tafl_games for details.  
+			]]>	
+			</value>
+		</property>
+
 		
 				
 	</propertyList>

@@ -1,5 +1,9 @@
 Changes for 1.0.1.5
 
+* Update game notes (sgb)
+
+* Better error message if no server properties for this version (sgb)
+
 * Mods can now be installed without unzipping anything.  Simply create a zip file with contents that look like any of the folder in maps. (sgb) 
 
 * Add new Game chooser dialog that shows games notes. (sgb)
