@@ -54,6 +54,7 @@ public class MoveValidator
     public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
     public static final String UNESCORTED_UNITS_WILL_DIE_IN_COMBAT = "Unescorted units will die in combat";
     private static int m_mechanizedSupportAvail = 0;
+    private static int m_paratroopsAvail = 0;
 
     
     /**
@@ -65,6 +66,7 @@ public class MoveValidator
     public static boolean hasEnoughMovement(Collection<Unit> units, Route route)
     {
         getMechanizedSupportAvail(route);
+        getParatroopsAvail(route);
         
         for (Unit unit : units)
         {
@@ -83,6 +85,22 @@ public class MoveValidator
         PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
         Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
         m_mechanizedSupportAvail = getMechanizedSupportAvailable(ownedUnits , player);
+    }
+    
+    /**
+     * TODO: Method description.
+     * @param route
+     */
+    private static void getParatroopsAvail(Route route)
+    {
+        PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
+        
+        CompositeMatch<Unit> ownedInfantry = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), 
+                        Matches.UnitIsLand, Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitIsNotArmour);
+        
+        Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(ownedInfantry);
+
+        m_paratroopsAvail = getParatroopsAvailable(ownedUnits , player);
     }
     
     public static boolean hasEnoughMovement(Collection<Unit> units, int length)
@@ -104,9 +122,11 @@ public class MoveValidator
     public static boolean hasEnoughMovement(Unit unit, Route route)
     {
         getMechanizedSupportAvail(route);
+        getParatroopsAvail(route);
      
         int left = TripleAUnit.get(unit).getMovementLeft();  
         UnitAttachment ua = UnitAttachment.get(unit.getType());
+        PlayerID player = unit.getOwner();
         
     	TerritoryAttachment taStart = TerritoryAttachment.get(route.getStart());
     	TerritoryAttachment taEnd = TerritoryAttachment.get(route.getEnd());
@@ -119,7 +139,9 @@ public class MoveValidator
             	left++;
         }
         
-        if(ua.isSea() && unit.getData().getSequence().getStep().getDisplayName().equals("Non Combat Move"))
+        GameStep stepName = unit.getData().getSequence().getStep();
+        
+        if(ua.isSea() && stepName.getDisplayName().equals("Non Combat Move"))
         {        	
         	//If a zone adjacent to the starting and ending sea zones are allied navalbases, increase the range.
         	//TODO Still need to be able to handle stops on the way (history to get route.getStart() 
@@ -128,14 +150,14 @@ public class MoveValidator
             {
             	Territory terrNext = (Territory) startNeighborIter.next();
             	TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
-            	if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getAllianceTracker().isAllied(terrNext.getOwner(), unit.getOwner()))
+            	if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getAllianceTracker().isAllied(terrNext.getOwner(), player))
             	{
             		Iterator <Territory> endNeighborIter = unit.getData().getMap().getNeighbors(route.getEnd(), 1).iterator();            
                     while (endNeighborIter.hasNext())
                     {
                     	Territory terrEnd = (Territory) endNeighborIter.next();
                     	TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
-                    	if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getAllianceTracker().isAllied(terrEnd.getOwner(), unit.getOwner()))
+                    	if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getAllianceTracker().isAllied(terrEnd.getOwner(), player))
                     	{
                     		left++;
                     		break;
@@ -145,13 +167,29 @@ public class MoveValidator
             }
         }
         
-        if (isMechanizedInfantry(unit.getOwner()) && !ua.isAir() && !ua.isSea() && !ua.isAA() && !ua.isArtillery() && !ua.isArmour())
+        if (isMechanizedInfantry(player) && !ua.isAir() && !ua.isSea() && !ua.isAA() && !ua.isArtillery() && !ua.isArmour())
         {   
             if(m_mechanizedSupportAvail > 0)
             {
                 left++;
                 m_mechanizedSupportAvail -= 1;
             }
+        }
+        
+        if(isParatroopers(player) && ua.isStrategicBomber())
+        {
+            //TODO COMCO add rule to allow non-combat paratroops
+            if (stepName.getDisplayName().equals("Combat Move"))
+            {                
+                if (m_paratroopsAvail > 0)
+                {
+                    //TODO COMCO ask if they want to transport paratroops and add dependents
+
+                    //Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
+                    m_paratroopsAvail -= 1;
+                }
+            }
+            
         }
             
         if(left == -1 || left < route.getLength())
@@ -168,7 +206,21 @@ public class MoveValidator
             return false;
         return true;
     }
-
+    
+  /*  private void addDependentUnits(Map<Unit, Collection<Unit>> dependencies)
+    {
+        Iterator iter = dependencies.keySet().iterator();
+        while (iter.hasNext())
+        {
+            Unit holder = (Unit) iter.next();
+            Collection<Unit> transporting = dependencies.get(holder);
+            if (m_dependentUnits.get(holder) != null)
+                m_dependentUnits.get(holder)
+                        .addAll(transporting);
+            else
+                m_dependentUnits.put(holder, transporting);
+        }
+    }*/
     /**
      * Checks that there are no enemy units on the route except possibly at the end.
      * Submerged enemy units are not considered as they don't affect
@@ -282,7 +334,6 @@ public class MoveValidator
     /**
      * TODO: Determine if artillery support is available and how much
      * @param units
-     * @param defending
      * @param player
      * @return
      */
@@ -291,6 +342,17 @@ public class MoveValidator
         int mechanizedSupportAvailable = Match.countMatches(units, Matches.UnitIsArmour);        
         return mechanizedSupportAvailable;
     }
+    /**
+     * TODO: Determine if paratroops are available and how many
+     * @param units
+     * @param player
+     * @return
+     */
+    private static int getParatroopsAvailable(Collection<Unit> units, PlayerID player)
+    {
+        int paratroopsAvailable = Match.countMatches(units, Matches.UnitIsArmour);        
+        return paratroopsAvailable;
+    }
     
     private static boolean isMechanizedInfantry(PlayerID player)    
     {
@@ -298,7 +360,11 @@ public class MoveValidator
         return ta.hasMechanizedInfantry();
     }
     
-
+    private static boolean isParatroopers(PlayerID player)    
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasParatroopers();
+    }    
 
     public static boolean isUnload(Route route)
     {
@@ -572,6 +638,7 @@ public class MoveValidator
                                                     Route route, 
                                                     PlayerID player, 
                                                     Collection<Unit> transportsToLoad, 
+                                                    Collection<Unit> bombersToLoad,
                                                     boolean isNonCombat, 
                                                     final List<UndoableMove> undoableMoves, 
                                                     GameData data)
@@ -617,6 +684,9 @@ public class MoveValidator
         if (validateTransport(data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
             return result;
 
+        if (validateParatroops(data, undoableMoves, units, route, player, transportsToLoad, bombersToLoad, result).getError() != null)
+            return result;
+        
         if (validateCanal(data, units, route, player, result).getError() != null)
             return result;
 
@@ -1485,6 +1555,131 @@ public class MoveValidator
                     Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
                     result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
                 }
+            }
+
+            if (! unitsToTransports.keySet().containsAll(land))
+            {
+                // some units didn't get mapped to a transport
+                Collection<UnitCategory> unitsToLoadCategories = UnitSeperator.categorize(land);
+
+                if (unitsToTransports.size() == 0 || unitsToLoadCategories.size() == 1)
+                {
+                    // set all unmapped units as disallowed if there are no transports
+                    //   or only one unit category
+                    for (Unit unit : land)
+                    {
+                        if (unitsToTransports.containsKey(unit))
+                            continue;
+                        UnitAttachment ua = UnitAttachment.get(unit.getType());
+                        if (ua.getTransportCost() != -1)
+                        {
+                            result.addDisallowedUnit("Not enough transports", unit);
+                            //System.out.println("adding disallowed unit (Not enough transports): "+unit);
+                        }
+                    }
+                }
+                else
+                {
+                    // set all units as unresolved if there is at least one transport 
+                    //   and mixed unit categories
+                    for (Unit unit : land)
+                    {
+                        UnitAttachment ua = UnitAttachment.get(unit.getType());
+                        if (ua.getTransportCost() != -1)
+                        {
+                            result.addUnresolvedUnit("Not enough transports", unit);
+                            //System.out.println("adding unresolved unit (Not enough transports): "+unit);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return result;
+    }
+
+    private static MoveValidationResult validateParatroops(GameData data, 
+                                                          final List<UndoableMove> undoableMoves, 
+                                                          Collection<Unit> units, 
+                                                          Route route, 
+                                                          PlayerID player, 
+                                                          Collection<Unit> transportsToLoad, 
+                                                          Collection<Unit> bombersToLoad, 
+                                                          MoveValidationResult result)
+    {
+        boolean isEditMode = getEditMode(data);
+
+        if (Match.allMatch(units, Matches.UnitIsAir))
+            return result;
+
+//        TransportTracker transportTracker = new TransportTracker();
+
+        //if unloading make sure length of route is only 1
+        if (!isEditMode && MoveValidator.isUnload(route))
+        {
+            if (route.getLength() > 1)
+                return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
+
+            Collection<Unit> bombers = MoveDelegate.mapTransports(route, units, null).values();
+            for(Unit transport : bombers)
+            {
+                //TODO This is very sensitive to the order of the transport collection.  The users may 
+                //need to modify the order in which they perform their actions.                
+            }
+        }
+
+        //if we are land make sure no water in route except for transport
+        // situations
+        Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
+
+        //make sure we can be transported
+        Match<Unit> cantBeTransported = new InverseMatch<Unit>(Matches.UnitCanBeTransported);
+        for (Unit unit : Match.getMatches(land, cantBeTransported))
+            result.addDisallowedUnit("Not all units can be transported",unit);
+
+        /*if (route.getEnd().isWater() && route.getStart().isWater())
+        {
+            //make sure units and transports stick together
+            Iterator<Unit> iter = units.iterator();
+            while (iter.hasNext())
+            {
+                Unit unit = (Unit) iter.next();
+                UnitAttachment ua = UnitAttachment.get(unit.getType());
+                //make sure transports dont leave their units behind
+                if (ua.getTransportCapacity() != -1)
+                {
+                    Collection<Unit> holding = transportTracker.transporting(unit);
+                    if (holding != null && !units.containsAll(holding))
+                        result.addDisallowedUnit("Transports cannot leave their units",unit);
+                }
+                //make sure units dont leave their transports behind
+                if (ua.getTransportCost() != -1)
+                {
+                    Unit transport = transportTracker.transportedBy(unit);
+                    if (transport != null && !units.contains(transport))
+                        result.addDisallowedUnit("Unit must stay with its transport while moving",unit);
+                }
+            }
+        } //end if end is water
+*/
+        if (MoveValidator.isLoad(route))
+        {
+
+            if (!isEditMode && route.getLength() != 1)
+                return result.setErrorReturnResult("Units cannot move before loading onto transports");
+
+            Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
+
+            Iterator<Unit> iter = land.iterator();
+            while (!isEditMode && iter.hasNext())
+            {
+                TripleAUnit unit = (TripleAUnit) iter.next();
+                if (unit.getAlreadyMoved() != 0)
+                    result.addDisallowedUnit("Units cannot move before loading onto transports",unit);
+                Unit transport = unitsToTransports.get(unit);
+                if (transport == null)
+                    continue;
             }
 
             if (! unitsToTransports.keySet().containsAll(land))

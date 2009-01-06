@@ -27,7 +27,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -752,6 +754,12 @@ public class MovePanel extends ActionPanel
         if(MoveValidator.isLoad(route)) {
             transportsToLoad = route.getEnd().getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), getData())));
         }
+        //TODO COMCO add bomberstoload
+        Collection<Unit> bombersToLoad = Collections.emptyList();
+        if(isParatroopers(getCurrentPlayer()))
+        {
+            bombersToLoad = route.getEnd().getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(getCurrentPlayer())));
+        }
         
         List<Unit> best = new ArrayList<Unit>(units);
         //if the player selects a land unit and other units
@@ -767,7 +775,7 @@ public class MovePanel extends ActionPanel
         List<Unit> bestWithDependents = addMustMoveWith(best);
         
         
-        MoveValidationResult allResults = MoveValidator.validateMove( bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, m_undoableMoves, getData());
+        MoveValidationResult allResults = MoveValidator.validateMove( bestWithDependents, route, getCurrentPlayer(), transportsToLoad, bombersToLoad, m_nonCombat, m_undoableMoves, getData());
         MoveValidationResult lastResults = allResults;
         
         if(!allResults.isMoveValid()) {
@@ -775,7 +783,7 @@ public class MovePanel extends ActionPanel
             while(!best.isEmpty() && !lastResults.isMoveValid()) {
                 best = best.subList(1, best.size());
                 bestWithDependents = addMustMoveWith(best);                
-                lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, m_undoableMoves, getData());    
+                lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, bombersToLoad, m_nonCombat, m_undoableMoves, getData());    
             }
         }
 
@@ -1655,6 +1663,12 @@ public class MovePanel extends ActionPanel
     {
         return m_selectedEndpointTerritory;
     }
+    
+    private static boolean isParatroopers(PlayerID player)    
+    {
+        TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
+        return ta.hasParatroopers();
+    }    
 
 }
 

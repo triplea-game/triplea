@@ -903,7 +903,7 @@
 				
 				<productionRule name="buyCruiserShipyards">
                         <cost resource="IPCs" quantity="10" />
-                        <result resourceOrUnit="destroyer" quantity="1"/>
+                        <result resourceOrUnit="cruiser" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyBattleshipShipyards">

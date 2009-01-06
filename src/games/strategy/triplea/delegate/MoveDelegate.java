@@ -253,14 +253,18 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         return move(units, route, Collections.<Unit>emptyList());
     }
 
-    public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
+    public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded, Collection<Unit> bombersThatCanBeLoaded)
     {
+        kev
         PlayerID player = getUnitOwner(units);
-
+        //Collection<Unit> bombersThatCanBeLoaded = Match.getMatches(units, 
+            //new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player)));
+        
         MoveValidationResult result = MoveValidator.validateMove(units, 
                                                                  route, 
                                                                  player, 
                                                                  transportsThatCanBeLoaded,
+                                                                 bombersThatCanBeLoaded,
                                                                  m_nonCombat,
                                                                  m_movesToUndo,
                                                                  m_data);
@@ -719,6 +723,24 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             m_movesToUndo = state.m_movesToUndo;
         m_ipcsLost = state.m_ipcsLost;
         m_tempMovePerformer = state.m_tempMovePerformer;
+    }
+
+    /**
+     * TODO: Method Description.
+     * @param units
+     * @param route
+     * @param thatCanBeLoaded
+     * @param thatCanBeLoaded2
+     * @return
+     * @see games.strategy.triplea.delegate.remote.IMoveDelegate#move(java.util.Collection, games.strategy.engine.data.Route, java.util.Collection, java.util.Collection)
+     */
+    @Override
+    public String move(Collection<Unit> units,
+                       Route route,
+                       Collection<Unit> thatCanBeLoaded)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
