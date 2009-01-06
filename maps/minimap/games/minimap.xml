@@ -610,7 +610,7 @@
                 
                 <property name="notes">
 	        	<value><![CDATA[   
-		        	<h1>Minimap</h1>     	
+		        	   	
 		        	A quick two player game.
 	        	]]></value>        	       
         		</property>                

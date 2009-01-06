@@ -39,7 +39,7 @@
         
         <property name="notes">
         	<value><![CDATA[   
-        	<h1>Eight Puzzle</h1>     	
+        	
         	A 3x3 n puzzle game.
         	]]></value>        	       
         </property>

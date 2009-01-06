@@ -629,9 +629,7 @@
 		<property name="mapName" value="capture_the_flag" editable="false"/>
 		
 		<!-- notes appear in the notes menu in the main screen, format as html -->
-		<property name="notes" value="&lt;H1&gt;		CAPTURE THE FLAG &lt;/H1&gt; &lt;br&gt; &lt;br&gt;
-		
-		Order goes in clockwise direction starting with Russia &lt;br&gt; &lt;br&gt;
+		<property name="notes" value="Order goes in clockwise direction starting with Russia &lt;br&gt; &lt;br&gt;
 		
 		Each white territory is neutral, but costs no IPCs to invade  &lt;br&gt; &lt;br&gt;
 		

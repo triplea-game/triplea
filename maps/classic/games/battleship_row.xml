@@ -1353,7 +1353,7 @@
 						<property name="notes">
 					<value>
 					<![CDATA[  
-						<h1>Battleship row</h1>
+						
 						A class scenario with changes to unit movement and costs.
 					]]>	
 					</value>

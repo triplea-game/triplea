@@ -37,12 +37,6 @@ public class NewGameChooser extends JDialog {
 	private JEditorPane m_notesPanel;
 	private NewGameChooserModel m_gameListModel;
 	
-	private JLabel m_gameLocationLabel;
-	private JLabel m_mapNameLabel;
-	private JLabel m_numberOfPlayersLabel;
-	private JLabel m_gameNameLabel;
-	private JLabel m_gameVersionLabel;
-	
 	private NewGameChooserEntry m_choosen;
 	
 	public NewGameChooser(Frame owner)
@@ -67,19 +61,14 @@ public class NewGameChooser extends JDialog {
 				
 		m_notesPanel = new JEditorPane();
         m_notesPanel.setEditable(false);
-        m_notesPanel.setContentType("text/html");   
+        m_notesPanel.setContentType("text/html");  
+        m_notesPanel.setBackground(new JLabel().getBackground());
         
-        m_gameLocationLabel = new JLabel();
-        m_mapNameLabel = new JLabel();
-        m_numberOfPlayersLabel = new JLabel();
-        m_gameNameLabel = new JLabel();
-        m_gameVersionLabel = new JLabel();
-	}
+    }
 	
 	private void layoutCoponents()
 	{
 		setLayout(new BorderLayout());
-		
 		
 		JSplitPane mainSplit = new JSplitPane();
 		add(mainSplit, BorderLayout.CENTER);
@@ -87,50 +76,47 @@ public class NewGameChooser extends JDialog {
 		JScrollPane listScroll = new JScrollPane();
 		listScroll.setBorder(null);
 		listScroll.getViewport().setBorder(null);
-		listScroll.setViewportView(m_gameList);
-		mainSplit.setLeftComponent(listScroll);
+		listScroll.setViewportView(m_gameList);		
+		
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new GridBagLayout());
+		
+		JLabel gamesLabel = new JLabel("Games");
+		gamesLabel.setFont(gamesLabel.getFont().deriveFont(Font.BOLD, gamesLabel.getFont().getSize() + 2) );
+		leftPanel.add(gamesLabel, new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10,10,10,10), 0,0));
+		leftPanel.add(listScroll, new GridBagConstraints(0,1,1,1,1.0,1.0,GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0,10,0,0), 0,0));
+		
+		
+		mainSplit.setLeftComponent(leftPanel);		
 		mainSplit.setRightComponent(m_infoPanel);
 
+		mainSplit.setBorder(null);
+		
 		listScroll.setMinimumSize(new Dimension(150,0));
 		
 		JPanel buttonsPanel = new JPanel();		
-		add(buttonsPanel, BorderLayout.SOUTH);
+		add(buttonsPanel, BorderLayout.SOUTH);		
 		
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 		
 		buttonsPanel.add(Box.createGlue());
 		buttonsPanel.add(m_okButton);
 		buttonsPanel.add(m_cancelButton);
-		buttonsPanel.add(Box.createHorizontalStrut(20));
+		buttonsPanel.add(Box.createGlue());
 
 		
-		JScrollPane notesScroll = new JScrollPane();
+		JScrollPane notesScroll = new JScrollPane();		
 		notesScroll.setViewportView(m_notesPanel);
-		
+		notesScroll.setBorder(null);
+        notesScroll.getViewport().setBorder(null);
+        
+        m_infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+        m_infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
         m_infoPanel.add(notesScroll, BorderLayout.CENTER);		
         
-        JPanel infoSummaryPanel = new JPanel();
-        infoSummaryPanel.setLayout(new GridBagLayout());
-        int index = 0;
-        addInfo(infoSummaryPanel, "Name:", m_gameNameLabel, index++);        
-        addInfo(infoSummaryPanel, "Map:", m_mapNameLabel, index++);
-        addInfo(infoSummaryPanel, "Number Of Players:", m_numberOfPlayersLabel, index++);
-        addInfo(infoSummaryPanel, "File:", m_gameLocationLabel, index++);
-        addInfo(infoSummaryPanel, "Version:", m_gameVersionLabel, index++);
-        
-        
-        m_infoPanel.add(infoSummaryPanel, BorderLayout.NORTH);
 	}
 	
-	private void addInfo(JPanel infoSummaryPanel, String name, JLabel component, int row)
-	{
-	    JLabel nameLabel = new JLabel(name);
-	    nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
-        infoSummaryPanel.add(nameLabel, 
-	            new GridBagConstraints(0,row,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,10), 0,0));
-	    infoSummaryPanel.add(component, 
-	            new GridBagConstraints(1,row,1,1,1,1,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0));
-	}
+
 	
 	public static NewGameChooserEntry chooseGame(Frame parent, String defaultGameName)
 	{
@@ -166,23 +152,26 @@ public class NewGameChooser extends JDialog {
 		if(getSelected() != null) 
 		{
 		    GameData data = getSelected().getGameData();
-		    m_notesPanel.setText((String) data.getProperties().get("notes", "No Game Notes"));
 		    
-		    m_gameLocationLabel.setText(getSelected().getLocation());
-		    m_numberOfPlayersLabel.setText(data.getPlayerList().size() + "");
-		    m_mapNameLabel.setText((String) data.getProperties().get("mapName", ""));
-		    m_gameNameLabel.setText(data.getGameName());
-		    m_gameVersionLabel.setText(data.getGameVersion().toString());
+		    StringBuilder notes = new StringBuilder();
+		    
+		    notes.append("<h1>").append(data.getGameName()).append("</h1>");
+		    appendListItem("Map Name", (String) data.getProperties().get("mapName", ""), notes);
+		    appendListItem("Number Of Players", data.getPlayerList().size() + "", notes);
+		    appendListItem("Location", getSelected().getLocation() + "", notes);
+		    appendListItem("Version", data.getGameVersion() + "", notes);
+		    notes.append("<p></p>");
+		    notes.append((String) data.getProperties().get("notes", ""));
+		    
+		    m_notesPanel.setText(notes.toString());
+		    
+		   
 		    
 		} else 
 		{
 		    m_notesPanel.setText("");
 		    
-		    m_gameLocationLabel.setText("");
-		    m_numberOfPlayersLabel.setText("");
-		    m_mapNameLabel.setText("");
-		    m_gameNameLabel.setText("");
-		    m_gameVersionLabel.setText("");
+		   
 		    
 		}
 		
@@ -196,6 +185,11 @@ public class NewGameChooser extends JDialog {
         
         });
 	}
+    
+    private void appendListItem(String title, String value, StringBuilder builder)
+    {
+        builder.append("<b>").append(title).append("</b>").append(": ").append(value).append("<br>");
+    }
 	
 	private NewGameChooserEntry getSelected()
 	{
@@ -259,7 +253,7 @@ public class NewGameChooser extends JDialog {
 	
 	public static void main(String[] args)
 	{
-	    chooseGame(null,null);
+	    chooseGame(null,"Revised");
 	    System.exit(0);		
 	}
 }
