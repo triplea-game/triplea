@@ -157,8 +157,6 @@ public class InitializationDelegate implements IDelegate
         
         CompositeChange change = new CompositeChange();
         ProductionFrontier frontierShipyards = data.getProductionFrontierList().getProductionFrontier("productionShipyards");
-
-        //TODO COMCO adding shipyards may need to add special/normal prices for regular units based on IT flag
         
         ProductionRule buyInfantry = data.getProductionRuleList().getProductionRule("buyInfantry");
         ProductionRule buyArtillery = data.getProductionRuleList().getProductionRule("buyArtillery");

@@ -23,6 +23,8 @@ package games.strategy.triplea.delegate;
 
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 import games.strategy.util.*;
 import games.strategy.engine.data.*;
 
@@ -34,6 +36,7 @@ import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 /**
@@ -56,6 +59,7 @@ public class MoveValidator
     private static int m_mechanizedSupportAvail = 0;
     private static int m_paratroopsAvail = 0;
 
+    private final static Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
     
     /**
      * Tests the given collection of units to see if they have the movement neccessary
@@ -84,7 +88,7 @@ public class MoveValidator
     {
         PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
         Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
-        m_mechanizedSupportAvail = getMechanizedSupportAvailable(ownedUnits , player);
+        m_mechanizedSupportAvail = Match.countMatches(ownedUnits, Matches.UnitIsArmour);
     }
     
     /**
@@ -94,13 +98,13 @@ public class MoveValidator
     private static void getParatroopsAvail(Route route)
     {
         PlayerID player = route.getStart().getData().getSequence().getStep().getPlayerID();
+
+        Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
         
         CompositeMatch<Unit> ownedInfantry = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), 
                         Matches.UnitIsLand, Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitIsNotArmour);
         
-        Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(ownedInfantry);
-
-        m_paratroopsAvail = getParatroopsAvailable(ownedUnits , player);
+        m_paratroopsAvail = Match.countMatches(ownedUnits, ownedInfantry);
     }
     
     public static boolean hasEnoughMovement(Collection<Unit> units, int length)
@@ -175,18 +179,20 @@ public class MoveValidator
                 m_mechanizedSupportAvail -= 1;
             }
         }
-        
+
+        //TODO COMCO add rule to allow non-combat paratroops
         if(isParatroopers(player) && ua.isStrategicBomber())
         {
-            //TODO COMCO add rule to allow non-combat paratroops
             if (stepName.getDisplayName().equals("Combat Move"))
             {                
                 if (m_paratroopsAvail > 0)
                 {
-                    //TODO COMCO ask if they want to transport paratroops and add dependents
+                    //selectParatroops(route.getStart(), player); 
+                
+                    //TODO COMCO ask if they want to transport paratroops and add dependents Dialog to load paratroops
 
                     //Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
-                    m_paratroopsAvail -= 1;
+                    //m_paratroopsAvail -= 1;
                 }
             }
             
@@ -197,6 +203,7 @@ public class MoveValidator
         return true;
     }
 
+    
     public static boolean hasEnoughMovement(Unit unit, int length)
     {
         int left = TripleAUnit.get(unit).getMovementLeft(); 
@@ -329,31 +336,7 @@ public class MoveValidator
         
         return true;
     }
-    
-
-    /**
-     * TODO: Determine if artillery support is available and how much
-     * @param units
-     * @param player
-     * @return
-     */
-    private static int getMechanizedSupportAvailable(Collection<Unit> units, PlayerID player)
-    {
-        int mechanizedSupportAvailable = Match.countMatches(units, Matches.UnitIsArmour);        
-        return mechanizedSupportAvailable;
-    }
-    /**
-     * TODO: Determine if paratroops are available and how many
-     * @param units
-     * @param player
-     * @return
-     */
-    private static int getParatroopsAvailable(Collection<Unit> units, PlayerID player)
-    {
-        int paratroopsAvailable = Match.countMatches(units, Matches.UnitIsArmour);        
-        return paratroopsAvailable;
-    }
-    
+        
     private static boolean isMechanizedInfantry(PlayerID player)    
     {
         TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTATCHMENT_NAME);
@@ -1598,7 +1581,7 @@ public class MoveValidator
 
         return result;
     }
-
+//TODO COMCO code this
     private static MoveValidationResult validateParatroops(GameData data, 
                                                           final List<UndoableMove> undoableMoves, 
                                                           Collection<Unit> units, 
@@ -1610,115 +1593,98 @@ public class MoveValidator
     {
         boolean isEditMode = getEditMode(data);
 
-        if (Match.allMatch(units, Matches.UnitIsAir))
+        if (Match.noneMatch(units, Matches.UnitIsAir))
             return result;
 
-//        TransportTracker transportTracker = new TransportTracker();
+        //Get all owned units
+        Collection<Unit> ownedUnits = route.getStart().getUnits().getMatches(Matches.unitIsOwnedBy(player));
+        
+        //get all owned infantry and bombers
+        CompositeMatch<Unit> ownedInfantry = new CompositeMatchOr<Unit>(Matches.UnitIsInfantry, Matches.UnitIsMarine);
+        //get infantry
+        Collection<Unit> infantry = Match.getMatches(ownedUnits, ownedInfantry);
+        //get bombers
+        Collection<Unit> bombers = Match.getMatches(ownedUnits, Matches.UnitIsStrategicBomber);
+        
+        GameStep stepName = player.getData().getSequence().getStep();
+        
+        if (stepName.getDisplayName().equals("Combat Move") && m_paratroopsAvail > 0)
+        {        
+            //        TransportTracker transportTracker = new TransportTracker();
 
-        //if unloading make sure length of route is only 1
-        if (!isEditMode && MoveValidator.isUnload(route))
-        {
-            if (route.getLength() > 1)
-                return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
+            /*            if (route.getLength() > 1)
+                return result.setErrorReturnResult("Unloading units must stop where they are unloaded");*/
 
-            Collection<Unit> bombers = MoveDelegate.mapTransports(route, units, null).values();
+            bombers = MoveDelegate.mapBombers(route, infantry, bombers).values();
             for(Unit transport : bombers)
             {
                 //TODO This is very sensitive to the order of the transport collection.  The users may 
                 //need to modify the order in which they perform their actions.                
             }
-        }
 
-        //if we are land make sure no water in route except for transport
-        // situations
-        Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
 
-        //make sure we can be transported
-        Match<Unit> cantBeTransported = new InverseMatch<Unit>(Matches.UnitCanBeTransported);
-        for (Unit unit : Match.getMatches(land, cantBeTransported))
-            result.addDisallowedUnit("Not all units can be transported",unit);
+            //make sure we can be transported
+            Match<Unit> cantBeTransported = new InverseMatch<Unit>(Matches.UnitCanBeTransported);
+            for (Unit unit : Match.getMatches(infantry, cantBeTransported))
+                result.addDisallowedUnit("Not all units can be transported",unit);
 
-        /*if (route.getEnd().isWater() && route.getStart().isWater())
-        {
-            //make sure units and transports stick together
-            Iterator<Unit> iter = units.iterator();
-            while (iter.hasNext())
+            if (MoveValidator.isLoad(route))
             {
-                Unit unit = (Unit) iter.next();
-                UnitAttachment ua = UnitAttachment.get(unit.getType());
-                //make sure transports dont leave their units behind
-                if (ua.getTransportCapacity() != -1)
+
+                if (!isEditMode && route.getLength() != 1)
+                    return result.setErrorReturnResult("Units cannot move before loading onto transports");
+
+                Map<Unit,Unit> unitsToBombers = MoveDelegate.mapBombers(route, infantry, bombersToLoad);
+
+                Iterator<Unit> iter = infantry.iterator();
+                while (!isEditMode && iter.hasNext())
                 {
-                    Collection<Unit> holding = transportTracker.transporting(unit);
-                    if (holding != null && !units.containsAll(holding))
-                        result.addDisallowedUnit("Transports cannot leave their units",unit);
+                    TripleAUnit unit = (TripleAUnit) iter.next();
+                    if (unit.getAlreadyMoved() != 0)
+                        result.addDisallowedUnit("Units cannot move before loading onto transports",unit);
+                    Unit bomber = unitsToBombers.get(unit);
+                    if (bomber == null)
+                        continue;
                 }
-                //make sure units dont leave their transports behind
-                if (ua.getTransportCost() != -1)
+
+                if (! unitsToBombers.keySet().containsAll(infantry))
                 {
-                    Unit transport = transportTracker.transportedBy(unit);
-                    if (transport != null && !units.contains(transport))
-                        result.addDisallowedUnit("Unit must stay with its transport while moving",unit);
-                }
-            }
-        } //end if end is water
-*/
-        if (MoveValidator.isLoad(route))
-        {
+                    // some units didn't get mapped to a transport
+                    Collection<UnitCategory> unitsToLoadCategories = UnitSeperator.categorize(infantry);
 
-            if (!isEditMode && route.getLength() != 1)
-                return result.setErrorReturnResult("Units cannot move before loading onto transports");
-
-            Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
-
-            Iterator<Unit> iter = land.iterator();
-            while (!isEditMode && iter.hasNext())
-            {
-                TripleAUnit unit = (TripleAUnit) iter.next();
-                if (unit.getAlreadyMoved() != 0)
-                    result.addDisallowedUnit("Units cannot move before loading onto transports",unit);
-                Unit transport = unitsToTransports.get(unit);
-                if (transport == null)
-                    continue;
-            }
-
-            if (! unitsToTransports.keySet().containsAll(land))
-            {
-                // some units didn't get mapped to a transport
-                Collection<UnitCategory> unitsToLoadCategories = UnitSeperator.categorize(land);
-
-                if (unitsToTransports.size() == 0 || unitsToLoadCategories.size() == 1)
-                {
-                    // set all unmapped units as disallowed if there are no transports
-                    //   or only one unit category
-                    for (Unit unit : land)
+                    if (unitsToBombers.size() == 0 || unitsToLoadCategories.size() == 1)
                     {
-                        if (unitsToTransports.containsKey(unit))
-                            continue;
-                        UnitAttachment ua = UnitAttachment.get(unit.getType());
-                        if (ua.getTransportCost() != -1)
+                        // set all unmapped units as disallowed if there are no transports
+                        //   or only one unit category
+                        for (Unit unit : infantry)
                         {
-                            result.addDisallowedUnit("Not enough transports", unit);
-                            //System.out.println("adding disallowed unit (Not enough transports): "+unit);
+                            if (unitsToBombers.containsKey(unit))
+                                continue;
+                            UnitAttachment ua = UnitAttachment.get(unit.getType());
+                            if (ua.getTransportCost() != -1)
+                            {
+                                result.addDisallowedUnit("Not enough transports", unit);
+                                //System.out.println("adding disallowed unit (Not enough transports): "+unit);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // set all units as unresolved if there is at least one transport 
+                        //   and mixed unit categories
+                        for (Unit unit : infantry)
+                        {
+                            UnitAttachment ua = UnitAttachment.get(unit.getType());
+                            if (ua.getTransportCost() != -1)
+                            {
+                                result.addUnresolvedUnit("Not enough transports", unit);
+                                //System.out.println("adding unresolved unit (Not enough transports): "+unit);
+                            }
                         }
                     }
                 }
-                else
-                {
-                    // set all units as unresolved if there is at least one transport 
-                    //   and mixed unit categories
-                    for (Unit unit : land)
-                    {
-                        UnitAttachment ua = UnitAttachment.get(unit.getType());
-                        if (ua.getTransportCost() != -1)
-                        {
-                            result.addUnresolvedUnit("Not enough transports", unit);
-                            //System.out.println("adding unresolved unit (Not enough transports): "+unit);
-                        }
-                    }
-                }
-            }
 
+            }
         }
 
         return result;

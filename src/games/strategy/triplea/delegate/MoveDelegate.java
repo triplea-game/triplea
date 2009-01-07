@@ -255,10 +255,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
 
     public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded, Collection<Unit> bombersThatCanBeLoaded)
     {
-        kev
         PlayerID player = getUnitOwner(units);
-        //Collection<Unit> bombersThatCanBeLoaded = Match.getMatches(units, 
-            //new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player)));
         
         MoveValidationResult result = MoveValidator.validateMove(units, 
                                                                  route, 
@@ -519,6 +516,20 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
     }
 
     /**
+     * returns a map of unit -> bomber. returns null if no mapping can be
+     * done either because there is not sufficient transport capacity or because
+     * a unit is not with its transport
+     * This method is static so it can be called from the client side.
+     */
+    public static Map<Unit, Unit> mapBombers(Route route, Collection<Unit> units, Collection<Unit> bombersToLoad)
+    {
+        //if (MoveValidator.isLoad(route))
+            return mapBombersToLoad(units, bombersToLoad);
+        /*if (MoveValidator.isUnload(route))
+            return mapBombersAlreadyLoaded(units, route.getStart().getUnits().getUnits());
+        return mapBombersAlreadyLoaded(units, units);*/
+    }
+    /**
      * Returns a map of unit -> transport. Unit must already be loaded in the
      * transport.  If no units are loaded in the transports then an empty Map will
      * be returned.
@@ -600,6 +611,74 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                 
                 Unit transport = (Unit) transportIter.next();
                 int capacity = transportTracker.getAvailableCapacity(transport);
+                capacity -= addedLoad.getInt(transport);
+                if (capacity >= cost)
+                {
+                    addedLoad.add(transport, cost);
+                    mapping.put(land, transport);
+                    loaded = true;
+                }
+            }
+            
+        }
+        return mapping;
+    }
+
+    /**
+     * Returns a map of unit -> transport. Tries to find transports to load all
+     * units. If it can't succeed returns an empty Map.
+     *  
+     */
+    private static Map<Unit, Unit> mapBombersToLoad(Collection<Unit> units, Collection<Unit> bombers)
+    {
+
+        List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+        int transportIndex = 0;
+        //TransportTracker transportTracker = new TransportTracker();
+
+        Comparator<Unit> c = new Comparator<Unit>()
+        {
+            public int compare(Unit o1, Unit o2)
+            {
+                int cost1 = UnitAttachment.get(((Unit) o1).getUnitType()).getTransportCost();
+                int cost2 = UnitAttachment.get(((Unit) o2).getUnitType()).getTransportCost();
+                return cost2 - cost1;
+            }
+        };
+        //fill the units with the highest cost first.
+        //allows easy loading of 2 infantry and 2 tanks on 2 transports
+        //in 4th edition rules.
+        Collections.sort(canBeTransported, c);
+
+        List<Unit> canTransport = Match.getMatches(bombers, Matches.UnitIsStrategicBomber);
+
+        Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
+        IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
+
+        Iterator<Unit> landIter = canBeTransported.iterator();
+        while (landIter.hasNext())
+        {
+            Unit land = (Unit) landIter.next();
+            UnitAttachment landUA = UnitAttachment.get(land.getType());
+            int cost = landUA.getTransportCost();
+            boolean loaded = false;
+
+            //we want to try to distribute units evenly to all the transports
+            //if the user has 2 infantry, and selects two transports to load
+            //we should put 1 infantry in each transport.
+            //the algorithm below does not guarantee even distribution in all cases
+            //but it solves most of the cases
+            Iterator<Unit> transportIter = Util.shiftElementsToEnd(canTransport, transportIndex).iterator();
+            while (transportIter.hasNext() && !loaded)
+            {
+                transportIndex++;
+                if(transportIndex >= canTransport.size())
+                    transportIndex = 0;
+                
+                Unit transport = (Unit) transportIter.next();
+                //TODO COMCO need to read the transport cost dynamically in the future.
+                //int capacity = transportTracker.getAvailableCapacity(transport);
+                int capacity = 2;
                 capacity -= addedLoad.getInt(transport);
                 if (capacity >= cost)
                 {

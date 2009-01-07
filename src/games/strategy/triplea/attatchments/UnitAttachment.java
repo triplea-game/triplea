@@ -56,6 +56,7 @@ public class UnitAttachment extends DefaultAttachment
   private boolean m_isArtillery = false;
   private boolean m_isArtillerySupportable = false;
   private boolean m_isMarine = false;
+  private boolean m_isInfantry = false; 
 
   //-1 if cant transport
   private int m_transportCapacity = -1;
@@ -177,6 +178,17 @@ public class UnitAttachment extends DefaultAttachment
   {
     return m_isTank;
   }
+  
+  public boolean isInfantry()
+  {
+    return m_isInfantry;
+  }
+
+  public boolean isMarine()
+  {
+    return m_isMarine;
+  }
+  
   public void setIsTransport(String s)
   {
     m_isTransport = getBool(s);
@@ -207,6 +219,16 @@ public class UnitAttachment extends DefaultAttachment
     return m_isMarine;
   }
 
+  public void setIsInfantry(String s)
+  {
+    m_isInfantry = getBool(s);
+  }
+
+  public boolean getIsInfantry()
+  {
+    return m_isInfantry;
+  }
+  
   public void setTransportCapacity(String s)
   {
     m_transportCapacity = getInt(s);

@@ -758,7 +758,7 @@ public class MovePanel extends ActionPanel
         Collection<Unit> bombersToLoad = Collections.emptyList();
         if(isParatroopers(getCurrentPlayer()))
         {
-            bombersToLoad = route.getEnd().getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(getCurrentPlayer())));
+            bombersToLoad = route.getStart().getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(getCurrentPlayer())));
         }
         
         List<Unit> best = new ArrayList<Unit>(units);

@@ -1060,6 +1060,7 @@
                 <attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="transportCost" value="2"/>
+                         <option name="isInfantry" value="true"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>
@@ -1068,6 +1069,7 @@
 				<!-- Chinese Infantry -->
 				<attatchment name="unitAttatchment" attatchTo="chineseInfantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 						<option name="movement" value="1"/>
+                         <option name="isInfantry" value="true"/>
 						<option name="attack" value="1"/>
 						<option name="defense" value="2"/>
 						<option name="artillerySupportable" value="true"/>

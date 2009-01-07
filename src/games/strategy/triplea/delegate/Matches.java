@@ -436,6 +436,31 @@ public class Matches
 
     public static final Match<Unit> UnitIsNotArmour = new InverseMatch<Unit>(UnitIsArmour);
     
+    public static final Match<Unit> UnitIsInfantry = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.isInfantry();
+        }
+    };
+
+    public static final Match<Unit> UnitIsNotInfantry = new InverseMatch<Unit>(UnitIsInfantry);
+    
+    public static final Match<Unit> UnitIsMarine = new Match<Unit>()
+    {
+        public boolean match(Unit obj)
+        {
+            UnitType type = ((Unit) obj).getUnitType();
+            UnitAttachment ua = UnitAttachment.get(type);
+            return ua.isMarine();
+        }
+    };
+
+    public static final Match<Unit> UnitIsNotMarine = new InverseMatch<Unit>(UnitIsMarine);
+        
+    
     public static final Match<Unit> UnitIsArtillery = new Match<Unit>()
     {
         public boolean match(Unit obj)
