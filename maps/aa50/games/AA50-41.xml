@@ -1111,6 +1111,7 @@
                          <option name="attack" value="4"/>
                          <option name="defense" value="1"/>
                          <option name="isStrategicBomber" value="true"/>
+                         <option name="transportCapacity" value="2"/>
                 </attatchment>
 
                 <!-- Transport -->

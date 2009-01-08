@@ -70,6 +70,7 @@ public class MoveValidator
     public static boolean hasEnoughMovement(Collection<Unit> units, Route route)
     {
         getMechanizedSupportAvail(route);
+        //TODO COMCO may not need this
         getParatroopsAvail(route);
         
         for (Unit unit : units)
@@ -171,7 +172,7 @@ public class MoveValidator
             }
         }
         
-        if (isMechanizedInfantry(player) && !ua.isAir() && !ua.isSea() && !ua.isAA() && !ua.isArtillery() && !ua.isArmour())
+        if (isMechanizedInfantry(player) && (ua.isInfantry() || ua.isMarine()))
         {   
             if(m_mechanizedSupportAvail > 0)
             {
@@ -187,12 +188,7 @@ public class MoveValidator
             {                
                 if (m_paratroopsAvail > 0)
                 {
-                    //selectParatroops(route.getStart(), player); 
-                
-                    //TODO COMCO ask if they want to transport paratroops and add dependents Dialog to load paratroops
-
-                    //Map<Unit,Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
-                    //m_paratroopsAvail -= 1;
+                    //TODO may need to ignore loaded paratroops
                 }
             }
             
@@ -213,21 +209,7 @@ public class MoveValidator
             return false;
         return true;
     }
-    
-  /*  private void addDependentUnits(Map<Unit, Collection<Unit>> dependencies)
-    {
-        Iterator iter = dependencies.keySet().iterator();
-        while (iter.hasNext())
-        {
-            Unit holder = (Unit) iter.next();
-            Collection<Unit> transporting = dependencies.get(holder);
-            if (m_dependentUnits.get(holder) != null)
-                m_dependentUnits.get(holder)
-                        .addAll(transporting);
-            else
-                m_dependentUnits.put(holder, transporting);
-        }
-    }*/
+        
     /**
      * Checks that there are no enemy units on the route except possibly at the end.
      * Submerged enemy units are not considered as they don't affect
@@ -620,8 +602,7 @@ public class MoveValidator
     public static MoveValidationResult validateMove(Collection<Unit> units, 
                                                     Route route, 
                                                     PlayerID player, 
-                                                    Collection<Unit> transportsToLoad, 
-                                                    Collection<Unit> bombersToLoad,
+                                                    Collection<Unit> transportsToLoad,
                                                     boolean isNonCombat, 
                                                     final List<UndoableMove> undoableMoves, 
                                                     GameData data)
@@ -667,7 +648,7 @@ public class MoveValidator
         if (validateTransport(data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
             return result;
 
-        if (validateParatroops(data, undoableMoves, units, route, player, transportsToLoad, bombersToLoad, result).getError() != null)
+        if (validateParatroops(data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
             return result;
         
         if (validateCanal(data, units, route, player, result).getError() != null)
@@ -1587,8 +1568,7 @@ public class MoveValidator
                                                           Collection<Unit> units, 
                                                           Route route, 
                                                           PlayerID player, 
-                                                          Collection<Unit> transportsToLoad, 
-                                                          Collection<Unit> bombersToLoad, 
+                                                          Collection<Unit> transportsToLoad,
                                                           MoveValidationResult result)
     {
         boolean isEditMode = getEditMode(data);
@@ -1634,7 +1614,7 @@ public class MoveValidator
                 if (!isEditMode && route.getLength() != 1)
                     return result.setErrorReturnResult("Units cannot move before loading onto transports");
 
-                Map<Unit,Unit> unitsToBombers = MoveDelegate.mapBombers(route, infantry, bombersToLoad);
+                Map<Unit,Unit> unitsToBombers = MoveDelegate.mapBombers(route, infantry, units);
 
                 Iterator<Unit> iter = infantry.iterator();
                 while (!isEditMode && iter.hasNext())

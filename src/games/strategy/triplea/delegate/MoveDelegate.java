@@ -253,7 +253,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         return move(units, route, Collections.<Unit>emptyList());
     }
 
-    public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded, Collection<Unit> bombersThatCanBeLoaded)
+    public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
     {
         PlayerID player = getUnitOwner(units);
         
@@ -261,7 +261,6 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
                                                                  route, 
                                                                  player, 
                                                                  transportsThatCanBeLoaded,
-                                                                 bombersThatCanBeLoaded,
                                                                  m_nonCombat,
                                                                  m_movesToUndo,
                                                                  m_data);
@@ -514,7 +513,21 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
             return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
         return mapTransportsAlreadyLoaded(units, units);
     }
-
+    
+    /**
+     * returns a map of unit -> transport. returns null if no mapping can be
+     * done either because there is not sufficient transport capacity or because
+     * a unit is not with its transport
+     * This method is static so it can be called from the client side.
+     */
+    public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad, boolean isload)
+    {
+        if (isload)
+            return mapTransportsToLoad(units, transportsToLoad);
+        if (MoveValidator.isUnload(route))
+            return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
+        return mapTransportsAlreadyLoaded(units, units);
+    }
     /**
      * returns a map of unit -> bomber. returns null if no mapping can be
      * done either because there is not sufficient transport capacity or because
@@ -813,7 +826,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      * @return
      * @see games.strategy.triplea.delegate.remote.IMoveDelegate#move(java.util.Collection, games.strategy.engine.data.Route, java.util.Collection, java.util.Collection)
      */
-    @Override
+    /*@Override
     public String move(Collection<Unit> units,
                        Route route,
                        Collection<Unit> thatCanBeLoaded)
@@ -821,7 +834,7 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
         // TODO Auto-generated method stub
         return null;
     }
-
+*/
 }
 
 class MoveState implements Serializable

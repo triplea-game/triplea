@@ -47,7 +47,7 @@ public interface IMoveDelegate extends IRemote
      * @param m_bombersThatCanBeLoaded - bombers that can be loaded while moving, must be non null
      * @return an error message if the move cant be made, null otherwise
      */
-    public String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded, Collection<Unit> m_bombersThatCanBeLoaded );
+    //public String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded, Collection<Unit> m_bombersThatCanBeLoaded );
 
     /**
      * equivalent to move(units, route, Collections.EMPTY_LIST)

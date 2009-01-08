@@ -398,7 +398,7 @@ public class UnitAttachment extends DefaultAttachment
         m_isSub ||
         m_isAA ||
         m_transportCost != -1 ||
-        m_transportCapacity != -1 ||
+        //m_transportCapacity != -1 ||
         m_carrierCapacity != -1 ||
         m_canBlitz ||
         m_canBombard || 
