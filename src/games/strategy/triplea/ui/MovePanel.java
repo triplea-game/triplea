@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -113,6 +114,7 @@ public class MovePanel extends ActionPanel
     //use a LinkedHashSet because we want to know the order
     private final Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
 
+    private Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
 
     //the must move with details for the currently selected territory
     //note this is kept in sync because we do not modify m_selectedTerritory directly
@@ -1243,141 +1245,20 @@ public class MovePanel extends ActionPanel
                 //TODO COMCO add load of bombers here!
 
                 if(isParatroopers(getCurrentPlayer()) && Match.someMatch(m_selectedUnits, Matches.UnitIsStrategicBomber))
-                {                    
-                    Collection<Unit> startOwnedUnits = route.getStart().getUnits().getUnits();
-                    final Collection<Unit> unitsToLoad = Match.getMatches(startOwnedUnits,Matches.UnitIsInfantry);
-
-                    final PlayerID unitOwner = getUnitOwner(unitsToLoad);
-                    MustMoveWithDetails startMustMoveWith = MoveValidator.getMustMoveWith(route.getStart(), startOwnedUnits, getData(), unitOwner);
-
-                    int minTransportCost = 2;
-                    for(Unit unit : unitsToLoad)
-                    {
-                        minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
-                    }
-
-                    CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
-                    candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
-                    candidateBombersMatch.add(Matches.unitIsOwnedBy(unitOwner));
-
-                    final List<Unit> candidateBombers = Match.getMatches(startOwnedUnits, candidateBombersMatch);
-
-                    // remove bombers that don't have enough capacity
-                    Iterator<Unit> bomberIter = candidateBombers.iterator();
-                    while (bomberIter.hasNext())
-                    {
-                        Unit bomber = bomberIter.next();
-                        int capacity = getTransportTracker().getAvailableCapacity(bomber);
-                        if (capacity < minTransportCost)
-                            bomberIter.remove();
-                    }
-
-                    // sort bombers in preferred load order
-                    sortTransportsToLoad(candidateBombers, route);
-
-                    List<Unit> availableUnits = new ArrayList<Unit>(unitsToLoad);
-
-                    IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();
-                    for (Unit bomber : candidateBombers)
-                    {
-                        int capacity = getTransportTracker().getAvailableCapacity(bomber);
-                        availableCapacityMap.put(bomber, capacity);
-                    }
-
-                    Set<Unit> defaultSelections = new HashSet<Unit>();
-
-
-                    // Algorithm to choose defaultSelections (transports to load)
-                    //
-                    // This algorithm uses mapTransports(), except mapTransports operates on 
-                    // transports that have already been selected for loading.  
-                    // We are trying to determine which transports are the best defaults to select for loading, 
-                    // and so we need a modified algorithm based strictly on candidateTransports order:
-                    //   - owned, capable transports are chosen first; attempt to fill them
-                    //   - allied, capable transports are chosen next; attempt to fill them
-                    //   - finally, incapable transports are chosen last (will generate errors)
-                    // Note that if any allied transports qualify as defaults, we will always prompt with a 
-                    // UnitChooser later on so that it is obvious to the player.
-                    //
-
-                    Collection<Unit> capableBombers = new ArrayList<Unit>(candidateBombers);
-
-                    // only allow incapable transports for updateUnitsThatCanMoveOnRoute
-                    //  so that we can have a nice UI error shown if these transports 
-                    //  are selected, since it may not be obvious
-                    //TODO remove bombers already loaded here
-                    Collection<Unit> incapableBombers = Match.getMatches(capableBombers, Matches.transportCannotUnload(route.getEnd()));
-                    capableBombers.removeAll(incapableBombers);
-
-                    // First, load capable bombers
-                    Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true);
-                    for (Unit unit : unitsToCapableBombers.keySet())
-                    {
-                        Unit bomber = unitsToCapableBombers.get(unit);
-                        int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
-                        availableCapacityMap.add(bomber, (-1 * unitCost));
-                        defaultSelections.add(bomber);
-                    }
-                    availableUnits.removeAll(unitsToCapableBombers.keySet());
-
-                    candidateBombers.removeAll(incapableBombers);
-
-                    //all the same type, dont ask unless we have more than 1 unit type
-                    if(UnitSeperator.categorize(candidateBombers, startMustMoveWith.getMustMoveWith(), true, false).size() == 1 
-                                    && unitsToLoad.size() == 1     )
-                        return; //candidateBombers;
-
-                    // If we've filled all transports, then no user intervention is required.
-                    // It is possible to make "wrong" decisions if there are mixed unit types and
-                    //   mixed transport categories, but there is no UI to manage that anyway.
-                    //   Players will need to load incrementally in such cases.
-                    boolean spaceLeft = false;
-                    if (defaultSelections.containsAll(candidateBombers))
-                    {
-                        for (Unit bomber : candidateBombers)
-                        {
-                            int capacity = availableCapacityMap.getInt(bomber);
-                            if (capacity >= minTransportCost)
-                            {
-                                spaceLeft = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    // the match criteria to ensure that chosen transports will match selected units
-                    Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
-                    {
-                        public boolean match(Collection<Unit> units)
-                        {
-                            Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
-                            // prevent too many transports from being selected
-                            return (bombers.size() <= Math.min(unitsToLoad.size(), candidateBombers.size()));
-                        }
-                    };
-
-                    UnitChooser chooser = new UnitChooser(candidateBombers, 
-                        defaultSelections, 
-                        startMustMoveWith.getMustMoveWith(), 
-                        /*categorizeMovement*/ true, 
-                        m_bridge.getGameData(), 
-                        /*allowTwoHit*/ false, 
-                        getMap().getUIContext(), 
-                        transportsToLoadMatch);
-
-                    chooser.setTitle("Load bombers with paratroops");
-                    int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
-                        chooser, "What bombers do you want to load",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.PLAIN_MESSAGE, null, null, null);
-                    /*if (option != JOptionPane.OK_OPTION)
-                        return; //Collections.emptyList();*/
-kev
-                    List<Unit> kevSelections = new ArrayList<Unit>(units.size());
-                    //final Collection<Unit> transportsToLoad = new ArrayList<Unit>(getTransportsToLoad(route, units, false));
-                    kevSelections.addAll(MoveDelegate.mapTransports(route, availableUnits, chooser.getSelected(true), true).keySet());
-                    
-                    m_selectedUnits.addAll(chooser.getSelected(true)); 
+                {     
+                	final PlayerID player = getCurrentPlayer();
+                	
+                	CompositeMatch<Unit> unitsToLoadMatch = new CompositeMatchAnd<Unit>();
+                		unitsToLoadMatch.add(Matches.UnitIsInfantry);
+                		unitsToLoadMatch.add(Matches.unitIsOwnedBy(player));
+                		
+                	Collection<Unit> unitsToLoad = Match.getMatches(route.getStart().getUnits().getUnits(),unitsToLoadMatch);
+                	
+                	if(unitsToLoad.size() > 0)
+                	{                	
+                		Collection<Unit> bombers = getBombersToLoad(route, unitsToLoad, player);
+                		m_selectedUnits.addAll(bombers);
+                	}                    
                 }
                 
                 //TODO COMCO END
@@ -1389,6 +1270,246 @@ kev
                 setFirstSelectedTerritory(null);
         }
 
+        /**
+         * Allow the user to select what transports to load.
+         * 
+         * If null is returned, the move should be cancelled.
+         */
+      //TODO COMCO model after this
+        private Collection<Unit> getBombersToLoad(final Route route, final Collection<Unit> unitsToLoad, PlayerID player)
+        {
+        	CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
+            candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
+            candidateBombersMatch.add(Matches.unitIsOwnedBy(player));
+            
+            //Get the list of all owned bombers in the starting terr
+            final List<Unit> candidateBombers = Match.getMatches(route.getStart().getUnits().getUnits(), candidateBombersMatch);
+            
+            //Get the minimum transport cost of a candidate paratrooper
+            int minTransportCost = 5;
+            for(Unit unit : unitsToLoad)
+            {
+                minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
+            }
+            
+            // remove bombers that don't have enough capacity
+            Iterator<Unit> bomberIter = candidateBombers.iterator();
+            while (bomberIter.hasNext())
+            {
+                Unit bomber = bomberIter.next();
+                int capacity = getTransportTracker().getAvailableCapacity(bomber);
+                if (capacity < minTransportCost)
+                	candidateBombers.remove(bomber); //TODO need to test to see if this is valid
+                	//bomberIter.remove();
+            }
+            
+            //Generate map of capacity
+            IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();
+            for (Unit bomber : candidateBombers)
+            {
+                int capacity = getTransportTracker().getAvailableCapacity(bomber);
+                availableCapacityMap.put(bomber, capacity);
+            }
+            
+            Collection<Unit> capableBombers = new ArrayList<Unit>(candidateBombers);
+            List<Unit> availableUnits = new ArrayList<Unit>(unitsToLoad);
+            Set<Unit> defaultSelections = new HashSet<Unit>();
+            
+            //Load capable bombers>
+            //Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true);
+            Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true);
+            for (Unit unit : unitsToCapableBombers.keySet())
+            {
+                Unit bomber = unitsToCapableBombers.get(unit);
+                int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+                availableCapacityMap.add(bomber, (-1 * unitCost));
+                defaultSelections.add(bomber);
+kev
+
+                List<Unit> singleCollection = new ArrayList<Unit>();
+                singleCollection.add(unit);
+            	//Collection<Unit> singleCollection = new ArrayList<Unit>();
+                if (m_dependentUnits.get(bomber) != null)
+                	m_dependentUnits.get(bomber).addAll(singleCollection);
+                else
+                    m_dependentUnits.put(bomber, singleCollection);
+            }
+
+            availableUnits.removeAll(unitsToCapableBombers.keySet());
+            
+            // the match criteria to ensure that chosen transports will match selected units
+            Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
+            {
+                public boolean match(Collection<Unit> units)
+                {
+                    Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
+                    // prevent too many transports from being selected
+                    return (bombers.size() <= Math.min(unitsToLoad.size(), candidateBombers.size()));
+                }
+            };
+
+            UnitChooser chooser = new UnitChooser(candidateBombers, 
+                defaultSelections, 
+                m_dependentUnits, 
+                /*categorizeMovement*/ true, 
+                m_bridge.getGameData(), 
+                /*allowTwoHit*/ false, 
+                getMap().getUIContext(), 
+                transportsToLoadMatch);
+
+            chooser.setTitle("Load bombers with paratroops");
+            int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                chooser, "What bombers do you want to load",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, null, null);
+            if (option != JOptionPane.OK_OPTION)
+                return Collections.emptyList();
+
+            //All bombers to load are selected... add the dependents.
+            Collection<Unit> loadedParatroops = new ArrayList<Unit>();
+            
+            for (Unit unit : unitsToCapableBombers.keySet())
+            {
+            	Collection<Unit> singleCollection = new ArrayList<Unit>();
+            	singleCollection.add(unit);
+            	loadedParatroops.add(unit);
+            	
+                Unit bomber = unitsToCapableBombers.get(unit);
+                if (m_dependentUnits.get(bomber) != null)
+                	m_dependentUnits.get(bomber).addAll(singleCollection);
+                else
+                    m_dependentUnits.put(bomber, singleCollection);
+            }
+            
+            return chooser.getSelected(true);
+            
+/*
+ * 
+ * 
+ * 
+ * 
+ */
+        	/*Collection<Unit> startOwnedUnits = route.getStart().getUnits().getUnits();
+           	//unitsToLoad = Match.getMatches(startOwnedUnits,Matches.UnitIsInfantry);
+
+            final PlayerID unitOwner = getUnitOwner(unitsToLoad);
+            //TODO COMCO add bombers carrying paratroops to mustMoveWith
+            MustMoveWithDetails startMustMoveWith = MoveValidator.getMustMoveWith(route.getStart(), startOwnedUnits, getData(), unitOwner);
+
+            int minTransportCost = 2;
+            for(Unit unit : unitsToLoad)
+            {
+                minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
+            }
+
+            CompositeMatch<Unit> candidateBombersMatch = new CompositeMatchAnd<Unit>();
+            candidateBombersMatch.add(Matches.UnitIsStrategicBomber);
+            candidateBombersMatch.add(Matches.unitIsOwnedBy(unitOwner));
+
+            final List<Unit> candidateBombers = Match.getMatches(startOwnedUnits, candidateBombersMatch);
+
+            // remove bombers that don't have enough capacity
+            Iterator<Unit> bomberIter = candidateBombers.iterator();
+            while (bomberIter.hasNext())
+            {
+                Unit bomber = bomberIter.next();
+                int capacity = getTransportTracker().getAvailableCapacity(bomber);
+                if (capacity < minTransportCost)
+                    bomberIter.remove();
+            }
+
+            // sort bombers in preferred load order
+            sortTransportsToLoad(candidateBombers, route);
+
+            List<Unit> availableUnits = new ArrayList<Unit>(unitsToLoad);
+
+            IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();
+            for (Unit bomber : candidateBombers)
+            {
+                int capacity = getTransportTracker().getAvailableCapacity(bomber);
+                availableCapacityMap.put(bomber, capacity);
+            }
+
+            Set<Unit> defaultSelections = new HashSet<Unit>();
+
+            Collection<Unit> capableBombers = new ArrayList<Unit>(candidateBombers);
+
+            // only allow incapable transports for updateUnitsThatCanMoveOnRoute
+            //  so that we can have a nice UI error shown if these transports 
+            //  are selected, since it may not be obvious
+            //TODO remove bombers already loaded here
+            Collection<Unit> incapableBombers = Match.getMatches(capableBombers, Matches.transportCannotUnload(route.getEnd()));
+            capableBombers.removeAll(incapableBombers);
+
+            // First, load capable bombers
+            Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true);
+            for (Unit unit : unitsToCapableBombers.keySet())
+            {
+                Unit bomber = unitsToCapableBombers.get(unit);
+                int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+                availableCapacityMap.add(bomber, (-1 * unitCost));
+                defaultSelections.add(bomber);
+            }
+            availableUnits.removeAll(unitsToCapableBombers.keySet());
+
+            candidateBombers.removeAll(incapableBombers);
+
+            //all the same type, dont ask unless we have more than 1 unit type
+            if(UnitSeperator.categorize(candidateBombers, startMustMoveWith.getMustMoveWith(), true, false).size() == 1 
+                            && unitsToLoad.size() == 1     )
+                return candidateBombers;
+
+            // If we've filled all transports, then no user intervention is required.
+            // It is possible to make "wrong" decisions if there are mixed unit types and
+            //   mixed transport categories, but there is no UI to manage that anyway.
+            //   Players will need to load incrementally in such cases.
+            if (defaultSelections.containsAll(candidateBombers))
+            {
+                boolean spaceLeft = false;
+                for (Unit bomber : candidateBombers)
+                {
+                    int capacity = availableCapacityMap.getInt(bomber);
+                    if (capacity >= minTransportCost)
+                    {
+                        spaceLeft = true;
+                        break;
+                    }
+                }
+                if (!spaceLeft)
+                    return candidateBombers;
+            }
+            
+            // the match criteria to ensure that chosen transports will match selected units
+            Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
+            {
+                public boolean match(Collection<Unit> units)
+                {
+                    Collection<Unit> bombers = Match.getMatches(units, Matches.UnitIsStrategicBomber);
+                    // prevent too many transports from being selected
+                    return (bombers.size() <= Math.min(unitsToLoad.size(), candidateBombers.size()));
+                }
+            };
+
+            UnitChooser chooser = new UnitChooser(candidateBombers, 
+                defaultSelections, 
+                startMustMoveWith.getMustMoveWith(), 
+                categorizeMovement true, 
+                m_bridge.getGameData(), 
+                allowTwoHit false, 
+                getMap().getUIContext(), 
+                transportsToLoadMatch);
+
+            chooser.setTitle("Load bombers with paratroops");
+            int option = JOptionPane.showOptionDialog(getTopLevelAncestor(),
+                chooser, "What bombers do you want to load",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, null, null);
+            if (option != JOptionPane.OK_OPTION)
+                return Collections.emptyList();
+
+
+            return chooser.getSelected(false);*/
+        }
         private void deselectUnits(List<Unit> units, Territory t, MouseDetails me)
         {         
 
