@@ -1319,8 +1319,10 @@ public class MovePanel extends ActionPanel
             Set<Unit> defaultSelections = new HashSet<Unit>();
             
             //Load capable bombers>
-            Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true);
+            Map<Unit,Unit> unitsToCapableBombers = MoveDelegate.mapTransports(route, availableUnits, capableBombers, true, player);
             Collection<Unit> loadedUnits = new ArrayList<Unit>();
+            m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
+            List<Unit> singleCollection = new ArrayList<Unit>();
             for (Unit unit : unitsToCapableBombers.keySet())
             {
                 Unit bomber = unitsToCapableBombers.get(unit);
@@ -1328,11 +1330,11 @@ public class MovePanel extends ActionPanel
                 availableCapacityMap.add(bomber, (-1 * unitCost));
                 defaultSelections.add(bomber);
 
-                List<Unit> singleCollection = new ArrayList<Unit>();
+                //List<Unit> singleCollection = new ArrayList<Unit>();
                 singleCollection.add(unit);
- kev               //TODO COMCO works for IDelegateBridge, MoveDelegate
-                Change change = m_transportTracker.loadTransportChange((TripleAUnit) bomber, unit, player);
-                m_bridge.addChange(change);
+kev                //TODO COMCO works for IDelegateBridge, MoveDelegate
+                /*Change change = m_transportTracker.loadTransportChange((TripleAUnit) bomber, unit, player);
+                m_bridge.addChange(change);*/
                 
             	//Set the dependents
                 if (m_dependentUnits.get(bomber) != null)
@@ -1341,6 +1343,11 @@ public class MovePanel extends ActionPanel
                     m_dependentUnits.put(bomber, singleCollection);
             }
 
+            m_mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(), 
+                capableBombers, 
+                getData(),
+                getCurrentPlayer());
+            
             availableUnits.removeAll(unitsToCapableBombers.keySet());
             
             // the match criteria to ensure that chosen transports will match selected units
@@ -1356,7 +1363,8 @@ public class MovePanel extends ActionPanel
 
             UnitChooser chooser = new UnitChooser(candidateBombers, 
                 defaultSelections, 
-                m_dependentUnits, 
+                //m_dependentUnits, 
+                m_mustMoveWithDetails.getMustMoveWith(),
                 /*categorizeMovement*/ true, 
                 m_bridge.getGameData(), 
                 /*allowTwoHit*/ false, 

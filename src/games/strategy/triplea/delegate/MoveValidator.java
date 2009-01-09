@@ -1407,7 +1407,7 @@ public class MoveValidator
         Collection<Unit> validateUnits = units;
         /*UnitChooser unitChooser = new UnitChooser(units, null, false, data, null);
         Collection<Unit> validateUnits = myStaticMethod(unitChooser);*/
-        if (isParatroopers(player))
+        if (isParatroopers(player) && Match.someMatch(units, Matches.UnitIsStrategicBomber))
         {
             Collection<Unit> bombers = Match.getMatches(validateUnits, Matches.UnitIsStrategicBomber);
             /*Iterator<Unit> bombersIter = bombers.iterator();
@@ -1759,6 +1759,7 @@ public class MoveValidator
         Map<Unit, Collection<Unit>> mapping = new HashMap<Unit, Collection<Unit>>();
         mapping.putAll(transportsMustMoveWith(sortedUnits));
         mapping.putAll(carrierMustMoveWith(sortedUnits, start, data, player));
+        mapping.putAll(bombersMustMoveWith(sortedUnits));
         return mapping;
     }
 
@@ -1778,6 +1779,22 @@ public class MoveValidator
         return mustMoveWith;
     }
 
+    private static Map<Unit, Collection<Unit>> bombersMustMoveWith(Collection<Unit> units)
+    {
+        TransportTracker transportTracker = new TransportTracker();
+        Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
+        //map transports
+        Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsStrategicBomber);
+        Iterator<Unit> iter = transports.iterator();
+        while (iter.hasNext())
+        {
+            Unit transport = iter.next();
+            Collection<Unit> transporting = transportTracker.transporting(transport);
+            mustMoveWith.put(transport, transporting);
+        }
+        return mustMoveWith;
+    }
+    
     private static Map<Unit, Collection<Unit>> carrierMustMoveWith(Collection<Unit> units, Territory start, GameData data, PlayerID player)
     {
         return carrierMustMoveWith(units, start.getUnits().getUnits(), data, player);

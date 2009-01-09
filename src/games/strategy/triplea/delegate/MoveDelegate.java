@@ -520,11 +520,19 @@ public class MoveDelegate implements IDelegate, IMoveDelegate
      * a unit is not with its transport
      * This method is static so it can be called from the client side.
      */
-    public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad, boolean isload)
+    public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad, boolean isload, PlayerID player)
     {
         //TODO COMCO need to finish this for unloads
         if (isload)
+        {
+          //TODO COMCO works for IDelegateBridge, MoveDelegate
+            /*TransportTracker transportTracker = new TransportTracker();
+            IDelegateBridge a_bridge;
+            a_bridge = new TripleADelegateBridge(aBridge, gameData);
+            Change change = transportTracker.loadTransportChange((TripleAUnit) transportsToLoad,(TripleAUnit) units, player);
+            m_bridge.addChange(change);*/
             return mapTransportsToLoad(units, transportsToLoad);
+        }
         if (MoveValidator.isUnload(route))
             return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
         return mapTransportsAlreadyLoaded(units, units);

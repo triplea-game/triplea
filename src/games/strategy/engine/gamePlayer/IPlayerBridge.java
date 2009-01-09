@@ -61,14 +61,6 @@ public interface IPlayerBridge
     public String getStepName();
 
     /**
-     * Add a change to game data. Use this rather than changing gameData
-     * directly since this method allows us to send the changes to other
-     * machines.
-     * 
-     * @param aChange
-     */
-    public void addChange(Change aChange);
-    /**
      * Get the properties for the current step.
      */
     public Properties getStepProperties();
